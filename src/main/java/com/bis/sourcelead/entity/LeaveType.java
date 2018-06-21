@@ -179,6 +179,36 @@ public class LeaveType {
 	@Column(name = "EFFECTIVE_GENDER")
 	private String effectiveGender;
 	
+	@Column(name = "INCLUDE_WEEKOFF")
+	private String includeWeekoff;
+	
+	@Column(name = "INCLUDE_HOLIDAYS")
+	private String includeHolidays;
+	
+	@Column(name = "VISIBLE_IN_BALANCE_LEAVES")
+	private String visibleInBalanceLeaves;
+	
+	@Column(name = "LEAVE_EMP_TYPE")
+	private String leaveEmpType;
+	
+	@Column(name = "ALLOWABILITY")
+	private String allowability;
+	
+	@Column(name = "MAX_DAYS_TO_CARRYFORWARD")
+	private Integer maxDaysToCarryforward;
+	
+	@Column(name = "INCLUDE_IN_PAYROLL")
+	private String includeInPayroll;
+	
+	@Column(name = "LEAVE_ENCASHMENT")
+	private String leaveEncashment;
+	
+	@Column(name = "LEAVE_ENCASH_MIN_DAYS")
+	private Integer leaveEncashMinDays;
+	
+	@Column(name = "LEAVE_ENCASH_MAX_DAYS")
+	private Integer leaveEncashMaxDays;
+	
 	@Transient
 	@JsonProperty
 	private String autoApproveTypeListNames;
@@ -812,6 +842,106 @@ public class LeaveType {
 	public void setUserGender(String userGender)
 	{
 		this.userGender = userGender;
+	}
+
+	public String getIncludeWeekoff()
+	{
+		return includeWeekoff;
+	}
+
+	public void setIncludeWeekoff(String includeWeekoff)
+	{
+		this.includeWeekoff = includeWeekoff;
+	}
+
+	public String getIncludeHolidays()
+	{
+		return includeHolidays;
+	}
+
+	public void setIncludeHolidays(String includeHolidays)
+	{
+		this.includeHolidays = includeHolidays;
+	}
+
+	public String getVisibleInBalanceLeaves()
+	{
+		return visibleInBalanceLeaves;
+	}
+
+	public void setVisibleInBalanceLeaves(String visibleInBalanceLeaves)
+	{
+		this.visibleInBalanceLeaves = visibleInBalanceLeaves;
+	}
+
+	public String getLeaveEmpType()
+	{
+		return leaveEmpType;
+	}
+
+	public void setLeaveEmpType(String leaveEmpType)
+	{
+		this.leaveEmpType = leaveEmpType;
+	}
+
+	public String getAllowability()
+	{
+		return allowability;
+	}
+
+	public void setAllowability(String allowability)
+	{
+		this.allowability = allowability;
+	}
+
+	public Integer getMaxDaysToCarryforward()
+	{
+		return maxDaysToCarryforward;
+	}
+
+	public void setMaxDaysToCarryforward(Integer maxDaysToCarryforward)
+	{
+		this.maxDaysToCarryforward = maxDaysToCarryforward;
+	}
+
+	public String getIncludeInPayroll()
+	{
+		return includeInPayroll;
+	}
+
+	public void setIncludeInPayroll(String includeInPayroll)
+	{
+		this.includeInPayroll = includeInPayroll;
+	}
+
+	public String getLeaveEncashment()
+	{
+		return leaveEncashment;
+	}
+
+	public void setLeaveEncashment(String leaveEncashment)
+	{
+		this.leaveEncashment = leaveEncashment;
+	}
+
+	public Integer getLeaveEncashMinDays()
+	{
+		return leaveEncashMinDays;
+	}
+
+	public void setLeaveEncashMinDays(Integer leaveEncashMinDays)
+	{
+		this.leaveEncashMinDays = leaveEncashMinDays;
+	}
+
+	public Integer getLeaveEncashMaxDays()
+	{
+		return leaveEncashMaxDays;
+	}
+
+	public void setLeaveEncashMaxDays(Integer leaveEncashMaxDays)
+	{
+		this.leaveEncashMaxDays = leaveEncashMaxDays;
 	}
 	
 }

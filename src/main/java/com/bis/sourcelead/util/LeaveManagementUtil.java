@@ -413,5 +413,14 @@ public class LeaveManagementUtil {
 		}
 		return extraLeaves;
 	}
+	
+	public Date getCurrentMonthStartDate(){
+		Calendar c = Calendar.getInstance();
+		int year = c.get(Calendar.YEAR);
+		int month = c.get(Calendar.MONTH);
+		int day = 1;
+		c.set(year, month, day);
+		return c.getTime();
+	}
 
 }

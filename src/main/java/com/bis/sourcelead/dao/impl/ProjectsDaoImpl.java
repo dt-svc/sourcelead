@@ -630,7 +630,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		}
 		
 		if(StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
-			projectModeQuery = " and (ps.orgLocationsId.org.id = :orgId OR ps.sharedLocationId.org.id = :orgId OR ps.projectMode = 'Finished')";
+			projectModeQuery = " and (ps.orgLocationsId.org.id = :orgId  OR ps.projectMode = 'Finished')";
 		}else {
 			projectModeQuery = " and (ps.orgLocationsId = :orgLocationsId OR ps.sharedLocationId = :orgLocationsId  OR ps.projectMode = 'Finished')";
 		}
@@ -734,6 +734,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		}else{
 			 queryObj = session.createQuery(query + query1.toString()+sortingQry);
 		}
+		
+		System.out.println(query);
 		
 		queryObj.setFirstResult(projectsDTO.getStart());
 		queryObj.setMaxResults(projectsDTO.getLength());
