@@ -2782,6 +2782,7 @@ public class LeaveManagementRestController {
 			
 			ModelAndView model = new ModelAndView();
 			model.addObject("leave", leave);
+			model.addObject("leaveUUID", leaveUUID);
 			model.addObject("fromDate", fromDate);
 			model.addObject("toDate", toDate);
 			model.addObject("currentStage", currentStage);
