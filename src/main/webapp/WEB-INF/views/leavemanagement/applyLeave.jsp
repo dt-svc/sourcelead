@@ -47,7 +47,6 @@ window.onload = function() {
               <div class="form-group">
                     <label class="checkBox pull-left mr10">
 					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
-					<label for="checkbox-1" class="checkbox-custom-label"></label>
                   </label>
                   <span class="pull-left">On behalf of</span>
               </div>
@@ -85,8 +84,6 @@ window.onload = function() {
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
 					<input id="checkbox-2" class="checkbox-custom checkboxCustom" id="fromHalfDay" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
-					<label for="checkbox-2" class="checkbox-custom-label"></label>
-                  </label>
                       Half a Day </label>
                   </div>
                 </div>
@@ -106,7 +103,6 @@ window.onload = function() {
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
 					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
-					<label for="checkbox-3" class="checkbox-custom-label"></label>
                   </label>
                       Half a Day </label>
                   </div>
@@ -160,7 +156,7 @@ window.onload = function() {
       <div class="form-footer clearfix mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Apply" id="applyId" class="btn btn-primary ml mr" onclick="applyLeave();">
+            <input type="button" value="Apply" id="ApplyLeave" class="btn btn-primary ml mr" onclick="applyLeave();">
             <input type="button" value="Cancel" class="btn btn-default" onclick="cancel();">
           </div>
         </div>
@@ -690,7 +686,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
     		    		validateOverDrawLeaves(report.name);
     		    	}else{
-    		    		$("#applyId").prop("disabled", false);
+    		    		$("#ApplyLeave").removeAttr('disabled');
     		    	}
     		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
     		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
@@ -701,13 +697,13 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	}
     		    	
     		    	if(errorMessage != ""){
-    		        	$("#applyId").prop("disabled", true);
+    		        	$("#ApplyLeave").attr('disabled','disabled');
     		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
     		        	$(".warMess").fadeIn();
     		        	$(".comMask").fadeIn();
     		        	errorMessage = "";
     		        }else{
-    		    		$("#applyId").prop("disabled", false);
+    		    		$("#ApplyLeave").removeAttr('disabled');
     		        }
     		    	if(skipPolicy != true){
     		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
@@ -740,11 +736,11 @@ function validateOverDrawLeaves(leaveTypeName){
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = $("#"+typeName+"Span").text();
 	if((dayDiff > typeIdBalCount) || typeIdBalCount ==  0){
-		$("#applyId").prop("disabled", true);
+		$("#ApplyLeave").attr('disabled','disabled');
 		$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You Have Not Enough Leaves To Apply</span> ");
 		$(".comMask").fadeIn();
 	}else{
-		$("#applyId").prop("disabled", false);
+		$("#ApplyLeave").removeAttr('disabled');
 	}
 }
 </script>
@@ -859,10 +855,11 @@ function validateDate(){
 	if(userId != null && userId != '' && userId != 'undefined'){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data != null){
+				$("#ApplyLeave").attr('disabled','disabled');
 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
 				$(".comMask").fadeIn();
-				$("#applyId").prop("disabled", true);
 			}else{
+				$("#ApplyLeave").removeAttr('disabled');
 				$('.warMess').hide();
 			}
 		});

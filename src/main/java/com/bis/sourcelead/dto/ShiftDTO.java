@@ -39,7 +39,7 @@ public class ShiftDTO {
 	private String saturdayOutTime;
 	private String sundayInTime;
 	private String sundayOutTime;
-	
+	private String defaultStatus;
 	
 	public long getId() {
 		return id;
@@ -220,5 +220,11 @@ public class ShiftDTO {
 	}
 	public void setSundayOutTime(String sundayOutTime) {
 		this.sundayOutTime = sundayOutTime;
+	}
+	public String getDefaultStatus() {
+		return defaultStatus;
+	}
+	public void setDefaultStatus(String defaultStatus) {
+		this.defaultStatus = defaultStatus;
 	}
 }

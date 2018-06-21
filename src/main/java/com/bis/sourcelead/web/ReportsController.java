@@ -17,9 +17,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -41,6 +43,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	@Autowired
 	TabsService tabsService;
 	
+	@Autowired
+	private TeamService teamService;
+	
 	@RequestMapping(value = "/recruitersReports")
 	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
 	 
@@ -54,6 +59,8 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 
 	 ModelAndView model = new ModelAndView();
 	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+	 List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+     model.addObject("teamsList", teamsList);
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
 	 model.addObject("sourceleadUrl", sourceleadUrl);

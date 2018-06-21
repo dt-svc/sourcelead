@@ -251,7 +251,7 @@ function requirementList(isWalkIn, walkInDay){
 	                    	 $("#requirementListActions").append(getDynamicDayActionsForWalkInJobs(parseInt(data.responseMessage.split(":")[1]) - 1, data.responseMessage.split(":")[2], parseInt(data.responseMessage.split(":")[1]) + 1));
 	                     }
 	                     $("#requirementList").append(result);
-	                     $("#requirementLoading").hide();
+	                     /* $("#requirementLoading").hide(); */
 	                     /* $("#assignedRequirementsDiv").css("display", "block"); */
 	                     
 	                	 $(".proj_close, .side_mask").click(function(){
@@ -267,14 +267,16 @@ function requirementList(isWalkIn, walkInDay){
 	                 		$("#requirementListActions").append(getDynamicDayActionsForWalkInJobs(parseInt(data.responseMessage.split(":")[1]) - 1, data.responseMessage.split(":")[2], parseInt(data.responseMessage.split(":")[1]) + 1));
                  		}
                  	}
-                 	 $("#requirementList").removeAttr("style");
-	                 if(isWalkIn) {
-	        	    	 $("#assigned").removeClass("current");
-	        	    	 $("#drive").addClass("current"); 
-	                 } else {
-	        	    	 $("#assigned").addClass("current");
-	        	    	 $("#drive").removeClass("current");
-	                 }
+                 	$("#requirementLoading").hide();
+                 	$("#requirementList").removeAttr("style");
+	                if(isWalkIn) {
+	        	    	$("#assigned").removeClass("current");
+	        	    	$("#drive").addClass("current"); 
+	                } else {
+	        	    	$("#assigned").addClass("current");
+	        	    	$("#drive").removeClass("current");
+	                }
+
 		    	} else if (data.indexOf('Sign In') !== -1) {
 		    		location.replace(sourceleadUrl);
 		    	} else {

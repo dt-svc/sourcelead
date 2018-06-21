@@ -417,7 +417,7 @@ function preventTabkey(e){
   </i>
     </a> </span>
     <nav class="header-nav navbar">
-    <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
+    <a class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
       <div class="search-area searchArea_mrgn">
            <form:form name ="search_form" id="search_form">

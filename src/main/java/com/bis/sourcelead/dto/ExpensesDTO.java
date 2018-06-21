@@ -43,7 +43,7 @@ private static final long serialVersionUID = 1L;
 	
 	private boolean sahApproved;
 	
-	private String expenseLocationCode;
+//	private String expenseLocationCode;
 	
 	private BigDecimal expenseAmountDivId;
 	
@@ -213,14 +213,14 @@ private static final long serialVersionUID = 1L;
 		this.projectMemberName = projectMemberName;
 	}
 
-	public String getExpenseLocationCode() {
+	/*public String getExpenseLocationCode() {
 		return expenseLocationCode;
 	}
 
 	public void setExpenseLocationCode(String expenseLocationCode) {
 		this.expenseLocationCode = expenseLocationCode;
 	}
-
+*/
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
