@@ -19,7 +19,7 @@ public interface AssociateBalanceLeaveService {
 	
 	AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId,Long userId,Long orgLocationId,Integer Status);
 
-	int getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId, Long orgLocationId);
+	float getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId, Long orgLocationId);
 
 	int addLeaveTypeToAssociate(List<User> userList, OrgLocations orgLocation, LeaveType leaveType, User loginUser);
 
@@ -28,5 +28,7 @@ public interface AssociateBalanceLeaveService {
 	int addOrSubAssociateBalanceLeaveType(List<User> userList, Long locationId, LeaveType leaveType, int status, float diffLeaves, String actionType, String methodType);
 
 	AssociateBalanceLeave saveOrUpdateAssocicateBalanceLeaves(AssociateBalanceLeave assBalLeave);
+
+	int updateAssociateAccuralBalanceLeaveCount(List<AssociateBalanceLeaveDTO> assBalList);
 	
 }
