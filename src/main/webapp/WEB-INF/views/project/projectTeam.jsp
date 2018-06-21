@@ -169,6 +169,7 @@ function filterStatus() {
 	 var postedOrgLocationId = '${postedOrgLocationId}';
 	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 	 var projectClientUUID = '${projectClientUUID}';
+	 var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
 	 	 
 	 $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
 	 var result = "";
@@ -193,12 +194,12 @@ function filterStatus() {
 			result = result +'<li>';
 	 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
 	 		 
-	 		if(postedOrgLocationId == loginOrgLocationId){
+	 		if(postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){
 	 			  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
 		 		  result = result + '<i class="fa fa-exchange paddingRight"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;'; 
 	 		 }
 	 		
-	 	     if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId){   
+	 	     if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){   
 	 			 result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 	 		     result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
 	 		}  
@@ -348,7 +349,7 @@ function filterStatus() {
 	    	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
 	    		result = result + '	<thead>';
 	    		result = result + '		<tr>';
-	    		  if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+	    		  if(('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}') || ('${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}')){
 	    			  result = result + ' <th><input type="checkbox" onclick="selectAllMembers();"  id="selectAllMembers" ></th>';
 	    		  }
 	    		
@@ -422,7 +423,7 @@ function filterStatus() {
 		        		}
 		        		
 		        		result = result + '	 <tr>';
-		        		 if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		        		 if(('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}') || ('${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}')){
 		        			 if(opt.status == 1){
 		        				 result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
 		        			 }else{

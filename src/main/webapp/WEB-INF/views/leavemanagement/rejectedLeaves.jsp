@@ -80,6 +80,7 @@ function getRejectedLeavesList(){
 				result = result + '<th>Reason</th>';
 				result = result + '<th>Rejected By</th>';
 				result = result + '<th>Status</th>';
+				result = result + '<th>Action</th>';
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
@@ -122,6 +123,9 @@ function getRejectedLeavesList(){
 			        		 result = result +' <b class="proj_closed">'+opt.status+'</b> ';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
+			        		 result = result + ' <td>';
+			        		 result = result + '   <a title="Reapply" class="tbldata-dotdot-100" href="'+sourceleadUrl+'/reApplyLeaveByUUID?leaveUUID='+opt.leaveUUID+'&currentStage=REJECTED">Reapply</a>';
+			        		 result = result + '</td>';
 			        		 result = result + '  </tr>';
 						}
 				}

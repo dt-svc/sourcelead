@@ -239,11 +239,11 @@ public class TaskDaoImpl implements TaskDao {
 
 		String query = null;
 		if (Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)) {
-			query = "from Tasks tasks where tasks.assignedUserId =:userId and ((tasks.ownerOrglocationId =:OrgLocationId) OR (tasks.assignedOrglocationId =:OrgLocationId)) and  tasks.taskStatus = 'Open' ";
+			query = "select count(*) from Tasks tasks where tasks.assignedUserId =:userId and ((tasks.ownerOrglocationId =:OrgLocationId) OR (tasks.assignedOrglocationId =:OrgLocationId)) and  tasks.taskStatus = 'Open' ";
 		} else if (Constants.TASK_STATUS_ASSIGNTASK.equalsIgnoreCase(taskStatus)) {
-			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId and  tasks.taskStatus = 'Open' ";
+			query = "select count(*) from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId and  tasks.taskStatus = 'Open' ";
 		} else if (Constants.TASK_STATUS_CLOSEDTASK.equalsIgnoreCase(taskStatus)) {
-			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and (tasks.taskOwnerId =:userId OR tasks.assignedUserId =:userId) and  tasks.taskStatus = 'Closed' ";
+			query = "select count(*) from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and (tasks.taskOwnerId =:userId OR tasks.assignedUserId =:userId) and  tasks.taskStatus = 'Closed' ";
 		}
 
 		if (Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)) {
