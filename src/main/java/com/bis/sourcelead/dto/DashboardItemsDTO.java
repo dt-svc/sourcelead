@@ -15,6 +15,7 @@ public class DashboardItemsDTO implements Serializable {
 	private long id;
 	/* private String items; */
 	private long userId;
+	private long orgLocationId;
 	/* private List<String> itemsList; */
 	/* private JSONArray itemsArray; */
 	private List<JSONObject> itemsObjectList;
@@ -34,6 +35,14 @@ public class DashboardItemsDTO implements Serializable {
 
 	public void setUserId(long userId) {
 		this.userId = userId;
+	}
+
+	public long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(long orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	public String getJsonData() {
