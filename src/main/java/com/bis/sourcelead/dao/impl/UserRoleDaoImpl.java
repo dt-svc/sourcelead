@@ -1410,6 +1410,13 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return userRoleList;
 	}
 
-
-
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<BigInteger> getAllUsersRoleList() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="SELECT  UR.ID AS userRoleId  FROM USER_ROLE UR ORDER BY UR.ID DESC ";
+		List<BigInteger> userRoleIds= session.createSQLQuery(query).list();
+		return userRoleIds;
+	}
 }

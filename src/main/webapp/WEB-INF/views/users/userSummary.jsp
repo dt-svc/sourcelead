@@ -642,6 +642,12 @@ $(document).ready(function(){
 					result = result + '<div class="clearfix"></div>';
 				}
 				
+				if(json.shiftName != null && json.shiftName != "" && json.shiftName != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Shift:</strong><span class="fix" title="'+json.shiftName+'">'+json.shiftName+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
+				}
 				
 				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
 					result = result + '			<div class="project_details_cta">';
@@ -1552,7 +1558,6 @@ $("#editRoleDetailsList").empty();
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 	        success: function(json) {
-	        	
 			    /* var json = JSON.parse(data); */
 			    var result = "";
 			    var selected1 = '';
@@ -1686,7 +1691,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>'; 
 
 					result = result + ' </div>';
-					result = result + ' <div class="clearfix"></div>';
+// 					result = result + ' <div class="clearfix"></div>';
 
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employee Id</label>';
@@ -1854,6 +1859,13 @@ $("#editRoleDetailsList").empty();
 					
 						result = result + '<input type="hidden" value="'+json.userEmploymentType+'" id="hiddenId" >';
 
+						result = result + ' <div class="user_summary_edit_cta">';
+					    result = result + ' <label>Shift <span class="text-danger">*</span></label>';
+						result = result + '  <select class="form-control chosen-select" id="shiftId" name="shiftId" field-name="Shift" data-validation="required">';
+						result = result + " <option value=''>-Select Shift-</option>";    
+			 	     	result = result+"</select>"; 
+						result = result + '</div>'; 
+						
 						
 					   result = result + '<div class="user_summary_edit_cta">';
  					   result = result + ' <label>Employment type <span class="text-danger">*</span></label>';
@@ -2029,6 +2041,8 @@ $("#editRoleDetailsList").empty();
 			    getVendorsByOrgLocationId();
 			    getDepartmentsList();
 			    maskme(); 
+			    
+			    getShiftList(json.shiftId);
 	        },
 		});
 }
@@ -4127,7 +4141,23 @@ function savedCommentAndCount(candidateId){
 		}
 	} 
 </script>
+<script>
+function getShiftList(shiftId){
+	 $.ajax({
+	        type : "POST",
+	         url: sourceleadUrl+"/getShiftList?"+tokenParamName+"="+tokenValue+"",        
+	         success :function(json) {
+	        	 for (var i = 0; i < json.length; i++) {
+	                    var report = json[i];
+	                    $('#shiftId').append('<option value=' + report.id + '  '+(report.id == shiftId ? "selected" : '') +'>' + report.shiftName + '</option>');
+	                }
+	                $('#shiftId').trigger("chosen:updated");
+	         }
+	 });
+}
 
+
+</script>
 <jsp:include page="candidatesProfile.jsp"></jsp:include>
 <jsp:include page="candidatesResumes.jsp"></jsp:include>
 <jsp:include page="candidatesExperience.jsp"></jsp:include>

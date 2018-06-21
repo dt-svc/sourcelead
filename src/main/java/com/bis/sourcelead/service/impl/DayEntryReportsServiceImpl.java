@@ -8,9 +8,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +38,7 @@ import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetActivities;
@@ -772,94 +776,23 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 
 		@Override
 		public ResponseList<DayWiseTimesheetReoprtsListDTO> getDayEntriesList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgloc, User loginUser,String isGlobalUser) throws Exception {
-			Long totalNonbillable = 0l;
-			Long totalBillable = 0l;
 			Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 			Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
-			
 			ResponseList<DayWiseTimesheetReoprtsListDTO> timeEntryDataMap = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
-			List<DayWiseTimesheetReoprtsListDTO> dayEntriesListDto = new ArrayList<DayWiseTimesheetReoprtsListDTO>();
-			
+			List<Long> projectIds = new ArrayList<Long>();
 			if(dayWiseTimesheetReoprtsDto.getProjectMemberListId()!= null && !dayWiseTimesheetReoprtsDto.getProjectMemberListId().isEmpty() && (dayWiseTimesheetReoprtsDto.getProjectIds() == null || dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty())) {
-			for(Long userId:dayWiseTimesheetReoprtsDto.getProjectMemberListId()) {
-				 ProjectMembers projectMember = projectMemberService.getProjectMemberById(userId);
+			for(Long projectMemberId:dayWiseTimesheetReoprtsDto.getProjectMemberListId()) {
+				 ProjectMembers projectMember = projectMemberService.getProjectMemberById(projectMemberId);
 				 if(projectMember!=null) {
-					 
 					 List<ProjectMembers> projectMemberList = projectMemberService.getProjectMembersListByOrgIdAndMasterCandidateId(orgloc.getOrg().getId(),projectMember.getMasterCandidateId().getId());
+					 projectMemberList.forEach(pm ->projectIds.add(pm.getProjects().getId()));
 					 if(projectMemberList!= null && !projectMemberList.isEmpty()) {
-					 for(ProjectMembers projectMembers:projectMemberList) {
-							List<TimeSheetDayEntries> dayEntryList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(projectMembers.getProjects().getId(),startDate,endDate,projectMembers.getId());
-							 if(dayEntryList != null && !dayEntryList.isEmpty()) {
-								 for(TimeSheetDayEntries dayEntries:dayEntryList) {
-									    DayWiseTimesheetReoprtsListDTO	listDto = new DayWiseTimesheetReoprtsListDTO();										
-									 	//listDto.setTimesheetDate(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getTimesheetDate()));		
-									 	if(projectMember.getProjectMemberCandidteId().getLastName()!=null) {
-											StringBuilder sb = new StringBuilder();
-											listDto.setEmployeeName(sb.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
-										}else {
-											listDto.setEmployeeName(projectMember.getProjectMemberCandidteId().getFirstName());
-										}
-									 	if (projectMember != null && projectMember.getProjects() != null) {
-									 		listDto.setEmployeeEmail(projectMember.getProjectMemberCandidteId().getEmail());
-										}
-									 	
-									 	if (dayEntries!= null) {
-									 		listDto.setTicketNo(dayEntries.getTicketNumber());
-										}
-										
-									 	if (dayEntries.getTimesheetSubmissions() != null && dayEntries.getTimesheetSubmissions().getProjects() != null) {
-									 		listDto.setProjectName(dayEntries.getTimesheetSubmissions().getProjects().getProjectName());
-										}
-									 	
-										if (dayEntries.getProjectTask() != null && dayEntries.getProjectTask().getId() != null) {
-											ProjectTasks projectTask = projecttasksservice.getTasksId(dayEntries.getProjectTask().getId().toString());
-											listDto.setTask(projectTask.getTaskName());
-										}
-										if (dayEntries.getBillableHours() != null) {
-											listDto.setBillableHrs(dayEntries.getBillableHours());
-											totalBillable = getTotalHoursFormDayHours(dayEntries.getBillableHours(), totalBillable);
-											
-										}
-										if (dayEntries.getNonBillableHours() != null) {
-											listDto.setNonBillableHrs(dayEntries.getNonBillableHours());
-											totalNonbillable = getTotalHoursFormDayHours(dayEntries.getNonBillableHours(), totalNonbillable);
-										}
-										  SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeBySubmissionId(dayEntries.getTimesheetSubmissions().getId(), projectMember.getMasterCandidateId().getId());
-										if (sah != null) {
-											listDto.setStatus(sah.getSubmissionApprovalStatus().toString());
-										}
-										
-										String status = null;
-										if(sah.getSubmissionApprovalStatus().getValue().equalsIgnoreCase("submitted for approval")) {
-											status =  "submitted";
-										}else {
-											status = sah.getSubmissionApprovalStatus().getValue();
-										}
-										
-										TimesheetActivities timesheetActivity = getSubmittedAndApprovedDate(projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId(), sah.getFrequencyStartDate(),sah.getFrequencyEndDate(),status);
-										String submittedDate = null;
-										if(timesheetActivity!= null) {
-											if(timesheetActivity.getActivityStatus().equalsIgnoreCase("submitted")) {
-												submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate());
-												listDto.setSubmittedOn(submittedDate);
-											}else if(timesheetActivity.getActivityStatus().equalsIgnoreCase("approved") || timesheetActivity.getActivityStatus().equalsIgnoreCase("rejected")) {
-												listDto.setSubmittedOn(submittedDate);
-												listDto.setApprovedOn(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate())); 
-											}
-										 }
-											dayEntriesListDto.add(listDto);
-										}
-								 
-								         
-								 
-							}
+						 timeEntryDataMap = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(projectIds, startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId());
 					}
 				}
 			}
-		}
-			timeEntryDataMap.setData(dayEntriesListDto);	
 		}else {
-			 timeEntryDataMap = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser);
+			 timeEntryDataMap = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,null);
 			}
 		return timeEntryDataMap;
 	}
