@@ -30,8 +30,12 @@ public class DashboardItems implements Serializable {
 	private String items;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_ID", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "USER_ID", referencedColumnName = "ID")
 	private User user;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORG_LOCATION_ID", referencedColumnName = "ID")
+	private OrgLocations orgLocations;
 
 	public long getId() {
 		return id;
@@ -55,6 +59,14 @@ public class DashboardItems implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
 	}
 
 }

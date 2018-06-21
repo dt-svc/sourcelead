@@ -8320,15 +8320,15 @@ max-width: 100% !important;
 	width: 400px; margin: 20% auto 0px; height: 20px;
 }
 .movIcon {
-    position: absolute; right: 3px; top: 3px; color: #ccc; background-image: url(../images/movearrow.png); height: 30px; width: 30px;
-    background-size: 20px;background-repeat: no-repeat; background-position: center;
+    position: absolute; right: 3px; top: 3px; color: #ccc; background-image: url(../images/movearrow.png); height: 23px; width: 23px;
+    background-size: 16px;background-repeat: no-repeat; background-position: center;
 }
 .moveListAlign {
     margin: 0px 0px; padding: 0px 0px; clear: both;
 }
 .moveListAlign li {
-    list-style-type: none; float: left; margin: 1%; border: 1px solid #b3ffb3; background-color: #f3fff2; padding: 15px 15px;
-    font-size: 15px; color: #545454; cursor: pointer;
+    list-style-type: none; float: left; margin: 1%; border: 1px solid #b3ffb3; background-color: #f3fff2; padding: 4px 8px;
+    font-size: 15px; color: #545454; cursor: pointer; /* height: 32px !important; */
 }
 .moveListAlign li.unCheck {
     border: 1px solid #ffd2be; background-color: #fff7f7;
@@ -8338,26 +8338,26 @@ max-width: 100% !important;
     text-align: center; background-image: url(../images/loading.gif); background-size: 80px; background-repeat: no-repeat;
     background-position: center; z-index: 100;
 }
-.checkbox-custom {
-    position: relative; width: 20px; height: 20px; display: inline-block; -webkit-user-select: none; -moz-user-select: none;
+.moveListAlign .checkbox-custom {
+    position: relative; width: 18px; height: 18px; display: inline-block; -webkit-user-select: none; -moz-user-select: none;
     -ms-user-select: none; -o-user-select: none; user-select: none; -webkit-appearance: none; -moz-appearance: none;
     appearance: none;  margin: 1px 10px 0px 0px !important; outline: 0; opacity: 1;
 }
-.checkbox-custom:after {
-    content: ''; position: absolute; display: block; z-index: 1; width: 20px; height: 20px; border: 1px solid #f5baa0; border-radius: 2px;
+.moveListAlign .checkbox-custom:after {
+    content: ''; position: absolute; display: block; z-index: 1; width: 18px; height: 18px; border: 1px solid #f5baa0; border-radius: 2px;
 }
-.checkbox-custom[type=checkbox]:before {
-    background: #82e482 url(../images/tick.png); background-size: 12px 9px; background-repeat: no-repeat; background-position: 3px 5px;
+.moveListAlign .checkbox-custom[type=checkbox]:before {
+    background: #82e482 url(../images/tick.png); background-size: 10px 7px; background-repeat: no-repeat; background-position: 3px 5px;
     position: absolute; left: 2px; z-index: 2; opacity: 0; width: 100%; height: 100%; color: #82e482;
 }
-.checkbox-custom[type=checkbox]:checked:before {
+.moveListAlign .checkbox-custom[type=checkbox]:checked:before {
     content: ''; position: absolute; top: 0px; opacity: 1; left: 0px; border: 1px solid #82e482; border-radius: 2px;
 }
 .filter-popupMid {
-width: 550px; margin: 0px auto; left: 0px; right: 0px; top: 8%;
+	width: 500px; margin: 0px auto; left: 0px; right: 0px; top: 5%;
 }
 #configureDashboard .addInner {
-background-color: #fff; max-height: 450px;
+	background-color: #fff; max-height: 500px;
 }
 .timesheet_tableNew table tr td.timeModifyBtn {
     height: 72px;

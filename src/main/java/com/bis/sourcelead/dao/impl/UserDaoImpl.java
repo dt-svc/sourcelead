@@ -2084,12 +2084,13 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public DashboardItems getDashboardItemsByUserId(long loginUserId) {
+	public DashboardItems getDashboardItemsByUserId(long loginUserId, long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from DashboardItems items where items.user.id= :userId";
+			String query = "from DashboardItems items where items.user.id= :userId and items.orgLocations.id=:orgLocationId";
 			Query queryObj = session.createQuery(query);
 			queryObj.setLong("userId", loginUserId);
+			queryObj.setLong("orgLocationId", orgLocationId);
 			List<DashboardItems> dashboardItems = queryObj.list();
 			if (dashboardItems != null && !dashboardItems.isEmpty())
 				return dashboardItems.get(0);

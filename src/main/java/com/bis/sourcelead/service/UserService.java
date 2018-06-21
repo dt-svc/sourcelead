@@ -16,7 +16,6 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
-import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -240,9 +239,9 @@ public interface UserService  {
 	 * @author Mahaveer Manoj
 	 * @purpose - to get Dashboard Items by user
 	 **/
-	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId);
+	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId);
 
-	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user);
+	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 
 }	
 		
