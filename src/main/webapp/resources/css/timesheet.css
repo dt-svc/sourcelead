@@ -3016,13 +3016,7 @@ background-color: #dddddd;
      
 .chosen-choices {
     max-height: 250px !important; overflow-y: auto !important;
-}
-     
-.dataTables_empty{
-background-color: #fff; height: 200px !important; background-image:url(../images/norecords.jpg); background-repeat:no-repeat;
-	background-position:center; background-size:260px;
-}
-     
+} 
 .loadMoreDiv {
 background-color: #fff; height: 200px !important; background-image:url(../images/norecords.jpg); background-repeat:no-repeat;
 	background-position:center; background-size:260px; margin: 0px 15px;
@@ -5571,9 +5565,8 @@ border: 1px solid #333;
 }
 .reqListBtn {}
 .reqListBtn span {
-	background-image: linear-gradient(to bottom, #fff 0px, #e0e0e0 100%); background-repeat: repeat-x; border-color: #ccc;
-	font-size: 18px; padding: 3px 12px 0px; border-radius: 4px; display: inline-block;
-	border: 1px solid #ccc; height: 30px; color: #666; margin: 0px 10px 0px 0px; cursor: pointer;
+	background-image: #f1f1f1;border-color: #ccc; font-size: 14px; padding: 6px 10px 0px; border-radius: 4px; display: inline-block;
+	border: 1px solid #ccc; height: 32px; color: #666; margin: 0px 10px 0px 0px; cursor: pointer;
 }
 .reqListBtn span.rAct {
 	color: #fff; background-color: #358ede; border: 1px solid #288eea;
@@ -7575,11 +7568,6 @@ font-weight: 500;
 .loadWrap .fa {
 	display: inline-block; margin: 0px 5px 0px 0px;
 }
-.noDate {
-	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);  border-radius: 2px; padding: 20px;
-	margin: 10px 0px 0px 0px; background-image: url(../images/norecords.jpg); background-position: center center;
-	background-repeat: no-repeat; min-height: 200px; background-size: 250px;
-}
 .zInMask {
 	z-index: 999999 !important; background-color: rgba(0,0,0,0.2) !important;
 }
@@ -8319,16 +8307,17 @@ max-width: 100% !important;
 .proMask .progress {
 	width: 400px; margin: 20% auto 0px; height: 20px;
 }
+
 .movIcon {
-    position: absolute; right: 3px; top: 3px; color: #ccc; background-image: url(../images/movearrow.png); height: 30px; width: 30px;
-    background-size: 20px;background-repeat: no-repeat; background-position: center;
+    position: absolute; right: 3px; top: 3px; color: #ccc; background-image: url(../images/movearrow.png); height: 23px; width: 23px;
+    background-size: 16px;background-repeat: no-repeat; background-position: center;
 }
 .moveListAlign {
     margin: 0px 0px; padding: 0px 0px; clear: both;
 }
 .moveListAlign li {
-    list-style-type: none; float: left; margin: 1%; border: 1px solid #b3ffb3; background-color: #f3fff2; padding: 15px 15px;
-    font-size: 15px; color: #545454; cursor: pointer;
+    list-style-type: none; float: left; margin: 1%; border: 1px solid #b3ffb3; background-color: #f3fff2; padding: 4px 8px;
+    font-size: 15px; color: #545454; cursor: pointer; /* height: 32px !important; */
 }
 .moveListAlign li.unCheck {
     border: 1px solid #ffd2be; background-color: #fff7f7;
@@ -8338,27 +8327,124 @@ max-width: 100% !important;
     text-align: center; background-image: url(../images/loading.gif); background-size: 80px; background-repeat: no-repeat;
     background-position: center; z-index: 100;
 }
-.checkbox-custom {
-    position: relative; width: 20px; height: 20px; display: inline-block; -webkit-user-select: none; -moz-user-select: none;
+.moveListAlign .checkbox-custom {
+    position: relative; width: 18px; height: 18px; display: inline-block; -webkit-user-select: none; -moz-user-select: none;
     -ms-user-select: none; -o-user-select: none; user-select: none; -webkit-appearance: none; -moz-appearance: none;
     appearance: none;  margin: 1px 10px 0px 0px !important; outline: 0; opacity: 1;
 }
-.checkbox-custom:after {
-    content: ''; position: absolute; display: block; z-index: 1; width: 20px; height: 20px; border: 1px solid #f5baa0; border-radius: 2px;
+.moveListAlign .checkbox-custom:after {
+    content: ''; position: absolute; display: block; z-index: 1; width: 18px; height: 18px; border: 1px solid #f5baa0; border-radius: 2px;
 }
-.checkbox-custom[type=checkbox]:before {
-    background: #82e482 url(../images/tick.png); background-size: 12px 9px; background-repeat: no-repeat; background-position: 3px 5px;
+.moveListAlign .checkbox-custom[type=checkbox]:before {
+    background: #82e482 url(../images/tick.png); background-size: 10px 7px; background-repeat: no-repeat; background-position: 3px 5px;
     position: absolute; left: 2px; z-index: 2; opacity: 0; width: 100%; height: 100%; color: #82e482;
 }
-.checkbox-custom[type=checkbox]:checked:before {
+.moveListAlign .checkbox-custom[type=checkbox]:checked:before {
     content: ''; position: absolute; top: 0px; opacity: 1; left: 0px; border: 1px solid #82e482; border-radius: 2px;
 }
 .filter-popupMid {
-width: 550px; margin: 0px auto; left: 0px; right: 0px; top: 8%;
+    width: 500px; margin: 0px auto; left: 0px; right: 0px; top: 5%;
 }
 #configureDashboard .addInner {
-background-color: #fff; max-height: 450px;
+    background-color: #fff; max-height: 500px;
 }
+
 .timesheet_tableNew table tr td.timeModifyBtn {
     height: 72px;
 }
+
+.noDate, .dataTables_empty, .noDateSm {
+	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);  border-radius: 2px; padding: 20px;
+	margin: 0px 0px 0px 0px; background-image: url(../images/norecords.png); background-position: center center;
+	background-repeat: no-repeat; min-height: 200px; height: 200px !important; background-size: auto;
+}
+.noDateSm {
+	background-image: url(../images/norecords.png); background-position: center center;
+	background-repeat: no-repeat; min-height: 150px; height: 150px !important; background-size: 130px;
+}
+.reportNewDash {
+	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 2px; padding: 10px 6px 10px 10px;
+}
+.perReport {
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+	background: url(../images/dashboard.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+}
+.finReport {
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+	background: url(../images/finrepicon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+}
+.hrReport {
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+	background: url(../images/hrrepicon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+}
+.assReport {
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+	background: url(../images/assrepicon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+}
+.banReport {
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+	background: url(../images/banrepicon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+}
+.proReport {
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+	background: url(../images/prorepicon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+}
+.comReport {
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+	background: url(../images/comrepicon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+}
+.payReport {
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+	background: url(../images/payrepicon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+}
+.reportNewCta {
+	border-radius: 0px !important; margin-bottom: -1px; margin-left: -1px; transition: all 0.1s ease-in-out !important;
+}
+.reportNewCta h4 {
+	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 15px; font-weight: 500;
+}
+.reportNewCta h4 a {
+	color: #566072;
+}
+.reportNewCta:hover {
+	border: 1px solid #91c1ed; position: relative; z-index: 10;
+}
+.repDropBtn {
+	background: #f3f1f1; border: 1px solid #c9c9c9; color: #566072;
+}
+.newRepList {
+	display: none;
+}
+.newRepListCta {
+	float: left; width: 33%; margin: 0px 0.3333% 5px 0px;
+}
+.newRepListCta h2 {
+	padding: 0px 0px; margin: 0px 0px; background-color: #6C7686; font-size: 15px; font-weight: 400; color: #fff;
+}
+.newRepListCta h2  a {
+	color: #fff; display: block; padding: 11px 15px;
+}
+.newRepListCta ul {
+	padding: 0px 0px; margin: 0px 0px; border: 1px solid #ededed; border-top: none; border-bottom: none;
+}
+.newRepListCta ul li {
+	list-style-type: none;
+}
+.newRepListCta ul li:first-child {
+	padding-top: 5px;
+}
+.newRepListCta ul li a {
+	display: block; padding: 8px 15px; font-size: 14px; color: #545454; border-bottom: 1px solid #ededed;
+}
+.repSearch {
+	float: right; padding: 0px 5px 0px 0px; display: none;
+}
+.innSeaFld {
+	width: 300px; height: 32px; border: 1px solid #E6EAEE; background-color: #fff !important; border-radius: 4px;
+	background: url("../images/search.svg"); background-repeat: no-repeat; background-position: 0px center;
+	background-size: 38px; padding: 0px 10px 0px 38px; font-size: 12px; font-family: "Proxima Nova"; color: #303345;
+	box-sizing: border-box; margin: 0px 0px;
+}
+
+
+
