@@ -339,8 +339,6 @@ function removeImmigDocumrntDynamic(id){
 								 $('#uploadDocumentName0').text(value);  
 								 $("#uploadFile0").attr("data-validation-optional","true");
 								 $('#docHisoryId0').val(key);
-								 alert("ppp"+key)
-								
 			    		  }else{
 			    			  appendDynamicUploaRow();	
 	    					  $("#uploadDocSaveDiv"+fileUploadRow).hide();
@@ -348,9 +346,6 @@ function removeImmigDocumrntDynamic(id){
 			    			  $("#uploadDocEditDiv"+fileUploadRow).show();
 			    			  $('#uploadDocumentName'+fileUploadRow).text(value);
 			    			  $('#docHisoryId'+fileUploadRow).val(key);
-			    			  alert("lll"+key)
-			    			 
-			    			  
 			    		  }
 			    	  
 			    	  console.log("row id value is "+rowId +", fileUploadRow --> "+fileUploadRow);

@@ -253,6 +253,8 @@
 			// Add addEdu Div  
 			$("#addEdu").click(function(){
 				$(".popMask").fadeIn(200);
+				$('#eduName option[value=""]').prop("selected", true);
+    	        $('#eduName').trigger("chosen:updated");
 				$("#popEduView").fadeIn(100);
 			});
 	function closeEdupopup(){
@@ -262,6 +264,10 @@
 		$("#candidateEducationId").val('');
 		$('#popEduView').find('p.jquery_form_error_message').remove();
 		$("#eduSave_Button").removeAttr("disabled");
+		$('#immigrationEduDocDivEdit').hide();
+    	$('#immigrationEduDocDiv').show();
+    	$('#immigrationEduDocName').text("");
+		// getCandidateEducationList(candidateId);
 	}
 	
 	var config = {

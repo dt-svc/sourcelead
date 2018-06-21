@@ -197,6 +197,10 @@ public class ProjectsRestController {
 			stroredProjectsDTO.setProjectUUID(projects.getProjectUUID());
 			stroredProjectsDTO.setStartDateStr(projects.getStartDateStr());
 			stroredProjectsDTO.setEndDateStr(projects.getEndDateStr());
+			if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+				stroredProjectsDTO.setSavedSharedClientOrgLocId(projects.getSharedLocationId().getId().toString());
+			}
+			
 			response.setObject(stroredProjectsDTO);
 			
 			 response.setResponse(Result.SUCCESS.name());

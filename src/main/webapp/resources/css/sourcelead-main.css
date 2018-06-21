@@ -8988,10 +8988,7 @@ clear: both; content: ""; height: 0; position: absolute; right: 30px; top: -10px
 background-color: transparent !important; width:96%; margin-left: 15px;
 }
 .reportsCountNew.reportsCountNewBig ul li {
-width: 10% !important;
-}
-.inputfiledColor input {
-	color: #333 !important;
+width: 10%;
 }
 /* forms edit element styles */
 @media (max-width: 320px) {
