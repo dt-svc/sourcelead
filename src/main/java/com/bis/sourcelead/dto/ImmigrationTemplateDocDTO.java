@@ -42,6 +42,8 @@ public class ImmigrationTemplateDocDTO {
 	
 	private List<Long> immigrationCandidateDocHistoryId;
 	
+	private String documentCategory;
+	
 	public Long getId() {
 		return id;
 	}
@@ -145,5 +147,13 @@ public class ImmigrationTemplateDocDTO {
 	public void setImmigrationCandidateDocHistoryId(List<Long> immigrationCandidateDocHistoryId) {
 		this.immigrationCandidateDocHistoryId = immigrationCandidateDocHistoryId;
 	}
+	public String getDocumentCategory() {
+		return documentCategory;
+	}
+	public void setDocumentCategory(String documentCategory) {
+		this.documentCategory = documentCategory;
+	}
+	
+	
 	
 }

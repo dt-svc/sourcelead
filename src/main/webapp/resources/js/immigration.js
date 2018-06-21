@@ -103,6 +103,12 @@ function Immigration() {
     });
 
     this.savePetitionDoc = function (status) {
+    	var validationSettings = {
+                errorMessagePosition: 'element',
+                borderColorOnError: '',
+                scrollToTopOnError: true,
+                dateFormat: 'yyyy/mm/dd'
+            };
         if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
             var formData = getFormData("PetitionTemplateDocDetails");
             formData.immigrationDocDeletedListIds = deletedDocListIds.join();

@@ -1,4 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <c:set var = "docsLst" scope = "page" value = '<%= session.getAttribute("templateDocList") %>'/>
 <c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index  rowindex starts from 0-->
 <section class="addImmiWrap">
@@ -26,7 +27,7 @@
 			</ul>
 			</c:if>
 		</div>
-		<form id="PetitionTemplateDocDetails" name="PetitionTemplateDocDetails">
+		<form id="PetitionTemplateDocDetails" name="PetitionTemplateDocDetails" >
 		<input type="hidden" name="id" id="templateId"/>
 		<div class="addImmiContent clearfix">
 			<div class="immiTemp clearfix" id="templateDocDivStatic">
@@ -37,11 +38,11 @@
 				      
 				      <div class="col-md-2">
 						<select class="form-control" 
-										name="immigrationDocList[0].documentCat"   title='Document Type' field-name="Select Document" data-validation="required">
+										name="immigrationDocList[0].documentCategory" id="immigrationDocList[0].documentCat" onchange="getDocumentType(this,'0');"  title='Document Category' field-name="Select Document Category" data-validation="required">
 									<option value="" selected>--Select Document Type--</option>
-									<option value="Petitioner" >Petitioner</option>
-									<option value="Beneficiary" >Beneficiary</option>
-									<option value="Attorney" >Attorney</option>
+									<option value="PetitionerCategory" >Petitioner</option>
+									<option value="Document Type" >Beneficiary</option>
+									<option value="AttorneyCategory" >Attorney</option>
 									
 						</select>
 					   </div>
@@ -50,10 +51,10 @@
 					  
 						<select class="form-control selectpicker" 
 										name="immigrationDocList[0].documentType"  onchange="updateUIforOthers(0);" field-name="Select Document" data-validation="required" id="candidateEducation0" data-live-search="true">
-							<option value="" selected>--Select Document--</option>
+							<%-- <option value="" selected>--Select Document--</option>
 							<c:forEach var="edu" items="${educationsList}">
 											<option value="${edu.id}">${edu.name}</option>
-										</c:forEach>
+							</c:forEach> --%>
 						</select>
 					   </div>
 					   <div class="col-md-4 noPad">
@@ -66,7 +67,7 @@
 						   	<div class="col-md-5">
 						   	<input type="text" id="otherType0" name="immigrationDocList[0].otherType" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" data-validation-optional="true"/>
 						   	</div>
-						   	 <div class="col-md-4">
+						   	 <div class="col-md-7">
 						   	<input type="text" name="immigrationDocList[0].descriptionOther" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 						   	</div> 
 					   </div>
@@ -105,25 +106,51 @@
 					  <div class="col-md-2">
 					  
 						<select class="form-control" 
-									name="immigrationDocList[${rows.count-1}].documentCat" title='Document Type' field-name="Select Document" data-validation="required" onchange="getDocmentCategory(docType);">
-							<option value="" selected>--Select Document Type--</option>
-									<option value="Petitioner" >Petitioner</option>
-									<option value="Beneficiary" >Beneficiary</option>
-									<option value="Attorney" >Attorney</option>
+									name="immigrationDocList[${rows.count-1}].documentCategory" id="documentCategory${rows.count-1}" title='Document Category' field-name="Select Document Category" data-validation="required" onchange="getDocumentType(this,${rows.count-1});" >
+							            <option value="" >--Select Document Type--</option>
+							        	<option ${items.documentCategory == "PetitionerCategory" ? 'selected': ''} value="PetitionerCategory">Petitioner</option>
+							        	<option ${items.documentCategory == "Document Type" ? 'selected': ''} value="Document Type">Beneficiary</option>
+							        	<option ${items.documentCategory == "AttorneyCategory" ? 'selected': ''} value="AttorneyCategory">Attorney</option>
 						</select>
 					  </div>
 					  
 					  
 					  <div class="col-md-3">
 					  <input type="hidden" name="immigrationDocList[${rows.count-1}].id" value="${items.id}" id="templateId${rows.count-1}"/>
-					  
+					  	<%-- 	category::::<c:out value ="${docCat.documentCategory }"/>c --%>
 						<select class="form-control selectpicker" 
 								onchange="updateUIforOthers(${rows.count-1});"		name="immigrationDocList[${rows.count-1}].documentType" field-name="Select Document" data-validation="required" id="candidateEducation${rows.count-1}" data-live-search="true">
-							<option value="" selected>--Select Document--</option>
+							
+							
+							<option value="" >--Select Document--</option>
+							
+					
+							<c:choose>
+							
+							<c:when test="${items.documentCategory eq 'Document Type'}">
+							
 							<c:forEach var="edu" items="${educationsList}">
-											<option ${edu.id == items.documentType? 'selected': ''} value="${items.documentType}">${edu.name}</option>
+								<option ${edu.id == items.documentType? 'selected': ''} value="${edu.id}">${edu.name}</option>
 							</c:forEach>
+							</c:when>
+							
+							<c:when test="${items.documentCategory eq 'PetitionerCategory'}">
+							<%-- Petitioner <c:out value ="${docCat.documentCategory }"/> --%>
+							<c:forEach var="pet" items="${petitionerDocsList}">
+							 
+								<option ${pet.id == items.documentType? 'selected': ''} value="${pet.id}">${pet.name}</option>
+							</c:forEach>
+							</c:when>
+							
+							<c:otherwise>
+							<c:forEach var="attor" items="${attorneyDocsList}">
+								<option ${attor.id == items.documentType? 'selected': ''} value="${attor.id}">${attor.name}</option>
+							</c:forEach>
+						    </c:otherwise>
+							</c:choose>
+							
 						</select>
+						
 					  </div>
 					
 					<div class="col-md-4 noPad" id="currentRow${rows.count-1}">
@@ -153,7 +180,7 @@
 						   	<div class="col-md-5">
 						   	<input type="text" id="otherType${rows.count-1}" name="immigrationDocList[${rows.count-1}].otherType"  value ="${items.otherType}" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200"  data-validation-optional="true"/>
 						   	</div>
-						   	 <div class="col-md-4">
+						   	 <div class="col-md-7">
 						   <input type="text" name="immigrationDocList[${rows.count-1}].descriptionOther" id="description${rows.count-1}"    value ="${items.descriptionOther}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 						   	</div> 
 					   </div>
@@ -213,12 +240,12 @@
 		templateDocDetails = templateDocDetails+ "<div id='dynamicRow"+rowId+"' class='col-md-12 clearfix noPad mt'>";
 		
 		templateDocDetails = templateDocDetails+ "<div class='col-md-2'>";
-		templateDocDetails = templateDocDetails+ "<select class='form-control' title='Document Type'  field-name='Select Document' data-validation='required' name='immigrationDocList["+rowId+"].documentType'  data-validation='validate_Space'>";
-		templateDocDetails = templateDocDetails+ "<option value='' selected>--Select Document Type--</option>";
 		
-		templateDocDetails = templateDocDetails+ "<option value='Petitioner'>Petitioner</option>";
-		templateDocDetails = templateDocDetails+ "<option value='Beneficiary'>Beneficiary</option>";
-		templateDocDetails = templateDocDetails+ "<option value='Attorney'>Attorney</option>";
+		templateDocDetails = templateDocDetails+ "<select class='form-control' title='Document Type'  field-name='Select Document Category' data-validation='required' name='immigrationDocList["+rowId+"].documentCategory' id='documentCategory"+rowId+"' onchange='getDocumentType(this,"+rowId+");'  data-validation='validate_Space'>";
+		templateDocDetails = templateDocDetails+ "<option value='' selected>--Select Document Category--</option>";
+		templateDocDetails = templateDocDetails+ "<option value='PetitionerCategory'>Petitioner</option>";
+		templateDocDetails = templateDocDetails+ "<option value='Document Type'>Beneficiary</option>";
+		templateDocDetails = templateDocDetails+ "<option value='AttorneyCategory'>Attorney</option>";
 		templateDocDetails = templateDocDetails+ "</select></div>";
 		
 		templateDocDetails = templateDocDetails+ "<div class='col-md-3'>";
@@ -236,7 +263,7 @@
 		templateDocDetails = templateDocDetails+ "<div class='col-md-5'>";
 		templateDocDetails = templateDocDetails+ "<input type='text' id='otherType"+rowId+"' name='immigrationDocList["+rowId+"].otherType' title='Name' class='form-control' placeholder='Name' field-name='Name' data-validation='validate_length length2-200'/>";
 		templateDocDetails = templateDocDetails+ "</div>";
-		templateDocDetails = templateDocDetails+ "<div class='col-md-4'>";
+		templateDocDetails = templateDocDetails+ "<div class='col-md-7'>";
 		templateDocDetails = templateDocDetails+ "<input type='text' name='immigrationDocList["+rowId+"].descriptionOther' id='description"+rowId+"' title='Description' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/>";
 		templateDocDetails = templateDocDetails+ "	</div>";
 		templateDocDetails = templateDocDetails+ "	</div>";
@@ -309,6 +336,7 @@
 	 
 	  // reset the values of all input elements when changed value in dropdown 
 	  $("#currentRow"+id).find('input:text').val('');
+	  
 	}
 	</script>
 	
@@ -316,10 +344,27 @@
 	$(document).ready(function(){
 		$("#templateId").val(immTemplId);
 	});
-	
-	</script>
-<script type="text/javascript">
-	function getDocmentCategory(docType){
-		
+
+	/* Document Category Selection  in immigration template creation */
+	function getDocumentType(id,rowId){
+		var docType = id.value;
+		$('#candidateEducation'+rowId).empty();
+		 
+		 $.ajax({
+	            type: "POST",
+	            url:sourceleadUrl+immiModulePath +"/getDcoumentType?"+tokenParamName +"="+tokenValue+"&docType="+docType,
+	            success: function (json) {
+	            	 $('#candidateEducation'+rowId).append('<option selected value="">--Select Document--</option>');
+	            	 for (var i = 0; i < json.length; i++) {
+	                     var report = json[i];
+	                     $('#candidateEducation'+rowId).append('<option value='+report.id +'>'+report.name+'</option>');
+	                 }
+	            	
+	            	 $('#candidateEducation'+rowId).selectpicker('refresh');
+	            },
+	        });
 	}
-</script>
+
+	/* End */
+	</script>
+

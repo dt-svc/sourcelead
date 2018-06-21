@@ -16,9 +16,9 @@ INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUE
 INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Tax returns of 3rd prior year ', 'Tax returns of 3rd prior year .', 'PetitionerCategory', 'United States');
 INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Organization Chart', 'Organization Chart.', 'PetitionerCategory', 'United States');
 
-INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Beneficiary’s qualifying job description ', 'Beneficiary’s qualifying job description .', 'PetitionerCategory', 'United States');
-INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Beneficiary’s qualifying job advertisement', 'Beneficiary’s qualifying job advertisement.', 'PetitionerCategory', 'United States');
-INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Multiple pictures of petitioner’s job area and work space', 'Multiple pictures of petitioner’s job area and work space.', 'PetitionerCategory', 'United States');
+INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Beneficiary''s qualifying job description', 'Beneficiary''s qualifying job description .', 'PetitionerCategory', 'United States');
+INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Beneficiary''s qualifying job advertisement', 'Beneficiary''s qualifying job advertisement.', 'PetitionerCategory', 'United States');
+INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Multiple pictures of petitioner''s job area and work space', 'Multiple pictures of petitioner''s job area and work space.', 'PetitionerCategory', 'United States');
 
 INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Other documents not listed above', 'Other documents not listed above.', 'PetitionerCategory', 'United States');
 INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Client letter from end client for the H1B petition', 'Client letter from end client for the H1B petition.', 'PetitionerCategory', 'United States');
