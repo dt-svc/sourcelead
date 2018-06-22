@@ -75,13 +75,7 @@
 									<select class="chosen-select" id="vendor" name="vendor"
 										data-placeholder="Select Vendor" multiple>
 										<c:forEach var="report" items="${add_VendorList}">
-											<c:if test="${report.locationId.id == loginOrgLocId}">
-												<option value="${report.id}">${report.responderLocationId.org.orgName}</option>
-											</c:if>
-											<c:if
-												test="${report.responderLocationId.id == loginOrgLocId}">
-												<option value="${report.id}">${report.locationId.org.orgName}</option>
-											</c:if>
+											<option value="${report.orgRelId}">${report.vendorName}</option>
 										</c:forEach>
 									</select>
 								</div>
@@ -237,7 +231,8 @@ function submitCandidatesToJob(){
 		result = result +'	<th>Email</th>';
 		result = result +'	<th>Primary Skill</th>';
 		result = result +'	<th>Employment Type</th>';
-		result = result +'  <th>Created Date<br>(<small class="custom-small">YYYY-MM-DD</small>)</th>';
+		result = result +'	<th>Vendor</th>';
+		result = result +'  <th>Updated Date<br>(<small class="custom-small">YYYY-MM-DD</small>)</th>';
 	  	result = result +'  <th>Location</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -376,7 +371,8 @@ function candidatesListPagination(url,sourceleadUrl){
             { "data": "email"},
             { "data": "primarySkill" },
             { "data": "employementType" },
-            { "data": "createdDate" },
+            { "data": "vendorName" },
+            { "data": "updatedDate" },
             { "data": "location"}
         ],
         "columnDefs": [ {
@@ -426,12 +422,12 @@ function candidatesListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
-	              "data": "createdDate",
+	              "data": "primarySkill",
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined"){
-	            	    	 result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.primarySkill+"'>"+opt.primarySkill+"</div></td>";
+	            	    	 result = result +"<td><div class='tbldata-dotdot_50' title='"+opt.primarySkill+"'>"+opt.primarySkill+"</div></td>";
 	            	    }else{
 	            	    	 result = result +"<div>----</div>";
 	            	    }
@@ -440,7 +436,7 @@ function candidatesListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
-	              "data": "primarySkill",
+	              "data": "employementType",
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
@@ -454,11 +450,25 @@ function candidatesListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
-	              "data": "primarySkill",
+	              "data": "vendorName",
+	              "sortable": true,
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.vendorName != null && opt.vendorName != '' && opt.vendorName != 'undefined'){
+	            		  result = result +"<td><div class='tbldata-dotdot_140'><span  title='"+opt.vendorName+"'>"+opt.vendorName+"</span></div></td>";
+	            	  }else{
+	            		  result = result +"<div>----</div>";
+	            	  }
+	            	 
+	            	  return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "updatedDate",
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div class='tblminwidth-75' title='"+opt.createdDate+"'>"+opt.createdDate+"</div></td>";
+	            	    result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.updatedDate+"'>"+opt.updatedDate+"</div></td>";
 	            		return result;
 	              }
 		     },{
@@ -468,9 +478,9 @@ function candidatesListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.location != null && opt.location != '' && opt.location != "undefined"){
-	            	    	result = result +"<td><div class='tbldata-dotdot-me' title='"+opt.location+"'>"+opt.location+"</div></td>";
+	            	    	result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.location+"'>"+opt.location+"</div></td>";
 	            	    }else if(opt.country != null && opt.country != '' && opt.country != "undefined"){
-	            	    	result = result +"<td><div class='tbldata-dotdot-me' title='"+opt.country+"'>"+opt.country+"</div></td>";
+	            	    	result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.country+"'>"+opt.country+"</div></td>";
 	            	    }else{
 	            	    	result = result +"<div>----</div>";
 	            	    }
@@ -482,7 +492,7 @@ function candidatesListPagination(url,sourceleadUrl){
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"bLengthChange": true,
-	    	"aaSorting": [[5,'desc']],
+	    	"aaSorting": [[6,'desc']],
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
