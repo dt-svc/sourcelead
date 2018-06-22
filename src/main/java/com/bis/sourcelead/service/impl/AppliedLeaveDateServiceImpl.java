@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,14 @@ public class AppliedLeaveDateServiceImpl implements AppliedLeaveDateService{
 	}
 
 	@Override
-	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(Long orgLocationid, Long leaveTypeId)
+	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(Long orgLocationid, Long leaveTypeId,Date startDate,Date endDate)
 	{
-		return appliedLeaveDateDao.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(orgLocationid, leaveTypeId);
+		return appliedLeaveDateDao.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(orgLocationid, leaveTypeId, startDate, endDate);
+	}
+
+	@Override
+	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate,Long userId)
+	{
+		return appliedLeaveDateDao.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocationId,leaveTypeId,sDate,eDate,userId);
 	}
 }

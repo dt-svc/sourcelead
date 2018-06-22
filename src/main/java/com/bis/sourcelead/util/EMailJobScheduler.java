@@ -1547,7 +1547,7 @@ public class EMailJobScheduler {
 		}
 		
 		//this cron is related to invoices to run every day.
-		getDueDateCompletedInvoicesLists();
+//		getDueDateCompletedInvoicesLists();
 
 	}
 
@@ -1556,7 +1556,9 @@ public class EMailJobScheduler {
 	 * changing invoice payment status when due date is over
 	 * @throws Exception
 	 */
-	private void getDueDateCompletedInvoicesLists() throws Exception {
+	@Scheduled(cron = "0 0 15 1/1 * ?")
+	@Async
+	public void getDueDateCompletedInvoicesLists() throws Exception {
 		List<Invoice> invoiceList = invoiceService.getDueDateCompletedInvoicesList();
 		invoiceList.forEach(invoice -> {
 			if (invoice.getDueDate() != null && !"".equals(invoice.getDueDate())) {

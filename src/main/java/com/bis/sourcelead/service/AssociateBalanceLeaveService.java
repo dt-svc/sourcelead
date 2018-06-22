@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
@@ -30,5 +31,7 @@ public interface AssociateBalanceLeaveService {
 	AssociateBalanceLeave saveOrUpdateAssocicateBalanceLeaves(AssociateBalanceLeave assBalLeave);
 
 	int updateAssociateAccuralBalanceLeaveCount(List<AssociateBalanceLeaveDTO> assBalList);
+
+	int calculateAndUpdateAssociateBalanceLeaves(Long orgLocationId, LeaveType leaveType, Date startDate, Date endDate);
 	
 }

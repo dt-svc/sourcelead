@@ -64,14 +64,8 @@ $(document).ready(function() {
 								<div class="clearfix">
 									<select class="chosen-select" id="client" name="client"
 										data-placeholder="Select Client" multiple>
-										<c:forEach var="report" items="${add_clientList}">
-											<c:if test="${report.locationId.id == loginOrgLocId}">
-												<option value="${report.id}">${report.responderLocationId.org.orgName}</option>
-											</c:if>
-											<c:if
-												test="${report.responderLocationId.id == loginOrgLocId}">
-												<option value="${report.id}">${report.locationId.org.orgName}</option>
-											</c:if>
+										<c:forEach var="report" items="${clientsList}">
+											<option value="${report.orgRelId}">${report.clientName}</option>
 										</c:forEach>
 									</select>
 								</div>
@@ -221,6 +215,7 @@ function submitCandidatesToJob(){
 		result = result +'  <th>&nbsp;</th>';
 		result = result +'	<th>Generated Id</th>';
 		result = result +'	<th>Title</th>';
+		result = result +'	<th>Client</th>';
 		result = result +'  <th>Posted On<br>(<small class="custom-small">YYYY-MM-DD</small>)</th>';
 	  	result = result +'  <th>Location</th>';
 		result = result + '</tr>';
@@ -325,6 +320,7 @@ function requirementListPagination(url,sourceleadUrl){
             { "data": "action" },
             { "data": "generatedId"},
             { "data": "jobTitle"},
+            { "data": "clientName"},
             { "data": "createdDate" },
             { "data": "location"}
         ],
@@ -365,6 +361,20 @@ function requirementListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
+	              "data": "client",
+	              "sortable": true,
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+	            		  result = result +"<td><div class='tbldata-dotdot_140'><span  title='"+opt.clientName+"'>"+opt.clientName+"</span></div></td>";
+	            	  }else{
+	            		  result = result +"<div>-----</div>";
+	            	  }
+	            	  
+	            	  return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
 	              "data": "createdDate",
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
@@ -386,7 +396,7 @@ function requirementListPagination(url,sourceleadUrl){
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"bLengthChange": true,
-	    	"aaSorting": [[3,'desc']],
+	    	"aaSorting": [[4,'desc']],
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
