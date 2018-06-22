@@ -212,7 +212,7 @@ function submitCandidatesToJob(){
 		result = result +" <div class='pull-right'>";
 		
 		 result = result +" <div class='mr pull-left mt5'>";
-    	 result = result +'<label class="switch mr pull-left">';
+    	 result = result +'<label class="switch mr pull-left ml">';
     	 result = result +'<input type="checkbox" onclick="checkResume();" value="N" name="candidateResume"  id="candidateResume"   >';
     	 result = result +'<div class="slider round" title="Attach Applicants Resume"></div>';
     	 result = result +'</label>';
@@ -395,7 +395,7 @@ function candidatesListPagination(url,sourceleadUrl){
    	        		 }
 	        		 if(!shareflag)
    	        			$("#sharedcheckbox").removeAttr('checked');
-	        		   result = result +"<div class='tblminwidth-30 pull-left'>";
+	        		   result = result +"<div class='tblminwidth-30 pull-left ml'>";
 	        			result = result +'<div class="pull-left mt3"><td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+opt.id+'" data-id="'+opt.id+'" value="'+opt.id+'" onchange="checkShareCandidates(this)"/></td></div>';
     	  		
 	        			if(opt.isAssociate == 'Y'){
