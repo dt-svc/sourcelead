@@ -19,6 +19,15 @@ public class DayWiseTimesheetReoprtsListDTO {
 	private String submittedOn;
 	private String approvedOn;
 	private String comments;
+	private String departmentName;
+	private String country;
+	private String state;
+	private String city;
+	private String candidateLocation;
+	private BigInteger projectId;
+	private BigInteger masterCandidateId;
+	private Date sahFrequenchStartDate;
+	private Date sahFrequenchEndDate;
 	
 	public String getEmployeeName() {
 		return employeeName;
@@ -111,5 +120,58 @@ public class DayWiseTimesheetReoprtsListDTO {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-	
+	public String getDepartmentName() {
+		return departmentName;
+	}
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
+	}
+	public String getCountry() {
+		return country;
+	}
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getCandidateLocation() {
+		return candidateLocation;
+	}
+	public void setCandidateLocation(String candidateLocation) {
+		this.candidateLocation = candidateLocation;
+	}
+	public BigInteger getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(BigInteger projectId) {
+		this.projectId = projectId;
+	}
+	public BigInteger getMasterCandidateId() {
+		return masterCandidateId;
+	}
+	public void setMasterCandidateId(BigInteger masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+	public Date getSahFrequenchStartDate() {
+		return sahFrequenchStartDate;
+	}
+	public void setSahFrequenchStartDate(Date sahFrequenchStartDate) {
+		this.sahFrequenchStartDate = sahFrequenchStartDate;
+	}
+	public Date getSahFrequenchEndDate() {
+		return sahFrequenchEndDate;
+	}
+	public void setSahFrequenchEndDate(Date sahFrequenchEndDate) {
+		this.sahFrequenchEndDate = sahFrequenchEndDate;
+	}
 }
