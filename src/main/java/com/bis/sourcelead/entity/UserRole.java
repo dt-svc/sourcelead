@@ -68,7 +68,7 @@ public class UserRole implements Serializable {
 	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
 	private OrgLocations orgLocations;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SHIFT_ID")
 	private Shift shift;
 	
