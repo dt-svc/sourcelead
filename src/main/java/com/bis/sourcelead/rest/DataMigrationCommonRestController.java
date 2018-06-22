@@ -86,10 +86,10 @@ public class DataMigrationCommonRestController {
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
 		dataWithCellId = dataMigrationService.getfileData(ac+dataMigrationCommonDTO.getFilePath(), dataMigrationCommonDTO.getHeaderPosition());
 		List<SourceleadFormFields> formFields = null;
-		
 		switch(dataMigrationCommonDTO.getUploadType()){  
 	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;
 	    case "projectTasks": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(94l, 1);break;  
+	    case "candidatesUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(73l, 1);break;  
 	    }
 		
 		if("timesheetUpload".equalsIgnoreCase(dataMigrationCommonDTO.getUploadType())) {
