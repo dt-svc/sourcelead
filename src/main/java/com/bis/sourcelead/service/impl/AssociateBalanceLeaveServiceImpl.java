@@ -112,8 +112,10 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
                 List<AppliedLeaveDateView> appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(),l.getLeaveTypeId(),monthDates[0],monthDates[1],userId);
                 if(appliedLeaves != null && appliedLeaves.size() >0) {
                 	appliedLeaveCount = Float.parseFloat(l.getTotalLeaves()) - appliedLeaves.size();
-                	associateBalanceLeaveDTO.setNoofLeaves(dec.format(appliedLeaveCount));
-               }
+                	associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(dec.format(appliedLeaveCount)));
+                }else {
+                	associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(l.getTotalLeaves()));
+                }
                  
                 /*float totalbalanceLeaveCounts = totalLeaves;
 				float calculatedTotalNonCarryforwardLeaves = 0;
