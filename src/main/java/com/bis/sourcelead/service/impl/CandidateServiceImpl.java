@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -2408,10 +2409,20 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			FileOutputStream out = new FileOutputStream(file);
 			XWPFParagraph paragraph = document.createParagraph();
 			XWPFRun run = paragraph.createRun();
-		    run.setText(candidateDTO.getDocFile());
+			
+			Scanner scanner = new Scanner(candidateDTO.getDocFile());
+			while (scanner.hasNextLine()) {
+			  String line = scanner.nextLine();
+			  run.setText(line);
+			  run.setFontFamily("verdana");
+			  run.setFontSize(12);
+			  run.addBreak();
+			}
+			
 	        document.write(out);
 	        out.close();
 	        document.close();
+	        scanner.close();
 	        
 	        CandidateResumes resume = new CandidateResumes();
 	        resume.setOrgLocationId(orgLocations);
