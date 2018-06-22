@@ -1543,7 +1543,7 @@ function getNoOfDaysPerPeriod(){
 	 }else if(period == "Monthly"){
 		 calculatedDays = noOfDays / 12 ;
 	 }
-	 $("#noOfDaysPerPeriod").val(calculatedDays);
+	 $("#noOfDaysPerPeriod").val(calculatedDays.toFixed(2));
  }
  </script>
  <script>
