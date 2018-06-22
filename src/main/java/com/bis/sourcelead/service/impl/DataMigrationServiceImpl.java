@@ -711,6 +711,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaLocation"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaLocation"))) {
 				immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("lcaLocation"));
+			}else {
+				immDto.setJobLocation("");
 			}
 			// /lcaCurrSummary.setIsCurrent(Constants.YES);
 			// candidate previous lca summary detials below
