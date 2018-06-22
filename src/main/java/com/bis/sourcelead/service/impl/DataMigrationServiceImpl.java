@@ -761,8 +761,17 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}else {
 				immDto.setPrevLcaNumber("");
 			}
-			immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("prevLcaLocation"));
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaLocation"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaLocation"))) {
+				immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("prevLcaLocation"));
+			}else {
+				immDto.setJobLocation("");
+			}
+			
 			immDto.setEditMode("false");
+			
+			
 			// pending prevLcaTitle in excel mapping.
 			Immigration immigration = immigrationCommonService.savePetitionDetails(immDto, user, orgLocation, null);
 			CandidatePassportVisa candidatePassportVisa = null;
