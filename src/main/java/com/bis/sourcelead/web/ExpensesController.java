@@ -112,9 +112,9 @@ public class ExpensesController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		sessionData.setNav(Constants.MY_EXPENSES);
 		request.getSession().setAttribute("sessionData", sessionData);
+		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		if(StringUtils.isNotEmpty(expenseId)&& StringUtils.isNotEmpty(expenseLocationCode)){
 			ExpensesListUtilDTO elDTO = new ExpensesListUtilDTO();
 			elDTO.setUserId(loginUser.getId());
@@ -148,10 +148,10 @@ public class ExpensesController {
 			}
 			model.addObject("expenseApproverHierarchy", rejectedReason);
 		}
-		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		eedDTO.setExpenseId(expenseId);
+		eedDTO.setExpenseLocationCode(expenseLocationCode);
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		expEntryDTO.setLoginCurrencyCode(currencyCode);
 		model.addObject("expEntry", expEntryDTO);
@@ -260,7 +260,7 @@ public class ExpensesController {
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		eedDTO.setExpenseId(expenseId);
 		eedDTO.setExpenseFrom("approver");
-		
+		eedDTO.setExpenseLocationCode(expenseLocationCode);
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		expEntryDTO.setLoginCurrencyCode(currencyCode);
 		model.addObject("expEntry", expEntryDTO);

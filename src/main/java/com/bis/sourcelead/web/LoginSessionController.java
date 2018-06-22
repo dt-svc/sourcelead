@@ -254,14 +254,6 @@ public class LoginSessionController {
 		//commented By Pavan jampana -- switchuserType value will be available in the session no-need to set again.
 //		SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
 		
-		boolean dashboardConfigured = false;
-		DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(user.getId());
-		if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
-			dashboardConfigured = true;
-		}
-		model.addObject("dashboardConfigured", dashboardConfigured);
-		model.addObject("dashboardItems", dashboardItems);
-		
 		List<SourceleadActions> actionsList = null;
 		
 		if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
@@ -594,6 +586,13 @@ public class LoginSessionController {
 			
 			
 		}
+		boolean dashboardConfigured = false;
+		DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(user.getId(), orgLocations.getId());
+		if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
+			dashboardConfigured = true;
+		}
+		model.addObject("dashboardConfigured", dashboardConfigured);
+		model.addObject("dashboardItems", dashboardItems);
 		if (model.getViewName().equalsIgnoreCase("dashboard") && dashboardConfigured)
 			model.setViewName("dashboard_configured");
 		return model;

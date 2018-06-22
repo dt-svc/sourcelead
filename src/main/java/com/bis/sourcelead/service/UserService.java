@@ -231,7 +231,7 @@ public interface UserService  {
 	
 	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
 	
-	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates) throws Exception;
+	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList) throws Exception;
 
 	
 //	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
@@ -240,9 +240,9 @@ public interface UserService  {
 	 * @author Mahaveer Manoj
 	 * @purpose - to get Dashboard Items by user
 	 **/
-	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId);
+	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId);
 
-	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user);
+	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 
 }	
 		

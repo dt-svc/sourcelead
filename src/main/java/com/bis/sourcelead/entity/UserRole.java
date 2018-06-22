@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,9 @@ public class UserRole implements Serializable {
 	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
 	private OrgLocations orgLocations;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "SHIFT_ID")
+	private Shift shift;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
@@ -316,14 +320,11 @@ public class UserRole implements Serializable {
 	@Transient
 	private Integer vendorDocumentsOwnerCount;
 	
-	
 	@Transient
 	List<User> clientDocumentsOwnerList;
 
-	
 	@Transient
 	List<User> vendorDocumentsOwnerList;
-
 
 	@Transient
 	@JsonProperty
@@ -363,6 +364,39 @@ public class UserRole implements Serializable {
 	@JsonProperty
 	private Map<Long,String> userCustomFieldlabelNameAndValue;
 	
+	
+	@Transient
+	@JsonProperty
+	private Long shiftId;
+	
+	@Transient
+	@JsonProperty
+	private String shiftName;
+	
+	@Transient
+	@JsonProperty
+	private BigInteger orgLocId;
+	
+	@Transient
+	@JsonProperty
+	private BigInteger userRoleShiftId;
+	
+	@Transient
+	@JsonProperty
+	private BigInteger userRoleId;
+	
+	
+	public BigInteger getUserRoleId() {
+		if(id != null) {
+			userRoleId = BigInteger.valueOf(id);
+		}
+		return userRoleId;
+	}
+
+	public void setUserRoleId(BigInteger userRoleId) {
+		this.userRoleId = userRoleId;
+	}
+
 	public String getUserName() {
 		return userName;
 	}
@@ -1065,5 +1099,45 @@ public class UserRole implements Serializable {
 
 	public void setTerminateDateStr(String terminateDateStr) {
 		this.terminateDateStr = terminateDateStr;
+	}
+
+	public Shift getShift() {
+		return shift;
+	}
+
+	public Long getShiftId() {
+		return shiftId;
+	}
+
+	public void setShift(Shift shift) {
+		this.shift = shift;
+	}
+
+	public void setShiftId(Long shiftId) {
+		this.shiftId = shiftId;
+	}
+
+	public String getShiftName() {
+		return shiftName;
+	}
+
+	public void setShiftName(String shiftName) {
+		this.shiftName = shiftName;
+	}
+
+	public BigInteger getOrgLocId() {
+		return orgLocId;
+	}
+
+	public void setOrgLocId(BigInteger orgLocId) {
+		this.orgLocId = orgLocId;
+	}
+
+	public BigInteger getUserRoleShiftId() {
+		return userRoleShiftId;
+	}
+
+	public void setUserRoleShiftId(BigInteger userRoleShiftId) {
+		this.userRoleShiftId = userRoleShiftId;
 	}
 }

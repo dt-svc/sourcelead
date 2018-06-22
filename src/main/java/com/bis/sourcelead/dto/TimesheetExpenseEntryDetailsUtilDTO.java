@@ -14,6 +14,8 @@ public class TimesheetExpenseEntryDetailsUtilDTO extends SearchDTO implements Se
 	
 	private String expenseId;
 	
+	private String expenseLocationCode;
+	
 	private String timeSheetsFor;
 	
 	private String expensesFor;
@@ -168,6 +170,14 @@ public class TimesheetExpenseEntryDetailsUtilDTO extends SearchDTO implements Se
 
 	public void setIsGlobalUser(String isGlobalUser) {
 		this.isGlobalUser = isGlobalUser;
+	}
+
+	public String getExpenseLocationCode() {
+		return expenseLocationCode;
+	}
+
+	public void setExpenseLocationCode(String expenseLocationCode) {
+		this.expenseLocationCode = expenseLocationCode;
 	}
 	
 

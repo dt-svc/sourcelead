@@ -49,7 +49,42 @@ function getDayWiseReports(){
     	<div class="ReqRepHead clearfix">
         <div class="col-md-2">
         <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
+         <a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+				</a>
         </div>
+       <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+       <h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					
+					<div class="col-md-12 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsUL">
+									<c:forEach var="team" items="${teamsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="${team.id}" ><label>${team.name}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet"
+								onclick="closeFilterPop();usersList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+       </div>
+        <div class="advancedsearch-mask"></div>
         
         <div class="col-md-3 dropdown-select positionRelative">
           <select class="form-control" id="reportTypeId" onChange="flushCustom(); custDates();">
@@ -105,6 +140,35 @@ function getDayWiseReports(){
  
  
  <script type="text/javascript"> 
+ 
+ function resetFilter() {
+	 $("ul#myTeamsUL > li input:checkbox").prop("checked",false);
+}
+ 
+ function myTeamsFunction() {
+	    var input, filter, ul, li, a, i;
+	    input = document.getElementById("myTeamsInput");
+	    filter = input.value.toUpperCase();
+	    ul = document.getElementById("myTeamsUL");
+	    li = ul.getElementsByTagName("li");
+	    for (i = 0; i < li.length; i++) {
+	        a = li[i].getElementsByTagName("label")[0];
+	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	            li[i].style.display = "";
+	        } else {
+	            li[i].style.display = "none";
+
+	        }
+	    }
+	}
+ function openFilterPop(){
+		$("div.cand-advsrch-popup").toggle();
+		 $(".advancedsearch-mask").fadeIn();
+	}
+ function closeFilterPop(){
+		$("div.cand-advsrch-popup").hide();
+		$(".advancedsearch-mask").fadeOut();
+	}
 	function addValidClass(){
 		 var StartDate = document.getElementById("ReportStartDate").value;
 		 if(StartDate){
@@ -207,6 +271,7 @@ function custDates(){
         result = result +"<th><i class='fa fa-handshake-o fa-2x'></i><div class='small'>Interviewed</div></th>"; 
         result = result +"<th><i class='fa fa-envelope-open-o fa-2x'></i><div class='small'>Offered</div></th>"; 
         result = result +"<th><i class='fa fa-ban fa-2x'></i><div class='small'>Rejected</div></th>";
+        result = result +"<th><i class='fa fa-id-badge'></i><div class='small'>Joined</div></th>";
         result = result +"<th><i class='fa fa-arrow-circle-left fa-2x'></i> <div class='small'>Back-Out</div></th>";
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -244,10 +309,14 @@ function userDataTableList(){
 		 document.getElementById("reportsStartDate").style.display="none";
 		 document.getElementById("reportsEndDate").style.display="none";
 	 }
-	
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
 	 if(flag){
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate;
+		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams;
 		 usersListPagination(url,sourceleadUrl);
 	 }
 	
@@ -277,6 +346,7 @@ function usersListPagination(url,sourceleadUrl){
             { "data": "Interviewed"},
             { "data": "offered"},
             { "data": "rejected"},
+            { "data": "joined"},
             { "data": "backout"}
         ],
         "columnDefs": [ {
@@ -406,6 +476,20 @@ function usersListPagination(url,sourceleadUrl){
 	              }
 		     }, {
 		    	  "targets": colIndex++,
+	              "data": "joined",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    if(opt.userApplicantsJoinedCount !=null && opt.userApplicantsJoinedCount !='' && opt.userApplicantsJoinedCount !='undefined'){
+	            	    	result = result +"<td><div class='small'> <span title='"+opt.userApplicantsJoinedCount+"'>"+opt.userApplicantsJoinedCount+"</span></div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    }
+	            	    
+	            	    return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
 	              "data": "backout",
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
@@ -448,9 +532,6 @@ function usersListPagination(url,sourceleadUrl){
     	});
 }
 </script>
-
-  
-
 
 <script>
 function reportpagination(){ 

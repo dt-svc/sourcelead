@@ -209,6 +209,9 @@ public class LeaveType {
 	@Column(name = "LEAVE_ENCASH_MAX_DAYS")
 	private Integer leaveEncashMaxDays;
 	
+	@Column(name = "ACCURAL_POLICY")
+	private String accuralPolicy;
+	
 	@Transient
 	@JsonProperty
 	private String autoApproveTypeListNames;
@@ -443,6 +446,16 @@ public class LeaveType {
 		this.updatedBy = updatedBy;
 	}
 
+	public String getLeaveTypeUUID()
+	{
+		return leaveTypeUUID;
+	}
+
+	public void setLeaveTypeUUID(String leaveTypeUUID)
+	{
+		this.leaveTypeUUID = leaveTypeUUID;
+	}
+
 	public Set<LeaveRole> getLeaveTypeRolesSet()
 	{
 		return leaveTypeRolesSet;
@@ -633,20 +646,19 @@ public class LeaveType {
 		this.leaveDuration = leaveDuration;
 	}
 
-
 	public Float getMinDays()
 	{
 		return minDays;
 	}
 
-	public Float getMaxDays()
-	{
-		return maxDays;
-	}
-
 	public void setMinDays(Float minDays)
 	{
 		this.minDays = minDays;
+	}
+
+	public Float getMaxDays()
+	{
+		return maxDays;
 	}
 
 	public void setMaxDays(Float maxDays)
@@ -662,106 +674,6 @@ public class LeaveType {
 	public void setNoOfDays(Integer noOfDays)
 	{
 		this.noOfDays = noOfDays;
-	}
-
-	public String getCreatedUser()
-	{
-		return createdUser;
-	}
-
-	public void setCreatedUser(String createdUser)
-	{
-		this.createdUser = createdUser;
-	}
-
-	public String getUpdatedUser()
-	{
-		return updatedUser;
-	}
-
-	public void setUpdatedUser(String updatedUser)
-	{
-		this.updatedUser = updatedUser;
-	}
-
-	public int getRemainingTotalLeaveCounts()
-	{
-		return remainingTotalLeaveCounts;
-	}
-
-	public void setRemainingTotalLeaveCounts(int remainingTotalLeaveCounts)
-	{
-		this.remainingTotalLeaveCounts = remainingTotalLeaveCounts;
-	}
-
-	public int getPendingLeaveCounts()
-	{
-		return pendingLeaveCounts;
-	}
-
-	public void setPendingLeaveCounts(int pendingLeaveCounts)
-	{
-		this.pendingLeaveCounts = pendingLeaveCounts;
-	}
-
-	public int getBalanceLeaveCounts()
-	{
-		return balanceLeaveCounts;
-	}
-
-	public void setBalanceLeaveCounts(int balanceLeaveCounts)
-	{
-		this.balanceLeaveCounts = balanceLeaveCounts;
-	}
-
-	public int getTakenLeaveCounts()
-	{
-		return takenLeaveCounts;
-	}
-
-	public void setTakenLeaveCounts(int takenLeaveCounts)
-	{
-		this.takenLeaveCounts = takenLeaveCounts;
-	}
-
-	public String getLeaveTypeUUID()
-	{
-		return leaveTypeUUID;
-	}
-
-	public void setLeaveTypeUUID(String leaveTypeUUID)
-	{
-		this.leaveTypeUUID = leaveTypeUUID;
-	}
-
-	public float getTotalBalanceLeaveCounts()
-	{
-		return totalBalanceLeaveCounts;
-	}
-
-	public void setTotalBalanceLeaveCounts(float totalBalanceLeaveCounts)
-	{
-		this.totalBalanceLeaveCounts = totalBalanceLeaveCounts;
-	}
-
-	public float getLeaveTypeBalanceLeaveCount()
-	{
-		return leaveTypeBalanceLeaveCount;
-	}
-
-	public void setLeaveTypeBalanceLeaveCount(float leaveTypeBalanceLeaveCount)
-	{
-		this.leaveTypeBalanceLeaveCount = leaveTypeBalanceLeaveCount;
-	}
-
-	public float getTakenLeaves()
-	{
-		return takenLeaves;
-	}
-
-	public void setTakenLeaves(float takenLeaves)
-	{
-		this.takenLeaves = takenLeaves;
 	}
 
 	public Float getNoOfDaysPerPeriod()
@@ -814,16 +726,6 @@ public class LeaveType {
 		this.timeSheetAutofill = timeSheetAutofill;
 	}
 
-	public String getAutoApproveTypeListNames()
-	{
-		return autoApproveTypeListNames;
-	}
-
-	public void setAutoApproveTypeListNames(String autoApproveTypeListNames)
-	{
-		this.autoApproveTypeListNames = autoApproveTypeListNames;
-	}
-
 	public String getEffectiveGender()
 	{
 		return effectiveGender;
@@ -832,16 +734,6 @@ public class LeaveType {
 	public void setEffectiveGender(String effectiveGender)
 	{
 		this.effectiveGender = effectiveGender;
-	}
-
-	public String getUserGender()
-	{
-		return userGender;
-	}
-
-	public void setUserGender(String userGender)
-	{
-		this.userGender = userGender;
 	}
 
 	public String getIncludeWeekoff()
@@ -943,5 +835,126 @@ public class LeaveType {
 	{
 		this.leaveEncashMaxDays = leaveEncashMaxDays;
 	}
+
+	public String getAccuralPolicy()
+	{
+		return accuralPolicy;
+	}
+
+	public void setAccuralPolicy(String accuralPolicy)
+	{
+		this.accuralPolicy = accuralPolicy;
+	}
+
+	public String getAutoApproveTypeListNames()
+	{
+		return autoApproveTypeListNames;
+	}
+
+	public void setAutoApproveTypeListNames(String autoApproveTypeListNames)
+	{
+		this.autoApproveTypeListNames = autoApproveTypeListNames;
+	}
+
+	public String getCreatedUser()
+	{
+		return createdUser;
+	}
+
+	public void setCreatedUser(String createdUser)
+	{
+		this.createdUser = createdUser;
+	}
+
+	public String getUpdatedUser()
+	{
+		return updatedUser;
+	}
+
+	public void setUpdatedUser(String updatedUser)
+	{
+		this.updatedUser = updatedUser;
+	}
+
+	public int getRemainingTotalLeaveCounts()
+	{
+		return remainingTotalLeaveCounts;
+	}
+
+	public void setRemainingTotalLeaveCounts(int remainingTotalLeaveCounts)
+	{
+		this.remainingTotalLeaveCounts = remainingTotalLeaveCounts;
+	}
+
+	public int getPendingLeaveCounts()
+	{
+		return pendingLeaveCounts;
+	}
+
+	public void setPendingLeaveCounts(int pendingLeaveCounts)
+	{
+		this.pendingLeaveCounts = pendingLeaveCounts;
+	}
+
+	public int getBalanceLeaveCounts()
+	{
+		return balanceLeaveCounts;
+	}
+
+	public void setBalanceLeaveCounts(int balanceLeaveCounts)
+	{
+		this.balanceLeaveCounts = balanceLeaveCounts;
+	}
+
+	public int getTakenLeaveCounts()
+	{
+		return takenLeaveCounts;
+	}
+
+	public void setTakenLeaveCounts(int takenLeaveCounts)
+	{
+		this.takenLeaveCounts = takenLeaveCounts;
+	}
+
+	public float getTotalBalanceLeaveCounts()
+	{
+		return totalBalanceLeaveCounts;
+	}
+
+	public void setTotalBalanceLeaveCounts(float totalBalanceLeaveCounts)
+	{
+		this.totalBalanceLeaveCounts = totalBalanceLeaveCounts;
+	}
+
+	public float getLeaveTypeBalanceLeaveCount()
+	{
+		return leaveTypeBalanceLeaveCount;
+	}
+
+	public void setLeaveTypeBalanceLeaveCount(float leaveTypeBalanceLeaveCount)
+	{
+		this.leaveTypeBalanceLeaveCount = leaveTypeBalanceLeaveCount;
+	}
+
+	public float getTakenLeaves()
+	{
+		return takenLeaves;
+	}
+
+	public void setTakenLeaves(float takenLeaves)
+	{
+		this.takenLeaves = takenLeaves;
+	}
+
+	public String getUserGender()
+	{
+		return userGender;
+	}
+
+	public void setUserGender(String userGender)
+	{
+		this.userGender = userGender;
+	}
+
 	
 }

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -165,5 +166,6 @@ public interface UserRoleService {
 	
 	List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId,Long orgLocationId);
 
+	 List<BigInteger> getAllUsersRoleList() throws Exception;
 
 }
