@@ -77,6 +77,8 @@ public interface OrgRelationsDao {
 	ResponseList<OrgSpoc> getAllVendorsContactFilterListByOrgLocationIdAndTabAccessDTO(OrgSpocDTO orgSpocDTO,Long loginUserId, List<Long> userIds, Long orgLocationId, String relationType,String vendorStatus, Long tabId, List<Long> vendorOrgLocationsIds);
 	
 	List<OrgRelationDTO> getAllClientsListOrgLocationId(Long orgLocationId) throws Exception;
+	
+	List<OrgRelationDTO> getAllVendorsListOrgLocationId(Long orgLocationId) throws Exception;
 
 
 }

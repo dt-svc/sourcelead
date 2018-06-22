@@ -107,7 +107,7 @@ overflow-x: auto;
 	             
 	             <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
 	             
-	               <li><b><a onClick="getClientProjectPop();" title="Add Project"><i class="fa fa-plus"></i>&nbsp;Add Project</b>
+	               <li><b><a onClick="getClientProjectPop();" title="Add Project"><i class="fa fa-plus"></i>&nbsp;Add Project</b></li></a>
 						<%-- 	<a onclick="getActions();" class="action"
 								href="javascript:void(0)">Add Project <i
 								class="fa fa-caret-down"></i>
