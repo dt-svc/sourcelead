@@ -1036,7 +1036,7 @@ public class LeaveManagementRestController {
 						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
 							float previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
 							float currentNofDays = 0;
-							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())) {
+							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
 								currentNofDays = leaveType.getNoOfDaysPerPeriod();
 							}else {
 								currentNofDays = leaveType.getNoOfDays();
