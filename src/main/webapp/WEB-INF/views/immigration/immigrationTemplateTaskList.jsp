@@ -439,6 +439,7 @@
             type: "GET",
             url: sourceleadUrl + immiModulePath + "/deleteImmigrationTaskList?${_csrf.parameterName}=${_csrf.token}&id=" + id,
             success: function (json) {
+            	showTemplateMsg("Successfully Task Deleted");
                 immigrationDataTableList();
                 cancelTemplateDelete();
             }

@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Countries;
@@ -173,21 +174,7 @@ public class ProjectsController {
 					request.getSession().setAttribute("sessionData",sessionData);
 				
 				if(StringUtils.isNotBlank(projectType) && projectType.equalsIgnoreCase("sharedProject")) {
-					Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId(), loginUser.getId());
-					for(OrgRelations ocl :orgClientList){
-						if(null != ocl.getLocationId() && ocl.getLocationId().getId() != null && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-							if(ocl.getResponderLocationId() != null){
-								ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
-								ocl.setOrgLocationId(ocl.getResponderLocationId().getId());
-							}
-						}
-						if(null != ocl.getResponderLocationId() && null != ocl.getResponderLocationId().getId() && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-							if(ocl.getLocationId() != null){
-								ocl.setOrgName(ocl.getLocationId().getOrgLocationName());
-								ocl.setOrgLocationId(ocl.getLocationId().getId());
-							}
-						}
-					 }
+					List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(loginOrgLocations.getId());
 				    model.addObject("clientsList", orgClientList);
 				}
 				 model.addObject("projectType", projectType);

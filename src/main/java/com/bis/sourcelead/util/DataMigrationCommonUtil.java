@@ -585,13 +585,6 @@ public class DataMigrationCommonUtil {
 					errorSet.put("designationType", "Employment Type field is missing");
 				}
 				
-				if(dataMigrationDTOJsonCopy.getString("location").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("location"))) {
-					errorSet.put("location", "Address field is missing");
-				}
-				
-				if(dataMigrationDTOJsonCopy.getString("country").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("country"))) {
-					errorSet.put("country", "Country field is missing");
-				}
 				
 				Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 						+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");

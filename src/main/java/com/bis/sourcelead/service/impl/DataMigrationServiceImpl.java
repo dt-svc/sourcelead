@@ -467,6 +467,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			candidtemapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			candidtemapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			candidateDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), CandidateDTO.class);
+			if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
+				candidateDTO.setCountry(orgLocation.getCountry());
+			}
 			candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
 			break;
 
@@ -581,18 +584,22 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("ssn"))) {
 				immDto.setSsnNumber(dataMigrationDTOJsonCopy.getString("ssn"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("i94Number"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("i94Number"))) {
 				immDto.setI_94_number(dataMigrationDTOJsonCopy.getString("i94Number"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("i20Number"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("i20Number"))) {
 				immDto.setI_20_number(dataMigrationDTOJsonCopy.getString("i20Number"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("eadNumber"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("eadNumber"))) {
 				immDto.setEadNumber(dataMigrationDTOJsonCopy.getString("eadNumber"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
 				immDto.setBirthDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"));
@@ -602,18 +609,23 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
 				immDto.setMaritalStatus(dataMigrationDTOJsonCopy.getString("maritalStatus"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("petitionType"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("petitionType"))) {
 				immDto.setPetitionType(dataMigrationDTOJsonCopy.getString("petitionType"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("template"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("template"))) {
 				immDto.setTemplateId(dataMigrationDTOJsonCopy.getString("template"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("dateOfArrival"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("dateOfArrival"))) {
 				immDto.setArrivalDate(dataMigrationDTOJsonCopy.getString("dateOfArrival"));
 			}
+			
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("openOn"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("openOn"))) {
 				immDto.setOpenDate(dataMigrationDTOJsonCopy.getString("openOn"));
@@ -648,6 +660,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("receiptNo"))) {
 				immDto.setReceiptNo(dataMigrationDTOJsonCopy.getString("receiptNo"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("benficiarylocation"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("benficiarylocation"))) {
 				immDto.setLocation(dataMigrationDTOJsonCopy.getString("benficiarylocation"));
@@ -665,6 +678,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				passVisaDto.setVisaType(dataMigrationDTOJsonCopy.getString("visaType"));
 
 			}
+			
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
 				passVisaDto.setIdType(Constants.ID_TYPE_PASSPORT);
@@ -681,6 +696,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaStartDate"))) {
 				immDto.setLcaStartDate(dataMigrationDTOJsonCopy.getString("lcaStartDate"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaEndDate"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaEndDate"))) {
 				immDto.setLcaEndDate(dataMigrationDTOJsonCopy.getString("lcaEndDate"));
@@ -690,10 +706,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaNumber"))) {
 				immDto.setLcaNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
 			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaRate")) 
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaRate"))){
 			immDto.setRate(dataMigrationDTOJsonCopy.getString("lcaRate"));
+			}
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaLocation"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaLocation"))) {
 				immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("lcaLocation"));
+			}else {
+				immDto.setJobLocation("");
 			}
 			// /lcaCurrSummary.setIsCurrent(Constants.YES);
 			// candidate previous lca summary detials below
@@ -702,17 +724,24 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaStartDate"))) {
 				immDto.setPrevLcaStartDate(dataMigrationDTOJsonCopy.getString("prevLcaStartDate"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"))) {
 				immDto.setPrevLcaEndDate(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"));
 			}
+			
 			// lcaSummary.setPrevLcaTitle(dataMigrationDTOJsonCopy.getString("prevLcaTitle"));prevLcaTitle
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaNumber"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaNumber"))) {
 				immDto.setPrevLcaNumber(dataMigrationDTOJsonCopy.getString("prevLcaNumber"));
 			}
-			immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("prevLcaLocation"));
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaLocation"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaLocation"))) {
+				immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("prevLcaLocation"));
+			}
 			immDto.setEditMode("false");
+			
+			
 			// pending prevLcaTitle in excel mapping.
 			Immigration immigration = immigrationCommonService.savePetitionDetails(immDto, user, orgLocation, null);
 			CandidatePassportVisa candidatePassportVisa = null;
