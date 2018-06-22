@@ -500,8 +500,17 @@ public class ImmigrationRestController {
 			if (status.equalsIgnoreCase("tempDetails")) {
 				model.setViewName("/immigration/petitionTemplateDetails");
 			} else if (status.equalsIgnoreCase("docDetails")) {
+				
 				List<LookUpData> educationsList = null;
 				educationsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE); // for populating
+				
+				List<LookUpData> attorneyDocsList = lookUpDataService.getLookUpDataByCategory(Constants.ATTORNEY_CATEGORY);
+				
+				model.addObject("attorneyDocsList", attorneyDocsList);
+				
+				List<LookUpData> petitionerDocsList = lookUpDataService.getLookUpDataByCategory(Constants.PETITIONER_CATEGORY);
+				model.addObject("petitionerDocsList", petitionerDocsList);
+				
 				// dropdown
 				// values in UI.
 				/*
@@ -510,6 +519,7 @@ public class ImmigrationRestController {
 				 * ); model.addObject("templateDTO", );
 				 */
 				model.addObject("educationsList", educationsList);
+				
 				model.setViewName("/immigration/petitionTemplateDocDetails");
 			} else if (status.equalsIgnoreCase("formDetails")) {
 				model.setViewName("/immigration/petitionTemplateFormDetails");
@@ -540,12 +550,13 @@ public class ImmigrationRestController {
 			// mode.
 			try {
 				ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
-				List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService
-						.getImmigrationTemplateDocsListById(templateId);
+				List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService.getImmigrationTemplateDocsListById(templateId);
+				for(ImmigrationTemplateDocDTO  itd:docsList) {
+					itd.setDocumentCategory(itd.getDocumentCategory());
+				}
 				logger.debug(
 						" Edit mode templateId templateId -->" + templateId + ", docsList size is " + docsList.size());
-				List<ImmigrationTemplateFormDTO> formsList = immigrationTemplateService
-						.getImmigrationTemplateformsListById(templateId);
+				List<ImmigrationTemplateFormDTO> formsList = immigrationTemplateService.getImmigrationTemplateformsListById(templateId);
 				logger.debug(
 						" Edit mode templateId templateId -->" + templateId + ", formsList size i " + formsList.size());
 				// templateDTO.setImmigrationDocList(docsList);
@@ -2177,5 +2188,21 @@ public class ImmigrationRestController {
 			@RequestParam(value = "immiTaskId", defaultValue = "0") Long immiTaskId) {
 		return immigrationTemplateService.validateTemplateTaskNameExistance(templateTaskName, templateId,immiTaskId);
 	}
+	
+	@RequestMapping(value = "/getDcoumentType", method = RequestMethod.POST)
+	@ResponseBody
+	public List<LookUpData> getDcoumentType(HttpServletRequest request, @RequestParam(value = "docType") String docType) throws Exception {
+		List<LookUpData> docTypeList = null;
+		if(docType.equalsIgnoreCase("Document Type")) {
+			docTypeList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		}else if(docType.equalsIgnoreCase("AttorneyCategory")) {
+			docTypeList = lookUpDataService.getLookUpDataByCategory(Constants.ATTORNEY_CATEGORY);
+		}else if(docType.equalsIgnoreCase("PetitionerCategory")) {
+			docTypeList = lookUpDataService.getLookUpDataByCategory(Constants.PETITIONER_CATEGORY);
+		}
+         
+		 
+		return docTypeList;
+	}	
 
 }
