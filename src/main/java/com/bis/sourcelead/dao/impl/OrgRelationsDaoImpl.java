@@ -8,6 +8,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
@@ -1165,6 +1167,39 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			orgLocation = (OrgRelations) clientsList.iterator().next();
 		}
 		return orgLocation;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgRelationDTO> getAllClientsListOrgLocationId(Long orgLocationId) throws Exception {
+		
+		
+		List<OrgRelationDTO> orgRelationDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+				
+		
+ 	  query ="SELECT "
+			+" ORL.RESPONDER_LOCATION_ID AS clientLocationId, "
+			+" (SELECT "
+			+" ORG_NAME"
+			+" FROM"
+			+" ORG_LOCATIONS OL"
+			+" WHERE"
+			+" (OL.ID = ORL.LOCATION_ID OR OL.ID = ORL.RESPONDER_LOCATION_ID) AND OL.ID != :orgLocationId ) AS clientName"
+			+" FROM"
+			+" ORG_RELATIONS ORL"
+			+" WHERE"
+			+" (ORL.LOCATION_ID = :orgLocationId AND ORL.INITIATOR_TYPE = 'Vendor') OR (ORL.RESPONDER_LOCATION_ID = :orgLocationId AND ORL.RESPONDER_TYPE = 'Vendor')"
+			+" GROUP BY ORL.ID";
+		    
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(OrgRelationDTO.class));
+			orgRelationDTOList = queryObj.list();
+			
+			
+			return orgRelationDTOList;
 	}
 
 	

@@ -230,6 +230,8 @@ public class CandidateDTO extends SearchDTO{
 	
 	private Long requirementId;
 	
+	private String docFile;
+	
 	private List<CustomFormFieldDTO> customFormData;
 	
 	 private Map<String,String> candidateCustomFieldData;
@@ -1136,6 +1138,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setRequirementId(Long requirementId) {
 		this.requirementId = requirementId;
+	}
+
+	public String getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(String docFile) {
+		this.docFile = docFile;
 	}
 
 	
