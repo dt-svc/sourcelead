@@ -46,6 +46,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
@@ -206,7 +207,7 @@ public class ReportRestController {
 	 */
 
 	@RequestMapping(value = "/getAllUsersByOrgLocationsId")
-	public @ResponseBody ResponseList<UserDTO> getAllUsersByOrgLocationsId(@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
+	public @ResponseBody ResponseList<UserDTO> getAllUsersByOrgLocationsId(UserRoleDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
 			UserDTO userDTO,HttpServletRequest request) throws Exception {
 
 	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -237,10 +238,15 @@ public class ReportRestController {
 		    	    searchDates[0] = startDateUTC;
 		    	    searchDates[1] = endDateUTC;
 				}
-
+				List<Long> teamsList = new ArrayList<>();
+				if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
+					String[] orgTeams = userRoleDto.getOrgTeams().split(",");
+					for(int i=0; i < orgTeams.length; i++) {
+						teamsList.add(Long.parseLong(orgTeams[i]));
+					}
+				}
 			
-			
-			String[] tableColumns = { "firstName", "jobs", "candidates", "applicants", "shortlisted", "submitted", "Interviewed", "offered", "rejected", "backout" };
+			String[] tableColumns = { "firstName", "jobs", "candidates", "applicants", "shortlisted", "submitted", "Interviewed", "offered", "rejected","joined", "backout" };
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
 			if (userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
@@ -249,7 +255,7 @@ public class ReportRestController {
 			}
 			userDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			userDTO.setSortOrder(sortColumnOrder);
-			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates);
+			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList);
 			return userDTOList;
 			
 		}

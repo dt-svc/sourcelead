@@ -66,6 +66,12 @@ public class Leave {
 	
 	@Column(name = "TO_HALF_DAY")
 	private String toHalfDay;
+	
+	@Column(name = "FROM_TIME")
+	private String fromTime;
+	
+	@Column(name = "TO_TIME")
+	private String toTime;
 
 //	 
 	@Column(name = "FILE_CONTENT_TYPE")
@@ -477,4 +483,20 @@ public class Leave {
 		this.appliedLeaveDateSet = appliedLeaveDateSet;
 	}
 
+	public String getFromTime() {
+		return fromTime;
+	}
+
+	public void setFromTime(String fromTime) {
+		this.fromTime = fromTime;
+	}
+
+	public String getToTime() {
+		return toTime;
+	}
+
+	public void setToTime(String toTime) {
+		this.toTime = toTime;
+	}
+	
 }

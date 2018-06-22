@@ -80,6 +80,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -105,6 +106,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.TabsService;
@@ -236,7 +238,8 @@ public class UsersListRestController {
 	@Autowired
 	AssociateGradesService associateGradesService;
 	
-	
+	@Autowired
+	private ShiftService shiftService;
 	/**
 	 * To get All the Users by filtering
 	 * 
@@ -739,6 +742,10 @@ public class UsersListRestController {
 			userRole.setDailyHours(employee.getDailyHours());
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
+			if(userRole.getShift() != null) {
+				userRole.setShiftId(userRole.getShift().getId());
+				userRole.setShiftName(userRole.getShift().getShiftName());
+			}
 			
 			if(null != employee.getDepartmentId()){
 				userRole.setDepartment(employee.getDepartmentId().getId().toString());
@@ -2024,6 +2031,12 @@ public class UsersListRestController {
 				resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
 				userRole.setResourceManager(resourceManager);
 			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getShiftId())){
+				Shift shift = new Shift();
+				shift.setId(Long.parseLong(addUserDTO.getShiftId()));
+				userRole.setShift(shift);
+			}
 
 
 			isUserActive = userRoleService.isUserActive(user.getId());
@@ -2260,6 +2273,15 @@ public class UsersListRestController {
 		return userRoleDTOList;
 
 	}
+	
+	@RequestMapping(value = "/getShiftList", method = RequestMethod.POST)
+	public @ResponseBody List<Shift> getShiftList(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Shift> shifList = shiftService.getShiftList(orgLocations.getId());
+		return shifList;
+
+	}
+	
 
 	private String toJSON(Object obj) {
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

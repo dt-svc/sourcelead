@@ -1229,7 +1229,7 @@ function cancel(candidateId){
 	  
 	   <div class="dropdown pull-left ml mt mr">
 			  <div class="dropdown-toggle" data-toggle="dropdown">
-			  <span class="fa fa-user-plus cursorPointer" title="Submit To Job" href="#" onclick="submitCandidatesToJob();"></span></div>
+			  <span class="fa fa-user-plus cursorPointer" title="Submit" href="#" onclick="submitCandidatesToJob();"></span></div>
 			 
 	  </div>
 			
