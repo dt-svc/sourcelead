@@ -11,19 +11,25 @@ window.onload = function() {
 	var leaveUUID = '${leaveUUID}';
 	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
 		getLeaveDetails();
+		var checkFromEdit = '${leave.fromHalfDay}';
+		var checkToEdit = '${leave.toHalfDay}';
+		if(checkFromEdit == 'YES' || checkToEdit == 'YES'){
+			$("#fromTimeDiv").show();
+			$("#toTimeDiv").show();
+		}
 	}
 	
 	getPieChartBasedOnUser();
 	getApproversList();
-   if($("#checkbox-1").is(':checked')){
-	   $("#checkbox-1").prop('checked', false);
-	}
-   if($("#checkbox-2").is(':checked')){
-	   $("#checkbox-2").prop('checked', false);
-	}
-   if($("#checkbox-3").is(':checked')){
-	   $("#checkbox-3").prop('checked', false);
-	}
+//    if($("#checkbox-1").is(':checked')){
+// 	   $("#checkbox-1").prop('checked', false);
+// 	}
+//    if($("#checkbox-2").is(':checked')){
+// 	   $("#checkbox-2").prop('checked', false);
+// 	}
+//    if($("#checkbox-3").is(':checked')){
+// 	   $("#checkbox-3").prop('checked', false);
+// 	}
    
    var isSuperUser = '${SourceLeadWeb_isSuperUser}';
    if(isSuperUser){
@@ -50,8 +56,8 @@ window.onload = function() {
           <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-1">
           <sec:authorize access="hasRole('ROLE_APPLY_BEHALF_LEAVE')"> 
               <div class="form-group">
-                    <label class="checkBox pull-left ml">
-					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
+                   <label class="pull-left ml checkBox">
+					<input id="checkbox-1" class="onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
                   </label>
                   <span class="pull-left mt5">On behalf of</span>
               </div>
@@ -85,16 +91,27 @@ window.onload = function() {
                     <span class="input-group-addon" onClick="clearFromDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                    </div> 
                   </div>
+                  <c:if test="${! empty leave.fromHalfDay}">
                   <div class="col-md-5 paddingLeft"  id="fromHalfDayDiv">
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
-					<input id="checkbox-2" class="checkbox-custom checkboxCustom" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
+					<input id="checkbox-2" checked class="pull-left" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
                       <span class="pull-left mt5">Half a Day</span></label>
                   </div>
+                  </c:if>
+                  
+                  <c:if test="${empty leave.fromHalfDay}">
+                  <div class="col-md-5 paddingLeft"  id="fromHalfDayDiv">
+                    <label class="checkBox mt5">
+                      <label class="checkBox pull-left mr10">
+					<input id="checkbox-2" class="pull-left" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
+                      <span class="pull-left mt5">Half a Day</span></label>
+                  </div>
+                  </c:if>
                                 <div class="clearfix"></div>
                   <div id="fromTimeDiv" class="mt10 clearfix" style="display:none;">
-                <div class="col-md-6 clearField" id="startTimeDiv">
-        			<input type="text" class="timepicker form-control" id="fromDateHalfTime" name="fromDateHalfTime" placeholder="From-Time" field-name="From-Time" value="" onblur="" data-validation = "required">
+                <div class="col-md-6 clearField errorInptgroup" id="startTimeDiv">
+        			<input type="text" class="timepicker form-control" id="fromDateHalfTime" name="fromDateHalfTime" placeholder="From-Time" field-name="From-Time" value="${leave.fromTime}" onblur="validateFromTimings()" data-validation-optional = "true">
         				<i class="fa fa-times text-muted small"></i>
         		</div>
                   </div>
@@ -111,17 +128,29 @@ window.onload = function() {
                      <span class="input-group-addon" onClick="clearToDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                     </div>
                   </div>
+                   <c:if test="${! empty leave.toHalfDay}">
                   <div class="col-md-5 paddingLeft" id="toHalfDayDiv">
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left">
-					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
+					<input id="checkbox-3" checked class="pull-left" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
                   </label>
                       <span class="pull-left mt5">Half a Day</span></label>
                   </div>
+                  </c:if>
+                  <c:if test="${empty leave.toHalfDay}">
+                  <div class="col-md-5 paddingLeft" id="toHalfDayDiv">
+                    <label class="checkBox mt5">
+                      <label class="checkBox pull-left">
+					<input id="checkbox-3" class="pull-left" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
+                  </label>
+                      <span class="pull-left mt5">Half a Day</span></label>
+                  </div>
+                  </c:if>
+                   
                   <div class="clearfix"></div>
                   <div id="toTimeDiv" class="mt10 clearfix"  style="display:none;">
                   <div class="col-md-6 clearField" id="toEndTimeDiv">
-        			<input type="text" class="timepicker form-control" id="toDateHalfTime" name="toDateHalfTime" placeholder="To-Time" field-name="To-Time" value="" onblur="" data-validation = "required">
+        			<input type="text" class="timepicker form-control" id="toDateHalfTime" name="toDateHalfTime" placeholder="To-Time" field-name="To-Time" value="${leave.toTime}" onblur="validateToTimings()" data-validation-optional = "true">
         				<i class="fa fa-times text-muted small"></i>
         		</div>
                   </div>
@@ -140,7 +169,7 @@ window.onload = function() {
               <div class="form-group">
               <label class="col-md-3" id="attachmentY" style="display:block">Attachment<span class="text-danger paddingLeft" >*</span></label>
               <label class="col-md-3" id="attachmentN" style="display:none">Attachment</label>
-              <div class="col-md-9 errorInptgroup errorInptgroup-bottom" id="attachmentId">
+              <div class="col-md-9 errorInptgroup" id="attachmentId">
                   <div class="positionRelative clearfix"><i class="clearUpload" title="clear" onClick="removedocfile();"></i>
                   
                   <div class="input-group ratetype col-md-12 pull-left" title="">
@@ -205,8 +234,8 @@ window.onload = function() {
 		   $("#fromTimeDiv").show();
 		   $("#toTimeDiv").show();
 	   }else{
-		   $("#startTimeDiv").find('p.jquery_form_error_message').remove();
-		   $("#toEndTimeDiv").find('p.jquery_form_error_message').remove();
+		   $("#fromTimeDiv").find('p.jquery_form_error_message').remove();
+		   $("#toTimeDiv").find('p.jquery_form_error_message').remove();
     	   $("#fromTimeDiv").hide();
     	   $("#toTimeDiv").hide();
     	   $("#fromDateHalfTime").val('');
@@ -223,12 +252,12 @@ window.onload = function() {
 		   $("#fromTimeDiv").show();
 		   $("#toTimeDiv").show();
 	   }else{
-		   $("#startTimeDiv").find('p.jquery_form_error_message').remove();
-		   $("#toEndTimeDiv").find('p.jquery_form_error_message').remove();
-  	   $("#fromTimeDiv").hide();
-  	   $("#toTimeDiv").hide();
-  	   $("#fromDateHalfTime").val('');
-  	   $("#toDateHalfTime").val('');
+		   $("#fromTimeDiv").find('p.jquery_form_error_message').remove();
+		   $("#toTimeDiv").find('p.jquery_form_error_message').remove();
+	  	   $("#fromTimeDiv").hide();
+	  	   $("#toTimeDiv").hide();
+	  	   $("#fromDateHalfTime").val('');
+	  	   $("#toDateHalfTime").val('');
  	   } 
  }
   function validateFromHalfDay()
@@ -724,7 +753,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	}else{
     		    		document.getElementById("attachmentY").style.display = 'none';
     		    		document.getElementById("attachmentN").style.display = 'block';
-    		    		$("#uploadBtn").removeAttr('data-validation');
+    		    		$("#uploadFile").removeAttr('data-validation');
     		    	}
     		    	
     		    	if(report.userGender == "Not Allow"){
@@ -982,9 +1011,9 @@ $("#fromDateHalfTime").timepicker({
 	'disableTextInput': true,
 	 'step': 15
 }).on('changeTime', function() {
-	$("#toDateHalfTime").val('')
+// 	$("#toDa`teHalfTime").val('')
 // 	flushShowDeatils();
-    $("#toDateHalfTime").timepicker('option', 'minTime', $(this).val());
+//     $("#toDateHalfTime").timepicker('option', 'minTime', $(this).val());
 });
 
 $("#toDateHalfTime").timepicker({
@@ -992,10 +1021,32 @@ $("#toDateHalfTime").timepicker({
 	'disableTextInput': true,
 	 'step': 15
 }).on('changeTime', function() {
-    $("#fromDateHalfTime").timepicker('option', 'maxTime', $(this).val());
+//     $("#fromDateHalfTime").timepicker('option', 'maxTime', $(this).val());
 }); 
 
 
+</script>
+
+<script>
+function validateFromTimings(){
+	var fromTimeCheck = $("#fromDateHalfTime").val();
+	if(fromTimeCheck != null && fromTimeCheck != '' && fromTimeCheck != 'undefined'){
+		$("#fromTimeDiv").find('p.jquery_form_error_message').remove();
+	}else{
+		$("#fromTimeDiv").find('p.jquery_form_error_message').remove();
+		$("#startTimeDiv").after("<p class='jquery_form_error_message'>From-Time is required</span>");
+	}
+}
+
+function validateToTimings(){
+	var toTimeCheck = $("#toDateHalfTime").val();
+	if(toTimeCheck != null && toTimeCheck != '' && toTimeCheck != 'undefined'){
+		$("#toTimeDiv").find('p.jquery_form_error_message').remove();
+	}else{
+		$("#toTimeDiv").find('p.jquery_form_error_message').remove();
+		$("#toEndTimeDiv").after("<p class='jquery_form_error_message'>To-Time is required</span>");
+	}
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
