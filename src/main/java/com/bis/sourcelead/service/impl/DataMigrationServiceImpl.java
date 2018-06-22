@@ -708,6 +708,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaLocation"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaLocation"))) {
 				immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("prevLcaLocation"));
+			}else {
+				immDto.setJobLocation("");
 			}
 			immDto.setEditMode("false");
 			
