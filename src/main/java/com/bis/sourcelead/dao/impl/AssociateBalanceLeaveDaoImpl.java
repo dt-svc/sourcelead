@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -157,7 +158,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 
 	@Override
 	@Transactional
-	public int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int status,int diffLeaves,String actionType,String methodType)
+	public int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int status,float diffLeaves,String actionType,String methodType)
 	{
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -182,8 +183,8 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						}
 						if(!"NONE".equalsIgnoreCase(actionType)) {
 							AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId,Integer.parseInt(leaveType.getStatus()));
-							int assoBalLeaves = Integer.parseInt(associateBalanceLeave.getTotalLeaves());
-							int additionLeaves = 0;
+							float assoBalLeaves = Float.parseFloat(associateBalanceLeave.getTotalLeaves());
+							float additionLeaves = 0;
 							if("ADD".equalsIgnoreCase(actionType)) {
 								 additionLeaves = assoBalLeaves + diffLeaves;
 							}if("SUB".equalsIgnoreCase(actionType)) {
@@ -242,6 +243,56 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 			e.printStackTrace();
 		}
 		return isLeaveApplicable;
+	}
+
+
+	@Override
+	@Transactional
+	public AssociateBalanceLeave saveOrUpdateAssocicateBalanceLeaves(AssociateBalanceLeave assBalLeave)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (assBalLeave != null) {
+				session.saveOrUpdate(assBalLeave);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return assBalLeave;
+		
+	}
+
+
+	@Override
+	@Transactional
+	public int updateAssociateAccuralBalanceLeaveCount(List<AssociateBalanceLeaveDTO> assBalList)
+	{
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.doWork(new Work() {
+				@Override
+				public void execute(java.sql.Connection connection) throws SQLException {
+					boolean initialAutocommitSetting = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+					CallableStatement stmt = connection.prepareCall("{call updateAssociateBalLeave(?,?,?,?)}");
+					for (AssociateBalanceLeaveDTO leave : assBalList) {
+						stmt.setString(1, leave.getNoofLeaves());
+						stmt.setLong(2, leave.getOrgLocationId());
+						stmt.setLong(3, Long.parseLong(leave.getUserId()));
+						stmt.setLong(4, leave.getLeaveTypeId());
+						stmt.addBatch();
+					}
+					int[] updateCount = stmt.executeBatch();
+					connection.commit();
+					connection.setAutoCommit(initialAutocommitSetting);
+				}
+			});
+			return 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+		
 	}
 
 }

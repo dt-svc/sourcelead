@@ -15,11 +15,11 @@ public class LeaveTypeDTO {
 	private String hoursType;
 	private String billingType;
 	private String applicableToUsers;
-	@Required(desc = "Department", either = "[Roles,leveEmpType]")
+//	@Required(desc = "Department", either = "[Roles,leveEmpType]")
 	private String department;
-	@Required(desc = "Roles", either = "[Department,leveEmpType]")
+//	@Required(desc = "Roles", either = "[Department,leveEmpType]")
 	private List<String> roles;
-	@Required(desc = "leveEmpType", either = "[Department,Roles]")
+//	@Required(desc = "leveEmpType", either = "[Department,Roles]")
 	private List<String> leveEmpType;
 	private String carryforward;
 	private String noOfLeavesPerYear;

@@ -289,7 +289,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.country !== null && opt.country !== '' && opt.country !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.country + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot-vsm'  title='"+opt.country+"'>" + opt.country + "</div></td>";
                         } else {
                             result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                         }
@@ -302,7 +302,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.petitionType !== null && opt.petitionType !== '' && opt.petitionType !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.petitionType + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot-vsm'  title='"+opt.petitionType+"'>" + opt.petitionType + "</div></td>";
                         } else {
                             result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                         }
@@ -315,7 +315,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.description !== null && opt.description !== '' && opt.description !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot'>" + opt.description + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot' title='"+opt.description+"'>" + opt.description + "</div></td>";
                         } else {
                             result = result + "<td><div class='tbldata-dotdot'>---</div></td>";
                         }

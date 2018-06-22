@@ -142,7 +142,7 @@
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="getCandidatesTableList();closePop();" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearCandAdvSearch();closePop();getCandidatesTableList();" class="btn btn-sm btn-primary" />
+								onclick="clearCandAdvSearch();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 					
@@ -212,14 +212,16 @@ function submitCandidatesToJob(){
 		result = result +" <div class='pull-right'>";
 		
 		 result = result +" <div class='mr pull-left mt5'>";
+
     	 result = result +'<label class="switch mr pull-left ml">';
-    	 result = result +'<input type="checkbox" onclick="checkResume();" value="N" name="candidateResume"  id="candidateResume"   >';
+    	 result = result +'<input type="checkbox" checked onclick="checkCandidateResume();" value="Y" name="candidateResume"  id="candidateResume"   >';
+
     	 result = result +'<div class="slider round" title="Attach Applicants Resume"></div>';
     	 result = result +'</label>';
     	 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
     	 
 		result = result +" <div class='mr pull-left'>";
-		result = result +" <input type='button' value='Submit To Job' onclick='submitApplicantsToJob()' class='btn btn-primary btn-sm'>";
+		result = result +" <input type='button' value='Submit' onclick='submitApplicantsToJob()' class='btn btn-primary btn-sm'>";
 		result = result +"</div>";
 		result = result +" <div class='dynamic_search pull-left'>";
 	 	result = result +" <input type='text' placeholder='Search' id='candDataTableSearch'/>";
@@ -249,7 +251,7 @@ function submitCandidatesToJob(){
 </script>
 
 <script>
-function checkResume(){
+function checkCandidateResume(){
 	 var flag = document.getElementById("candidateResume").checked;
 	 if(flag == true){
 		 $("#candidateResume").val('Y'); 

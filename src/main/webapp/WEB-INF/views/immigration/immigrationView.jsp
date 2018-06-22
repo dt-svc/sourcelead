@@ -30,8 +30,8 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 <c:set var ="taskOnLoadCount" value  = "${tabRecordCountMap['Tasks']}" scope="request"/>
 <c:set var ="curUscisMyImmi" value = "${immigration.currUscisStatus}" scope="session"/>
  <section class="content-wraper content-wraperNew">
-	        <div class="success_pop" id="selector"  style="display: none;">
-		         <i class="fa fa-check-circle"></i><span></span>
+	        <div class="success_pop" id="selector" >
+	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 			</div>
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -472,8 +472,8 @@ function showWarningPopup(tabName, multiWarnMsg){ // multiWarnMsg populated when
 	}
 	function showSuccessMsg(msg){
 		$('#selector').show();
-		$('#selector').text(msg)
-		setTimeout(function(){ $('#selector').hide();$('#selector').text("") }, 1000);
+		$('#msgDiv').text(msg)
+		setTimeout(function(){ $('#selector').hide();$('#msgDiv').text("") }, 1000);
 	}
 </script>
 <jsp:include page="../masterFooter.jsp" />

@@ -132,7 +132,7 @@ $(document).ready(function() {
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="getRequirementTableList();closePop();" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearJobAdvSearch();closePop();getRequirementTableList();" class="btn btn-sm btn-primary" />
+								onclick="clearJobAdvSearch();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 					
@@ -190,7 +190,7 @@ function submitCandidatesToJob(){
 		$("body").css('overflow-y', 'hidden');
 		
 		var result = "";
-		result = result + '<h3>Choose Job</h3>';
+		result = result + '<h3>Select Job</h3>';
 		result = result + '<div id="choicepopUp"></div>';
 		result = result + '<div id="requirementsListLoading"></div>';
 	    result = result +" <div class='mr pull-left'>";
@@ -201,13 +201,13 @@ function submitCandidatesToJob(){
 		
 		 result = result +" <div class='mr pull-left mt5'>";
     	 result = result +'<label class="switch mr pull-left">';
-    	 result = result +'<input type="checkbox" onclick="checkResume();" value="N" name="candidateResume"  id="candidateResume"   >';
+    	 result = result +'<input type="checkbox" checked onclick="checkResume();" value="Y" name="candidateResume"  id="candidateResume"   >';
     	 result = result +'<div class="slider round" title="Attach Applicants Resume"></div>';
     	 result = result +'</label>';
     	 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
 		
 		result = result +" <div class='mr pull-left'>";
-		result = result +" <input type='button' value='Submit To Job' onclick='submitCandidtesToJob()' class='btn btn-primary btn-sm'>";
+		result = result +" <input type='button' value='Submit' onclick='submitCandidtesToJob()' class='btn btn-primary btn-sm'>";
 		result = result +"</div>";
 		result = result +" <div class='dynamic_search pull-left'>";
 	 	result = result +" <input type='text' placeholder='Search' id='reqDataTableSearch'/>";
@@ -248,12 +248,12 @@ function submitCandidatesToJob(){
 
 <script>
 function checkResume(){
-	 var flag = document.getElementById("candidateResume").checked;
+	  var flag = document.getElementById("candidateResume").checked;
 	 if(flag == true){
 		 $("#candidateResume").val('Y'); 
 	 }else{
 		 $("#candidateResume").val('N'); 
-	 }
+	 } 
 }
 </script>
 

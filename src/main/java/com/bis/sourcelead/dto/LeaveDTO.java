@@ -97,6 +97,9 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private Long leaveId;
 	private String currentStage;
 	
+	private String fromDateHalfTime;
+	private String toDateHalfTime;
+	
 	public String getLeavesTaken() {
 		return leavesTaken;
 	}
@@ -673,5 +676,17 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setCurrentStage(String currentStage) {
 		this.currentStage = currentStage;
+	}
+	public String getFromDateHalfTime() {
+		return fromDateHalfTime;
+	}
+	public void setFromDateHalfTime(String fromDateHalfTime) {
+		this.fromDateHalfTime = fromDateHalfTime;
+	}
+	public String getToDateHalfTime() {
+		return toDateHalfTime;
+	}
+	public void setToDateHalfTime(String toDateHalfTime) {
+		this.toDateHalfTime = toDateHalfTime;
 	}
 }
