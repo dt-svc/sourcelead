@@ -1,9 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +19,7 @@ import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TotalLeaveDTO;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.Leave;
@@ -25,6 +29,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
@@ -50,6 +55,9 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	
 	@Autowired
 	LeaveManagementUtil leaveManagementUtil;
+	
+	@Autowired
+	AppliedLeaveDateService appliedLeaveDateService;
 	
 	@Override
 	public Response<AssociateBalanceLeaveDTO> addAssociateLeave(AssociateBalanceLeaveDTO associateBalanceLeaveDTO, User loginUser, OrgLocations orgLocations)
@@ -297,6 +305,44 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	public int updateAssociateAccuralBalanceLeaveCount(List<AssociateBalanceLeaveDTO> assBalList)
 	{
 		return associateBalanceLeaveDao.updateAssociateAccuralBalanceLeaveCount(assBalList);		
+	}
+
+	@Override
+	public int calculateAndUpdateAssociateBalanceLeaves(Long orgLocationId, LeaveType leaveType, Date startDate, Date endDate)
+	{
+		int stat = 0;
+		List<AppliedLeaveDateView> appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(orgLocationId,leaveType.getId(),startDate,endDate);
+		  try{
+//				   Map<Integer,Integer> map = appliedLeaves.stream().collect(Collectors.groupingBy(apl->AppliedLeaveDateView::getUserId,counting(),Map::size));
+			 Map<Long, Long> map = appliedLeaves.stream().collect(Collectors.groupingBy(AppliedLeaveDateView::getUserId,Collectors.counting()));
+			 System.out.println(map);
+			 List<AssociateBalanceLeaveDTO> assBalList = new ArrayList<>();
+			 for(Long userId : map.keySet()){
+				 float associateBalanceLeaves = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), userId, orgLocationId);
+				 float balLeaves = 0;
+				 float totalBal = 0f;
+			     if(map.get(userId) > leaveType.getNoOfDaysPerPeriod()){
+			    	balLeaves = map.get(userId) - leaveType.getNoOfDaysPerPeriod();
+			    	totalBal = associateBalanceLeaves - balLeaves;
+			     }else if(map.get(userId) < leaveType.getNoOfDaysPerPeriod()){
+			    	balLeaves = leaveType.getNoOfDaysPerPeriod() - map.get(userId);
+			    	totalBal = associateBalanceLeaves + balLeaves;
+			     }
+			    totalBal += leaveType.getNoOfDaysPerPeriod();
+			    AssociateBalanceLeaveDTO assBal = new AssociateBalanceLeaveDTO();
+			    assBal.setUserId(String.valueOf(userId));
+			    assBal.setLeaveTypeId(leaveType.getId());
+			    assBal.setNoofLeaves(String.valueOf(totalBal));
+			    assBal.setOrgLocationId(orgLocationId);
+			    assBalList.add(assBal);
+			 }
+			 
+			 stat = updateAssociateAccuralBalanceLeaveCount(assBalList);
+			 
+		   }catch (Exception e) {
+			// TODO: handle exception
+		   }
+		return stat;
 	}
 	
 }
