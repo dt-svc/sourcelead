@@ -269,6 +269,14 @@
 						result = result + '</span>';
 						result = result	+ '</div><div class="clearfix"></div>';
 						
+						if(json.projectShortCode != null && json.projectShortCode != "" && json.projectShortCode != "undefined"){
+						result = result	+ '<div class="project_details_cta">';
+						result = result + '<strong>Project Short Code:</strong><span>';
+						result = result + json.projectShortCode;
+						result = result + '</span>';
+						result = result	+ '</div><div class="clearfix"></div>';
+						}
+						
 						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
 						result = result + '<div class="clearfix"></div>';
 
