@@ -38,6 +38,8 @@ public class SubmissionCandidateListView {
 	
 	private String country;
 	
+	private String vendorName;
+	
 	
 
 	public BigInteger getId() {
@@ -174,6 +176,14 @@ public class SubmissionCandidateListView {
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
 	}
 
 }

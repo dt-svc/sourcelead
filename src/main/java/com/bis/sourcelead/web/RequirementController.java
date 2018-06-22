@@ -34,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
@@ -803,16 +804,9 @@ public class RequirementController {
 					model.addObject("submissionStatus", submissionStatus);
 				}
 				
-				Collection<OrgRelations> orgVendorsList = orgRelationsService.getAllVendorsByOrgLocationId(orgLocations.getId()); 
-				if(null != orgVendorsList && orgVendorsList.size() > 0){
-					for(OrgRelations ocl :orgVendorsList){
-						ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
-						ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
-					 }
-				    model.addObject("add_VendorList", orgVendorsList);
-				}
-			    model.addObject("loginOrgLocId", orgLocations.getId());
-				
+			    
+			    List<OrgRelationDTO> orgVendorsList = orgRelationsService.getAllVendorsListOrgLocationId(orgLocations.getId());
+			    model.addObject("add_VendorList", orgVendorsList);
 				
 			}
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
