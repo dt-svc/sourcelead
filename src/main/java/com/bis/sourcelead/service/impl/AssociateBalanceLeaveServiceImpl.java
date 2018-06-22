@@ -124,7 +124,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				associateBalanceLeaveDTO.setLeaveTypeId(l.getLeaveTypeId());
 				float balanceLeaveCounts = 0;
 				float takenLeaveCounts = 0;
-				int totalLeaves = getTotalLeavesByUserIdAndLeaveTypeId(l.getLeaveTypeId(), userId, orgLocations.getId());
+				float totalLeaves = getTotalLeavesByUserIdAndLeaveTypeId(l.getLeaveTypeId(), userId, orgLocations.getId());
 				float totalbalanceLeaveCounts = totalLeaves;
 				float calculatedTotalNonCarryforwardLeaves = 0;
 				LeaveType leaveType = null;
@@ -183,17 +183,17 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	}
 
 	@Override
-	public int getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId,Long orgLocationId)
+	public float getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId,Long orgLocationId)
 	{
-		int totalLeaves = 0;
+		float totalLeaves = 0;
 		try {
 			AssociateBalanceLeave associateBalanceLeave = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId,userId,orgLocationId,1);
 			if(associateBalanceLeave != null) {
-				totalLeaves = Integer.parseInt(associateBalanceLeave.getTotalLeaves());
-			}else {
+				totalLeaves = Float.parseFloat(associateBalanceLeave.getTotalLeaves());
+			}/*else {
 				LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
 				totalLeaves = leaveType.getNoOfDays();
-			}
+			}*/
 		}catch (Exception e) {
 			logger.error("Get Total Leaves By User Id And LeaveType Id "+e.getMessage());
 		}
@@ -291,6 +291,12 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	public AssociateBalanceLeave saveOrUpdateAssocicateBalanceLeaves(AssociateBalanceLeave assBalLeave)
 	{
 		return associateBalanceLeaveDao.saveOrUpdateAssocicateBalanceLeaves(assBalLeave);		
+	}
+
+	@Override
+	public int updateAssociateAccuralBalanceLeaveCount(List<AssociateBalanceLeaveDTO> assBalList)
+	{
+		return associateBalanceLeaveDao.updateAssociateAccuralBalanceLeaveCount(assBalList);		
 	}
 	
 }

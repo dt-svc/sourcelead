@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,9 +39,12 @@ public class TabsDaoImpl implements TabsDao{
 		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).list();
 		 List<Long> roleActionsList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
-			 for (String s : roles.getActionId().split(",")){
+			 /*for (String s : roles.getActionId().split(",")){
 				 roleActionsList.add(Long.parseLong(s));
-			 }
+			 }*/
+			 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+    			 roleActionsList.add(Long.parseLong(s));
+        	 }
 		 }
 		
 	    String query = "from Tabs tabs where tabs.id IN (select sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActionsList)) ";
@@ -88,9 +92,12 @@ public class TabsDaoImpl implements TabsDao{
 		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).list();
 		 List<Long> roleActonList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
-			 for (String s : roles.getActionId().split(",")){
+			 /*for (String s : roles.getActionId().split(",")){
 				 roleActonList.add(Long.parseLong(s.trim()));
-			 }
+			 }*/
+			 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+    			 roleActonList.add(Long.parseLong(s));
+        	 }
 		 }
 		
 		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActonList)) and tabs.status = '1' ORDER BY tabs.tabOrder ASC ";
@@ -108,9 +115,12 @@ public class TabsDaoImpl implements TabsDao{
 		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).list();
 		 List<Long> roleActionsList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
-			 for (String s : roles.getActionId().split(",")){
+			 /*for (String s : roles.getActionId().split(",")){
 				 roleActionsList.add(Long.parseLong(s));
-			 }
+			 }*/
+			 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+    			 roleActionsList.add(Long.parseLong(s));
+        	 }
 		 }
 		
 	    String query = "select tabs.id from Tabs tabs where tabs.id IN (select sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActionsList)) ";
@@ -139,9 +149,12 @@ public class TabsDaoImpl implements TabsDao{
 		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).list();
 		 List<Long> roleActionsList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
-			 for (String s : roles.getActionId().split(",")){
+			 /*for (String s : roles.getActionId().split(",")){
 				 roleActionsList.add(Long.parseLong(s));
-			 }
+			 }*/
+			 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+    			 roleActionsList.add(Long.parseLong(s));
+        	 }
 		 }
 		
 	    String query = "select tabs.id from Tabs tabs where tabs.id IN (select sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActionsList)) ";
@@ -165,9 +178,12 @@ public class TabsDaoImpl implements TabsDao{
 		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId" ).setLong( "roleId", roleId ).list();
 		 List<Long> roleActonList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
-			 for (String s : roles.getActionId().split(",")){
+			 /*for (String s : roles.getActionId().split(",")){
 				 roleActonList.add(Long.parseLong(s.trim()));
-			 }
+			 }*/
+			 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+    			 roleActonList.add(Long.parseLong(s));
+        	 }
 		 }
 		
 		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = '5' and moduleActions.sourceleadActions.id IN (:roleActonList))) ORDER BY tabs.tabOrder ASC ";
