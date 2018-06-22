@@ -64,14 +64,8 @@ $(document).ready(function() {
 								<div class="clearfix">
 									<select class="chosen-select" id="client" name="client"
 										data-placeholder="Select Client" multiple>
-										<c:forEach var="report" items="${add_clientList}">
-											<c:if test="${report.locationId.id == loginOrgLocId}">
-												<option value="${report.id}">${report.responderLocationId.org.orgName}</option>
-											</c:if>
-											<c:if
-												test="${report.responderLocationId.id == loginOrgLocId}">
-												<option value="${report.id}">${report.locationId.org.orgName}</option>
-											</c:if>
+										<c:forEach var="report" items="${clientsList}">
+											<option value="${report.orgRelId}">${report.clientName}</option>
 										</c:forEach>
 									</select>
 								</div>
@@ -132,7 +126,7 @@ $(document).ready(function() {
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="getRequirementTableList();closePop();" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearJobAdvSearch();closePop();getRequirementTableList();" class="btn btn-sm btn-primary" />
+								onclick="clearJobAdvSearch();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 					
@@ -190,7 +184,7 @@ function submitCandidatesToJob(){
 		$("body").css('overflow-y', 'hidden');
 		
 		var result = "";
-		result = result + '<h3>Choose Job</h3>';
+		result = result + '<h3>Select Job</h3>';
 		result = result + '<div id="choicepopUp"></div>';
 		result = result + '<div id="requirementsListLoading"></div>';
 	    result = result +" <div class='mr pull-left'>";
@@ -201,7 +195,7 @@ function submitCandidatesToJob(){
 		
 		 result = result +" <div class='mr pull-left mt5'>";
     	 result = result +'<label class="switch mr pull-left">';
-    	 result = result +'<input type="checkbox" onclick="checkResume();" value="N" name="candidateResume"  id="candidateResume"   >';
+    	 result = result +'<input type="checkbox" checked onclick="checkResume();" value="Y" name="candidateResume"  id="candidateResume"   >';
     	 result = result +'<div class="slider round" title="Attach Applicants Resume"></div>';
     	 result = result +'</label>';
     	 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
@@ -221,6 +215,7 @@ function submitCandidatesToJob(){
 		result = result +'  <th>&nbsp;</th>';
 		result = result +'	<th>Generated Id</th>';
 		result = result +'	<th>Title</th>';
+		result = result +'	<th>Client</th>';
 		result = result +'  <th>Posted On<br>(<small class="custom-small">YYYY-MM-DD</small>)</th>';
 	  	result = result +'  <th>Location</th>';
 		result = result + '</tr>';
@@ -248,12 +243,12 @@ function submitCandidatesToJob(){
 
 <script>
 function checkResume(){
-	 var flag = document.getElementById("candidateResume").checked;
+	  var flag = document.getElementById("candidateResume").checked;
 	 if(flag == true){
 		 $("#candidateResume").val('Y'); 
 	 }else{
 		 $("#candidateResume").val('N'); 
-	 }
+	 } 
 }
 </script>
 
@@ -325,6 +320,7 @@ function requirementListPagination(url,sourceleadUrl){
             { "data": "action" },
             { "data": "generatedId"},
             { "data": "jobTitle"},
+            { "data": "clientName"},
             { "data": "createdDate" },
             { "data": "location"}
         ],
@@ -365,6 +361,20 @@ function requirementListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
+	              "data": "client",
+	              "sortable": true,
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+	            		  result = result +"<td><div class='tbldata-dotdot_140'><span  title='"+opt.clientName+"'>"+opt.clientName+"</span></div></td>";
+	            	  }else{
+	            		  result = result +"<div>-----</div>";
+	            	  }
+	            	  
+	            	  return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
 	              "data": "createdDate",
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
@@ -386,7 +396,7 @@ function requirementListPagination(url,sourceleadUrl){
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"bLengthChange": true,
-	    	"aaSorting": [[3,'desc']],
+	    	"aaSorting": [[4,'desc']],
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {

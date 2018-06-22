@@ -65,6 +65,9 @@ public class ImmigrationTemplateDocs implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
+	
+	@Column(name = "DOCUMENT_CATEGORY")
+	private String documentCategory;
 
 	public Long getId() {
 		return id;
@@ -169,6 +172,14 @@ public class ImmigrationTemplateDocs implements Serializable {
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getDocumentCategory() {
+		return documentCategory;
+	}
+
+	public void setDocumentCategory(String documentCategory) {
+		this.documentCategory = documentCategory;
 	}
 
 }
