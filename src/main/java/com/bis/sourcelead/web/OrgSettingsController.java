@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -422,9 +423,12 @@ public class OrgSettingsController {
 			if (null != roles.getActionId()) {
 				ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
 				List<Long> roleActonList = new ArrayList<Long>();
-				for (String s : roles.getActionId().split(",")) {
+				/*for (String s : roles.getActionId().split(",")) {
 					roleActonList.add(Long.parseLong(s));
-				}
+				}*/
+				for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActonList.add(Long.parseLong(s));
+	        	 }
 				for (SourceleadActions sleadActions : actionsList) {
 					if (roleActonList.contains(sleadActions.getId())) {
 						sleadActions.setIsActionConfigured(Constants.YES);
@@ -472,9 +476,12 @@ public class OrgSettingsController {
 			if (null != roles.getActionId()) {
 				ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
 				List<Long> roleActonList = new ArrayList<Long>();
-				for (String s : roles.getActionId().split(",")) {
+				/*for (String s : roles.getActionId().split(",")) {
 					roleActonList.add(Long.parseLong(s));
-				}
+				}*/
+				for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActonList.add(Long.parseLong(s));
+	        	 }
 				for (SourceleadActions sleadActions : actionsList) {
 					if (roleActonList.contains(sleadActions.getId())) {
 						sleadActions.setIsActionConfigured(Constants.YES);

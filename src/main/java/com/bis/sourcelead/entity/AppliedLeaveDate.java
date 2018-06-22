@@ -34,6 +34,9 @@ public class AppliedLeaveDate {
 	@Column(name = "IS_PAYROLL_INCLUDE")
 	private String isPayrollInclude;
 	
+	@Column(name = "YEAR")
+	private Integer year;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -147,6 +150,16 @@ public class AppliedLeaveDate {
 	public void setUpdatedDate(Date updatedDate)
 	{
 		this.updatedDate = updatedDate;
+	}
+
+	public Integer getYear()
+	{
+		return year;
+	}
+
+	public void setYear(Integer year)
+	{
+		this.year = year;
 	}
 
 	

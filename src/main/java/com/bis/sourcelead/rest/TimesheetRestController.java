@@ -407,6 +407,7 @@ public class TimesheetRestController {
 			}
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			model.addObject("AWKWARD", true);
 			model.setViewName("timesheet/employeeTImesheetInvoiceList");
 		}
@@ -517,7 +518,9 @@ public class TimesheetRestController {
 					     if(StringUtils.isEmpty(eedDTO.getCurrentTimeFrequency()))
 					     currentTimesheetFrequency = k.replaceAll("/", "-")+"To"+v.replaceAll("/", "-");
 	    			}
-			      } catch (Exception e) {}
+			      } catch (Exception e) {
+			    	  e.printStackTrace();
+			      }
 	    	     count++;
 	    	    if(k.equalsIgnoreCase(v)){
 	    	    	dateFrequencyList.put(k.replaceAll("/", "-")+"To"+v.replaceAll("/", "-"), k.replaceAll("/", "-"));
@@ -1255,7 +1258,7 @@ public class TimesheetRestController {
 			statusDTO.setTaskCommentsRequired(false);
 		}
 		
-		if(projectMember != null && projectMember.getProjects() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() ==1) {
+		if(projectMember != null && projectMember.getProjects() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() ==1) {
 			statusDTO.setTimesheetDocumentRequired(true);
 		}else {
 			statusDTO.setTimesheetDocumentRequired(false);
