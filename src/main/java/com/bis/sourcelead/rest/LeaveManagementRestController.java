@@ -401,10 +401,47 @@ public class LeaveManagementRestController {
 				for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
 					roleIds.add(leaveRole.getRoleId().getId());
 				}
-				if (roleIds.contains(userRole.getRoles().getId())
-						|| "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
-					roleLeaveType.add(leaveType);
+				
+				if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+					if("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+						if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
+							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
+								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+								roleLeaveType.add(leaveType);
+							}
+						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() == null) {
+							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+									roleLeaveType.add(leaveType);
+								}
+						}else if(roleIds.size() == 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
+							if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue() && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+									roleLeaveType.add(leaveType);
+								}
+						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() == null && leaveType.getLeaveEmpType() != null) {
+							if(roleIds.contains(userRole.getRoles().getId()) && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+								roleLeaveType.add(leaveType);
+							}
+						}
+					}else {
+						roleLeaveType.add(leaveType);
+					}
 				}
+				
+				
+				/*if (roleIds.contains(userRole.getRoles().getId())
+						|| "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+					if(leaveType.getLeaveEmpType() != null && leaveType.getDepartmentId() != null) {
+						if(emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+							roleLeaveType.add(leaveType);
+						}
+					}else if(leaveType.getDepartmentId() != null) {
+						
+					}
+					else {
+						roleLeaveType.add(leaveType);
+					}
+					
+				}*/
 			}
 
 			for (LeaveType type : roleLeaveType) {
