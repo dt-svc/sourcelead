@@ -129,7 +129,7 @@ public class ExpensesController {
 				 
 			     String type = request.getParameter("type");
 			 	 Boolean isEditable = false;
-			 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.DRAFT.getValue()) || submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue())){
+			 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.DRAFT.getValue()) || submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue()) || submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REOPENED.getValue())){
 			 		isEditable = true;
 			 	 }
 			 	 if(StringUtils.isEmpty(type) || (StringUtils.isNotEmpty(type) && type.equalsIgnoreCase("edit") && !isEditable)){
@@ -232,7 +232,7 @@ public class ExpensesController {
 			 String type = request.getParameter("type");
 		 	
 		 	 Boolean isEditable = false;
-		 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) ||submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue())){
+		 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) ||submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue()) ||submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REOPENED.getValue())){
 		 		isEditable = true;
 		 	 }
 		 	
