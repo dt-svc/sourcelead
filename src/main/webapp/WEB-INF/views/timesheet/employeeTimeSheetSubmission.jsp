@@ -1688,13 +1688,13 @@ function addTimeSheetRow() {
 			   $("#"+projectTaskId).attr('class','smfield existedProjectTaskId'+projectMemberId);
 			   
 			   var avilableProjectTaskIds = [];
-			   $('.existedProjectTaskId'+projectMemberId).each(function() {
+			  /*  $('.existedProjectTaskId'+projectMemberId).each(function() {
 					 var localId = this.value;
 					 if(localId != null &&  localId !='undefined' && localId != ''){
 						 var taskIdArray = localId.split(",");
 						 avilableProjectTaskIds.push(taskIdArray[0]);
 					 }
-			   }); 
+			   });  */
 			   $.ajax({
 	   	          type : "POST",
 	 	      	  url: sourceleadUrl+"/projectTasksByMemberId?projectMemeberId="+projectMemberId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
