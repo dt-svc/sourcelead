@@ -468,7 +468,12 @@ function candidatesListPagination(url,sourceleadUrl){
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.updatedDate+"'>"+opt.updatedDate+"</div></td>";
+	            	    if(opt.updatedDate != null && opt.updatedDate != '' && opt.updatedDate!= 'undefined'){
+	            	    	result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.updatedDate+"'>"+opt.updatedDate+"</div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.createdDate+"'>"+opt.createdDate+"</div></td>";
+	            	    }
+	            	    
 	            		return result;
 	              }
 		     },{
