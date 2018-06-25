@@ -116,6 +116,7 @@ margin-top: 3px;
 								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="getExpensesApprovalDataList('dateSearch');"><label >Sub for Approval</label></li>
 								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Approved</label></li>
 								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Rejected</label></li>
+									<li><input id="expenseReopened" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Reopened</label></li>
 								<!-- <li><input id="expenseReopned" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList();"><label >Re-Opened</label></li> -->
 	                        </ul>
 	                    </div>                	
