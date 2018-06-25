@@ -32,7 +32,7 @@ function assocBalanceLeaveSummary(userId){
          		result = result + '<div class="col-md-1 paddingLeft">';
          		result = result + '<i class="fa fa-pencil cursorPointer mt5" onclick="editBalLeave(\''+i+'noofLeaves\');"></i>';
          		result = result + '</div>';
-         		result = result + '<label  class="col-md-3 mt10"><th>Balance : '+opt.balanceLeaveCounts+' / '+opt.noofLeaves+'</th></label>';
+         		result = result + '<label  class="col-md-3 mt10"><th>Applied Leaves : '+opt.appliedLeaveCount+' / '+opt.balanceLeaveCounts+'</th></label>';
          		result = result + '</div>';
          		result = result + '</div>';
           	   } 

@@ -161,6 +161,39 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.setViewName("reports/requirementStageReports");
 		  return model;		
 	 }	
+	 
+	 
+	 @RequestMapping(value = "/financialReportsList")
+		public ModelAndView financialReportsList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/financialReportsList");
+		  return model;		
+	 }	
+	 
+	 @RequestMapping(value = "/performanceReportList")
+		public ModelAndView performanceReportList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/performanceReportList");
+		  return model;		
+	 }	
+	 
+	 @RequestMapping(value = "/hrReportsList")
+		public ModelAndView hrReportsList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/hrReportsList");
+		  return model;		
+	 }	
+	 
+	 @RequestMapping(value = "/associateReportsList")
+		public ModelAndView associateReportsList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/associateReportsList");
+		  return model;		
+	 }	
 
 	 /**
 	  * returns requirement assign to reports jsp page

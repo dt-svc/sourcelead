@@ -18,7 +18,16 @@ private String noOfExpenses;
 private Long expId;
 private Long projectMemberId;
 private String orgRelationUUID;
+private String reopenReason;
 
+
+
+public String getReopenReason() {
+	return reopenReason;
+}
+public void setReopenReason(String reopenReason) {
+	this.reopenReason = reopenReason;
+}
 public String getExpenseId() {
 	return expenseId;
 }

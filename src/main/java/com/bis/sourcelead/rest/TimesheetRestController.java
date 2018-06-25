@@ -6196,7 +6196,7 @@ public class TimesheetRestController {
 		return resp;
 	}
 
-	public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId,
+	/*public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId,
 			Leave leave, String leaveStatusType) throws Exception {
 		List<ProjectTasks> projectTaskList = leaveTypeService
 				.getProjectTaskByorgLocationIdAndLeaveTypeId(orgLocations.getId(), leaveTypeId);
@@ -6210,14 +6210,14 @@ public class TimesheetRestController {
 					if (pmhDateList.isEmpty() || pmhDateList == null)
 						continue;
 					
-					/*String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(),orgLocations.getDateFormat());
+					String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(),orgLocations.getDateFormat());
 					String leaveDate[] = dateList.split(",");
-					for (int i = 0; i < leaveDate.length; i++) {*/
+					for (int i = 0; i < leaveDate.length; i++) {
 					if (projectTask != null && projectMember != null && leave != null) {
 					    for (Date pmhDate :pmhDateList) {
 					    	String leaveDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmhDate);
-						/*if(!pmhDateList.contains(leaveDate[i]))
-							continue;*/
+						if(!pmhDateList.contains(leaveDate[i]))
+							continue;
 						
 						if(leave.getFromHalfDay() !=null && leave.getFromHalfDay().equalsIgnoreCase("YES") && pmhDate.equals(leave.getFromDate())) {
 							addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(),	projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate,CalendarUtil.getHalfTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"),
@@ -6267,7 +6267,7 @@ public class TimesheetRestController {
 			}
 		}
 	}
-
+*/
 	/**
 	 * @author Rajashekar
 	 * @param request

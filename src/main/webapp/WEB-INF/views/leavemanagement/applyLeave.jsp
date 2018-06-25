@@ -109,7 +109,7 @@ window.onload = function() {
                   </div>
                   </c:if>
                                 <div class="clearfix"></div>
-                  <div id="fromTimeDiv" class="mt10 clearfix" style="display:none;">
+                  <div id="fromTimeDiv" class="mt10 clearfix errorInptgroup" style="display:none;">
                 <div class="col-md-6 clearField errorInptgroup" id="startTimeDiv">
         			<input type="text" class="timepicker form-control" id="fromDateHalfTime" name="fromDateHalfTime" placeholder="From-Time" field-name="From-Time" value="${leave.fromTime}" onblur="validateFromTimings()" data-validation-optional = "true">
         				<i class="fa fa-times text-muted small"></i>
@@ -148,7 +148,7 @@ window.onload = function() {
                   </c:if>
                    
                   <div class="clearfix"></div>
-                  <div id="toTimeDiv" class="mt10 clearfix"  style="display:none;">
+                  <div id="toTimeDiv" class="mt clearfix errorInptgroup"  style="display:none;">
                   <div class="col-md-6 clearField" id="toEndTimeDiv">
         			<input type="text" class="timepicker form-control" id="toDateHalfTime" name="toDateHalfTime" placeholder="To-Time" field-name="To-Time" value="${leave.toTime}" onblur="validateToTimings()" data-validation-optional = "true">
         				<i class="fa fa-times text-muted small"></i>
@@ -1034,7 +1034,7 @@ function validateFromTimings(){
 		$("#fromTimeDiv").find('p.jquery_form_error_message').remove();
 	}else{
 		$("#fromTimeDiv").find('p.jquery_form_error_message').remove();
-		$("#startTimeDiv").after("<p class='jquery_form_error_message'>From-Time is required</span>");
+		$("#startTimeDiv").after("<p class='jquery_form_error_message'>From-Time is required</p>");
 	}
 }
 
@@ -1044,7 +1044,7 @@ function validateToTimings(){
 		$("#toTimeDiv").find('p.jquery_form_error_message').remove();
 	}else{
 		$("#toTimeDiv").find('p.jquery_form_error_message').remove();
-		$("#toEndTimeDiv").after("<p class='jquery_form_error_message'>To-Time is required</span>");
+		$("#toEndTimeDiv").after("<p class='jquery_form_error_message'>To-Time is required</p>");
 	}
 }
 </script>
