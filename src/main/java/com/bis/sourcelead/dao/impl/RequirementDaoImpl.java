@@ -2576,7 +2576,6 @@ public class RequirementDaoImpl implements RequirementDao {
 					" GROUP BY  REQ.ID, "+
 					" DATE_FORMAT(REQ.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+advSeachStr+sortingQry;
 	
-			 System.out.println(query);
 			
 			  String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
 					" FROM" + 
