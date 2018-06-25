@@ -125,6 +125,7 @@ $( document ).ready(function() {
  </div> 
 </body>
 
+
 <div id="expensesExportListDiv" style="display: none;">
 	 <jsp:include page="dayEntriesReportList.jsp"></jsp:include> 
 </div>
@@ -136,7 +137,7 @@ function validateDayEntriesReport(){
 	var projectMemberList = $('#projectMemberList').val();
 	var templateType = "";
 	
-	if((projectIds == null || projectIds =='' || projectIds=='undefined') && (projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined')){
+	if((projectIds == null || projectIds =='' || projectIds=='undefined')){
 		projectIds = $("#projectList option[name='all']").val();
 		$('#projectList').val(projectIds);
 	}
@@ -284,7 +285,7 @@ function getProjectMemberFromProjectId(){
         	output = output + "<option>--select Associate--</option>";
         	if(result != null && result !='' && result !='undefined'){
         		$.each(result, function(i, item) {
-            		output = output + "<option value='" +item.id+ "'>"+item.candidateName+"</option>";
+            		output = output + "<option value='" +item.masterCandidateId.id+ "'>"+item.candidateName+"</option>";
         		});
         	}
         	$("#projectMemberList").empty();

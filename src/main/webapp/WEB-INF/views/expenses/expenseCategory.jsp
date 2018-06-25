@@ -668,7 +668,7 @@ function reActiveExpenseCategory(categoryId){
 									result = result  +' </div>';
 									result = result  +' </div>';
 									
-									result = result  +'<div class="col-md-12">Attachment Required <input type="checkbox" value="" '+(json.isAttachemtRequired == "Y" ? "checked" : '')+' onClick="checkCheckBox();" name="isAttachmetRequired" id="isAttachmetRequired"></div>';
+									result = result  +'<div class="col-md-12">Attachment Required <input type="checkbox" value="'+json.isAttachemtRequired +'"  '+(json.isAttachemtRequired == "Y" ? "checked" : '')+' onClick="checkCheckBox();" name="isAttachmetRequired" id="isAttachmetRequired"></div>';
 									
 									result = result  +' <div class="clearfix"></div>';	
 									
@@ -737,11 +737,11 @@ function reActiveExpenseCategory(categoryId){
 				dateFormat : 'yyyy/mm/dd'
 			};
 		
-		if ($('#expenseCategory_form').validate(false,
-				validationSettings)) {
+		if ($('#expenseCategory_form').validate(false,validationSettings)) {
 
-			var frm = $('#expenseCategory_form').serializeFormJSON();
-
+			//var frm = $('#expenseCategory_form').serializeFormJSON();
+			
+			var frm = getFormData("expenseCategory_form");
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			//It will escape all the special characters
@@ -818,9 +818,9 @@ function reActiveExpenseCategory(categoryId){
  function checkCheckBox(){
 	 $('input[name$="isAttachmetRequired"]').each(function(){
 	     if(this.checked){
-	         $(this).val('Y');
+	         $('#isAttachmetRequired').val('Y');
 	     } else {
-	         $(this).val('N');
+	         $('#isAttachmetRequired').val('N');
 	     }
 	});
  }

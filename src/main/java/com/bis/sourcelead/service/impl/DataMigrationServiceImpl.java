@@ -467,6 +467,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			candidtemapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			candidtemapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			candidateDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), CandidateDTO.class);
+			if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
+				candidateDTO.setCountry(orgLocation.getCountry());
+			}
 			candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
 			break;
 

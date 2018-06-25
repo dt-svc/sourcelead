@@ -1718,7 +1718,7 @@ function calculateDiscount(){
 		var taxTotal = $("#"+rowId+"taxTotal").val(); 
 		var first=parseFloat(grandTotal);
         var second=parseFloat(taxTotal);
-        total = (first-second);
+        total = Math.round(first-second);
         $("#grandTotal").val(total);
         $("#conversionFrom").val(total);
        //=======================================
