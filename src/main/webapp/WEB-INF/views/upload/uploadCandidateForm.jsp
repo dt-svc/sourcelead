@@ -110,8 +110,6 @@
 							<p>
 								<label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label> <label><i
 									class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label> <label><i
-									class="fa fa-map-marker"></i>&nbsp;&nbsp;Address</label> <label><i
-									class="fa fa-map-marker"></i>&nbsp;&nbsp;Country</label> <label><i
 									class="fa fa-black-tie"></i>&nbsp;&nbsp;Employment Type</label>
 							</p>
 						</span>
