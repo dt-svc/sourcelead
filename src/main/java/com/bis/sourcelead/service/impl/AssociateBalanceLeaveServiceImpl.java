@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.ibm.icu.text.DecimalFormat;
 
@@ -60,6 +62,9 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	
 	@Autowired
 	AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
 	
 	@Override
 	public Response<AssociateBalanceLeaveDTO> addAssociateLeave(AssociateBalanceLeaveDTO associateBalanceLeaveDTO, User loginUser, OrgLocations orgLocations)
@@ -106,8 +111,26 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 //				float balanceLeaveCounts = 0;
 //				float takenLeaveCounts = 0;
 //				float totalLeaves = getTotalLeavesByUserIdAndLeaveTypeId(l.getLeaveTypeId(), userId, orgLocations.getId());
-				Date [] monthDates = getMonthStartDateEndDate();
-                List<AppliedLeaveDateView> appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(),l.getLeaveTypeId(),monthDates[0],monthDates[1],userId);
+				LocalDate todayDate = LocalDate.now();
+				List<AppliedLeaveDateView> appliedLeaves = null;
+			    // If Leave Type Monthly
+				if(Constants.MONTHLY.equalsIgnoreCase(l.getPeriod())) {
+			    	Date [] monthDates = getMonthStartDateEndDate();
+	                appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(),l.getLeaveTypeId(),monthDates[0],monthDates[1],userId);
+			    //If leave type Quartely
+				}else if(Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod())) {
+			    	LocalDate [] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
+			    	appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(),l.getLeaveTypeId(),currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate(),userId);
+			    //If leave type Halfyearly
+				}else if(Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod())) {
+					LocalDate [] currentMonthQuarter = conversionUtil.getH
+					
+			    // If leave type annually
+				}else if(Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod())) {
+			    	
+			    }
+				
+				
                 if(appliedLeaves != null && appliedLeaves.size() >0) {
                 	appliedLeaveCount = Float.parseFloat(l.getTotalLeaves()) - appliedLeaves.size();
                 	associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(dec.format(appliedLeaveCount)));
