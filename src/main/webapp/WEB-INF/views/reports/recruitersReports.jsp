@@ -115,7 +115,7 @@ function getDayWiseReports(){
           
         </div>
         
-      <div class="col-md-2">
+      <div class="col-md-2" id = "runButtonDiv">
         <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="userDataTableList();">Run</button>
 		</div>   
         
@@ -229,11 +229,13 @@ function custDates(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
 		 document.getElementById("customSearch").style.display="block";
+		 document.getElementById("runButtonDiv").style.display="none";
 	}
 	if(reportType != "custom"){
 	    document.getElementById("customSearch").style.display="none";
 	    document.getElementById("reportsStartDate").style.display="none";
 		document.getElementById("reportsEndDate").style.display="none";
+		document.getElementById("runButtonDiv").style.display="block";
 	}
 }
 </script>

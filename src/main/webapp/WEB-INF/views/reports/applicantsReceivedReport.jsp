@@ -150,7 +150,7 @@ function toDate(selector) {
 
 <div class="pull-left reportBtns reportBtns_custom mt5">
 	  <div class="reportBtn dropdown-select reportBtn_custom_btn">
-		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports();custDates();flushCustomDates();">
+		<select class="form-control" id="reportTypeId" onChange="custDates();flushCustomDates();">
 		<option value="">-- Select --</option> 
 		  <option value="today" selected>Today</option>
 		  <option value="yesterday">Yesterday</option>
@@ -179,6 +179,9 @@ function toDate(selector) {
 		
 		
 	</div>
+	 <div class="col-md-2" id = "RunApplicantDivId">
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getDayWiseReports();">Run</button>
+		</div>
                      
         <!-- <ul style="padding: 2px 300px 2px 0px;">
           <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
@@ -252,6 +255,7 @@ function toDate(selector) {
 function custDates(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
+		document.getElementById("RunApplicantDivId").style.display="none";
 	    $(".cusShow").show();
 	    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatAppreports = getJSDateFormat(locationDate);
@@ -281,6 +285,7 @@ function custDates(){
 		});
 	}
 	if(reportType!="custom"){
+		document.getElementById("RunApplicantDivId").style.display="block";
 	    $(".cusShow").hide();
 	    $("#ExportStartDate").datepicker("destroy");
 		 $("#ExportEndDate").datepicker("destroy");

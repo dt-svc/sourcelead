@@ -20,6 +20,7 @@ function getJobsReportCustomDates(){
 	 if(dateSelection == 'custom'){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
+		 document.getElementById("runPipelineDiv").style.display="none";
 		 
 			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 			  var finalDateFormatProjectSave = '';
@@ -60,6 +61,7 @@ function getJobsReportCustomDates(){
 	  
 		 
 	 }else{
+		 document.getElementById("runPipelineDiv").style.display="block";
 		 document.getElementById("customSearch").style.display="none";
 		 $("#jobReportList_custome").removeAttr("disabled");
 		 $("#fromDate").datepicker("destroy");
@@ -128,7 +130,7 @@ function getJobsReportCustomDates(){
       </div>
 
         </div>
-		        <div class="col-md-2">
+		        <div class="col-md-2" id = "runPipelineDiv">
         <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getJobPipelineReports();">Run</button>
 		</div>
          

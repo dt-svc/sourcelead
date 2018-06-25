@@ -42,7 +42,7 @@ window.onload = function() {
       <div class="timesheet_head clearfix">
 <div class="pull-left reportBtns reportBtns_custom mt5">
 	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
-		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
+		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); custVendorDates();">
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
 		  <option value="week">1 Week ago</option>
@@ -68,6 +68,11 @@ window.onload = function() {
 	
         <div class="clearfix"></div>
       </div>
+      
+       <div class="col-md-2" id = "RunDivId">
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getVendorsReportList();">Run</button>
+		</div> 
+      
    </div>
  
 <section class="candidate_wrap_table recruiterReports_table minHeight">
@@ -670,10 +675,12 @@ function custVendorDates(){
 	if(reportType=="custom"){
 // 	    $("#dateShow").style("display: block");
 	    $("#dateShow").css("display", "block");
+	    document.getElementById("RunDivId").style.display="none";
 	}
 	if(reportType!="custom"){
 // 	    $("#dateShow").style("display: none");
 	    $("#dateShow").css("display", "none");
+	    document.getElementById("RunDivId").style.display="block";
 	}
 }
 </script>
