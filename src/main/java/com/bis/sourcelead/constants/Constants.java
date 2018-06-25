@@ -552,8 +552,6 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
-	public static final String QUARTERLY = "Quarterly";
-	public static final String HALFYEARLY = "HalfYearly";
 	
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
@@ -1156,6 +1154,11 @@ public class Constants {
 	public static final String STATUS_NO = "NO";
 	public static final String STATUS_YES = "YES";
 	public static final String ANNUALLY = "Annually";
+	
+	public static final String HALFYEARLY = "HalfYearly";
+	public static final String QUARTERLY = "Quarterly";
+	
+//	Annually   
 
 
 }
