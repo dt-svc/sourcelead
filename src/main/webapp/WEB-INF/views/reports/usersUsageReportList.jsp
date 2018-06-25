@@ -153,7 +153,7 @@
   <div class="timesheet_head">
     <p class="pull-left mt ml"><strong><b id="listNamediv">Active User List</b></strong></p>
     <ul>
-        <li>
+        <!-- <li>
     <div title="Export" class="mrPOP mt10 pull-right" id="mypop"><i class="glyphicon glyphicon-export"></i>
                      <div id="exportPop" class="ExpPop" style="left: 0px; display: none;">
                        <ul>
@@ -162,7 +162,7 @@
                 </ul>
               </div>
             </div>
-    </li>
+    </li> -->
     <li>
     <div class="col-md-12 dropdown-select">
         <div class="dropdown-select positionRelative">
