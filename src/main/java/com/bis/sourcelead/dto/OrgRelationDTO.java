@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -95,6 +96,12 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 	private String isAccountingFirm;
 	
 	private String noOfNonReleasedContacts;
+	
+	private BigInteger clientLocationId;
+	
+	private String clientName;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -445,6 +452,22 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	public void setIsAccountingFirm(String isAccountingFirm) {
 		this.isAccountingFirm = isAccountingFirm;
+	}
+
+	public BigInteger getClientLocationId() {
+		return clientLocationId;
+	}
+
+	public void setClientLocationId(BigInteger clientLocationId) {
+		this.clientLocationId = clientLocationId;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}
 
 }
