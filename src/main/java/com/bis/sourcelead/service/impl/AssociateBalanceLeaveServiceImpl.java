@@ -24,7 +24,6 @@ import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
-import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -134,7 +133,12 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				else {
 					associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(l.getTotalLeaves()));
 				}
-				associateBalanceLeaveDTO.setAppliedLeaveCount(appliedLeaves.size());
+				if(appliedLeaves != null) {
+					associateBalanceLeaveDTO.setAppliedLeaveCount(appliedLeaves.size());
+				}else {
+					associateBalanceLeaveDTO.setAppliedLeaveCount(Float.parseFloat(l.getTotalLeaves()));
+				}
+				
 				if (l.getCreatedByFirstName() != null
 						&& !"".equalsIgnoreCase(l.getCreatedByFirstName())) {
 					associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName() + " "
