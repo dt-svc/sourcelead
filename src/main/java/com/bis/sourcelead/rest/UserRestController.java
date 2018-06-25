@@ -1700,6 +1700,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
 		}
 		return response;
 	}

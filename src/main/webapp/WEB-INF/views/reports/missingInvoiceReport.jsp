@@ -18,9 +18,9 @@ $(document).ready(function(){
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Missing Invoice Lists</h2>
+        <h2>Missing Invoice(s)</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Report(s) Dashboard</a> &raquo;  Missing Invoice Lists</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Report(s) Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo;  Missing Invoice(s)</div>
     </section>
     <!-- hiring Process  -->
    

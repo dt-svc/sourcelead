@@ -8,7 +8,7 @@
 
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Report(s) Dashboard</h2>
+        <h2>Reports Dashboard</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Reports Dashboard</div>
     </section>
@@ -74,7 +74,7 @@
 			</div>
                  <!-- Dropdown -->
  				<div class="clearfix text-center mb10"><i class="perReport"></i></div>
-                  <div class="clearfix text-center"> <h4><a href="#">Performance Report</a></h4></div>
+                  <div class="clearfix text-center"> <h4><a href="${appPath}/performanceReportList">Performance Report</a></h4></div>
               </div>
               
            </sec:authorize>   
@@ -147,7 +147,7 @@
                  <!-- Dropdown -->
                  
                   <div class="clearfix text-center mb10"><i class="finReport"></i></div>
-                  <div class="clearfix text-center"><h4><a href="#">Financial Report</a></h4></div>
+                  <div class="clearfix text-center"><h4><a href="${appPath}/financialReportsList">Financial Report</a></h4></div>
                   </div>
      </sec:authorize>             
                   
@@ -196,7 +196,7 @@
                  <!-- Dropdown -->
                  
                   <div class="clearfix text-center mb10"><i class="hrReport"></i></div>
-                  <div class="clearfix text-center"><h4><a href="#">HR Report</a></h4></div>
+                  <div class="clearfix text-center"><h4><a href="${appPath}/hrReportsList">HR Report</a></h4></div>
      </div>
      </sec:authorize>
      
@@ -233,7 +233,7 @@
                   
                   
                   <div class="clearfix text-center mb10"><i class="assReport"></i></div>
-                  <div class="clearfix text-center"><h4 class="text-danger"><a href="#">Associate Report</a></h4></div>
+                  <div class="clearfix text-center"><h4 class="text-danger"><a href="${appPath}/associateReportsList">Associate Report</a></h4></div>
                       </div>
                       
               </sec:authorize>       
@@ -257,8 +257,8 @@
                   
                   
                   
-                  <div class="clearfix text-center mb10"><i class="perReport"></i></div>
-                  <div class="clearfix text-center"><h4><a href="#">Users Usage Reports</a></h4></div>
+                  <div class="clearfix text-center mb10"><i class="useReport"></i></div>
+                  <div class="clearfix text-center"><h4><a href="${appPath}/userUsageReport">Users Usage Report</a></h4></div>
                       </div>
                       
               </sec:authorize>     
