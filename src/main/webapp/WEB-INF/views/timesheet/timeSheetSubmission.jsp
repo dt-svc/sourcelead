@@ -267,16 +267,17 @@
 														<option value=''>--select task--</option>
 														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
 														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
-														       <c:if test="${pt.id == entry.key}">
+														       <c:set var="taskId" value="${fn:split(entry.key, '##')[0]}"/>
+														       <c:set var="ticketNumber" value="${fn:split(entry.key, '##')[1]}" />
+														       <c:if test="${pt.id == taskId}">
 															       <c:forEach var="ted" items="${entry.value}">
 														                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
-														                  <c:set var="ticketNumber" value="${ted.timesheetTaskDTO.ticketNumber}" />
 														           </c:forEach>
 														          <c:set var="taskId" value="${pt.id}" />
 														          <c:set var="taskName" value="${pt.taskName}" />
 														         <option value='${pt.id},${!empty taskType ? taskType : pt.taskType},${pt.taskName}' selected>${pt.taskName}</option>
 														       </c:if>
-														       <c:if test="${pt.id != entry.key}">
+														       <c:if test="${pt.id != taskId}">
 															       <c:if test="${not empty pt.generatedId}" >
 															       		<option value='${pt.id},${pt.taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
 															       </c:if>
@@ -295,19 +296,19 @@
 													 </c:if>
 											  </c:if>
 											   <c:if test="${!timesheetSubmissionDTO.saveButtonVisible}">
-											         <c:if test="${entry.key != 0}">
+											         <c:if test="${!empty entry.key}">
 											             <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
-															       <c:if test="${pt.id == entry.key}">
+											                     <c:set var="taskId" value="${fn:split(entry.key, '##')[0]}"/>
+											                     <c:set var="ticketNumber" value="${fn:split(entry.key, '##')[1]}" />
+															       <c:if test="${pt.id == taskId}">
 															       <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
 																	       <c:forEach var="ted" items="${entry.value}">
 																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
-																                  <c:set var="ticketNumber" value="${ted.timesheetTaskDTO.ticketNumber}" />
 																           </c:forEach>
 															       </c:if>
 															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
 															             <c:forEach var="ted" items="${entry.value}">
 															                 <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
-															                 <c:set var="ticketNumber" value="${ted.timesheetTaskDTO.ticketNumber}" />
 									                                      </c:forEach>
 															        </c:if> 
 														           <c:set var="taskId" value="${pt.id}" />
@@ -316,7 +317,7 @@
 															       </c:if>
 												         </c:forEach>
 												       </c:if>
-											          <c:if test="${entry.key == 0}">
+											          <c:if test="${empty entry.key}">
 											              <p>--</p>
 											          </c:if>
 											          
@@ -1382,13 +1383,13 @@ function addTimeSheetRow(projectId) {
 		   }
 		   
 		   var avilableProjectTaskIds = [];
-		   $('.existedProjectTaskId'+projectId).each(function() {
+		  /*  $('.existedProjectTaskId'+projectId).each(function() {
 				 var localId = this.value;
 				 if(localId != null &&  localId !='undefined' && localId != ''){
 					 var taskIdArray = localId.split(",");
 					 avilableProjectTaskIds.push(taskIdArray[0]);
 				 }
-		   }); 
+		   });  */
 		   $.ajax({
    	          type : "POST",
  	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
