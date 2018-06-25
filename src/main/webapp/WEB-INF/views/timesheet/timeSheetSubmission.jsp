@@ -275,7 +275,12 @@
 														           </c:forEach>
 														          <c:set var="taskId" value="${pt.id}" />
 														          <c:set var="taskName" value="${pt.taskName}" />
-														         <option value='${pt.id},${!empty taskType ? taskType : pt.taskType},${pt.taskName}' selected>${pt.taskName}</option>
+														          <c:if test="${not empty pt.generatedId}" >
+															       		<option value='${pt.id},${!empty taskType ? taskType : pt.taskType},${pt.taskName}' selected>${pt.generatedId} -${pt.taskName}</option>
+															       </c:if>
+															        <c:if test="${empty pt.generatedId}" >
+															       		<option value='${pt.id},${!empty taskType ? taskType : pt.taskType},${pt.taskName}' selected>${pt.taskName}</option>
+															       </c:if>
 														       </c:if>
 														       <c:if test="${pt.id != taskId}">
 															       <c:if test="${not empty pt.generatedId}" >
