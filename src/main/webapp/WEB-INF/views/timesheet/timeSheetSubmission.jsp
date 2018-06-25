@@ -377,40 +377,6 @@
 										           </td>
 								        </c:forEach>
 									    </tr>
-									    
-									  <%--   <tr id="timesheetRow${entryCount.index+1}">
-									      <td>
-									        <div>Overtime</div>
-									      </td>									      
-									       <c:forEach var="te" items="${entry.value}" varStatus="teStatus">
-										          <td> 
-										           <div>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
- 
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
-										               <input onblur="editMe(this);"  ${te.editable ? '' : 'disabled="disabled"'} id="${entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
-										               <div class='timesheet_comm'>
-										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment${teStatus.index+1}Id");'></i>
-										                       <span class='teskcomment' id='${entryCount.index+1}comment${teStatus.index+1}Id'>
-										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
-                                                               </span>
-										                   </c:if>
-										                   <c:if test="${empty te.comments && !te.editable}">
-										                      <i class='blankDiv'></i>
-										                   </c:if>
-										               </div>
-										            </div>
-										              <c:set var="entryIndex" value="${entryIndex+1}"/>
-										           </td>
-								        </c:forEach>
-									    </tr> --%>
-
-									    
 									</c:forEach>
 								    <tr class="last_child">
 										<td class="total_field">Total</td>
@@ -1324,9 +1290,8 @@ function addTimeSheetRow(projectId) {
 			$("#entryIndexValue").val(entryIndex);
 		    maskme();
 		    
-			//var projectTaskId = maxRowNum+"task1Id"; 
-			
-			//getProjectTasks(projectTaskId,projectId); 
+			var projectTaskId = maxRowNum+"task1Id"; 
+			getProjectTasks(projectTaskId);  
 			
 		   var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
 		   if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
@@ -1367,11 +1332,7 @@ function addTimeSheetRow(projectId) {
          	 setTotals(); 
         }
 	   //get project tasks 
-	   function getProjectTasks(projectTaskId,projectId){
-		 /*   alert($("#"+projectTaskId).val($("#"+projectTaskId+" option:first").val())); 
-		 <i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
-*/         $("#"+projectTaskId).next('i').remove();
-		   $("#"+projectTaskId).after('<i class="fa fa-spinner fa-pulse"></i>');
+	   function getProjectTasks(projectTaskId){
 		   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
 			   var taskId = $("#" + projectTaskId).val().split(",");
@@ -1381,50 +1342,20 @@ function addTimeSheetRow(projectId) {
 			   $("#" + projectTaskId + "BillableTypeId").val(""); 
 			   setTotals(); 
 		   }
-		   
-		   var avilableProjectTaskIds = [];
-		  /*  $('.existedProjectTaskId'+projectId).each(function() {
-				 var localId = this.value;
-				 if(localId != null &&  localId !='undefined' && localId != ''){
-					 var taskIdArray = localId.split(",");
-					 avilableProjectTaskIds.push(taskIdArray[0]);
-				 }
-		   });  */
-		   $.ajax({
-   	          type : "POST",
- 	      	  url: sourceleadUrl+"/projectTasksById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
- 		      success :function(data) {
- 		    	    var json = JSON.parse(data);
- 		    	    $('.existedProjectTaskId'+projectId).each(function() {
- 			   				 var localId = this.id;
- 			   				 var localValue = this.value;
- 			   				 
-	 			   		    var result = ""; 
-	 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){
-	 			   			    $('option', this).not(':eq(0), :selected').remove();
-	 			   		    }else{ 
-	 			   		    	 $("#"+localId).empty();
-	 			   		   		 result = result + "<option value=''>--select task--</option>";
-	 			   		    }
-	  		    	    	for (var i=0; i<json.length; i++)
-	  					 	{
-	  			        		var opt = json[i];
-	  			        		if(opt.generatedId != null && opt.generatedId !='undefined' && opt.generatedId !=''){
-	  			        			result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.generatedId+"-"+opt.taskName+"</option>";
-	  			        		}else{
-	  			        			result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.taskName+"</option>";
-	  			        		}
-	  			        		
-	  						}
-	  		    	    	
- 				    	 	$("#"+localId).append(result);
- 				    	 	$("#"+localId).next('i').remove();
- 			   	   }); 
- 		    	   
- 		      }
- 	      	  
- 	       });  
-		   
+		   var result = "";
+		   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
+		      var taskId = '${pt.id}';
+		      var taskType = '${pt.taskType}';
+		      var taskName = '${pt.taskName}';
+		      var generatedId = '${pt.generatedId}';
+		     
+		      if(generatedId != null && generatedId !='undefined' && generatedId !=''){
+        			result = result + "<option value='" +taskId+","+taskType+","+taskName+"'>"+generatedId+"-"+taskName+"</option>";
+              }else{
+        			result = result + "<option value='" +taskId+","+taskType+","+taskName+"'>"+taskName+"</option>";
+        	  }
+		   </c:forEach>
+		   $("#"+projectTaskId).append(result);
 	   }
 </script>
 
