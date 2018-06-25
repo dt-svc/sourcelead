@@ -497,6 +497,11 @@ public class LeaveServiceImpl implements LeaveService{
 
 	private Set<LeaveApproveHierarchy> getApproverList(LeaveDTO leaveDTO, Leave leave, User user) {
 		Set<LeaveApproveHierarchy> approverList = new HashSet<>();
+		
+		List<String> allUsers = new ArrayList<>();
+		allUsers.addAll(leaveDTO.getApproverUser());
+		allUsers.addAll(leaveDTO.getOtherApproverUser());
+		leaveDTO.setApproverUser(allUsers);
 		leaveDTO.getApproverUser().forEach(userId->{
 			try {
 				LeaveApproveHierarchy leaveApproveHierarchy = new LeaveApproveHierarchy();

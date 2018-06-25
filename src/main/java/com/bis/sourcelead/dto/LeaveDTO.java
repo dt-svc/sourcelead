@@ -100,6 +100,8 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String fromDateHalfTime;
 	private String toDateHalfTime;
 	
+	private List<String> otherApproverUser;
+	
 	public String getLeavesTaken() {
 		return leavesTaken;
 	}
@@ -688,5 +690,11 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setToDateHalfTime(String toDateHalfTime) {
 		this.toDateHalfTime = toDateHalfTime;
+	}
+	public List<String> getOtherApproverUser() {
+		return otherApproverUser;
+	}
+	public void setOtherApproverUser(List<String> otherApproverUser) {
+		this.otherApproverUser = otherApproverUser;
 	}
 }

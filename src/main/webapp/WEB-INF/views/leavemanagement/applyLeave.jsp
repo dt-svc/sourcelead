@@ -193,6 +193,25 @@ window.onload = function() {
 	              </div>
             	</div>
 <%--             </c:if> --%>
+
+		<div class="clearfix"></div>
+         <div class="form-group">
+				<div class="ml">
+							<input  type="checkbox" name="notifyOthersId" id="notifyOthersId" onclick="getUsersBasedOnHierarchy();">
+					<label>&nbsp;&nbsp;Notify to others
+						&nbsp;&nbsp;
+					</label>
+				</div>
+			</div>
+			
+			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
+              <label class="col-md-3">&nbsp;&nbsp;</label>
+              <div class="col-md-9">
+              	<select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverId" name="otherApproverUser" field-name="Approver" data-validation-optional = "true">
+	                  </select>
+              </div>
+             </div>
+		
               
           </div>
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -620,6 +639,7 @@ $(function() {
 
 <script type="text/javascript">
 function applyLeave(){
+	
 		var leaveId = '${leave.id}';
 		var currentStage = '${currentStage}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -1046,6 +1066,39 @@ function validateToTimings(){
 		$("#toTimeDiv").find('p.jquery_form_error_message').remove();
 		$("#toEndTimeDiv").after("<p class='jquery_form_error_message'>To-Time is required</p>");
 	}
+}
+</script>
+
+<script>
+function getUsersBasedOnHierarchy(){
+	$("#notifyOtherDiv").toggle();
+	if($("#notifyOthersId").is(':checked')){
+		$("#approverId").removeAttr("data-validation-optional");
+		$("#approverId").attr("data-validation","required");
+	}else{
+		$("#approverId").removeAttr("data-validation");
+	}
+	var behalf = $("#checkbox-1");
+	var userId = "";
+	if(behalf.is(':checked')){
+		userId = $("#user").val();
+	}else{
+		userId = '${SourceLeadWeb_userId}';
+	}
+   if(userId != null && userId !='' && userId !='undefined'){
+	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId, function(data) {
+		if(data !=null){
+			for(var i=1; i<data.length; i++){
+			var approver = data[i];
+			var result = '';
+			result = result +'<option value='+approver.id+'>'+approver.firstName+' '+approver.lastName+'</option>';
+			$("#approverId").empty();
+			$("#approverId").append(result);
+			$('#approverId').trigger("chosen:updated");
+			}
+		}
+		});
+   }
 }
 </script>
 

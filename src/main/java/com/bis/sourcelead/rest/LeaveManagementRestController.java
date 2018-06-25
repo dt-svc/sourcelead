@@ -402,7 +402,7 @@ public class LeaveManagementRestController {
 					roleIds.add(leaveRole.getRoleId().getId());
 				}
 				
-				if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+				if((leaveType.getEffectiveGender() != null && StringUtils.isNotBlank(userRole.getUser().getGender()) && userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender())) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
 					if("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 						if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
 							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
@@ -2615,20 +2615,20 @@ public class LeaveManagementRestController {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+//		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 
 		UserRole selectedUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocations.getId());
-		List<User> approversList = new ArrayList<>();
-		boolean flag = false;
+//		List<User> approversLnotifyOthersist = new ArrayList<>();
+//		boolean flag = false;
 			List<User> appUser = new ArrayList<>();
 			
 			if(selectedUserRole.getReportingManager() != null){
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(selectedUserRole.getReportingManager().getId(),orgLocations.getId());
 				if (userRole != null) {
-					String roles = userRole.getRoles().getActionId();
-						if (roles.contains("238")) {
-							flag = true;
-						}
+//					String roles = userRole.getRoles().getActionId();
+//						if (roles.contains("238")) {
+//							flag = true;
+//						}
 						User user = userRole.getUser();
 						StringBuilder sb = new StringBuilder();
 						if (StringUtils.isNotBlank(user.getLastName())) {
@@ -2641,13 +2641,14 @@ public class LeaveManagementRestController {
 						appUser.add(userRole.getUser());
 					}
 				
-				if(!flag){
+				
+//				if(!flag){
 					userRole = userRoleService.getUserRoleByUserIdAndLocationId(orgLocations.getUser().getId(),orgLocations.getId());
 					if (userRole != null) {
-						String roles = userRole.getRoles().getActionId();
-							if (roles.contains("238")) {
-								flag = true;
-							}
+//						String roles = userRole.getRoles().getActionId();
+//							if (roles.contains("238")) {
+//								flag = true;
+//							}
 							User user = userRole.getUser();
 							StringBuilder sb = new StringBuilder();
 							if (StringUtils.isNotBlank(user.getLastName())) {
@@ -2659,7 +2660,7 @@ public class LeaveManagementRestController {
 							user.setUserType(userRole.getUserType());
 							appUser.add(userRole.getUser());
 						}
-				}
+//				}
 			
 			
 			return appUser;
