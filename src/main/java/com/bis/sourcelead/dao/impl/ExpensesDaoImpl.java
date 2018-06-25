@@ -61,7 +61,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		String subQuery2 = "";
 		if (Arrays.asList(expStatus).contains("ALL") || StringUtils.isEmpty(expenseStatus)) {
 			subQuery2 = subQuery2
-					+ "  expenses.expenseStatus = 'APPROVED' or expenses.expenseStatus = 'SUBMITTED' or expenses.expenseStatus = 'DRAFT' or expenses.expenseStatus = 'REJECTED' ";
+					+ "  expenses.expenseStatus = 'APPROVED' or expenses.expenseStatus = 'SUBMITTED' or expenses.expenseStatus = 'DRAFT' or expenses.expenseStatus = 'REJECTED' or expenses.expenseStatus = 'REOPENED' ";
 		}
 		else{
 			if (Arrays.asList(expStatus).contains("APPROVED")) {
@@ -79,6 +79,15 @@ public class ExpensesDaoImpl implements ExpensesDao {
 				}
 				subQuery2 = subQuery2 + " expenses.expenseStatus = 'DRAFT' ";
 			}
+			
+			if (Arrays.asList(expStatus).contains("REOPENED")) {
+				if(StringUtils.isNotEmpty(subQuery2)){
+					subQuery2 = subQuery2 + " OR ";
+				}
+				subQuery2 = subQuery2 + " expenses.expenseStatus = 'REOPENED' ";
+			}
+			
+			
 			if (Arrays.asList(expStatus).contains("REJECTED")) {
 				if(StringUtils.isNotEmpty(subQuery2)){
 					subQuery2 = subQuery2 + " OR ";
