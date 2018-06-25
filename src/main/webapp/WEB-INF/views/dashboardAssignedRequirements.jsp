@@ -267,16 +267,15 @@ function requirementList(isWalkIn, walkInDay){
 	                 		$("#requirementListActions").append(getDynamicDayActionsForWalkInJobs(parseInt(data.responseMessage.split(":")[1]) - 1, data.responseMessage.split(":")[2], parseInt(data.responseMessage.split(":")[1]) + 1));
                  		}
                  	}
-                 	$("#requirementLoading").hide();
-                 	$("#requirementList").removeAttr("style");
-	                if(isWalkIn) {
-	        	    	$("#assigned").removeClass("current");
-	        	    	$("#drive").addClass("current"); 
-	                } else {
-	        	    	$("#assigned").addClass("current");
-	        	    	$("#drive").removeClass("current");
-	                }
-
+                 	 $("#requirementLoading").hide();
+                 	 $("#requirementList").removeAttr("style");
+	                 if(isWalkIn) {
+	        	    	 $("#assigned").removeClass("current");
+	        	    	 $("#drive").addClass("current"); 
+	                 } else {
+	        	    	 $("#assigned").addClass("current");
+	        	    	 $("#drive").removeClass("current");
+	                 }
 		    	} else if (data.indexOf('Sign In') !== -1) {
 		    		location.replace(sourceleadUrl);
 		    	} else {

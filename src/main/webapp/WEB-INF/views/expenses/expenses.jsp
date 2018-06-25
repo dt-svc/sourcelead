@@ -74,6 +74,7 @@
 								<li><input id="expenseSubmitted" type="checkbox" name="expenseStatus" value ="SUBMITTED" onclick="getExpensesList();"><label >Submitted</label></li>
 								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList();"><label >Draft</label></li>
 								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList();"><label >Rejected</label></li>
+								<li><input id="expenseReopened" type="checkbox" name="expenseStatus" value ="Reopened" onclick="getExpensesList();"><label >Reopened</label></li>
 	                        </ul>
 	                    </div>                	
 	                </li>

@@ -1180,6 +1180,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 				
 		
  	  query ="SELECT "
+ 			+" ORL.ID AS orgRelId, "
 			+" ORL.RESPONDER_LOCATION_ID AS clientLocationId, "
 			+" (SELECT "
 			+" ORG_NAME"
@@ -1200,6 +1201,40 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			
 			
 			return orgRelationDTOList;
+	}
+
+	@Override
+	@Transactional
+	public List<OrgRelationDTO> getAllVendorsListOrgLocationId(Long orgLocationId) throws Exception {
+		
+		List<OrgRelationDTO> orgRelationDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+				
+		
+ 	  query ="SELECT "
+ 			+" ORL.ID AS orgRelId, "
+			+" ORL.RESPONDER_LOCATION_ID AS clientLocationId, "
+			+" (SELECT "
+			+" ORG_NAME"
+			+" FROM"
+			+" ORG_LOCATIONS OL"
+			+" WHERE"
+			+" (OL.ID = ORL.LOCATION_ID OR OL.ID = ORL.RESPONDER_LOCATION_ID) AND OL.ID != :orgLocationId ) AS vendorName"
+			+" FROM"
+			+" ORG_RELATIONS ORL"
+			+" WHERE"
+			+" (ORL.LOCATION_ID = :orgLocationId AND ORL.INITIATOR_TYPE = 'Client') OR (ORL.RESPONDER_LOCATION_ID = :orgLocationId AND ORL.RESPONDER_TYPE = 'Client')"
+			+" GROUP BY ORL.ID";
+		    
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(OrgRelationDTO.class));
+			orgRelationDTOList = queryObj.list();
+			
+			
+			return orgRelationDTOList;
+	
 	}
 
 	

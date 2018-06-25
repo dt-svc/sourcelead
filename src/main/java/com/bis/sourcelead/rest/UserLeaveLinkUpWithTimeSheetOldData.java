@@ -108,7 +108,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 					leaveUserId =  approverUser.getApproverUserId();
 				}
 				if(leaveUserId != null && leave != null) {
-					timesheetRestController.linkLeaveTypeWithTimeSheet(leaveUserId,leave.getOrgLocations(), leave.getLeaveType().getId(), leave,null);
+					//timesheetRestController.linkLeaveTypeWithTimeSheet(leaveUserId,leave.getOrgLocations(), leave.getLeaveType().getId(), leave,null);
 				}
 			}
 		}
@@ -149,7 +149,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 				if(holiday != null) {
 					User user = userService.getUserByUserCode(holiday.getCreatedBy());
 					if(user!= null) {
-						timesheetRestController.linkHolidaysWithTimeSheet(user,holiday.getOrgLocations(),holiday);
+						//timesheetRestController.linkHolidaysWithTimeSheet(user,holiday.getOrgLocations(),holiday);
 					}
 				}
 			}

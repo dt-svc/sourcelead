@@ -4712,6 +4712,7 @@ display:none;
     display: inline-block; color: #454545; padding: 0px 0px 0px 6px; cursor: pointer;
 }
 .popRela {
+
     position: relative;
 }
 .editNewDat {
@@ -7037,46 +7038,30 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	padding: 20px 0px 15px 0px;
 	}
 .repDashCta {
-	width: 24.5%; margin: 0px 0.25% 10px; float: left; background-color: #fff; padding:15px 0px; border-radius: 2px;
-	border-top: 2px solid #9690e8; position: relative; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+	width: 25%; margin: 0px; float: left; background-color: #fff; padding:16px 0px 0px 0px; border-radius: 2px;
+	position: relative; border:1px solid #ededed; margin-left: -1px; margin-bottom: -1px; height: 80px;
 	}
 .repDashCta span {
 	display: block; position: absolute; width: 49px; top: 20px; left: 0px;
 	}
 .repDashCta i {
-	display: inline-block; padding: 0px 0px 0px 12px; font-size: 26px; color: #9690e8;
+	display: inline-block; padding: 0px 0px 0px 13px; font-size: 24px; color: #566072;
 	}
 .repDashCtaWrap {
-	width: auto; padding: 0px 10px 0px 50px;
+	width: auto; padding: 0px 10px 0px 55px;
 	}
 .repDashCtaWrap h2 {
-	font-size: 16px; font-weight: 500; color: #666; padding: 0px 0px; margin: 0px 0px;
+	font-size: 14px; font-weight: 500; color: #566072; padding: 0px 0px; margin: 0px 0px;
 	}
-.repDashCtaWrap p {
-	font-size: 13px; font-weight: 400; color: #666; padding: 6px 0px; margin: 0px 0px;
+.repDashCtaWrap b {
+	font-size: 13px; font-weight: 500; color: #545454; padding: 6px 0px 0px; margin: 0px 0px; display: inline-block;
 	}
-.repDashCtaWrap a {
-	color: #9690e8;
-	}
-.repDashCta.colTwo {
-	border-top: 2px solid #3a8cd7; 
+.repDashCtaWrap b:hover {
+	color: #3081cb;
 }
-.repDashCta.colTwo i, .repDashCta.colTwo a {
-	color: #3a8cd7;
+.repDashCta:hover {
+	border: 1px solid #91c1ed; position: relative; z-index: 10;
 }
-.repDashCta.colThree {
-	border-top: 2px solid #fd8373; 
-}
-.repDashCta.colThree i, .repDashCta.colThree a {
-	color: #fd8373;
-}
-.repDashCta.colFour {
-	border-top: 2px solid #7dc33e; 
-}
-.repDashCta.colFour i, .repDashCta.colFour a {
-	color: #7dc33e;
-}
-
 
 .subMenuView {
 	display: none; background-color: #2970B1;
@@ -8356,14 +8341,14 @@ max-width: 100% !important;
 .noDate, .dataTables_empty, .noDateSm {
 	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);  border-radius: 2px; padding: 20px;
 	margin: 0px 0px 0px 0px; background-image: url(../images/norecords.png); background-position: center center;
-	background-repeat: no-repeat; min-height: 200px; height: 200px !important; background-size: auto;
+	background-repeat: no-repeat; min-height: 200px; height: 200px !important; background-size: 130px;
 }
 .noDateSm {
 	background-image: url(../images/norecords.png); background-position: center center;
 	background-repeat: no-repeat; min-height: 150px; height: 150px !important; background-size: 130px;
 }
 .reportNewDash {
-	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 2px; padding: 10px 6px 10px 10px;
+	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 2px; padding: 10px 6px 10px 10px; min-height: 450px;
 }
 .perReport {
 	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
@@ -8397,6 +8382,10 @@ max-width: 100% !important;
 	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
 	background: url(../images/payrepicon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
 }
+.useReport {
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+	background: url(../images/userepicon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+}
 .reportNewCta {
 	border-radius: 0px !important; margin-bottom: -1px; margin-left: -1px; transition: all 0.1s ease-in-out !important;
 }
@@ -8405,6 +8394,9 @@ max-width: 100% !important;
 }
 .reportNewCta h4 a {
 	color: #566072;
+}
+.reportNewCta h4 a:hover {
+	color: #3081cb;
 }
 .reportNewCta:hover {
 	border: 1px solid #91c1ed; position: relative; z-index: 10;
@@ -8435,6 +8427,9 @@ max-width: 100% !important;
 }
 .newRepListCta ul li a {
 	display: block; padding: 8px 15px; font-size: 14px; color: #545454; border-bottom: 1px solid #ededed;
+}
+.newRepListCta ul li a:hover {
+	color: #3081cb;
 }
 .repSearch {
 	float: right; padding: 0px 5px 0px 0px; display: none;
