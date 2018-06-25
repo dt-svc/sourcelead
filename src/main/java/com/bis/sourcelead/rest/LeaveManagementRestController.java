@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,6 +120,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -235,6 +237,9 @@ public class LeaveManagementRestController {
 
 	@Autowired
 	AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
 	
 
 	/**
@@ -2809,42 +2814,76 @@ public class LeaveManagementRestController {
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 			for(LeaveType leaveType : leaveTypeList){
 				if(Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod())){
-					List<AppliedLeaveDateView> appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(orgLocation.getId(),leaveType.getId());
-					  try{
-		//				   Map<Integer,Integer> map = appliedLeaves.stream().collect(Collectors.groupingBy(apl->AppliedLeaveDateView::getUserId,counting(),Map::size));
-						 Map<Long, Long> map = appliedLeaves.stream().collect(Collectors.groupingBy(AppliedLeaveDateView::getUserId,Collectors.counting()));
-						 System.out.println(map);
-						 List<AssociateBalanceLeaveDTO> assBalList = new ArrayList<>();
-						 for(Long userId : map.keySet()){
-							 float associateBalanceLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), userId, orgLocation.getId());
-							 float balLeaves = 0;
-							 float totalBal = 0f;
-			 			     if(map.get(userId) > leaveType.getNoOfDaysPerPeriod()){
-			 			    	balLeaves = map.get(userId) - leaveType.getNoOfDaysPerPeriod();
-			 			    	totalBal = associateBalanceLeaves - balLeaves;
-						     }else if(map.get(userId) < leaveType.getNoOfDaysPerPeriod()){
-						    	balLeaves = leaveType.getNoOfDaysPerPeriod() - map.get(userId);
-						    	totalBal = associateBalanceLeaves + balLeaves;
-						     }
-			 			    totalBal += leaveType.getNoOfDaysPerPeriod();
-			 			    AssociateBalanceLeaveDTO assBal = new AssociateBalanceLeaveDTO();
-			 			    assBal.setUserId(String.valueOf(userId));
-			 			    assBal.setLeaveTypeId(leaveType.getId());
-			 			    assBal.setNoofLeaves(String.valueOf(totalBal));
-			 			    assBal.setOrgLocationId(orgLocation.getId());
-			 			    assBalList.add(assBal);
-						 }
-						 
-						 int stat = associateBalanceLeaveService.updateAssociateAccuralBalanceLeaveCount(assBalList);
-						 
-					   }catch (Exception e) {
-						// TODO: handle exception
-					   }
+					Calendar c = Calendar.getInstance();
+					c.set(Calendar.DATE, 1);
+					Date startDate = c.getTime();
+					c.set(Calendar.DATE,     c.getActualMaximum(Calendar.DAY_OF_MONTH));
+					Date endDate = c.getTime();
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,startDate,endDate);
 				}
 			}
 		}
 	}
 	
+	
+	@RequestMapping(value = "/calculateQuarterlyBalance")
+	public void calculateQuarterlyBalance(HttpServletRequest request,HttpServletResponse response) throws Exception {
+//		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgLocations> orglocationsList = new ArrayList<>();
+		orglocationsList.add(orgLocations);
+		Format formatter = new SimpleDateFormat("MMM"); 
+	    String monthName = formatter.format(new Date()).toUpperCase();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
+					LocalDate today = LocalDate.now();
+					LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(today);
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,dates[0].toDate(),dates[1].toDate());
+				}
+			}
+		}
+	}
+	
+	@RequestMapping(value = "/calculateHalfyearlyBalance")
+	public void calculateHalfyearlyBalance(HttpServletRequest request,HttpServletResponse response) throws Exception {
+//		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgLocations> orglocationsList = new ArrayList<>();
+		orglocationsList.add(orgLocations);
+		Format formatter = new SimpleDateFormat("MMM"); 
+	    String monthName = formatter.format(new Date()).toUpperCase();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod())){
+					LocalDate today = LocalDate.now();
+					LocalDate[] dates = conversionUtil.getThisMonthHalfyearyDates(today);
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,dates[0].toDate(),dates[1].toDate());
+				}
+			}
+		}
+	}
+	
+	@RequestMapping(value = "/calculateYearlyBalance")
+	public void calculateYearlyBalance(HttpServletRequest request,HttpServletResponse response) throws Exception {
+//		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgLocations> orglocationsList = new ArrayList<>();
+		orglocationsList.add(orgLocations);
+		Format formatter = new SimpleDateFormat("MMM"); 
+	    String monthName = formatter.format(new Date()).toUpperCase();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
+					Date[] dates = conversionUtil.getCurrentYearStartAndEndDate();
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,dates[0],dates[1]);
+				}
+			}
+		}
+	}
 
 	@RequestMapping(value = "/ws/dumpAllGeneralShifts", method = RequestMethod.GET)
     public void dumpAllGeneralShifts(HttpServletRequest request, HttpServletResponse response) throws Exception
