@@ -141,7 +141,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				if(appliedLeaves != null) {
 					associateBalanceLeaveDTO.setAppliedLeaveCount(appliedLeaves.size());
 				}else {
-					associateBalanceLeaveDTO.setAppliedLeaveCount(Float.parseFloat(l.getTotalLeaves()));
+					associateBalanceLeaveDTO.setAppliedLeaveCount(0);
 				}
 				
 				if (l.getCreatedByFirstName() != null
