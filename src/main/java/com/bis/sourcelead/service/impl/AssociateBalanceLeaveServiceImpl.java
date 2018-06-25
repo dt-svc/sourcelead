@@ -96,9 +96,8 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	}
 
 	@Override
-	public List<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(Long userId,OrgLocations orgLocations,User loginUser)
+	public List<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(Long userId, OrgLocations orgLocations, User loginUser)
 	{
-		
 		ResponseList<AssociateBalanceLeaveView> finalResObj = associateBalanceLeaveDao.getAssociateBalanceLeavesByUserId(userId, orgLocations.getId());
 		ArrayList<AssociateBalanceLeaveDTO> list = new ArrayList<>();
 		if (finalResObj.getData() != null && finalResObj.getData().size() > 0) {
@@ -110,35 +109,36 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				associateBalanceLeaveDTO.setNoofLeaves(l.getTotalLeaves());
 				associateBalanceLeaveDTO.setLeaveTypeId(l.getLeaveTypeId());
 				float appliedLeaveCount = 0;
-//				float balanceLeaveCounts = 0;
-//				float takenLeaveCounts = 0;
-//				float totalLeaves = getTotalLeavesByUserIdAndLeaveTypeId(l.getLeaveTypeId(), userId, orgLocations.getId());
 				LocalDate todayDate = LocalDate.now();
 				List<AppliedLeaveDateView> appliedLeaves = null;
-				if(Constants.MONTHLY.equalsIgnoreCase(l.getPeriod())) {
-			    	Date [] monthDates = getMonthStartDateEndDate();
-	                appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(),l.getLeaveTypeId(),monthDates[0],monthDates[1],userId);
-				}else if(Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod())) {
-			    	LocalDate [] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
-			    	appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(),l.getLeaveTypeId(),currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate(),userId);
-				}else if(Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod())) {
-					LocalDate [] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
-			    	appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(),l.getLeaveTypeId(),currentHalfYear[0].toDate(),currentHalfYear[1].toDate(),userId);
-				}else if(Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod())) {
-					LocalDate [] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
-			    	appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(),l.getLeaveTypeId(),currentHalfYear[0].toDate(),currentHalfYear[1].toDate(),userId);
-			    }
-				
-                if(appliedLeaves != null && appliedLeaves.size() >0) {
-                	appliedLeaveCount = Float.parseFloat(l.getTotalLeaves()) - appliedLeaves.size();
-                	associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(dec.format(appliedLeaveCount)));
-                }else {
-                	associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(l.getTotalLeaves()));
-                }
-                 
+				if (Constants.MONTHLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					Date[] monthDates = getMonthStartDateEndDate();
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), monthDates[0], monthDates[1], userId);
+				}
+				else if (Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), userId);
+				}
+				else if (Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId);
+				}
+				else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId);
+				}
+				if (appliedLeaves != null && appliedLeaves.size() > 0) {
+					appliedLeaveCount = Float.parseFloat(l.getTotalLeaves()) - appliedLeaves.size();
+					associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(dec.format(appliedLeaveCount)));
+				}
+				else {
+					associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(l.getTotalLeaves()));
+				}
 				associateBalanceLeaveDTO.setAppliedLeaveCount(appliedLeaves.size());
-				if (l.getCreatedByFirstName() != null && !"".equalsIgnoreCase(l.getCreatedByFirstName())) {
-					associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName() + " "+ l.getCreatedByLastName());
+				if (l.getCreatedByFirstName() != null
+						&& !"".equalsIgnoreCase(l.getCreatedByFirstName())) {
+					associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName() + " "
+							+ l.getCreatedByLastName());
 				}
 				else {
 					associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName());
