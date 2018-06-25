@@ -31,6 +31,10 @@ public class AssociateBalanceLeaveView {
 	@Column (name = "PERIOD")
 	private String period;
 	
+	@Column (name = "ACCURAL_POLICY")
+	private String accuralPolicy;
+	
+	
 	@Column(name = "USER_ID")
 	private Long userId;
 	
@@ -60,6 +64,19 @@ public class AssociateBalanceLeaveView {
 	
 	@Column(name = "ORG_LOCATION_ID")
 	private Long orgLocationId;
+	
+	@Column (name = "NO_OF_DAYS_PER_PERIOD")
+	private Float noOfDaysPerPeriod;
+
+	public Float getNoOfDaysPerPeriod()
+	{
+		return noOfDaysPerPeriod;
+	}
+
+	public void setNoOfDaysPerPeriod(Float noOfDaysPerPeriod)
+	{
+		this.noOfDaysPerPeriod = noOfDaysPerPeriod;
+	}
 
 	public Long getId()
 	{
@@ -225,6 +242,16 @@ public class AssociateBalanceLeaveView {
 	public void setPeriod(String period)
 	{
 		this.period = period;
+	}
+
+	public String getAccuralPolicy()
+	{
+		return accuralPolicy;
+	}
+
+	public void setAccuralPolicy(String accuralPolicy)
+	{
+		this.accuralPolicy = accuralPolicy;
 	}
 	
 	

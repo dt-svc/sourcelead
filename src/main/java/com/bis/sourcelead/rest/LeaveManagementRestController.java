@@ -377,8 +377,7 @@ public class LeaveManagementRestController {
 		return model;
 	}
 
-	@RequestMapping(value = { "/getPieChartForLeaveStatus",
-			"/rest/getPieChartForLeaveStatus" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getPieChartForLeaveStatus","/rest/getPieChartForLeaveStatus" }, method = RequestMethod.GET)
 	public List<LeaveType> getPieChartForLeaveStatus(
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request,

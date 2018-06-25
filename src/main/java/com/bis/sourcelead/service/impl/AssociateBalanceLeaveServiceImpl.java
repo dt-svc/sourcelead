@@ -87,6 +87,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 		}catch (Exception e) {
 			resObj.setResponse(Result.AWKWARD.name());
 			resObj.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
 			logger.error("Add Association Balance Leave Failed Due To : "+e.getMessage());
 		}
 		
@@ -105,7 +106,11 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				associateBalanceLeaveDTO.setId(String.valueOf(l.getId()));
 				associateBalanceLeaveDTO.setAssoBalLeaveUUID(l.getAssoBalLeaveUUID());
 				associateBalanceLeaveDTO.setLeaveTypeName(l.getLeaveTypeName());
-				associateBalanceLeaveDTO.setNoofLeaves(l.getTotalLeaves());
+				if(!Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && !Constants.NO.equalsIgnoreCase(l.getAccuralPolicy())) {
+					associateBalanceLeaveDTO.setNoofLeaves(String.valueOf(l.getNoOfDaysPerPeriod()));	
+				}else {
+				    associateBalanceLeaveDTO.setNoofLeaves(l.getTotalLeaves());
+				}
 				associateBalanceLeaveDTO.setLeaveTypeId(l.getLeaveTypeId());
 				float appliedLeaveCount = 0;
 				LocalDate todayDate = LocalDate.now();
