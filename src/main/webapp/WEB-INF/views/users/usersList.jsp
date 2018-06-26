@@ -78,9 +78,6 @@ $(document).ready(function() {
 }); 
 </script>
 
-
-
-
 <script type="text/javascript">
 window.onload = function () {
 	usersListCheck("${searchValue}","${searchResult}");
