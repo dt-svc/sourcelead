@@ -100,7 +100,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 		System.out.println("added leave type to project task");
 		
 		
-		List<Leave> leaves = leaveService.getAllLeave();
+		/*List<Leave> leaves = leaveService.getAllLeave();
 		if(leaves != null && !leaves.isEmpty()) {
 			for(Leave leave:leaves) {
 				User leaveUserId = null; 
@@ -111,7 +111,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 					timesheetRestController.linkLeaveTypeWithTimeSheet(leaveUserId,leave.getOrgLocations(), leave.getLeaveType().getId(), leave,null);
 				}
 			}
-		}
+		}*/
 		System.out.println("added old leave type to timesheet");
 		
 		List<Holiday> holidayList = holidayService.getAllHoliday();
@@ -144,7 +144,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 		}
 	}
 		System.out.println("added holiday to projectTask");
-		if(holidayList != null && !holidayList.isEmpty()) {
+		/*if(holidayList != null && !holidayList.isEmpty()) {
 			for(Holiday holiday:holidayList) {
 				if(holiday != null) {
 					User user = userService.getUserByUserCode(holiday.getCreatedBy());
@@ -153,7 +153,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 					}
 				}
 			}
-		}
+		}*/
 		System.out.println("added old holiday data to timesheet");
 		
 		return "success";

@@ -270,7 +270,7 @@ public class ProjectsRestController {
 						 List<Leave> leaveList = leaveService.getLeaveByUserIdOrglocationIdandStatus(candidate.getConsultantUser(),orglocationId.getId(),Constants.APPROVED);
 						 if(leaveList!= null && !leaveList.isEmpty()) {
 							 for(Leave leave:leaveList) {
-							 	timesheetRestController.linkLeaveTypeWithTimeSheet(user,orglocationId, leave.getLeaveType().getId(),leave,Constants.APPROVED);
+							 //	timesheetRestController.linkLeaveTypeWithTimeSheet(user,orglocationId, leave.getLeaveType().getId(),leave,Constants.APPROVED);
 							 } 
 						 }
 					 }

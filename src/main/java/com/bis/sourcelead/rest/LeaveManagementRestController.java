@@ -887,7 +887,7 @@ public class LeaveManagementRestController {
 				if (holidayDTO != null)
 					savedHoliday = holidayService.storeHoliday(holidayDTO);
 
-				List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocations.getId());
+				/*List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocations.getId());
 				if (projectsList != null && projectsList.size() > 0) {
 					for (Projects projects : projectsList) {
 						ProjectTasks tasks = new ProjectTasks();
@@ -911,8 +911,8 @@ public class LeaveManagementRestController {
 						tasks.setUpdatedDate(new Date());
 						projectTasksDao.addTasks(tasks);
 					}
-				}
-				timesheetRestController.linkHolidaysWithTimeSheet(user, orgLocations, savedHoliday);
+				}*/
+				//timesheetRestController.linkHolidaysWithTimeSheet(user, orgLocations, savedHoliday);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else if(user==null){
@@ -2011,9 +2011,9 @@ public class LeaveManagementRestController {
 			leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 			leaveService.LeaveCancelEmailToUser(user,leaveManagementHistory,reason);
-			if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
+			/*if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
 				timesheetRestController.linkLeaveTypeWithTimeSheet(user, leave.getOrgLocations(), leave.getLeaveType().getId(), leave, Constants.LEAVE_CANCELLED);
-			}
+			}*/
 		}  else {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());
 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

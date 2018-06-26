@@ -722,9 +722,9 @@ public class LeaveServiceImpl implements LeaveService{
 		leaveManagementHistory.setUpdatedDate(new Date());
 		leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 		sendApprovedAndRejectedLeaveMailToEmployee(orgLocations, user, leaveManagementHistory);
-		if(isApproved == true && updaetedLeave.getLeaveType().getTimeSheetAutofill().equalsIgnoreCase(Constants.YES)) {
+		/*if(isApproved == true && updaetedLeave.getLeaveType().getTimeSheetAutofill().equalsIgnoreCase(Constants.YES)) {
 			timesheetRestController.linkLeaveTypeWithTimeSheet(user, orgLocations, leaveTypeId, updaetedLeave,Constants.APPROVED);
-		}
+		}*/
 		return isApproved;
 	}
 
@@ -1452,9 +1452,9 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveManagementHistory.setUpdatedDate(new Date());
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 			sendWithdrawLeaveMailToAdmin(orgLocations,leave.getId(), user, leaveManagementHistory);
-			if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
+			/*if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
 				timesheetRestController.linkLeaveTypeWithTimeSheet(user,leave.getOrgLocations(),leave.getLeaveType().getId(),leave,Constants.LEAVE_WITHDRAW);
-			}
+			}*/
 		}
 		return isLeaveWithdraw;
 	}
