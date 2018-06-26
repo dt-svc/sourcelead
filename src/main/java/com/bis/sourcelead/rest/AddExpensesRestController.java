@@ -53,6 +53,7 @@ import com.bis.sourcelead.service.ExpensesEntryDocumentsService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
@@ -70,6 +71,11 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	private ProjectsService projectsService; 
+	
+	@Autowired
+	private ProjectApproverHierarchyService projectApproverHierarchyService; 
+	
+	
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
@@ -174,7 +180,7 @@ public class AddExpensesRestController {
 				User superUser = userService.getUserById(reOpenedUserId);
 				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId(),isGlobalAccess);
 				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
-			  	
+				expensesApprovalService.sendExpenseReopenAcceptMailToEmployee(expense,orgLoc,type,reopenedUser,loginUser);
 			}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
 			    //send mail & notification logic
@@ -185,6 +191,8 @@ public class AddExpensesRestController {
 				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
 
 			}
+			
+			
 		
 	}
 	
@@ -214,7 +222,6 @@ public class AddExpensesRestController {
 			  	if(isSuperUser.equalsIgnoreCase(Constants.NO)){
 			  		sendEmailToSuperUserForReOpenExpenseApprovalStatus(expenses.getProjectMembers().getId(),expenses,loginUser,orgLoc,reason,currencyCode);
 			  	}
-			  	
 			}
 		
 	}
@@ -495,4 +502,7 @@ public class AddExpensesRestController {
 			
 		}
 	
+	
+	 
+	 
 }
