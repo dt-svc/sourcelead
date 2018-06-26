@@ -367,7 +367,7 @@ function cpagination(url){
                     "render": function ( data, type, opt, meta ) {
                     		var result = "";
                     		if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
-                    			result = "<div>"+opt.createdBy+"</div>"; 
+                    			result = "<div class='tbldata-dotdot-vsm'>"+opt.createdBy+"</div>"; 
   			            	}else{
   			            		result = "<div>---</div>";
   			            	}
