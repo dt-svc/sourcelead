@@ -21,6 +21,18 @@ public class ApplicantsBackoutDTO {
 	private BigInteger totalCount;
 	
 	private String jobName;
+	
+	private String generatedId;
+	
+	
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
 
 	public String getCounts() {
 		return counts;

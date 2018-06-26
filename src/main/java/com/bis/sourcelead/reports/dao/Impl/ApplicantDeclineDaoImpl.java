@@ -48,8 +48,8 @@ public class ApplicantDeclineDaoImpl implements ApplicantDeclineDao{
 		String query = null;
 		Query submissionCount = null;
 		
-		List<ApplicantDeclineDTO> countList = new ArrayList<ApplicantDeclineDTO>();
-	
+		List<ApplicantDeclineDTO> countList = null;
+	if(jobIds.size() > 0){
 		if(searchDates != null) {
 			 query = "select (select count(rs.REASON_TYPE)  from REQUIREMENT_SUBMISSION rs where rs.SUBMISSION_STATUS ='REJECTED' and rs.REASON_TYPE LIKE 'Bad Fit' and rs.REQUIREMENT_ID IN (:jobIds) and DATE(rs.CREATED_DATE) BETWEEN :startDate and :endDate) as badfitCount,"
 					+ "(select count(rs.REASON_TYPE)  from REQUIREMENT_SUBMISSION rs where rs.SUBMISSION_STATUS ='REJECTED' and rs.REASON_TYPE LIKE 'other' and rs.REQUIREMENT_ID IN (:jobIds ) and DATE(rs.CREATED_DATE) BETWEEN :startDate and :endDate) as otherCount,"
@@ -67,6 +67,7 @@ public class ApplicantDeclineDaoImpl implements ApplicantDeclineDao{
 				//applicantsBackoutDTO.setCountFlag("true");
 				countList.add(applicantsDeclineDTO);
 			}
+	   }
 			return countList;
 	}
 

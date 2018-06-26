@@ -103,7 +103,7 @@ function prepareReportDataDiv(data){
     	}
     	result = result + '<tr>';
         result = result + '<td>';
-        result = result + '<div class="tbldata-dotdot-sm"><span title="'+report.jobTitle+'">'+report.jobTitle+'</span></div> ';
+        result = result + '<div class="tbldata-dotdot-sm"><span title="'+report.generatedId+" - "+report.jobTitle+'">'+report.generatedId+" - "+report.jobTitle+'</span></div> ';
         result = result + '</td>';
 
         result = result + '<td>';

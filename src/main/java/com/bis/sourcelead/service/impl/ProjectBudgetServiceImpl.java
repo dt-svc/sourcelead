@@ -226,7 +226,7 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	
 	
 	private String generatebudgetRequestId(Projects projects) {
-		String companyShortCode = null;
+		String companyShortCode = "";
        	Long number = 1L;
    		String candidateId = null;
    		Integer generatedIdcount = 0;

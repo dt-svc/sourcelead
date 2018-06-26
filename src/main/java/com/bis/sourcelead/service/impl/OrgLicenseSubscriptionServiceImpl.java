@@ -58,6 +58,7 @@ import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
@@ -263,10 +264,11 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 		    saveOrgRoleHierarchy(orgLocations,user);
 			saveOrgBasedRoles(orgLicenseSubscription.getOrg(),orgLocations,user,orgLicenseSubscriptionDTO.getRegisteredModules());
 			
-			
+			Shift shift = commonUtil.saveDefaultGenaeralShift(orgLocations, user, Constants.GENERAL_SHIFT);
 			//For saving the User Role (At registration user will have Admin Role)
 			UserRole userRole = getUserRoleDetails(user,orgLocations);
 			try {
+				userRole.setShift(shift);
 				userRoleDao.addUserRole(userRole);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -311,7 +313,6 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			commonUtil.saveDefaultContractTemplate(orgLicenseSubscription.getOrg(),orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
 			commonUtil.saveDefaultContractTemplate(orgLicenseSubscription.getOrg(),orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
 			commonUtil.saveDefaultContractTemplate(orgLicenseSubscription.getOrg(),orgLocations,user," Default NDA Template",Constants.NDA);
-			commonUtil.saveDefaultGenaeralShift(orgLocations, user, "General Shift");
 			
 			saveOrgLocationDefaultProject(orgLocations, user);
 			commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);

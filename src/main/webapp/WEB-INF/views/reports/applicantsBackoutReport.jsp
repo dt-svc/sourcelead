@@ -36,7 +36,7 @@ $(window).load(function() {
         <div class="col-md-6 ReqRepHead-chosen">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
             <c:forEach var="option" items="${requirementsList}">
-				<option value="${option.requirementId}">${option.jobTitle}</option>
+				<option value="${option.requirementId}"> ${option.generatedId} - ${option.jobTitle} </option>
 			</c:forEach>
           </select>
         </div>
@@ -244,7 +244,8 @@ $(window).load(function() {
 			    			var result = "";
 				             result  = result + '    <table class="table table-bordered" id="applicantBackoutPagenationId">     ';
 							 result  = result + '     <thead>                                 ';
-							 result  = result + '       <tr>                                  ';
+							 result  = result + '       <tr>     ';
+							 result  = result + '         <th>Id</th>                       ';
 							 result  = result + '         <th>Jobs</th>                       ';
 							 result  = result + '         <th>Current Company</th>                     ';
 							 result  = result + '         <th>Compensation</th>             ';
@@ -260,6 +261,7 @@ $(window).load(function() {
 								 var report = response.data[i];
 								 if(report.totalCount != 0){
 								 result  = result + '       <tr>                                  ';
+								 result  = result + '		  <td><div>'+report.generatedId+'</div></td>  ';
 								 result  = result + '		  <td><div>'+report.jobName+'</div></td>  ';
 								 result  = result + '         <td><div>'+report.currentCompany+'</div></td>               ';
 								 result  = result + '         <td><div>'+report.compensation+'</div></td>               ';

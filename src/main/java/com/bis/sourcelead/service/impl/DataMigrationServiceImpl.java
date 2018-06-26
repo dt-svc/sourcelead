@@ -317,6 +317,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					break;
 					
 				case "candidatesUpload":
+					dataMigrationDTOJsonCopy.put("inviteEmail", dataMigrationDTO.getInviteEmail());
 					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
 					break;

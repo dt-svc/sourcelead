@@ -363,14 +363,14 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		//String aa = commonUtil.elkDateFormatter(startDateUTC);
 		//String bb = commonUtil.elkDateFormatter(endDateUTC);
 		if(null != startDateUTC && null != endDateUTC ){
-			String query = "SELECT DISTINCT CONCAT(C.FIRST_NAME, ' ',IFNULL(C.LAST_NAME, '')) AS name, R.JOB_TITLE AS jobTitle, RS.ORG_LOCATION_ID AS orglocationId, RS.SUBMISSION_STATUS AS submissionStatus, CONCAT(RS.CREATED_USER, ' (', OL.ORG_NAME, ')') AS userAndOrgName, RS.UPDATED_DATE AS updatedDate	FROM" 
+			String query = "SELECT DISTINCT CONCAT(C.FIRST_NAME, ' ',IFNULL(C.LAST_NAME, '')) AS name, CONCAT (R.GENERATED_ID,' - ',R.JOB_TITLE) AS jobTitle, RS.ORG_LOCATION_ID AS orglocationId, RS.SUBMISSION_STATUS AS submissionStatus, CONCAT(RS.CREATED_USER, ' (', OL.ORG_NAME, ')') AS userAndOrgName, RS.UPDATED_DATE AS updatedDate	FROM" 
 	    +" REQUIREMENT_SUBMISSION RS, REQUIREMENT R, ORG_LOCATIONS OL, CANDIDATE C WHERE RS.VENDOR_LOCATION_ID IS NOT NULL AND C.ID = RS.CANDIDATE_ID AND R.ID = RS.REQUIREMENT_ID AND RS.VENDOR_LOCATION_ID = OL.ID"
 	     +" AND RS.ORG_LOCATION_ID = :orgLocationId AND DATE(RS.CREATED_DATE) BETWEEN :fromDate AND :toDate";
 			return  session.createSQLQuery(query).setResultTransformer(Transformers.aliasToBean(ApplicantReceivedReportsDTO.class)).setLong("orgLocationId", orgLocationId).setDate("fromDate", startDateUTC).setDate("toDate", endDateUTC).list();
 
 		}
 		else{
-			String query = "SELECT DISTINCT CONCAT(C.FIRST_NAME, ' ',IFNULL(C.LAST_NAME, '')) AS name, R.JOB_TITLE AS jobTitle, RS.ORG_LOCATION_ID AS orglocationId, RS.SUBMISSION_STATUS AS submissionStatus, CONCAT(RS.CREATED_USER, ' (', OL.ORG_NAME, ')') AS userAndOrgName, RS.UPDATED_DATE AS updatedDate	FROM" 
+			String query = "SELECT DISTINCT CONCAT(C.FIRST_NAME, ' ',IFNULL(C.LAST_NAME, '')) AS name, CONCAT (R.GENERATED_ID,' - ',R.JOB_TITLE) AS jobTitle, RS.ORG_LOCATION_ID AS orglocationId, RS.SUBMISSION_STATUS AS submissionStatus, CONCAT(RS.CREATED_USER, ' (', OL.ORG_NAME, ')') AS userAndOrgName, RS.UPDATED_DATE AS updatedDate	FROM" 
 	    +" REQUIREMENT_SUBMISSION RS, REQUIREMENT R, ORG_LOCATIONS OL, CANDIDATE C WHERE RS.VENDOR_LOCATION_ID IS NOT NULL AND C.ID = RS.CANDIDATE_ID AND R.ID = RS.REQUIREMENT_ID AND RS.VENDOR_LOCATION_ID = OL.ID"
 	     +" AND RS.ORG_LOCATION_ID = :orgLocationId";
 			return  session.createSQLQuery(query).setResultTransformer(Transformers.aliasToBean(ApplicantReceivedReportsDTO.class)).setLong("orgLocationId", orgLocationId).list();

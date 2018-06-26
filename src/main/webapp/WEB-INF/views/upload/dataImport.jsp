@@ -88,6 +88,10 @@
 	function saveDataFields() {
 		if ($('#dataMigration_form').validate(false, validationSettings)) {
 			var formData = getFormData1("dataMigration_form");
+			var inviteEmail = '';
+			if($("#inviteEmail").val() != null && $("#inviteEmail").val() != 'undefined' && $("#inviteEmail").val() != ''){
+				inviteEmail = $("#inviteEmail").val();
+			}
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 				type : "POST",
@@ -95,7 +99,7 @@
 				processData : false,
 				contentType : false,
 				url : sourceleadUrl + "/getDataByMatchedFields?"
-						+ tokenParamName + "=" + tokenValue,
+						+ tokenParamName + "=" + tokenValue+"&inviteEmail="+inviteEmail,
 				success : function(data) {
 					$("#dataFileImportDiv").attr("style","display:none");
 			    	$('#dataFieldsDiv').removeAttr("style");

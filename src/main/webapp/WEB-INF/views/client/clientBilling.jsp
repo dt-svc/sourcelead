@@ -1386,7 +1386,6 @@ function resetInvoiceFilter(orgRelationId,clientLocationId){
 	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	getClientInvoiceList(orgRelationId,clientLocationId)
-	$(".comMask").fadeIn();
 }
 </script>
 
