@@ -70,7 +70,7 @@
 					<div class="dropzone">
 						<div class="clearfix"></div>
 						<div class="file-upload clearfix text-center">
-							<div class="col-md-12" id="">
+							<div class="col-md-12" id="uploadDocDiv">
 								<label class="bg-default"> <i aria-hidden="true"
 									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
@@ -135,12 +135,14 @@ document.getElementById("uploadBtn").onchange = function () {
 	  if(sizeinbytes > 10485760){
 		  document.getElementById("errorImage").style.display="";
 		  $('#newUploadFile').text('');
-		  $("#upload_button").attr("disabled","disabled")
+		  $("#upload_button").attr("disabled","disabled");
+		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
 	  }else{
 		  document.getElementById("errorImage").style.display="none";
 		  $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
 		  fileUpload("uploadBtn", "dataMigration");
-		  $("#upload_button").removeAttr("disabled")
+		  $("#upload_button").removeAttr("disabled");
+		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
 	  }
 	
 };
