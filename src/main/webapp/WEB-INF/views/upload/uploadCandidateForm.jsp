@@ -134,10 +134,12 @@ document.getElementById("uploadBtn").onchange = function () {
 	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
 	  if(sizeinbytes > 10485760){
 		  document.getElementById("errorImage").style.display="";
+		  $("#upload_button").attr("disabled","disabled")
 	  }else{
 		  document.getElementById("errorImage").style.display="none";
 		  $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
 		  fileUpload("uploadBtn", "dataMigration");
+		  $("#upload_button").removeAttr("disabled")
 	  }
 	
 };
