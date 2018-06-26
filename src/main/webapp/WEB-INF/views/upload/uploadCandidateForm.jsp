@@ -85,6 +85,7 @@
 								<input id="uploadFile" placeholder="" disabled="disabled"
 									style="width: 100%;" />
 							</div>
+							 <p class="text-danger small" style="font-size: 12px; display: none;" id="errorImage" ><i class="fa fa-exclamation-triangle" ></i><b>&nbsp;Document size should be less than 10 MB</b></p>
 						</div>
 
 						<!--  Downloaded File show here -->
@@ -130,8 +131,15 @@
 
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
-	$('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
-	fileUpload("uploadBtn", "dataMigration");
+	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
+	  if(sizeinbytes > 10485760){
+		  document.getElementById("errorImage").style.display="";
+	  }else{
+		  document.getElementById("errorImage").style.display="none";
+		  $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
+		  fileUpload("uploadBtn", "dataMigration");
+	  }
+	
 };
 </script>
 
