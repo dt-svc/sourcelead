@@ -2596,7 +2596,6 @@ function vendorFileterPopUp(){
 function resetVendorFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
 	getVendorList();
-	 $(".advancedsearch-mask").fadeIn();
 	
 }
 

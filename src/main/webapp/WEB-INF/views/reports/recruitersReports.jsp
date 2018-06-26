@@ -40,9 +40,9 @@ function getDayWiseReports(){
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Recruiters Report</h2>
+        <h2>Recruiter(s) Report</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Recruiters Report  </div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Recruiter(s) Report  </div>
     </section>
     <div class="clearfix">
     <div class="clearfix"></div>

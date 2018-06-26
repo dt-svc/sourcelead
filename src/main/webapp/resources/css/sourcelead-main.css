@@ -8987,49 +8987,12 @@ clear: both; content: ""; height: 0; position: absolute; right: 30px; top: -10px
 .inputOverright .form-control {
 background-color: transparent !important; width:96%; margin-left: 15px;
 }
+.inputfiledColor input {
+	color: #333 !important;
+}
 .reportsCountNew.reportsCountNewBig ul li {
-width: 10%;
+	width: 10% !important;
 }
-/* Tooltip css */
-.tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-    opacity: 1;
-}
-.tooltip .tooltiptext {
-    visibility: hidden;
-    min-width: 250px;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 10px;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left:0%; font-weight:600;
-    margin-left: -60px;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 30%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-}
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
-/* Tooltip css ends */
-
 /* forms edit element styles */
 @media (max-width: 320px) {
 .uasrch-selectpicker {
@@ -9456,4 +9419,41 @@ z-index: -800;
 .menuWidget ul.menupop.menupop_3 {
     width:310px;
 	}
+.tooltip {
+    position: relative;
+    display: inline-block;
+    opacity: 1;
+}
+.tooltip .tooltiptext {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left:0%; font-weight:600;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 30%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
 
