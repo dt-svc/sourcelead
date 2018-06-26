@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +25,8 @@ import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
+import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -32,9 +35,11 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
+import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.ibm.icu.text.DecimalFormat;
@@ -67,6 +72,12 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	@Autowired
 	ConversionUtil conversionUtil;
 	
+	@Autowired
+	HolidayService holidayService;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	@Override
 	public Response<AssociateBalanceLeaveDTO> addAssociateLeave(AssociateBalanceLeaveDTO associateBalanceLeaveDTO, User loginUser, OrgLocations orgLocations)
 	{
@@ -74,7 +85,6 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 		try {
 			if(associateBalanceLeaveDTO.getTotalLeavesDto() != null && associateBalanceLeaveDTO.getTotalLeavesDto().size() > 0) {
 				int count = associateBalanceLeaveDao.addAssociateLeave(associateBalanceLeaveDTO,loginUser,orgLocations);
-					
 					if (count == 1) {
 						resObj.setResponse(Result.SUCCESS.name());
 						resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -118,18 +128,22 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				if (Constants.MONTHLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 					Date[] monthDates = getMonthStartDateEndDate();
 					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), monthDates[0], monthDates[1], userId);
+				    appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,l,monthDates[0],monthDates[1]);
 				}
 				else if (Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 					LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
 					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), userId);
+				     appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,l,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate());
 				}
 				else if (Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 					LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
 					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId);
+					appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,l,currentHalfYear[0].toDate(),currentHalfYear[1].toDate());
 				}
 				else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
-					LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
-					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId);
+					LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), userId);
+						 appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,l,thisYearDates[0].toDate(),thisYearDates[1].toDate());
 				}
 				if (appliedLeaves != null && appliedLeaves.size() > 0) {
 					appliedLeaveCount = Float.parseFloat(l.getTotalLeaves()) - appliedLeaves.size();
@@ -144,10 +158,8 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					associateBalanceLeaveDTO.setAppliedLeaveCount(0);
 				}
 				
-				if (l.getCreatedByFirstName() != null
-						&& !"".equalsIgnoreCase(l.getCreatedByFirstName())) {
-					associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName() + " "
-							+ l.getCreatedByLastName());
+				if (l.getCreatedByFirstName() != null && !"".equalsIgnoreCase(l.getCreatedByFirstName())) {
+					associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName() + " " + l.getCreatedByLastName());
 				}
 				else {
 					associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName());
@@ -157,7 +169,38 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 		}
 		return list;
 	}
-
+    /**
+     * Exclude Week Offs and Holidays from leaves
+     * @param holidayList
+     * @param appliedLeaves
+     * @param orgLocations
+     * @param l 
+     * @param endDaet 
+     * @param startDate 
+     * @return List<AppliedLeaveDateView>
+     */
+	private List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDaet)
+	{
+		 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the day of the week abbreviated
+		 if(l.getIncludeHolidays() != null && !Constants.YES.equalsIgnoreCase(l.getIncludeHolidays())) {
+			    List<HolidayAndRestrictday> holidayList = holidayService.getHolidayByFromToDate(startDate,endDaet,orgLocations);
+			    for (HolidayAndRestrictday holiday : holidayList) {
+					Date holidayDate = commonUtil.orgLocationCommonDate(holiday.getDay(), orgLocations);
+					boolean s = appliedLeaves.removeIf(x -> commonUtil.orgLocationCommonDate(x.getApplyLeaveDate(), orgLocations).equals(holidayDate));
+				}
+		 }
+		
+		if(l.getIncludeWeekoff() != null && !Constants.YES.equalsIgnoreCase(l.getIncludeWeekoff())) {
+			if(orgLocations.getWeekOffDays() != null) {
+				String[] weekOoffs = orgLocations.getWeekOffDays().split(",");
+				for(String weekEndDay : weekOoffs) {
+					appliedLeaves.removeIf(x -> simpleDateformat.format(x.getApplyLeaveDate()).toUpperCase().equals(weekEndDay.trim().toUpperCase()));
+				}
+			}	
+		}
+		return appliedLeaves;
+	}
+	
 	/**
 	 * Get Month startDate and endDate
 	 * 

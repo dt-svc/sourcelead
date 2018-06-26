@@ -29,7 +29,7 @@
 		<p>Manage Your Applicant Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE')"> 
-			<a class="btn btn-info btn-sm mr10" href="<c:url value="${appPath}/orgSubmissionTemplate" />">Add</a>
+			<a class="btn btn-info btn-sm mr10" href="<c:url value="${appPath}/orgSubmissionTemplate?type=addTemplate" />">Add</a>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
 			<a class="btn btn-primary btn-sm" href="<c:url value="${appPath}/orgSubmissionTemplate" />">View</a>
