@@ -134,6 +134,7 @@ document.getElementById("uploadBtn").onchange = function () {
 	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
 	  if(sizeinbytes > 10485760){
 		  document.getElementById("errorImage").style.display="";
+		  $('#newUploadFile').text('');
 		  $("#upload_button").attr("disabled","disabled")
 	  }else{
 		  document.getElementById("errorImage").style.display="none";
