@@ -25,8 +25,9 @@ $(document).ready(function(){
 </script>
   
     <div class="col-md-6 mb">
-      <div class="dashboard-widget">
+      <div class="dashboardWidget-new">
           <h4 class="pull-left"><a href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management">Leaves</a></h4>
+        <div class="clearfix"></div>
         <div class="clearfix">
           <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
@@ -36,9 +37,9 @@ $(document).ready(function(){
           </ul>
           <div class="tab-content clearfix">
             <div id="self" class="tab-pane fade in active">
-              <div class="col-md-4 padding_left" style="position:absolute; top:16px; left:140px;">
+              <div class="col-md-4" style="position:absolute; top:16px; right:15px;">
                         <label class="pull-left mr">Balance Leaves</label>
-                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-left" id="selfBalancedCounts"></span></div>
+                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
               </div>
               <div class="db-widget-sm clearfix row">
                 <div class="width100percnt clearfix">
@@ -46,34 +47,38 @@ $(document).ready(function(){
                     <div class="clearfix"></div>
               <div class="mt5 clearfix">
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
+                <div class="clearfix">
+                 <!-- <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span> -->
                   <div class="info-box-content text-center">
                     <p class="info-box-number"><span id="selfPendingCounts"></span></p>
-                    <p class="info-box-text" id="selfpend"></p>
+                    <p class="info-box-text mb0 text-muted mt2" id="selfpend"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
+                <div class="clearfix">
+                 <!-- <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span> -->
                   <div class="info-box-content text-center">
                    <p class="info-box-number"><span id="selfApprovedCounts"></span></p>
-                   <p class="info-box-text" id="selfapp"></p>
+                   <p class="info-box-text mb0 text-muted mt2" id="selfapp"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-times" aria-hidden="true"></i> </span>
+                <div class="clearfix">
+                <!-- <span class="info-box-icon bg-orange"> <i class="fa fa-times" aria-hidden="true"></i></span> -->
                   <div class="info-box-content text-center">
                   <p class="info-box-number"><span id="selfRejectedCounts"></span></p>
-                  <p class="info-box-text" id="selfrej"></p>
+                  <p class="info-box-text mb0 text-muted mt2" id="selfrej"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
+                <div class="clearfix">
+                <!-- <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span> -->
                   <div class="info-box-content text-center">
                   <p class="info-box-number"><span id="selfCancelledCounts"></span></p>
-                  <p class="info-box-text" id="selfcanc"></p>
+                  <p class="info-box-text mb0 text-muted mt2" id="selfcanc"></p>
                   </div>
                 </div>
               </div>
@@ -103,34 +108,38 @@ $(document).ready(function(){
                 <div class="clearfix"></div>
                 <div class="mt5 clearfix row">
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
+                <div class="clearfix">
+                 <!-- <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i></span> -->
                   <div class="info-box-content text-center">
                     <p class="info-box-number"><span id="employeeRequestedCounts"></span></p>
-                    <p class="info-box-text" id="empReq"></p>
+                    <p class="info-box-text mb0 text-muted mt2" id="empReq"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
+                <div class="clearfix">
+                <!-- <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i></span> -->
                   <div class="info-box-content text-center">
                     <p class="info-box-number"><span id="employeeApprovedCounts"></span></p>
-                    <p class="info-box-text" id="empApp"></p>
+                    <p class="info-box-text mb0 text-muted mt2" id="empApp"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-times" aria-hidden="true"></i> </span>
+                <div class="clearfix">
+                <!-- <span class="info-box-icon bg-orange"> <i class="fa fa-times" aria-hidden="true"></i></span> -->
                   <div class="info-box-content text-center">
                     <p class="info-box-number"><span id="employeeRejectedCounts"></span></p>
-                    <p class="info-box-text" id="empRej"></p>
+                    <p class="info-box-text mb0 text-muted mt2" id="empRej"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
+                <div class="clearfix">
+                <!-- <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i></span> -->
                   <div class="info-box-content text-center">
                     <p class="info-box-number"><span id="employeeCancelledCounts"></span></p>
-                    <p class="info-box-text" id="empCanc"></p>
+                    <p class="info-box-text mb0 text-muted mt2" id="empCanc"></p>
                   </div>
                 </div>
               </div>
