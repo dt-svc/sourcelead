@@ -2928,7 +2928,7 @@ public class LeaveManagementRestController {
         List<OrgLocations> locationsList = orgLocationService.getAllOrgLocations();
         System.out.println("Start Time"+java.time.LocalDateTime.now());
         for (OrgLocations orgLocation : locationsList) {
-             	commonUtil.saveDefaultGenaeralShift(orgLocation, orgLocation.getUser(), Constants.GENERAL_SHIFT);
+             commonUtil.saveDefaultGenaeralShift(orgLocation, orgLocation.getUser(), Constants.GENERAL_SHIFT);
         }
         System.out.println("End Time"+java.time.LocalDateTime.now());
 
