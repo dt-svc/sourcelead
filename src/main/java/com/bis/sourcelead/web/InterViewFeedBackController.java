@@ -45,9 +45,10 @@ public class InterViewFeedBackController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')")
 	@RequestMapping(value = "/interViewFeedBackTemplate")
-	public ModelAndView interViewFeedBackTemplate(HttpServletRequest request) throws Exception {
+	public ModelAndView interViewFeedBackTemplate(HttpServletRequest request,@RequestParam(value = "type", required = false) String type) throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("type", type);
 		model.setViewName("requirement/interViewFeedBackTemplate");
 		return model;
 
