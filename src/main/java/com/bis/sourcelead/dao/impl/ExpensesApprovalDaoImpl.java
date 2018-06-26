@@ -333,15 +333,10 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		    			eah.setReopenReason(null);
 		    			eah.setExpenseStatus(Submission_Status.APPROVED);
 		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
-		    		}else if(null != type && "accept".equalsIgnoreCase(type)){
-//		    			eah.setReopenRejectedReason(reason);
-//		    			eah.setReopenReason(null);
-		    			eah.setExpenseStatus(Submission_Status.REOPENED);
-		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.REOPENED);
 		    		}
 		    		else{
-		    			eah.setExpenseStatus(Submission_Status.SUBMITTED);
-		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+		    			eah.setExpenseStatus(Submission_Status.REOPENED);
+		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.REOPENED);
 		    			eah.setReopenRejectedReason(null);
 		    			eah.setReopenReason(null);
 		    		}
