@@ -408,6 +408,7 @@
 						<div class="form-group" id="calculatedNoOfDaysDiv">
 							<label class="col-md-4">No Of Days per Period<span class="text-danger paddingLeft" ></span></label>
 							<div class="col-md-3">
+							    <input type="hidden" value="${leaveType.noOfDaysPerPeriod}" id="previousNoOfDaysPerPeriod" name="previousNoOfDaysPerPeriod"/>
 								<input type="text" id="noOfDaysPerPeriod" name="noOfDaysPerPeriod" field-name="No Of Days" readonly placeholder="Enter no of Days" class="form-control" value="${leaveType.noOfDaysPerPeriod}">
 							</div>
 						</div>

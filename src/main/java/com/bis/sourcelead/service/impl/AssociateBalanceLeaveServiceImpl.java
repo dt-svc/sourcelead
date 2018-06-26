@@ -85,7 +85,6 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 		try {
 			if(associateBalanceLeaveDTO.getTotalLeavesDto() != null && associateBalanceLeaveDTO.getTotalLeavesDto().size() > 0) {
 				int count = associateBalanceLeaveDao.addAssociateLeave(associateBalanceLeaveDTO,loginUser,orgLocations);
-					
 					if (count == 1) {
 						resObj.setResponse(Result.SUCCESS.name());
 						resObj.setResponseMessage(Result.SUCCESS.getValue());

@@ -1070,12 +1070,14 @@ public class LeaveManagementRestController {
 							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
 						}
 						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
-							float previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
+							float previousNoOfDays = 0;;
 							float currentNofDays = 0;
 							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
 								currentNofDays = leaveType.getNoOfDaysPerPeriod();
+								previousNoOfDays = leaveTypeDTO.getPreviousNoOfDaysPerPeriod();
 							}else {
-								currentNofDays = leaveType.getNoOfDays();
+								currentNofDays   = leaveType.getNoOfDays();
+								previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
 							}
 							float diffLeaves = 0;
 							String actionType = "";
