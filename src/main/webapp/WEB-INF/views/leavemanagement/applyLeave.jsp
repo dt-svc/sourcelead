@@ -11,6 +11,7 @@ window.onload = function() {
 	var leaveUUID = '${leaveUUID}';
 	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
 		getLeaveDetails();
+		getUsersBasedOnHierarchy('edit');
 		var checkFromEdit = '${leave.fromHalfDay}';
 		var checkToEdit = '${leave.toHalfDay}';
 		if(checkFromEdit == 'YES' || checkToEdit == 'YES'){
@@ -195,14 +196,27 @@ window.onload = function() {
 <%--             </c:if> --%>
 
 		<div class="clearfix"></div>
+		<c:if test="${!empty leave.notifyToOthers}">
          <div class="form-group">
 				<div class="ml">
-							<input  type="checkbox" name="notifyOthersId" id="notifyOthersId" onclick="getUsersBasedOnHierarchy();">
+							<input  type="checkbox" checked name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
 					<label>&nbsp;&nbsp;Notify to others
 						&nbsp;&nbsp;
 					</label>
 				</div>
 			</div>
+			</c:if>
+			
+		<c:if test="${empty leave.notifyToOthers}">
+         <div class="form-group">
+				<div class="ml">
+							<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
+					<label>&nbsp;&nbsp;Notify to others
+						&nbsp;&nbsp;
+					</label>
+				</div>
+			</div>
+		</c:if>
 			
 			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
               <label class="col-md-3">&nbsp;&nbsp;</label>
@@ -1070,7 +1084,7 @@ function validateToTimings(){
 </script>
 
 <script>
-function getUsersBasedOnHierarchy(){
+function getUsersBasedOnHierarchy(type){
 	$("#notifyOtherDiv").toggle();
 	if($("#notifyOthersId").is(':checked')){
 		$("#approverId").removeAttr("data-validation-optional");
@@ -1086,16 +1100,24 @@ function getUsersBasedOnHierarchy(){
 		userId = '${SourceLeadWeb_userId}';
 	}
    if(userId != null && userId !='' && userId !='undefined'){
-	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId, function(data) {
+	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId+"&notifyToOthers=Y", function(data) {
 		if(data !=null){
-			for(var i=1; i<data.length; i++){
-			var approver = data[i];
 			var result = '';
-			result = result +'<option value='+approver.id+'>'+approver.firstName+' '+approver.lastName+'</option>';
+			for(var i=0; i<data.length; i++){
+			var approver = data[i];
+			if(type == 'edit'){
+				<c:forEach var="user" items="${approversList}">
+					if("${user.approverUserId.id}" == approver.id){
+						result = result +'<option selected value='+approver.id+'>'+approver.firstName+' '+approver.lastName+'</option>';
+					}
+				</c:forEach>
+			}else{
+				result = result +'<option value='+approver.id+'>'+approver.firstName+' '+approver.lastName+'</option>';
+			}
+			}
 			$("#approverId").empty();
 			$("#approverId").append(result);
 			$('#approverId').trigger("chosen:updated");
-			}
 		}
 		});
    }
