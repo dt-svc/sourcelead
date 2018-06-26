@@ -1,4 +1,6 @@
 
+
+
 package com.bis.sourcelead.service.impl;
 
 
@@ -835,7 +837,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 
 
 	@Override
-	public void sendExpenseReopenAcceptMailToEmployee(Expenses expenses, OrgLocations orgLoc, String type,User reopenedUser,User loginUser) throws Exception {
+	public void sendExpenseReopenAcceptMailToEmployee(Expenses expenses, OrgLocations orgLoc, String type,User reopenedUser,User loginUser,String reopenReason) throws Exception {
 				 
 				 
 				 		 EmailMessage emailMessage = new EmailMessage();
@@ -881,10 +883,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 							 
 							 globalVarsMap.put("clientName","--");
 						 }
+						
 						 
 //						 globalVarsMap.put("loginUrl",amopuntRate.toString());
-						 ExpensesApproverHierarchy eah = expensesApprovalDao.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
-						 globalVarsMap.put("reason",eah.getReopenReason());
+					/*	 ExpensesApproverHierarchy eah = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(reopenedUser.getId(), expenses.getId(), orgLoc.getId(), "");
+						 globalVarsMap.put("reason",eah.getReopenReason());*/
 						 
 						 
 						 //setting the Recipient information
