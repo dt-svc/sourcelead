@@ -2898,7 +2898,7 @@ public class LeaveManagementRestController {
 					Date startDate = c.getTime();
 					c.set(Calendar.DATE,     c.getActualMaximum(Calendar.DAY_OF_MONTH));
 					Date endDate = c.getTime();
-					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,startDate,endDate);
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,startDate,endDate);
 				}
 			}
 		}
@@ -2919,7 +2919,7 @@ public class LeaveManagementRestController {
 				if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
 					LocalDate today = LocalDate.now();
 					LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(today);
-					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,dates[0].toDate(),dates[1].toDate());
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0].toDate(),dates[1].toDate());
 				}
 			}
 		}
@@ -2939,7 +2939,7 @@ public class LeaveManagementRestController {
 				if(Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod())){
 					LocalDate today = LocalDate.now();
 					LocalDate[] dates = conversionUtil.getThisMonthHalfyearyDates(today);
-					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,dates[0].toDate(),dates[1].toDate());
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0].toDate(),dates[1].toDate());
 				}
 			}
 		}
@@ -2958,7 +2958,7 @@ public class LeaveManagementRestController {
 			for(LeaveType leaveType : leaveTypeList){
 				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
 					Date[] dates = conversionUtil.getCurrentYearStartAndEndDate();
-					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,dates[0],dates[1]);
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
 				}
 			}
 		}

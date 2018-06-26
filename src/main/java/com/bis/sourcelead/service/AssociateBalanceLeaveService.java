@@ -34,7 +34,7 @@ public interface AssociateBalanceLeaveService {
 
 	int updateAssociateAccuralBalanceLeaveCount(List<AssociateBalanceLeaveDTO> assBalList);
 
-	int calculateAndUpdateAssociateBalanceLeaves(Long orgLocationId, LeaveType leaveType, Date startDate, Date endDate) throws Exception;
+	int calculateAndUpdateAssociateBalanceLeaves(OrgLocations orgLocation, LeaveType leaveType, Date startDate, Date endDate) throws Exception;
 	
 	List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDaet);
 }
