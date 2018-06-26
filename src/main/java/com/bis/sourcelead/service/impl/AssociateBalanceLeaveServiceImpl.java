@@ -111,11 +111,11 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				associateBalanceLeaveDTO.setId(String.valueOf(l.getId()));
 				associateBalanceLeaveDTO.setAssoBalLeaveUUID(l.getAssoBalLeaveUUID());
 				associateBalanceLeaveDTO.setLeaveTypeName(l.getLeaveTypeName());
-				if(!Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && !Constants.NO.equalsIgnoreCase(l.getAccuralPolicy())) {
-					associateBalanceLeaveDTO.setNoofLeaves(String.valueOf(l.getNoOfDaysPerPeriod()));	
-				}else {
+//				if(!Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && !Constants.NO.equalsIgnoreCase(l.getAccuralPolicy())) {
+//					associateBalanceLeaveDTO.setNoofLeaves(String.valueOf(l.getNoOfDaysPerPeriod()));	
+//				}else {
 				    associateBalanceLeaveDTO.setNoofLeaves(l.getTotalLeaves());
-				}
+//				}
 				associateBalanceLeaveDTO.setLeaveTypeId(l.getLeaveTypeId());
 				float appliedLeaveCount = 0;
 				LocalDate todayDate = LocalDate.now();
@@ -337,6 +337,15 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				    assBal.setNoofLeaves(String.valueOf(totalBal));
 				    assBal.setOrgLocationId(orgLocationId);
 				    assBalList.add(assBal);
+				 }else{
+					 float associateBalanceLeaves = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
+					 float totalBal = associateBalanceLeaves + leaveType.getNoOfDaysPerPeriod();
+				     AssociateBalanceLeaveDTO assBal = new AssociateBalanceLeaveDTO();
+				     assBal.setUserId(String.valueOf(user.getId()));
+				     assBal.setLeaveTypeId(leaveType.getId());
+				     assBal.setNoofLeaves(String.valueOf(totalBal));
+				     assBal.setOrgLocationId(orgLocationId);
+				     assBalList.add(assBal);
 				 }
 			 }
 			 /*for(Long userId : map.keySet()){
