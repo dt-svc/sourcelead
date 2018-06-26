@@ -512,12 +512,19 @@ function candidatesListPagination(url,sourceleadUrl){
     	   if(e.which === 13) {
    		    $('#candDataTableSearch').parent().find('p.jquery_form_error_message').remove();
    	    	var searchData = $('#candDataTableSearch').val();
-   	    	var regex =  new RegExp(/[\\-]/g);
+   	    /* 	var regex =  new RegExp(/[\\-]/g);
    	    	if(regex.test(searchData) == false){
    	    		getCandidatesTableList();
    	    	}else{
    	    		$("#candDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	    	} */
+   	    	
+   	    	if(searchData.endsWith("-") || searchData.endsWith("\\")){
+   	    		$("#candDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	    	}else{
+   	    		getCandidatesTableList();
    	    	}
+   	    	
    	    	$('#candDataTableSearch').val(searchData);
     	   }
     	});

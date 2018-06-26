@@ -411,11 +411,10 @@ function requirementListPagination(url,sourceleadUrl){
     	   if(e.which === 13) {
    		    $('#reqDataTableSearch').parent().find('p.jquery_form_error_message').remove();
    	    	var searchData = $('#reqDataTableSearch').val();
-   	    	var regex =  new RegExp(/[\\-]/g);
-   	    	if(regex.test(searchData) == false){
-   	    		getRequirementTableList();
-   	    	}else{
+   	    	if(searchData.endsWith("-") || searchData.endsWith("\\")){
    	    		$("#reqDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	    	}else{
+   	    		getRequirementTableList();
    	    	}
    	    	$('#reqDataTableSearch').val(searchData);
     	   }
