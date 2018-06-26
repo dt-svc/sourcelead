@@ -30,7 +30,7 @@
                   <div class="col-md-6 paddingLeft">${endDate}</div>
                 </div>
               </div>
-              <div class="col-md-6">
+              <%-- <div class="col-md-6">
                 <div class="row">
                   <label class="col-md-5 paddingRight">Billable Hrs</label>
                   <div class="col-md-6 paddingLeft">${totalBillable}</div>
@@ -39,7 +39,7 @@
                   <label class="col-md-5 paddingRight">No-Billable Hrs</label>
                   <div class="col-md-6 paddingLeft">${totalNonBillable}</div>
                 </div>
-              </div>
+              </div> --%>
             </div>
           </div>
           <div class="pull-right mt10">
@@ -48,9 +48,9 @@
               <li><a href="javascript:void(0)" class="text-danger" title="Download PDF" onclick="runExport('pdf');"><i class="fa fa-file-pdf-o"></i></a></li>
               <li><a href="javascript:void(0)" class="text-success" title="Download Excel" onclick="runExport('excel');"><i class="fa fa-file-excel-o"></i></a></li>
               <li>
-                <div class="dynamic_search mr10">
-                  <input placeholder="Search" type="text">
-                  <i class="fa fa-search"></i> </div>
+                <!-- <div class="dynamic_search mr10">
+                 		 <input type='text' placeholder="Search" value="" id='searchEntryData'/>
+                  <i class="fa fa-search"></i> </div> -->
               </li>
             </ul>
           </div>
@@ -139,6 +139,22 @@ $(document).ready(function() {
 </script> -->
 
 <script>
+$("#searchEntryData").keyup(function(event) {
+    if (event.keyCode === 13) {
+    	$('#searchEntryData').parent().find('p.jquery_form_error_message').remove();
+    	var searchData = $('#searchEntryData').val();
+    	var regex =  new RegExp(/[\\]/g);
+    	if(regex.test(searchData) == false){
+    		getTableDataTimeSheetReports(1);
+    	}else{
+    		$("#searchEntryData").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+    	}
+    	$('#searchEntryData').val(searchData);
+    }
+});
+</script>
+
+<script>
 function getTableDataByPageSizeEmployee(){
 	getTableDataTimeSheetReports(1);
 }
@@ -198,7 +214,7 @@ function getTableDataTimeSheetReports(pageNo){
 		  var endDate = endDateDto;
 		  var pageSize = $("#pageSize").val();
 		  var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
-	      var searchData = $("#SearchExpensesData").val();
+	      var searchData = $("#searchEntryData").val();
 	      if(searchData != null && searchData !='' && searchData!='undefined'){
 	    	searchValue = searchData;
 	      }else{
@@ -248,8 +264,8 @@ function preparePaginationEmployee(pageNo) {
 	  }else{
 		  $("#dayWiseExportListDiv").empty();
   	  	  $("#dayWiseExportListDiv").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
-		 /*  $('#SearchExpensesDataEmployee').val('') ;
-		  $('#SearchExpensesDataEmployee').val(searchData); */
+		 /*  $('#searchEntryData').val('') ;
+		  $('#searchEntryData').val(searchData); */
 		  $('#paginationDiv').hide();
 	  } 
     $('#pageMsg').html('');

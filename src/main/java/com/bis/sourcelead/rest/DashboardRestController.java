@@ -1660,10 +1660,11 @@ public class DashboardRestController {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
 			if (user != null) {
 //				JSONArray jsonArray = new JSONArray(dashboardItemsDTO.getItems());
-				
-				response = userService.saveDashboardItems(dashboardItemsDTO, user);
+				response = userService.saveDashboardItems(dashboardItemsDTO, user, loginOrgLocations);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

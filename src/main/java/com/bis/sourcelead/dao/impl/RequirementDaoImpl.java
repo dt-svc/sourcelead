@@ -2435,6 +2435,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			if(requirementDTO.getSearchValue() != null && !"".equalsIgnoreCase(requirementDTO.getSearchValue())) {
 				 query1.append(" Q1.generatedId like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.jobTitle like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR Q1.clientName like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.createdDate like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.location like '%" + requirementDTO.getSearchValue() + "%' ");
 				 
@@ -2557,7 +2558,14 @@ public class RequirementDaoImpl implements RequirementDao {
 					"GROUP_CONCAT(DISTINCT RL.CITY " + 
 					"SEPARATOR ',') AS city, " + 
 					"GROUP_CONCAT(DISTINCT RL.LOCATION " + 
-					"SEPARATOR '|') AS location " + 
+					"SEPARATOR '|') AS location, " + 
+					 "(SELECT " + 
+						 "ORG_NAME " + 
+						 "FROM " + 
+						 "ORG_LOCATIONS OL,ORG_RELATIONS ORL " + 
+						 "WHERE " + 
+						 "(OL.ID = ORL.LOCATION_ID OR OL.ID = ORL.RESPONDER_LOCATION_ID) AND OL.ID != :orgLocationId AND ORL.ID = REQ.ORG_RELATION_ID) AS clientName " + 
+							             
 					"FROM " + 
 					"REQUIREMENT REQ ," + 
 					"REQUIREMENT_LOCATIONS RL, " + 
@@ -2567,7 +2575,7 @@ public class RequirementDaoImpl implements RequirementDao {
 					"AND REQ.ORG_LOCATION_ID = :orgLocationId AND REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN' " + 
 					" GROUP BY  REQ.ID, "+
 					" DATE_FORMAT(REQ.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+advSeachStr+sortingQry;
-			 
+	
 			
 			  String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
 					" FROM" + 

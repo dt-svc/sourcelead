@@ -1,5 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,6 +14,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
+import com.bis.sourcelead.entity.AppliedLeaveDate;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
 
 @Repository
 public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
@@ -35,5 +41,32 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 					+ e.getLocalizedMessage());
 		}
 		return isDeleted;
+	}
+
+	@Override
+	@Transactional
+	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(Long orgLocationid, Long leaveTypeId,Date startDate,Date endDate)
+	{
+		List<AppliedLeaveDateView> appliedLeaveList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate)";
+		appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationid).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+		return appliedLeaveList;
+	}
+
+	@Override
+	@Transactional
+	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate,Long userId)
+	{
+       try {
+    	   Session session = this.sessionFactory.getCurrentSession();
+           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and alView.userId = :userId and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate)";
+           List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setParameter("startDate", sDate).setParameter("endDate", eDate).list();
+           return appliedLeaveList;
+       }catch (Exception e) {
+    	   e.printStackTrace();
+	}
+    	return null;
+		
 	}
 }

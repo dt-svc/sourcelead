@@ -8987,8 +8987,11 @@ clear: both; content: ""; height: 0; position: absolute; right: 30px; top: -10px
 .inputOverright .form-control {
 background-color: transparent !important; width:96%; margin-left: 15px;
 }
+.inputfiledColor input {
+	color: #333 !important;
+}
 .reportsCountNew.reportsCountNewBig ul li {
-width: 10%;
+	width: 10% !important;
 }
 /* forms edit element styles */
 @media (max-width: 320px) {
@@ -9416,4 +9419,5 @@ z-index: -800;
 .menuWidget ul.menupop.menupop_3 {
     width:310px;
 	}
+
 

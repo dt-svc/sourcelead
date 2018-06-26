@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -413,9 +414,12 @@ public class OrgSettingsRestController {
 			roleDTO.setDisplayName(roles.getDisplayName());
 			List<Long> roleActonsList = new ArrayList<Long>();
 			if (null != roles.getActionId()) {
-				for (String s : roles.getActionId().split(",")) {
+				/*for (String s : roles.getActionId().split(",")) {
 					roleActonsList.add(Long.parseLong(s));
-				}
+				}*/
+				for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActonsList.add(Long.parseLong(s));
+	        	 }
 			}
 			roleDTO.setUuid(roles.getUuid());
 			roleDTO.setActionsCount(roleActonsList.size());
@@ -442,9 +446,12 @@ public class OrgSettingsRestController {
 			
 			List<Long> roleActonsList = new ArrayList<Long>();
 			if (null != roles.getActionId()) {
-				for (String s : roles.getActionId().split(",")) {
+				/*for (String s : roles.getActionId().split(",")) {
 					roleActonsList.add(Long.parseLong(s));
-				}
+				}*/
+				for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActonsList.add(Long.parseLong(s));
+	        	 }
 			}
 			rolesDTO.setActionsCount(roleActonsList.size());
 			rolesDTOList.add(rolesDTO);

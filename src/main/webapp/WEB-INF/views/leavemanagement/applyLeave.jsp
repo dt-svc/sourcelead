@@ -8,17 +8,28 @@
 <script type="text/javascript">
 window.onload = function() { 
 
+	var leaveUUID = '${leaveUUID}';
+	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
+		getLeaveDetails();
+		var checkFromEdit = '${leave.fromHalfDay}';
+		var checkToEdit = '${leave.toHalfDay}';
+		if(checkFromEdit == 'YES' || checkToEdit == 'YES'){
+			$("#fromTimeDiv").show();
+			$("#toTimeDiv").show();
+		}
+	}
+	
 	getPieChartBasedOnUser();
 	getApproversList();
-   if($("#checkbox-1").is(':checked')){
-	   $("#checkbox-1").prop('checked', false);
-	}
-   if($("#checkbox-2").is(':checked')){
-	   $("#checkbox-2").prop('checked', false);
-	}
-   if($("#checkbox-3").is(':checked')){
-	   $("#checkbox-3").prop('checked', false);
-	}
+//    if($("#checkbox-1").is(':checked')){
+// 	   $("#checkbox-1").prop('checked', false);
+// 	}
+//    if($("#checkbox-2").is(':checked')){
+// 	   $("#checkbox-2").prop('checked', false);
+// 	}
+//    if($("#checkbox-3").is(':checked')){
+// 	   $("#checkbox-3").prop('checked', false);
+// 	}
    
    var isSuperUser = '${SourceLeadWeb_isSuperUser}';
    if(isSuperUser){
@@ -45,11 +56,10 @@ window.onload = function() {
           <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-1">
           <sec:authorize access="hasRole('ROLE_APPLY_BEHALF_LEAVE')"> 
               <div class="form-group">
-                    <label class="checkBox pull-left mr10">
-					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
-					<label for="checkbox-1" class="checkbox-custom-label"></label>
+                   <label class="pull-left ml checkBox">
+					<input id="checkbox-1" class="onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
                   </label>
-                  <span class="pull-left">On behalf of</span>
+                  <span class="pull-left mt5">On behalf of</span>
               </div>
           </sec:authorize> 
                <div class="form-group" style="display: none" id="onbehalf">
@@ -81,13 +91,29 @@ window.onload = function() {
                     <span class="input-group-addon" onClick="clearFromDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                    </div> 
                   </div>
+                  <c:if test="${! empty leave.fromHalfDay}">
                   <div class="col-md-5 paddingLeft"  id="fromHalfDayDiv">
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
-					<input id="checkbox-2" class="checkbox-custom checkboxCustom" id="fromHalfDay" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
-					<label for="checkbox-2" class="checkbox-custom-label"></label>
-                  </label>
-                      Half a Day </label>
+					<input id="checkbox-2" checked class="pull-left" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
+                      <span class="pull-left mt5">Half a Day</span></label>
+                  </div>
+                  </c:if>
+                  
+                  <c:if test="${empty leave.fromHalfDay}">
+                  <div class="col-md-5 paddingLeft"  id="fromHalfDayDiv">
+                    <label class="checkBox mt5">
+                      <label class="checkBox pull-left mr10">
+					<input id="checkbox-2" class="pull-left" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
+                      <span class="pull-left mt5">Half a Day</span></label>
+                  </div>
+                  </c:if>
+                                <div class="clearfix"></div>
+                  <div id="fromTimeDiv" class="mt10 clearfix errorInptgroup" style="display:none;">
+                <div class="col-md-6 clearField errorInptgroup" id="startTimeDiv">
+        			<input type="text" class="timepicker form-control" id="fromDateHalfTime" name="fromDateHalfTime" placeholder="From-Time" field-name="From-Time" value="${leave.fromTime}" onblur="validateFromTimings()" data-validation-optional = "true">
+        				<i class="fa fa-times text-muted small"></i>
+        		</div>
                   </div>
                 </div>
               </div>
@@ -102,13 +128,31 @@ window.onload = function() {
                      <span class="input-group-addon" onClick="clearToDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                     </div>
                   </div>
+                   <c:if test="${! empty leave.toHalfDay}">
                   <div class="col-md-5 paddingLeft" id="toHalfDayDiv">
                     <label class="checkBox mt5">
-                      <label class="checkBox pull-left mr10">
-					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
-					<label for="checkbox-3" class="checkbox-custom-label"></label>
+                      <label class="checkBox pull-left">
+					<input id="checkbox-3" checked class="pull-left" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
                   </label>
-                      Half a Day </label>
+                      <span class="pull-left mt5">Half a Day</span></label>
+                  </div>
+                  </c:if>
+                  <c:if test="${empty leave.toHalfDay}">
+                  <div class="col-md-5 paddingLeft" id="toHalfDayDiv">
+                    <label class="checkBox mt5">
+                      <label class="checkBox pull-left">
+					<input id="checkbox-3" class="pull-left" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
+                  </label>
+                      <span class="pull-left mt5">Half a Day</span></label>
+                  </div>
+                  </c:if>
+                   
+                  <div class="clearfix"></div>
+                  <div id="toTimeDiv" class="mt clearfix errorInptgroup"  style="display:none;">
+                  <div class="col-md-6 clearField" id="toEndTimeDiv">
+        			<input type="text" class="timepicker form-control" id="toDateHalfTime" name="toDateHalfTime" placeholder="To-Time" field-name="To-Time" value="${leave.toTime}" onblur="validateToTimings()" data-validation-optional = "true">
+        				<i class="fa fa-times text-muted small"></i>
+        		</div>
                   </div>
                 </div>
               </div>
@@ -125,12 +169,17 @@ window.onload = function() {
               <div class="form-group">
               <label class="col-md-3" id="attachmentY" style="display:block">Attachment<span class="text-danger paddingLeft" >*</span></label>
               <label class="col-md-3" id="attachmentN" style="display:none">Attachment</label>
-              <div class="col-md-9 errorInptgroup errorInptgroup-bottom" id="attachmentId">
-                  <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
-                      <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);" data-validation="required" >
-                      <a id="Button0value">
-                      <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
-                      </a>
+              <div class="col-md-9 errorInptgroup" id="attachmentId">
+                  <div class="positionRelative clearfix"><i class="clearUpload" title="clear" onClick="removedocfile();"></i>
+                  
+                  <div class="input-group ratetype col-md-12 pull-left" title="">
+	                      <label class="input-group-btn"> 
+	                        <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Choose File
+	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
+	                        </span> 
+	                      </label>
+		                      <input type="text" class="form-control" readonly id="uploadFile" value="${leave.fileName}" placeholder="no file chosen" field-name="Attachment" data-validation="required">
+	              </div>
                   </div>
               </div>
             </div>
@@ -160,7 +209,7 @@ window.onload = function() {
       <div class="form-footer clearfix mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Apply" id="applyId" class="btn btn-primary ml mr" onclick="applyLeave();">
+            <input type="button" value="Apply" id="ApplyLeave" class="btn btn-primary ml mr" onclick="applyLeave();">
             <input type="button" value="Cancel" class="btn btn-default" onclick="cancel();">
           </div>
         </div>
@@ -173,22 +222,47 @@ window.onload = function() {
   
  <script>
  function removedocfile(){
-	 $("#uploadBtn").val('');
+	 $("#uploadFile").val('');
  }
  </script> 
  <script>
  function checkFromHalfDay(){
-	
+	 
     $("#checkbox-2").val('YES');
+    
+	   if($("#checkbox-2").is(':checked')){
+		   $("#fromTimeDiv").show();
+		   $("#toTimeDiv").show();
+	   }else{
+		   $("#fromTimeDiv").find('p.jquery_form_error_message').remove();
+		   $("#toTimeDiv").find('p.jquery_form_error_message').remove();
+    	   $("#fromTimeDiv").hide();
+    	   $("#toTimeDiv").hide();
+    	   $("#fromDateHalfTime").val('');
+    	   $("#toDateHalfTime").val('');
+   	   }
+    
  }
  
  function checkToHalfDay(){
 	
 	 $("#checkbox-3").val('YES');
+	 
+	 if($("#checkbox-3").is(':checked')){
+		   $("#fromTimeDiv").show();
+		   $("#toTimeDiv").show();
+	   }else{
+		   $("#fromTimeDiv").find('p.jquery_form_error_message').remove();
+		   $("#toTimeDiv").find('p.jquery_form_error_message').remove();
+	  	   $("#fromTimeDiv").hide();
+	  	   $("#toTimeDiv").hide();
+	  	   $("#fromDateHalfTime").val('');
+	  	   $("#toDateHalfTime").val('');
+ 	   } 
  }
   function validateFromHalfDay()
   {
-	  $("#toHalfDayDiv").hide();
+// 	  $("#toHalfDayDiv").hide();
 		 var fromDate = $("#fromDate").val();
 		 var toDate = $("#toDate").val();
 		 if(fromDate.length !=0 && toDate.length!=0)
@@ -209,7 +283,7 @@ window.onload = function() {
   }
   function validateToHalfDay()
   {
-	  $("#fromHalfDayDiv").hide();
+// 	  $("#fromHalfDayDiv").hide();
 		 var fromDate = $("#fromDate").val();
 		 var toDate = $("#toDate").val();
 
@@ -265,7 +339,7 @@ window.onload = function() {
 	  var toDate = $("#toDate").val();
 	  if(fromDate.length !=0 && toDate.length!=0)
 	  {
-		if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
+		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
 	  }
@@ -341,6 +415,10 @@ window.onload = function() {
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
 		});
+	  
+	  document.getElementById("uploadBtn").onchange = function () {
+  	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
+  	    };
 		
 	});
 </script>
@@ -615,7 +693,13 @@ $(".close").click(function(){
 
 <script>
 function getLeaveDetails(finalDateFormatEndDate){
-	var leaveTypeUUID = $("#leaveType").val();
+	var editLeaveTypeUUID = '${leave.leaveType.leaveTypeUUID}';
+	var leaveTypeUUID = '';
+	if(editLeaveTypeUUID != null && editLeaveTypeUUID != '' && editLeaveTypeUUID != 'undefined'){
+		 leaveTypeUUID = editLeaveTypeUUID;
+	}else{
+		 leaveTypeUUID = $("#leaveType").val();
+	}
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	var skipPolicy = false;
@@ -669,7 +753,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	}else{
     		    		document.getElementById("attachmentY").style.display = 'none';
     		    		document.getElementById("attachmentN").style.display = 'block';
-    		    		$("#uploadBtn").removeAttr('data-validation');
+    		    		$("#uploadFile").removeAttr('data-validation');
     		    	}
     		    	
     		    	if(report.userGender == "Not Allow"){
@@ -690,7 +774,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
     		    		validateOverDrawLeaves(report.name);
     		    	}else{
-    		    		$("#applyId").prop("disabled", false);
+    		    		$("#ApplyLeave").removeAttr('disabled');
     		    	}
     		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
     		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
@@ -701,13 +785,13 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	}
     		    	
     		    	if(errorMessage != ""){
-    		        	$("#applyId").prop("disabled", true);
+    		        	$("#ApplyLeave").attr('disabled','disabled');
     		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
     		        	$(".warMess").fadeIn();
     		        	$(".comMask").fadeIn();
     		        	errorMessage = "";
     		        }else{
-    		    		$("#applyId").prop("disabled", false);
+    		    		$("#ApplyLeave").removeAttr('disabled');
     		        }
     		    	if(skipPolicy != true){
     		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
@@ -740,11 +824,11 @@ function validateOverDrawLeaves(leaveTypeName){
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = $("#"+typeName+"Span").text();
 	if((dayDiff > typeIdBalCount) || typeIdBalCount ==  0){
-		$("#applyId").prop("disabled", true);
+		$("#ApplyLeave").attr('disabled','disabled');
 		$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You Have Not Enough Leaves To Apply</span> ");
 		$(".comMask").fadeIn();
 	}else{
-		$("#applyId").prop("disabled", false);
+		$("#ApplyLeave").removeAttr('disabled');
 	}
 }
 </script>
@@ -856,13 +940,14 @@ function validateDate(){
 	}else{
 		userId = '${SourceLeadWeb_userId}';
 	}
-	if(userId != null && userId != '' && userId != 'undefined'){
+	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data != null){
+				$("#ApplyLeave").attr('disabled','disabled');
 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
 				$(".comMask").fadeIn();
-				$("#applyId").prop("disabled", true);
 			}else{
+				$("#ApplyLeave").removeAttr('disabled');
 				$('.warMess').hide();
 			}
 		});
@@ -917,6 +1002,51 @@ function clearFromDate(){
 function clearToDate(){
 	$("#toDate").val("");
 	};
+</script>
+
+
+<script>
+$("#fromDateHalfTime").timepicker({
+	'showDuration': true,
+	'disableTextInput': true,
+	 'step': 15
+}).on('changeTime', function() {
+// 	$("#toDa`teHalfTime").val('')
+// 	flushShowDeatils();
+//     $("#toDateHalfTime").timepicker('option', 'minTime', $(this).val());
+});
+
+$("#toDateHalfTime").timepicker({
+	'showDuration': true,
+	'disableTextInput': true,
+	 'step': 15
+}).on('changeTime', function() {
+//     $("#fromDateHalfTime").timepicker('option', 'maxTime', $(this).val());
+}); 
+
+
+</script>
+
+<script>
+function validateFromTimings(){
+	var fromTimeCheck = $("#fromDateHalfTime").val();
+	if(fromTimeCheck != null && fromTimeCheck != '' && fromTimeCheck != 'undefined'){
+		$("#fromTimeDiv").find('p.jquery_form_error_message').remove();
+	}else{
+		$("#fromTimeDiv").find('p.jquery_form_error_message').remove();
+		$("#startTimeDiv").after("<p class='jquery_form_error_message'>From-Time is required</p>");
+	}
+}
+
+function validateToTimings(){
+	var toTimeCheck = $("#toDateHalfTime").val();
+	if(toTimeCheck != null && toTimeCheck != '' && toTimeCheck != 'undefined'){
+		$("#toTimeDiv").find('p.jquery_form_error_message').remove();
+	}else{
+		$("#toTimeDiv").find('p.jquery_form_error_message').remove();
+		$("#toEndTimeDiv").after("<p class='jquery_form_error_message'>To-Time is required</p>");
+	}
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

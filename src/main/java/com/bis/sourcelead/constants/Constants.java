@@ -43,6 +43,7 @@ public class Constants {
 	public static final String ASSOCIATE_VENDOR_CONTACT="Vendor Contact(Email)";
 	public static final String ASSOCIATE_GRADE="Grade";
 	public static final String ASSOCIATE_DESIGNATION="Designation*";
+	public static final String ASSOCIATE_SHIFT="Shift*";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";
@@ -169,6 +170,10 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
+	
+	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
+	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
+	
 	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
 	public static final String LEAVE_CANCEL_EMAIL_TO_USER = "LeaveCancelEmailToUser";
@@ -531,6 +536,8 @@ public class Constants {
     public static final String SOURCELEAD_ADMIN_UNIQUE = "Sourcelead";
 	
 	public static final String DOCUMENT_TYPE = "Document Type";
+	public static final String ATTORNEY_CATEGORY = "AttorneyCategory";
+	public static final String PETITIONER_CATEGORY = "PetitionerCategory";
 	public static final String ADMIN = "Admin";
 	public static final String MAIL_SENT = "Sent";
 	public static final String MAIL_NEW = "New";
@@ -1139,7 +1146,7 @@ public class Constants {
 	public static final String REPORT_FILTER_1_WEEK = "1_week";
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
-	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On"};
+	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
 	
 
 	public static final String EMAIL_SUCCESS = "success";
@@ -1147,8 +1154,15 @@ public class Constants {
 	public static final String DELETE = "DEL";
 	public static final String NONE = "NONE";
 	public static final String ADDITION = "ADD";
+	public static final String GENERAL_SHIFT = "General Shift"; 
 	public static final String STATUS_NO = "NO";
 	public static final String STATUS_YES = "YES";
 	public static final String ANNUALLY = "Annually";
+	
+	public static final String HALFYEARLY = "HalfYearly";
+	public static final String QUARTERLY = "Quarterly";
+	
+//	Annually   
+
 
 }
