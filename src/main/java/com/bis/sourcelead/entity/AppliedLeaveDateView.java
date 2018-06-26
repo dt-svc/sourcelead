@@ -12,6 +12,9 @@ import javax.persistence.Table;
 public class AppliedLeaveDateView {
 	
 	@Id
+    @Column(name = "ID", nullable = false)
+	private Long id;
+	
     @Column(name = "USER_ID", nullable = false)
     private Long userId;
 	
@@ -128,4 +131,15 @@ public class AppliedLeaveDateView {
 	{
 		this.leaveTypeId = leaveTypeId;
 	}
+
+	public Long getId()
+	{
+		return id;
+	}
+
+	public void setId(Long id)
+	{
+		this.id = id;
+	}
+	
 }
