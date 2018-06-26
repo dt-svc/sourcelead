@@ -57,7 +57,12 @@
                   		result = result + '<input type = "hidden" value='+opt.id+' id="'+i+'leaveTypeId" name="totalLeavesDto['+i+'].leaveTypeId" />';
                   		result = result + '<label  class="col-md-3"><th>'+opt.name+'</th></label>';
                   		result = result + '<div class="col-md-2">';
-                  		result = result + '<input type="text" value='+opt.noOfDays+' class="form-control" id="'+i+'noOfLeaves" name="totalLeavesDto['+i+'].noOfLeaves" data-validation="required validate_float" field-name="Total Leaves">';
+                  		if(opt.period != 'Annually' && opt.accuralPolicy != 'N'){
+                  			result = result + '<input type="text" value='+opt.noOfDaysPerPeriod+' class="form-control" id="'+i+'noOfLeaves" name="totalLeavesDto['+i+'].noOfLeaves" data-validation="required validate_float" field-name="Total Leaves">';
+                  		}else{
+                  			result = result + '<input type="text" value='+opt.noOfDays+' class="form-control" id="'+i+'noOfLeaves" name="totalLeavesDto['+i+'].noOfLeaves" data-validation="required validate_float" field-name="Total Leaves">';
+                  		}
+                  		
                   		result = result + '</div>';
                   		result = result + '<div class="col-md-1">';
                   		result = result + '<i class="fa fa-pencil cursorPointer mt5"></i>';

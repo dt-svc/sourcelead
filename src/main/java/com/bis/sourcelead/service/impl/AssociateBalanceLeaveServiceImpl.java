@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
-import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -35,6 +35,7 @@ import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.ibm.icu.text.DecimalFormat;
 
@@ -63,6 +64,9 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	@Autowired
 	AppliedLeaveDateService appliedLeaveDateService;
 	
+	@Autowired
+	ConversionUtil conversionUtil;
+	
 	@Override
 	public Response<AssociateBalanceLeaveDTO> addAssociateLeave(AssociateBalanceLeaveDTO associateBalanceLeaveDTO, User loginUser, OrgLocations orgLocations)
 	{
@@ -83,6 +87,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 		}catch (Exception e) {
 			resObj.setResponse(Result.AWKWARD.name());
 			resObj.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
 			logger.error("Add Association Balance Leave Failed Due To : "+e.getMessage());
 		}
 		
@@ -91,9 +96,8 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	}
 
 	@Override
-	public List<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(Long userId,OrgLocations orgLocations,User loginUser)
+	public List<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(Long userId, OrgLocations orgLocations, User loginUser)
 	{
-		
 		ResponseList<AssociateBalanceLeaveView> finalResObj = associateBalanceLeaveDao.getAssociateBalanceLeavesByUserId(userId, orgLocations.getId());
 		ArrayList<AssociateBalanceLeaveDTO> list = new ArrayList<>();
 		if (finalResObj.getData() != null && finalResObj.getData().size() > 0) {
@@ -102,59 +106,48 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				associateBalanceLeaveDTO.setId(String.valueOf(l.getId()));
 				associateBalanceLeaveDTO.setAssoBalLeaveUUID(l.getAssoBalLeaveUUID());
 				associateBalanceLeaveDTO.setLeaveTypeName(l.getLeaveTypeName());
-				associateBalanceLeaveDTO.setNoofLeaves(l.getTotalLeaves());
+				if(!Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && !Constants.NO.equalsIgnoreCase(l.getAccuralPolicy())) {
+					associateBalanceLeaveDTO.setNoofLeaves(String.valueOf(l.getNoOfDaysPerPeriod()));	
+				}else {
+				    associateBalanceLeaveDTO.setNoofLeaves(l.getTotalLeaves());
+				}
 				associateBalanceLeaveDTO.setLeaveTypeId(l.getLeaveTypeId());
 				float appliedLeaveCount = 0;
-//				float balanceLeaveCounts = 0;
-//				float takenLeaveCounts = 0;
-//				float totalLeaves = getTotalLeavesByUserIdAndLeaveTypeId(l.getLeaveTypeId(), userId, orgLocations.getId());
-				Date [] monthDates = getMonthStartDateEndDate();
-                List<AppliedLeaveDateView> appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(),l.getLeaveTypeId(),monthDates[0],monthDates[1],userId);
-                if(appliedLeaves != null && appliedLeaves.size() >0) {
-                	appliedLeaveCount = Float.parseFloat(l.getTotalLeaves()) - appliedLeaves.size();
-                	associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(dec.format(appliedLeaveCount)));
-                }else {
-                	associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(l.getTotalLeaves()));
-                }
-                 
-                /*float totalbalanceLeaveCounts = totalLeaves;
-				float calculatedTotalNonCarryforwardLeaves = 0;
-				LeaveType leaveType = null;
-				try {
-					leaveType = leaveTypeService.getLeaveTypeById(l.getLeaveTypeId());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}*/
-			
-				
-				
-				
-			/*	List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getLeaveTypeUUID(), orgLocations.getId(), userId);
-				for (Leave leave : totalleavesTaken) {
-					float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
-					if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus())
-							|| Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-						totalbalanceLeaveCounts = totalbalanceLeaveCounts
-								- (appliedLeaveCount - leave.getExtraLeavesTaken());
-						takenLeaveCounts = takenLeaveCounts + appliedLeaveCount;
-					}
+				LocalDate todayDate = LocalDate.now();
+				List<AppliedLeaveDateView> appliedLeaves = null;
+				if (Constants.MONTHLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					Date[] monthDates = getMonthStartDateEndDate();
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), monthDates[0], monthDates[1], userId);
 				}
-				if ("Monthly".equalsIgnoreCase(leaveType.getPeriod())
-						&& Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
-					try {
-						calculatedTotalNonCarryforwardLeaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leaveType, totalbalanceLeaveCounts, null);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					totalbalanceLeaveCounts = calculatedTotalNonCarryforwardLeaves;
-					balanceLeaveCounts += totalbalanceLeaveCounts;
+				else if (Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), userId);
+				}
+				else if (Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId);
+				}
+				else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getLeaveTypeId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId);
+				}
+				if (appliedLeaves != null && appliedLeaves.size() > 0) {
+					appliedLeaveCount = Float.parseFloat(l.getTotalLeaves()) - appliedLeaves.size();
+					associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(dec.format(appliedLeaveCount)));
 				}
 				else {
-					balanceLeaveCounts += totalbalanceLeaveCounts;
-				}*/
-				associateBalanceLeaveDTO.setAppliedLeaveCount(appliedLeaves.size());
-				if (l.getCreatedByFirstName() != null && !"".equalsIgnoreCase(l.getCreatedByFirstName())) {
-					associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName() + " "+ l.getCreatedByLastName());
+					associateBalanceLeaveDTO.setBalanceLeaveCounts(Float.parseFloat(l.getTotalLeaves()));
+				}
+				if(appliedLeaves != null) {
+					associateBalanceLeaveDTO.setAppliedLeaveCount(appliedLeaves.size());
+				}else {
+					associateBalanceLeaveDTO.setAppliedLeaveCount(0);
+				}
+				
+				if (l.getCreatedByFirstName() != null
+						&& !"".equalsIgnoreCase(l.getCreatedByFirstName())) {
+					associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName() + " "
+							+ l.getCreatedByLastName());
 				}
 				else {
 					associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName());
@@ -224,7 +217,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					TotalLeaveDTO totalLeaveDTO = new TotalLeaveDTO();
 					totalLeaveDTO.setUserId(String.valueOf(user.getId()));
 					totalLeaveDTO.setLeaveTypeId(String.valueOf(leaveType.getId()));
-					if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())  && !Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
+					if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())  && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
 						totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDaysPerPeriod()));
 					}else {
 						totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));	

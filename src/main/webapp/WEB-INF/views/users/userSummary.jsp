@@ -488,7 +488,7 @@ $(document).ready(function(){
 			}
 			
 			result = result + '			<div class="project_details_cta">';
-			result = result + '				<strong>Is Global Manager:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
+			result = result + '				<strong>Global Manager:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
 			result = result + '			</div>';
 			result = result + '<div class="clearfix"></div>';
 			
@@ -611,7 +611,7 @@ $(document).ready(function(){
 				}
 				
 				result = result + '			<div class="project_details_cta">';
-				result = result + '				<strong>Is Global Manager:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
+				result = result + '				<strong>Global Manager:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
 				result = result + '<div class="clearfix"></div>';
 				

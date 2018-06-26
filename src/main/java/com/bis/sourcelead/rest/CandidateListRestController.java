@@ -1480,10 +1480,10 @@ public class CandidateListRestController {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 				if (null != candidate) {
-					if (null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_ACTIVE)) {
-						candidate.setIsFavourite(Constants.RECORD_INACTIVE);
-					} else {
+					if (null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_INACTIVE)) {
 						candidate.setIsFavourite(Constants.RECORD_ACTIVE);
+					} else {
+						candidate.setIsFavourite(Constants.RECORD_INACTIVE);
 					}
 					candidate.setTeamId(null);
 					candidateService.saveOrUpdateCandidate(candidate);

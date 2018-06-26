@@ -377,8 +377,7 @@ public class LeaveManagementRestController {
 		return model;
 	}
 
-	@RequestMapping(value = { "/getPieChartForLeaveStatus",
-			"/rest/getPieChartForLeaveStatus" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getPieChartForLeaveStatus","/rest/getPieChartForLeaveStatus" }, method = RequestMethod.GET)
 	public List<LeaveType> getPieChartForLeaveStatus(
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request,
@@ -402,7 +401,8 @@ public class LeaveManagementRestController {
 					roleIds.add(leaveRole.getRoleId().getId());
 				}
 				
-				if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+				if((leaveType.getEffectiveGender() != null && StringUtils.isNotBlank(userRole.getUser().getGender()) && userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender())) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+//				if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
 					if("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 						if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
 							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
@@ -1073,7 +1073,7 @@ public class LeaveManagementRestController {
 						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
 							float previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
 							float currentNofDays = 0;
-							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
+							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
 								currentNofDays = leaveType.getNoOfDaysPerPeriod();
 							}else {
 								currentNofDays = leaveType.getNoOfDays();
