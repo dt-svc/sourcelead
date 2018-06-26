@@ -11,68 +11,7 @@
 
 </style>
  <div class="timesheetNewHead">
-<%--<div class="timeNewSe timeNewSe_month addicon">
-	<select id="frequencyMonth" name="frequencyMonth" class="form-control chosen-select" onchange="timesheetApprovalDetils('month');">
-		<c:forEach var="frequencyMonth" items="${timesheetApprovalDTO.frequencyMonthList}">
-			<option data-icon="fa fa-calendar" value="${frequencyMonth}"  ${frequencyMonth == timesheetApprovalDTO.frequencyMonth ? 'selected' : ''}>${frequencyMonth}</option>
-		</c:forEach>
-	</select>
-</div>
-<div id="timesheetFrequencyDiv" class="timeNewSe timeNewSe_week">
-	<select id="timesheetFrequency" class="form-control chosen-select" onchange="timesheetApprovalDetils('frequency');">
-		<c:forEach var="timesheetfrequency" items="${timesheetApprovalDTO.timesheetFrequencyList}">
-			<option data-icon="fa fa-calendar" value="${timesheetfrequency}"  ${timesheetfrequency == timesheetApprovalDTO.timesheetFrequency ? 'selected' : ''}>${timesheetfrequency}</option>
-		</c:forEach>
-	</select>
-</div>
 
-
-<c:if test="${!empty timesheetApprovalDTO.timesheetFrequency  && timesheetApprovalDTO.timesheetFrequency != 'Monthly' }" >
-<div id="weekFreTotalDiv">
-	<div class="timeNewSe timeNewSe_week_date addicon" id="weekFrequencyDiv">
-	<select id="weekFrequency" class="form-control chosen-select" onchange="timesheetApprovalDetils('week');" style="display: block;">
-		<c:forEach var="weekFrequencyList" items="${timesheetApprovalDTO.weekFrequencyList}">
-			<option data-icon="fa fa-calendar" ${weekFrequencyList.key == timesheetApprovalDTO.weekFrequency ? 'selected' : ''} value="${weekFrequencyList.key}">${weekFrequencyList.value}</option>
-		</c:forEach>
-	</select>
-	</div>
-</div>
-</c:if>
-<div class="timeNewSe timeNewSe_month">
-	<select id="project"	onchange="timesheetApprovalDetils('project');" class="form-control chosen-select" style="display: block;">
-	     <option data-icon="fa fa-calendar" value="">Select Project</option>
-		<c:forEach var="projects" items="${timesheetApprovalDTO.projectList}">
-			<option data-icon="fa fa-calendar" ${projects.key == timesheetApprovalDTO.project ? 'selected' : ''} value="${projects.key}">${projects.value}</option>
-		</c:forEach>
-	</select>
-</div>
-<div class="timeNewSe timeNewSe_client">
-	<select id="client"	onchange="timesheetApprovalDetils('client');" class="form-control chosen-select" style="display: block;">
-		<option data-icon="fa fa-calendar" value="">Select Client</option>
-		<c:forEach var="clientList" items="${timesheetApprovalDTO.clientList}">
-			<option data-icon="fa fa-calendar" ${clientList.key == timesheetApprovalDTO.client ? 'selected' : ''} value="${clientList.key}">${clientList.value}</option>
-		</c:forEach>
-	</select>
-</div>
-<div class="timeNewSe timeNewSe_client">
-	<select id="stage"	onchange="timesheetApprovalDetils('stage');" class="form-control chosen-select" style="display: block;">
-		<c:forEach var="stages" items="${timesheetApprovalDTO.stagesList}">
-			<option data-icon="fa fa-calendar" ${stages == timesheetApprovalDTO.stage ? 'selected' : ''} value="${stages}">${stages}</option>
-		</c:forEach>
-	</select>
-</div>
-
-<c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
-<div class="export dropexport" onclick="dropDown();" id="exportHideId">
-	<p data-toggle="tooltip" title="Export">
-		<i class="glyphicon glyphicon-export padding_left"></i>
-	</p>
-	<ul id="exporrt">
-	<li onclick="exportTimeSheetToPdfOrExcel('pdf');"title="PDF"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF</li>
-	<li onclick="exportTimeSheetToPdfOrExcel('excel');"title="Excel"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
-	</ul>
-</div>
-</c:if>--%>
 
 
 
@@ -96,7 +35,7 @@
 			<p data-toggle="tooltip" title="Export">
 				<i class="glyphicon glyphicon-export padding_left"></i>
 			</p>
-			<ul id="exporrt">
+			<ul id="exporrt" style="right:auto; left:0;">
 			<li onclick="exportTimeSheetToPdfOrExcel('pdf');"title="PDF"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF</li>
 			<li onclick="exportTimeSheetToPdfOrExcel('excel');"title="Excel"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
 			</ul>
@@ -216,7 +155,7 @@
 <!-- AddRow and Add Attachments Divs  ####-->
          <div id="divadttTd1" style="display:none;"  class="taskDropDown">   
              <div> 
-              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId timSelWid"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id')"  onclick="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId timSelWid"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id')">  
               <option value=''>--select task--</option>
               </select>
              <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="addtaskfield removetaskfield"/>

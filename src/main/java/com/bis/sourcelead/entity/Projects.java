@@ -624,8 +624,14 @@ public class Projects implements Serializable{
 
 	public String getEndDateStr() {
 		if(endDate != null){
-			SimpleDateFormat dateFormat = orgLocationsId.getLocFullFormDateFormatter();
-			endDateStr = dateFormat.format(endDate);
+			SimpleDateFormat dateFormat = null;
+			if(orgLocationsId != null && orgLocationsId.getDateFormat() != null && StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
+				dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
+			}
+			else{
+				dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+			}
+			endDateStr = dateFormat.format(endDate);	
 		}
 		return endDateStr;
 	}
