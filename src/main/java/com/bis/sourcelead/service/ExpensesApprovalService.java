@@ -51,6 +51,6 @@ public interface ExpensesApprovalService {
 	
 	public void sendReopenExpenseAcceptOrRejectMail(Expenses expense,String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser, String projectName) throws Exception;
 
-	void sendExpenseReopenAcceptMailToEmployee(Expenses expense, OrgLocations orgLoc, String type, User reopenedUser, User loginUser) throws AddressException, Exception;
+	void sendExpenseReopenAcceptMailToEmployee(Expenses expense, OrgLocations orgLoc, String type, User reopenedUser, User loginUser, String reason) throws AddressException, Exception;
 
 }
