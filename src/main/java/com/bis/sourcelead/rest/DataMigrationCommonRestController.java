@@ -82,6 +82,7 @@ public class DataMigrationCommonRestController {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		  
 		ModelAndView model = new ModelAndView();
+		try {
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
 		dataWithCellId = dataMigrationService.getfileData(ac+dataMigrationCommonDTO.getFilePath(), dataMigrationCommonDTO.getHeaderPosition());
@@ -133,6 +134,9 @@ public class DataMigrationCommonRestController {
 			model.addObject("columnHeaders", ImmigrationConstants.IMPORT_IMMIGRATION_EXCEL_HEADERS);
 			model.addObject("headersNamesMap", ImmigrationConstants.HEADERS_NAMES_MAP);
 			model.addObject("headersFieldNamesMap", ImmigrationConstants.HEADERS_FIELD_NAMES_MAP);
+		}
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 		return model;
 	}

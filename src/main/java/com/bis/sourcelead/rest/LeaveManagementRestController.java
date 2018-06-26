@@ -400,10 +400,47 @@ public class LeaveManagementRestController {
 				for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
 					roleIds.add(leaveRole.getRoleId().getId());
 				}
-				if (roleIds.contains(userRole.getRoles().getId())
-						|| "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
-					roleLeaveType.add(leaveType);
+				
+				if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+					if("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+						if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
+							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
+								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+								roleLeaveType.add(leaveType);
+							}
+						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() == null) {
+							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+									roleLeaveType.add(leaveType);
+								}
+						}else if(roleIds.size() == 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
+							if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue() && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+									roleLeaveType.add(leaveType);
+								}
+						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() == null && leaveType.getLeaveEmpType() != null) {
+							if(roleIds.contains(userRole.getRoles().getId()) && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+								roleLeaveType.add(leaveType);
+							}
+						}
+					}else {
+						roleLeaveType.add(leaveType);
+					}
 				}
+				
+				
+				/*if (roleIds.contains(userRole.getRoles().getId())
+						|| "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+					if(leaveType.getLeaveEmpType() != null && leaveType.getDepartmentId() != null) {
+						if(emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+							roleLeaveType.add(leaveType);
+						}
+					}else if(leaveType.getDepartmentId() != null) {
+						
+					}
+					else {
+						roleLeaveType.add(leaveType);
+					}
+					
+				}*/
 			}
 
 			for (LeaveType type : roleLeaveType) {
@@ -942,7 +979,7 @@ public class LeaveManagementRestController {
 						projectTasksDao.addTasks(tasks);
 					}
 				}
-				timesheetRestController.linkHolidaysWithTimeSheet(user, orgLocations, savedHoliday);
+				//timesheetRestController.linkHolidaysWithTimeSheet(user, orgLocations, savedHoliday);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else if(user==null){
@@ -2060,9 +2097,9 @@ public class LeaveManagementRestController {
 			leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 			leaveService.LeaveCancelEmailToUser(user,leaveManagementHistory,reason);
-			if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
+			/*if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
 				timesheetRestController.linkLeaveTypeWithTimeSheet(user, leave.getOrgLocations(), leave.getLeaveType().getId(), leave, Constants.LEAVE_CANCELLED);
-			}
+			}*/
 		}  else {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());
 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

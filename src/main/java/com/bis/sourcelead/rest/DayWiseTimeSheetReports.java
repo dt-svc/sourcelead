@@ -104,20 +104,12 @@ public List<ProjectMembers> getProjectMembersBasedOnProjectId(DayWiseTimesheetRe
 public void exportDaywiseTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request,HttpServletResponse response) throws Exception {
 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
+	String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 	File file = null;
 	if ("excel".equalsIgnoreCase(dayWiseTimesheetReoprtsDto.getExportType())) {
-		if(dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
-			file = dayEntryReportsService.exportDayEntryReportsWithoutProjectExcel(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
-		}else {
-			file = dayEntryReportsService.exportDayEntryReportsWithProjectExcel(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
-		}
+			file = dayEntryReportsService.exportDayEntryReportsWithoutProjectExcel(dayWiseTimesheetReoprtsDto,orgLocations,loginUser,isGlobalUser);
 	} else if("pdf".equalsIgnoreCase(dayWiseTimesheetReoprtsDto.getExportType())){
-		if(dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
-			file = dayEntryReportsService.exportDayEntryReportsWithoutProjectPdf(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
-		}else {
-			file = dayEntryReportsService.exportDayEntryReportsWithProjectPdf(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
-		}
+			file = dayEntryReportsService.exportDayEntryReportsWithProjectPdf(dayWiseTimesheetReoprtsDto,orgLocations,loginUser,isGlobalUser);
 	}
 	if (file != null) {
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());

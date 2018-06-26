@@ -4,6 +4,7 @@ public enum Submission_Status {
 	
 	NEW("new"),
 	DRAFT("draft"),
+	REOPENED("reopened"),
 	SUBMITTED("submitted"),
 	APPROVED("approved"),
 	REJECTED("rejected");

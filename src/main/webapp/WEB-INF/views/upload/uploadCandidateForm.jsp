@@ -75,7 +75,7 @@
 									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
 									style="display: none;" id="uploadBtn"
-									data-validation="required validate_importFile">
+									data-validation="required validate_xls_importFile">
 								</label>
 								<div class="clearfix"></div>
 								<label id="newUploadFile"></label> 
@@ -85,6 +85,7 @@
 								<input id="uploadFile" placeholder="" disabled="disabled"
 									style="width: 100%;" />
 							</div>
+							 <p class="text-danger small" style="font-size: 12px; display: none;" id="errorImage" ><i class="fa fa-exclamation-triangle" ></i><b>&nbsp;Document size should be less than 10 MB</b></p>
 						</div>
 
 						<!--  Downloaded File show here -->
@@ -110,8 +111,6 @@
 							<p>
 								<label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label> <label><i
 									class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label> <label><i
-									class="fa fa-map-marker"></i>&nbsp;&nbsp;Address</label> <label><i
-									class="fa fa-map-marker"></i>&nbsp;&nbsp;Country</label> <label><i
 									class="fa fa-black-tie"></i>&nbsp;&nbsp;Employment Type</label>
 							</p>
 						</span>
@@ -132,8 +131,15 @@
 
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
-	$('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
-	fileUpload("uploadBtn", "dataMigration");
+	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
+	  if(sizeinbytes > 10485760){
+		  document.getElementById("errorImage").style.display="";
+	  }else{
+		  document.getElementById("errorImage").style.display="none";
+		  $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
+		  fileUpload("uploadBtn", "dataMigration");
+	  }
+	
 };
 </script>
 

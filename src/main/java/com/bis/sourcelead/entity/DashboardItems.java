@@ -36,7 +36,8 @@ public class DashboardItems implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", referencedColumnName = "ID")
 	private OrgLocations orgLocations;
-	
+
+
 	public long getId() {
 		return id;
 	}
