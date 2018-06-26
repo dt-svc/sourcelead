@@ -75,7 +75,7 @@
 									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
 									style="display: none;" id="uploadBtn"
-									data-validation="required validate_importFile">
+									data-validation="required validate_xls_importFile">
 								</label>
 								<div class="clearfix"></div>
 								<label id="newUploadFile"></label> 
