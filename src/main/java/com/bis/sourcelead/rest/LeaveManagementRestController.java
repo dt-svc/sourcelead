@@ -401,7 +401,8 @@ public class LeaveManagementRestController {
 					roleIds.add(leaveRole.getRoleId().getId());
 				}
 				
-				if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+				if((leaveType.getEffectiveGender() != null && StringUtils.isNotBlank(userRole.getUser().getGender()) && userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender())) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+//				if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
 					if("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 						if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
 							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
