@@ -1111,12 +1111,14 @@ public class LeaveManagementRestController {
 							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
 						}
 						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
-							float previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
+							float previousNoOfDays = 0;;
 							float currentNofDays = 0;
 							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
 								currentNofDays = leaveType.getNoOfDaysPerPeriod();
+								previousNoOfDays = leaveTypeDTO.getPreviousNoOfDaysPerPeriod();
 							}else {
-								currentNofDays = leaveType.getNoOfDays();
+								currentNofDays   = leaveType.getNoOfDays();
+								previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
 							}
 							float diffLeaves = 0;
 							String actionType = "";
@@ -2968,7 +2970,7 @@ public class LeaveManagementRestController {
         List<OrgLocations> locationsList = orgLocationService.getAllOrgLocations();
         System.out.println("Start Time"+java.time.LocalDateTime.now());
         for (OrgLocations orgLocation : locationsList) {
-             	commonUtil.saveDefaultGenaeralShift(orgLocation, orgLocation.getUser(), Constants.GENERAL_SHIFT);
+             commonUtil.saveDefaultGenaeralShift(orgLocation, orgLocation.getUser(), Constants.GENERAL_SHIFT);
         }
         System.out.println("End Time"+java.time.LocalDateTime.now());
 

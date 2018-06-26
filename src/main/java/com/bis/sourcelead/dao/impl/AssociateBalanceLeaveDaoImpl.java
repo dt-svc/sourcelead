@@ -194,7 +194,11 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 							}
 							stmt.setString(2, String.valueOf(additionLeaves));
 						}else {
-							stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
+							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
+								stmt.setString(2, String.valueOf(leaveType.getNoOfDaysPerPeriod()));
+							}else {
+								stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
+							}
 						}
 						stmt.setLong(3, orgLocationId);
 						stmt.setLong(4, user.getId());
