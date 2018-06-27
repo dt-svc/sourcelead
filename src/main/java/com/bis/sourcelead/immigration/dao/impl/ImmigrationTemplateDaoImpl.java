@@ -419,6 +419,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             for (ImmigrationTemplateForms entityObj : formsList) {
                 ImmigrationTemplateFormDTO formDto = new ImmigrationTemplateFormDTO();
                 formDto.setId(entityObj.getId());
+                formDto.setFormCategory(entityObj.getFormCategory());
                 formDto.setFormName(entityObj.getFormName());
                 formDto.setFormDescription(entityObj.getDescription());
                 formDto.setFileName(entityObj.getFileName());
