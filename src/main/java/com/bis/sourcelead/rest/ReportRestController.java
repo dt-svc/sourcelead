@@ -1000,7 +1000,7 @@ public class ReportRestController {
 				
 				if(userRole.getUserState() != null) {
 					if("Inactive".equalsIgnoreCase(userRole.getUserState().toString())) {
-						userDto.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
+						userDto.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getTerminateDate()));
 					}else {
 						userDto.setDateOfTermination("Till Date");
 					}
