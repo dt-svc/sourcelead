@@ -27,9 +27,8 @@
 </script>
  
  
-    <section class="clearfix">
-      <div class="content-dashboard clearfix"> 
-      	  <div class="clearfix dashboard-widget mb col-md-12">
+      <div class="mb col-md-12 clearfix"> 
+      	  <div class="dashboard-widget col-md-12">
       	    <h4>Budget Requests</h4>
       	    
       	    <div class="project_side_wrap_inn_tabs">
@@ -49,7 +48,6 @@
       	  </div>
       </div>
     <div id="editBudgetRequestPopUpid"></div>
- </section>
  
  <script>
  function getBudgetRequestListCount(){

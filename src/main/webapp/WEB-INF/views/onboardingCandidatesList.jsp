@@ -19,8 +19,8 @@
 }
 </style>
 
-<div class="content-dashboard clearfix"> 
-      <div class="clearfix dashboard-widget mb col-md-12 hdrPosition">
+<div class="mb col-md-12 clearfix"> 
+      <div class=" dashboard-widget col-md-12 hdrPosition">
         <h4 class="clearfix">
         Candidates for Onboarding
         &nbsp;&nbsp;
