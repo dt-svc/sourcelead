@@ -211,6 +211,7 @@ public class ApplicantsBackoutReportRestController {
 						jobids.add(jobId);
 						applicantsBackoutDTO =  applicantsBackoutReportService.getBackoutApplicantCount(jobids, searchDates,orgLocation);
 						applicantsBackoutDTO.setJobName(requirement.getJobTitle());
+						applicantsBackoutDTO.setGeneratedId(requirement.getGeneratedId());
 						applicantsBackoutList.add(applicantsBackoutDTO);
 					}
 

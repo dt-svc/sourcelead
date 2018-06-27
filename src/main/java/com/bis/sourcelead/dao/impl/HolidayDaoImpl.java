@@ -1,6 +1,5 @@
 	package com.bis.sourcelead.dao.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectDocumentPermission;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -210,6 +209,19 @@ public class HolidayDaoImpl  implements HolidayDAO{
     	   }
        }
 	}
+
+	@Override
+	public List<HolidayAndRestrictday> getHolidayByFromToDate(Date fromDate, Date toDate,OrgLocations orgLocations)
+	{
+		Date from = commonUtil.orgLocationCommonDate(fromDate, orgLocations);
+		Date to =  commonUtil.orgLocationCommonDate(toDate, orgLocations);
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from HolidayAndRestrictday day where day.holiday.orgLocations.id = :orgLocationId and day.restrictDay.id IS NULL and (day.day >= :fromDate and day.day <= :toDate) and day.status = '1'";
+		List<HolidayAndRestrictday> list = session.createQuery(query).setParameter("fromDate", from).setParameter("toDate", to).setLong("orgLocationId", orgLocations.getId()).list();
+		return list;
+	}
+
+	
 	
 	
 }

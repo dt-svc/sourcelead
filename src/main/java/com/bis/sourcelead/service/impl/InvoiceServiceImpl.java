@@ -1770,9 +1770,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
-				String billableHours = String.valueOf(sah.getBillableHours());
 				StringBuilder sb = new StringBuilder();
-				if(billableHours != null){
+				if(sah.getBillableHours() != null){
+				String billableHours = String.valueOf(sah.getBillableHours());
 					String arr[] = billableHours.split("\\.");
 					if (arr[0].length() == 2) {
 						sb.append("0").append(arr[0]);

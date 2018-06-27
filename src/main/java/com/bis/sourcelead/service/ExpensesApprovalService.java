@@ -48,9 +48,9 @@ public interface ExpensesApprovalService {
 	File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy, OrgLocations orgLoc, User loginUser,String isGlobalUser) throws IOException, Exception;
 
 	File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy,OrgLocations orgLoc, User loginUser,String isGlobalUser)throws IOException, Exception;
-	
-	public void sendReopenExpenseAcceptOrRejectMail(Expenses expense,String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser, String projectName) throws Exception;
 
-	void sendExpenseReopenAcceptMailToEmployee(Expenses expense, OrgLocations orgLoc, String type, User reopenedUser, User loginUser) throws AddressException, Exception;
+	void sendExpenseReopenAcceptMailToEmployee(Expenses expense, OrgLocations orgLoc, String type, User reopenedUser, User loginUser, String reason) throws AddressException, Exception;
+
+	void sendReopenExpenseAcceptOrRejectMail(Expenses expense, String reason, User superUser, OrgLocations orgLoc,String type, User reopenedUser, User loginUser, String projectName) throws AddressException, Exception;
 
 }

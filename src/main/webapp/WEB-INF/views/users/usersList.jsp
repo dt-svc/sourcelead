@@ -16,7 +16,6 @@ clear: both;
 display: inline-block;
 margin: auto;
 width: 100%;
-
 }
 #loadMoreDiv .fa-spinner{
 margin-right: 15px;
@@ -77,11 +76,7 @@ $(document).ready(function() {
     });
     
 }); 
-
 </script>
-
-
-
 
 <script type="text/javascript">
 window.onload = function () {

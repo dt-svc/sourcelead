@@ -14,6 +14,10 @@
 //On document ready
 $(function(){
 	submissionTemplateList();
+	if('${type}' != 'undefined' && '${type}' != '' && '${type}' != null && '${type}' == 'addTemplate'){
+		$("#add-tm").click();
+	}
+	
 });
 </script>
 

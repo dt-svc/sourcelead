@@ -5,6 +5,8 @@ import java.math.BigInteger;
 public class ApplicantDeclineDTO {
 	
 	private String jobName;
+	
+	private String generatedId;
 
 	private BigInteger skillsCount;
 	
@@ -19,6 +21,15 @@ public class ApplicantDeclineDTO {
 	private BigInteger otherCount;
 	
 	private BigInteger totalCount;
+	
+	
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
 
 	public String getJobName() {
 		return jobName;
