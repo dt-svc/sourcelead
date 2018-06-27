@@ -484,6 +484,46 @@ public class LeaveManagementRestController {
 				type.setPendingLeaveCounts(pendingLeaveCounts);
 				type.setTakenLeaves(takenLeaveCounts);
 				type.setLeaveTypeBalanceLeaveCount(totalbalanceLeaveCounts);
+				
+				//do not remove below commented code, need to do some changes further 
+				
+				/*float appliedLeaveCount = 0;
+				LocalDate todayDate = LocalDate.now();
+				List<AppliedLeaveDateView> appliedLeaves = null;
+				AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
+				ablv.setIncludeWeekoff(l.getIncludeWeekoff());
+				ablv.setIncludeHolidays(l.getIncludeHolidays());
+				if (Constants.MONTHLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					Date[] monthDates = conversionUtil.getMonthStartDateEndDate();
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), monthDates[0], monthDates[1], userId);
+				    appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,monthDates[0],monthDates[1]);
+				}
+				else if (Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), userId);
+				     appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate());
+				}
+				else if (Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId);
+					appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,currentHalfYear[0].toDate(),currentHalfYear[1].toDate());
+				}
+				else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), userId);
+						 appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate());
+				}
+				if (appliedLeaves != null && appliedLeaves.size() > 0) {
+					appliedLeaveCount = totalLeaves - appliedLeaves.size();
+				}
+				else {
+					appliedLeaveCount = totalLeaves;
+				}
+
+				l.setTotalBalanceLeaveCounts(balanceLeaveCounts);
+				l.setPendingLeaveCounts(pendingLeaveCounts);
+				l.setTakenLeaves(takenLeaveCounts);
+				l.setLeaveTypeBalanceLeaveCount(Float.parseFloat(dec.format(appliedLeaveCount)));*/
 			}
 		}
 		return roleLeaveType;
@@ -955,7 +995,7 @@ public class LeaveManagementRestController {
 				if (holidayDTO != null)
 					savedHoliday = holidayService.storeHoliday(holidayDTO);
 
-				List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocations.getId());
+				/*List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocations.getId());
 				if (projectsList != null && projectsList.size() > 0) {
 					for (Projects projects : projectsList) {
 						ProjectTasks tasks = new ProjectTasks();
@@ -979,7 +1019,11 @@ public class LeaveManagementRestController {
 						tasks.setUpdatedDate(new Date());
 						projectTasksDao.addTasks(tasks);
 					}
+
 				}
+
+				}*/
+
 				//timesheetRestController.linkHolidaysWithTimeSheet(user, orgLocations, savedHoliday);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -2858,7 +2902,7 @@ public class LeaveManagementRestController {
 					Date startDate = c.getTime();
 					c.set(Calendar.DATE,     c.getActualMaximum(Calendar.DAY_OF_MONTH));
 					Date endDate = c.getTime();
-					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,startDate,endDate);
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,startDate,endDate);
 				}
 			}
 		}
@@ -2879,7 +2923,7 @@ public class LeaveManagementRestController {
 				if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
 					LocalDate today = LocalDate.now();
 					LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(today);
-					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,dates[0].toDate(),dates[1].toDate());
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0].toDate(),dates[1].toDate());
 				}
 			}
 		}
@@ -2899,7 +2943,7 @@ public class LeaveManagementRestController {
 				if(Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod())){
 					LocalDate today = LocalDate.now();
 					LocalDate[] dates = conversionUtil.getThisMonthHalfyearyDates(today);
-					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,dates[0].toDate(),dates[1].toDate());
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0].toDate(),dates[1].toDate());
 				}
 			}
 		}
@@ -2918,7 +2962,7 @@ public class LeaveManagementRestController {
 			for(LeaveType leaveType : leaveTypeList){
 				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
 					Date[] dates = conversionUtil.getCurrentYearStartAndEndDate();
-					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation.getId(),leaveType,dates[0],dates[1]);
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
 				}
 			}
 		}

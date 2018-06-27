@@ -192,11 +192,11 @@ a { cursor:pointer;}
 .inline_field:focus {
     width:50px !important; padding:2px 2px; font-size:12px; border:1px solid #dedede; overflow: hidden; background-color:#fff;
     }
-/*<!--.inline_field::-webkit-input-placeholder { color: #333; }
-.inline_field::-moz-placeholder { color: #333; }
-.inline_field:-ms-input-placeholder { color: #333; }
-.inline_field:placeholder { color: #333; }
-input.inline_field::-moz-placeholder { color: #333; }-->*/
+/*input.inline_field::-webkit-input-placeholder { color: rgba(0,0,0,0.3); }
+input.inline_field::-moz-placeholder { color: rgba(0,0,0,0.3); }
+input.inline_field:-ms-input-placeholder { color: rgba(0,0,0,0.3); }
+input.inline_field:placeholder { color: rgba(0,0,0,0.3); }
+input.inline_field::-moz-placeholder { color: rgba(0,0,0,0.3); }*/
        
 .logPop p.jquery_form_error_message {
     font-size: 12px; color:red;
@@ -217,7 +217,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     position:absolute; z-index:1000; right:-25px; top:25px; display:none;
     }
 .timesheet_comm span textarea {
-    position:relative; width:200px; height:80px; resize:none; border:1px solid #dedede; box-shadow:0px 0px 5px rgba(0,0,0,0.1);
+    position:relative; width:300px; height:120px; resize:none; border:1px solid #dedede; box-shadow:0px 0px 5px rgba(0,0,0,0.1);
     padding:5px; font-size:13px; font-weight:500; color:#333;
     }
 .timesheet_comm span:after {
@@ -7052,6 +7052,7 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	}
 .repDashCtaWrap h2 {
 	font-size: 14px; font-weight: 500; color: #566072; padding: 0px 0px; margin: 0px 0px;
+<<<<<<< HEAD
 	}
 .repDashCtaWrap b {
 	font-size: 13px; font-weight: 500; color: #545454; padding: 6px 0px 0px; margin: 0px 0px; display: inline-block;
@@ -7062,6 +7063,18 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 .repDashCta:hover {
 	border: 1px solid #91c1ed; position: relative; z-index: 10;
 }
+=======
+	}
+.repDashCtaWrap b {
+	font-size: 13px; font-weight: 500; color: #545454; padding: 6px 0px 0px; margin: 0px 0px; display: inline-block;
+	}
+.repDashCtaWrap b:hover {
+	color: #3081cb;
+}
+.repDashCta:hover {
+	border: 1px solid #91c1ed; position: relative; z-index: 10;
+}
+>>>>>>> a81c3b83aafb32fa6041b63785252fde1f741020
 
 .subMenuView {
 	display: none; background-color: #2970B1;
@@ -8441,5 +8454,21 @@ max-width: 100% !important;
 	box-sizing: border-box; margin: 0px 0px;
 }
 
+
+.time_btn.time_rej {
+border:1px solid #d43f3a; background-color:#d9534f;
+}
+
+.time_btn.time_rej:hover {
+background-color:#d9534f;
+}
+
+.time_btn.time_appr {
+border:1px solid #34c244; background-color:#34c244;
+}
+
+.time_btn.time_appr:hover {
+background-color:#34c244;
+}
 
 

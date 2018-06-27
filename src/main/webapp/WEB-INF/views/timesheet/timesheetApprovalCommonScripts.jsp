@@ -165,8 +165,13 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 </script>
 
 <script>
-function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
-	 var msg = $("#reject"+projectMemberId+"message").val(); 
+function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from,reason){
+	 var msg = ''; 
+	if(reason != null && reason != 'undefined' && reason != ''){
+		 msg = reason;
+	 }else {
+		 msg = $("#reject"+projectMemberId+"message").val();
+	 }
 	 var tableFor = $("#tableFor").val();
 	 var encodeMsg = msg;
 	 if(encodeMsg !== ""){
