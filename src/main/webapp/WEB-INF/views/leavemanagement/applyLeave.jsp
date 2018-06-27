@@ -11,6 +11,7 @@ window.onload = function() {
 	var leaveUUID = '${leaveUUID}';
 	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
 		getLeaveDetails();
+		getUsersBasedOnHierarchy('edit');
 		var checkFromEdit = '${leave.fromHalfDay}';
 		var checkToEdit = '${leave.toHalfDay}';
 		if(checkFromEdit == 'YES' || checkToEdit == 'YES'){
@@ -193,6 +194,38 @@ window.onload = function() {
 	              </div>
             	</div>
 <%--             </c:if> --%>
+
+		<div class="clearfix"></div>
+		<c:if test="${!empty leave.notifyToOthers}">
+         <div class="form-group">
+				<div class="ml">
+							<input  type="checkbox" checked name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
+					<label>&nbsp;&nbsp;Notify to others
+						&nbsp;&nbsp;
+					</label>
+				</div>
+			</div>
+			</c:if>
+			
+		<c:if test="${empty leave.notifyToOthers}">
+         <div class="form-group">
+				<div class="ml">
+							<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
+					<label>&nbsp;&nbsp;Notify to others
+						&nbsp;&nbsp;
+					</label>
+				</div>
+			</div>
+		</c:if>
+			
+			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
+              <label class="col-md-3">&nbsp;&nbsp;</label>
+              <div class="col-md-9">
+              	<select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverId" name="otherApproverUser" field-name="Approver" data-validation-optional = "true">
+	                  </select>
+              </div>
+             </div>
+		
               
           </div>
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -620,6 +653,7 @@ $(function() {
 
 <script type="text/javascript">
 function applyLeave(){
+	
 		var leaveId = '${leave.id}';
 		var currentStage = '${currentStage}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -824,11 +858,9 @@ function validateOverDrawLeaves(leaveTypeName){
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = $("#"+typeName+"Span").text();
 	if((dayDiff > typeIdBalCount) || typeIdBalCount ==  0){
-		$("#ApplyLeave").attr('disabled','disabled');
+		$("#ApplyLeave").removeAttr('disabled');
 		$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You Have Not Enough Leaves To Apply</span> ");
 		$(".comMask").fadeIn();
-	}else{
-		$("#ApplyLeave").removeAttr('disabled');
 	}
 }
 </script>
@@ -911,12 +943,15 @@ function validateCarryForwardLeaves(){
 	if(userId != null && userId !='' && userId !='undefined'){
 	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
 		$.get(sourceleadUrl+"/validateCarryForwardLeaves?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
-			if(data == true){
-				$('.jquery_form_error_message').remove();
-				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
-			}else{
-				$('.jquery_form_error_message').hide();
-			}
+			if(data!=null&&data == "you cannot apply two leaves on same day.!"){ 
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data); 
+				$("#ApplyLeave").attr('disabled','disabled'); 
+				$(".comMask").fadeIn(); 
+				}else if(data!=null){ 
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data); 
+				$("#ApplyLeave").removeAttr('disabled'); 
+				$(".comMask").fadeIn();	
+				} 
 		}); 
 	}
 	
@@ -942,13 +977,14 @@ function validateDate(){
 	}
 	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
-			if(data != null){
-				$("#ApplyLeave").attr('disabled','disabled');
+			if(data!=null&&data == "you cannot apply two leaves on same day.!"){
 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
+				$("#ApplyLeave").attr('disabled','disabled');
 				$(".comMask").fadeIn();
-			}else{
+			}else if(data!=null){
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
 				$("#ApplyLeave").removeAttr('disabled');
-				$('.warMess').hide();
+				$(".comMask").fadeIn();	
 			}
 		});
 	}
@@ -1046,6 +1082,47 @@ function validateToTimings(){
 		$("#toTimeDiv").find('p.jquery_form_error_message').remove();
 		$("#toEndTimeDiv").after("<p class='jquery_form_error_message'>To-Time is required</p>");
 	}
+}
+</script>
+
+<script>
+function getUsersBasedOnHierarchy(type){
+	$("#notifyOtherDiv").toggle();
+	if($("#notifyOthersId").is(':checked')){
+		$("#approverId").removeAttr("data-validation-optional");
+		$("#approverId").attr("data-validation","required");
+	}else{
+		$("#approverId").removeAttr("data-validation");
+	}
+	var behalf = $("#checkbox-1");
+	var userId = "";
+	if(behalf.is(':checked')){
+		userId = $("#user").val();
+	}else{
+		userId = '${SourceLeadWeb_userId}';
+	}
+   if(userId != null && userId !='' && userId !='undefined'){
+	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId+"&notifyToOthers=Y", function(data) {
+		if(data !=null){
+			var result = '';
+			for(var i=0; i<data.length; i++){
+			var approver = data[i];
+			if(type == 'edit'){
+				<c:forEach var="user" items="${approversList}">
+					if("${user.approverUserId.id}" == approver.id){
+						result = result +'<option selected value='+approver.id+'>'+approver.firstName+' '+approver.lastName+'</option>';
+					}
+				</c:forEach>
+			}else{
+				result = result +'<option value='+approver.id+'>'+approver.firstName+' '+approver.lastName+'</option>';
+			}
+			}
+			$("#approverId").empty();
+			$("#approverId").append(result);
+			$('#approverId').trigger("chosen:updated");
+		}
+		});
+   }
 }
 </script>
 

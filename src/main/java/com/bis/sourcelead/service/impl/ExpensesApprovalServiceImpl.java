@@ -1,4 +1,6 @@
 
+
+
 package com.bis.sourcelead.service.impl;
 
 
@@ -802,10 +804,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 							 
 							 globalVarsMap.put("clientName","--");
 						 }
+						
 						 
 //						 globalVarsMap.put("loginUrl",amopuntRate.toString());
-						 ExpensesApproverHierarchy eah = expensesApprovalDao.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
-						 globalVarsMap.put("reason",eah.getReopenReason());
+					/*	 ExpensesApproverHierarchy eah = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(reopenedUser.getId(), expenses.getId(), orgLoc.getId(), "");
+						 globalVarsMap.put("reason",eah.getReopenReason());*/
 						 
 						 
 						 //setting the Recipient information

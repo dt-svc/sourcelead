@@ -134,6 +134,9 @@ public class Leave {
 	@Column(name = "LEAVE_UUID")
 	private String leaveUUID;
 	
+	@Column(name = "NOTIFY_TO_OTHERS")
+	private String notifyToOthers;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveid")
@@ -497,6 +500,14 @@ public class Leave {
 
 	public void setToTime(String toTime) {
 		this.toTime = toTime;
+	}
+
+	public String getNotifyToOthers() {
+		return notifyToOthers;
+	}
+
+	public void setNotifyToOthers(String notifyToOthers) {
+		this.notifyToOthers = notifyToOthers;
 	}
 	
 }

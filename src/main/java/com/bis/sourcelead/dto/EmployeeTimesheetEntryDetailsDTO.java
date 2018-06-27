@@ -42,6 +42,8 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	
 	private Map<Long,EmployeeTimeSheetSubmissionStatusDTO> statusMap;
 	
+	private Map<String,List<EmployeeLeaveDTO>> empLeaveMap;
+	
     private boolean monEditable;
 	
 	private boolean tueEditable;
@@ -314,6 +316,12 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 		this.oldSubmittedProjectMembersList = oldSubmittedProjectMembersList;
 	}
 
+	public Map<String, List<EmployeeLeaveDTO>> getEmpLeaveMap() {
+		return empLeaveMap;
+	}
 
+	public void setEmpLeaveMap(Map<String, List<EmployeeLeaveDTO>> empLeaveMap) {
+		this.empLeaveMap = empLeaveMap;
+	}
      
 }

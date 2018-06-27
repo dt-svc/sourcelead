@@ -890,7 +890,7 @@ function editClientProjectDetails(projectId){
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="width100percnt col-md-12 mb txtEditor_p">';
 						result = result + '<label>Description</label>';
-						result = result + '<textarea id="txtEditor1" name="description" value="'+ description +'" class="form-control newContrtextarea">' + description + '</textarea>';
+						result = result + '<textarea id="txtEditor1" name="description" data-validation-optional="true"  value="'+ description +'" class="form-control newContrtextarea">' + description + '</textarea>';
 						result = result + '</div>       ';
 						
 					    result = result + '<div class="clearfix"></div>';
