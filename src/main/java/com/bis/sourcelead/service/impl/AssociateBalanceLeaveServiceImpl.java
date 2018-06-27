@@ -266,8 +266,9 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					}else {
 						totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));	
 					}
-				
-					list.add(totalLeaveDTO);
+					if(!"All".equalsIgnoreCase(leaveType.getEffectiveGender()) || user.getGender().equalsIgnoreCase(leaveType.getEffectiveGender())){
+						list.add(totalLeaveDTO);
+					}
 				}
 			}
 			associateBalanceLeaveDTO.setTotalLeavesDto(list);
