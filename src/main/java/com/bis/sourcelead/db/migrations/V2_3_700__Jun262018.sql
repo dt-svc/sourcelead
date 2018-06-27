@@ -11,5 +11,5 @@ SELECT
 	uLeave.LEAVE_TYPE_ID,
 	uLeave.STATUS as LEAVE_STATUS,
 	uLeave.REASON AS REASON
-FROM sourcelead.USER_LEAVE uLeave,APPLIED_LEAVE_DATE aLeaveDate
+FROM USER_LEAVE uLeave,APPLIED_LEAVE_DATE aLeaveDate
 where uLeave.ID = aLeaveDate.LEAVE_ID;
