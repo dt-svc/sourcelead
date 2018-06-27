@@ -39,7 +39,7 @@ public interface RequirementReportDao {
 	List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC,Date endDateUTC)throws Exception;
 
 	List<ApplicantReceivedReportsDTO> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC,
-			Date endDateUTC);
+			Date endDateUTC,String searchValue);
 	
 	ApplicantReceivedReportsDTO getReceivedApplicantsCounts(Long orgLocationId, Date startDateUTC,Date endDateUTC);
 

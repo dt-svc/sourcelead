@@ -505,7 +505,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	}
 	
 	@Override
-	public List<ApplicantReport> getReceivedApplicantsCountsPerOrgLocId(OrgLocations orgLocation,String reportType,String customStartDate,String customEndDate) throws Exception
+	public List<ApplicantReport> getReceivedApplicantsCountsPerOrgLocId(OrgLocations orgLocation,String reportType,String customStartDate,String customEndDate,String searchValue) throws Exception
 	{
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
@@ -564,7 +564,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				}
 			}
 			List<ApplicantReport> applicantReportList = null;               
-			List<ApplicantReceivedReportsDTO> requirementSubmissionList = requirementReportDao.getReceivedApplicantsCountsPerOrgLocId(orgLocation.getId(),startDateUTC,endDateUTC);
+			List<ApplicantReceivedReportsDTO> requirementSubmissionList = requirementReportDao.getReceivedApplicantsCountsPerOrgLocId(orgLocation.getId(),startDateUTC,endDateUTC,searchValue);
 			if(null != requirementSubmissionList && requirementSubmissionList.size() >0){
 				applicantReportList = new ArrayList<>(); 
 				for(ApplicantReceivedReportsDTO rs : requirementSubmissionList){

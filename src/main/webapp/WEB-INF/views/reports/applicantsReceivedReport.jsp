@@ -151,15 +151,7 @@ function toDate(selector) {
 	</div>
 	
     	<ul class="clearfix pull-right">
-    		<li>
-				<div class="ReqRepHead-chosen repChosen">
-			          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
-			            <c:forEach var="option" items="${requirementsList}">
-							<option value="${option.requirementId}">${option.jobTitle}</option>
-						</c:forEach>
-			          </select>
-		        </div>    		
-    		</li>
+    		
     		<li>
        <div class="dropdown-select positionRelative repSelWrap clearfix">
 		<select class="form-control repSelFiled" id="reportTypeId" onChange="custDates();flushCustomDates();">
@@ -193,7 +185,7 @@ function toDate(selector) {
         </div>    		
     		</li>
     		<li class="dataTabPdf">&nbsp;</li> 
-    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='applicantDeclineReportsTableSearch' onkeyup="getDeclineApplicants();getDeclineApplicantList();"/><span class="repSearchIcon" onClick="userDataTableList();"></span></li>
+    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='applicantDeclineReportsTableSearch'/><span class="repSearchIcon" onclick="getDayWiseReports();getDayWiseAppRecReports();"></span></li>
     	</ul>
     </div>       
      
@@ -508,6 +500,14 @@ $(".reminder").click(function(){
 	}
 	</script>
 <script>
+
+$("#applicantDeclineReportsTableSearch").keydown(function(e) {
+	   if(e.which === 13) {
+		   getDayWiseReports();
+		   getDayWiseAppRecReports();
+	   }
+	});
+
 function getDayWiseReports(){
 	$('#container').empty();
 	$('#reportStartDate').empty();
@@ -515,6 +515,8 @@ function getDayWiseReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
+	var searchValue = $("#applicantDeclineReportsTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
 	if(reportType == "custom" && (startDate == null || startDate == '' || startDate == 'undefined')){
 		document.getElementById("reportStartDate").style.display="block";
 		$("#reportStartDate").empty().append("Start Date is Required") ;
@@ -532,7 +534,7 @@ function getDayWiseReports(){
 		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
+         url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,     
           success :function(data) {
 	        	 prepareReportDataDiv(data);
 	        	 var json = JSON.parse(data);

@@ -72,7 +72,7 @@ window.onload = function() {
           
         </div>    		
     		</li>
-    		<li class="unVisable"><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/></li>
+    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/></li>
     	</ul>
     </div>    
     

@@ -42,7 +42,7 @@ public interface RequirementReportService {
 
 	ApplicantReport getApplicantsCountsByDateRange(OrgLocations orgLocation,String reportType,String customStartDate,String customEndDate)throws Exception;
 
-	List<ApplicantReport> getReceivedApplicantsCountsPerOrgLocId(OrgLocations orgLocation,String reportType,String customStartDate,String customEndDate) throws Exception;
+	List<ApplicantReport> getReceivedApplicantsCountsPerOrgLocId(OrgLocations orgLocation,String reportType,String customStartDate,String customEndDate,String searchValue) throws Exception;
 
 	List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId, Set<String> userCodesList,Date startDateUTC, Date endDateUTC);
 

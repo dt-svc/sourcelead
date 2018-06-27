@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.util.CommonUtil;
+import com.mchange.lang.StringUtils;
 
 @Repository
 public class RequirementReportDaoImpl implements RequirementReportDao{
@@ -358,23 +359,32 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ApplicantReceivedReportsDTO> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC,Date endDateUTC) {
+	public List<ApplicantReceivedReportsDTO> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC,Date endDateUTC,String searchByValue) {
 		Session session = this.sessionFactory.getCurrentSession();
 		//String aa = commonUtil.elkDateFormatter(startDateUTC);
 		//String bb = commonUtil.elkDateFormatter(endDateUTC);
-		if(null != startDateUTC && null != endDateUTC ){
-			String query = "SELECT DISTINCT CONCAT(C.FIRST_NAME, ' ',IFNULL(C.LAST_NAME, '')) AS name, CONCAT (R.GENERATED_ID,' - ',R.JOB_TITLE) AS jobTitle, RS.ORG_LOCATION_ID AS orglocationId, RS.SUBMISSION_STATUS AS submissionStatus, CONCAT(RS.CREATED_USER, ' (', OL.ORG_NAME, ')') AS userAndOrgName, RS.UPDATED_DATE AS updatedDate	FROM" 
+		String subQuery = null;
+		String resultSqlQuery = null;
+		Query queryString = null;
+		List <ApplicantReceivedReportsDTO> finalList = new ArrayList<ApplicantReceivedReportsDTO>();
+		if(searchByValue != null && !"".equals(searchByValue)){
+			
+			subQuery = " AND ((C.FIRST_NAME like :searchByValue) OR (C.LAST_NAME like :searchByValue) OR (R.GENERATED_ID like :searchByValue) OR (R.JOB_TITLE like :searchByValue) OR  (CONCAT (R.GENERATED_ID,' - ',R.JOB_TITLE) like :searchByValue) OR (CONCAT (C.FIRST_NAME, ' ',IFNULL(C.LAST_NAME, '')) like :searchByValue))";
+		}
+		String query = "SELECT DISTINCT CONCAT(C.FIRST_NAME, ' ',IFNULL(C.LAST_NAME, '')) AS name, CONCAT (R.GENERATED_ID,' - ',R.JOB_TITLE) AS jobTitle, RS.ORG_LOCATION_ID AS orglocationId, RS.SUBMISSION_STATUS AS submissionStatus, CONCAT(RS.CREATED_USER, ' (', OL.ORG_NAME, ')') AS userAndOrgName, RS.UPDATED_DATE AS updatedDate	FROM" 
 	    +" REQUIREMENT_SUBMISSION RS, REQUIREMENT R, ORG_LOCATIONS OL, CANDIDATE C WHERE RS.VENDOR_LOCATION_ID IS NOT NULL AND C.ID = RS.CANDIDATE_ID AND R.ID = RS.REQUIREMENT_ID AND RS.VENDOR_LOCATION_ID = OL.ID"
 	     +" AND RS.ORG_LOCATION_ID = :orgLocationId AND DATE(RS.CREATED_DATE) BETWEEN :fromDate AND :toDate";
-			return  session.createSQLQuery(query).setResultTransformer(Transformers.aliasToBean(ApplicantReceivedReportsDTO.class)).setLong("orgLocationId", orgLocationId).setDate("fromDate", startDateUTC).setDate("toDate", endDateUTC).list();
-
-		}
-		else{
-			String query = "SELECT DISTINCT CONCAT(C.FIRST_NAME, ' ',IFNULL(C.LAST_NAME, '')) AS name, CONCAT (R.GENERATED_ID,' - ',R.JOB_TITLE) AS jobTitle, RS.ORG_LOCATION_ID AS orglocationId, RS.SUBMISSION_STATUS AS submissionStatus, CONCAT(RS.CREATED_USER, ' (', OL.ORG_NAME, ')') AS userAndOrgName, RS.UPDATED_DATE AS updatedDate	FROM" 
-	    +" REQUIREMENT_SUBMISSION RS, REQUIREMENT R, ORG_LOCATIONS OL, CANDIDATE C WHERE RS.VENDOR_LOCATION_ID IS NOT NULL AND C.ID = RS.CANDIDATE_ID AND R.ID = RS.REQUIREMENT_ID AND RS.VENDOR_LOCATION_ID = OL.ID"
-	     +" AND RS.ORG_LOCATION_ID = :orgLocationId";
-			return  session.createSQLQuery(query).setResultTransformer(Transformers.aliasToBean(ApplicantReceivedReportsDTO.class)).setLong("orgLocationId", orgLocationId).list();
-		}
+			
+			if(searchByValue != null && !"".equals(searchByValue)){
+				resultSqlQuery = query.concat(subQuery);
+				queryString = session.createSQLQuery(resultSqlQuery).setResultTransformer(Transformers.aliasToBean(ApplicantReceivedReportsDTO.class)).setLong("orgLocationId", orgLocationId).setDate("fromDate", startDateUTC).setDate("toDate", endDateUTC).setParameter("searchByValue", "%" +searchByValue + "%");
+			}else{
+				resultSqlQuery = query;
+				queryString = session.createSQLQuery(resultSqlQuery).setResultTransformer(Transformers.aliasToBean(ApplicantReceivedReportsDTO.class)).setLong("orgLocationId", orgLocationId).setDate("fromDate", startDateUTC).setDate("toDate", endDateUTC);
+			}
+			finalList = queryString.list();
+			return  finalList;
+		
 	}
 
 	@Override

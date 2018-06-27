@@ -203,6 +203,13 @@ $(window).load(function() {
   </script>
   
   <script type="text/javascript">
+  
+  $("#applicantBackoutReportsTableSearch").keydown(function(e) {
+	   if(e.which === 13) {
+		   getApplicantBackoutReportCount();
+		   getBackoutApplicantList();
+	   }
+	});
  
  function getBackoutApplicantList(){
 	 var searchValue = $("#applicantBackoutReportsTableSearch").val();
