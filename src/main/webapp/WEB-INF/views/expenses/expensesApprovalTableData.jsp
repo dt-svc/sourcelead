@@ -117,8 +117,12 @@
       <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus ==  'APPROVED'}">
       	<c:if test="${not empty expApproverHierarchy.reopenRejectedReason}">
       		<!--  <div class='sm text-center'title="Rejected"><h3 class='reje_color'>Rejected</h3></div> -->
+
       		 <%--  	<i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i> --%>
-      		<%--  <div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.reopenRejectedReason}</div> --%>
+      		<%--  <div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.reopenRejectedReason}</div> --%
+      		  	<%-- <i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i> --%>
+      		 <div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.reopenRejectedReason}</div>
+
       	</c:if>
       	<c:if test="${not empty expApproverHierarchy.actionPerformedBy}">
       		 <div class='sm text-center' title="Approved"> <h3>Approved</h3><br>By : ${expApproverHierarchy.actionPerformedBy}</div> 
