@@ -995,7 +995,7 @@ public class LeaveManagementRestController {
 				if (holidayDTO != null)
 					savedHoliday = holidayService.storeHoliday(holidayDTO);
 
-				List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocations.getId());
+				/*List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocations.getId());
 				if (projectsList != null && projectsList.size() > 0) {
 					for (Projects projects : projectsList) {
 						ProjectTasks tasks = new ProjectTasks();
@@ -1019,7 +1019,11 @@ public class LeaveManagementRestController {
 						tasks.setUpdatedDate(new Date());
 						projectTasksDao.addTasks(tasks);
 					}
+
 				}
+
+				}*/
+
 				//timesheetRestController.linkHolidaysWithTimeSheet(user, orgLocations, savedHoliday);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -2652,25 +2656,25 @@ public class LeaveManagementRestController {
 	}
 
 	@RequestMapping(value = { "/getApproversForLeave" }, method = RequestMethod.GET)
-	public @ResponseBody List<User> getApproversForLeave(@RequestParam(value = "userId", required = true) Long userId,
+	public @ResponseBody List<User> getApproversForLeave(@RequestParam(value = "userId", required = true) Long userId,@RequestParam(value = "notifyToOthers", required = false) String notifyToOthers,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+//		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 
 		UserRole selectedUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocations.getId());
-		List<User> approversList = new ArrayList<>();
-		boolean flag = false;
+//		List<User> approversLnotifyOthersist = new ArrayList<>();
+//		boolean flag = false;
 			List<User> appUser = new ArrayList<>();
 			
-			if(selectedUserRole.getReportingManager() != null){
+			if(!StringUtils.isNotBlank(notifyToOthers) && selectedUserRole.getReportingManager() != null){
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(selectedUserRole.getReportingManager().getId(),orgLocations.getId());
 				if (userRole != null) {
-					String roles = userRole.getRoles().getActionId();
-						if (roles.contains("238")) {
-							flag = true;
-						}
+//					String roles = userRole.getRoles().getActionId();
+//						if (roles.contains("238")) {
+//							flag = true;
+//						}
 						User user = userRole.getUser();
 						StringBuilder sb = new StringBuilder();
 						if (StringUtils.isNotBlank(user.getLastName())) {
@@ -2682,31 +2686,19 @@ public class LeaveManagementRestController {
 						user.setUserType(userRole.getUserType());
 						appUser.add(userRole.getUser());
 					}
-				
-				if(!flag){
-					userRole = userRoleService.getUserRoleByUserIdAndLocationId(orgLocations.getUser().getId(),orgLocations.getId());
-					if (userRole != null) {
-						String roles = userRole.getRoles().getActionId();
-							if (roles.contains("238")) {
-								flag = true;
-							}
-							User user = userRole.getUser();
-							StringBuilder sb = new StringBuilder();
-							if (StringUtils.isNotBlank(user.getLastName())) {
-							sb.append(user.getFirstName()).append(" ").append(user.getLastName());
-							} else {
-							sb.append(user.getFirstName());
-							}
-							user.setFullName(user.getFullName().toString());
-							user.setUserType(userRole.getUserType());
-							appUser.add(userRole.getUser());
-						}
+			}
+			
+			List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId,selectedUserRole.getRoles().getId(), orgLocations.getId());
+			for (User user : approversList) {
+				if(selectedUserRole.getReportingManager() != null) {
+					if(selectedUserRole.getReportingManager().getId().longValue() != user.getId().longValue())
+						appUser.add(user);
 				}
+			}
 			
 			
 			return appUser;
-		} else
-			return null;
+		
 	}
 
 	@RequestMapping(value = { "/validateCarryForwardLeaves", "/rest/validateCarryForwardLeaves" }, method = RequestMethod.GET)
@@ -2858,19 +2850,28 @@ public class LeaveManagementRestController {
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/reApplyLeaveByUUID")
 	public ModelAndView reApllyLeaveByUUID(@RequestParam(value = "leaveUUID", required = false) String leaveUUID,@RequestParam(value = "currentStage", required = false) String currentStage,HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response) throws Exception {
 		
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
+			UserRole role = userRoleService.getUserDetailsByUserIdAndLocationId(leave.getUser().getId(), orgLocation.getId());
+			List<LeaveApproveHierarchy> lahList = new ArrayList<>();
+			for(LeaveApproveHierarchy lah : leave.getApproverHierarchyList()) {
+				if(role.getReportingManager().getId().longValue() != lah.getApproverUserId().getId().longValue())
+					lahList.add(lah);
+			}
+			
 		
 			String fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), leave.getFromDate());
 			String toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), leave.getToDate());
 			
 			ModelAndView model = new ModelAndView();
 			model.addObject("leave", leave);
+			model.addObject("approversList", lahList);
 			model.addObject("leaveUUID", leaveUUID);
 			model.addObject("fromDate", fromDate);
 			model.addObject("toDate", toDate);
