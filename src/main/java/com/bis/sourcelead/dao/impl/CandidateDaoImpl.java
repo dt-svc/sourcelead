@@ -1714,7 +1714,8 @@ public class CandidateDaoImpl implements CandidateDao {
 					 query1.append(" Q1.candidateName like '%" + candidateDTO.getSearchValue() + "%' ")
 						.append("OR Q1.email like '%" + candidateDTO.getSearchValue() + "%' ")
 						.append("OR Q1.employementType like '%" + candidateDTO.getSearchValue() + "%' ")
-						.append("OR Q1.createdDate like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.vendorName like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.updatedDate like '%" + candidateDTO.getSearchValue() + "%' ")
 						.append("OR Q1.noticePeriod like '%" + candidateDTO.getSearchValue() + "%' ")
 						.append("OR Q1.primarySkill like '%" + candidateDTO.getSearchValue() + "%' ")
 						.append("OR Q1.country like '%" + candidateDTO.getSearchValue() + "%' ")
@@ -1773,10 +1774,10 @@ public class CandidateDaoImpl implements CandidateDao {
 					String toDate = sdf.format(searchDates[1]);
 					
 					if(flag == false) {
-						advSeach.append(" (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+						advSeach.append(" (Q1.updatedDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
 						flag = true;
 					}else {
-						advSeach.append(" OR (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+						advSeach.append(" OR (Q1.updatedDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
 					}
 					
 				 }
@@ -1844,7 +1845,13 @@ public class CandidateDaoImpl implements CandidateDao {
 					 		 "DATE_FORMAT(CAND.UPDATED_DATE ,\"%Y-%m-%d\") AS updatedDate, " + 
 					 		 "CAND.ORG_LOCATION_ID AS orgLocationId, " + 
 					 		 "CAND.ORG_RELATION_ID AS orgRelationId, " + 
-					 		 "OL.ORG_ID AS orgId " + 
+					 		 "OL.ORG_ID AS orgId, " + 
+					 		 "(SELECT " + 
+							 "ORG_NAME " + 
+							 "FROM " + 
+							 "ORG_LOCATIONS OL,ORG_RELATIONS ORL " + 
+							 "WHERE " + 
+							 "(OL.ID = ORL.LOCATION_ID OR OL.ID = ORL.RESPONDER_LOCATION_ID) AND OL.ID != :orgLocationId AND ORL.ID = CAND.ORG_RELATION_ID) AS vendorName " + 
 					 		 "FROM " + 
 					 		 "CANDIDATE CAND, " + 
 					 		 "ORG_LOCATIONS OL " + 

@@ -312,17 +312,9 @@ public class UsersListRestController {
 			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds,teamsList,departmentsList);
 				for(UserRole role : rolesList.getData()){
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
-					StringBuilder userName = new StringBuilder();
-					
 					userRoleDTO.setUserRoleName(role.getRoles().getDisplayName());
 					userRoleDTO.setIsMailSent(role.getIsMailSent().toString());
-					if(!isNullOrEmpty(role.getUser().getLastName())){
-						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
-						userRoleDTO.setUserName(userName.toString());
-					}
-					else{
-						userRoleDTO.setUserName(role.getUser().getFirstName());
-					}
+					userRoleDTO.setUserName(role.getUser().getFullName());
 					userRoleDTO.setUserEmail(role.getUser().getEmail());
 					userRoleDTO.setUserId(role.getUser().getId());
 					userRoleDTO.setUserCode(role.getUser().getUserCode());

@@ -75,7 +75,7 @@
 									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
 									style="display: none;" id="uploadBtn"
-									data-validation="required validate_importFile">
+									data-validation="required validate_xls_importFile">
 								</label>
 								<div class="clearfix"></div>
 								<label id="newUploadFile"></label> 
@@ -110,8 +110,6 @@
 							<p>
 								<label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label> <label><i
 									class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label> <label><i
-									class="fa fa-map-marker"></i>&nbsp;&nbsp;Address</label> <label><i
-									class="fa fa-map-marker"></i>&nbsp;&nbsp;Country</label> <label><i
 									class="fa fa-black-tie"></i>&nbsp;&nbsp;Employment Type</label>
 							</p>
 						</span>

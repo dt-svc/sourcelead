@@ -8,7 +8,7 @@
 
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Report(s) Dashboard</h2>
+        <h2>Reports Dashboard</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Reports Dashboard</div>
     </section>
@@ -31,31 +31,31 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
-				 <li><a href='${appPath}/recruitersReports'>Recruiters Reports</a></li>
+				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
 				 </sec:authorize>
 				
 				 <sec:authorize access="hasRole('ROLE_VENDORS_REPORT')">
-				 <li><a href="${appPath}/vendorsReports">Vendors Reports</a></li>
+				 <li><a href="${appPath}/vendorsReports">Vendor(s) Report</a></li>
 				 </sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_CLIENT_REPORT')">
-				<li><a href="${appPath}/perfomanceClientReports">Client Reports</a></li>
+				<li><a href="${appPath}/perfomanceClientReports">Client(s) Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_DECLINE')">
-				<li><a href="${appPath}/applicantDeclineReports">Applicants Decline</a></li>
+				<li><a href="${appPath}/applicantDeclineReports">Applicant(s) Decline</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_BACKOUT')">
-				<li><a href="${appPath}/applicantsBackoutReport">Applicants Backout</a></li>
+				<li><a href="${appPath}/applicantsBackoutReport">Applicant(s) Backout</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_JOBS_PIPELINE')">
-				<li><a href="${appPath}/jobPipelineReports">Jobs Pipeline</a></li>
+				<li><a href="${appPath}/jobPipelineReports">Job(s) Pipeline</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_SOURCE')">
-				<li><a href="${appPath}/applicantBySource">Applicants Source</a></li>
+				<li><a href="${appPath}/applicantBySource">Applicant(s) by Source</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIME_TO_FILL')">
@@ -63,18 +63,18 @@
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_RECEIVED')">
-				<li><a href="${appPath}/applicantsReceivedListForReports">Applicants Received</a></li>
+				<li><a href="${appPath}/applicantsReceivedListForReports">Applicant(s) Received</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_JOBS_STAGES')">
-				<li><a href="${appPath}/requirementStagesListForReports">Jobs Stages</a></li>
+				<li><a href="${appPath}/requirementStagesListForReports">Job(s) Stage</a></li>
 				</sec:authorize>
 				
 				</ul>
 			</div>
                  <!-- Dropdown -->
  				<div class="clearfix text-center mb10"><i class="perReport"></i></div>
-                  <div class="clearfix text-center"> <h4><a href="#">Performance Report</a></h4></div>
+                  <div class="clearfix text-center"> <h4><a href="${appPath}/performanceReportList">Performance Report</a></h4></div>
               </div>
               
            </sec:authorize>   
@@ -108,27 +108,29 @@
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_INVOICE')">
 					<c:if test="${SourceLeadWeb_ats == 'Y'}">
-					<li><a href='${appPath}/missingInvoiceReport'>Missing Invoices</a></li>
+					<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice(s)</a></li>
 					</c:if>
+				</sec:authorize>
+				
+				<sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
+				<c:if test="${SourceLeadWeb_ats == 'Y'}">
+			     <li><a href='${appPath}/receivedInvoiceReport'>Received Invoice(s)</a></li>    
+			     </c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_BILL')">
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='${appPath}/missingBillReport'>Missing Bills</a></li>
+				<li><a href='${appPath}/missingBillReport'>Missing Bill(s)</a></li>
 				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_PAID_BILL')">
 					<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				    <li><a href='${appPath}/paidBillReport'>Paid Bill</a></li>
+				    <li><a href='${appPath}/paidBillReport'>Paid Bill(s)</a></li>
 				    </c:if>
 				</sec:authorize>
 				
-				<sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
-				<c:if test="${SourceLeadWeb_ats == 'Y'}">
-			     <li><a href='${appPath}/receivedInvoiceReport'>Received Invoices</a></li>    
-			     </c:if>
-				</sec:authorize>
+				
 			    
 				<!-- <li><a href="#">Profit &amp; Loss</a></li>
 				<li><a href="#">Balance Sheet</a></li>
@@ -147,7 +149,7 @@
                  <!-- Dropdown -->
                  
                   <div class="clearfix text-center mb10"><i class="finReport"></i></div>
-                  <div class="clearfix text-center"><h4><a href="#">Financial Report</a></h4></div>
+                  <div class="clearfix text-center"><h4><a href="${appPath}/financialReportsList">Financial Report</a></h4></div>
                   </div>
      </sec:authorize>             
                   
@@ -163,19 +165,19 @@
 				<%-- <li><a href="${appPath}/dailyTimeSheetReports">Daily Timesheet Report</a></li> --%>
 
 				<sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Reports</a></li>
+				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
-				  <li><a href="${appPath}/timeSheetReports">Timesheet Reports</a></li>
+				  <li><a href="${appPath}/timeSheetReports">Timesheet Monthly Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">
-				<li><a href="${appPath}/expensesReportsList">Expenses</a></li>
+				<li><a href="${appPath}/expensesReportsList">Expense(s)</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_TIMESHEETS')">
-                <li><a href="${appPath}/missingTimesheetsReport">Missing Timesheets</a></li>
+                <li><a href="${appPath}/missingTimesheetsReport">Missing Timesheet(s)</a></li>
                 </sec:authorize>
                 
                 <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
@@ -183,7 +185,7 @@
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-				<li><a href="${appPath}/employementVerificationReport">Employement Verification Reports</a></li>
+				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
 				<!-- <li><a href="#">Employment Verficication</a></li>
 				<li><a href="#">Wage and Tax</a></li>
@@ -196,7 +198,7 @@
                  <!-- Dropdown -->
                  
                   <div class="clearfix text-center mb10"><i class="hrReport"></i></div>
-                  <div class="clearfix text-center"><h4><a href="#">HR Report</a></h4></div>
+                  <div class="clearfix text-center"><h4><a href="${appPath}/hrReportsList">HR Report</a></h4></div>
      </div>
      </sec:authorize>
      
@@ -211,14 +213,14 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_ROI')">
-					<li><a href="${appPath}/payrollReport">Associate ROI</a></li>
+					<li><a href="${appPath}/payrollReport">Associate(s) ROI</a></li>
 					</sec:authorize>
 					
 					<sec:authorize access="hasRole('ROLE_ALL_ASSOCIATE_ROI')">
 					<li><a href="${appPath}/payrollAllBalanceReport">All Associates ROI</a></li>
 					</sec:authorize>
 					<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
-					<li><a href='${appPath}/campaignStats'>Campaign Reports</a></li>
+					<li><a href='${appPath}/campaignStats'>Campaign(s) Report</a></li>
 					</sec:authorize>
 					<!--<li><a href="#">Bank Report</a></li>
 					 <li><a href="#">Performance</a></li>
@@ -233,7 +235,7 @@
                   
                   
                   <div class="clearfix text-center mb10"><i class="assReport"></i></div>
-                  <div class="clearfix text-center"><h4 class="text-danger"><a href="#">Associate Report</a></h4></div>
+                  <div class="clearfix text-center"><h4 class="text-danger"><a href="${appPath}/associateReportsList">Associate Report</a></h4></div>
                       </div>
                       
               </sec:authorize>       
@@ -248,7 +250,7 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 			     <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-				<li><a href="${appPath}/userUsageReport">Usage Reports</a></li>
+				<li><a href="${appPath}/userUsageReport">Usage Report(s)</a></li>
 				</sec:authorize>
 					
 				</ul>
@@ -257,8 +259,8 @@
                   
                   
                   
-                  <div class="clearfix text-center mb10"><i class="perReport"></i></div>
-                  <div class="clearfix text-center"><h4><a href="#">Users Usage Reports</a></h4></div>
+                  <div class="clearfix text-center mb10"><i class="useReport"></i></div>
+                  <div class="clearfix text-center"><h4><a href="${appPath}/userUsageReport">Users Usage Report</a></h4></div>
                       </div>
                       
               </sec:authorize>     
@@ -271,31 +273,31 @@
                 <h2><a href="javascript:void(0)">Performance Reports</a></h2>
                 <ul class="repSearchList">
  				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
-				 <li><a href='${appPath}/recruitersReports'>Recruiters Reports</a></li>
+				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
 				 </sec:authorize>
 				
 				 <sec:authorize access="hasRole('ROLE_VENDORS_REPORT')">
-				 <li><a href="${appPath}/vendorsReports">Vendors Reports</a></li>
+				 <li><a href="${appPath}/vendorsReports">Vendor(s) Report</a></li>
 				 </sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_CLIENT_REPORT')">
-				<li><a href="${appPath}/perfomanceClientReports">Client Reports</a></li>
+				<li><a href="${appPath}/perfomanceClientReports">Client(s) Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_DECLINE')">
-				<li><a href="${appPath}/applicantDeclineReports">Applicants Decline</a></li>
+				<li><a href="${appPath}/applicantDeclineReports">Applicant(s) Decline</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_BACKOUT')">
-				<li><a href="${appPath}/applicantsBackoutReport">Applicants Backout</a></li>
+				<li><a href="${appPath}/applicantsBackoutReport">Applicant(s) Backout</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_JOBS_PIPELINE')">
-				<li><a href="${appPath}/jobPipelineReports">Jobs Pipeline</a></li>
+				<li><a href="${appPath}/jobPipelineReports">Job(s) Pipeline</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_SOURCE')">
-				<li><a href="${appPath}/applicantBySource">Applicants Source</a></li>
+				<li><a href="${appPath}/applicantBySource">Applicant(s) by Source</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIME_TO_FILL')">
@@ -303,11 +305,11 @@
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_RECEIVED')">
-				<li><a href="${appPath}/applicantsReceivedListForReports">Applicants Received</a></li>
+				<li><a href="${appPath}/applicantsReceivedListForReports">Applicant(s) Received</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_JOBS_STAGES')">
-				<li><a href="${appPath}/requirementStagesListForReports">Jobs Stages</a></li>
+				<li><a href="${appPath}/requirementStagesListForReports">Job(s) Stage</a></li>
 				</sec:authorize>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
@@ -334,27 +336,29 @@
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_INVOICE')">
 					<c:if test="${SourceLeadWeb_ats == 'Y'}">
-					<li><a href='${appPath}/missingInvoiceReport'>Missing Invoices</a></li>
+					<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice(s)</a></li>
 					</c:if>
+				</sec:authorize>
+				
+				<sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
+				<c:if test="${SourceLeadWeb_ats == 'Y'}">
+			     <li><a href='${appPath}/receivedInvoiceReport'>Received Invoice(s)</a></li>    
+			     </c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_BILL')">
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='${appPath}/missingBillReport'>Missing Bills</a></li>
+				<li><a href='${appPath}/missingBillReport'>Missing Bill(s)</a></li>
 				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_PAID_BILL')">
 					<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				    <li><a href='${appPath}/paidBillReport'>Paid Bill</a></li>
+				    <li><a href='${appPath}/paidBillReport'>Paid Bill(s)</a></li>
 				    </c:if>
 				</sec:authorize>
 				
-				<sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
-				<c:if test="${SourceLeadWeb_ats == 'Y'}">
-			     <li><a href='${appPath}/receivedInvoiceReport'>Received Invoices</a></li>    
-			     </c:if>
-				</sec:authorize>
+				
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
@@ -362,19 +366,19 @@
                 <h2><a href="javascript:void(0)">HR Reports</a></h2>
                 <ul class="repSearchList">
                    <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Reports</a></li>
+				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
-				  <li><a href="${appPath}/timeSheetReports">Timesheet Reports</a></li>
+				  <li><a href="${appPath}/timeSheetReports">Timesheet Monthly Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">
-				<li><a href="${appPath}/expensesReportsList">Expenses</a></li>
+				<li><a href="${appPath}/expensesReportsList">Expense(s)</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_TIMESHEETS')">
-                <li><a href="${appPath}/missingTimesheetsReport">Missing Timesheets</a></li>
+                <li><a href="${appPath}/missingTimesheetsReport">Missing Timesheet(s)</a></li>
                 </sec:authorize>
                 
                 <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
@@ -382,7 +386,7 @@
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-				<li><a href="${appPath}/employementVerificationReport">Employement Verification Reports</a></li>
+				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
@@ -393,14 +397,14 @@
                 <h2><a href="javascript:void(0)">Associate Report</a></h2>
                 <ul class="repSearchList">
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_ROI')">
-					<li><a href="${appPath}/payrollReport">Associate ROI</a></li>
+					<li><a href="${appPath}/payrollReport">Associate(s) ROI</a></li>
 					</sec:authorize>
 					
 					<sec:authorize access="hasRole('ROLE_ALL_ASSOCIATE_ROI')">
 					<li><a href="${appPath}/payrollAllBalanceReport">All Associates ROI</a></li>
 					</sec:authorize>
 					<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
-					<li><a href='${appPath}/campaignStats'>Campaign Reports</a></li>
+					<li><a href='${appPath}/campaignStats'>Campaign(s) Report</a></li>
 					</sec:authorize>               
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
@@ -410,7 +414,7 @@
                 <h2><a href="javascript:void(0)">Users Usage Reports</a></h2>
                 <ul class="repSearchList">
                 <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-				<li><a href="${appPath}/userUsageReport">Usage Reports</a></li>
+				<li><a href="${appPath}/userUsageReport">Usage Report(s)</a></li>
 				</sec:authorize>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
