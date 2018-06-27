@@ -88,14 +88,17 @@ public class RequirementReportRestController {
 	  * @throws Exception
 	  */
 	@RequestMapping(value = "/getRequirementReports")
-	public String getRequirementReports(@RequestParam(value = "reportType", required = false) String reportType, @RequestParam(value = "startDate", required = false) String customStartDate,
-			@RequestParam(value = "endDate", required = false) String customEndDate,@RequestParam(value = "status", required = false) String status,
+	public String getRequirementReports(@RequestParam(value = "reportType", required = false) String reportType, 
+			@RequestParam(value = "startDate", required = false) String customStartDate,
+			@RequestParam(value = "endDate", required = false) String customEndDate,
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName, orgLocation, user, reportType,customStartDate,customEndDate,status);
+		List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName, orgLocation, user, reportType,customStartDate,customEndDate,status,searchValue);
 		String reportsList;
 		if (null != requirementList) {
 			reportsList = commonUtil.toJSON(requirementList);

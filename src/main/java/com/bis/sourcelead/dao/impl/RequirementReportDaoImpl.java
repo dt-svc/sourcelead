@@ -39,12 +39,13 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC,String status) {
+	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC,String status,String searchValue) {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		Map<String, Object> params = new HashMap<String,Object>();
 		List<Requirement> mainList = null;
 		String filterQuery = "";
+		String searchQuery = "";
 		String dateSubQuery = "";
 		String[] reqStatus = null;
 		if(null != status && !"".equals(status)){	
@@ -83,11 +84,15 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			params.put("endDateUTC",endDateUTC);
 		}
 	    
+	    if(searchValue !=null && !"".equals(searchValue)){
+	    	searchQuery = "AND ((REQ.JOB_TITLE like :searchValue) OR (REQ.GENERATED_ID like :searchValue) OR  (REQ.REQUIREMENT_SUBMISSION_STATUS like :searchValue) OR (CONCAT(REQ.GENERATED_ID,'',REQ.JOB_TITLE) like :searchValue) OR ( U.FIRST_NAME like :searchValue) OR (CONCAT(U.FIRST_NAME,' ',IFNULL(U.LAST_NAME, '')) like :searchValue))";
+	    }
+	    
 	    if(!list.isEmpty() && null != list){
 	    	filterQuery = " AND REQ.REQUIREMENT_SUBMISSION_STATUS IN (:statusList)";
 	    	params.put("statusList",list);
 	    }
-		String from = "SELECT REQ.* FROM REQUIREMENT REQ LEFT JOIN ORG_RELATIONS ORGL ON ORGL.ID = REQ.ORG_RELATION_ID"; 
+		String from = "SELECT REQ.* FROM REQUIREMENT REQ LEFT JOIN ORG_RELATIONS ORGL ON ORGL.ID = REQ.ORG_RELATION_ID LEFT JOIN USER U ON U.ID = REQ.MANAGER_USER_ID"; 
 		String subQuery = "";
 		
 		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
@@ -121,7 +126,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			}
 			
 		}
-		String whereCondition = subQuery +dateSubQuery+filterQuery;
+		String whereCondition = subQuery +dateSubQuery+filterQuery+searchQuery;
 		String listQuery = from+" "+whereCondition+" ORDER BY REQ.ID DESC";
 		
 		Query query = session.createSQLQuery(listQuery).addEntity(Requirement.class);
@@ -149,6 +154,8 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 				query.setDate(str,startDateUTC);
 			}else if (str.equalsIgnoreCase("endDateUTC")) {
 				query.setDate(str, endDateUTC);
+			}else if(str.equalsIgnoreCase("searchValue")){
+				query.setParameter(str, "%"+ searchValue +"%");
 			}
 
 		}

@@ -76,7 +76,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	private RequirementLocationsService requirementLocationsService;
 	
 	@Override
-	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String reportType, String customStartDate, String customEndDate,String status) throws Exception
+	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String reportType, String customStartDate, String customEndDate,String status,String searchValue) throws Exception
 	{
 		//SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 				Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
@@ -140,7 +140,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				Calendar cal = Calendar.getInstance();
 			    Date date=cal.getTime();
 	 System.out.println("======== first time======="+date);
-		List<Requirement> requirementList = requirementReportDao.getRequirementReports(userRoleName, orgLocation, user,filterDate, startDateUTC, endDateUTC,status);
+		List<Requirement> requirementList = requirementReportDao.getRequirementReports(userRoleName, orgLocation, user,filterDate, startDateUTC, endDateUTC,status,searchValue);
 	    
 		Map<Long,Requirement> requirementMap = new HashMap<Long,Requirement>();
 		List<Long> reqIdsList = new ArrayList<Long>();

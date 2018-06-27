@@ -25,7 +25,15 @@ window.onload = function() {
 </script>
 
 <script>
+$("#reqStagesReportsTableSearch").keydown(function(e) {
+	   if(e.which === 13) {
+		   getRequirementList();
+	   }
+	});
+
 function getRequirementList(){
+	var searchValue = $("#reqStagesReportsTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
 	    var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() 
 	    {
@@ -34,7 +42,7 @@ function getRequirementList(){
 		$("#reqStagesLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	    $.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status,    
+	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&searchValue="+searchValue,    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
@@ -366,7 +374,7 @@ function getRequirementStageCounts(countObj){
 			    </div>
 	        </li>    	
     		<li class="dataTabPdf">&nbsp;</li> 
-    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='applicantDeclineReportsTableSearch' onkeyup="getDeclineApplicants();getDeclineApplicantList();"/><span class="repSearchIcon" onClick="userDataTableList();"></span></li>
+    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='reqStagesReportsTableSearch'/><span class="repSearchIcon" onClick="getRequirementList();"></span></li>
     	</ul>
     </div>      
   
