@@ -532,5 +532,16 @@ public class ConversionUtil {
 		yearDates[1] = endDate;
 		return yearDates;
 	}
+
+	public Date[] getMonthStartDateEndDate()
+	{
+		Date[] dates = new Date[2];
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.DATE, 1);
+		dates[0] = c.getTime();
+		c.set(Calendar.DATE, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+		dates[1] = c.getTime();
+		return dates;
+	}
 	
 }

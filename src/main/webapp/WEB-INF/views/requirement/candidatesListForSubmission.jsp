@@ -308,6 +308,12 @@ function checkShareCandidates(elem) {
 function getCandidatesTableList(){
 	
 	
+	var searchData = $('#candDataTableSearch').val();
+   	if(searchData != '' && searchData != 'undefined' && (searchData.endsWith("-") || searchData.endsWith("\\"))){
+   	 $('#candDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+   	 $("#candDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	}else{
+   	 $('#candDataTableSearch').parent().find('p.jquery_form_error_message').remove();
 	 var primarySkill = "";
 	 var designationType = "";
 	 var noticePeriod = "";
@@ -349,6 +355,7 @@ function getCandidatesTableList(){
 	 searchValue = searchValue ? searchValue : "";
 	 var url = sourceleadUrl+"/getCandidatesListForJobBulkSubmission?searchValue="+searchValue+"&primarySkill="+primarySkill+"&designationType="+designationType+"&noticePeriod="+noticePeriod+"&vendor="+vendor+"&createdDate="+createdDate+"&candidateSkills="+candidateSkills+"&city="+city+"&requirementId="+requirementId;
 	 candidatesListPagination(url,sourceleadUrl);
+	}
 }
 </script>
 
@@ -468,7 +475,12 @@ function candidatesListPagination(url,sourceleadUrl){
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.updatedDate+"'>"+opt.updatedDate+"</div></td>";
+	            	    if(opt.updatedDate != null && opt.updatedDate != '' && opt.updatedDate!= 'undefined'){
+	            	    	result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.updatedDate+"'>"+opt.updatedDate+"</div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.createdDate+"'>"+opt.createdDate+"</div></td>";
+	            	    }
+	            	    
 	            		return result;
 	              }
 		     },{
@@ -507,12 +519,19 @@ function candidatesListPagination(url,sourceleadUrl){
     	   if(e.which === 13) {
    		    $('#candDataTableSearch').parent().find('p.jquery_form_error_message').remove();
    	    	var searchData = $('#candDataTableSearch').val();
-   	    	var regex =  new RegExp(/[\\-]/g);
+   	    /* 	var regex =  new RegExp(/[\\-]/g);
    	    	if(regex.test(searchData) == false){
    	    		getCandidatesTableList();
    	    	}else{
    	    		$("#candDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	    	} */
+   	    	
+   	    	if(searchData.endsWith("-") || searchData.endsWith("\\")){
+   	    		$("#candDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	    	}else{
+   	    		getCandidatesTableList();
    	    	}
+   	    	
    	    	$('#candDataTableSearch').val(searchData);
     	   }
     	});

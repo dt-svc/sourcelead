@@ -1667,7 +1667,6 @@ public class UserServiceImpl implements UserService {
 	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId) {
 		try {
 			DashboardItems dashboardItems = userDao.getDashboardItemsByUserId(loginUserId, orgLocationId);
-			
 			if (dashboardItems != null) {
 				DashboardItemsDTO dashboardItemsDTO = new DashboardItemsDTO();
 				

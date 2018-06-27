@@ -18,9 +18,9 @@ $(window).load(function() {
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Applicant(S) Decline</h2>
+        <h2>Applicant(s) Decline</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Report(s) Dashboard</a> &raquo; Applicant(S) Decline </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) Decline </div>
    
     </section>
     <!-- hiring Process  -->
@@ -39,7 +39,7 @@ $(window).load(function() {
 		<div class="col-md-6 ReqRepHead-chosen">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
             <c:forEach var="option" items="${requirementsList}">
-				<option value="${option.requirementId}">${option.jobTitle}</option>
+				<option value="${option.requirementId}"> ${option.generatedId} - ${option.jobTitle} </option>
 			</c:forEach>
           </select>
         </div>
@@ -139,7 +139,14 @@ function getDeclineApplicants(){
 		    		    showError(response.responseMessage);
 		    	  	} else if (response.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
-		    		} else if (response.response === "SUCCESS") {
+		    		} else if(response.response === "DATA_NOT_FOUND"){
+		    			var result = '';
+		 	   			result = result+"<div class='dataTables_empty'>"; 
+		 	   			result = result+"</div> ";
+		 	   	        $("#applicantDecline").empty();
+		                $("#applicantDecline").append(result);
+		    		}
+		    	  	else if (response.response === "SUCCESS") {
 		    			
 		    			var total=response.object.skillsCount + response.object.unsuitableCount + response.object.badfitCount + response.object.interviewCount + response.object.salaryCount + response.object.otherCount;
 				    	
@@ -251,6 +258,7 @@ function getDeclineApplicantList(){
 			             result  = result + '    <table class="table table-bordered" id="applicantDeclinePagenationId">     ';
 						 result  = result + '     <thead>                                 ';
 						 result  = result + '       <tr>                                  ';
+						 result  = result + '         <th>Id</th>                       ';
 						 result  = result + '         <th>Jobs</th>                       ';
 						 result  = result + '         <th>Skills</th>                     ';
 						 result  = result + '         <th>Unsuitable Personality</th>     ';
@@ -266,7 +274,8 @@ function getDeclineApplicantList(){
 							 var report = response.data[i];
 							 
 							 if(report.totalCount>0){
-								 result  = result + '       <tr>                                  ';	
+							result  = result + '       <tr>                                  ';	
+							 result  = result + '		  <td><div>'+report.generatedId+'</div></td>  ';	 
 							 result  = result + '		  <td><div>'+report.jobName+'</div></td>  ';
 							 result  = result + '         <td><div>'+report.skillsCount+'</div></td>               ';
 							 result  = result + '         <td><div>'+report.unsuitableCount+'</div></td>               ';

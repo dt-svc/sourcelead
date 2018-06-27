@@ -7,97 +7,171 @@ import javax.persistence.Column;
 import com.bis.sourcelead.annotations.Required;
 
 public class LeaveTypeDTO {
+	
 	@Required(desc = "Name")
 	private String name;
+	
 	@Required(desc = "Duration")
+	
 	private String duration;
+	
 	private String hours;
+	
 	private String hoursType;
+	
 	private String billingType;
+	
 	private String applicableToUsers;
-//	@Required(desc = "Department", either = "[Roles,leveEmpType]")
+
+	//	@Required(desc = "Department", either = "[Roles,leveEmpType]")
 	private String department;
-//	@Required(desc = "Roles", either = "[Department,leveEmpType]")
+
+	//	@Required(desc = "Roles", either = "[Department,leveEmpType]")
 	private List<String> roles;
-//	@Required(desc = "leveEmpType", either = "[Department,Roles]")
+
+	//	@Required(desc = "leveEmpType", either = "[Department,Roles]")
 	private List<String> leveEmpType;
+	
 	private String carryforward;
+	
 	private String noOfLeavesPerYear;
+	
 	private String description;
+	
 	private String leavePolicy;
+	
 	@Required(desc = "Policy Name", dependsOn="leavePolicy",parentValue="Y")
 	private String policyName;
+	
 	private String visibilityToAllUsers;
+	
 	@Required(desc = "Policy Description", dependsOn="leavePolicy",parentValue="Y")
+	
 	private String leavePolicyDescription;
+	
 	private String orgLocationId;
+	
 	private String noOfLeavesPerMonth;
+	
 	private String loginUserId;
+	
 	private long leaveTypeId;
+	
 	private String deleteReason;
+	
 	@Required(desc = "Color Code",dependsOn="leaveEffective",parentValue={"All Employees","Experienced"})
+	
 	private String colorCode;
+	
 	private int approvedCount;
+	
 	private int pendingCount;
+	
 	private int rejectedCount;
+	
 	private int cancelCount;
+	
 	private String numberOfDaysCount;
+	
 	private String status;
+	
 	@Required(desc = "Period")
 	private String period;
+	
 	@Required(desc = "Leave Effective")
 	private String leaveEffective;
+	
 	@Required(desc = "New Joinee",dependsOn="leaveEffective",parentValue="Experienced")
 	private String newJoinee;
+	
 	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
 	private String experiencedType;
+	
 	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
 	private String experiencedDuration;
+	
 	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
 	private String experiencedApplicableDays;
+	
 	private String reasonRequired;
+	
 	private String attachmentRequired;
+	
 	private String overdrawLeaves;
+	
 	private String donateLeave;
+	
 	private String priorLeaveApplying;
+	
 	@Required(desc = "Min Days", dependsOn="priorLeaveApplying",parentValue="Y")
 	private String priorDays;
+	
 	private String leaveDuration;
+	
 	@Required(desc = "Min Days", dependsOn="leaveDuration",parentValue="Y")
 	private String minDays;
+	
 	@Required(desc = "Max Days", dependsOn="leaveDuration",parentValue="Y")
 	private String maxDays;
+	
 	@Required(desc = "No. of Days",dependsOn="leaveEffective",parentValue="All Employees")
 	private String noOfDays;
+	
 	private String leaveTypeUUID;
 	
 	private float totalApprovedCount;
+	
 	private float totalPendingCount;
+	
 	private float totalRejectedCount;
+	
 	private float totalCancelCount;
+	
 	private float totalNoOfDays;
+	
 	private String createdUser;
+	
 	private String updatedUser;
 	
 	private Float noOfDaysPerPeriod;
+	
 	private String autoApprove;
+	
 	private String autoApproveType;
+	
 	private List<String> autoApproveTypeList;
+	
 	private String timeSheetAutofill;
+
+	
 	private String effectiveGender;
+	
 	private String previousNoOfdays;
+	
 	private String updateCount;
 	
 	private String includeWeekoff;
+	
 	private String includeHoliday;
+	
 	private String visibleInBalanceLeaves;
+	
 	private Integer noOfdaysToCarryforward;
+	
 	private String leaveAllowability;
+	
 	private String includeInPayRoll;
+	
 	private String leaveEncashment;
+	
 	private Integer leaveEncashMinDays;
+	
 	private Integer leaveEncashMaxDays;
+	
 	private String accuralPolicy;
+	
+	private Float previousNoOfDaysPerPeriod;
+	
 	public String getName()
 	{
 		return name;
@@ -657,6 +731,14 @@ public class LeaveTypeDTO {
 	public void setAccuralPolicy(String accuralPolicy)
 	{
 		this.accuralPolicy = accuralPolicy;
+	}
+	public Float getPreviousNoOfDaysPerPeriod()
+	{
+		return previousNoOfDaysPerPeriod;
+	}
+	public void setPreviousNoOfDaysPerPeriod(Float previousNoOfDaysPerPeriod)
+	{
+		this.previousNoOfDaysPerPeriod = previousNoOfDaysPerPeriod;
 	}
 	
 	
