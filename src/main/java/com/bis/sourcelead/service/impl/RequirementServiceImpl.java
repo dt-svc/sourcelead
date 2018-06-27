@@ -1515,6 +1515,11 @@ public class RequirementServiceImpl implements RequirementService {
 		Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		return requirement;
 	}
+	
+	@Override
+	public Requirement getRequirementByRequirementIdAndSearchValue(Long requirementId,String searchValue) throws Exception {
+		return requirementDao.getRequirementByRequirementIdAndSearchValue(requirementId,searchValue);
+	}
 
 	/**
 	 * @author Venkat Kesav

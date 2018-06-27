@@ -136,21 +136,33 @@ function toDate(selector) {
 }
 </script>
 <section class="content-wraper">
-  <section class="content-header clearfix">
-    <div class="pull-left">
-      <h2 class="pull-left">Applicant(s) Received</h2>
-		
-    </div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) Received </div>
-  </section>
-  <div class="timesheet_out">
-    <div class="vendor_wrap">
-     
-      <div class="timesheet_head">
 
-<div class="pull-left reportBtns reportBtns_custom mt5">
-	  <div class="reportBtn dropdown-select reportBtn_custom_btn">
-		<select class="form-control" id="reportTypeId" onChange="custDates();flushCustomDates();">
+  <section class="content-header clearfix">
+    <div class="pull-left"><h2 class="pull-left">Applicant(s) Received</h2> </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) Received </div>
+  </section>
+  
+    <div class="vendor_wrap clearfix">
+          
+<div class="reportHead clearfix">
+	<div class="listGridWrap reqListBtn">
+		<a id="listView" class="btn btn-default rAct" title="Grid List"><i class="fa fa-list"></i></a>
+		<a id="gridView" class="btn btn-default" onclick="getDefaultChart()" title="Pie chart"><i class="fa fa-pie-chart"></i></a>	
+	</div>
+	
+    	<ul class="clearfix pull-right">
+    		<li>
+				<div class="ReqRepHead-chosen repChosen">
+			          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
+			            <c:forEach var="option" items="${requirementsList}">
+							<option value="${option.requirementId}">${option.jobTitle}</option>
+						</c:forEach>
+			          </select>
+		        </div>    		
+    		</li>
+    		<li>
+       <div class="dropdown-select positionRelative repSelWrap clearfix">
+		<select class="form-control repSelFiled" id="reportTypeId" onChange="custDates();flushCustomDates();">
 		<option value="">-- Select --</option> 
 		  <option value="today" selected>Today</option>
 		  <option value="yesterday">Yesterday</option>
@@ -159,54 +171,36 @@ function toDate(selector) {
 		  <option value="month">1 Month</option>
 		  <option value="twomonths">2 Months</option>
 		   <option value="custom">Custom</option> 
-		</select>
-	 </div>	
-	<span class="repoBtns">
-			<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
-			<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart()" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
-			</span>	
-	<div class="col-md-7">
-		 <span class="dashboard-datepkr cusShow">
-		 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-		 <p id="reportStartDate" class="ReError" style="display: none"></p>
-		 </span>
-		<span class="dashboard-datepkr cusShow">
-		<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-		<p id="reportEndDate" class="ReError" style="display: none"></p>
-		</span>
-		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getDayWiseReports();" /></span>
-		</div>
-		
-		
-	</div>
-	 <div class="col-md-2" id = "RunApplicantDivId">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getDayWiseReports();">Run</button>
-		</div>
-                     
-        <!-- <ul style="padding: 2px 300px 2px 0px;">
-          <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
-            <div class="export_pop">
-              <ul>
-                <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                <li>Word<i class="fa fa-file-word-o"></i></li>
-              </ul>
-            </div>
-          </li>
-
-          <div class="clearfix"></div>
-        </ul> -->
-        <div class="clearfix"></div>
-      </div>
+		</select>          
+          
+		<div class="repSelBtn" id="RunApplicantDivId"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getDayWiseReports();">Run</button></div> 
+          
+            <!-- Custom Date -->
+				 <div class="clearfix customLeaves repCustomDate">
+					<div class="repCustomDateInn">
+					 	<input type="text" class="form-control calendar" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" readonly="readonly" placeholder="Start Date">
+					 	<p id="reportStartDate"></p>
+					 </div>
+					 
+					<div class="repCustomDateInn">
+						<input type="text"  class="form-control calendar" value="" id="ExportEndDate" name="EndDate" field-name="End Date" readonly="readonly" placeholder="End Date">
+						<p id="reportEndDate"></p>
+					</div>
+					
+					<div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" onclick="getDayWiseReports();"><i class="fa fa-search"></i></button></div>
+				</div>                    
+          <!-- Custom Date --> 
+        </div>    		
+    		</li>
+    		<li class="dataTabPdf">&nbsp;</li> 
+    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='applicantDeclineReportsTableSearch' onkeyup="getDeclineApplicants();getDeclineApplicantList();"/><span class="repSearchIcon" onClick="userDataTableList();"></span></li>
+    	</ul>
+    </div>       
      
-   <div class="repTab1  clearfix mt10">    
+   <div class="repTab1 clearfix" id="listshow" style="display: block;">   
+    
 	<div class="reportsCount">
 		<ul>
-		
-
-
-
-
 			<li title="Applicants" id="applicantsli">
 				<span><i class="fa fa-users"></i></span><b id="applicantCount">0</b>
 			</li>
@@ -229,19 +223,19 @@ function toDate(selector) {
 		</ul>
 	</div>
 
-  <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                 <div id="requirementReportsDiv12" class="repoPositi"></div>
-                </div>      
+  	<div class="project_tabs_inn_table vendor_wrap_inn_table" >
+		<div id="requirementReportsDiv12" class="repDataSearch"></div>
+	</div>      
+       </div>
+	<div class="repTab2" id="gridshow" style="display: none;">
+	 <div id="applicantsLoderDiv"></div>
+	  	<div class="chatNew" id="container"></div>	 
+	  </div>       
       
- </div>
+
+ 
 </div>
-<div class="repTab2">
- <div id="applicantsLoderDiv"></div>
-  	<div class="chatNew" id="container"></div>	 
-  </div>                 
       
- </div>
-  </div>
 </section>
 <!--   Error Message   -->
 <div class="vendor_wrap_mask"></div>
@@ -256,7 +250,7 @@ function custDates(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
 		document.getElementById("RunApplicantDivId").style.display="none";
-	    $(".cusShow").show();
+	    $(".customLeaves").show();
 	    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatAppreports = getJSDateFormat(locationDate);
 		$('#ExportStartDate').datepicker({
@@ -286,7 +280,7 @@ function custDates(){
 	}
 	if(reportType!="custom"){
 		document.getElementById("RunApplicantDivId").style.display="block";
-	    $(".cusShow").hide();
+	    $(".customLeaves").hide();
 	    $("#ExportStartDate").datepicker("destroy");
 		 $("#ExportEndDate").datepicker("destroy");
 	}
@@ -295,18 +289,19 @@ function custDates(){
 
 <script>
 // Reports Active
-	$(".oneB").click(function(){
-		$(".oneA").removeClass("actRE");
-		$(".oneB").addClass("actRE");
-		$(".repTab1").hide();
-		$(".repTab2").show();
+	$("#gridView").click(function(){
+		$("#gridView").addClass("rAct");
+		$("#listView").removeClass("rAct");
+		$("#gridshow").show();
+		$("#listshow, .dataTabPdf").hide();
 	});
-	$(".oneA").click(function(){
-		$(".oneB").removeClass("actRE");
-		$(".oneA").addClass("actRE");
-		$(".repTab2").hide();
-		$(".repTab1").show();
-	});		
+	$("#listView").click(function(){
+		$("#gridView").removeClass("rAct");
+		$("#listView").addClass("rAct");
+		$("#gridshow").hide();
+		$("#listshow, .dataTabPdf").show();
+		
+	});	
 	</script>
 
 <script>

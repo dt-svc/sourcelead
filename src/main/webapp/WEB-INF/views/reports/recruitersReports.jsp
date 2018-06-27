@@ -44,50 +44,14 @@ function getDayWiseReports(){
       </div>
        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Recruiter(s) Report  </div>
     </section>
-    <div class="clearfix">
-    <div class="clearfix"></div>
-    	<div class="ReqRepHead clearfix">
-        <div class="col-md-2">
-        <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
-         <a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
-				</a>
-        </div>
-       <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
-       <h5 class="headerAdsrch">Filters
-					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
-						class="fa fa-close"></i></a>
-				</h5>
-				<div class="addInner">
-					<div class="row">
-					
-					<div class="col-md-12 mb positionRelative">
-							<div class="clearfix dynamic_search filterDynamicsearch">
-								<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Type in a teams">
-								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
-							</div>
-							 <div class="clearfix filterSearch-ul">
-								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsUL">
-									<c:forEach var="team" items="${teamsList}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="${team.id}" ><label>${team.name}</label></li>
-									</c:forEach>
-								</ul>
-							 </div> 
-						</div>
-					</div>
-					</div>
-					<div class="clearfix advancedsearch-footer">
-						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet"
-								onclick="closeFilterPop();usersList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search"
-								onclick="resetFilter();" class="btn btn-sm btn-primary" />
-						</div>
-					</div>
-       </div>
-        <div class="advancedsearch-mask"></div>
-        
-        <div class="col-md-3 dropdown-select positionRelative">
-          <select class="form-control" id="reportTypeId" onChange="flushCustom(); custDates();">
+    
+    <div class="clearfix vendor_wrap">
+    
+    <div class="reportHead">
+    	<ul class="clearfix pull-right">
+    		<li>
+        <div class="dropdown-select positionRelative repSelWrap clearfix">
+          <select class="form-control repSelFiled" id="reportTypeId" onChange="flushCustom(); custDates();">
 			  <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option>
 			  <option value="1_week">Last 7 days</option>
@@ -96,47 +60,70 @@ function getDayWiseReports(){
 			  <option value="2_months">Last 2 months</option>
 			  <option value="custom">Custom</option> 
 			</select>
+		<div id="runButtonDiv" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="userDataTableList();">Run</button></div> 
           
-          
-          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
-            <div class="pull-left">
-              <div class="pull-left mr5" style="width: 140px">
+          <div class="clearfix customLeaves repCustomDate" id="customSearch">
+              <div class="repCustomDateInn">
                 <input type="text" class="form-control calendar" value="" id="ReportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date *">
-				  <p id="reportsStartDate" style="display: none; font-size: 12px;"><font color="red">Start Date Required</font></p>
+				  <p id="reportsStartDate"></p>
               </div>
               
-              <div class="pull-left mr5" style="width: 140px">
+              <div class="repCustomDateInn">
                <input type="text"  class="form-control calendar" value="" id="ReportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date *">
-				 <p id="reportsEndDate" style="display: none; font-size: 12px;"><font color="red">End Date Required</font></p>
+				 <p id="reportsEndDate"></p>
               </div>
-              <button type="button" class="btn btn-primary btn-sm" onclick="userDataTableList();"><i class="fa fa-search"></i></button>
-            </div>
+              
+              <div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" onclick="userDataTableList();"><i class="fa fa-search"></i></button></div>
           </div>
           
-        </div>
-        
-      <div class="col-md-2" id = "runButtonDiv">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="userDataTableList();">Run</button>
-		</div>   
-        
-       <ul class="pull-right list-unstyled list-inline mr10 mb0">
-       <div class="mt5"></div>
-		  <li class="positionRelative">
-			  <div class="dynamic_search">
-	   			<input type='text' placeholder='Search' id='usersDataTableSearch'/>
-	   			<span class="cursorPointer" title="Search"><i class="fa fa-search" onClick="userDataTableList();"></i></span>
-			  </div>
-		  </li>
-        </ul>
-         
-      </div>
+        </div>    		
+    		</li>
+    		<li><a href="javascript:void(0)" class="btn btn-default btn-sm repFilIcon" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter"></i></a></li>
+    		<li class="positionRelative"><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/><span class="repSearchIcon" onClick="userDataTableList();"></span></li>
+    	</ul>
+    </div>
+    
     	<div class="clearfix"></div>
-    	 	<div class="candidate_wrap_table recruiterReports_table minHeight positionRelative datatable_filter dashboard-widget clearfix mt">
+    	 	<div class="candidate_wrap_table recruiterReports_table minHeight positionRelative datatable_filter dashboard-widget clearfix">
               <div id="usersList" class="filter_position positionRelative"></div> 
           </div> 
-    	<div class="clearfix"></div>
     </div>
   </section>
+ 
+ <!--  Popup  -->
+ <div class="advancedsearch-mask"></div>   
+ <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+		       <h5 class="headerAdsrch">Filters
+							<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
+								class="fa fa-close"></i></a>
+						</h5>
+						<div class="addInner">
+							<div class="row">
+							
+							<div class="col-md-3 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Type in a teams">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsUL">
+											<c:forEach var="team" items="${teamsList}">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="${team.id}" ><label>${team.name}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+								</div>
+							</div>
+							</div>
+							<div class="clearfix advancedsearch-footer">
+								<div class="pull-right mr">
+									<input type="button" value="Apply" id="search_requiremet"
+										onclick="closeFilterPop();usersList();" class="btn btn-sm btn-success" />
+									<input type="button" value="Reset" id="clear_search"
+										onclick="resetFilter();" class="btn btn-sm btn-primary" />
+								</div>
+							</div>
+		       </div>
  
  
  <script type="text/javascript"> 
@@ -254,8 +241,8 @@ function custDates(){
  function usersList(){
 	 
 	    var timePeriod = $('#reportTypeId').val();
-		$("#reportsStartDate").empty();
-		$("#reportsEndDate").empty();
+		/* $("#reportsStartDate").empty();
+		$("#reportsEndDate").empty(); */
 	 
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  
@@ -300,10 +287,12 @@ function userDataTableList(){
 		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
 			  if(startDate == null || startDate == ''){
 				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
 			  }
 			  
 			  if(endDate == null || endDate == ''){
 				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
 			  }
 			  flag = false;
 		  }

@@ -23,89 +23,48 @@ $(document).ready(function(){
     </section>
     
     
-    <div class="clearfix">
-    <div class="clearfix"></div>
-    	<div class="ReqRepHead clearfix">
-        
-        <!-- <div class="col-md-2">
-        <a href="#" id="graphicView" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
-        </div> -->
-        <div class="col-md-5">
-          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
-            <c:forEach var="option" items="${requirementsList}">
-				<option value="${option.requirementId}">${option.jobTitle}</option>
-			</c:forEach>
-          </select>
-        </div>
-        
-        <div class="col-md-2">
-          <select class="form-control" name="year" id="year">
-            <option value=''>--Select Year--</option>
-            <c:forEach var="option" items="${yearList}">
-				<option value="${option.year}">${option.year}</option>
-			</c:forEach>
-          </select>
-        </div>
-        
-        <div class="col-md-5 dropdown-select positionRelative">
-           <!--<select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
-            <option value=''>Select Date</option>
-            <option value='Last_7_days' selected>Last 7 days</option>
-            <option value='Last_15_days'>Last 15 days</option>
-            <option value='1_month'>1 month</option>
-            <option value='3_months'>3 months</option>
-            <option value='YTD'>YTD</option>
-            <option value='Last_Year'>Last Year</option>
-            <option value="custom">Custom</option>
-          </select>-->
-          
-          
-          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
-            <div class="pull-left">
-              <div class="pull-left mr5" style="width: 140px">
-                <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
-                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
-              </div>
-              
-              <div class="pull-left mr5" style="width: 140px">
-                <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
-                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
-              </div>
-              <button type="button" class="btn btn-primary btn-sm" onclick="getApplicantBySourceChart();"><i class="fa fa-search"></i></button>
-            </div>
-          </div>
-          
-        </div>
-        
-        
-        
-        <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getTimeToFillChart();">Customize</button>
-		</div>
-		
-		
-         <div class="col-md-1">
-          <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions" onclick="reload();"><i class="fa fa-retweet"></i></button>
-          </div>
-        </div>
-      </div>
-    	<div class="clearfix"></div>
-    	 	<div class="dashboard-widget clearfix mt">
+    <div class="vendor_wrap clearfix">
+    
+<div class="reportHead clearfix">
+	
+    	<ul class="clearfix pull-right">
+    		<li>
+				<div class="ReqRepHead-chosen repChosen">
+			          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
+			            <c:forEach var="option" items="${requirementsList}">
+							<option value="${option.requirementId}">${option.jobTitle}</option>
+						</c:forEach>
+			          </select>
+		        </div>    		
+    		</li>
+    		<li>
+	        <div class="dropdown-select positionRelative repSelWrap clearfix">
+		          <select class="form-control repSelFiled" name="year" id="year">
+		            <option value=''>--Select Year--</option>
+		            <c:forEach var="option" items="${yearList}">
+						<option value="${option.year}">${option.year}</option>
+					</c:forEach>
+		          </select>          
+				<div class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getTimeToFillChart();">Run</button></div> 
+	        </div>    		
+    		</li> 
+    	</ul>
+    </div>     
+
+    	<div class="dashboard-widget clearfix">
     	 	<div id="loading"></div>
     	 	<div id="timetofill" class="" style="height: 350px; width: 100%;"></div>
     	 	<div class="clearfix">
     			<div class="reTenWrap mt">
-			<h2 class="clearfix"><p id="yearchart"></p><span class="text-success" id="totalyearcount">0</span></h2>
-			<h3 class="clearfix"><p>Quarter 1 - Jan To Mar</p><span class="text-primary" id="quarter1">0</span></h3>
-			<h3 class="clearfix"><p>Quarter 2 - Apr To Jun</p><span class="text-warning" id="quarter2">0</span></h3>
-			<h3 class="clearfix"><p>Quarter 3 - Jul To Sep</p><span class="text-primary" id="quarter3">0</span></h3>
-			<h3 class="clearfix"><p>Quarter 4 - Oct To Dec</p><span class="text-warning" id="quarter4">0</span></h3>
-		</div>
+					<h2 class="clearfix"><p id="yearchart"></p><span class="text-success" id="totalyearcount">0</span></h2>
+					<h3 class="clearfix"><p>Quarter 1 - Jan To Mar</p><span class="text-primary" id="quarter1">0</span></h3>
+					<h3 class="clearfix"><p>Quarter 2 - Apr To Jun</p><span class="text-warning" id="quarter2">0</span></h3>
+					<h3 class="clearfix"><p>Quarter 3 - Jul To Sep</p><span class="text-primary" id="quarter3">0</span></h3>
+					<h3 class="clearfix"><p>Quarter 4 - Oct To Dec</p><span class="text-warning" id="quarter4">0</span></h3>
+				</div>
     		</div>
     		
-    	 	</div>
+    	 </div>
     
     	<div class="clearfix"></div>
     </div>
