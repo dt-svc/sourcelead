@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.HolidayShift;
-import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 
@@ -40,6 +40,9 @@ public interface HolidayDAO {
 	void removeHolidayShiftList(List<Long> shiftIds,Long holidayId)throws Exception ;
 
 	void deleteHolidayByHolidayId(Long holidayId)throws Exception;
+
+	List<HolidayAndRestrictday> getHolidayByFromToDate(Date startDate, Date endDate, OrgLocations orgLocations);
+
 
 	
 }

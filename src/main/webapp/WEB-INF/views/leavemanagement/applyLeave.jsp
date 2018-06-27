@@ -858,11 +858,9 @@ function validateOverDrawLeaves(leaveTypeName){
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = $("#"+typeName+"Span").text();
 	if((dayDiff > typeIdBalCount) || typeIdBalCount ==  0){
-		$("#ApplyLeave").attr('disabled','disabled');
+		$("#ApplyLeave").removeAttr('disabled');
 		$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You Have Not Enough Leaves To Apply</span> ");
 		$(".comMask").fadeIn();
-	}else{
-		$("#ApplyLeave").removeAttr('disabled');
 	}
 }
 </script>
@@ -976,13 +974,14 @@ function validateDate(){
 	}
 	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
-			if(data != null){
-				$("#ApplyLeave").attr('disabled','disabled');
+			if(data!=null&&data == "you cannot apply two leaves on same day.!"){
 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
+				$("#ApplyLeave").attr('disabled','disabled');
 				$(".comMask").fadeIn();
-			}else{
+			}else if(data!=null){
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
 				$("#ApplyLeave").removeAttr('disabled');
-				$('.warMess').hide();
+				$(".comMask").fadeIn();	
 			}
 		});
 	}

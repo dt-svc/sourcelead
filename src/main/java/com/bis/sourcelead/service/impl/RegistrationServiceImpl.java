@@ -69,6 +69,7 @@ import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
@@ -371,10 +372,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveOrgRoleHierarchy(orgLocations,user);
 		saveOrgBasedRoles(org,orgLocations,user);
-		
+		Shift shift = commonUtil.saveDefaultGenaeralShift(orgLocations,user,Constants.GENERAL_SHIFT);
 		//For saving the User Role (At registration user will have Admin Role)
 		UserRole userRole = getUserRoleDetails(user,orgLocations);
 		try {
+			userRole.setShift(shift);
 			userRoleService.addUserRole(userRole);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -420,7 +422,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		commonUtil.saveDefaultEmployeeVerificationTemplate(org,orgLocations,user,"Default Employee Verification Template");
 //		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
-		commonUtil.saveDefaultGenaeralShift(orgLocations,user,"Genearal Shift");
+		
 
 		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
