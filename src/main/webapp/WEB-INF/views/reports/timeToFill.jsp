@@ -32,7 +32,7 @@ $(document).ready(function(){
 				<div class="ReqRepHead-chosen repChosen">
 			          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
 			            <c:forEach var="option" items="${requirementsList}">
-							<option value="${option.requirementId}">${option.jobTitle}</option>
+							<option value="${option.requirementId}">${option.generatedId} - ${option.jobTitle}</option>
 						</c:forEach>
 			          </select>
 		        </div>    		
