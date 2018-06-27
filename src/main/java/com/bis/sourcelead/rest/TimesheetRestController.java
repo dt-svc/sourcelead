@@ -66,9 +66,8 @@ import com.bis.sourcelead.dto.TimesheetTaskDTO;
 import com.bis.sourcelead.dto.UpdateTimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.WeekDaysDTO;
 import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
+import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Holiday;
-import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -86,6 +85,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.HolidayService;
@@ -194,6 +194,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private TimeSheetDayEntriesService timeSheetDayEntriesService;
+	
+	@Autowired
+	private AppliedLeaveDateService appliedLeaveDateService;
 
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -248,9 +251,11 @@ public class TimesheetRestController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		}
+		final OrgLocations loginOrgLocations = orgLocations;
 		try {
 			EmployeeTimesheetEntryDetailsDTO tedDTO = getEmployeeTimesheetEntryDetails(eedDTO, request);
 			if(tedDTO.getProjectMembersList() == null || tedDTO.getProjectMembersList().isEmpty()) {
@@ -390,9 +395,10 @@ public class TimesheetRestController {
 				}
                 
                 Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-				if(avgWorkingHoursPerDay == null) {
+                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
 					avgWorkingHoursPerDay = 8; 
 				}
+				final Integer avgHours = avgWorkingHoursPerDay;
 				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
 				model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
 				
@@ -1876,6 +1882,7 @@ public class TimesheetRestController {
 	public ModelAndView saveEmployeeTimesheetEntriesWeb(EmployeeTimesheetEntryDetailsDTO tedDTO, HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		try {
@@ -2013,7 +2020,7 @@ public class TimesheetRestController {
 					}
 	                
 	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-					if(avgWorkingHoursPerDay == null) {
+					if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
 						avgWorkingHoursPerDay = 8; 
 					}
 					Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
@@ -6552,5 +6559,15 @@ public class TimesheetRestController {
 		return resultJson;
 
 	}
-	
+	private String getHoursStringFormHours(Integer hours) {
+		String hrs = "";
+		if(hours != null) {
+			if(hours.toString().length() == 1) {
+				hrs = "0"+hours+":00";
+			}else if(hours.toString().length() == 2) {
+				hrs = hours+":00";
+			}
+		}
+		return hrs;
+	}
 }

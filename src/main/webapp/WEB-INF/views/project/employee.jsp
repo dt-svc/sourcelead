@@ -51,7 +51,7 @@ left: 115px !important;
 	 var postedOrgLocationId = '${postedOrgLocationId}';
 	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 	 var projectClientUUID = '${projectClientUUID}';
-	 	 
+	 var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
 	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
  	 
 	   var resourceRequestsCount = '${resourceRequestsCount}';
@@ -69,7 +69,7 @@ left: 115px !important;
 	/* Dont delete this commented code. Functionality is in progress '+projectBudgetCount+' */
 	 result = result + '<li class="current"><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; 
 	
-	 if(postedOrgLocationId == loginOrgLocationId){
+	 if((postedOrgLocationId == loginOrgLocationId) || (postedSharedProjectOrgLocationId == loginOrgLocationId)){
 		result = result + '<li class=""><a href="#tab-c" id="budgetRequestsTab" onclick="budgetRequests();">Budget Requests ';
 		result = result + '(<b class="countClose">'+projectBudgetCount+'</b><input class="countShow" type="text" id="projectBudgetCount" readonly/>)';
 		result = result + '</a></li>';

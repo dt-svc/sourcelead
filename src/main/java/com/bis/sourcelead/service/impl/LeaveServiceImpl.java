@@ -249,6 +249,9 @@ public class LeaveServiceImpl implements LeaveService{
 		if(StringUtils.isNotBlank(leaveDTO.getToDateHalfTime())) {
 			leave.setToTime(leaveDTO.getToDateHalfTime());
 		}
+		if(StringUtils.isNotBlank(leaveDTO.getNotifyToOthers())) {
+			leave.setNotifyToOthers(leaveDTO.getNotifyToOthers());
+		}
 		if(leaveDTO.getFileInfo() !=null) {
 			FileInfo fileinfo = leaveDTO.getFileInfo().get(0);
 			leave.setFileName(fileinfo.getFileName());
@@ -497,6 +500,13 @@ public class LeaveServiceImpl implements LeaveService{
 
 	private Set<LeaveApproveHierarchy> getApproverList(LeaveDTO leaveDTO, Leave leave, User user) {
 		Set<LeaveApproveHierarchy> approverList = new HashSet<>();
+		
+		if(leaveDTO.getOtherApproverUser() != null) {
+			List<String> allUsers = new ArrayList<>();
+			allUsers.addAll(leaveDTO.getApproverUser());
+			allUsers.addAll(leaveDTO.getOtherApproverUser());
+			leaveDTO.setApproverUser(allUsers);
+		}
 		leaveDTO.getApproverUser().forEach(userId->{
 			try {
 				LeaveApproveHierarchy leaveApproveHierarchy = new LeaveApproveHierarchy();
@@ -2319,4 +2329,5 @@ public class LeaveServiceImpl implements LeaveService{
 		assBalLeave.setTotalLeaves(String.valueOf(balanceLeaves));
 		associateBalanceLeaveService.saveOrUpdateAssocicateBalanceLeaves(assBalLeave);
 	}
+
 }
