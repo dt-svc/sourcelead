@@ -2644,8 +2644,10 @@ public class LeaveManagementRestController {
 			
 			List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId,selectedUserRole.getRoles().getId(), orgLocations.getId());
 			for (User user : approversList) {
-				if(selectedUserRole.getReportingManager().getId().longValue() != user.getId().longValue())
-					appUser.add(user);
+				if(selectedUserRole.getReportingManager() != null) {
+					if(selectedUserRole.getReportingManager().getId().longValue() != user.getId().longValue())
+						appUser.add(user);
+				}
 			}
 			
 			
