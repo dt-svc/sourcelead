@@ -180,7 +180,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
      * @param startDate 
      * @return List<AppliedLeaveDateView>
      */
-	private List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDaet)
+	public List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDaet)
 	{
 		 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the day of the week abbreviated
 		 if(l.getIncludeHolidays() != null && !Constants.YES.equalsIgnoreCase(l.getIncludeHolidays())) {
@@ -342,35 +342,71 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	}
 
 	@Override
-	public int calculateAndUpdateAssociateBalanceLeaves(Long orgLocationId, LeaveType leaveType, Date startDate, Date endDate) throws Exception
+	public int calculateAndUpdateAssociateBalanceLeaves(OrgLocations orgLocations, LeaveType leaveType, Date startDate, Date endDate) throws Exception
 	{
 		int stat = 0;
-		List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocationId);
-		List<AppliedLeaveDateView> appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(orgLocationId,leaveType.getId(),startDate,endDate);
+		List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		List<AppliedLeaveDateView> appliedLeavesView = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(orgLocations.getId(),leaveType.getId(),startDate,endDate);
 		  try{
 //				   Map<Integer,Integer> map = appliedLeaves.stream().collect(Collectors.groupingBy(apl->AppliedLeaveDateView::getUserId,counting(),Map::size));
-			 Map<Long, Long> map = appliedLeaves.stream().collect(Collectors.groupingBy(AppliedLeaveDateView::getUserId,Collectors.counting()));
+			 Map<Long, Long> map = appliedLeavesView.stream().collect(Collectors.groupingBy(AppliedLeaveDateView::getUserId,Collectors.counting()));
 			 List<AssociateBalanceLeaveDTO> assBalList = new ArrayList<>();
 			 for(User user : userList){
 				 if(map.keySet().contains(user.getId())){
-					 float associateBalanceLeaves = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
-					 float totalBal = 0f;
-					 totalBal =  associateBalanceLeaves - map.get(user.getId()) ;
+					float associateBalanceLeaves = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocations.getId());
+					float totalBal = 0f;
+					
+					AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
+					ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
+					ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
+					float appliedLeaveCount = 0;
+					LocalDate todayDate = LocalDate.now();
+					List<AppliedLeaveDateView> appliedLeaves = null;
+					if (Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
+						Date[] monthDates = getMonthStartDateEndDate();
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), monthDates[0], monthDates[1], user.getId());
+					    appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,monthDates[0],monthDates[1]);
+					}
+					else if (Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
+						LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), user.getId());
+					     appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate());
+					}
+					else if (Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
+						LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), user.getId());
+						appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,currentHalfYear[0].toDate(),currentHalfYear[1].toDate());
+					}
+					else if (Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
+						LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), user.getId());
+						appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate());
+					}
+					if (appliedLeaves != null && appliedLeaves.size() > 0) {
+						totalBal = associateBalanceLeaves - appliedLeaves.size();
+					}
+					if(Constants.YES.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
+						if(totalBal < 0){
+							totalBal = 0;
+						}
+					}
+					
+//					totalBal =  associateBalanceLeaves - map.get(user.getId()) ;
 				    totalBal += leaveType.getNoOfDaysPerPeriod();
 				    AssociateBalanceLeaveDTO assBal = new AssociateBalanceLeaveDTO();
 				    assBal.setUserId(String.valueOf(user.getId()));
 				    assBal.setLeaveTypeId(leaveType.getId());
 				    assBal.setNoofLeaves(String.valueOf(totalBal));
-				    assBal.setOrgLocationId(orgLocationId);
+				    assBal.setOrgLocationId(orgLocations.getId());
 				    assBalList.add(assBal);
 				 }else{
-					 float associateBalanceLeaves = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
+					 float associateBalanceLeaves = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocations.getId());
 					 float totalBal = associateBalanceLeaves + leaveType.getNoOfDaysPerPeriod();
 				     AssociateBalanceLeaveDTO assBal = new AssociateBalanceLeaveDTO();
 				     assBal.setUserId(String.valueOf(user.getId()));
 				     assBal.setLeaveTypeId(leaveType.getId());
 				     assBal.setNoofLeaves(String.valueOf(totalBal));
-				     assBal.setOrgLocationId(orgLocationId);
+				     assBal.setOrgLocationId(orgLocations.getId());
 				     assBalList.add(assBal);
 				 }
 			 }

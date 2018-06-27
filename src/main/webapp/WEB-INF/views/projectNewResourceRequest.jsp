@@ -29,13 +29,14 @@
       	    
       	    <div class="project_side_wrap_inn_tabs">
       	    <div id="resourceRequestsDivLoading"></div>
-			    <ul class="project-tabs-menu">
+			    <ul class="project-tabs-menu tabnewStyles">
 			        <li class="current" id="newReqWaiting"><a data-toggle="tab" href="javascript:void(0)" onclick="newResourceRequestList('Waiting For Approval')">Waiting (<span id="newWaitingCount"></span>)</a></li>
 			        <li id="newRequestApproved"><a data-toggle="tab" href="javascript:void(0)"  onclick="newResourceRequestList('Approved')">Approved (<span id="newApprovedCount"></span>)</a></li>
 			        <li id="newRequestRejected"><a data-toggle="tab" href="javascript:void(0)" onclick="newResourceRequestList('Rejected')">Rejected (<span id="newRejectedCount"></span>)</a></li>
 			        <li id="newRequestOnhold"><a data-toggle="tab" href="javascript:void(0)" onclick="newResourceRequestList('On hold')">On hold (<span id="newOnholdCount"></span>)</a></li>
 			        <div class="clearfix"></div>
 			    </ul>
+			    <div class="clearfix mb10"></div>
 			    <div id="newResourceRequestList"></div>
 			    <div class="vendor_wrap_mask"></div>
    				<div id="requestedNewAssociatesDivLoading"></div>

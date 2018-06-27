@@ -1237,7 +1237,9 @@ function cancel(candidateId){
         <ul>
             
           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
-          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-user" style="font-size:17px;"></i></b>
+<!--           <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-user" style="font-size:17px;"></i></b> -->
+          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-plus"></i>Add Candidate</b>
+          
           <div id="addmorepop" class="approved_pop">
            
            </div>

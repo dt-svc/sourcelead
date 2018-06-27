@@ -8993,6 +8993,61 @@ background-color: transparent !important; width:96%; margin-left: 15px;
 .reportsCountNew.reportsCountNewBig ul li {
 	width: 10% !important;
 }
+.tooltip {
+    position: relative; display: inline-block; opacity: 1;
+}
+.tooltip .tooltiptext {
+    visibility: hidden; min-width: 250px; background-color: #333;
+    color: #fff; text-align: center; border-radius: 6px; padding: 10px; position: absolute;
+    z-index: 1; bottom: 125%; left:0%; font-weight:600;
+    margin-left: -60px; opacity: 0; transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: ""; position: absolute; top: 100%; left: 30%; margin-left: -5px;
+    border-width: 5px; border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible; 	opacity: 1;
+}
+/* Dashboard navar bar ui */
+.dashboardWidget-new {
+    background: #fff; box-shadow: 0 1px 1px rgba(0,0,0,0.1); border-radius: 5px;
+    min-height: 150px; padding: 15px 15px 10px 15px;    
+}
+.dashboardWidget-new .nav>li>a {
+    padding: 5px 15px; color: #909090;
+} 
+.dashboardWidget-new h4 {
+    margin-top: 0; margin-bottom: 10px; font-size: 16px;
+}
+.dashboardWidget-new .nav-tabs {
+    border-bottom: none;
+}
+.dashboardWidget-new .nav-tabs>li.active>a, .dashboardWidget-new .nav-tabs>li.active>a:focus, .dashboardWidget-new .nav-tabs>li.active>a:hover {
+    border-top-color: transparent; border-right-color: transparent; border-left-color: transparent; border-bottom-color: transparent;
+    color: #505050; box-shadow: inset 0 -3px 0px 0px #0084bf; font-weight: 500;
+}
+.dashboardWidget-new .db-widget-sm .info-box-text  {
+    font-size: 14px;
+}
+ul.tabnewStyles {
+    padding-left: 0;
+}
+ul.tabnewStyles li {
+    background-color: transparent; border-radius: 0; border: 2px solid transparent;
+}
+ul.tabnewStyles li a {
+    color: #909090;
+}
+ul.tabnewStyles li.current {
+    box-shadow: inset 0 -3px 0px 0px #0084bf; border: 2px solid #ffff;
+}
+ul.tabnewStyles li.current a {
+    color: #505050; font-weight: 500;
+}
+/* Dashboard navar bar ui */
 /* forms edit element styles */
 @media (max-width: 320px) {
 .uasrch-selectpicker {
@@ -9419,41 +9474,3 @@ z-index: -800;
 .menuWidget ul.menupop.menupop_3 {
     width:310px;
 	}
-.tooltip {
-    position: relative;
-    display: inline-block;
-    opacity: 1;
-}
-.tooltip .tooltiptext {
-    visibility: hidden;
-    min-width: 250px;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 10px;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left:0%; font-weight:600;
-    margin-left: -60px;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 30%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-}
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
-
-
