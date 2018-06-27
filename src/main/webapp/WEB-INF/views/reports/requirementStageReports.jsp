@@ -11,8 +11,8 @@
 .timesheet_head .glyphicon-play {
 right: 15px;
 }
-.vendor_wrap .timesheet_head ul li b{
-color: #333;
+.repDataSearch .dt-buttons {
+	top: -116px !important;
 }
 </style>
 
@@ -25,7 +25,15 @@ window.onload = function() {
 </script>
 
 <script>
+$("#reqStagesReportsTableSearch").keydown(function(e) {
+	   if(e.which === 13) {
+		   getRequirementList();
+	   }
+	});
+
 function getRequirementList(){
+	var searchValue = $("#reqStagesReportsTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
 	    var status = [];
 		$('input:checkbox[name=requirementStatus]:checked').each(function() 
 	    {
@@ -34,7 +42,7 @@ function getRequirementList(){
 		$("#reqStagesLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	    $.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status,    
+	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&searchValue="+searchValue,    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
@@ -335,64 +343,40 @@ function getRequirementStageCounts(countObj){
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Job(s) Stage</div>
   </section>
-  <div class="timesheet_out">
+  
     <div class="vendor_wrap">
      
-      <div class="timesheet_head">
-
-<div class="pull-left reportBtns">
-	  <!-- <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
-		  <option value="">select</option>
-		  <option value="today">Today</option>
-		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 week</option>
-		  <option value="twoweeks">2 weeks</option>
-		  <option value="month">1 month</option>
-		  <option value="twomonths">2 months</option>
-		  <option value="custom">Custom</option> 
-		</select>
-	 </div>	 -->
-	 <!-- <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
-	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker1"><i class="fa fa-calendar"></i></span>	 -->
-	 <span class="dashboard-datepkr cusShow">
-	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="reportStartDate" class="ReError"></p>
-	 </span>
-	<span class="dashboard-datepkr cusShow">
-	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="reportEndDate" class="ReError"></p>
-	</span>
-	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+     
+     
+<div class="reportHead clearfix">
+	<div class="listGridWrap reqListBtn">
+		<a id="listView" class="btn btn-default rAct" title="Grid List"><i class="fa fa-list"></i></a>
+		<a id="gridView" class="btn btn-default" onclick="getRequirementStageCounts();" title="Pie chart"><i class="fa fa-pie-chart"></i></a>	
+	</div>
 	
-		<span class="repoBtns">
-		<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="getRequirementStageCounts();" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
-	</span>
-</div>
-                     
-        <ul style="padding: 0px 310px 0px 0px;" id="statusDiv" style="display: block">
-        <li>
-        	<b id="filter2ApprovePop"><i class="fa fa-filter paddingRight"></i>Status<span class="padFil"></span> <i class="glyphicon glyphicon-play" id="status-pop"></i></b>
-        	<div id="filter2ApprovedPop" class="approved_pop">
-		              <ul>
-                		    <li><input type="checkbox" name="requirementStatus"  value ="NEW"  onclick="getRequirementList();">New</li>
-							<li><input type="checkbox" name="requirementStatus"  value ="DRAFT"  onclick="getRequirementList();">Draft</li>
-							<li><input type="checkbox" name="requirementStatus"  value ="SUBMITTED"  onclick="getRequirementList();">Submitted</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="OPEN"  onclick="getRequirementList();">Open</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="ONHOLD"  onclick="getRequirementList();">On Hold</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="CANCEL"  onclick="getRequirementList();">Cancel</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="FILLEDCLOSED"  onclick="getRequirementList();">Filled Closed</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="UNFILLEDCLOSED"  onclick="getRequirementList();">Unfilled Closed</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="REJECTED"  onclick="getRequirementList();">Rejected</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="CLOSED"  onclick="getRequirementList();">Closed</li>
-               				
-		              </ul>
-		    </div>
-        </li>
-        </ul>
-        <div class="clearfix"></div>
-      </div>
+    	<ul class="clearfix pull-right" id="statusDiv">
+	        <li class="">
+	        	<span id="filter2ApprovePop" class="filRep"><i class="fa fa-filter"></i></span>
+	        	<div id="filter2ApprovedPop" class="approved_pop">
+			              <ul>
+	                		    <li><input type="checkbox" name="requirementStatus"  value ="NEW"  onclick="getRequirementList();">New</li>
+								<li><input type="checkbox" name="requirementStatus"  value ="DRAFT"  onclick="getRequirementList();">Draft</li>
+								<li><input type="checkbox" name="requirementStatus"  value ="SUBMITTED"  onclick="getRequirementList();">Submitted</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="OPEN"  onclick="getRequirementList();">Open</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="ONHOLD"  onclick="getRequirementList();">On Hold</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="CANCEL"  onclick="getRequirementList();">Cancel</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="FILLEDCLOSED"  onclick="getRequirementList();">Filled Closed</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="UNFILLEDCLOSED"  onclick="getRequirementList();">Unfilled Closed</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="REJECTED"  onclick="getRequirementList();">Rejected</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="CLOSED"  onclick="getRequirementList();">Closed</li>
+	               				
+			              </ul>
+			    </div>
+	        </li>    	
+    		<li class="dataTabPdf">&nbsp;</li> 
+    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='reqStagesReportsTableSearch'/><span class="repSearchIcon" onClick="getRequirementList();"></span></li>
+    	</ul>
+    </div>      
   
  <div class="repTab1">  
       
@@ -425,16 +409,16 @@ function getRequirementStageCounts(countObj){
 			<li title="REJECTED">
 				<span><i class="fa fa-ban"></i></span><b id="rejectedRequirementsCount"></b>
 			</li>
-			<li title="CLOSED">
+			<li title="CLOSED" class="colorTwo">
 				<span><i class="fa fa-window-close"></i></span><b id="closedRequirementsCount"></b>
 			</li>
 					<div class="clearfix"></div>
 		</ul>
 	</div>
 
-  <div class="project_tabs_inn_table vendor_wrap_inn_table"> 
+  <div class="project_tabs_inn_table"> 
   <div id="reqStagesLoderDiv"></div>
-                 <div id="requirementReportsDiv12" class="repoPositi"></div>
+                 <div id="requirementReportsDiv12" class="repDataSearch"></div>
                 </div>      
 </div>
 
@@ -445,7 +429,6 @@ function getRequirementStageCounts(countObj){
  </div>
 
 
-  </div>
 </section>
 
 
@@ -683,16 +666,16 @@ function custDates(){
 </script>
 <script>
 // Reports Active
-	$(".oneB").click(function(){
-		$(".oneA").removeClass("actRE");
-		$(".oneB").addClass("actRE");
+	$("#gridView").click(function(){
+		$("#listView").removeClass("rAct");
+		$("#gridView").addClass("rAct");
 		$(".repTab1").hide();
 		$(".repTab2").show();
 		$("#statusDiv").css("display", "none");
 	});
-	$(".oneA").click(function(){
-		$(".oneB").removeClass("actRE");
-		$(".oneA").addClass("actRE");
+	$("#listView").click(function(){
+		$("#gridView").removeClass("rAct");
+		$("#listView").addClass("rAct");
 		$(".repTab2").hide();
 		$(".repTab1").show();
 		$("#statusDiv").css("display", "block");

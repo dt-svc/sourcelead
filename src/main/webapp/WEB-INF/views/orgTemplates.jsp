@@ -180,7 +180,7 @@
 	
 	<div class="landTempCta nomr">
 	<div class="pull-left mr10">
-           <i class="fa fa-address-card-o fa-2x text-info"></i>
+           <i class="fa fa-envelope fa-2x text-info"></i>
     </div>
 		<div class="pull-left">
 		<h2 class="text-info">Email</h2>

@@ -758,7 +758,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 
 
 	@Override
-	public void sendExpenseReopenAcceptMailToEmployee(Expenses expenses, OrgLocations orgLoc, String type,User reopenedUser,User loginUser,String reopenReason) throws Exception {
+	public void sendExpenseReopenAcceptMailToEmployee(Expenses expenses, OrgLocations orgLoc, String type,User reopenedUser,User loginUser) throws Exception {
 				 
 				 
 				 		 EmailMessage emailMessage = new EmailMessage();
