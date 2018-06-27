@@ -509,16 +509,20 @@
 										<div class="clearfix"></div>
 									</ul>
 								</div>
-								 <c:if test="${timesheetSubmissionDTO.saveButtonVisible}">
-								    <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
+								  <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW' || timesheetSubmissionDTO.timesheetStatus == 'DRAFT'}">
+								        <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
 								 </c:if>
 								 <c:if test="${timesheetSubmissionDTO.submitButtonVisible}">
 								     <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
+								     <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
+								          <input onclick="approveTimesheet('approve');" value="Approve" class="time_btn time_appr" type="button">
+								          <input onclick="approveTimesheet('reject');" value="Reject" class="time_btn time_rej" type="button">
+								     </c:if>
+								     
 							    </c:if>
 							     <c:if test="${timesheetSubmissionDTO.cancelButtonVisible}">
 							       <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />
 							     </c:if>
-							   
 							</div>
 							</div>
 							<div class="clearfix"></div>								
@@ -1754,6 +1758,61 @@ function timesheetEntriesExport(exportType){
 	}
 }
 </script>
+<script>
+   function approveTimesheet(status){
+	 var tableFor = $("#tableFor").val();
+	 var tdSpan = '';
+	 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor =='dashboard'){
+		 tableFor = 'approval';
+		 tdSpan ='8' 
+	 }else {
+		 tableFor = 'approval';
+		 tdSpan = '6';
+	 }
+	 var currentTimeFrequency = $("#currentTimeFrequency").val();
+	 var dates = currentTimeFrequency.split("To");
+  	 var projectMemberId = $("#projectMemberId").val();
+  	 
+	 if(status == 'approve'){
+		 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+		 $(".side_mask").fadeOut(200); 
+		 $("body").css('overflow-y', 'scroll');
+		 $("#dynamic").removeAttr('style');
+		 approveSubmissionByProjectMemberId(projectMemberId,dates[0],dates[1],tdSpan,tableFor);
+	 }else{
+		  	var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Reject Reason</p>";
+			result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
+			result = result + ' <div id="reOpenReasonDiv"/>';
+			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick="validateRejectReason(\''+projectMemberId+'\',\''+dates[0]+'\',\''+dates[1]+'\','+tdSpan+',\''+tableFor+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelReOpen();"></b>';
+			result = result +"	</div>";
+			$("#reOpenPopup").append(result);
+			$("#remove_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200); 
+			
+	 }
+  	
+  	
+   }
+   
+   function validateRejectReason(projectMemberId,startDate,endDate,tdSpanSize,from){
+	   var reason = document.getElementById("reOpenReason").value;
+	   if(reason != ""){
+		    $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+		    $(".side_mask").fadeOut(200); 
+		    $("body").css('overflow-y', 'scroll');
+		    $("#dynamic").removeAttr('style');
+		    cancelReOpen();
+		    saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from,reason);
+	   }
+	  	else{
+	  		$("#reOpenReasonDiv").empty();
+	   		$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	   	}
+   }
+</script>
 <script type="text/javascript">
 function newSaveTimesheet(status){ 
 	 var savingType = $("#timesheetFor").val();
@@ -2154,4 +2213,3 @@ $('.selectpicker').selectpicker('refresh');
 </script>
 <!-- Tab Switching -->
 <script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
-

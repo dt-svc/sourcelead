@@ -107,10 +107,12 @@ function addOffer(requirementId){
 				$(".clearUpload").click(function(){
 					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadFile").val("");
 					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadBtn").val("");
+			        $("#OfferAttachmentuploadFileGroup").find("p.jquery_form_error_message").remove();
 					$(".clearUpload").hide();
-					document.getElementById("OfferAttachmentuploadFile").value("");
-				        $("#addOffer_form input[data-id*=OfferAttachmentuploadBtn]").remove();
-				        
+					$("#OfferAttachmentuploadFile").val('');
+				    $("#addOffer_form input[data-id*=OfferAttachmentuploadBtn]").remove();
+				    $("#OfferAttachmentuploadFile").removeAttr('record-exist');
+				    $("#OfferAttachmentuploadFile").removeAttr('record-exist-errormsg');   
 				});
 				
 	        },
@@ -161,7 +163,7 @@ function selectOfferApplicants(){
 
 
 <div id="divOfferTd3" style="display: none; float: left;">
-   	 <div class="positionRelative float select-field">
+   	 <div class="float select-field tblminwidth-75">
            <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType" style="height: 30px;">
 	          		 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
 	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
@@ -257,7 +259,7 @@ function selectOfferApplicants(){
 		cell0.innerHTML = divTsTd1Str;
 		
 		var cell1 = row.insertCell(1);
-		cell1.innerHTML = "<div class='positionRelative date' id='offerDatePic'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"joiningDate' id='"+maxRowNum+"joiningDate'  readonly='readonly'  type='text' data-validation='required' field-name='Joining Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
+		cell1.innerHTML = "<div class='positionRelative date tblminwidth-100' id='offerDatePic'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"joiningDate' id='"+maxRowNum+"joiningDate'  readonly='readonly'  type='text' data-validation='required' field-name='Joining Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
 		
 		var cell2 = row.insertCell(2);
 		var divTsTd3Str = document.getElementById("divOfferTd3").innerHTML;

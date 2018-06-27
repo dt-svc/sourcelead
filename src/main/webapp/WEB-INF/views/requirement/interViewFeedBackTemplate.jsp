@@ -19,6 +19,9 @@
 //On document ready
 $(function(){
 	interViewTemplateList();
+	if('${type}' != 'undefined' && '${type}' != '' && '${type}' != null && '${type}' == 'addInterViewFeedBackTemplate'){
+		$("#add-tm").click();
+	}
 });
 </script>
 

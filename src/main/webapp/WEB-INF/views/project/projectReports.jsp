@@ -823,26 +823,41 @@ function getDonutChartDetails(data){
 	        type : "POST",
 	         url: sourceleadUrl+"/ProjectTasks/geBudgetStatusReport?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
 	         success :function(data) {
-	        	 var remainingBudget  = data.budgetTotal - data.actualBudget;
-	        	 var  remainingHours  = data.estimatedHours - data.actualHours;
+	        	 var remainingBudget = 0;
+	        	 var  remainingHours = 0;
+	        	 if(data.budgetTotal > 0){
+	        		 remainingBudget  = data.budgetTotal - data.actualBudget;
+	        	 }
+	        	 if(data.estimatedHours > 0){
+	        		 remainingHours  = data.estimatedHours - data.actualHours;
+	        	 }
+	        	  
 	        	 if(data.currency != null && data.currency != "" && data.currency != "undefined"){
 	        		 currency = data.currency;
 	        	 }else{
 	        		 currency = "";
 	        	 }
-	        	 var result = ""
-	        	result = result + '          <div class="row">';
-	 			result = result + '          <div class="col-md-6">';
-	 			result = result + '              <label class="form-control-static">Remaining Budget: <span class="paddingLeft"><strong>'+currency+' '+remainingBudget+'</strong></span></label>';
-	 			result = result + '              <div id="budgetStatus" style="height: 180px; width: 100%;">';
-	 			result = result + '              </div>';
-	 			result = result + '          </div>';
-	 			result = result + '          <div class="col-md-6">';
-	 			result = result + '              <p class="form-control-static">Remaining Hours: <span class="paddingLeft"><strong>'+remainingHours+' Hours</strong></span></p>';
-	 			result = result + '              <div id="hoursStatus" style="height: 180px; width: 100%;">';
-	 			result = result + '              </div>';
-	 			result = result + '          </div>';
-	 			result = result + '      </div>';
+		        	 var result = ""
+	        		 result = result + '<div class="clearfix"></div>';
+		        	 result = result + '          <div class="row">';
+	        		 result = result + '          <div class="col-md-6">';
+	        		if(remainingBudget > 0){
+	        		result = result + '              <label class="form-control-static">Remaining Budget: <span class="paddingLeft"><strong>'+currency+' '+remainingBudget+'</strong></span></label>';
+	        		}
+	        		result = result + '              <div id="budgetStatus" style="height: 180px; width: 100%;">';
+		 			result = result + '              </div>';
+		 			result = result + '          </div>';
+	        	
+	        		result = result + '          <div class="col-md-6">';
+	        		if(remainingHours > 0){
+	        		result = result + '              <p class="form-control-static">Remaining Hours: <span class="paddingLeft"><strong>'+remainingHours+' Hours</strong></span></p>';
+	        		}
+	        		result = result + '              <div id="hoursStatus" style="height: 180px; width: 100%;">';
+		 			result = result + '              </div>';
+		 			result = result + '          </div>';
+		 			
+	        	
+	        	result = result + '      </div>';
 	 			$("#budgetStatusDivId").empty();
 	 			$("#budgetStatusDivId").append(result);
 	        	 budgetTotal(data)
