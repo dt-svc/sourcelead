@@ -15,7 +15,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,8 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,7 +55,6 @@ import com.bis.sourcelead.dao.OptionsDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dao.ShiftDao;
-import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
@@ -69,10 +65,10 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
-import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
+import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
@@ -84,12 +80,10 @@ import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
@@ -122,14 +116,16 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.text.DecimalFormat;
 
 @RestController
 @RequestMapping("/app")
 public class LeaveManagementRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementRestController.class);
+	
+	DecimalFormat dec = new DecimalFormat("#0.00");
 
 	@Autowired
 	ShiftService shiftService;
@@ -444,17 +440,17 @@ public class LeaveManagementRestController {
 				}*/
 			}
 
-			for (LeaveType type : roleLeaveType) {
+			for (LeaveType l : roleLeaveType) {
 				
-				float totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),userId,orgLocationId);
+				float totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(l.getId(),userId,orgLocationId);
 
 //				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, loginUser);
 				// float leaves =
 				// leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,
 				// totalLeaves,emp);
-				float totalbalanceLeaveCounts = totalLeaves;
+				float totalbalanceLeaveCounts = 0;
 				float calculatedTotalNonCarryforwardLeaves = 0;
-				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),
+				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(l.getLeaveTypeUUID(),
 						orgLocations.getId(), loginUser.getId());
 
 				for (Leave leave : totalleavesTaken) {
@@ -465,29 +461,29 @@ public class LeaveManagementRestController {
 						// (Integer.valueOf(leave.getNumberOfDays()));
 						pendingLeaveCounts = pendingLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
-					if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus()) || Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-						totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
+					if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+//						totalbalanceLeaveCounts = totalbalanceLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 
-						takenLeaveCounts = takenLeaveCounts + appliedLeaveCount;
+						takenLeaveCounts = takenLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 				}
-				if ("Monthly".equalsIgnoreCase(type.getPeriod()) && Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())) {
-					calculatedTotalNonCarryforwardLeaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type, totalbalanceLeaveCounts, emp);
-					totalbalanceLeaveCounts = calculatedTotalNonCarryforwardLeaves;
-					balanceLeaveCounts += totalbalanceLeaveCounts;
-				} else {
-					balanceLeaveCounts += totalbalanceLeaveCounts;
-				}
+//				if ("Monthly".equalsIgnoreCase(l.getPeriod()) && Constants.NO.equalsIgnoreCase(l.getLeavesCarryforward())) {
+//					calculatedTotalNonCarryforwardLeaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(l, totalbalanceLeaveCounts, emp);
+//					totalbalanceLeaveCounts = calculatedTotalNonCarryforwardLeaves;
+//					balanceLeaveCounts += totalbalanceLeaveCounts;
+//				} else {
+//					balanceLeaveCounts += totalbalanceLeaveCounts;
+//				}
 
 				// balanceLeaveCounts += totalbalanceLeaveCounts;
-				type.setTotalBalanceLeaveCounts(balanceLeaveCounts);
-				type.setPendingLeaveCounts(pendingLeaveCounts);
-				type.setTakenLeaves(takenLeaveCounts);
-				type.setLeaveTypeBalanceLeaveCount(totalbalanceLeaveCounts);
+//				l.setTotalBalanceLeaveCounts(balanceLeaveCounts);
+//				l.setPendingLeaveCounts(pendingLeaveCounts);
+//				l.setTakenLeaves(takenLeaveCounts);
+//				l.setLeaveTypeBalanceLeaveCount(totalbalanceLeaveCounts);
 				
 				//do not remove below commented code, need to do some changes further 
 				
-				/*float appliedLeaveCount = 0;
+				float appliedLeaveCount = 0;
 				LocalDate todayDate = LocalDate.now();
 				List<AppliedLeaveDateView> appliedLeaves = null;
 				AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
@@ -519,11 +515,11 @@ public class LeaveManagementRestController {
 				else {
 					appliedLeaveCount = totalLeaves;
 				}
-
+				balanceLeaveCounts += appliedLeaveCount;
 				l.setTotalBalanceLeaveCounts(balanceLeaveCounts);
 				l.setPendingLeaveCounts(pendingLeaveCounts);
 				l.setTakenLeaves(takenLeaveCounts);
-				l.setLeaveTypeBalanceLeaveCount(Float.parseFloat(dec.format(appliedLeaveCount)));*/
+				l.setLeaveTypeBalanceLeaveCount(Float.parseFloat(dec.format(appliedLeaveCount)));
 			}
 		}
 		return roleLeaveType;
