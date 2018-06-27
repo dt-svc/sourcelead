@@ -943,12 +943,15 @@ function validateCarryForwardLeaves(){
 	if(userId != null && userId !='' && userId !='undefined'){
 	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
 		$.get(sourceleadUrl+"/validateCarryForwardLeaves?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
-			if(data == true){
-				$('.jquery_form_error_message').remove();
-				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
-			}else{
-				$('.jquery_form_error_message').hide();
-			}
+			if(data!=null&&data == "you cannot apply two leaves on same day.!"){ 
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data); 
+				$("#ApplyLeave").attr('disabled','disabled'); 
+				$(".comMask").fadeIn(); 
+				}else if(data!=null){ 
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data); 
+				$("#ApplyLeave").removeAttr('disabled'); 
+				$(".comMask").fadeIn();	
+				} 
 		}); 
 	}
 	
