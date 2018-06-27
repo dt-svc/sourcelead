@@ -432,7 +432,7 @@ function validateTimeZone(){
 			dateFormat : finalDateFormatInterview,
 			changeMonth: true,
 			 changeYear: true, 
-		      minDate: 0  ,
+		      /* minDate: 0  , */
 		      onSelect : function(selected) {
 		    	  removeInterviewvalidation();
 		      }

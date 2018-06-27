@@ -941,6 +941,25 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 			    	}
   				},
     		  });
+    }else if(selectBox == "SelectedOnInterview"){
+    	$("tr").find("td.sorting_1").removeClass("sorting_1");
+    	$("#job_"+submissionId).addClass("row-success");
+    	
+    	$.ajax({
+  	      type : "POST",
+  	      url: sourceleadUrl+"/saveSelectedOnInterviewStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+  	    	success :function(data) {
+  	    		if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+		    		$("tr").removeClass("row-success");
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
+  	    	},
+		  });
     }
 }
 </script>
