@@ -2470,7 +2470,7 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 		 return fromEmail;
   }
   
-  public void saveDefaultGenaeralShift(OrgLocations orgLocations, User user,String shiftName) throws Exception {
+  public Shift saveDefaultGenaeralShift(OrgLocations orgLocations, User user,String shiftName) throws Exception {
 	     Shift shift = new Shift();
 	     shift.setShiftUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 	     shift.setOrgLocations(orgLocations);
@@ -2510,6 +2510,7 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 		 shift.setUpdatedDate(new Date());
 		 shift.setCreatedDate(new Date());
 		 shiftDao.saveShift(shift);
+		 return shift;
 	}
   
   
