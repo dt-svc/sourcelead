@@ -615,7 +615,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,
-			Long candidateId, String searchVal) {
+			Long candidateId, String searchVal, String myImmigration) {
 		logger.debug("Getting  CandidatepassportDetails --->  ");
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder("");
@@ -624,13 +624,21 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			query1.append(" or (cd.documentStatus like :searchVal )");
 			query1.append(" or (cd.description like :searchVal ))");
 		}
+		StringBuilder myImmiQuery = new StringBuilder("");
+		if(myImmigration.equalsIgnoreCase("Y")) {
+			myImmiQuery.append(" and cd.docCategory = :docCategory");
+		}
 		List<ImmigrationCandidateDocuments> immigrationCandidateDocumentsList = new ArrayList<ImmigrationCandidateDocuments>();
 		String queryString = "from ImmigrationCandidateDocuments cd where cd.candidateId.id=:candidateId and cd.immigrationId.id=:immigrationId and cd.immigrationTemplateId.id=:templateId ";
 		String orderByString = " order by cd.updatedDate desc";
-		Query query = session.createQuery(queryString + query1 + orderByString).setLong("candidateId", candidateId)
+		Query query = session.createQuery(queryString + query1 + myImmiQuery + orderByString).setLong("candidateId", candidateId)
 				.setLong("templateId", templateId).setLong("immigrationId", immigrationId);
 		if (StringUtils.isNotEmpty(searchVal) && searchVal != null) {
 			query.setParameter("searchVal", "%" + searchVal + "%");
+		}
+		
+		if(myImmigration.equalsIgnoreCase("Y")) {
+			query.setParameter("docCategory", "PetitionerCategory");
 		}
 		immigrationCandidateDocumentsList = query.list();
 		return immigrationCandidateDocumentsList;
@@ -664,7 +672,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId,
-			Long immigrationId, String searchVal) {
+			Long immigrationId, String searchVal, String myImmigration) {
 		List<ImmigrationCandidateForms> candidateFormLst = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -674,10 +682,17 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				query1.append(" or (icf.formStatus like :searchVal ))");
 			}
 			String queryString = "from ImmigrationCandidateForms icf where  icf.immigrationTempId.id= :templateId and icf.immigration.id=:immigrationId and icf.candidate=:candidateId";
+			if(myImmigration.equalsIgnoreCase("Y")) {
+				queryString = queryString + " and icf.formCategory = :formCategory";
+			}
+			
 			Query query = session.createQuery(queryString + query1).setLong("templateId", templateId)
 					.setLong("immigrationId", immigrationId).setLong("candidateId", candidateId);
 			if (StringUtils.isNotEmpty(searchVal) && searchVal != null) {
 				query.setParameter("searchVal", "%" + searchVal + "%");
+			}
+			if(myImmigration.equalsIgnoreCase("Y")) {
+				query.setParameter("formCategory", "PetitionerCategory");
 			}
 			candidateFormLst = query.list();
 			logger.debug("candidateFormLst size is ---> " + candidateFormLst.size());
