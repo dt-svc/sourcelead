@@ -995,7 +995,7 @@ public class LeaveManagementRestController {
 				if (holidayDTO != null)
 					savedHoliday = holidayService.storeHoliday(holidayDTO);
 
-				List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocations.getId());
+				/*List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocations.getId());
 				if (projectsList != null && projectsList.size() > 0) {
 					for (Projects projects : projectsList) {
 						ProjectTasks tasks = new ProjectTasks();
@@ -1019,7 +1019,11 @@ public class LeaveManagementRestController {
 						tasks.setUpdatedDate(new Date());
 						projectTasksDao.addTasks(tasks);
 					}
+
 				}
+
+				}*/
+
 				//timesheetRestController.linkHolidaysWithTimeSheet(user, orgLocations, savedHoliday);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
