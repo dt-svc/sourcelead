@@ -45,19 +45,28 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 
 	@Override
 	@Transactional
-	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(Long orgLocationid, Long leaveTypeId)
+	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(Long orgLocationid, Long leaveTypeId,Date startDate,Date endDate)
 	{
-		Calendar c = Calendar.getInstance();
-		c.set(Calendar.DATE, 1);
-		Date startDate = c.getTime();
-//		java.sql.Date currentMonthStartDate = new java.sql.Date(startDate.getTime());
-		c.set(Calendar.DATE,     c.getActualMaximum(Calendar.DAY_OF_MONTH));
-		Date endDate = c.getTime();
-//		java.sql.Date currentMonthEndDate = new java.sql.Date(endDate.getTime());
 		List<AppliedLeaveDateView> appliedLeaveList = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate)";
 		appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationid).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
 		return appliedLeaveList;
+	}
+
+	@Override
+	@Transactional
+	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate,Long userId)
+	{
+       try {
+    	   Session session = this.sessionFactory.getCurrentSession();
+           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and alView.userId = :userId and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate)";
+           List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setParameter("startDate", sDate).setParameter("endDate", eDate).list();
+           return appliedLeaveList;
+       }catch (Exception e) {
+    	   e.printStackTrace();
+	}
+    	return null;
+		
 	}
 }

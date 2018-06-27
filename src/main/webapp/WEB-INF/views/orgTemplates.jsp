@@ -127,7 +127,7 @@
 		<p>Manage Your Interview Templates</p>
 		<span>
 		<sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/interViewFeedBackTemplate'/>">Add</a> 
+			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/interViewFeedBackTemplate?type=addInterViewFeedBackTemplate'/>">Add</a> 
 			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/interViewFeedBackTemplate" />">View</a>
 			</sec:authorize>
 		</span>

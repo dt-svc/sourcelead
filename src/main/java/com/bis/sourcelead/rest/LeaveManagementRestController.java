@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,6 +120,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -235,6 +237,9 @@ public class LeaveManagementRestController {
 
 	@Autowired
 	AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
 	
 
 	/**
@@ -372,8 +377,7 @@ public class LeaveManagementRestController {
 		return model;
 	}
 
-	@RequestMapping(value = { "/getPieChartForLeaveStatus",
-			"/rest/getPieChartForLeaveStatus" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getPieChartForLeaveStatus","/rest/getPieChartForLeaveStatus" }, method = RequestMethod.GET)
 	public List<LeaveType> getPieChartForLeaveStatus(
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request,
@@ -396,10 +400,48 @@ public class LeaveManagementRestController {
 				for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
 					roleIds.add(leaveRole.getRoleId().getId());
 				}
-				if (roleIds.contains(userRole.getRoles().getId())
-						|| "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
-					roleLeaveType.add(leaveType);
+				
+				if((leaveType.getEffectiveGender() != null && StringUtils.isNotBlank(userRole.getUser().getGender()) && userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender())) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+//				if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+					if("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+						if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
+							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
+								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+								roleLeaveType.add(leaveType);
+							}
+						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() == null) {
+							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+									roleLeaveType.add(leaveType);
+								}
+						}else if(roleIds.size() == 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
+							if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue() && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+									roleLeaveType.add(leaveType);
+								}
+						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() == null && leaveType.getLeaveEmpType() != null) {
+							if(roleIds.contains(userRole.getRoles().getId()) && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+								roleLeaveType.add(leaveType);
+							}
+						}
+					}else {
+						roleLeaveType.add(leaveType);
+					}
 				}
+				
+				
+				/*if (roleIds.contains(userRole.getRoles().getId())
+						|| "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+					if(leaveType.getLeaveEmpType() != null && leaveType.getDepartmentId() != null) {
+						if(emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+							roleLeaveType.add(leaveType);
+						}
+					}else if(leaveType.getDepartmentId() != null) {
+						
+					}
+					else {
+						roleLeaveType.add(leaveType);
+					}
+					
+				}*/
 			}
 
 			for (LeaveType type : roleLeaveType) {
@@ -442,6 +484,46 @@ public class LeaveManagementRestController {
 				type.setPendingLeaveCounts(pendingLeaveCounts);
 				type.setTakenLeaves(takenLeaveCounts);
 				type.setLeaveTypeBalanceLeaveCount(totalbalanceLeaveCounts);
+				
+				//do not remove below commented code, need to do some changes further 
+				
+				/*float appliedLeaveCount = 0;
+				LocalDate todayDate = LocalDate.now();
+				List<AppliedLeaveDateView> appliedLeaves = null;
+				AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
+				ablv.setIncludeWeekoff(l.getIncludeWeekoff());
+				ablv.setIncludeHolidays(l.getIncludeHolidays());
+				if (Constants.MONTHLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					Date[] monthDates = conversionUtil.getMonthStartDateEndDate();
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), monthDates[0], monthDates[1], userId);
+				    appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,monthDates[0],monthDates[1]);
+				}
+				else if (Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), userId);
+				     appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate());
+				}
+				else if (Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId);
+					appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,currentHalfYear[0].toDate(),currentHalfYear[1].toDate());
+				}
+				else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
+					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), userId);
+						 appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate());
+				}
+				if (appliedLeaves != null && appliedLeaves.size() > 0) {
+					appliedLeaveCount = totalLeaves - appliedLeaves.size();
+				}
+				else {
+					appliedLeaveCount = totalLeaves;
+				}
+
+				l.setTotalBalanceLeaveCounts(balanceLeaveCounts);
+				l.setPendingLeaveCounts(pendingLeaveCounts);
+				l.setTakenLeaves(takenLeaveCounts);
+				l.setLeaveTypeBalanceLeaveCount(Float.parseFloat(dec.format(appliedLeaveCount)));*/
 			}
 		}
 		return roleLeaveType;
@@ -938,7 +1020,7 @@ public class LeaveManagementRestController {
 						projectTasksDao.addTasks(tasks);
 					}
 				}
-				timesheetRestController.linkHolidaysWithTimeSheet(user, orgLocations, savedHoliday);
+				//timesheetRestController.linkHolidaysWithTimeSheet(user, orgLocations, savedHoliday);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else if(user==null){
@@ -1029,12 +1111,14 @@ public class LeaveManagementRestController {
 							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
 						}
 						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
-							float previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
+							float previousNoOfDays = 0;;
 							float currentNofDays = 0;
-							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())) {
+							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
 								currentNofDays = leaveType.getNoOfDaysPerPeriod();
+								previousNoOfDays = leaveTypeDTO.getPreviousNoOfDaysPerPeriod();
 							}else {
-								currentNofDays = leaveType.getNoOfDays();
+								currentNofDays   = leaveType.getNoOfDays();
+								previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
 							}
 							float diffLeaves = 0;
 							String actionType = "";
@@ -2056,9 +2140,9 @@ public class LeaveManagementRestController {
 			leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 			leaveService.LeaveCancelEmailToUser(user,leaveManagementHistory,reason);
-			if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
+			/*if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
 				timesheetRestController.linkLeaveTypeWithTimeSheet(user, leave.getOrgLocations(), leave.getLeaveType().getId(), leave, Constants.LEAVE_CANCELLED);
-			}
+			}*/
 		}  else {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());
 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -2809,42 +2893,76 @@ public class LeaveManagementRestController {
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 			for(LeaveType leaveType : leaveTypeList){
 				if(Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod())){
-					List<AppliedLeaveDateView> appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(orgLocation.getId(),leaveType.getId());
-					  try{
-		//				   Map<Integer,Integer> map = appliedLeaves.stream().collect(Collectors.groupingBy(apl->AppliedLeaveDateView::getUserId,counting(),Map::size));
-						 Map<Long, Long> map = appliedLeaves.stream().collect(Collectors.groupingBy(AppliedLeaveDateView::getUserId,Collectors.counting()));
-						 System.out.println(map);
-						 List<AssociateBalanceLeaveDTO> assBalList = new ArrayList<>();
-						 for(Long userId : map.keySet()){
-							 float associateBalanceLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), userId, orgLocation.getId());
-							 float balLeaves = 0;
-							 float totalBal = 0f;
-			 			     if(map.get(userId) > leaveType.getNoOfDaysPerPeriod()){
-			 			    	balLeaves = map.get(userId) - leaveType.getNoOfDaysPerPeriod();
-			 			    	totalBal = associateBalanceLeaves - balLeaves;
-						     }else if(map.get(userId) < leaveType.getNoOfDaysPerPeriod()){
-						    	balLeaves = leaveType.getNoOfDaysPerPeriod() - map.get(userId);
-						    	totalBal = associateBalanceLeaves + balLeaves;
-						     }
-			 			    totalBal += leaveType.getNoOfDaysPerPeriod();
-			 			    AssociateBalanceLeaveDTO assBal = new AssociateBalanceLeaveDTO();
-			 			    assBal.setUserId(String.valueOf(userId));
-			 			    assBal.setLeaveTypeId(leaveType.getId());
-			 			    assBal.setNoofLeaves(String.valueOf(totalBal));
-			 			    assBal.setOrgLocationId(orgLocation.getId());
-			 			    assBalList.add(assBal);
-						 }
-						 
-						 int stat = associateBalanceLeaveService.updateAssociateAccuralBalanceLeaveCount(assBalList);
-						 
-					   }catch (Exception e) {
-						// TODO: handle exception
-					   }
+					Calendar c = Calendar.getInstance();
+					c.set(Calendar.DATE, 1);
+					Date startDate = c.getTime();
+					c.set(Calendar.DATE,     c.getActualMaximum(Calendar.DAY_OF_MONTH));
+					Date endDate = c.getTime();
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,startDate,endDate);
 				}
 			}
 		}
 	}
 	
+	
+	@RequestMapping(value = "/calculateQuarterlyBalance")
+	public void calculateQuarterlyBalance(HttpServletRequest request,HttpServletResponse response) throws Exception {
+//		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgLocations> orglocationsList = new ArrayList<>();
+		orglocationsList.add(orgLocations);
+		Format formatter = new SimpleDateFormat("MMM"); 
+	    String monthName = formatter.format(new Date()).toUpperCase();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
+					LocalDate today = LocalDate.now();
+					LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(today);
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0].toDate(),dates[1].toDate());
+				}
+			}
+		}
+	}
+	
+	@RequestMapping(value = "/calculateHalfyearlyBalance")
+	public void calculateHalfyearlyBalance(HttpServletRequest request,HttpServletResponse response) throws Exception {
+//		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgLocations> orglocationsList = new ArrayList<>();
+		orglocationsList.add(orgLocations);
+		Format formatter = new SimpleDateFormat("MMM"); 
+	    String monthName = formatter.format(new Date()).toUpperCase();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod())){
+					LocalDate today = LocalDate.now();
+					LocalDate[] dates = conversionUtil.getThisMonthHalfyearyDates(today);
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0].toDate(),dates[1].toDate());
+				}
+			}
+		}
+	}
+	
+	@RequestMapping(value = "/calculateYearlyBalance")
+	public void calculateYearlyBalance(HttpServletRequest request,HttpServletResponse response) throws Exception {
+//		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgLocations> orglocationsList = new ArrayList<>();
+		orglocationsList.add(orgLocations);
+		Format formatter = new SimpleDateFormat("MMM"); 
+	    String monthName = formatter.format(new Date()).toUpperCase();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
+					Date[] dates = conversionUtil.getCurrentYearStartAndEndDate();
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
+				}
+			}
+		}
+	}
 
 	@RequestMapping(value = "/ws/dumpAllGeneralShifts", method = RequestMethod.GET)
     public void dumpAllGeneralShifts(HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -2852,7 +2970,7 @@ public class LeaveManagementRestController {
         List<OrgLocations> locationsList = orgLocationService.getAllOrgLocations();
         System.out.println("Start Time"+java.time.LocalDateTime.now());
         for (OrgLocations orgLocation : locationsList) {
-             	commonUtil.saveDefaultGenaeralShift(orgLocation, orgLocation.getUser(), Constants.GENERAL_SHIFT);
+             commonUtil.saveDefaultGenaeralShift(orgLocation, orgLocation.getUser(), Constants.GENERAL_SHIFT);
         }
         System.out.println("End Time"+java.time.LocalDateTime.now());
 

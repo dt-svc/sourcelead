@@ -18,6 +18,23 @@ public class AssociateBalanceLeaveView {
 	@Column (name = "LEAVE_TYPE_ID")
 	private Long leaveTypeId;
 	
+	
+	@Column (name = "VISIBLE_IN_BALANCE_LEAVES")
+	private String visibleInBalanceLeaves;
+	
+	@Column (name = "INCLUDE_WEEKOFF")
+	private String includeWeekoff;
+	
+	@Column (name = "INCLUDE_HOLIDAYS")
+	private String includeHolidays;
+	
+	@Column (name = "PERIOD")
+	private String period;
+	
+	@Column (name = "ACCURAL_POLICY")
+	private String accuralPolicy;
+	
+	
 	@Column(name = "USER_ID")
 	private Long userId;
 	
@@ -47,6 +64,19 @@ public class AssociateBalanceLeaveView {
 	
 	@Column(name = "ORG_LOCATION_ID")
 	private Long orgLocationId;
+	
+	@Column (name = "NO_OF_DAYS_PER_PERIOD")
+	private Float noOfDaysPerPeriod;
+
+	public Float getNoOfDaysPerPeriod()
+	{
+		return noOfDaysPerPeriod;
+	}
+
+	public void setNoOfDaysPerPeriod(Float noOfDaysPerPeriod)
+	{
+		this.noOfDaysPerPeriod = noOfDaysPerPeriod;
+	}
 
 	public Long getId()
 	{
@@ -172,6 +202,56 @@ public class AssociateBalanceLeaveView {
 	public void setOrgLocationId(Long orgLocationId)
 	{
 		this.orgLocationId = orgLocationId;
+	}
+
+	public String getVisibleInBalanceLeaves()
+	{
+		return visibleInBalanceLeaves;
+	}
+
+	public String getIncludeWeekoff()
+	{
+		return includeWeekoff;
+	}
+
+	public String getIncludeHolidays()
+	{
+		return includeHolidays;
+	}
+
+	public String getPeriod()
+	{
+		return period;
+	}
+
+	public void setVisibleInBalanceLeaves(String visibleInBalanceLeaves)
+	{
+		this.visibleInBalanceLeaves = visibleInBalanceLeaves;
+	}
+
+	public void setIncludeWeekoff(String includeWeekoff)
+	{
+		this.includeWeekoff = includeWeekoff;
+	}
+
+	public void setIncludeHolidays(String includeHolidays)
+	{
+		this.includeHolidays = includeHolidays;
+	}
+
+	public void setPeriod(String period)
+	{
+		this.period = period;
+	}
+
+	public String getAccuralPolicy()
+	{
+		return accuralPolicy;
+	}
+
+	public void setAccuralPolicy(String accuralPolicy)
+	{
+		this.accuralPolicy = accuralPolicy;
 	}
 	
 	

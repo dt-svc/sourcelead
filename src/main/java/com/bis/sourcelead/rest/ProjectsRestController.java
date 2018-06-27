@@ -240,7 +240,7 @@ public class ProjectsRestController {
 				   			}
 				   		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 						    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
-						    approvedLeaveForNewlyAddedEmployee(projectAssignedMembersDTO.getProjectMembers(),orgLocations,user);
+						   // approvedLeaveForNewlyAddedEmployee(projectAssignedMembersDTO.getProjectMembers(),orgLocations,user);
 						    response.setResponse(Result.SUCCESS.name());
 							response.setResponseMessage(Result.SUCCESS.getValue());
 					     }else {
@@ -261,7 +261,7 @@ public class ProjectsRestController {
 	    }
        
        
-	private void approvedLeaveForNewlyAddedEmployee(List<ProjectMembersDTO> projectMembers, OrgLocations orglocationId, User user) throws Exception {
+	/*private void approvedLeaveForNewlyAddedEmployee(List<ProjectMembersDTO> projectMembers, OrgLocations orglocationId, User user) throws Exception {
 		if(projectMembers != null && !projectMembers.isEmpty()) {
 			for(ProjectMembersDTO members:projectMembers) {
 				if(members.getCandidateId()!= null) {
@@ -277,7 +277,7 @@ public class ProjectsRestController {
 				}
 			}	
 		}
-	}
+	}*/
 
 
 
