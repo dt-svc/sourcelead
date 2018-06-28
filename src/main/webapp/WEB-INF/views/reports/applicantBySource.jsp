@@ -24,23 +24,29 @@ $(document).ready(function(){
       </div>
        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) by source </div>
     </section>
-    <div class="clearfix">
-    <div class="clearfix"></div>
-    	<div class="ReqRepHead clearfix">
-        
-        <div class="col-md-2">
-        <a href="#" id="graphicView" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
-        </div>
-        <div class="col-md-4">
-          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
-            <c:forEach var="option" items="${requirementsList}">
-				<option value="${option.requirementId}">${option.jobTitle}</option>
-			</c:forEach>
-          </select>
-        </div>
-        <div class="col-md-3 dropdown-select positionRelative">
-          <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
+    
+    
+    <div class="vendor_wrap clearfix">
+    
+<div class="reportHead clearfix">
+	<div class="listGridWrap reqListBtn">
+          <a title="Graphical View"  id="graphicView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
+          <a title="List View" id="listView" class="btn btn-default" ><i class="fa fa-list"></i></a>
+	</div>
+	
+    	<ul class="clearfix pull-right">
+    		<li>
+				<div class="ReqRepHead-chosen repChosen">
+		          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
+		            <c:forEach var="option" items="${requirementsList}">
+						<option value="${option.requirementId}">${option.generatedId} - ${option.jobTitle}</option>
+					</c:forEach>
+		          </select>
+		        </div>    		
+    		</li>
+    		<li>
+        <div class="dropdown-select positionRelative repSelWrap clearfix">
+          <select class="form-control repSelFiled" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
             <option value='Last_7_days' selected>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
@@ -49,45 +55,40 @@ $(document).ready(function(){
             <option value='YTD'>YTD</option>
             <option value='Last_Year'>Last Year</option>
             <option value="custom">Custom</option>
-          </select>
+          </select>          
           
+		<div class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getApplicantBySourceChart();">Run</button></div> 
           
-          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
-            <div class="pull-left">
-              <div class="pull-left mr5" style="width: 140px">
+                    <!-- Custom Date -->
+                    
+                    
+          <div class="clearfix customLeaves repCustomDate" id="customSearch">
+              <div class="repCustomDateInn">
                 <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
-                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
+                <p id="fromDateDiv">From Date Required</p>
               </div>
               
-              <div class="pull-left mr5" style="width: 140px">
+              <div class="repCustomDateInn">
                 <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
-                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
+                <p id="toDateDiv">To Date Required</p>
               </div>
-              <button type="button" class="btn btn-primary btn-sm" onclick="getApplicantBySourceChart();"><i class="fa fa-search"></i></button>
-            </div>
-          </div>
-          
-        </div>
-        
-        
-        
-        <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getApplicantBySourceChart();">Run</button>
-		</div>
-		
-		
-         <div class="col-md-1">
-          <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions"  onclick="reload();"><i class="fa fa-retweet"></i></button>
-          </div>
-        </div>
-      </div>
-    	<div class="clearfix"></div>
+              <div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" onclick="getApplicantBySourceChart();"><i class="fa fa-search"></i></button></div>
+          </div>   
+                           
+          <!-- Custom Date --> 
+        </div>    		
+    		</li> 
+    	</ul>
+    </div>     
+      
+      
    	 	<!-- Applicant source Graph 2017 -->
-    	 	<div class="dashboard-widget clearfix mt">
-    	 	<div id="applicantSource" class="" style="height: 425px; width: 100%;"></div>
+    	 	<div class="clearfix backWhite">
+    	 		<div id="applicantSourceGrap" class="" style="height: 425px; width: 100%;" style="display:block"></div>
     	 	</div>
-    	<div class="clearfix"></div>
+    	 	
+	      <div class="project_tabs_inn_table" id="applicantSource" style="display:none"></div>    	 	
+    	 	
     </div>
   </section>
 
@@ -241,11 +242,25 @@ function getCustomDates(){
 				        		 var listView = document.getElementById("listView");
 					        	 listView.addEventListener("click", function() {
 									 getListView(response);
+					        		 document.getElementById("applicantSourceGrap").style.display="none";
+								    	document.getElementById("applicantSource").style.display="block";
+								    	var element = document.getElementById("listView");
+								    	var grid = document.getElementById("graphicView");
+								    	element.classList.add("rAct");
+								    	grid.classList.remove("rAct");
+								    	$(".listSearch").show();
 								  });
 					        	 
 					        	 var graphicView = document.getElementById("graphicView");
 					        	 graphicView.addEventListener("click", function() {
 					        		 loadApplicantSourceChart(chartData);
+					        		 document.getElementById("applicantSourceGrap").style.display="block";
+								    	document.getElementById("applicantSource").style.display="none";
+								    	
+								    	var element = document.getElementById("listView");
+								    	var grid = document.getElementById("graphicView");
+								    	element.classList.remove("rAct");
+								    	grid.classList.add("rAct");
 								  });
 				 	   		}else{
 				 	   			var result = '';
@@ -272,9 +287,7 @@ function getCustomDates(){
  <script>
  function loadApplicantSourceChart(result){
 	 
-	 $("#applicantSource").empty();
-     
-	 var chart = AmCharts.makeChart("applicantSource", {
+	 var chart = AmCharts.makeChart("applicantSourceGrap", {
 		 
 			"type": "serial",
 			"categoryField": "category",
@@ -469,8 +482,8 @@ function getCustomDates(){
  		{
 		// alert("SS"+response.data.length);
 		 var result = "";
-		 result = result +"<div class='clearfix tableStyles mt'>"; 
-		 result = result +"<table class='table table-bordered mt10'>"; 
+		 result = result +"<div class='clearfix project_tabs_inn_table'>"; 
+		 result = result +"<table class='table'>"; 
          result = result +"<thead>"; 
          result = result +"  <tr>"; 
          result = result +"    <th>Source</th>";

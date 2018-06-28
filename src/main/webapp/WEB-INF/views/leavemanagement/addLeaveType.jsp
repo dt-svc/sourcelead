@@ -26,6 +26,7 @@
 		var policy = '${leaveType.leavePolicy}';
 		if (policy == 'Y') {
 			leavePolicy();
+			leavepolicyDescription();
 		}
 		var applicable = '${leaveType.applicableToUsers}';
 		if (applicable == 'N') {
@@ -261,7 +262,7 @@
 							<div class="form-group" id="departmentDiv">
 								<label class="col-md-4">Select Department<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-6 dropdown-select">
-									<select class="chosen-select form-control" multiple  name="department" onchange="removeErrMsg();valid();"
+									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();valid();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
 										<c:forEach var="report" items="${departmentList}">
@@ -814,7 +815,6 @@
 									</div>	 
 	                                </c:if>
 								</span>
-								
 								<span class="checkBox col-md-4">
 									<c:if test="${leaveType.visibleInBalanceLeaves == 'Y'}">
 										<input type="checkbox" checked="true" name="visibleInBalanceLeaves" id="visibleInBalanceLeaves" 
@@ -826,7 +826,7 @@
 									</div>
 									</c:if>
 									     <c:if test="${leaveType.visibleInBalanceLeaves == 'N'}">
-									      <input type="checkbox" name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
+									      <input name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
 										   value="Y">Visible in Balance Leaves
 										   	   <div class="tooltip">
 									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
@@ -835,7 +835,7 @@
 									</div>
 	                                </c:if>
 	                                <c:if test="${empty leaveType.visibleInBalanceLeaves}">
-									      <input type="checkbox" name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
+									      <input type="checkbox" checked="true"  name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
 										   value="Y">Visible in Balance Leaves
 										   	   <div class="tooltip">
 									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
@@ -1083,13 +1083,10 @@
 						<div class="form-group mt10">
 							<div class="col-md-12 checkBox" onClick="leavePolicy();">
 								<c:if test="${!empty leaveType.leavePolicy}">
-									<input type="checkbox" checked="true" name="leavePolicy"
-										id="leavePolicy" value="Y">Leave Policy
-	              </c:if>
+									<input type="checkbox" checked="true" name="leavePolicy" id="leavePolicy" value="Y">Leave Policy
+	                           </c:if>
 								<c:if test="${empty leaveType.leavePolicy}">
-									<input type="checkbox" name="leavePolicy" id="leavePolicy"
-
-										value="Y">Leave Policy <i class='fa fa-info-circle text-muted' title='provides the leave policy for a particluar leave type.'></i>
+									<input type="checkbox" name="leavePolicy" id="leavePolicy" value="N">Leave Policy<i class='fa fa-info-circle text-muted' title='provides the leave policy for a particluar leave type.'></i>
 
 									
 
@@ -1114,11 +1111,11 @@
 								<div class="col-md-6 checkBox">
 									<c:if test="${!empty leaveType.visibilityToAllUsers}">
 										<input type="checkbox" checked="true"
-											name="visibilityToAllUsers" value="Y">Visiblity
+											name="visibilityToAllUsers" value="Y" id="visibilityToAllUsers">Visiblity
 										All Users
 									</c:if>
 									<c:if test="${empty leaveType.visibilityToAllUsers}">
-										<input type="checkbox" name="visibilityToAllUsers" value="Y">Visiblity
+										<input type="checkbox" name="visibilityToAllUsers"  id="visibilityToAllUsers" value="Y">Visiblity
 										All Users
 									</c:if>
 								</div>
@@ -1127,8 +1124,7 @@
 					<div class="row">		
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description<span class="text-danger">&nbsp;*</span></h5>
-						<textarea id="txtEditor" name="leavePolicyDescription"   
-						value="" field-name="Description" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
+						<textarea id="txtEditor" name="leavePolicyDescription"   field-name="Description" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 					</div>
 </div>
 						</div>
@@ -1209,8 +1205,7 @@ function showLeaveEncashmentDiv(){
 											'p.jquery_form_error_message')
 											.remove();
 									$("#saveLeaveType").removeAttr("disabled");
-									$("#saveLeaveType").attr("disabled",
-											"disabled");
+									$("#saveLeaveType").attr("disabled","disabled");
 									$("input#leaveTypeName")
 											.after(
 													"<p class='jquery_form_error_message'>"
@@ -1251,6 +1246,7 @@ function showLeaveEncashmentDiv(){
 		    		    showError("Operation failed, please try again");
 		    		}
 					 $("#loading").hide();
+					 $('#saveLeaveType').attr('disabled','disabled');
 				});
 
 				return true;
@@ -1276,39 +1272,55 @@ function showLeaveEncashmentDiv(){
 		window.location.href = sourceleadUrl + "/viewLeaveTypes";
 	}
 </script>
-
 <script>
-	function leavePolicy() {
-		var ckbox = $('#leavePolicy');
-		if (ckbox.is(':checked')) {
-			$("#leavepolicy-div").show();
+function leavePolicy(){
+	  var flag = document.getElementById("leavePolicy").checked;
+	 if(flag == true){
+		 $("#leavePolicy").val('Y'); 
+		 $("#leavepolicy-div").show();
 			$('#policyName').removeAttr('data-validation-optional');
 			$('#policyName').attr('data-validation', "required validate_length length1-250");
 			$('#txtEditor').removeAttr('data-validation-optional');
 			$('#txtEditor').attr('data-validation', "required required validate_length length1-5000");
 			$('#policyNameDiv').find('p.jquery_form_error_message').remove();
-			$('#leavePolicyDescDiv').find('p.jquery_form_error_message')
-					.remove();
-		} else {
-			$("#leavepolicy-div").hide();
+			$('#leavePolicyDescDiv').find('p.jquery_form_error_message').remove();
+			
+	 }else{
+		 $('.Editor-editor').text('');
+		 $("#leavePolicy").val('N'); 
+		 $("#leavepolicy-div").hide();
 			$('#policyNameDiv').find('p.jquery_form_error_message').remove();
-			$('#leavePolicyDescDiv').find('p.jquery_form_error_message')
-					.remove();
+			$('#leavePolicyDescDiv').find('p.jquery_form_error_message').remove();
 			$('#policyName').removeAttr('data-validation');
 			$('#policyName').attr('data-validation-optional', "true");
 			$('#txtEditor').removeAttr('data-validation');
 			$('#txtEditor').attr('data-validation-optional', "true");
-		} 
-		
-		var policyDesc = '${leaveType.policyDescription}';
-		
-		  setTimeout(function () {
-			  $("textarea[name=leavePolicyDescription]").html(policyDesc);
-			 	$(".Editor-editor").html(policyDesc);
-	 			}, 100);
-		
-	}
-	
+			$('#policyName').val('');
+			$("#visibilityToAllUsers").prop("checked",false);
+			
+	 } 
+	 
+	 
+}
+</script>
+<script>
+function leavepolicyDescription(){
+	var leaveTypeId = '${leaveType.id}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/leavepolicyDescription?${_csrf.parameterName}=${_csrf.token}&leaveTypeId="+leaveTypeId, 	   
+		    success: function(result) {
+		    	$('#txtEditor').html(result.policyDescription);
+		    	$('.Editor-editor').html(result.policyDescription);
+		    }
+		    	 
+     });
+}
+
+
+
+</script>
+<script>
 	function showPriorDaysDiv() {
 			var ckbox = $('#priorLeaveApplying');
 			if (ckbox.is(':checked')) {
@@ -1372,7 +1384,7 @@ function showLeaveEncashmentDiv(){
 	function noUsers() {
 		document.getElementById("applicableId").style.display="block";
 		 	if($('#department').val() == null && $('#roles').val() == null && $('#leveEmpType').val() == null){
-				$("#saveLeaveType").attr("disabled", true);
+				$("#saveLeaveType").attr('disabled','disabled');
 		 	}else{
 				document.getElementById("applicableId").style.display="none";
 		 	}
@@ -1470,16 +1482,16 @@ $('.chosen-select').chosen().on('change', function() {
 	var leveEmpType = $("#leveEmpType").val();
 	var department = $("#department").val();
 	if(roles != null && roles !="" && roles !="undefined"){
-		$("#saveLeaveType").attr("disabled",false );
+		$("#saveLeaveType").removeAttr('disabled');
 		document.getElementById("applicableId").style.display="none";
 	}else if(leveEmpType != null && leveEmpType !="" && leveEmpType !="undefined"){
-		$("#saveLeaveType").attr("disabled",false );
+		$("#saveLeaveType").removeAttr('disabled' );
 		document.getElementById("applicableId").style.display="none";
 	}else if(department != null && department !="" && department !="undefined"){
-		$("#saveLeaveType").attr("disabled",false );
+		$("#saveLeaveType").removeAttr('disabled');
 		document.getElementById("applicableId").style.display="none";
 	}else{
-		$("#saveLeaveType").attr("disabled",true );
+		$("#saveLeaveType").removeAttr('disabled');
 		document.getElementById("applicableId").style.display="block";
 	}
 	
