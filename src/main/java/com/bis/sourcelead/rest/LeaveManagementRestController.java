@@ -576,6 +576,7 @@ public class LeaveManagementRestController {
 				orgLocations.getId(), roleHierarchyId);
 		List<AssociateGrades> gradelist =  associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
 		model.addObject("gradelist", gradelist);
+		model.addObject("employmentTypeList", Constants.EMPLOYMENT_TYPES);
 		model.addObject("departmentList", departmentList);
 		model.addObject("rolesList", rolesList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -1491,6 +1492,7 @@ public class LeaveManagementRestController {
 		model.addObject("existedRoles", existedRolesList);
 		model.addObject("rolesList", rolesList);
 		model.addObject("departmentList", departmentList);
+		model.addObject("employmentTypeList", Constants.EMPLOYMENT_TYPES);
 		model.addObject("leaveType", leaveType);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/addLeaveType");
