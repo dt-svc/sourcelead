@@ -509,6 +509,27 @@ public class RequirementDaoImpl implements RequirementDao {
 		return requirement;
 
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Requirement getRequirementByRequirementIdAndSearchValue(Long requirementId,String searchValue) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query1 = null;
+		Query finalQuery = null;
+		Requirement requirement = null;
+		if(searchValue !=null && StringUtils.isNotBlank(searchValue)){
+		 query1 = " and ((requirement.jobTitle like '" + searchValue + "%') or (requirement.generatedId like '" + searchValue + "%'))";
+		}
+		String query = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch requirement.orgLocationId  where requirement.id =:requirementId";
+		if(searchValue !=null && StringUtils.isNotBlank(searchValue)){
+		finalQuery = session.createQuery(query + query1);
+		}else{
+			finalQuery = session.createQuery(query);	
+		}
+		requirement = (Requirement)finalQuery.setLong("requirementId", requirementId).uniqueResult();
+		return requirement;
+
+	}
 
 	/**
 	 * @author venkat kesav

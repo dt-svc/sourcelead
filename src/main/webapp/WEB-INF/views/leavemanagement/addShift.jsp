@@ -460,6 +460,7 @@ function validateShiftName(){
                		    showError("Operation failed, please try again");
                		}
 				$("#loading").hide();
+				$('#save_shift').attr('disabled','disabled');
                     });
             
 // 			$("addshift_form").validate().resetForm();

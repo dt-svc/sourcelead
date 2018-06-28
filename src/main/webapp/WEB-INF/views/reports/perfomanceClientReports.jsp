@@ -82,7 +82,7 @@ $(document).ready(function(){
     </div>
     <div class="ReqRepHead clearfix">
       <div class="col-md-2 dropdown-select positionRelative col-md-offset-9">
-        <select class="form-control" id="dateFrequency" onchange="refreshWithNewFreq(); showCustomFields();">
+        <select class="form-control" id="dateFrequency" onchange="showCustomFields();">
           <option value="Last_7_days" selected>Last 7 days</option>
           <option value="Last_15_days">Last 15 days</option>
           <option value="1_month">1 month</option>
@@ -104,6 +104,10 @@ $(document).ready(function(){
         </div>
         <!-- Top Leave Takers Custom Date --> 
       </div>
+      
+       <div class="col-md-2" id = "RunDivId">
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="refreshWithNewFreq();">Run</button>
+		</div>
 <!--       <div class="col-md-1">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
           <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
