@@ -669,7 +669,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("INTERVIEWED")){
-			 submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW')";
+			 submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW')";
 		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("OFFERED")){
