@@ -46,7 +46,7 @@ window.onload = function() {
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Apply Leave</h2>
+        <h2>Time Off</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/leaveManagementReports'/>">Leave Management</a> &raquo; Apply Leave</div>
     </section>
@@ -77,7 +77,7 @@ window.onload = function() {
               
               <div class="form-group">
               <label class="col-md-3">Leave Type<span class="text-danger paddingLeft">*</span></label>
-              <div class="col-md-9 dropdown-select">
+              <div class="col-md-9 dropdown-select" id="removeErrMsg">
               <div id="leaveTypeIdDiv"></div>
               </div>
              </div>
@@ -804,22 +804,20 @@ function getLeaveDetails(finalDateFormatEndDate){
    	   		    	   }
     		    	}
     		    	
-    		    	
-    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
-    		    		validateOverDrawLeaves(report.name);
-    		    	}else{
-    		    		$("#ApplyLeave").removeAttr('disabled');
-    		    	}
-    		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
-    		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
-    		    		
-    		    	}
     		    	if(report.leaveDuration == "Y" && fromDate != "" && toDate != ""){
     		    		validateMinMaxDays(report.minDays, report.maxDays);
     		    	}
     		    	
+    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
+    		    		validateOverDrawLeaves(report.name);
+    		    	}
+    		    	
+    		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
+    		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
+    		    	}
+    		    	
     		    	if(errorMessage != ""){
-    		        	$("#ApplyLeave").attr('disabled','disabled');
+//     		        	$("#ApplyLeave").attr('disabled','disabled');
     		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
     		        	$(".warMess").fadeIn();
     		        	$(".comMask").fadeIn();
@@ -860,9 +858,7 @@ function validateOverDrawLeaves(leaveTypeName){
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = $("#"+typeName+"Span").text();
 	if((dayDiff > typeIdBalCount) || typeIdBalCount ==  0){
-		$("#ApplyLeave").removeAttr('disabled');
-		$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You Have Not Enough Leaves To Apply</span> ");
-		$(".comMask").fadeIn();
+		errorMessage += "You Have Not Enough Leaves To Apply.";
 	}
 }
 </script>
@@ -890,7 +886,6 @@ function validateMinMaxDays(minDays, maxDays){
     var dayDiff= (convertToDate - convertFromDate+1);
     if(!(maxDays >= dayDiff && dayDiff >= minDays)){
     	errorMessage += "You need to apply this Leave Type for atleast Min "+minDays+"days and Max "+maxDays+"days.";
-    
     }
 }
 
@@ -996,6 +991,7 @@ function validateDate(){
 function closedate(){
 $(".warMess").fadeOut();
 $(".comMask").fadeOut();
+$("#removeErrMsg").find('p.warMess').remove();
 };
 $(".comMask").click(function()
 {

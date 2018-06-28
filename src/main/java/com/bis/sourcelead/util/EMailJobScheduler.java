@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
@@ -54,6 +56,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.Candidate;
@@ -74,6 +77,7 @@ import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -91,6 +95,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
@@ -103,6 +108,7 @@ import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
 import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -283,6 +289,12 @@ public class EMailJobScheduler {
 	private LeaveService leaveService;
 	
 	@Autowired
+	LeaveTypeService leaveTypeService;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
 	LeaveDao leaveDao;
 	
 	@Value("${static.path}")
@@ -293,6 +305,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	private ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
 	
 	@Autowired
 	private ImmigrationTemplateService immigrationTemplateService;
@@ -3261,6 +3276,78 @@ public class EMailJobScheduler {
 		// calling the sendEmail method of emailScenerioUtil
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations,
 				Constants.EMAIL_TO_IMMIGRATION_BENEFICIARY, new ArrayList<EmailAttachment>());
+	}
+	
+	
+	//@Scheduled(cron = "0 3 0 1 1/1 ?")
+	@Async
+	public void calculateMonthlyLeaves() throws Exception
+	{
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod())){
+					Calendar c = Calendar.getInstance();
+					c.add(Calendar.MONTH, -1);
+					c.set(Calendar.DATE, 1);
+					Date startDate = c.getTime();
+					c.set(Calendar.DATE, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+					Date endDate = c.getTime();
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,startDate,endDate);
+				}
+			}
+		}
+	}
+	
+	//@Scheduled(cron = "0 3 0 1 1/3 ?")
+	@Async
+	public void calculateQuarterlyLeaves() throws Exception
+	{
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
+					LocalDate today = LocalDate.now();
+					LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(today.minusDays(1));
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0].toDate(),dates[1].toDate());
+				}
+			}
+		}
+	}
+	
+	//@Scheduled(cron = "0 3 0 1 1/6 ?")
+	@Async
+	public void calculateHalfYearlyLeaves() throws Exception
+	{
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod())){
+					LocalDate today = LocalDate.now();
+					LocalDate[] dates = conversionUtil.getThisMonthHalfyearyDates(today.minusDays(1));
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0].toDate(),dates[1].toDate());
+				}
+			}
+		}
+	}
+	
+	//@Scheduled(cron = "0 3 0 1 1 ?")
+	@Async
+	public void calculateYearlyLeaves() throws Exception
+	{
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
+					Date[] dates = conversionUtil.getPreviousYearStartAndEndDate();
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
+				}
+			}
+		}
 	}
 	
 }

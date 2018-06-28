@@ -418,7 +418,19 @@ public class LeaveManagementRestController {
 							if(roleIds.contains(userRole.getRoles().getId()) && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
 								roleLeaveType.add(leaveType);
 							}
-						}
+						}else if(roleIds.size() == 0 && leaveType.getDepartmentId() == null && leaveType.getLeaveEmpType() != null) {
+							if(emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+								roleLeaveType.add(leaveType);
+							}
+						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() == null && leaveType.getLeaveEmpType() == null) {
+							if(roleIds.contains(userRole.getRoles().getId())) {
+								roleLeaveType.add(leaveType);
+							}
+						}else if(roleIds.size() == 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() == null) {
+							if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+								roleLeaveType.add(leaveType);
+							}
+					}
 					}else {
 						roleLeaveType.add(leaveType);
 					}
