@@ -396,17 +396,48 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), user.getId());
 						appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate());
 					}
-					if (appliedLeaves != null && appliedLeaves.size() > 0) {
-						totalBal = associateBalanceLeaves - appliedLeaves.size();
-					}
-					if(Constants.YES.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
-						if(totalBal < 0){
+					
+					if(Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())){
+						if(Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
 							totalBal = 0;
+						}else if(Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+							if (appliedLeaves != null && appliedLeaves.size() > 0) {
+								totalBal = associateBalanceLeaves - appliedLeaves.size();
+								if(Constants.YES.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
+									if(totalBal < 0){
+										totalBal = 0;
+									}
+								}else if(Constants.NO.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
+									totalBal = associateBalanceLeaves - appliedLeaves.size();
+								} 
+							}
+						}
+						totalBal += leaveType.getNoOfDaysPerPeriod();
+					}else if(Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())){
+						if(Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+							totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
+						}else if(Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+							float remainingBal = 0f;
+							if (appliedLeaves != null && appliedLeaves.size() > 0) {
+								remainingBal = leaveType.getNoOfDaysPerPeriod() - appliedLeaves.size();
+								if(Constants.YES.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
+									if(remainingBal < 0){
+										totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
+									}else{
+										totalBal = associateBalanceLeaves - appliedLeaves.size();
+									}
+								}else if(Constants.NO.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
+									totalBal = associateBalanceLeaves - appliedLeaves.size();
+								}
+							}else{
+								totalBal = associateBalanceLeaves;
+							}
 						}
 					}
+					 
 					
 //					totalBal =  associateBalanceLeaves - map.get(user.getId()) ;
-				    totalBal += leaveType.getNoOfDaysPerPeriod();
+				    
 				    AssociateBalanceLeaveDTO assBal = new AssociateBalanceLeaveDTO();
 				    assBal.setUserId(String.valueOf(user.getId()));
 				    assBal.setLeaveTypeId(leaveType.getId());
@@ -415,8 +446,25 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				    assBalList.add(assBal);
 				 }else{
 					 float associateBalanceLeaves = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocations.getId());
-					 float totalBal = associateBalanceLeaves + leaveType.getNoOfDaysPerPeriod();
-				     AssociateBalanceLeaveDTO assBal = new AssociateBalanceLeaveDTO();
+//					 float totalBal = associateBalanceLeaves + leaveType.getNoOfDaysPerPeriod();
+					 float totalBal = 0;
+					if (Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
+						if (Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
+							totalBal += leaveType.getNoOfDaysPerPeriod();
+						}
+						else if (Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
+							totalBal = associateBalanceLeaves + leaveType.getNoOfDaysPerPeriod();
+						}
+					}
+					else if (Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
+						if (Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
+							totalBal = associateBalanceLeaves;
+						}
+						else if (Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
+							totalBal = associateBalanceLeaves;
+						}
+					}
+					 AssociateBalanceLeaveDTO assBal = new AssociateBalanceLeaveDTO();
 				     assBal.setUserId(String.valueOf(user.getId()));
 				     assBal.setLeaveTypeId(leaveType.getId());
 				     assBal.setNoofLeaves(String.valueOf(totalBal));
