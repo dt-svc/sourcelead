@@ -82,4 +82,6 @@ public interface LeaveDao {
 
 	List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate);
 
+	int deleteApproversByLeaveId(Long leaveId);
+
 }
