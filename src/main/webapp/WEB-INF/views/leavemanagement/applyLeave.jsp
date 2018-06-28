@@ -1038,12 +1038,13 @@ function validateDate(){
 function closedate(){
 $(".warMess").fadeOut();
 $(".comMask").fadeOut();
-$("#removeErrMsg").find('p.warMess').remove();
+$(".warMess").remove();
 };
 $(".comMask").click(function()
 {
 	$(".comMask").fadeOut();
 	$(".warMess").fadeOut();
+	$(".warMess").remove();
 		});
 
 

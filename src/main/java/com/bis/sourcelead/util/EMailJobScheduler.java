@@ -3279,7 +3279,7 @@ public class EMailJobScheduler {
 	}
 	
 	
-	//@Scheduled(cron = "0 3 0 1 1/1 ?")
+	@Scheduled(cron = "0 3 0 1 1/1 ?")
 	@Async
 	public void calculateMonthlyLeaves() throws Exception
 	{
@@ -3300,7 +3300,7 @@ public class EMailJobScheduler {
 		}
 	}
 	
-	//@Scheduled(cron = "0 3 0 1 1/3 ?")
+	@Scheduled(cron = "0 3 0 1 1/3 ?")
 	@Async
 	public void calculateQuarterlyLeaves() throws Exception
 	{
@@ -3317,7 +3317,7 @@ public class EMailJobScheduler {
 		}
 	}
 	
-	//@Scheduled(cron = "0 3 0 1 1/6 ?")
+	@Scheduled(cron = "0 3 0 1 1/6 ?")
 	@Async
 	public void calculateHalfYearlyLeaves() throws Exception
 	{
@@ -3334,7 +3334,7 @@ public class EMailJobScheduler {
 		}
 	}
 	
-	//@Scheduled(cron = "0 3 0 1 1 ?")
+	@Scheduled(cron = "0 3 0 1 1 ?")
 	@Async
 	public void calculateYearlyLeaves() throws Exception
 	{
