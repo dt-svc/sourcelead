@@ -16,59 +16,71 @@
     
 <div class="reportNewDash">
     
+    <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
+    <a href="${appPath}/daywiseTimeSheetReports">
 	<div class="repDashCta">
 		<span><i class="fa fa-calendar"></i></span>
 		<div class="repDashCtaWrap">
-			<sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-				<a href="${appPath}/daywiseTimeSheetReports"><h2>Daywise Timesheet Report</h2><b>View</b></a>
-				</sec:authorize>
+		<h2>Daywise Timesheet Report</h2><b>View</b>
 		</div>
 	</div>
+	</a>
+	</sec:authorize>
 	
+	<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
+		<a href="${appPath}/timeSheetReports">
 	<div class="repDashCta">
 		<span><i class="fa fa-clock-o"></i></span>
 		<div class="repDashCtaWrap">
-			<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
-				  <a href="${appPath}/timeSheetReports"><h2>Timesheet Monthly Report</h2><b>View</b></a>
-				</sec:authorize>
+		 <h2>Timesheet Monthly Report</h2><b>View</b>
 		</div>
 	</div>
+	</a>
+	</sec:authorize>
 		
+	<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">	
+	<a href="${appPath}/expensesReportsList">
 	<div class="repDashCta">
 		<span><i class="fa fa-dollar"></i></span>
 		<div class="repDashCtaWrap">
-				<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">
-				<a href="${appPath}/expensesReportsList"><h2>Expense(s)</h2><b>View</b></a>
-				</sec:authorize>		
+	    <h2>Expense(s)</h2><b>View</b>
 		</div>
 	</div>
+	</a>
+	</sec:authorize>
 	
+	<sec:authorize access="hasRole('ROLE_MISSING_TIMESHEETS')">
+	<a href="${appPath}/missingTimesheetsReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-clock-o"></i></span>
 		<div class="repDashCtaWrap">
-			<sec:authorize access="hasRole('ROLE_MISSING_TIMESHEETS')">
-                <a href="${appPath}/missingTimesheetsReport"><h2>Missing Timesheet(s)</h2><b>View</b></a>
-                </sec:authorize>
+         <h2>Missing Timesheet(s)</h2><b>View</b>
 		</div>
 	</div>	
+	</a>
+	</sec:authorize>
 	
+	<sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
+	<a href="${appPath}/pendingForApprovalReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-square-o"></i></span>
 		<div class="repDashCtaWrap">
-			<sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
-				<a href="${appPath}/pendingForApprovalReport"><h2>Pending for Approval</h2><b>View</b></a>
-				</sec:authorize>
+		<h2>Pending for Approval</h2><b>View</b>
 		</div>
 	</div>	
+	</a>
+		</sec:authorize>
 	
+	<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
+	<a href="${appPath}/employementVerificationReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-check-square-o"></i></span>
 		<div class="repDashCtaWrap">
-			<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-				<a href="${appPath}/employementVerificationReport"><h2>Employment Verification Report</h2><b>View</b></a>
-				</sec:authorize>
+		<h2>Employment Verification Report</h2><b>View</b>
 		</div>
 	</div>	
+	</a>
+	</sec:authorize>
 				
 	<div class="clearfix"></div>	
 </div>

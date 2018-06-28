@@ -890,6 +890,8 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    }
 		});
 	}
+	
+	validateDate();	
 }
 
 </script>
@@ -969,7 +971,7 @@ function validateMaxLeave(data){
 	}
 	
   }
-	
+	validateDate();		
 }
 </script>
 
@@ -990,12 +992,15 @@ function validateCarryForwardLeaves(){
 	if(userId != null && userId !='' && userId !='undefined'){
 	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
 		$.get(sourceleadUrl+"/validateCarryForwardLeaves?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
-			if(data == true){
-				$('.jquery_form_error_message').remove();
-				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
-			}else{
-				$('.jquery_form_error_message').hide();
-			}
+			if(data!=null&&data == "you cannot apply two leaves on same day.!"){ 
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data); 
+				$("#ApplyLeave").attr('disabled','disabled'); 
+				$(".comMask").fadeIn(); 
+				}else if(data!=null){ 
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data); 
+				$("#ApplyLeave").removeAttr('disabled'); 
+				$(".comMask").fadeIn();	
+				} 
 		}); 
 	}
 	
@@ -1021,12 +1026,12 @@ function validateDate(){
 	}
 	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
-			if(data!=null&&data == "you cannot apply two leaves on same day.!"){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
+			if(data !=null && data.validateType == 'SAMEDAY'){
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
 				$("#ApplyLeave").attr('disabled','disabled');
 				$(".comMask").fadeIn();
-			}else if(data!=null){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
+			}else if(data != null && data.validateType == 'HOLIDAY'){
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
 				$("#ApplyLeave").removeAttr('disabled');
 				$(".comMask").fadeIn();	
 			}
