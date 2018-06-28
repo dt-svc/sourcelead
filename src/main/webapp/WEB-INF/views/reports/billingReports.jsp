@@ -52,7 +52,7 @@ $(document).ready(function(){
 <div class="pull-left reportBtns reportBtns_custom mt5 mb10">
 <h4 class="pull-left mr">Finance Report</h4>
 	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
-		<select class="form-control" id="billingReportType" onChange="flushBillingCustom(); getBillingReports('Receivable');custBillingDates();">
+		<select class="form-control" id="billingReportType" onChange="flushBillingCustom();custBillingDates();">
 		  <option value="THIS_MONTH">This Month</option>
 		  <option value="THIS_QUARTER">This quarter</option>
 		  <option value="THIS_YEAR">This Year</option>
@@ -75,6 +75,11 @@ $(document).ready(function(){
 	<span class="cusShowBilling"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomBillingReports('Receivable');" /></span>
         <div class="clearfix"></div>
       </div>
+      
+       <div class="col-md-2" id = "runButtonBillingDiv">
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getBillingReports('Receivable');">Run</button>
+		</div>  
+      
  </div>
  
  <div class="clearfix"></div>
@@ -539,9 +544,11 @@ function customPayableReportPagination(){
 function custBillingDates(){
 	var billingReportType = $("#billingReportType").val();
 	if(billingReportType=="CUSTOM"){
+		document.getElementById("runButtonBillingDiv").style.display = "none";
 	    $(".cusShowBilling").show();
 	}
 	if(billingReportType!="CUSTOM"){
+		document.getElementById("runButtonBillingDiv").style.display = "block";
 	    $(".cusShowBilling").hide();
 	}
 }

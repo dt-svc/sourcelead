@@ -20,6 +20,7 @@ function getJobsReportCustomDates(){
 	 if(dateSelection == 'custom'){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
+		 document.getElementById("runPipelineDiv").style.display="none";
 		 
 			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 			  var finalDateFormatProjectSave = '';
@@ -60,6 +61,7 @@ function getJobsReportCustomDates(){
 	  
 		 
 	 }else{
+		 document.getElementById("runPipelineDiv").style.display="block";
 		 document.getElementById("customSearch").style.display="none";
 		 $("#jobReportList_custome").removeAttr("disabled");
 		 $("#fromDate").datepicker("destroy");
@@ -73,6 +75,7 @@ function getJobsReportCustomDates(){
 
 </script>
  <section class="content-wraper">
+ 
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Job(s) Pipeline</h2>
@@ -80,87 +83,96 @@ function getJobsReportCustomDates(){
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Job(s) Pipeline
        </div>
     </section>
+    
     <!-- hiring Process  -->
-    <div class="clearfix">
-      <div class="ReqRepHead clearfix">
-    		      <div class="col-md-2 pull-left reqListBtn">
-                    <a title="Reports View" id="GraphView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-                    <a  title="List View" id="ListView" class="btn btn-default"><i class="fa fa-list"></i></a>
-    		      </div>
-     		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
-       
-        <div class="col-md-4">
-    <div class="dropdown-scroll">
-		<select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
-            <c:forEach var="option" items="${requirementsList}">
-				<option value="${option.requirementId}">${option.jobTitle}</option>
-			</c:forEach>
-          </select>
-	</div>
-        </div>
-        <div class="col-md-3 dropdown-select">
-        <div class="dropdown-select positionRelative">
-        <select class="form-control" name="dateSelection" id="dateSelection" onchange="getJobsReportCustomDates();">
-            <option value=''>Select Date</option>
-            <option value='Last_7_days' selected >Last 7 days</option>
-            <option value='Last_15_days'>Last 15 days</option>
-            <option value='1_month'>1 month</option>
-            <option value='3_months'>3 months</option>
-            <option value='YTD' >YTD</option>
-            <option value='Last_Year'>Last Year</option>
-            <option value="custom">Custom</option>
-          </select>
-    <!-- Top Leave Takers Custom Date -->
-          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
-            <div class="pull-left">
-              <div class="pull-left mr5" style="width: 140px" id="errMsgFrm">
+    
+    <div class="vendor_wrap clearfix">
+    
+	<div class="reportHead clearfix">
+		<div class="listGridWrap reqListBtn">
+			<a title="Reports View" id="GraphView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
+        	<a title="List View" id="ListView" class="btn btn-default"><i class="fa fa-list"></i></a>
+		</div>
+	
+    	<ul class="clearfix pull-right">
+    		<li>
+				<div class="ReqRepHead-chosen repChosen">
+					<select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
+			            <c:forEach var="option" items="${requirementsList}">
+							<option value="${option.requirementId}">${option.generatedId} - ${option.jobTitle}</option>
+						</c:forEach>
+			          </select>
+		        </div>    		
+    		</li>
+    		<li>
+        <div class="dropdown-select positionRelative repSelWrap clearfix">
+	        <select class="form-control repSelFiled" name="dateSelection" id="dateSelection" onchange="getJobsReportCustomDates();">
+	            <option value=''>Select Date</option>
+	            <option value='Last_7_days' selected >Last 7 days</option>
+	            <option value='Last_15_days'>Last 15 days</option>
+	            <option value='1_month'>1 month</option>
+	            <option value='3_months'>3 months</option>
+	            <option value='YTD' >YTD</option>
+	            <option value='Last_Year'>Last Year</option>
+	            <option value="custom">Custom</option>
+	        </select>   
+	        
+		<div class="repSelBtn" id="runPipelineDiv"><button type="button" class="btn btn-primary btn-sm" onclick="getJobPipelineReports();">Run</button></div> 
+          
+                    <!-- Custom Date -->
+          <div class="clearfix customLeaves repCustomDate" id="customSearch">
+              <div class="repCustomDateInn" id="errMsgFrm">
                 <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
-                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
+                <p id="fromDateDiv">From Date Required</p>
               </div>
               
-              <div class="pull-left mr5" style="width: 140px" id="errMsgTo">
+              <div class="repCustomDateInn" id="errMsgTo">
                 <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
-                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
+                <p id="toDateDiv">To Date Required</p>
               </div>
-              <button type="button" class="btn btn-primary btn-sm" onclick="getJobPipelineReports();"><i class="fa fa-search"></i></button>
-            </div>
-          </div>
-      </div>
-
-        </div>
-		        <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getJobPipelineReports();">Run</button>
-		</div>
-         
-         <div class="col-md-1">
-          <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Reload" onclick="reload();"><i class="fa fa-retweet"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>
+              <div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" onclick="getJobPipelineReports();"><i class="fa fa-search"></i></button></div>
+          </div>                    
+          <!-- Custom Date --> 
+          
+        </div>    		
+    		</li> 
+    		
+    	</ul>
+    </div>     
     
-    <div class="dashboard-widget clearfix mt amchartTitile-hide" id="jobPipelineReportDivId" style="display:block"> 
+    
+    <div class="dashboard-widget clearfix amchartTitile-hide" id="jobPipelineReportDivId" style="display:block"> 
        <div id="jobspipline" style="width: 100%; height: 350px;"></div>
     </div>
     
     
     
     
-    <div class="vendor_wrap clearfix mt" id="jobPipelineListDivId" style="display:none">
-        <div class="clearfix"></div>
-        <div class="clerfix jobpipline-count col-md-8 col-md-offset-2">
-          <ul class="list-unstyled list-inline">
-            <li> <a href="javascript:void(0)"><span id="allJobsCount"></span></a> <span>All</span> </li>
-            <li> <a href="javascript:void(0)"><span id="openJobsCount"></span></a> <span>Open</span> </li>
-            <li> <a href="javascript:void(0)"><span id="closedJobsCount"></span></a> <span>Closed</span> </li>
-            <li> <a href="javascript:void(0)"><span id="onHoldJobsCount"></span></a> <span>Onhold</span> </li>
-            <li> <a href="javascript:void(0)"><span id="cancelledJobsCount"></span></a> <span>Cancelled</span> </li>
-          </ul>
-        </div>
-        <div class="clearfix"></div>
+    <div class="clearfix backWhite" id="jobPipelineListDivId" style="display:none">
+            
+<div class="reportsCount reportsCount5">
+		<ul>
+			<li title="All" id="applicantsli">
+				<span><i class="fa fa-globe"></i></span><b id="allJobsCount">0</b>
+			</li>
+			<li title="Open" class="colorTwo">
+				<span><i class="fa fa-folder-open"></i></span><b id="openJobsCount">0</b>
+			</li>
+			<li title="Closed">
+				<span><i class="fa fa-star"></i></span><b id="closedJobsCount">0</b>
+			</li>
+			<li title="Onhold" class="colorTwo">
+				<span><i class="fa fa-hand-rock-o"></i></span><b id="onHoldJobsCount">0</b>
+			</li>
+			<li title="Cancelled">
+				<span><i class="fa fa-times"></i></span><b id="cancelledJobsCount">0</b>
+			</li>
+			<div class="clearfix"></div>
+		</ul>
+	</div>        
         
-        <div class="clearfix mt5">
+        
+        <div class="clearfix mt">
         	
         	<div class="col-md-4 mb">
         	<div class="cardModel-widget">
@@ -339,6 +351,8 @@ function getJobsReportCustomDates(){
         </div>
         <div class="clearfix mt mb"></div>
       </div>
+      
+</div>      
     
   </section>
 <script>
@@ -392,6 +406,10 @@ function getJobPipelineReports(){
 		        		 getJobPipelineReportsList(response);
 		        		 document.getElementById("jobPipelineListDivId").style.display="block";
 		        		 document.getElementById("jobPipelineReportDivId").style.display="none";
+					    	var element = document.getElementById("ListView");
+					    	var grid = document.getElementById("GraphView");
+					    	element.classList.add("rAct");
+					    	grid.classList.remove("rAct");
 					  });
 		        	 
 		        	 var graphicView = document.getElementById("GraphView");
@@ -399,6 +417,11 @@ function getJobPipelineReports(){
 		        		 getJobsPipelineAmcahrt(response);
 		        		 document.getElementById("jobPipelineListDivId").style.display="none";
 		        		 document.getElementById("jobPipelineReportDivId").style.display="block";
+					    	var element = document.getElementById("ListView");
+					    	var grid = document.getElementById("GraphView");
+					    	element.classList.remove("rAct");
+					    	grid.classList.add("rAct");
+		        		 
 		        	 });
 		        	 
 		    	}else{
