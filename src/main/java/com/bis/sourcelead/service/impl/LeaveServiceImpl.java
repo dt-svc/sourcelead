@@ -240,14 +240,20 @@ public class LeaveServiceImpl implements LeaveService{
 		if(StringUtils.isNotBlank(leaveDTO.getFromHalfDay())) {
 			leave.setFromHalfDay(leaveDTO.getFromHalfDay());
 		}
-		if(StringUtils.isNotBlank(leaveDTO.getFromDateHalfTime())) {
-			leave.setFromTime(leaveDTO.getFromDateHalfTime());
-		}
 		if(StringUtils.isNotBlank(leaveDTO.getToHalfDay())) {
 			leave.setToHalfDay(leaveDTO.getToHalfDay());
 		}
-		if(StringUtils.isNotBlank(leaveDTO.getToDateHalfTime())) {
-			leave.setToTime(leaveDTO.getToDateHalfTime());
+		if(StringUtils.isNotBlank(leaveDTO.getFromDateFromHalfTime())) {
+			leave.setFromDateFromHalfTime(leaveDTO.getFromDateFromHalfTime());
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getFromDateToHalfTime())) {
+			leave.setFromDateToHalfTime(leaveDTO.getFromDateToHalfTime());
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getToDateFromHalfTime())) {
+			leave.setToDateFromHalfTime(leaveDTO.getToDateFromHalfTime());
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getToDateToHalfTime())) {
+			leave.setToDateToHalfTime(leaveDTO.getToDateToHalfTime());
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getNotifyToOthers())) {
 			leave.setNotifyToOthers(leaveDTO.getNotifyToOthers());
