@@ -843,6 +843,8 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    }
 		});
 	}
+	
+	validateDate();	
 }
 
 </script>
@@ -922,7 +924,7 @@ function validateMaxLeave(data){
 	}
 	
   }
-	
+	validateDate();		
 }
 </script>
 
@@ -978,11 +980,11 @@ function validateDate(){
 	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data !=null && data.validateType == 'SAMEDAY'){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
 				$("#ApplyLeave").attr('disabled','disabled');
 				$(".comMask").fadeIn();
 			}else if(data != null && data.validateType == 'HOLIDAY'){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
 				$("#ApplyLeave").removeAttr('disabled');
 				$(".comMask").fadeIn();	
 			}
