@@ -294,7 +294,7 @@ function getUserList(teamType){
 			                    var json = data.data;
 			                    //var selectedTempIds = $("#assignedTeamId").val();
 			                    for (var i = 0; i < json.length; i++) {
-			                    	 var opt = json[i]; 
+			                    	 var opt = json[i];
 				                     var isSelected = "";
 				                     var isBlockedBySelected = "";
 				                     var selectAssignUsersIdsStr = ""+selectAssignUsersIds+"";
