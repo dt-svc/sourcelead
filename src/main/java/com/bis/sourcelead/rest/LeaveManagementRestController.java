@@ -65,6 +65,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
+import com.bis.sourcelead.dto.ValidateDateDTO;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
@@ -1146,6 +1147,7 @@ public class LeaveManagementRestController {
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -2258,10 +2260,11 @@ public class LeaveManagementRestController {
 	 */
 	@RequestMapping(value = "/validateRestrictDate")
 	@ResponseBody
-	public String validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate, @RequestParam(value = "toDate", required = false) String toDate, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "leaveUUID", required = false) String leaveUUID, HttpServletRequest request) throws Exception
+	public ValidateDateDTO validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate, @RequestParam(value = "toDate", required = false) String toDate, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "leaveUUID", required = false) String leaveUUID, HttpServletRequest request) throws Exception
 	{
 		String isTrue = null;
-		StringBuilder sb = null;
+//		StringBuilder sb = null;
+		ValidateDateDTO validateDateDTO = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = null;
 		if (userId == null) {
@@ -2274,6 +2277,18 @@ public class LeaveManagementRestController {
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
+		
+		List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
+		if(leaveList != null && !leaveList.isEmpty()) {
+			validateDateDTO = new ValidateDateDTO();
+			validateDateDTO.setValidateType("SAMEDAY");	
+			validateDateDTO.setErrorMessage("you cannot apply two leaves on same day.!");
+//			sb = new StringBuilder();
+//			sb.append("you cannot apply two leaves on same day.!");
+			return validateDateDTO;
+		}
+		
+		
 		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate, toDate, orgLocations);
 		List<Date> daysList = new ArrayList<>();
 		Set<Long> roleIds = new HashSet<>();
@@ -2301,7 +2316,8 @@ public class LeaveManagementRestController {
 		int i = 0;
 		Collections.sort(daysList);
 		if (daysList.size() > 0) {
-			sb = new StringBuilder();
+			validateDateDTO = new ValidateDateDTO();
+			StringBuilder sb = new StringBuilder();
 			sb.append("You cannot apply for leave on restricted/holiday day ");
 			for (Date d : daysList) {
 				sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
@@ -2310,13 +2326,16 @@ public class LeaveManagementRestController {
 				}
 				i++;
 			}
-		}else {
+			validateDateDTO.setValidateType("HOLIDAY");
+			validateDateDTO.setErrorMessage(sb.toString());
+			return validateDateDTO;
+		}/*else {
 			List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
 			if(leaveList != null && !leaveList.isEmpty()) {
 					sb = new StringBuilder();
 					sb.append("you cannot apply two leaves on same day.!");
 			}
-		}
+		}*/
 		
 		
 		/*
@@ -2351,10 +2370,10 @@ public class LeaveManagementRestController {
 		 * 
 		 * } isValid = true; } }
 		 */
-		if (sb != null) {
-			isTrue = sb.toString();
-		}
-		return isTrue;
+//		if (sb != null) {
+//			isTrue = sb.toString();
+//		}
+		return validateDateDTO;
 	}
 
 	@RequestMapping(value = { "/totalCountsForEmployeeLeaves",

@@ -25,6 +25,7 @@
           <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')">
              
       <sec:authorize access="hasAnyRole('ROLE_RECRUITERS_REPORT','ROLE_VENDORS_REPORT','ROLE_CLIENT_REPORT','ROLE_APPLICANT_DECLINE','ROLE_APPLICANT_BACKOUT','ROLE_JOBS_PIPELINE','ROLE_APPLICANT_SOURCE','ROLE_TIME_TO_FILL','ROLE_APPLICANT_RECEIVED','ROLE_JOBS_STAGES')">
+            
              <div class="col-md-4 reportNewCta">
                  
 			<div class="dropdown pull-right report-dropdown">
@@ -73,15 +74,18 @@
 				</ul>
 			</div>
                  <!-- Dropdown -->
+                  <a href="${appPath}/performanceReportList" class="block">
  				<div class="clearfix text-center mb10"><i class="perReport"></i></div>
-                  <div class="clearfix text-center"> <h4><a href="${appPath}/performanceReportList">Performance Report</a></h4></div>
+                  <div class="clearfix text-center"> <h4>Performance Report</h4></div>
+                   </a>
               </div>
-              
+             
            </sec:authorize>   
               
               
               
          <sec:authorize access="hasAnyRole('ROLE_BILLING_REPORTS','ROLE_A_R_AGING','ROLE_A_P_AGING','ROLE_MISSING_INVOICE','ROLE_MISSING_BILL','ROLE_PAID_BILL','ROLE_RECEIVED_INVOICES')">     
+              
               <div class="col-md-4 reportNewCta">
                  <!-- DropDown -->
 			<div class="dropdown pull-right report-dropdown">
@@ -147,14 +151,16 @@
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                 
+                 <a href="${appPath}/financialReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="finReport"></i></div>
-                  <div class="clearfix text-center"><h4><a href="${appPath}/financialReportsList">Financial Report</a></h4></div>
+                  <div class="clearfix text-center"><h4>Financial Report</h4></div></a>
                   </div>
+                 
      </sec:authorize>             
                   
                   
     <sec:authorize access="hasAnyRole('ROLE_DAYWISE_TIMESHEET_REPORT','ROLE_TIMESHEET_REPORT','ROLE_EXPENSES_REPORT','ROLE_MISSING_TIMESHEETS','ROLE_PENDING_FOR_APPROVAL','ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">              
+
   <div class="col-md-4 reportNewCta">
                  
                  <!-- DropDown -->
@@ -196,10 +202,11 @@
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                 
+                  <a href="${appPath}/hrReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="hrReport"></i></div>
-                  <div class="clearfix text-center"><h4><a href="${appPath}/hrReportsList">HR Report</a></h4></div>
+                  <div class="clearfix text-center"><h4>HR Report</h4></div> </a>
      </div>
+    
      </sec:authorize>
      
      
@@ -232,13 +239,13 @@
 			</div>
                  <!-- Dropdown -->
                   
-                  
-                  
+                  <a href="${appPath}/associateReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="assReport"></i></div>
-                  <div class="clearfix text-center"><h4 class="text-danger"><a href="${appPath}/associateReportsList">Associate Report</a></h4></div>
+                  <div class="clearfix text-center"><h4>Associate Report</h4></div> </a> 
                       </div>
-                      
-              </sec:authorize>       
+                    
+              </sec:authorize>    
+                 
        </sec:authorize> 
        
                        
@@ -256,13 +263,11 @@
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  
-                  
-                  
+                  <a href="${appPath}/userUsageReport" class="block">
                   <div class="clearfix text-center mb10"><i class="useReport"></i></div>
-                  <div class="clearfix text-center"><h4><a href="${appPath}/userUsageReport">Users Usage Report</a></h4></div>
+                  <div class="clearfix text-center"><h4>Users Usage Report</h4></div> </a>
                       </div>
-                      
+                     
               </sec:authorize>     
       </div>
       
