@@ -1034,6 +1034,7 @@ public class LeaveManagementRestController {
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
 		}
 		return response;
 	}
