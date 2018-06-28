@@ -25,6 +25,7 @@ public enum ApplicantSubmissionStatus {
     NOT_ATTENDING("Not_Attending"),
     MAYBE("Maybe"),
     JOINED("Joined"),
+    SELECTED_ON_INTERVIEW("selected_on_Interview"),
     
     CLIENT_OFFERMADE("client_offer_made"),
     CLIENT_OFFERACCEPTED("client_offer_accepted"),
