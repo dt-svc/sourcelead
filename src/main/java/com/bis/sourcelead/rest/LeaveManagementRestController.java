@@ -402,18 +402,24 @@ public class LeaveManagementRestController {
 //				if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
 					if("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 						if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
-							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
-								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
-								roleLeaveType.add(leaveType);
+							if(emp.getDepartmentId() != null){
+								if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
+										&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+										roleLeaveType.add(leaveType);
+									}
 							}
 						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() == null) {
-							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+							if(emp.getDepartmentId() != null){
+								if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
 									roleLeaveType.add(leaveType);
 								}
+							}
 						}else if(roleIds.size() == 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
-							if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue() && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+							if(emp.getDepartmentId() != null){
+								if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue() && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
 									roleLeaveType.add(leaveType);
 								}
+							}
 						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() == null && leaveType.getLeaveEmpType() != null) {
 							if(roleIds.contains(userRole.getRoles().getId()) && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
 								roleLeaveType.add(leaveType);
@@ -427,8 +433,10 @@ public class LeaveManagementRestController {
 								roleLeaveType.add(leaveType);
 							}
 						}else if(roleIds.size() == 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() == null) {
-							if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
-								roleLeaveType.add(leaveType);
+							if(emp.getDepartmentId() != null){
+								if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+									roleLeaveType.add(leaveType);
+								}
 							}
 					}
 					}else {
