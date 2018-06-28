@@ -160,7 +160,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' ) "; 
 		 }else{
 			if(isClientRequirement.equalsIgnoreCase(Constants.NO)){
-				 subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "
+				 /*subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "*/
+				subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR "
 					 		+ " rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED') ";
 			}else{
 				 subQuery = " and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' "
@@ -668,7 +669,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("INTERVIEWED")){
-			 submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW')";
+			 submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW')";
 		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("OFFERED")){
@@ -739,7 +740,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
              }else if(ss.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
                  submissionStages = "and (reqSub.submissionStatus = 'SUBMIT_TO_CLIENT')";
              }else if(ss.equalsIgnoreCase("INTERVIEWED")){
-                 submissionStages = "and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW')";
+                 submissionStages = "and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW')";
              }else if(ss.equalsIgnoreCase("REJECTED")){
                  submissionStages = "and (reqSub.submissionStatus = 'REJECTED')";
              }else if(ss.equalsIgnoreCase("REQUESTSENT")){
@@ -2756,8 +2757,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			
 			  Session session = this.sessionFactory.getCurrentSession();
 			
-			  String  subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') "; 
-			 
+			  /*String  subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') ";*/
+			  String  subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') ";
 			 
 			 List<RequirementSubmission> shortListCandidatesList;
 			 if(existingApplicantsIds != null && !existingApplicantsIds.isEmpty()){
@@ -2975,7 +2976,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}else{
 					String statusSubQuery = "";
 					if(requirementSubmissionsDTO.getSubmissionType() != null && "INTERVIEW".equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
-						statusSubQuery = " and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW') "; 
+						statusSubQuery = " and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW') "; 
 					}else if(requirementSubmissionsDTO.getSubmissionType() != null && "OFFERMADE".equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
 						statusSubQuery = " and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' "
 								+ " OR reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED') "; 

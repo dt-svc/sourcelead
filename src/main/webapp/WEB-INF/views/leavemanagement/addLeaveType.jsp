@@ -1205,8 +1205,7 @@ function showLeaveEncashmentDiv(){
 											'p.jquery_form_error_message')
 											.remove();
 									$("#saveLeaveType").removeAttr("disabled");
-									$("#saveLeaveType").attr("disabled",
-											"disabled");
+									$("#saveLeaveType").attr("disabled","disabled");
 									$("input#leaveTypeName")
 											.after(
 													"<p class='jquery_form_error_message'>"
@@ -1385,7 +1384,7 @@ function leavepolicyDescription(){
 	function noUsers() {
 		document.getElementById("applicableId").style.display="block";
 		 	if($('#department').val() == null && $('#roles').val() == null && $('#leveEmpType').val() == null){
-				$("#saveLeaveType").attr("disabled", true);
+				$("#saveLeaveType").attr('disabled','disabled');
 		 	}else{
 				document.getElementById("applicableId").style.display="none";
 		 	}
@@ -1483,16 +1482,16 @@ $('.chosen-select').chosen().on('change', function() {
 	var leveEmpType = $("#leveEmpType").val();
 	var department = $("#department").val();
 	if(roles != null && roles !="" && roles !="undefined"){
-		$("#saveLeaveType").attr("disabled",false );
+		$("#saveLeaveType").removeAttr('disabled');
 		document.getElementById("applicableId").style.display="none";
 	}else if(leveEmpType != null && leveEmpType !="" && leveEmpType !="undefined"){
-		$("#saveLeaveType").attr("disabled",false );
+		$("#saveLeaveType").removeAttr('disabled' );
 		document.getElementById("applicableId").style.display="none";
 	}else if(department != null && department !="" && department !="undefined"){
-		$("#saveLeaveType").attr("disabled",false );
+		$("#saveLeaveType").removeAttr('disabled');
 		document.getElementById("applicableId").style.display="none";
 	}else{
-		$("#saveLeaveType").attr("disabled",true );
+		$("#saveLeaveType").removeAttr('disabled');
 		document.getElementById("applicableId").style.display="block";
 	}
 	

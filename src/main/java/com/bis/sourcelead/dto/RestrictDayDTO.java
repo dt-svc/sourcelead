@@ -25,6 +25,9 @@ public class RestrictDayDTO extends SearchDTO {
 	private String restrictUUID;
 	private List<String> rolesList;
 	
+	private String validateType;
+	
+	private String erroMsg;
 	
 	public long getRestrictDayId() {
 		return restrictDayId;
@@ -93,6 +96,22 @@ public class RestrictDayDTO extends SearchDTO {
 	public void setRestrictUUID(String restrictUUID)
 	{
 		this.restrictUUID = restrictUUID;
+	}
+	public String getValidateType()
+	{
+		return validateType;
+	}
+	public String getErroMsg()
+	{
+		return erroMsg;
+	}
+	public void setValidateType(String validateType)
+	{
+		this.validateType = validateType;
+	}
+	public void setErroMsg(String erroMsg)
+	{
+		this.erroMsg = erroMsg;
 	}
 	
 }

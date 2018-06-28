@@ -206,13 +206,15 @@ public class ApplicantsBackoutReportRestController {
 
 				for (Long jobId : jobIdList) {
 					if(jobId!=null){
-						Requirement requirement = requirementService.getRequirementByRequirementId(jobId);
+						Requirement requirement = requirementService.getRequirementByRequirementIdAndSearchValue(jobId,jobFilterDTO.getSearchValue());
 						List<Long> jobids = new ArrayList<>();
 						jobids.add(jobId);
 						applicantsBackoutDTO =  applicantsBackoutReportService.getBackoutApplicantCount(jobids, searchDates,orgLocation);
+						if(requirement != null){
 						applicantsBackoutDTO.setJobName(requirement.getJobTitle());
 						applicantsBackoutDTO.setGeneratedId(requirement.getGeneratedId());
 						applicantsBackoutList.add(applicantsBackoutDTO);
+						}
 					}
 
 				}

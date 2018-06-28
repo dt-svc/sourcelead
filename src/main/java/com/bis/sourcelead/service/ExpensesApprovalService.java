@@ -49,7 +49,7 @@ public interface ExpensesApprovalService {
 
 	File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy,OrgLocations orgLoc, User loginUser,String isGlobalUser)throws IOException, Exception;
 
-	void sendExpenseReopenAcceptMailToEmployee(Expenses expense, OrgLocations orgLoc, String type, User reopenedUser, User loginUser, String reason) throws AddressException, Exception;
+	void sendExpenseReopenAcceptMailToEmployee(Expenses expense, OrgLocations orgLoc, String type, User reopenedUser, User loginUser) throws AddressException, Exception;
 
 	void sendReopenExpenseAcceptOrRejectMail(Expenses expense, String reason, User superUser, OrgLocations orgLoc,String type, User reopenedUser, User loginUser, String projectName) throws AddressException, Exception;
 
