@@ -1035,6 +1035,7 @@ public class LeaveManagementRestController {
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1775,8 +1776,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
-	@RequestMapping(value = { "/getEmployeeRequestedLeaves",
-			"/rest/getEmployeeRequestedLeaves" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<LeaveDTO> getEmployeeRequestedLeaves(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
@@ -2021,17 +2021,15 @@ public class LeaveManagementRestController {
 			Map<String, Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),
 					leave.getLeaveType().getId());
 
-			float leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken")
-					- (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
+			float leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken") - (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
 			leaveDto.setActualLeavesTaken(leavesTaken);
 
-			float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),
-					leave.getLeaveType().getId());
+			float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeavesTaken(thisMonthLeaves);
 
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
 			float balLeaves = 0f;
-			 float balLeaves1 = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+//			 float balLeaves1 = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 			 
 			 float tot = 0f;
 			 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);

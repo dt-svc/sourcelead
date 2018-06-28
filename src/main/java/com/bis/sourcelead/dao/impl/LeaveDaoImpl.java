@@ -43,6 +43,7 @@ import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 
 
 @Repository
@@ -67,6 +68,9 @@ public class LeaveDaoImpl implements LeaveDao{
 	
 	@Autowired
 	RolesService roleService;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
 	
 	@Override
 	@Transactional
@@ -363,26 +367,14 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Override
 	@Transactional
 	public float getThisMonthLeavesTakenByUser(Long userId,Long leaveTypeId) {
-		Calendar c = Calendar.getInstance();
-		int year = c.get(Calendar.YEAR);
-		int month = c.get(Calendar.MONTH);
-		int day = 1;
-		c.set(year, month, day);
-		int numOfDaysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
-		Date startDate = c.getTime();
-		java.sql.Date currentMonthStartDate = new java.sql.Date(startDate.getTime());
-		c.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth - 1);
-		Date endDate = c.getTime();
-		java.sql.Date currentMonthEndDate = new java.sql.Date(endDate.getTime());
+		
+		Date[] dates = conversionUtil.getMonthStartDateEndDate();
+		java.sql.Date startDate = new java.sql.Date(dates[0].getTime());
+		java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Leave leave where leave.user.id = :userId and leave.leaveType.id = :leaveTypeId and (leave.status = 'APPROVED' OR leave.status = 'PENDING') and leave.createdDate BETWEEN :currentMonthStartDate AND :currentMonthEndDate";
-		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate)
-				.list();
-		int numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
-		int fromhalfDayCount = leavesList.stream().filter(ll->ll.getFromHalfDay() != null && ll.getFromHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
-		int tohalfDayCount = leavesList.stream().filter(ll->ll.getToHalfDay() != null && ll.getToHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
-		float leavesTaken = (float) (numberOfLeavsTaken - ((fromhalfDayCount+tohalfDayCount) * 0.5));
-		return leavesTaken;
+		String query = "from AppliedLeaveDateView aleave where aleave.userId = :userId and aleave.leaveTypeId = :leaveTypeId and (( aleave.applyLeaveDate >= :startDate AND aleave.applyLeaveDate <= :endDate)) and (aleave.leaveStatus = 'APPROVED' or aleave.leaveStatus = 'PENDING')";
+		List<AppliedLeaveDateView> list = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("userId", userId).list();
+		return list.size();
 	}
 
 
