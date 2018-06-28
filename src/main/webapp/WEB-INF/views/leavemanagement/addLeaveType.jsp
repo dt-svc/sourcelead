@@ -265,8 +265,8 @@
 									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();valid();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
+										<option value="">--Select Department--</option>
 										<c:forEach var="report" items="${departmentList}">
-										    <option value="">--Select Department--</option>
 											<option value="${report.id}"
 												${report.id  == departmentId ? 'selected' : ''}>${report.departmentName}</option>
 										</c:forEach>
