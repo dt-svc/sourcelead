@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -187,6 +188,10 @@ public class LeaveServiceImpl implements LeaveService{
     
     @Autowired
     AppliedLeaveDateService  appliedLeaveDateService;  
+    
+    @Autowired
+    ConversionUtil conversionUtil;
+    
     
     private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
     
@@ -544,17 +549,18 @@ public class LeaveServiceImpl implements LeaveService{
 				StringBuilder durationSb = new StringBuilder();
 				leaveDto.setId(laph.getLeaveid().getId());
 				Map<String,Float> nuberOfLeavestaken = null;
-				Calendar cal = Calendar.getInstance();
-		        cal.set(Calendar.DAY_OF_YEAR, 1);
-		        Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(cal.getTime()));
-		        Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getFromDate()));
+//				Calendar cal = Calendar.getInstance();
+//		        cal.set(Calendar.DAY_OF_YEAR, 1);
+//		        Date [] thisMonthdates = conversionUtil.getMonthStartDateEndDate();
+//		        Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(thisMonthdates[0]));
+//		        Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(thisMonthdates[1]));
 				float leavesTaken = 0;
 				if (leave.getUser() != null) {
 					try {
-						 nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+						nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 						float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
-						leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken") - (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
-						leaveDto.setActualLeavesTaken(leavesTaken);
+//						leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken") - (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
+						leaveDto.setActualLeavesTaken((float)nuberOfLeavestaken.get("numberOfLeavsTaken"));
 						leaveDto.setThisMonthLeavesTaken(thisMonthLeaves);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -584,16 +590,23 @@ public class LeaveServiceImpl implements LeaveService{
 				float totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId());
 				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leave.getLeaveType(), totalLeaves,emp);
 				
-				float balLeaves = leaves - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
-				
-				leaveDto.setTotalBalLeaves(balLeaves);
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
 				leaveDto.setFromHalfDay(leave.getFromHalfDay());
 				
-				float appliedLeavesCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+				float appliedLeavesCount = leaveManagementUtil.getAppliedLeaveCount(orgLocations,leave.getLeaveType(),leave,totalLeaves);
+//				float appliedLeavesCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 				leaveDto.setAppliedNoOfDays(appliedLeavesCount);
 				
-				leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
+				float balLeaves = 0;
+				if(appliedLeavesCount >0) {
+					  balLeaves = totalLeaves - appliedLeavesCount;
+				}else {
+					  balLeaves = totalLeaves;	
+				}
+				
+				leaveDto.setTotalBalLeaves(balLeaves);
+				
+//				leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
 			
 				if(StringUtils.isNotBlank(leave.getDeleteReason())) {
 					leaveDto.setCancelReason(leave.getDeleteReason());
@@ -665,6 +678,8 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveDtoList;
 	}
 
+
+	
 
 	@Override
 	public Leave getLeaveByLeavId(Long leaveId) throws Exception {
