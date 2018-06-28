@@ -34,13 +34,14 @@
       	    
       	    <div class="project_side_wrap_inn_tabs">
       	    <div id="resourceRequestsDivLoading"></div>
-			    <ul class="project-tabs-menu">
+			    <ul class="project-tabs-menu tabnewStyles">
 			        <li class="current" id="budgetWaiting"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('Waiting For Approval')">Waiting (<span id="budgetWaitingCount"></span>)</a></li>
 			        <li id="budgetApproved"><a data-toggle="tab" href="javascript:void(0)"  onclick="getBudgetRequestList('Approved')">Approved (<span id="budgetApprovedCount"></span>)</a></li>
 			        <li id="budgetRejected"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('Rejected')">Rejected (<span id="budgetRejectedCount"></span>)</a></li>
 			        <li id="budgetOnhold"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('On Hold')">On hold (<span id="budgetOnholdCount"></span>)</a></li>
 			        <div class="clearfix"></div>
 			    </ul>
+			    <div class="clearfix mb10"></div>
 			    <div id="budgetRequestListDiv"></div>
 			    <div class="vendor_wrap_mask"></div>
    				<div id="budgetRejectedReasonDiv" ></div>

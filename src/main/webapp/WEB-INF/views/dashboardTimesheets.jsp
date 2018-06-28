@@ -30,9 +30,9 @@ $(document).ready(function(){
 
  <!-- Timesheets -->
       <div class="col-md-6 mb">
-        <div class="dashboard-widget dashboard-widget-icons">
-          <h4 class="clearfix"><a id="timeSheetLink" href="<c:url value="/app/timesheet"/>"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'My Timesheets' : onlyApprovalTimesheets ? 'Approval Timesheets' : ''} &nbsp;&nbsp;</a><!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
-           <div class="clearfix dashboard-data mt">
+        <div class="dashboardWidget-new">
+          <h4 class="clearfix"><a id="timeSheetLink" href="<c:url value="/app/timesheet"/>"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'Timesheets' : onlyApprovalTimesheets ? 'Approval' : ''} &nbsp;&nbsp;</a><!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
+           <div class="clearfix dashboard-data">
             <input type="hidden" value="" id="timesheetSocketsFor">
              <c:if test="${bothTimesheets}">
 	             <ul class="nav nav-tabs">
@@ -43,37 +43,41 @@ $(document).ready(function(){
              
             <div class="db-widget-sm row">
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box positionRelative"> <span class="info-box-icon bg-orange"> <i class="fa fa-floppy-o" aria-hidden="true"></i> </span>
+                <div class="clearfix positionRelative">
+                <!-- <span class="info-box-icon bg-orange"> <i class="fa fa-floppy-o" aria-hidden="true"></i> </span> -->
                   <div class="info-box-content text-center">
                    <p class="info-box-number"><span id="savedTimesheetsSubmissionsCount"></span></p>
-                    <p class="info-box-text" id="savedCountAnchor"></p>
+                    <p class="info-box-text mb0 text-muted mt2" id="savedCountAnchor"></p>
                   </div>
                   <div id ="draftLoading"></div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box positionRelative"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
+                <div class="clearfix positionRelative">
+                <!-- <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i></span> -->
                   <div class="info-box-content text-center">
                     <p class="info-box-number"><strong><span  id="waitingTimesheetsSubmissionsCount"></span></strong></p>
-                    <p class="info-box-text" id="waitingCountAnchor"></p>
+                    <p class="info-box-text mb0 text-muted mt2" id="waitingCountAnchor"></p>
                   </div>
                   <div id ="waitingLoading"></div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box positionRelative"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
+                <div class="clearfix positionRelative">
+                <!-- <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span> -->
                   <div class="info-box-content text-center">
                     <p class="info-box-number"><strong><span id="approvalTimesheetsSubmissionsCount"></span></strong></p>
-                    <p class="info-box-text" id="approvedCountAnchor"></p>
+                    <p class="info-box-text mb0 text-muted mt2" id="approvedCountAnchor"></p>
                   </div>
                    <div id ="approvedloading"></div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box positionRelative"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
+                <div class="clearfix positionRelative">
+                 <!-- <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i></span> -->
                   <div class="info-box-content text-center">
                     <p class="info-box-number"><strong><span id="rejectTimesheetsSubmissionsCount"></span></strong></p>
-                    <p class="info-box-text" id="rejectedCountAnchor"></p>
+                    <p class="info-box-text mb0 text-muted mt2" id="rejectedCountAnchor"></p>
                   </div>
                    <div id ="rejectLoading"></div>
                 </div>

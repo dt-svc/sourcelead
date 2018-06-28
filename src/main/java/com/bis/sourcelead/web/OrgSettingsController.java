@@ -293,12 +293,13 @@ public class OrgSettingsController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')")
 	@RequestMapping(value = "/orgSubmissionTemplate")
-	public ModelAndView orgSubmissionTemplate(HttpServletRequest request)
+	public ModelAndView orgSubmissionTemplate(HttpServletRequest request,@RequestParam(value = "type", required = false) String type)
 	{
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		model.setViewName("orgSubmissionTemplateList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("type", type);
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "SubmissionTemplateCreateMsg");
 		  if(!isNullOrEmpty(msg)){
 			model.addObject("msg", msg);

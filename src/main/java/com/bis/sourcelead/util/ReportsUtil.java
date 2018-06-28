@@ -147,6 +147,7 @@ public class ReportsUtil {
 						RequirementDTO requirementDTO = new RequirementDTO();
 						requirementDTO.setRequirementId(String.valueOf(requirementIndex.getRequirementId()));
 						requirementDTO.setJobTitle(requirementIndex.getJobTitle());
+						requirementDTO.setGeneratedId(requirementIndex.getGeneratedId());
 						requirementDTOList.add(requirementDTO);
 					}
 				}

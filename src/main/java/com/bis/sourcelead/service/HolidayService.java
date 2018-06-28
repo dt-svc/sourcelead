@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -37,4 +38,7 @@ public interface HolidayService {
 	List<Long> getHolidayShiftCout(Long holidayId)throws Exception;
 
 	void deleteHolidayByHolidayId(Long holidayId)throws Exception;
+
+	public List<HolidayAndRestrictday> getHolidayByFromToDate(Date startDate, Date endDate, OrgLocations orgLocations);
+
 }
