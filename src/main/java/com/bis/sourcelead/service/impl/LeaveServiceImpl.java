@@ -512,6 +512,7 @@ public class LeaveServiceImpl implements LeaveService{
 	private Set<LeaveApproveHierarchy> getApproverList(LeaveDTO leaveDTO, Leave leave, User user) {
 		Set<LeaveApproveHierarchy> approverList = new HashSet<>();
 		
+		int isDeleted = leaveDao.deleteApproversByLeaveId(leave.getId());
 		if(leaveDTO.getOtherApproverUser() != null) {
 			List<String> allUsers = new ArrayList<>();
 			allUsers.addAll(leaveDTO.getApproverUser());
