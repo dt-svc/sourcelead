@@ -1034,6 +1034,7 @@ public class LeaveManagementRestController {
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -3006,4 +3007,10 @@ public class LeaveManagementRestController {
 		 System.out.println("End Time"+java.time.LocalDateTime.now());
     }
 
+	@RequestMapping(value = { "/leavepolicyDescription"}, method = RequestMethod.POST)
+	public LeaveType leavepolicyDescription(@RequestParam(value = "leaveTypeId", required = true) Long leaveTypeId) throws Exception {
+	      LeaveType leaveType =  leaveTypeService.getLeaveTypeById(leaveTypeId);
+		 return leaveType;
+	}
+	
 }
