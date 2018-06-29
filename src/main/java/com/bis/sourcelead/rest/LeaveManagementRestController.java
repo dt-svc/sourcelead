@@ -2496,66 +2496,50 @@ public class LeaveManagementRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = userService.getUserById(userId);
 		Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
-		List<LeaveType> leaveTypeList = leaveTypeService
-				.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
 
 		List<LeaveTypeDTO> leaveTypeDTOList = new ArrayList<>();
-		if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
-			for (LeaveType type : leaveTypeList) {
-				float pendingCounts = 0;
-				float approvedCounts = 0;
-				float rejectedCounts = 0;
-				float cancelCounts = 0;
-				float noOfDays = 0;
-				LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
-				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),
-						orgLocations.getId(), user.getId());
-				
-				float totalLeavesperYear  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());
-//				int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, user);
-				if (totalleavesTaken != null && totalleavesTaken.size() > 0) {
-					for (Leave leave : totalleavesTaken) {
+		
+		try {
+			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
+				for (LeaveType type : leaveTypeList) {
+					float pendingCounts = 0;
+					float approvedCounts = 0;
+					float rejectedCounts = 0;
+					float cancelCounts = 0;
+					LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
+					List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),orgLocations.getId(), user.getId());
+					
+					float empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());
 
-						float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
-
-						if (Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-							pendingCounts = pendingCounts + appliedLeaveCount;
+					float empAppliedLeaveCount = 0;
+					float balLeaves = 0;
+					//int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, user);
+					if (totalleavesTaken != null && totalleavesTaken.size() > 0) {
+						 empAppliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations,type,user.getId());
+						 empToatalLeaves = empToatalLeaves - empAppliedLeaveCount;
 						}
-						if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus()) || Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-							approvedCounts = approvedCounts + (appliedLeaveCount - leave.getExtraLeavesTaken());
-
-							noOfDays = noOfDays + (appliedLeaveCount);
-							if (noOfDays > totalLeavesperYear) {
-								float totalLeaves = totalLeavesperYear - noOfDays;
-								leaveTypeDto.setTotalNoOfDays(totalLeaves);
-							} else {
-								leaveTypeDto.setTotalNoOfDays(noOfDays);
-							}
-
-						}
-						if (Constants.REJECTED.equalsIgnoreCase(leave.getStatus())) {
-							rejectedCounts = rejectedCounts + appliedLeaveCount;
-						}
-						if (Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus())) {
-							cancelCounts = cancelCounts + appliedLeaveCount;
-						}
-
+						leaveTypeDto.setTotalNoOfDays(empAppliedLeaveCount);
+						leaveTypeDto.setName(type.getName());
+						leaveTypeDto.setLeaveTypeId(type.getId());
+						leaveTypeDto.setNoOfLeavesPerYear(String.valueOf(empToatalLeaves));
+						leaveTypeDto.setTotalApprovedCount(approvedCounts);
+						leaveTypeDto.setTotalRejectedCount(rejectedCounts);
+						leaveTypeDto.setTotalPendingCount(pendingCounts);
+						leaveTypeDto.setTotalCancelCount(cancelCounts);
+						leaveTypeDTOList.add(leaveTypeDto);
 					}
-
-					leaveTypeDto.setName(type.getName());
-					leaveTypeDto.setLeaveTypeId(type.getId());
-					leaveTypeDto.setNoOfLeavesPerYear(String.valueOf(totalLeavesperYear));
-					leaveTypeDto.setTotalApprovedCount(approvedCounts);
-					leaveTypeDto.setTotalRejectedCount(rejectedCounts);
-					leaveTypeDto.setTotalPendingCount(pendingCounts);
-					leaveTypeDto.setTotalCancelCount(cancelCounts);
-					leaveTypeDTOList.add(leaveTypeDto);
 				}
-			}
+		}catch (Exception e) {
+		}
+		
+		return leaveTypeDTOList;
 		}
 
-		return leaveTypeDTOList;
-	}
+		
+	
+	
+
 
 	/**
 	 * 
