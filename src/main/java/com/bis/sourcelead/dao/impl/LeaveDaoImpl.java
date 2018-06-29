@@ -822,4 +822,22 @@ public class LeaveDaoImpl implements LeaveDao{
 		List<AppliedLeaveDateView> list = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setLong("userId", userId).list();
 		return list;
 	}
+
+
+	@Override
+	@Transactional
+	public int deleteApproversByLeaveId(Long leaveId) {
+		int isDeleted = 0;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from LeaveApproveHierarchy lah where lah.leaveid.id =:leaveId";
+			Query qry = session.createQuery(query).setLong("leaveId", leaveId);
+			int i = qry.executeUpdate();
+			return i;
+		} catch (Exception e) {
+			logger.error("Delete Approvers By Leave Id Failed Due to "
+					+ e.getLocalizedMessage());
+		}
+		return isDeleted;
+	}
 }

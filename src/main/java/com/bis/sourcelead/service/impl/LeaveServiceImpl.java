@@ -512,6 +512,7 @@ public class LeaveServiceImpl implements LeaveService{
 	private Set<LeaveApproveHierarchy> getApproverList(LeaveDTO leaveDTO, Leave leave, User user) {
 		Set<LeaveApproveHierarchy> approverList = new HashSet<>();
 		
+		int isDeleted = leaveDao.deleteApproversByLeaveId(leave.getId());
 		if(leaveDTO.getOtherApproverUser() != null) {
 			List<String> allUsers = new ArrayList<>();
 			allUsers.addAll(leaveDTO.getApproverUser());
@@ -1308,7 +1309,9 @@ public class LeaveServiceImpl implements LeaveService{
 			   }
 			   
 				for(LeaveType type : roleLeaveType) {
-					float totalLeaves = 0;
+					float empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());
+					float appliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations,  type, userId);
+	/*				float totalLeaves = 0;
 				
 //				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,user);
 				 totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocationId);
@@ -1324,15 +1327,14 @@ public class LeaveServiceImpl implements LeaveService{
 						if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus()) || Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
 							totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
 						}
-				}
-				/*if("Monthly".equalsIgnoreCase(type.getPeriod()) && Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())){
-					totalbalanceLeaveCounts = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,totalbalanceLeaveCounts,emp);
 				}*/
-				balanceLeaveCounts += totalbalanceLeaveCounts;
-//				type.setBalanceLeaveCounts(balanceLeaveCounts);
-//				type.setPendingLeaveCounts(pendingLeaveCounts);
-//				type.setTakenLeaveCounts(takenLeaveCounts);
-//				type.setRemainingTotalLeaveCounts(totalLeaves);
+					if (appliedLeaveCount > 0) {
+						appliedLeaveCount = empToatalLeaves - appliedLeaveCount;
+					}
+					else {
+						appliedLeaveCount = empToatalLeaves;
+					}
+					balanceLeaveCounts += appliedLeaveCount;
 				}
 		   }
 		
@@ -1341,7 +1343,7 @@ public class LeaveServiceImpl implements LeaveService{
 		leaveDto.setSelfApprovedCounts(String.valueOf(selfApprovedCounts));
 		leaveDto.setSelfRejectedCounts(String.valueOf(selfRejectedCounts));
 		leaveDto.setSelfCancelledCounts(String.valueOf(selfCancelledCounts));
-		leaveDto.setTotalBalLeaves(balanceLeaveCounts);
+		leaveDto.setTotalBalLeaves(Float.parseFloat(leaveManagementUtil.dec.format(balanceLeaveCounts)));
 		return leaveDto;
 	}
 	public List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
