@@ -1,0 +1,14 @@
+INSERT INTO `sourcelead`.`sourcelead_form_fields` (`SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('1', 'Middle Name', 'middleName', 'Select Middle Name', 'TextBox', '0', '0', '1');
+INSERT INTO `sourcelead`.`sourcelead_form_fields` (`SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('1', 'Last Name', 'lastName', 'Select Last Name', 'TextBox', '0', '0', '1');
+INSERT INTO `sourcelead`.`sourcelead_form_fields` (`SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('1', 'Rate Currency', 'currentCurrency', 'Select Currency', 'SelectBox', '0', '0', '1');
+INSERT INTO `sourcelead`.`sourcelead_form_fields` (`SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('1', 'Rate Per', 'RatePer', 'Select RatePer', 'SelectBox', '0', '0', '1');
+INSERT INTO `sourcelead`.`sourcelead_form_fields` (`SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('1', 'Gender', 'genderValue', 'Select Gender', 'radioButton', '1', '0', '1');
+INSERT INTO `sourcelead`.`sourcelead_form_fields` (`SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('1', 'Marital Status', 'maritalStatus', 'Select Marital Status', 'radioButton', '0', '0', '1');
+INSERT INTO `sourcelead`.`sourcelead_form_fields` (`SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('1', 'Grade', 'grade', 'Select Grade', 'SelectBox', '0', '0', '1');
+INSERT INTO `sourcelead`.`sourcelead_form_fields` (`SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('1', 'Designation', 'designation', 'Select Designation', 'TextBox', '1', '0', '1');
+INSERT INTO `sourcelead`.`sourcelead_form_fields` (`SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('1', 'Shift', 'shiftId', 'Select Shift', 'SelectBox', '1', '0', '1');
+INSERT INTO `sourcelead`.`sourcelead_form_fields` (`SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('1', 'Is Global Manager', 'isMailSent', 'Select Global Manager', 'Check Box', '0', '0', '1');
+
+UPDATE `sourcelead`.`sourcelead_form_fields` SET `IS_FIELD_REQUIRED`='1' WHERE `ID`='13';
+UPDATE `sourcelead`.`sourcelead_form_fields` SET `IS_FIELD_REQUIRED`='1' WHERE `ID`='9';
+

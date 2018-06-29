@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.DataMigrationDao;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.AssetsDataImportDTO;
@@ -60,12 +61,14 @@ import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CandidateService;
@@ -76,6 +79,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
@@ -131,6 +135,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	@Autowired
 	CandidateService candidateService;
 
+	@Autowired
+	private UploadFileService uploadFileService;
+	
+	
 	@Override
 	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception {
 		FileInputStream inputStream = new FileInputStream(new File(filePath.replace("/dataMigration/", "/temp/")));
@@ -336,6 +344,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 							orgLocation,isGlobalAccess);
 					break;
 
+				case "associateUpload":
+					dataMigrationCommonUtil.dataValidationForAsscoaites(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation,isGlobalAccess);
+					break;
+
 				case "immigrationUpload":
 					dataMigrationCommonUtil.dataValidationForImmigration(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
@@ -525,6 +538,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			tasksService.saveProjectTasksDTOByProjectId(project.getId(), projectTasksDTO, user.getId());
 			break;
 
+		case "associateUpload":
+			logger.debug("upload Associate");
+			UsersImport userImport = new UsersImport();
+			ObjectMapper userImporMmapper = new ObjectMapper();
+			userImporMmapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			userImporMmapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			userImport = gson.fromJson(dataMigrationDTOJsonCopy.toString(), UsersImport.class);
+			uploadFileService.saveBulkAssociate(userImport, orgLocation, user);
+
+			break;
 		case "immigrationUpload":
 			logger.debug("inside Immigration uplod---->>>>>");
 			ObjectMapper immigratoinMapper = new ObjectMapper();
