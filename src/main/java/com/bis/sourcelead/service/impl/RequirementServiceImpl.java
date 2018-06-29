@@ -769,7 +769,7 @@ public class RequirementServiceImpl implements RequirementService {
 					} else {
 						requirementAssignTo = new RequirementAssignTo();
 					}
-					if (StringUtils.isNotEmpty(teamId) && !teamId.equalsIgnoreCase("undefined")) {
+					if (StringUtils.isNotEmpty(teamId) && !teamId.equalsIgnoreCase("undefined") && !teamId.equalsIgnoreCase("null")) {
 						Team assignedTeam = new Team();
 						assignedTeam.setId(Long.parseLong(teamId));
 						requirementAssignTo.setTeamId(assignedTeam);
