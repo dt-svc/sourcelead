@@ -67,6 +67,9 @@ public class AssociateBalanceLeaveView {
 	
 	@Column (name = "NO_OF_DAYS_PER_PERIOD")
 	private Float noOfDaysPerPeriod;
+	
+	@Column (name = "EFFECTIVE_GENDER")
+	private String effectiveGender;
 
 	public Float getNoOfDaysPerPeriod()
 	{
@@ -252,6 +255,16 @@ public class AssociateBalanceLeaveView {
 	public void setAccuralPolicy(String accuralPolicy)
 	{
 		this.accuralPolicy = accuralPolicy;
+	}
+
+	public String getEffectiveGender()
+	{
+		return effectiveGender;
+	}
+
+	public void setEffectiveGender(String effectiveGender)
+	{
+		this.effectiveGender = effectiveGender;
 	}
 	
 	

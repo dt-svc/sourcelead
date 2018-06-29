@@ -222,6 +222,7 @@ $(document).ready(function() {
   </section>
   <script type="text/javascript">
 	function saveHoliday() {
+		$('#save_holiday').attr('disabled','disabled');
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#holiday_form').validate(false, validationSettings)) {
@@ -241,6 +242,7 @@ $(document).ready(function() {
 	    		    showError("Operation failed, please try again");
 	    		}
 				 $("#holidayLoading").hide();
+				 $('#save_holiday').attr('disabled','disabled');
 			});
 			return true;
 		} else {
