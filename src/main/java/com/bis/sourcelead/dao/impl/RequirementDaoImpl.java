@@ -2470,7 +2470,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		else {
 			         query ="SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQA.ASSIGN_USER_ID AS assignedUserId "
 					+" FROM  REQUIREMENT REQ LEFT JOIN REQUIREMENT_ASSIGN_TO REQA ON REQ.ID = REQA.REQUIREMENT_ID WHERE REQ.ORG_LOCATION_ID =:orgLocationId AND (REQ.MANAGER_USER_ID IN (:userIdsList) "
-					+ "OR REQA.ASSIGN_USER_ID IN (:userIdsList)) AND REQ.CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"; 
+					+ "OR REQA.ASSIGN_USER_ID IN (:userIdsList))  AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"; 
 		
 			
 		
