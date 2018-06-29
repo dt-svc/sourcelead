@@ -831,7 +831,7 @@
 									</div>
 									</c:if>
 									     <c:if test="${leaveType.visibleInBalanceLeaves == 'N'}">
-									      <input name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
+									      <input type="checkbox" name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
 										   value="Y">Visible in Balance Leaves
 										   	   <div class="tooltip">
 									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
