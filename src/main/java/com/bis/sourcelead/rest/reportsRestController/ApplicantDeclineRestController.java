@@ -192,13 +192,15 @@ public class ApplicantDeclineRestController {
 
 				 for (Long jobId : jobIdList) {
 					if(jobId!=null){
-					Requirement requirement = requirementService.getRequirementByRequirementId(jobId);
+					Requirement requirement = requirementService.getRequirementByRequirementIdAndSearchValue(jobId,jobFilterDTO.getSearchValue());
 					List<Long> jobids = new ArrayList<>();
 					jobids.add(jobId);
 					applicantDeclineDTO =  applicantDeclineService.getDeclineApplicantSkillCount(jobids, searchDates,orgLocation);
+					if(requirement != null){
 					applicantDeclineDTO.setJobName(requirement.getJobTitle());
 					applicantDeclineDTO.setGeneratedId(requirement.getGeneratedId());
 					applicantDeclineList.add(applicantDeclineDTO);
+					}
 					if(applicantDeclineList != null){
 						response.setData(applicantDeclineList);
 						response.setResponse(Result.SUCCESS.name());

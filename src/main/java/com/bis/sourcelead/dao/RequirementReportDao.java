@@ -13,7 +13,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface RequirementReportDao {
 
-	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, Date startDateUTC, Date endDateUTC,String status);
+	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, Date startDateUTC, Date endDateUTC,String status,String searchValue);
 
 	List<RequirementSubmissionHistory> getRequirementReports(Long requirementId);
 
@@ -39,7 +39,7 @@ public interface RequirementReportDao {
 	List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC,Date endDateUTC)throws Exception;
 
 	List<ApplicantReceivedReportsDTO> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC,
-			Date endDateUTC);
+			Date endDateUTC,String searchValue);
 	
 	ApplicantReceivedReportsDTO getReceivedApplicantsCounts(Long orgLocationId, Date startDateUTC,Date endDateUTC);
 

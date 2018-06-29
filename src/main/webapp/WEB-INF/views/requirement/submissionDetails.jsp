@@ -2186,7 +2186,7 @@ $('#rescheduleDate').datepicker({
 	dateFormat : finalDateFormatRescheduleDate,
 	 changeMonth: true,
 	changeYear: true, 
-	minDate : 0,
+	/* minDate : 0, */
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);

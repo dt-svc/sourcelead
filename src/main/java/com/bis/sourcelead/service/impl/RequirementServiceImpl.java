@@ -769,7 +769,7 @@ public class RequirementServiceImpl implements RequirementService {
 					} else {
 						requirementAssignTo = new RequirementAssignTo();
 					}
-					if (StringUtils.isNotEmpty(teamId) && !teamId.equalsIgnoreCase("undefined")) {
+					if (StringUtils.isNotEmpty(teamId) && !teamId.equalsIgnoreCase("undefined") && !teamId.equalsIgnoreCase("null")) {
 						Team assignedTeam = new Team();
 						assignedTeam.setId(Long.parseLong(teamId));
 						requirementAssignTo.setTeamId(assignedTeam);
@@ -1514,6 +1514,11 @@ public class RequirementServiceImpl implements RequirementService {
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
 		Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		return requirement;
+	}
+	
+	@Override
+	public Requirement getRequirementByRequirementIdAndSearchValue(Long requirementId,String searchValue) throws Exception {
+		return requirementDao.getRequirementByRequirementIdAndSearchValue(requirementId,searchValue);
 	}
 
 	/**
