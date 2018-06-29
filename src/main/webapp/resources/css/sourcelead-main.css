@@ -3973,10 +3973,10 @@ position: absolute; bottom: 0; left: 0; width: 100%; height: 16px;
     float: left;
 }
 .jspTrack {
-background: #dde; position: relative; border-radius: 5px;
+background: #ededed; position: relative; border-radius: 5px;
 }
 .jspDrag {
-background: #bbd; position: relative; top: 0; left: 0; border-radius: 5px; cursor: pointer;
+background: #909090; position: relative; top: 0; left: 0; border-radius: 5px; cursor: pointer;
 }
 .jspHorizontalBar .jspTrack, .jspHorizontalBar .jspDrag {
   float: left; height: 100%;
@@ -3988,10 +3988,10 @@ background: #bbd; position: relative; top: 0; left: 0; border-radius: 5px; curso
  cursor: default; background: #80808d;
 }
 .jspVerticalBar .jspArrow {
-    height: 16px;
+    height: 15px;
 }
 .jspHorizontalBar .jspArrow {
-    width: 16px; float: left; height: 100%;
+    width: 15px; float: left; height: 100%;
 }
 .jspVerticalBar .jspArrow:focus {
     outline: none;
@@ -7781,7 +7781,7 @@ top:0 !important;
     margin: 0px; border: none; border-bottom: 1px solid #bdbdbd; padding: 3px 25px 3px 5px; background-color: transparent;
     width: 210px;      
     }
-.dynamic_search .fa-search {
+.dynamic_search .fa-search, .dynamic_search .fa-calendar  {
 	font-size: 18px; position: absolute; right: 0px; top: 0px; color:#9E9E9E !important;
 }
     /* Dynamic Search */
@@ -9048,6 +9048,10 @@ ul.tabnewStyles li.current a {
     color: #505050; font-weight: 500;
 }
 /* Dashboard navar bar ui */
+.require_wrap_table.tableFirstSecond tr td:first-child, .require_wrap_table.tableFirstSecond tr td:last-child,
+.require_wrap_table.tableFirstSecond table tr th:last-child {
+width: auto;	
+}
 /* forms edit element styles */
 @media (max-width: 320px) {
 .uasrch-selectpicker {
@@ -9474,3 +9478,5 @@ z-index: -800;
 .menuWidget ul.menupop.menupop_3 {
     width:310px;
 	}
+
+

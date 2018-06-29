@@ -79,12 +79,12 @@ a { cursor:pointer;}
     border-color: rgba(136, 183, 213, 0); border-bottom-color: #fff; border-width: 8px; margin-left: -8px;       
     }  
 .export_pop ul li, .approved_pop ul li, .export_pipline ul li, #exportPop ul li, .userExp ul li {
-    list-style-type:none; padding:4px 10px !important; margin:0px 0px !important; width:100%; position:relative;
+    list-style-type:none; padding:5px 10px !important; margin:0px 0px !important; width:100%; position:relative;
     font-size:13px; font-weight:500; color:#454545; display:inline-flex; cursor: pointer;
     }
 .export_pop ul li, .export_pipline ul li { cursor:pointer;}   
 .approved_pop ul li input[type="checkbox"], .export_pop ul li input[type="checkbox"]{
-    margin:0px; width:15px; height:15px; background-color:#FFF;
+    margin:0px; width:15px; height:15px; background-color:#FFF; display: inline-block; margin: 0px 5px 0px 0px;
     }
 .approved_pop ul li label, .export_pop ul li label  {
     margin:0px; position:relative; top:-1px; left:5px; font-weight:500; float:left;
@@ -192,11 +192,11 @@ a { cursor:pointer;}
 .inline_field:focus {
     width:50px !important; padding:2px 2px; font-size:12px; border:1px solid #dedede; overflow: hidden; background-color:#fff;
     }
-/*input.inline_field::-webkit-input-placeholder { color: rgba(0,0,0,0.3); }
-input.inline_field::-moz-placeholder { color: rgba(0,0,0,0.3); }
-input.inline_field:-ms-input-placeholder { color: rgba(0,0,0,0.3); }
-input.inline_field:placeholder { color: rgba(0,0,0,0.3); }
-input.inline_field::-moz-placeholder { color: rgba(0,0,0,0.3); }*/
+/*<!--.inline_field::-webkit-input-placeholder { color: #333; }
+.inline_field::-moz-placeholder { color: #333; }
+.inline_field:-ms-input-placeholder { color: #333; }
+.inline_field:placeholder { color: #333; }
+input.inline_field::-moz-placeholder { color: #333; }-->*/
        
 .logPop p.jquery_form_error_message {
     font-size: 12px; color:red;
@@ -217,7 +217,7 @@ input.inline_field::-moz-placeholder { color: rgba(0,0,0,0.3); }*/
     position:absolute; z-index:1000; right:-25px; top:25px; display:none;
     }
 .timesheet_comm span textarea {
-    position:relative; width:300px; height:120px; resize:none; border:1px solid #dedede; box-shadow:0px 0px 5px rgba(0,0,0,0.1);
+    position:relative; width:200px; height:80px; resize:none; border:1px solid #dedede; box-shadow:0px 0px 5px rgba(0,0,0,0.1);
     padding:5px; font-size:13px; font-weight:500; color:#333;
     }
 .timesheet_comm span:after {
@@ -735,7 +735,7 @@ input.inline_field::-moz-placeholder { color: rgba(0,0,0,0.3); }*/
 .project_tabs_inn_table table tr:nth-child(odd) {background: #eef1fc;}         
 .project_tabs_inn_table table tr th {
     background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 10px; height:40px;
-    border-right:1px solid #4576a4; font-size:14px; text-align:center;
+    border-right:1px solid #4576a4; font-size:14px; text-align:center; vertical-align: middle;
     }
 .project_tabs_inn_table table tr th:last-child { text-align:center;}
 .project_tabs_inn_table.project_tabs_inn_table_a table tr th:last-child { text-align:center;}
@@ -1749,6 +1749,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     margin: 0px; border: none; border-bottom: 1px solid #bdbdbd; padding: 3px 25px 3px 5px; background-color: transparent; width:210px;
     background-image:url("../images/search-icon.png"); background-repeat:no-repeat; background-position:98% center; background-size:16px;
     }
+
 .dataTables_filter input:focus {
     border-bottom: 1px solid #368ee0;
     }  
@@ -2212,6 +2213,7 @@ margin-bottom:15px !important;
     width:100%; font-size:14px; font-weight:400;
     }
 .tabFixed {
+
 	margin: 0px 90px 0px 0px;
 }
 .timesheet_tableNew table {
@@ -2922,14 +2924,20 @@ padding: 2px 10px !important;
     right:0px; top: 13px;
 }
      
-.reportsCount {
+.reportsCount, .reportsCount5 {
     border-top: 1px solid #dedede;
+}
+.reportsCount5 {
+	border-bottom: 1px solid #dedede;
 }
 .reportsCount ul {
     margin:0px 0px; padding: 0px 0px;
 }
 .reportsCount ul li {
     width:16.66666%; float: left; background-color:#fff; list-style-type: none; text-align: center; padding: 14px 0px;
+}
+.reportsCount5 ul li {
+	width:20%;
 }
 .reportsCount ul li.colorTwo {
     background-color:#f4f4f4; 
@@ -2978,6 +2986,21 @@ background-color: #dddddd;
 .reportsCount ul li:first-child + li + li + li + li + li span {
     background-color:#da3838;
 }
+
+
+.reportsCount5 ul li:first-child + li span {
+    background-color:#4c9e5e;
+}
+.reportsCount5 ul li:first-child + li + li span {
+    background-color:#da3838;
+}
+.reportsCount5 ul li:first-child + li + li + li span {
+    background-color:#e48f3c;
+}
+.reportsCount5 ul li:first-child + li + li + li + li span {
+    background-color:#CB4042; 
+}
+
      
     /*    Reports CSS    */
      
@@ -3166,7 +3189,7 @@ border: 1px solid rgb(204, 204, 204);
 }
     
 .chatOne {
-    margin: 10px; background-color: #f9f9f9; width: auto; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+    margin: 10px; background-color: #fff; width: auto;
 }
 .reportA {
     padding: 5px 15px; background-color: #fff;
@@ -3437,6 +3460,7 @@ position: relative;
 position: absolute; right: -33px; top: -33px; width: 30px; height: 30px; background-color: #fff; border-radius:50%;
 text-align: center; cursor: pointer; box-shadow:0px 0px 2px rgba(0,0,0,0.3); display: block; padding: 0px 0px;
 }
+
 .mergeAA .fa-times {
 font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block;
 }
@@ -3467,7 +3491,7 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .welcoHead ul {
-    float:right; margin: 0px; padding: 8px 60px 0px 0px;
+    float:right; margin: 0px; padding: 8px 20px 0px 0px;
 }
 .welcoHead ul li {
     float:left; list-style-type: none; text-align: center; width: 80px; margin: 0px 1px;  position: relative;
@@ -4541,6 +4565,7 @@ float: none !important; padding: 2px 5px; color: #333;
     color: #fe4556 !important;
 }
 .expensHead {
+
     position: relative; background-color: #fff; border-top:1px solid #ededed; padding: 5px 15px;
 }
 .expensHead a {
@@ -4712,7 +4737,6 @@ display:none;
     display: inline-block; color: #454545; padding: 0px 0px 0px 6px; cursor: pointer;
 }
 .popRela {
-
     position: relative;
 }
 .editNewDat {
@@ -7052,7 +7076,6 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	}
 .repDashCtaWrap h2 {
 	font-size: 14px; font-weight: 500; color: #566072; padding: 0px 0px; margin: 0px 0px;
-<<<<<<< HEAD
 	}
 .repDashCtaWrap b {
 	font-size: 13px; font-weight: 500; color: #545454; padding: 6px 0px 0px; margin: 0px 0px; display: inline-block;
@@ -7063,18 +7086,6 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 .repDashCta:hover {
 	border: 1px solid #91c1ed; position: relative; z-index: 10;
 }
-=======
-	}
-.repDashCtaWrap b {
-	font-size: 13px; font-weight: 500; color: #545454; padding: 6px 0px 0px; margin: 0px 0px; display: inline-block;
-	}
-.repDashCtaWrap b:hover {
-	color: #3081cb;
-}
-.repDashCta:hover {
-	border: 1px solid #91c1ed; position: relative; z-index: 10;
-}
->>>>>>> a81c3b83aafb32fa6041b63785252fde1f741020
 
 .subMenuView {
 	display: none; background-color: #2970B1;
@@ -8255,6 +8266,20 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 	padding: 10px 240px 0px 0px;
 } 
 
+.time_btn.time_rej {
+	border:1px solid #d43f3a; background-color:#d9534f;
+}
+.time_btn.time_rej:hover {
+	background-color:#d9534f;
+}
+.time_btn.time_appr {
+	border:1px solid #34c244; background-color:#34c244;
+}
+.time_btn.time_appr:hover {
+	background-color:#34c244;
+}
+
+
 /*  New Css File  */
 
 .commentTime textarea{
@@ -8401,14 +8426,12 @@ max-width: 100% !important;
 }
 .reportNewCta {
 	border-radius: 0px !important; margin-bottom: -1px; margin-left: -1px; transition: all 0.1s ease-in-out !important;
+	cursor: pointer;
 }
 .reportNewCta h4 {
-	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 15px; font-weight: 500;
+	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 15px; font-weight: 500; color: #545454;
 }
-.reportNewCta h4 a {
-	color: #566072;
-}
-.reportNewCta h4 a:hover {
+.reportNewCta:hover h4 {
 	color: #3081cb;
 }
 .reportNewCta:hover {
@@ -8454,21 +8477,127 @@ max-width: 100% !important;
 	box-sizing: border-box; margin: 0px 0px;
 }
 
-
-.time_btn.time_rej {
-border:1px solid #d43f3a; background-color:#d9534f;
+	/*   Reports   */
+	
+.reportHead {
+	background-color: #f5f5f5;
+}	
+.reportHead ul {
+	margin: 0px 0px; padding: 8px 0px;
+}
+.reportHead ul li {
+	list-style-type: none; float: left; margin: 0px 15px 0px 0px; position: relative;
+}
+.repSearchBar {
+	width: 220px; height: 32px; border: 1px solid #ccc; background-color: #fff !important; border-radius: 4px;
+	padding: 0px 40px 0px 10px; font-size: 12px; font-family: "Proxima Nova"; color: #303345;
+	box-sizing: border-box; margin: 0px 0px; font-family: roboto, arial;
+}
+.repSearchIcon {
+	position: absolute; background: url("../images/search.svg"); background-repeat: no-repeat; background-position: center;
+	background-size: 35px; display: block; width: 32px; height: 32px; top:0px; right: 1px; cursor: pointer;
+}
+.repSelWrap {
+	width: 200px;
+}
+.repSelFiled {
+	width: 150px !important; float: left; height: 32px !important;
+}
+.repSelBtn {
+	width: 50px; float: left; padding: 0px 0px 0px 6px;
+}
+.repSelBtn button {
+	width: 100% !important; height: 32px !important;
+}
+.repFilIcon {
+	height: 32px !important; line-height: 22px;
+}
+.repFilIcon i {
+	font-size: 15px;
 }
 
-.time_btn.time_rej:hover {
-background-color:#d9534f;
+.repCustomDate {
+	width: 400px; display: none; padding: 20px 15px; top: 45px; box-shadow: 2px 2px 3px rgba(0,0,0,0.3) !important; right: 60px;
+}
+.repCustomDateInn {
+	width: 160px; float: left; padding: 0px 15px 0px 0px;
+}
+.repCustomDateInn input {
+	margin: 0px !important;
+}
+.repCustomDateInn p {
+	padding: 4px 0px 0px 0px; margin: 0px 0px; color: #bd3636; font-size: 12px; display: none;
+}
+.repCustomDateBtn {
+	float: left; width: 46px;
+}
+.repCustomDateBtn button {
+	width: 100%;
+}
+.repCustomDateBtn i {
+	padding: 0px 0px !important; color: #fff !important; top:0px !important;
+}
+.repDataSearch {
+	width: 100%;
+}
+.repDataSearch .dataTables_filter {
+	top: -40px !important;  display: none;
+}
+.repDataSearch .dataTables_wrapper .dataTables_filter input {
+	width: 220px; height: 32px; border: 1px solid #ccc; background-color: #fff !important; border-radius: 4px;
+	background-image: url("../images/search.svg") !important; background-repeat: no-repeat; background-position: 182px center;
+	background-size: 35px; padding: 0px 38px 0px 10px; font-size: 12px; font-family: "Proxima Nova"; color: #303345;
+	box-sizing: border-box; margin: 0px 0px;	
+}
+.repDataSearch .dataTables_wrapper .dataTables_filter input:FOCUS {
+	border: 1px solid #ccc !important;
+}
+.unVisable {
+	opacity: 0; visibility: hidden;
+}
+.listSearch {
+	display: none;
+}
+.listGridWrap {
+	padding: 8px 15px; float: left;
+}
+.listGridWrap a {
+	height: 32px;
+}
+.reportHead .chosen-choices {
+	margin-bottom: 0px;
+}
+.repChosen {
+	width: 400px;
+}
+.backWhite {
+	background-color: #fff;
+}
+.dataTabPdf {
+	width: 60px; display: block;
+}
+.highcharts-contextbutton {
+	display: none !important;
+}
+.repDataSearch .dt-buttons {
+	position: absolute !important; height: 32px; background-color: #fff; border: 1px solid #ccc; border-radius: 3px; right: 250px;
+    width: 60px; top: -115px; left: inherit;
+}
+.repDataSearch .dt-buttons a {
+	border: none; background: none !important; height: 31px; width: 29px; display: inline-block; padding: 12px 0px 0px 12px !important; margin: 0px !important;
+	text-align: center; box-sizing: border-box;
+}
+.repDataSearch .dt-buttons a:hover, .repDataSearch .dt-buttons a:focus {
+	border: none !important; background: #f5f5f5 !important;
+}
+.repDataSearch .dt-buttons a span {
+	display: none !important;
+}
+.filRep {
+	padding: 7px 12px 0px; cursor: pointer; height: 32px; border: 1px solid #ccc; border-radius: 3px; background-color: #fff; color: #545454; display: block;
 }
 
-.time_btn.time_appr {
-border:1px solid #34c244; background-color:#34c244;
-}
 
-.time_btn.time_appr:hover {
-background-color:#34c244;
-}
+
 
 
