@@ -31,6 +31,8 @@
 		var applicable = '${leaveType.applicableToUsers}';
 		if (applicable == 'N') {
 			noUsers();
+		}else if(applicable == 'Y'){
+			yesUsers();
 		}
 		var leaveEffective = '${leaveType.leaveEffective}';
 		if (leaveEffective == 'All Employees' || leaveEffective == '') {
@@ -161,7 +163,7 @@
 												<span class="paddingLeft">Half Day</span>
 											</c:if>
 										</c:if> <c:if test="${empty leaveType.duration}">
-											<input type="checkbox" id="fullDayId" name="duration" value="Full Day">
+											<input type="checkbox" id="fullDayId" checked name="duration" value="Full Day">
 											<span class="paddingLeft">Full Day</span>
 											<input type="checkbox"  id="halfDayId" name="duration" value="Half Day">
 											<span class="paddingLeft">Half Day</span>
@@ -217,8 +219,6 @@
 							</label>
 							<div class="col-md-6">
 
-							
-
 								<div class="clearfix mb">
 									<c:if test="${!empty leaveType.applicableToUsers}">
 										<c:if test="${leaveType.applicableToUsers == 'Y'}">
@@ -226,8 +226,8 @@
 												<input type="radio" checked="true" value="Y"
 												name="applicableToUsers"> <span class="paddingLeft">Yes</span>
 											</label>
-											<label class="paddingLeft" onClick="noUsers();"> <input
-												type="radio" id="noUsers" value="N" name="applicableToUsers">
+											<label class="paddingLeft"> <input
+												type="radio" id="noUsers" value="N" name="applicableToUsers" onClick="noUsers();">
 												<span class="paddingLeft">No</span></label>
 										</c:if>
 
@@ -260,11 +260,12 @@
 						<div class="clearfix" id="noUsersDiv" style="display: none;" class="deprolemp">
 							<div class="clearfix"></div>
 							<div class="form-group" id="departmentDiv">
-								<label class="col-md-4">Select Department<span class="text-danger">&nbsp;*</span></label>
+								<label class="col-md-4">Select Department</label>
 								<div class="col-md-6 dropdown-select">
 									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();valid();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
+										<option value="">--Select Department--</option>
 										<c:forEach var="report" items="${departmentList}">
 											<option value="${report.id}"
 												${report.id  == departmentId ? 'selected' : ''}>${report.departmentName}</option>
@@ -273,11 +274,10 @@
 								</div>
 							</div>
 							<div class="form-group" id="rolesDiv">
-								<label class="col-md-4">Select Roles<span
-								class="text-danger">&nbsp;*</span></label>
+								<label class="col-md-4">Select Roles</label>
 								<div class="col-md-6 dropdown-select" id="roleErrMsg">
 								<select class="form-control chosen-select choose" multiple id="roles" name="roles"
-										field-name="Roles" data-validation-optional="true" onchange="removeRoleErrMsg()">
+										field-name="Roles" data-validation-optional="true" data-placeholder="Select Roles" onchange="removeRoleErrMsg()">
 									
 										<c:forEach var="role" items="${rolesList}">
 											<c:set var="NUM" value="${0}" />
@@ -295,19 +295,24 @@
 								</div>
 							</div>
 							
+										
 							<div class="form-group" id="rolesDiv">
-								<label class="col-md-4">Select Employement Type<span
-								class="text-danger">&nbsp;*</span></label>
+								<label class="col-md-4">Select Employement Type</label>
 								<div class="col-md-6 dropdown-select" id="empTypeErrMsg">
 									<select class="chosen-select form-control"  multiple id="leveEmpType" name="leveEmpType" value="${leaveType.leaveEmpType}"
-										field-name="Employement Type" data-validation-optional="true">
-						                 <option>C2C</option>
-						                 <option>C2C-1099</option>
-						                 <option>W-2</option>
-						                 <option>C2H</option>
-						                 <option>C2H -1099</option>
-						                 <option>Part Time</option>
-						                 <option>Full Time</option>
+										field-name="Employement Type" data-placeholder="Select Employement Type" data-validation-optional="true">
+						                 <c:forEach var="employmentType" items="${employmentTypeList}">
+											<c:set var="NUM" value="${0}" />
+											<c:forEach var="dbEmpType" items="${leaveType.leaveEmpType}">
+												<c:if test="${dbEmpType eq employmentType}">
+													<c:set var="NUM" value="${1}" />
+													<option selected >${dbEmpType}</option>
+												</c:if>
+											</c:forEach>
+											<c:if test="${NUM == 0}">
+												<option >${employmentType}</option>
+											</c:if>
+										</c:forEach>
 									</select>
 								</div>
 								<p Style="color: red; display: none;" id="applicableId" >Select Atleast One Field</p>
@@ -524,7 +529,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="col-md-4">Allowability<span class="text-danger paddingLeft">*</span>
+							<label class="col-md-4">Allowability
 							<div class="tooltip">
 							<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
 							<span class="tooltiptext">User can apply for this leave type number of times configured</span>
@@ -1368,6 +1373,9 @@ function leavepolicyDescription(){
 
 	//Select All Users
 	function yesUsers() {
+		$("#department").val('').trigger("chosen:updated");
+		$("#roles").val('').trigger("chosen:updated");
+		$("#leveEmpType").val('').trigger("chosen:updated");
 		$('#departmentDiv').find('p.jquery_form_error_message').remove();
 		$('#rolesDiv').find('p.jquery_form_error_message').remove();
 		$('#department').removeAttr('data-validation');
@@ -1378,27 +1386,32 @@ function leavepolicyDescription(){
 		$("#department").val();
 		$("#roles").val();
 		$("#leveEmpType").val();
-		$(".chosen-select").val('').trigger("chosen:updated");
 		document.getElementById("applicableId").style.display="block";
+		$("#saveLeaveType").attr('disabled',false);
+		
 	}
 	function noUsers() {
 		document.getElementById("applicableId").style.display="block";
-		 	if($('#department').val() == null && $('#roles').val() == null && $('#leveEmpType').val() == null){
+		var department = $('#department').val();
+		
+		 	if((department == "" || department == null) && $('#roles').val() == null && $('#leveEmpType').val() == null){
 				$("#saveLeaveType").attr('disabled','disabled');
 		 	}else{
 				document.getElementById("applicableId").style.display="none";
 		 	}
 		 	$("#noUsersDiv").show();
-		 	
-		 	/* $('#department').click(function(){
-		 		alert("1")
-		 	} */ 
-// 		$('#department').removeAttr('data-validation-optional');
-// 		$('#department').attr('data-validation', "required");
-// 		$('#roles').removeAttr('data-validation-optional');
-// 		$('#roles').attr('data-validation', "required");
-		
 	}
+	 $("#noUsers").click(function() {
+		 document.getElementById("applicableId").style.display="block";
+		 var department = $('#department').val();
+		 	if((department == "" || department == null)  && $('#roles').val() == null && $('#leveEmpType').val() == null){
+				$("#saveLeaveType").attr('disabled','disabled');
+		 	}else{
+				document.getElementById("applicableId").style.display="none";
+		 	}
+		 	$("#noUsersDiv").show();
+	 });
+	 
 	
 // 	${leaveType.leavesCarryforward == 'Y'}
 	function valid(){
@@ -1572,6 +1585,8 @@ function getNoOfDaysPerPeriod(){
 			getGradeList();
 		}else{
 			$("#grade").removeAttr("checked");
+			$('#gradeListId').removeAttr('data-validation');
+			$('#roleListId').removeAttr('data-validation');
 		}
  }
  
