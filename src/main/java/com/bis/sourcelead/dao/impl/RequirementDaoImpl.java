@@ -2447,19 +2447,9 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
 			
-			/* query ="SELECT "
-						+" USER_ID AS associateUserId,SUM(REQ_COUNT) AS jobCount"
-						+" FROM"
-						+" RECRUITER_REPORT_ASSOCIATE_COUNT_VIEW"
-						+" WHERE"
-						+" ORG_ID = :orgId AND USER_ID IN (:userIdsList)"
-						+" AND CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
-						+" GROUP BY USER_ID";
-			        */
-			
 			query = "SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQA.ASSIGN_USER_ID AS assignedUserId,REQ.ORG_LOCATION_ID AS orglocationId,OL.ORG_ID AS orgId "
 					+" FROM REQUIREMENT REQ LEFT JOIN REQUIREMENT_ASSIGN_TO REQA ON REQ.ID = REQA.REQUIREMENT_ID,LEFT JOIN ORGLOCATIONS OL ON REQ.ORG_LOCATION_ID = OL.ID WHERE OL.ORG_ID =:orgId AND (REQ.MANAGER_USER_ID IN (:userIdsList) "
-					+ "OR REQA.ASSIGN_USER_ID IN (:userIdsList)) AND REQ.CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'";
+					+ "OR REQA.ASSIGN_USER_ID IN (:userIdsList)) AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'";
 			
 	            Query queryObj = session.createSQLQuery(query);
 				queryObj.setParameterList("userIdsList", userIdsList).setParameter("orgId", orgId);
