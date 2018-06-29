@@ -243,6 +243,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             immigrationTemplateForms.setImmigrationTempId(immiTemplate);
             immigrationTemplateForms.setFormName(tempObj.getFormName());
             immigrationTemplateForms.setDescription(tempObj.getFormDescription());
+            immigrationTemplateForms.setFormCategory(tempObj.getFormCategory());
             if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
                 immigrationTemplateForms.setIsRequired(tempObj.getIsRequired());
             } else {

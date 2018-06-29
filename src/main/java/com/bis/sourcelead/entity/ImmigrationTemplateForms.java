@@ -74,6 +74,9 @@ public class ImmigrationTemplateForms implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
+	
+	@Column(name="FORM_CATEGORY")
+	private String formCategory;
 
 	public Long getId() {
 		return id;
@@ -196,4 +199,11 @@ public class ImmigrationTemplateForms implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+	public String getFormCategory() {
+		return formCategory;
+	}
+
+	public void setFormCategory(String formCategory) {
+		this.formCategory = formCategory;
+	}
 }
