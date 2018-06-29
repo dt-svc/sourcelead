@@ -844,14 +844,15 @@ public class ImmigrationRestController {
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "templateid", required = true) Long templateid,
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
-			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
+			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "myImmigration", required = false) String myImmigration, HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<ImmigrationCandidateDocuments> immigrationCanDocList = immigrationCommonService
-				.getImmigrationCandidateDocs(immigrationId, templateid, candidateId, user, orgLocations, searchVal);
+				.getImmigrationCandidateDocs(immigrationId, templateid, candidateId, user, orgLocations, searchVal, myImmigration);
 		for (ImmigrationCandidateDocuments docs : immigrationCanDocList) {
 			LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType().getId());
 			docs.setDocumentTypeName(data.getName());
@@ -1643,7 +1644,7 @@ public class ImmigrationRestController {
 
 			// check required column value in Forms tab.
 			List<ImmigrationCandidateForms> formsList = immigrationCommonService
-					.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, "");
+					.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, "","Y");
 			logger.debug(" formsList:::size --> : " + formsList.size());
 			for (ImmigrationCandidateForms form : formsList) {
 				if (form.getIsRequired().equalsIgnoreCase(Constants.YES)) {
@@ -1658,7 +1659,7 @@ public class ImmigrationRestController {
 			}
 			// check is required in in DocumentsTab
 			List<ImmigrationCandidateDocuments> docsList = immigrationCommonService
-					.getImmigrationCandidateDocs(immigrationId, templateId, candidateId, user, orgLocations, "");
+					.getImmigrationCandidateDocs(immigrationId, templateId, candidateId, user, orgLocations, "","Y");
 			logger.debug(" docsList:::size --> : " + formsList.size());
 			for (ImmigrationCandidateDocuments doc : docsList) {
 				if (doc.getIsRequired().equalsIgnoreCase(Constants.YES)) {
@@ -1910,13 +1911,14 @@ public class ImmigrationRestController {
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "templateId", defaultValue = "0") Long templateId,
 			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
-			@RequestParam(value = "searchVal", required = false) String searchVal) throws Exception {
+			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "myImmigration", required = false) String myImmigration) throws Exception {
 
 		logger.debug("inside controller method getCandidateImmigrationForms--> ");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("/immigration/formDetailsTab");
 		List<ImmigrationCandidateForms> candidateFormsLst = immigrationCommonService
-				.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, searchVal);
+				.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, searchVal,myImmigration);
 		logger.debug("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "
 				+ candidateFormsLst.size());
 		model.addObject("formsList", candidateFormsLst);
