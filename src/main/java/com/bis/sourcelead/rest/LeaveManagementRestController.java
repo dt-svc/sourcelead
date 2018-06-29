@@ -65,6 +65,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
+import com.bis.sourcelead.dto.ValidateDateDTO;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
@@ -401,23 +402,43 @@ public class LeaveManagementRestController {
 //				if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
 					if("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 						if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
-							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
-								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
-								roleLeaveType.add(leaveType);
+							if(emp.getDepartmentId() != null){
+								if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
+										&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+										roleLeaveType.add(leaveType);
+									}
 							}
 						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() == null) {
-							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+							if(emp.getDepartmentId() != null){
+								if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
 									roleLeaveType.add(leaveType);
 								}
+							}
 						}else if(roleIds.size() == 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
-							if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue() && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+							if(emp.getDepartmentId() != null){
+								if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue() && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
 									roleLeaveType.add(leaveType);
 								}
+							}
 						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() == null && leaveType.getLeaveEmpType() != null) {
 							if(roleIds.contains(userRole.getRoles().getId()) && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
 								roleLeaveType.add(leaveType);
 							}
-						}
+						}else if(roleIds.size() == 0 && leaveType.getDepartmentId() == null && leaveType.getLeaveEmpType() != null) {
+							if(emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+								roleLeaveType.add(leaveType);
+							}
+						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() == null && leaveType.getLeaveEmpType() == null) {
+							if(roleIds.contains(userRole.getRoles().getId())) {
+								roleLeaveType.add(leaveType);
+							}
+						}else if(roleIds.size() == 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() == null) {
+							if(emp.getDepartmentId() != null){
+								if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+									roleLeaveType.add(leaveType);
+								}
+							}
+					}
 					}else {
 						roleLeaveType.add(leaveType);
 					}
@@ -563,6 +584,7 @@ public class LeaveManagementRestController {
 				orgLocations.getId(), roleHierarchyId);
 		List<AssociateGrades> gradelist =  associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
 		model.addObject("gradelist", gradelist);
+		model.addObject("employmentTypeList", Constants.EMPLOYMENT_TYPES);
 		model.addObject("departmentList", departmentList);
 		model.addObject("rolesList", rolesList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -1033,6 +1055,7 @@ public class LeaveManagementRestController {
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1146,6 +1169,7 @@ public class LeaveManagementRestController {
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1476,6 +1500,7 @@ public class LeaveManagementRestController {
 		model.addObject("existedRoles", existedRolesList);
 		model.addObject("rolesList", rolesList);
 		model.addObject("departmentList", departmentList);
+		model.addObject("employmentTypeList", Constants.EMPLOYMENT_TYPES);
 		model.addObject("leaveType", leaveType);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/addLeaveType");
@@ -1771,8 +1796,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
-	@RequestMapping(value = { "/getEmployeeRequestedLeaves",
-			"/rest/getEmployeeRequestedLeaves" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<LeaveDTO> getEmployeeRequestedLeaves(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
@@ -2017,17 +2041,15 @@ public class LeaveManagementRestController {
 			Map<String, Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),
 					leave.getLeaveType().getId());
 
-			float leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken")
-					- (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
+			float leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken") - (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
 			leaveDto.setActualLeavesTaken(leavesTaken);
 
-			float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),
-					leave.getLeaveType().getId());
+			float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeavesTaken(thisMonthLeaves);
 
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
 			float balLeaves = 0f;
-			 float balLeaves1 = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+//			 float balLeaves1 = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 			 
 			 float tot = 0f;
 			 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
@@ -2258,10 +2280,11 @@ public class LeaveManagementRestController {
 	 */
 	@RequestMapping(value = "/validateRestrictDate")
 	@ResponseBody
-	public String validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate, @RequestParam(value = "toDate", required = false) String toDate, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "leaveUUID", required = false) String leaveUUID, HttpServletRequest request) throws Exception
+	public ValidateDateDTO validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate, @RequestParam(value = "toDate", required = false) String toDate, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "leaveUUID", required = false) String leaveUUID, HttpServletRequest request) throws Exception
 	{
 		String isTrue = null;
-		StringBuilder sb = null;
+//		StringBuilder sb = null;
+		ValidateDateDTO validateDateDTO = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = null;
 		if (userId == null) {
@@ -2274,6 +2297,18 @@ public class LeaveManagementRestController {
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
+		
+		List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
+		if(leaveList != null && !leaveList.isEmpty()) {
+			validateDateDTO = new ValidateDateDTO();
+			validateDateDTO.setValidateType("SAMEDAY");	
+			validateDateDTO.setErrorMessage("you cannot apply two leaves on same day.!");
+//			sb = new StringBuilder();
+//			sb.append("you cannot apply two leaves on same day.!");
+			return validateDateDTO;
+		}
+		
+		
 		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate, toDate, orgLocations);
 		List<Date> daysList = new ArrayList<>();
 		Set<Long> roleIds = new HashSet<>();
@@ -2301,7 +2336,8 @@ public class LeaveManagementRestController {
 		int i = 0;
 		Collections.sort(daysList);
 		if (daysList.size() > 0) {
-			sb = new StringBuilder();
+			validateDateDTO = new ValidateDateDTO();
+			StringBuilder sb = new StringBuilder();
 			sb.append("You cannot apply for leave on restricted/holiday day ");
 			for (Date d : daysList) {
 				sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
@@ -2310,13 +2346,16 @@ public class LeaveManagementRestController {
 				}
 				i++;
 			}
-		}else {
+			validateDateDTO.setValidateType("HOLIDAY");
+			validateDateDTO.setErrorMessage(sb.toString());
+			return validateDateDTO;
+		}/*else {
 			List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
 			if(leaveList != null && !leaveList.isEmpty()) {
 					sb = new StringBuilder();
 					sb.append("you cannot apply two leaves on same day.!");
 			}
-		}
+		}*/
 		
 		
 		/*
@@ -2351,10 +2390,10 @@ public class LeaveManagementRestController {
 		 * 
 		 * } isValid = true; } }
 		 */
-		if (sb != null) {
-			isTrue = sb.toString();
-		}
-		return isTrue;
+//		if (sb != null) {
+//			isTrue = sb.toString();
+//		}
+		return validateDateDTO;
 	}
 
 	@RequestMapping(value = { "/totalCountsForEmployeeLeaves",
@@ -2990,4 +3029,10 @@ public class LeaveManagementRestController {
 		 System.out.println("End Time"+java.time.LocalDateTime.now());
     }
 
+	@RequestMapping(value = { "/leavepolicyDescription"}, method = RequestMethod.POST)
+	public LeaveType leavepolicyDescription(@RequestParam(value = "leaveTypeId", required = true) Long leaveTypeId) throws Exception {
+	      LeaveType leaveType =  leaveTypeService.getLeaveTypeById(leaveTypeId);
+		 return leaveType;
+	}
+	
 }

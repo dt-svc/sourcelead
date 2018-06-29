@@ -234,6 +234,7 @@ public class User implements Serializable{
 	private String role;
 	
 	@Transient
+	@JsonProperty
 	private String assignedTeamId;
 	
 	@Transient

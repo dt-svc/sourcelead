@@ -26,10 +26,13 @@
 		var policy = '${leaveType.leavePolicy}';
 		if (policy == 'Y') {
 			leavePolicy();
+			leavepolicyDescription();
 		}
 		var applicable = '${leaveType.applicableToUsers}';
 		if (applicable == 'N') {
 			noUsers();
+		}else if(applicable == 'Y'){
+			yesUsers();
 		}
 		var leaveEffective = '${leaveType.leaveEffective}';
 		if (leaveEffective == 'All Employees' || leaveEffective == '') {
@@ -160,7 +163,7 @@
 												<span class="paddingLeft">Half Day</span>
 											</c:if>
 										</c:if> <c:if test="${empty leaveType.duration}">
-											<input type="checkbox" id="fullDayId" name="duration" value="Full Day">
+											<input type="checkbox" id="fullDayId" checked name="duration" value="Full Day">
 											<span class="paddingLeft">Full Day</span>
 											<input type="checkbox"  id="halfDayId" name="duration" value="Half Day">
 											<span class="paddingLeft">Half Day</span>
@@ -216,8 +219,6 @@
 							</label>
 							<div class="col-md-6">
 
-							
-
 								<div class="clearfix mb">
 									<c:if test="${!empty leaveType.applicableToUsers}">
 										<c:if test="${leaveType.applicableToUsers == 'Y'}">
@@ -225,8 +226,8 @@
 												<input type="radio" checked="true" value="Y"
 												name="applicableToUsers"> <span class="paddingLeft">Yes</span>
 											</label>
-											<label class="paddingLeft" onClick="noUsers();"> <input
-												type="radio" id="noUsers" value="N" name="applicableToUsers">
+											<label class="paddingLeft"> <input
+												type="radio" id="noUsers" value="N" name="applicableToUsers" onClick="noUsers();">
 												<span class="paddingLeft">No</span></label>
 										</c:if>
 
@@ -259,11 +260,12 @@
 						<div class="clearfix" id="noUsersDiv" style="display: none;" class="deprolemp">
 							<div class="clearfix"></div>
 							<div class="form-group" id="departmentDiv">
-								<label class="col-md-4">Select Department<span class="text-danger">&nbsp;*</span></label>
+								<label class="col-md-4">Select Department</label>
 								<div class="col-md-6 dropdown-select">
-									<select class="chosen-select form-control" multiple  name="department" onchange="removeErrMsg();valid();"
+									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();valid();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
+										<option value="">--Select Department--</option>
 										<c:forEach var="report" items="${departmentList}">
 											<option value="${report.id}"
 												${report.id  == departmentId ? 'selected' : ''}>${report.departmentName}</option>
@@ -272,11 +274,10 @@
 								</div>
 							</div>
 							<div class="form-group" id="rolesDiv">
-								<label class="col-md-4">Select Roles<span
-								class="text-danger">&nbsp;*</span></label>
+								<label class="col-md-4">Select Roles</label>
 								<div class="col-md-6 dropdown-select" id="roleErrMsg">
 								<select class="form-control chosen-select choose" multiple id="roles" name="roles"
-										field-name="Roles" data-validation-optional="true" onchange="removeRoleErrMsg()">
+										field-name="Roles" data-validation-optional="true" data-placeholder="Select Roles" onchange="removeRoleErrMsg()">
 									
 										<c:forEach var="role" items="${rolesList}">
 											<c:set var="NUM" value="${0}" />
@@ -294,19 +295,24 @@
 								</div>
 							</div>
 							
+										
 							<div class="form-group" id="rolesDiv">
-								<label class="col-md-4">Select Employement Type<span
-								class="text-danger">&nbsp;*</span></label>
+								<label class="col-md-4">Select Employement Type</label>
 								<div class="col-md-6 dropdown-select" id="empTypeErrMsg">
 									<select class="chosen-select form-control"  multiple id="leveEmpType" name="leveEmpType" value="${leaveType.leaveEmpType}"
-										field-name="Employement Type" data-validation-optional="true">
-						                 <option>C2C</option>
-						                 <option>C2C-1099</option>
-						                 <option>W-2</option>
-						                 <option>C2H</option>
-						                 <option>C2H -1099</option>
-						                 <option>Part Time</option>
-						                 <option>Full Time</option>
+										field-name="Employement Type" data-placeholder="Select Employement Type" data-validation-optional="true">
+						                 <c:forEach var="employmentType" items="${employmentTypeList}">
+											<c:set var="NUM" value="${0}" />
+											<c:forEach var="dbEmpType" items="${leaveType.leaveEmpType}">
+												<c:if test="${dbEmpType eq employmentType}">
+													<c:set var="NUM" value="${1}" />
+													<option selected >${dbEmpType}</option>
+												</c:if>
+											</c:forEach>
+											<c:if test="${NUM == 0}">
+												<option >${employmentType}</option>
+											</c:if>
+										</c:forEach>
 									</select>
 								</div>
 								<p Style="color: red; display: none;" id="applicableId" >Select Atleast One Field</p>
@@ -523,7 +529,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="col-md-4">Allowability<span class="text-danger paddingLeft">*</span>
+							<label class="col-md-4">Allowability
 							<div class="tooltip">
 							<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
 							<span class="tooltiptext">User can apply for this leave type number of times configured</span>
@@ -814,7 +820,6 @@
 									</div>	 
 	                                </c:if>
 								</span>
-								
 								<span class="checkBox col-md-4">
 									<c:if test="${leaveType.visibleInBalanceLeaves == 'Y'}">
 										<input type="checkbox" checked="true" name="visibleInBalanceLeaves" id="visibleInBalanceLeaves" 
@@ -826,7 +831,7 @@
 									</div>
 									</c:if>
 									     <c:if test="${leaveType.visibleInBalanceLeaves == 'N'}">
-									      <input type="checkbox" name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
+									      <input name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
 										   value="Y">Visible in Balance Leaves
 										   	   <div class="tooltip">
 									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
@@ -835,7 +840,7 @@
 									</div>
 	                                </c:if>
 	                                <c:if test="${empty leaveType.visibleInBalanceLeaves}">
-									      <input type="checkbox" name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
+									      <input type="checkbox" checked="true"  name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
 										   value="Y">Visible in Balance Leaves
 										   	   <div class="tooltip">
 									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
@@ -1083,13 +1088,10 @@
 						<div class="form-group mt10">
 							<div class="col-md-12 checkBox" onClick="leavePolicy();">
 								<c:if test="${!empty leaveType.leavePolicy}">
-									<input type="checkbox" checked="true" name="leavePolicy"
-										id="leavePolicy" value="Y">Leave Policy
-	              </c:if>
+									<input type="checkbox" checked="true" name="leavePolicy" id="leavePolicy" value="Y">Leave Policy
+	                           </c:if>
 								<c:if test="${empty leaveType.leavePolicy}">
-									<input type="checkbox" name="leavePolicy" id="leavePolicy"
-
-										value="Y">Leave Policy <i class='fa fa-info-circle text-muted' title='provides the leave policy for a particluar leave type.'></i>
+									<input type="checkbox" name="leavePolicy" id="leavePolicy" value="N">Leave Policy<i class='fa fa-info-circle text-muted' title='provides the leave policy for a particluar leave type.'></i>
 
 									
 
@@ -1114,11 +1116,11 @@
 								<div class="col-md-6 checkBox">
 									<c:if test="${!empty leaveType.visibilityToAllUsers}">
 										<input type="checkbox" checked="true"
-											name="visibilityToAllUsers" value="Y">Visiblity
+											name="visibilityToAllUsers" value="Y" id="visibilityToAllUsers">Visiblity
 										All Users
 									</c:if>
 									<c:if test="${empty leaveType.visibilityToAllUsers}">
-										<input type="checkbox" name="visibilityToAllUsers" value="Y">Visiblity
+										<input type="checkbox" name="visibilityToAllUsers"  id="visibilityToAllUsers" value="Y">Visiblity
 										All Users
 									</c:if>
 								</div>
@@ -1127,8 +1129,7 @@
 					<div class="row">		
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description<span class="text-danger">&nbsp;*</span></h5>
-						<textarea id="txtEditor" name="leavePolicyDescription"   
-						value="" field-name="Description" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
+						<textarea id="txtEditor" name="leavePolicyDescription"   field-name="Description" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 					</div>
 </div>
 						</div>
@@ -1250,6 +1251,7 @@ function showLeaveEncashmentDiv(){
 		    		    showError("Operation failed, please try again");
 		    		}
 					 $("#loading").hide();
+					 $('#saveLeaveType').attr('disabled','disabled');
 				});
 
 				return true;
@@ -1275,39 +1277,55 @@ function showLeaveEncashmentDiv(){
 		window.location.href = sourceleadUrl + "/viewLeaveTypes";
 	}
 </script>
-
 <script>
-	function leavePolicy() {
-		var ckbox = $('#leavePolicy');
-		if (ckbox.is(':checked')) {
-			$("#leavepolicy-div").show();
+function leavePolicy(){
+	  var flag = document.getElementById("leavePolicy").checked;
+	 if(flag == true){
+		 $("#leavePolicy").val('Y'); 
+		 $("#leavepolicy-div").show();
 			$('#policyName').removeAttr('data-validation-optional');
 			$('#policyName').attr('data-validation', "required validate_length length1-250");
 			$('#txtEditor').removeAttr('data-validation-optional');
 			$('#txtEditor').attr('data-validation', "required required validate_length length1-5000");
 			$('#policyNameDiv').find('p.jquery_form_error_message').remove();
-			$('#leavePolicyDescDiv').find('p.jquery_form_error_message')
-					.remove();
-		} else {
-			$("#leavepolicy-div").hide();
+			$('#leavePolicyDescDiv').find('p.jquery_form_error_message').remove();
+			
+	 }else{
+		 $('.Editor-editor').text('');
+		 $("#leavePolicy").val('N'); 
+		 $("#leavepolicy-div").hide();
 			$('#policyNameDiv').find('p.jquery_form_error_message').remove();
-			$('#leavePolicyDescDiv').find('p.jquery_form_error_message')
-					.remove();
+			$('#leavePolicyDescDiv').find('p.jquery_form_error_message').remove();
 			$('#policyName').removeAttr('data-validation');
 			$('#policyName').attr('data-validation-optional', "true");
 			$('#txtEditor').removeAttr('data-validation');
 			$('#txtEditor').attr('data-validation-optional', "true");
-		} 
-		
-		var policyDesc = '${leaveType.policyDescription}';
-		
-		  setTimeout(function () {
-			  $("textarea[name=leavePolicyDescription]").html(policyDesc);
-			 	$(".Editor-editor").html(policyDesc);
-	 			}, 100);
-		
-	}
-	
+			$('#policyName').val('');
+			$("#visibilityToAllUsers").prop("checked",false);
+			
+	 } 
+	 
+	 
+}
+</script>
+<script>
+function leavepolicyDescription(){
+	var leaveTypeId = '${leaveType.id}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/leavepolicyDescription?${_csrf.parameterName}=${_csrf.token}&leaveTypeId="+leaveTypeId, 	   
+		    success: function(result) {
+		    	$('#txtEditor').html(result.policyDescription);
+		    	$('.Editor-editor').html(result.policyDescription);
+		    }
+		    	 
+     });
+}
+
+
+
+</script>
+<script>
 	function showPriorDaysDiv() {
 			var ckbox = $('#priorLeaveApplying');
 			if (ckbox.is(':checked')) {
@@ -1355,6 +1373,9 @@ function showLeaveEncashmentDiv(){
 
 	//Select All Users
 	function yesUsers() {
+		$("#department").val('').trigger("chosen:updated");
+		$("#roles").val('').trigger("chosen:updated");
+		$("#leveEmpType").val('').trigger("chosen:updated");
 		$('#departmentDiv').find('p.jquery_form_error_message').remove();
 		$('#rolesDiv').find('p.jquery_form_error_message').remove();
 		$('#department').removeAttr('data-validation');
@@ -1365,27 +1386,32 @@ function showLeaveEncashmentDiv(){
 		$("#department").val();
 		$("#roles").val();
 		$("#leveEmpType").val();
-		$(".chosen-select").val('').trigger("chosen:updated");
 		document.getElementById("applicableId").style.display="block";
+		$("#saveLeaveType").attr('disabled',false);
+		
 	}
 	function noUsers() {
 		document.getElementById("applicableId").style.display="block";
-		 	if($('#department').val() == null && $('#roles').val() == null && $('#leveEmpType').val() == null){
+		var department = $('#department').val();
+		
+		 	if((department == "" || department == null) && $('#roles').val() == null && $('#leveEmpType').val() == null){
 				$("#saveLeaveType").attr('disabled','disabled');
 		 	}else{
 				document.getElementById("applicableId").style.display="none";
 		 	}
 		 	$("#noUsersDiv").show();
-		 	
-		 	/* $('#department').click(function(){
-		 		alert("1")
-		 	} */ 
-// 		$('#department').removeAttr('data-validation-optional');
-// 		$('#department').attr('data-validation', "required");
-// 		$('#roles').removeAttr('data-validation-optional');
-// 		$('#roles').attr('data-validation', "required");
-		
 	}
+	 $("#noUsers").click(function() {
+		 document.getElementById("applicableId").style.display="block";
+		 var department = $('#department').val();
+		 	if((department == "" || department == null)  && $('#roles').val() == null && $('#leveEmpType').val() == null){
+				$("#saveLeaveType").attr('disabled','disabled');
+		 	}else{
+				document.getElementById("applicableId").style.display="none";
+		 	}
+		 	$("#noUsersDiv").show();
+	 });
+	 
 	
 // 	${leaveType.leavesCarryforward == 'Y'}
 	function valid(){
@@ -1559,6 +1585,8 @@ function getNoOfDaysPerPeriod(){
 			getGradeList();
 		}else{
 			$("#grade").removeAttr("checked");
+			$('#gradeListId').removeAttr('data-validation');
+			$('#roleListId').removeAttr('data-validation');
 		}
  }
  

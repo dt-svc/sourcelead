@@ -31,6 +31,8 @@ public interface RequirementService {
     public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId, String status, String clients, User user, String userRoleName) throws Exception;
 
     public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
+    
+    public Requirement getRequirementByRequirementIdAndSearchValue(Long requirementId,String searchValue) throws Exception;
 
     public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String url) throws Exception;
 
