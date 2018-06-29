@@ -163,7 +163,7 @@
 												<span class="paddingLeft">Half Day</span>
 											</c:if>
 										</c:if> <c:if test="${empty leaveType.duration}">
-											<input type="checkbox" id="fullDayId" name="duration" value="Full Day">
+											<input type="checkbox" id="fullDayId" checked name="duration" value="Full Day">
 											<span class="paddingLeft">Full Day</span>
 											<input type="checkbox"  id="halfDayId" name="duration" value="Half Day">
 											<span class="paddingLeft">Half Day</span>
@@ -831,7 +831,7 @@
 									</div>
 									</c:if>
 									     <c:if test="${leaveType.visibleInBalanceLeaves == 'N'}">
-									      <input name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
+									      <input type="checkbox" name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
 										   value="Y">Visible in Balance Leaves
 										   	   <div class="tooltip">
 									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
@@ -1585,6 +1585,8 @@ function getNoOfDaysPerPeriod(){
 			getGradeList();
 		}else{
 			$("#grade").removeAttr("checked");
+			$('#gradeListId').removeAttr('data-validation');
+			$('#roleListId').removeAttr('data-validation');
 		}
  }
  

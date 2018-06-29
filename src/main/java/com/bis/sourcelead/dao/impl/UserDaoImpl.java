@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,6 +35,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
@@ -43,6 +45,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.RecruiterReportView;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -2124,8 +2127,26 @@ public class UserDaoImpl implements UserDao {
 					}
 				}
 				
-				List<RecruiterReportAssociateCountView> RecruiterReportAssociateList = requirementService.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
-				if(RecruiterReportAssociateList != null && !RecruiterReportAssociateList.isEmpty()) {
+				//List<RecruiterReportAssociateCountView> RecruiterReportAssociateList = requirementService.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
+				List<RecruiterRrportDTO> recruiterReportAssociateList1 = requirementService.getAssociateCountsCreatedUserListByLocation(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
+				//Map<Long,List<Long>> requirementMap = new HashMap<Long,List<Long>>();
+				UserDTO userDTO1 = null;
+				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
+					
+					userDTO1 = associatesListMap.get(reportDTO.getManagerUserId());
+					if(userDTO1 != null){
+						userDTO1.setUserRequirementsCount(userDTO1.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO1.getUserRequirementsCount().add(BigDecimal.ONE) );
+					}
+					userDTO1 = associatesListMap.get(reportDTO.getAssignedUserId());
+					if(userDTO1 != null){
+						userDTO1.setUserRequirementsCount(userDTO1.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO1.getUserRequirementsCount().add(BigDecimal.ONE) );
+					}
+				}
+				
+				
+				
+				
+			/*if(RecruiterReportAssociateList != null && !RecruiterReportAssociateList.isEmpty()) {
 					for(RecruiterReportAssociateCountView associateReportView : RecruiterReportAssociateList) {
 						UserDTO userDTO = associatesListMap.get(associateReportView.getAssociateUserId());
 						if(associateReportView.getJobCount() != null) {
@@ -2133,7 +2154,7 @@ public class UserDaoImpl implements UserDao {
 						}
 						
 					}
-				}
+				}*/
 				
 				List<RecruiterReportView> recruiterReportViewList = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
 				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
