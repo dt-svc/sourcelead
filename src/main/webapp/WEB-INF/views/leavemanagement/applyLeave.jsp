@@ -456,7 +456,6 @@ window.onload = function() {
 			$("#fromdate").datepicker("option", "maxDate", dt);
 			removeEndValid();
 			checkToDate();
-			validateDate();
 			getLeaveDetails();
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
@@ -844,11 +843,15 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	if(report.autoApprove == "Y"){
     		    		$("#approvalDiv").hide();
     		    	}else{
-    		    		if(isSuperUser == 'true'){
-   	   		    		   $("#approvalDiv").hide();
-   	   		    	   }else{
-   	   		    		   $("#approvalDiv").show();
-   	   		    	   }
+    		    		if(userId === '${SourceLeadWeb_userId}'){
+    		    			if(isSuperUser == 'true'){
+    	   	   		    		   $("#approvalDiv").hide();
+    	   	   		    	   }else{
+    	   	   		    		   $("#approvalDiv").show();
+    	   	   		    	   }
+    		    		}else{
+	   	   		    		   $("#approvalDiv").show();
+	   	   		    	   }
     		    	}
     		    	
     		    	if(report.leaveDuration == "Y" && fromDate != "" && toDate != ""){
@@ -888,8 +891,8 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    }
 		});
 	}
-	
-	validateDate();	
+	setTimeout(function(){ validateDate(); }, 1500);
+		
 }
 
 </script>
@@ -966,7 +969,6 @@ function validateMaxLeave(data){
 	}
 	
   }
-	validateDate();		
 }
 </script>
 
