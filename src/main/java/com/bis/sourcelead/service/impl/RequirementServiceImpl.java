@@ -46,6 +46,7 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -3767,6 +3768,13 @@ public class RequirementServiceImpl implements RequirementService {
 	public Requirement getRequirementByGeneratedIdAndLocationId(String generatedId, Long orgLocationId)
 			throws Exception {
 		return requirementDao.getRequirementByGeneratedIdAndLocationId(generatedId, orgLocationId);
+	}
+	
+	@Override
+	public  List<RecruiterRrportDTO> getAssociateCountsCreatedUserListByLocation(Long orgLocationId,
+			List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception {
+		return requirementDao.getAssociateCountsCreatedUserListByLocation(orgLocationId, userIdsList, startDateUTC, endDateUTC, isGlobalUser, orgId);
 	}
 
 	@Override

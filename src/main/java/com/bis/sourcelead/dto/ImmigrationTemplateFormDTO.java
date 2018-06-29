@@ -32,6 +32,8 @@ public class ImmigrationTemplateFormDTO {
 	
 	private Long immigrationCandidateFormId;
 	
+	private String formCategory;
+	
 	public String getFormDescription() {
 		return formDescription;
 	}
@@ -129,6 +131,12 @@ public class ImmigrationTemplateFormDTO {
 		this.immigrationCandidateFormId = immigrationCandidateFormId;
 	}
 
-	
-	
+	public String getFormCategory() {
+		return formCategory;
+	}
+
+	public void setFormCategory(String formCategory) {
+		this.formCategory = formCategory;
+	}
+
 }
