@@ -885,7 +885,7 @@ function getPieChartBasedOnUser(){
       	            result = result +'   </div>';
       	            result = result +' </div>';
       	            
-      	             AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
+      	           /*   AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
       						"type": "pie",
       						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
       						"innerRadius": "60%",
@@ -924,9 +924,9 @@ function getPieChartBasedOnUser(){
       								"color": "#f0ad4e"
       							}
       						]
-      					}
+      					} 
       							 
-      					); 
+      					); */
       		   }
        		 }else{
        			result = result + '<div class="dataTables_empty center" ></div>';
