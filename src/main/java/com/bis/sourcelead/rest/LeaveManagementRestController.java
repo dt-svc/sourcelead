@@ -2508,26 +2508,27 @@ public class LeaveManagementRestController {
 					float rejectedCounts = 0;
 					float cancelCounts = 0;
 					LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
-					List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),orgLocations.getId(), user.getId());
+					List<Leave> takenLeaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),orgLocations.getId(), user.getId());
 					
 					float empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());
 
 					float empAppliedLeaveCount = 0;
 					float balLeaves = 0;
 					//int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, user);
-					if (totalleavesTaken != null && totalleavesTaken.size() > 0) {
+					if (takenLeaveList != null && takenLeaveList.size() > 0) {
 						 empAppliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations,type,user.getId());
 						 empToatalLeaves = empToatalLeaves - empAppliedLeaveCount;
+						 leaveTypeDto.setTotalNoOfDays(empAppliedLeaveCount);
+						 leaveTypeDto.setName(type.getName());
+							leaveTypeDto.setLeaveTypeId(type.getId());
+							leaveTypeDto.setNoOfLeavesPerYear(String.valueOf(empToatalLeaves));
+							leaveTypeDto.setTotalApprovedCount(approvedCounts);
+							leaveTypeDto.setTotalRejectedCount(rejectedCounts);
+							leaveTypeDto.setTotalPendingCount(pendingCounts);
+							leaveTypeDto.setTotalCancelCount(cancelCounts);
+							leaveTypeDTOList.add(leaveTypeDto);
 						}
-						leaveTypeDto.setTotalNoOfDays(empAppliedLeaveCount);
-						leaveTypeDto.setName(type.getName());
-						leaveTypeDto.setLeaveTypeId(type.getId());
-						leaveTypeDto.setNoOfLeavesPerYear(String.valueOf(empToatalLeaves));
-						leaveTypeDto.setTotalApprovedCount(approvedCounts);
-						leaveTypeDto.setTotalRejectedCount(rejectedCounts);
-						leaveTypeDto.setTotalPendingCount(pendingCounts);
-						leaveTypeDto.setTotalCancelCount(cancelCounts);
-						leaveTypeDTOList.add(leaveTypeDto);
+						
 					}
 				}
 		}catch (Exception e) {
