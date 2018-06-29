@@ -3491,7 +3491,7 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .welcoHead ul {
-    float:right; margin: 0px; padding: 8px 20px 0px 0px;
+    float:right; margin: 0px; padding: 8px 60px 0px 0px;
 }
 .welcoHead ul li {
     float:left; list-style-type: none; text-align: center; width: 80px; margin: 0px 1px;  position: relative;
