@@ -195,6 +195,8 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		
 		if(leaveTypeDTO.getLeveEmpType() != null && leaveTypeDTO.getLeveEmpType().size() > 0){
 			leaveType.setLeaveEmpType(String.join(",", leaveTypeDTO.getLeveEmpType()));
+		}else{
+			leaveType.setLeaveEmpType("");
 		}
 		
 		if(leaveTypeDTO.getLeaveEncashment() != null){
