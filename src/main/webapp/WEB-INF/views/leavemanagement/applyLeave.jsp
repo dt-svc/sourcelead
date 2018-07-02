@@ -860,7 +860,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		validateMinMaxDays(report.minDays, report.maxDays);
     		    	}
     		    	
-    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "Y"){
+    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
     		    		validateOverDrawLeaves(report.name);
     		    	}
     		    	
