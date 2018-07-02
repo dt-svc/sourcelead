@@ -537,15 +537,7 @@
 							</div>
 							</label>
 							<div class="col-md-6">
-							
 								<input type="text" class="form-control" name="leaveAllowability" placeholder="Enter no.of Times" id="leaveAllowability" value="${leaveType.allowability}" field-name="Allowability" data-validation-optional="true" data-validation="validate_int validate_length length1-10">
-							
-								<%-- <select class="form-control" name="leaveAllowability" id="leaveAllowability">
-								<option value="">--Select Allowability--</option>
-								<option ${leaveType.period == 'Once' ? 'selected' : ''}>Once</option>
-								<option ${leaveType.period == 'Twice' ? 'selected' : ''}>Twice</option>
-								<option ${leaveType.period == 'Many' ? 'selected' : ''}>Many</option>
-								</select> --%>
 							</div>
 						</div>
 						
