@@ -200,7 +200,7 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		Leave leave = null;
 		if(leaveDTO.getLeaveId() != null) {
-			int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(leave.getId());
+			int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(leaveDTO.getLeaveId());
 			leave = leaveDao.getLeaveById(leaveDTO.getLeaveId());
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());
