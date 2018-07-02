@@ -109,7 +109,7 @@
 									name="immigrationDocList[${rows.count-1}].documentCategory" id="documentCategory${rows.count-1}" title='Document Category' field-name="Select Document Category" data-validation="required" onchange="getDocumentType(this,${rows.count-1});" >
 							            <option value="" >--Select Document Type--</option>
 							        	<option ${items.documentCategory == "PetitionerCategory" ? 'selected': ''} value="PetitionerCategory">Petitioner</option>
-							        	<option ${items.documentCategory == "Document Type" ? 'selected': ''} value="Document Type">Beneficiary</option>
+							        	<option ${items.documentCategory == "DocumentType" ? 'selected': ''} value="DocumentType">Beneficiary</option>
 							        	<option ${items.documentCategory == "AttorneyCategory" ? 'selected': ''} value="AttorneyCategory">Attorney</option>
 						</select>
 					  </div>

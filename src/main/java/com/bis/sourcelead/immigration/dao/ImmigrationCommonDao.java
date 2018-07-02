@@ -90,9 +90,9 @@ public interface ImmigrationCommonDao {
 	 
 	Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception;
 	
-	List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,Long candidateId, String searchVal);
+	List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,Long candidateId, String searchVal, String myImmigration);
 
-	List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId, Long immigrationId, String searchVal);
+	List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId, Long immigrationId, String searchVal, String myImmigration);
 
 	ImmigrationCandidateForms getImmigrationCandidateFormsById(Long id, Long candidateId, Long immigrationId) throws Exception;
 

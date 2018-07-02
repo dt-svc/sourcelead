@@ -136,7 +136,7 @@
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="getCandidatesTableList();closePop();" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearCandAdvSearch();" class="btn btn-sm btn-primary" />
+								onclick="clearCandAdvSearch();getCandidatesTableList();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 					

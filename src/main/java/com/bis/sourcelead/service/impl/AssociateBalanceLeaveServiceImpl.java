@@ -25,6 +25,7 @@ import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.LeaveRole;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
@@ -82,6 +84,9 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	EmployeesService employeesService;
 	
 	@Override
 	public Response<AssociateBalanceLeaveDTO> addAssociateLeave(AssociateBalanceLeaveDTO associateBalanceLeaveDTO, User loginUser, OrgLocations orgLocations)
@@ -300,13 +305,20 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 //			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
 //				for (LeaveType leaveType : leaveTypeList) {
+			Employees emp = employeesService.getEmployeByUserIdAndOrgRelationId(userRole.getUser().getId(), orgLocation.getId());
 					Set<Long> roleIds = new HashSet<>();
 					if(leaveType.getLeaveTypeRolesSet() != null) {
 						for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
 							roleIds.add(leaveRole.getRoleId().getId());
 						}
 						if (roleIds.contains(userRole.getRoles().getId()) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
-							isLeaveApplicable = true;
+							if(leaveType.getDepartmentId() != null){
+								if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()){
+									isLeaveApplicable = true;
+								}
+							}else{
+								isLeaveApplicable = true;
+							}
 							//						roleLeaveType.add(leaveType);
 						}	
 					}else {
