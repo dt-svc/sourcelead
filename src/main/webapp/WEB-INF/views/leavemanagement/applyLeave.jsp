@@ -219,6 +219,7 @@ window.onload = function() {
 			</c:if>
 			
 		<c:if test="${empty leave.notifyToOthers}">
+		<c:if test="${SourceLeadWeb_isSuperUser != true}">
          <div class="form-group">
 				<div class="ml">
 							<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
@@ -227,6 +228,7 @@ window.onload = function() {
 					</label>
 				</div>
 			</div>
+		</c:if>
 		</c:if>
 			
 			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
@@ -272,7 +274,7 @@ window.onload = function() {
  <script>
  function checkFromHalfDay(){
 	 
-    $("#checkbox-2").val('YES');
+//     $("#checkbox-2").val('YES');
     
 	   if($("#checkbox-2").is(':checked')){
 		   $("#fromTimeDiv").show();
@@ -291,7 +293,7 @@ window.onload = function() {
  
  function checkToHalfDay(){
 	
-	 $("#checkbox-3").val('YES');
+// 	 $("#checkbox-3").val('YES');
 	 
 	 if($("#checkbox-3").is(':checked')){
 		   $("#toDateFromTimeDiv").show();
@@ -442,7 +444,7 @@ window.onload = function() {
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
 			checkFromDate();
-			getLeaveDetails(finalDateFormatEndDate);
+// 			getLeaveDetails(finalDateFormatEndDate);
 			}
 		});
 		
@@ -456,7 +458,7 @@ window.onload = function() {
 			$("#fromdate").datepicker("option", "maxDate", dt);
 			removeEndValid();
 			checkToDate();
-			getLeaveDetails();
+			getLeaveDetails(finalDateFormatEndDate);
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
 		});
@@ -795,7 +797,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 	}else{
 		userId = '${SourceLeadWeb_userId}';
 	}
-	
+	errorMessage = "";
 	if(leaveTypeUUID !=null && leaveTypeUUID != '' && leaveTypeUUID !='undefined'){
 		$.ajax({
 		   	type: "POST",
@@ -808,12 +810,24 @@ function getLeaveDetails(finalDateFormatEndDate){
           		} else if (result.response === "SUCCESS") {
           			var report = result.object;
           			
-          			if(report.duration == "Half Day"){
+          			var duration = report.duration;
+          			var splitDuration = duration.split(",");
+          			
+          			if(splitDuration[0] == "Full Day" && splitDuration[1] == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
-    		    	}else{
+    		    	}else if(duration == "Half Day"){
+    		    		$("#fromHalfDayDiv").show();
+    		    		$("#toHalfDayDiv").show();
+    		    	}else if(duration == "Full Day"){
+    		    		$("#checkbox-2").removeAttr("checked");
+    		    		$("#checkbox-3").removeAttr("checked");
     		    		$("#fromHalfDayDiv").hide();
     		    		$("#toHalfDayDiv").hide();
+    		    		$("#fromTimeDiv").hide();
+     		 		    $("#toTimeDiv").hide();
+     		 		    $("#toDateFromTimeDiv").hide();
+     					$("#toDateTimeDiv").hide();
     		    	} 
     		    	
     		    	if(report.reasonRequired == "Y"){
@@ -858,7 +872,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		validateMinMaxDays(report.minDays, report.maxDays);
     		    	}
     		    	
-    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
+    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "Y"){
     		    		validateOverDrawLeaves(report.name);
     		    	}
     		    	
@@ -871,7 +885,6 @@ function getLeaveDetails(finalDateFormatEndDate){
     		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
     		        	$(".warMess").fadeIn();
     		        	$(".comMask").fadeIn();
-    		        	errorMessage = "";
     		        }else{
     		    		$("#ApplyLeave").removeAttr('disabled');
     		        }
@@ -891,7 +904,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    }
 		});
 	}
-	setTimeout(function(){ validateDate(); }, 1500);
+	setTimeout(function(){ validateDate(); }, 800);
 		
 }
 
@@ -1009,7 +1022,7 @@ function validateCarryForwardLeaves(){
 <div class='comMask'></div>
 <script>
 function validateDate(){
-	$('.warMess').hide();
+// 	$('.warMess').hide();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var roleId = '${SourceLeadWeb_loginUserRoleId}';
 	var fromDate = $("#fromDate").val();
@@ -1024,11 +1037,16 @@ function validateDate(){
 	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data !=null && data.validateType == 'SAMEDAY'){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
+				errorMessage += data.errorMessage;
+				$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+// 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
 				$("#ApplyLeave").attr('disabled','disabled');
+				$(".warMess").fadeIn();
 				$(".comMask").fadeIn();
 			}else if(data != null && data.validateType == 'HOLIDAY'){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
+				errorMessage += data.errorMessage;
+				$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+// 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
 				$("#ApplyLeave").removeAttr('disabled');
 				$(".comMask").fadeIn();	
 			}
