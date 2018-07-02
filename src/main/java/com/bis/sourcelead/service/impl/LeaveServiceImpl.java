@@ -200,6 +200,7 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		Leave leave = null;
 		if(leaveDTO.getLeaveId() != null) {
+			int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(leave.getId());
 			leave = leaveDao.getLeaveById(leaveDTO.getLeaveId());
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());
@@ -733,7 +734,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leave.setStatus(Constants.LEAVE_REJECTED);
 				leave.setRejectedReason(reason);
 				leave.setRejectedBy(user);
-				int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(leave.getId());
+//				int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(leave.getId());
 			}
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());
@@ -1458,7 +1459,7 @@ public class LeaveServiceImpl implements LeaveService{
 			Leave updatedLeave = leaveDao.saveLeave(leave);
 			if(updatedLeave !=null) {
 				isLeaveWithdraw = true;
-				int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(updatedLeave.getId());
+//				int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(updatedLeave.getId());
 			}
 			leaveManagementHistory.setLeaveid(leave);
 			leaveManagementHistory.setType(Constants.LEAVE);
