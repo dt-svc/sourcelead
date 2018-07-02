@@ -71,8 +71,9 @@ function reloadFcuntion(){
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Missing Timesheet(s)</h2>
-      </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; Missing Timesheet(s)</div>
+      </div> 
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>"> HR Reports
+</a> &raquo; Missing Timesheet(s)</div>
     </section>
 
     <div class="ReqRepHead clearfix">

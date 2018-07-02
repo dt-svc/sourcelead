@@ -58,7 +58,7 @@ public class Projects implements Serializable{
     @Column(name = "PROJECT_NAME")
     private String projectName;
  
-    @Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
+    @Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
     private String description;
  
     @Column(name = "WEEK_START_DATE")

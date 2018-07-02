@@ -16,32 +16,38 @@
     
 <div class="reportNewDash">
     
+    	<sec:authorize access="hasRole('ROLE_ASSOCIATE_ROI')">
+    	<a href="${appPath}/payrollReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-user-circle"></i></span>
 		<div class="repDashCtaWrap">
-			<sec:authorize access="hasRole('ROLE_ASSOCIATE_ROI')">
-				<a href="${appPath}/payrollReport"><h2>Associate(s) ROI</h2><b>View</b></a>
-			</sec:authorize>
+		<h2>Associate(s) ROI</h2><b>View</b>
 		</div>
 	</div>
+	</a>
+	</sec:authorize>
 	
+	<sec:authorize access="hasRole('ROLE_ALL_ASSOCIATE_ROI')">
+	<a href="${appPath}/payrollAllBalanceReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-users"></i></span>
 		<div class="repDashCtaWrap">
-			<sec:authorize access="hasRole('ROLE_ALL_ASSOCIATE_ROI')">
-				 <a href="${appPath}/payrollAllBalanceReport"><h2>All Associates ROI</h2><b>View</b></a>
-			 </sec:authorize>
+		 <h2>All Associates ROI</h2><b>View</b>
 		</div>
 	</div>
-		
+	</a>
+	</sec:authorize>
+	
+	<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
+	<a href='${appPath}/campaignStats'>	
 	<div class="repDashCta">
 		<span><i class="fa fa-bullhorn"></i></span>
 		<div class="repDashCtaWrap">
-				<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
-				<a href='${appPath}/campaignStats'><h2>Campaign(s) Report</h2><b>View</b></a>
-				</sec:authorize>		
+		<h2>Campaign(s) Report</h2><b>View</b>
 		</div>
 	</div>
+	</a>
+	</sec:authorize>		
 	
 				
 	<div class="clearfix"></div>	
