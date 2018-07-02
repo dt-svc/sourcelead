@@ -126,7 +126,7 @@ $(document).ready(function() {
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="getRequirementTableList();closePop();" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearJobAdvSearch();" class="btn btn-sm btn-primary" />
+								onclick="clearJobAdvSearch();getRequirementTableList();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 					

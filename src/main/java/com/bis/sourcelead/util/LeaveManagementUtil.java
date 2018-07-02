@@ -31,21 +31,33 @@ import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
+import com.ibm.icu.text.DecimalFormat;
 
 @Component
 public class LeaveManagementUtil {
+	
+	public DecimalFormat dec = new DecimalFormat("#0.00");
+	
 	@Autowired
 	CommonUtil commonUtil;
+	
 	@Autowired
 	LeaveService leaveService;
+	
 	@Autowired
 	EmployeesService employeesService;
+	
 	@Autowired
 	ConversionUtil conversionUtil;
+	
 	@Autowired
 	AppliedLeaveDateService appliedLeaveDateService;
+	
 	@Autowired
 	HolidayService holidayService;
+	
+	
+	
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementUtil.class);
 	
 	public static List<Date> getDaysBetweenDates(Date startDate, Date endDate, String orgFormat) throws ParseException
@@ -462,50 +474,68 @@ public class LeaveManagementUtil {
 		c.set(year, month, day);
 		return c.getTime();
 	}
-	
+	/**
+	 * Get number of leaves taken by employee by the duration
+	 * @param orgLocations
+	 * @param l
+	 * @param leave
+	 * @param totalLeaves
+	 * @return float
+	 */
 	public float getAppliedLeaveCount(OrgLocations orgLocations, LeaveType l, Leave leave, float totalLeaves)
 	{
 		float appliedLeaveCount = 0;
-		LocalDate todayDate = LocalDate.now();
 		List<AppliedLeaveDateView> appliedLeaves = null;
 		AssociateBalanceLeaveView al = new AssociateBalanceLeaveView();
 		if (l.getIncludeHolidays() != null) {
 			al.setIncludeHolidays(l.getIncludeHolidays());
 		}
-		
 		if (l.getIncludeWeekoff() != null) {
 			al.setIncludeWeekoff(l.getIncludeWeekoff());
 		}
-		if (Constants.MONTHLY.equalsIgnoreCase(l.getPeriod())
-				&& Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId());
+		appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, leave.getFromDate(), leave.getToDate());
+		return appliedLeaveCount;
+	}
+	
+	
+	
+	public float getTotalAppliedLeaveCount(OrgLocations orgLocations, LeaveType l,Long userId)
+	{
+		
+		float appliedLeaveCount = 0;
+		AssociateBalanceLeaveView al = new AssociateBalanceLeaveView();
+		if (l.getIncludeHolidays() != null) {
+			al.setIncludeHolidays(l.getIncludeHolidays());
+		}
+		if (l.getIncludeWeekoff() != null) {
+			al.setIncludeWeekoff(l.getIncludeWeekoff());
+		}
+		LocalDate todayDate = LocalDate.now();
+		List<AppliedLeaveDateView> appliedLeaves = null;
+		if (Constants.MONTHLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 			Date[] monthDates = conversionUtil.getMonthStartDateEndDate();
-			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId());
-			appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, monthDates[0], monthDates[1]);
+			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), monthDates[0], monthDates[1], userId);
+		    appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,al,monthDates[0],monthDates[1]);
 		}
-		else if (Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod())
-				&& Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+		else if (Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 			LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
-			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), leave.getUser().getId());
-			appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate());
+			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), userId);
+		     appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,al,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate());
 		}
-		else if (Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod())
-				&& Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+		else if (Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 			LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
-			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), leave.getUser().getId());
-			appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, currentHalfYear[0].toDate(), currentHalfYear[1].toDate());
+			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId);
+			appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,al,currentHalfYear[0].toDate(),currentHalfYear[1].toDate());
 		}
-		else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod())
-				&& Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+		else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 			LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
-			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), leave.getUser().getId());
-			appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, thisYearDates[0].toDate(), thisYearDates[1].toDate());
+			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), userId);
+			appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,al,thisYearDates[0].toDate(),thisYearDates[1].toDate());
 		}
 		if (appliedLeaves != null && appliedLeaves.size() > 0) {
-			appliedLeaveCount =appliedLeaves.size();
+			appliedLeaveCount = appliedLeaves.size();
 		}
-		/*else {
-			appliedLeaveCount = totalLeaves;
-		}*/
 		return appliedLeaveCount;
 	}
 	
@@ -522,12 +552,7 @@ public class LeaveManagementUtil {
 	 */
 	public List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDaet)
 	{
-		SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the
-																		// day
-																		// of
-																		// the
-																		// week
-																		// abbreviated
+		SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); 
 		if (l.getIncludeHolidays() != null
 				&& !Constants.YES.equalsIgnoreCase(l.getIncludeHolidays())) {
 			List<HolidayAndRestrictday> holidayList = holidayService.getHolidayByFromToDate(startDate, endDaet, orgLocations);
@@ -546,5 +571,21 @@ public class LeaveManagementUtil {
 			}
 		}
 		return appliedLeaves;
+	}
+
+	public List<Date> getDaysBetweenLeaveDates(Date fromDate, Date toDate) {
+		List<Date> dates = new ArrayList<Date>();
+		List<String> dateStr = new ArrayList<>();
+//		DateFormat formatter;
+//		formatter = new SimpleDateFormat(orgFormat);
+		long interval = 24 * 1000 * 60 * 60; // 1 hour in millis
+		long endTime = toDate.getTime(); // create your endtime here, possibly
+											// using Calendar or Date
+		long curTime = fromDate.getTime();
+		while (curTime <= endTime) {
+			dates.add(new Date(curTime));
+			curTime += interval;
+		}
+		return dates;
 	}
 }
