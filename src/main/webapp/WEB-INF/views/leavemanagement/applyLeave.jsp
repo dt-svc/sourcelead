@@ -810,12 +810,24 @@ function getLeaveDetails(finalDateFormatEndDate){
           		} else if (result.response === "SUCCESS") {
           			var report = result.object;
           			
-          			if(report.duration == "Half Day"){
+          			var duration = report.duration;
+          			var splitDuration = duration.split(",");
+          			
+          			if(splitDuration[0] == "Full Day" && splitDuration[1] == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
-    		    	}else{
+    		    	}else if(duration == "Half Day"){
+    		    		$("#fromHalfDayDiv").show();
+    		    		$("#toHalfDayDiv").show();
+    		    	}else if(duration == "Full Day"){
+    		    		$("#checkbox-2").removeAttr("checked");
+    		    		$("#checkbox-3").removeAttr("checked");
     		    		$("#fromHalfDayDiv").hide();
     		    		$("#toHalfDayDiv").hide();
+    		    		$("#fromTimeDiv").hide();
+     		 		    $("#toTimeDiv").hide();
+     		 		    $("#toDateFromTimeDiv").hide();
+     					$("#toDateTimeDiv").hide();
     		    	} 
     		    	
     		    	if(report.reasonRequired == "Y"){
