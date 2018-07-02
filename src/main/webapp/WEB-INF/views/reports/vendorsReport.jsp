@@ -72,7 +72,7 @@ window.onload = function() {
           
         </div>    		
     		</li>
-    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/></li>
+    		<li class="unVisable"><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/></li>
     	</ul>
     </div>    
     
@@ -80,7 +80,7 @@ window.onload = function() {
  
 <section class="candidate_wrap_table recruiterReports_table minHeight">
 <div id ="vendorLoderDiv"></div>
-<div id="vendorReportsDiv" class="datatable_filter repDataSearch"></div>
+<div id="vendorReportsDiv" class="datatable_filter repDataSearch repDataSearchFil"></div>
 <div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
 </section>    
  
