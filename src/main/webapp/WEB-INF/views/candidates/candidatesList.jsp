@@ -973,6 +973,20 @@ function cancel(candidateId){
 					  </div>
 					  <div class="row">
 					  <div class="clearfix">
+					  
+					  
+					  <div class="col-md-8">
+						<label>Tags</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="canTags" name="candidateTags">
+								<c:forEach var="tag" items="${tagsList}">
+								<option value="${tag}">${tag}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+						
+						
 						<div class="col-md-8">
 						<label>Immigration Status</label>
 							<div class="clearfix">
@@ -1843,6 +1857,7 @@ function getCities(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#canVisa").val('').trigger("chosen:updated");
+	    $("#canTags").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
@@ -1889,6 +1904,8 @@ function getCities(){
 		 
 		   //Adding Customized Visa list this method is slead-common.js
 		   tagIt("canVisa", 'Press Enter-Key Or Comma(,) Or Tab To Add Visa:', 'tagItBykeyForSkills','skills','Visa');
+		   
+		   tagIt("canTags", 'Press Enter-Key Or Comma(,) Or Tab To Add Tags:', 'tagItBykeyForSkills','skills','Visa');
 		   
 		   //Adding Customized Visa list this method is slead-common.js
 		   tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add Education:', 'tagItBykeyForSkills','skills','Education');
@@ -2316,6 +2333,7 @@ function minMaxExperience(){
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#canVisa").val('').trigger("chosen:updated");
+	    $("#canTags").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");
@@ -2359,6 +2377,7 @@ function minMaxExperience(){
 	     $("#applicantType").val('');
 	     $("#canSkills").val('');
 	     $("#canVisa").val('');
+	     $("#canTags").val('');
 	     $("#primarySkill").val('');
 	    
 	}
@@ -2691,6 +2710,7 @@ function openCandidateFilterPop(){
 	 $(".advancedsearch-mask").fadeIn();
 }
 function resetCandidateFilter(){
+	clearCandidateSearchKeys();
 	$("ul#TypeFilter > li input:radio").prop("checked",false);
 	$("ul#AllTypeFilter > li input:radio").prop("checked",false);
 	$("ul#UpdatedFilter > li input:radio").prop("checked",false);

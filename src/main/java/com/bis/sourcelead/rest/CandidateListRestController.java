@@ -14,10 +14,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,7 +61,6 @@ import com.bis.sourcelead.dto.CandidateSearchDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
-import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
@@ -71,12 +72,13 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
-import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
@@ -90,6 +92,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
@@ -172,6 +175,9 @@ public class CandidateListRestController {
 
 	@Autowired
 	private CandidateCustomFieldDataService candidateCustomFieldDataService;
+	
+	@Autowired
+	SourceleadTagsService sourceleadTagsService;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -678,6 +684,16 @@ public class CandidateListRestController {
 			}
 			boolQueryBuilder.must(visaBoolQueryBuilder);
 		}
+		
+		
+		List<String> candidateTagsArray = search.getCandidateTags();
+		if (candidateTagsArray != null && !candidateTagsArray.isEmpty()) {
+			BoolQueryBuilder tagBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : candidateTagsArray) {
+				tagBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("tags", keywd));
+			}
+			boolQueryBuilder.must(tagBoolQueryBuilder);
+		}
 
 		if (StringUtils.isNotEmpty(search.getIsAssociate()) && search.getIsAssociate().equalsIgnoreCase(Constants.YES)) {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", search.getIsAssociate()));
@@ -875,7 +891,19 @@ public class CandidateListRestController {
 				}
 				candidateDTO.setAllAndCandidateVisa(visa);
 				candidateDTO.setVisaType(can.getVisaType());
-
+				
+				Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+				candidateDTO.setTagsList(tagsList);
+				Set<String> candidateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.CANDIDATES.getValue(), can.getId());
+				if(candidateTagsList != null && !candidateTagsList.isEmpty()) {
+					StringBuilder candidateTagsStr = new StringBuilder();
+					for(String tags : candidateTagsList) {
+						candidateTagsStr = candidateTagsStr.append(tags).append(",");
+					}
+					candidateTagsStr.toString();
+					candidateDTO.setCandidateTags(candidateTagsStr.substring(0,candidateTagsStr.length()-1));
+				}
+				
 				if (null != can.getExpectedRateCurrencey()) {
 					candidateDTO.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
 				} else {
@@ -1792,6 +1820,72 @@ public class CandidateListRestController {
 		}
 		return response;
 	}
+	
+	
+	
+	@RequestMapping(value = "/saveOrUpdateTagsBycandidateId")
+	public Response<String> saveOrUpdateTagsBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(defaultValue = "0") long candidateId,
+			@RequestParam(value = "tagName", required = false) String tagName, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			User user = userService.getUserById(loginUserId);
+			if (user != null) {
+				Candidate can = candidateService.getCandidateByCandidateId(candidateId);
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+					Set<String> candidateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(orgLocations.getId(), TagEntites.CANDIDATES.getValue(), can.getId());
+					ArrayList<String> newTags = new ArrayList<>(Arrays.asList(tagName.split("\\s*,\\s*")));
+					ArrayList<String> actualNewTags = new ArrayList<>();
+					actualNewTags.addAll(newTags);
+				    Set<String> newTagsSet = new HashSet<String>(actualNewTags);
+				    newTagsSet.removeAll(candidateTagsList);
+				    candidateTagsList.removeAll(actualNewTags);
+				    can.setCandidateTags(tagName);
+				    
+				    
+				    if(newTagsSet != null && !newTagsSet.isEmpty() && newTagsSet.size() > 0) {
+				    	for(String tag : newTagsSet) {
+				    		if(StringUtils.isNotBlank(tag)) {
+				    			SourceleadTags tags = new SourceleadTags();
+					    		tags.setEntityType(TagEntites.CANDIDATES);
+					    		tags.setEntityId(can.getId());
+					    		tags.setTagName(tag);
+					    		tags.setOrgLocationId(orgLocations);
+					    		tags.setStatus(Constants.CANDIDATE_ACTIVE);
+					    		tags.setCreatedBy(user);
+					    		tags.setCreatedDate(new Date());
+					    		sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    }
+				    
+				    if(candidateTagsList != null && !candidateTagsList.isEmpty() && candidateTagsList.size() > 0) {
+				    	for(String removedTags : candidateTagsList) {
+				    		SourceleadTags tags = sourceleadTagsService.getSourceleadTagsByEntityIdAndTagNameAndOrgLocationId(orgLocations.getId(), TagEntites.CANDIDATES.getValue(), can.getId(),removedTags);
+				    		if(tags != null) {
+				    			tags.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				    			tags.setUpdatedBy(user);
+				    			tags.setUpdatedDate(new Date());
+				    			sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    }
+				    
+				    candidateService.saveOrUpdateCandidateElkDocument(can);
+				    
+				response.setResponseMessage(Result.SUCCESS.getValue());
+
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
 
 	@RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
 	public Response<String> saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
