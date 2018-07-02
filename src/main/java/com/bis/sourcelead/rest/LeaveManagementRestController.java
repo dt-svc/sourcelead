@@ -2044,7 +2044,7 @@ public class LeaveManagementRestController {
 			float leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken") - (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
 			leaveDto.setActualLeavesTaken(leavesTaken);
 
-			float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+			float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType(),orgLocations);
 			leaveDto.setThisMonthLeavesTaken(thisMonthLeaves);
 
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());

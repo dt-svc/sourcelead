@@ -9053,6 +9053,9 @@ ul.tabnewStyles li.current a {
 width: auto;	
 }
 /* forms edit element styles */
+.chosen-container .chosen-drop {
+    z-index: 1100;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

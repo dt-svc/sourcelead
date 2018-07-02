@@ -219,6 +219,7 @@ window.onload = function() {
 			</c:if>
 			
 		<c:if test="${empty leave.notifyToOthers}">
+		<c:if test="${SourceLeadWeb_isSuperUser != true}">
          <div class="form-group">
 				<div class="ml">
 							<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
@@ -227,6 +228,7 @@ window.onload = function() {
 					</label>
 				</div>
 			</div>
+		</c:if>
 		</c:if>
 			
 			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
@@ -456,7 +458,6 @@ window.onload = function() {
 			$("#fromdate").datepicker("option", "maxDate", dt);
 			removeEndValid();
 			checkToDate();
-			validateDate();
 			getLeaveDetails();
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
@@ -844,18 +845,22 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	if(report.autoApprove == "Y"){
     		    		$("#approvalDiv").hide();
     		    	}else{
-    		    		if(isSuperUser == 'true'){
-   	   		    		   $("#approvalDiv").hide();
-   	   		    	   }else{
-   	   		    		   $("#approvalDiv").show();
-   	   		    	   }
+    		    		if(userId === '${SourceLeadWeb_userId}'){
+    		    			if(isSuperUser == 'true'){
+    	   	   		    		   $("#approvalDiv").hide();
+    	   	   		    	   }else{
+    	   	   		    		   $("#approvalDiv").show();
+    	   	   		    	   }
+    		    		}else{
+	   	   		    		   $("#approvalDiv").show();
+	   	   		    	   }
     		    	}
     		    	
     		    	if(report.leaveDuration == "Y" && fromDate != "" && toDate != ""){
     		    		validateMinMaxDays(report.minDays, report.maxDays);
     		    	}
     		    	
-    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
+    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "Y"){
     		    		validateOverDrawLeaves(report.name);
     		    	}
     		    	
@@ -888,8 +893,8 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    }
 		});
 	}
-	
-	validateDate();	
+	setTimeout(function(){ validateDate(); }, 1500);
+		
 }
 
 </script>
@@ -966,7 +971,6 @@ function validateMaxLeave(data){
 	}
 	
   }
-	validateDate();		
 }
 </script>
 

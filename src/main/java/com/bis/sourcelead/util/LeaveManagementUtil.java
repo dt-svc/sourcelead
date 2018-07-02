@@ -570,4 +570,20 @@ public class LeaveManagementUtil {
 		}
 		return appliedLeaves;
 	}
+
+	public List<Date> getDaysBetweenLeaveDates(Date fromDate, Date toDate) {
+		List<Date> dates = new ArrayList<Date>();
+		List<String> dateStr = new ArrayList<>();
+//		DateFormat formatter;
+//		formatter = new SimpleDateFormat(orgFormat);
+		long interval = 24 * 1000 * 60 * 60; // 1 hour in millis
+		long endTime = toDate.getTime(); // create your endtime here, possibly
+											// using Calendar or Date
+		long curTime = fromDate.getTime();
+		while (curTime <= endTime) {
+			dates.add(new Date(curTime));
+			curTime += interval;
+		}
+		return dates;
+	}
 }
