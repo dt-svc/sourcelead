@@ -1300,7 +1300,7 @@ public class LeaveServiceImpl implements LeaveService{
 			   }
 			   
 				for(LeaveType type : roleLeaveType) {
-					if("All".equalsIgnoreCase(type.getEffectiveGender()) || type.getEffectiveGender().equalsIgnoreCase(user.getGender())) {
+					if("All".equalsIgnoreCase(type.getEffectiveGender()) || (user.getGender() != null && type.getEffectiveGender().equalsIgnoreCase(user.getGender()))) {
 						float empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());
 						float appliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations,  type, userId);
 
