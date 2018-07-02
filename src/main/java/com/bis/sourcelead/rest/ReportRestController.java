@@ -269,59 +269,31 @@ public class ReportRestController {
 		
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    
-		 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
-		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
-		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		 Date endDateUTC =null ;
-		 Date startDateUTC = null;
-		 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-
-		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)&&!"".equalsIgnoreCase(reportType)){
-			 String endDate = outputFormatter1.print(zoned);
-			 endDateUTC = TZ_DF_TS.parse(endDate);
-		 }
-			
-			if(null != reportType && !"".equals(reportType)){
-				if("today".equals(reportType)){
-					String startDate = outputFormatter.print(zoned);
-					startDateUTC = TZ_DF_TS.parse(startDate);
-				}else if(Constants.YESTER_DAY.equals(reportType)){
-					DateTime yesterDayZoned = zoned.minusDays(1);
-					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-				}else if(Constants.ONE_WEEK.equals(reportType)){
-					DateTime yesterDayZoned = zoned.minusDays(7);
-					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-				}else if(Constants.TWO_WEEKS.equals(reportType)){
-					DateTime yesterDayZoned = zoned.minusDays(14);
-					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-				}else if(Constants.ONE_MONTH.equals(reportType)){
-					DateTime yesterDayZoned = zoned.minusDays(30);
-					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-				}else if(Constants.TWO_MONTHS.equals(reportType)){
-					DateTime yesterDayZoned = zoned.minusDays(60);
-					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-				}else{
-					 if(customStartDate  != null && !"".equalsIgnoreCase(customStartDate) && customStartDate  != "undefined" && customEndDate != null && !"".equalsIgnoreCase(customEndDate) && customEndDate  != "undefined"){
-						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-						Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
-						Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
-						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-						String customEndTimeStr = TZ_DF_CED.format(endTime);  
-						startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
-						endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
-					 }
-					
-				}
-			}
+	    
+	    Date[] searchDates = null;
+	    Date startDateUTC = null;
+	    Date endDateUTC = null;
 		
+		if(!"custom".equalsIgnoreCase(reportType)){
+			searchDates = reportsUtil.getJobFilterDate(reportType,orgLocations);
+			startDateUTC =searchDates[0];
+			endDateUTC = searchDates[1];
+		}else if("custom".equalsIgnoreCase(reportType) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+    	    
+    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+			DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			
+			Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+			Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+			String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+			String customEndTimeStr = TZ_DF_CED.format(endTime);  
+			 startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+			 endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+			 startDateUTC = new java.sql.Date(startDateUTC.getTime());
+			 endDateUTC = new java.sql.Date(endDateUTC.getTime());
+		}
+	    
 	    List<OrgRelations> vendorslist = orgRelationService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 	    
 	    for(OrgRelations orgrel : vendorslist){

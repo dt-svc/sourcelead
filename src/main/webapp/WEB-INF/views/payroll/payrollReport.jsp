@@ -27,16 +27,14 @@ window.onload = function () {
                 Employee Name
             </label>
             <div class="col-md-4">
-                <select class="chosen-select" id="empId" name="empName" onchange="getWagesTaxSummaryByEmpId(); redirect();">
+                <select class="chosen-select" id="empId" name="empName"  redirect();">
                   <option value=" " selected >-Select Employee-</option>
 	            <c:forEach var="wage" items="${wageTaxSummaryList}">
 					<option value="${wage.employeeId}">${wage.employeeName}</option>
 				</c:forEach>
                 </select>
             </div>
-             <!-- <div class='remove_search'>
-        		          <input type='text' placeholder='search' id='dataTableSearch'/>
-                </div>  -->
+             <div id="runButtonDiv" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getWagesTaxSummaryByEmpId();">Run</button></div>
                 </form:form>
         </div>
       <ul class="project-tabs-menu" id="menuli">
