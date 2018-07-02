@@ -74,7 +74,6 @@ $( document ).ready(function() {
               <label class="clearfix">Emp Type</label>
               <div class="clearfix">
                 <select class="form-control chosen-select" id="designationType" name="employmentType" data-placeholder="Select Emp Type" multiple field-name="Employment type" onchange="getProjectMemberFromProjectId();">
-	                 <option >--Select Employment type--</option>
 	                 <option value="C2C">C2C</option>
 	                 <option value="C2C-1099">C2C-1099</option>
 	                 <option value="W-2">W-2</option>
@@ -283,7 +282,6 @@ function getProjectMemberFromProjectId(){
         type: "POST",
         success: function (result) {
         	var output = "";
-        	output = output + "<option>--select Associate--</option>";
         	if(result != null && result !='' && result !='undefined'){
         		$.each(result, function(i, item) {
             		output = output + "<option value='" +item.masterCandidateId.id+ "'>"+item.candidateName+"</option>";
@@ -330,8 +328,8 @@ function getAllUserListBasedOnOrgLocationId(){
         url: sourceleadUrl + "/getAllUserListBasedOnOrgLocationId",
         type: "POST",
         success: function (obj) {
-        	var output = "";
-        	output = output + "<option>--select Associate--</option>";
+        	 var output = "";
+        	 /*output = output + "<option>--select Associate--</option>"; */
         	if(obj != null && obj !='' && obj !='undefined'){
         		$.each(obj, function(i, item) {
         			if(item.candidateName != null && item.candidateName !='' && item.candidateName !='undefined'){
@@ -360,7 +358,7 @@ var validationSettings = {
 
 <script>
 function clearDate(requestFrom){
-	if(requestFrom == 'form'){
+	if(requestFrom == 'from'){
 		$('#fromDate').val('');
 	}else if(requestFrom == 'to'){
 		$('#toDate').val('');
