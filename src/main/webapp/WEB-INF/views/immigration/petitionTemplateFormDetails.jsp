@@ -38,7 +38,7 @@
 											<select class="form-control" name="immigrationFormList[0].formCategory" id="formCategory0" title='Form Category' field-name="Select Form Category" data-validation="required">
 													<option value="" selected>--Select Form Type--</option>
 													<option value="PetitionerCategory" >Petitioner</option>
-												    <option value="DocumentType" >Beneficiary</option>
+												    <option value="Document Type" >Beneficiary</option>
 													<option value="AttorneyCategory" >Attorney</option>
 											</select>
 											</div>
@@ -82,7 +82,7 @@
 											<select class="form-control" name="immigrationFormList[${rows.count-1}].formCategory" id="formCategory${rows.count-1}" title='Form Category' field-name="Select Form Category" data-validation="required">
 													<option value="" selected>--Select Form Type--</option>
 													<option ${item.formCategory == "PetitionerCategory" ? 'selected': ''} value="PetitionerCategory">Petitioner</option>
-							        				<option ${item.formCategory == "DocumentType" ? 'selected': ''} value="DocumentType">Beneficiary</option>
+							        				<option ${item.formCategory == "Document Type" ? 'selected': ''} value="Document Type">Beneficiary</option>
 							        				<option ${item.formCategory == "AttorneyCategory" ? 'selected': ''} value="AttorneyCategory">Attorney</option>
 											</select>
 											</div>
