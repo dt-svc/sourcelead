@@ -413,8 +413,10 @@ public class LeaveManagementRestController {
 			}
 
 			for (LeaveType l : roleLeaveType) {
-				
-				float totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(l.getId(),userId,orgLocationId);
+				float totalLeaves = 0;
+				if(Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					 totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(l.getId(),userId,orgLocationId);
+				}
 
 //				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, loginUser);
 				// float leaves =
@@ -2537,8 +2539,10 @@ public class LeaveManagementRestController {
 					float cancelCounts = 0;
 					LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
 					List<Leave> takenLeaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),orgLocations.getId(), user.getId());
-					
-					float empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());
+					float empToatalLeaves = 0;	
+					if(Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())){
+						 empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());	
+					}
 
 					float empAppliedLeaveCount = 0;
 					float balLeaves = 0;
