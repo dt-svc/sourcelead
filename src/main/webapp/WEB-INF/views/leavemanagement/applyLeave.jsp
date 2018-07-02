@@ -219,6 +219,7 @@ window.onload = function() {
 			</c:if>
 			
 		<c:if test="${empty leave.notifyToOthers}">
+		<c:if test="${SourceLeadWeb_isSuperUser != true}">
          <div class="form-group">
 				<div class="ml">
 							<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
@@ -227,6 +228,7 @@ window.onload = function() {
 					</label>
 				</div>
 			</div>
+		</c:if>
 		</c:if>
 			
 			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
@@ -858,7 +860,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		validateMinMaxDays(report.minDays, report.maxDays);
     		    	}
     		    	
-    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
+    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "Y"){
     		    		validateOverDrawLeaves(report.name);
     		    	}
     		    	
