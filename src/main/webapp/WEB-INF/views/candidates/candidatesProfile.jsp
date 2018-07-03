@@ -1240,7 +1240,6 @@ function saveCandidateTags(candidateId){
 	 var jsonData = encodeURIComponent(tagName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	 alert(tagName);
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
 		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+jsonData
 	 } else {
