@@ -617,9 +617,12 @@ public class LeaveManagementUtil {
 	{
 		boolean flag = false;
 		Set<Long> roleIds = new HashSet<>();
-		for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
-			roleIds.add(leaveRole.getRoleId().getId());
+		if(leaveType.getLeaveTypeRolesSet() != null){
+			for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+				roleIds.add(leaveRole.getRoleId().getId());
+			}
 		}
+		
 		if ((leaveType.getEffectiveGender() != null
 				&& StringUtils.isNotBlank(userRole.getUser().getGender())
 				&& userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()))
@@ -628,17 +631,17 @@ public class LeaveManagementUtil {
 			// || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
 			if ("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 				if (roleIds.size() > 0 && leaveType.getDepartmentId() != null
-						&& leaveType.getLeaveEmpType() != null) {
+						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (emp.getDepartmentId() != null) {
 						if (roleIds.contains(userRole.getRoles().getId())
 								&& leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
-								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+								&& leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
 							flag = true;
 						}
 					}
 				}
 				else if (roleIds.size() > 0 && leaveType.getDepartmentId() != null
-						&& leaveType.getLeaveEmpType() == null) {
+						&& !StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (emp.getDepartmentId() != null) {
 						if (roleIds.contains(userRole.getRoles().getId())
 								&& leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
@@ -647,35 +650,35 @@ public class LeaveManagementUtil {
 					}
 				}
 				else if (roleIds.size() == 0 && leaveType.getDepartmentId() != null
-						&& leaveType.getLeaveEmpType() != null) {
+						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (emp.getDepartmentId() != null) {
 						if (leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
-								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+								&& leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
 							flag = true;
 						}
 					}
 				}
 				else if (roleIds.size() > 0 && leaveType.getDepartmentId() == null
-						&& leaveType.getLeaveEmpType() != null) {
+						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (roleIds.contains(userRole.getRoles().getId())
-							&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+							&& leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
 						flag = true;
 					}
 				}
 				else if (roleIds.size() == 0 && leaveType.getDepartmentId() == null
-						&& leaveType.getLeaveEmpType() != null) {
-					if (emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
+					if (leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
 						flag = true;
 					}
 				}
 				else if (roleIds.size() > 0 && leaveType.getDepartmentId() == null
-						&& leaveType.getLeaveEmpType() == null) {
+						&& !StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (roleIds.contains(userRole.getRoles().getId())) {
 						flag = true;
 					}
 				}
 				else if (roleIds.size() == 0 && leaveType.getDepartmentId() != null
-						&& leaveType.getLeaveEmpType() == null) {
+						&& !StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (emp.getDepartmentId() != null) {
 						if (leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
 							flag = true;
