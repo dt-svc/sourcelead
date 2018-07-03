@@ -479,10 +479,11 @@ public class LeaveManagementUtil {
 	 * @param orgLocations
 	 * @param l
 	 * @param leave
+	 * @param leaveStatus 
 	 * @param totalLeaves
 	 * @return float
 	 */
-	public float getAppliedLeaveCount(OrgLocations orgLocations, LeaveType l, Leave leave, float totalLeaves)
+	public float getAppliedLeaveCount(OrgLocations orgLocations, LeaveType l, Leave leave, String leaveStatus)
 	{
 		List<AppliedLeaveDateView> appliedLeaves = null;
 		AssociateBalanceLeaveView al = new AssociateBalanceLeaveView();
@@ -492,7 +493,7 @@ public class LeaveManagementUtil {
 		if (l.getIncludeWeekoff() != null) {
 			al.setIncludeWeekoff(l.getIncludeWeekoff());
 		}
-		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId());
+		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId(),leaveStatus);
 		appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, leave.getFromDate(), leave.getToDate());
 		return appliedLeaves.size();
 	}
