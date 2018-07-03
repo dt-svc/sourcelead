@@ -61,8 +61,6 @@
 	</div>
 </div>
 	
- <div id="addApplicantDiv"></div>
- 
 	<script>
 	var isAssociate = 'N';
 	var _csrfParam = '${_csrf.parameterName}';
@@ -1377,6 +1375,7 @@ function cancel(candidateId){
 		$(".new_side_wrap").removeClass("new_side_wrap_active");
 		$(".req_side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
+		candidateList();
 	}
 </script>
 
