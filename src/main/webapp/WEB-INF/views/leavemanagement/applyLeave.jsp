@@ -570,7 +570,7 @@ function removeEndValid(){
     				        result = result +'	<li>';
     				  		result = result +'			<label>'+leaveType.name+'</label>';
     				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
+    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount.toFixed(2)+'</span>';
     				  		result = result +'	</li>'; 
     	        	  }
    	        	  result = result +'	</ul>'; 

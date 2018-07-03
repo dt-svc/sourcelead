@@ -117,14 +117,17 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 	{
 		try {
 	    	   String subQuery = "";
-	    	   if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveStatus) || Constants.LEAVE_PENDING.equalsIgnoreCase(leaveStatus)) {
-	    		   subQuery =  " and (alView.leaveStatus = 'APPROVED' or alView.leaveStatus = 'PENDING')";
+	    	   if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveStatus) ) {
+	    		   subQuery =  " and alView.leaveStatus = 'APPROVED' ";
 	    	   }
 	    	   if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveStatus)) {
 	    		   subQuery =  " and alView.leaveStatus = 'REJECTED'";
 	    	   }
 	    	   if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveStatus)) {
 	    		   subQuery =  " and alView.leaveStatus = 'CANCELLED ";  
+	    	   }
+	    	   if(Constants.LEAVE_PENDING.equalsIgnoreCase(leaveStatus)){
+	    		   subQuery =  " and alView.leaveStatus = 'PENDING' ";  
 	    	   }
 	    		java.sql.Date startDate = new java.sql.Date(sDate.getTime());
 	    		java.sql.Date endDate = new java.sql.Date(eDate.getTime());
