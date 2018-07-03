@@ -2974,7 +2974,7 @@ public class LeaveManagementRestController {
 		User usr = userService.getUserById(Long.parseLong(leaveDTO.getUserId()));
 		leave.setUser(usr);
 		leave.setToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getToDate()));
-		noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocations,leaveType,leave,"");
+		noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocations,leaveType,leave,"Duration");
 		 return noOfDays;
 	}
 }
