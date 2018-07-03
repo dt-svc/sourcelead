@@ -22,6 +22,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -393,57 +395,28 @@ public class LeaveManagementRestController {
 		List<LeaveType> roleLeaveType = new ArrayList<>();
 		if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
 			for (LeaveType leaveType : leaveTypeList) {
-				Set<Long> roleIds = new HashSet<>();
-				for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
-					roleIds.add(leaveRole.getRoleId().getId());
-				}
-				
-				if((leaveType.getEffectiveGender() != null && StringUtils.isNotBlank(userRole.getUser().getGender()) && userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender())) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
-//				if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()) || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
-					if("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
-						if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
-							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
-								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
-								roleLeaveType.add(leaveType);
-							}
-						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() == null) {
-							if(roleIds.contains(userRole.getRoles().getId()) && leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
-									roleLeaveType.add(leaveType);
-								}
-						}else if(roleIds.size() == 0 && leaveType.getDepartmentId() != null && leaveType.getLeaveEmpType() != null) {
-							if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue() && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
-									roleLeaveType.add(leaveType);
-								}
-						}else if(roleIds.size() > 0 && leaveType.getDepartmentId() == null && leaveType.getLeaveEmpType() != null) {
-							if(roleIds.contains(userRole.getRoles().getId()) && emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
-								roleLeaveType.add(leaveType);
-							}
-						}
-					}else {
-						roleLeaveType.add(leaveType);
-					}
-				}
-				
-				
-				/*if (roleIds.contains(userRole.getRoles().getId())
-						|| "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
-					if(leaveType.getLeaveEmpType() != null && leaveType.getDepartmentId() != null) {
-						if(emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+				List<Leave> takenLeavesList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getLeaveTypeUUID(), orgLocationId, loginUser.getId());
+				List<Leave> pendingAndApprovedList = takenLeavesList.stream().filter(tl->Constants.PENDING.equalsIgnoreCase(tl.getStatus()) || Constants.APPROVED.equalsIgnoreCase(tl.getStatus())).collect(Collectors.toList());
+				if(StringUtils.isNotBlank(leaveType.getAllowability())){
+					if(StringUtils.isNotBlank(leaveType.getAllowability()) && pendingAndApprovedList.size() < Integer.parseInt(leaveType.getAllowability())){
+						boolean flag = checkGenderAndDepartmentAndRoleAndEmpType(leaveType,emp,userRole);
+						if(flag == true){
 							roleLeaveType.add(leaveType);
 						}
-					}else if(leaveType.getDepartmentId() != null) {
-						
 					}
-					else {
+				}else{
+					boolean flag = checkGenderAndDepartmentAndRoleAndEmpType(leaveType,emp,userRole);
+					if(flag == true){
 						roleLeaveType.add(leaveType);
 					}
-					
-				}*/
+				}
 			}
 
 			for (LeaveType l : roleLeaveType) {
-				
-				float totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(l.getId(),userId,orgLocationId);
+				float totalLeaves = 0;
+				if(Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+					 totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(l.getId(),userId,orgLocationId);
+				}
 
 //				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, loginUser);
 				// float leaves =
@@ -508,7 +481,7 @@ public class LeaveManagementRestController {
 				else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 					LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
 					appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), userId);
-						 appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate());
+				    appliedLeaves = associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate());
 				}
 				if (appliedLeaves != null && appliedLeaves.size() > 0) {
 					appliedLeaveCount = totalLeaves - appliedLeaves.size();
@@ -524,6 +497,83 @@ public class LeaveManagementRestController {
 			}
 		}
 		return roleLeaveType;
+	}
+
+	private boolean checkGenderAndDepartmentAndRoleAndEmpType(LeaveType leaveType, Employees emp, UserRole userRole)
+	{
+		boolean flag = false;
+		Set<Long> roleIds = new HashSet<>();
+		for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+			roleIds.add(leaveRole.getRoleId().getId());
+		}
+		if ((leaveType.getEffectiveGender() != null
+				&& StringUtils.isNotBlank(userRole.getUser().getGender())
+				&& userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()))
+				|| "All".equalsIgnoreCase(leaveType.getEffectiveGender())) {
+			// if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender())
+			// || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+			if ("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+				if (roleIds.size() > 0 && leaveType.getDepartmentId() != null
+						&& leaveType.getLeaveEmpType() != null) {
+					if (emp.getDepartmentId() != null) {
+						if (roleIds.contains(userRole.getRoles().getId())
+								&& leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
+								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+							flag = true;
+						}
+					}
+				}
+				else if (roleIds.size() > 0 && leaveType.getDepartmentId() != null
+						&& leaveType.getLeaveEmpType() == null) {
+					if (emp.getDepartmentId() != null) {
+						if (roleIds.contains(userRole.getRoles().getId())
+								&& leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+							flag = true;
+						}
+					}
+				}
+				else if (roleIds.size() == 0 && leaveType.getDepartmentId() != null
+						&& leaveType.getLeaveEmpType() != null) {
+					if (emp.getDepartmentId() != null) {
+						if (leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
+								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+							flag = true;
+						}
+					}
+				}
+				else if (roleIds.size() > 0 && leaveType.getDepartmentId() == null
+						&& leaveType.getLeaveEmpType() != null) {
+					if (roleIds.contains(userRole.getRoles().getId())
+							&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+						flag = true;
+					}
+				}
+				else if (roleIds.size() == 0 && leaveType.getDepartmentId() == null
+						&& leaveType.getLeaveEmpType() != null) {
+					if (emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+						flag = true;
+					}
+				}
+				else if (roleIds.size() > 0 && leaveType.getDepartmentId() == null
+						&& leaveType.getLeaveEmpType() == null) {
+					if (roleIds.contains(userRole.getRoles().getId())) {
+						flag = true;
+					}
+				}
+				else if (roleIds.size() == 0 && leaveType.getDepartmentId() != null
+						&& leaveType.getLeaveEmpType() == null) {
+					if (emp.getDepartmentId() != null) {
+						if (leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+							flag = true;
+						}
+					}
+				}
+			}
+			else {
+				flag = true;
+			}
+		}
+		return flag;
 	}
 
 	/**
@@ -564,6 +614,7 @@ public class LeaveManagementRestController {
 				orgLocations.getId(), roleHierarchyId);
 		List<AssociateGrades> gradelist =  associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
 		model.addObject("gradelist", gradelist);
+		model.addObject("employmentTypeList", Constants.EMPLOYMENT_TYPES);
 		model.addObject("departmentList", departmentList);
 		model.addObject("rolesList", rolesList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -1479,6 +1530,7 @@ public class LeaveManagementRestController {
 		model.addObject("existedRoles", existedRolesList);
 		model.addObject("rolesList", rolesList);
 		model.addObject("departmentList", departmentList);
+		model.addObject("employmentTypeList", Constants.EMPLOYMENT_TYPES);
 		model.addObject("leaveType", leaveType);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/addLeaveType");
@@ -1774,8 +1826,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
-	@RequestMapping(value = { "/getEmployeeRequestedLeaves",
-			"/rest/getEmployeeRequestedLeaves" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/getEmployeeRequestedLeaves","/rest/getEmployeeRequestedLeaves" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<LeaveDTO> getEmployeeRequestedLeaves(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
@@ -2020,17 +2071,15 @@ public class LeaveManagementRestController {
 			Map<String, Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),
 					leave.getLeaveType().getId());
 
-			float leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken")
-					- (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
+			float leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken") - (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
 			leaveDto.setActualLeavesTaken(leavesTaken);
 
-			float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),
-					leave.getLeaveType().getId());
+			float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType(),orgLocations);
 			leaveDto.setThisMonthLeavesTaken(thisMonthLeaves);
 
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
 			float balLeaves = 0f;
-			 float balLeaves1 = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+//			 float balLeaves1 = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 			 
 			 float tot = 0f;
 			 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
@@ -2283,7 +2332,7 @@ public class LeaveManagementRestController {
 		if(leaveList != null && !leaveList.isEmpty()) {
 			validateDateDTO = new ValidateDateDTO();
 			validateDateDTO.setValidateType("SAMEDAY");	
-			validateDateDTO.setErrorMessage("you cannot apply two leaves on same day.!");
+			validateDateDTO.setErrorMessage(" You cannot apply two leaves on same day.!");
 //			sb = new StringBuilder();
 //			sb.append("you cannot apply two leaves on same day.!");
 			return validateDateDTO;
@@ -2319,7 +2368,7 @@ public class LeaveManagementRestController {
 		if (daysList.size() > 0) {
 			validateDateDTO = new ValidateDateDTO();
 			StringBuilder sb = new StringBuilder();
-			sb.append("You cannot apply for leave on restricted/holiday day ");
+			sb.append(" You cannot apply for leave on restricted/holiday day ");
 			for (Date d : daysList) {
 				sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
 				if (i != daysList.size() - 1) {
@@ -2477,66 +2526,53 @@ public class LeaveManagementRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = userService.getUserById(userId);
 		Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
-		List<LeaveType> leaveTypeList = leaveTypeService
-				.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
+		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
 
 		List<LeaveTypeDTO> leaveTypeDTOList = new ArrayList<>();
-		if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
-			for (LeaveType type : leaveTypeList) {
-				float pendingCounts = 0;
-				float approvedCounts = 0;
-				float rejectedCounts = 0;
-				float cancelCounts = 0;
-				float noOfDays = 0;
-				LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
-				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),
-						orgLocations.getId(), user.getId());
-				
-				float totalLeavesperYear  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());
-//				int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, user);
-				if (totalleavesTaken != null && totalleavesTaken.size() > 0) {
-					for (Leave leave : totalleavesTaken) {
-
-						float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
-
-						if (Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-							pendingCounts = pendingCounts + appliedLeaveCount;
-						}
-						if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus()) || Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-							approvedCounts = approvedCounts + (appliedLeaveCount - leave.getExtraLeavesTaken());
-
-							noOfDays = noOfDays + (appliedLeaveCount);
-							if (noOfDays > totalLeavesperYear) {
-								float totalLeaves = totalLeavesperYear - noOfDays;
-								leaveTypeDto.setTotalNoOfDays(totalLeaves);
-							} else {
-								leaveTypeDto.setTotalNoOfDays(noOfDays);
-							}
-
-						}
-						if (Constants.REJECTED.equalsIgnoreCase(leave.getStatus())) {
-							rejectedCounts = rejectedCounts + appliedLeaveCount;
-						}
-						if (Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus())) {
-							cancelCounts = cancelCounts + appliedLeaveCount;
-						}
-
+		
+		try {
+			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
+				for (LeaveType type : leaveTypeList) {
+					float pendingCounts = 0;
+					float approvedCounts = 0;
+					float rejectedCounts = 0;
+					float cancelCounts = 0;
+					LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
+					List<Leave> takenLeaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),orgLocations.getId(), user.getId());
+					float empToatalLeaves = 0;	
+					if(Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())){
+						 empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());	
 					}
 
-					leaveTypeDto.setName(type.getName());
-					leaveTypeDto.setLeaveTypeId(type.getId());
-					leaveTypeDto.setNoOfLeavesPerYear(String.valueOf(totalLeavesperYear));
-					leaveTypeDto.setTotalApprovedCount(approvedCounts);
-					leaveTypeDto.setTotalRejectedCount(rejectedCounts);
-					leaveTypeDto.setTotalPendingCount(pendingCounts);
-					leaveTypeDto.setTotalCancelCount(cancelCounts);
-					leaveTypeDTOList.add(leaveTypeDto);
+					float empAppliedLeaveCount = 0;
+					float balLeaves = 0;
+					//int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, user);
+					if (takenLeaveList != null && takenLeaveList.size() > 0) {
+						 empAppliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations,type,user.getId());
+						 empToatalLeaves = empToatalLeaves - empAppliedLeaveCount;
+						 leaveTypeDto.setTotalNoOfDays(empAppliedLeaveCount);
+						 leaveTypeDto.setName(type.getName());
+							leaveTypeDto.setLeaveTypeId(type.getId());
+							leaveTypeDto.setNoOfLeavesPerYear(String.valueOf(empToatalLeaves));
+							leaveTypeDto.setTotalApprovedCount(approvedCounts);
+							leaveTypeDto.setTotalRejectedCount(rejectedCounts);
+							leaveTypeDto.setTotalPendingCount(pendingCounts);
+							leaveTypeDto.setTotalCancelCount(cancelCounts);
+							leaveTypeDTOList.add(leaveTypeDto);
+						}
+						
+					}
 				}
-			}
+		}catch (Exception e) {
+		}
+		
+		return leaveTypeDTOList;
 		}
 
-		return leaveTypeDTOList;
-	}
+		
+	
+	
+
 
 	/**
 	 * 

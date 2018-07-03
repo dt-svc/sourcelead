@@ -669,7 +669,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("INTERVIEWED")){
-			 submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW')";
+			 submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW')";
 		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("OFFERED")){
@@ -2907,7 +2907,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						params.put("usercode",requirementSubmissionsDTO.getUserCode());
 						
 						//  this is if the  user is   Assign Team  Owner
-						String subQuery3 = "reqSub.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))";
+						String subQuery3 = "reqSub.requirement.id IN ( select rat.requirementId from RequirementAssignTo rat where rat.teamId.id IN ( select t.id from Team t where t.ownerUserId.id =:userId))";
 						params.put("userId",requirementSubmissionsDTO.getUserId());
 						
 						 //  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
@@ -3062,7 +3062,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							String subQuery2 = "((reqSub.createdBy =:usercode) OR (reqSub.candidate.candidateType = 'Professional') OR (reqSub.recruiterUserId IS NOT NULL))";
 							params.put("usercode",requirementSubmissionsDTO.getUserCode());
 							//  this is if the  user is   Assign Team  Owner
-							String subQuery3 = "reqSub.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))";
+							String subQuery3 = "reqSub.requirement.id IN ( select rat.requirementId from RequirementAssignTo rat where rat.teamId.id IN ( select t.id from Team t where t.ownerUserId.id =:userId))";
 							params.put("userId",requirementSubmissionsDTO.getUserId());
 							//  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
 							String subQuery5 = "reqSub.requirement.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";

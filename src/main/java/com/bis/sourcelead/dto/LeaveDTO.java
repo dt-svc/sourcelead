@@ -97,8 +97,10 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private Long leaveId;
 	private String currentStage;
 	
-	private String fromDateHalfTime;
-	private String toDateHalfTime;
+	private String fromDateFromHalfTime;
+	private String fromDateToHalfTime;
+	private String toDateFromHalfTime;
+	private String toDateToHalfTime;
 	
 	private List<String> otherApproverUser;
 	private String notifyToOthers;
@@ -680,18 +682,6 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setCurrentStage(String currentStage) {
 		this.currentStage = currentStage;
 	}
-	public String getFromDateHalfTime() {
-		return fromDateHalfTime;
-	}
-	public void setFromDateHalfTime(String fromDateHalfTime) {
-		this.fromDateHalfTime = fromDateHalfTime;
-	}
-	public String getToDateHalfTime() {
-		return toDateHalfTime;
-	}
-	public void setToDateHalfTime(String toDateHalfTime) {
-		this.toDateHalfTime = toDateHalfTime;
-	}
 	public List<String> getOtherApproverUser() {
 		return otherApproverUser;
 	}
@@ -703,5 +693,29 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setNotifyToOthers(String notifyToOthers) {
 		this.notifyToOthers = notifyToOthers;
+	}
+	public String getFromDateFromHalfTime() {
+		return fromDateFromHalfTime;
+	}
+	public void setFromDateFromHalfTime(String fromDateFromHalfTime) {
+		this.fromDateFromHalfTime = fromDateFromHalfTime;
+	}
+	public String getFromDateToHalfTime() {
+		return fromDateToHalfTime;
+	}
+	public void setFromDateToHalfTime(String fromDateToHalfTime) {
+		this.fromDateToHalfTime = fromDateToHalfTime;
+	}
+	public String getToDateFromHalfTime() {
+		return toDateFromHalfTime;
+	}
+	public void setToDateFromHalfTime(String toDateFromHalfTime) {
+		this.toDateFromHalfTime = toDateFromHalfTime;
+	}
+	public String getToDateToHalfTime() {
+		return toDateToHalfTime;
+	}
+	public void setToDateToHalfTime(String toDateToHalfTime) {
+		this.toDateToHalfTime = toDateToHalfTime;
 	}
 }

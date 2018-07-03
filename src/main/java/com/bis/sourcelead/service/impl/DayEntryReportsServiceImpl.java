@@ -218,21 +218,32 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				}else {
 					status = dayEntries.getStatus();
 				}
-				
-				TimesheetActivities timesheetActivity = getSubmittedAndApprovedDate(dayEntries.getProjectId().longValue(), dayEntries.getMasterCandidateId().longValue(), dayEntries.getSahFrequenchStartDate(),dayEntries.getSahFrequenchEndDate(),status);
-				String submittedDate = null;
-				if(timesheetActivity!= null) {
-					if(timesheetActivity.getActivityStatus().equalsIgnoreCase("submitted")) {
-						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate());
-						writeRow.createCell(12).setCellValue(submittedDate);
-						createExcelsheet.autoSizeColumn(12);
-					}else if(timesheetActivity.getActivityStatus().equalsIgnoreCase("approved") || timesheetActivity.getActivityStatus().equalsIgnoreCase("rejected")) {
-						writeRow.createCell(12).setCellValue(submittedDate);
-						createExcelsheet.autoSizeColumn(12);
-						writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate()));
-						createExcelsheet.autoSizeColumn(13);
+				//Map<String,Date>dateMap = getSubmittedAndApprovedDate(dayEntries.getProjectId().longValue(),dayEntries.getMasterCandidateId().longValue(),dayEntries.getSahFrequenchStartDate(),dayEntries.getSahFrequenchEndDate(),status);
+				String submittedDate =  null;
+				String approvedDate =  null;
+				/*if(dateMap != null && !dateMap.isEmpty()) {
+					if(dateMap.get("SUBMITTED") != null) {
+						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("SUBMITTED"));
 					}
-				 }
+					
+                    if(dateMap.get("APPROVED") != null) {
+                    	approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("APPROVED")); 
+					}
+				}else {*/
+					if(status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
+						if(dayEntries.getSubmittedDate() != null)
+						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+					}else {
+						if(dayEntries.getSubmittedDate() != null)
+						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+						if(dayEntries.getApprovedDate() != null)
+						approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getApprovedDate()); 
+					}
+				//}
+				createExcelsheet.autoSizeColumn(12);
+				writeRow.createCell(12).setCellValue(submittedDate);
+				createExcelsheet.autoSizeColumn(13);
+				writeRow.createCell(13).setCellValue(approvedDate);
 				if (dayEntries.getCandidateLocation() != null) {
 					writeRow.createCell(14).setCellValue(dayEntries.getCandidateLocation());
 					createExcelsheet.autoSizeColumn(11);
@@ -517,21 +528,41 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				if (dayEntries.getComments() != null) {
 					dayArray[11]=(dayEntries.getComments());
 				}
-				String submittedDate =  null;
+				
 				String status = null;
 				if(dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
 					status = "SUBMITTED";
 				}else {
 					status = dayEntries.getStatus();
 				}
-				TimesheetActivities timesheetActivity = getSubmittedAndApprovedDate(dayEntries.getProjectId().longValue(),dayEntries.getMasterCandidateId().longValue(),dayEntries.getSahFrequenchStartDate(),dayEntries.getSahFrequenchEndDate(),status);
-				if(timesheetActivity != null && timesheetActivity.getCreatedDate() != null && dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
-						 submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate());
-						 dayArray[12] = submittedDate;
-				}else if(timesheetActivity != null && timesheetActivity.getCreatedDate() != null && (dayEntries.getStatus().equalsIgnoreCase("approved") ||dayEntries.getStatus().equalsIgnoreCase("rejected"))){
-						 dayArray[12] = submittedDate;
-						 dayArray[13] =commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate()); 
-				 }
+				
+				String submittedDate =  null;
+				String approvedDate =  null;
+				/*Map<String,Date>dateMap = getSubmittedAndApprovedDate(dayEntries.getProjectId().longValue(),dayEntries.getMasterCandidateId().longValue(),dayEntries.getSahFrequenchStartDate(),dayEntries.getSahFrequenchEndDate(),status);
+				String submittedDate =  null;
+				String approvedDate =  null;
+				if(dateMap != null && !dateMap.isEmpty()) {
+					if(dateMap.get("SUBMITTED") != null) {
+						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("SUBMITTED"));
+					}
+					
+                    if(dateMap.get("APPROVED") != null) {
+                    	approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("APPROVED")); 
+					}
+				}
+				else {*/
+					if(status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
+						if(dayEntries.getSubmittedDate() != null)
+						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+					}else {
+						if(dayEntries.getSubmittedDate() != null)
+						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+						if(dayEntries.getApprovedDate() != null)
+						approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getApprovedDate()); 
+					}
+				//}
+				 dayArray[12] = submittedDate;
+				 dayArray[13] = approvedDate;
 				if(dayEntries.getCandidateLocation()!= null) {
 					if(dayEntries.getCandidateLocation().endsWith(","))
 					{
@@ -580,13 +611,8 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 
 
 
-	private TimesheetActivities getSubmittedAndApprovedDate(Long projectId, Long masterCandidateId, Date frequencyStartDate, Date frequencyEndDate,String status) {
-		Long timesheetActivityId = timesheetActivityDao.getTimesheetActivityByProjectIdMasterCandidateIdFrequencyStartAndEndDateAndStatus(projectId, masterCandidateId, frequencyStartDate,frequencyEndDate,status);
-		TimesheetActivities timesheetActivity = null;
-		if(timesheetActivityId != null) {
-			 timesheetActivity = timesheetActivityDao.getTimesheetActivityById(timesheetActivityId);
-		}
-	return timesheetActivity;
+	private Map<String,Date> getSubmittedAndApprovedDate(Long projectId, Long masterCandidateId, Date frequencyStartDate, Date frequencyEndDate,String status) {
+	   return timesheetActivityDao.getTimesheetActivityByProjectIdMasterCandidateIdFrequencyStartAndEndDateAndStatus(projectId, masterCandidateId, frequencyStartDate,frequencyEndDate,status);
 	}
 
 	private String convertMinuteToHours(Long totalHours, String actualTimeString) {
