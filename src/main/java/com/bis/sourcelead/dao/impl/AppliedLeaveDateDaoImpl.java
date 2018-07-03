@@ -14,10 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.Leave;
+
+import opennlp.tools.parser.Cons;
 
 @Repository
 public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
@@ -106,5 +109,32 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 			e.printStackTrace();
 		}
 		return existed;
+	}
+
+	@Override
+	@Transactional
+	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate, Long userId, String leaveStatus)
+	{
+		try {
+	    	   String subQuery = "";
+	    	   if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveStatus) || Constants.LEAVE_PENDING.equalsIgnoreCase(leaveStatus)) {
+	    		   subQuery =  " and (alView.leaveStatus = 'APPROVED' or alView.leaveStatus = 'PENDING')";
+	    	   }
+	    	   if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveStatus)) {
+	    		   subQuery =  " and alView.leaveStatus = 'REJECTED'";
+	    	   }
+	    	   if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveStatus)) {
+	    		   subQuery =  " and alView.leaveStatus = 'CANCELLED ";  
+	    	   }
+	    		java.sql.Date startDate = new java.sql.Date(sDate.getTime());
+	    		java.sql.Date endDate = new java.sql.Date(eDate.getTime());
+	    	   Session session = this.sessionFactory.getCurrentSession();
+	           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and alView.userId = :userId and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate) "+subQuery;
+	           List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+	           return appliedLeaveList;
+	       }catch (Exception e) {
+	    	   e.printStackTrace();
+		}
+	    	return null;
 	}
 }

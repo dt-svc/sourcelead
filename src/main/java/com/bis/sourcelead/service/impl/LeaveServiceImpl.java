@@ -591,7 +591,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
 				leaveDto.setFromHalfDay(leave.getFromHalfDay());
 				
-				float appliedLeavesCount = leaveManagementUtil.getAppliedLeaveCount(orgLocations,leave.getLeaveType(),leave,totalLeaves);
+				float appliedLeavesCount = leaveManagementUtil.getAppliedLeaveCount(orgLocations,leave.getLeaveType(),leave,leaveDTO.getLeaveStatus());
 				leaveDto.setAppliedNoOfDays(appliedLeavesCount);
 				
 				float totalLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, leave.getLeaveType(),leave.getUser().getId());
