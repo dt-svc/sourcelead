@@ -1221,9 +1221,7 @@ function editTag(candidateId){
 function saveTag(candidateId){
 	$("#tagName").prop('disabled', true).trigger("chosen:updated");
 	window.tagCountAfter = $("#tagName :selected").length;
-	if(tagCountBefore != tagCountAfter){
-		saveCandidateTags(candidateId);
-	}
+	saveCandidateTags(candidateId);
 	$("#saveTagBtn").remove();
 	$("#saveTagBtnSpan").hide();
 	var result = '';
@@ -1242,6 +1240,7 @@ function saveCandidateTags(candidateId){
 	 var jsonData = encodeURIComponent(tagName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 alert(tagName);
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
 		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+jsonData
 	 } else {
