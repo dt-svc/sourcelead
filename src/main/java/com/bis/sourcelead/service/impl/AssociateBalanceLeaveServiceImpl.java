@@ -314,7 +314,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 							roleIds.add(leaveRole.getRoleId().getId());
 						}
 						if (roleIds.contains(userRole.getRoles().getId()) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
-							if(leaveType.getDepartmentId() != null){
+							if(leaveType.getDepartmentId() != null && emp.getDepartmentId() != null){
 								if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()){
 									isLeaveApplicable = true;
 								}
