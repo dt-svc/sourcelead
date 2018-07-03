@@ -32,6 +32,7 @@ import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -506,6 +507,27 @@ public class RequirementDaoImpl implements RequirementDao {
 		if (requirementList != null && !requirementList.isEmpty()) {
 			requirement = (Requirement) requirementList.iterator().next();
 		}
+		return requirement;
+
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Requirement getRequirementByRequirementIdAndSearchValue(Long requirementId,String searchValue) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query1 = null;
+		Query finalQuery = null;
+		Requirement requirement = null;
+		if(searchValue !=null && StringUtils.isNotBlank(searchValue)){
+		 query1 = " and ((requirement.jobTitle like '" + searchValue + "%') or (requirement.generatedId like '" + searchValue + "%'))";
+		}
+		String query = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch requirement.orgLocationId  where requirement.id =:requirementId";
+		if(searchValue !=null && StringUtils.isNotBlank(searchValue)){
+		finalQuery = session.createQuery(query + query1);
+		}else{
+			finalQuery = session.createQuery(query);	
+		}
+		requirement = (Requirement)finalQuery.setLong("requirementId", requirementId).uniqueResult();
 		return requirement;
 
 	}
@@ -2401,6 +2423,50 @@ public class RequirementDaoImpl implements RequirementDao {
             Query queryObj = session.createSQLQuery(query);
 			queryObj.setParameterList("userIdsList", userIdsList).setParameter("orgLocationId", orgLocationId);
 			queryObj.setResultTransformer(Transformers.aliasToBean(RecruiterReportAssociateCountView.class));
+			associatesViewList = queryObj.list();
+		
+		}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return  associatesViewList;
+		
+	}
+	
+	@Override
+	@Transactional
+	public List<RecruiterRrportDTO> getAssociateCountsCreatedUserListByLocation (Long orgLocationId,
+			List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception{
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<RecruiterRrportDTO> associatesViewList = null;
+		try {
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			
+			query = "SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQA.ASSIGN_USER_ID AS assignedUserId,REQ.ORG_LOCATION_ID AS orglocationId,OL.ORG_ID AS orgId "
+					+" FROM REQUIREMENT REQ LEFT JOIN REQUIREMENT_ASSIGN_TO REQA ON REQ.ID = REQA.REQUIREMENT_ID,LEFT JOIN ORGLOCATIONS OL ON REQ.ORG_LOCATION_ID = OL.ID WHERE OL.ORG_ID =:orgId AND (REQ.MANAGER_USER_ID IN (:userIdsList) "
+					+ "OR REQA.ASSIGN_USER_ID IN (:userIdsList)) AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'";
+			
+	            Query queryObj = session.createSQLQuery(query);
+				queryObj.setParameterList("userIdsList", userIdsList).setParameter("orgId", orgId);
+				queryObj.setResultTransformer(Transformers.aliasToBean(RecruiterRrportDTO.class));
+				associatesViewList = queryObj.list();
+				
+		}
+		else {
+			         query ="SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQA.ASSIGN_USER_ID AS assignedUserId "
+					+" FROM  REQUIREMENT REQ LEFT JOIN REQUIREMENT_ASSIGN_TO REQA ON REQ.ID = REQA.REQUIREMENT_ID WHERE REQ.ORG_LOCATION_ID =:orgLocationId AND (REQ.MANAGER_USER_ID IN (:userIdsList) "
+					+ "OR REQA.ASSIGN_USER_ID IN (:userIdsList))  AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"; 
+		
+			
+		
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setParameterList("userIdsList", userIdsList).setParameter("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(RecruiterRrportDTO.class));
 			associatesViewList = queryObj.list();
 		
 		}

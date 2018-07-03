@@ -731,9 +731,9 @@ function Immigration() {
         });
 	}
 	
-	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId,searchVal){
+	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId,searchVal,myImmigrationStatus){
 		$.ajax({
-	        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+"&searchVal="+searchVal,
+	        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+"&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus,
 	        type: "GET",
 	        success: function (result) {
 	            $("#formsTab").html(result);
@@ -1146,9 +1146,9 @@ $('body').on('blur', '#employerDetails_form', function () {
 
 
 
-function displayImmigrationCandidateDocs(candidateId,templateid,immigrationId,searchVal){
+function displayImmigrationCandidateDocs(candidateId,templateid,immigrationId,searchVal,myImmigrationStatus){
 	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal,
+        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus,
         type: "GET",
         success: function (result) {
             $("#docsTab").html(result);

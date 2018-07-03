@@ -46,6 +46,7 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -769,7 +770,7 @@ public class RequirementServiceImpl implements RequirementService {
 					} else {
 						requirementAssignTo = new RequirementAssignTo();
 					}
-					if (StringUtils.isNotEmpty(teamId) && !teamId.equalsIgnoreCase("undefined")) {
+					if (StringUtils.isNotEmpty(teamId) && !teamId.equalsIgnoreCase("undefined") && !teamId.equalsIgnoreCase("null")) {
 						Team assignedTeam = new Team();
 						assignedTeam.setId(Long.parseLong(teamId));
 						requirementAssignTo.setTeamId(assignedTeam);
@@ -1514,6 +1515,11 @@ public class RequirementServiceImpl implements RequirementService {
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
 		Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		return requirement;
+	}
+	
+	@Override
+	public Requirement getRequirementByRequirementIdAndSearchValue(Long requirementId,String searchValue) throws Exception {
+		return requirementDao.getRequirementByRequirementIdAndSearchValue(requirementId,searchValue);
 	}
 
 	/**
@@ -3762,6 +3768,13 @@ public class RequirementServiceImpl implements RequirementService {
 	public Requirement getRequirementByGeneratedIdAndLocationId(String generatedId, Long orgLocationId)
 			throws Exception {
 		return requirementDao.getRequirementByGeneratedIdAndLocationId(generatedId, orgLocationId);
+	}
+	
+	@Override
+	public  List<RecruiterRrportDTO> getAssociateCountsCreatedUserListByLocation(Long orgLocationId,
+			List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception {
+		return requirementDao.getAssociateCountsCreatedUserListByLocation(orgLocationId, userIdsList, startDateUTC, endDateUTC, isGlobalUser, orgId);
 	}
 
 	@Override

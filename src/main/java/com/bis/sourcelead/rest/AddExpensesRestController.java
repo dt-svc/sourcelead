@@ -171,8 +171,10 @@ public class AddExpensesRestController {
 				Expenses expense = expensesService.getExpenseById(expenseId);
 				User superUser = userService.getUserById(reOpenedUserId);
 				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId(),isGlobalAccess);
+
 				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser,loginUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
 				expensesApprovalService.sendExpenseReopenAcceptMailToEmployee(expense,orgLoc,type,reopenedUser,loginUser);
+
 			}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
 			    //send mail & notification logic

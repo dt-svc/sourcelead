@@ -104,6 +104,9 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 	
+	@Column(name = "DOCUMENT_CATEGORY")
+	private String docCategory;
+	
 	@Transient
 	@JsonProperty
 	private String documentTypeName;
@@ -323,4 +326,11 @@ public class ImmigrationCandidateDocuments implements Serializable {
 		this.candidateDocumentsHistories = candidateDocumentsHistories;
 	}
 
+	public String getDocCategory() {
+		return docCategory;
+	}
+
+	public void setDocCategory(String docCategory) {
+		this.docCategory = docCategory;
+	}
 }

@@ -990,6 +990,8 @@ public class Constants {
 	public static final String CANDIDATE_REQUEST_DOCUMENTS = "requested for documents";
 	public static final String CANDIDATE_ACCEPT_REQUEST_DOCUMENTS = "accepted documents";
 	public static final String CANDIDATE_REJECT_REQUEST_DOCUMENTS = "rejected documents";
+	public static final String CANDIDATE_TAG_ADDED = "added tag";
+	public static final String CANDIDATE_TAG_REMOVED = "removed tag";
 	
 	public static final String EXPENSES = "expenses";
 	public static final String VIEW_TYPE = "LISTVIEW"; 
@@ -1163,6 +1165,8 @@ public class Constants {
 	
 	public static final String HALFYEARLY = "HalfYearly";
 	public static final String QUARTERLY = "Quarterly";
+	
+	public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
 	
 //	Annually   
 

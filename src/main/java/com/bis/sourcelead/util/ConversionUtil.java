@@ -533,4 +533,30 @@ public class ConversionUtil {
 		return yearDates;
 	}
 	
+	public static Date[] getPreviousYearStartAndEndDate()
+	{
+		Date[] yearDates = new Date[2];
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -1);
+		cal.set(Calendar.DAY_OF_YEAR, 1);
+		Date startDate = cal.getTime();
+		yearDates[0] = startDate;
+		cal.set(Calendar.MONTH, 11); // 11 = december
+		cal.set(Calendar.DAY_OF_MONTH, 31); // new years eve
+		Date endDate = cal.getTime();
+		yearDates[1] = endDate;
+		return yearDates;
+	}
+
+	public Date[] getMonthStartDateEndDate()
+	{
+		Date[] dates = new Date[2];
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.DATE, 1);
+		dates[0] = c.getTime();
+		c.set(Calendar.DATE, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+		dates[1] = c.getTime();
+		return dates;
+	}
+	
 }

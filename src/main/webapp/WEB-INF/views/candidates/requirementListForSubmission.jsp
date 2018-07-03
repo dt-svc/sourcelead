@@ -126,7 +126,7 @@ $(document).ready(function() {
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="getRequirementTableList();closePop();" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearJobAdvSearch();" class="btn btn-sm btn-primary" />
+								onclick="clearJobAdvSearch();getRequirementTableList();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 					
@@ -254,6 +254,13 @@ function checkResume(){
 
 <script>
 function getRequirementTableList(){
+	
+	var searchData = $('#reqDataTableSearch').val();
+   	if(searchData != '' && searchData != 'undefined' && (searchData.endsWith("-") || searchData.endsWith("\\"))){
+   	    $('#reqDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+   		$("#reqDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	}else{
+   	 $('#reqDataTableSearch').parent().find('p.jquery_form_error_message').remove();
 	 $("#addApplicantDivLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var generatedId = "";
 	 var requirementTitle = "";
@@ -300,6 +307,7 @@ function getRequirementTableList(){
 	 var url = sourceleadUrl+"/getRequirementListForCandidateBulkSubmission?searchValue="+searchValue+"&generatedId="+generatedId+"&jobTitle="+requirementTitle+"&noticePeriod="+noticePeriod+"&client="+client+"&createdDate="+updatedOn+"&skills="+requirementSkills+"&city="+city;
 	 requirementListPagination(url,sourceleadUrl);
 	 $("#addApplicantDivLoading").removeAttr("style");
+   	}
 }
 </script>
 
@@ -411,11 +419,10 @@ function requirementListPagination(url,sourceleadUrl){
     	   if(e.which === 13) {
    		    $('#reqDataTableSearch').parent().find('p.jquery_form_error_message').remove();
    	    	var searchData = $('#reqDataTableSearch').val();
-   	    	var regex =  new RegExp(/[\\-]/g);
-   	    	if(regex.test(searchData) == false){
-   	    		getRequirementTableList();
-   	    	}else{
+   	    	if(searchData.endsWith("-") || searchData.endsWith("\\")){
    	    		$("#reqDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	    	}else{
+   	    		getRequirementTableList();
    	    	}
    	    	$('#reqDataTableSearch').val(searchData);
     	   }

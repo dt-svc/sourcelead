@@ -44,6 +44,8 @@ public class DataMigrationDTO extends CommonDTO {
 
 	private String maxRate;
 	
+	private String inviteEmail;
+	
 	private String currencyCode;
 
 	private String rateType;
@@ -1929,6 +1931,7 @@ private String beneficiaryFirstName;
 		this.primarySkill = primarySkill;
 	}
 
+
 	public String getEmailId() {
 		return emailId;
 	}
@@ -2114,5 +2117,12 @@ private String beneficiaryFirstName;
 		this.dayHours = dayHours;
 	}
 
-	 
+	public String getInviteEmail() {
+		return inviteEmail;
+	}
+
+	public void setInviteEmail(String inviteEmail) {
+		this.inviteEmail = inviteEmail;
+	}
+
 }

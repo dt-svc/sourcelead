@@ -14,6 +14,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectDocumentFolder;
@@ -341,6 +342,12 @@ public class HolidayServiceImpl implements HolidayService{
 	public void deleteHolidayByHolidayId(Long holidayId) throws Exception {
 		holidayDAO.deleteHolidayByHolidayId(holidayId);
 	}
-	
+
+	@Override
+	public List<HolidayAndRestrictday> getHolidayByFromToDate(Date startDate, Date endDate,OrgLocations orgLocations)
+	{
+		return holidayDAO.getHolidayByFromToDate(startDate,endDate,orgLocations);
+	}
+
 	
 }

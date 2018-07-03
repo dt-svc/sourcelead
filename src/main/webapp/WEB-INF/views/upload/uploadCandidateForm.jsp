@@ -116,17 +116,40 @@
 						</span>
 					</div>
 				</div>
+				
+		  <div class="clearfix"></div>
+	        <div class="form-group">
+	             <div class="col-md-9">
+	               <div class="checkbox checkBox ml">
+	                     <label><input type="checkbox" onclick="checkInviteEmail();" id="inviteEmailCheck"></label><span>Invite to SourceLead</span>
+	               </div>
+	                </div>
+	         </div>
+	         
 			</div>
 		</div>
 		</form:form>
 	</div>
 	<div id="dataFieldsDiv" style="display: none"></div>
-	
+	<input type="hidden" id="inviteEmail" name="inviteEmail" value="N"/>
 </section>
 
 <div class="success_pop" id="selector11" style="display: none;">
     <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 </div>
+
+
+<script>
+function checkInviteEmail(){
+	 var flag = document.getElementById("inviteEmailCheck").checked;
+	 
+	 if(flag == true){
+		 $("#inviteEmail").val('Y'); 
+	 }else{
+		 $("#inviteEmail").val('N'); 
+	 }
+}
+</script>
 
 
 <script type="text/javascript">

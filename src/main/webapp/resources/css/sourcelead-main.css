@@ -1387,7 +1387,7 @@ border: 1px solid #ddd; margin-bottom: 20px !important; border-radius: 5px; back
 .tblminwidth-90 {
 	min-width: 90px !important;
 }
-.tbldata-dotdot_80{
+.tbldata-dotdot_80 {
 overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 80px; display: block; margin: 0 auto;
 }
 .tbldata-dotdot-100 {
@@ -3330,6 +3330,12 @@ top: 0px; left: 0px;
 .star-rating.mailbox-rating label:before {
 top: -1px; left: -2px;
 }
+.acivestar-rating {
+	color: #f60;
+}
+.starating-li li {
+	padding: 0 1px;
+}
 /*** custom checkboxes ***/
 .hotlist-header .chosen-container-single .chosen-single {
 height: 30px !important; line-height: 30px !important;
@@ -3973,10 +3979,10 @@ position: absolute; bottom: 0; left: 0; width: 100%; height: 16px;
     float: left;
 }
 .jspTrack {
-background: #dde; position: relative; border-radius: 5px;
+background: #ededed; position: relative; border-radius: 5px;
 }
 .jspDrag {
-background: #bbd; position: relative; top: 0; left: 0; border-radius: 5px; cursor: pointer;
+background: #909090; position: relative; top: 0; left: 0; border-radius: 5px; cursor: pointer;
 }
 .jspHorizontalBar .jspTrack, .jspHorizontalBar .jspDrag {
   float: left; height: 100%;
@@ -3988,10 +3994,10 @@ background: #bbd; position: relative; top: 0; left: 0; border-radius: 5px; curso
  cursor: default; background: #80808d;
 }
 .jspVerticalBar .jspArrow {
-    height: 16px;
+    height: 15px;
 }
 .jspHorizontalBar .jspArrow {
-    width: 16px; float: left; height: 100%;
+    width: 15px; float: left; height: 100%;
 }
 .jspVerticalBar .jspArrow:focus {
     outline: none;
@@ -5885,6 +5891,41 @@ border-bottom: 10px solid #fff; border-left: 10px solid transparent; border-righ
 clear: both; content: ""; height: 0; position: absolute; right: 10px; top: -10px; width: 0;
 }
 /* Teja Styles */
+
+
+
+
+
+
+
+
+a.btn-addtag {
+min-width: 20px; text-align: center; padding: 2px 8px 2px 2px;
+background: #3081cb; border-radius: 3px 3px 0 0;
+color: #fff !important; line-height: 20px; transition: all 0.5s ease-in-out;
+}
+a.btn-addtag i {
+padding-bottom: 0 !important; padding-right: 5px !important; padding-top: 0 !important;
+}
+a.btn-addtag:hover {
+background: #375d81;
+}
+.add-tag {
+background: #fff none repeat scroll 0 0; border: 1px solid #909090;
+border-radius: 5px; padding: 10px 0px; position: absolute; right: 33px; top: 20px; z-index: 8;
+text-align: left; margin-top: 8px; box-shadow: 0 8px 6px -8px #505050; min-height: 55px; opacity: 0;
+-webkit-transition: all .5s ease-in-out; -moz-transition: all .5s ease-in-out; transition: all .5s ease-in-out;
+}
+.add-tag.add-tag-active {
+opacity: 1;
+}
+.add-tag:before {
+border-bottom: 10px solid #fff; border-left: 10px solid transparent; border-right: 10px solid transparent;
+clear: both; content: ""; height: 0; position: absolute; right: 10px; top: -10px; width: 0;
+}
+
+
+
 .expDetails .chosen-custom div.chosen-container {
 position: relative !important;
 }
@@ -7781,7 +7822,7 @@ top:0 !important;
     margin: 0px; border: none; border-bottom: 1px solid #bdbdbd; padding: 3px 25px 3px 5px; background-color: transparent;
     width: 210px;      
     }
-.dynamic_search .fa-search {
+.dynamic_search .fa-search, .dynamic_search .fa-calendar  {
 	font-size: 18px; position: absolute; right: 0px; top: 0px; color:#9E9E9E !important;
 }
     /* Dynamic Search */
@@ -8993,7 +9034,117 @@ background-color: transparent !important; width:96%; margin-left: 15px;
 .reportsCountNew.reportsCountNewBig ul li {
 	width: 10% !important;
 }
+.tooltip {
+    position: relative; display: inline-block; opacity: 1;
+}
+.tooltip .tooltiptext {
+    visibility: hidden; min-width: 250px; background-color: #333;
+    color: #fff; text-align: center; border-radius: 6px; padding: 10px; position: absolute;
+    z-index: 1; bottom: 125%; left:0%; font-weight:600;
+    margin-left: -60px; opacity: 0; transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: ""; position: absolute; top: 100%; left: 30%; margin-left: -5px;
+    border-width: 5px; border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible; 	opacity: 1;
+}
+/* Dashboard navar bar ui */
+.dashboardWidget-new {
+    background: #fff; box-shadow: 0 1px 1px rgba(0,0,0,0.1); border-radius: 5px;
+    min-height: 150px; padding: 15px 15px 10px 15px;    
+}
+.dashboardWidget-new .nav>li>a {
+    padding: 5px 15px; color: #909090;
+} 
+.dashboardWidget-new h4 {
+    margin-top: 0; margin-bottom: 10px; font-size: 16px;
+}
+.dashboardWidget-new .nav-tabs {
+    border-bottom: none;
+}
+.dashboardWidget-new .nav-tabs>li.active>a, .dashboardWidget-new .nav-tabs>li.active>a:focus, .dashboardWidget-new .nav-tabs>li.active>a:hover {
+    border-top-color: transparent; border-right-color: transparent; border-left-color: transparent; border-bottom-color: transparent;
+    color: #505050; box-shadow: inset 0 -3px 0px 0px #0084bf; font-weight: 500;
+}
+.dashboardWidget-new .db-widget-sm .info-box-text  {
+    font-size: 14px;
+}
+ul.tabnewStyles {
+    padding-left: 0;
+}
+ul.tabnewStyles li {
+    background-color: transparent; border-radius: 0; border: 2px solid transparent;
+}
+ul.tabnewStyles li a {
+    color: #909090;
+}
+ul.tabnewStyles li.current {
+    box-shadow: inset 0 -3px 0px 0px #0084bf; border: 2px solid #ffff;
+}
+ul.tabnewStyles li.current a {
+    color: #505050; font-weight: 500;
+}
+/* Dashboard navar bar ui */
+.require_wrap_table.tableFirstSecond tr td:first-child, .require_wrap_table.tableFirstSecond tr td:last-child,
+.require_wrap_table.tableFirstSecond table tr th:last-child {
+width: auto;	
+}
 /* forms edit element styles */
+.chosen-container .chosen-drop {
+    z-index: 1100;
+}
+.lm-portlet {
+background: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px;
+-o-border-radius: 5px; border-radius: 5px; display: block; margin-bottom: 0; min-height: 75px; width: 100%;
+position: relative; margin-top: 5px; padding-bottom: 5px; border: 1px solid rgba(0,0,0,0.1);
+}
+.lm-portlet .info-box-icon {
+top:15%; left: 10px; color: #d5d5d5; font-size:1.5em;
+}
+.lm-portlet .info-box-number, .lm-portlet .info-box-text {
+text-align: right !important; padding-right: 15px; text-transform: uppercase;
+}
+.lm-portlet .info-box-text, .lm-portlet .info-box-text a {
+font-size: 14px;
+}
+a.btn-addtag {
+min-width: 20px; text-align: center; padding: 2px 8px 2px 2px;
+background: #3081cb; border-radius: 3px 3px 0 0;
+color: #fff !important; line-height: 20px; transition: all 0.5s ease-in-out;
+}
+a.btn-addtag i {
+padding-bottom: 0 !important; padding-right: 5px !important; padding-top: 0 !important;
+}
+a.btn-addtag:hover {
+background: #375d81;
+}
+.add-tag {
+background: #fff none repeat scroll 0 0; border: 1px solid #909090;
+border-radius: 5px; padding: 10px 0px; position: absolute; right: 33px; top: 20px; z-index: 8;
+text-align: left; margin-top: 8px; box-shadow: 0 8px 6px -8px #505050; min-height: 55px; opacity: 0;
+-webkit-transition: all .5s ease-in-out; -moz-transition: all .5s ease-in-out; transition: all .5s ease-in-out;
+}
+.add-tag.add-tag-active {
+opacity: 1;
+}
+.add-tag:before {
+border-bottom: 10px solid #fff; border-left: 10px solid transparent; border-right: 10px solid transparent;
+clear: both; content: ""; height: 0; position: absolute; right: 10px; top: -10px; width: 0;
+}
+.tablecustom-styles table tbody > tr:nth-child(2n+2) {
+	display: none;
+}
+.tablecustom-styles table th {
+	text-align: center; color: #fff; background-color: #375d81; font-weight: normal; border-bottom: none;
+}
+.modal-POP {
+position: fixed; top: 15px; right: 0; bottom: 0; z-index: 105000; display: none; overflow: hidden;
+-webkit-overflow-scrolling: touch; outline: 0; width: 80%; left: 10%;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

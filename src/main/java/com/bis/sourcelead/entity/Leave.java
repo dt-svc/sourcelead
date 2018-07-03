@@ -67,11 +67,17 @@ public class Leave {
 	@Column(name = "TO_HALF_DAY")
 	private String toHalfDay;
 	
-	@Column(name = "FROM_TIME")
-	private String fromTime;
+	@Column(name = "FROM_DATE_FROM_TIME")
+	private String fromDateFromHalfTime;
 	
-	@Column(name = "TO_TIME")
-	private String toTime;
+	@Column(name = "FROM_DATE_TO_TIME")
+	private String fromDateToHalfTime;
+	
+	@Column(name = "TO_DATE_FROM_TIME")
+	private String toDateFromHalfTime;
+	
+	@Column(name = "TO_DATE_TO_TIME")
+	private String toDateToHalfTime;
 
 //	 
 	@Column(name = "FILE_CONTENT_TYPE")
@@ -133,6 +139,9 @@ public class Leave {
 	
 	@Column(name = "LEAVE_UUID")
 	private String leaveUUID;
+	
+	@Column(name = "NOTIFY_TO_OTHERS")
+	private String notifyToOthers;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@JsonBackReference
@@ -483,20 +492,44 @@ public class Leave {
 		this.appliedLeaveDateSet = appliedLeaveDateSet;
 	}
 
-	public String getFromTime() {
-		return fromTime;
+	public String getFromDateFromHalfTime() {
+		return fromDateFromHalfTime;
 	}
 
-	public void setFromTime(String fromTime) {
-		this.fromTime = fromTime;
+	public void setFromDateFromHalfTime(String fromDateFromHalfTime) {
+		this.fromDateFromHalfTime = fromDateFromHalfTime;
 	}
 
-	public String getToTime() {
-		return toTime;
+	public String getFromDateToHalfTime() {
+		return fromDateToHalfTime;
 	}
 
-	public void setToTime(String toTime) {
-		this.toTime = toTime;
+	public void setFromDateToHalfTime(String fromDateToHalfTime) {
+		this.fromDateToHalfTime = fromDateToHalfTime;
+	}
+
+	public String getToDateFromHalfTime() {
+		return toDateFromHalfTime;
+	}
+
+	public void setToDateFromHalfTime(String toDateFromHalfTime) {
+		this.toDateFromHalfTime = toDateFromHalfTime;
+	}
+
+	public String getToDateToHalfTime() {
+		return toDateToHalfTime;
+	}
+
+	public void setToDateToHalfTime(String toDateToHalfTime) {
+		this.toDateToHalfTime = toDateToHalfTime;
+	}
+
+	public String getNotifyToOthers() {
+		return notifyToOthers;
+	}
+
+	public void setNotifyToOthers(String notifyToOthers) {
+		this.notifyToOthers = notifyToOthers;
 	}
 	
 }

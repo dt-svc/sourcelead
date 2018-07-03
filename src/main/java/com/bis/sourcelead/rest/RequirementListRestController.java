@@ -688,6 +688,9 @@ public class RequirementListRestController {
 					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("JOINED")){
 						String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "source", "joinDate", "status"};
 						tableColumns = columns;
+					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SELECTED")){
+						String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "source", "selectedDate", "status"};
+						tableColumns = columns;
 					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("REJECTED")){
 						String[] columns = {"name", "email", "resume", "appliedOn", "rate", "subRate", "source", "rejectedOn", "rejectedBy", "status"};
 						tableColumns = columns;

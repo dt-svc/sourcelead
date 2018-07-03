@@ -241,6 +241,7 @@ $(document).ready(function() {
 	    		    showError("Operation failed, please try again");
 	    		}
 				 $("#holidayLoading").hide();
+				 $('#save_holiday').attr('disabled','disabled');
 			});
 			return true;
 		} else {
