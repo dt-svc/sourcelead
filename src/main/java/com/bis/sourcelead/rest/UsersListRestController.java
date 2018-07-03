@@ -730,7 +730,7 @@ public class UsersListRestController {
 			if(userRole != null) {
 				userRole.setTerminateDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getTerminateDate()));
 			}
-		
+		   System.out.println(employee.getDailyHours());
 			userRole.setDailyHours(employee.getDailyHours());
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
