@@ -546,16 +546,26 @@ public class LeaveManagementUtil {
 	 * @param appliedLeaves
 	 * @param orgLocations
 	 * @param l
-	 * @param endDaet
+	 * @param endDate
 	 * @param startDate
 	 * @return List<AppliedLeaveDateView>
 	 */
-	public List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDaet)
+	public List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDate)
 	{
 		SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); 
+		
+		if(appliedLeaves.size() == 0){
+			List<Date> dates = getDaysBetweenLeaveDates(startDate, endDate);
+			for(Date d : dates){
+				AppliedLeaveDateView view = new AppliedLeaveDateView();
+				view.setApplyLeaveDate(d);
+				appliedLeaves.add(view);
+			}
+		}
+		
 		if (l.getIncludeHolidays() != null
 				&& !Constants.YES.equalsIgnoreCase(l.getIncludeHolidays())) {
-			List<HolidayAndRestrictday> holidayList = holidayService.getHolidayByFromToDate(startDate, endDaet, orgLocations);
+			List<HolidayAndRestrictday> holidayList = holidayService.getHolidayByFromToDate(startDate, endDate, orgLocations);
 			for (HolidayAndRestrictday holiday : holidayList) {
 				Date holidayDate = commonUtil.orgLocationCommonDate(holiday.getDay(), orgLocations);
 				boolean s = appliedLeaves.removeIf(x -> commonUtil.orgLocationCommonDate(x.getApplyLeaveDate(), orgLocations).equals(holidayDate));
@@ -565,6 +575,7 @@ public class LeaveManagementUtil {
 			if (orgLocations.getWeekOffDays() != null) {
 				String[] weekOoffs = orgLocations.getWeekOffDays().split(",");
 				for (String weekEndDay : weekOoffs) {
+					System.out.println();
 					appliedLeaves.removeIf(x -> simpleDateformat.format(x.getApplyLeaveDate()).toUpperCase().equals(weekEndDay.trim().toUpperCase()));
 				}
 			}

@@ -170,6 +170,10 @@ window.onload = function() {
               </div>
             </div>
               
+            <div class="form-group" id="durationDiv" style="display:none">
+             	<label class="col-md-3" id="durationId"></label>
+            </div>
+              
             <div class="form-group">
               <label class="col-md-3" id="reasonIdY" style="display:block">Reason<span class="text-danger paddingLeft" >*</span></label>
               <label class="col-md-3" id="reasonIdN" style="display:none">Reason</label>
@@ -459,6 +463,8 @@ window.onload = function() {
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
 			checkFromDate();
+			calcaulateDuraton();
+			validateDate();
 // 			getLeaveDetails(finalDateFormatEndDate);
 			}
 		});
@@ -492,6 +498,30 @@ function removeStartValid(){
 
 function removeEndValid(){
 	$('#toDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function calcaulateDuraton(){
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
+	var leaveTypeUUID = $("#leaveType").val();
+	var ckbox = $('#checkbox-1');
+	if (ckbox.is(':checked')) {
+		 userId = $("#user").val();
+	 }else{
+		 userId = '${SourceLeadWeb_userId}';
+	 }
+	if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined' && leaveTypeUUID != null && leaveTypeUUID != '' && leaveTypeUUID != 'undefined'){
+		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId,  function(result) {
+			if(result != null){
+				$("#durationDiv").show();
+				$("#durationId").html("Duration : "+result+" day(s)");
+			}
+		}); 
+	}else{
+		$("#durationDiv").hide();
+		$("#durationId").html("Duration : 0 day(s)");
+	}
+	
 }
  </script>
 
@@ -919,6 +949,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    }
 		});
 	}
+	calcaulateDuraton();
 	setTimeout(function(){ validateDate(); }, 800);
 		
 }
