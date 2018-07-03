@@ -188,7 +188,7 @@ window.onload = function() {
               <div class="col-md-9 errorInptgroup" id="attachmentId">
                   <div class="positionRelative clearfix"><i class="clearUpload" title="clear" onClick="removedocfile();"></i>
                   
-                  <div class="input-group ratetype col-md-12 pull-left" title="">
+                  <div class="input-group ratetype col-md-12 pull-left" title="" id="uploadFileGroup">
 	                      <label class="input-group-btn"> 
 	                        <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Choose File
 	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
@@ -483,11 +483,6 @@ window.onload = function() {
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
 		});
-	  
-	  document.getElementById("uploadBtn").onchange = function () {
-  	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
-  	    };
-		
 	});
 </script>
 
@@ -699,6 +694,52 @@ function onbehalf() {
 	    }
 	}
     
+}
+</script>
+
+
+<script>
+var selectedFile = document.getElementById("uploadBtn");
+selectedFile.addEventListener("change", function() {
+	 $("#uploadFile").focus();
+	 if(validate_fileupload(this.value)){
+		 var docSize =  $("#uploadBtn")[0].files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+			  $("input#uploadFile").after("<p class='jquery_form_error_message'>File size should be less then 2MB </span>");
+			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','File size should be less then 2MB');
+			  document.getElementById("uploadFile").value="";
+	      }else{
+	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+  		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	    }
+	 }
+});
+
+/* upload file script */
+document.getElementById("uploadBtn").onchange = function () {
+	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+};
+
+</script>
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+    var allowed_extensions = new Array("docx","doc","pdf","rtf");
+    var file_extension = fileName.split('.').pop(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i]==file_extension)
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
 }
 </script>
 
@@ -1230,5 +1271,6 @@ function getUsersBasedOnHierarchy(type){
    }
 }
 </script>
+
 
 <jsp:include page="../masterFooter.jsp" />
