@@ -650,7 +650,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 /* the functionality of this block is to verify the submitted candidate is in the Cooling-Off Period or not
 		 if the applicant is in cooling-off period, the candidate should be in rejected state(set previous state to Submission) at client side  [Venkat Kesav] START Code snippet*/
-		 RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = null;
+		 /*RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = null;
 			 String reqCoolingOffPeriod = requirement.getReqCoolingOffPeriod();
 			 String [] coolingOffArr = reqCoolingOffPeriod.split(" ");
 			 String reqCoolingOffPeriodDays;
@@ -675,7 +675,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				     break;
 				 default:
 					 reqCoolingOffPeriodDays = "0";
-			 }
+			 }*/
 			 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
                  if(jsonObj.getString("needApplicantPermit").equals("Y")){
                      requirementSubmission.setNeedApplicantPermit("Y");
@@ -684,7 +684,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
              }else{
                  requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
              }
-			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
+			 /*requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
 					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
@@ -697,7 +697,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 requirementSubmission.setRejectedCategoryType("Other");
 					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
 				 }
-			 }
+			 }*/
 			 /*END Code snippet*/
 		 
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);

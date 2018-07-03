@@ -52,12 +52,14 @@ function getDayWiseReports(){
     		<li>
         <div class="dropdown-select positionRelative repSelWrap clearfix">
           <select class="form-control repSelFiled" id="reportTypeId" onChange="flushCustom(); custDates();">
-			  <option value="today">Today</option>
-			  <option value="yesterday">Yesterday</option>
-			  <option value="1_week">Last 7 days</option>
+			  <!-- <option value="today">Today</option>
+			  <option value="yesterday">Yesterday</option> -->
+			  <option value="Last_7_days">Last 7 days</option>
 			  <option value="Last_15_days">Last 15 days</option>
 			  <option value="1_month">Last 1 month</option>
-			  <option value="2_months">Last 2 months</option>
+			  <option value="3_months">Last 3 months</option>
+			  <option value='YTD' >YTD</option>
+	          <option value='Last_Year'>Last Year</option>
 			  <option value="custom">Custom</option> 
 			</select>
 		<div id="runButtonDiv" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="userDataTableList();">Run</button></div> 
