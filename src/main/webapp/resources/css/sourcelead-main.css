@@ -5885,6 +5885,41 @@ border-bottom: 10px solid #fff; border-left: 10px solid transparent; border-righ
 clear: both; content: ""; height: 0; position: absolute; right: 10px; top: -10px; width: 0;
 }
 /* Teja Styles */
+
+
+
+
+
+
+
+
+a.btn-addtag {
+min-width: 20px; text-align: center; padding: 2px 8px 2px 2px;
+background: #3081cb; border-radius: 3px 3px 0 0;
+color: #fff !important; line-height: 20px; transition: all 0.5s ease-in-out;
+}
+a.btn-addtag i {
+padding-bottom: 0 !important; padding-right: 5px !important; padding-top: 0 !important;
+}
+a.btn-addtag:hover {
+background: #375d81;
+}
+.add-tag {
+background: #fff none repeat scroll 0 0; border: 1px solid #909090;
+border-radius: 5px; padding: 10px 0px; position: absolute; right: 33px; top: 20px; z-index: 8;
+text-align: left; margin-top: 8px; box-shadow: 0 8px 6px -8px #505050; min-height: 55px; opacity: 0;
+-webkit-transition: all .5s ease-in-out; -moz-transition: all .5s ease-in-out; transition: all .5s ease-in-out;
+}
+.add-tag.add-tag-active {
+opacity: 1;
+}
+.add-tag:before {
+border-bottom: 10px solid #fff; border-left: 10px solid transparent; border-right: 10px solid transparent;
+clear: both; content: ""; height: 0; position: absolute; right: 10px; top: -10px; width: 0;
+}
+
+
+
 .expDetails .chosen-custom div.chosen-container {
 position: relative !important;
 }
