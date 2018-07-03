@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
+import com.bis.sourcelead.entity.Leave;
 
 @Repository
 public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
@@ -68,5 +70,36 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 	}
     	return null;
 		
+	}
+
+	@Override
+	@Transactional
+	public AppliedLeaveDate saveAppliedLeaveDates(AppliedLeaveDate appliedLeaveDate) {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (appliedLeaveDate != null) {
+				session.saveOrUpdate(appliedLeaveDate);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return appliedLeaveDate;
+	}
+
+	@Override
+	@Transactional
+	public boolean checkForExistedLeave(Leave leave) {
+		boolean existed = false;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from AppliedLeaveDate ald where ald.leave.id = :leaveId";
+			List<Leave> leaveList = session.createQuery(query).setLong("leaveId", leave.getId()).list();
+			if(leaveList != null && leaveList.size() > 0) {
+				existed = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return existed;
 	}
 }
