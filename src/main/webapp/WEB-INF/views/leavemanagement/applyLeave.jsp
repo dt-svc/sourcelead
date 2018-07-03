@@ -10,7 +10,7 @@ window.onload = function() {
 
 	var leaveUUID = '${leaveUUID}';
 	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
-		getLeaveDetails();
+// 		getLeaveDetails();
 		getUsersBasedOnHierarchy('edit');
 		var checkFromEdit = '${leave.fromHalfDay}';
 		var checkToEdit = '${leave.toHalfDay}';
@@ -317,8 +317,11 @@ window.onload = function() {
 	    {
 		 if(fromDate == toDate)
 		 {
-			 
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 		 }
 		else
 			{
@@ -340,6 +343,10 @@ window.onload = function() {
 		 if(fromDate == toDate)
 		 {
 			$("#fromHalfDayDiv").hide();
+			$("#fromTimeDiv").hide();
+			 $("#toTimeDiv").hide();
+			 $("#fromDateHalfTime").val('');
+			 $("#toDateHalfTime").val('');
 			
 		  }
 		   else
@@ -359,6 +366,10 @@ window.onload = function() {
 		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 		 }else{
 			 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) )
 			 {
@@ -390,6 +401,10 @@ window.onload = function() {
 		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 	  }
 	 else
 	 {
