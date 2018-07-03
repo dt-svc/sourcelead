@@ -1221,9 +1221,7 @@ function editTag(candidateId){
 function saveTag(candidateId){
 	$("#tagName").prop('disabled', true).trigger("chosen:updated");
 	window.tagCountAfter = $("#tagName :selected").length;
-	if(tagCountBefore != tagCountAfter){
-		saveCandidateTags(candidateId);
-	}
+	saveCandidateTags(candidateId);
 	$("#saveTagBtn").remove();
 	$("#saveTagBtnSpan").hide();
 	var result = '';

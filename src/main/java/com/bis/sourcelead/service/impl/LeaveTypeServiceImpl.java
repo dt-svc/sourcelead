@@ -299,11 +299,11 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
 		
-		if(flag == true) {
+		/*if(flag == true) {
 			addOrUpdateLeaveTypeToprojectTask(orgLocation.getId(),leaveTypeDTO,leaveType,user,flag);
 		}else if(flag == false) {
 			addOrUpdateLeaveTypeToprojectTask(orgLocation.getId(),leaveTypeDTO,leaveType,user,flag);
-		}
+		}*/
 		return leaveType;
 	}
 	 
