@@ -274,7 +274,7 @@ window.onload = function() {
  <script>
  function checkFromHalfDay(){
 	 
-//     $("#checkbox-2").val('YES');
+    $("#checkbox-2").val('YES');
     
 	   if($("#checkbox-2").is(':checked')){
 		   $("#fromTimeDiv").show();
@@ -293,7 +293,7 @@ window.onload = function() {
  
  function checkToHalfDay(){
 	
-// 	 $("#checkbox-3").val('YES');
+	 $("#checkbox-3").val('YES');
 	 
 	 if($("#checkbox-3").is(':checked')){
 		   $("#toDateFromTimeDiv").show();
@@ -872,7 +872,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		validateMinMaxDays(report.minDays, report.maxDays);
     		    	}
     		    	
-    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "Y"){
+    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
     		    		validateOverDrawLeaves(report.name);
     		    	}
     		    	
