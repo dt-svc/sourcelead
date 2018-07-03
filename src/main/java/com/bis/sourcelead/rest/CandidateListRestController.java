@@ -1860,10 +1860,13 @@ public class CandidateListRestController {
 				    	}
 				    	
 				    	String addedTags =  StringUtils.join(newTagsSet,",");
-				    	StringBuffer addedTagSummary = new StringBuffer();
-				    	addedTagSummary.append("Tag(s)").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(addedTags)
-						.append(Constants.NEW_VALUE_TAG_END);
-				    	candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_TAG_ADDED, addedTagSummary.toString(), "CANDIDATE");
+				    	if(addedTags != null && !addedTags.isEmpty()) {
+				    		StringBuffer addedTagSummary = new StringBuffer();
+					    	addedTagSummary.append("Tag(s)").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(addedTags)
+							.append(Constants.NEW_VALUE_TAG_END);
+					    	candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_TAG_ADDED, addedTagSummary.toString(), "CANDIDATE");
+				    	}
+				    	
 				    }
 				    
 				    if(candidateTagsList != null && !candidateTagsList.isEmpty() && candidateTagsList.size() > 0) {
