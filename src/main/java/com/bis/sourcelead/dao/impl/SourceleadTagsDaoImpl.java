@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.SourceleadTagsDao;
 import com.bis.sourcelead.dto.SourceleadTagsDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -113,7 +114,12 @@ public class SourceleadTagsDaoImpl implements SourceleadTagsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from SourceleadTags tags  where tags.orgLocationId.id = :orgLocationId and "
 				+ "tags.entityType = :entityType and tags.entityId = :entityId and tags.tagName = :tagName ";  
-        return  (SourceleadTags) session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("entityType", entityType).setLong("entityId", entityId).setString("tagName", tagName).uniqueResult();
+		List<SourceleadTags> sourceleadTagsList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("entityType", entityType).setLong("entityId", entityId).setString("tagName", tagName).list();
+		SourceleadTags sourceleadTags = null;
+		if (sourceleadTagsList != null && sourceleadTagsList.size() > 0) {
+			sourceleadTags = (SourceleadTags) sourceleadTagsList.iterator().next();
+		}
+		return sourceleadTags;
 	
 	}
 }
