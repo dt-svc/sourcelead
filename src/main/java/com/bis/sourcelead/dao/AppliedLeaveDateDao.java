@@ -8,6 +8,8 @@ import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.Leave;
 
 public interface AppliedLeaveDateDao {
+	
+	public List<AppliedLeaveDate> getAppliedLeaveDateByUserId(Long userId,Date sDate,Date eDate);
 
 	int deleteAppliedLeaveDatesByLeaveId(Long leaveId);
 

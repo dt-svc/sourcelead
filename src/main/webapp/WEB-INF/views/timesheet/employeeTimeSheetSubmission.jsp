@@ -53,10 +53,8 @@
 												</c:forEach>
 						                        <th class="timeTabFix">Status</th>              
 						                    </tr>  
-						                    
-						                    
-						                    <c:set var="leaveIndex" value="0"/>
-						                      <c:set var="entryIndex" value="0"/>
+						                     <c:set var="leaveIndex" value="0"/>
+						                     <c:set var="entryIndex" value="0"/>
 						                     <c:if test="${!empty employeeTimesheetEntryDetailsDTO.empLeaveMap}">
 						                      <c:forEach var="empLeaveMap" items="${employeeTimesheetEntryDetailsDTO.empLeaveMap}" varStatus="empLeaveMapCount">
 						                      <c:set var="leaveIndex" value="${leaveIndex+1}"/>
@@ -76,7 +74,7 @@
 								                      </td>
 								                      <c:forEach var="empLeave" items="${empLeaveMap.value}" varStatus="empLeaveCount">
 								                        <td>
-								                              <input onblur="editMe(this);" class="inline_field" value="${empLeave.hours}" placeholder="HH:MM" type="text" id="${leaveIndex}timeSheetDay${empLeaveCount.index+1}Id" >
+								                              <input disabled="disabled"  class="inline_field" value="${empLeave.hours}" placeholder="HH:MM" type="text" id="${leaveIndex}timeSheetDay${empLeaveCount.index+1}Id" >
 											                   <c:if test="${!empty empLeave.leaveReason}">
 	                                                              <div class=" timesheet_comm">                
 											                       <i id="leaveReason${empLeaveCount.index}" class='glyphicon glyphicon-comment com_active' onclick='timesheetComment("leaveReason${empLeaveCount.index}Id");'></i>

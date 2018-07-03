@@ -26,6 +26,8 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	
 	private Map<String,List<TimesheetEntriesDTO>> entriesMap;
 	
+	private Map<String,List<EmployeeLeaveDTO>> empLeaveMap;
+	
 	private List<Long> removedDocumentIds;
 	
 	private List<FileInfo> fileInfo;
@@ -466,7 +468,12 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.activityList = activityList;
 	}
 
+	public Map<String, List<EmployeeLeaveDTO>> getEmpLeaveMap() {
+		return empLeaveMap;
+	}
 
-	
-	
+	public void setEmpLeaveMap(Map<String, List<EmployeeLeaveDTO>> empLeaveMap) {
+		this.empLeaveMap = empLeaveMap;
+	}
+
 }
