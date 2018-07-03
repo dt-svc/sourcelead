@@ -1415,7 +1415,7 @@ public class LeaveServiceImpl implements LeaveService{
 		Date toDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), leaveDTO.getToDate());
 		int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate, toDate);*/
 		
-		float appliedLeavesCount = leaveManagementUtil.getAppliedLeaveCount(orgLoc,leaveType,leave,0f);
+		float appliedLeavesCount = leaveManagementUtil.getAppliedLeaveCount(orgLoc,leaveType,leave,Constants.LEAVE_PENDING);
 		
 		globalVarsMap.put("noOfDays", String.valueOf(appliedLeavesCount));
 		
