@@ -786,6 +786,7 @@ public class CandidateListRestController {
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateMobilePhone", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("tags", keywd));
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
@@ -1871,7 +1872,10 @@ public class CandidateListRestController {
 				    	}
 				    }
 				    
-				    candidateService.saveOrUpdateCandidateElkDocument(can);
+			    candidateService.saveOrUpdateCandidateElkDocument(can);
+			    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+			    SourceLeadSessionManager.removeSessionAttribute(request, "tagsList");
+			    SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
 				    
 				response.setResponseMessage(Result.SUCCESS.getValue());
 
@@ -1884,6 +1888,14 @@ public class CandidateListRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return response;
+	}
+	
+	
+	@RequestMapping(value = "/getSourceleadTagsList")
+	public  Set<String>  getSourceleadTagsList(
+			 HttpServletRequest request) throws Exception {
+		 Set<String> tagsList =  (Set<String>) SourceLeadSessionManager.getSessionAttribute(request, "tagsList");
+		return tagsList;
 	}
 	
 

@@ -299,8 +299,11 @@ public class AddElkCandidate{
 								 while(rs7.next()){
 									 tagsStr = tagsStr.append(rs7.getString("TAG_NAME")).append(","); 
 							    }
-								 tagsStr.toString();
-								 candidateIndex.setTags(tagsStr.substring(0,tagsStr.length()-1));
+								 String tagString = tagsStr.toString();
+								 if(tagString != null && !tagString.isEmpty()) {
+									 candidateIndex.setTags(tagString.substring(0,tagString.length()-1));
+								 }
+								 
 		    	           }
 						
 		    	    }

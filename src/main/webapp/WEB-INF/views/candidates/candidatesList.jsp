@@ -935,7 +935,7 @@ function cancel(candidateId){
 				</button>
 	</div>
      <div class="pull-left cand-advsrche">
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();getSourceleadTags();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
 			  </a> 
@@ -979,9 +979,6 @@ function cancel(candidateId){
 						<label>Tags</label>
 							<div class="clearfix">
 								<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="canTags" name="candidateTags">
-								<c:forEach var="tag" items="${tagsList}">
-								<option value="${tag}">${tag}</option>
-								</c:forEach>
 								</select>
 							 </div>
 						</div>
@@ -1337,6 +1334,29 @@ function cancel(candidateId){
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 <!--   Error Message   --> 
 
+   
+   <script>
+   function getSourceleadTags(){
+ 		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getSourceleadTagsList?"+tokenParamName+"="+tokenValue, 
+		        success: function(json) {
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt+ "'>"+opt+"</option>";
+			        		
+					}
+		        	$("#canTags").empty();
+			        $("#canTags").append(output);
+			        $('#canTags').trigger("chosen:updated");
+		        },
+		    }); 
+   }
+   </script>
+   
+   
    <script>
 	   function msgFadein() {
 			$("#candSelector").fadeIn(200);

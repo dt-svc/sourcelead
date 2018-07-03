@@ -262,7 +262,7 @@ public class CandidateController {
 		
 		
 		Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
-		model.addObject("tagsList", tagsList);
+		SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
 		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
