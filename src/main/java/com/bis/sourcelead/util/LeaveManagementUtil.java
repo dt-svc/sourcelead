@@ -479,12 +479,12 @@ public class LeaveManagementUtil {
 	 * @param orgLocations
 	 * @param l
 	 * @param leave
+	 * @param leaveStatus 
 	 * @param totalLeaves
 	 * @return float
 	 */
-	public float getAppliedLeaveCount(OrgLocations orgLocations, LeaveType l, Leave leave, float totalLeaves)
+	public float getAppliedLeaveCount(OrgLocations orgLocations, LeaveType l, Leave leave, String leaveStatus)
 	{
-		float appliedLeaveCount = 0;
 		List<AppliedLeaveDateView> appliedLeaves = null;
 		AssociateBalanceLeaveView al = new AssociateBalanceLeaveView();
 		if (l.getIncludeHolidays() != null) {
@@ -493,9 +493,9 @@ public class LeaveManagementUtil {
 		if (l.getIncludeWeekoff() != null) {
 			al.setIncludeWeekoff(l.getIncludeWeekoff());
 		}
-		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId());
+		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId(),leaveStatus);
 		appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, leave.getFromDate(), leave.getToDate());
-		return appliedLeaveCount;
+		return appliedLeaves.size();
 	}
 	
 	
@@ -561,8 +561,7 @@ public class LeaveManagementUtil {
 				boolean s = appliedLeaves.removeIf(x -> commonUtil.orgLocationCommonDate(x.getApplyLeaveDate(), orgLocations).equals(holidayDate));
 			}
 		}
-		if (l.getIncludeWeekoff() != null
-				&& !Constants.YES.equalsIgnoreCase(l.getIncludeWeekoff())) {
+		if (l.getIncludeWeekoff() != null && !Constants.YES.equalsIgnoreCase(l.getIncludeWeekoff())) {
 			if (orgLocations.getWeekOffDays() != null) {
 				String[] weekOoffs = orgLocations.getWeekOffDays().split(",");
 				for (String weekEndDay : weekOoffs) {
@@ -571,5 +570,21 @@ public class LeaveManagementUtil {
 			}
 		}
 		return appliedLeaves;
+	}
+
+	public List<Date> getDaysBetweenLeaveDates(Date fromDate, Date toDate) {
+		List<Date> dates = new ArrayList<Date>();
+		List<String> dateStr = new ArrayList<>();
+//		DateFormat formatter;
+//		formatter = new SimpleDateFormat(orgFormat);
+		long interval = 24 * 1000 * 60 * 60; // 1 hour in millis
+		long endTime = toDate.getTime(); // create your endtime here, possibly
+											// using Calendar or Date
+		long curTime = fromDate.getTime();
+		while (curTime <= endTime) {
+			dates.add(new Date(curTime));
+			curTime += interval;
+		}
+		return dates;
 	}
 }

@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,12 +33,14 @@ import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
@@ -71,6 +74,9 @@ public class LeaveDaoImpl implements LeaveDao{
 	
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	HolidayService holidayService;
 	
 	@Override
 	@Transactional
@@ -336,11 +342,11 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId,Long orgLocationId, Long userId) {
+	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeUUID,Long orgLocationId, Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Leave> leaveList = null;
-		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.leaveTypeUUID = :leaveTypeId";
-		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("leaveTypeId", leaveTypeId).list();
+		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.leaveTypeUUID = :leaveTypeUUID";
+		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("leaveTypeUUID", leaveTypeUUID).list();
 		return leaveList;
 	}
 	
@@ -366,15 +372,39 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public float getThisMonthLeavesTakenByUser(Long userId,Long leaveTypeId) {
+	public float getThisMonthLeavesTakenByUser(Long userId,LeaveType leaveType,OrgLocations orgLocations) {
 		
 		Date[] dates = conversionUtil.getMonthStartDateEndDate();
 		java.sql.Date startDate = new java.sql.Date(dates[0].getTime());
 		java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from AppliedLeaveDateView aleave where aleave.userId = :userId and aleave.leaveTypeId = :leaveTypeId and (( aleave.applyLeaveDate >= :startDate AND aleave.applyLeaveDate <= :endDate)) and (aleave.leaveStatus = 'APPROVED' or aleave.leaveStatus = 'PENDING')";
-		List<AppliedLeaveDateView> list = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("userId", userId).list();
-		return list.size();
+		List<AppliedLeaveDateView> thisMonthLeaves = session.createQuery(query).setLong("leaveTypeId", leaveType.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("userId", userId).list();
+		thisMonthLeaves = getExcludeHolidayLeaveCount(thisMonthLeaves, orgLocations,dates,leaveType);
+		return thisMonthLeaves.size();
+	}
+
+
+	private List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> thisMonthLeaves, OrgLocations orgLocations, Date[] dates, LeaveType l)
+	{
+		SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); 
+		if (l.getIncludeHolidays() != null
+				&& !Constants.YES.equalsIgnoreCase(l.getIncludeHolidays())) {
+			List<HolidayAndRestrictday> holidayList = holidayService.getHolidayByFromToDate(dates[0], dates[1], orgLocations);
+			for (HolidayAndRestrictday holiday : holidayList) {
+				Date holidayDate = commonUtil.orgLocationCommonDate(holiday.getDay(), orgLocations);
+				boolean s = thisMonthLeaves.removeIf(x -> commonUtil.orgLocationCommonDate(x.getApplyLeaveDate(), orgLocations).equals(holidayDate));
+			}
+		}
+		if (l.getIncludeWeekoff() != null && !Constants.YES.equalsIgnoreCase(l.getIncludeWeekoff())) {
+			if (orgLocations.getWeekOffDays() != null) {
+				String[] weekOoffs = orgLocations.getWeekOffDays().split(",");
+				for (String weekEndDay : weekOoffs) {
+					thisMonthLeaves.removeIf(x -> simpleDateformat.format(x.getApplyLeaveDate()).toUpperCase().equals(weekEndDay.trim().toUpperCase()));
+				}
+			}
+		}
+		return thisMonthLeaves;
 	}
 
 
