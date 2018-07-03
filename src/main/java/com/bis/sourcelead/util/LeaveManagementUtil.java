@@ -479,10 +479,11 @@ public class LeaveManagementUtil {
 	 * @param orgLocations
 	 * @param l
 	 * @param leave
+	 * @param leaveStatus 
 	 * @param totalLeaves
 	 * @return float
 	 */
-	public float getAppliedLeaveCount(OrgLocations orgLocations, LeaveType l, Leave leave, float totalLeaves)
+	public float getAppliedLeaveCount(OrgLocations orgLocations, LeaveType l, Leave leave, String leaveStatus)
 	{
 		List<AppliedLeaveDateView> appliedLeaves = null;
 		AssociateBalanceLeaveView al = new AssociateBalanceLeaveView();
@@ -492,7 +493,7 @@ public class LeaveManagementUtil {
 		if (l.getIncludeWeekoff() != null) {
 			al.setIncludeWeekoff(l.getIncludeWeekoff());
 		}
-		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId());
+		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId(),leaveStatus);
 		appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, leave.getFromDate(), leave.getToDate());
 		return appliedLeaves.size();
 	}
@@ -545,16 +546,26 @@ public class LeaveManagementUtil {
 	 * @param appliedLeaves
 	 * @param orgLocations
 	 * @param l
-	 * @param endDaet
+	 * @param endDate
 	 * @param startDate
 	 * @return List<AppliedLeaveDateView>
 	 */
-	public List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDaet)
+	public List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDate)
 	{
 		SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); 
+		
+		if(appliedLeaves.size() == 0){
+			List<Date> dates = getDaysBetweenLeaveDates(startDate, endDate);
+			for(Date d : dates){
+				AppliedLeaveDateView view = new AppliedLeaveDateView();
+				view.setApplyLeaveDate(d);
+				appliedLeaves.add(view);
+			}
+		}
+		
 		if (l.getIncludeHolidays() != null
 				&& !Constants.YES.equalsIgnoreCase(l.getIncludeHolidays())) {
-			List<HolidayAndRestrictday> holidayList = holidayService.getHolidayByFromToDate(startDate, endDaet, orgLocations);
+			List<HolidayAndRestrictday> holidayList = holidayService.getHolidayByFromToDate(startDate, endDate, orgLocations);
 			for (HolidayAndRestrictday holiday : holidayList) {
 				Date holidayDate = commonUtil.orgLocationCommonDate(holiday.getDay(), orgLocations);
 				boolean s = appliedLeaves.removeIf(x -> commonUtil.orgLocationCommonDate(x.getApplyLeaveDate(), orgLocations).equals(holidayDate));

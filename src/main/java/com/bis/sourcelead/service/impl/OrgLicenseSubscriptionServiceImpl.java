@@ -225,8 +225,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			if(orgLocations.getUser() != null) {
 				 user =  orgLocations.getUser();
 				UserRole userRole = userRoleDao.getLoginUserPrimaryRole(user.getId());
-				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 if(userRole == null || (null != userRole && userRole.getUserState().equals(Status.NOT_LOGGEDIN))) {
+					 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 					 user.setPassword(sourceleadPasswordEncoder.encode(password));
 				 }
 				 

@@ -854,6 +854,52 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 							//result = result +'		    <li><a data-toggle="tab" href="#milestone">Milestone View</a></li>                                                                        ';
 							result = result +'		  </ul>                                                                                                                                       ';
 							result = result +'		  <div class="tab-content">                                                                                                                   ';
+							
+							
+							
+							result = result +'		    <div id="tags" class="tab-pane fade in active">                                                                                         ';
+							result = result +'		      <div class="skills-summary positionRelative">                                                                                                            ';
+							result = result +'		        <div class="design-view tagsresult">                                                                                                             ';
+							result = result +'		<div class="clearfix">';
+							result = result +'		          <h2 class="education  pull-left">Tags:</h2>';
+							result = result +'		          <span id="editTagBtnSpan" class="pull-right mt10 mb"><button type="button" id="editTagBtn" name="editTagBtn" class="btn btn-primary btn-sm" onclick="editTag('+candidateId+');">Edit Tag</button></span>';
+							result = result +'		          <span id="saveTagBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
+							result = result +'<div class="clearfix">';
+							result = result + '<select multiple class="chosen-select form-control" name="tagName" id="tagName" data-validation="validate_Space" data-validation-optional="true">';
+							// here get lookup data tags and manually enter skills 
+							$.each( json.tagsList, function( i, tags ) {
+							  var existed = 0;
+				                if(json.candidateTags != null && json.candidateTags != 'undefined' && json.candidateTags != '') {
+					                var res = [];
+					                res = json.candidateTags.split(",");
+					                res.forEach(function(item) {
+					                	if(tags == item){
+					                		existed = 1;
+					                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+					                	}
+					                });
+				                }
+				                if(existed == 0){
+				                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+				                }
+							});
+			                result = result + '</select>';
+							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'		</div>';
+							result = result + '<div class="clearfix"></div> ';
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
 							result = result +'		    <div id="skills" class="tab-pane fade in active">                                                                                         ';
 							result = result +'		      <div class="skills-summary positionRelative">                                                                                                            ';
 							result = result +'		        <div class="design-view skillsresult">                                                                                                             ';
@@ -1011,6 +1057,33 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 									$this.next().css({'width': '100%'});
 								})
 							});
+							
+							
+							
+							//tags type
+							$(".btn-addtag").click(function(){
+								$(".add-tag").css({"display":"block","opacity":"1"});
+								$("#tagName").val('');
+								$("#tagName").val('').trigger("chosen:updated");
+								/* tag auto complete */
+								var config = {
+									'.chosen-select'           : {},
+									'.chosen-select-deselect'  : {allow_single_deselect:true},
+									'.chosen-select-no-single' : {disable_search_threshold:10},
+									'.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+									'.chosen-select-width'     : {width:"95%"}
+								}
+								for (var selector in config) {
+									$(selector).chosen(config[selector]);
+								}
+								$('.chosen-select').each(function() {
+									var $this = $(this);
+									$this.next().css({'width': '100%'});
+								})
+							});
+							//end of tags type
+							
+							
 								//visa type
 							$(".btn-addvisa").click(function(){
 								$(".add-visa").css({"display":"block","opacity":"1"});
@@ -1047,6 +1120,7 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 								var $this = $(this);
 								$this.next().css({'width': '100%'});
 							})
+							
 							$("#skillName").chosen();
 							$("#skillName").prop('disabled', true).trigger("chosen:updated");
 							$(".close-div").click(function(){
@@ -1055,6 +1129,20 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 							$(".add-skills").click(function(e){
 								e.stopPropagation();
 							});
+							
+							
+							//tag type
+							$("#tagName").chosen();
+							$("#tagName").prop('disabled', true).trigger("chosen:updated");
+							$(".close-div").click(function(){
+								$(".add-tag").removeClass('add-tag-active');
+							});
+							$(".add-tag").click(function(e){
+								e.stopPropagation();
+							});
+								//end tag type
+								
+								
 							//visa type
 							$("#visaName").chosen();
 							$("#visaName").prop('disabled', true).trigger("chosen:updated");
@@ -1108,6 +1196,79 @@ function candidateProfile(candidateId,candidateType,isAssociate){
                  
 	}); 
 }
+</script>
+
+
+<script>
+
+function editTag(candidateId){
+	$("#tagName").prop('disabled', false).trigger("chosen:updated");
+	$("#editTagBtn").remove();
+	$("#editTagBtnSpan").hide();
+	window.tagCountBefore = $("#tagName :selected").length;
+	var result = '';
+	result = result + '<button type="button" id="saveTagBtn" name="saveTagBtn" class="btn btn-primary btn-sm" onclick="saveTag('+candidateId+');">Save Tag</button>';
+	$("#saveTagBtnSpan").empty();
+	$("#saveTagBtnSpan").append(result);
+	$("#saveTagBtnSpan").show();
+	
+	//Adding Customized Tags to the list this method is slead-common.js
+	tagIt("tagName", 'Press Enter-Key Or Comma(,) To Add New Tag:', 'tagItBykeyForSkills','tags','');
+	
+}
+
+
+function saveTag(candidateId){
+	$("#tagName").prop('disabled', true).trigger("chosen:updated");
+	window.tagCountAfter = $("#tagName :selected").length;
+	saveCandidateTags(candidateId);
+	$("#saveTagBtn").remove();
+	$("#saveTagBtnSpan").hide();
+	var result = '';
+	result = result + '<button type="button" id="editTagBtn" name="editTagBtn" class="btn btn-primary btn-sm" onclick="editTag('+candidateId+');">Edit Tag</button>';
+	$("#editTagBtnSpan").empty();
+	$("#editTagBtnSpan").append(result);
+	$("#editTagBtnSpan").show();
+	tagCountAfter = tagCountBefore = 0;
+	
+}
+
+
+
+function saveCandidateTags(candidateId){
+	 var tagName = $("#tagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+""
+	 }
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+        	$("#loading").removeAttr('style');
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		showSuccessStatusPopup("Tags details updated successfully");
+        		var candidateType = "Candidates";
+          	  	candidateProfile(candidateId,candidateType);
+          	  	candidateQuickViewProfile(candidateId);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+
 </script>
 
 <script>

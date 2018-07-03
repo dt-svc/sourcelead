@@ -379,7 +379,11 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 			 List<AssociateBalanceLeaveDTO> assBalList = new ArrayList<>();
 			 for(User user : userList){
 				 if(map.keySet().contains(user.getId())){
-					float associateBalanceLeaves = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocations.getId());
+					 
+					 float associateBalanceLeaves = 0;
+					 if(Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
+						 associateBalanceLeaves = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocations.getId());
+					 }
 					float totalBal = 0f;
 					
 					AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
