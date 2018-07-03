@@ -88,6 +88,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -240,6 +241,9 @@ public class UsersListRestController {
 	
 	@Autowired
 	private ShiftService shiftService;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
 	/**
 	 * To get All the Users by filtering
 	 * 
@@ -1879,9 +1883,9 @@ public class UsersListRestController {
 			if (null != employee) {
 				userService.saveOrUpdateUserElkDocument(userRole, employee, user.getUserCode());
 			}
-
+			int updated = associateBalanceLeaveService.updateAssociateBalanceLeaves(userRole.getUser(), orgLocations, employee, userRole);
 		}
-
+		
 		return "success";
 	}
 
@@ -1986,6 +1990,7 @@ public class UsersListRestController {
 		boolean isUserActive = false;
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
+		User updatedUser = null;
 		if (user != null) {
 			user.setFirstName(addUserDTO.getFirstName());
 			user.setLastName(addUserDTO.getLastName());
@@ -2044,7 +2049,7 @@ public class UsersListRestController {
 			user.setUpdatedDate(commonUtil.currentDate());
 			userRole.setUpdatedBy(loginUser.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
-			User updatedUser = userService.addUser(user);
+			 updatedUser = userService.addUser(user);
 			
 			
 			if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess()) && addUserDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
@@ -2198,7 +2203,7 @@ public class UsersListRestController {
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole, employees, loginUser.getUserCode());
 		
-
+		int updated = associateBalanceLeaveService.updateAssociateBalanceLeaves(updatedUser,orgLocations,employees,userRole);
 		return "success";
 		}else{
 			return "DataMissing";

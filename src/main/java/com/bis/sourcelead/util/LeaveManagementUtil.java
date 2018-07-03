@@ -3,13 +3,17 @@ package com.bis.sourcelead.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +27,12 @@ import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
@@ -596,5 +602,82 @@ public class LeaveManagementUtil {
 			curTime += interval;
 		}
 		return dates;
+	}
+	
+	public boolean checkGenderAndDepartmentAndRoleAndEmpType(LeaveType leaveType, Employees emp, UserRole userRole)
+	{
+		boolean flag = false;
+		Set<Long> roleIds = new HashSet<>();
+		for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+			roleIds.add(leaveRole.getRoleId().getId());
+		}
+		if ((leaveType.getEffectiveGender() != null
+				&& StringUtils.isNotBlank(userRole.getUser().getGender())
+				&& userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()))
+				|| "All".equalsIgnoreCase(leaveType.getEffectiveGender())) {
+			// if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender())
+			// || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+			if ("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+				if (roleIds.size() > 0 && leaveType.getDepartmentId() != null
+						&& leaveType.getLeaveEmpType() != null) {
+					if (emp.getDepartmentId() != null) {
+						if (roleIds.contains(userRole.getRoles().getId())
+								&& leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
+								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+							flag = true;
+						}
+					}
+				}
+				else if (roleIds.size() > 0 && leaveType.getDepartmentId() != null
+						&& leaveType.getLeaveEmpType() == null) {
+					if (emp.getDepartmentId() != null) {
+						if (roleIds.contains(userRole.getRoles().getId())
+								&& leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+							flag = true;
+						}
+					}
+				}
+				else if (roleIds.size() == 0 && leaveType.getDepartmentId() != null
+						&& leaveType.getLeaveEmpType() != null) {
+					if (emp.getDepartmentId() != null) {
+						if (leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
+								&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+							flag = true;
+						}
+					}
+				}
+				else if (roleIds.size() > 0 && leaveType.getDepartmentId() == null
+						&& leaveType.getLeaveEmpType() != null) {
+					if (roleIds.contains(userRole.getRoles().getId())
+							&& emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+						flag = true;
+					}
+				}
+				else if (roleIds.size() == 0 && leaveType.getDepartmentId() == null
+						&& leaveType.getLeaveEmpType() != null) {
+					if (emp.getUserEmploymentType().equalsIgnoreCase(leaveType.getLeaveEmpType())) {
+						flag = true;
+					}
+				}
+				else if (roleIds.size() > 0 && leaveType.getDepartmentId() == null
+						&& leaveType.getLeaveEmpType() == null) {
+					if (roleIds.contains(userRole.getRoles().getId())) {
+						flag = true;
+					}
+				}
+				else if (roleIds.size() == 0 && leaveType.getDepartmentId() != null
+						&& leaveType.getLeaveEmpType() == null) {
+					if (emp.getDepartmentId() != null) {
+						if (leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+							flag = true;
+						}
+					}
+				}
+			}
+			else {
+				flag = true;
+			}
+		}
+		return flag;
 	}
 }
