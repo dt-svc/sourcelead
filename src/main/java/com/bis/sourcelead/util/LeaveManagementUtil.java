@@ -575,7 +575,6 @@ public class LeaveManagementUtil {
 			if (orgLocations.getWeekOffDays() != null) {
 				String[] weekOoffs = orgLocations.getWeekOffDays().split(",");
 				for (String weekEndDay : weekOoffs) {
-					System.out.println();
 					appliedLeaves.removeIf(x -> simpleDateformat.format(x.getApplyLeaveDate()).toUpperCase().equals(weekEndDay.trim().toUpperCase()));
 				}
 			}
