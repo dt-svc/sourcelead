@@ -10,6 +10,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -493,12 +497,18 @@ public class LeaveManagementUtil {
 		if (l.getIncludeWeekoff() != null) {
 			al.setIncludeWeekoff(l.getIncludeWeekoff());
 		}
+		al.setPeriod(leaveStatus);
 		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId(),leaveStatus);
+		List<AppliedLeaveDateView> unique = appliedLeaves.stream().filter(distinctByKey(p -> p.getApplyLeaveDate())).collect(Collectors.toList());
 		appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, leave.getFromDate(), leave.getToDate());
 		return appliedLeaves.size();
 	}
 	
-	
+	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
+    {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
 	
 	public float getTotalAppliedLeaveCount(OrgLocations orgLocations, LeaveType l,Long userId)
 	{
@@ -554,7 +564,7 @@ public class LeaveManagementUtil {
 	{
 		SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); 
 		
-		if(appliedLeaves.size() == 0){
+		if("Duration".equalsIgnoreCase(l.getPeriod())){
 			List<Date> dates = getDaysBetweenLeaveDates(startDate, endDate);
 			for(Date d : dates){
 				AppliedLeaveDateView view = new AppliedLeaveDateView();
