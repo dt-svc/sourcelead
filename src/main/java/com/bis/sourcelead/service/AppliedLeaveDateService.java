@@ -3,9 +3,12 @@ package com.bis.sourcelead.service;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 
 public interface AppliedLeaveDateService {
+	
+	public List<AppliedLeaveDate> getAppliedLeaveDateByUserId(Long userId,Date sDate,Date eDate);
 
 	int deleteAppliedLeaveDatesByLeaveId(Long leaveId);
 
