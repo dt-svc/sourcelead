@@ -204,6 +204,8 @@ public class CandidateIndex implements Serializable {
 	
 	private String dateofBirth;
 	
+	private String tags;
+	
 	
 	public String getSearchType() {
 		return searchType;
@@ -1018,6 +1020,14 @@ public class CandidateIndex implements Serializable {
 	public void setCreatedByUserCode(String createdByUserCode) {
 		this.createdByUserCode = createdByUserCode;
 
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 	
 }

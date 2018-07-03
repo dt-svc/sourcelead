@@ -493,7 +493,7 @@ public class LeaveManagementRestController {
 				l.setTotalBalanceLeaveCounts(balanceLeaveCounts);
 				l.setPendingLeaveCounts(pendingLeaveCounts);
 				l.setTakenLeaves(takenLeaveCounts);
-				l.setLeaveTypeBalanceLeaveCount(Float.parseFloat(dec.format(appliedLeaveCount)));
+				l.setLeaveTypeBalanceLeaveCount(appliedLeaveCount);
 			}
 		}
 		return roleLeaveType;

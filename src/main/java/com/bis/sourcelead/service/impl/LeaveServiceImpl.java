@@ -325,7 +325,7 @@ public class LeaveServiceImpl implements LeaveService{
 					leaveDTO.setLeaveUUID(savedLeave.getLeaveUUID());
 					User approverUser = userService.getUserById(Long.parseLong(approverUserId));
 					if(user.getId().longValue() != approverUser.getId().longValue())
-					sendLeaveEmailToApprovers(user, leaveDTO, orgLocations,approverUser);
+					sendLeaveEmailToApprovers(user, leaveDTO, orgLocations,approverUser,savedLeave);
 				}
 			}
 			
@@ -1359,7 +1359,7 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 	
 	@Override
-	public void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser) throws Exception
+	public void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser, Leave leave) throws Exception
 	{
 		EmailMessage emailMessage = new EmailMessage();
 		StringBuilder sb = new StringBuilder();
@@ -1377,6 +1377,11 @@ public class LeaveServiceImpl implements LeaveService{
 		emailMessage.setOrgLocationId(orgLoc.getId());
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		LeaveType leaveType = null;
+		if (null != leaveDTO.getLeaveType()) {
+			leaveType = leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
+		}
+		
 		if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
 			StringBuilder employee = new StringBuilder();
 			globalVarsMap.put("employeeUser", employee.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -1406,17 +1411,17 @@ public class LeaveServiceImpl implements LeaveService{
 		if (null != leaveDTO.getReason()) {
 			globalVarsMap.put("reason", leaveDTO.getReason());
 		}
-		Date fromDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), leaveDTO.getFromDate());
+		/*Date fromDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), leaveDTO.getFromDate());
 		Date toDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), leaveDTO.getToDate());
-		int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate, toDate);
-		leaveDTO.setNoOfDays(numberOfdays);
-		globalVarsMap.put("noOfDays", String.valueOf(leaveDTO.getNoOfDays()));
-		if (null != leaveDTO.getLeaveType()) {
-			LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
-			// LeaveType leaveType =
-			// leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
+		int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate, toDate);*/
+		
+		float appliedLeavesCount = leaveManagementUtil.getAppliedLeaveCount(orgLoc,leaveType,leave,Constants.LEAVE_PENDING);
+		
+		globalVarsMap.put("noOfDays", String.valueOf(appliedLeavesCount));
+		
+		if(leaveType.getName() != null)
 			globalVarsMap.put("leaveType", leaveType.getName());
-		}
+		
 		if (null != leaveDTO.getFromDate()) {
 			globalVarsMap.put("fromDate", leaveDTO.getFromDate());
 		}

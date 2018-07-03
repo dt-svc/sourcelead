@@ -10,7 +10,7 @@ window.onload = function() {
 
 	var leaveUUID = '${leaveUUID}';
 	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
-		getLeaveDetails();
+// 		getLeaveDetails();
 		getUsersBasedOnHierarchy('edit');
 		var checkFromEdit = '${leave.fromHalfDay}';
 		var checkToEdit = '${leave.toHalfDay}';
@@ -317,8 +317,11 @@ window.onload = function() {
 	    {
 		 if(fromDate == toDate)
 		 {
-			 
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 		 }
 		else
 			{
@@ -340,6 +343,10 @@ window.onload = function() {
 		 if(fromDate == toDate)
 		 {
 			$("#fromHalfDayDiv").hide();
+			$("#fromTimeDiv").hide();
+			 $("#toTimeDiv").hide();
+			 $("#fromDateHalfTime").val('');
+			 $("#toDateHalfTime").val('');
 			
 		  }
 		   else
@@ -359,6 +366,10 @@ window.onload = function() {
 		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 		 }else{
 			 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) )
 			 {
@@ -390,6 +401,10 @@ window.onload = function() {
 		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 	  }
 	 else
 	 {
@@ -555,7 +570,7 @@ function removeEndValid(){
     				        result = result +'	<li>';
     				  		result = result +'			<label>'+leaveType.name+'</label>';
     				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
+    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount.toFixed(2)+'</span>';
     				  		result = result +'	</li>'; 
     	        	  }
    	        	  result = result +'	</ul>'; 
@@ -841,7 +856,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	}
     		    	
     		    	if(report.attachmentRequired == "Y"){
-    			 		$("#uploadBtn").attr('data-validation',"required");
+    			 		$("#uploadFile").attr('data-validation',"required");
     			 		document.getElementById("attachmentY").style.display = 'block';
     			 		document.getElementById("attachmentN").style.display = 'none';
     		    	}else{
