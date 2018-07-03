@@ -1960,7 +1960,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 			
 		}
-		employee.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), userImport.getDateofJoin()));
+		if(userImport.getDateofJoin() != null) {
+			employee.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), userImport.getDateofJoin()));
+		}
 
 		
 		String password = null;

@@ -2573,9 +2573,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			//Day hours
 			if(!dataMigrationDTOJsonCopy.getString("dayHours").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("dayHours"))) {
 				 String DayHours = dataMigrationDTOJsonCopy.getString("dayHours"); 
-				 boolean isValidated = isDayHourValid(DayHours);
-					if(isValidated == false){
+				 String result = isDayHourValid(DayHours);
+					if(result.split(",")[0] == "false"){
 						 errorSet.put("dayHours", "Day Hours should less than 24 Hours");
+					} else {
+						dataMigrationDTOJsonCopy.put("dayHours", result.split(",")[1]);
 					}
 			}
 			
@@ -2653,22 +2655,26 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			return pat.matcher(email).matches();
 		}
 
-		private boolean isDayHourValid(String dayHours) {
-			String regex = "\\d+";
-			boolean flag;
-			int hours;
-			if (dayHours.matches(regex)) {
-				hours = Integer.parseInt(dayHours);
-				if (hours <= 24) {
-					flag = true;
-				} else {
-					flag = false;
-				}
-			} else {
-				flag = false;
-			}
-			return flag;
+	private String isDayHourValid(String dayHours) {
+		Pattern pattern;
+		Matcher matcher;
+		String TIME12HOURS_PATTERN = "([01]?[0-9]|2[0-3]):[0-5][0-9]";
+		pattern = Pattern.compile(TIME12HOURS_PATTERN);
+		int hours = 0;
+		int mins = 0;
+		if (dayHours.contains(":")) {
+			hours = Integer.parseInt(dayHours.split(":")[0]);
+			mins = Integer.parseInt(dayHours.split(":")[1]);
+		} else {
+			hours = Integer.parseInt(dayHours);
 		}
+		String finalTime = (hours < 10 ? "0" + hours : hours) + ":" + (mins < 10 ? "0" + mins : mins);
+		matcher = pattern.matcher(finalTime);
+		boolean result = matcher.matches();
+		return result + "," + finalTime;
+	}
 
+		
+		
 		
 	}
