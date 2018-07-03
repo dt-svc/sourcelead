@@ -580,16 +580,17 @@ function getEmployeementType(designationType){
 	 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
 	 var military = /^\s*([01]?\d|2[0-3]):[0-5]\d\s*$/i;
      var standard = /^\s*(0?\d|1[0-2]):[0-5]\d(\s+(AM|PM))?\s*$/i;
-	
+	alert("military >> "+DayHours.match(military))
+	alert("standard >> "+DayHours.match(standard))
 	if(DayHours.match(military) || DayHours.match(standard)){
-		
+		alert("1")
 		 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
 		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg"); 
 	/* 	$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
 		 document.getElementById("DayHours").setAttribute('record-exist','yes');
 		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');  */
 	}else{
-		
+		alert("2")
 		$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
 		 document.getElementById("DayHours").setAttribute('record-exist','yes');
 		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours'); 

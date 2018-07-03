@@ -124,7 +124,7 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 	    		   subQuery =  " and alView.leaveStatus = 'REJECTED'";
 	    	   }
 	    	   if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveStatus)) {
-	    		   subQuery =  " and alView.leaveStatus = 'CANCELLED ";  
+	    		   subQuery =  " and alView.leaveStatus = 'CANCELLED' ";  
 	    	   }
 	    	   if(Constants.LEAVE_PENDING.equalsIgnoreCase(leaveStatus)){
 	    		   subQuery =  " and alView.leaveStatus = 'PENDING' ";  
