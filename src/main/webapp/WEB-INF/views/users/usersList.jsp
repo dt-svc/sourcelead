@@ -259,7 +259,7 @@ function getUsersSearchResult(searchValue){
 							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
 									<c:forEach var="client" items="${clientsList}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.id}" ><label>${client.clientName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.orgRelId}" ><label>${client.clientName}</label></li>
 									</c:forEach>
 								</ul>
 							 </div> 
