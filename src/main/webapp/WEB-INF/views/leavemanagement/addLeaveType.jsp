@@ -73,6 +73,7 @@
 		}else{
 			$('#autoApproveDiv').hide();
 		}
+		carryForwardYesUsers();
 		
 	});
 </script>
@@ -371,7 +372,7 @@
 							</span>
 							</div>
 							</label>
-							<div class="col-md-3">
+							<div class="col-md-3" id="errorNoOfdaysToCarryforward">
 								<input type="text" id="noOfdaysToCarryforward" name="noOfdaysToCarryforward" field-name="No Of Days To CarryForward" placeholder="Enter no of Days" class="form-control" value="${leaveType.maxDaysToCarryforward}">
 							</div>
 						</div>
@@ -1421,11 +1422,14 @@ function leavepolicyDescription(){
 	} */
 	//Select Leave Carry Forward Users
 	function carryForwardNoUsers(){
+		$('#noOfdaysToCarryforward').attr('data-validation-optional', "true");
+		$('#errorNoOfdaysToCarryforward').find('p.jquery_form_error_message').remove();
 		$("#noOfDaysDiv").hide();
 		$("#noOfdaysToCarryforward").val();
 	}
 	
 	function carryForwardYesUsers(){
+		$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
 		$("#noOfDaysDiv").show();
 		$("#noOfdaysToCarryforward").val('');
 	}
