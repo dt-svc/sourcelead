@@ -307,8 +307,11 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 //			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
 //				for (LeaveType leaveType : leaveTypeList) {
-			Employees emp = employeesService.getEmployeByUserIdAndOrgRelationId(userRole.getUser().getId(), orgLocation.getId());
-					Set<Long> roleIds = new HashSet<>();
+			Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocation.getId());
+				
+			isLeaveApplicable = leaveManagementUtil.checkGenderAndDepartmentAndRoleAndEmpType(leaveType, emp, userRole);
+			
+			/*Set<Long> roleIds = new HashSet<>();
 					if(leaveType.getLeaveTypeRolesSet() != null) {
 						for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
 							roleIds.add(leaveRole.getRoleId().getId());
@@ -327,7 +330,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 						if("Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 							isLeaveApplicable = true;
 						}
-					}
+					}*/
 				
 //				}
 //			}
