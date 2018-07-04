@@ -469,7 +469,7 @@
 													if (opt.submissionStatus == 'INTERVIEW'){
 														result = result + "<option value='SelectedOnInterview'>Selected on Interview</option>";
 													}
-													if (opt.submissionStatus != 'SUBMISSION' && opt.submissionStatus != 'SUBMISSION_ACCEPT' && opt.submissionStatus != 'REQUEST_SENT' && opt.submissionStatus != 'NEW' && opt.submissionStatus != 'JOINED'){
+													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED'){
 														result = result + "<option value='Joined'>Joined</option>";
 													}
 													result = result + "<option value='Reject'>Reject</option>";

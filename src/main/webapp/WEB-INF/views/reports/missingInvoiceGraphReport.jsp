@@ -70,7 +70,7 @@ $(document).ready(function(){
 
         </div>
         <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingInvoiceDataGraph();" id="customizeButton">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingInvoiceDataGraph();" id="customizeButton">Run</button>
 		</div>
 		<!-- <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">

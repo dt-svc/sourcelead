@@ -404,7 +404,7 @@ public class AddExpensesRestController {
 				 
 				 
 						 if(null != clientProjectMember.getProjects()){
-					      globalVarsMap.put("projectName",clientProjectMember.getProjectName());
+					      globalVarsMap.put("projectName", clientProjectMember.getProjects().getProjectName());
 					 }
 				 
 //				 if(null != sah.getExpenseId()){
@@ -469,14 +469,22 @@ public class AddExpensesRestController {
 //				 }
 				 
 				
-				 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
-				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-				 String url = sourceleadUrl;
-				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg(),orgLoc);
+				
+					 
+					 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+					 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+					 String signature = null;
+					 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+						 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+					 }
+					 String url = sourceleadUrl;
+				 
+				 //construct HTML template using required data
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg(), orgLoc);
 				 emailMessage.setSubject(subject);
-				 emailMessage.setMessageBody(emailTemplate);
+				 emailMessage.setMessageBody(emailTemplate);	 
+					 
+					 
 				 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 
 				 EmailScenario  notificationScenario = null;

@@ -138,34 +138,34 @@ background-color: #fcfcfc;
                     <div class="clearfix"></div>
               <div class="mt5 clearfix">
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-blue" style="width:30%;"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
                     <p class="info-box-number"><span id="selfPendingCounts"></span></p>
-                    <p class="info-box-text" id="selfpend"></p>
+                    <p class="info-box-text text-muted mt5" id="selfpend"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-green" style="width:30%;"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
+                <div class="lm-portlet"> <span class="info-box-icon  text-muted" style="width:30%;"> <i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
                    <p class="info-box-number"><span id="selfApprovedCounts"></span></p>
-                   <p class="info-box-text" id="selfapp"></p>
+                   <p class="info-box-text text-muted mt5" id="selfapp"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-orange" style="width:30%;"> <i class="fa fa-times" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-times fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
                   <p class="info-box-number"><span id="selfRejectedCounts"></span></p>
-                  <p class="info-box-text" id="selfrej"></p>
+                  <p class="info-box-text text-muted mt5" id="selfrej"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-red" style="width:30%;"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-ban fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
                   <p class="info-box-number"><span id="selfCancelledCounts"></span></p>
-                  <p class="info-box-text" id="selfcanc"></p>
+                  <p class="info-box-text text-muted mt5" id="selfcanc"></p>
                   </div>
                 </div>
               </div>
@@ -235,34 +235,34 @@ background-color: #fcfcfc;
                 <div class="clearfix"></div>
                 <div class="mt5 clearfix row">
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-blue" style="width:30%;"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
                     <p class="info-box-number"><span id="employeeRequestedCounts"></span></p>
-                    <p class="info-box-text" id="empReq"></p>
+                    <p class="info-box-text text-muted mt5" id="empReq"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-green" style="width:30%;"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
                     <p class="info-box-number"><span id="employeeApprovedCounts"></span></p>
-                    <p class="info-box-text" id="empApp"></p>
+                    <p class="info-box-text text-muted mt5" id="empApp"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-orange" style="width:30%;"> <i class="fa fa-times" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-times fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
                     <p class="info-box-number"><span id="employeeRejectedCounts"></span></p>
-                    <p class="info-box-text" id="empRej"></p>
+                    <p class="info-box-text text-muted mt5" id="empRej"></p>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-ban fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
                     <p class="info-box-number"><span id="employeeCancelledCounts"></span></p>
-                    <p class="info-box-text" id="empCanc"></p>
+                    <p class="info-box-text text-muted mt5" id="empCanc"></p>
                   </div>
                 </div>
               </div>
