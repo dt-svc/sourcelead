@@ -3,14 +3,21 @@ package com.bis.sourcelead.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +30,12 @@ import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
@@ -493,12 +502,18 @@ public class LeaveManagementUtil {
 		if (l.getIncludeWeekoff() != null) {
 			al.setIncludeWeekoff(l.getIncludeWeekoff());
 		}
+		al.setPeriod(leaveStatus);
 		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId(),leaveStatus);
+		List<AppliedLeaveDateView> unique = appliedLeaves.stream().filter(distinctByKey(p -> p.getApplyLeaveDate())).collect(Collectors.toList());
 		appliedLeaves = getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, leave.getFromDate(), leave.getToDate());
 		return appliedLeaves.size();
 	}
 	
-	
+	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
+    {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
 	
 	public float getTotalAppliedLeaveCount(OrgLocations orgLocations, LeaveType l,Long userId)
 	{
@@ -554,7 +569,7 @@ public class LeaveManagementUtil {
 	{
 		SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); 
 		
-		if(appliedLeaves.size() == 0){
+		if("Duration".equalsIgnoreCase(l.getPeriod())){
 			List<Date> dates = getDaysBetweenLeaveDates(startDate, endDate);
 			for(Date d : dates){
 				AppliedLeaveDateView view = new AppliedLeaveDateView();
@@ -596,5 +611,85 @@ public class LeaveManagementUtil {
 			curTime += interval;
 		}
 		return dates;
+	}
+	
+	public boolean checkGenderAndDepartmentAndRoleAndEmpType(LeaveType leaveType, Employees emp, UserRole userRole)
+	{
+		boolean flag = false;
+		Set<Long> roleIds = new HashSet<>();
+		if(leaveType.getLeaveTypeRolesSet() != null){
+			for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+				roleIds.add(leaveRole.getRoleId().getId());
+			}
+		}
+		
+		if ((leaveType.getEffectiveGender() != null
+				&& StringUtils.isNotBlank(userRole.getUser().getGender())
+				&& userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender()))
+				|| "All".equalsIgnoreCase(leaveType.getEffectiveGender())) {
+			// if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender())
+			// || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
+			if ("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+				if (roleIds.size() > 0 && leaveType.getDepartmentId() != null
+						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
+					if (emp.getDepartmentId() != null) {
+						if (roleIds.contains(userRole.getRoles().getId())
+								&& leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
+								&& leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
+							flag = true;
+						}
+					}
+				}
+				else if (roleIds.size() > 0 && leaveType.getDepartmentId() != null
+						&& !StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
+					if (emp.getDepartmentId() != null) {
+						if (roleIds.contains(userRole.getRoles().getId())
+								&& leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+							flag = true;
+						}
+					}
+				}
+				else if (roleIds.size() == 0 && leaveType.getDepartmentId() != null
+						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
+					if (emp.getDepartmentId() != null) {
+						if (leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
+								&& leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
+							flag = true;
+						}
+					}
+				}
+				else if (roleIds.size() > 0 && leaveType.getDepartmentId() == null
+						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
+					if (roleIds.contains(userRole.getRoles().getId())
+							&& leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
+						flag = true;
+					}
+				}
+				else if (roleIds.size() == 0 && leaveType.getDepartmentId() == null
+						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
+					if (leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
+						flag = true;
+					}
+				}
+				else if (roleIds.size() > 0 && leaveType.getDepartmentId() == null
+						&& !StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
+					if (roleIds.contains(userRole.getRoles().getId())) {
+						flag = true;
+					}
+				}
+				else if (roleIds.size() == 0 && leaveType.getDepartmentId() != null
+						&& !StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
+					if (emp.getDepartmentId() != null) {
+						if (leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+							flag = true;
+						}
+					}
+				}
+			}
+			else {
+				flag = true;
+			}
+		}
+		return flag;
 	}
 }
