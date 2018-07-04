@@ -30,7 +30,7 @@
 		
 		
 		<div class="timeReFi">
-			<input type="button" onclick="timesheetReportsDiv();" class="btn btn-success" value="View"> 
+			<input type="button" onclick="timesheetReportsDiv();" class="btn btn-primary" value="Run"> 
 		</div>
 
 		<ul>

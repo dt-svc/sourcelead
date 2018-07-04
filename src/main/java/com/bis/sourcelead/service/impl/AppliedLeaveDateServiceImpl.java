@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
+import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 
@@ -15,6 +16,11 @@ public class AppliedLeaveDateServiceImpl implements AppliedLeaveDateService{
 
 	@Autowired
 	AppliedLeaveDateDao appliedLeaveDateDao;
+	
+	@Override
+	public List<AppliedLeaveDate> getAppliedLeaveDateByUserId(Long userId, Date sDate, Date eDate) {
+		return appliedLeaveDateDao.getAppliedLeaveDateByUserId(userId, sDate, eDate);
+	}
 	
 	@Override
 	public int deleteAppliedLeaveDatesByLeaveId(Long leaveId)
@@ -33,4 +39,12 @@ public class AppliedLeaveDateServiceImpl implements AppliedLeaveDateService{
 	{
 		return appliedLeaveDateDao.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocationId,leaveTypeId,sDate,eDate,userId);
 	}
+
+	@Override
+	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate, Long userId, String leaveStatus)
+	{
+		return appliedLeaveDateDao.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(orgLocationId,leaveTypeId,sDate,eDate,userId,leaveStatus);
+	}
+
+	
 }

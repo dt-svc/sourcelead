@@ -245,14 +245,14 @@ public class UserServiceImpl implements UserService {
 			  user.setMobilePhone(addUserDTO.getPhoneNumber());
 		  }
 		  
-		  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
-			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
-		  }
+			  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+				  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+			  }
 		  
-		  if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
+		     if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
 		    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
-		    }
-		  if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
+		     }
+		     if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
 			  user.setMiddelName(addUserDTO.getMiddleName());
 			  }else{
 			  user.setMiddelName(null);

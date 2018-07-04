@@ -68,7 +68,7 @@ $(document).ready(function(){
           
         </div>              
          <div class="col-md-2" id="paidBillreportGraph">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getPaidBillGraphReport();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getPaidBillGraphReport();">Run</button>
 		</div>
         <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">

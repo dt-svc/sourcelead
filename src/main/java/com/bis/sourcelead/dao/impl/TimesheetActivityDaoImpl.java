@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -42,17 +44,36 @@ public class TimesheetActivityDaoImpl  implements TimesheetActivityDao {
 
 	@Override
 	@Transactional
-	public Long getTimesheetActivityByProjectIdMasterCandidateIdFrequencyStartAndEndDateAndStatus(Long projectId, Long masterCandidateId, Date frequencyStartDate, Date frequencyEndDate, String status) {
+	public Map<String,Date> getTimesheetActivityByProjectIdMasterCandidateIdFrequencyStartAndEndDateAndStatus(Long projectId, Long masterCandidateId, Date frequencyStartDate, Date frequencyEndDate, String status) {
 		 Session session = this.sessionFactory.getCurrentSession();
-		 String queryOne = null;
-		 if(status.equalsIgnoreCase("submitted")) {
-			 queryOne = "SELECT MIN(activity.id)";
+		 Map<String,Date> dateMap = new HashMap<>();
+		 if(status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
+			 String query = " SELECT TA.CREATED_DATE FROM TIMESHEET_ACTIVITIES TA WHERE TA.ID IN(SELECT MIN(AV.ID)  FROM TIMESHEET_ACTIVITIES AV WHERE AV.PROJECT_ID = :projectId AND AV.MASTER_CANDIDATE_ID = :masterCandidateId AND AV.FREQUENCY_START_DATE = :frequencyStartDate AND AV.FREQUENCY_END_DATE = :frequencyEndDate AND AV.ACTIVITY_STATUS = 'SUBMITTED') ";
+			 List<Object> submittedOn = session.createSQLQuery(query).setLong("projectId",projectId).setLong("masterCandidateId", masterCandidateId).setDate("frequencyStartDate", frequencyStartDate).setDate("frequencyEndDate",frequencyEndDate).list();
+		     Date d1 = null;
+		     if(submittedOn != null && !submittedOn.isEmpty()) {
+				 d1= (Date) submittedOn.get(0);
+			 }
+			 dateMap.put("SUBMITTED",d1);
+			 dateMap.put("APPROVED",null);
 		 }else{
-			 queryOne = "SELECT MAX(activity.id)";
+			 String query = " SELECT TA.CREATED_DATE FROM TIMESHEET_ACTIVITIES TA WHERE TA.ID IN(SELECT MIN(AV.ID)  FROM TIMESHEET_ACTIVITIES AV WHERE AV.PROJECT_ID = :projectId AND AV.MASTER_CANDIDATE_ID = :masterCandidateId AND AV.FREQUENCY_START_DATE = :frequencyStartDate AND AV.FREQUENCY_END_DATE = :frequencyEndDate AND AV.ACTIVITY_STATUS = 'SUBMITTED')";
+			 List<Object> submittedOn = session.createSQLQuery(query).setLong("projectId",projectId).setLong("masterCandidateId", masterCandidateId).setDate("frequencyStartDate", frequencyStartDate).setDate("frequencyEndDate",frequencyEndDate).list();
+			 Date d1 = null;
+			 if(submittedOn != null && !submittedOn.isEmpty()) {
+				 d1= (Date) submittedOn.get(0);
+			 }
+			 dateMap.put("SUBMITTED",d1);
+			 
+			  query = " SELECT TA.CREATED_DATE FROM TIMESHEET_ACTIVITIES TA WHERE TA.ID IN(SELECT MAX(AV.ID)  FROM TIMESHEET_ACTIVITIES AV WHERE AV.PROJECT_ID = :projectId AND AV.MASTER_CANDIDATE_ID = :masterCandidateId AND AV.FREQUENCY_START_DATE = :frequencyStartDate AND AV.FREQUENCY_END_DATE = :frequencyEndDate AND AV.ACTIVITY_STATUS = 'SUBMITTED')";
+			  List<Object> approvedOn = session.createSQLQuery(query).setLong("projectId",projectId).setLong("masterCandidateId", masterCandidateId).setDate("frequencyStartDate", frequencyStartDate).setDate("frequencyEndDate",frequencyEndDate).list();
+			  Date d2 = null;
+			  if(approvedOn != null && !approvedOn.isEmpty()) {
+					 d2= (Date) approvedOn.get(0);
+			   }
+			  dateMap.put("APPROVED",d2);
 		 }
-		 String query = queryOne+" FROM TimesheetActivities activity WHERE activity.projectId.id =:projectId AND activity.masterCandidate.id =:masterCandidateId AND activity.frequencyStartDate = :frequencyStartDate AND activity.frequencyEndDate =:frequencyEndDate AND activity.activityStatus LIKE ('%"+ status +"%') ORDER BY activity.id DESC";
-		 List<Long> submissionList = session.createQuery(query).setLong("projectId",projectId).setLong("masterCandidateId", masterCandidateId).setDate("frequencyStartDate", frequencyStartDate).setDate("frequencyEndDate",frequencyEndDate).list();
-		 return submissionList.get(0);
+		 return dateMap;
 	}
 
 	@Override

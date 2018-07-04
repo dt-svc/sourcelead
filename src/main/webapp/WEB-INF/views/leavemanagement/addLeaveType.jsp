@@ -536,13 +536,8 @@
 							</span>
 							</div>
 							</label>
-							<div class="col-md-6 dropdown-select">
-								<select class="form-control" name="leaveAllowability" id="leaveAllowability">
-								<option value="">--Select Allowability--</option>
-								<option ${leaveType.period == 'Once' ? 'selected' : ''}>Once</option>
-								<option ${leaveType.period == 'Twice' ? 'selected' : ''}>Twice</option>
-								<option ${leaveType.period == 'Many' ? 'selected' : ''}>Many</option>
-								</select>
+							<div class="col-md-6">
+								<input type="text" class="form-control" name="leaveAllowability" placeholder="Enter no.of Times" id="leaveAllowability" value="${leaveType.allowability}" field-name="Allowability" data-validation-optional="true" data-validation="validate_int validate_length length1-10">
 							</div>
 						</div>
 						
@@ -870,7 +865,7 @@
 									</div>
 	                                </c:if>
 	                                <c:if test="${empty leaveType.includeInPayroll}">
-									      <input type="checkbox" name="includeInPayRoll" id="includeInPayRoll"
+									      <input type="checkbox" checked name="includeInPayRoll" id="includeInPayRoll"
 										   value="Y">Include in PayRoll
 										     <div class="tooltip">
 									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
