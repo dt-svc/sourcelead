@@ -26,6 +26,8 @@ public class DayWiseTimesheetReoprtsListDTO {
 	private String candidateLocation;
 	private BigInteger projectId;
 	private BigInteger masterCandidateId;
+	private Date submittedDate;
+	private Date approvedDate;
 	private Date sahFrequenchStartDate;
 	private Date sahFrequenchEndDate;
 	
@@ -174,4 +176,17 @@ public class DayWiseTimesheetReoprtsListDTO {
 	public void setSahFrequenchEndDate(Date sahFrequenchEndDate) {
 		this.sahFrequenchEndDate = sahFrequenchEndDate;
 	}
+	public Date getSubmittedDate() {
+		return submittedDate;
+	}
+	public void setSubmittedDate(Date submittedDate) {
+		this.submittedDate = submittedDate;
+	}
+	public Date getApprovedDate() {
+		return approvedDate;
+	}
+	public void setApprovedDate(Date approvedDate) {
+		this.approvedDate = approvedDate;
+	}
+	
 }

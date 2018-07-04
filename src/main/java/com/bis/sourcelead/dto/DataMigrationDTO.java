@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.enums.Status;
 
 public class DataMigrationDTO extends CommonDTO {
 
@@ -368,6 +370,56 @@ private String beneficiaryFirstName;
  // Candidate import fields ends
     
 	
+    
+    //Associate import fields
+                                     
+    private String emailId;			 
+                                     
+    private String phoneNumber;	 
+                                     
+    private String extensionNumber;  
+                                     
+    private String ratePer;			 
+
+    private String dateofJoin;		 
+
+    private String role;			 
+
+    private String invoiceFrequency; 
+
+    private String dayHours; 
+
+    private String dateString;
+
+    private Status isMailChecked;
+
+    private String reason;
+
+    private String vendorContact;
+
+    private String employmentType;
+
+    private String grade;
+
+    private String genderValue;
+    
+    private String shift;
+    
+    private String currentCurrency;
+    
+    private String shiftId;
+    
+    private String department;
+    
+    private String roleType;
+    
+    private String reportingManager;
+    
+    private String isMailSent;
+    
+    private String isGlobalAccess;
+    
+    
 	public String getEmployeeId() {
 		return employeeId;
 	}
@@ -1877,6 +1929,192 @@ private String beneficiaryFirstName;
 
 	public void setPrimarySkill(String primarySkill) {
 		this.primarySkill = primarySkill;
+	}
+
+
+	public String getEmailId() {
+		return emailId;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public String getExtensionNumber() {
+		return extensionNumber;
+	}
+
+	public String getRatePer() {
+		return ratePer;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public String getInvoiceFrequency() {
+		return invoiceFrequency;
+	}
+
+
+	public String getDateString() {
+		return dateString;
+	}
+
+	public Status getIsMailChecked() {
+		return isMailChecked;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public String getVendorContact() {
+		return vendorContact;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public String getShift() {
+		return shift;
+	}
+
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber) {
+		this.extensionNumber = extensionNumber;
+	}
+
+	public void setRatePer(String ratePer) {
+		this.ratePer = ratePer;
+	}
+
+	public String getDateofJoin() {
+		return dateofJoin;
+	}
+
+	public void setDateofJoin(String dateofJoin) {
+		this.dateofJoin = dateofJoin;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency) {
+		this.invoiceFrequency = invoiceFrequency;
+	}
+
+	public void setDateString(String dateString) {
+		this.dateString = dateString;
+	}
+
+	public void setIsMailChecked(Status isMailChecked) {
+		this.isMailChecked = isMailChecked;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public void setVendorContact(String vendorContact) {
+		this.vendorContact = vendorContact;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	public void setShift(String shift) {
+		this.shift = shift;
+	}
+
+	public String getGenderValue() {
+		return genderValue;
+	}
+
+	public void setGenderValue(String genderValue) {
+		this.genderValue = genderValue;
+	}
+
+	public String getCurrentCurrency() {
+		return currentCurrency;
+	}
+
+	public String getShiftId() {
+		return shiftId;
+	}
+
+	public void setCurrentCurrency(String currentCurrency) {
+		this.currentCurrency = currentCurrency;
+	}
+
+	public void setShiftId(String shiftId) {
+		this.shiftId = shiftId;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public String getRoleType() {
+		return roleType;
+	}
+
+	public String getReportingManager() {
+		return reportingManager;
+	}
+
+	public String getIsMailSent() {
+		return isMailSent;
+	}
+
+	public String getIsGlobalAccess() {
+		return isGlobalAccess;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public void setRoleType(String roleType) {
+		this.roleType = roleType;
+	}
+
+	public void setReportingManager(String reportingManager) {
+		this.reportingManager = reportingManager;
+	}
+
+	public void setIsMailSent(String isMailSent) {
+		this.isMailSent = isMailSent;
+	}
+
+	public void setIsGlobalAccess(String isGlobalAccess) {
+		this.isGlobalAccess = isGlobalAccess;
+	}
+
+	public String getDayHours() {
+		return dayHours;
+	}
+
+	public void setDayHours(String dayHours) {
+		this.dayHours = dayHours;
 	}
 
 	public String getInviteEmail() {

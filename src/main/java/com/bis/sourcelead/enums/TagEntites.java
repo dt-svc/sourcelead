@@ -1,0 +1,22 @@
+package com.bis.sourcelead.enums;
+
+public enum TagEntites {
+	
+	CANDIDATES("Candidates"),
+	JOBS("Jobs");
+	
+    private String value;
+	private TagEntites(String value){
+		this.value = value;
+	}
+	public String getValue() {
+		return value;
+	}
+	public static TagEntites getNameByValue(String tagName){
+	   	  for(TagEntites tagEntites : TagEntites.values()){
+	   	    if(tagName.equalsIgnoreCase(tagEntites.value)) 
+	   	    	return tagEntites;
+	   	  }
+	   	  return null;
+	}
+}

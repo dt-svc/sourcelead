@@ -226,9 +226,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 					}
 					if(record.get(Constants.DATEOFJOIN) !=null || !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))){
 						Date date = getDateFormat(record.get(Constants.DATEOFJOIN),"dd/MM/yyyy");
-						userImport.setDateOfJoin(date);
+						userImport.setDateofJoin(date.toString());
 					}else{
-						userImport.setDateOfJoin(null);
+						userImport.setDateofJoin(null);
 					}
 					userImport.setRole(record.get(Constants.ROLE));
 					userImport.setGrade(record.get(Constants.ASSOCIATE_GRADE));
@@ -393,10 +393,10 @@ public class UploadFileServiceImpl implements UploadFileService {
 							}
 							
 							if (row.getCell(8) == null || "".equalsIgnoreCase(row.getCell(8).toString())) {
-								userImport.setDateOfJoin(null);
+								userImport.setDateofJoin(null);
 							} else {
 								Date hireDate = getCellDate(row.getCell(8),fileName);
-								userImport.setDateOfJoin(hireDate);
+								userImport.setDateofJoin(hireDate.toString());
 							}
 							userImport.setRole(row.getCell(9).toString());
 							
@@ -607,11 +607,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 			
 		}
-		
-		employee.setHireDate(userImport.getDateOfJoin());
-		
-		
-		
+		employee.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), userImport.getDateofJoin()));
+
 		String password = null;
 		
 		User userExisted = userService.findByEmail(userImport.getEmailId());
@@ -1911,5 +1908,144 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}
 
 		return vendors;
+	}
+
+	@Override
+	public void saveBulkAssociate(UsersImport userImport, OrgLocations orgLocations, User loginUser) throws Exception {
+		UserRole userRole = new UserRole();
+		Employees employee = new Employees();
+		OrgRelations orgRelation = null;
+		OrgSpoc orgspoc = null;
+		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRoleType(), orgLocations.getId());
+		User reportUser = userService.findByEmailAndOrgLocationsId(userImport.getReportingManager(), orgLocations.getId());
+		if(userImport.getShiftId() != null) {
+			Shift shift = shiftService.getShiftListByShiftNameAndOrglocationId(userImport.getShiftId(), orgLocations.getId());
+			if(shift != null) {
+				userRole.setShift(shift);
+			}
+		}
+		userRole.setReportingManager(reportUser);
+		userRole.setResourceManager(reportUser);
+		userRole.setRoles(role);
+		userRole.setUserType(role.getDisplayName());
+		userRole.setCreatedDate(new Date());
+		userRole.setCreatedBy(loginUser.getUserCode());
+		userRole.setOrgLocations(orgLocations);
+		if(StringUtils.isNotBlank(userImport.getGrade())) {
+			AssociateGrades grades = associateGradesService.getAssociateGradesByGradeNameAndOrgLocationId(userImport.getGrade(), orgLocations.getId());
+			if(grades != null) {
+				userRole.setGradeId(grades);
+			}
+		}
+		if(StringUtils.isNotBlank(userImport.getDesignation())) {
+			userRole.setDesignation(userImport.getDesignation());
+		}
+		
+		employee.setEmployeeId(userImport.getEmployeeId());
+		employee.setRate(userImport.getRate());
+		employee.setRatePer(userImport.getRatePer());
+		employee.setDailyHours(userImport.getDayHours());
+		employee.setOrgLocations(orgLocations);
+		
+		employee.setUserEmploymentType(userImport.getDesignationType());
+		
+		if("C2C".equalsIgnoreCase(userImport.getEmploymentType())) {
+			Map<String,Long> vendors = getVendorAndVendorContacts(userImport.getEmploymentType(), userImport.getVendor(), userImport.getVendorContact(), orgLocations.getId());
+			if(vendors != null) {
+				orgRelation = orgRelationsService.getOrRelationsById(vendors.get("vendorId"));
+				employee.setOrgRelationId(orgRelation);
+				
+				orgspoc = orgSpocService.getOrgSpocById(vendors.get("spocId"));
+				employee.setSpocId(orgspoc);
+			}
+			
+		}
+		if(userImport.getDateofJoin() != null) {
+			employee.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), userImport.getDateofJoin()));
+		}
+
+		
+		String password = null;
+		
+		User userExisted = userService.findByEmail(userImport.getEmailId());
+		
+		if(null !=  userExisted){
+			UserRole userRole1 = userRoleService.getLoginUserPrimaryRole(userExisted.getId());
+			if(userRole1 != null && userRole1.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRole1.getUserState().toString())){
+				password = SourceLeadRandomCodeHelper.generateRandomPassword();
+				userExisted.setPassword(sourceleadPasswordEncoder.encode(password));
+				userService.addUser(userExisted);
+				userRole.setIsPrimary(0);
+			}else{
+				userRole.setIsPrimary(1);
+			}
+			userRole.setUserState(Status.NOT_LOGGEDIN);
+			userRole.setUser(userExisted);
+			if(userImport.getIsMailChecked() != null) {
+				userRole.setIsMailSent(userImport.getIsMailChecked());
+			}else {
+				userRole.setIsMailSent(Status.N);
+			}
+			userRoleService.addUserRole(userRole);
+			employee.setUser(userExisted);
+			employeesService.addEmployee(employee);
+			
+			if(userImport.getIsMailChecked() !=null){
+				userService.sendEmail(userExisted, loginUser, password,orgLocations.getId());
+			}
+			
+			MasterCandidate masterCandidate = null;
+			masterCandidate = getMasterCandidateByInteligence(userExisted);
+			if(null == masterCandidate){
+				masterCandidate = storeMasterCandidate(userExisted);
+			}
+			
+			storeCandidate(userExisted, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
+		}else{
+			User user  = new User();
+			user.setFirstName(userImport.getFirstName());
+			user.setLastName(userImport.getLastName());
+			user.setEmail(userImport.getEmail());
+			user.setGender(userImport.getGenderValue());
+			user.setMobilePhone(userImport.getPhoneNumber());
+			user.setExtensionNumber(userImport.getExtensionNumber());
+			user.setEmploymentType(userImport.getEmploymentType());
+			user.setCreatedDate(new Date());
+			user.setCreatedBy(loginUser.getUserCode());
+			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			user.setUserName(userImport.getEmailId());
+			password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			user.setPassword(sourceleadPasswordEncoder.encode(password));
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+	 		user.setUrlSentTime(new Date());
+	 		user.setIsVerified(Constants.NO);
+			userRole.setIsPrimary(1);
+			userRole.setUserState(Status.NOT_LOGGEDIN);
+			userRole.setUser(user);
+			if(userImport.getIsMailChecked() != null) {
+				userRole.setIsMailSent(userImport.getIsMailChecked());
+			}else {
+				userRole.setIsMailSent(Status.N);
+			}
+			
+		    userService.addUser(user);	
+		    userRoleService.addUserRole(userRole);
+		   
+			employee.setUser(user);
+			employeesService.addEmployee(employee);
+			if(userImport.getIsMailChecked() !=null){
+				userService.sendEmail(user, loginUser, password,orgLocations.getId());
+				registrationService.sendActivationEmail(user,orgLocations);
+			}
+			userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+			
+		    MasterCandidate masterCandidate = null;
+			masterCandidate = getMasterCandidateByInteligence(user);
+			if(null == masterCandidate){
+				masterCandidate = storeMasterCandidate(user);
+			}
+			storeCandidate(user, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
+		}
+		
 	}
 }

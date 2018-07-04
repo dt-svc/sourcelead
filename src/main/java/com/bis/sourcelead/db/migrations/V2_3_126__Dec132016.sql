@@ -1,7 +1,7 @@
 
-ALTER TABLE `REQUIREMENT_OFFERS` 
-DROP COLUMN `Notify_To_Vendor`,
-DROP COLUMN `Notify_To_Applicant`;
+#ALTER TABLE `REQUIREMENT_OFFERS` 
+#DROP COLUMN `Notify_To_Vendor`,
+#DROP COLUMN `Notify_To_Applicant`;
 
 DROP TABLE IF EXISTS `REQUIREMENT_OFFER_HISTORY`;
 CREATE TABLE `REQUIREMENT_OFFER_HISTORY` (
@@ -24,10 +24,10 @@ CREATE TABLE `REQUIREMENT_OFFER_HISTORY` (
   FOREIGN KEY(ORG_LOCATION_ID) REFERENCES `ORG_LOCATIONS`(ID)
 );
 
-INSERT INTO `EMAIL_SCENARIO` (`ID`, `SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('76', 'Timesheet Scheduler', 'Notification', 'Timesheet Scheduler', 'Used for Timesheet Scheduler Notification', 'You need to update timesheet', '', '', '', 'N', 'SLADMIN', 'com', 'in.com');
+INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('Timesheet Scheduler', 'Notification', 'Timesheet Scheduler', 'Used for Timesheet Scheduler Notification', 'You need to update timesheet', '', '', '', 'N', 'SLADMIN', 'com', 'in.com');
 
 UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear {{TimesheetScheduler.FirstName}}{{TimesheetScheduler.LastName}},\nYou need to update the timesheets of as soon as possible' WHERE `ID`='76';
-INSERT INTO `EMAIL_SCENARIO` (`ID`, `SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('75', 'Timesheet Scheduler Level1 Manager', 'Email', 'Timesheet Scheduler Level1 Manager', 'Used for Timesheet Scheduler Level1 Manager', 'Employees not update timesheet', 'sourcelead', 'Best Regards,\n', 'Dear {{TimesheetScheduler.FirstName}}{{TimesheetScheduler.LastName}},\n\n  Employees not update their  timesheet . The list of     & Frequencies are below\n{{TimesheetScheduler.WeekFrequency}}So update as soon as possible', 'N', 'SLADMIN', 'com', 'in.com');
+INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('Timesheet Scheduler Level1 Manager', 'Email', 'Timesheet Scheduler Level1 Manager', 'Used for Timesheet Scheduler Level1 Manager', 'Employees not update timesheet', 'sourcelead', 'Best Regards,\n', 'Dear {{TimesheetScheduler.FirstName}}{{TimesheetScheduler.LastName}},\n\n  Employees not update their  timesheet . The list of     & Frequencies are below\n{{TimesheetScheduler.WeekFrequency}}So update as soon as possible', 'N', 'SLADMIN', 'com', 'in.com');
 
 INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('InterviewrTemplate','Email');
 INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'interviewerFirstName', '{{InterviewrTemplate.InterviewerFirstName}}');

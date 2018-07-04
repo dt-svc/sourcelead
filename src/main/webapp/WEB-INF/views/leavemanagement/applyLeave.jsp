@@ -10,7 +10,7 @@ window.onload = function() {
 
 	var leaveUUID = '${leaveUUID}';
 	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
-		getLeaveDetails();
+// 		getLeaveDetails();
 		getUsersBasedOnHierarchy('edit');
 		var checkFromEdit = '${leave.fromHalfDay}';
 		var checkToEdit = '${leave.toHalfDay}';
@@ -170,6 +170,10 @@ window.onload = function() {
               </div>
             </div>
               
+            <div class="form-group" id="durationDiv" style="display:none">
+             	<label class="col-md-12" id="durationId"></label>
+            </div>
+              
             <div class="form-group">
               <label class="col-md-3" id="reasonIdY" style="display:block">Reason<span class="text-danger paddingLeft" >*</span></label>
               <label class="col-md-3" id="reasonIdN" style="display:none">Reason</label>
@@ -184,7 +188,7 @@ window.onload = function() {
               <div class="col-md-9 errorInptgroup" id="attachmentId">
                   <div class="positionRelative clearfix"><i class="clearUpload" title="clear" onClick="removedocfile();"></i>
                   
-                  <div class="input-group ratetype col-md-12 pull-left" title="">
+                  <div class="input-group ratetype col-md-12 pull-left" title="" id="uploadFileGroup">
 	                      <label class="input-group-btn"> 
 	                        <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Choose File
 	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
@@ -317,8 +321,11 @@ window.onload = function() {
 	    {
 		 if(fromDate == toDate)
 		 {
-			 
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 		 }
 		else
 			{
@@ -340,6 +347,10 @@ window.onload = function() {
 		 if(fromDate == toDate)
 		 {
 			$("#fromHalfDayDiv").hide();
+			$("#fromTimeDiv").hide();
+			 $("#toTimeDiv").hide();
+			 $("#fromDateHalfTime").val('');
+			 $("#toDateHalfTime").val('');
 			
 		  }
 		   else
@@ -359,6 +370,10 @@ window.onload = function() {
 		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 		 }else{
 			 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) )
 			 {
@@ -390,6 +405,10 @@ window.onload = function() {
 		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 	  }
 	 else
 	 {
@@ -444,6 +463,8 @@ window.onload = function() {
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
 			checkFromDate();
+			calcaulateDuraton();
+			validateDate();
 // 			getLeaveDetails(finalDateFormatEndDate);
 			}
 		});
@@ -462,11 +483,6 @@ window.onload = function() {
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
 		});
-	  
-	  document.getElementById("uploadBtn").onchange = function () {
-  	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
-  	    };
-		
 	});
 </script>
 
@@ -477,6 +493,30 @@ function removeStartValid(){
 
 function removeEndValid(){
 	$('#toDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function calcaulateDuraton(){
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
+	var leaveTypeUUID = $("#leaveType").val();
+	var ckbox = $('#checkbox-1');
+	if (ckbox.is(':checked')) {
+		 userId = $("#user").val();
+	 }else{
+		 userId = '${SourceLeadWeb_userId}';
+	 }
+	if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined' && leaveTypeUUID != null && leaveTypeUUID != '' && leaveTypeUUID != 'undefined'){
+		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId,  function(result) {
+			if(result != null){
+				$("#durationDiv").show();
+				$("#durationId").html("Duration : "+result+" day(s)");
+			}
+		}); 
+	}else{
+		$("#durationDiv").hide();
+		$("#durationId").html("Duration : 0 day(s)");
+	}
+	
 }
  </script>
 
@@ -555,7 +595,7 @@ function removeEndValid(){
     				        result = result +'	<li>';
     				  		result = result +'			<label>'+leaveType.name+'</label>';
     				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
+    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount.toFixed(2)+'</span>';
     				  		result = result +'	</li>'; 
     	        	  }
    	        	  result = result +'	</ul>'; 
@@ -654,6 +694,52 @@ function onbehalf() {
 	    }
 	}
     
+}
+</script>
+
+
+<script>
+var selectedFile = document.getElementById("uploadBtn");
+selectedFile.addEventListener("change", function() {
+	 $("#uploadFile").focus();
+	 if(validate_fileupload(this.value)){
+		 var docSize =  $("#uploadBtn")[0].files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+			  $("input#uploadFile").after("<p class='jquery_form_error_message'>File size should be less then 2MB </span>");
+			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','File size should be less then 2MB');
+			  document.getElementById("uploadFile").value="";
+	      }else{
+	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+  		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	    }
+	 }
+});
+
+/* upload file script */
+document.getElementById("uploadBtn").onchange = function () {
+	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+};
+
+</script>
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+    var allowed_extensions = new Array("docx","doc","pdf","rtf");
+    var file_extension = fileName.split('.').pop(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i]==file_extension)
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
 }
 </script>
 
@@ -841,7 +927,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	}
     		    	
     		    	if(report.attachmentRequired == "Y"){
-    			 		$("#uploadBtn").attr('data-validation',"required");
+    			 		$("#uploadFile").attr('data-validation',"required");
     			 		document.getElementById("attachmentY").style.display = 'block';
     			 		document.getElementById("attachmentN").style.display = 'none';
     		    	}else{
@@ -872,7 +958,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		validateMinMaxDays(report.minDays, report.maxDays);
     		    	}
     		    	
-    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "Y"){
+    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
     		    		validateOverDrawLeaves(report.name);
     		    	}
     		    	
@@ -904,6 +990,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    }
 		});
 	}
+	calcaulateDuraton();
 	setTimeout(function(){ validateDate(); }, 800);
 		
 }
@@ -1184,5 +1271,6 @@ function getUsersBasedOnHierarchy(type){
    }
 }
 </script>
+
 
 <jsp:include page="../masterFooter.jsp" />
