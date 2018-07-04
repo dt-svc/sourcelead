@@ -191,7 +191,7 @@ overflow-x: auto;
 									 <div class="clearfix filterSearch-ul">
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
 										    <c:forEach var="report" items="${add_client}">
-											     <li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${report.id}" ><label>${report.clientName}</label></li>
+											     <li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${report.orgRelId}" ><label>${report.clientName}</label></li>
 											</c:forEach>
 										</ul>
 									 </div> 
