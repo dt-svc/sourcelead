@@ -35,14 +35,14 @@
                             <div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mb">
                                 <div class="col-md-12 clearfix noPad">
                                 	<div class="col-md-2 paddingRight">
-											<select class="form-control" name="immigrationFormList[0].formCategory" id="formCategory0" title='Form Category' field-name="Select Form Category" data-validation="required">
+											<select class="form-control" name="immigrationFormList[0].formCategory" onchange="validationFormName($(this),0)" id="formCategory0" title='Form Category' field-name="Select Form Category" data-validation="required">
 													<option value="" selected>--Select Form Type--</option>
 													<option value="PetitionerCategory" >Petitioner</option>
 												    <option value="Document Type" >Beneficiary</option>
 													<option value="AttorneyCategory" >Attorney</option>
 											</select>
 											</div>
-                                    <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName"/></div>
+                                    <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name" placeholder="Form name" data-name="formName"/></div>
                                     <div class="col-md-3">
 
                                         <div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
@@ -79,14 +79,14 @@
                                         <div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mb">
                                             <input type="hidden" name="immigrationFormList[${rows.count-1}].id" value="${item.id}" id="templateId${rows.count-1}"/>
 											<div class="col-md-2 paddingRight">
-											<select class="form-control" name="immigrationFormList[${rows.count-1}].formCategory" id="formCategory${rows.count-1}" title='Form Category' field-name="Select Form Category" data-validation="required">
+											<select class="form-control" name="immigrationFormList[${rows.count-1}].formCategory" onchange="validationFormName($(this),${rows.count-1})" id="formCategory${rows.count-1}" title='Form Category' field-name="Select Form Category" data-validation="required">
 													<option value="" selected>--Select Form Type--</option>
 													<option ${item.formCategory == "PetitionerCategory" ? 'selected': ''} value="PetitionerCategory">Petitioner</option>
 							        				<option ${item.formCategory == "Document Type" ? 'selected': ''} value="Document Type">Beneficiary</option>
 							        				<option ${item.formCategory == "AttorneyCategory" ? 'selected': ''} value="AttorneyCategory">Attorney</option>
 											</select>
 											</div>
-                                            <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName"/></div>
+                                            <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name" placeholder="Form name" data-name="formName"/></div>
 
                                             <div class="col-md-3 mt10" id="docNameDiv${rows.count-1}">
                                                 <label id="documentName${rows.count-1}"  class="text-primary tbldata-dotdot-vsm pull-left" title="${item.fileName}">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file${rows.count-1}" onclick = "deleteDoc('${rows.count-1}')"><i class="fa fa-trash removeIcon"></i></span>
@@ -125,14 +125,14 @@
                                         <div id="dynamicFormRow${rows.count-1}" class="col-md-12 clearfix noPad mb"><!--when rowIndex is 1, 2 row onwards loaded with close button-->
                                             <input type="hidden" name="immigrationFormList[${rows.count-1}].id" value="${item.id}" id="templateId${rows.count-1}"/>
                                             <div class="col-md-2 paddingRight">
-											<select class="form-control" name="immigrationFormList[${rows.count-1}].formCategory" id="formCategory${rows.count-1}" title='Form Category' field-name="Select Form Category" data-validation="required">
+											<select class="form-control" name="immigrationFormList[${rows.count-1}].formCategory" onchange="validationFormName($(this),${rows.count-1})" id="formCategory${rows.count-1}" title='Form Category' field-name="Select Form Category" data-validation="required">
 													<option value="" selected>--Select Form Type--</option>
 													<option value="PetitionerCategory" >Petitioner</option>
 												    <option value="Document Type" >Beneficiary</option>
 													<option value="AttorneyCategory" >Attorney</option>
 											</select>
 											</div>
-                                            <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName"/></div>
+                                            <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name" placeholder="Form name" data-name="formName"/></div>
 
                                             <div class="col-md-3 mt10" id="docNameDiv${rows.count-1}">
                                                 <label id="documentName${rows.count-1}"  class="text-primary tbldata-dotdot-vsm pull-left" title="${item.fileName}">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file${rows.count-1}" onclick = "deleteDoc('${rows.count-1}')"><i class="fa fa-trash removeIcon"></i></span>
@@ -189,6 +189,12 @@
     function uploadBtnFile(id) {
         $('#uploadFile' + id).val($("#uploadBtn" + id).val().replace(/C:\\fakepath\\/i, ''));
     }
+    
+    function validationFormName(thisVal,count){
+    	if(thisVal.val() !== "" ){
+    		$("#formName"+count).attr("data-validation","required validate_length length2-100")
+    	}
+    }
 </script> 
 
 <script>
@@ -221,11 +227,11 @@
     function appendTemplateFormDetails(rowId) {
         var result = "";
         result = result + "<div id='dynamicFormRow" + rowId + "' class='col-md-12 clearfix noPad mb'>";
-        result = result + '<div class="col-md-2 paddingRight"><select class="form-control" name="immigrationFormList['+rowId+'].formCategory" id="formCategory'+rowId+'" title="Form Category" field-name="Select Form Category" data-validation="required">';
+        result = result + '<div class="col-md-2 paddingRight"><select class="form-control" name="immigrationFormList['+rowId+'].formCategory" onchange="validationFormName($(this),'+rowId+')" id="formCategory'+rowId+'" title="Form Category" field-name="Select Form Category" data-validation="required">';
 		result = result + '<option value="" selected>--Select Form Type--</option><option value="PetitionerCategory" >Petitioner</option><option value="Document Type" >Beneficiary</option><option value="AttorneyCategory" >Attorney</option></select>';
 		result = result + "</div>";
 		result = result + '<div class="col-md-2 paddingRight">';
-		result = result + "<input type='text' id= 'formName" + rowId + "' name = 'immigrationFormList[" + rowId + "].formName' class='form-control' field-name='Form Name' placeholder='Form name' data-validation = 'required validate_length length2-100' data-name='formName'/>";
+		result = result + "<input type='text' id= 'formName" + rowId + "' name = 'immigrationFormList[" + rowId + "].formName' class='form-control' field-name='Form Name' placeholder='Form name' data-name='formName'/>";
         result = result + "</div>";
         result = result + "<div class='col-md-3'>";
         result = result + " <div class='input-group col-md-12 errorInptgroup' style='margin:0 auto'>";
@@ -272,10 +278,10 @@
         applyChangeEvent();
         checkFormNames();
     });
-    function applyChangeEvent() {
+    /* function applyChangeEvent() {
         $("input[data-name='formName']").unbind('keyup');
         $("input[data-name='formName']").on("keyup", function () {
             checkFormNames();
         });
-    }
+    } */
 </script>
