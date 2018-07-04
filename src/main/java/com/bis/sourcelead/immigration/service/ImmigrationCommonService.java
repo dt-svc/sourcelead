@@ -82,9 +82,9 @@ public interface ImmigrationCommonService {
 
 	 Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception;
 	 
-	 List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId,Long templateId, Long candidateId,User user,OrgLocations orgLocations, String searchVal) throws Exception;
+	 List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId,Long templateId, Long candidateId,User user,OrgLocations orgLocations, String searchVal, String myImmigration) throws Exception;
 
-	List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId, Long immigrationId, String searchVal);
+	List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId, Long immigrationId, String searchVal, String myImmigration);
 
 	ImmigrationCandidateForms saveImmigrationCandidateForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, User user, OrgLocations orgLocations) throws Exception;
 

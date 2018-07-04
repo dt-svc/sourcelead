@@ -243,13 +243,13 @@ $(document).ready(function() {
         immigration.displayVisaDetails(candidateId,'Visa');
         }else if(tab=='#docsTab'){
         	showLoading("immigrationLoadingDocsTab");
-        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"");
+        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
         }else if(tab =='#notesTab'){
         	showLoading("immigrationLoadingNotesTab");
         	getNotesListByImmigration(candidateId);
         } else if(tab=='#formsTab'){
         	showLoading("immigrationLoadingFormsTab");
-        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"");
+        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
         }else if(tab=='#activitiesTab'){
         	showLoading("immigrationLoadingActivitiesTab");
         	getImmigrationActivies();

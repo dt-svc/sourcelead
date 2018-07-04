@@ -27,4 +27,6 @@ public interface AssociateBalanceLeaveDao {
 	AssociateBalanceLeave saveOrUpdateAssocicateBalanceLeaves(AssociateBalanceLeave assBalLeave);
 
 	int updateAssociateAccuralBalanceLeaveCount(List<AssociateBalanceLeaveDTO> assBalList);
+
+	List<AssociateBalanceLeave> getAssoBalLeavesByUserId(Long userId, Long orgLocationId);
 }

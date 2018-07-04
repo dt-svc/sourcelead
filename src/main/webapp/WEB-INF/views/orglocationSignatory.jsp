@@ -230,12 +230,19 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='col-md-6'>";
 	result = result +"<div class='form-group clearfix' id='associateDiv'>";
 	result = result +"<label class='col-md-4'>Associate<span class='text-danger'>&nbsp;*</span></label>";
-	result = result +"<div class='col-md-8'>";
+	
+	result = result +"<div class='col-md-8' id='editSignerDiv' style='display:block'>";
 	result = result +"<select class='chosen-select form-control' type='text' name='associateId' id='signatoryAssociate' field-name='Associate' onchange='validateAssociate();' data-validation='required'>";
 	result = result +"</select>";
 	result = result +"<input type='hidden' name='uuid' id='signatoryUUID' value=''>";
 	result = result +"<input type='hidden' name='signatoryFromType' id='signatoryFromType' value='orgSettings'>";
 	result = result +"</div>";
+	
+	result = result +"<div class='col-md-8' id='showSignerDiv' style='display:none'>";
+	result = result +"<input class='form-control' type='text' id='showAssociateName' readonly>";
+	result = result +"<input type='hidden'  id='showAssociateId' value=''>";
+	result = result +"</div>";
+	
 	result = result +"</div>";
 	result = result +"</div>";
 	
@@ -361,15 +368,16 @@ function getDesignationType(){
 
 <script type="text/javascript">
 function saveSignatory(){
+	var associateId = $("#showAssociateId").val();
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-         }; 
+         }
       var sourceleadUrl ='${sourceleadUrl}';
   	  var formData = $($('#signatory_form')[0]).serialize();
-  	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue, formData, function(result) {
+  	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue+"&associateId="+associateId, formData, function(result) {
   		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
   		    showError(result.responseMessage);
   		    $("#loading").removeAttr('style');
@@ -551,6 +559,11 @@ function saveSignatory(){
 			  $("#authorizedType").val(data.authorizedType);
 			  $("#authorizedType").trigger("chosen:updated");
 			  $("#signatoryAuthorisedAmount").val(data.authorizedAmount);
+			  document.getElementById("editSignerDiv").style.display="none";
+			  document.getElementById("showSignerDiv").style.display="block";
+			  $("#showAssociateName").val(data.firstName);
+			  $("#showAssociateId").val(data.associateId);
+			  
 		  }
 	  });
   }

@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,9 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
+import com.bis.sourcelead.entity.Leave;
+
+import opennlp.tools.parser.Cons;
 
 @Repository
 public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
@@ -45,6 +50,18 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 
 	@Override
 	@Transactional
+	public List<AppliedLeaveDate> getAppliedLeaveDateByUserId(Long userId,Date sDate,Date eDate)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date startDate = new java.sql.Date(sDate.getTime());
+		java.sql.Date endDate = new java.sql.Date(eDate.getTime());
+		String query = "from AppliedLeaveDate al left join fetch al.leave lv left join fetch lv.leaveType lt  where lv.user.id =:userId and (al.applyLeaveDate >= :startDate and al.applyLeaveDate <= :endDate)";
+		List<AppliedLeaveDate> appliedLeaveList  = session.createQuery(query).setLong("userId", userId).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+		return appliedLeaveList;
+	}
+	
+	@Override
+	@Transactional
 	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(Long orgLocationid, Long leaveTypeId,Date startDate,Date endDate)
 	{
 		List<AppliedLeaveDateView> appliedLeaveList = null;
@@ -59,14 +76,80 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate,Long userId)
 	{
        try {
+    		java.sql.Date startDate = new java.sql.Date(sDate.getTime());
+    		java.sql.Date endDate = new java.sql.Date(eDate.getTime());
     	   Session session = this.sessionFactory.getCurrentSession();
-           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and alView.userId = :userId and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate)";
-           List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setParameter("startDate", sDate).setParameter("endDate", eDate).list();
+           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and alView.userId = :userId and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate) and (alView.leaveStatus = 'APPROVED' or alView.leaveStatus = 'PENDING')";
+           List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
            return appliedLeaveList;
        }catch (Exception e) {
     	   e.printStackTrace();
 	}
     	return null;
 		
+    	
+    	
+    	
+	}
+
+	@Override
+	@Transactional
+	public AppliedLeaveDate saveAppliedLeaveDates(AppliedLeaveDate appliedLeaveDate) {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (appliedLeaveDate != null) {
+				session.saveOrUpdate(appliedLeaveDate);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return appliedLeaveDate;
+	}
+
+	@Override
+	@Transactional
+	public boolean checkForExistedLeave(Leave leave) {
+		boolean existed = false;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from AppliedLeaveDate ald where ald.leave.id = :leaveId";
+			List<Leave> leaveList = session.createQuery(query).setLong("leaveId", leave.getId()).list();
+			if(leaveList != null && leaveList.size() > 0) {
+				existed = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return existed;
+	}
+
+	@Override
+	@Transactional
+	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate, Long userId, String leaveStatus)
+	{
+		try {
+	    	   String subQuery = "";
+	    	   if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveStatus) ) {
+	    		   subQuery =  " and alView.leaveStatus = 'APPROVED' ";
+	    	   }
+	    	   if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveStatus)) {
+	    		   subQuery =  " and alView.leaveStatus = 'REJECTED'";
+	    	   }
+	    	   if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveStatus)) {
+	    		   subQuery =  " and alView.leaveStatus = 'CANCELLED' ";  
+	    	   }
+	    	   if(Constants.LEAVE_PENDING.equalsIgnoreCase(leaveStatus)){
+	    		   subQuery =  " and alView.leaveStatus = 'PENDING' ";  
+	    	   }
+	    		java.sql.Date startDate = new java.sql.Date(sDate.getTime());
+	    		java.sql.Date endDate = new java.sql.Date(eDate.getTime());
+	    	   Session session = this.sessionFactory.getCurrentSession();
+	           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and alView.userId = :userId and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate) "+subQuery;
+	           List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+	           return appliedLeaveList;
+	       }catch (Exception e) {
+	    	   e.printStackTrace();
+		}
+	    	return null;
 	}
 }

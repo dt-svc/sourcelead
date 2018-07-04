@@ -643,6 +643,8 @@ public class Constants {
 			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
 			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
 
+	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee ID" , "First Name*","Last Name", "Email id*", "Phone Number", "Extension Number",
+			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User(Y/N)","Is Global Manage(Y/N)"};
 
 
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
@@ -988,6 +990,8 @@ public class Constants {
 	public static final String CANDIDATE_REQUEST_DOCUMENTS = "requested for documents";
 	public static final String CANDIDATE_ACCEPT_REQUEST_DOCUMENTS = "accepted documents";
 	public static final String CANDIDATE_REJECT_REQUEST_DOCUMENTS = "rejected documents";
+	public static final String CANDIDATE_TAG_ADDED = "added tag";
+	public static final String CANDIDATE_TAG_REMOVED = "removed tag";
 	
 	public static final String EXPENSES = "expenses";
 	public static final String VIEW_TYPE = "LISTVIEW"; 
@@ -1161,6 +1165,8 @@ public class Constants {
 	
 	public static final String HALFYEARLY = "HalfYearly";
 	public static final String QUARTERLY = "Quarterly";
+	
+	public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
 	
 //	Annually   
 

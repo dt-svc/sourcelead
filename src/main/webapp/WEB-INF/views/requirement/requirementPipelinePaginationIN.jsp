@@ -266,8 +266,8 @@
 															+ submissionType
 															+ '\')";>';
 													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
-													if (opt.submissionStatus != 'SUBMISSION' && opt.submissionStatus != 'SUBMISSION_ACCEPT' && opt.submissionStatus != 'REQUEST_SENT' && opt.submissionStatus != 'NEW' && opt.submissionStatus != 'JOINED'){
-														result = result + "<option value='Joined'>Joined</option>";
+													if (opt.submissionStatus == 'INTERVIEW'){
+														result = result + "<option value='SelectedOnInterview'>Selected on Interview</option>";
 													}
 													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERACCEPTED'
@@ -299,6 +299,9 @@
 							"bLengthChange" : true,
 							"bDestroy" : true,
 							"ordering" : true,
+							"createdRow": function ( row, data, index ) {
+					    		row.setAttribute('id',"job_"+data.id);
+				    	    },
 							"oLanguage" : {
 								"sSearch" : "",
 								"sZeroRecords" : "",

@@ -42,6 +42,8 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	
 	private Map<Long,EmployeeTimeSheetSubmissionStatusDTO> statusMap;
 	
+	private Map<String,List<EmployeeLeaveDTO>> empLeaveMap;
+	
     private boolean monEditable;
 	
 	private boolean tueEditable;
@@ -71,6 +73,8 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	private boolean submitButtonVisible;
 	
 	private boolean saveButtonVisible;
+	
+	private boolean leaveOnFullWeek;
 
 	public LinkedHashSet<String> getInvoiceFrequencyList() {
 		return invoiceFrequencyList;
@@ -314,6 +318,22 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 		this.oldSubmittedProjectMembersList = oldSubmittedProjectMembersList;
 	}
 
+	public Map<String, List<EmployeeLeaveDTO>> getEmpLeaveMap() {
+		return empLeaveMap;
+	}
 
+	public void setEmpLeaveMap(Map<String, List<EmployeeLeaveDTO>> empLeaveMap) {
+		this.empLeaveMap = empLeaveMap;
+	}
+
+	public boolean isLeaveOnFullWeek() {
+		return leaveOnFullWeek;
+	}
+
+	public void setLeaveOnFullWeek(boolean leaveOnFullWeek) {
+		this.leaveOnFullWeek = leaveOnFullWeek;
+	}
+
+	
      
 }

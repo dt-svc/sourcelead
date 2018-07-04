@@ -16,7 +16,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface RequirementReportService {
 
-	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, String startDateUTC, String endDateUTC,String status) throws Exception;
+	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, String startDateUTC, String endDateUTC,String status,String searchValue) throws Exception;
 
 	List<RequirementSubmissionHistory> getApplicantsCountsPerReq(Long requirementId)throws Exception;
 
@@ -42,7 +42,7 @@ public interface RequirementReportService {
 
 	ApplicantReport getApplicantsCountsByDateRange(OrgLocations orgLocation,String reportType,String customStartDate,String customEndDate)throws Exception;
 
-	List<ApplicantReport> getReceivedApplicantsCountsPerOrgLocId(OrgLocations orgLocation,String reportType,String customStartDate,String customEndDate) throws Exception;
+	List<ApplicantReport> getReceivedApplicantsCountsPerOrgLocId(OrgLocations orgLocation,String reportType,String customStartDate,String customEndDate,String searchValue) throws Exception;
 
 	List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId, Set<String> userCodesList,Date startDateUTC, Date endDateUTC);
 
