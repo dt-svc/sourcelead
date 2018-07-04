@@ -155,14 +155,13 @@ function toDate(selector) {
     		<li>
        <div class="dropdown-select positionRelative repSelWrap clearfix">
 		<select class="form-control repSelFiled" id="reportTypeId" onChange="custDates();flushCustomDates();">
-		<option value="">-- Select --</option> 
-		  <option value="today" selected>Today</option>
-		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 Week</option>
-		  <option value="twoweeks">2 Weeks</option>
-		  <option value="month">1 Month</option>
-		  <option value="twomonths">2 Months</option>
-		   <option value="custom">Custom</option> 
+			  <option value="Last_7_days">Last 7 days</option>
+			  <option value="Last_15_days">Last 15 days</option>
+			  <option value="1_month">Last 1 month</option>
+			  <option value="3_months">Last 3 months</option>
+			  <option value='YTD' >YTD</option>
+	          <option value='Last_Year'>Last Year</option>
+			  <option value="custom">Custom</option>
 		</select>          
           
 		<div class="repSelBtn" id="RunApplicantDivId"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getDayWiseReports();">Run</button></div> 

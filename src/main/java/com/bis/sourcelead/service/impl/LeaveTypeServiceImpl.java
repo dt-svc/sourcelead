@@ -109,6 +109,8 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		if (leaveTypeDTO.getDepartment() != null && !"".equalsIgnoreCase(leaveTypeDTO.getDepartment())) {
 			Department dep = departmentService.getDepartmentById(Long.parseLong(leaveTypeDTO.getDepartment()));
 			leaveType.setDepartmentId(dep);
+		}else {
+			leaveType.setDepartmentId(null);
 		}
 		if (leaveTypeDTO.getRoles() != null && !leaveTypeDTO.getRoles().isEmpty() && leaveTypeDTO.getRoles().size() > 0) {
 			Set<LeaveRole> leaveRolesSet = getLeaveRoles(leaveTypeDTO.getRoles(), leaveType, user);
@@ -195,6 +197,8 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		
 		if(leaveTypeDTO.getLeveEmpType() != null && leaveTypeDTO.getLeveEmpType().size() > 0){
 			leaveType.setLeaveEmpType(String.join(",", leaveTypeDTO.getLeveEmpType()));
+		}else{
+			leaveType.setLeaveEmpType("");
 		}
 		
 		if(leaveTypeDTO.getLeaveEncashment() != null){
@@ -297,14 +301,22 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
 		
-		if(flag == true) {
+		if (leaveTypeDTO.getRoles() == null || leaveTypeDTO.getRoles().isEmpty()) {
+			leaveService.deleteAllLeaveRolesByParticularTableId(Constants.LEAVE_TYPE,leaveType.getId());
+		} 
+		/*if(flag == true) {
 			addOrUpdateLeaveTypeToprojectTask(orgLocation.getId(),leaveTypeDTO,leaveType,user,flag);
 		}else if(flag == false) {
 			addOrUpdateLeaveTypeToprojectTask(orgLocation.getId(),leaveTypeDTO,leaveType,user,flag);
-		}
+		}*/
 		return leaveType;
 	}
 	 
+		private void deleteLeaveRoleIds(long leaveTypeId) {
+		// TODO Auto-generated method stub
+		
+	}
+
 		private void addOrUpdateLeaveTypeToprojectTask(Long orgLocationId, LeaveTypeDTO leaveTypeDTO, LeaveType leaveType, User user, boolean flag) throws Exception {
 			List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocationId);
 			if(projectsList != null && projectsList.size() > 0) {

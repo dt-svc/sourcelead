@@ -299,4 +299,13 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 		
 	}
 
+
+	@Override
+	@Transactional
+	public List<AssociateBalanceLeave> getAssoBalLeavesByUserId(Long userId, Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.orgLocationId.id= :orgLocationId").setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
+		return assoBalLeave;
+	}
 }
