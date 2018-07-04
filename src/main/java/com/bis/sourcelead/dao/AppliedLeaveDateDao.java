@@ -8,6 +8,8 @@ import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.Leave;
 
 public interface AppliedLeaveDateDao {
+	
+	public List<AppliedLeaveDate> getAppliedLeaveDateByUserId(Long userId,Date sDate,Date eDate);
 
 	int deleteAppliedLeaveDatesByLeaveId(Long leaveId);
 
@@ -18,5 +20,7 @@ public interface AppliedLeaveDateDao {
 	AppliedLeaveDate saveAppliedLeaveDates(AppliedLeaveDate appliedLeaveDate);
 
 	boolean checkForExistedLeave(Leave leave);
+
+	List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate, Long userId, String leaveStatus);
 
 }

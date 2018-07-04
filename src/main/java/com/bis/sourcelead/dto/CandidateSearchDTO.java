@@ -34,6 +34,7 @@ public class CandidateSearchDTO extends SearchDTO implements Serializable {
     private String candidateTypeFilter;
     private String createdByCandidates;
     private String createdByFilter;
+    private List<String> candidateTags;
     
     
 	public List<String> getCandidateSkills() {
@@ -271,5 +272,13 @@ public class CandidateSearchDTO extends SearchDTO implements Serializable {
 
 	public void setCreatedByFilter(String createdByFilter) {
 		this.createdByFilter = createdByFilter;
+	}
+
+	public List<String> getCandidateTags() {
+		return candidateTags;
+	}
+
+	public void setCandidateTags(List<String> candidateTags) {
+		this.candidateTags = candidateTags;
 	}
 }
