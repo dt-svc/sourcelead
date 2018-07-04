@@ -2,13 +2,11 @@ package com.bis.sourcelead.dao.impl;
 
 import java.sql.CallableStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -29,14 +27,17 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Repository
@@ -52,6 +53,12 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 	
 	@Autowired
 	LeaveTypeService leaveTypeService;
+	
+	@Autowired
+	private EmployeesService employeesService;
+	
+	@Autowired
+	private LeaveManagementUtil leaveManagementUtil;
 	
 	@Override
 	@Transactional
@@ -195,9 +202,30 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 							stmt.setString(2, String.valueOf(additionLeaves));
 						}else {
 							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-								stmt.setString(2, String.valueOf(leaveType.getNoOfDaysPerPeriod()));
+								if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+									stmt.setString(2, String.valueOf(leaveType.getNoOfDaysPerPeriod()));
+								}else {
+									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+									 try {
+										float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+										stmt.setString(2, String.valueOf(days));
+									} catch (ParseException e) {
+										e.printStackTrace();
+									}
+								}
 							}else {
-								stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
+								
+								if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+									stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
+								}else {
+									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+									 try {
+										float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+										stmt.setString(2, String.valueOf(days));
+									} catch (ParseException e) {
+										e.printStackTrace();
+									}
+								}
 							}
 						}
 						stmt.setLong(3, orgLocationId);
