@@ -61,8 +61,6 @@
 	</div>
 </div>
 	
- <div id="addApplicantDiv"></div>
- 
 	<script>
 	var isAssociate = 'N';
 	var _csrfParam = '${_csrf.parameterName}';
@@ -935,7 +933,7 @@ function cancel(candidateId){
 				</button>
 	</div>
      <div class="pull-left cand-advsrche">
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();getSourceleadTags();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
 			  </a> 
@@ -973,6 +971,17 @@ function cancel(candidateId){
 					  </div>
 					  <div class="row">
 					  <div class="clearfix">
+					  
+					  
+					  <div class="col-md-8">
+						<label>Tags</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="canTags" name="candidateTags">
+								</select>
+							 </div>
+						</div>
+						
+						
 						<div class="col-md-8">
 						<label>Immigration Status</label>
 							<div class="clearfix">
@@ -1323,6 +1332,29 @@ function cancel(candidateId){
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 <!--   Error Message   --> 
 
+   
+   <script>
+   function getSourceleadTags(){
+ 		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getSourceleadTagsList?"+tokenParamName+"="+tokenValue, 
+		        success: function(json) {
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt+ "'>"+opt+"</option>";
+			        		
+					}
+		        	$("#canTags").empty();
+			        $("#canTags").append(output);
+			        $('#canTags').trigger("chosen:updated");
+		        },
+		    }); 
+   }
+   </script>
+   
+   
    <script>
 	   function msgFadein() {
 			$("#candSelector").fadeIn(200);
@@ -1343,6 +1375,7 @@ function cancel(candidateId){
 		$(".new_side_wrap").removeClass("new_side_wrap_active");
 		$(".req_side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
+		candidateList();
 	}
 </script>
 
@@ -1843,6 +1876,7 @@ function getCities(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#canVisa").val('').trigger("chosen:updated");
+	    $("#canTags").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
@@ -1889,6 +1923,8 @@ function getCities(){
 		 
 		   //Adding Customized Visa list this method is slead-common.js
 		   tagIt("canVisa", 'Press Enter-Key Or Comma(,) Or Tab To Add Visa:', 'tagItBykeyForSkills','skills','Visa');
+		   
+		   tagIt("canTags", 'Press Enter-Key Or Comma(,) Or Tab To Add Tags:', 'tagItBykeyForSkills','skills','Visa');
 		   
 		   //Adding Customized Visa list this method is slead-common.js
 		   tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add Education:', 'tagItBykeyForSkills','skills','Education');
@@ -2316,6 +2352,7 @@ function minMaxExperience(){
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#canVisa").val('').trigger("chosen:updated");
+	    $("#canTags").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");
@@ -2359,6 +2396,7 @@ function minMaxExperience(){
 	     $("#applicantType").val('');
 	     $("#canSkills").val('');
 	     $("#canVisa").val('');
+	     $("#canTags").val('');
 	     $("#primarySkill").val('');
 	    
 	}
@@ -2691,6 +2729,7 @@ function openCandidateFilterPop(){
 	 $(".advancedsearch-mask").fadeIn();
 }
 function resetCandidateFilter(){
+	clearCandidateSearchKeys();
 	$("ul#TypeFilter > li input:radio").prop("checked",false);
 	$("ul#AllTypeFilter > li input:radio").prop("checked",false);
 	$("ul#UpdatedFilter > li input:radio").prop("checked",false);

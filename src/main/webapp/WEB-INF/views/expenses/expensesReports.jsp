@@ -31,7 +31,7 @@
 					<div id="selectQuarterDropDownId"></div>
 				</div>
 				<div class="timeReFi">
-					<input type="button" class="btn btn-success" value="View"	onclick="expensesReportList();">
+					<input type="button" class="btn btn-primary" value="Run"	onclick="expensesReportList();">
 				</div>
 				<ul>
 					<li id="export-pop"><i class="glyphicon glyphicon-export"></i>
