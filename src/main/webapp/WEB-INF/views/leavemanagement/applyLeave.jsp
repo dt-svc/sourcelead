@@ -706,6 +706,7 @@ selectedFile.addEventListener("change", function() {
 		 var docSize =  $("#uploadBtn")[0].files[0].size;
 	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
 	      if(docSize > 2097152){
+// 	    	  $('#leaveLoading').removeAttr('style');
 	    	  document.getElementById("uploadFile").value = '';
 	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
 			  $("input#uploadFile").after("<p class='jquery_form_error_message'>File size should be less then 2MB </span>");
