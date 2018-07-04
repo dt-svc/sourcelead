@@ -31,8 +31,10 @@ window.onload = function() {
    var isSuperUser = '${SourceLeadWeb_isSuperUser}';
    if(isSuperUser){
 	   $("#approvalDiv").hide();
+	   $("#notifyToOthersDiv").hide();
    }else{
 	   $("#approvalDiv").show();
+	   $("#notifyToOthersDiv").show();
    }
 }
 </script>
@@ -212,7 +214,7 @@ window.onload = function() {
 
 		<div class="clearfix"></div>
 		<c:if test="${!empty leave.notifyToOthers}">
-         <div class="form-group">
+         <div class="form-group" id="notifyToOthersDiv">
 				<div class="ml">
 							<input  type="checkbox" checked name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
 					<label>&nbsp;&nbsp;Notify to others
@@ -223,8 +225,7 @@ window.onload = function() {
 			</c:if>
 			
 		<c:if test="${empty leave.notifyToOthers}">
-		<c:if test="${SourceLeadWeb_isSuperUser != true}">
-         <div class="form-group">
+         <div class="form-group" id="notifyToOthersDiv">
 				<div class="ml">
 							<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
 					<label>&nbsp;&nbsp;Notify to others
@@ -232,7 +233,6 @@ window.onload = function() {
 					</label>
 				</div>
 			</div>
-		</c:if>
 		</c:if>
 			
 			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
@@ -943,15 +943,20 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	
     		    	if(report.autoApprove == "Y"){
     		    		$("#approvalDiv").hide();
+    		    		$("#notifyToOthersDiv").hide();
+    		    		
     		    	}else{
     		    		if(userId === '${SourceLeadWeb_userId}'){
     		    			if(isSuperUser == 'true'){
     	   	   		    		   $("#approvalDiv").hide();
+    	   	   		    			$("#notifyToOthersDiv").hide();
     	   	   		    	   }else{
     	   	   		    		   $("#approvalDiv").show();
+    	   	   		    		   $("#notifyToOthersDiv").show();
     	   	   		    	   }
     		    		}else{
-	   	   		    		   $("#approvalDiv").show();
+	   	   		    		 $("#approvalDiv").show();
+    		    			 $("#notifyToOthersDiv").show();
 	   	   		    	   }
     		    	}
     		    	
@@ -1175,6 +1180,7 @@ function getApproversList(){
 			result += '<input type="text" class="form-control" id="approverUser" readOnly value="'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')"/>';
 			result += '<input type="hidden" class="form-control" name="approverUser" readOnly value="'+opt.id+'"/>';
 			$("#approvalDiv").show();
+			$("#notifyToOthersDiv").show();
 			$("#approverUserDiv").empty();
 			$("#approverUserDiv").append(result);
 	// 		$('#approverUser').trigger("chosen:updated");
