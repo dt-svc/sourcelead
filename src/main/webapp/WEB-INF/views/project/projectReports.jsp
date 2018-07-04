@@ -1133,7 +1133,10 @@ function getTaskPercentge(data){
 			result = result + '                 <tbody>';
 			 for(var i=0; i<json.length; i++){
 				 var report = json[i];
-				 
+				 var generatedId = "";
+				 if(report.generatedId != null && report.generatedId != "" && report.generatedId != "undefied"){
+					 generatedId = report.generatedId +" -";
+				 } 
 				   result = result + '                 <tr>';
 				   if(report.taskTypes == "Epic"){
 					   result = result + '   <td><i class="fa fa-bolt text-info" title="Epic"></i></td>';
@@ -1146,7 +1149,8 @@ function getTaskPercentge(data){
 				   }else if(report.taskTypes == "General"){
 					   result = result + '                     <td><i class="fa fa-spinner text-warning" title="General Task"></i></td>';
 				   }
-					result = result + '                     <td><span title="'+report.generatedId+'" ><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+report.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'">'+report.generatedId+'</a></span></td>';
+				   
+					result = result + '                     <td><span title="'+generatedId+' '+report.taskName+'" ><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+report.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'">'+generatedId+' '+report.taskName+'</a></span></td>';
 					result = result + '                     <td>  '+report.actionTimeStr+' </td>';
 					result = result + '                     <td> '+report.percentage+'% </td>';
 					result = result + '                     <td>';
