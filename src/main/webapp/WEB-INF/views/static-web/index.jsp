@@ -17,7 +17,7 @@
 		<a href="/register" target="_blank">Sign Up</a>
 	</li>
 	<li>
-		<a href="javascript:void(0)" onClick="requestDemo()">GET A DEMO</a>
+		<a href="javascript:void(0)" id="demoRequest" onClick="requestDemo()">GET A DEMO</a>
 	</li>
 	<li class="hidden">
 		<a href="javascript:void(0)">GET A FREE TRIAL</a>
@@ -316,5 +316,9 @@
 <script type="text/javascript">
 window.onload = function() {
 	$("#indexpageID").addClass("slactive");
+	var demoRequest = '${demoRequest}';
+	if(demoRequest != null && demoRequest != '' && demoRequest != 'undefined'){
+		$("#demoRequest").click();
+	}
 }
 </script>
