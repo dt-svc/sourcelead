@@ -499,7 +499,13 @@
 						<div class="form-group">
 
 							<label class="col-md-4">Color Picker<span
-								class="text-danger">&nbsp;* </span><i class='fa fa-info-circle text-muted' title='Color coding for the leave type throughout the application'></i></label>
+								class="text-danger">&nbsp;* </span>
+								<div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Color coding for the leave type throughout the application.</span>
+									</span>
+								</div>
+								</label>
 							<div class="col-md-6">
 
 							
@@ -1086,7 +1092,12 @@
 									<input type="checkbox" checked="true" name="leavePolicy" id="leavePolicy" value="Y">Leave Policy
 	                           </c:if>
 								<c:if test="${empty leaveType.leavePolicy}">
-									<input type="checkbox" name="leavePolicy" id="leavePolicy" value="N">Leave Policy<i class='fa fa-info-circle text-muted' title='provides the leave policy for a particluar leave type.'></i>
+									<input type="checkbox" name="leavePolicy" id="leavePolicy" value="N">Leave Policy
+									    <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Provides the leave policy for a particluar leave type.</span>
+									</span>
+									</div>
 
 									
 
