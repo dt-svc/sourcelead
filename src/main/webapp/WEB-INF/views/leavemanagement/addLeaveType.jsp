@@ -262,7 +262,7 @@
 							<div class="form-group" id="departmentDiv">
 								<label class="col-md-4">Select Department</label>
 								<div class="col-md-6 dropdown-select">
-									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();valid();"
+									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
 										<option value="">--Select Department--</option>
@@ -1420,14 +1420,6 @@ function leavepolicyDescription(){
 	 
 	
 // 	${leaveType.leavesCarryforward == 'Y'}
-	function valid(){
-		var id = $('#department').val();
-		if(id != "" && id != null && id != "undefined"){
-			$("#saveLeaveType").attr("disabled", false);
-		}else{
-			$("#saveLeaveType").attr("disabled", true);
-		}
-	}
 	/* $("#roles").chosen().change({
 		("#roles").attr("disabled", false);
 	  }); */
@@ -1496,7 +1488,6 @@ function leavepolicyDescription(){
 
 <script>
 $('.chosen-select').chosen().on('change', function() {
-	
 	var roles = $("#roles").val();
 	var leveEmpType = $("#leveEmpType").val();
 	var department = $("#department").val();
@@ -1510,9 +1501,18 @@ $('.chosen-select').chosen().on('change', function() {
 		$("#saveLeaveType").removeAttr('disabled');
 		document.getElementById("applicableId").style.display="none";
 	}else{
-		$("#saveLeaveType").removeAttr('disabled');
+		$("#department").val('').trigger("chosen:updated");
+		$("#roles").val('').trigger("chosen:updated");
+		$("#leveEmpType").val('').trigger("chosen:updated");
+		$("#saveLeaveType").prop('disabled',true);
 		document.getElementById("applicableId").style.display="block";
+		
 	}
+	 if(roles == null){
+		$("#roles").val('').trigger("chosen:updated");
+	}else if(department == null){
+		$("#department").val('').trigger("chosen:updated");
+	} 
 	
 	
 })

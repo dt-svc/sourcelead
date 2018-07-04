@@ -107,8 +107,8 @@
       
        <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus == 'REOPENED'}">
        	  <div class='sm text-center' title="Reopened"><h3 class='bg-blue'>Reopened</h3>
-	       	  <i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i>
-	       	 	<div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.reopenReason}</div>
+	       	 <%--  <i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i>
+	       	 	<div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.reopenReason}</div> --%>
 	   	 		 <br><p title="${expApproverHierarchy.actionPerformedBy}">By :${expApproverHierarchy.actionPerformedBy}</p>
    	 	 </div>
       </c:if>
