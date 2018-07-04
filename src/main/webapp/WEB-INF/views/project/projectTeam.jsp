@@ -354,8 +354,8 @@ function filterStatus() {
 	    		  }
 	    		
 	            result = result + '	 	<th>Emp Name</th>';
-	        /*     result = result + '	 	<th>Emp Email</th>';*/
-	            result = result + '	 	<th>Emp Role</th>'; 
+	        /*     result = result + '	 	<th>Emp Email</th>';
+	            result = result + '	 	<th>Emp Role</th>'; */
 	            result = result + '	     <th>Start Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
 	            result = result + '	     <th>End Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
 	            result = result + '	     <th>Bill Rate</th>';
@@ -432,8 +432,8 @@ function filterStatus() {
 		        		 }
 		        		
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
-		              /*   result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>'; */
-		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
+		              /*   result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>'; 
+		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';*/
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+projectStartDateStr+'">'+projectStartDateStr+'</span></div></td>';
 		                if(status == 'COMPLETED'){
 		                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';

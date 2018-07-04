@@ -108,8 +108,6 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		customDTO.setLabelinfo(customList.getLabelInfo());
 		customDTO.setLabelName(customList.getLabelName());
 		
-		
-		
 		if(StringUtils.isEmpty(customList.getPlaceHolder())) {
 			
 			if(customList.getFieldType().equalsIgnoreCase("TextBox")){
@@ -130,14 +128,7 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		}else{
 				customDTO.setPlaceHolder(customList.getPlaceHolder());
 			}
-		/*
-		if(customList.getPlaceHolder().isEmpty() == true){
-			customDTO.setPlaceHolder("Enter");
-		}else{
-			customDTO.setPlaceHolder(customList.getPlaceHolder());
-		}
-		*/
-		
+	
 		customDTO.setOrglocationId(customList.getOrgLocations().getId());
 		customDTO.setOrgId(customList.getOrg().getId());
 		customDTO.setMinDate(customList.getMinDate());
