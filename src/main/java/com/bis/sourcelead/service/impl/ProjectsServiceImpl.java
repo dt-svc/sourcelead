@@ -630,8 +630,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setSharedLocationId(loginOrgLocation);
 			projects.setIsProjectShared(Constants.YES);
 			projects.setIsClientProject(Constants.YES);
-			OrgRelations orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(loginOrgLocation.getId(), clientOrgLocationId);
-			
+			OrgRelations orgRelations = null;
+			orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(loginOrgLocation.getId(), clientOrgLocationId);
+			if(orgRelations == null) {
+				orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(loginOrgLocation.getId(), clientOrgLocationId);
+			}
 			if(projects.getId() == null) {
 				Set<ProjectClients> clientProjectClientsList = getProjectClientsForSharedClientProject(projectsDTO,projects,loginOrgLocation,clientOrgLocationId,user,orgRelations);
 				projects.setSharedClientProjectClients(clientProjectClientsList);

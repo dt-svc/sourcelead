@@ -214,7 +214,7 @@ function validateShortCode(){
 											data-validation-optional="true">
 											<option value="">-- Select Client --</option>
 											<c:forEach var="report" items="${clientsList}">
-											<option value="${report.clientLocationId}">${report.clientName}</option>
+											<option value="${report.orgRelId}">${report.clientName}</option>
 											</c:forEach>
 								</select>
 							</div>
