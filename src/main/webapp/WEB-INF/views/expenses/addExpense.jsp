@@ -313,7 +313,7 @@ $(document).ready(function(){
 <div class="form-footer clearfix mt">
 		   <div class="col-lg-12">
 			<div class="pull-right">
-			 <c:if test="${submissionStatus == 'DRAFT'}">
+			 <c:if test="${submissionStatus == 'REOPENED'}">
 			  <input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
 			  </c:if>
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">

@@ -60,7 +60,7 @@ $(document).ready(function(){
                 <div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-					<c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED' and submissionStatus ne 'REOPENED'}">
+					<c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'and submissionStatus ne 'REOPENED'}">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
 
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
@@ -71,7 +71,7 @@ $(document).ready(function(){
 							</c:forEach>
 						</select>
 					</c:if>
-					<c:if test ="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED' or submissionStatus eq 'REOPENED'}">
+					<c:if test ="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED'or submissionStatus eq 'REOPENED'}">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" disabled="disabled" >
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
 								<option value="">Select Project</option>
@@ -331,7 +331,7 @@ $(document).ready(function(){
 		
 		
 			<div class="pull-right">
-			<!-- <input type="button" value="Save" class="btn btn-sm btn-primary"> -->
+			 <input type="button" value="Save" class="btn btn-sm btn-primary"> 
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('submitted');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Approve" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('approved');">
 			<c:if test ="${!empty expenses.id}">
