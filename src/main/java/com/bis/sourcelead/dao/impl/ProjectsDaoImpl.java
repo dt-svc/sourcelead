@@ -735,8 +735,6 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			 queryObj = session.createQuery(query + query1.toString()+sortingQry);
 		}
 		
-		System.out.println(query);
-		
 		queryObj.setFirstResult(projectsDTO.getStart());
 		queryObj.setMaxResults(projectsDTO.getLength());
 		if(StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
