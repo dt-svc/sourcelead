@@ -971,7 +971,6 @@ function grandTotal(){
 		 total = "00:00"; 
 	 }
 	 $("#grandTotal").val(total);
-	 currentMonthHours();
 }
 </script>
 
