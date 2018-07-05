@@ -24,7 +24,7 @@
                         </div> 
                         <div class="col-md-12 noPad mb">
                             <label class="col-md-3">Description<span class="text-danger paddingLeft">*</span></label>
-                            <div class="col-md-9"><textarea id="templateDescription" name="templateDescription" class="form-control" rows="3" field-name="Description" data-validation="required validate_length length2-500">${not empty templateDTO.templateDescription ? templateDTO.templateDescription : ''} </textarea></div>
+                            <div class="col-md-9"><textarea id="templateDescription" name="templateDescription" class="form-control" rows="3" field-name="Description" data-validation="required validate_length length2-500">${not empty templateDTO.templateDescription ? templateDTO.templateDescription : ''}</textarea></div>
                         </div>
                         <div class="col-md-12 noPad mb" id="templateNameDiv">
                             <label class="col-md-3">Country<span class="text-danger paddingLeft">*</span></label>

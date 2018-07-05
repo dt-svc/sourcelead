@@ -233,7 +233,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 					if(status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
 						if(dayEntries.getSubmittedDate() != null)
 						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
-					}else {
+					}else if(status.equalsIgnoreCase("APPROVED")){
 						if(dayEntries.getSubmittedDate() != null)
 						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
 						if(dayEntries.getApprovedDate() != null)

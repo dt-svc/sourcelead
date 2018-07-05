@@ -48,6 +48,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.EmployeeLeaveDTO;
 import com.bis.sourcelead.dto.EmployeeTimeSheetSubmissionStatusDTO;
@@ -70,6 +71,7 @@ import com.bis.sourcelead.dto.WeekDaysDTO;
 import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -84,6 +86,7 @@ import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocumentsHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -104,6 +107,7 @@ import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimesheetActivityService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -199,6 +203,12 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
+	
+	@Autowired
+	private HolidayDAO holidayDAO;
 
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -437,7 +447,7 @@ public class TimesheetRestController {
 
 	}
 	
-	public Map<String,List<EmployeeLeaveDTO>> getEmpLeaveList(List<WeekDaysDTO> weekDays,String currentTimeSubFrequency,OrgLocations loc,User user,Integer avgHours) {
+	public Map<String,List<EmployeeLeaveDTO>> getEmpLeaveList(List<WeekDaysDTO> weekDays,String currentTimeSubFrequency,OrgLocations loc,User user,Integer avgHours) throws Exception {
 		Map<String,List<EmployeeLeaveDTO>> empLeaveMap = new ConcurrentHashMap<>();
 		Date startDate = null;
 		Date endDate = null;
@@ -448,8 +458,15 @@ public class TimesheetRestController {
 			startDate = commonUtil.orgLocationDateFormat(loc.getDateFormat(), subfrstartDate);
 			endDate = commonUtil.orgLocationDateFormat(loc.getDateFormat(), subfrEndDate);
 			List<AppliedLeaveDate> leaveDateList = appliedLeaveDateService.getAppliedLeaveDateByUserId(user.getId(), startDate, endDate);
-			if(leaveDateList != null && !leaveDateList.isEmpty()) {
+			List<Holiday>  holidays = null;
+			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+			if(userRole != null) {
+				 holidays = holidayDAO.getHolidaybyLocationIdAndFromdate(startDate, endDate,userRole.getOrgLocations().getId());
+			}
+			
+			if((leaveDateList != null && !leaveDateList.isEmpty()) || (holidays != null && !holidays.isEmpty())) {
 			    LinkedHashMap<String, EmployeeLeaveDTO> valuesMap = new LinkedHashMap<>();
+			  if(leaveDateList != null && !leaveDateList.isEmpty()) {
 				for(AppliedLeaveDate leaveDate :leaveDateList) {
 					String leaveType = leaveDate.getLeave().getLeaveType().getName();
 					String billableType = leaveDate.getLeave().getLeaveType().getLeaveType();
@@ -464,15 +481,48 @@ public class TimesheetRestController {
 					List<EmployeeLeaveDTO>  leaveDTOList = empLeaveMap.get(leaveTypeArr);
 					if(leaveDTOList != null && !leaveDTOList.isEmpty()) {
 						leaveDTOList.add(leaveDTO);
-						valuesMap.put(leaveDTO.getLeaveDate(),leaveDTO);
+						valuesMap.put(leaveTypeArr+leaveDTO.getLeaveDate(),leaveDTO);
 						empLeaveMap.put(leaveTypeArr, leaveDTOList);
 						
 					}else {
 						leaveDTOList = new ArrayList<>();
 						leaveDTOList.add(leaveDTO);
-						valuesMap.put(leaveDTO.getLeaveDate(),leaveDTO);
+						valuesMap.put(leaveTypeArr+leaveDTO.getLeaveDate(),leaveDTO);
 						empLeaveMap.put(leaveTypeArr, leaveDTOList);
 					}
+				}
+			  }
+			  if(holidays != null && !holidays.isEmpty()) {
+				for(Holiday holiday :holidays) {
+					List<Date> duration =  CalendarUtil.getListOfDaysBetweenTwoDates(holiday.getFromDate(),holiday.getToDate());
+					if(duration != null && !duration.isEmpty()) {
+						for(Date  holidayDate :duration) {
+							String leaveType = holiday.getHolidayName();
+							String billableType = "Billable";
+							String leaveTypeArr = leaveType+"##"+billableType;
+							
+							EmployeeLeaveDTO leaveDTO = new EmployeeLeaveDTO();
+							leaveDTO.setHours(getDisplayHoursFromHours(avgHours));
+							SimpleDateFormat sf = new SimpleDateFormat("E");
+							leaveDTO.setLeaveDate(commonUtil.dateStrFromOrgDateFormatter(loc.getDateFormat(),holidayDate));
+							leaveDTO.setDayOfTheDate(sf.format(holidayDate));
+							leaveDTO.setLeaveReason(holiday.getDescription());
+							List<EmployeeLeaveDTO>  leaveDTOList = empLeaveMap.get(leaveTypeArr);
+							if(leaveDTOList != null && !leaveDTOList.isEmpty()) {
+								leaveDTOList.add(leaveDTO);
+								valuesMap.put(leaveTypeArr+leaveDTO.getLeaveDate(),leaveDTO);
+								empLeaveMap.put(leaveTypeArr, leaveDTOList);
+								
+							}else {
+								leaveDTOList = new ArrayList<>();
+								leaveDTOList.add(leaveDTO);
+								valuesMap.put(leaveTypeArr+leaveDTO.getLeaveDate(),leaveDTO);
+								empLeaveMap.put(leaveTypeArr, leaveDTOList);
+							}
+						}
+					}
+					
+				 }
 				}
 				Boolean isLeaveOnFullWeek = true;
 				LinkedList<String> weekDaysList = new LinkedList<>();
@@ -487,17 +537,19 @@ public class TimesheetRestController {
 				{
 					
 					List<EmployeeLeaveDTO> freshLeaveDTOList = new LinkedList<>();
-					for (WeekDaysDTO weekDay : weekDays) {
-						if (valuesMap.get(weekDay.getDate()) == null) {
-							EmployeeLeaveDTO leaveDTO = new EmployeeLeaveDTO();
-							leaveDTO.setHours("HH:MM");
-							leaveDTO.setLeaveDate(weekDay.getDate());
-							leaveDTO.setDayOfTheDate(weekDay.getDayOfTheDate());
-							leaveDTO.setLeaveReason("");
-							freshLeaveDTOList.add(leaveDTO);
-						}else {
-							freshLeaveDTOList.add(valuesMap.get(weekDay.getDate()));
-							weekDaysList.remove(weekDay.getDayOfTheDate());
+					for (String leaveTypeArr : empLeaveMap.keySet()) {
+						for (WeekDaysDTO weekDay : weekDays) {
+							if (valuesMap.get(leaveTypeArr+weekDay.getDate()) == null) {
+								EmployeeLeaveDTO leaveDTO = new EmployeeLeaveDTO();
+								leaveDTO.setHours("HH:MM");
+								leaveDTO.setLeaveDate(weekDay.getDate());
+								leaveDTO.setDayOfTheDate(weekDay.getDayOfTheDate());
+								leaveDTO.setLeaveReason("");
+								freshLeaveDTOList.add(leaveDTO);
+							}else {
+								freshLeaveDTOList.add(valuesMap.get(leaveTypeArr+weekDay.getDate()));
+								weekDaysList.remove(weekDay.getDayOfTheDate());
+							}
 						}
 					}
 					entry.getValue().clear();
