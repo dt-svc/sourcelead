@@ -2254,7 +2254,7 @@ margin-bottom:15px !important;
 	border-right: 1px solid #D2D5DA; border-left: 1px solid #D2D5DA; width: 90px !important; text-align: center;
     right: 0; position: absolute; top: auto; height: 38px; line-height: 31px;
 }
-.timeAdd {
+.timeAdd .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
 	width: 150px; padding: 0px 25px 0px 0px; position: relative;
 }
 .timeAddBtn {
