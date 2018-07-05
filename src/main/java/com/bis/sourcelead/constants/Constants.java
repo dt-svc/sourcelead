@@ -854,6 +854,7 @@ public class Constants {
 	public static final String LAST_QUARTER =  "LAST_QUARTER";
 	public static final String LAST_YEAR =  "LAST_YEAR";
 	public static final String CUSTOM =  "CUSTOM";
+	public static final String LEAVE_MANAGENENT =  "Leave Management";
 
 	public static final String BILLING =  "Billing";
 	public static final String ACTIVE_USAGE_LIST =  "Active Usage List";
