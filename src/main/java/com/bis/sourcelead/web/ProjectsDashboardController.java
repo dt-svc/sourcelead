@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -106,22 +107,7 @@ public class ProjectsDashboardController {
         sessionData.setNav(Constants.Projects);
         request.getSession().setAttribute("sessionData",sessionData);
         
-        List<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
-        for(OrgRelations orgRelations:orgClientList){
-        	//orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
-        	if(null != orgRelations.getLocationId() && orgRelations.getLocationId().getId() != null && orgRelations.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-				if(orgRelations.getResponderLocationId() != null){
-					orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
-				}
-			}
-			if(null != orgRelations.getResponderLocationId() && null != orgRelations.getResponderLocationId().getId() && orgRelations.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-				if(orgRelations.getLocationId() != null){
-					orgRelations.setClientName(orgRelations.getLocationId().getOrgLocationName());
-				}
-			}
-			
-			
-        }
+        List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(loginOrgLocations.getId()); 
         model.addObject("add_client", orgClientList);
         model.addObject("clientListSize", orgClientList.size());
         model.addObject(orgClientList);
