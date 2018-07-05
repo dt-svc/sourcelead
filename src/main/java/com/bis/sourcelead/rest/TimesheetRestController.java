@@ -466,6 +466,7 @@ public class TimesheetRestController {
 			
 			if((leaveDateList != null && !leaveDateList.isEmpty()) || (holidays != null && !holidays.isEmpty())) {
 			    LinkedHashMap<String, EmployeeLeaveDTO> valuesMap = new LinkedHashMap<>();
+			  if(leaveDateList != null && !leaveDateList.isEmpty()) {
 				for(AppliedLeaveDate leaveDate :leaveDateList) {
 					String leaveType = leaveDate.getLeave().getLeaveType().getName();
 					String billableType = leaveDate.getLeave().getLeaveType().getLeaveType();
@@ -490,6 +491,8 @@ public class TimesheetRestController {
 						empLeaveMap.put(leaveTypeArr, leaveDTOList);
 					}
 				}
+			  }
+			  if(holidays != null && !holidays.isEmpty()) {
 				for(Holiday holiday :holidays) {
 					List<Date> duration =  CalendarUtil.getListOfDaysBetweenTwoDates(holiday.getFromDate(),holiday.getToDate());
 					if(duration != null && !duration.isEmpty()) {
@@ -519,8 +522,8 @@ public class TimesheetRestController {
 						}
 					}
 					
+				 }
 				}
-				
 				Boolean isLeaveOnFullWeek = true;
 				LinkedList<String> weekDaysList = new LinkedList<>();
 				weekDaysList.add("Mon");
