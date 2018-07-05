@@ -1390,7 +1390,7 @@ function addTimeSheetRow(projectId) {
 		   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
 		      var taskId = '${pt.id}';
 		      var taskType = '${pt.taskType}';
-		      var taskName = '${pt.taskName}';
+		      var taskName = '${fn:replace(pt.taskName, "'", "`")}';
 		      var generatedId = '${pt.generatedId}';
 		     
 		      if(generatedId != null && generatedId !='undefined' && generatedId !=''){

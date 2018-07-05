@@ -66,7 +66,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		if(StringUtils.isNotEmpty(pmSubQuery)) {
 			subQuery = subQuery+" AND "+pmSubQuery;
 		}
-		String query = " SELECT TDE.TIMESHEET_DATE as timesheetDate,"
+		String query = " (SELECT TDE.TIMESHEET_DATE as timesheetDate,"
 				+ " TDE.ID as timeEntryId,"
 				+ " TDE.BILLABLE_HOURS as billableHrs,"
 				+ " TDE.TICKET_NUMBER as ticketNo,"
@@ -92,9 +92,9 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+"  LEFT JOIN PROJECT_MEMBERS PM ON PM.ID =  TS.PROJECT_MEMBER_ID "
                 + " LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
                 + " LEFT JOIN EMPLOYEE EMP ON EMP.ID =  PM.EMPLOYEE_ID "
-                + " LEFT JOIN ORG_LOCATIONS ORGLOC ON ORGLOC.ID =  EMP.ORG_LOCATIONS_ID "
                 + " LEFT JOIN DEPARTMENT DEPART ON DEPART.ID =  EMP.DEPARTMENT_ID "
                 + " INNER JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"' "
+                + " LEFT JOIN ORG_LOCATIONS ORGLOC ON ORGLOC.ID =  PC.ORG_LOCATIONS_ID "
 				+ " WHERE "+subQuery+" AND SAH.SUBMISSION_ID =  TS.ID  " 
 				+ " AND SAH.ID IN (SELECT SUBSAH.ID FROM SUBMISSION_APPROVER_HIERARCHY SUBSAH WHERE "
 				+ "                  SUBSAH.SUBMISSION_ID = TS.ID "
@@ -107,7 +107,9 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "                                                    AND  PAH.LEVEL IN(select MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0') )                    "
 				+ "                    )"
 			    + "              ) "
-				+ " AND TDE.TIMESHEET_DATE BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' group by TDE.ID ORDER BY TDE.TIMESHEET_DATE"; 
+				+ " AND TDE.TIMESHEET_DATE BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' group by TDE.ID ORDER BY TDE.TIMESHEET_DATE)"
+				/*+ "  OR "
+				+ " ( SELECT FROM) "*/; 
 		
 		
 		Query result = session.createSQLQuery(query).setFirstResult(start).setMaxResults(length);
