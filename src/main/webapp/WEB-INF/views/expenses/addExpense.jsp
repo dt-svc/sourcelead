@@ -313,9 +313,14 @@ $(document).ready(function(){
 <div class="form-footer clearfix mt">
 		   <div class="col-lg-12">
 			<div class="pull-right">
-			 <c:if test="${submissionStatus == 'REOPENED'}">
-			  <input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
-			  </c:if>
+			<c:choose>
+			<c:when test="${submissionStatus == 'REOPENED'}">
+			 <!-- <input type="button" hidden="hidden" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');"> -->
+			</c:when>
+			<c:otherwise>
+			 <input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
+			</c:otherwise>
+			</c:choose>
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
 			<c:if test ="${!empty expenses.expenseAutoId}">
 			  <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
