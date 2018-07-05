@@ -73,6 +73,7 @@
 		}else{
 			$('#autoApproveDiv').hide();
 		}
+		carryForwardYesUsers();
 		
 	});
 </script>
@@ -262,7 +263,7 @@
 							<div class="form-group" id="departmentDiv">
 								<label class="col-md-4">Select Department</label>
 								<div class="col-md-6 dropdown-select">
-									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();valid();"
+									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
 										<option value="">--Select Department--</option>
@@ -371,7 +372,7 @@
 							</span>
 							</div>
 							</label>
-							<div class="col-md-3">
+							<div class="col-md-3" id="errorNoOfdaysToCarryforward">
 								<input type="text" id="noOfdaysToCarryforward" name="noOfdaysToCarryforward" field-name="No Of Days To CarryForward" placeholder="Enter no of Days" class="form-control" value="${leaveType.maxDaysToCarryforward}">
 							</div>
 						</div>
@@ -499,7 +500,13 @@
 						<div class="form-group">
 
 							<label class="col-md-4">Color Picker<span
-								class="text-danger">&nbsp;* </span><i class='fa fa-info-circle text-muted' title='Color coding for the leave type throughout the application'></i></label>
+								class="text-danger">&nbsp;* </span>
+								<div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Color coding for the leave type throughout the application.</span>
+									</span>
+								</div>
+								</label>
 							<div class="col-md-6">
 
 							
@@ -1086,7 +1093,12 @@
 									<input type="checkbox" checked="true" name="leavePolicy" id="leavePolicy" value="Y">Leave Policy
 	                           </c:if>
 								<c:if test="${empty leaveType.leavePolicy}">
-									<input type="checkbox" name="leavePolicy" id="leavePolicy" value="N">Leave Policy<i class='fa fa-info-circle text-muted' title='provides the leave policy for a particluar leave type.'></i>
+									<input type="checkbox" name="leavePolicy" id="leavePolicy" value="N">Leave Policy
+									    <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Provides the leave policy for a particluar leave type.</span>
+									</span>
+									</div>
 
 									
 
@@ -1409,14 +1421,6 @@ function leavepolicyDescription(){
 	 
 	
 // 	${leaveType.leavesCarryforward == 'Y'}
-	function valid(){
-		var id = $('#department').val();
-		if(id != "" && id != null && id != "undefined"){
-			$("#saveLeaveType").attr("disabled", false);
-		}else{
-			$("#saveLeaveType").attr("disabled", true);
-		}
-	}
 	/* $("#roles").chosen().change({
 		("#roles").attr("disabled", false);
 	  }); */
@@ -1429,11 +1433,14 @@ function leavepolicyDescription(){
 	} */
 	//Select Leave Carry Forward Users
 	function carryForwardNoUsers(){
+		$('#noOfdaysToCarryforward').attr('data-validation-optional', "true");
+		$('#errorNoOfdaysToCarryforward').find('p.jquery_form_error_message').remove();
 		$("#noOfDaysDiv").hide();
 		$("#noOfdaysToCarryforward").val();
 	}
 	
 	function carryForwardYesUsers(){
+		$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
 		$("#noOfDaysDiv").show();
 		$("#noOfdaysToCarryforward").val('');
 	}
@@ -1485,7 +1492,6 @@ function leavepolicyDescription(){
 
 <script>
 $('.chosen-select').chosen().on('change', function() {
-	
 	var roles = $("#roles").val();
 	var leveEmpType = $("#leveEmpType").val();
 	var department = $("#department").val();
@@ -1499,9 +1505,18 @@ $('.chosen-select').chosen().on('change', function() {
 		$("#saveLeaveType").removeAttr('disabled');
 		document.getElementById("applicableId").style.display="none";
 	}else{
-		$("#saveLeaveType").removeAttr('disabled');
+		$("#department").val('').trigger("chosen:updated");
+		$("#roles").val('').trigger("chosen:updated");
+		$("#leveEmpType").val('').trigger("chosen:updated");
+		$("#saveLeaveType").prop('disabled',true);
 		document.getElementById("applicableId").style.display="block";
+		
 	}
+	 if(roles == null){
+		$("#roles").val('').trigger("chosen:updated");
+	}else if(department == null){
+		$("#department").val('').trigger("chosen:updated");
+	} 
 	
 	
 })

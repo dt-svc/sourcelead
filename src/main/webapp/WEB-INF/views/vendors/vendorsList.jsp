@@ -2618,8 +2618,8 @@ function resetVendorContactFilter(){
 }
 </script>
 <!-- clinet related Fileter popup -->
-          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="vendorFilterId" style="display: none">
-				<h5 class="headerAdsrch">Filter Search
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="vendorFilterId" style="display: none">
+				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closeVendorFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
@@ -2653,8 +2653,8 @@ function resetVendorContactFilter(){
 
 
 
-          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="vendorContactFilterId" style="display: none">
-				<h5 class="headerAdsrch">Filter Search
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="vendorContactFilterId" style="display: none">
+				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="vendorClientContactFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>

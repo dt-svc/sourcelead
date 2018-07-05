@@ -828,11 +828,19 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
 		 globalVarsMap.put("LoginUser",user.getFirstName());
 		 if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
-             globalVarsMap.put("vendorName",invoice.getContactUser().getFirstName());
-
+			 StringBuilder vendorName = new StringBuilder();
+			 if(invoice.getContactUser().getLastName() != null) {
+             globalVarsMap.put("vendorName",vendorName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+			 }else {
+				 globalVarsMap.put("vendorName",invoice.getContactUser().getFirstName());
+			 }
          }else{
+        	 StringBuilder clientName = new StringBuilder();
+        	 if(invoice.getContactUser().getLastName() != null) {
+        		 globalVarsMap.put("clientName",clientName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+        	 }else {
              globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
-
+        	 }
          }
 		 globalVarsMap.put("totalAmouprojectMembersListnt",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
@@ -881,7 +889,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 
 			//send notification logic
 			EmailScenario notificationScenario = null;
-			if(invoiceType.equalsIgnoreCase("payables")){
+			if(invoiceType.equalsIgnoreCase("payable")){
 				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList);
 				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 			 }else{
