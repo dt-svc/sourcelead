@@ -27,6 +27,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ConnectionsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ConnectionsDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -1418,5 +1419,30 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		String query ="SELECT  UR.ID AS userRoleId  FROM USER_ROLE UR ORDER BY UR.ID DESC ";
 		List<BigInteger> userRoleIds= session.createSQLQuery(query).list();
 		return userRoleIds;
+	}
+
+	@Override
+	@Transactional
+	public List<UserDTO> getAllReportingManagersListAssignedToAssociates(Long orgLocationId) throws Exception {
+		
+		List<UserDTO> userDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+				
+		query ="SELECT DISTINCT"
+				+" UR.ID AS userId,"
+				+" CONCAT (UR.FIRST_NAME,' ',IFNULL(UR.LAST_NAME,'')) AS fullName"
+				+" FROM"
+			    +" USER_ROLE RL ,"
+			    +" USER UR,"
+			    +" ORG_LOCATIONS OL"
+				+" WHERE RL.REPORTING_MANAGER_ID = UR.ID"
+				+" AND   RL.ORG_LOCATIONS_ID = :orgLocationId";
+		    
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
+			userDTOList = queryObj.list();
+			return userDTOList;
 	}
 }

@@ -49,7 +49,6 @@ import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SingnatoryDTO;
-import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
@@ -92,6 +91,7 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -202,6 +202,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	
 	@Autowired
 	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	RegistrationService registrationService;
 	
 	
 	/**
@@ -584,6 +587,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		    //generate random password
 		    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		    boolean isUserActive = false;
+		    
+		    
 	 		if(user != null){
 	 			isUserActive = userRoleService.isUserActive(user.getId());
 	 			if(isUserActive == false){
@@ -596,6 +601,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 			userService.sendEmailFromSourcelead(user,loginUser,password,orgLocationId,orgId);
 	 			}else{
 	 				userService.sendEmail(user,loginUser,password,orgLocations.getId());
+	 			}
+	 			if(Constants.NO.equalsIgnoreCase(user.getIsVerified())){
+	 				registrationService.sendActivationEmail(user,orgLocations);	
 	 			}
 	 			/*
 				 * Update USER DB data as ElasticSearch Documents

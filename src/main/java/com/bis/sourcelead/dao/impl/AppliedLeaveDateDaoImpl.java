@@ -55,7 +55,7 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date startDate = new java.sql.Date(sDate.getTime());
 		java.sql.Date endDate = new java.sql.Date(eDate.getTime());
-		String query = "from AppliedLeaveDate al left join fetch al.leave lv left join fetch lv.leaveType lt  where lv.user.id =:userId and (al.applyLeaveDate >= :startDate and al.applyLeaveDate <= :endDate)";
+		String query = "from AppliedLeaveDate al left join fetch al.leave lv left join fetch lv.leaveType lt  where lt.timeSheetAutofill = 'Y' and lv.user.id =:userId and (lv.status = 'APPROVED' OR  lv.status = 'PENDING') and (al.applyLeaveDate >= :startDate and al.applyLeaveDate <= :endDate)";
 		List<AppliedLeaveDate> appliedLeaveList  = session.createQuery(query).setLong("userId", userId).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
 		return appliedLeaveList;
 	}

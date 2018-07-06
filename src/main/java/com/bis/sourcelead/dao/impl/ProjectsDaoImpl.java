@@ -164,7 +164,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		return (Projects) session.get(Projects.class, id);*/
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Projects project left join fetch project.orgRelationId left join fetch project.orgLocationsId orgLoc left join fetch orgLoc.org  where project.id = :id ";
+		String query = "from Projects project left join fetch project.orgRelationId left join fetch project.orgLocationsId orgLoc "
+				+ "left join fetch orgLoc.org left join fetch project.sharedLocationId  where project.id = :id ";
 		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("id", id).list();
 
 		Projects projects = null;
@@ -734,8 +735,6 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		}else{
 			 queryObj = session.createQuery(query + query1.toString()+sortingQry);
 		}
-		
-		System.out.println(query);
 		
 		queryObj.setFirstResult(projectsDTO.getStart());
 		queryObj.setMaxResults(projectsDTO.getLength());

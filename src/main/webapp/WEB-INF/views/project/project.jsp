@@ -214,7 +214,7 @@ function validateShortCode(){
 											data-validation-optional="true">
 											<option value="">-- Select Client --</option>
 											<c:forEach var="report" items="${clientsList}">
-											<option value="${report.clientLocationId}">${report.clientName}</option>
+											<option value="${report.orgRelId}">${report.clientName}</option>
 											</c:forEach>
 								</select>
 							</div>
@@ -903,7 +903,7 @@ function getProjectDetails(){
         			   var opt = json.projectDocumentsList[i];
         			  
         			     result = result +"<strong id='projectDocument"+opt.id+"'>";
-      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileUrl+"\"></a></i>";
+      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' target='_blank' href=\""+opt.fileUrl+"\"></a></i>";
       					 result = result +"<input type='button' value='"+opt.fileName+"'>";
       					 result = result +"</a>";
       					 result = result +"<input class='dele' type='button' onClick='removeProjectDocuments("+opt.id+","+json.id+");' >";

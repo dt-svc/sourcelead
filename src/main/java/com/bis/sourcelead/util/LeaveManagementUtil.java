@@ -570,6 +570,7 @@ public class LeaveManagementUtil {
 		SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); 
 		
 		if("Duration".equalsIgnoreCase(l.getPeriod())){
+			appliedLeaves = new ArrayList<>();
 			List<Date> dates = getDaysBetweenLeaveDates(startDate, endDate);
 			for(Date d : dates){
 				AppliedLeaveDateView view = new AppliedLeaveDateView();

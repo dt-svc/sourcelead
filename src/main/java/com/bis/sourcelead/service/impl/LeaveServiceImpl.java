@@ -245,24 +245,38 @@ public class LeaveServiceImpl implements LeaveService{
 		leave.setReason(leaveDTO.getReason());
 		if(StringUtils.isNotBlank(leaveDTO.getFromHalfDay())) {
 			leave.setFromHalfDay(leaveDTO.getFromHalfDay());
+		}else {
+			leave.setFromHalfDay(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getToHalfDay())) {
 			leave.setToHalfDay(leaveDTO.getToHalfDay());
+		}else {
+			leave.setToHalfDay(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getFromDateFromHalfTime())) {
 			leave.setFromDateFromHalfTime(leaveDTO.getFromDateFromHalfTime());
+		}else {
+			leave.setFromDateFromHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getFromDateToHalfTime())) {
 			leave.setFromDateToHalfTime(leaveDTO.getFromDateToHalfTime());
+		}else {
+			leave.setFromDateToHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getToDateFromHalfTime())) {
 			leave.setToDateFromHalfTime(leaveDTO.getToDateFromHalfTime());
+		}else {
+			leave.setToDateFromHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getToDateToHalfTime())) {
 			leave.setToDateToHalfTime(leaveDTO.getToDateToHalfTime());
+		}else {
+			leave.setToDateToHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getNotifyToOthers())) {
 			leave.setNotifyToOthers(leaveDTO.getNotifyToOthers());
+		}else {
+			leave.setNotifyToOthers(null);
 		}
 		if(leaveDTO.getFileInfo() !=null) {
 			FileInfo fileinfo = leaveDTO.getFileInfo().get(0);
@@ -1296,7 +1310,7 @@ public class LeaveServiceImpl implements LeaveService{
 			   }
 			   
 				for(LeaveType type : roleLeaveType) {
-					if("All".equalsIgnoreCase(type.getEffectiveGender()) || (user.getGender() != null && type.getEffectiveGender().equalsIgnoreCase(user.getGender()))) {
+					if(type.getEffectiveGender() != null && ("All".equalsIgnoreCase(type.getEffectiveGender()) || (user.getGender() != null && type.getEffectiveGender().equalsIgnoreCase(user.getGender())))) {
 						float empToatalLeaves = 0;
 						if(Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())) {
 							 empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());
