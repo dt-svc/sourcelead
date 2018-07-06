@@ -240,8 +240,14 @@ public class ProjectsRestController {
 								}
 				   			}
 				   		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-						    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
-						   // approvedLeaveForNewlyAddedEmployee(projectAssignedMembersDTO.getProjectMembers(),orgLocations,user);
+				   		    Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+				   		    if(StringUtils.isNotBlank(projects.getIsProjectShared()) && 
+			   		    		projects.getIsProjectShared().equalsIgnoreCase(Constants.YES) && projects.getSharedLocationId().getId().equals(orgLocations.getId())) {
+				   		    	projectMembersService.saveAssignedSharedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    }else {
+				   		        projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    }
+						   
 						    response.setResponse(Result.SUCCESS.name());
 							response.setResponseMessage(Result.SUCCESS.getValue());
 					     }else {
