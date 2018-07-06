@@ -210,6 +210,7 @@ public class ProjectsRestController {
 			 response.setResponseMessage(Result.INVALID_DATA.getValue());
     	 }
 		}catch (Exception e) {
+			e.printStackTrace();
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
