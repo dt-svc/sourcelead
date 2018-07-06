@@ -46,7 +46,7 @@ public interface RequirementInterviewService {
 	 */
 	RequirementInterview getRequirementInterviewByIdAndSubmissionIdAndOrgLocationsId(Long requirementInterviewId, Long submissionId, Long orgLocationsId);
 
-	void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;
+	RequirementInterview saveRequirementInterview(RequirementInterview requirementInterview) throws Exception;
 
 	List<RequirementInterview> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception; 
 
@@ -70,6 +70,8 @@ public interface RequirementInterviewService {
 	void applicantInterviewProposeTimeEmailToInterviewInitiator(String requirementInterviewId, OrgLocations orgLocations, Org loginOrg, User user) throws Exception;
 
 	RequirementInterview getinterviewBySubmissionId(Long submissionId);
+	
+	RequirementInterview getLatestInterviewBySubmissionId(Long submissionId);
 	
 	List<Date> getInterviewDatesForCalendarEvent(Long userId,Long orgLocationId) throws Exception;
 	
