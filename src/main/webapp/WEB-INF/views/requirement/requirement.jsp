@@ -1671,8 +1671,7 @@ selectedFile.addEventListener("change", function() {
 	 $("#uploadFile").focus();
 	 if(validate_fileupload(this.value)){
 		 var docSize =  $("#uploadBtn")[0].files[0].size;
-		 alert("docSize>>> "+docSize)
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+		  $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
 	      if(docSize > 2097152){
 	    	  document.getElementById("uploadFile").value = '';
 	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
