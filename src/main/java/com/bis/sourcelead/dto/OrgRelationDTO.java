@@ -99,6 +99,8 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 	
 	private BigInteger clientLocationId;
 	
+	private BigInteger vendorLocationId;
+	
 	private String clientName;
 	
 	private BigInteger orgRelId;
@@ -486,6 +488,14 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	public void setVendorName(String vendorName) {
 		this.vendorName = vendorName;
+	}
+
+	public BigInteger getVendorLocationId() {
+		return vendorLocationId;
+	}
+
+	public void setVendorLocationId(BigInteger vendorLocationId) {
+		this.vendorLocationId = vendorLocationId;
 	}
 
 }
