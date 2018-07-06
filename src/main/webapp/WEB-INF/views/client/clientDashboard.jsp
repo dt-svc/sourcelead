@@ -2477,7 +2477,7 @@ function resetClientContactFilter(){
 }
 </script>
 <!-- clinet related Fileter popup -->
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="clientFilterId" style="display:none;">
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="clientFilterId" style="display:none;">
 				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closeClientFilterPop()"><i
 						class="fa fa-close"></i></a>
@@ -2512,7 +2512,7 @@ function resetClientContactFilter(){
 
 
 
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="clientContactFilterId" style="display:none;">
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="clientContactFilterId" style="display:none;">
 				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closeClientContactFilterPop()"><i
 						class="fa fa-close"></i></a>
