@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -278,9 +279,31 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					totalLeaveDTO.setUserId(String.valueOf(user.getId()));
 					totalLeaveDTO.setLeaveTypeId(String.valueOf(leaveType.getId()));
 					if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())  && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-						totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDaysPerPeriod()));
+						if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+							totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDaysPerPeriod()));
+						}else {
+							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());
+							 try {
+								float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+								totalLeaveDTO.setNoOfLeaves(String.valueOf(days));
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+						}
 					}else {
-						totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));	
+						if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+							totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));
+						}else {
+							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());
+							 try {
+								float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+								totalLeaveDTO.setNoOfLeaves(String.valueOf(days));
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+						}
+						
+							
 					}
 
 //					if(user.getGender() != null) {
@@ -554,6 +577,16 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	private boolean containsName(List<AssociateBalanceLeave> associateBalLeave, LeaveType type)
 	{
 		 return associateBalLeave.stream().filter(o -> o.getId().longValue()== type.getId().longValue()).findFirst().isPresent();
+	}
+
+	@Override
+	public int updateAssociateDateOfJoinBalanceLeaveType(Long orgLocationId, User user,int status, String methodType) {
+		return associateBalanceLeaveDao.updateAssociateDateOfJoinBalanceLeaveType(orgLocationId, user, status,  methodType);
+	}
+
+	@Override
+	public int addAssociateLeaveType(User user, Long orgLocationId,Employees employee, UserRole userRole) {
+		return associateBalanceLeaveDao.addAssociateLeaveType(user, orgLocationId,employee,userRole);
 	}
 	
 }

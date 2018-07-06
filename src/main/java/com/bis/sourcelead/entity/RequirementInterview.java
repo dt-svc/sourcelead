@@ -102,6 +102,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "CUSTOM_INTERVIEW_TYPE")
 	private String customInterviewType;
 	
+	@Column(name = "INTERVIEW_SCORE")
+	private Integer interviewScore;
+	
+	@Column(name = "INTERVIEW_PHASE")
+	private String interviewPhase;
+	
+	@Column(name = "INTERVIEW_COMMENT", columnDefinition = "TEXT default NULL")
+	private String interviewComment;
+	
 	@Transient
 	private String remainderTime;
 	
@@ -157,6 +166,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setCustomInterviewType(String customInterviewType) {
 		this.customInterviewType = customInterviewType;
+	}
+
+	public Integer getInterviewScore() {
+		return interviewScore;
+	}
+
+	public void setInterviewScore(Integer interviewScore) {
+		this.interviewScore = interviewScore;
+	}
+
+	public String getInterviewPhase() {
+		return interviewPhase;
+	}
+
+	public void setInterviewPhase(String interviewPhase) {
+		this.interviewPhase = interviewPhase;
+	}
+
+	public String getInterviewComment() {
+		return interviewComment;
+	}
+
+	public void setInterviewComment(String interviewComment) {
+		this.interviewComment = interviewComment;
 	}
 
 	public String getInterviewStatus() {

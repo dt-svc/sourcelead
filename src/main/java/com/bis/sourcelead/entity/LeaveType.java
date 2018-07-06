@@ -212,6 +212,12 @@ public class LeaveType {
 	@Column(name = "ACCURAL_POLICY")
 	private String accuralPolicy;
 	
+	@Column(name = "NEW_JOINEE_PER_PERIOD")
+	private Float newJoinPerPeriod;
+	
+	@Column(name = "EXPERIENCED_PER_PERIOD")
+	private Float experiencedPerPeriod;
+	
 	@Transient
 	@JsonProperty
 	private String autoApproveTypeListNames;
@@ -956,5 +962,20 @@ public class LeaveType {
 		this.userGender = userGender;
 	}
 
-	
+	public Float getNewJoinPerPeriod() {
+		return newJoinPerPeriod;
+	}
+
+	public Float getExperiencedPerPeriod() {
+		return experiencedPerPeriod;
+	}
+
+	public void setNewJoinPerPeriod(Float newJoinPerPeriod) {
+		this.newJoinPerPeriod = newJoinPerPeriod;
+	}
+
+	public void setExperiencedPerPeriod(Float experiencedPerPeriod) {
+		this.experiencedPerPeriod = experiencedPerPeriod;
+	}
+
 }
