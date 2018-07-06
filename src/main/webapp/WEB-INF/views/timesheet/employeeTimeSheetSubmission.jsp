@@ -527,9 +527,9 @@
                                                        </c:forEach>
                                                        <c:set var="attMaxRowNumber" value="${attCount}"/>
                                                       </c:if>
-                                                      <input type='hidden' name='maxAttRowNumber' id='maxAttRowNumber'  value='${attMaxRowNumber}' />
 												  </c:forEach>
 												</table>
+												 <input type='hidden' name='maxAttRowNumber' id='maxAttRowNumber'  value='${!empty attMaxRowNumber ? attMaxRowNumber : 0}' />
 											</div>
 							            </div>  
 							          </c:if> 
