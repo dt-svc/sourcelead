@@ -578,5 +578,15 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	{
 		 return associateBalLeave.stream().filter(o -> o.getId().longValue()== type.getId().longValue()).findFirst().isPresent();
 	}
+
+	@Override
+	public int updateAssociateDateOfJoinBalanceLeaveType(Long orgLocationId, User user,int status, String methodType) {
+		return associateBalanceLeaveDao.updateAssociateDateOfJoinBalanceLeaveType(orgLocationId, user, status,  methodType);
+	}
+
+	@Override
+	public int addAssociateLeaveType(User user, Long orgLocationId,Employees employee, UserRole userRole) {
+		return associateBalanceLeaveDao.addAssociateLeaveType(user, orgLocationId,employee,userRole);
+	}
 	
 }

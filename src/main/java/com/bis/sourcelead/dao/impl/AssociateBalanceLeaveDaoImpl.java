@@ -3,10 +3,12 @@ package com.bis.sourcelead.dao.impl;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -28,12 +30,14 @@ import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -59,6 +63,9 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 	
 	@Autowired
 	private LeaveManagementUtil leaveManagementUtil;
+	
+	@Autowired
+	private LeaveService leaveService;
 	
 	@Override
 	@Transactional
@@ -335,5 +342,164 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.orgLocationId.id= :orgLocationId").setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 		return assoBalLeave;
+	}
+	
+	
+	
+	@Override
+	@Transactional
+	public int updateAssociateDateOfJoinBalanceLeaveType(Long orgLocationId, User user,int status,String methodType)
+	{
+		List<LeaveType> leavetypeList = leaveTypeService.getLeaveTypeListByLocationId(orgLocationId.toString());
+		if(leavetypeList != null) {
+			try {
+				Session session = this.sessionFactory.getCurrentSession();
+				session.doWork(new Work() {
+					@Override
+					public void execute(java.sql.Connection connection) throws SQLException {
+						boolean initialAutocommitSetting = connection.getAutoCommit();
+						connection.setAutoCommit(false);
+						CallableStatement stmt = connection.prepareCall("{call deleteAssociateBalLeave(?,?,?,?,?)}");
+						for (LeaveType leaveType : leavetypeList) {
+							if(Constants.UPDATE.equalsIgnoreCase(methodType)) {
+								OrgLocations orgLocations = new OrgLocations();
+								orgLocations.setId(orgLocationId);
+								boolean b = getOrgLevelLeaves(orgLocations, user.getId(), leaveType);
+								if(!b) {
+									stmt.setLong(1, 0);
+								}else{
+									stmt.setLong(1, status);
+								}
+							}else {
+								stmt.setLong(1, status);
+							}
+								if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
+									if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+										stmt.setString(2, String.valueOf(leaveType.getNoOfDaysPerPeriod()));
+									}else {
+										Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+										 try {
+											float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+											stmt.setString(2, String.valueOf(days));
+										} catch (ParseException e) {
+											e.printStackTrace();
+										}
+									}
+								}else {
+									
+									if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+										stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
+									}else {
+										Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+										 try {
+											float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+											stmt.setString(2, String.valueOf(days));
+										} catch (ParseException e) {
+											e.printStackTrace();
+										}
+									}
+								}
+							stmt.setLong(3, orgLocationId);
+							stmt.setLong(4, user.getId());
+							stmt.setLong(5, leaveType.getId());
+							stmt.execute();
+							connection.commit();
+						}
+						connection.setAutoCommit(initialAutocommitSetting);
+					}
+				});
+				return 1;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return 0;
+			}
+		}return 0;
+	}
+	
+	
+	@Override
+	@Transactional
+	public int addAssociateLeaveType(User user, Long orgLocationId,Employees employee, UserRole userRole)
+	{
+		List<LeaveType> leavetypeList = leaveTypeService.getLeaveTypeListByLocationId(orgLocationId.toString());
+		List<LeaveType> roleLeaveType = new ArrayList<>();
+		if (leavetypeList != null && !leavetypeList.isEmpty()) {
+			for (LeaveType leaveType : leavetypeList) {
+				List<Leave> takenLeavesList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getLeaveTypeUUID(), orgLocationId, user.getId());
+				List<Leave> pendingAndApprovedList = takenLeavesList.stream().filter(tl->Constants.PENDING.equalsIgnoreCase(tl.getStatus()) || Constants.APPROVED.equalsIgnoreCase(tl.getStatus())).collect(Collectors.toList());
+				if(StringUtils.isNotBlank(leaveType.getAllowability())){
+					if(StringUtils.isNotBlank(leaveType.getAllowability()) && pendingAndApprovedList.size() < Integer.parseInt(leaveType.getAllowability())){
+						boolean flag = leaveManagementUtil.checkGenderAndDepartmentAndRoleAndEmpType(leaveType,employee,userRole);
+						if(flag == true){
+							roleLeaveType.add(leaveType);
+						}
+					}
+				}else{
+					boolean flag = leaveManagementUtil.checkGenderAndDepartmentAndRoleAndEmpType(leaveType,employee,userRole);
+					if(flag == true){
+						roleLeaveType.add(leaveType);
+					}
+				}
+			}
+			
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.doWork(new Work() {
+				@Override
+				public void execute(java.sql.Connection connection) throws SQLException {
+					boolean initialAutocommitSetting = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+					CallableStatement stmt = connection.prepareCall("{call associateBalanceLeave(?,?,?,?,?,?,?,?,?,?)}");
+					for(LeaveType leaveType : roleLeaveType) {
+						stmt.setLong(1, user.getId());
+						stmt.setLong(2, orgLocationId);
+						stmt.setLong(3, leaveType.getId());
+						if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
+							if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+								stmt.setString(4, String.valueOf(leaveType.getNoOfDaysPerPeriod()));
+							}else {
+								Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+								 try {
+									float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+									stmt.setString(4, String.valueOf(days));
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
+							}
+						}else {
+							
+							if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+								stmt.setString(4, String.valueOf(leaveType.getNoOfDays()));
+							}else {
+								Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+								 try {
+									float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+									stmt.setString(4, String.valueOf(days));
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+						
+//						stmt.setString(4, leaveType.getNoOfLeaves());
+						stmt.setString(5, SourceLeadRandomCodeHelper.generateRandomUUID());
+						stmt.setInt(6, 1);
+						stmt.setLong(7, user.getId());
+						stmt.setDate(8, new java.sql.Date(new Date().getTime()));
+						stmt.setLong(9, user.getId());
+						stmt.setDate(10, new java.sql.Date(new Date().getTime()));
+						stmt.addBatch();
+					}
+					int[] updateCount = stmt.executeBatch();
+					connection.commit();
+					connection.setAutoCommit(initialAutocommitSetting);
+				}
+			});
+			return 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	  }return 0;
 	}
 }
