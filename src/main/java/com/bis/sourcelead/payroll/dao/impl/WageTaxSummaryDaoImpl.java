@@ -235,27 +235,46 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 			PayrollBalance payrollBalance) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<WageTaxSummary> wagesAndTaxlist = null;
+		String subQuery = null;
+		String searchValue = payrollBalance.getSearchValue();
 		ResponseList<WageTaxSummary> response = new ResponseList<>();
-		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId GROUP BY wts.employeeId";
-		String countQuery = "from WageTaxSummary wts  where wts.orgLocationId.id =:orgLocationId GROUP BY wts.employeeId";
-		Query queryObj = session.createQuery(query);
-		if (payrollBalance != null && payrollBalance.getLength() > 0) {
-			queryObj.setFirstResult(payrollBalance.getStart());
-			queryObj.setMaxResults(payrollBalance.getLength());
-			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+		Query queryObj = null;
+		Query countQueryObj = null;
+		if(searchValue !=null && !"".equals(searchValue)){
+		 subQuery = " and wts.employeeName like :searchValue";
 		}
+		String query = "from WageTaxSummary wts where wts.orgLocationId.id =:orgLocationId";
+		String countQuery = "select count(*) from WageTaxSummary wts where wts.orgLocationId.id =:orgLocationId";
+		if(searchValue !=null && !"".equals(searchValue)){
+			 queryObj = session.createQuery(query.concat(subQuery).concat(" GROUP BY wts.employeeId"));
+			 countQueryObj = session.createQuery(countQuery.concat(subQuery).concat(" GROUP BY wts.employeeId"));
+			 if (payrollBalance != null && payrollBalance.getLength() > 0) {
+					queryObj.setFirstResult(payrollBalance.getStart());
+					queryObj.setMaxResults(payrollBalance.getLength());
+					queryObj.setLong("orgLocationId", orgLocation.getId()).setParameter("searchValue", "%" + searchValue + "%").list();
+					countQueryObj.setLong("orgLocationId", orgLocation.getId()).setParameter("searchValue", "%" + searchValue + "%");
+				}
+		}else{
+		 queryObj = session.createQuery(query+" GROUP BY wts.employeeId");
+		 countQueryObj = session.createQuery(countQuery.concat(" GROUP BY wts.employeeId"));
+		 if (payrollBalance != null && payrollBalance.getLength() > 0) {
+				queryObj.setFirstResult(payrollBalance.getStart());
+				queryObj.setMaxResults(payrollBalance.getLength());
+				queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+				countQueryObj.setLong("orgLocationId", orgLocation.getId());
+			}
+		}
+		
 		wagesAndTaxlist = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery)
-				.setLong("orgLocationId", orgLocation.getId()).list();
+		List<Long> countlist = countQueryObj.list();
 		if (countlist != null && !countlist.isEmpty()) {
 			count = countlist.size();
 		}
 		response.setRecordsTotal(count);
 		if (payrollBalance != null) {
-			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery)
-					.setLong("orgLocationId", orgLocation.getId()).list();
+			List<Long> filteredCountlist = countQueryObj.list();
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.size();
 			}
