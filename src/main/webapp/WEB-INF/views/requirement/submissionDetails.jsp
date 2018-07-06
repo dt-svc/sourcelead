@@ -699,6 +699,8 @@ function getInternalInterviewsList(submissionId){
 		                    	   //Latest interview for Reschedule  start
 		                    	   //This condition  is to enable the feedback  and reschedule icon for Own Interviews
 		                    	   if(report.submissionStatus == "REJECTED"){
+		                    	   }else if(report.submissionStatus == "SELECTED_ON_INTERVIEW"){
+		                    		   
 		                    	   }else{
 				                    	//Latest interview for Reschedule  ends
 			                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
@@ -719,17 +721,24 @@ function getInternalInterviewsList(submissionId){
 		                    }
 		                    	 if(submissionId == report.interviewSubmissionId){
 		                    		   if(i == 0){
-				                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
-											result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
-											result = result + '			</div>';
-											result = result + '			 </a> ';
-				                    				                    		
+		                    			   if(report.interviewId.interviewPhase != "Selected"){
+					                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
+												result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
+												result = result + '			</div>';
+												result = result + '			 </a> ';
+		                    			   }		                    		
 				                    	}
 		                    	   }
 	                    	 result = result + '</span>';
 	                    	 result = result + '<span id="'+report.interviewId.id+'showStatus"></span>';
 	                    	 if(report.interviewId.interviewStatus == "Attending"){
-	                    		 result = result +' <font color="green" class="brder-int">Attending</font>';
+	                    		 if(report.interviewId.interviewPhase == "Selected"){
+	                    			 result = result +' <font color="green" class="brder-int">Selected</font>';
+	                    		 }else if(report.interviewId.interviewPhase == "Rejected"){
+	                    			 result = result +' <font color="red" class="brder-int">Rejected</font>';
+	                    		 }else{
+	                    			 result = result +' <font color="green" class="brder-int">Attending</font>';
+	                    		 }
 	                    	 }
 	                    	 if(report.interviewId.interviewStatus == "Not_Attending"){
 	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';
@@ -992,7 +1001,13 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 result = result + '</span>';
 	                    	 result = result + '<span id="'+report.id+'showStatus"></span>';
 	                    	 if(report.interviewStatus == "Attending"){
-	                    		 result = result +' <font color="green">Attending</font>';
+	                    		 if(report.interviewId.interviewPhase == "Selected"){
+	                    			 result = result +' <font color="green">Selected</font>';
+	                    		 }else if(report.interviewId.interviewPhase == "Rejected"){
+	                    			 result = result +' <font color="red">Rejected</font>';
+	                    		 }else{
+	                    			 result = result +' <font color="green">Attending</font>';
+	                    		 }
 	                    	 }
 	                    	 if(report.interviewStatus == "Not Attending"){
 	                    		 result = result +' <font color="red">Not Attending</font>';
