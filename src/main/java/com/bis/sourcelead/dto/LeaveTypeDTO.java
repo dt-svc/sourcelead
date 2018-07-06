@@ -172,6 +172,10 @@ public class LeaveTypeDTO {
 	
 	private Float previousNoOfDaysPerPeriod;
 	
+	private Float fresherPeriod;
+
+	private Float experiencedPeriod;
+	
 	public String getName()
 	{
 		return name;
@@ -740,6 +744,17 @@ public class LeaveTypeDTO {
 	{
 		this.previousNoOfDaysPerPeriod = previousNoOfDaysPerPeriod;
 	}
-	
+	public Float getFresherPeriod() {
+		return fresherPeriod;
+	}
+	public Float getExperiencedPeriod() {
+		return experiencedPeriod;
+	}
+	public void setFresherPeriod(Float fresherPeriod) {
+		this.fresherPeriod = fresherPeriod;
+	}
+	public void setExperiencedPeriod(Float experiencedPeriod) {
+		this.experiencedPeriod = experiencedPeriod;
+	}
 	
 }

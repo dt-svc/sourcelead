@@ -377,50 +377,7 @@
 							</div>
 						</div>
 						
-						<div class="form-group" id="noOfDaysDiv">
-							<label class="col-md-4">No Of Days Annually<span class="text-danger paddingLeft" >*</span>
-							<div class="tooltip">
-							<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
-							<span class="tooltiptext">No of leaves are applicable for this leave type annually</span>
-							</span>
-							</div>
-							</label>
-							<div class="col-md-3">
-							   <input type="hidden" name="previousNoOfdays" id="previousNoOfdays" value="${leaveType.noOfDays}"/>
-								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" placeholder="Enter no of Days" onblur="getNoOfDaysPerPeriod();" class="form-control" value="${leaveType.noOfDays}">
-							</div>
-						</div>
 						
-						<div class="form-group">
-							<label class="col-md-4">Accural Period<span
-								class="text-danger paddingLeft">*</span>
-								<div class="tooltip">
-								<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
-								<span class="tooltiptext">Configure how the leave type should calculate Annually/Half-yearly/Quarterly/Monthly.</span>
-								</span>
-								</div>
-								</label>
-							<div class="col-md-6 dropdown-select">
-								<select class="form-control" name="period" id="period" onchange="getNoOfDaysPerPeriod();">
-								<option ${leaveType.period == 'Annually' ? 'selected' : ''}>Annually</option>
-								<option ${leaveType.period == 'HalfYearly' ? 'selected' : ''}>HalfYearly</option>
-								<option ${leaveType.period == 'Quarterly' ? 'selected' : ''}>Quarterly</option>
-								<option ${leaveType.period == 'Monthly' ? 'selected' : ''}>Monthly</option>
-<%-- 								<option ${leaveType.period == 'SemiMonthly' ? 'selected' : ''}>SemiMonthly</option> --%>
-<%-- 								<option ${leaveType.period == 'BiWeekly' ? 'selected' : ''}>BiWeekly</option> --%>
-								</select>
-							</div>
-						</div>
-						
-						<div class="form-group" id="calculatedNoOfDaysDiv">
-							<label class="col-md-4">No Of Days per Period<span class="text-danger paddingLeft" ></span></label>
-							<div class="col-md-3">
-							    <input type="hidden" value="${leaveType.noOfDaysPerPeriod}" id="previousNoOfDaysPerPeriod" name="previousNoOfDaysPerPeriod"/>
-								<input type="text" id="noOfDaysPerPeriod" name="noOfDaysPerPeriod" field-name="No Of Days" readonly placeholder="Enter no of Days" class="form-control" value="${leaveType.noOfDaysPerPeriod}">
-							</div>
-						</div>
-						
-
 						<div class="form-group">
 						 <label class="col-md-4">Leave Effective<span
 								class="text-danger paddingLeft">*</span>
@@ -464,12 +421,65 @@
 							</div>
 						</div>
 						
+						<div class="form-group" id="noOfDaysAnnuallyDiv">
+							<label class="col-md-4">No Of Days Annually<span class="text-danger paddingLeft" >*</span>
+							<div class="tooltip">
+							<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+							<span class="tooltiptext">No of leaves are applicable for this leave type annually</span>
+							</span>
+							</div>
+							</label>
+							<div class="col-md-3">
+							   <input type="hidden" name="previousNoOfdays" id="previousNoOfdays" value="${leaveType.noOfDays}"/>
+								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" placeholder="Enter no of Days" onblur="getNoOfDaysPerPeriod();" class="form-control" value="${leaveType.noOfDays}">
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-4">Accural Period<span
+								class="text-danger paddingLeft">*</span>
+								<div class="tooltip">
+								<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+								<span class="tooltiptext">Configure how the leave type should calculate Annually/Half-yearly/Quarterly/Monthly.</span>
+								</span>
+								</div>
+								</label>
+							<div class="col-md-6 dropdown-select">
+								<select class="form-control" name="period" id="period" onchange="getNoOfDaysPerPeriod();">
+								<option ${leaveType.period == 'Annually' ? 'selected' : ''}>Annually</option>
+								<option ${leaveType.period == 'HalfYearly' ? 'selected' : ''}>HalfYearly</option>
+								<option ${leaveType.period == 'Quarterly' ? 'selected' : ''}>Quarterly</option>
+								<option ${leaveType.period == 'Monthly' ? 'selected' : ''}>Monthly</option>
+<%-- 								<option ${leaveType.period == 'SemiMonthly' ? 'selected' : ''}>SemiMonthly</option> --%>
+<%-- 								<option ${leaveType.period == 'BiWeekly' ? 'selected' : ''}>BiWeekly</option> --%>
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group" id="calculatedNoOfDaysDiv">
+							<label class="col-md-4">No Of Days per Period<span class="text-danger paddingLeft" ></span></label>
+							<div class="col-md-3">
+							    <input type="hidden" value="${leaveType.noOfDaysPerPeriod}" id="previousNoOfDaysPerPeriod" name="previousNoOfDaysPerPeriod"/>
+								<input type="text" id="noOfDaysPerPeriod" name="noOfDaysPerPeriod" field-name="No Of Days" readonly placeholder="Enter no of Days" class="form-control" value="${leaveType.noOfDaysPerPeriod}">
+							</div>
+						</div>
+						
+
+						
+						
 				<!-- experiencedGroup -->
 					<div id="experiencedGroup" style="display:none">
 						<div class="form-group" id="newJoineeDiv">
 							<label class="col-md-4">No.of Days for Fresher<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-3">
-								<input type="text" id="newJoinee" name="newJoinee" placeholder="Enter no.of Days" field-name="ApplicableDays" class="form-control" value="${leaveType.newJoinee}">
+								<input type="text" id="newJoinee" name="newJoinee" placeholder="Enter no.of Days" field-name="ApplicableDays" onblur="getNoOfDaysPerPeriodFresher();" class="form-control" value="${leaveType.newJoinee}">
+							</div>
+						</div>
+						
+						<div class="form-group" id="newJoineeDiv2">
+							<label class="col-md-4">No.of Days for Fresher Period</label>
+							<div class="col-md-3">
+								<input type="text" id="fresherPeriod" name="fresherPeriod" placeholder="Enter Per Day"  class="form-control" value="${leaveType.newJoinPerPeriod}" readonly>
 							</div>
 						</div>
 						
@@ -477,23 +487,28 @@
 							<label class="col-md-4">Experienced<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-6">
 								<div class="row">
-								<div class="col-md-3 padding_right">
+								<div class="col-md-4 padding_right">
 									<input type="text" class="form-control" id="experiencedDuration" name="experiencedDuration" placeholder="Experience" field-name="Duration" value="${leaveType.experiencedDuration}">
 								</div>
-								<div class="col-md-5 dropdown-select padding_left">
+								<div class="col-md-4 dropdown-select padding_right padding_left">
 									<select id="experiencedType" name="experiencedType" field-name="experiencedType" >
 									<option ${leaveType.experiencedType == 'Year' ? 'selected' : ''}>Year</option>
 									<option ${leaveType.experiencedType == 'Month' ? 'selected' : ''}>Month</option>
 									<option ${leaveType.experiencedType == 'Days' ? 'selected' : ''}>Days</option>
 									</select>
 								</div>
-								<div class="col-md-4" id="experiencedApplicableDaysDiv">
-								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" placeholder="No.of Days for exp" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
+								<div class="col-md-4 padding_left" id="experiencedApplicableDaysDiv">
+								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" placeholder="No. of Days for exp" onblur="getNoOfDaysPerPeriodExperienced();" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
 								</div>
-								
 							</div>
 						</div>
+						<div class="clearfix mt mb"></div>
+						<label class="col-md-4">No.of Days for Experienced Period</label>
+						<div class="col-md-3">
+						<input type="text" class="form-control" id="experiencedPeriod" name="experiencedPeriod" placeholder="Experience" field-name="Duration" value="${leaveType.experiencedPerPeriod}" readonly>
 						</div>
+						</div>
+						
 					</div>
 <!-- experiencedGroup -->
 
@@ -1465,6 +1480,12 @@ function leavepolicyDescription(){
 		$("#experiencedDuration").val("");
 		$("#experiencedApplicableDays").val("");
 		$("#newJoinee").val("");
+		
+		//Writte By Laxman
+		$("#noOfDaysAnnuallyDiv").show();
+		$("#calculatedNoOfDaysDiv").show();
+		$("#experiencedPeriod").val("");
+		$("#fresherPeriod").val("");
 	}
 	function showExperienced() {
 		$('#newJoinee').removeAttr('data-validation-optional');
@@ -1477,9 +1498,13 @@ function leavepolicyDescription(){
 		$('#experiencedApplicableDays').attr('data-validation', "required validate_int validate_length length1-3");
 		$("#experiencedGroup").show();
 		$("#noOfDays").val("");
-// 		$("#noOfDaysDiv").hide();
 		$('#noOfDays').removeAttr('data-validation');
 		$('#noOfDays').attr('data-validation-optional', "true");
+		
+		//Writte By Laxman
+		$("#noOfDaysAnnuallyDiv").hide();
+		$("#calculatedNoOfDaysDiv").hide();
+		$('#noOfDaysAnnuallyDiv').find('p.jquery_form_error_message').remove();
 	}
 </script>
 <script>
@@ -1584,8 +1609,49 @@ function getNoOfDaysPerPeriod(){
 	 }else{
 		 $("#noOfDaysPerPeriod").val(calculatedDays);
 	 }
-	
+	 getNoOfDaysPerPeriodFresher();
+	 getNoOfDaysPerPeriodExperienced();
  }
+ 
+function getNoOfDaysPerPeriodFresher(){
+	 var period = $("#period").val();
+	 var noOfDays = $("#newJoinee").val();
+	 var calculatedDays = "";
+	 if(period == "Annually"){
+		 calculatedDays = noOfDays;
+	 }else if(period == "HalfYearly"){
+		 calculatedDays = noOfDays / 2 ;
+	 }else if(period == "Quarterly"){
+		 calculatedDays = noOfDays / 4 ;
+	 }else if(period == "Monthly"){
+		 calculatedDays = noOfDays / 12 ;
+	 }
+	 if(period != "Annually"){
+		 $("#fresherPeriod").val(calculatedDays.toFixed(2));
+	 }else{
+		 $("#fresherPeriod").val(calculatedDays);
+	 }
+	
+}
+function getNoOfDaysPerPeriodExperienced(){
+	 var period = $("#period").val();
+	 var noOfDays = $("#experiencedApplicableDays").val();
+	 var calculatedDays = "";
+	 if(period == "Annually"){
+		 calculatedDays = noOfDays;
+	 }else if(period == "HalfYearly"){
+		 calculatedDays = noOfDays / 2 ;
+	 }else if(period == "Quarterly"){
+		 calculatedDays = noOfDays / 4 ;
+	 }else if(period == "Monthly"){
+		 calculatedDays = noOfDays / 12 ;
+	 }
+	 if(period != "Annually"){
+		 $("#experiencedPeriod").val(calculatedDays.toFixed(2));
+	 }else{
+		 $("#experiencedPeriod").val(calculatedDays);
+	 }
+}
  </script>
  <script>
  function validateAutoApprove(){
