@@ -483,13 +483,12 @@ if(type == 'C2C' || type == 'C2C-1099'){
 	 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
 		        	$('#vendors').empty();
 		        	$('#vendors').append('<option value="">--Select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
-		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+		            		$('#vendors').append('<option value='+opt.orgRelId+' >'+opt.vendorName+'</option>');
 		            }
 		            $('#vendors').trigger("chosen:updated");
 		        }
