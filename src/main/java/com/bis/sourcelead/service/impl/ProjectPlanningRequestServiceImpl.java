@@ -563,8 +563,6 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 				 if(!isNullOrEmpty(associateRequestDTO.getRequestStartDate())){
 					 Date requestStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),associateRequestDTO.getRequestStartDate());
 					 resourceRequest.setStartDate(requestStartDate);
-				 }else{
-					 resourceRequest.setStartDate(null);
 				 }
 				 
 				 if(!isNullOrEmpty(associateRequestDTO.getRequestEndDate())){

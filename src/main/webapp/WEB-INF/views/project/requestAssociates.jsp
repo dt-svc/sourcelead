@@ -595,7 +595,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 				var startDateText = "";
 				var cell3 = row.insertCell(3);
 				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input" value="'+opt.startDateStr+'"  name="'+maxRowNum+'requestStartDate" >';
+				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input" value="'+opt.startDateStr+'"  name="associateResources['+maxRowNum+'].requestStartDate">';
 				startDateText = startDateText+'</div>';
 				cell3.innerHTML = startDateText;
 				
@@ -603,7 +603,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 				var endDateText = "";
 				var cell4 = row.insertCell(4);
 				endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input" value="'+opt.endDateStr+'"  name="'+maxRowNum+'requestEndDate" >';
+				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input" value="'+opt.endDateStr+'"   name="associateResources['+maxRowNum+'].requestEndDate" >';
 				endDateText = endDateText+'</div>';
 				cell4.innerHTML = endDateText;
 				

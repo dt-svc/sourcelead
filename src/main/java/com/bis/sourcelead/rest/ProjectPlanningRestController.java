@@ -768,6 +768,7 @@ public class ProjectPlanningRestController {
 										projectClients.setCreatedBy(user);
 										projectClients.setUpdatedDate(new Date());
 										projectClients.setUpdatedBy(user);
+										projectClients.setIsProjectShared(Constants.NO);
 										
 										//prepare ProjectApproverHierarchy
 										Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
@@ -871,6 +872,7 @@ public class ProjectPlanningRestController {
 							projectClients.setCreatedBy(user);
 							projectClients.setUpdatedDate(new Date());
 							projectClients.setUpdatedBy(user);
+							projectClients.setIsProjectShared(Constants.NO);
 							
 							//prepare ProjectApproverHierarchy
 							Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
