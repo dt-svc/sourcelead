@@ -32,6 +32,7 @@ public class MissingInvoiceDTO extends SearchDTO {
 	private String frequencyDate;
 	private double billAmount;
 	private double invoiceAmount;
+	private double totalCalAmount;
 	private String candidateName;
 	private String contractType;
 	private String graphDateType;
@@ -46,6 +47,15 @@ public class MissingInvoiceDTO extends SearchDTO {
 
 	public String getBillReferId() {
 		return billReferId;
+	}
+
+
+	public double getTotalCalAmount() {
+		return totalCalAmount;
+	}
+
+	public void setTotalCalAmount(double totalCalAmount) {
+		this.totalCalAmount = totalCalAmount;
 	}
 
 	public void setBillReferId(String billReferId) {
