@@ -41,4 +41,9 @@ public interface AssociateBalanceLeaveService {
 	List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDaet);
 
 	int updateAssociateBalanceLeaves(User updatedUser, OrgLocations orgLocations, Employees employees, UserRole userRole);
+	
+	int updateAssociateDateOfJoinBalanceLeaveType(Long orgLocationId, User user, int status, String methodType);
+	
+	int addAssociateLeaveType(User loginUser, Long orgLocationId, Employees employee, UserRole userRole);
+	
 }

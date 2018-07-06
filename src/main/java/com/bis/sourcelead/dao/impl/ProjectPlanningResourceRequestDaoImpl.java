@@ -61,7 +61,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 		logger.debug("In ProjectPlanningResourceRequestDaoImpl class getProjectPlanningResourceRequestIdsByRequestId method");
 		Session session = this.sessionFactory.getCurrentSession();
 			 
-		String query = "select resourceRequest.id from ProjectPlanningResourceRequest resourceRequest where resourceRequest.projectPlanningRequestId.id = :projectPlanningRequestId and (resourceRequest.resourceStatus IS NULL OR resourceRequest.resourceStatus = 'Rejected')";
+		String query = "select resourceRequest.id from ProjectPlanningResourceRequest resourceRequest where resourceRequest.projectPlanningRequestId.id = :projectPlanningRequestId";
 		List<Long> lineItemsIdsList =  session.createQuery(query.toString()).setLong("projectPlanningRequestId", projectPlanningRequestId)
 									.list();
 		
@@ -107,7 +107,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 			throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectPlanningResourceRequest resourceRequest left join fetch resourceRequest.projectPlanningRequestId planningRequest "
+		String query = "from ProjectPlanningResourceRequest resourceRequest left join fetch resourceRequest.orgLocationId left join fetch resourceRequest.projectPlanningRequestId planningRequest "
 				+ " left join fetch planningRequest.projectId project left join fetch project.orgLocationsId left join fetch resourceRequest.candidateId "
 				+ " where resourceRequest.requestUUID = :requestUUID and resourceRequest.status = '1' ";  
 		List<ProjectPlanningResourceRequest> resourceRequestList = session.createQuery(query).setString("requestUUID", requestUUID).list();
