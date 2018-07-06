@@ -273,7 +273,7 @@
 								                      </td>
 								                      <c:forEach var="empLeave" items="${empLeaveMap.value}" varStatus="empLeaveCount">
 								                        <td>
-								                              <input disabled="disabled"  class="inline_field" value="${empLeave.hours}" placeholder="HH:MM" type="text" id="${leaveIndex}timeSheetDay${empLeaveCount.index+1}Id" >
+								                              <input readonly="readonly" class="inline_field"   value="${empLeave.hours}" placeholder="HH:MM" type="text" id="${leaveIndex}timeSheetDay${empLeaveCount.index+1}Id" >
 											                   <c:if test="${!empty empLeave.leaveReason}">
 	                                                              <div class=" timesheet_comm">                
 											                       <i id="leaveReason${empLeaveCount.index}" class='glyphicon glyphicon-comment com_active' onclick='timesheetComment("leaveReason${empLeaveCount.index}Id");'></i>
@@ -298,8 +298,8 @@
 											  <c:set var="taskName" value=""/>
 											  <c:set var="ticketNumber" value=""/>
 											  <c:if test="${timesheetSubmissionDTO.submitButtonVisible ||  timesheetSubmissionDTO.saveButtonVisible}">
-												   <select id="${leaveIndex+entryCount.index+1}task1Id" name="${leaveIndex+entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId} timSelWid"  onchange='prepareProjectTaskDetails("${entryIndex}","${leaveIndex+entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
-														<option value=''>--select task--</option>
+												   <select id="${leaveIndex+entryCount.index+1}task1Id" name="${leaveIndex+entryCount.index+1}task1Id" title="--select task--"  data-dropup-auto="false" data-size="8" data-live-search="true" class="selectpicker existedProjectTaskId${timesheetEntryDetailsDTO.projectId} timSelWid"  onchange='prepareProjectTaskDetails("${entryIndex}","${leaveIndex+entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
+														<!-- <option value=''>--select task--</option> -->
 														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
 														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
 														       <c:set var="taskId" value="${fn:split(entry.key, '##')[0]}"/>
@@ -329,7 +329,7 @@
 														</c:if>
 													</select>
 													 <c:if test="${entryCount.index == 0}">
-													    <input value="" onclick="addTimeSheetRow('${timesheetEntryDetailsDTO.projectId}')" class="addtaskfield" type="button">
+													    <input value="" onclick="addTimeSheetRow('${timesheetEntryDetailsDTO.projectId}','${leaveIndex}')" class="addtaskfield" type="button">
 													 </c:if>
 													 <c:if test="${entryCount.index > 0}">
 													    <input value="" onclick="removeTimeSheetRow('${leaveIndex+entryCount.index+1}');" class="addtaskfield removetaskfield" type="button">
@@ -365,14 +365,13 @@
 											</div>
 									      </td>
 									      <td> <!-- rowspan="2" -->
-									        <div>
+									        <div class='taskDropDown'>
 									          <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
 									               <span>${!empty taskType ? taskType : '--'}</span>
 									               <input type="hidden" id="${leaveIndex+entryCount.index+1}task1IdBillableTypeId" name="${leaveIndex+entryCount.index+1}task1IdBillableTypeId" value="${taskType}"/>
 									          </c:if>
 									         <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-			                                      <select id="${leaveIndex+entryCount.index+1}task1IdBillableTypeId" name="${leaveIndex+entryCount.index+1}task1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('${entryIndex}','${leaveIndex+entryCount.index+1}task1IdBillableTypeId')">  
-									                  <option value=''>--select BillableType--</option>
+			                                      <select id="${leaveIndex+entryCount.index+1}task1IdBillableTypeId" style="width:220px;" data-dropup-auto="false" data-size="8"  class="selectpicker" name="${leaveIndex+entryCount.index+1}task1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('${entryIndex}','${leaveIndex+entryCount.index+1}task1IdBillableTypeId')">  
 									                  <option value='Billable' ${!empty taskType && taskType == 'Billable' ?'selected':''}>Billable</option>
 									                  <option value='Non-Billable' ${!empty taskType && taskType == 'Non-Billable' ?'selected':''}>Non-Billable</option>
 								                  </select>
@@ -660,7 +659,7 @@ function setTotals(){
 						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
 				    }
 				     
-				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Non-Billable') {
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && (billableType == 'Non Billable' || billableType == 'Non-Billable')) {
 				    	 var nonBillableHours = btemp;
 				    	 var nonBillableSplit = nonBillableHours.split(':');
 				    	 var nonBillableFirst = nonBillableSplit[0];
@@ -1137,12 +1136,14 @@ var validationSettings = {
 		scrollToTopOnError : true,
 		dateFormat : 'yyyy/mm/dd' 
 }; 
-function addTimeSheetRow(projectId) {
+function addTimeSheetRow(projectId,leaveIndex) {
+	  
 	 $('#0docFile').removeAttr('data-validation');
 	 $('#0docFile').attr("data-validation-optional","true"); 
 	 /* $('#0docFile').removeClass('error'); */
 	/*  $('#0docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); */ 
 	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){   
+		    var nonLeaveRowId = parseInt(leaveIndex*7);
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
 			var maxRowNum = parseInt(rowNum);
@@ -1162,6 +1163,10 @@ function addTimeSheetRow(projectId) {
 			/* cell0.setAttribute("class", "pname");*/
 			cell0.innerHTML = divadttTd0Str;
 			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
+			$("#"+maxRowNum+"task1Id").addClass('selectpicker');
+			$("#"+maxRowNum+"task1Id").attr('data-live-search','true');
+			$("#"+maxRowNum+"task1Id").attr('title','--select task--');
+			$("#"+maxRowNum+"task1Id").attr('data-size',8);
 			
 			var cell1 = row.insertCell(1);
 			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
@@ -1169,7 +1174,11 @@ function addTimeSheetRow(projectId) {
 			divadttTd1Str = divadttTd1Str.replace(/projectId/g, (projectId)); 
 			divadttTd1Str = divadttTd1Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			cell1.innerHTML = divadttTd1Str;
-			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
+			$("#"+maxRowNum+"task1IdBillableTypeId").attr('data-validation','required');
+			$("#"+maxRowNum+"task1IdBillableTypeId").addClass('selectpicker');
+			$("#"+maxRowNum+"task1IdBillableTypeId").attr('title','BillableType');
+			$("#"+maxRowNum+"task1IdBillableTypeId").attr('data-size',8);
+			
 			
 			var cell2 = row.insertCell(2);
 			var divadttTd10Str = document.getElementById("divadttTd10").innerHTML;
@@ -1194,8 +1203,8 @@ function addTimeSheetRow(projectId) {
 			divadttTd2Str = divadttTd2Str.replace(/projectId/g, (projectId));
 			divadttTd2Str = divadttTd2Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			
-			var dateValue = $("[name='timesheetSubmission.timesheetEntries[0].date']").val();
-			var dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[0].dayOfTheDate']").val();
+			var dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+"].date']").val();
+			var dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+"].dayOfTheDate']").val();
 			divadttTd2Str = divadttTd2Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd2Str = divadttTd2Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell3.innerHTML = divadttTd2Str;
@@ -1216,8 +1225,8 @@ function addTimeSheetRow(projectId) {
 			divadttTd3Str = divadttTd3Str.replace(/projectId/g, (projectId));
 			divadttTd3Str = divadttTd3Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			
-		    dateValue = $("[name='timesheetSubmission.timesheetEntries[1].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[1].dayOfTheDate']").val();
+		    dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+1+"].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+1+"].dayOfTheDate']").val();
 			divadttTd3Str = divadttTd3Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd3Str = divadttTd3Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell4.innerHTML = divadttTd3Str;
@@ -1238,8 +1247,8 @@ function addTimeSheetRow(projectId) {
 			divadttTd4Str = divadttTd4Str.replace(/projectId/g, (projectId));
 			divadttTd4Str = divadttTd4Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			
-			dateValue = $("[name='timesheetSubmission.timesheetEntries[2].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[2].dayOfTheDate']").val();
+			dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+2+"].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+2+"].dayOfTheDate']").val();
 			divadttTd4Str = divadttTd4Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd4Str = divadttTd4Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell5.innerHTML = divadttTd4Str;
@@ -1259,8 +1268,8 @@ function addTimeSheetRow(projectId) {
 			divadttTd5Str = divadttTd5Str.replace(/projectId/g, (projectId)); 
 			divadttTd5Str = divadttTd5Str.replace(/ENTRYINDEX/g, (entryIndex));
 			
-			dateValue = $("[name='timesheetSubmission.timesheetEntries[3].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[3].dayOfTheDate']").val();
+			dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+3+"].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+3+"].dayOfTheDate']").val();
 			divadttTd5Str = divadttTd5Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd5Str = divadttTd5Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell6.innerHTML = divadttTd5Str;
@@ -1281,8 +1290,8 @@ function addTimeSheetRow(projectId) {
 			divadttTd6Str = divadttTd6Str.replace(/projectId/g, (projectId)); 
 			divadttTd6Str = divadttTd6Str.replace(/ENTRYINDEX/g, (entryIndex));
 			
-			dateValue = $("[name='timesheetSubmission.timesheetEntries[4].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[4].dayOfTheDate']").val();
+			dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+4+"].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+4+"].dayOfTheDate']").val();
 			divadttTd6Str = divadttTd6Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd6Str = divadttTd6Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell7.innerHTML = divadttTd6Str;
@@ -1303,8 +1312,8 @@ function addTimeSheetRow(projectId) {
 			divadttTd7Str = divadttTd7Str.replace(/projectId/g, (projectId));
 			divadttTd7Str = divadttTd7Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			
-			dateValue = $("[name='timesheetSubmission.timesheetEntries[5].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[5].dayOfTheDate']").val();
+			dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+5+"].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+5+"].dayOfTheDate']").val();
 			divadttTd7Str = divadttTd7Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd7Str = divadttTd7Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell8.innerHTML = divadttTd7Str;
@@ -1324,8 +1333,8 @@ function addTimeSheetRow(projectId) {
 			divadttTd8Str = divadttTd8Str.replace(/projectId/g, (projectId));
 			divadttTd8Str = divadttTd8Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			
-			dateValue = $("[name='timesheetSubmission.timesheetEntries[6].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[6].dayOfTheDate']").val();
+			dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+6+"].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+6+"].dayOfTheDate']").val();
 			divadttTd8Str = divadttTd8Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd8Str = divadttTd8Str.replace(/DAYOFTHEDATE/g, (dayOfDate));
 			cell9.innerHTML = divadttTd8Str;
@@ -1337,6 +1346,8 @@ function addTimeSheetRow(projectId) {
 			var projectTaskId = maxRowNum+"task1Id"; 
 			getProjectTasks(projectTaskId);  
 			
+			$('.selectpicker').selectpicker('refresh');
+		    $('.selectpicker').selectpicker({dropupAuto: false});
 		   var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
 		   if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
 			 $('#0docFile').removeAttr('data-validation-optional');
@@ -1354,7 +1365,8 @@ function addTimeSheetRow(projectId) {
         function prepareProjectTaskDetails(entryIndex,projectTaskId){
         	 if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
         		   var taskId = $("#" + projectTaskId).val().split(",");
-    			   $("#" + projectTaskId + "BillableTypeId").val(taskId[1]);
+    			   /* $("#" + projectTaskId + "BillableTypeId").val(taskId[1]); */
+    			   $('select[name="'+ projectTaskId +'BillableTypeId"]').selectpicker('val', taskId[1]);
     			   setTotals(); 
 	  			   var taskDetails = $("#" + projectTaskId).val().split(",");
 	  			   var taskId = taskDetails[0];
@@ -1390,7 +1402,7 @@ function addTimeSheetRow(projectId) {
 		   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
 		      var taskId = '${pt.id}';
 		      var taskType = '${pt.taskType}';
-		      var taskName = '${pt.taskName}';
+		      var taskName = '${fn:replace(pt.taskName, "'", "`")}';
 		      var generatedId = '${pt.generatedId}';
 		     
 		      if(generatedId != null && generatedId !='undefined' && generatedId !=''){

@@ -59,6 +59,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectMembersRateHistory;
@@ -210,6 +211,7 @@ public class ProjectsRestController {
 			 response.setResponseMessage(Result.INVALID_DATA.getValue());
     	 }
 		}catch (Exception e) {
+			e.printStackTrace();
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
@@ -239,8 +241,17 @@ public class ProjectsRestController {
 								}
 				   			}
 				   		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-						    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
-						   // approvedLeaveForNewlyAddedEmployee(projectAssignedMembersDTO.getProjectMembers(),orgLocations,user);
+				   		    Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+				   		    if(StringUtils.isNotBlank(projects.getIsProjectShared()) && 
+			   		    		projects.getIsProjectShared().equalsIgnoreCase(Constants.YES) && !projects.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+				   		    	ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+				   		    	if(StringUtils.isNotBlank(projectClients.getIsProjectShared()) && projectClients.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+				   		    		projectMembersService.saveAssignedSharedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    	}
+				   		    }else {
+				   		        projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    }
+						   
 						    response.setResponse(Result.SUCCESS.name());
 							response.setResponseMessage(Result.SUCCESS.getValue());
 					     }else {

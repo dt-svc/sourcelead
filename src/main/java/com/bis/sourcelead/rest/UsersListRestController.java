@@ -127,6 +127,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
+import opennlp.tools.parser.Cons;
+
 @RestController
 @RequestMapping("/app")
 public class UsersListRestController {
@@ -2204,6 +2206,9 @@ public class UsersListRestController {
 		userService.saveOrUpdateUserElkDocument(userRole, employees, loginUser.getUserCode());
 		
 		int updated = associateBalanceLeaveService.updateAssociateBalanceLeaves(updatedUser,orgLocations,employees,userRole);
+		
+		 associateBalanceLeaveService.updateAssociateDateOfJoinBalanceLeaveType(orgLocations.getId(), updatedUser,Constants.CANDIDATE_ACTIVE,Constants.UPDATE);
+		
 		return "success";
 		}else{
 			return "DataMissing";

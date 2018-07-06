@@ -153,18 +153,16 @@
 	</div> 
 </div>
 <!-- AddRow and Add Attachments Divs  ####-->
-         <div id="divadttTd1" style="display:none;"  class="taskDropDown">   
-             <div> 
+         <div id="divadttTd1" style="display:none;">   
+             <div class="taskDropDown"> 
               <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId timSelWid"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id')">  
-              <option value=''>--select task--</option>
               </select>
              <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="addtaskfield removetaskfield"/>
              </div>
         </div>
         <div id="divadttTd2" style="display:none;">
-             <div>
+             <div class="taskDropDown">
                <select id="REPLACEROWIDtask1IdBillableTypeId" name="REPLACEROWIDtask1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('ENTRYINDEX','REPLACEROWIDtask1IdBillableTypeId')">  
-                  <option value=''>--select BillableType--</option>
                   <option value='Billable'>Billable</option>
                   <option value='Non-Billable'>Non-Billable</option>
                </select>

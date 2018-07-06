@@ -270,8 +270,17 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 				leaveType.setMinDays(0f);
 			}
 		
-		if(leaveTypeDTO.getNoOfDaysPerPeriod() != null)
+		if(leaveTypeDTO.getNoOfDaysPerPeriod() != null) {
 			leaveType.setNoOfDaysPerPeriod(leaveTypeDTO.getNoOfDaysPerPeriod());
+		}
+		
+		if(leaveTypeDTO.getFresherPeriod() != null) {
+			leaveType.setNewJoinPerPeriod(leaveTypeDTO.getFresherPeriod());
+		}
+		
+		if(leaveTypeDTO.getExperiencedPeriod() != null) {
+			leaveType.setExperiencedPerPeriod(leaveTypeDTO.getExperiencedPeriod());
+		}
 		
 		if(leaveTypeDTO.getAutoApprove() !=null && !"".equalsIgnoreCase(leaveTypeDTO.getAutoApprove())){
 			leaveType.setAutoApprove(leaveTypeDTO.getAutoApprove());

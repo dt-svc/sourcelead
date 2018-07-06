@@ -45,6 +45,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -1296,23 +1297,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
          }
 		
 		@RequestMapping(value = "/getVendorsByOrgLocationId")
-		public String getVendorsByOrgLocationId(
+		public List<OrgRelationDTO> getVendorsByOrgLocationId(
 				HttpServletRequest request) throws Exception {
-		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			String resultJson = null;
-			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
-			for(OrgRelations vendors:vendorList){
-				if(vendors.getLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
-				}
-				if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
-				}
-				
-			}
-			
-			resultJson = toJSON(vendorList);
-			return resultJson;
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<OrgRelationDTO> vendorList = orgRelationsService.getAllVendorsListOrgLocationId(orgLocations.getId());
+			return vendorList;
 
 		}
 		/**
