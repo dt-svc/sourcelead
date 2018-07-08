@@ -1020,6 +1020,34 @@ public class DashboardRestController {
 			return response;
 		}
 		
+	@RequestMapping(value = "/getJobFairDates")
+	public ResponseList<String> getJobFairDates(String dateRange, HttpServletRequest request) throws Exception {
+		ResponseList<String> response = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String userType = null;
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+				}
+				List<String> datesList = requirementService.getJobFairDaysListByOrgLocationIDAndUserId(loginOrgLocations.getId(), userType, user.getId());
+				response.setData(datesList);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+		
 		
 		@RequestMapping(value = "/getInterviewsTaskDates")
 		public ResponseList<String> getInterviewsTaskDates(String dateRange, HttpServletRequest request) throws Exception {
@@ -1662,8 +1690,8 @@ public class DashboardRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 //				JSONArray jsonArray = new JSONArray(dashboardItemsDTO.getItems());
-				
-				response = userService.saveDashboardItems(dashboardItemsDTO, user);
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				response = userService.saveDashboardItems(dashboardItemsDTO, user, orgLocations);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

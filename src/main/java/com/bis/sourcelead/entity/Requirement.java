@@ -618,6 +618,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	@JsonProperty
 	private String experienceLevelStr;
+	
+	@Transient
+	@JsonProperty
+	private List<JobFair> jobFairList;
+	
+	public List<JobFair> getJobFairList() {
+		return jobFairList;
+	}
+
+	public void setJobFairList(List<JobFair> jobFairList) {
+		this.jobFairList = jobFairList;
+	}
 
 	public String getRequirementOrgName() {
 		return requirementOrgName;
