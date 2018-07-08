@@ -64,14 +64,8 @@ $(document).ready(function() {
 								<div class="clearfix">
 									<select class="chosen-select" id="client" name="client"
 										data-placeholder="Select Client" multiple>
-										<c:forEach var="report" items="${add_clientList}">
-											<c:if test="${report.locationId.id == loginOrgLocId}">
-												<option value="${report.id}">${report.responderLocationId.org.orgName}</option>
-											</c:if>
-											<c:if
-												test="${report.responderLocationId.id == loginOrgLocId}">
-												<option value="${report.id}">${report.locationId.org.orgName}</option>
-											</c:if>
+										<c:forEach var="report" items="${clientsList}">
+											<option value="${report.orgRelId}">${report.clientName}</option>
 										</c:forEach>
 									</select>
 								</div>
@@ -132,7 +126,7 @@ $(document).ready(function() {
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="getRequirementTableList();closePop();" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearJobAdvSearch();closePop();getRequirementTableList();" class="btn btn-sm btn-primary" />
+								onclick="clearJobAdvSearch();getRequirementTableList();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 					
@@ -190,7 +184,7 @@ function submitCandidatesToJob(){
 		$("body").css('overflow-y', 'hidden');
 		
 		var result = "";
-		result = result + '<h3>Jobs List</h3>';
+		result = result + '<h3>Select Job</h3>';
 		result = result + '<div id="choicepopUp"></div>';
 		result = result + '<div id="requirementsListLoading"></div>';
 	    result = result +" <div class='mr pull-left'>";
@@ -198,8 +192,16 @@ function submitCandidatesToJob(){
 		result = result +" <button type='button' onclick='clearJobAdvSearch();getRequirementTableList()' class='btn btn-primary btn-sm' title='Refresh'><i class='fa fa-refresh'></i></button>";
 		result = result +"</div>"; 
 		result = result +" <div class='pull-right'>";
+		
+		 result = result +" <div class='mr pull-left mt5'>";
+    	 result = result +'<label class="switch mr pull-left">';
+    	 result = result +'<input type="checkbox" checked onclick="checkResume();" value="Y" name="candidateResume"  id="candidateResume"   >';
+    	 result = result +'<div class="slider round" title="Attach Applicants Resume"></div>';
+    	 result = result +'</label>';
+    	 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
+		
 		result = result +" <div class='mr pull-left'>";
-		result = result +" <input type='button' value='Submit To Job' onclick='submitCandidtesToJob()' class='btn btn-primary btn-sm'>";
+		result = result +" <input type='button' value='Submit' onclick='submitCandidtesToJob()' class='btn btn-primary btn-sm'>";
 		result = result +"</div>";
 		result = result +" <div class='dynamic_search pull-left'>";
 	 	result = result +" <input type='text' placeholder='Search' id='reqDataTableSearch'/>";
@@ -213,6 +215,7 @@ function submitCandidatesToJob(){
 		result = result +'  <th>&nbsp;</th>';
 		result = result +'	<th>Generated Id</th>';
 		result = result +'	<th>Title</th>';
+		result = result +'	<th>Client</th>';
 		result = result +'  <th>Posted On<br>(<small class="custom-small">YYYY-MM-DD</small>)</th>';
 	  	result = result +'  <th>Location</th>';
 		result = result + '</tr>';
@@ -239,7 +242,25 @@ function submitCandidatesToJob(){
 </script>
 
 <script>
+function checkResume(){
+	  var flag = document.getElementById("candidateResume").checked;
+	 if(flag == true){
+		 $("#candidateResume").val('Y'); 
+	 }else{
+		 $("#candidateResume").val('N'); 
+	 } 
+}
+</script>
+
+<script>
 function getRequirementTableList(){
+	
+	var searchData = $('#reqDataTableSearch').val();
+   	if(searchData != '' && searchData != 'undefined' && (searchData.endsWith("-") || searchData.endsWith("\\"))){
+   	    $('#reqDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+   		$("#reqDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	}else{
+   	 $('#reqDataTableSearch').parent().find('p.jquery_form_error_message').remove();
 	 $("#addApplicantDivLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var generatedId = "";
 	 var requirementTitle = "";
@@ -286,6 +307,7 @@ function getRequirementTableList(){
 	 var url = sourceleadUrl+"/getRequirementListForCandidateBulkSubmission?searchValue="+searchValue+"&generatedId="+generatedId+"&jobTitle="+requirementTitle+"&noticePeriod="+noticePeriod+"&client="+client+"&createdDate="+updatedOn+"&skills="+requirementSkills+"&city="+city;
 	 requirementListPagination(url,sourceleadUrl);
 	 $("#addApplicantDivLoading").removeAttr("style");
+   	}
 }
 </script>
 
@@ -306,6 +328,7 @@ function requirementListPagination(url,sourceleadUrl){
             { "data": "action" },
             { "data": "generatedId"},
             { "data": "jobTitle"},
+            { "data": "clientName"},
             { "data": "createdDate" },
             { "data": "location"}
         ],
@@ -346,6 +369,20 @@ function requirementListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
+	              "data": "client",
+	              "sortable": true,
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+	            		  result = result +"<td><div class='tbldata-dotdot_140'><span  title='"+opt.clientName+"'>"+opt.clientName+"</span></div></td>";
+	            	  }else{
+	            		  result = result +"<div>-----</div>";
+	            	  }
+	            	  
+	            	  return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
 	              "data": "createdDate",
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
@@ -367,7 +404,7 @@ function requirementListPagination(url,sourceleadUrl){
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"bLengthChange": true,
-	    	"aaSorting": [[3,'desc']],
+	    	"aaSorting": [[4,'desc']],
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
@@ -382,11 +419,10 @@ function requirementListPagination(url,sourceleadUrl){
     	   if(e.which === 13) {
    		    $('#reqDataTableSearch').parent().find('p.jquery_form_error_message').remove();
    	    	var searchData = $('#reqDataTableSearch').val();
-   	    	var regex =  new RegExp(/[\\-]/g);
-   	    	if(regex.test(searchData) == false){
-   	    		getRequirementTableList();
-   	    	}else{
+   	    	if(searchData.endsWith("-") || searchData.endsWith("\\")){
    	    		$("#reqDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	    	}else{
+   	    		getRequirementTableList();
    	    	}
    	    	$('#reqDataTableSearch').val(searchData);
     	   }
@@ -417,11 +453,13 @@ function submitCandidtesToJob(){
 				   continue;
 			 candidateIds.push(shareCandidates[e]);
 		   } 
+		 
+		 var candidateResume = $("#candidateResume").val();
 			
 		 $("#requirementsListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			   $.ajax({
 		          type : "POST",
-		          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId,    
+		          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId+"&candidateResume="+candidateResume,    
 		           success :function(data) {
 		        	   if (data.response === "FAILED") {
 		        		   $("#requirementsListLoading").removeAttr("style");
@@ -436,7 +474,7 @@ function submitCandidtesToJob(){
 			       			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 			       			$(".side_mask").fadeOut(200);
 			       			$("body").css('overflow-y', 'auto');
-			       			$("#candMsgDiv").html("Candidates Submitted Successfully...");
+			       			$("#candMsgDiv").html(candidateIds.length+" Candidate(s) Submitted Successfully...");
 			       			msgFadein();
 				    	}else if (data.indexOf('Sign In') !== -1) {
 				    		location.replace(sourceleadUrl);
@@ -453,7 +491,7 @@ function submitCandidtesToJob(){
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>Select Requirement</p>";
+			result = result +"		<p>Select Job</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='okPopUp();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPopUp();'></b>";
 			result = result +"	</div>";

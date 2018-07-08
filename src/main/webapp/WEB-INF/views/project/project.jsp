@@ -204,6 +204,24 @@ function validateShortCode(){
 							</div>
 						</div>
 						
+						<c:if test="${!empty projectType && projectType == 'sharedProject' }">
+							<input type="hidden" name="savedSharedClientOrgLocId" id="savedSharedClientOrgLocId">
+							<div class="form-group">
+							<label class="col-md-3" for="Client">Client<span class="text-danger">*</span></label>
+							<div class="col-md-9 select-field">
+								<select class="form-control chosen-select"
+											name="sharedClientOrgLocId" id="sharedClientOrgLocId" field-name="Client"
+											data-validation-optional="true">
+											<option value="">-- Select Client --</option>
+											<c:forEach var="report" items="${clientsList}">
+											<option value="${report.clientLocationId}">${report.clientName}</option>
+											</c:forEach>
+								</select>
+							</div>
+						</div>
+							
+					</c:if>
+						
 						
 						<div class="form-group">
 					             <label class="col-md-3"></label>
@@ -347,7 +365,6 @@ function validateShortCode(){
 						</div>
 						
 						
-						
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
@@ -473,7 +490,7 @@ function validateShortCode(){
 
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
-						<textarea id="txtEditor" name="projectDescription"   value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
+						<textarea id="txtEditor" name="projectDescription"   value="" class="form-control newContrtextarea"  data-validation-optional="true"></textarea>
 					</div>
 					
 					<div id="timesheetDocumentsId">
@@ -771,6 +788,13 @@ function getProjectDetails(){
 	        		 $('#projectSequeneNumber').removeAttr('onblur');
 	        	}
 	        	
+	        	if(json.isProjectShared != null && json.isProjectShared != 'undefined' && json.isProjectShared == 'Y'){
+	        		$("#savedSharedClientOrgLocId").val(json.sharedClientOrgLocationId);
+	        		 $("select[name=sharedClientOrgLocId]").val(json.sharedClientOrgLocationId);
+	        		 $('#sharedClientOrgLocId').prop('disabled', true).trigger("chosen:updated");
+	        	}
+	        	 
+	        	
 	        	 $("input[name=projectName]").val(json.projectName);
 	        	 $("input[name=startDate]").val(json.startDateStr);
 	        	 $("input[name=endDate]").val(json.endDateStr);
@@ -879,7 +903,7 @@ function getProjectDetails(){
         			   var opt = json.projectDocumentsList[i];
         			  
         			     result = result +"<strong id='projectDocument"+opt.id+"'>";
-      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileUrl+"\"></a></i>";
+      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' target='_blank' href=\""+opt.fileUrl+"\"></a></i>";
       					 result = result +"<input type='button' value='"+opt.fileName+"'>";
       					 result = result +"</a>";
       					 result = result +"<input class='dele' type='button' onClick='removeProjectDocuments("+opt.id+","+json.id+");' >";
@@ -1253,6 +1277,13 @@ function getBudgetApprover(approverUserId){
 		  var sectionId = '${section.id}';
 		  getCustomDependentField(sectionId);
 		 </c:forEach>
+		 
+		 var projectType = '${projectType}';
+		 if(projectType != '' && projectType != 'undefined' && projectType == 'sharedProject'){
+			 $("#sharedClientOrgLocId").removeAttr("data-validation-optional");
+			 $("#sharedClientOrgLocId").attr("data-validation", "required");
+		 }
+		 
 	});
 </script>
 

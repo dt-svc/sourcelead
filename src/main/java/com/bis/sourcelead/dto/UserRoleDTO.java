@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 public class UserRoleDTO extends SearchDTO implements Serializable  {
@@ -31,6 +32,7 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	private String orgDepartments;
 	private String isGlobalUser;
 	private Long orgId;
+	private BigInteger orgLocationId;
 	
 	
 	public Long getId() {
@@ -198,6 +200,12 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	}
 	public void setOrgId(Long orgId) {
 		this.orgId = orgId;
+	}
+	public BigInteger getOrgLocationId() {
+		return orgLocationId;
+	}
+	public void setOrgLocationId(BigInteger orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 }

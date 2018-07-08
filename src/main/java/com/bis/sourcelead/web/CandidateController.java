@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
@@ -43,9 +45,11 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrglocationStateTaxService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
@@ -103,6 +107,9 @@ public class CandidateController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	SourceleadTagsService sourceleadTagsService;
 	
 	/**
 	 * Handles to display candidate jsp
@@ -253,21 +260,18 @@ public class CandidateController {
 		List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
 		model.addObject("visaList", visaList);
 		
+		
+		Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+		SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
+		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
 		
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		
-		Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
-		if(null != orgClientList && orgClientList.size() > 0){
-			for(OrgRelations ocl :orgClientList){
-				ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
-				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
-			 }
-		    model.addObject("add_clientList", orgClientList);
-		}
-		  model.addObject("loginOrgLocId", orgLocations.getId());
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(orgLocations.getId());
+	    model.addObject("clientsList", orgClientList);
 		  
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)

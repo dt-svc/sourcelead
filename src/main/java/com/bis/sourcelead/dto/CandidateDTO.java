@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
@@ -230,6 +231,8 @@ public class CandidateDTO extends SearchDTO{
 	
 	private Long requirementId;
 	
+	private String docFile;
+	
 	private List<CustomFormFieldDTO> customFormData;
 	
 	 private Map<String,String> candidateCustomFieldData;
@@ -237,6 +240,12 @@ public class CandidateDTO extends SearchDTO{
 	 private Long userId;
 	 
 	 private BigInteger candId;
+	 
+	 private Set<String> tagsList;
+	 
+	 private Set<String> candidateTagsList;
+	 
+	 private String candidateTags;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -1136,6 +1145,38 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setRequirementId(Long requirementId) {
 		this.requirementId = requirementId;
+	}
+
+	public String getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(String docFile) {
+		this.docFile = docFile;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public Set<String> getCandidateTagsList() {
+		return candidateTagsList;
+	}
+
+	public void setCandidateTagsList(Set<String> candidateTagsList) {
+		this.candidateTagsList = candidateTagsList;
+	}
+
+	public String getCandidateTags() {
+		return candidateTags;
+	}
+
+	public void setCandidateTags(String candidateTags) {
+		this.candidateTags = candidateTags;
 	}
 
 	

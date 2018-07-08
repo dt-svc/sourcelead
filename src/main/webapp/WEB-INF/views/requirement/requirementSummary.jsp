@@ -41,30 +41,26 @@ $(document).ready(function() {
 
 <script>
 function prepareAllCounts(requirementId){
-    $('#applicantli').load(allApplicantsCount(requirementId)); 
-    $('#duplicataplctli').load(duplicateCount(requirementId));
-    $('#requestSentli').load(requestSentCount(requirementId));
-    $('#shortListli').load(shortListCount(requirementId));
-    $('#submitToClientli').load(submitToClientCount(requirementId));
-    $('#interviewli').load(interviewsCount(requirementId));
-    $('#offerMadeli').load(offerMadeCount(requirementId));
-    $('#joinedli').load(joinedCount(requirementId));
-    $('#rejectedli').load(rejectedCount(requirementId)); 
-    $('#backoutli').load(backoutCount(requirementId)); 
-}
-</script>
-
-<script>
-function allApplicantsCount(requirementId){
+	$.ajax({
+	       type : "POST",
+	        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=ALL",        
+	        success :function(data) { 
+	       	 var json = data.object;
+	       	 $("#applicantsCount").html(json.applicantsCount);
+	       	 $("#requestSent").html(json.requestSent);
+	       	 $("#shortlistCount").html(json.shortlistCount);
+	       	 $("#submitToClientCount").html(json.submitToClientCount);
+	       	 $("#interviewCount").html(json.interviewCount);
+	       	 $("#offersCount").html(json.offersCount);
+	       	 $("#joinedCount").html(json.joinedCount);
+	       	 $("#rejectedCount").html(json.rejectedCount);
+	       	 $("#backoutCount").html(json.backoutCount);
+	        },
+		  });
 	
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=APPLICANTS",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	 $("#applicantsCount").html(json);
-        },
-	  });
+	$('#duplicataplctli').load(duplicateCount(requirementId));
+    
+	
 }
 </script>
 
@@ -82,119 +78,14 @@ function duplicateCount(requirementId){
 }
 </script>
 
-<script>
-function requestSentCount(requirementId){
-	
-	 $.ajax({
-      type : "POST",
-       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REQUESTSENT",        
-       success :function(data) { 
-      	    var json = JSON.parse(data);
-      	    $("#requestSent").html(json);
-         },
-	  });
-}
-</script>
-
-<script>
-function shortListCount(requirementId){
-	
-	 $.ajax({
-     type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SHORTLISTED",        
-      success :function(data) { 
-     	    var json = JSON.parse(data);
-     	    $("#shortlistCount").html(json);
-        },
-	  });
-}
-</script>
-
-<script>
-function submitToClientCount(requirementId){
-	
-	$.ajax({
-     type : "POST",
-     url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SUBMIT_TO_CLIENT",        
-     success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#submitToClientCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function interviewsCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=INTERVIEWED",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#interviewCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function offerMadeCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=OFFERED",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#offersCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function joinedCount(requirementId){
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=JOINED",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#joinedCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function rejectedCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REJECTED",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#rejectedCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function backoutCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=BACKOUT",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#backoutCount").html(json);
-       },
-	  });
-}
-</script>
-
 <!-- Content Area -->
 <section class="content-wraper" onclick="popClose(); piplineexportClose();">
+
+
+<div class="success_pop" id="candSelector" style="display: none;"> 
+    	 <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
+   		</div>
+   		
   <section class="content-header clearfix">
     <div class="pull-left">
       <h2>Job Summary</h2>
@@ -270,6 +161,14 @@ function backoutCount(requirementId){
 	}
 </script> 
 <!-- End -->
+
+
+  <script>
+	   function candMsgFadein() {
+			$("#candSelector").fadeIn(200);
+		    $('#candSelector').delay(2000).fadeOut('slow');
+		}
+   </script>
 
 <script>
 
@@ -990,36 +889,77 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         $("#rejectApplicant"+submissionId).slideDown(200);
         $(".project_inn_mask").fadeIn(200);
     }else if(selectBox == "Joined"){
-        var result = "";
-        result = result +"<div id='joinedApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
-        result = result +"<form id='joinedApplicant_form' name='joinedApplicant_form'>";
-        result = result +"	<div class='col-md-12 mt10 mb'>";
-        result = result +"    <div class='clearfix inputfiledColor'>";
-        result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='' type='text' data-validation='required' field-name='Join Date'>";
-        result = result +"    </div>";
-        result = result +"	</div>";
-        result = result +" <input id='saveJoinedRequest' type='button' class='btn' value='Submit' onclick='saveJoinedRequestForApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='joinedRequestCancel' value='Cancel' onClick='cancelJoinedRequest("+subId+","+reqId+",\""+subType+"\");'>";
-        result = result +"</form>";
-        result = result +"</div>";
-        $("#popUp").append(result);
-        $("#joinedApplicant"+submissionId).slideDown(200);
-        $(".project_inn_mask").fadeIn(200);
-        var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-  	    var jsDateFormat= '';
-  	  if(locationDate.match("yyyy-MM-dd")){
-  		  jsDateFormat = 'yy-mm-dd';
-  	  }if(locationDate.match("dd-MM-yyyy")){
-  		  jsDateFormat = 'dd-mm-yy'; 
-  	  }if(locationDate.match("MM-dd-yyyy")){
-  		  jsDateFormat = 'mm-dd-yy'; 
-  	  }if(locationDate.match("yyyy-dd-MM")){
-  		  jsDateFormat = 'yy-dd-mm'; 
-  	  }
-  	  $('#joinDate').datepicker({
-  	      dateFormat: jsDateFormat,
-  	      changeMonth: true,
-  	  	  changeYear: true,
-  	  });
+    	$.ajax({
+    	      type : "POST",
+    	      url: sourceleadUrl+"/getRequirementOfferSubmissionById?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+    	    	success :function(data) { 
+    	    		if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		var obj = data.object;
+    	            	var result = "";
+    	                result = result +"<div id='joinedApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+    	                result = result +"<form id='joinedApplicant_form' name='joinedApplicant_form'>";
+    	                result = result +"	<div class='col-md-12 mt10 mb'>";
+    	                result = result +"    <div class='clearfix inputfiledColor'>";
+    	                if(obj != null && obj != 'undefined' && obj != ""){
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='"+obj.updatedDateStr+"' type='text' field-name='Join Date'>";
+    	                }else{
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='' type='text' field-name='Join Date'>";
+    	                }
+    	                result = result +"    </div>";
+    	                result = result +"    <div id='joinDateErrorDiv'></div>";
+    	                result = result +"	</div>";
+    	                result = result +" <input id='saveJoinedRequest' type='button' class='btn' value='Submit' onclick='saveJoinedRequestForApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='joinedRequestCancel' value='Cancel' onClick='cancelJoinedRequest("+subId+","+reqId+",\""+subType+"\");'>";
+    	                result = result +"</form>";
+    	                result = result +"</div>";
+    	                $("#popUp").append(result);
+    	                $("#joinedApplicant"+submissionId).slideDown(200);
+    	                $(".project_inn_mask").fadeIn(200);
+    	                var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    	            	  var jsDateFormat= '';
+    	            	  if(locationDate.match("yyyy-MM-dd")){
+    	            		  jsDateFormat = 'yy-mm-dd';
+    	            	  }if(locationDate.match("dd-MM-yyyy")){
+    	            		  jsDateFormat = 'dd-mm-yy'; 
+    	            	  }if(locationDate.match("MM-dd-yyyy")){
+    	            		  jsDateFormat = 'mm-dd-yy'; 
+    	            	  }if(locationDate.match("yyyy-dd-MM")){
+    	            		  jsDateFormat = 'yy-dd-mm'; 
+    	            	  }
+    	            	  $('#joinDate').datepicker({
+    	            	      dateFormat: jsDateFormat,
+    	            	      changeMonth: true,
+    	            	  	  changeYear: true,
+    	            	  });
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
+  				},
+    		  });
+    }else if(selectBox == "SelectedOnInterview"){
+    	$("tr").find("td.sorting_1").removeClass("sorting_1");
+    	$("#job_"+submissionId).addClass("row-success");
+    	
+    	$.ajax({
+  	      type : "POST",
+  	      url: sourceleadUrl+"/saveSelectedOnInterviewStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+  	    	success :function(data) {
+  	    		if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+		    		$("tr").removeClass("row-success");
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
+  	    	},
+		  });
     }
 }
 </script>
@@ -1211,6 +1151,7 @@ $('body').on('blur', '#backOut_form', function() {
 
 function saveJoinedRequestForApplicant(submissionId,requirementId,submissionType){
 	if ($('#joinedApplicant_form').validate(false, validationSettings)) {
+		if($('#joinDate').val() != null && $('#joinDate').val() != ''){
 		var formData =  getFormData('joinedApplicant_form'); 
 		$("#saveBackOut").attr("disabled", true);
 		$.ajax({
@@ -1218,12 +1159,27 @@ function saveJoinedRequestForApplicant(submissionId,requirementId,submissionType
     	    data: formData,
 		    url: sourceleadUrl+"/saveJoinedRequestForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
 		    success: function(data) {
-		    	$("#popUp").empty();
-   			 	$(".project_inn_mask").fadeOut(200);
-   			    requirementPipeline(requirementId,submissionType);
+		    	if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+		    		$("#popUp").empty();
+	   			 	$(".project_inn_mask").fadeOut(200);
+	   			    requirementPipeline(requirementId,submissionType);
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
 		    }
 	   });
 		return true;
+	}else{
+		$('#joinDateErrorDiv').append('<p class="jquery_form_error_message">Join Date is required</p>');
+		return false;
+	}
+		
 	}else{
 		return false;
 	}
@@ -1236,7 +1192,7 @@ $('body').on('blur', '#joinedApplicant_form', function() {
 
 
 
-<script>
+<!-- <script>
 function requirementSubmissionCount(requirementId){  
 	
 	 $.ajax({
@@ -1258,7 +1214,7 @@ function requirementSubmissionCount(requirementId){
          },
 	  });
 }
-</script>
+</script> -->
 
 <%-- 
      @author : sarath kumar.
@@ -2361,7 +2317,7 @@ function exportPipelineToPdf(requirementId,submissionType){
 
 <script>
 	// Close Advanced Search
-		function closePop(){
+		function closeCustomizePop(){
 			$("div.cand-advsrch-popup").hide();
 			$("#customizeScoreDiv").hide();
 		}
@@ -2761,7 +2717,10 @@ function customizeScore(requirementId){
 			        result = result +'		              </div>                          ';
 			        
 			        result = result +'		            <div class="form-footer clearfix">                                              ';
-			        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Customize</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closePop();">Cancel</a> </div>';
+
+	
+			        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Apply</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closeCustomizePop();">Cancel</a> </div>';
+
 			        result = result +'		            </div>'; 
 			        result = result	+ '               <form>';
 			        result = result +'		            </div>'; 

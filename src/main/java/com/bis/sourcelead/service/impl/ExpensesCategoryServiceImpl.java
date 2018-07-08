@@ -94,7 +94,7 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 		if(jsonObject.has("isAttachmetRequired")){
 			expensesCategory.setIsAttachemtRequired(jsonObject.getString("isAttachmetRequired"));
 		}else {
-			expensesCategory.setIsAttachemtRequired(Constants.NO);
+			expensesCategory.setIsAttachemtRequired(null);
 		}
 		
 		expensesCategory.setStatus(Constants.MEMBER_ACTIVE);

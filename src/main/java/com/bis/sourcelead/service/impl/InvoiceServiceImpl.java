@@ -828,11 +828,19 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
 		 globalVarsMap.put("LoginUser",user.getFirstName());
 		 if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
-             globalVarsMap.put("vendorName",invoice.getContactUser().getFirstName());
-
+			 StringBuilder vendorName = new StringBuilder();
+			 if(invoice.getContactUser().getLastName() != null) {
+             globalVarsMap.put("vendorName",vendorName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+			 }else {
+				 globalVarsMap.put("vendorName",invoice.getContactUser().getFirstName());
+			 }
          }else{
+        	 StringBuilder clientName = new StringBuilder();
+        	 if(invoice.getContactUser().getLastName() != null) {
+        		 globalVarsMap.put("clientName",clientName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+        	 }else {
              globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
-
+        	 }
          }
 		 globalVarsMap.put("totalAmouprojectMembersListnt",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
@@ -881,7 +889,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 
 			//send notification logic
 			EmailScenario notificationScenario = null;
-			if(invoiceType.equalsIgnoreCase("payables")){
+			if(invoiceType.equalsIgnoreCase("payable")){
 				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList);
 				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 			 }else{
@@ -1770,9 +1778,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
-				String billableHours = String.valueOf(sah.getBillableHours());
 				StringBuilder sb = new StringBuilder();
-				if(billableHours != null){
+				if(sah.getBillableHours() != null){
+				String billableHours = String.valueOf(sah.getBillableHours());
 					String arr[] = billableHours.split("\\.");
 					if (arr[0].length() == 2) {
 						sb.append("0").append(arr[0]);
@@ -1922,16 +1930,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 */
 	private void populateClientDetails(OrgLocations vendorOrgLocation, Invoice invoice, OrgRelations orgRelation)
 	{
-		invoice.setResponderLocationId(vendorOrgLocation);
-		if (null != orgRelation.getPaymentTerm()
-				&& !"".equalsIgnoreCase(orgRelation.getPaymentTerm())) {
+		invoice.setResponderLocationId(vendorOrgLocation);                                                //check whether the string start with number
+		if (null != orgRelation.getPaymentTerm() && !"".equalsIgnoreCase(orgRelation.getPaymentTerm()) && orgRelation.getPaymentTerm().matches("^[0-9].*$")) {
 			invoice.setPaymentFrequency(orgRelation.getPaymentTerm());
 			invoice.setInvoiceDate(new Date());
 			Date dueDate = getDueDateByPaymentTerm(new Date(), orgRelation.getPaymentTerm());
 			invoice.setDueDate(dueDate);
 		}
-		if (null != orgRelation.getBillingAddress()
-				&& !"".equalsIgnoreCase(orgRelation.getBillingAddress())) {
+		if (null != orgRelation.getBillingAddress()	&& !"".equalsIgnoreCase(orgRelation.getBillingAddress())) {
 			invoice.setBillingAddress(orgRelation.getBillingAddress());
 		}
 	}

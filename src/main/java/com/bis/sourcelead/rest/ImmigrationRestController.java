@@ -500,8 +500,17 @@ public class ImmigrationRestController {
 			if (status.equalsIgnoreCase("tempDetails")) {
 				model.setViewName("/immigration/petitionTemplateDetails");
 			} else if (status.equalsIgnoreCase("docDetails")) {
+				
 				List<LookUpData> educationsList = null;
 				educationsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE); // for populating
+				
+				List<LookUpData> attorneyDocsList = lookUpDataService.getLookUpDataByCategory(Constants.ATTORNEY_CATEGORY);
+				
+				model.addObject("attorneyDocsList", attorneyDocsList);
+				
+				List<LookUpData> petitionerDocsList = lookUpDataService.getLookUpDataByCategory(Constants.PETITIONER_CATEGORY);
+				model.addObject("petitionerDocsList", petitionerDocsList);
+				
 				// dropdown
 				// values in UI.
 				/*
@@ -510,6 +519,7 @@ public class ImmigrationRestController {
 				 * ); model.addObject("templateDTO", );
 				 */
 				model.addObject("educationsList", educationsList);
+				
 				model.setViewName("/immigration/petitionTemplateDocDetails");
 			} else if (status.equalsIgnoreCase("formDetails")) {
 				model.setViewName("/immigration/petitionTemplateFormDetails");
@@ -540,12 +550,13 @@ public class ImmigrationRestController {
 			// mode.
 			try {
 				ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
-				List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService
-						.getImmigrationTemplateDocsListById(templateId);
+				List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService.getImmigrationTemplateDocsListById(templateId);
+				for(ImmigrationTemplateDocDTO  itd:docsList) {
+					itd.setDocumentCategory(itd.getDocumentCategory());
+				}
 				logger.debug(
 						" Edit mode templateId templateId -->" + templateId + ", docsList size is " + docsList.size());
-				List<ImmigrationTemplateFormDTO> formsList = immigrationTemplateService
-						.getImmigrationTemplateformsListById(templateId);
+				List<ImmigrationTemplateFormDTO> formsList = immigrationTemplateService.getImmigrationTemplateformsListById(templateId);
 				logger.debug(
 						" Edit mode templateId templateId -->" + templateId + ", formsList size i " + formsList.size());
 				// templateDTO.setImmigrationDocList(docsList);
@@ -833,14 +844,15 @@ public class ImmigrationRestController {
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "templateid", required = true) Long templateid,
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
-			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
+			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "myImmigration", required = false) String myImmigration, HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<ImmigrationCandidateDocuments> immigrationCanDocList = immigrationCommonService
-				.getImmigrationCandidateDocs(immigrationId, templateid, candidateId, user, orgLocations, searchVal);
+				.getImmigrationCandidateDocs(immigrationId, templateid, candidateId, user, orgLocations, searchVal, myImmigration);
 		for (ImmigrationCandidateDocuments docs : immigrationCanDocList) {
 			LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType().getId());
 			docs.setDocumentTypeName(data.getName());
@@ -1632,7 +1644,7 @@ public class ImmigrationRestController {
 
 			// check required column value in Forms tab.
 			List<ImmigrationCandidateForms> formsList = immigrationCommonService
-					.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, "");
+					.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, "","Y");
 			logger.debug(" formsList:::size --> : " + formsList.size());
 			for (ImmigrationCandidateForms form : formsList) {
 				if (form.getIsRequired().equalsIgnoreCase(Constants.YES)) {
@@ -1647,7 +1659,7 @@ public class ImmigrationRestController {
 			}
 			// check is required in in DocumentsTab
 			List<ImmigrationCandidateDocuments> docsList = immigrationCommonService
-					.getImmigrationCandidateDocs(immigrationId, templateId, candidateId, user, orgLocations, "");
+					.getImmigrationCandidateDocs(immigrationId, templateId, candidateId, user, orgLocations, "","Y");
 			logger.debug(" docsList:::size --> : " + formsList.size());
 			for (ImmigrationCandidateDocuments doc : docsList) {
 				if (doc.getIsRequired().equalsIgnoreCase(Constants.YES)) {
@@ -1899,13 +1911,14 @@ public class ImmigrationRestController {
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "templateId", defaultValue = "0") Long templateId,
 			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
-			@RequestParam(value = "searchVal", required = false) String searchVal) throws Exception {
+			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "myImmigration", required = false) String myImmigration) throws Exception {
 
 		logger.debug("inside controller method getCandidateImmigrationForms--> ");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("/immigration/formDetailsTab");
 		List<ImmigrationCandidateForms> candidateFormsLst = immigrationCommonService
-				.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, searchVal);
+				.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, searchVal,myImmigration);
 		logger.debug("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "
 				+ candidateFormsLst.size());
 		model.addObject("formsList", candidateFormsLst);
@@ -2177,5 +2190,21 @@ public class ImmigrationRestController {
 			@RequestParam(value = "immiTaskId", defaultValue = "0") Long immiTaskId) {
 		return immigrationTemplateService.validateTemplateTaskNameExistance(templateTaskName, templateId,immiTaskId);
 	}
+	
+	@RequestMapping(value = "/getDcoumentType", method = RequestMethod.POST)
+	@ResponseBody
+	public List<LookUpData> getDcoumentType(HttpServletRequest request, @RequestParam(value = "docType") String docType) throws Exception {
+		List<LookUpData> docTypeList = null;
+		if(docType.equalsIgnoreCase("Document Type")) {
+			docTypeList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		}else if(docType.equalsIgnoreCase("AttorneyCategory")) {
+			docTypeList = lookUpDataService.getLookUpDataByCategory(Constants.ATTORNEY_CATEGORY);
+		}else if(docType.equalsIgnoreCase("PetitionerCategory")) {
+			docTypeList = lookUpDataService.getLookUpDataByCategory(Constants.PETITIONER_CATEGORY);
+		}
+         
+		 
+		return docTypeList;
+	}	
 
 }

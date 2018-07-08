@@ -84,7 +84,7 @@ function getWithdrawLeavesList(){
 				result = result +'<th>Withdraw On</th>';
 				result = result + '<th>Reason</th>';
 				result = result + '<th>Status</th>';
-// 				result = result + '<th>Action</th>';
+				result = result + '<th>Action</th>';
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
@@ -123,9 +123,9 @@ function getWithdrawLeavesList(){
 			        		 result = result +' <b class="proj_process mt5 mb5" title="'+opt.status+'">Withdrawn</b> ';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
-			        		/*  result = result + ' <td>';
-			        		 result = result + '   <div title="Reapply" class="tbldata-dotdot-100">Reapply</div>';
-			        		 result = result + '</td>'; */
+			        		 result = result + ' <td>';
+			        		 result = result + '   <a title="Reapply" class="tbldata-dotdot-100" href="'+sourceleadUrl+'/reApplyLeaveByUUID?leaveUUID='+opt.leaveUUID+'&currentStage=WITHDRAW">Reapply</a>';
+			        		 result = result + '</td>';
 			        		 result = result + '  </tr>';
 						}
 				}
@@ -202,7 +202,7 @@ function getWithdrawLeaveSummary(leaveUUID,orgLocationId,status){
 	            }
              result = result +' </div>';
              result = result +' </div>';
-             result = result +'<div class="col-md-12 mb">';
+            /*  result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">'; 
              if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
@@ -211,7 +211,7 @@ function getWithdrawLeaveSummary(leaveUUID,orgLocationId,status){
 	            	result = result +' <span>--</span>';
 	            }
              result = result +'</div>';
-             result = result +'</div>';
+             result = result +'</div>'; */
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Applied on:</b></label>';
              result = result +'<div class="col-md-8">';

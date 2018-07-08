@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +48,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
+import com.bis.sourcelead.dto.EmployeeLeaveDTO;
 import com.bis.sourcelead.dto.EmployeeTimeSheetSubmissionStatusDTO;
 import com.bis.sourcelead.dto.EmployeeTimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.EmployeeTimesheetFileInfoDTO;
@@ -66,9 +69,9 @@ import com.bis.sourcelead.dto.TimesheetTaskDTO;
 import com.bis.sourcelead.dto.UpdateTimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.WeekDaysDTO;
 import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
+import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Holiday;
-import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -83,9 +86,11 @@ import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocumentsHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.HolidayService;
@@ -102,6 +107,7 @@ import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimesheetActivityService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -194,6 +200,15 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private TimeSheetDayEntriesService timeSheetDayEntriesService;
+	
+	@Autowired
+	private AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
+	
+	@Autowired
+	private HolidayDAO holidayDAO;
 
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -223,11 +238,28 @@ public class TimesheetRestController {
 		ModelAndView model = new ModelAndView();
 		try {
 			TimesheetEntryDetailsDTO tedDTO = getTimesheetEntryDetails(eedDTO, request);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
+				orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+			}
 			Long projectMemberId = eedDTO.getProjectMembersId();
 			if (projectMemberId != null) {
+				TimeSheetSubmissionDTO tsDTO =tedDTO.getTimesheetSubmission();
+				ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
+				if(conPM != null) {
+					User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
+	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+	                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+						avgWorkingHoursPerDay = 8; 
+					}
+	                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,avgWorkingHoursPerDay);
+	                tsDTO.setEmpLeaveMap(empLeaveMap);
+				}
+				
 				model.addObject("timesheetEntryDetailsDTO", tedDTO);
 				model.addObject("timesheetSubmissionDTO", tedDTO.getTimesheetSubmission());
-				LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(
+				LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(
 						tedDTO.getTimesheetSubmission(), request);
 				model.addObject("entriesMap", entriesMap);
 			}
@@ -248,6 +280,7 @@ public class TimesheetRestController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		}
@@ -345,9 +378,6 @@ public class TimesheetRestController {
 					}
 					
 				}
-				
-				
-				
 				tedDTO.getProjectMembersList().clear();
 				tedDTO.setOldSubmittedProjectMembersList(oldSubmittedPmIdsList);
 				tedDTO.setProjectMembersList(freshProjectMembersList);
@@ -390,9 +420,11 @@ public class TimesheetRestController {
 				}
                 
                 Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-				if(avgWorkingHoursPerDay == null) {
+                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
 					avgWorkingHoursPerDay = 8; 
 				}
+                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,avgWorkingHoursPerDay);
+				tedDTO.setEmpLeaveMap(empLeaveMap);
 				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
 				model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
 				
@@ -407,6 +439,7 @@ public class TimesheetRestController {
 			}
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			model.addObject("AWKWARD", true);
 			model.setViewName("timesheet/employeeTImesheetInvoiceList");
 		}
@@ -414,6 +447,135 @@ public class TimesheetRestController {
 
 	}
 	
+	public Map<String,List<EmployeeLeaveDTO>> getEmpLeaveList(List<WeekDaysDTO> weekDays,String currentTimeSubFrequency,OrgLocations loc,User user,Integer avgHours) throws Exception {
+		Map<String,List<EmployeeLeaveDTO>> empLeaveMap = new ConcurrentHashMap<>();
+		Date startDate = null;
+		Date endDate = null;
+		if (StringUtils.isNotEmpty(currentTimeSubFrequency)) {
+			String[] subfrequency = currentTimeSubFrequency.split("To");
+			String subfrstartDate = subfrequency[0].trim();
+			String subfrEndDate = subfrequency[1].trim();
+			startDate = commonUtil.orgLocationDateFormat(loc.getDateFormat(), subfrstartDate);
+			endDate = commonUtil.orgLocationDateFormat(loc.getDateFormat(), subfrEndDate);
+			List<AppliedLeaveDate> leaveDateList = appliedLeaveDateService.getAppliedLeaveDateByUserId(user.getId(), startDate, endDate);
+			List<Holiday>  holidays = null;
+			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+			if(userRole != null) {
+				 holidays = holidayDAO.getHolidaybyLocationIdAndFromdate(startDate, endDate,userRole.getOrgLocations().getId());
+			}
+			
+			if((leaveDateList != null && !leaveDateList.isEmpty()) || (holidays != null && !holidays.isEmpty())) {
+			    LinkedHashMap<String, EmployeeLeaveDTO> valuesMap = new LinkedHashMap<>();
+			  if(leaveDateList != null && !leaveDateList.isEmpty()) {
+				for(AppliedLeaveDate leaveDate :leaveDateList) {
+					String leaveType = leaveDate.getLeave().getLeaveType().getName();
+					String billableType = leaveDate.getLeave().getLeaveType().getLeaveType();
+					String leaveTypeArr = leaveType+"##"+billableType;
+					
+					EmployeeLeaveDTO leaveDTO = new EmployeeLeaveDTO();
+					leaveDTO.setHours(getDisplayHoursFromHours(avgHours));
+					SimpleDateFormat sf = new SimpleDateFormat("E");
+					leaveDTO.setLeaveDate(commonUtil.dateStrFromOrgDateFormatter(loc.getDateFormat(),leaveDate.getApplyLeaveDate()));
+					leaveDTO.setDayOfTheDate(sf.format(leaveDate.getApplyLeaveDate()));
+					leaveDTO.setLeaveReason(leaveDate.getLeave().getReason());
+					List<EmployeeLeaveDTO>  leaveDTOList = empLeaveMap.get(leaveTypeArr);
+					if(leaveDTOList != null && !leaveDTOList.isEmpty()) {
+						leaveDTOList.add(leaveDTO);
+						valuesMap.put(leaveTypeArr+leaveDTO.getLeaveDate(),leaveDTO);
+						empLeaveMap.put(leaveTypeArr, leaveDTOList);
+						
+					}else {
+						leaveDTOList = new ArrayList<>();
+						leaveDTOList.add(leaveDTO);
+						valuesMap.put(leaveTypeArr+leaveDTO.getLeaveDate(),leaveDTO);
+						empLeaveMap.put(leaveTypeArr, leaveDTOList);
+					}
+				}
+			  }
+			  if(holidays != null && !holidays.isEmpty()) {
+				for(Holiday holiday :holidays) {
+					List<Date> duration =  CalendarUtil.getListOfDaysBetweenTwoDates(holiday.getFromDate(),holiday.getToDate());
+					if(duration != null && !duration.isEmpty()) {
+						for(Date  holidayDate :duration) {
+							String leaveType = holiday.getHolidayName();
+							String billableType = "Billable";
+							String leaveTypeArr = leaveType+"##"+billableType;
+							
+							EmployeeLeaveDTO leaveDTO = new EmployeeLeaveDTO();
+							leaveDTO.setHours(getDisplayHoursFromHours(avgHours));
+							SimpleDateFormat sf = new SimpleDateFormat("E");
+							leaveDTO.setLeaveDate(commonUtil.dateStrFromOrgDateFormatter(loc.getDateFormat(),holidayDate));
+							leaveDTO.setDayOfTheDate(sf.format(holidayDate));
+							leaveDTO.setLeaveReason(holiday.getDescription());
+							List<EmployeeLeaveDTO>  leaveDTOList = empLeaveMap.get(leaveTypeArr);
+							if(leaveDTOList != null && !leaveDTOList.isEmpty()) {
+								leaveDTOList.add(leaveDTO);
+								valuesMap.put(leaveTypeArr+leaveDTO.getLeaveDate(),leaveDTO);
+								empLeaveMap.put(leaveTypeArr, leaveDTOList);
+								
+							}else {
+								leaveDTOList = new ArrayList<>();
+								leaveDTOList.add(leaveDTO);
+								valuesMap.put(leaveTypeArr+leaveDTO.getLeaveDate(),leaveDTO);
+								empLeaveMap.put(leaveTypeArr, leaveDTOList);
+							}
+						}
+					}
+					
+				 }
+				}
+				Boolean isLeaveOnFullWeek = true;
+				LinkedList<String> weekDaysList = new LinkedList<>();
+				weekDaysList.add("Mon");
+				weekDaysList.add("Tue");
+				weekDaysList.add("Wed");
+				weekDaysList.add("Thu");
+				weekDaysList.add("Fri");
+				weekDaysList.add("Sat");
+				weekDaysList.add("Sun");
+				
+				for (Map.Entry<String, List<EmployeeLeaveDTO>> entry : empLeaveMap.entrySet())
+				{
+					List<EmployeeLeaveDTO> freshLeaveDTOList = new LinkedList<>();
+					String leaveTypeArr = entry.getKey();
+						for (WeekDaysDTO weekDay : weekDays) {
+							if (valuesMap.get(leaveTypeArr+weekDay.getDate()) == null) {
+								EmployeeLeaveDTO leaveDTO = new EmployeeLeaveDTO();
+								leaveDTO.setHours("HH:MM");
+								leaveDTO.setLeaveDate(weekDay.getDate());
+								leaveDTO.setDayOfTheDate(weekDay.getDayOfTheDate());
+								leaveDTO.setLeaveReason("");
+								freshLeaveDTOList.add(leaveDTO);
+							}else {
+								freshLeaveDTOList.add(valuesMap.get(leaveTypeArr+weekDay.getDate()));
+								weekDaysList.remove(weekDay.getDayOfTheDate());
+							}
+						}
+					entry.getValue().clear();
+					entry.getValue().addAll(freshLeaveDTOList);
+				}
+				
+				if(weekDaysList != null && !weekDaysList.isEmpty()) {
+					isLeaveOnFullWeek = false;
+				}
+				//tedDTO.setLeaveOnFullWeek(isLeaveOnFullWeek);
+				//tedDTO.setEmpLeaveMap(empLeaveMap);
+			}
+		}
+		return empLeaveMap;
+	}
+	
+	private String getDisplayHoursFromHours(Integer hours) {
+		String output = "";
+		if(hours != null) {
+			if(hours.toString().length() == 2) {
+				output = hours+":00";
+			}else if(hours.toString().length() == 1) {
+				output = "0"+hours+":00";
+			}
+		}
+		return output;
+	}
 	private EmployeeTimesheetEntryDetailsDTO getEmployeeTimesheetEntryDetails(TimesheetExpenseEntryDetailsUtilDTO eedDTO,
 			HttpServletRequest request) throws Exception {
 		EmployeeTimesheetEntryDetailsDTO employeeTimesheetEntryDetailsDTO = new EmployeeTimesheetEntryDetailsDTO();
@@ -517,7 +679,9 @@ public class TimesheetRestController {
 					     if(StringUtils.isEmpty(eedDTO.getCurrentTimeFrequency()))
 					     currentTimesheetFrequency = k.replaceAll("/", "-")+"To"+v.replaceAll("/", "-");
 	    			}
-			      } catch (Exception e) {}
+			      } catch (Exception e) {
+			    	  e.printStackTrace();
+			      }
 	    	     count++;
 	    	    if(k.equalsIgnoreCase(v)){
 	    	    	dateFrequencyList.put(k.replaceAll("/", "-")+"To"+v.replaceAll("/", "-"), k.replaceAll("/", "-"));
@@ -704,14 +868,14 @@ public class TimesheetRestController {
 						continue;	
 					pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm));
 					TimesheetSubmissions ts = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate, actualEndDate,pm.getProjects().getId(), pm.getMasterCandidateId().getId());
-					Map<Long,LinkedList<TimesheetEntriesDTO>> entryMap = getEmployeeTimesheetSubmissionDetailsByProjectMemberId(ts,new LinkedList(etd.getWeekDays()),pm,request, orgLocations, actualStartDate, actualEndDate, etd);
-					Long entrySizeCheck = 0l;
-					for(Long key : entryMap.keySet()) {
-						entrySizeCheck = key;
+					Map<String,LinkedList<TimesheetEntriesDTO>> entryMap = getEmployeeTimesheetSubmissionDetailsByProjectMemberId(ts,new LinkedList(etd.getWeekDays()),pm,request, orgLocations, actualStartDate, actualEndDate, etd);
+					String entryAvailableCheck = "";
+					for(String key : entryMap.keySet()) {
+						entryAvailableCheck = key;
 					}
 					EmployeeTimeSheetSubmissionStatusDTO etssDTO = getEmployeeTimesheetSubmissionStatus(pm.getId(), currentTimeFrequency, currentTimeSubFrequency, orgLocations, loginUser,editableCount);
 					if(etssDTO != null && StringUtils.isNotEmpty(etssDTO.getTimesheetStatus()) && !etssDTO.getTimesheetStatus().equalsIgnoreCase("NEW")) {
-						entrySizeCheck = 1l;
+						entryAvailableCheck = "available";
 					}
 					if(editableCount == 1) {
 						etd.setMonEditable(etssDTO.getEditableMap().get("Mon"));
@@ -724,7 +888,7 @@ public class TimesheetRestController {
 					}
 					editableCount++;
 					ettsDTOMap.put(pm.getId(), etssDTO);
-					if(entrySizeCheck == 0)
+					if(StringUtils.isEmpty(entryAvailableCheck))
 						continue;
 					if (ts != null) {
 						List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
@@ -752,7 +916,7 @@ public class TimesheetRestController {
 					
 					List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(pm.getProjects().getId());
 					if(entryMap != null && !entryMap.isEmpty()) {
-					    for(Map.Entry<Long,LinkedList<TimesheetEntriesDTO>> entry : entryMap.entrySet()) {
+					    for(Map.Entry<String,LinkedList<TimesheetEntriesDTO>> entry : entryMap.entrySet()) {
 							EmployeeTimesheetSubmissionDTO etsDTO = new EmployeeTimesheetSubmissionDTO();
 							Long pmId = null;
 							String taskType = "";
@@ -773,7 +937,12 @@ public class TimesheetRestController {
 							}
 							etsDTO.setTimesheetEntries(entry.getValue());
 							etsDTO.setProjectMemberId(pmId);
-							etsDTO.setProjectTaskId(entry.getKey());
+							String[] taskSplitter = entry.getKey().split("##");
+							Long taskId = 0l;
+							if(taskSplitter != null && taskSplitter.length >= 0 && StringUtils.isNotEmpty(taskSplitter[0])) {
+								taskId = Long.parseLong(taskSplitter[0]);
+							}
+							etsDTO.setProjectTaskId(taskId);
 							etsDTO.setTicketNumber(ticketNumber);
 							etsDTO.setProjectTaskType(taskType);
 							etsDTO.setProjectTaskList(projectsTasks);
@@ -1255,7 +1424,7 @@ public class TimesheetRestController {
 			statusDTO.setTaskCommentsRequired(false);
 		}
 		
-		if(projectMember != null && projectMember.getProjects() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() ==1) {
+		if(projectMember != null && projectMember.getProjects() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() ==1) {
 			statusDTO.setTimesheetDocumentRequired(true);
 		}else {
 			statusDTO.setTimesheetDocumentRequired(false);
@@ -1325,8 +1494,8 @@ public class TimesheetRestController {
 		
 		return tsDTOList;
 	}
-	private Map<Long,LinkedList<TimesheetEntriesDTO>> getEmployeeTimesheetSubmissionDetailsByProjectMemberId(TimesheetSubmissions ts,LinkedList<WeekDaysDTO> weekDaysDTOs, ProjectMembers projectMember,HttpServletRequest request, OrgLocations orgLocations, Date actualStartDate,Date actualEndDate,EmployeeTimesheetEntryDetailsDTO etd) throws Exception {
-		Map<Long,LinkedList<TimesheetEntriesDTO>> entriesMap = new LinkedHashMap<>();
+	private Map<String,LinkedList<TimesheetEntriesDTO>> getEmployeeTimesheetSubmissionDetailsByProjectMemberId(TimesheetSubmissions ts,LinkedList<WeekDaysDTO> weekDaysDTOs, ProjectMembers projectMember,HttpServletRequest request, OrgLocations orgLocations, Date actualStartDate,Date actualEndDate,EmployeeTimesheetEntryDetailsDTO etd) throws Exception {
+		Map<String,LinkedList<TimesheetEntriesDTO>> entriesMap = new LinkedHashMap<>();
 		LinkedList<TimesheetEntriesDTO> entriesList = new LinkedList<>();
 		
 		if (ts != null) {
@@ -1385,14 +1554,21 @@ public class TimesheetRestController {
 			if (timesheetEntriesList != null && !timesheetEntriesList.isEmpty()) {
 				for (TimeSheetDayEntries te : timesheetEntriesList) {
 					
-					Long taskId = 0l;
+					String taskIdWithRef = "";
 					String billableType = "Billable";
 					TimesheetTaskDTO timesheetTaskDTO = new TimesheetTaskDTO();
 					if (te.getProjectTask() != null) {
-						taskId = te.getProjectTask().getId();
+						Long taskId = te.getProjectTask().getId();
 						billableType = te.getTaskType();
 						timesheetTaskDTO.setId(te.getProjectTask().getId());
 						timesheetTaskDTO.setTaskName(te.getProjectTask().getTaskName());
+						timesheetTaskDTO.setTicketNumber(te.getTicketNumber());
+						String ticketNumber = "";
+						if(StringUtils.isNotEmpty(te.getTicketNumber())) {
+							ticketNumber = te.getTicketNumber();
+						}
+						taskIdWithRef = taskId+"##"+ticketNumber;
+						
 					}
 
 					timesheetTaskDTO.setTaskType(billableType);
@@ -1414,14 +1590,14 @@ public class TimesheetRestController {
 						teMonDTO.setHours(mondayHours);
 						teMonDTO.setComments(te.getComments());
 						teMonDTO.setTicketNumber(te.getTicketNumber());
-						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 						if (tsDTOList == null) {
 							tsDTOList = new LinkedList<>();
 							tsDTOList.add(teMonDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						} else {
 							tsDTOList.add(teMonDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						}
 						if (StringUtils.isNotEmpty(mondayHours) && !mondayHours.equalsIgnoreCase("HH:MM")) {
 							if (StringUtils.isNotEmpty(monDayTotalHours) && monDayTotalHours.equalsIgnoreCase("HH:MM")) {
@@ -1461,14 +1637,14 @@ public class TimesheetRestController {
 						if(te != null && te.getTimesheetSubmissions() != null && te.getTimesheetSubmissions().getProjectMembers() != null && te.getTimesheetSubmissions().getProjectMembers().getId() != null)
 						teTueDTO.setProjectMemberId(te.getTimesheetSubmissions().getProjectMembers().getId());
 						teTueDTO.setComments(te.getComments());
-						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 						if (tsDTOList == null) {
 							tsDTOList = new LinkedList<>();
 							tsDTOList.add(teTueDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						} else {
 							tsDTOList.add(teTueDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						}
 						if (StringUtils.isNotEmpty(tuesdayHours) && !tuesdayHours.equalsIgnoreCase("HH:MM")) {
 							if (StringUtils.isNotEmpty(tuesDayTotalHours) && tuesDayTotalHours.equalsIgnoreCase("HH:MM")) {
@@ -1510,14 +1686,14 @@ public class TimesheetRestController {
 						teWedDTO.setDate(WednesDayDate);
 						teWedDTO.setHours(weddayHours);
 						teWedDTO.setComments(te.getComments());
-						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 						if (tsDTOList == null) {
 							tsDTOList = new LinkedList<>();
 							tsDTOList.add(teWedDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						} else {
 							tsDTOList.add(teWedDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						}
 						if (StringUtils.isNotEmpty(weddayHours) && !weddayHours.equalsIgnoreCase("HH:MM")) {
 							if (StringUtils.isNotEmpty(wedDayTotalHours) && wedDayTotalHours.equalsIgnoreCase("HH:MM")) {
@@ -1557,14 +1733,14 @@ public class TimesheetRestController {
 						teThuDTO.setDate(ThursDayDate);
 						teThuDTO.setHours(thursdayHours);
 						teThuDTO.setComments(te.getComments());
-						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 						if (tsDTOList == null) {
 							tsDTOList = new LinkedList<>();
 							tsDTOList.add(teThuDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						} else {
 							tsDTOList.add(teThuDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						}
 						if (StringUtils.isNotEmpty(thursdayHours) && !thursdayHours.equalsIgnoreCase("HH:MM")) {
 							if (StringUtils.isNotEmpty(thursDayTotalHours)
@@ -1607,14 +1783,14 @@ public class TimesheetRestController {
 						teFriDTO.setDate(FriDayDate);
 						teFriDTO.setHours(fridayHours);
 						teFriDTO.setComments(te.getComments());
-						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 						if (tsDTOList == null) {
 							tsDTOList = new LinkedList<>();
 							tsDTOList.add(teFriDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						} else {
 							tsDTOList.add(teFriDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						}
 						if (StringUtils.isNotEmpty(fridayHours) && !fridayHours.equalsIgnoreCase("HH:MM")) {
 							if (StringUtils.isNotEmpty(friDayTotalHours) && friDayTotalHours.equalsIgnoreCase("HH:MM")) {
@@ -1654,14 +1830,14 @@ public class TimesheetRestController {
 						teSatDTO.setDate(SaturdayDate);
 						teSatDTO.setHours(satdayHours);
 						teSatDTO.setComments(te.getComments());
-						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 						if (tsDTOList == null) {
 							tsDTOList = new LinkedList<>();
 							tsDTOList.add(teSatDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						} else {
 							tsDTOList.add(teSatDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						}
 						if (StringUtils.isNotEmpty(satdayHours) && !satdayHours.equalsIgnoreCase("HH:MM")) {
 							if (StringUtils.isNotEmpty(satDayTotalHours) && satDayTotalHours.equalsIgnoreCase("HH:MM")) {
@@ -1701,14 +1877,14 @@ public class TimesheetRestController {
 						if(te != null && te.getTimesheetSubmissions() != null && te.getTimesheetSubmissions().getProjectMembers() != null && te.getTimesheetSubmissions().getProjectMembers().getId() != null)
 						teSunDTO.setProjectMemberId(te.getTimesheetSubmissions().getProjectMembers().getId());
 						teSunDTO.setComments(te.getComments());
-						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 						if (tsDTOList == null) {
 							tsDTOList = new LinkedList<>();
 							tsDTOList.add(teSunDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						} else {
 							tsDTOList.add(teSunDTO);
-							entriesMap.put(taskId, tsDTOList);
+							entriesMap.put(taskIdWithRef, tsDTOList);
 						}
 						if (StringUtils.isNotEmpty(sundayHours) && !sundayHours.equalsIgnoreCase("HH:MM")) {
 							if (StringUtils.isNotEmpty(sunDayTotalHours) && sunDayTotalHours.equalsIgnoreCase("HH:MM")) {
@@ -1737,7 +1913,7 @@ public class TimesheetRestController {
 		}		
 		//return entriesMap;
 		if(entriesMap !=null && !entriesMap.isEmpty()) {
-			for(Long key :entriesMap.keySet()) {
+			for(String key :entriesMap.keySet()) {
 				entriesList.addAll(entriesMap.get(key));
 			}
 		}
@@ -1745,88 +1921,112 @@ public class TimesheetRestController {
 		return getEmployeeEntriesMapForDisplayWeb(entriesList, weekDaysDTOs, request);
 	}
 	
-	private LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> getEmployeeEntriesMapForDisplayWeb(
+	private LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> getEmployeeEntriesMapForDisplayWeb(
 			LinkedList<TimesheetEntriesDTO> entriesList,LinkedList<WeekDaysDTO> weekDaysList, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = new LinkedHashMap<>();
-		LinkedHashMap<String, Long> valuesMap = new LinkedHashMap<>();
+		LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = new LinkedHashMap<>();
+		LinkedHashMap<String, String> valuesMap = new LinkedHashMap<>();
+		LinkedHashMap<String, String> taskTypeMap = new LinkedHashMap<>();
+		LinkedHashMap<String, String> taskNameMap = new LinkedHashMap<>();
+		LinkedHashMap<String, String> ticketNumberMap = new LinkedHashMap<>();
 		if (entriesList != null && entriesList != null && !entriesList.isEmpty()) {
 			for (TimesheetEntriesDTO teDTO : entriesList) {
-				Long taskId = 0l;
+				String taskIdWithRef = "";
+				String taskName="";
+				String taskType = "";
+				String ticketNumber="";
 				if (teDTO.getTimesheetTaskDTO() != null && teDTO.getTimesheetTaskDTO().getId() != null) {
-					taskId = teDTO.getTimesheetTaskDTO().getId();
+					Long taskId = teDTO.getTimesheetTaskDTO().getId();
+					taskName = teDTO.getTimesheetTaskDTO().getTaskName();
+					taskType = teDTO.getTimesheetTaskDTO().getTaskType();
+					ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
+					if(StringUtils.isNotEmpty(teDTO.getTimesheetTaskDTO().getTicketNumber())) {
+						ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
+					}
+					taskIdWithRef = taskId+"##"+ticketNumber;
 				}
-				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 				if (tsDTOList == null) {
 					tsDTOList = new LinkedList<>();
 					tsDTOList.add(teDTO);
 				} else {
 					tsDTOList.add(teDTO);
 				}
-				valuesMap.put(taskId + "" + teDTO.getDate(), taskId);
-				entriesMap.put(taskId, tsDTOList);
+				valuesMap.put(taskIdWithRef + "" + teDTO.getDate(), taskIdWithRef);
+				entriesMap.put(taskIdWithRef, tsDTOList);
+				taskNameMap.put(taskIdWithRef, taskName);
+				taskTypeMap.put(taskIdWithRef, taskType);
+				ticketNumberMap.put(taskIdWithRef, ticketNumber);
 			}
 		} else {
-			Long taskId = 0l;
+			String taskIdWithRef = "";
 			for (WeekDaysDTO weekDay : weekDaysList) {
 				TimesheetEntriesDTO teDTO = new TimesheetEntriesDTO();
 				teDTO.setDayOfTheDate(weekDay.getDayOfTheDate());
 				teDTO.setDate(weekDay.getDate());
 				teDTO.setEditable(weekDay.isEditable());
 				teDTO.setHours("HH:MM");
-				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 				if (tsDTOList == null) {
 					tsDTOList = new LinkedList<>();
 					tsDTOList.add(teDTO);
 				} else {
 					tsDTOList.add(teDTO);
 				}
-				entriesMap.put(taskId, tsDTOList);
+				entriesMap.put(taskIdWithRef, tsDTOList);
 			}
 		}
 
 		if (valuesMap != null && !valuesMap.isEmpty()) {
-			for (Long taskId : entriesMap.keySet()) {
+			for (String taskIdWithRef : entriesMap.keySet()) {
 				for (WeekDaysDTO weekDay : weekDaysList) {
-					if (valuesMap.get(taskId + "" + weekDay.getDate()) == null) {
-						ProjectTasks pt = projectTasksService.getTasksId(taskId.toString());
+					if (valuesMap.get(taskIdWithRef + "" + weekDay.getDate()) == null) {
+						//ProjectTasks pt = projectTasksService.getTasksId(taskId.toString());
+						String[] taskSplitter = taskIdWithRef.split("##");
+						if((taskSplitter != null && taskSplitter.length < 0) || (taskSplitter != null && taskSplitter.length >= 0 && StringUtils.isEmpty(taskSplitter[0])))
+							continue;
 						TimesheetEntriesDTO teDTO = new TimesheetEntriesDTO();
 						teDTO.setDayOfTheDate(weekDay.getDayOfTheDate());
 						teDTO.setDate(weekDay.getDate());
 						teDTO.setEditable(weekDay.isEditable());
 						teDTO.setHours("HH:MM");
 						TimesheetTaskDTO timesheetTaskDTO = new TimesheetTaskDTO();
-						if (pt != null) {
-							timesheetTaskDTO.setId(pt.getId());
-							timesheetTaskDTO.setTaskType(pt.getBillableType());
-							timesheetTaskDTO.setTaskName(pt.getTaskName());
+						timesheetTaskDTO.setId(Long.parseLong(taskSplitter[0]));
+						if (StringUtils.isNotEmpty(taskTypeMap.get(taskIdWithRef))) {
+							timesheetTaskDTO.setTaskType(taskTypeMap.get(taskIdWithRef));
+						}
+						if (StringUtils.isNotEmpty(ticketNumberMap.get(taskIdWithRef))) {
+							timesheetTaskDTO.setTicketNumber(ticketNumberMap.get(taskIdWithRef));
+						}
+						if (StringUtils.isNotEmpty(taskNameMap.get(taskIdWithRef))) {
+							timesheetTaskDTO.setTaskName(taskNameMap.get(taskIdWithRef));
 						}
 						teDTO.setTimesheetTaskDTO(timesheetTaskDTO);
-						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 						if (tsDTOList == null) {
 							tsDTOList = new LinkedList<>();
 							tsDTOList.add(teDTO);
 						} else {
 							tsDTOList.add(teDTO);
 						}
-						entriesMap.put(taskId, tsDTOList);
+						entriesMap.put(taskIdWithRef, tsDTOList);
 					}
 				}
 
 			}
 		}
 
-		LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> freshEntryMap = new LinkedHashMap<>();
+		LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> freshEntryMap = new LinkedHashMap<>();
 		if (entriesMap != null && !entriesMap.isEmpty()) {
-			for (Long taskId : entriesMap.keySet()) {
-				LinkedList<TimesheetEntriesDTO> tedList = entriesMap.get(taskId);
+			for (String taskIdWithRef : entriesMap.keySet()) {
+				LinkedList<TimesheetEntriesDTO> tedList = entriesMap.get(taskIdWithRef);
 				TreeMap<Date, TimesheetEntriesDTO> freshTsDTOMap = new TreeMap<>();
 				for (TimesheetEntriesDTO ted : tedList) {
 					freshTsDTOMap.put(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
 							ted.getDate().replaceAll("/", "-")), ted);
 				}
-				freshEntryMap.put(taskId, new LinkedList<TimesheetEntriesDTO>(freshTsDTOMap.values()));
+				freshEntryMap.put(taskIdWithRef, new LinkedList<TimesheetEntriesDTO>(freshTsDTOMap.values()));
 			}
 		}
 		return freshEntryMap;
@@ -1837,6 +2037,7 @@ public class TimesheetRestController {
 	public ModelAndView saveEmployeeTimesheetEntriesWeb(EmployeeTimesheetEntryDetailsDTO tedDTO, HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		try {
@@ -1974,9 +2175,12 @@ public class TimesheetRestController {
 					}
 	                
 	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-					if(avgWorkingHoursPerDay == null) {
+					if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
 						avgWorkingHoursPerDay = 8; 
 					}
+					Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,avgWorkingHoursPerDay);
+					tedDTO.setEmpLeaveMap(empLeaveMap);	
+							
 					Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
 					model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
 					
@@ -2423,13 +2627,17 @@ public class TimesheetRestController {
 			} else {
 				status = "Draft";
 			}
-	
+			LinkedHashSet<Long> freshPmIdList = new LinkedHashSet<>();
 			List<EmployeeTimesheetFileInfoDTO> timesheetAttachments = tedDTO.getTimsheetAttachments();
 			Map<Long,LinkedList<TimesheetEntriesDTO>> timesheetEntriesMap = new LinkedHashMap<>();
 			if(tsDTO.getTimesheetEntries() != null && !tsDTO.getTimesheetEntries().isEmpty()) {
 				for(TimesheetEntriesDTO teDTO :tsDTO.getTimesheetEntries()) {
 					if(StringUtils.isNotEmpty(teDTO.getTimesheetStatus()) && (teDTO.getTimesheetStatus().equalsIgnoreCase("APPROVED") || teDTO.getTimesheetStatus().equalsIgnoreCase("SUBMITTED")))
+					{
+						freshPmIdList.add(teDTO.getProjectMemberId());
 						continue;
+					}
+						
 					Long projectMemberId = teDTO.getProjectMemberId();
 					LinkedList<TimesheetEntriesDTO> tsDTOList = timesheetEntriesMap.get(projectMemberId);
 					if (tsDTOList == null) {
@@ -2442,7 +2650,7 @@ public class TimesheetRestController {
 				}
 			}
 		     List<Long> oldPmDbIdList = tedDTO.getOldSubmittedProjectMembersList();
-		    List<Long> freshPmIdList = new ArrayList<>();
+		   
 			if(timesheetEntriesMap != null && !timesheetEntriesMap.isEmpty()) {
 				 
 				  for (Map.Entry<Long,LinkedList<TimesheetEntriesDTO>> entry : timesheetEntriesMap.entrySet()) {
@@ -2479,52 +2687,73 @@ public class TimesheetRestController {
 	}
 
 	
-	private LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> getEntriesMapForDisplayWeb(
+	private LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> getEntriesMapForDisplayWeb(
 			TimeSheetSubmissionDTO tsDTO, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = new LinkedHashMap<>();
-		LinkedHashMap<String, Long> valuesMap = new LinkedHashMap<>();
+		LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = new LinkedHashMap<>();
+		LinkedHashMap<String, String> valuesMap = new LinkedHashMap<>();
 		if (tsDTO != null && tsDTO.getTimesheetEntries() != null && !tsDTO.getTimesheetEntries().isEmpty()) {
 			for (TimesheetEntriesDTO teDTO : tsDTO.getTimesheetEntries()) {
-				Long taskId = 0l;
+				String taskIdWithRef = "";
 				if (teDTO.getTimesheetTaskDTO() != null && teDTO.getTimesheetTaskDTO().getId() != null) {
-					taskId = teDTO.getTimesheetTaskDTO().getId();
+					Long taskId = teDTO.getTimesheetTaskDTO().getId();
+					String ticketNumber = "";
+					if(StringUtils.isNotEmpty(teDTO.getTimesheetTaskDTO().getTicketNumber())) {
+						ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
+					}
+					taskIdWithRef = taskId+"##"+ticketNumber;
 				}
-				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 				if (tsDTOList == null) {
 					tsDTOList = new LinkedList<>();
 					tsDTOList.add(teDTO);
 				} else {
 					tsDTOList.add(teDTO);
 				}
-				valuesMap.put(taskId + "" + teDTO.getDate(), taskId);
-				entriesMap.put(taskId, tsDTOList);
+				valuesMap.put(taskIdWithRef + "" + teDTO.getDate(), taskIdWithRef);
+				entriesMap.put(taskIdWithRef, tsDTOList);
 			}
 		} else {
-			Long taskId = 0l;
+			String taskIdWithRef = "";
 			for (WeekDaysDTO weekDay : tsDTO.getWeekDays()) {
 				TimesheetEntriesDTO teDTO = new TimesheetEntriesDTO();
 				teDTO.setDayOfTheDate(weekDay.getDayOfTheDate());
 				teDTO.setDate(weekDay.getDate());
 				teDTO.setEditable(weekDay.isEditable());
 				teDTO.setHours("HH:MM");
-				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 				if (tsDTOList == null) {
 					tsDTOList = new LinkedList<>();
 					tsDTOList.add(teDTO);
 				} else {
 					tsDTOList.add(teDTO);
 				}
-				entriesMap.put(taskId, tsDTOList);
+				entriesMap.put(taskIdWithRef, tsDTOList);
 			}
 		}
 
+		
+		/*for (String taskIdWithRef : entriesMap.keySet()) {
+			for (WeekDaysDTO weekDay : weekDaysList) {
+				if (valuesMap.get(taskIdWithRef + "" + weekDay.getDate()) == null) {
+					//ProjectTasks pt = projectTasksService.getTasksId(taskId.toString());
+					String[] taskSplitter = taskIdWithRef.split("##");
+					if((taskSplitter != null && taskSplitter.length < 0) || (taskSplitter != null && taskSplitter.length >= 0 && StringUtils.isEmpty(taskSplitter[0])))
+						continue;*/
+					
+					
+					
 		if (valuesMap != null && !valuesMap.isEmpty()) {
-			for (Long taskId : entriesMap.keySet()) {
+			for (String taskIdWithRef : entriesMap.keySet()) {
 				for (WeekDaysDTO weekDay : tsDTO.getWeekDays()) {
-					if (valuesMap.get(taskId + "" + weekDay.getDate()) == null) {
-						TimesheetEntriesDTO tempteDTO =  entriesMap.get(taskId).getFirst();
+					if (valuesMap.get(taskIdWithRef + "" + weekDay.getDate()) == null) {
+						
+						String[] taskSplitter = taskIdWithRef.split("##");
+						if((taskSplitter != null && taskSplitter.length < 0) || (taskSplitter != null && taskSplitter.length >= 0 && StringUtils.isEmpty(taskSplitter[0])))
+							continue;
+						
+						TimesheetEntriesDTO tempteDTO =  entriesMap.get(taskIdWithRef).getFirst();
 						//ProjectTasks pt = projectTasksService.getTasksId(taskId.toString());
 						TimesheetEntriesDTO teDTO = new TimesheetEntriesDTO();
 						teDTO.setDayOfTheDate(weekDay.getDayOfTheDate());
@@ -2535,31 +2764,32 @@ public class TimesheetRestController {
 						timesheetTaskDTO.setId(tempteDTO.getTimesheetTaskDTO().getId());
 						timesheetTaskDTO.setTaskType(tempteDTO.getTimesheetTaskDTO().getTaskType());
 						timesheetTaskDTO.setTaskName(tempteDTO.getTimesheetTaskDTO().getTaskName());
+						timesheetTaskDTO.setTicketNumber(tempteDTO.getTimesheetTaskDTO().getTicketNumber());
 						teDTO.setTimesheetTaskDTO(timesheetTaskDTO);
-						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
+						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskIdWithRef);
 						if (tsDTOList == null) {
 							tsDTOList = new LinkedList<>();
 							tsDTOList.add(teDTO);
 						} else {
 							tsDTOList.add(teDTO);
 						}
-						entriesMap.put(taskId, tsDTOList);
+						entriesMap.put(taskIdWithRef, tsDTOList);
 					}
 				}
 
 			}
 		}
 
-		LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> freshEntryMap = new LinkedHashMap<>();
+		LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> freshEntryMap = new LinkedHashMap<>();
 		if (entriesMap != null && !entriesMap.isEmpty()) {
-			for (Long taskId : entriesMap.keySet()) {
-				LinkedList<TimesheetEntriesDTO> tedList = entriesMap.get(taskId);
+			for (String taskIdWithRef : entriesMap.keySet()) {
+				LinkedList<TimesheetEntriesDTO> tedList = entriesMap.get(taskIdWithRef);
 				TreeMap<Date, TimesheetEntriesDTO> freshTsDTOMap = new TreeMap<>();
 				for (TimesheetEntriesDTO ted : tedList) {
 					freshTsDTOMap.put(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
 							ted.getDate().replaceAll("/", "-")), ted);
 				}
-				freshEntryMap.put(taskId, new LinkedList<TimesheetEntriesDTO>(freshTsDTOMap.values()));
+				freshEntryMap.put(taskIdWithRef, new LinkedList<TimesheetEntriesDTO>(freshTsDTOMap.values()));
 			}
 		}
 		return freshEntryMap;
@@ -2836,7 +3066,7 @@ public class TimesheetRestController {
 			timesheetEntryDetailsDTO = getTimesheetFrequencyList(eedDTO, timesheetEntryDetailsDTO, request);
 			model.addObject("timesheetSubmissionDTO", timesheetEntryDetailsDTO.getTimesheetSubmission());
 			model.addObject("timesheetEntryDetailsDTO", timesheetEntryDetailsDTO);
-			LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(
+			LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(
 					timesheetEntryDetailsDTO.getTimesheetSubmission(), request);
 			model.addObject("entriesMap", entriesMap);
 			model.addObject("sourceleadUrl", sourceleadUrl);
@@ -3256,8 +3486,19 @@ public class TimesheetRestController {
 				TimeSheetSubmissionDTO tsDTO = getTimesheetSubmissionDetails(eedDTO, request);
 				//time sheet activity from time sheet activity
 				tsDTO  = timesheetActitvityList(pm.getProjects().getId(),pm.getMasterCandidateId().getId(),tsDTO.getTimeFrequency(),orgLocations,tsDTO);
+				
+				ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
+				if(conPM != null) {
+					User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
+	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+	                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+						avgWorkingHoursPerDay = 8; 
+					}
+	                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,avgWorkingHoursPerDay);
+	                tsDTO.setEmpLeaveMap(empLeaveMap);
+				}
 				model.addObject("timesheetSubmissionDTO", tsDTO);
-				LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tsDTO,request);
+				LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tsDTO,request);
 				model.addObject("entriesMap", entriesMap);
 				model.addObject("projectsTasks", projectsTasks);
 				model.addObject("timesheetEntryDetailsDTO", timesheetEntryDetailsDTO);
@@ -4213,15 +4454,6 @@ public class TimesheetRestController {
 			 * Project Task List
 			 */
 			tsDTO.setTimesheetTaskList(taskDTOList);
-
-			/**
-			 * Status_map
-			 */
-
-			if (statusMap != null && !statusMap.isEmpty()) {
-
-			}
-
 			if (StringUtils.isNotEmpty(currentFrequencyEndDate)) {
 				List<FileInfo> fileInfoList = new ArrayList<>();
 				Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
@@ -4359,15 +4591,21 @@ public class TimesheetRestController {
 		WeekDaysDTO satDayDTO = weekDaysMap.get("Sat");
 		WeekDaysDTO sunDayDTO = weekDaysMap.get("Sun");
 		if (timesheetEntriesList != null && !timesheetEntriesList.isEmpty()) {
-			HashSet<Long> taskSize = new HashSet<>();
+			HashSet<String> taskSize = new HashSet<>();
 			for (TimeSheetDayEntries te : timesheetEntriesList) {
 				String billableType = "Billable";
 				TimesheetTaskDTO timesheetTaskDTO = new TimesheetTaskDTO();
 				if (te.getProjectTask() != null) {
-					taskSize.add(te.getProjectTask().getId());
+					String ticketNumber = "";
+					if(StringUtils.isNotEmpty(te.getTicketNumber())) {
+						ticketNumber = te.getTicketNumber();
+					}
+					String taskIdWithRef = te.getProjectTask().getId()+"##"+ticketNumber;
+					taskSize.add(taskIdWithRef);
 					billableType = te.getTaskType();
 					timesheetTaskDTO.setId(te.getProjectTask().getId());
 					timesheetTaskDTO.setTaskName(te.getProjectTask().getTaskName());
+					timesheetTaskDTO.setTicketNumber(te.getTicketNumber());
 				}
 
 				timesheetTaskDTO.setTaskType(billableType);
@@ -4382,6 +4620,7 @@ public class TimesheetRestController {
 					teMonDTO.setId(te.getId());
 					teMonDTO.setTimesheetTaskDTO(timesheetTaskDTO);
 					teMonDTO.setDayOfTheDate("Mon");
+					teMonDTO.setTicketNumber(te.getTicketNumber());
 					teMonDTO.setDate(monDayDTO.getDate());
 					teMonDTO.setEditable(monDayDTO.isEditable());
 					teMonDTO.setHours(mondayHours);
@@ -4764,6 +5003,7 @@ public class TimesheetRestController {
 				}
 		     }
 		
+		
 		if(!isValid) {
 			/*if invalid Data*/
 			TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
@@ -4787,8 +5027,18 @@ public class TimesheetRestController {
 			tedDTO.setProjectNameForSubmissionPageDisplay(pm.getProjects().getProjectName());
 			tedDTO.setEmploymentTypeForSubmissionPageDisplay(
 			pm.getProjectMemberCandidteId().getDesignationType());
-
-				if (pm.getProjectClientsId().getOrgRelationId() != null) {
+	
+			ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(pm.getId());
+			if(conPM != null) {
+				User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
+                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+					avgWorkingHoursPerDay = 8; 
+				}
+                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,avgWorkingHoursPerDay);
+                tsDTO.setEmpLeaveMap(empLeaveMap);
+			 }
+			if (pm.getProjectClientsId().getOrgRelationId() != null) {
 					OrgRelations orgRelations = orgRelationsService
 							.getOrgRelationById(pm.getProjectClientsId().getOrgRelationId().getId());
 					if (null != pm.getProjectClientsId().getOrgRelationId().getLocationId()
@@ -4807,11 +5057,11 @@ public class TimesheetRestController {
 							tedDTO.setClientNameForDisplay(orgRelations.getLocationId().getOrgLocationName());
 						}
 					}
-				}
+			}
 			tedDTO.setTimesheetSubmission(tsDTO);
 		}
 		model.addObject("timesheetSubmissionDTO", tedDTO.getTimesheetSubmission());
-		LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(
+		LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(
 				tedDTO.getTimesheetSubmission(), request);
 		model.addObject("entriesMap", entriesMap);
 		model.addObject("timesheetEntryDetailsDTO", tedDTO);
@@ -5134,7 +5384,7 @@ public class TimesheetRestController {
 						timesheetDayEntries.setTotalHours(nonBillableHours);
 						timesheetDayEntries.setTaskType("Non-Billable");
 					}
-
+					timesheetDayEntries.setTicketNumber(teDTO.getTicketNumber());
 					timesheetDayEntries.setComments(teDTO.getComments());
 					timesheetDayEntries.setTimesheetDate(
 							commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), teDTO.getDate()));
@@ -5276,12 +5526,18 @@ public class TimesheetRestController {
             		 timeSheetDayEntriesService.saveTimesheetDayEntries(timesheetDayEntry);
             	}
             }
-            
-            
-            
-			
 			tedDTO = getTimesheetSubFrequencyListByCurrentFrequency(eedDTO, tedDTO, loginOrgLocation, request);
 			tsDTO = getTimesheetSubmissionDetails(eedDTO, request);
+			ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+			if(conPM != null) {
+				User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
+                Integer avgWorkingHoursPerDay = loginOrgLocation.getAverageWorkingHours();
+                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+					avgWorkingHoursPerDay = 8; 
+				}
+                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), loginOrgLocation,consultantUser,avgWorkingHoursPerDay);
+                tsDTO.setEmpLeaveMap(empLeaveMap);
+			 }
 			tedDTO.setTimesheetSubmission(tsDTO);
 		}
 		return tedDTO;
@@ -6168,7 +6424,7 @@ public class TimesheetRestController {
 		return resp;
 	}
 
-	public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId,
+	/*public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId,
 			Leave leave, String leaveStatusType) throws Exception {
 		List<ProjectTasks> projectTaskList = leaveTypeService
 				.getProjectTaskByorgLocationIdAndLeaveTypeId(orgLocations.getId(), leaveTypeId);
@@ -6182,14 +6438,14 @@ public class TimesheetRestController {
 					if (pmhDateList.isEmpty() || pmhDateList == null)
 						continue;
 					
-					/*String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(),orgLocations.getDateFormat());
+					String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(),orgLocations.getDateFormat());
 					String leaveDate[] = dateList.split(",");
-					for (int i = 0; i < leaveDate.length; i++) {*/
+					for (int i = 0; i < leaveDate.length; i++) {
 					if (projectTask != null && projectMember != null && leave != null) {
 					    for (Date pmhDate :pmhDateList) {
 					    	String leaveDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmhDate);
-						/*if(!pmhDateList.contains(leaveDate[i]))
-							continue;*/
+						if(!pmhDateList.contains(leaveDate[i]))
+							continue;
 						
 						if(leave.getFromHalfDay() !=null && leave.getFromHalfDay().equalsIgnoreCase("YES") && pmhDate.equals(leave.getFromDate())) {
 							addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(),	projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate,CalendarUtil.getHalfTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"),
@@ -6239,7 +6495,7 @@ public class TimesheetRestController {
 			}
 		}
 	}
-
+*/
 	/**
 	 * @author Rajashekar
 	 * @param request
@@ -6480,5 +6736,15 @@ public class TimesheetRestController {
 		return resultJson;
 
 	}
-	
+	private String getHoursStringFormHours(Integer hours) {
+		String hrs = "";
+		if(hours != null) {
+			if(hours.toString().length() == 1) {
+				hrs = "0"+hours+":00";
+			}else if(hours.toString().length() == 2) {
+				hrs = hours+":00";
+			}
+		}
+		return hrs;
+	}
 }

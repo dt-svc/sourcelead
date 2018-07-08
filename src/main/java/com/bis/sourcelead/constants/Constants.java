@@ -43,6 +43,7 @@ public class Constants {
 	public static final String ASSOCIATE_VENDOR_CONTACT="Vendor Contact(Email)";
 	public static final String ASSOCIATE_GRADE="Grade";
 	public static final String ASSOCIATE_DESIGNATION="Designation*";
+	public static final String ASSOCIATE_SHIFT="Shift*";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";
@@ -169,6 +170,10 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
+	
+	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
+	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
+	
 	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
 	public static final String LEAVE_CANCEL_EMAIL_TO_USER = "LeaveCancelEmailToUser";
@@ -217,7 +222,7 @@ public class Constants {
 	public static final String loginUserAsAdmin = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers. projectClientsId.orgLocationsId.id)";
 	public static final String loginUserAsAdminWithMaxHeirarchyLevelForTs = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))";
 	public static final String loginUserAsAdminWithMaxHeirarchyLevelForExp = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pc.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pc.id and pah.status != '0' ))";
-	public static final String loginUserAsAdminForProjects = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id)";
+	public static final String loginUserAsAdminForProjects = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id and userRole.userState = 'ACTIVE')";
 	public static final String IMMIGRATION_NOTIFICATION_TO_BENEFICIARY = "notificationToImmigrationBeneficiary";
 	/** projectMember constants **/
 	public static final String MEMBER_ACTIVE = "1";
@@ -531,6 +536,8 @@ public class Constants {
     public static final String SOURCELEAD_ADMIN_UNIQUE = "Sourcelead";
 	
 	public static final String DOCUMENT_TYPE = "Document Type";
+	public static final String ATTORNEY_CATEGORY = "AttorneyCategory";
+	public static final String PETITIONER_CATEGORY = "PetitionerCategory";
 	public static final String ADMIN = "Admin";
 	public static final String MAIL_SENT = "Sent";
 	public static final String MAIL_NEW = "New";
@@ -633,9 +640,11 @@ public class Constants {
 	
 
 	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "Emp ID", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
-			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Company", "Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
+			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
 			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
 
+	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee ID" , "First Name*","Last Name", "Email id*", "Phone Number", "Extension Number",
+			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User(Y/N)","Is Global Manage(Y/N)"};
 
 
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
@@ -845,6 +854,7 @@ public class Constants {
 	public static final String LAST_QUARTER =  "LAST_QUARTER";
 	public static final String LAST_YEAR =  "LAST_YEAR";
 	public static final String CUSTOM =  "CUSTOM";
+	public static final String LEAVE_MANAGENENT =  "Leave Management";
 
 	public static final String BILLING =  "Billing";
 	public static final String ACTIVE_USAGE_LIST =  "Active Usage List";
@@ -982,6 +992,8 @@ public class Constants {
 	public static final String CANDIDATE_REQUEST_DOCUMENTS = "requested for documents";
 	public static final String CANDIDATE_ACCEPT_REQUEST_DOCUMENTS = "accepted documents";
 	public static final String CANDIDATE_REJECT_REQUEST_DOCUMENTS = "rejected documents";
+	public static final String CANDIDATE_TAG_ADDED = "added tag";
+	public static final String CANDIDATE_TAG_REMOVED = "removed tag";
 	
 	public static final String EXPENSES = "expenses";
 	public static final String VIEW_TYPE = "LISTVIEW"; 
@@ -1140,7 +1152,7 @@ public class Constants {
 	public static final String REPORT_FILTER_1_WEEK = "1_week";
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
-	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On"};
+	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
 	
 
 	public static final String EMAIL_SUCCESS = "success";
@@ -1148,6 +1160,17 @@ public class Constants {
 	public static final String DELETE = "DEL";
 	public static final String NONE = "NONE";
 	public static final String ADDITION = "ADD";
+	public static final String GENERAL_SHIFT = "General Shift"; 
+	public static final String STATUS_NO = "NO";
+	public static final String STATUS_YES = "YES";
+	public static final String ANNUALLY = "Annually";
+	
+	public static final String HALFYEARLY = "HalfYearly";
+	public static final String QUARTERLY = "Quarterly";
+	
+	public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
+	
+//	Annually   
 
 
 }

@@ -205,7 +205,7 @@ $(document).ready(function () {
     <div class="success_pop" id="selector2" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgJobDiv"></span>
        </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Add Job </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; Add Job </div>
   	
   </section>
   <div class="content-area content-new clearfix">
@@ -1965,7 +1965,7 @@ selectedFile.addEventListener("change", function() {
 	 $("#uploadFile").focus();
 	 if(validate_fileupload(this.value)){
 		 var docSize =  $("#uploadBtn")[0].files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+		  $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
 	      if(docSize > 2097152){
 	    	  document.getElementById("uploadFile").value = '';
 	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();

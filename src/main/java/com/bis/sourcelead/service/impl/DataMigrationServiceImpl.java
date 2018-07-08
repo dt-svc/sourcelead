@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,6 +33,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -42,9 +46,11 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.DataMigrationDao;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.AssetsDataImportDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
@@ -55,14 +61,17 @@ import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DataMigrationService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -70,9 +79,11 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -120,7 +131,14 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 	@Autowired
 	private ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
+	CandidateService candidateService;
 
+	@Autowired
+	private UploadFileService uploadFileService;
+	
+	
 	@Override
 	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception {
 		FileInputStream inputStream = new FileInputStream(new File(filePath.replace("/dataMigration/", "/temp/")));
@@ -305,6 +323,13 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
 					break;
+					
+				case "candidatesUpload":
+					dataMigrationDTOJsonCopy.put("inviteEmail", dataMigrationDTO.getInviteEmail());
+					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation);
+					break;
+					
 				case "timesheetUpload":
 					String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
 					dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy,
@@ -317,6 +342,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 				case "projectTasks":
 					dataMigrationCommonUtil.dataValidationForProjectTasks(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation,isGlobalAccess);
+					break;
+
+				case "associateUpload":
+					dataMigrationCommonUtil.dataValidationForAsscoaites(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation,isGlobalAccess);
 					break;
 
@@ -442,6 +472,20 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			reqDTO.setLocationInfo(locationDTOList);
 			Requirement requirement = requirementService.storeRequirement(reqDTO, orgLocation, user);
 			break;
+			
+			
+		case "candidatesUpload":
+			
+			CandidateDTO candidateDTO = new CandidateDTO();
+			ObjectMapper candidtemapper = new ObjectMapper();
+			candidtemapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			candidtemapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			candidateDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), CandidateDTO.class);
+			if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
+				candidateDTO.setCountry(orgLocation.getCountry());
+			}
+			candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
+			break;
 
 		case "assetUpload":
 			AssetDTO assetDTO = new AssetDTO();
@@ -495,6 +539,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			tasksService.saveProjectTasksDTOByProjectId(project.getId(), projectTasksDTO, user.getId());
 			break;
 
+		case "associateUpload":
+			logger.debug("upload Associate");
+			UsersImport userImport = new UsersImport();
+			ObjectMapper userImporMmapper = new ObjectMapper();
+			userImporMmapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			userImporMmapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			userImport = gson.fromJson(dataMigrationDTOJsonCopy.toString(), UsersImport.class);
+			uploadFileService.saveBulkAssociate(userImport, orgLocation, user);
+
+			break;
 		case "immigrationUpload":
 			logger.debug("inside Immigration uplod---->>>>>");
 			ObjectMapper immigratoinMapper = new ObjectMapper();
@@ -554,18 +608,22 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("ssn"))) {
 				immDto.setSsnNumber(dataMigrationDTOJsonCopy.getString("ssn"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("i94Number"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("i94Number"))) {
 				immDto.setI_94_number(dataMigrationDTOJsonCopy.getString("i94Number"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("i20Number"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("i20Number"))) {
 				immDto.setI_20_number(dataMigrationDTOJsonCopy.getString("i20Number"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("eadNumber"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("eadNumber"))) {
 				immDto.setEadNumber(dataMigrationDTOJsonCopy.getString("eadNumber"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
 				immDto.setBirthDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"));
@@ -575,18 +633,23 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
 				immDto.setMaritalStatus(dataMigrationDTOJsonCopy.getString("maritalStatus"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("petitionType"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("petitionType"))) {
 				immDto.setPetitionType(dataMigrationDTOJsonCopy.getString("petitionType"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("template"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("template"))) {
 				immDto.setTemplateId(dataMigrationDTOJsonCopy.getString("template"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("dateOfArrival"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("dateOfArrival"))) {
 				immDto.setArrivalDate(dataMigrationDTOJsonCopy.getString("dateOfArrival"));
 			}
+			
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("openOn"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("openOn"))) {
 				immDto.setOpenDate(dataMigrationDTOJsonCopy.getString("openOn"));
@@ -621,6 +684,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("receiptNo"))) {
 				immDto.setReceiptNo(dataMigrationDTOJsonCopy.getString("receiptNo"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("benficiarylocation"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("benficiarylocation"))) {
 				immDto.setLocation(dataMigrationDTOJsonCopy.getString("benficiarylocation"));
@@ -638,6 +702,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				passVisaDto.setVisaType(dataMigrationDTOJsonCopy.getString("visaType"));
 
 			}
+			
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
 				passVisaDto.setIdType(Constants.ID_TYPE_PASSPORT);
@@ -654,6 +720,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaStartDate"))) {
 				immDto.setLcaStartDate(dataMigrationDTOJsonCopy.getString("lcaStartDate"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaEndDate"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaEndDate"))) {
 				immDto.setLcaEndDate(dataMigrationDTOJsonCopy.getString("lcaEndDate"));
@@ -663,10 +730,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaNumber"))) {
 				immDto.setLcaNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
 			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaRate")) 
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaRate"))){
 			immDto.setRate(dataMigrationDTOJsonCopy.getString("lcaRate"));
+			}
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaLocation"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaLocation"))) {
 				immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("lcaLocation"));
+			}else {
+				immDto.setJobLocation("");
 			}
 			// /lcaCurrSummary.setIsCurrent(Constants.YES);
 			// candidate previous lca summary detials below
@@ -675,17 +748,26 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaStartDate"))) {
 				immDto.setPrevLcaStartDate(dataMigrationDTOJsonCopy.getString("prevLcaStartDate"));
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"))) {
 				immDto.setPrevLcaEndDate(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"));
 			}
+			
 			// lcaSummary.setPrevLcaTitle(dataMigrationDTOJsonCopy.getString("prevLcaTitle"));prevLcaTitle
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaNumber"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaNumber"))) {
 				immDto.setPrevLcaNumber(dataMigrationDTOJsonCopy.getString("prevLcaNumber"));
 			}
-			immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("prevLcaLocation"));
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevLcaLocation"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("prevLcaLocation"))) {
+				immDto.setJobLocation(dataMigrationDTOJsonCopy.getString("prevLcaLocation"));
+			}else {
+				immDto.setJobLocation("");
+			}
 			immDto.setEditMode("false");
+			
+			
 			// pending prevLcaTitle in excel mapping.
 			Immigration immigration = immigrationCommonService.savePetitionDetails(immDto, user, orgLocation, null);
 			CandidatePassportVisa candidatePassportVisa = null;

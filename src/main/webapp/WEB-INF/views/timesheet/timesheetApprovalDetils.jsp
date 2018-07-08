@@ -11,68 +11,7 @@
 
 </style>
  <div class="timesheetNewHead">
-<%--<div class="timeNewSe timeNewSe_month addicon">
-	<select id="frequencyMonth" name="frequencyMonth" class="form-control chosen-select" onchange="timesheetApprovalDetils('month');">
-		<c:forEach var="frequencyMonth" items="${timesheetApprovalDTO.frequencyMonthList}">
-			<option data-icon="fa fa-calendar" value="${frequencyMonth}"  ${frequencyMonth == timesheetApprovalDTO.frequencyMonth ? 'selected' : ''}>${frequencyMonth}</option>
-		</c:forEach>
-	</select>
-</div>
-<div id="timesheetFrequencyDiv" class="timeNewSe timeNewSe_week">
-	<select id="timesheetFrequency" class="form-control chosen-select" onchange="timesheetApprovalDetils('frequency');">
-		<c:forEach var="timesheetfrequency" items="${timesheetApprovalDTO.timesheetFrequencyList}">
-			<option data-icon="fa fa-calendar" value="${timesheetfrequency}"  ${timesheetfrequency == timesheetApprovalDTO.timesheetFrequency ? 'selected' : ''}>${timesheetfrequency}</option>
-		</c:forEach>
-	</select>
-</div>
 
-
-<c:if test="${!empty timesheetApprovalDTO.timesheetFrequency  && timesheetApprovalDTO.timesheetFrequency != 'Monthly' }" >
-<div id="weekFreTotalDiv">
-	<div class="timeNewSe timeNewSe_week_date addicon" id="weekFrequencyDiv">
-	<select id="weekFrequency" class="form-control chosen-select" onchange="timesheetApprovalDetils('week');" style="display: block;">
-		<c:forEach var="weekFrequencyList" items="${timesheetApprovalDTO.weekFrequencyList}">
-			<option data-icon="fa fa-calendar" ${weekFrequencyList.key == timesheetApprovalDTO.weekFrequency ? 'selected' : ''} value="${weekFrequencyList.key}">${weekFrequencyList.value}</option>
-		</c:forEach>
-	</select>
-	</div>
-</div>
-</c:if>
-<div class="timeNewSe timeNewSe_month">
-	<select id="project"	onchange="timesheetApprovalDetils('project');" class="form-control chosen-select" style="display: block;">
-	     <option data-icon="fa fa-calendar" value="">Select Project</option>
-		<c:forEach var="projects" items="${timesheetApprovalDTO.projectList}">
-			<option data-icon="fa fa-calendar" ${projects.key == timesheetApprovalDTO.project ? 'selected' : ''} value="${projects.key}">${projects.value}</option>
-		</c:forEach>
-	</select>
-</div>
-<div class="timeNewSe timeNewSe_client">
-	<select id="client"	onchange="timesheetApprovalDetils('client');" class="form-control chosen-select" style="display: block;">
-		<option data-icon="fa fa-calendar" value="">Select Client</option>
-		<c:forEach var="clientList" items="${timesheetApprovalDTO.clientList}">
-			<option data-icon="fa fa-calendar" ${clientList.key == timesheetApprovalDTO.client ? 'selected' : ''} value="${clientList.key}">${clientList.value}</option>
-		</c:forEach>
-	</select>
-</div>
-<div class="timeNewSe timeNewSe_client">
-	<select id="stage"	onchange="timesheetApprovalDetils('stage');" class="form-control chosen-select" style="display: block;">
-		<c:forEach var="stages" items="${timesheetApprovalDTO.stagesList}">
-			<option data-icon="fa fa-calendar" ${stages == timesheetApprovalDTO.stage ? 'selected' : ''} value="${stages}">${stages}</option>
-		</c:forEach>
-	</select>
-</div>
-
-<c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
-<div class="export dropexport" onclick="dropDown();" id="exportHideId">
-	<p data-toggle="tooltip" title="Export">
-		<i class="glyphicon glyphicon-export padding_left"></i>
-	</p>
-	<ul id="exporrt">
-	<li onclick="exportTimeSheetToPdfOrExcel('pdf');"title="PDF"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF</li>
-	<li onclick="exportTimeSheetToPdfOrExcel('excel');"title="Excel"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
-	</ul>
-</div>
-</c:if>--%>
 
 
 
@@ -96,7 +35,7 @@
 			<p data-toggle="tooltip" title="Export">
 				<i class="glyphicon glyphicon-export padding_left"></i>
 			</p>
-			<ul id="exporrt">
+			<ul id="exporrt" style="right:auto; left:0;">
 			<li onclick="exportTimeSheetToPdfOrExcel('pdf');"title="PDF"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF</li>
 			<li onclick="exportTimeSheetToPdfOrExcel('excel');"title="Excel"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
 			</ul>
@@ -214,31 +153,33 @@
 	</div> 
 </div>
 <!-- AddRow and Add Attachments Divs  ####-->
-         <div id="divadttTd1" style="display:none;"  class="taskDropDown">   
-             <div> 
-              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId timSelWid"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id')"  onclick="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
-              <option value=''>--select task--</option>
+         <div id="divadttTd1" style="display:none;">   
+             <div class="taskDropDown"> 
+              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId timSelWid"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id')">  
               </select>
              <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="addtaskfield removetaskfield"/>
              </div>
         </div>
         <div id="divadttTd2" style="display:none;">
-             <div>
+             <div class="taskDropDown">
                <select id="REPLACEROWIDtask1IdBillableTypeId" name="REPLACEROWIDtask1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('ENTRYINDEX','REPLACEROWIDtask1IdBillableTypeId')">  
-                  <option value=''>--select BillableType--</option>
                   <option value='Billable'>Billable</option>
                   <option value='Non-Billable'>Non-Billable</option>
                </select>
              </div>
 	    	 <!--   <span id="" name="" ></span>	 -->
    		</div>
+   		 <div id="divadttTd10" style="display:none;">
+		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTicketNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick" field-name=" "></div>	
+	   </div>
         <div id="divadttTd3" style="display:none;">
                <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 			   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 			   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                  
+               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/>  
                <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
                <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+              
                
 	    	   <input type="text" onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay1Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
                <div class="timesheet_comm">
@@ -250,7 +191,7 @@
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   
+                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
                
@@ -263,7 +204,7 @@
                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   
+                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
                
@@ -276,7 +217,7 @@
                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   
+                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 	               
@@ -289,7 +230,7 @@
                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   
+                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 	               
@@ -302,7 +243,7 @@
                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   
+                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 	               
@@ -315,7 +256,7 @@
                  <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 				 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 				 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   
+                 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
                  <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
                  <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 	               
@@ -433,13 +374,19 @@ function getTimesheetFilterData(){
 		$("#stage").val(formData['timesheetStatus']); 
 	}
 	if('client' in formData){
-		$("#client").val(formData['client']); 
+		if(formData['client'] != null && formData['client'] != '' && formData['client'] !='undefined'){
+			$("#client").val(formData['client']); 
+		}else{
+			$("#client").val('');
+		}
 	}
 	if('project' in formData){
 		$("#project").val(formData['project']); 
 	}
-	if('projectName' in formData){
-		$("#projectName").val(formData['projectName']); 
+	
+	var selectedProjectValue = $("input[id='project']:checked").data('value');
+	if(selectedProjectValue != null && selectedProjectValue !='' && selectedProjectValue !='undefined'){
+		$("#projectName").val(selectedProjectValue); 
 	}
 	timesheetApprovalDetils();
 }

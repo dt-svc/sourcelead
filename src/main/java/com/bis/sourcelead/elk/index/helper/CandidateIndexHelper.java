@@ -230,6 +230,11 @@ public class CandidateIndexHelper {
 				candidateIndex.setIsProfilePublic(candidate.getIsProfilePublic());
 			}
 			
+			if(candidate.getCandidateTags() != null && !candidate.getCandidateTags().isEmpty()) {
+				candidateIndex.setTags(candidate.getCandidateTags());
+			}
+			
+			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());
 			
 			candidateIndex.setCandidateUUID(candidate.getCandidateUUID());

@@ -80,6 +80,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -87,6 +88,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -105,6 +107,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.TabsService;
@@ -123,6 +126,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
+
+import opennlp.tools.parser.Cons;
 
 @RestController
 @RequestMapping("/app")
@@ -236,7 +241,11 @@ public class UsersListRestController {
 	@Autowired
 	AssociateGradesService associateGradesService;
 	
+	@Autowired
+	private ShiftService shiftService;
 	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
 	/**
 	 * To get All the Users by filtering
 	 * 
@@ -309,17 +318,9 @@ public class UsersListRestController {
 			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds,teamsList,departmentsList);
 				for(UserRole role : rolesList.getData()){
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
-					StringBuilder userName = new StringBuilder();
-					
 					userRoleDTO.setUserRoleName(role.getRoles().getDisplayName());
 					userRoleDTO.setIsMailSent(role.getIsMailSent().toString());
-					if(!isNullOrEmpty(role.getUser().getLastName())){
-						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
-						userRoleDTO.setUserName(userName.toString());
-					}
-					else{
-						userRoleDTO.setUserName(role.getUser().getFirstName());
-					}
+					userRoleDTO.setUserName(role.getUser().getFullName());
 					userRoleDTO.setUserEmail(role.getUser().getEmail());
 					userRoleDTO.setUserId(role.getUser().getId());
 					userRoleDTO.setUserCode(role.getUser().getUserCode());
@@ -735,10 +736,14 @@ public class UsersListRestController {
 			if(userRole != null) {
 				userRole.setTerminateDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getTerminateDate()));
 			}
-		
+		   System.out.println(employee.getDailyHours());
 			userRole.setDailyHours(employee.getDailyHours());
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
+			if(userRole.getShift() != null) {
+				userRole.setShiftId(userRole.getShift().getId());
+				userRole.setShiftName(userRole.getShift().getShiftName());
+			}
 			
 			if(null != employee.getDepartmentId()){
 				userRole.setDepartment(employee.getDepartmentId().getId().toString());
@@ -1880,9 +1885,9 @@ public class UsersListRestController {
 			if (null != employee) {
 				userService.saveOrUpdateUserElkDocument(userRole, employee, user.getUserCode());
 			}
-
+			int updated = associateBalanceLeaveService.updateAssociateBalanceLeaves(userRole.getUser(), orgLocations, employee, userRole);
 		}
-
+		
 		return "success";
 	}
 
@@ -1987,6 +1992,7 @@ public class UsersListRestController {
 		boolean isUserActive = false;
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
+		User updatedUser = null;
 		if (user != null) {
 			user.setFirstName(addUserDTO.getFirstName());
 			user.setLastName(addUserDTO.getLastName());
@@ -2024,6 +2030,12 @@ public class UsersListRestController {
 				resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
 				userRole.setResourceManager(resourceManager);
 			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getShiftId())){
+				Shift shift = new Shift();
+				shift.setId(Long.parseLong(addUserDTO.getShiftId()));
+				userRole.setShift(shift);
+			}
 
 
 			isUserActive = userRoleService.isUserActive(user.getId());
@@ -2039,7 +2051,7 @@ public class UsersListRestController {
 			user.setUpdatedDate(commonUtil.currentDate());
 			userRole.setUpdatedBy(loginUser.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
-			User updatedUser = userService.addUser(user);
+			 updatedUser = userService.addUser(user);
 			
 			
 			if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess()) && addUserDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
@@ -2193,7 +2205,10 @@ public class UsersListRestController {
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole, employees, loginUser.getUserCode());
 		
-
+		int updated = associateBalanceLeaveService.updateAssociateBalanceLeaves(updatedUser,orgLocations,employees,userRole);
+		
+		 associateBalanceLeaveService.updateAssociateDateOfJoinBalanceLeaveType(orgLocations.getId(), updatedUser,Constants.CANDIDATE_ACTIVE,Constants.UPDATE);
+		
 		return "success";
 		}else{
 			return "DataMissing";
@@ -2260,6 +2275,15 @@ public class UsersListRestController {
 		return userRoleDTOList;
 
 	}
+	
+	@RequestMapping(value = "/getShiftList", method = RequestMethod.POST)
+	public @ResponseBody List<Shift> getShiftList(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Shift> shifList = shiftService.getShiftList(orgLocations.getId());
+		return shifList;
+
+	}
+	
 
 	private String toJSON(Object obj) {
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

@@ -21,6 +21,7 @@ public enum ApplicantSubmissionDisplayStatus {
     OFFERHIRED("Hired"),
     NEW("New"),
     JOINED("Joined"),
+    SELECTED_ON_INTERVIEW("Selected on Interview"),
     
     CLIENT_OFFERMADE("Client Offer Made"),
     CLIENT_OFFERACCEPTED("Client Offer Accepted"),

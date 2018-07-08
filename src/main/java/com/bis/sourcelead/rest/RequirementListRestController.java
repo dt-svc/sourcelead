@@ -52,6 +52,7 @@ import com.bis.sourcelead.dto.RequirementAssignToDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -348,36 +349,42 @@ public class RequirementListRestController {
 	public @ResponseBody ResponseList<RequirementAssignTo> getRequirementAssignedListByRequirementId(RequirementAssignToDTO requirementAssignToDTO, HttpServletRequest request) throws Exception
 	{
 		ResponseList<RequirementAssignTo> requirementAssignToDtoResponse = new ResponseList<>();
-		try {
-			ResponseList<RequirementAssignTo> list = requirementAssignToService.loadRequirementAssignToListByRequirementId(requirementAssignToDTO);
-			List<RequirementAssignTo> requirementAssignToList = list.getData();
-				if (list != null && list.getRecordsTotal() > 0) {
-					for (RequirementAssignTo assing : requirementAssignToList) {
-						if (assing.getAssignUserId() != null) {
-							assing.setAssignedUserName(assing.getAssignUserId().getFullName());
-						}
-						if (assing.getRoleId() != null) {
-							assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
-						}
-						if (assing.getTeamId() != null) {
-							assing.setTeamName(assing.getTeamId().getName());
-						}
-						if (assing.getAssignUserId() != null) {
-							Integer applicantCount = requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(requirementAssignToDTO.getRequirementId(), assing.getAssignUserId().getUserCode());
-							assing.setApplicantCount(applicantCount.toString());
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user != null) {
+			try {
+				ResponseList<RequirementAssignTo> list = requirementAssignToService.loadRequirementAssignToListByRequirementId(requirementAssignToDTO);
+				List<RequirementAssignTo> requirementAssignToList = list.getData();
+					if (list != null && list.getRecordsTotal() > 0) {
+						for (RequirementAssignTo assing : requirementAssignToList) {
+							if (assing.getAssignUserId() != null) {
+								assing.setAssignedUserName(assing.getAssignUserId().getFullName());
+							}
+							if (assing.getRoleId() != null) {
+								assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
+							}
+							if (assing.getTeamId() != null) {
+								assing.setTeamName(assing.getTeamId().getName());
+							}
+							if (assing.getAssignUserId() != null) {
+								Integer applicantCount = requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(requirementAssignToDTO.getRequirementId(), assing.getAssignUserId().getUserCode());
+								assing.setApplicantCount(applicantCount.toString());
+							}
 						}
 					}
-				}
-			requirementAssignToDtoResponse.setData(requirementAssignToList);
-			requirementAssignToDtoResponse.setRecordsFiltered(requirementAssignToList.size());
-			requirementAssignToDtoResponse.setRecordsTotal(requirementAssignToList.size());
-			requirementAssignToDtoResponse.setError(list.getError());
-			requirementAssignToDtoResponse.setResponse(Result.SUCCESS.name());
-			requirementAssignToDtoResponse.setResponseMessage(Result.SUCCESS.getValue());
-	}catch(Exception e) {
-		requirementAssignToDtoResponse.setResponse(Result.AWKWARD.name());
-		requirementAssignToDtoResponse.setResponseMessage(Result.AWKWARD.getValue());
-	}
+				requirementAssignToDtoResponse.setData(requirementAssignToList);
+				requirementAssignToDtoResponse.setRecordsFiltered(requirementAssignToList.size());
+				requirementAssignToDtoResponse.setRecordsTotal(requirementAssignToList.size());
+				requirementAssignToDtoResponse.setError(list.getError());
+				requirementAssignToDtoResponse.setResponse(Result.SUCCESS.name());
+				requirementAssignToDtoResponse.setResponseMessage(Result.SUCCESS.getValue());
+		}catch(Exception e) {
+			requirementAssignToDtoResponse.setResponse(Result.AWKWARD.name());
+			requirementAssignToDtoResponse.setResponseMessage(Result.AWKWARD.getValue());
+		}
+	}else {
+		requirementAssignToDtoResponse.setResponse(Result.SESSION_TIMEDOUT.name());
+		requirementAssignToDtoResponse.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
 	return requirementAssignToDtoResponse;
 	}
 	
@@ -681,6 +688,9 @@ public class RequirementListRestController {
 						tableColumns = columns;
 					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("JOINED")){
 						String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "source", "joinDate", "status"};
+						tableColumns = columns;
+					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SELECTED")){
+						String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "source", "selectedDate", "status"};
 						tableColumns = columns;
 					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("REJECTED")){
 						String[] columns = {"name", "email", "resume", "appliedOn", "rate", "subRate", "source", "rejectedOn", "rejectedBy", "status"};
@@ -1325,70 +1335,18 @@ public class RequirementListRestController {
 	@Async
 	@RequestMapping(value = "/getSubmissionsCountBySubmissionStatus", method = RequestMethod.POST)
 	@ResponseBody
-	String getSubmissionsCountBySubmissionStatus(@RequestParam(value = "requirementId", required = false) String requirementId, @RequestParam(value = "submissionType", required = false) String submissionType, HttpServletRequest request) throws Exception
+	Response<RequirementSubmissionsCountDTO> getSubmissionsCountBySubmissionStatus(@RequestParam(value = "requirementId", required = false) String requirementId, @RequestParam(value = "submissionType", required = false) String submissionType, HttpServletRequest request) throws Exception
 	{
+		Response<RequirementSubmissionsCountDTO> response = new Response<>();
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String resultJson = null;
-		/*
-		 * int numOfShortList = 0; int numOfInterview = 0; int
-		 * numOfSubmitToClient = 0; int numOfOffers = 0; int numOfRejected = 0;
-		 * int numofrequestsent = 0;
-		 */
 		if (requirementId != null && !requirementId.isEmpty() && !requirementId.equalsIgnoreCase("undefined")) {
-			Integer applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long.valueOf(requirementId), user, loginOrgLocation, submissionType);
-			/*
-			 * List<RequirementSubmission> requirementSubmissions =
-			 * requirementSubmissionService.getSubmissionsByRequirementId(Long.
-			 * valueOf(requirementId),user,loginOrgLocation);
-			 * List<RequirementSubmission> duplicateCount =
-			 * requirementSubmissionService.duplicateCandidateCountList(Long.
-			 * parseLong(requirementId), user, loginOrgLocation);
-			 * 
-			 * if(requirementSubmissions !=null && requirementSubmissions.size()
-			 * >0){ for(RequirementSubmission rmentSubmission
-			 * :requirementSubmissions){
-			 * 
-			 * if("SHORTLIST".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString())){ numOfShortList++; } else
-			 * if("INTERVIEW".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString()) ||
-			 * "CLIENT_INTERVIEW".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString())){ numOfInterview++; } else
-			 * if("SUBMIT_TO_CLIENT".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString())){ numOfSubmitToClient++; } else
-			 * if("OFFERMADE".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString()) ||
-			 * "OFFERACCEPTED".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString()) ||
-			 * "OFFERREJECTED".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString()) ||
-			 * "CLIENT_OFFERMADE".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString()) ||
-			 * "CLIENT_OFFERACCEPTED".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString()) ||
-			 * "CLIENT_OFFERREJECTED".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString()) ){ numOfOffers++; }else
-			 * if("REJECTED".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString())){ numOfRejected++; }else
-			 * if("REQUEST_SENT".equalsIgnoreCase(rmentSubmission.
-			 * getSubmissionStatus().toString())){ numofrequestsent++; } }
-			 * for(RequirementSubmission rmentSubmission
-			 * :requirementSubmissions){
-			 * rmentSubmission.setNumOfSubmissions(requirementSubmissions.size()
-			 * ); rmentSubmission.setNumOfShortList(numOfShortList);
-			 * rmentSubmission.setNumOfInterview(numOfInterview);
-			 * rmentSubmission.setNumOfSubmitToClient(numOfSubmitToClient);
-			 * rmentSubmission.setNumOfOffers(numOfOffers);
-			 * rmentSubmission.setNumOfRejected(numOfRejected);
-			 * rmentSubmission.setNumofrequestsent(numofrequestsent);
-			 * if(duplicateCount != null){
-			 * rmentSubmission.setDuplicateCount(duplicateCount.size()); } } }
-			 * resultJson = commonUtil.toJSON(requirementSubmissions);
-			 */
-			resultJson = commonUtil.toJSON(applicantsCount);
+			RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long.valueOf(requirementId), user, loginOrgLocation, submissionType);
+			//resultJson = commonUtil.toJSON(applicantsCount);
+			response.setObject(rsCount);
 		}
-		return resultJson;
+		return response;
 	}
 	
 	/**
@@ -2067,8 +2025,8 @@ public class RequirementListRestController {
 							RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 							Requirement	requirement = getData(requirementIndex,user,orgLocation);
 			            	if(requirement !=null){
-			            		Integer applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "APPLICANTS");
-			            		requirement.setTotalApplicants(applicantsCount);
+			            		RequirementSubmissionsCountDTO applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "APPLICANTS");
+			            		requirement.setTotalApplicants(applicantsCount.getApplicantsCount());
 			            		
 			            		if(requirement.getOrgRelationId() != null && !requirement.getOrgRelationId().isEmpty()){
 			            			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(requirement.getOrgRelationId()));
@@ -2464,7 +2422,7 @@ public class RequirementListRestController {
 	      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    
 			
-			String[] tableColumns = { "action","generatedId", "jobTitle", "createdDate", "location"};
+			String[] tableColumns = { "action","generatedId", "jobTitle", "clientName", "createdDate", "location"};
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
 			if (requirementDTO.getOrder() != null && !requirementDTO.getOrder().isEmpty()) {

@@ -36,9 +36,7 @@ import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
-import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -1162,12 +1160,12 @@ public class CandidateDaoImpl implements CandidateDao {
 		if(!isNullOrEmpty(resourceType)){
 			String[] type = resourceType.split(",");
 			if(type.length > 1){
-				subQuery2 = " and ((candidate.isFavouriteAssociate = '1') OR (candidate.consultantUser.id IN (select pm.projectMemberCandidteId.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' )))";
+				subQuery2 = " and ((candidate.isFavourite = '1') OR (candidate.consultantUser.id IN (select pm.projectMemberCandidteId.id from ProjectMembers pm where pm.projectMemberCandidteId.orgLocationId.id = :orgLocationsId and pm.status = '1' )))";
 			}else{
 				if(type[0].equalsIgnoreCase("hotlist")){
-				subQuery2 = " and candidate.isFavouriteAssociate = '1' ";
+				subQuery2 = " and candidate.isFavourite = '1' ";
 				}else{
-					subQuery2 = " and candidate.consultantUser.id IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' )  and candidate.orgLocationId.id = :orgLocationsId ";
+					subQuery2 = " and candidate.consultantUser.id IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projectMemberCandidteId.orgLocationId.id = :orgLocationsId and pm.status = '1' )  and candidate.orgLocationId.id = :orgLocationsId ";
 				}
 			}
 		}
@@ -1176,7 +1174,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		
 		
-		String subQuery5 = " and candidate.consultantUser.id NOT IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projectClientsId.orgLocationsId.id = :orgLocationsId and pm.projectClientsId.projectId.id = :projectId ) and candidate.orgLocationId.id = :orgLocationsId ";
+		String subQuery5 = " and candidate.consultantUser.id NOT IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projectClientsId.orgLocationsId.id = :orgLocationsId and pm.projectClientsId.projectId.id = :projectId and pm.projectMemberCandidteId.consultantUser IS NOT NULL ) and candidate.orgLocationId.id = :orgLocationsId ";
 		
 		// Dont delete this logic., It will be used further
 		/*String subQuery6 = " and candidate.consultantUser.id NOT IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = :projectId) and candidate.orgLocationId.id = :orgLocationsId ";
@@ -1716,7 +1714,8 @@ public class CandidateDaoImpl implements CandidateDao {
 					 query1.append(" Q1.candidateName like '%" + candidateDTO.getSearchValue() + "%' ")
 						.append("OR Q1.email like '%" + candidateDTO.getSearchValue() + "%' ")
 						.append("OR Q1.employementType like '%" + candidateDTO.getSearchValue() + "%' ")
-						.append("OR Q1.createdDate like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.vendorName like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.updatedDate like '%" + candidateDTO.getSearchValue() + "%' ")
 						.append("OR Q1.noticePeriod like '%" + candidateDTO.getSearchValue() + "%' ")
 						.append("OR Q1.primarySkill like '%" + candidateDTO.getSearchValue() + "%' ")
 						.append("OR Q1.country like '%" + candidateDTO.getSearchValue() + "%' ")
@@ -1775,10 +1774,10 @@ public class CandidateDaoImpl implements CandidateDao {
 					String toDate = sdf.format(searchDates[1]);
 					
 					if(flag == false) {
-						advSeach.append(" (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+						advSeach.append(" (Q1.updatedDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
 						flag = true;
 					}else {
-						advSeach.append(" OR (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+						advSeach.append(" OR (Q1.updatedDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
 					}
 					
 				 }
@@ -1846,7 +1845,13 @@ public class CandidateDaoImpl implements CandidateDao {
 					 		 "DATE_FORMAT(CAND.UPDATED_DATE ,\"%Y-%m-%d\") AS updatedDate, " + 
 					 		 "CAND.ORG_LOCATION_ID AS orgLocationId, " + 
 					 		 "CAND.ORG_RELATION_ID AS orgRelationId, " + 
-					 		 "OL.ORG_ID AS orgId " + 
+					 		 "OL.ORG_ID AS orgId, " + 
+					 		 "(SELECT " + 
+							 "ORG_NAME " + 
+							 "FROM " + 
+							 "ORG_LOCATIONS OL,ORG_RELATIONS ORL " + 
+							 "WHERE " + 
+							 "(OL.ID = ORL.LOCATION_ID OR OL.ID = ORL.RESPONDER_LOCATION_ID) AND OL.ID != :orgLocationId AND ORL.ID = CAND.ORG_RELATION_ID) AS vendorName " + 
 					 		 "FROM " + 
 					 		 "CANDIDATE CAND, " + 
 					 		 "ORG_LOCATIONS OL " + 
@@ -1927,6 +1932,56 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			
 			return candidateDTO;
+	
+	}
+
+	@Override
+	@Transactional
+	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,
+			Long requirementId,String skills,String candidateDetails) throws Exception {
+		
+		List<CandidateDTO> candidateDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		String querySeachStr = "";
+		
+		  StringBuilder query1 = new StringBuilder("");
+			if(candidateDetails != null && !"".equalsIgnoreCase(candidateDetails)) {
+				 query1.append(" CAND.FIRST_NAME like '%" + candidateDetails + "%' ")
+					.append("OR CAND.LAST_NAME like '%" + candidateDetails + "%' ")
+					.append("OR CAND.EMAIL like '%" + candidateDetails + "%' ")
+					.append("OR CAND.MOBILE_PHONE like '%" + candidateDetails + "%' ");
+				 
+			}
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				querySeachStr = " AND "+"("+query1.toString()+")";
+			}
+			
+		if(StringUtils.isNotBlank(skills)) {
+			String requirementSkills [] = skills.split(",");
+			String requirementSkillsStr = "'" + StringUtils.join(requirementSkills,"','") + "'";
+			subQuery = " AND CAND.SKILLS_NAME IN ("+requirementSkillsStr+")";
+		}
+		
+		String	query ="SELECT "
+				+" CAND.ID AS candId, "
+				+" CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName," 
+				+" CAND.IS_ASSOCIATE AS isAssociate "  
+				+" FROM CANDIDATE CAND "
+				+" WHERE CAND.STATUS = '1' " 
+		 		+" AND CAND.ORG_LOCATION_ID = :orgLocationId " 
+				+subQuery
+		 		+ " AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "
+				+ " ORDER BY CAND.ID DESC "; 
+		
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("orgLocationId", orgLcoations.getId());
+			queryObj.setLong("requirementId", requirementId);
+			queryObj.setMaxResults(5000);
+			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
+			candidateDTOList = queryObj.list();
+			return candidateDTOList;
 	
 	}
 

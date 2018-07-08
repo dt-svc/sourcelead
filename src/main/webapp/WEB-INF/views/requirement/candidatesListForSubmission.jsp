@@ -75,13 +75,7 @@
 									<select class="chosen-select" id="vendor" name="vendor"
 										data-placeholder="Select Vendor" multiple>
 										<c:forEach var="report" items="${add_VendorList}">
-											<c:if test="${report.locationId.id == loginOrgLocId}">
-												<option value="${report.id}">${report.responderLocationId.org.orgName}</option>
-											</c:if>
-											<c:if
-												test="${report.responderLocationId.id == loginOrgLocId}">
-												<option value="${report.id}">${report.locationId.org.orgName}</option>
-											</c:if>
+											<option value="${report.orgRelId}">${report.vendorName}</option>
 										</c:forEach>
 									</select>
 								</div>
@@ -142,7 +136,7 @@
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="getCandidatesTableList();closePop();" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearCandAdvSearch();closePop();getCandidatesTableList();" class="btn btn-sm btn-primary" />
+								onclick="clearCandAdvSearch();getCandidatesTableList();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 					
@@ -210,8 +204,18 @@ function submitCandidatesToJob(){
 		result = result +" <button type='button' onclick='clearCandAdvSearch();getCandidatesTableList()' class='btn btn-primary btn-sm' title='Refresh'><i class='fa fa-refresh'></i></button>";
 		result = result +"</div>"; 
 		result = result +" <div class='pull-right'>";
+		
+		 result = result +" <div class='mr pull-left mt5'>";
+
+    	 result = result +'<label class="switch mr pull-left ml">';
+    	 result = result +'<input type="checkbox" checked onclick="checkCandidateResume();" value="Y" name="candidateResume"  id="candidateResume"   >';
+
+    	 result = result +'<div class="slider round" title="Attach Applicants Resume"></div>';
+    	 result = result +'</label>';
+    	 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
+    	 
 		result = result +" <div class='mr pull-left'>";
-		result = result +" <input type='button' value='Submit To Job' onclick='submitApplicantsToJob()' class='btn btn-primary btn-sm'>";
+		result = result +" <input type='button' value='Submit' onclick='submitApplicantsToJob()' class='btn btn-primary btn-sm'>";
 		result = result +"</div>";
 		result = result +" <div class='dynamic_search pull-left'>";
 	 	result = result +" <input type='text' placeholder='Search' id='candDataTableSearch'/>";
@@ -227,7 +231,8 @@ function submitCandidatesToJob(){
 		result = result +'	<th>Email</th>';
 		result = result +'	<th>Primary Skill</th>';
 		result = result +'	<th>Employment Type</th>';
-		result = result +'  <th>Created Date<br>(<small class="custom-small">YYYY-MM-DD</small>)</th>';
+		result = result +'	<th>Vendor</th>';
+		result = result +'  <th>Updated Date<br>(<small class="custom-small">YYYY-MM-DD</small>)</th>';
 	  	result = result +'  <th>Location</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -238,6 +243,17 @@ function submitCandidatesToJob(){
 	
 }
 
+</script>
+
+<script>
+function checkCandidateResume(){
+	 var flag = document.getElementById("candidateResume").checked;
+	 if(flag == true){
+		 $("#candidateResume").val('Y'); 
+	 }else{
+		 $("#candidateResume").val('N'); 
+	 }
+}
 </script>
 
 <script>
@@ -292,6 +308,12 @@ function checkShareCandidates(elem) {
 function getCandidatesTableList(){
 	
 	
+	var searchData = $('#candDataTableSearch').val();
+   	if(searchData != '' && searchData != 'undefined' && (searchData.endsWith("-") || searchData.endsWith("\\"))){
+   	 $('#candDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+   	 $("#candDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	}else{
+   	 $('#candDataTableSearch').parent().find('p.jquery_form_error_message').remove();
 	 var primarySkill = "";
 	 var designationType = "";
 	 var noticePeriod = "";
@@ -333,6 +355,7 @@ function getCandidatesTableList(){
 	 searchValue = searchValue ? searchValue : "";
 	 var url = sourceleadUrl+"/getCandidatesListForJobBulkSubmission?searchValue="+searchValue+"&primarySkill="+primarySkill+"&designationType="+designationType+"&noticePeriod="+noticePeriod+"&vendor="+vendor+"&createdDate="+createdDate+"&candidateSkills="+candidateSkills+"&city="+city+"&requirementId="+requirementId;
 	 candidatesListPagination(url,sourceleadUrl);
+	}
 }
 </script>
 
@@ -355,7 +378,8 @@ function candidatesListPagination(url,sourceleadUrl){
             { "data": "email"},
             { "data": "primarySkill" },
             { "data": "employementType" },
-            { "data": "createdDate" },
+            { "data": "vendorName" },
+            { "data": "updatedDate" },
             { "data": "location"}
         ],
         "columnDefs": [ {
@@ -376,7 +400,7 @@ function candidatesListPagination(url,sourceleadUrl){
    	        		 }
 	        		 if(!shareflag)
    	        			$("#sharedcheckbox").removeAttr('checked');
-	        		   result = result +"<div class='tblminwidth-30 pull-left'>";
+	        		   result = result +"<div class='tblminwidth-30 pull-left ml'>";
 	        			result = result +'<div class="pull-left mt3"><td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+opt.id+'" data-id="'+opt.id+'" value="'+opt.id+'" onchange="checkShareCandidates(this)"/></td></div>';
     	  		
 	        			if(opt.isAssociate == 'Y'){
@@ -405,12 +429,12 @@ function candidatesListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
-	              "data": "createdDate",
+	              "data": "primarySkill",
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined"){
-	            	    	 result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.primarySkill+"'>"+opt.primarySkill+"</div></td>";
+	            	    	 result = result +"<td><div class='tbldata-dotdot_50' title='"+opt.primarySkill+"'>"+opt.primarySkill+"</div></td>";
 	            	    }else{
 	            	    	 result = result +"<div>----</div>";
 	            	    }
@@ -419,7 +443,7 @@ function candidatesListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
-	              "data": "primarySkill",
+	              "data": "employementType",
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
@@ -433,11 +457,30 @@ function candidatesListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
-	              "data": "primarySkill",
+	              "data": "vendorName",
+	              "sortable": true,
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.vendorName != null && opt.vendorName != '' && opt.vendorName != 'undefined'){
+	            		  result = result +"<td><div class='tbldata-dotdot_140'><span  title='"+opt.vendorName+"'>"+opt.vendorName+"</span></div></td>";
+	            	  }else{
+	            		  result = result +"<div>----</div>";
+	            	  }
+	            	 
+	            	  return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "updatedDate",
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div class='tblminwidth-75' title='"+opt.createdDate+"'>"+opt.createdDate+"</div></td>";
+	            	    if(opt.updatedDate != null && opt.updatedDate != '' && opt.updatedDate!= 'undefined'){
+	            	    	result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.updatedDate+"'>"+opt.updatedDate+"</div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.createdDate+"'>"+opt.createdDate+"</div></td>";
+	            	    }
+	            	    
 	            		return result;
 	              }
 		     },{
@@ -447,9 +490,9 @@ function candidatesListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.location != null && opt.location != '' && opt.location != "undefined"){
-	            	    	result = result +"<td><div class='tbldata-dotdot-me' title='"+opt.location+"'>"+opt.location+"</div></td>";
+	            	    	result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.location+"'>"+opt.location+"</div></td>";
 	            	    }else if(opt.country != null && opt.country != '' && opt.country != "undefined"){
-	            	    	result = result +"<td><div class='tbldata-dotdot-me' title='"+opt.country+"'>"+opt.country+"</div></td>";
+	            	    	result = result +"<td><div class='tbldata-dotdot_140' title='"+opt.country+"'>"+opt.country+"</div></td>";
 	            	    }else{
 	            	    	result = result +"<div>----</div>";
 	            	    }
@@ -461,7 +504,7 @@ function candidatesListPagination(url,sourceleadUrl){
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"bLengthChange": true,
-	    	"aaSorting": [[5,'desc']],
+	    	"aaSorting": [[6,'desc']],
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
@@ -476,12 +519,19 @@ function candidatesListPagination(url,sourceleadUrl){
     	   if(e.which === 13) {
    		    $('#candDataTableSearch').parent().find('p.jquery_form_error_message').remove();
    	    	var searchData = $('#candDataTableSearch').val();
-   	    	var regex =  new RegExp(/[\\-]/g);
+   	    /* 	var regex =  new RegExp(/[\\-]/g);
    	    	if(regex.test(searchData) == false){
    	    		getCandidatesTableList();
    	    	}else{
    	    		$("#candDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	    	} */
+   	    	
+   	    	if(searchData.endsWith("-") || searchData.endsWith("\\")){
+   	    		$("#candDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	    	}else{
+   	    		getCandidatesTableList();
    	    	}
+   	    	
    	    	$('#candDataTableSearch').val(searchData);
     	   }
     	});
@@ -502,6 +552,8 @@ function submitApplicantsToJob(){
 		 candidateIds.push(shareCandidates[e]);
 	   } 
 	 
+	 var candidateResume = $("#candidateResume").val();
+	 
 	 if(candidateIds.length > 0){
 		 
 		 getProgressBar();
@@ -509,7 +561,7 @@ function submitApplicantsToJob(){
 		 $("#candidatesListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			   $.ajax({
 		          type : "POST",
-		          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId,    
+		          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId+"&candidateResume="+candidateResume,    
 		           success :function(data) {
 		        	   if (data.response === "FAILED") {
 		        		   $("#candidatesListLoading").removeAttr("style");
@@ -518,6 +570,8 @@ function submitApplicantsToJob(){
 				    		location.href = "/errorPage";
 				    	} else if (data.response === "SUCCESS") {
 				    		$("#candidatesListLoading").removeAttr("style");
+				    		$("#candMsgDiv").html(candidateIds.length+" Candidate(s) Submitted Successfully...");
+				    		candMsgFadein();
 				    		shareCandidates = {};
 				    		$(".proMask").hide();
 				    		$('.action-pop').slideUp();

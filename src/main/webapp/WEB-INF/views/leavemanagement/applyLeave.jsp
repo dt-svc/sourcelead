@@ -8,23 +8,33 @@
 <script type="text/javascript">
 window.onload = function() { 
 
+	var leaveUUID = '${leaveUUID}';
+	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
+// 		getLeaveDetails();
+		getUsersBasedOnHierarchy('edit');
+		var checkFromEdit = '${leave.fromHalfDay}';
+		var checkToEdit = '${leave.toHalfDay}';
+		if(checkFromEdit == 'YES'){
+			$("#fromTimeDiv").show();
+			$("#toTimeDiv").show();
+		}
+		if(checkToEdit == 'YES'){
+			$("#toDateFromTimeDiv").show();
+			$("#toDateTimeDiv").show();
+		}
+		
+	}
+	
 	getPieChartBasedOnUser();
 	getApproversList();
-   if($("#checkbox-1").is(':checked')){
-	   $("#checkbox-1").prop('checked', false);
-	}
-   if($("#checkbox-2").is(':checked')){
-	   $("#checkbox-2").prop('checked', false);
-	}
-   if($("#checkbox-3").is(':checked')){
-	   $("#checkbox-3").prop('checked', false);
-	}
    
    var isSuperUser = '${SourceLeadWeb_isSuperUser}';
    if(isSuperUser){
 	   $("#approvalDiv").hide();
+	   $("#notifyToOthersDiv").hide();
    }else{
 	   $("#approvalDiv").show();
+	   $("#notifyToOthersDiv").show();
    }
 }
 </script>
@@ -34,7 +44,7 @@ window.onload = function() {
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Apply Leave</h2>
+        <h2>Time Off</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/leaveManagementReports'/>">Leave Management</a> &raquo; Apply Leave</div>
     </section>
@@ -45,11 +55,10 @@ window.onload = function() {
           <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-1">
           <sec:authorize access="hasRole('ROLE_APPLY_BEHALF_LEAVE')"> 
               <div class="form-group">
-                    <label class="checkBox pull-left mr10">
-					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
-					<label for="checkbox-1" class="checkbox-custom-label"></label>
+                   <label class="pull-left ml checkBox">
+					<input id="checkbox-1" class="onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
                   </label>
-                  <span class="pull-left">On behalf of</span>
+                  <span class="pull-left mt5">On behalf of</span>
               </div>
           </sec:authorize> 
                <div class="form-group" style="display: none" id="onbehalf">
@@ -66,7 +75,7 @@ window.onload = function() {
               
               <div class="form-group">
               <label class="col-md-3">Leave Type<span class="text-danger paddingLeft">*</span></label>
-              <div class="col-md-9 dropdown-select">
+              <div class="col-md-9 dropdown-select" id="removeErrMsg">
               <div id="leaveTypeIdDiv"></div>
               </div>
              </div>
@@ -77,18 +86,41 @@ window.onload = function() {
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="fromDateDiv">
                   <div class="input-group errorInptgroup">
-                    <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required" readonly>
+                    <input type="text" class="form-control calendar" id="fromDate" value="${fromDate}" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required" readonly>
                     <span class="input-group-addon" onClick="clearFromDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                    </div> 
                   </div>
+                  <c:if test="${! empty leave.fromHalfDay}">
                   <div class="col-md-5 paddingLeft"  id="fromHalfDayDiv">
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
-					<input id="checkbox-2" class="checkbox-custom checkboxCustom" id="fromHalfDay" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
-					<label for="checkbox-2" class="checkbox-custom-label"></label>
-                  </label>
-                      Half a Day </label>
+					<input id="checkbox-2" checked class="pull-left" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
+                      <span class="pull-left mt5">Half a Day</span></label>
                   </div>
+                  </c:if>
+                  
+                  <c:if test="${empty leave.fromHalfDay}">
+                  <div class="col-md-5 paddingLeft"  id="fromHalfDayDiv">
+                    <label class="checkBox mt5">
+                      <label class="checkBox pull-left mr10">
+					<input id="checkbox-2" class="pull-left" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
+                      <span class="pull-left mt5">Half a Day</span></label>
+                  </div>
+                  </c:if>
+                   <div class="clearfix"></div>
+                  <div id="fromTimeDiv" class="col-md-4 mt5 clearfix errorInptgroup" style="display:none;">
+                <div class="clearField errorInptgroup" id="startTimeDiv">
+        			<input type="text" class="timepicker form-control" id="fromDateHalfTime" name="fromDateFromHalfTime" placeholder="From-Time" field-name="From-Time" value="${leave.fromDateFromHalfTime}" onblur="validateFromTimings()">
+        				<i class="fa fa-times text-muted small"></i>
+        		</div>
+        		</div>
+				<div id="toTimeDiv" class="mt5 col-md-4 clearfix errorInptgroup" style="display:none;">
+                  <div class="clearField" id="toEndTimeDiv">
+        			<input type="text" class="timepicker form-control" id="toDateHalfTime" name="fromDateToHalfTime" placeholder="To-Time" field-name="To-Time" value="${leave.fromDateToHalfTime}" onblur="validateToTimings()" data-validation-optional = "true">
+        				<i class="fa fa-times text-muted small"></i>
+        		</div>
+                  </div>
+        		
                 </div>
               </div>
             </div>
@@ -98,39 +130,74 @@ window.onload = function() {
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="toDateDiv">
                     <div class="input-group errorInptgroup">
-                     <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
+                     <input type="text" class="form-control calendar" id="toDate" name="toDate" value="${toDate}" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
                      <span class="input-group-addon" onClick="clearToDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                     </div>
                   </div>
+                   <c:if test="${! empty leave.toHalfDay}">
                   <div class="col-md-5 paddingLeft" id="toHalfDayDiv">
                     <label class="checkBox mt5">
-                      <label class="checkBox pull-left mr10">
-					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
-					<label for="checkbox-3" class="checkbox-custom-label"></label>
+                      <label class="checkBox pull-left">
+					<input id="checkbox-3" checked class="pull-left" name="toHalfDay" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
                   </label>
-                      Half a Day </label>
+                      <span class="pull-left mt5">Half a Day</span></label>
                   </div>
+                  </c:if>
+                  <c:if test="${empty leave.toHalfDay}">
+                  <div class="col-md-5 paddingLeft" id="toHalfDayDiv">
+                    <label class="checkBox mt5">
+                      <label class="checkBox pull-left">
+					<input id="checkbox-3" class="pull-left" name="toHalfDay" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
+                  </label>
+                      <span class="pull-left mt5">Half a Day</span></label>
+                  </div>
+                  </c:if>
+                   
+                  <div class="clearfix"></div>
+                  <div id="toDateFromTimeDiv" class="mt10 clearfix errorInptgroup col-md-4" style="display:none;">
+                <div class="clearField errorInptgroup" id="toDateStartTime">
+        			<input type="text" class="timepicker form-control" id="toDateFromHalfTime" name="toDateFromHalfTime" placeholder="From-Time" field-name="From-Time" value="${leave.toDateFromHalfTime}" onblur="validateToDateFromTimings()" data-validation-optional = "true">
+        				<i class="fa fa-times text-muted small"></i>
+        		</div>
+        		</div>
+        		
+				<div id="toDateTimeDiv" class="col-md-4 clearfix errorInptgroup mt10" style="display:none;">
+                  <div class="clearField" id="toDateToTime">
+        			<input type="text" class="timepicker form-control" id="toDateToHalfTime" name="toDateToHalfTime" placeholder="To-Time" field-name="To-Time" value="${leave.toDateToHalfTime}" onblur="validateToDateToTimings()" data-validation-optional = "true">
+        				<i class="fa fa-times text-muted small"></i>
+        		</div>
+                  </div>
+        		
                 </div>
               </div>
+            </div>
+              
+            <div class="form-group" id="durationDiv" style="display:none">
+             	<label class="col-md-12" id="durationId"></label>
             </div>
               
             <div class="form-group">
               <label class="col-md-3" id="reasonIdY" style="display:block">Reason<span class="text-danger paddingLeft" >*</span></label>
               <label class="col-md-3" id="reasonIdN" style="display:none">Reason</label>
               <div class="col-md-9" id="reasonId">
-                <textarea class="form-control" rows="2" placeholder="Reason" id="reason" name="reason" field-name="Reason" data-validation="required validate_length length1-500"></textarea>
+                <textarea class="form-control" rows="2" placeholder="Reason" id="reason" name="reason" field-name="Reason" data-validation="required validate_length length1-500">${leave.reason}</textarea>
               </div>
             </div>
               
               <div class="form-group">
               <label class="col-md-3" id="attachmentY" style="display:block">Attachment<span class="text-danger paddingLeft" >*</span></label>
               <label class="col-md-3" id="attachmentN" style="display:none">Attachment</label>
-              <div class="col-md-9 errorInptgroup errorInptgroup-bottom" id="attachmentId">
-                  <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
-                      <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);" data-validation="required" >
-                      <a id="Button0value">
-                      <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
-                      </a>
+              <div class="col-md-9 errorInptgroup" id="attachmentId">
+                  <div class="positionRelative clearfix"><i class="clearUpload" title="clear" onClick="removedocfile();"></i>
+                  
+                  <div class="input-group ratetype col-md-12 pull-left" title="" id="uploadFileGroup">
+	                      <label class="input-group-btn"> 
+	                        <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Choose File
+	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
+	                        </span> 
+	                      </label>
+		                      <input type="text" class="form-control" readonly id="uploadFile" value="${leave.fileName}" placeholder="no file chosen" field-name="Attachment" data-validation="required">
+	              </div>
                   </div>
               </div>
             </div>
@@ -139,14 +206,46 @@ window.onload = function() {
             	<div class="form-group" id="approvalDiv">
 	              <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
 	              <div class="col-md-9 dropdown-select" id="approverUserDiv">
-	                  <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver" data-validation="required">
+	                  <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver">
 	                  </select>
 	              </div>
             	</div>
 <%--             </c:if> --%>
+
+		<div class="clearfix"></div>
+		<c:if test="${!empty leave.notifyToOthers}">
+         <div class="form-group" id="notifyToOthersDiv">
+				<div class="ml">
+							<input  type="checkbox" checked name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
+					<label>&nbsp;&nbsp;Notify to others
+						&nbsp;&nbsp;
+					</label>
+				</div>
+			</div>
+			</c:if>
+			
+		<c:if test="${empty leave.notifyToOthers}">
+         <div class="form-group" id="notifyToOthersDiv">
+				<div class="ml">
+							<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
+					<label>&nbsp;&nbsp;Notify to others
+						&nbsp;&nbsp;
+					</label>
+				</div>
+			</div>
+		</c:if>
+			
+			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
+              <label class="col-md-3">&nbsp;&nbsp;</label>
+              <div class="col-md-9">
+              	<select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverId" name="otherApproverUser" field-name="Approver" data-validation-optional = "true">
+	                  </select>
+              </div>
+             </div>
+		
               
           </div>
-          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" oncontextmenu="return false" onkeydown="return false;" onmousedown="return false;">
             <div class="well-sm well well-custom clearfix amchartAnchor-Hide">
                  <h5>Leaves Status</h5>
                 <div id="leavestatsu" style="width: 100%; height: 150px;"></div>
@@ -160,7 +259,7 @@ window.onload = function() {
       <div class="form-footer clearfix mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Apply" id="applyId" class="btn btn-primary ml mr" onclick="applyLeave();">
+            <input type="button" value="Apply" id="ApplyLeave" class="btn btn-primary ml mr" onclick="applyLeave();">
             <input type="button" value="Cancel" class="btn btn-default" onclick="cancel();">
           </div>
         </div>
@@ -173,30 +272,60 @@ window.onload = function() {
   
  <script>
  function removedocfile(){
-	 $("#uploadBtn").val('');
+	 $("#uploadFile").val('');
  }
  </script> 
  <script>
  function checkFromHalfDay(){
-	
+	 
     $("#checkbox-2").val('YES');
+    
+	   if($("#checkbox-2").is(':checked')){
+		   $("#fromTimeDiv").show();
+		   $("#toTimeDiv").show();
+	   }else{
+		   $("#fromTimeDiv").find('p.jquery_form_error_message').remove();
+		   $("#toTimeDiv").find('p.jquery_form_error_message').remove();
+    	   $("#fromTimeDiv").hide();
+    	   $("#toTimeDiv").hide();
+    	   $("#fromDateHalfTime").val('');
+    	   $("#toDateHalfTime").val('');
+//     	   $("#toDateHalfTime").val('');
+   	   }	
+    
  }
  
  function checkToHalfDay(){
 	
 	 $("#checkbox-3").val('YES');
+	 
+	 if($("#checkbox-3").is(':checked')){
+		   $("#toDateFromTimeDiv").show();
+		   $("#toDateTimeDiv").show();
+	   }else{
+		   $("#toDateFromTimeDiv").find('p.jquery_form_error_message').remove();
+		   $("#toDateTimeDiv").find('p.jquery_form_error_message').remove();
+	  	   $("#toDateFromTimeDiv").hide();
+	  	   $("#toDateTimeDiv").hide();
+	  	   $("#toDateFromHalfTime").val('');
+	  	 $("#toDateToHalfTime").val('');
+// 	  	   $("#toDateHalfTime").val('');
+ 	   } 
  }
   function validateFromHalfDay()
   {
-	  $("#toHalfDayDiv").hide();
+// 	  $("#toHalfDayDiv").hide();
 		 var fromDate = $("#fromDate").val();
 		 var toDate = $("#toDate").val();
 		 if(fromDate.length !=0 && toDate.length!=0)
 	    {
 		 if(fromDate == toDate)
 		 {
-			 
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 		 }
 		else
 			{
@@ -209,7 +338,7 @@ window.onload = function() {
   }
   function validateToHalfDay()
   {
-	  $("#fromHalfDayDiv").hide();
+// 	  $("#fromHalfDayDiv").hide();
 		 var fromDate = $("#fromDate").val();
 		 var toDate = $("#toDate").val();
 
@@ -218,6 +347,10 @@ window.onload = function() {
 		 if(fromDate == toDate)
 		 {
 			$("#fromHalfDayDiv").hide();
+			$("#fromTimeDiv").hide();
+			 $("#toTimeDiv").hide();
+			 $("#fromDateHalfTime").val('');
+			 $("#toDateHalfTime").val('');
 			
 		  }
 		   else
@@ -237,6 +370,10 @@ window.onload = function() {
 		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 		 }else{
 			 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) )
 			 {
@@ -265,9 +402,13 @@ window.onload = function() {
 	  var toDate = $("#toDate").val();
 	  if(fromDate.length !=0 && toDate.length!=0)
 	  {
-		if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
+		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 	  }
 	 else
 	 {
@@ -322,7 +463,9 @@ window.onload = function() {
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
 			checkFromDate();
-			getLeaveDetails(finalDateFormatEndDate);
+			calcaulateDuraton();
+			validateDate();
+// 			getLeaveDetails(finalDateFormatEndDate);
 			}
 		});
 		
@@ -336,12 +479,10 @@ window.onload = function() {
 			$("#fromdate").datepicker("option", "maxDate", dt);
 			removeEndValid();
 			checkToDate();
-			validateDate();
-			getLeaveDetails();
+			getLeaveDetails(finalDateFormatEndDate);
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
 		});
-		
 	});
 </script>
 
@@ -352,6 +493,30 @@ function removeStartValid(){
 
 function removeEndValid(){
 	$('#toDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function calcaulateDuraton(){
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
+	var leaveTypeUUID = $("#leaveType").val();
+	var ckbox = $('#checkbox-1');
+	if (ckbox.is(':checked')) {
+		 userId = $("#user").val();
+	 }else{
+		 userId = '${SourceLeadWeb_userId}';
+	 }
+	if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined' && leaveTypeUUID != null && leaveTypeUUID != '' && leaveTypeUUID != 'undefined'){
+		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId,  function(result) {
+			if(result != null){
+				$("#durationDiv").show();
+				$("#durationId").html("Duration : "+result+" day(s)");
+			}
+		}); 
+	}else{
+		$("#durationDiv").hide();
+		$("#durationId").html("Duration : 0 day(s)");
+	}
+	
 }
  </script>
 
@@ -382,6 +547,7 @@ function removeEndValid(){
  		
  <script type="text/javascript">
  function getPieChartBasedOnUser(onbehalf){
+	 var leaveId = '${leave.leaveType.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 var userId ='';
 	 if(onbehalf !=null && onbehalf !='' && onbehalf !='undefined'){
@@ -399,7 +565,11 @@ function removeEndValid(){
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) { 
         		  var leave = json[i];
-        		  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        		  if(leave.id == leaveId){
+        			  output = output +'<option selected value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        		  }else{
+        			  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        		  }
         	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
@@ -422,11 +592,14 @@ function removeEndValid(){
     	    	  result = result +'			<label>Balance Leaves :</label>';
     	          for (var i = 0; i < json.length; i++) { 
     	        		  var leaveType = json[i];
-    				        result = result +'	<li>';
-    				  		result = result +'			<label>'+leaveType.name+'</label>';
-    				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
-    				  		result = result +'	</li>'; 
+    	        		  if(leaveType.leaveTypeBalanceLeaveCount > 0){
+    	        			  result = result +'	<li>';
+      				  		result = result +'			<label>'+leaveType.name+'</label>';
+      				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
+      				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount.toFixed(2)+'</span>';
+      				  		result = result +'	</li>'; 
+    	        		  }
+    				       
     	        	  }
    	        	  result = result +'	</ul>'; 
    	        	  $("#leaveStatusIdDiv").empty();
@@ -527,6 +700,53 @@ function onbehalf() {
 }
 </script>
 
+
+<script>
+var selectedFile = document.getElementById("uploadBtn");
+selectedFile.addEventListener("change", function() {
+	 $("#uploadFile").focus();
+	 if(validate_fileupload(this.value)){
+		 var docSize =  $("#uploadBtn")[0].files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+// 	    	  $('#leaveLoading').removeAttr('style');
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+			  $("input#uploadFile").after("<p class='jquery_form_error_message'>File size should be less then 2MB </span>");
+			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','File size should be less then 2MB');
+			  document.getElementById("uploadFile").value="";
+	      }else{
+	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+  		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	    }
+	 }
+});
+
+/* upload file script */
+document.getElementById("uploadBtn").onchange = function () {
+	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+};
+
+</script>
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+    var allowed_extensions = new Array("docx","doc","pdf","rtf");
+    var file_extension = fileName.split('.').pop(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i]==file_extension)
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+
 <script>
 $(function() {
 	$("#uploadBtn").change(function() {
@@ -537,12 +757,49 @@ $(function() {
 
 <script type="text/javascript">
 function applyLeave(){
+	
+	if($("#checkbox-2").is(':checked')){
+		var fromDateFromHalfTime = $("#fromDateHalfTime").val();
+		if(fromDateFromHalfTime != null && fromDateFromHalfTime != '' && fromDateFromHalfTime != 'undefined'){
+			$("#fromDateHalfTime").removeAttr('data-validation');
+		}else{
+			$("#fromDateHalfTime").removeAttr("data-validation-optional");
+			$("#fromDateHalfTime").attr("data-validation","required");
+		}
+		
+		var toDateHalfTime = $("#toDateHalfTime").val();
+		if(toDateHalfTime != null && toDateHalfTime != '' && toDateHalfTime != 'undefined'){
+			$("#toDateHalfTime").removeAttr('data-validation');
+		}else{
+			$("#toDateHalfTime").removeAttr("data-validation-optional");
+			$("#toDateHalfTime").attr("data-validation","required");
+		}
+	}
+	if($("#checkbox-3").is(':checked')){
+		var toDateFromHalfTime = $("#toDateFromHalfTime").val();
+		if(toDateFromHalfTime != null && toDateFromHalfTime != '' && toDateFromHalfTime != 'undefined'){
+			$("#toDateFromHalfTime").removeAttr('data-validation');
+		}else{
+			$("#toDateFromHalfTime").removeAttr("data-validation-optional");
+			$("#toDateFromHalfTime").attr("data-validation","required");
+		}
+		
+		var toDateToHalfTime = $("#toDateToHalfTime").val();
+		if(toDateToHalfTime != null && toDateToHalfTime != '' && toDateToHalfTime != 'undefined'){
+			$("#toDateToHalfTime").removeAttr('data-validation');
+		}else{
+			$("#toDateToHalfTime").removeAttr("data-validation-optional");
+			$("#toDateToHalfTime").attr("data-validation","required");
+		}
+	}
+		var leaveId = '${leave.id}';
+		var currentStage = '${currentStage}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
 	  	var formData = $($('#apply_leave_form')[0]).serialize();
 		$("#leaveLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(result) {
+		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveId="+leaveId+"&currentStage="+currentStage, formData, function(result) {
 			if (result && result.response === "INVALID_DATA") {
     		    showError(result.responseMessage);
     		} else if (result.response === "AWKWARD") {
@@ -608,7 +865,13 @@ $(".close").click(function(){
 
 <script>
 function getLeaveDetails(finalDateFormatEndDate){
-	var leaveTypeUUID = $("#leaveType").val();
+	var editLeaveTypeUUID = '${leave.leaveType.leaveTypeUUID}';
+	var leaveTypeUUID = '';
+	if(editLeaveTypeUUID != null && editLeaveTypeUUID != '' && editLeaveTypeUUID != 'undefined'){
+		 leaveTypeUUID = editLeaveTypeUUID;
+	}else{
+		 leaveTypeUUID = $("#leaveType").val();
+	}
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	var skipPolicy = false;
@@ -624,7 +887,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 	}else{
 		userId = '${SourceLeadWeb_userId}';
 	}
-	
+	errorMessage = "";
 	if(leaveTypeUUID !=null && leaveTypeUUID != '' && leaveTypeUUID !='undefined'){
 		$.ajax({
 		   	type: "POST",
@@ -637,12 +900,24 @@ function getLeaveDetails(finalDateFormatEndDate){
           		} else if (result.response === "SUCCESS") {
           			var report = result.object;
           			
-          			if(report.duration == "Half Day"){
-    		    		$("#fromHalfDayDiv").hide();
-    		    		$("#toHalfDayDiv").hide();
-    		    	}else{
+          			var duration = report.duration;
+          			var splitDuration = duration.split(",");
+          			
+          			if(splitDuration[0] == "Full Day" && splitDuration[1] == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
+    		    	}else if(duration == "Half Day"){
+    		    		$("#fromHalfDayDiv").show();
+    		    		$("#toHalfDayDiv").show();
+    		    	}else if(duration == "Full Day"){
+    		    		$("#checkbox-2").removeAttr("checked");
+    		    		$("#checkbox-3").removeAttr("checked");
+    		    		$("#fromHalfDayDiv").hide();
+    		    		$("#toHalfDayDiv").hide();
+    		    		$("#fromTimeDiv").hide();
+     		 		    $("#toTimeDiv").hide();
+     		 		    $("#toDateFromTimeDiv").hide();
+     					$("#toDateTimeDiv").hide();
     		    	} 
     		    	
     		    	if(report.reasonRequired == "Y"){
@@ -656,13 +931,13 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	}
     		    	
     		    	if(report.attachmentRequired == "Y"){
-    			 		$("#uploadBtn").attr('data-validation',"required");
+    			 		$("#uploadFile").attr('data-validation',"required");
     			 		document.getElementById("attachmentY").style.display = 'block';
     			 		document.getElementById("attachmentN").style.display = 'none';
     		    	}else{
     		    		document.getElementById("attachmentY").style.display = 'none';
     		    		document.getElementById("attachmentN").style.display = 'block';
-    		    		$("#uploadBtn").removeAttr('data-validation');
+    		    		$("#uploadFile").removeAttr('data-validation');
     		    	}
     		    	
     		    	if(report.userGender == "Not Allow"){
@@ -671,36 +946,42 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	
     		    	if(report.autoApprove == "Y"){
     		    		$("#approvalDiv").hide();
-    		    	}else{
-    		    		if(isSuperUser == true){
-   	   		    		   $("#approvalDiv").hide();
-   	   		    	   }else{
-   	   		    		   $("#approvalDiv").show();
-   	   		    	   }
-    		    	}
-    		    	
-    		    	
-    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
-    		    		validateOverDrawLeaves(report.name);
-    		    	}else{
-    		    		$("#applyId").prop("disabled", false);
-    		    	}
-    		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
-    		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
+    		    		$("#notifyToOthersDiv").hide();
     		    		
+    		    	}else{
+    		    		if(userId === '${SourceLeadWeb_userId}'){
+    		    			if(isSuperUser == 'true'){
+    	   	   		    		   $("#approvalDiv").hide();
+    	   	   		    			$("#notifyToOthersDiv").hide();
+    	   	   		    	   }else{
+    	   	   		    		   $("#approvalDiv").show();
+    	   	   		    		   $("#notifyToOthersDiv").show();
+    	   	   		    	   }
+    		    		}else{
+	   	   		    		 $("#approvalDiv").show();
+    		    			 $("#notifyToOthersDiv").show();
+	   	   		    	   }
     		    	}
+    		    	
     		    	if(report.leaveDuration == "Y" && fromDate != "" && toDate != ""){
     		    		validateMinMaxDays(report.minDays, report.maxDays);
     		    	}
     		    	
+    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
+    		    		validateOverDrawLeaves(report.name);
+    		    	}
+    		    	
+    		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
+    		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
+    		    	}
+    		    	
     		    	if(errorMessage != ""){
-    		        	$("#applyId").prop("disabled", true);
+//     		        	$("#ApplyLeave").attr('disabled','disabled');
     		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
     		        	$(".warMess").fadeIn();
     		        	$(".comMask").fadeIn();
-    		        	errorMessage = "";
     		        }else{
-    		    		$("#applyId").prop("disabled", false);
+    		    		$("#ApplyLeave").removeAttr('disabled');
     		        }
     		    	if(skipPolicy != true){
     		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
@@ -718,6 +999,9 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    }
 		});
 	}
+	calcaulateDuraton();
+	setTimeout(function(){ validateDate(); }, 800);
+		
 }
 
 </script>
@@ -733,11 +1017,7 @@ function validateOverDrawLeaves(leaveTypeName){
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = $("#"+typeName+"Span").text();
 	if((dayDiff > typeIdBalCount) || typeIdBalCount ==  0){
-		$("#applyId").prop("disabled", true);
-		$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You Have Not Enough Leaves To Apply</span> ");
-		$(".comMask").fadeIn();
-	}else{
-		$("#applyId").prop("disabled", false);
+		errorMessage += "You Have Not Enough Leaves To Apply.";
 	}
 }
 </script>
@@ -765,7 +1045,6 @@ function validateMinMaxDays(minDays, maxDays){
     var dayDiff= (convertToDate - convertFromDate+1);
     if(!(maxDays >= dayDiff && dayDiff >= minDays)){
     	errorMessage += "You need to apply this Leave Type for atleast Min "+minDays+"days and Max "+maxDays+"days.";
-    
     }
 }
 
@@ -799,7 +1078,6 @@ function validateMaxLeave(data){
 	}
 	
   }
-	
 }
 </script>
 
@@ -820,12 +1098,15 @@ function validateCarryForwardLeaves(){
 	if(userId != null && userId !='' && userId !='undefined'){
 	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
 		$.get(sourceleadUrl+"/validateCarryForwardLeaves?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
-			if(data == true){
-				$('.jquery_form_error_message').remove();
-				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
-			}else{
-				$('.jquery_form_error_message').hide();
-			}
+			if(data!=null&&data == "you cannot apply two leaves on same day.!"){ 
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data); 
+				$("#ApplyLeave").attr('disabled','disabled'); 
+				$(".comMask").fadeIn(); 
+				}else if(data!=null){ 
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data); 
+				$("#ApplyLeave").removeAttr('disabled'); 
+				$(".comMask").fadeIn();	
+				} 
 		}); 
 	}
 	
@@ -837,7 +1118,7 @@ function validateCarryForwardLeaves(){
 <div class='comMask'></div>
 <script>
 function validateDate(){
-	$('.warMess').hide();
+// 	$('.warMess').hide();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var roleId = '${SourceLeadWeb_loginUserRoleId}';
 	var fromDate = $("#fromDate").val();
@@ -849,14 +1130,21 @@ function validateDate(){
 	}else{
 		userId = '${SourceLeadWeb_userId}';
 	}
-	if(userId != null && userId != '' && userId != 'undefined'){
+	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
-			if(data != null){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
+			if(data !=null && data.validateType == 'SAMEDAY'){
+				errorMessage += data.errorMessage;
+				$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+// 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
+				$("#ApplyLeave").attr('disabled','disabled');
+				$(".warMess").fadeIn();
 				$(".comMask").fadeIn();
-				$("#applyId").prop("disabled", true);
-			}else{
-				$('.warMess').hide();
+			}else if(data != null && data.validateType == 'HOLIDAY'){
+				errorMessage += data.errorMessage;
+				$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+// 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
+				$("#ApplyLeave").removeAttr('disabled');
+				$(".comMask").fadeIn();	
 			}
 		});
 	}
@@ -866,11 +1154,13 @@ function validateDate(){
 function closedate(){
 $(".warMess").fadeOut();
 $(".comMask").fadeOut();
+$(".warMess").remove();
 };
 $(".comMask").click(function()
 {
 	$(".comMask").fadeOut();
 	$(".warMess").fadeOut();
+	$(".warMess").remove();
 		});
 
 
@@ -893,6 +1183,7 @@ function getApproversList(){
 			result += '<input type="text" class="form-control" id="approverUser" readOnly value="'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')"/>';
 			result += '<input type="hidden" class="form-control" name="approverUser" readOnly value="'+opt.id+'"/>';
 			$("#approvalDiv").show();
+			$("#notifyToOthersDiv").show();
 			$("#approverUserDiv").empty();
 			$("#approverUserDiv").append(result);
 	// 		$('#approverUser').trigger("chosen:updated");
@@ -911,5 +1202,85 @@ function clearToDate(){
 	$("#toDate").val("");
 	};
 </script>
+
+
+<script>
+$("#fromDateHalfTime").timepicker({
+	'showDuration': true,
+	'disableTextInput': true,
+	 'step': 15
+}).on('changeTime', function() {
+	 $("#toDateHalfTime").timepicker('option', 'minTime', $(this).val());
+});
+
+$("#toDateHalfTime").timepicker({
+	'showDuration': true,
+	'disableTextInput': true,
+	 'step': 15
+}).on('changeTime', function() {
+    $("#fromDateHalfTime").timepicker('option', 'maxTime', $(this).val());
+}); 
+
+$("#toDateFromHalfTime").timepicker({
+	'showDuration': true,
+	'disableTextInput': true,
+	 'step': 15
+}).on('changeTime', function() {
+    $("#toDateToHalfTime").timepicker('option', 'minTime', $(this).val());
+});
+
+$("#toDateToHalfTime").timepicker({
+	'showDuration': true,
+	'disableTextInput': true,
+	 'step': 15
+}).on('changeTime', function() {
+    $("#toDateFromHalfTime").timepicker('option', 'maxTime', $(this).val());
+}); 
+
+
+</script>
+
+<script>
+function getUsersBasedOnHierarchy(type){
+	$("#notifyOtherDiv").hide();
+	if($("#notifyOthersId").is(':checked')){
+		$("#notifyOtherDiv").show();
+		$("#approverId").removeAttr("data-validation-optional");
+		$("#approverId").attr("data-validation","required");
+	}else{
+		$("#approverId").removeAttr("data-validation");
+	}
+	var behalf = $("#checkbox-1");
+	var userId = "";
+	if(behalf.is(':checked')){
+		userId = $("#user").val();
+	}else{
+		userId = '${SourceLeadWeb_userId}';
+	}
+   if(userId != null && userId !='' && userId !='undefined'){
+	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId+"&notifyToOthers=Y", function(data) {
+		if(data !=null){
+			var result = '';
+			for(var i=0; i<data.length; i++){
+			var approver = data[i];
+			if(type == 'edit'){
+				<c:forEach var="user" items="${approversList}">
+					if("${user.approverUserId.id}" == approver.id){
+						result = result +'<option selected value='+approver.id+'>'+approver.firstName+' '+approver.lastName+'</option>';
+					}
+				</c:forEach>
+			}else{
+				result = result +'<option value='+approver.id+'>'+approver.firstName+' '+approver.lastName+'</option>';
+			}
+			}
+			$("#approverId").empty();
+			$("#approverId").append(result);
+			$('#approverId').trigger("chosen:updated");
+		}
+		});
+   }
+}
+</script>
+
 
 <jsp:include page="../masterFooter.jsp" />

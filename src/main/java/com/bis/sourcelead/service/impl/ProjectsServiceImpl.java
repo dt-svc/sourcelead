@@ -597,7 +597,7 @@ public class ProjectsServiceImpl implements ProjectsService{
     	if(user.getUserCode() != null){
     		projects.setCreatedBy(user.getUserCode());	
     	}
-    	projects.setOrgLocationsId(loginOrgLocation);
+    	
     	
     	
     	//save the default tasks
@@ -610,15 +610,50 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setProjectTasks(projectTasksList);
 	    }
 
-	    Set<ProjectClients> projectClientsList = getProjectClientsForProject(projectsDTO,projects,loginOrgLocation,user);
-		projects.setProjectClients(projectClientsList);
 		
-		
-		projects.setIsClientProject(Constants.NO);
 		projects.setProjectMode("Draft");
 		projects.setIsProjectDetailsFilled(Constants.YES);
 		projects.setIsProjectMembersFilled(Constants.NO);
 		projects.setIsProjectAdditionalDetailsFilled(Constants.NO);
+		
+		if((projectsDTO.getSharedClientOrgLocId() != null && !projectsDTO.getSharedClientOrgLocId().isEmpty()) 
+				|| (projectsDTO.getSavedSharedClientOrgLocId() != null && !projectsDTO.getSavedSharedClientOrgLocId().isEmpty())) {
+			OrgLocations sharedClientOrgLocation = new OrgLocations();
+			Long clientOrgLocationId = null;
+			if(projectsDTO.getSharedClientOrgLocId() != null && !projectsDTO.getSharedClientOrgLocId().isEmpty()) {
+				clientOrgLocationId = Long.valueOf(projectsDTO.getSharedClientOrgLocId());
+			}else {
+				clientOrgLocationId = Long.valueOf(projectsDTO.getSavedSharedClientOrgLocId());
+			}
+			sharedClientOrgLocation.setId(clientOrgLocationId);
+			projects.setOrgLocationsId(sharedClientOrgLocation);
+			projects.setSharedLocationId(loginOrgLocation);
+			projects.setIsProjectShared(Constants.YES);
+			projects.setIsClientProject(Constants.YES);
+			OrgRelations orgRelations = null;
+			orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(loginOrgLocation.getId(), clientOrgLocationId);
+			if(orgRelations == null) {
+				orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(loginOrgLocation.getId(), clientOrgLocationId);
+			}
+			if(projects.getId() == null) {
+				Set<ProjectClients> clientProjectClientsList = getProjectClientsForSharedClientProject(projectsDTO,projects,loginOrgLocation,clientOrgLocationId,user,orgRelations);
+				projects.setSharedClientProjectClients(clientProjectClientsList);
+			}
+			
+			Set<ProjectClients> projectClientsList = getProjectClientsForSharedProject(projectsDTO,projects,loginOrgLocation,user,orgRelations);
+			projects.setProjectClients(projectClientsList);
+			
+		}else {
+			projects.setOrgLocationsId(loginOrgLocation);
+			projects.setIsClientProject(Constants.NO);
+			projects.setIsProjectShared(Constants.NO);
+			Set<ProjectClients> projectClientsList = getProjectClientsForProject(projectsDTO,projects,loginOrgLocation,user);
+			projects.setProjectClients(projectClientsList);
+		}
+		
+		
+		
+		
 		Projects updatedProjects = saveProject(projects);
 		
 		
@@ -898,6 +933,69 @@ public class ProjectsServiceImpl implements ProjectsService{
 		String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
 		
 		return sbuilder.append(convetredRequirementsId).toString();
+	}
+	
+	
+	private Set<ProjectClients> getProjectClientsForSharedClientProject(ProjectsDTO projectsDTO,Projects projects,OrgLocations orglocations,Long clientOrgLocation,User user,OrgRelations orgRelations) throws Exception {
+		Set<ProjectClients> projectClientsSet = new HashSet<>();
+		ProjectClients projectClients = null;
+		
+			projectClients = new ProjectClients();
+			projectClients.setProjectId(projects);
+			OrgLocations clientOrgLoc = new OrgLocations();
+			clientOrgLoc.setId(clientOrgLocation);
+			projectClients.setOrgLocationsId(clientOrgLoc);
+			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setLevel(1);
+			projectClients.setStatus(1);
+			projectClients.setIsProjectShared(Constants.NO);
+			projectClients.setIsEndClient(Constants.YES);
+			projectClients.setCreatedDate(new Date());
+			projectClients.setUpdatedDate(new Date());
+			projectClients.setCreatedBy(user);
+			projectClients.setUpdatedBy(user);
+	
+		HashSet<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+		OrgSpoc orgSpoc = orgSpocDao.getGusetClientOrgSpocByOrgRelationId(orgRelations.getId());
+		ProjectApproverHierarchy projectApproverHierarchy = new ProjectApproverHierarchy();
+		projectApproverHierarchy.setProjectId(projects);
+		projectApproverHierarchy.setProjectClientsId(projectClients);
+		projectApproverHierarchy.setApproverUserId(orgSpoc.getClientUser());
+		projectApproverHierarchy.setLevel(1);
+		projectApproverHierarchy.setStatus("1");
+		projectApproverHierarchyList.add(projectApproverHierarchy);
+		projectClients.setSharedClientProjectApproverHierarchyList(projectApproverHierarchyList);
+    	projectClientsSet.add(projectClients);
+		return projectClientsSet;
+	}
+	
+	
+	private Set<ProjectClients> getProjectClientsForSharedProject(ProjectsDTO projectsDTO,Projects projects,OrgLocations orglocations,User user,OrgRelations orgRelations) throws Exception {
+		Set<ProjectClients> projectClientsSet = new HashSet<>();
+		ProjectClients projectClients = null;
+		if(projects.getId() == null){
+			projectClients = new ProjectClients();
+			projectClients.setProjectId(projects);
+			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setOrgRelationId(orgRelations);
+			projectClients.setLevel(2);
+			projectClients.setIsProjectShared(Constants.YES);
+			projectClients.setStatus(1);
+			projectClients.setIsEndClient(Constants.NO);
+			projectClients.setCreatedDate(new Date());
+			projectClients.setUpdatedDate(new Date());
+			projectClients.setCreatedBy(user);
+			projectClients.setUpdatedBy(user);
+		}else{
+			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), orglocations.getId(), orgRelations.getId());
+		}
+		
+		//prepare ProjectApproverHierarchy
+		Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(projectsDTO,request,projects,projectClients);
+		projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+    	projectClientsSet.add(projectClients);
+		return projectClientsSet;
 	}
 	
 	private Set<ProjectClients> getProjectClientsForProject(ProjectsDTO projectsDTO,Projects projects,OrgLocations orglocations,User user) throws Exception {
@@ -1260,6 +1358,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    projectsDTO.setIsReportingManagerAsApprover(projects.getIsReportingManagerAsApprover());
 	    projectsDTO.setIsTaskCommentsRequired(projects.getIsTaskCommentsRequired());
 	    projectsDTO.setIsTicketNumberRequired(projects.getIsTicketNumberRequired());
+	    if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+	    	 ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
+	    	 if(StringUtils.isNotBlank(pc.getIsProjectShared()) && pc.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+	    		 projectsDTO.setIsProjectShared(projects.getIsProjectShared());
+		    	 projectsDTO.setSharedProjectCreatedOrgLocId(loginOrgLocations.getId());
+	    	 }
+	    	
+	    }
+	  
 	    
 	    User createdByUseraName= userService.getUserDetailsByUserCode(projects.getCreatedBy());
 	    if(null !=createdByUseraName){
@@ -2998,7 +3105,6 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					
 				}
 				
-				projects.setIsTimesheetAttachmentRequired(1);
 				projectsDao.updateProject(projects);
 				return projects;
 			}

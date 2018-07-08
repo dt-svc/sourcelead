@@ -45,11 +45,11 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SingnatoryDTO;
-import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
@@ -92,6 +92,7 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -202,6 +203,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	
 	@Autowired
 	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	RegistrationService registrationService;
 	
 	
 	/**
@@ -584,6 +588,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		    //generate random password
 		    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		    boolean isUserActive = false;
+		    
+		    
 	 		if(user != null){
 	 			isUserActive = userRoleService.isUserActive(user.getId());
 	 			if(isUserActive == false){
@@ -596,6 +602,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 			userService.sendEmailFromSourcelead(user,loginUser,password,orgLocationId,orgId);
 	 			}else{
 	 				userService.sendEmail(user,loginUser,password,orgLocations.getId());
+	 			}
+	 			if(Constants.NO.equalsIgnoreCase(user.getIsVerified())){
+	 				registrationService.sendActivationEmail(user,orgLocations);	
 	 			}
 	 			/*
 				 * Update USER DB data as ElasticSearch Documents
@@ -1288,23 +1297,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
          }
 		
 		@RequestMapping(value = "/getVendorsByOrgLocationId")
-		public String getVendorsByOrgLocationId(
+		public List<OrgRelationDTO> getVendorsByOrgLocationId(
 				HttpServletRequest request) throws Exception {
-		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			String resultJson = null;
-			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
-			for(OrgRelations vendors:vendorList){
-				if(vendors.getLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
-				}
-				if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
-				}
-				
-			}
-			
-			resultJson = toJSON(vendorList);
-			return resultJson;
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<OrgRelationDTO> vendorList = orgRelationsService.getAllVendorsListOrgLocationId(orgLocations.getId());
+			return vendorList;
 
 		}
 		/**
@@ -1700,6 +1697,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
 		}
 		return response;
 	}

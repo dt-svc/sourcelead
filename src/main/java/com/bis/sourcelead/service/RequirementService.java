@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -34,6 +35,8 @@ public interface RequirementService {
     public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId, String status, String clients, User user, String userRoleName) throws Exception;
 
     public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
+    
+    public Requirement getRequirementByRequirementIdAndSearchValue(Long requirementId,String searchValue) throws Exception;
 
     public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String url) throws Exception;
 
@@ -198,6 +201,9 @@ public interface RequirementService {
     public List<RequirementDTO> getAllManagerRequirementForJobSharing(Date[] searchDates,Long managerUserId,Long orgLocationId) throws Exception;
     
     List<RecruiterReportAssociateCountView> getAssociateCountsCreatedUserList(Long orgLocationId, List<Long> userIdsList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
+    
+    List<RecruiterRrportDTO> getAssociateCountsCreatedUserListByLocation(Long orgLocationId, List<Long> userIdsList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
+
     
     public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,Long userId,OrgLocations orgLocations) throws Exception;
 

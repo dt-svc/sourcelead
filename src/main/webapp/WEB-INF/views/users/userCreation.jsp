@@ -332,6 +332,18 @@
                   </div>
             </div>
             
+            <div class="form-group " >
+              <label class="col-md-3">Shift<span class="text-danger">&nbsp;* </span></label>
+              <div class="col-md-9">
+					<select class="form-control chosen-select" name="shiftId" id="shiftId" field-name="Shift" data-validation="required">
+                        <option value="">-Select Shift-</option>
+                        <c:forEach var="shift" items="${shiftList}">
+                          <option value="${shift.id}" ${shift.defaultStatus eq 'Y' ? 'selected' : ''}>${shift.shiftName}</option>
+                        </c:forEach>
+                     </select>
+                 </div>
+            </div>
+            
             <div class="form-group">
                   <label class="col-md-3">Resource Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the resource manager for a associate in organisation'></i></label>
                   <div class="col-md-9">
@@ -341,17 +353,6 @@
                   </div>
             </div>
             		
-            <div class="form-group">
-		             <label class="col-md-3"></label>
-		              <div class="col-md-9">
-		                <div class="checkbox checkBox">
-		                  <label>
-		                    <input type="checkbox" value="Y" name="isGlobalAccess">
-		                    Is Global Manager</label>
-		                </div>
-		                 </div>
-               </div> 
-                
                  <div class="form-group">
                      <label class="col-md-3">Rate</label>
                      <div class="col-md-9">
@@ -384,13 +385,23 @@
                           </div>
                      </div>
                 </div>
-                
-            <div class="form-group " id = "DayHoursDiv">
+                <div class="form-group">
+		             <label class="col-md-3"></label>
+		              <div class="col-md-9">
+		                <div class="checkbox checkBox">
+		                  <label>
+		                    <input type="checkbox" value="Y" name="isGlobalAccess">
+		                    Is Global Manager</label>
+		                </div>
+		                 </div>
+               </div>
+                <div class="form-group " id = "DayHoursDiv">
                   <label class="col-md-3">Day hours</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="DayHours" placeholder="HH:MM" value="${averageWorkingHours}" name="DayHours" data-validation="validate_Space validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">
                   </div>
                 </div>
+                
             
             <div class="form-group">
 		             <label class="col-md-3"></label>
@@ -472,13 +483,12 @@ if(type == 'C2C' || type == 'C2C-1099'){
 	 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
 		        	$('#vendors').empty();
 		        	$('#vendors').append('<option value="">--Select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
-		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+		            		$('#vendors').append('<option value='+opt.orgRelId+' >'+opt.vendorName+'</option>');
 		            }
 		            $('#vendors').trigger("chosen:updated");
 		        }
@@ -569,16 +579,17 @@ function getEmployeementType(designationType){
 	 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
 	 var military = /^\s*([01]?\d|2[0-3]):[0-5]\d\s*$/i;
      var standard = /^\s*(0?\d|1[0-2]):[0-5]\d(\s+(AM|PM))?\s*$/i;
-	
+	alert("military >> "+DayHours.match(military))
+	alert("standard >> "+DayHours.match(standard))
 	if(DayHours.match(military) || DayHours.match(standard)){
-		
+		alert("1")
 		 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
 		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg"); 
 	/* 	$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
 		 document.getElementById("DayHours").setAttribute('record-exist','yes');
 		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');  */
 	}else{
-		
+		alert("2")
 		$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
 		 document.getElementById("DayHours").setAttribute('record-exist','yes');
 		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours'); 

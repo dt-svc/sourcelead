@@ -385,6 +385,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
                 ImmigrationTemplateDocDTO docDto = new ImmigrationTemplateDocDTO();
                 docDto.setId(entityObj.getId());
                 docDto.setDocumentType(entityObj.getDocumentType().getId());
+                docDto.setDocumentCategory(entityObj.getDocumentCategory());
                 docDto.setDescription(entityObj.getDescription());
                 docDto.setIsRequired(entityObj.getIsRequired());
                 docDto.setMultiple(entityObj.getIsMultipleRequired());
@@ -418,6 +419,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             for (ImmigrationTemplateForms entityObj : formsList) {
                 ImmigrationTemplateFormDTO formDto = new ImmigrationTemplateFormDTO();
                 formDto.setId(entityObj.getId());
+                formDto.setFormCategory(entityObj.getFormCategory());
                 formDto.setFormName(entityObj.getFormName());
                 formDto.setFormDescription(entityObj.getDescription());
                 formDto.setFileName(entityObj.getFileName());

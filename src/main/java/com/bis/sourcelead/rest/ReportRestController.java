@@ -8,8 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -46,9 +44,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.AssociateGradesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
@@ -209,7 +207,7 @@ public class ReportRestController {
 	 */
 
 	@RequestMapping(value = "/getAllUsersByOrgLocationsId")
-	public @ResponseBody ResponseList<UserDTO> getAllUsersByOrgLocationsId(@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
+	public @ResponseBody ResponseList<UserDTO> getAllUsersByOrgLocationsId(UserRoleDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
 			UserDTO userDTO,HttpServletRequest request) throws Exception {
 
 	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -240,10 +238,15 @@ public class ReportRestController {
 		    	    searchDates[0] = startDateUTC;
 		    	    searchDates[1] = endDateUTC;
 				}
-
+				List<Long> teamsList = new ArrayList<>();
+				if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
+					String[] orgTeams = userRoleDto.getOrgTeams().split(",");
+					for(int i=0; i < orgTeams.length; i++) {
+						teamsList.add(Long.parseLong(orgTeams[i]));
+					}
+				}
 			
-			
-			String[] tableColumns = { "firstName", "jobs", "candidates", "applicants", "shortlisted", "submitted", "Interviewed", "offered", "rejected", "backout" };
+			String[] tableColumns = { "firstName", "jobs", "candidates", "applicants", "shortlisted", "submitted", "Interviewed", "offered", "rejected","joined", "backout" };
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
 			if (userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
@@ -252,7 +255,7 @@ public class ReportRestController {
 			}
 			userDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			userDTO.setSortOrder(sortColumnOrder);
-			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates);
+			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList);
 			return userDTOList;
 			
 		}
@@ -266,59 +269,31 @@ public class ReportRestController {
 		
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    
-		 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
-		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
-		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		 Date endDateUTC =null ;
-		 Date startDateUTC = null;
-		 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-
-		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)&&!"".equalsIgnoreCase(reportType)){
-			 String endDate = outputFormatter1.print(zoned);
-			 endDateUTC = TZ_DF_TS.parse(endDate);
-		 }
-			
-			if(null != reportType && !"".equals(reportType)){
-				if("today".equals(reportType)){
-					String startDate = outputFormatter.print(zoned);
-					startDateUTC = TZ_DF_TS.parse(startDate);
-				}else if(Constants.YESTER_DAY.equals(reportType)){
-					DateTime yesterDayZoned = zoned.minusDays(1);
-					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-				}else if(Constants.ONE_WEEK.equals(reportType)){
-					DateTime yesterDayZoned = zoned.minusDays(7);
-					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-				}else if(Constants.TWO_WEEKS.equals(reportType)){
-					DateTime yesterDayZoned = zoned.minusDays(14);
-					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-				}else if(Constants.ONE_MONTH.equals(reportType)){
-					DateTime yesterDayZoned = zoned.minusDays(30);
-					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-				}else if(Constants.TWO_MONTHS.equals(reportType)){
-					DateTime yesterDayZoned = zoned.minusDays(60);
-					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-				}else{
-					 if(customStartDate  != null && !"".equalsIgnoreCase(customStartDate) && customStartDate  != "undefined" && customEndDate != null && !"".equalsIgnoreCase(customEndDate) && customEndDate  != "undefined"){
-						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-						Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
-						Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
-						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-						String customEndTimeStr = TZ_DF_CED.format(endTime);  
-						startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
-						endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
-					 }
-					
-				}
-			}
+	    
+	    Date[] searchDates = null;
+	    Date startDateUTC = null;
+	    Date endDateUTC = null;
 		
+		if(!"custom".equalsIgnoreCase(reportType)){
+			searchDates = reportsUtil.getJobFilterDate(reportType,orgLocations);
+			startDateUTC =searchDates[0];
+			endDateUTC = searchDates[1];
+		}else if("custom".equalsIgnoreCase(reportType) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+    	    
+    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+			DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			
+			Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+			Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+			String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+			String customEndTimeStr = TZ_DF_CED.format(endTime);  
+			 startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+			 endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+			 startDateUTC = new java.sql.Date(startDateUTC.getTime());
+			 endDateUTC = new java.sql.Date(endDateUTC.getTime());
+		}
+	    
 	    List<OrgRelations> vendorslist = orgRelationService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 	    
 	    for(OrgRelations orgrel : vendorslist){
@@ -997,7 +972,7 @@ public class ReportRestController {
 				
 				if(userRole.getUserState() != null) {
 					if("Inactive".equalsIgnoreCase(userRole.getUserState().toString())) {
-						userDto.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
+						userDto.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getTerminateDate()));
 					}else {
 						userDto.setDateOfTermination("Till Date");
 					}

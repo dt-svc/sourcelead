@@ -27,9 +27,11 @@ import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
@@ -317,11 +319,11 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	    			eah.setReopenedUser(loginUser);
 	    			
 	    			Expenses expenses =eah.getExpenseId();
-	    			expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+	    			expenses.setExpenseStatus(Submission_Status.REOPENED);
 	    			session.saveOrUpdate(expenses);
 	    			
-	    			eah.setExpenseStatus(Submission_Status.SUBMITTED);
-	    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+	    			eah.setExpenseStatus(Submission_Status.REOPENED);
+	    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.REOPENED);
 	    			eah.setReopenRejectedReason(null);
 	    		}else{
 	    			if(null != type && "notify".equalsIgnoreCase(type)){
@@ -333,11 +335,12 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		    			eah.setReopenReason(null);
 		    			eah.setExpenseStatus(Submission_Status.APPROVED);
 		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
-		    		}else{
-		    			eah.setExpenseStatus(Submission_Status.SUBMITTED);
-		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+		    		}
+		    		else{
+		    			eah.setExpenseStatus(Submission_Status.REOPENED);
+		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.REOPENED);
 		    			eah.setReopenRejectedReason(null);
-		    			eah.setReopenReason(null);
+		    			//eah.setReopenReason(null);
 		    		}
 	    		}
 	    		try {
@@ -632,7 +635,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		//return expensesApproverHierarchyList;
 		
 		Boolean isRejected = false; 
-	    Boolean isAPPROVED = false; 
+	    Boolean isREOPENED = false; 
 	    Boolean isSUBMITTED = false; 
 	    Boolean isNEW = false;
 	    Boolean isDRAFT = false;
@@ -648,16 +651,19 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 					 isNEW   = true;  
 					 expensesApproverHierarchy = eah;
 				}
-				else if(!isRejected && !isNEW &&  eah.getExpenseStatus() == Submission_Status.DRAFT){
+				else if(!isRejected && !isNEW &&  eah.getExpenseStatus() == Submission_Status.REOPENED){
+					 isREOPENED   = true;  
+					 expensesApproverHierarchy = eah;
+				}
+				else if(!isRejected && !isNEW && !isREOPENED &&  eah.getExpenseStatus() == Submission_Status.DRAFT){
 					 isDRAFT   = true;  
 					 expensesApproverHierarchy = eah;
 				}
-				else if(!isRejected && !isNEW && !isDRAFT && eah.getExpenseStatus() == Submission_Status.SUBMITTED){
+				else if(!isRejected && !isNEW &&  !isREOPENED && !isDRAFT && eah.getExpenseStatus() == Submission_Status.SUBMITTED){
 					isSUBMITTED   = true;  
 					expensesApproverHierarchy = eah;
 				}
-				else if(!isRejected && !isNEW && !isDRAFT && !isSUBMITTED && eah.getExpenseStatus() == Submission_Status.APPROVED ){
-					 isAPPROVED   = true;  
+				else if(!isRejected && !isNEW &&  !isREOPENED && !isDRAFT && !isSUBMITTED && eah.getExpenseStatus() == Submission_Status.APPROVED ){
 					 expensesApproverHierarchy = eah;
 				}
 	      }
@@ -731,6 +737,28 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return expensesApproverHierarchy;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override	
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ExpensesApproverHierarchy> makeReopenReasonStatusNull(Long expenseId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ExpensesApproverHierarchy> eah=null;
+		String query = "from ExpensesApproverHierarchy eah  where eah.expenseId =:expenseId"; 
+		 eah = session.createQuery(query).setLong("expenseId", expenseId).list();
+			if(eah != null && !eah.isEmpty())
+			{
+				for(ExpensesApproverHierarchy e :eah) {
+					e.setReopenReason(null);
+					session.saveOrUpdate(e);
+				}
+				
+			}
+			return eah;
+		
+		
 	}
 
 

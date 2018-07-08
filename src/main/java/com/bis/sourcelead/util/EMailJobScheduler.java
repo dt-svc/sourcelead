@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
@@ -54,6 +56,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.Candidate;
@@ -67,12 +70,14 @@ import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -90,6 +95,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
@@ -102,6 +108,7 @@ import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
 import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -282,6 +289,12 @@ public class EMailJobScheduler {
 	private LeaveService leaveService;
 	
 	@Autowired
+	LeaveTypeService leaveTypeService;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
 	LeaveDao leaveDao;
 	
 	@Value("${static.path}")
@@ -292,6 +305,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	private ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
 	
 	@Autowired
 	private ImmigrationTemplateService immigrationTemplateService;
@@ -1547,7 +1563,7 @@ public class EMailJobScheduler {
 		}
 		
 		//this cron is related to invoices to run every day.
-		getDueDateCompletedInvoicesLists();
+//		getDueDateCompletedInvoicesLists();
 
 	}
 
@@ -1556,7 +1572,9 @@ public class EMailJobScheduler {
 	 * changing invoice payment status when due date is over
 	 * @throws Exception
 	 */
-	private void getDueDateCompletedInvoicesLists() throws Exception {
+	@Scheduled(cron = "0 0 15 1/1 * ?")
+	@Async
+	public void getDueDateCompletedInvoicesLists() throws Exception {
 		List<Invoice> invoiceList = invoiceService.getDueDateCompletedInvoicesList();
 		invoiceList.forEach(invoice -> {
 			if (invoice.getDueDate() != null && !"".equals(invoice.getDueDate())) {
@@ -2214,6 +2232,7 @@ public class EMailJobScheduler {
 	  * @throws Exception
 	  */
 	@Scheduled(cron = "0 0 9 1/1 * ?")
+//	@Scheduled(cron = "0 0/3 * 1/1 * ?") //testing related every 3minit  run the cron
 	@Async
 	public void holidayNotificationToUsers() throws Exception {
 		DateTime zoned = new DateTime();	
@@ -2229,100 +2248,127 @@ public class EMailJobScheduler {
 		String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
 		Date holidayEndDate = ts.parse(endDateString);
 		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+		/*OrgLocations asd = orgLocationService.getOrgLocations(2754L);
+		List<OrgLocations> orgLocationsList = new ArrayList<>();
+		orgLocationsList.add(asd);*/
 		/*
 		 * OrgLocations orgLocations = orgLocationsList.get(1);..for single org
 		 */
 		for (OrgLocations orgLocations : orgLocationsList) {
-			List<Holiday> holidayList = holidayService.getHolidaybyLocationIdAndFromdate(holidayStartDate,
-					holidayEndDate, orgLocations.getId());
+			List<Holiday> holidayList = holidayService.getHolidaybyLocationIdAndFromdate(holidayStartDate, holidayEndDate, orgLocations.getId());
 			String holidayNames = "";
 			int i = 0;
 			if (holidayList != null && !holidayList.isEmpty()) {
-				for (Holiday holiday : holidayList) {
+				/*for (Holiday holiday : holidayList) {
 					if (i == holidayList.size() - 1)
 						holidayNames += holiday.getHolidayName();
 					else
 						holidayNames += holiday.getHolidayName() + ",";
 					i++;
+				}*/
+				Map<String,String> map = new HashMap<>();
+				for (Holiday holiday : holidayList) {
+					if (i == holidayList.size() - 1) {
+						for(HolidayShift hshift : holiday.getHolidayShift())
+							map.put(hshift.getShift().getShiftName(), holiday.getHolidayName());
+					}else {
+						for(HolidayShift hshift : holiday.getHolidayShift()) {
+							if(map.containsKey(hshift.getShift().getShiftName())) {
+								String name = map.get(hshift.getShift().getShiftName());
+								StringBuilder sb = new StringBuilder();
+								sb.append(name).append(",").append(holiday.getHolidayName());
+								map.put(hshift.getShift().getShiftName(), sb.toString());
+							}else {
+								map.put(hshift.getShift().getShiftName(), holiday.getHolidayName());
+							}
+						}
+					}
+						
+					i++;
 				}
-				List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-				for (User user : userList) {
-					EmailMessage emailMessage = new EmailMessage();
-					emailMessage.setFirstName(user.getFirstName());
-					if (StringUtils.isNotBlank(user.getLastName()))
-						emailMessage.setLastName(user.getLastName());
-					emailMessage.setToEmail(user.getEmail());
-					emailMessage.setFromEmail("defaultFromEmailAddressForProd");
-					
-					String fromEmail = null;
-					 EmailConfigurationFromMail confFromMail=null;
-					 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
-					 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
-						 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
-							 if( fromMail.getEmailModules() != null){
-								String[] jobIds = fromMail.getEmailModules().split(",");
-									for(int j=0; j<jobIds.length; j++) {
-										if(Long.valueOf(jobIds[j]) == 31L ){
-											confFromMail=fromMail;
+				
+				List<UserRole> userList = userRoleService.getAllActiveUsersListByOrgLocationId(orgLocations.getId());
+				for (UserRole uRole : userList) {
+					User user = uRole.getUser();
+					if(uRole.getShift() != null && map.containsKey(uRole.getShift().getShiftName())) {
+						EmailMessage emailMessage = new EmailMessage();
+						emailMessage.setFirstName(user.getFirstName());
+						if (StringUtils.isNotBlank(user.getLastName()))
+							emailMessage.setLastName(user.getLastName());
+						emailMessage.setToEmail(user.getEmail());
+						emailMessage.setFromEmail("defaultFromEmailAddressForProd");
+						
+						String fromEmail = null;
+						 EmailConfigurationFromMail confFromMail=null;
+						 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
+						 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+							 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+								 if( fromMail.getEmailModules() != null){
+									String[] jobIds = fromMail.getEmailModules().split(",");
+										for(int j=0; j<jobIds.length; j++) {
+											if(Long.valueOf(jobIds[j]) == 31L ){
+												confFromMail=fromMail;
+											}
 										}
-									}
-							 }
-						 } 
-						 
-						 if(confFromMail == null){
-							 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
-							 if(confFromMail != null){
+								 }
+							 } 
+							 
+							 if(confFromMail == null){
+								 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+								 if(confFromMail != null){
+									 fromEmail = confFromMail.getEmail();
+								 }
+							 }else{
 								 fromEmail = confFromMail.getEmail();
 							 }
-						 }else{
-							 fromEmail = confFromMail.getEmail();
 						 }
-					 }
-					 
-					 if(StringUtils.isNotBlank(fromEmail)){
-						 emailMessage.setFromEmail(fromEmail);
-					 }
+						 
+						 if(StringUtils.isNotBlank(fromEmail)){
+							 emailMessage.setFromEmail(fromEmail);
+						 }
+						
+						StringBuilder msgBuild = new StringBuilder();
+						emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+						// setting the class filed values
+						Map<String, String> globalVarsMap = new HashMap<String, String>();
+						globalVarsMap.put("loginUser", emailMessage.getFromName());
+						StringBuilder name = new StringBuilder();
+						if (user.getLastName() != null && user.getLastName() != "" && user.getLastName() != "undefined") {
+							globalVarsMap.put("UserName",
+									name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+						} else {
+							globalVarsMap.put("UserName", user.getFirstName());
+						}
+						globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
+						globalVarsMap.put("date",
+								commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidayEndDate));
+						globalVarsMap.put("holidayname", map.get(uRole.getShift().getShiftName()));
+						InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+						
+						EmailScenario  emailScenario = null;
+						 if(orgLocations != null)
+						 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.HOLIDAY_REMAINDER,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+						  if(emailScenario == null){
+								emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.HOLIDAY_REMAINDER,Constants.ENTITY_TYPE_EMAIL);
+						   }
+						
+						//configured Email
+						String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+						 if(StringUtils.isNotBlank(fromMail)){
+							 emailMessage.setFromEmail(fromMail);
+						 } 
+						
+						commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.HOLIDAY_REMAINDER,new ArrayList<EmailAttachment>());
+						EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+								Constants.HOLIDAY_REMAINDER_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+						String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+						notificationScenario.setBody(notificationBody);
+						StringBuilder actionLinkBuilder = new StringBuilder();
+						String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("leaveManagementReports").toString();
+						emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), user, orgLocations,notificationScenario,new HashMap<String,String>());
 					
-					StringBuilder msgBuild = new StringBuilder();
-					emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-					// setting the class filed values
-					Map<String, String> globalVarsMap = new HashMap<String, String>();
-					globalVarsMap.put("loginUser", emailMessage.getFromName());
-					StringBuilder name = new StringBuilder();
-					if (user.getLastName() != null && user.getLastName() != "" && user.getLastName() != "undefined") {
-						globalVarsMap.put("UserName",
-								name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-					} else {
-						globalVarsMap.put("UserName", user.getFirstName());
 					}
-					globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
-					globalVarsMap.put("date",
-							commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidayEndDate));
-					globalVarsMap.put("holidayname", holidayNames);
-					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 					
-					EmailScenario  emailScenario = null;
-					 if(orgLocations != null)
-					 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.HOLIDAY_REMAINDER,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
-					  if(emailScenario == null){
-							emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.HOLIDAY_REMAINDER,Constants.ENTITY_TYPE_EMAIL);
-					   }
-					
-					//configured Email
-					String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
-					 if(StringUtils.isNotBlank(fromMail)){
-						 emailMessage.setFromEmail(fromMail);
-					 } 
-					
-					commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.HOLIDAY_REMAINDER,new ArrayList<EmailAttachment>());
-					EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
-							Constants.HOLIDAY_REMAINDER_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
-					String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
-					notificationScenario.setBody(notificationBody);
-					StringBuilder actionLinkBuilder = new StringBuilder();
-					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("leaveManagementReports").toString();
-					emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), user, orgLocations,notificationScenario,new HashMap<String,String>());
-				
 				}
 			}
 		}
@@ -3230,6 +3276,78 @@ public class EMailJobScheduler {
 		// calling the sendEmail method of emailScenerioUtil
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations,
 				Constants.EMAIL_TO_IMMIGRATION_BENEFICIARY, new ArrayList<EmailAttachment>());
+	}
+	
+	
+	@Scheduled(cron = "0 3 0 1 1/1 ?")
+	@Async
+	public void calculateMonthlyLeaves() throws Exception
+	{
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod())){
+					Calendar c = Calendar.getInstance();
+					c.add(Calendar.MONTH, -1);
+					c.set(Calendar.DATE, 1);
+					Date startDate = c.getTime();
+					c.set(Calendar.DATE, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+					Date endDate = c.getTime();
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,startDate,endDate);
+				}
+			}
+		}
+	}
+	
+	@Scheduled(cron = "0 3 0 1 1/3 ?")
+	@Async
+	public void calculateQuarterlyLeaves() throws Exception
+	{
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
+					LocalDate today = LocalDate.now();
+					LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(today.minusDays(1));
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0].toDate(),dates[1].toDate());
+				}
+			}
+		}
+	}
+	
+	@Scheduled(cron = "0 3 0 1 1/6 ?")
+	@Async
+	public void calculateHalfYearlyLeaves() throws Exception
+	{
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod())){
+					LocalDate today = LocalDate.now();
+					LocalDate[] dates = conversionUtil.getThisMonthHalfyearyDates(today.minusDays(1));
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0].toDate(),dates[1].toDate());
+				}
+			}
+		}
+	}
+	
+	@Scheduled(cron = "0 3 0 1 1 ?")
+	@Async
+	public void calculateYearlyLeaves() throws Exception
+	{
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
+					Date[] dates = conversionUtil.getPreviousYearStartAndEndDate();
+					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
+				}
+			}
+		}
 	}
 	
 }

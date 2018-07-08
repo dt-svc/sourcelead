@@ -31,6 +31,8 @@ public class SubmissionRequirementListView {
 	private String city;
 	
 	private String isAssociate;
+	
+	private String clientName;
 
 	
 	
@@ -144,6 +146,14 @@ public class SubmissionRequirementListView {
 
 	public void setIsAssociate(String isAssociate) {
 		this.isAssociate = isAssociate;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}
 	
 	

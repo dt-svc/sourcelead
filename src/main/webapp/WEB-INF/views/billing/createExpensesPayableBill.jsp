@@ -18,7 +18,6 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
 
 <script>
 $(document).ready(function(){
-	getVendors();
 	populateInlineItemsGrid();
 });
 </script>
@@ -353,7 +352,7 @@ function getProjectsList(projectName){
  	for (var i=0; i<json.data.length; i++)
    {
  	var opt = json.data[i];
- 	/* output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; */
+ 	 output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; 
  	var selected = "";
  	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
  		selected = 'selected';
@@ -697,7 +696,7 @@ function calculateDisCount(){
 		var taxTotal = $("#"+rowId+"taxTotal").val(); 
 		var first=parseFloat(grandTotal);
         var second=parseFloat(taxTotal);
-        total = (first-second);
+        total = Math.round(first-second);
         $("#grandTotal").val(total); 
         $("#conversionFrom").val(total);
         conversion();
@@ -1063,7 +1062,6 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID);
 	}else{
 		getVendors();
-		getProjectsList();
 		$("#invoiceId").val("");
 		$("#paymentFrequency").val("");
 		$("#paymentFrequency").trigger("chosen:updated");

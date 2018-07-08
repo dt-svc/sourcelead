@@ -1,24 +1,38 @@
 package com.bis.sourcelead.reportsDTO;
 
+import java.math.BigInteger;
+
 public class ApplicantsBackoutDTO {
 
 	private String counts;
 	
-    private int currentCompany;
+    private BigInteger currentCompany;
 	
-	private int compensation;
+	private BigInteger compensation;
 	
-	private int betterOffer;
+	private BigInteger betterOffer;
 	
-	private int coldFeet;
+	private BigInteger coldFeet;
 	
-	private int personal;
+	private BigInteger personal;
 	
-	private int other;
+	private BigInteger other;
 	
-	private int totalCount;
+	private BigInteger totalCount;
 	
 	private String jobName;
+	
+	private String generatedId;
+	
+	
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
 
 	public String getCounts() {
 		return counts;
@@ -28,59 +42,59 @@ public class ApplicantsBackoutDTO {
 		this.counts = counts;
 	}
 
-	public int getCurrentCompany() {
+	public BigInteger getCurrentCompany() {
 		return currentCompany;
 	}
 
-	public void setCurrentCompany(int currentCompany) {
+	public void setCurrentCompany(BigInteger currentCompany) {
 		this.currentCompany = currentCompany;
 	}
 
-	public int getCompensation() {
+	public BigInteger getCompensation() {
 		return compensation;
 	}
 
-	public void setCompensation(int compensation) {
+	public void setCompensation(BigInteger compensation) {
 		this.compensation = compensation;
 	}
 
-	public int getBetterOffer() {
+	public BigInteger getBetterOffer() {
 		return betterOffer;
 	}
 
-	public void setBetterOffer(int betterOffer) {
+	public void setBetterOffer(BigInteger betterOffer) {
 		this.betterOffer = betterOffer;
 	}
 
-	public int getColdFeet() {
+	public BigInteger getColdFeet() {
 		return coldFeet;
 	}
 
-	public void setColdFeet(int coldFeet) {
+	public void setColdFeet(BigInteger coldFeet) {
 		this.coldFeet = coldFeet;
 	}
 
-	public int getPersonal() {
+	public BigInteger getPersonal() {
 		return personal;
 	}
 
-	public void setPersonal(int personal) {
+	public void setPersonal(BigInteger personal) {
 		this.personal = personal;
 	}
 
-	public int getOther() {
+	public BigInteger getOther() {
 		return other;
 	}
 
-	public void setOther(int other) {
+	public void setOther(BigInteger other) {
 		this.other = other;
 	}
 
-	public int getTotalCount() {
+	public BigInteger getTotalCount() {
 		return totalCount;
 	}
 
-	public void setTotalCount(int totalCount) {
+	public void setTotalCount(BigInteger totalCount) {
 		this.totalCount = totalCount;
 	}
 
@@ -91,6 +105,8 @@ public class ApplicantsBackoutDTO {
 	public void setJobName(String jobName) {
 		this.jobName = jobName;
 	}
+
+	
 	
 	
 }

@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -642,8 +643,9 @@ public class ClientServiceImpl implements ClientService {
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client SOW Template",Constants.Client_SOW);
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor SOW Template",Constants.Vendor_SOW);
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default NDA Template",Constants.NDA);
-			
 			commonUtil.saveDefaultEmployeeVerificationTemplate(org, clientOrgLocations, spocUser, "Default Employee Verification Template");
+         	commonUtil.saveDefaultGenaeralShift(clientOrgLocations, spocUser, Constants.GENERAL_SHIFT);
+
 		}
 		
 		if(Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
@@ -931,9 +933,12 @@ public class ClientServiceImpl implements ClientService {
 
 				List<Long> roleActonsList = new ArrayList<Long>();
 				if (null != roles.getActionId()) {
-					for (String s : roles.getActionId().split(",")) {
+					/*for (String s : roles.getActionId().split(",")) {
 						roleActonsList.add(Long.parseLong(s));
-					}
+					}*/
+					for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+		    			 roleActonsList.add(Long.parseLong(s));
+		        	 }
 				}
 
 				for (Long actionId : soureleadActionIdList) {

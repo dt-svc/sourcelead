@@ -83,4 +83,7 @@ public interface OrgRelationsService {
 
 	ResponseList<OrgRelations> getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(OrgRelationDTO orgRelationDTO ,Long id,String status, String vendorsRelationId) throws Exception;
 
+	List<OrgRelationDTO> getAllClientsListOrgLocationId(Long orgLocationId) throws Exception;
+	
+	List<OrgRelationDTO> getAllVendorsListOrgLocationId(Long orgLocationId) throws Exception;
 }

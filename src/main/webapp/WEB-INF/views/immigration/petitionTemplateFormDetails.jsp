@@ -34,7 +34,15 @@
                         <c:when  test="${empty formsList}"> <!--  when list is empty loads default row -->
                             <div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mb">
                                 <div class="col-md-12 clearfix noPad">
-                                    <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName"/></div>
+                                	<div class="col-md-2 paddingRight">
+											<select class="form-control" name="immigrationFormList[0].formCategory" onchange="validationFormName($(this),0)" id="formCategory0" title='Form Category' field-name="Select Form Category" data-validation="required">
+													<option value="" selected>--Select Form Type--</option>
+													<option value="PetitionerCategory" >Petitioner</option>
+												    <option value="Document Type" >Beneficiary</option>
+													<option value="AttorneyCategory" >Attorney</option>
+											</select>
+											</div>
+                                    <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name" placeholder="Form name" data-name="formName"/></div>
                                     <div class="col-md-3">
 
                                         <div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
@@ -45,7 +53,7 @@
                                             <!-- 						<input class="form-control" id="uploadFile0" placeholder="Attachment" type="text"> -->
                                         </div>		  	
                                     </div>
-                                    <div class="col-md-5 noPad">
+                                    <div class="col-md-3 noPad">
                                         <input type="text" class="form-control" name="immigrationFormList[0].formDescription" id="formDescription0" placeholder="Description" data-validation = "validate_length length2-500" data-validation-optional="true"/>
                                     </div>
                                     <div class="col-md-2 clearfix">
@@ -70,8 +78,15 @@
                                     <c:when test="${rows.count == 1}"><!--when rowIndex is 1 defatult(first) row is loaded with add button-->
                                         <div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mb">
                                             <input type="hidden" name="immigrationFormList[${rows.count-1}].id" value="${item.id}" id="templateId${rows.count-1}"/>
-
-                                            <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName"/></div>
+											<div class="col-md-2 paddingRight">
+											<select class="form-control" name="immigrationFormList[${rows.count-1}].formCategory" onchange="validationFormName($(this),${rows.count-1})" id="formCategory${rows.count-1}" title='Form Category' field-name="Select Form Category" data-validation="required">
+													<option value="" selected>--Select Form Type--</option>
+													<option ${item.formCategory == "PetitionerCategory" ? 'selected': ''} value="PetitionerCategory">Petitioner</option>
+							        				<option ${item.formCategory == "Document Type" ? 'selected': ''} value="Document Type">Beneficiary</option>
+							        				<option ${item.formCategory == "AttorneyCategory" ? 'selected': ''} value="AttorneyCategory">Attorney</option>
+											</select>
+											</div>
+                                            <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name" placeholder="Form name" data-name="formName"/></div>
 
                                             <div class="col-md-3 mt10" id="docNameDiv${rows.count-1}">
                                                 <label id="documentName${rows.count-1}"  class="text-primary tbldata-dotdot-vsm pull-left" title="${item.fileName}">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file${rows.count-1}" onclick = "deleteDoc('${rows.count-1}')"><i class="fa fa-trash removeIcon"></i></span>
@@ -88,7 +103,7 @@
                                                     <!-- 						<input class="form-control" id="uploadFile0" placeholder="Attachment" type="text"> -->
                                                 </div>			  	
                                             </div>
-                                            <div class="col-md-5 noPad">
+                                            <div class="col-md-3 noPad">
                                                 <input type="text" class="form-control" name="immigrationFormList[${rows.count-1}].formDescription" value= "${item.formDescription}" id="formDescription0" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
                                             </div>
                                             <div class="col-md-2 clearfix">
@@ -109,8 +124,15 @@
                                     <c:otherwise>
                                         <div id="dynamicFormRow${rows.count-1}" class="col-md-12 clearfix noPad mb"><!--when rowIndex is 1, 2 row onwards loaded with close button-->
                                             <input type="hidden" name="immigrationFormList[${rows.count-1}].id" value="${item.id}" id="templateId${rows.count-1}"/>
-
-                                            <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName"/></div>
+                                            <div class="col-md-2 paddingRight">
+											<select class="form-control" name="immigrationFormList[${rows.count-1}].formCategory" onchange="validationFormName($(this),${rows.count-1})" id="formCategory${rows.count-1}" title='Form Category' field-name="Select Form Category" data-validation="required">
+													<option value="" selected>--Select Form Type--</option>
+													<option value="PetitionerCategory" >Petitioner</option>
+												    <option value="Document Type" >Beneficiary</option>
+													<option value="AttorneyCategory" >Attorney</option>
+											</select>
+											</div>
+                                            <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name" placeholder="Form name" data-name="formName"/></div>
 
                                             <div class="col-md-3 mt10" id="docNameDiv${rows.count-1}">
                                                 <label id="documentName${rows.count-1}"  class="text-primary tbldata-dotdot-vsm pull-left" title="${item.fileName}">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file${rows.count-1}" onclick = "deleteDoc('${rows.count-1}')"><i class="fa fa-trash removeIcon"></i></span>
@@ -127,7 +149,7 @@
                                                     <!-- 						<input class="form-control" id="uploadFile0" placeholder="Attachment" type="text"> -->
                                                 </div>			  	
                                             </div>
-                                            <div class="col-md-5 noPad">
+                                            <div class="col-md-3 noPad">
                                                 <input type="text" class="form-control" name="immigrationFormList[${rows.count-1}].formDescription" value= "${item.formDescription}" id="formDescription0" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
                                             </div>
                                             <div class="col-md-2 clearfix">
@@ -167,6 +189,12 @@
     function uploadBtnFile(id) {
         $('#uploadFile' + id).val($("#uploadBtn" + id).val().replace(/C:\\fakepath\\/i, ''));
     }
+    
+    function validationFormName(thisVal,count){
+    	if(thisVal.val() !== "" ){
+    		$("#formName"+count).attr("data-validation","required validate_length length2-100")
+    	}
+    }
 </script> 
 
 <script>
@@ -199,10 +227,12 @@
     function appendTemplateFormDetails(rowId) {
         var result = "";
         result = result + "<div id='dynamicFormRow" + rowId + "' class='col-md-12 clearfix noPad mb'>";
-        result = result + "<div class='col-md-2 padding_right'>";
-        result = result + "<input type='text' id= 'formName" + rowId + "' name = 'immigrationFormList[" + rowId + "].formName' class='form-control' field-name='Form Name' placeholder='Form name' data-validation = 'required validate_length length2-100' data-name='formName'/>";
+        result = result + '<div class="col-md-2 paddingRight"><select class="form-control" name="immigrationFormList['+rowId+'].formCategory" onchange="validationFormName($(this),'+rowId+')" id="formCategory'+rowId+'" title="Form Category" field-name="Select Form Category" data-validation="required">';
+		result = result + '<option value="" selected>--Select Form Type--</option><option value="PetitionerCategory" >Petitioner</option><option value="Document Type" >Beneficiary</option><option value="AttorneyCategory" >Attorney</option></select>';
+		result = result + "</div>";
+		result = result + '<div class="col-md-2 paddingRight">';
+		result = result + "<input type='text' id= 'formName" + rowId + "' name = 'immigrationFormList[" + rowId + "].formName' class='form-control' field-name='Form Name' placeholder='Form name' data-name='formName'/>";
         result = result + "</div>";
-
         result = result + "<div class='col-md-3'>";
         result = result + " <div class='input-group col-md-12 errorInptgroup' style='margin:0 auto'>";
         result = result + " <label class='input-group-btn'> <span class='btn btn-primary' onchange='uploadFormDocs(" + rowId + ");'><i class='fa fa-folder-open-o'></i>&nbsp;Browse File";
@@ -211,7 +241,7 @@
         result = result + '<input type="text" class="form-control" readonly id="uploadFile' + rowId + '" name = "immigrationFormList[' + rowId + '].immigrationFormFileInfo[0].docFile"  placeholder="Attachment" field-name="Attachment" data-validation="required validatepdf">';
         result = result + "</div>";
         result = result + "</div>";
-        result = result + "<div class='col-md-5 noPad'>";
+        result = result + "<div class='col-md-3 noPad'>";
         result = result + "<input type='text' title='Description' name='immigrationFormList[" + rowId + "].formDescription' id='formDescription" + rowId + "' class='form-control' placeholder='Description' data-validation = 'validate_length length2-500' data-validation-optional='true' /></div>";
         result = result + "<div class='col-md-2 clearfix'>";
         result = result + "<label class='switch mt5 text-center'>";
@@ -248,10 +278,10 @@
         applyChangeEvent();
         checkFormNames();
     });
-    function applyChangeEvent() {
+    /* function applyChangeEvent() {
         $("input[data-name='formName']").unbind('keyup');
         $("input[data-name='formName']").on("keyup", function () {
             checkFormNames();
         });
-    }
+    } */
 </script>

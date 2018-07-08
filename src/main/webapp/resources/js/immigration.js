@@ -103,6 +103,12 @@ function Immigration() {
     });
 
     this.savePetitionDoc = function (status) {
+    	var validationSettings = {
+                errorMessagePosition: 'element',
+                borderColorOnError: '',
+                scrollToTopOnError: true,
+                dateFormat: 'yyyy/mm/dd'
+            };
         if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
             var formData = getFormData("PetitionTemplateDocDetails");
             formData.immigrationDocDeletedListIds = deletedDocListIds.join();
@@ -649,6 +655,7 @@ function Immigration() {
             type: "GET",
             success: function (result) {
             	if(result =='success'){
+            		showSuccessMsg("Successfully Record Deleted.");
             		immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'');
             		deleteImmigrationPopupDiv();
             	}
@@ -674,6 +681,7 @@ function Immigration() {
             type: "GET",
             success: function (result) {
             	if(result=='success'){
+            		showSuccessMsg("Successfully Record Deleted.");
             	     immigration.displayFamilyDetails(candidateId) //candidateId global variable
             	     deleteImmigrationPopupDiv();
             	}
@@ -723,9 +731,9 @@ function Immigration() {
         });
 	}
 	
-	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId,searchVal){
+	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId,searchVal,myImmigrationStatus){
 		$.ajax({
-	        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+"&searchVal="+searchVal,
+	        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+"&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus,
 	        type: "GET",
 	        success: function (result) {
 	            $("#formsTab").html(result);
@@ -823,9 +831,11 @@ function deletePassportVisaDetails(id,idType){
         success: function (result) {
         	if(result=='success'){
         		if(idType=='Passport'){
+        			showSuccessMsg("Successfully Record Deleted.");
         			immigration.displayPassportDetails(candidateId,idType);
         		}
         		else if (idType == 'Visa') {
+        			showSuccessMsg("Successfully Record Deleted.");
         			immigration.displayVisaDetails(candidateId,idType);
         		}
             	deleteImmigrationPopupDiv(); // removes the existing added delete popup div in html code.
@@ -843,6 +853,7 @@ function deleteEDucationDetailsById(id){
         type: "GET",
         success: function (result) {
         	if(result=='success'){
+        		showSuccessMsg("Successfully Record Deleted.");
         	  getCandidateEducationList(candidateId) //candidateId global variable
         	  deleteImmigrationPopupDiv();
         	}
@@ -864,7 +875,9 @@ function editEducationDEtailsByRowId(id){
         			var fomValues=["name","specialization", "startDate","endDate","gradeType","grade","institute","address"];
         			$("#addEdu").trigger('click');
         			udpateEduFormdata(formObj,fomValues,data);
-        			$('#eduName').val(data.name); // to select the dropdwon value based on id value.
+        			//$('#eduName').val(data.name); // to select the dropdwon value based on id value.
+        			$('#eduName option[value="'+data.name+'"]').prop("selected", true);
+        	        $('#eduName').trigger("chosen:updated");
         			$('#scoreEducationType').val(data.gradeType);
         			$('#immigrationEduStartDate12').val(data.startDateStr);
         			$('#immigrationEduEndDate').val(data.endDateStr);
@@ -872,6 +885,10 @@ function editEducationDEtailsByRowId(id){
         			$('#immigrationEduDocDivEdit').show();
     	        	$('#immigrationEduDocDiv').hide();
         			$('#immigrationEduDocName').text(data.educationFileName);
+        			}else{
+        				$('#immigrationEduDocDivEdit').hide();
+        	        	$('#immigrationEduDocDiv').show();
+        	        	$('#immigrationEduDocName').text("");
         			}
         			$('#candidateEducationId').val(data.id);
         	
@@ -964,6 +981,7 @@ function deleteEmpDetails(id){
         type: "GET",
         success: function (result) {
         	if(result=='success'){
+        		showSuccessMsg("Successfully Record Deleted.");
         		getCandidateEmployerList(candidateId) //candidateId global variable
         		deleteImmigrationPopupDiv();
         	}
@@ -993,7 +1011,7 @@ function validateTemplateName() {
     }
 }
 
-function checkFormNames() {
+/*function checkFormNames() {
     formNames = [];
     var focusedElement;
     $("input[data-name='formName']").each(function () {
@@ -1027,7 +1045,7 @@ function checkFormNames() {
         return true;
     }
     return false;
-}
+}*/
 function checkTaskNames(newName, immiTaskId) {
     if (newName !== null && newName !== "") {
         $.ajax({
@@ -1128,9 +1146,9 @@ $('body').on('blur', '#employerDetails_form', function () {
 
 
 
-function displayImmigrationCandidateDocs(candidateId,templateid,immigrationId,searchVal){
+function displayImmigrationCandidateDocs(candidateId,templateid,immigrationId,searchVal,myImmigrationStatus){
 	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal,
+        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus,
         type: "GET",
         success: function (result) {
             $("#docsTab").html(result);
@@ -1236,6 +1254,7 @@ function deleteResidenceDetailsById(id){
         type: "GET",
         success: function (result) {
         	if(result=='success'){
+        		showSuccessMsg("Successfully Record Deleted.");
         		getCandidateResidenceList(candidateId) //candidateId global variable
         		deleteImmigrationPopupDiv();
         	     
@@ -1345,7 +1364,8 @@ function deleteDocumentDetailsByRowId(id){
         type: "GET",
         success: function (result) {
         	if(result=='success'){
-        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
+        	showSuccessMsg("Successfully Record Deleted.");
+            displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
         	deleteImmigrationPopupDiv();
         	}
         }

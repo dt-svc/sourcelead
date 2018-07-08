@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -46,6 +45,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -66,6 +66,7 @@ import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementLocationsService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -102,6 +103,9 @@ public class SubmissionsRestController {
 
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	private RequirementOffersService requirementOffersService;
 
 	@Autowired
 	private SubmissionTemplateService submissionTemplateService;
@@ -1239,42 +1243,96 @@ public class SubmissionsRestController {
 	
 	
 	@RequestMapping(value = "/app/saveJoinedRequestForApplicant")
-	public @ResponseBody String saveJoinedRequestForApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO,
+	public @ResponseBody Response<String> saveJoinedRequestForApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO,
 			@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
 			throws Exception {
+		Response<String> response = new Response<>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user != null) {
+			try {
+				response.setObject(commonUtil.saveJoinStatusInSubmission(applicantRejectBackOutDTO, submissionId, orgLocations, user));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
+	
+	@RequestMapping(value = "/app/saveSelectedOnInterviewStatusForApplicant")
+	public @ResponseBody Response<String> saveSelectedOnInterviewStatusForApplicant(@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
+			throws Exception {
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user != null) {
+			try {
+				RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+
+				// to update submission history
+				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+				requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+				requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW.toString());
+
+				// to update Submission status
+				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW);
+				requirementSubmission.setUpdatedBy(user.getUserCode());
+				StringBuilder sb = new StringBuilder();
+				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				requirementSubmission.setUpdatedDate(new Date());
+				
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
+	
+	
+	@RequestMapping(value = "/app/getRequirementOfferSubmissionById")
+	public @ResponseBody Response<RequirementOffers> getRequirementOfferSubmissionById(@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
+			throws Exception {
+		Response<RequirementOffers> response = new Response<>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
-		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-
-		// to update submission history
-		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
-		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
-
-		// to update Submission status
-		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
-		requirementSubmission.setUpdatedBy(user.getUserCode());
-		StringBuilder sb = new StringBuilder();
-		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-		requirementSubmission.setUpdatedDate(new Date());
-		
-		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getJoinDate()) && !"".equalsIgnoreCase(applicantRejectBackOutDTO.getJoinDate())) {
+		if(user != null) {
 			try {
-				Date convertedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), applicantRejectBackOutDTO.getJoinDate());
-				requirementSubmission.setJoinedDate(convertedDate);
-			} catch (Exception e) {
-				e.printStackTrace();
+				RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submissionId);
+				if(requirementOffers != null) {
+					requirementOffers.setUpdatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementOffers.getUpdatedDate()));
+					response.setObject(requirementOffers);
+				}else {
+					response.setObject(null);
+				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
-		} else {
-			requirementSubmission.setJoinedDate(null);
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
-
-		return "success";
+		return response;
 	}
 
 }

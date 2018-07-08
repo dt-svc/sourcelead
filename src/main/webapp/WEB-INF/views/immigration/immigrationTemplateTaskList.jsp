@@ -314,6 +314,7 @@
             $('#taskReminderSelect').trigger("chosen:updated");
             $(".popMask").fadeIn(200);
             $("#taskViewPopup").fadeIn(100);
+            immiTaskId = "";
         });
         $(".popCan").click(function () {
             $(".popMask").fadeOut(200);
@@ -367,7 +368,7 @@
         });
     });
 
-	var immiTaskId = "";
+	var immiTaskId;
     function editImmiTaskList(id) {
         $.ajax({
             type: "GET",
@@ -438,6 +439,7 @@
             type: "GET",
             url: sourceleadUrl + immiModulePath + "/deleteImmigrationTaskList?${_csrf.parameterName}=${_csrf.token}&id=" + id,
             success: function (json) {
+            	showTemplateMsg("Successfully Task Deleted");
                 immigrationDataTableList();
                 cancelTemplateDelete();
             }
@@ -479,7 +481,6 @@
                 }
             }
         });
-        immiTaskId = "";
     }
 
 </script>

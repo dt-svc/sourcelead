@@ -7,11 +7,11 @@
         <div class="dashboard-widget height400px">
           <h4 class="clearfix">Job Approvals &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data filter_position">
+          <div class="clearfix require_wrap_table dashboard-data">
            <div class="success_pop" id="selector4" style="display: none;">
   		<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>
    		 </div>
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs pull-left mb10">
               <li class="active" id="waitingTab"><a data-toggle="tab" onclick="requirementApproverList('SUBMITTED');">Waiting </a></li>
               <li id="approvedTab"><a data-toggle="tab" onclick="requirementApproverList('APPROVED');">Approved </a></li>
               <li id="rejectedTab"><a data-toggle="tab" onclick="requirementApproverList('REJECTED');">Rejected</a></li>

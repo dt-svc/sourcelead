@@ -298,6 +298,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immCanObj.setDocumentType(docs.getDocumentType());
 			immCanObj.setDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			immCanObj.setDescription(docs.getDescription());
+			immCanObj.setDocCategory(docs.getDocumentCategory());
 			if (docs.getIsRequired() != null && "Y".equalsIgnoreCase(docs.getIsRequired())) {
 				immCanObj.setIsRequired(docs.getIsRequired());
 			} else {
@@ -345,6 +346,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immCanObj.setFormType(forms.getFormType());
 			immCanObj.setFormUUID(forms.getFormUUID());
 			immCanObj.setFileName(forms.getFileName());
+			immCanObj.setFormCategory(forms.getFormCategory());
 			immCanObj.setFileContentType(forms.getFileContentType());
 			immCanObj.setFileUrl(forms.getFileUrl());
 			immCanObj.setStatus(Constants.RECORD_ACTIVE);
@@ -968,9 +970,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			List<FileInfo> fileInfo1 = immigrationTemplateDocDTO.getFileInfo();
 			for (FileInfo info : fileInfo1) {
 				ImmigrationCandidateDocumentsHistory docsHistory = null;
-				if (immigrationTemplateDocDTO.getImmigrationCandidateDocHistoryId() != null) {
-					docsHistory = immigrationCommonDao.getImmigrationCandidateDocumentsHistoryById(
-							immigrationTemplateDocDTO.getImmigrationCandidateDocHistoryId());
+				if (!immigrationTemplateDocDTO.getImmigrationCandidateDocHistoryId().contains(null)) {
+					docsHistory = immigrationCommonDao.getImmigrationCandidateDocumentsHistoryById(immigrationTemplateDocDTO.getImmigrationCandidateDocHistoryId().get(0));
 				} else {
 					docsHistory = new ImmigrationCandidateDocumentsHistory();
 				}
@@ -1270,19 +1271,19 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	@Override
 	public List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,
-			Long candidateId, User user, OrgLocations orgLocations, String searchVal) throws Exception {
+			Long candidateId, User user, OrgLocations orgLocations, String searchVal, String myImmigration) throws Exception {
 
 		List<ImmigrationCandidateDocuments> immigrationCanididateDocList = immigrationCommonDao
-				.getImmigrationCandidateDocs(immigrationId, templateId, candidateId, searchVal);
+				.getImmigrationCandidateDocs(immigrationId, templateId, candidateId, searchVal, myImmigration);
 
 		return immigrationCanididateDocList;
 	}
 
 	@Override
 	public List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId,
-			Long immigrationId, String searchVal) {
+			Long immigrationId, String searchVal, String myImmigration) {
 		return immigrationCommonDao.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId,
-				searchVal);
+				searchVal, myImmigration);
 	}
 
 	@Override

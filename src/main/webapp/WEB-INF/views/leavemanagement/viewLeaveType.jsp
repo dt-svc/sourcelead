@@ -383,20 +383,20 @@
 							result += '                <h4>Details</h4>';
 							result += '              </div>';
 							result += '              <div class="clearfix">';
-							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Name:</b></label>';
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Name:</b></label>';
 							if (report.name != null && report.name != ''
 									&& report.name != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								result += '                      <span>'
 										+ report.name + '</span>';
 								result += '                  </div>';
 							}
 
 							result += '              </div>';
-							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Duration:</b></label>';
-							result += '                  <div class="col-md-8">';
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Duration:</b></label>';
+							result += '                  <div class="col-md-7">';
 							if (report.duration != null
 									&& report.duration != ''
 									&& report.duration != 'undefined') {
@@ -407,9 +407,9 @@
 							}
 							result += '                  </div>';
 							result += '              </div>';
-							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Type:</b></label>';
-							result += '                  <div class="col-md-8">';
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Type:</b></label>';
+							result += '                  <div class="col-md-7">';
 							if (report.leaveType != null
 									&& report.leaveType != ''
 									&& report.leaveType != 'undefined') {
@@ -430,10 +430,99 @@
 							// 			}
 							// 			result +='                  </div>';
 							// 			result +='              </div>';
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Applicable To All Users:</b></label>';
+							result += '                  <div class="col-md-7">';
+							if (report.applicableToUsers != null
+									&& report.applicableToUsers != ''
+									&& report.applicableToUsers != 'undefined') {
+								if (report.applicableToUsers == 'Y') {
+									result += '                      <span>Yes</span>';
+								} else {
+									result += '                      <span>No</span>';
+								}
+								result += '                  </div>';
+							} 
+							 
+							result += '              </div>';
+							
+							/* if (report.departmentId != null
+									&& report.departmentId != ''
+									&& report.departmentId != 'undefined') {
+								result += '              <div class="col-md-12 mb">';
+								result += '                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Select Department:</b></label>';
+								result += '                  <div class="col-md-8">';
+								result += '                      <span>'
+										+ report.departmentId + '</span>';
+								result += '                  </div>';
+
+								result += '              </div>';
+							}
+							
+							if (report.departmentId != null
+									&& report.departmentId != ''
+									&& report.departmentId != 'undefined') {
+								result += '              <div class="col-md-12 mb">';
+								result += '                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Select Department:</b></label>';
+								result += '                  <div class="col-md-8">';
+								result += '                      <span>'
+										+ report.departmentId + '</span>';
+								result += '                  </div>';
+
+								result += '              </div>';
+							}
+							
+							if (report.roleId != null
+									&& report.roleId != ''
+									&& report.roleId != 'undefined') {
+								result += '              <div class="col-md-12 mb">';
+								result += '                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Select Department:</b></label>';
+								result += '                  <div class="col-md-8">';
+								result += '                      <span>'
+										+ report.roleId + '</span>';
+								result += '                  </div>';
+
+								result += '              </div>';
+							} */
+							
+							result += '              <div class="col-md-5 mb">';
+							
 							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Description:</b></label>';
-							result += '                  <div class="col-md-8">';
-							if (report.description != null
+							result += '                  <label class="col-md-5 control-label"><b>Leaves Carryforward:</b></label>';
+							result += '                  <div class="col-md-7">';
+							if (report.leavesCarryforward != null
+									&& report.leavesCarryforward != ''
+									&& report.leavesCarryforward != 'undefined') {
+								if (report.leavesCarryforward == 'Y') {
+									result += '                      <span>Yes</span>';
+								} else {
+									result += '                      <span>No</span>';
+								}
+								result += '                  </div>';
+							} 
+							 
+							result += '              </div>';
+							
+							if (report.maxDaysToCarryforward != null
+									&& report.maxDaysToCarryforward != ''
+									&& report.maxDaysToCarryforward != 'undefined') {
+								result += '              <div class="col-md-12 mb">';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Max no of Days to Carry forward:</b></label>';
+
+								result += '                  <div class="col-md-7">';
+								result += '                      <span>'
+										+ report.maxDaysToCarryforward + '</span>';
+								result += '                  </div>';
+
+								result += '              </div>';
+							}
+							result += '              </div>';
+							
+							
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Description:</b></label>';
+							result += '                  <div class="col-md-7">';
+							if (report.roleId != null
 									&& report.description != ''
 									&& report.description != 'undefined') {
 								result += '                      <span>'
@@ -443,11 +532,14 @@
 							}
 							result += '                  </div>';
 							result += '              </div>';
+							
+							
+							result += '              <div class="col-md-5 mb">';
 							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Calculation Period:</b></label>';
+							result += '                  <label class="col-md-5 control-label"><b>Calculation Period:</b></label>';
 							if (report.period != null && report.period != ''
 									&& report.period != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								result += '                      <span>'
 										+ report.period + '</span>';
 								result += '                  </div>';
@@ -458,22 +550,39 @@
 									&& report.noOfDays != ''
 									&& report.noOfDays != 'undefined') {
 								result += '              <div class="col-md-12 mb">';
-								result += '                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>No Of Days Annualy:</b></label>';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>No Of Days Annualy:</b></label>';
 
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								result += '                      <span>'
 										+ report.noOfDays + '</span>';
 								result += '                  </div>';
 
 								result += '              </div>';
 							}
+							
+							if (report.noOfDaysPerPeriod != null
+									&& report.noOfDaysPerPeriod != ''
+									&& report.noOfDaysPerPeriod != 'undefined') {
+								result += '              <div class="col-md-12 mb">';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>No Of Days per Period:</b></label>';
 
+								result += '                  <div class="col-md-7">';
+								result += '                      <span>'
+										+ report.noOfDaysPerPeriod + '</span>';
+								result += '                  </div>';
+
+								result += '              </div>';
+							}
+							result += '              </div>';
+							
+							
+							result += '              <div class="col-md-5 mb">';
 							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b style="color:#101010;">Leave Effective:</b></label>';
+							result += '                  <label class="col-md-5 control-label"><b style="color:#101010;">Leave Effective:</b></label>';
 							if (report.leaveEffective != null
 									&& report.leaveEffective != ''
 									&& report.leaveEffective != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								result += '                      <span>'
 										+ report.leaveEffective + '</span>';
 								result += '                  </div>';
@@ -481,16 +590,19 @@
 
 							result += '              </div>';
 
-							if (report.newJoinee != null
-									&& report.newJoinee != ''
-									&& report.newJoinee != 'undefined') {
+							if (report.newJoinee != null && report.newJoinee != '' && report.newJoinee != 'undefined') {
 								result += '              <div class="col-md-12 mb">';
-								result += '                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>New Joinee:</b></label>';
-								result += '                  <div class="col-md-8">';
-								result += '                      <span>'
-										+ report.newJoinee + '</span>';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>New Joinee:</b></label>';
+								result += '                  <div class="col-md-7">';
+								result += '                      <span>' + report.newJoinee + ' day(s) / Annually</span>';
 								result += '                  </div>';
-
+								result += '              </div>';
+								
+								result += '              <div class="col-md-12 mb">';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>New Joinee Per Period:</b></label>';
+								result += '                  <div class="col-md-7">';
+								result += '                      <span>' + report.newJoinPerPeriod + ' day(s) / Period</span>';
+								result += '                  </div>';
 								result += '              </div>';
 							}
 
@@ -501,8 +613,8 @@
 									&& (report.experiencedApplicableDays != null
 											&& report.experiencedApplicableDays != '' && report.experiencedApplicableDays != 'undefined')) {
 								result += '              <div class="col-md-12 mb">';
-								result += '                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Experienced:</b></label>';
-								result += '                  <div class="col-md-8">';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Experienced:</b></label>';
+								result += '                  <div class="col-md-7">';
 								result += '                      <span>'
 										+ report.experiencedDuration
 										+ '</span>';
@@ -515,14 +627,25 @@
 								result += '                  </div>';
 
 								result += '              </div>';
+								
+								result += '              <div class="col-md-12 mb">';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Experienced Per Period:</b></label>';
+								result += '                  <div class="col-md-7">';
+								result += '                      <span>' + report.experiencedPerPeriod + ' day(s) / Period</span>';
+								result += '                  </div>';
+								result += '              </div>';
+								
 							}
-
+							    result += '              </div>';
+							
+							result += '              <div class="col-md-5 mb">';    
+							    
 							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Auto Approve:</b></label>';
+							result += '                  <label class="col-md-5 control-label"><b>Auto Approve:</b></label>';
 							if (report.autoApprove != null
 									&& report.autoApprove != ''
 									&& report.autoApprove != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								if (report.autoApprove == 'Y') {
 									result += '                      <span>Yes</span>';
 								} else {
@@ -534,11 +657,11 @@
 
 							if (report.autoApprove == 'Y') {
 								result += '              <div class="col-md-12 mb">';
-								result += '                  <label class="col-md-2 control-label"><b>Auto Approve Type:</b></label>';
+								result += '                  <label class="col-md-5 control-label"><b>Auto Approve Type:</b></label>';
 								if (report.autoApproveType != null
 										&& report.autoApproveType != ''
 										&& report.autoApproveType != 'undefined') {
-									result += '                  <div class="col-md-8">';
+									result += '                  <div class="col-md-7">';
 									result += '                      <span>By '
 											+ report.autoApproveType
 											+ '</span>';
@@ -547,11 +670,11 @@
 								result += '              </div>';
 
 								result += '              <div class="col-md-12 mb">';
-								result += '                  <label class="col-md-2 control-label"><i class="fa fa-level-up paddingRight"></i></label>';
+								result += '                  <label class="col-md-5 control-label"><i class="fa fa-level-up paddingRight"></i></label>';
 								if (report.autoApproveTypeListNames != null
 										&& report.autoApproveTypeListNames != ''
 										&& report.autoApproveTypeListNames != 'undefined') {
-									result += '                  <div class="col-md-8">';
+									result += '                  <div class="col-md-7">';
 									result += '                      <span>'
 											+ report.autoApproveTypeListNames
 											+ '</span>';
@@ -559,13 +682,14 @@
 								}
 								result += '              </div>';
 							}
-
-							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Reason Required:</b></label>';
+							result += '              </div>';
+							
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Reason Required:</b></label>';
 							if (report.reasonRequired != null
 									&& report.reasonRequired != ''
 									&& report.reasonRequired != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								if (report.reasonRequired == 'Y') {
 									result += '                      <span>Yes</span>';
 								} else {
@@ -575,24 +699,36 @@
 							}
 							result += '              </div>';
 
-							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Effective Gender:</b></label>';
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Effective Gender:</b></label>';
 							if (report.effectiveGender != null
 									&& report.effectiveGender != ''
 									&& report.effectiveGender != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								result += '                      <span>'
 										+ report.effectiveGender + '</span>';
 								result += '                  </div>';
 							}
 							result += '              </div>';
+							
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Allowability:</b></label>';
+							if (report.allowability != null
+									&& report.allowability != ''
+									&& report.allowability != 'undefined') {
+								result += '                  <div class="col-md-7">';
+								result += '                      <span>'
+										+ report.allowability + '</span>';
+								result += '                  </div>';
+							}
+							result += '              </div>';
 
-							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Attachment Required:</b></label>';
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Attachment Required:</b></label>';
 							if (report.attachmentRequired != null
 									&& report.attachmentRequired != ''
 									&& report.attachmentRequired != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								if (report.attachmentRequired == 'Y') {
 									result += '                      <span>Yes</span>';
 								} else {
@@ -603,12 +739,12 @@
 
 							result += '              </div>';
 
-							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>TimeSheet Autofill:</b></label>';
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>TimeSheet Autofill:</b></label>';
 							if (report.timeSheetAutofill != null
 									&& report.timeSheetAutofill != ''
 									&& report.timeSheetAutofill != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								if (report.timeSheetAutofill == 'Y') {
 									result += '                      <span>Yes</span>';
 								} else {
@@ -617,13 +753,117 @@
 								result += '                  </div>';
 							}
 							result += '              </div>';
-
+							
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Include Week off:</b></label>';
+							if (report.includeWeekoff != null
+									&& report.includeWeekoff != ''
+									&& report.includeWeekoff != 'undefined') {
+								result += '                  <div class="col-md-7">';
+								if (report.includeWeekoff == 'Y') {
+									result += '                      <span>Yes</span>';
+								} else {
+									result += '                      <span>No</span>';
+								}
+								result += '                  </div>';
+							}
+							result += '              </div>';
+							
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Include Holiday:</b></label>';
+							if (report.includeHolidays != null
+									&& report.includeHolidays != ''
+									&& report.includeHolidays != 'undefined') {
+								result += '                  <div class="col-md-7">';
+								if (report.includeHolidays == 'Y') {
+									result += '                      <span>Yes</span>';
+								} else {
+									result += '                      <span>No</span>';
+								}
+								result += '                  </div>';
+							}
+							result += '              </div>';
+							
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Visible in Balance Leaves:</b></label>';
+							if (report.visibleInBalanceLeaves != null
+									&& report.visibleInBalanceLeaves != ''
+									&& report.visibleInBalanceLeaves != 'undefined') {
+								result += '                  <div class="col-md-7">';
+								if (report.visibleInBalanceLeaves == 'Y') {
+									result += '                      <span>Yes</span>';
+								} else {
+									result += '                      <span>No</span>';
+								}
+								result += '                  </div>';
+							}
+							result += '              </div>';
+							
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Include in PayRoll:</b></label>';
+							if (report.includeInPayroll != null
+									&& report.includeInPayroll != ''
+									&& report.includeInPayroll != 'undefined') {
+								result += '                  <div class="col-md-7">';
+								if (report.includeInPayroll == 'Y') {
+									result += '                      <span>Yes</span>';
+								} else {
+									result += '                      <span>No</span>';
+								}
+								result += '                  </div>';
+							}
+							result += '              </div>';
+							
+							
+							result += '              <div class="col-md-5 mb">';
 							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Overdraw Leaves:</b></label>';
+							result += '                  <label class="col-md-5 control-label"><b>Leave En-cashment:</b></label>';
+							if (report.leaveEncashment != null
+									&& report.leaveEncashment != ''
+									&& report.leaveEncashment != 'undefined') {
+								result += '                  <div class="col-md-7">';
+								if (report.leaveEncashment == 'Y') {
+									result += '                      <span>Yes</span>';
+								} else {
+									result += '                      <span>No</span>';
+								}
+								result += '                  </div>';
+							}
+							result += '              </div>';
+							
+							if (report.leaveEncashMinDays != null && report.leaveEncashMinDays != ''
+								&& report.leaveEncashMinDays != 'undefined') {
+							result += '              <div class="col-md-12 mb">';
+							result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Min Days:</b></label>';
+
+							result += '                  <div class="col-md-7">';
+							result += '                      <span>'
+									+ report.leaveEncashMinDays + '</span>';
+							result += '                  </div>';
+
+							result += '              </div>';
+						}
+
+						if (report.leaveEncashMaxDays != null && report.leaveEncashMaxDays != ''
+								&& report.leaveEncashMaxDays != 'undefined') {
+							result += '              <div class="col-md-12 mb">';
+							result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Max Days:</b></label>';
+
+							result += '                  <div class="col-md-7">';
+							result += '                      <span>'
+									+ report.leaveEncashMaxDays + '</span>';
+							result += '                  </div>';
+
+							result += '              </div>';
+						}
+						    result += '              </div>';
+						    
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Overdraw Leaves:</b></label>';
 							if (report.overdrawLeaves != null
 									&& report.overdrawLeaves != ''
 									&& report.overdrawLeaves != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								if (report.overdrawLeaves == 'Y') {
 									result += '                      <span>Yes</span>';
 								} else {
@@ -633,12 +873,12 @@
 							}
 
 							result += '              </div>';
-							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Donate Leave:</b></label>';
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Donate Leave:</b></label>';
 							if (report.donateLeave != null
 									&& report.donateLeave != ''
 									&& report.donateLeave != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								if (report.donateLeave == 'Y') {
 									result += '                      <span>Yes</span>';
 								} else {
@@ -648,12 +888,13 @@
 							}
 
 							result += '              </div>';
+							result += '              <div class="col-md-5 mb">';
 							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b style="color:#101010;">Prior Leave Applying:</b></label>';
+							result += '                  <label class="col-md-5 control-label"><b style="color:#101010;">Prior Leave Applying:</b></label>';
 							if (report.priorLeaveApplying != null
 									&& report.priorLeaveApplying != ''
 									&& report.priorLeaveApplying != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								if (report.priorLeaveApplying == 'Y') {
 									result += '                      <span>Yes</span>';
 								} else {
@@ -668,21 +909,23 @@
 									&& report.priorDays != ''
 									&& report.priorDays != 'undefined') {
 								result += '              <div class="col-md-12 mb">';
-								result += '                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Prior Days:</b></label>';
-								result += '                  <div class="col-md-8">';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Prior Days:</b></label>';
+								result += '                  <div class="col-md-7">';
 								result += '                      <span>'
 										+ report.priorDays + '</span>';
 								result += '                  </div>';
 
 								result += '              </div>';
 							}
-
+							result += '              </div>';
+							
+							result += '              <div class="col-md-5 mb">';
 							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b style="color:#101010;">Leave Duration:</b></label>';
+							result += '                  <label class="col-md-5 control-label"><b style="color:#101010;">Leave Duration:</b></label>';
 							if (report.leaveDuration != null
 									&& report.leaveDuration != ''
 									&& report.leaveDuration != 'undefined') {
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								if (report.leaveDuration == 'Y') {
 									result += '                      <span>Yes</span>';
 								} else {
@@ -698,9 +941,9 @@
 							if (report.minDays != null && report.minDays != ''
 									&& report.minDays != 'undefined') {
 								result += '              <div class="col-md-12 mb">';
-								result += '                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Min Days:</b></label>';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Min Days:</b></label>';
 
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								result += '                      <span>'
 										+ report.minDays + '</span>';
 								result += '                  </div>';
@@ -711,15 +954,34 @@
 							if (report.maxDays != null && report.maxDays != ''
 									&& report.maxDays != 'undefined') {
 								result += '              <div class="col-md-12 mb">';
-								result += '                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Max Days:</b></label>';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Max Days:</b></label>';
 
-								result += '                  <div class="col-md-8">';
+								result += '                  <div class="col-md-7">';
 								result += '                      <span>'
 										+ report.maxDays + '</span>';
 								result += '                  </div>';
 
 								result += '              </div>';
 							}
+							result += '              </div>';
+							
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b style="color:#101010;">Accural Policy:</b></label>';
+							if (report.accuralPolicy != null
+									&& report.accuralPolicy != ''
+									&& report.accuralPolicy != 'undefined') {
+								result += '                  <div class="col-md-7">';
+								if (report.accuralPolicy == 'Y') {
+									result += '                      <span>Yes</span>';
+								} else {
+									result += '                      <span>No</span>';
+								}
+
+								result += '                  </div>';
+
+							}
+
+							result += '              </div>';
 
 							if (report.leavePolicy != null
 									&& report.leavePolicy != ''
@@ -729,17 +991,17 @@
 								result += '                  <h4>Leave Policies</h4>';
 								result += '              </div>';
 								result += '                            <div class="clearfix"></div>';
-								result += '             <div class="col-md-12 mb">';
-								result += '                  <label class="col-md-2 control-label"><b>Policy Name:</b></label>';
-								result += '                  <div class="col-md-8">';
+								result += '             <div class="col-md-5 mb">';
+								result += '                  <label class="col-md-5 control-label"><b>Policy Name:</b></label>';
+								result += '                  <div class="col-md-7">';
 								result += '                      <span>'
 										+ report.policyName + '</span>';
 
 								result += '                  </div>';
 								result += '              </div>';
-								result += '              <div class="col-md-12 mb">';
-								result += '                  <label class="col-md-2 control-label"><b>Description:</b></label>';
-								result += '                  <div class="col-md-8">';
+								result += '              <div class="col-md-5 mb">';
+								result += '                  <label class="col-md-5 control-label"><b>Description:</b></label>';
+								result += '                  <div class="col-md-7">';
 								if (report.policyDescription != null
 										&& report.policyDescription != ''
 										&& report.policyDescription != 'undefined') {
@@ -755,9 +1017,9 @@
 										&& report.visibilityToAllUsers != ''
 										&& report.visibilityToAllUsers != 'undefined'
 										&& report.visibilityToAllUsers == 'Y') {
-									result += '              <div class="col-md-12 mb">';
-									result += '                 <label class="col-md-2 control-label">&nbsp;&nbsp;</label>';
-									result += '                 <div class="checkBox col-md-8">';
+									result += '              <div class="col-md-5 mb">';
+									result += '                 <label class="col-md-5 control-label">&nbsp;&nbsp;</label>';
+									result += '                 <div class="checkBox col-md-7">';
 
 									result += '                  <input type="checkbox" Checked disabled="true" value="" name="visible">Visible to all users';
 
@@ -765,9 +1027,9 @@
 									result += '              </div>';
 								}
 							}
-							result += '              <div class="col-md-12 mb mt40">';
-							result += '                  <label class="col-md-2 control-label"><b>Created By:</b></label>';
-							result += '                  <div class="col-md-8">';
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Created By:</b></label>';
+							result += '                  <div class="col-md-7">';
 							if (report.createdUser != null
 									&& report.createdUser != ''
 									&& report.createdUser != 'undefined') {
@@ -778,9 +1040,12 @@
 							}
 							result += '                  </div>';
 							result += '              </div>';
-							result += '              <div class="col-md-12 mb">';
-							result += '                  <label class="col-md-2 control-label"><b>Updated By:</b></label>';
-							result += '                  <div class="col-md-8">';
+							
+							result += '              <div class="clearfix"></div>';
+							
+							result += '              <div class="col-md-5 mb">';
+							result += '                  <label class="col-md-5 control-label"><b>Updated By:</b></label>';
+							result += '                  <div class="col-md-7">';
 							if (report.updatedUser != null
 									&& report.updatedUser != ''
 									&& report.updatedUser != 'undefined') {

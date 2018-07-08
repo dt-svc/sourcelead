@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -144,5 +145,8 @@ public interface UserRoleDao {
 	
 	public List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId, Long orgLocationId);
 
+	 List<BigInteger> getAllUsersRoleList() throws Exception;
+	 
+	 List<UserDTO> getAllReportingManagersListAssignedToAssociates(Long orgLocationId) throws Exception;
 
 }

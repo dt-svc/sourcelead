@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,6 +35,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
@@ -43,6 +45,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.RecruiterReportView;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -371,9 +374,12 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-		    	 for (String s : roles.getActionId().split(",")){
+		    	 /*for (String s : roles.getActionId().split(",")){
 		    		 roleActionsList.add(Long.parseLong(s));
-		    	 }
+		    	 }*/
+		    	 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 		    	 
 		    	 roleActionsList.retainAll(tabActionsIds);
 		    	 if(roleActionsList.size() > 0){
@@ -410,9 +416,12 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-		    	 for (String s : roles.getActionId().split(",")){
+		    	 /*for (String s : roles.getActionId().split(",")){
 		    		 roleActionsList.add(Long.parseLong(s));
-		    	 }
+		    	 }*/
+		    	 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 		    	 
 		    	 roleActionsList.retainAll(tabActionsIds);
 		    	 if(roleActionsList.size() > 0){
@@ -515,8 +524,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -594,8 +606,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		/* for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -691,8 +706,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -731,8 +749,11 @@ public class UserDaoImpl implements UserDao {
 		     for(Roles roles : rolesList){
 		    	 if(null != roles.getActionId()){
 		    		 List<Long> roleActionsList = new ArrayList<Long>();
-		    		 for (String s : roles.getActionId().split(",")){
+		    		 /*for (String s : roles.getActionId().split(",")){
 		        		 roleActionsList.add(Long.parseLong(s));
+		        	 }*/
+		    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+		    			 roleActionsList.add(Long.parseLong(s));
 		        	 }
 		        	 
 		        	 roleActionsList.retainAll(tabActionsIds);
@@ -817,8 +838,11 @@ public class UserDaoImpl implements UserDao {
      for(Roles roles : rolesList){
     	 if(null != roles.getActionId()){
     		 List<Long> roleActionsList = new ArrayList<Long>();
-    		 for (String s : roles.getActionId().split(",")){
+    		 /*for (String s : roles.getActionId().split(",")){
         		 roleActionsList.add(Long.parseLong(s));
+        	 }*/
+    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+    			 roleActionsList.add(Long.parseLong(s));
         	 }
         	 
         	 roleActionsList.retainAll(tabActionsIds);
@@ -849,9 +873,12 @@ public class UserDaoImpl implements UserDao {
 		for (Roles roles : rolesList) {
 			if (null != roles.getActionId()) {
 				List<Long> roleActionsList = new ArrayList<Long>();
-				for (String s : roles.getActionId().split(",")) {
+				/*for (String s : roles.getActionId().split(",")) {
 					roleActionsList.add(Long.parseLong(s));
-				}
+				}*/
+				for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 				roleActionsList.retainAll(tabActionsIds);
 				if (roleActionsList.size() > 0) {
 					ownerRolesList.add(roles.getId());
@@ -892,8 +919,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -952,8 +982,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -987,8 +1020,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -1079,8 +1115,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -1118,9 +1157,12 @@ public class UserDaoImpl implements UserDao {
          for(Roles roles : rolesList){
         	 if(null != roles.getActionId()){
         		 List<Long> roleActionsList = new ArrayList<Long>();
-        		 for (String s : roles.getActionId().split(",")){
+        		 /*for (String s : roles.getActionId().split(",")){
             		 roleActionsList.add(Long.parseLong(s));
-            	 }
+            	 }*/
+        		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
             	 
             	 roleActionsList.retainAll(tabActionsIds);
             	 if(roleActionsList.size() > 0){
@@ -1153,9 +1195,12 @@ public class UserDaoImpl implements UserDao {
 	       for(Roles roles : rolesList){
 	      	 if(null != roles.getActionId()){
 	      		 List<Long> roleActionsList = new ArrayList<Long>();
-	      		 for (String s : roles.getActionId().split(",")){
+	      		 /*for (String s : roles.getActionId().split(",")){
 	          		 roleActionsList.add(Long.parseLong(s));
-	          	 }
+	          	 }*/
+	      		for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 	          	 roleActionsList.retainAll(tabActionsIds);
 	          	 if(roleActionsList.size() > 0){
 	          		 ownerRolesList.add(roles.getId());
@@ -1185,9 +1230,12 @@ public class UserDaoImpl implements UserDao {
 	       for(Roles roles : rolesList){
 	      	 if(null != roles.getActionId()){
 	      		 List<Long> roleActionsList = new ArrayList<Long>();
-	      		 for (String s : roles.getActionId().split(",")){
+	      		 /*for (String s : roles.getActionId().split(",")){
 	          		 roleActionsList.add(Long.parseLong(s));
-	          	 }
+	          	 }*/
+	      		for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 	          	 roleActionsList.retainAll(tabActionsIds);
 	          	 if(roleActionsList.size() > 0){
 	          		 ownerRolesList.add(roles.getId());
@@ -1246,9 +1294,12 @@ public class UserDaoImpl implements UserDao {
          for(Roles roles : rolesList){
 	      	 if(null != roles.getActionId()){
 	      		 List<Long> roleActionsList = new ArrayList<Long>();
-	      		 for (String s : roles.getActionId().split(",")){
+	      		 /*for (String s : roles.getActionId().split(",")){
 	          		 roleActionsList.add(Long.parseLong(s));
-	          	 }
+	          	 }*/
+	      		for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 	      		 
 	      		 if(roleActionsList.contains(roleActionId)) {
 	      			ownerRolesList.add(roles.getId());
@@ -1563,9 +1614,12 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-		    	 for (String s : roles.getActionId().split(",")){
+		    	 /*for (String s : roles.getActionId().split(",")){
 		    		 roleActionsList.add(Long.parseLong(s));
-		    	 }
+		    	 }*/
+		    	 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 		    	 
 		    	 roleActionsList.retainAll(tabActionsIds);
 		    	 if(roleActionsList.size() > 0){
@@ -1621,8 +1675,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -1658,8 +1715,11 @@ public class UserDaoImpl implements UserDao {
 		     for(Roles roles : rolesList){
 		    	 if(null != roles.getActionId()){
 		    		 List<Long> roleActionsList = new ArrayList<Long>();
-		    		 for (String s : roles.getActionId().split(",")){
+		    		 /*for (String s : roles.getActionId().split(",")){
 		        		 roleActionsList.add(Long.parseLong(s));
+		        	 }*/
+		    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+		    			 roleActionsList.add(Long.parseLong(s));
 		        	 }
 		        	 
 		        	 roleActionsList.retainAll(tabActionsIds);
@@ -1798,7 +1858,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional
-	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates)
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList)
 			throws Exception {
 		
 		
@@ -1810,15 +1870,20 @@ public class UserDaoImpl implements UserDao {
 		Query queryObj = null;
 		List<User> usersList = null;
 		StringBuilder query1 = new StringBuilder("");
+		StringBuilder query2 = new StringBuilder("");
 		String globalAccessQuery = "";
 		String searchQuery = "";
 		int totalCount = 0;
+		String subQueryTeam = "";
 		String sortingQry = "";
 		
 		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
 			
 			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
 				searchQuery = " AND U.FIRST_NAME LIKE '%" + userDTO.getSearchValue() + "%' OR U.LAST_NAME LIKE '%" + userDTO.getSearchValue() + "%'";
+			}
+			if(teamsList.size()>0 && !teamsList.isEmpty()){
+			subQueryTeam = " AND UR.USER_ID IN (SELECT TM.MEMBER_USER_ID FROM TEAM_MEMBERS TM WHERE TM.TEAM_ID IN (:teamsList) and TM.STATUS = '1' )";
 			}
 			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
 				sortingQry = " ORDER BY U.FIRST_NAME"+" "+userDTO.getSortOrder();
@@ -1839,6 +1904,7 @@ public class UserDaoImpl implements UserDao {
 						+ " UR.USER_ID = U.ID AND "
 					    + " UR.USER_STATE = 'ACTIVE' "
 						+searchQuery
+						+subQueryTeam
 						+ " AND  OL.ORG_ID = :orgId"
 					    + " GROUP BY UR.USER_ID"
 					    +sortingQry;
@@ -1872,6 +1938,7 @@ public class UserDaoImpl implements UserDao {
 					    + " OL.ID = UR.ORG_LOCATIONS_ID AND"
 					    + " UR.USER_STATE = 'ACTIVE' "
 						+searchQuery
+						+subQueryTeam
 						+ " AND  OL.ORG_ID = :orgId"
 					    +sortingQry;
 			
@@ -1901,12 +1968,16 @@ public class UserDaoImpl implements UserDao {
 							+ " UR.USER_ID = U.ID AND "
 						    + " UR.USER_STATE = 'ACTIVE' "
 							+searchQuery
-						    + " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
+							+subQueryTeam
+							+ " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
 						    + " GROUP BY UR.USER_ID"
 						    +sortingQry;
 				
 					queryObj = session.createSQLQuery(query);
 					queryObj.setParameter("orgLocationId", orgLocationId);
+					if(teamsList.size()>0 && !teamsList.isEmpty()){
+					queryObj.setParameterList("teamsList", teamsList);
+					}
 					queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
 					queryObj.setFirstResult(userDTO.getStart());
 					queryObj.setMaxResults(userDTO.getLength());
@@ -1930,11 +2001,15 @@ public class UserDaoImpl implements UserDao {
 							+ " WHERE UR.USER_ID = U.ID AND "
 						    + " UR.USER_STATE = 'ACTIVE' "
 							+searchQuery
+							+subQueryTeam
 						    + " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
 						    +sortingQry;
 				
 				Query countqueryString = session.createSQLQuery(countQuery);
 				countqueryString.setParameter("orgLocationId", orgLocationId);
+				if(teamsList.size()>0 && !teamsList.isEmpty()){
+				countqueryString.setParameterList("teamsList", teamsList);
+				}
 				BigInteger filterCount1 =  (BigInteger) countqueryString.uniqueResult();
 				filterCount = filterCount1.intValue();
 				totalCount = filterCount1.intValue();
@@ -1946,6 +2021,12 @@ public class UserDaoImpl implements UserDao {
 
 			
 		}else {
+			
+			if(teamsList != null && teamsList.isEmpty()){
+				teamsList.add(0l);
+			}
+			
+			String subQuery = " and ((:varZero  IN (:teamsList)) OR (:varZero NOT IN (:teamsList) and tm.teamId.id IN (:teamsList))) ";
 			
 			if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
 				globalAccessQuery = " and userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
@@ -1959,38 +2040,33 @@ public class UserDaoImpl implements UserDao {
 				.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ");
 							
 				}
-			
-			
 			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
 					sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
 			}
 			
 			query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+globalAccessQuery+" ) "
-					+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId))";
+					+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId  "+subQuery+"))";
+			
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
 			}else{
-				 queryObj = session.createQuery(query + query1.toString()+" "+sortingQry+" ");
+				 queryObj = session.createQuery(query +query1.toString()+" "+sortingQry);
 			}
 			
-			queryObj.setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
-			
+				queryObj.setLong("orgLocationId", orgLocationId).setLong("userId", userId).setParameterList("teamsList", teamsList).setLong("varZero", 0).list();
+	
 			
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 				filterCount = countlist.iterator().next().intValue();
 			}else {
-				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("varZero", 0).setParameterList("teamsList", teamsList).list();
 				filterCount = countlist.iterator().next().intValue();
 			}
 			queryObj.setFirstResult(userDTO.getStart());
 			queryObj.setMaxResults(userDTO.getLength());
 			usersList = queryObj.list();
 		}
-		
-		
-		
-		
 		
 		if (userDTO != null) {
 			if(countlist != null && !countlist.isEmpty()) {
@@ -2051,8 +2127,26 @@ public class UserDaoImpl implements UserDao {
 					}
 				}
 				
-				List<RecruiterReportAssociateCountView> RecruiterReportAssociateList = requirementService.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
-				if(RecruiterReportAssociateList != null && !RecruiterReportAssociateList.isEmpty()) {
+				//List<RecruiterReportAssociateCountView> RecruiterReportAssociateList = requirementService.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
+				List<RecruiterRrportDTO> recruiterReportAssociateList1 = requirementService.getAssociateCountsCreatedUserListByLocation(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
+				//Map<Long,List<Long>> requirementMap = new HashMap<Long,List<Long>>();
+				UserDTO userDTO1 = null;
+				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
+					
+					userDTO1 = associatesListMap.get(reportDTO.getManagerUserId());
+					if(userDTO1 != null){
+						userDTO1.setUserRequirementsCount(userDTO1.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO1.getUserRequirementsCount().add(BigDecimal.ONE) );
+					}
+					userDTO1 = associatesListMap.get(reportDTO.getAssignedUserId());
+					if(userDTO1 != null){
+						userDTO1.setUserRequirementsCount(userDTO1.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO1.getUserRequirementsCount().add(BigDecimal.ONE) );
+					}
+				}
+				
+				
+				
+				
+			/*if(RecruiterReportAssociateList != null && !RecruiterReportAssociateList.isEmpty()) {
 					for(RecruiterReportAssociateCountView associateReportView : RecruiterReportAssociateList) {
 						UserDTO userDTO = associatesListMap.get(associateReportView.getAssociateUserId());
 						if(associateReportView.getJobCount() != null) {
@@ -2060,7 +2154,7 @@ public class UserDaoImpl implements UserDao {
 						}
 						
 					}
-				}
+				}*/
 				
 				List<RecruiterReportView> recruiterReportViewList = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
 				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
@@ -2071,7 +2165,9 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserSubmittedApplicantsCount(recuiterReportView.getApplicantSubmittedClientCount());
 						userDTO.setUserOfferedApplicantsCount(recuiterReportView.getApplicantOfferMadeCount());
 						userDTO.setUserRejectedApplicantsCount(recuiterReportView.getApplicantRejectedCount());
+						userDTO.setUserInterviewedApplicantsCount(recuiterReportView.getApplicantInterviewCount());
 						userDTO.setUserApplicantsBackOutCount(recuiterReportView.getApplicantBackOutCount());
+						userDTO.setUserApplicantsJoinedCount(recuiterReportView.getApplicantJoinedCount());
 					}
 					
 				}
@@ -2080,16 +2176,6 @@ public class UserDaoImpl implements UserDao {
 			}
 		}
 		return usersDTOList;
-	}
-
-	@Override
-	@Transactional
-	public List<User> getUsersByEmailList(List<String> userEmail,OrgLocations orgLocation)
-	{
-		 Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationId and userRole.user.email IN (:emailList)) ORDER BY user.id DESC";
-	     List<User> usersList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).setParameterList("emailList", userEmail).list();
-	     return usersList;
 	}
 
 	@Override
@@ -2135,5 +2221,5 @@ public class UserDaoImpl implements UserDao {
 		return -1;
 	}
 	
-	
+
 }

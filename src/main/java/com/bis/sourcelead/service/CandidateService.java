@@ -210,4 +210,8 @@ public interface CandidateService {
 	 public ResponseList<SubmissionCandidateListView> getSubmissionCandidateListView(CandidateDTO candidateDTO,OrgLocations orgLocations) throws Exception;
 	 
 	 public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception;
+	 
+	 public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,Long requirementId,String skills,String candidateDetails) throws Exception;
+	 
+	 public void saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception;
 }

@@ -139,10 +139,11 @@ public class RequirementListController {
 			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
 			}
+			if(countries!= null && countries.getName()!= null) {
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);
 		}
-	    
+	}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("viewTab",viewTab);
 		model.setViewName("requirement/requirementList");

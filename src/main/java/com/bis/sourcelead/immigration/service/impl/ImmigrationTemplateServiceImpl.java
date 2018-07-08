@@ -106,6 +106,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             if(tempObj.getId() != null){
             	immigrationTemplateDocs = new ImmigrationTemplateDocs();
             	immigrationTemplateDocs.setId(tempObj.getId());
+            	immigrationTemplateDocs.setDocumentCategory(tempObj.getDocumentCategory());
             }else{
             	immigrationTemplateDocs = new ImmigrationTemplateDocs();
             	 immigrationTemplateDocs.setCreatedDate(latestDate);
@@ -114,9 +115,13 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             immigrationTemplateDocs.setImmigrationTempId(immiTemplate);
             immigrationTemplateDocs.setUpdatedDate(latestDate);
             immigrationTemplateDocs.setUpdatedBy(user);
+            immigrationTemplateDocs.setDocumentCategory(tempObj.getDocumentCategory());
+            
             LookUpData documentTypeId = new LookUpData();
+           
             documentTypeId.setId(tempObj.getDocumentType());
             immigrationTemplateDocs.setDocumentType(documentTypeId);
+            
             immigrationTemplateDocs.setDescription(tempObj.getDescription());
             immigrationTemplateDocs.setDocumentOtherType(tempObj.getOtherType());
             if(!StringUtils.isEmpty(tempObj.getOtherType())){ // if other the value is not empty overriding the description value.
@@ -238,6 +243,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             immigrationTemplateForms.setImmigrationTempId(immiTemplate);
             immigrationTemplateForms.setFormName(tempObj.getFormName());
             immigrationTemplateForms.setDescription(tempObj.getFormDescription());
+            immigrationTemplateForms.setFormCategory(tempObj.getFormCategory());
             if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
                 immigrationTemplateForms.setIsRequired(tempObj.getIsRequired());
             } else {

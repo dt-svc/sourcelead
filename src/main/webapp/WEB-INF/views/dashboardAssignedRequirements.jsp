@@ -17,7 +17,7 @@
         
         <div class="project_side_wrap_inn_tabs">
       	    <div id="resourceRequestsDivLoading"></div>
-		    <ul class="project-tabs-menu">
+		    <ul class="project-tabs-menu tabnewStyles">
 		        <li class="current" id="assigned"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementList(false, -1);">Assigned</a></li>
 		        <li id="drive"><a data-toggle="tab" href="javascript:void(0)"  onclick="requirementList(true, -1);">Daily Drives</a></li>
 		    </ul>
@@ -90,7 +90,7 @@ function requirementList(isWalkIn, walkInDay){
                  if(json != null && json != 'undefined' && json != "" && json != '[]'){
                 	 $("#requirementList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='99.9%' >"; 
+	                	 result = result +"<table id='requirementPagination' class='display mt10' cellspacing='0' width='99.9%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>Actions</th>";
@@ -267,15 +267,15 @@ function requirementList(isWalkIn, walkInDay){
 	                 		$("#requirementListActions").append(getDynamicDayActionsForWalkInJobs(parseInt(data.responseMessage.split(":")[1]) - 1, data.responseMessage.split(":")[2], parseInt(data.responseMessage.split(":")[1]) + 1));
                  		}
                  	}
-                 	$("#requirementLoading").hide();
-                 	$("#requirementList").removeAttr("style");
-	                if(isWalkIn) {
-	        	    	$("#assigned").removeClass("current");
-	        	    	$("#drive").addClass("current"); 
-	                } else {
-	        	    	$("#assigned").addClass("current");
-	        	    	$("#drive").removeClass("current");
-	                }
+                 	 $("#requirementLoading").hide();
+                 	 $("#requirementList").removeAttr("style");
+	                 if(isWalkIn) {
+	        	    	 $("#assigned").removeClass("current");
+	        	    	 $("#drive").addClass("current"); 
+	                 } else {
+	        	    	 $("#assigned").addClass("current");
+	        	    	 $("#drive").removeClass("current");
+	                 }
 		    	} else if (data.indexOf('Sign In') !== -1) {
 		    		location.replace(sourceleadUrl);
 		    	} else {
@@ -290,9 +290,9 @@ function requirementList(isWalkIn, walkInDay){
  <script>
 function getDynamicDayActionsForWalkInJobs(prevDay, selectedDay, nextDay){
 	var text="<div class='walk_in_days pull-right mb10 mt10'>";
-	 text += "<a  class='btn btn-default pull-left mr' href='javascript:void(0)' onclick='requirementList(true," + prevDay + ")'>&lt;&lt;</a>";
+	 text += "<a  class='btn btn-default pull-left mr btn-sm' href='javascript:void(0)' onclick='requirementList(true," + prevDay + ")'>&lt;&lt;</a>";
 	 text += "<div class='paginate_button pull-left'>" + selectedDay + "</div>";
-	 text += "<a  class='btn btn-default pull-left ml' href='javascript:void(0)' onclick='requirementList(true," + nextDay + ")'>&gt;&gt;</a>";
+	 text += "<a  class='btn btn-default pull-left ml btn-sm' href='javascript:void(0)' onclick='requirementList(true," + nextDay + ")'>&gt;&gt;</a>";
 	 text += "</div>";
 	 return text;
 }

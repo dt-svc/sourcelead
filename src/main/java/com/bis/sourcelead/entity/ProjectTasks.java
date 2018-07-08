@@ -496,9 +496,9 @@ public class ProjectTasks implements Serializable{
 		if(projectAssignTask != null && !projectAssignTask.isEmpty()) {
 			for(ProjectAssignTask assignedTask: projectAssignTask) {
 				if(assignedTask.getProjectMemberId() != null && 
-						assignedTask.getProjectMemberId().getEmployee() != null && 
-						assignedTask.getProjectMemberId().getEmployee().getUser() != null) {
-					usersList.add(assignedTask.getProjectMemberId().getEmployee().getUser().getFullName());
+						assignedTask.getProjectMemberId().getProjectMemberCandidteId() != null && 
+						assignedTask.getProjectMemberId().getProjectMemberCandidteId() != null) {
+					usersList.add(assignedTask.getProjectMemberId().getProjectMemberCandidteId().getFullName());
 				}
 			}
 		}

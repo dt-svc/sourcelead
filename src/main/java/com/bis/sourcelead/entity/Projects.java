@@ -58,7 +58,7 @@ public class Projects implements Serializable{
     @Column(name = "PROJECT_NAME")
     private String projectName;
  
-    @Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
+    @Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
     private String description;
  
     @Column(name = "WEEK_START_DATE")
@@ -138,6 +138,13 @@ public class Projects implements Serializable{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SHARED_LOCATION_ID")
+    private OrgLocations sharedLocationId;
+    
+    @Column(name = "IS_PROJECT_SHARED")
+    private String isProjectShared;
 	
     @Column(name = "STATUS")
     private String status;
@@ -217,7 +224,11 @@ public class Projects implements Serializable{
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectClients> projectClients;
-  
+    
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<ProjectClients> sharedClientProjectClients;
 
     
     @OneToMany(mappedBy="projects")
@@ -346,6 +357,10 @@ public class Projects implements Serializable{
     @Transient
    	@JsonProperty
     private String projectbudgetCurrency;
+    
+    @Transient
+   	@JsonProperty
+    private Long sharedClientOrgLocationId;
     
     @Transient
     @JsonProperty
@@ -609,8 +624,14 @@ public class Projects implements Serializable{
 
 	public String getEndDateStr() {
 		if(endDate != null){
-			SimpleDateFormat dateFormat = orgLocationsId.getLocFullFormDateFormatter();
-			endDateStr = dateFormat.format(endDate);
+			SimpleDateFormat dateFormat = null;
+			if(orgLocationsId != null && orgLocationsId.getDateFormat() != null && StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
+				dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
+			}
+			else{
+				dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+			}
+			endDateStr = dateFormat.format(endDate);	
 		}
 		return endDateStr;
 	}
@@ -1060,5 +1081,39 @@ public class Projects implements Serializable{
 	public void setIsTaskCommentsRequired(String isTaskCommentsRequired) {
 		this.isTaskCommentsRequired = isTaskCommentsRequired;
 	}
+
+	public OrgLocations getSharedLocationId() {
+		return sharedLocationId;
+	}
+
+	public void setSharedLocationId(OrgLocations sharedLocationId) {
+		this.sharedLocationId = sharedLocationId;
+	}
+
+	public String getIsProjectShared() {
+		return isProjectShared;
+	}
+
+	public void setIsProjectShared(String isProjectShared) {
+		this.isProjectShared = isProjectShared;
+	}
+
+	public Set<ProjectClients> getSharedClientProjectClients() {
+		return sharedClientProjectClients;
+	}
+
+	public void setSharedClientProjectClients(Set<ProjectClients> sharedClientProjectClients) {
+		this.sharedClientProjectClients = sharedClientProjectClients;
+	}
+
+	public Long getSharedClientOrgLocationId() {
+		return sharedClientOrgLocationId;
+	}
+
+	public void setSharedClientOrgLocationId(Long sharedClientOrgLocationId) {
+		this.sharedClientOrgLocationId = sharedClientOrgLocationId;
+	}
+
+	
 	
 }

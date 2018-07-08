@@ -37,6 +37,7 @@ import com.bis.sourcelead.dto.EventsDTO;
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
@@ -512,20 +513,23 @@ public class DashboardRestController {
 					
 					Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
 		    		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
+		    		
+		    		
+		    		RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, loginOrgLocation, "ALL");
 					
-					int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
+					/*int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
 					int shortlistedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SHORTLISTED");
 					int submittedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SUBMITTED");
 					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "INTERVIEWED");
 					int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "OFFERED");
 					int joinedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "JOINED");
-					
-					requirement.setNoOfApplicants(String.valueOf(applicantsCount));
-					requirement.setNoOfShortlistedApplicants(String.valueOf(shortlistedCount));
-					requirement.setNoOfSubmittedApplicants(String.valueOf(submittedCount));
-					requirement.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
-					requirement.setNoOfOfferedApplicants(String.valueOf(offeredCount));
-					requirement.setNoOfJoinedApplicants(String.valueOf(joinedCount));
+					*/
+					requirement.setNoOfApplicants(String.valueOf(rsCount.getApplicantsCount()));
+					requirement.setNoOfShortlistedApplicants(String.valueOf(rsCount.getShortlistCount()));
+					requirement.setNoOfSubmittedApplicants(String.valueOf(rsCount.getSubmitToClientCount()));
+					requirement.setNoOfInterviewedApplicants(String.valueOf(rsCount.getInterviewCount()));
+					requirement.setNoOfOfferedApplicants(String.valueOf(rsCount.getOffersCount()));
+					requirement.setNoOfJoinedApplicants(String.valueOf(rsCount.getJoinedCount()));
 					
 					if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
 						List<Long> userId = new ArrayList<Long>();

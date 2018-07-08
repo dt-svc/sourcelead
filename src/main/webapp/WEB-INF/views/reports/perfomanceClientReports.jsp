@@ -16,9 +16,9 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Clients Reports</h2>
+        <h2>Client(s) Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Clients Reports</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Client(s) Report</div>
    </section>
     <div class="clearfix"></div>
     <div class="clearfix row mb">
@@ -82,7 +82,7 @@ $(document).ready(function(){
     </div>
     <div class="ReqRepHead clearfix">
       <div class="col-md-2 dropdown-select positionRelative col-md-offset-9">
-        <select class="form-control" id="dateFrequency" onchange="refreshWithNewFreq(); showCustomFields();">
+        <select class="form-control" id="dateFrequency" onchange="showCustomFields();">
           <option value="Last_7_days" selected>Last 7 days</option>
           <option value="Last_15_days">Last 15 days</option>
           <option value="1_month">1 month</option>
@@ -104,6 +104,10 @@ $(document).ready(function(){
         </div>
         <!-- Top Leave Takers Custom Date --> 
       </div>
+      
+       <div class="col-md-2" id = "RunDivId">
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="refreshWithNewFreq();">Run</button>
+		</div>
 <!--       <div class="col-md-1">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
           <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>

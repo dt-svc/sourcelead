@@ -4,39 +4,42 @@ CALL AlterTableAddColumn ('CANDIDATE_SKILLS','STATUS','VARCHAR(20) NULL AFTER `S
 
 
 
-INSERT INTO `ENTITY_TYPE` (`ID`, `ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('35', 'AcceptVendorInvitation', 'Notification');
-INSERT INTO `ENTITY_TYPE` (`ID`, `ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('36', 'AcceptClientInvitation', 'Notification');
-INSERT INTO `ENTITY_TYPE` (`ID`, `ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('37', 'AcceptVendorInvitation', 'Email');
-INSERT INTO `ENTITY_TYPE` (`ID`, `ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('38', 'AcceptClientInvitation', 'Email');
 
 
 
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('129', '35', 'vendorOrgName', '{{inviteVendor.vendorOrgName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('130', '36', 'clientOrgName', '{{inviteClient.clientOrgName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('131', '37', 'AcceptVendorInvitation', '{{inviteVendor.acceptVendorInvitation}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('132', '38', 'AcceptClientInvitation', '{{inviteClient.acceptClientInvitation}}');
 
 
 
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('133', '37', 'firstName', '{{inviteVendor.firstName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('134', '37', 'lastName', '{{inviteVendor.lastName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('135', '37', 'clientFirstName', '{{inviteVendor.clientFirstName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('136', '37', 'clientLastName', '{{inviteVendor.clientLastName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('137', '37', 'vendorOrgName', '{{inviteVendor.vendorOrgName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('138', '37', 'userName', '{{inviteVendor.userName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('139', '37', 'password', '{{inviteVendor.password}}');
+INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('AcceptVendorInvitation', 'Notification');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'vendorOrgName', '{{inviteVendor.vendorOrgName}}');
+
+INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('AcceptClientInvitation', 'Notification');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'clientOrgName', '{{inviteClient.clientOrgName}}');
+
+INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('AcceptVendorInvitation', 'Email');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'AcceptVendorInvitation', '{{inviteVendor.acceptVendorInvitation}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'firstName', '{{inviteVendor.firstName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'lastName', '{{inviteVendor.lastName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'clientFirstName', '{{inviteVendor.clientFirstName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'clientLastName', '{{inviteVendor.clientLastName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'vendorOrgName', '{{inviteVendor.vendorOrgName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'userName', '{{inviteVendor.userName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'password', '{{inviteVendor.password}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'acceptURL', '{{inviteVendor.acceptURL}}');
 
 
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('140', '38', 'firstName', '{{inviteClient.firstName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('141', '38', 'lastName', '{{inviteClient.lastName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('142', '38', 'vendorFirstName', '{{inviteClient.vendorFirstName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('143', '38', 'vendorLastName', '{{inviteClient.vendorLastName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('144', '38', 'clientOrgName', '{{inviteClient.clientOrgName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('145', '38', 'userName', '{{inviteClient.userName}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('146', '38', 'password', '{{inviteClient.password}}');
+INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('AcceptClientInvitation', 'Email');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'AcceptClientInvitation', '{{inviteClient.acceptClientInvitation}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'firstName', '{{inviteClient.firstName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'lastName', '{{inviteClient.lastName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'vendorFirstName', '{{inviteClient.vendorFirstName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'vendorLastName', '{{inviteClient.vendorLastName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'clientOrgName', '{{inviteClient.clientOrgName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'userName', '{{inviteClient.userName}}');
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'password', '{{inviteClient.password}}');
 
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('147', '37', 'acceptURL', '{{inviteVendor.acceptURL}}');
-INSERT INTO `CLASS_FIELD` (`ID`, `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('148', '28', 'acceptURL', '{{inviteClient.acceptURL}}');
+
+INSERT INTO `CLASS_FIELD` ( `ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ('28', 'acceptURL', '{{inviteClient.acceptURL}}');
 
 
 

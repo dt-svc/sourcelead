@@ -76,9 +76,9 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 		    }
 			 orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
-			if(orgLocation == null && addExpensesDTO.getLocationCode() != null ){
+			/*if(orgLocation == null && addExpensesDTO.getLocationCode() != null ){
 			 orgLocation = orgLocationService.getOrgLocationsByLocationCode(addExpensesDTO.getLocationCode());
-			}
+			}*/
 			
 		    HashSet<ExpensesEntries> expensesEntriesList = new HashSet<ExpensesEntries>(); 
 		    for(ExpensesEntriesDTO entryCategory:addExpensesDTO.getExpenseEntry()){
@@ -97,15 +97,7 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						entries.setExpensesCategoryId(ec);
 						
 						if(StringUtils.isNotBlank(entryCategory.getDateOccurred())){
-							/*Timezone timezone = null;
-							timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-							DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");*/
 							Date date = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),entryCategory.getDateOccurred());
-							/*String currentTimeStr = Constants.TZ_DF.format(date);  
-							String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
-							Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);*/
-							
-							
 							entries.setExpenseDate(date);
 						}
 						

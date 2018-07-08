@@ -48,7 +48,7 @@
 									<div class="form-icon">
 										<input type="text" class="form-control pull-left"
 											name="requestId" id="requestId" data-validation="required validate_Space validate_length length1-15 validate_int"
-											field-name="Project Id"> <i
+											field-name="Request Id"> <i
 											class="fa fa-refresh btn btn-default formic1"
 											title="Request Id" onclick='$("#requestId").val("");'></i>
 										<div class="clearfix"></div>
@@ -595,7 +595,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 				var startDateText = "";
 				var cell3 = row.insertCell(3);
 				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input" value="'+opt.startDateStr+'"  name="'+maxRowNum+'requestStartDate" >';
+				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input" value="'+opt.startDateStr+'"  name="associateResources['+maxRowNum+'].requestStartDate">';
 				startDateText = startDateText+'</div>';
 				cell3.innerHTML = startDateText;
 				
@@ -603,7 +603,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 				var endDateText = "";
 				var cell4 = row.insertCell(4);
 				endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input" value="'+opt.endDateStr+'"  name="'+maxRowNum+'requestEndDate" >';
+				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input" value="'+opt.endDateStr+'"   name="associateResources['+maxRowNum+'].requestEndDate" >';
 				endDateText = endDateText+'</div>';
 				cell4.innerHTML = endDateText;
 				

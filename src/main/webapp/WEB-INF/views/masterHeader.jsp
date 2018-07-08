@@ -417,7 +417,7 @@ function preventTabkey(e){
   </i>
     </a> </span>
     <nav class="header-nav navbar">
-    <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
+    <a class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
       <div class="search-area searchArea_mrgn">
            <form:form name ="search_form" id="search_form">
@@ -700,10 +700,10 @@ function preventTabkey(e){
 						  <li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
 						  
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
-						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configuration</a></li>
+						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-calendar" aria-hidden="true"></i>Leave Configuration</a></li>
 						  </sec:authorize>
 						  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-                                                    <li><a href="<c:url value="/app/job-boards" />"><i class="fa fa-key" aria-hidden="true"></i>Job Board Configuration</a></li>
+                                                    <li><a href="<c:url value="/app/job-boards" />"><i class="fa fa-briefcase" aria-hidden="true"></i>Job Board Configuration</a></li>
                                                  </sec:authorize>
 					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 					  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>

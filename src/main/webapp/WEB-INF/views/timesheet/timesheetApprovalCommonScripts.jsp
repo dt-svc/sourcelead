@@ -165,8 +165,13 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 </script>
 
 <script>
-function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
-	 var msg = $("#reject"+projectMemberId+"message").val(); 
+function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from,reason){
+	 var msg = ''; 
+	if(reason != null && reason != 'undefined' && reason != ''){
+		 msg = reason;
+	 }else {
+		 msg = $("#reject"+projectMemberId+"message").val();
+	 }
 	 var tableFor = $("#tableFor").val();
 	 var encodeMsg = msg;
 	 if(encodeMsg !== ""){
@@ -244,7 +249,8 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		}
 	}
 	var data = submissionIDs.toString().split(',');
-	for(var i=0; i<=data.length;i++){
+	if(data.length > 0){
+	for(var i=0; i<=data.length-1;i++){
 		var data2 = data[i].toString().split('!');
 		var projectMemberId = data2[0];
 		var startDate = data2[1];
@@ -286,6 +292,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		  });  
 		
 	}
+ }
 }
 </script>
 
@@ -316,7 +323,8 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 		}
 	}
 	var dataOne = submissionIDs.toString().split(',');
-	for(var i=0; i<=dataOne.length;i++){
+	if(dataOne.length > 0){
+	for(var i=0; i<=dataOne.length-1;i++){
 		var dataTwo = dataOne[i].split('!');
 		var projectMemberId = dataTwo[0];
 		var startDate = dataTwo[1];
@@ -374,6 +382,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 			}
 		}
 	}
+  }
 }
 </script>
 <script>

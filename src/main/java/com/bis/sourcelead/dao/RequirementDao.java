@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -29,6 +30,8 @@ public interface RequirementDao {
 	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
+	
+	public Requirement getRequirementByRequirementIdAndSearchValue(Long requirementId,String searchValue) throws Exception;
 	
 	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String url) throws Exception;
 	
@@ -182,6 +185,8 @@ public interface RequirementDao {
     public List<RequirementDTO> getAllManagerRequirementForJobSharing(Date[] searchDates,Long managerUserId,Long orgLocationId) throws Exception;
     
     List<RecruiterReportAssociateCountView> getAssociateCountsCreatedUserList(Long orgLocationId, List<Long> userIdsList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
+    
+    List<RecruiterRrportDTO> getAssociateCountsCreatedUserListByLocation(Long orgLocationId,List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)throws Exception ;
     
     public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,Long userId,OrgLocations orgLocations) throws Exception;
 

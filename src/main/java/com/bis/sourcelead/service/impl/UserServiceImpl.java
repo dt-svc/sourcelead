@@ -1,10 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +12,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
@@ -73,11 +69,13 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
@@ -201,6 +199,8 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	EmailScenarioConfigurationService emailScenarioConfigurationService;
 
+	@Autowired
+	private AssociateBalanceLeaveService associateBalanceLeaveService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -225,6 +225,7 @@ public class UserServiceImpl implements UserService {
       *  
       *  @return 
       */
+	@SuppressWarnings("unused")
 	@Override
 	public User storeUser(AddUserDTO addUserDTO,CandidateDTO candidateDTO,User loginuser,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg) throws Exception {
 	   User user1 = null;
@@ -232,6 +233,7 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
+	   boolean associateBalance = false;
 	   user = userDao.findByUserName(addUserDTO.getEmail());
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
@@ -248,14 +250,14 @@ public class UserServiceImpl implements UserService {
 			  user.setMobilePhone(addUserDTO.getPhoneNumber());
 		  }
 		  
-		  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
-			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
-		  }
+			  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+				  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+			  }
 		  
-		  if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
+		     if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
 		    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
-		    }
-		  if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
+		     }
+		     if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
 			  user.setMiddelName(addUserDTO.getMiddleName());
 			  }else{
 			  user.setMiddelName(null);
@@ -291,7 +293,7 @@ public class UserServiceImpl implements UserService {
  		  user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
  		  user.setUrlSentTime(new Date());
  		  user.setIsVerified(Constants.NO);
- 		  
+ 		 associateBalance  = true;
 		}else if(isUserActive == false){
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
@@ -470,6 +472,16 @@ public class UserServiceImpl implements UserService {
 				sendEmail(user,loginuser,password,orgLocations.getId());
 			}
 			
+			
+			/**
+			 * @author Laxman
+			 * Update the leaveTypes
+			 */
+			if(associateBalance == true) {
+			     associateBalanceLeaveService.addAssociateLeaveType(user1,orgLocations.getId(),employee,userRole);
+			}
+			
+			
 			/**
 			 * This method is used to newly added admin as a level2 manager for all existing projectmembers
 			 * @author: Naresh Bolisetty
@@ -628,6 +640,12 @@ public class UserServiceImpl implements UserService {
 			User resourceManager = new User();
 			resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
 			userRole.setResourceManager(resourceManager);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getShiftId())) {
+			Shift shift = new Shift();
+			shift.setId(Long.parseLong(addUserDTO.getShiftId()));
+			userRole.setShift(shift);
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
@@ -1654,22 +1672,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates)
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList)
 			throws Exception {
-		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates);
+		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates,teamsList);
 	}
 
-	@Override
-	public List<User> getUsersByEmailList(List<String> userEmail,OrgLocations orgLocation)
-	{
-		return userDao.getUsersByEmailList(userEmail,orgLocation);
-	}
 
 	@Override
 	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId) {
 		try {
 			DashboardItems dashboardItems = userDao.getDashboardItemsByUserId(loginUserId, orgLocationId);
-			
 			if (dashboardItems != null) {
 				DashboardItemsDTO dashboardItemsDTO = new DashboardItemsDTO();
 				
@@ -1728,13 +1740,4 @@ public class UserServiceImpl implements UserService {
 		return response;
 	}
 
-	@Override
-	public List<User> getUsersByEmailList(List<String> userEmail) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
-	
-	
 }
