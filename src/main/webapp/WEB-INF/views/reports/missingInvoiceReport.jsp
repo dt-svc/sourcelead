@@ -114,6 +114,7 @@ $(document).ready(function(){
   
   <script>
 function missingInvoiceReportData(){
+	  $("#total").html("0.00"); // reset the total value when applied filters.
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";

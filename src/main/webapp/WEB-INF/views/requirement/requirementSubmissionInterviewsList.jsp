@@ -32,7 +32,7 @@
 					        <tr>
 								<td>
 									<div class="text-left tblminwidth-150">
-									<i class="fa fa-plus paddingRight cursorPointer mr5 knowNext"></i>${opt.interviewType}
+									<i class="fa fa-plus paddingRight cursorPointer mr5 knowNext" id="${opt.id}InterviewRatingsClickDiv" onclick="getInterviewRatings(${opt.id});"></i>${opt.interviewType}
 									</div>
 								</td>
 								<td>
@@ -76,49 +76,20 @@
 								</div>
 								</td>
 								<td>
-									<div class="tblminwidth-30" id="${opt.id}saveInterviewDiv"><a class="fa fa-floppy-o mt10" onclick="saveInterviewStatus(${opt.id})"></a></div>
+									<c:if test="${empty opt.interviewPhase}">
+										<div class="tblminwidth-30" id="${opt.id}saveInterviewDiv"><a class="fa fa-floppy-o mt10" onclick="saveInterviewStatus(${opt.id})"></a></div>
+									</c:if>
+									<c:if test="${not empty opt.interviewPhase}">
+										<div class="tblminwidth-30" id="${opt.id}saveInterviewDiv"><a class="fa fa-check mt10" ></a></div>
+									</c:if>
 								</td>
 							</tr>
 							<tr>
 								<td colspan="6">
-									<ul class="list-unstyled clearfix mt5 mb5 row">
-										<li class="col-md-6 mb">
-												<p class="dotdot-class inlineBlock text-left pull-left">Inerviewer 1</p>
-												<ul class="pull-left list-inline list-unstyled star-rating starating-li ml">
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star"></i></li>
-												</ul>
-										 </li>
-										<li class="col-md-6 mb">
-												<p class="dotdot-class inlineBlock text-left pull-left">Inerviewer 1</p>
-												<ul class="pull-left list-inline list-unstyled star-rating starating-li ml">
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star"></i></li>
-												</ul>
-										 </li>
-										<li class="col-md-6 mb">
-												<p class="dotdot-class inlineBlock text-left pull-left">Inerviewer 1</p>
-												<ul class="pull-left list-inline list-unstyled star-rating starating-li ml">
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star acivestar-rating"></i></li>
-													<li><i class="fa fa-star"></i></li>
-												</ul>
-										 </li>
-									</ul>
+									<ul class="list-unstyled clearfix mt5 mb5 row" id="${opt.id}interviewRatingDiv"> </ul>
 								</td>
 							</tr>
 					    </c:forEach>
-						
-						
-						
 					</tbody>
   				</table>
   			</div>
@@ -126,10 +97,10 @@
   	</div>
   </div>
 <script>
-/* $(".knowNext").click(function() {
+$(".knowNext").click(function() {
 	$(this).closest("tr").next().slideToggle();
 	$(this).toggleClass("fa-plus fa-minus");
-}); */
+});
 
 function closeInterviewlistpop(){
 	$(".comMask, .modal-POP").fadeOut();
@@ -172,6 +143,52 @@ function saveInterviewStatus(id){
 function enableSaveIcon(id){
 	$("#"+id+"saveInterviewDiv").empty();
 	$("#"+id+"saveInterviewDiv").append('<a class="fa fa-floppy-o mt10" onclick="saveInterviewStatus('+id+')"></a>');
+}
+
+function getInterviewRatings(interviewId){
+	if($("#"+interviewId+"InterviewRatingsClickDiv").hasClass("fa-plus")){
+		$.ajax({
+			type: "POST",
+		    url: sourceleadUrl+"/getInterviewerAndRatingListByInterviewId?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId, 
+		    success: function(result) {
+				if (result.response === "SESSION_TIMEDOUT") {
+	  				location.replace(sourceleadUrl);
+	           } else if (result.response === "AWKWARD") {
+	               location.href = "/errorPage";
+	           } else if (result.response === "SUCCESS") {
+	        	   var list = result.data;
+	        	   var opt = '';
+	        	   for (var i=0; i<list.length; i++){
+	        		   opt = opt + '<li class="col-md-6 mb">';
+	        		   opt = opt + '	<p class="dotdot-class inlineBlock text-left pull-left">'+list[i].interviewerName+'</p>';
+	        		   opt = opt + '	<ul class="pull-left list-inline list-unstyled star-rating starating-li ml">';
+		        		var details = eval(list[i].interviewerRating);
+		        		   $.each(details, function( k, v ) {
+		    	    		   var value = '';
+		    	    		   if(v['label'].trim() === "Rating"){
+		    	    			   value = v['value'];
+		    	    			   for (var j=0; j<5; j++){
+		    	    				   var active = '';
+		    	    				   if(value > j){
+		    	    					   active = 'acivestar-rating';
+		    	    				   }
+		    	    				   opt = opt + '<li><i class="fa fa-star '+active+'"></i></li>';
+		    	    			   }
+		    	    		   }
+		    	    	   });
+	        		   opt = opt + '	</ul>';
+	        		   opt = opt + '</li>';
+					}
+	        	   $("#"+interviewId+"interviewRatingDiv").empty();
+	        	   $("#"+interviewId+"interviewRatingDiv").append(opt);
+	           } else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+			   } else {
+	               showError("Operation failed, please try again");
+	           }
+		    },
+		});
+	}
 }
 
 </script>

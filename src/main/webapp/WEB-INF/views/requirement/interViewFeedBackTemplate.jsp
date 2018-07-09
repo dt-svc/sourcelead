@@ -725,6 +725,16 @@ function generateTemplateForm(sourceleadUrl,templateId) {
     
 }
 
-
+function validateRating(){
+	 var rating =   $("input[name=Rating]").val();
+	 alert("aa"+rating);
+	 rating = Number(rating)
+	 if(rating < 0 || rating > 5){
+  	  	$('.jquery_form_error_message').remove();
+		$("input[name=Rating]").after("<p class='jquery_form_error_message'>"+rating+" is invalid</span>");
+	}else{
+		$('.jquery_form_error_message').remove();
+	}
+}
 </script>
 <jsp:include page="../masterFooter.jsp" />	
