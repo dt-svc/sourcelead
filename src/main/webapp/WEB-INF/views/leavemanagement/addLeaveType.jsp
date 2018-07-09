@@ -373,7 +373,7 @@
 							</div>
 							</label>
 							<div class="col-md-3" id="errorNoOfdaysToCarryforward">
-								<input type="text" id="noOfdaysToCarryforward" name="noOfdaysToCarryforward" field-name="No Of Days To CarryForward" placeholder="Enter no of Days" class="form-control" value="${leaveType.maxDaysToCarryforward}">
+								<input type="text" id="noOfdaysToCarryforward" name="noOfdaysToCarryforward" field-name="No Of Days To CarryForward" onblur="validateNoDays();" placeholder="Enter no of Days" class="form-control" value="${leaveType.maxDaysToCarryforward}">
 							</div>
 						</div>
 						
@@ -1455,11 +1455,21 @@ function leavepolicyDescription(){
 	}
 	
 	function carryForwardYesUsers(){
-		$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
+// 		$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
 		$("#noOfDaysDiv").show();
 		$("#noOfdaysToCarryforward").val('');
 	}
 	
+	function validateNoDays(){
+		var val = $('#noOfdaysToCarryforward').val();
+		if(val == ''){
+			$('#noOfdaysToCarryforward').removeAttr('data-validation', "validate_int");
+			$('#errorNoOfdaysToCarryforward').find('p.jquery_form_error_message').remove();
+		}else{
+			$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
+		}
+		
+	}
 	//Select All Employees And Experienced
 	function hideExperienced() {
 		
