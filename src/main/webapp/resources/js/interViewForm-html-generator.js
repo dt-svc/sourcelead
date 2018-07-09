@@ -257,12 +257,7 @@ function generateInterviewFeedbackForm(sourceleadUrl,templateId) {
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 }
                 
-            	 if(label == 'Rating'){
-        			 datavalidation = 'data-validation="required validate_Space validate_length length1-2 validate_int"';
-        			 onBlurEvent = 'onblur="validateRating();"';
-        			 placeHolder = 'placeholder="Enter rating between 0 to 5"';
-        		 }
-
+            	 
                  switch (fieldType) {
 
                      case 'text':

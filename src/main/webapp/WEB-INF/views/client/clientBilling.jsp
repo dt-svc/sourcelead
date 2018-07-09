@@ -707,7 +707,7 @@ function clientInvoicePagination(){
 
 <!-- modal pop -->
 <div class="side_mask" style="display: none"></div>
-<div class="modal modal_invoice" style="display: none;">
+<div class="modal modal_invoice datatable_filter" style="display: none;">
    <div id="linkPopup" ></div>
 </div>
 <!-- modal pop -->
@@ -1190,7 +1190,7 @@ function linkInvoice(invoiceUUID,totalAmount){
 			result = result +'      <div class="modal-body clearfix">                                                                                       ';
 			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
 			result = result +'      <div class="candidate_wrap_table">                                                                                      ';
-			result = result +'      <table>                                                                                                                 ';
+			result = result +'      <table id = "linkInvoiceClientPaginationId">                                                                                                                 ';
 			result = result +'        <thead>                                                                                                               ';
 			result = result +'          <tr>                                                                                                                ';
 			result = result +'            <th>&nbsp;                                                                                                        ';
@@ -1257,10 +1257,34 @@ function linkInvoice(invoiceUUID,totalAmount){
 		
 			$("#linkPopup").empty();
 			$("#linkPopup").append(result);
+			LinkInvoiceClientPagination();
 			$('.modal.modal_invoice').fadeIn(200);
 	        $('.side_mask').fadeIn(200);
 		},
 	 }); 
+}
+</script>
+
+<script>
+function LinkInvoiceClientPagination(){  
+	// $.fn.dataTable.moment( 'DD-MM-YYYY' );
+    $('#linkInvoiceClientPaginationId').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"aaSorting": [[3,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $("#linkInvoiceClientPaginationId").wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 

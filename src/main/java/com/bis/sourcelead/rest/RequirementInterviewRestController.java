@@ -713,7 +713,7 @@ public class RequirementInterviewRestController {
 			ModelAndView model = new ModelAndView();
 			try {
 				model.addObject("candidate", candidateService.getCandidateByCandidateId(candidateId));
-				model.addObject("interviewsList", requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId()));
+				model.addObject("interviewsList", requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations));
 				model.setViewName("requirement/requirementSubmissionInterviewsList");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 			}catch (Exception e) {

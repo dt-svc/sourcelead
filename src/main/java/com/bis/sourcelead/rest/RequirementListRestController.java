@@ -1463,7 +1463,7 @@ public class RequirementListRestController {
 						}
 						
 						RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-						List<RequirementInterview> numberOfInterviews = requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(), loginOrgLocation.getId());
+						List<RequirementInterview> numberOfInterviews = requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(), loginOrgLocation);
 						List<RequirementOffers> requirementOffersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmission.getId(), loginOrgLocation.getId());
 						if (Constants.All_APPLICANTS.equalsIgnoreCase(submissionType)) {
 							submissionType = "SUBMISSION";

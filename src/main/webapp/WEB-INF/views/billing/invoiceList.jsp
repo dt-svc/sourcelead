@@ -854,7 +854,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	 	'</sec:authorize>'
 	 	
 	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
-	     result = result+'<li><a target="_blank" href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
+	     result = result+'<li><a download href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 	     '</sec:authorize>'
 	     if(invoiceStatus != 'DRAFT')
 	     {
