@@ -247,6 +247,11 @@ public class ProjectsRestController {
 				   		    	ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
 				   		    	if(StringUtils.isNotBlank(projectClients.getIsProjectShared()) && projectClients.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 				   		    		projectMembersService.saveAssignedSharedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    	}else {
+				   		    		OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
+				   		    		if(StringUtils.isNotBlank(clientOrgLocation.getOrg().getOrgType()) && clientOrgLocation.getOrg().getOrgType().equalsIgnoreCase("Guest")) {
+				   		    			projectMembersService.saveAssignedSharedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    		}
 				   		    	}
 				   		    }else {
 				   		        projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
