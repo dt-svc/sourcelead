@@ -534,6 +534,8 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
             	 
             	 var datavalidation = '';	
             	 var novalidation = '';
+            	 var onBlurEvent = '';
+            	 var placeHolder = '';
             	 
         		 if(required == 1){
         			 
@@ -559,7 +561,11 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
             	 else{
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 }
-                
+            	 if(label == 'Rating'){
+            		 datavalidation = 'data-validation="required validate_Space validate_length length1-2 validate_int"';
+        			 onBlurEvent = 'onblur="validateRating();"';
+        			 placeHolder = 'placeholder="Enter rating between 0 to 5"';
+        		 }
 
                  switch (fieldType) {
 
@@ -567,7 +573,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation+' '+onBlurEvent+' '+placeHolder+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':
@@ -796,6 +802,18 @@ function generateViewpublicpage(sourceleadUrl,templateId) {
     });
     
     
+}
+
+function validateRating(){
+	 var rating =   $("input[name=Rating]").val();
+	 alert("bbaa"+rating);
+	 rating = Number(rating)
+	 if(rating < 0 || rating > 5){
+ 	  	$('.jquery_form_error_message').remove();
+		$("input[name=Rating]").after("<p class='jquery_form_error_message'>"+rating+" is invalid</span>");
+	}else{
+		$('.jquery_form_error_message').remove();
+	}
 }
 </script>
 </body>

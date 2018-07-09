@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -125,6 +126,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Transient
 	private String interviewersList;
+	
+	@Transient
+	@JsonProperty
+	private List<InterviewFeedbackTemplate> interviewFeedbackTemplateList;
 	
 	@Transient
 	@JsonProperty
@@ -373,6 +378,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setInterviewersList(String interviewersList) {
 		this.interviewersList = interviewersList;
+	}
+
+	public List<InterviewFeedbackTemplate> getInterviewFeedbackTemplateList() {
+		return interviewFeedbackTemplateList;
+	}
+
+	public void setInterviewFeedbackTemplateList(List<InterviewFeedbackTemplate> interviewFeedbackTemplateList) {
+		this.interviewFeedbackTemplateList = interviewFeedbackTemplateList;
 	}
 
 	public String getCandidateName() {

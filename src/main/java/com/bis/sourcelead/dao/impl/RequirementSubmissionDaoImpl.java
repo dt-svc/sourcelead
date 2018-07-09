@@ -126,7 +126,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 if(isClientInterview != null && "Y".equalsIgnoreCase(isClientInterview)){
 			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' ) "; 
 		 }else{
-			 subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) "; 
+			 subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) "; 
 		 }
 		 
 		 String subQuery2 = "";
