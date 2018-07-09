@@ -9,6 +9,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+	
 	missingBillReportData();
 });
 </script>
@@ -99,7 +100,7 @@ $(document).ready(function(){
   <script>
 function missingBillReportData(){
 	
-
+	   $("#billAmountTotal").html("0.00"); // reset the total value when applied filters.
 	    var flag = true;
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
