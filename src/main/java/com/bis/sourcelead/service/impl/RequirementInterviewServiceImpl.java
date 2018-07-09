@@ -1194,8 +1194,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 
 
 	@Override
-	public void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception {
-		requirementInterviewDao.storeRequirementInterview(requirementInterview);
+	public RequirementInterview saveRequirementInterview(RequirementInterview requirementInterview) throws Exception {
+		return requirementInterviewDao.storeRequirementInterview(requirementInterview);
 	}	
 	
 	
@@ -1206,7 +1206,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		
 		List<RequirementInterview> interviewslist = null;
 		interviewslist = requirementInterviewDao.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationsId);
+		//OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationsId);
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if (interviewslist != null && !interviewslist.isEmpty() ) {
 			for (RequirementInterview requirementInterview : interviewslist) {
@@ -1218,7 +1218,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				}
 				
 			    if(requirementInterview.getDateOfInterview() != null){
-			    	requirementInterview.setDateOfInterviewStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementInterview.getDateOfInterview()));
+			    	requirementInterview.setDateOfInterviewStr(commonUtil.dateStrFromOrgDateFormatter(requirementInterview.getSubmissionId().getOrgLocations().getDateFormat(),requirementInterview.getDateOfInterview()));
 			    }
 			    
 			    if(requirementInterview.getStartTime() != null){
@@ -1809,6 +1809,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Override
 	public RequirementInterview getinterviewBySubmissionId(Long submissionId) {
 		return requirementInterviewDao.getinterviewBySubmissionId(submissionId);
+		
+	}
+	
+	@Override
+	public RequirementInterview getLatestInterviewBySubmissionId(Long submissionId) {
+		return requirementInterviewDao.getLatestInterviewBySubmissionId(submissionId);
 		
 	}
 
