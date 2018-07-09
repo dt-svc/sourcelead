@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProposeTimeService;
@@ -130,6 +132,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Autowired
 	RequirementInterviewerService requirementInterviewerService; 
+	
+	@Autowired
+	private InterviewFeedbackTemplateService interviewFeedbackTemplateService;
 	
 	@Override
 	public void saveRequirementInterview(JSONObject jsonObj, User user, OrgLocations orgLocations, Org loginOrg) throws Exception  {
@@ -1250,6 +1255,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					i++;
 				}
 				requirementInterview.setInterviewersList(InterviewersList);
+				//requirementInterview.setInterviewFeedbackTemplateList(interviewFeedbackTemplateService.getInterviewerAndRatingListByInterviewId(requirementInterview.getId()));
 			}
 		}
 		return interviewslist;
