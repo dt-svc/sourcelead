@@ -590,16 +590,19 @@
 
 							result += '              </div>';
 
-							if (report.newJoinee != null
-									&& report.newJoinee != ''
-									&& report.newJoinee != 'undefined') {
+							if (report.newJoinee != null && report.newJoinee != '' && report.newJoinee != 'undefined') {
 								result += '              <div class="col-md-12 mb">';
 								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>New Joinee:</b></label>';
 								result += '                  <div class="col-md-7">';
-								result += '                      <span>'
-										+ report.newJoinee + '</span>';
+								result += '                      <span>' + report.newJoinee + ' day(s) / Annually</span>';
 								result += '                  </div>';
-
+								result += '              </div>';
+								
+								result += '              <div class="col-md-12 mb">';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>New Joinee Per Period:</b></label>';
+								result += '                  <div class="col-md-7">';
+								result += '                      <span>' + report.newJoinPerPeriod + ' day(s) / Period</span>';
+								result += '                  </div>';
 								result += '              </div>';
 							}
 
@@ -624,6 +627,14 @@
 								result += '                  </div>';
 
 								result += '              </div>';
+								
+								result += '              <div class="col-md-12 mb">';
+								result += '                  <label class="col-md-5 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Experienced Per Period:</b></label>';
+								result += '                  <div class="col-md-7">';
+								result += '                      <span>' + report.experiencedPerPeriod + ' day(s) / Period</span>';
+								result += '                  </div>';
+								result += '              </div>';
+								
 							}
 							    result += '              </div>';
 							

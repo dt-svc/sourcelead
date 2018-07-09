@@ -533,11 +533,11 @@ public class TimesheetRestController {
 				weekDaysList.add("Fri");
 				weekDaysList.add("Sat");
 				weekDaysList.add("Sun");
+				
 				for (Map.Entry<String, List<EmployeeLeaveDTO>> entry : empLeaveMap.entrySet())
 				{
-					
 					List<EmployeeLeaveDTO> freshLeaveDTOList = new LinkedList<>();
-					for (String leaveTypeArr : empLeaveMap.keySet()) {
+					String leaveTypeArr = entry.getKey();
 						for (WeekDaysDTO weekDay : weekDays) {
 							if (valuesMap.get(leaveTypeArr+weekDay.getDate()) == null) {
 								EmployeeLeaveDTO leaveDTO = new EmployeeLeaveDTO();
@@ -551,11 +551,10 @@ public class TimesheetRestController {
 								weekDaysList.remove(weekDay.getDayOfTheDate());
 							}
 						}
-					}
 					entry.getValue().clear();
 					entry.getValue().addAll(freshLeaveDTOList);
-					
 				}
+				
 				if(weekDaysList != null && !weekDaysList.isEmpty()) {
 					isLeaveOnFullWeek = false;
 				}
@@ -2182,7 +2181,6 @@ public class TimesheetRestController {
 					Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,avgWorkingHoursPerDay);
 					tedDTO.setEmpLeaveMap(empLeaveMap);	
 							
-						//	getEmpLeaveList(tedDTO,orgLocations,loginUser,avgWorkingHoursPerDay);
 					Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
 					model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
 					
@@ -5005,6 +5003,7 @@ public class TimesheetRestController {
 				}
 		     }
 		
+		
 		if(!isValid) {
 			/*if invalid Data*/
 			TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
@@ -5028,8 +5027,18 @@ public class TimesheetRestController {
 			tedDTO.setProjectNameForSubmissionPageDisplay(pm.getProjects().getProjectName());
 			tedDTO.setEmploymentTypeForSubmissionPageDisplay(
 			pm.getProjectMemberCandidteId().getDesignationType());
-
-				if (pm.getProjectClientsId().getOrgRelationId() != null) {
+	
+			ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(pm.getId());
+			if(conPM != null) {
+				User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
+                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+					avgWorkingHoursPerDay = 8; 
+				}
+                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,avgWorkingHoursPerDay);
+                tsDTO.setEmpLeaveMap(empLeaveMap);
+			 }
+			if (pm.getProjectClientsId().getOrgRelationId() != null) {
 					OrgRelations orgRelations = orgRelationsService
 							.getOrgRelationById(pm.getProjectClientsId().getOrgRelationId().getId());
 					if (null != pm.getProjectClientsId().getOrgRelationId().getLocationId()
@@ -5048,7 +5057,7 @@ public class TimesheetRestController {
 							tedDTO.setClientNameForDisplay(orgRelations.getLocationId().getOrgLocationName());
 						}
 					}
-				}
+			}
 			tedDTO.setTimesheetSubmission(tsDTO);
 		}
 		model.addObject("timesheetSubmissionDTO", tedDTO.getTimesheetSubmission());
@@ -5517,12 +5526,18 @@ public class TimesheetRestController {
             		 timeSheetDayEntriesService.saveTimesheetDayEntries(timesheetDayEntry);
             	}
             }
-            
-            
-            
-			
 			tedDTO = getTimesheetSubFrequencyListByCurrentFrequency(eedDTO, tedDTO, loginOrgLocation, request);
 			tsDTO = getTimesheetSubmissionDetails(eedDTO, request);
+			ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+			if(conPM != null) {
+				User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
+                Integer avgWorkingHoursPerDay = loginOrgLocation.getAverageWorkingHours();
+                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+					avgWorkingHoursPerDay = 8; 
+				}
+                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), loginOrgLocation,consultantUser,avgWorkingHoursPerDay);
+                tsDTO.setEmpLeaveMap(empLeaveMap);
+			 }
 			tedDTO.setTimesheetSubmission(tsDTO);
 		}
 		return tedDTO;

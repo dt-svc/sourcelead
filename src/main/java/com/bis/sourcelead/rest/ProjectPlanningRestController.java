@@ -628,6 +628,9 @@ public class ProjectPlanningRestController {
 					 }
 					 
 		    		 orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),clientOrgLocation.getId());
+		    		 if(orgRelations == null) {
+		    			 orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),clientOrgLocation.getId());
+		    		 }
 		    		 OrgSpoc orgSpoc = null;
 		    		 if(orgRelations == null) {
 
@@ -768,6 +771,7 @@ public class ProjectPlanningRestController {
 										projectClients.setCreatedBy(user);
 										projectClients.setUpdatedDate(new Date());
 										projectClients.setUpdatedBy(user);
+										projectClients.setIsProjectShared(Constants.NO);
 										
 										//prepare ProjectApproverHierarchy
 										Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
@@ -871,6 +875,7 @@ public class ProjectPlanningRestController {
 							projectClients.setCreatedBy(user);
 							projectClients.setUpdatedDate(new Date());
 							projectClients.setUpdatedBy(user);
+							projectClients.setIsProjectShared(Constants.NO);
 							
 							//prepare ProjectApproverHierarchy
 							Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();

@@ -245,7 +245,7 @@ window.onload = function() {
 		
               
           </div>
-          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" oncontextmenu="return false" onkeydown="return false;" onmousedown="return false;">
             <div class="well-sm well well-custom clearfix amchartAnchor-Hide">
                  <h5>Leaves Status</h5>
                 <div id="leavestatsu" style="width: 100%; height: 150px;"></div>
@@ -592,11 +592,14 @@ function calcaulateDuraton(){
     	    	  result = result +'			<label>Balance Leaves :</label>';
     	          for (var i = 0; i < json.length; i++) { 
     	        		  var leaveType = json[i];
-    				        result = result +'	<li>';
-    				  		result = result +'			<label>'+leaveType.name+'</label>';
-    				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount.toFixed(2)+'</span>';
-    				  		result = result +'	</li>'; 
+    	        		  if(leaveType.leaveTypeBalanceLeaveCount > 0){
+    	        			  result = result +'	<li>';
+      				  		result = result +'			<label>'+leaveType.name+'</label>';
+      				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
+      				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount.toFixed(2)+'</span>';
+      				  		result = result +'	</li>'; 
+    	        		  }
+    				       
     	        	  }
    	        	  result = result +'	</ul>'; 
    	        	  $("#leaveStatusIdDiv").empty();
