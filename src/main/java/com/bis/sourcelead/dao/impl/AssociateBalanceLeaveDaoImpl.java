@@ -209,7 +209,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 							stmt.setString(2, String.valueOf(additionLeaves));
 						}else {
 							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-								if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
 									stmt.setString(2, String.valueOf(leaveType.getNoOfDaysPerPeriod()));
 								}else {
 									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
@@ -222,7 +222,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 								}
 							}else {
 								
-								if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
 									stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
 								}else {
 									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
@@ -374,7 +374,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 								stmt.setLong(1, status);
 							}
 								if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-									if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+									if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
 										stmt.setString(2, String.valueOf(leaveType.getNoOfDaysPerPeriod()));
 									}else {
 										Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
@@ -387,7 +387,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 									}
 								}else {
 									
-									if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+									if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
 										stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
 									}else {
 										Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
@@ -455,7 +455,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						stmt.setLong(2, orgLocationId);
 						stmt.setLong(3, leaveType.getId());
 						if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-							if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+							if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
 								stmt.setString(4, String.valueOf(leaveType.getNoOfDaysPerPeriod()));
 							}else {
 								Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
@@ -468,7 +468,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 							}
 						}else {
 							
-							if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+							if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
 								stmt.setString(4, String.valueOf(leaveType.getNoOfDays()));
 							}else {
 								Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
