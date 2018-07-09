@@ -75,6 +75,7 @@ import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
@@ -198,6 +199,8 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	EmailScenarioConfigurationService emailScenarioConfigurationService;
 
+	@Autowired
+	private AssociateBalanceLeaveService associateBalanceLeaveService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -222,6 +225,7 @@ public class UserServiceImpl implements UserService {
       *  
       *  @return 
       */
+	@SuppressWarnings("unused")
 	@Override
 	public User storeUser(AddUserDTO addUserDTO,CandidateDTO candidateDTO,User loginuser,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg) throws Exception {
 	   User user1 = null;
@@ -229,6 +233,7 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
+	   boolean associateBalance = false;
 	   user = userDao.findByUserName(addUserDTO.getEmail());
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
@@ -288,7 +293,7 @@ public class UserServiceImpl implements UserService {
  		  user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
  		  user.setUrlSentTime(new Date());
  		  user.setIsVerified(Constants.NO);
- 		  
+ 		 associateBalance  = true;
 		}else if(isUserActive == false){
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
@@ -466,6 +471,16 @@ public class UserServiceImpl implements UserService {
 
 				sendEmail(user,loginuser,password,orgLocations.getId());
 			}
+			
+			
+			/**
+			 * @author Laxman
+			 * Update the leaveTypes
+			 */
+			if(associateBalance == true) {
+			     associateBalanceLeaveService.addAssociateLeaveType(user1,orgLocations.getId(),employee,userRole);
+			}
+			
 			
 			/**
 			 * This method is used to newly added admin as a level2 manager for all existing projectmembers

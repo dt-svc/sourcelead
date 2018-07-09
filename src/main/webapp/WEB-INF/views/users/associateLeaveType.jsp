@@ -47,30 +47,36 @@
 	 var userId = $("#associateId").val();   
 	 $.ajax({
                 type: "GET",
-                url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
+                url: sourceleadUrl+"/getAssociateBalanceLeavesByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
                 success: function(json) {
-                	if(json.length >0 && json !=null && json !='' && json != 'undefined'){
+                	var data = json.data;
+                	if(data.length >0 && data !=null && json !='' && data != 'undefined'){
                 		var result = "";
-                   	 for (var i = 0; i < json.length; i++) { 
-                  		  var opt = json[i];
-                  		result = result + '<div class="mb row">';
-                  		result = result + '<input type = "hidden" value='+opt.id+' id="'+i+'leaveTypeId" name="totalLeavesDto['+i+'].leaveTypeId" />';
-                  		result = result + '<label  class="col-md-3"><th>'+opt.name+'</th></label>';
-                  		result = result + '<div class="col-md-2">';
-                  		if(opt.period != 'Annually' && opt.accuralPolicy != 'N'){
-                  			result = result + '<input type="text" value='+opt.noOfDaysPerPeriod+' class="form-control" id="'+i+'noOfLeaves" name="totalLeavesDto['+i+'].noOfLeaves" data-validation="required validate_float" field-name="Total Leaves">';
-                  		}else{
-                  			result = result + '<input type="text" value='+opt.noOfDays+' class="form-control" id="'+i+'noOfLeaves" name="totalLeavesDto['+i+'].noOfLeaves" data-validation="required validate_float" field-name="Total Leaves">';
-                  		}
-                  		
-                  		result = result + '</div>';
-                  		result = result + '<div class="col-md-1">';
-                  		result = result + '<i class="fa fa-pencil cursorPointer mt5"></i>';
-                  		result = result + '</div>';
-                  		result = result + '</div>';
-                  	  }
-                   	$("#leaveDiv").empty();
-                   	$("#leaveDiv").append(result);
+                		result = result + '<div class="project_tabs_inn_table">';
+                		result = result + '<div class="clearfix"></div>';
+                		for(var i=0;i<data.length;i++){
+                  		var opt = data[i];
+                  		result = result + '<div class="clearfix mt mb">';
+                 		result = result + '<div class="col-md-10">';
+                 		result = result + '<div class="mb row">';
+                 		result = result + '<input type="hidden" value='+opt.assoBalLeaveUUID+' />';
+                 		result = result + '<label  class="col-md-3"><th>'+opt.leaveTypeName+'</th></label>';
+                 		result = result + '<div class="col-md-2">';
+                 		result = result + '<input type="text" value='+opt.noofLeaves+' id="'+i+'noofLeaves" name="'+i+'noofLeaves" class="form-control" onblur="editAssBalLeave(\''+opt.assoBalLeaveUUID+'\','+i+','+userId+')">';
+                 		result = result + '<div id="'+i+'errorDiv" style="color:red;"></div>';
+                 		result = result + '</div>';
+                 		result = result + '<div class="col-md-1 paddingLeft">';
+                 		result = result + '<i class="fa fa-pencil cursorPointer mt5" ></i>';
+                 		result = result + '</div>';
+                 		result = result + '</div>';
+                 		result = result + '</div>';
+                  	   } 
+                		
+                		result = result + '</div>';
+                		result = result + '</div>';
+                		
+                		$("#leaveDiv").empty();
+                       	$("#leaveDiv").append(result);
                 	}else{
                 		location.replace(sourceleadUrl+"/usersList");
                 	}
@@ -80,9 +86,27 @@
  
  </script>
  
+ <script>
+function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
+	var totalLeaves = $("#"+rowId+"noofLeaves").val();
+	if(totalLeaves != '' && totalLeaves != 'undefined' && totalLeaves != null){
+		$("#"+rowId+"errorDiv").text("");
+		$.ajax({
+	        type : "PUT",
+	         url: sourceleadUrl+"/editAssBalLeave?"+tokenParamName+"="+tokenValue+"&assoBalLeaveUUID="+assoBalLeaveUUID+"&totalLeaves="+totalLeaves,        
+	         success :function(json) { },
+	         }); 
+	}else{
+		$("#"+rowId+"errorDiv").text("Total Leave Required");
+	}
+ 	 
+}
+function saveAssociateleave() {
+	location.replace(sourceleadUrl+"/usersList");
+}
+</script>
  
- 
-  <script type="text/javascript">
+<!--   <script type="text/javascript">
  function saveAssociateleave() {
 	 var userId = $("#associateId").val();
 	 if ($('#associate_leave_form').validate(false, validationSettings)){ 
@@ -111,7 +135,7 @@
 		                    showError("Operation failed, please try again");
 		                }
 				},
-			});s
+			});
 		 return true;
 	 }else{
 			return false;
@@ -125,7 +149,7 @@
 		$("#associate_leave_form").validateOnBlur(false, validationSettings);  
  });
  
-</script>
+</script> -->
 
 
 <script>
