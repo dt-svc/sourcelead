@@ -113,6 +113,8 @@ public interface ProjectMembersService {
 	
 	public void saveAssignedProjectMembers(ProjectAssignedMembersDTO projectAssignedMembersDTO,String projectUUID,User user,OrgLocations orgLocations,String isGlobalUser) throws Exception;
 	
+	public void saveAssignedSharedProjectMembers(ProjectAssignedMembersDTO projectAssignedMembersDTO,String projectUUID,User user,OrgLocations orgLocations,String isGlobalUser) throws Exception;
+	
 	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId,String status) throws Exception;
 
 	public String transferMembers(OrgLocations orgLocations,Org org,Projects projects,String projectMembers,User user,Long projectOrgLocationId) throws Exception;

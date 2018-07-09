@@ -22,35 +22,36 @@
 	</section>
 	<div id="loadingId"></div>
 	<div class="content-area content-new clearfix">
+	
+	
 		<form:form id="expenses_Reports_form" name="expenses_Reports_form"	enctype='multipart/form-data'>
-			<div class="timesheet_head timesheetRep">
-				<div class="timeReFi">
+		
+		
+		
+		<div class="reportHead">
+    	<ul class="clearfix pull-right">
+    		<li>
+				<div class="timeReFi noPad mr10">
 					<div id="selectYearDropDownId"></div>
 				</div>
-				<div class="timeReFi">
+				<div class="timeReFi noPad">
 					<div id="selectQuarterDropDownId"></div>
 				</div>
-				<div class="timeReFi">
-					<input type="button" class="btn btn-primary" value="Run"	onclick="expensesReportList();">
-				</div>
-				<ul>
-					<li id="export-pop"><i class="glyphicon glyphicon-export"></i>
-						<div class="export_pop">
-							<ul>
-								<li onclick="exportExpensesReports('pdf')"><i class="fa fa-file-pdf-o"></i>PDF</li>
-								<li onclick="exportExpensesReports('excel')"><i class="fa fa-file-excel-o"></i>Excel</li>
-							</ul>
-						</div></li>
-				</ul>
-				<div class="clearfix"></div>
-				<!-- <div class="remove_search">
-					<input placeholder="search" type="text">
-				</div> -->
-
-			</div>
+				<div class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" onclick="expensesReportList();">Run</button></div>
+          
+    		</li>
+    		<li class="staPdfExl"><i onclick="exportExpensesReports('pdf')" title="PDF" class="fa fa-file-pdf-o text-danger"></i><i onclick="exportExpensesReports('excel')" title="Excel" class="fa fa-file-excel-o text-primary"></i></li>
+    		<li class="unVisable"><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/><span class="repSearchIcon" onclick=""></span></li>
+    	</ul>
+    </div> 
+		
+	
 		</form:form>
+		
+		
+		
 		<div id="YearQuartersDiv" style="display: none;" ></div>
-		<div class="timesheetRepTab expensestable datatable_filter mt5 overflow_inherint">
+		<div class="timesheetRepTab expensestable datatable_filter overflow_inherint repDataSearch repDataSearchFil">
 			<div id="expensesReportsListDiv"></div>
 		</div>
 	</div>
