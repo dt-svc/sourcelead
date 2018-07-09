@@ -32,6 +32,7 @@ import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.JobFairRequirements;
 import com.bis.sourcelead.entity.OrgJobBoardAccount;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
@@ -2796,17 +2798,46 @@ public class RequirementDaoImpl implements RequirementDao {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<JobFair> getJobFairList(long userId, long orgLocationId, boolean includeInactive) {
+	public ResponseList<JobFair> getJobFairList(JobFairDTO jobFairDTO, boolean includeInactive) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in "
-					+ (includeInactive ? "(0, 1)" : "(1)");
-			Query queryObj = session.createQuery(query);
-			queryObj.setLong("userId", userId);
-			queryObj.setLong("orgLocationId", orgLocationId);
-			return queryObj.list();
+			List<JobFair> jobFairList = null;
+			List<Long> countlist = null;
+//			Integer filterCount = 0;
+			ResponseList<JobFair> response = new ResponseList<>();
+			StringBuilder query1 = new StringBuilder("");
+			if(jobFairDTO.getSearchValue() !=null && !"".equalsIgnoreCase(jobFairDTO.getSearchValue())) {
+			 query1.append("and (jobFair.name like '%" + jobFairDTO.getSearchValue() + "%' ")
+				   .append("OR jobFair.venue like '%" + jobFairDTO.getSearchValue() + "%' )");
+			}
+			
+			String query = "from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
+			Query queryObj = session.createQuery(query + query1);
+			jobFairList = queryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).setFirstResult(jobFairDTO.getStart()).setMaxResults(jobFairDTO.getLength()).list();
+			
+			String  countQuery = "select count(*) from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
+			Query countQueryObj = session.createQuery(countQuery + query1); 
+			countlist = countQueryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).list();
+			
+			int totalCount = 0;
+			if (jobFairDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+			} 
+//			if(query1.toString() != null && !query1.toString().isEmpty()){
+//				response.setRecordsFiltered(filterCount);
+//			}else {
+//				response.setRecordsFiltered(totalCount);
+//			}
+			response.setRecordsFiltered(totalCount);
+			response.setRecordsTotal(totalCount);
+			response.setData(jobFairList);
+			
+			return response;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

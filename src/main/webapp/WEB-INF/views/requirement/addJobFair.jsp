@@ -109,6 +109,7 @@
 							</div>
 						</div>
 					</div>
+					<div class="clearfix"></div>
 					<div class="col-md-5">
 						<label class="clearfix">Selected Job(s)</label>
 						<div class="clearfix" id="selectedJobsDiv">
@@ -212,8 +213,10 @@
 			onSelect : function(selected) {
 				var parentDiv = $(this).parents(".multiJob").find(".multiJobDate");
 				parentDiv.find("div").remove();
-				var text = "<span class='reqDate' data-value='" + $(this).val() + "'>" + $(this).val() + "<i class='fa fa-times' onclick='removeJobFairDate($(this))'></i></span>";
-				parentDiv.append(text);
+				if(parentDiv.find("span[data-value='" + $(this).val() + "']").length === 0) {
+					var text = "<span class='reqDate' data-value='" + $(this).val() + "'>" + $(this).val() + "<i class='fa fa-times' onclick='removeJobFairDate($(this))'></i></span>";
+					parentDiv.append(text);
+				}
 			}
 		});
 	}
@@ -315,7 +318,7 @@
 				
 				$("#requirementsList").chosen();
 				$("#requirementsList").trigger('chosen:update');
-				$('#requirementsList').find('option:first-child').prop('selected', false).end().trigger('chosen:updated');
+				/* $('#requirementsList').find('option:first-child').prop('selected', false).end().trigger('chosen:updated'); */
 			});
 
 	function getRequirements() {

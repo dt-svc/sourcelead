@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -196,7 +197,7 @@ public interface RequirementDao {
 	
 	public JobFair getJobFairByUUID(String uuid);
 
-	public List<JobFair> getJobFairList(long userId, long orgLocationId, boolean includeInactive);
+	public ResponseList<JobFair> getJobFairList(JobFairDTO jobFairDTO, boolean includeInactive);
 
 	public boolean changeJobFairStatus(Long jobFairId, int status);
 

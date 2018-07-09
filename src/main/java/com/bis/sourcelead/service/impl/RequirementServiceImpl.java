@@ -4002,15 +4002,19 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public List<JobFairDTO> getJobFairsList(long userId, long orgLocationId, boolean includeInactive) {
-		List<JobFairDTO> jobFairDTOList = new LinkedList<>();
+	public ResponseList<JobFairDTO> getJobFairsList(JobFairDTO jobFairDTO, boolean includeInactive) {
+		ResponseList<JobFairDTO> jobFairDTOList = new ResponseList();
 		try {
-			List<JobFair> jobFairList = requirementDao.getJobFairList(userId, orgLocationId, includeInactive);
-			if (jobFairList != null && !jobFairList.isEmpty()) {
-				for (JobFair jobFair : jobFairList) {
-					jobFairDTOList.add(getJobFairDetails(jobFair));
+			ResponseList<JobFair> jobFairList = requirementDao.getJobFairList(jobFairDTO, includeInactive);
+			List<JobFairDTO> dtoList  = new LinkedList<>();
+			if (jobFairList != null && !jobFairList.getData().isEmpty()) {
+				for (JobFair jobFair : jobFairList.getData()) {
+					dtoList.add(getJobFairDetails(jobFair));
 				}
 			}
+			jobFairDTOList.setData(dtoList);
+			jobFairDTOList.setRecordsTotal(jobFairList.getRecordsTotal());
+			jobFairDTOList.setRecordsFiltered(jobFairList.getRecordsFiltered());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -4103,6 +4107,24 @@ public class RequirementServiceImpl implements RequirementService {
 			e.printStackTrace();
 		}
 		return jobFairList;
+	}
+	
+	
+
+	@Override
+	public List<JobFairDTO> getJobFairsDTOListByRequirementId(long requirementId) {
+		List<JobFairDTO> jobFairDTOList = new LinkedList<>();
+		try {
+			List<JobFair> jobFairList = getJobFairsListByRequirementId(requirementId);
+			if(jobFairList!=null && !jobFairList.isEmpty()) {
+				for(JobFair jobFair : jobFairList) {
+					jobFairDTOList.add(getJobFairDetails(jobFair));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jobFairDTOList;
 	}
 
 	@Override

@@ -185,7 +185,7 @@ function statusvalidating(id){
 	<p>Are are sure you want to delete the JobFair?</p>
 	<div>&nbsp;&nbsp;&nbsp;</div>
 	<b>
-		<input id='confirmId' type='button' value='Ok' onclick='changeJobFairStatus()'>
+		<input id='confirmId' type='button' value='Ok' onclick='changeJobFairStatus()' class="pull-left">
 		<input id="cancelStatusPopup" class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup()'>
 	</b>
 </div>
@@ -656,8 +656,8 @@ function statusvalidating(id){
 					</sec:authorize>
 					<li>
 						<div class='dynamic_search'>
-			        		<input type='text' placeholder='Search' id='dataTableSearch'/>
-		   					<span class="cursorPointer padding_right" title="Search"><i class="fa fa-search padding_right" onClick="requirementListCheck('','','','${sourceleadUrl}');"></i></span>
+			        		<input type='text' placeholder='Search' id='jobFairDataTableSearch'/>
+		   					<span class="cursorPointer padding_right" title="Search"><i class="fa fa-search padding_right" onClick="jobFairListCheck();"></i></span>
 			        	</div>
 					</li>
 				</ul>

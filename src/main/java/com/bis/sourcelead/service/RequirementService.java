@@ -213,7 +213,7 @@ public interface RequirementService {
     
     public Response<String> saveJobFair(JobFairDTO jobFairDTO, User user, OrgLocations orgLocation);
     
-    public List<JobFairDTO> getJobFairsList(long userId, long orgLocationId, boolean includeInactive);
+    public ResponseList<JobFairDTO> getJobFairsList(JobFairDTO jobFairDTO, boolean includeInactive);
     
     public JobFairDTO getJobFairByUUID(String uuid);
     
@@ -224,5 +224,7 @@ public interface RequirementService {
 	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat);
 
 	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date);
+
+	public List<JobFairDTO> getJobFairsDTOListByRequirementId(long requirementId);
 
 }

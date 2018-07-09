@@ -335,6 +335,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 		var sourceleadUrl ='${sourceleadUrl}';
 		var date = getSelectedDateFromCalendar($("#jobFairCalendar").val());
 		$("#fairJobsDiv").empty();
+		$("#fairJobsDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getJobFairRequirements?${_csrf.parameterName}=${_csrf.token}&date="+date,
@@ -360,7 +361,8 @@ function getSelectedDateFromCalendar(selectedDate) {
 
 					var data = result.data;
 					if (data != null && data.length > 0) {
-						for ( var e in data) {
+						var jobFairsText = "";
+						for (var e in data) {
 							var text = "<div class='eventList clearfix'>";
 							text += "	<div class='pull-left event_details form-horizontal dashboard_fair_table'>";
 							text += "		<p>";
@@ -379,8 +381,10 @@ function getSelectedDateFromCalendar(selectedDate) {
 							text += "	</div>";
 							text += "</div>";
 
-							$("#fairJobsDiv").append(text);
+							/* $("#fairJobsDiv").append(text); */
+							jobFairsText += text;
 						}
+						$("#fairJobsDiv").append(jobFairsText);
 					} else {
 						var text = '<div class="row">';
 						text = text + '	<div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;">';
@@ -389,6 +393,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 						text = text + ' </div>';
 						$("#fairJobsDiv").append(text);
 					}
+					$("#fairJobsDiv").removeAttr("style");
 				} else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
 				} else {

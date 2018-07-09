@@ -63,6 +63,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1621,7 +1622,7 @@ public class RequirementListRestController {
 	//@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/searchJobFairs")
 	@ResponseBody
-	public ResponseList<JobFairDTO> searchJobFairs(HttpServletRequest request,
+	public ResponseList<JobFairDTO> searchJobFairs(HttpServletRequest request,JobFairDTO jobFairDTO,
 			@RequestParam(defaultValue = "false") boolean includeInactive) throws Exception {
 		ResponseList<JobFairDTO> response = new ResponseList<>();
 		try {
@@ -1631,9 +1632,32 @@ public class RequirementListRestController {
 				
 				String[] tableColumns = {"", "generatedId.keyword","jobTitle.keyword", "client.keyword","","", "jobType.keyword", "country.keyword", "", "manager.keyword", "createdDate", ""};
 				
-				
-				List<JobFairDTO> jobFairList = requirementService.getJobFairsList(user.getId(), orgLocation.getId(), includeInactive);
-				response.setData(jobFairList);
+				jobFairDTO.setUserId(user.getId());
+				jobFairDTO.setOrgLocationId(orgLocation.getId());
+				response = requirementService.getJobFairsList(jobFairDTO, includeInactive);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/jobFairsByRequirementId")
+	@ResponseBody
+	public ResponseList<JobFairDTO> getJobFairListByRequirementId(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") long requirementId) {
+		ResponseList<JobFairDTO> response = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				response.setData(requirementService.getJobFairsDTOListByRequirementId(requirementId));
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {

@@ -37,6 +37,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.JobFairRequirementsDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
@@ -621,26 +622,34 @@ public class RequirementController {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			/*OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");*/
 			if (loginUser != null) {
 				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
 
 				if (!uuid.isEmpty()) {
 					JobFairDTO jobFairDTO = requirementService.getJobFairByUUID(uuid);
 					modelAndView.addObject("jobFair", jobFairDTO);
-					
+
+					String requirementString = "";
+					for (JobFairRequirementsDTO jobFairRequirementsDTO : jobFairDTO.getJobFairRequirementList()) {
+						String req = jobFairRequirementsDTO.getRequirementId() + ":" + jobFairRequirementsDTO.getRequirementTitle();
+						if (!requirementString.contains(req)) {
+							requirementString += (requirementString.isEmpty() ? "" : ",") + req;
+						}
+					}
 					String reqString = dashboardRestController
 							.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(jobFairDTO.getPostedFrom(), request);
 					if (reqString != null) {
-						String requirementString = "";
 						JSONArray jsonArray = new JSONArray(reqString);
 						for (int i = 0; i < jsonArray.length(); i++) {
 							JSONObject jsonObject = jsonArray.getJSONObject(i);
-							requirementString += (requirementString.isEmpty() ? "" : ",")
-									+ (jsonObject.getString("id") + ":" + jsonObject.getString("jobTitle"));
+							String req = jsonObject.getString("id") + ":" + jsonObject.getString("jobTitle");
+							if (!requirementString.contains(req)) {
+								requirementString += (requirementString.isEmpty() ? "" : ",") + (req);
+							}
 						}
-						modelAndView.addObject("requirementString", requirementString);
 					}
+					/*System.out.println("Requirement String : " + requirementString);*/
+					modelAndView.addObject("requirementString", requirementString);
 				}
 			} else {
 				modelAndView.setViewName("login");
