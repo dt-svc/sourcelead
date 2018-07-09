@@ -251,7 +251,7 @@ function errRemoveClientContact(){
 
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
-		<input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="lineItems[REPLACEROWID].totalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
+		<input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" data-validation = "required" field-name = "Hours" id="REPLACEROWIDtotalHours" name="lineItems[REPLACEROWID].totalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
 			<input type="hidden" id="REPLACEROWIDhiddenHours" name="REPLACEROWIDhiddenHours">
 <!-- 			<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date &amp; Manager is Mandatory"></i> -->
 			<u id="REPLACEROWIDerrMsg" style="display: none;"><i class=" text-info fa fa-info-circle" >Avg Hours</i></u>
