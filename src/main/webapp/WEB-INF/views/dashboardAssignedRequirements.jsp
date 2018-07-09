@@ -18,8 +18,8 @@
         <div class="project_side_wrap_inn_tabs">
       	    <div id="resourceRequestsDivLoading"></div>
 		    <ul class="project-tabs-menu tabnewStyles">
-		        <li class="current" id="assigned"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementList(false, -1);">Assigned</a></li>
-		        <li id="drive"><a data-toggle="tab" href="javascript:void(0)"  onclick="requirementList(true, -1);">Daily Drives</a></li>
+		        <!-- <li class="current" id="assigned"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementList(false, -1);">Assigned</a></li> -->
+		        <!-- <li id="drive"><a data-toggle="tab" href="javascript:void(0)"  onclick="requirementList(true, -1);">Daily Drives</a></li> -->
 		    </ul>
 			<div id="requirementListTabHead">
 				<div id="requirementListActions">
