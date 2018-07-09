@@ -213,10 +213,12 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 					createExcelsheet.autoSizeColumn(11);
 				}
 				String status = null;
-				if(dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
-					status =  "submitted";
-				}else {
-					status = dayEntries.getStatus();
+				if(StringUtils.isNotEmpty(dayEntries.getStatus())) {
+					if(dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
+						status =  "submitted";
+					}else {
+						status = dayEntries.getStatus();
+					}
 				}
 				//Map<String,Date>dateMap = getSubmittedAndApprovedDate(dayEntries.getProjectId().longValue(),dayEntries.getMasterCandidateId().longValue(),dayEntries.getSahFrequenchStartDate(),dayEntries.getSahFrequenchEndDate(),status);
 				String submittedDate =  null;
@@ -230,10 +232,10 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
                     	approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("APPROVED")); 
 					}
 				}else {*/
-					if(status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
+					if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
 						if(dayEntries.getSubmittedDate() != null)
 						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
-					}else if(status.equalsIgnoreCase("APPROVED")){
+					}else if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("APPROVED")){
 						if(dayEntries.getSubmittedDate() != null)
 						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
 						if(dayEntries.getApprovedDate() != null)
