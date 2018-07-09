@@ -94,7 +94,7 @@ public class InterviewFeedbackTemplateDaoImpl implements InterviewFeedbackTempla
 	public List<InterviewFeedbackTemplate> getInterviewerAndRatingListByInterviewId(Long requirementInterviewId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<InterviewFeedbackTemplate> interviewFeedbackTemplate = new ArrayList<InterviewFeedbackTemplate>();
-		List<Object[]> objList  = session.createSQLQuery("select ift.INTERVIEW_TEMPLATE_JSON_STRING, u.FIRST_NAME, u.LAST_NAME from INTERVIEW_FEEDBACK_TEMPLATE ift, REQUIREMENT_INTERVIEWER ri, user u  where ri.id=ift.REQUIREMENT_INTERVIEWER_ID and u.id=ri.INTERVIEWER_USER_ID and ri.INTERVIEW_ID =:requirementInterviewId ").setLong("requirementInterviewId", requirementInterviewId).list();
+		List<Object[]> objList  = session.createSQLQuery("select ift.INTERVIEW_TEMPLATE_JSON_STRING, u.FIRST_NAME, u.LAST_NAME from INTERVIEW_FEEDBACK_TEMPLATE ift, REQUIREMENT_INTERVIEWER ri, USER u  where ri.id=ift.REQUIREMENT_INTERVIEWER_ID and u.id=ri.INTERVIEWER_USER_ID and ri.INTERVIEW_ID =:requirementInterviewId ").setLong("requirementInterviewId", requirementInterviewId).list();
 		for(Object[] obj : objList){
 			InterviewFeedbackTemplate ifTemplate = new InterviewFeedbackTemplate();
 			ifTemplate.setInterviewerRating(obj[0].toString());
