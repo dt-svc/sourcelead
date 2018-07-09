@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProposeTimeService;
@@ -130,6 +132,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Autowired
 	RequirementInterviewerService requirementInterviewerService; 
+	
+	@Autowired
+	private InterviewFeedbackTemplateService interviewFeedbackTemplateService;
 	
 	@Override
 	public void saveRequirementInterview(JSONObject jsonObj, User user, OrgLocations orgLocations, Org loginOrg) throws Exception  {
@@ -1194,8 +1199,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 
 
 	@Override
-	public void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception {
-		requirementInterviewDao.storeRequirementInterview(requirementInterview);
+	public RequirementInterview saveRequirementInterview(RequirementInterview requirementInterview) throws Exception {
+		return requirementInterviewDao.storeRequirementInterview(requirementInterview);
 	}	
 	
 	
@@ -1206,7 +1211,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		
 		List<RequirementInterview> interviewslist = null;
 		interviewslist = requirementInterviewDao.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationsId);
+		//OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationsId);
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if (interviewslist != null && !interviewslist.isEmpty() ) {
 			for (RequirementInterview requirementInterview : interviewslist) {
@@ -1218,7 +1223,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				}
 				
 			    if(requirementInterview.getDateOfInterview() != null){
-			    	requirementInterview.setDateOfInterviewStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementInterview.getDateOfInterview()));
+			    	requirementInterview.setDateOfInterviewStr(commonUtil.dateStrFromOrgDateFormatter(requirementInterview.getSubmissionId().getOrgLocations().getDateFormat(),requirementInterview.getDateOfInterview()));
 			    }
 			    
 			    if(requirementInterview.getStartTime() != null){
@@ -1250,6 +1255,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					i++;
 				}
 				requirementInterview.setInterviewersList(InterviewersList);
+				//requirementInterview.setInterviewFeedbackTemplateList(interviewFeedbackTemplateService.getInterviewerAndRatingListByInterviewId(requirementInterview.getId()));
 			}
 		}
 		return interviewslist;
@@ -1809,6 +1815,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Override
 	public RequirementInterview getinterviewBySubmissionId(Long submissionId) {
 		return requirementInterviewDao.getinterviewBySubmissionId(submissionId);
+		
+	}
+	
+	@Override
+	public RequirementInterview getLatestInterviewBySubmissionId(Long submissionId) {
+		return requirementInterviewDao.getLatestInterviewBySubmissionId(submissionId);
 		
 	}
 

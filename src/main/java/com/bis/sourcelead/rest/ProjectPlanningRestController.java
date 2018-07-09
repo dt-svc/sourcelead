@@ -619,15 +619,20 @@ public class ProjectPlanningRestController {
 	    		 if(candidate != null && !candidate.getOrgLocationId().getId().equals(projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getOrgLocationsId().getId())) {
 	    			
 					 OrgLocations vendorOrgLocation = candidate.getOrgLocationId();
-					 Projects project = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId();
 					 OrgLocations clientOrgLocation = null;
-					 if(StringUtils.isNotBlank(project.getIsProjectShared()) && project.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+					 /* Projects project = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId();
+						if(StringUtils.isNotBlank(project.getIsProjectShared()) && project.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 						 clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getSharedLocationId();
 					 }else {
 						 clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getOrgLocationsId();
-					 }
+					 }*/
+					 
+					 clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getOrgLocationId();
 					 
 		    		 orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),clientOrgLocation.getId());
+		    		 if(orgRelations == null) {
+		    			 orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),clientOrgLocation.getId());
+		    		 }
 		    		 OrgSpoc orgSpoc = null;
 		    		 if(orgRelations == null) {
 
@@ -768,6 +773,7 @@ public class ProjectPlanningRestController {
 										projectClients.setCreatedBy(user);
 										projectClients.setUpdatedDate(new Date());
 										projectClients.setUpdatedBy(user);
+										projectClients.setIsProjectShared(Constants.NO);
 										
 										//prepare ProjectApproverHierarchy
 										Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
@@ -840,11 +846,12 @@ public class ProjectPlanningRestController {
 	    		 }else {
 	    			 OrgLocations clientOrgLocation = null;
 	    			 Projects project = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId();
-					 if(StringUtils.isNotBlank(project.getIsProjectShared()) && project.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+					/* if(StringUtils.isNotBlank(project.getIsProjectShared()) && project.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 						 clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getSharedLocationId();
 					 }else {
 						 clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getOrgLocationsId();
-					 }
+					 }*/
+	    			 clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getOrgLocationId();
 	    			 ProjectClients orgProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientOrgLocation.getId());
 	    			 if(orgProjectClients != null) {
 							ProjectMembers projectMembers = saveProjectMembers(projects,vendorCandidate,projectPlanningResourceRequest,user,orgProjectClients,orgLocations);
@@ -871,6 +878,7 @@ public class ProjectPlanningRestController {
 							projectClients.setCreatedBy(user);
 							projectClients.setUpdatedDate(new Date());
 							projectClients.setUpdatedBy(user);
+							projectClients.setIsProjectShared(Constants.NO);
 							
 							//prepare ProjectApproverHierarchy
 							Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();

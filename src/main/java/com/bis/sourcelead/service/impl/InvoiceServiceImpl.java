@@ -1930,16 +1930,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 */
 	private void populateClientDetails(OrgLocations vendorOrgLocation, Invoice invoice, OrgRelations orgRelation)
 	{
-		invoice.setResponderLocationId(vendorOrgLocation);
-		if (null != orgRelation.getPaymentTerm()
-				&& !"".equalsIgnoreCase(orgRelation.getPaymentTerm())) {
+		invoice.setResponderLocationId(vendorOrgLocation);                                                //check whether the string start with number
+		if (null != orgRelation.getPaymentTerm() && !"".equalsIgnoreCase(orgRelation.getPaymentTerm()) && orgRelation.getPaymentTerm().matches("^[0-9].*$")) {
 			invoice.setPaymentFrequency(orgRelation.getPaymentTerm());
 			invoice.setInvoiceDate(new Date());
 			Date dueDate = getDueDateByPaymentTerm(new Date(), orgRelation.getPaymentTerm());
 			invoice.setDueDate(dueDate);
 		}
-		if (null != orgRelation.getBillingAddress()
-				&& !"".equalsIgnoreCase(orgRelation.getBillingAddress())) {
+		if (null != orgRelation.getBillingAddress()	&& !"".equalsIgnoreCase(orgRelation.getBillingAddress())) {
 			invoice.setBillingAddress(orgRelation.getBillingAddress());
 		}
 	}
