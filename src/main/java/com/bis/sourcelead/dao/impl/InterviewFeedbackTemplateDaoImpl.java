@@ -1,11 +1,14 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.InterviewFeedbackTemplateDao;
 import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Repository
 public class InterviewFeedbackTemplateDaoImpl implements InterviewFeedbackTemplateDao{
@@ -81,5 +88,24 @@ public class InterviewFeedbackTemplateDaoImpl implements InterviewFeedbackTempla
 			return null;
 		}
 	}
-
+	
+	@Override
+	@Transactional
+	public List<InterviewFeedbackTemplate> getInterviewerAndRatingListByInterviewId(Long requirementInterviewId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<InterviewFeedbackTemplate> interviewFeedbackTemplate = new ArrayList<InterviewFeedbackTemplate>();
+		List<Object[]> objList  = session.createSQLQuery("select ift.interview_template_json_string, u.first_name, u.last_name from interview_feedback_template ift, requirement_interviewer ri, user u  where ri.id=ift.requirement_interviewer_id and u.id=ri.interviewer_user_id and ri.interview_id =:requirementInterviewId ").setLong("requirementInterviewId", requirementInterviewId).list();
+		for(Object[] obj : objList){
+			InterviewFeedbackTemplate ifTemplate = new InterviewFeedbackTemplate();
+			ifTemplate.setInterviewerRating(obj[0].toString());
+			if(obj[2] != null) {
+				ifTemplate.setInterviewerName(obj[1].toString()+" "+obj[2].toString());
+			}else {
+				ifTemplate.setInterviewerName(obj[1].toString());
+			}
+			interviewFeedbackTemplate.add(ifTemplate);
+		}
+		return interviewFeedbackTemplate;
+	}
+	
 }
