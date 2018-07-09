@@ -561,19 +561,17 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
             	 else{
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 }
+            	 
             	 if(label == 'Rating'){
-            		 datavalidation = 'data-validation="required validate_Space validate_length length1-2 validate_int"';
-        			 onBlurEvent = 'onblur="validateRating();"';
-        			 placeHolder = 'placeholder="Enter rating between 0 to 5"';
+            		 options = '<option value="">--Select Rating--</option>';
         		 }
 
                  switch (fieldType) {
-
                      case 'text':
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' '+onBlurEvent+' '+placeHolder+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation+'  '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':
@@ -587,7 +585,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
                              '<label for="select-' + uniqueID + '"></label>' +
-                             '<select id="select-' + uniqueID + '" '+datavalidation+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select"></select>' +
+                             '<select id="select-' + uniqueID + '" '+datavalidation+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select">'+options+'</select>' +
                              '</div>';
 
                      case 'radio':
@@ -802,18 +800,6 @@ function generateViewpublicpage(sourceleadUrl,templateId) {
     });
     
     
-}
-
-function validateRating(){
-	 var rating =   $("input[name=Rating]").val();
-	 alert("bbaa"+rating);
-	 rating = Number(rating)
-	 if(rating < 0 || rating > 5){
- 	  	$('.jquery_form_error_message').remove();
-		$("input[name=Rating]").after("<p class='jquery_form_error_message'>"+rating+" is invalid</span>");
-	}else{
-		$('.jquery_form_error_message').remove();
-	}
 }
 </script>
 </body>

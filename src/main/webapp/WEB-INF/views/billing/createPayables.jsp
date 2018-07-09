@@ -241,7 +241,7 @@ function errRemoveVendorContact(){
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
 		<input type="text" class="form-control input-sm inline_field"
-			placeholder="HHH:MM" id="REPLACEROWIDtotalHours"
+			placeholder="HHH:MM" id="REPLACEROWIDtotalHours" data-validation="required" field-name="Hours"
 			name="lineItems[REPLACEROWID].totalHours"
 			onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
 			<input type="hidden" id="REPLACEROWIDhiddenHours" name="lineItems[REPLACEROWID].hiddenHours">
