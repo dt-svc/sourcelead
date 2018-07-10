@@ -222,7 +222,7 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		LeaveType leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
 		if(leaveType.getDuration().contains("Half Day")) {
-			leaveDTO.setFromHalfDay(Constants.YES);
+			leaveDTO.setFromHalfDay(Constants.STATUS_YES);
 			leaveDTO.setToDate(leaveDTO.getFromDate());
 		}
 		leave.setToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getToDate()));

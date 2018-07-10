@@ -222,7 +222,9 @@ public class ProjectsRestController {
 	
        @RequestMapping(value = "/assignProjectMembersToProject", method = RequestMethod.POST)
 		public  Response<String> assignProjectMembersToProject(ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
-			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
+			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="projectClientUUID", required=false) String projectClientUUID,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
+			   HttpServletRequest request) throws Exception {
+    	    projectAssignedMembersDTO.setProjectClientUUID(projectClientUUID);
 			Response<String> response = new Response<>();
 			 User user = userService.getUserById(userId);
 			 String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request,"isGlobalAccess");
@@ -271,6 +273,7 @@ public class ProjectsRestController {
 			}catch (Exception e) {
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
 			}
 		   
 		    return response;

@@ -77,7 +77,7 @@ public class RequirementListController {
 	
 	@RequestMapping(value = "/jobs")
 	public ModelAndView requirementList(HttpServletRequest request,@RequestParam(value="searchResult", required=false)String  searchResult
-			,@RequestParam(value="searchValue", required=false)String searchValue) throws Exception {
+			,@RequestParam(value="searchValue", required=false)String searchValue,@RequestParam(defaultValue = "") String viewTab) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -145,6 +145,7 @@ public class RequirementListController {
 		}
 	}
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("viewTab",viewTab);
 		model.setViewName("requirement/requirementList");
 		
 	    	/*

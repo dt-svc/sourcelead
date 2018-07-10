@@ -930,6 +930,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
     		    		$("#toDate").attr('data-validation');
+    		    		document.getElementById("halfDayHidingDiv").style.display = 'block';
     		    	}else if(duration == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
