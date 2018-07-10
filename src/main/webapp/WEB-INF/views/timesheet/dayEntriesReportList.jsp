@@ -79,12 +79,12 @@
 	                <td><div class="tblminwidth-75">${entryList.timesheetDate}</div></td>
 	                <td><div class="tbldata-dotdot-vsm" title="${entryList.employeeName}">${entryList.employeeName}</div></td>
 	                <td><div class="tbldata-dotdot-vsm" title="${entryList.employeeEmail}">${entryList.employeeEmail}</div></td>
-	                <td><div class="tblminwidth-75">${entryList.ticketNo}</div></td>
-	                <td><div class="tbldata-dotdot-100" title="${entryList.projectName}">${entryList.projectName}</div></td>
+	                <td><div class="tblminwidth-75">${!empty entryList.ticketNo ? entryList.ticketNo : '--'}</div></td>
+	                <td><div class="tbldata-dotdot-100" title="${!empty entryList.projectName ? entryList.projectName : ''}">${!empty entryList.projectName ? entryList.projectName : '--'}</div></td>
 	                <td><div class="tbldata-dotdot-100" title="${entryList.task}">${entryList.task}</div></td>
-	                <td><div class="tblminwidth-50">${entryList.billableHrs}</div></td>
-	                <td><div class="tblminwidth-50">${entryList.nonBillableHrs}</div></td>
-	                <td><div class="tblminwidth-50" title="${entryList.status}">${entryList.status}</div></td>
+	                <td><div class="tblminwidth-50">${!empty entryList.billableHrs ? entryList.billableHrs : '--'}</div></td>
+	                <td><div class="tblminwidth-50">${!empty entryList.nonBillableHrs ? entryList.nonBillableHrs : '--'}</div></td>
+	                <td><div class="tblminwidth-50" title="${!empty entryList.status ? entryList.status : ''}">${!empty entryList.status ? entryList.status : '--'}</div></td>
 	               <%--  <td><div class="tblminwidth-50" title="${entryList.submittedOn}">${entryList.submittedOn}</div></td>
 	                <td><div class="tblminwidth-50" title="${entryList.approvedOn}">${entryList.approvedOn}</div></td> --%>
 	              </tr>
@@ -122,22 +122,6 @@
       </div>
     </div>  
   </section>
-  <!-- Content Area Ends--> 
-<%--   <jsp:include page="../masterFooter.jsp" /> --%>
-
-<!-- <script>  
-$(document).ready(function() {
-    $('#dayEntriesTable').DataTable({
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-    	"aaSorting": [[1,'desc']],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": false,
-    });
-});
-</script> -->
-
 <script>
 $("#searchEntryData").keyup(function(event) {
     if (event.keyCode === 13) {

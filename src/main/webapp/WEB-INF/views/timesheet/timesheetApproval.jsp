@@ -25,14 +25,16 @@
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	               var locationCode ='${SourceLeadWeb_locationCode}';
 	               var userId = '${SourceLeadWeb_user.id}';
-	               var frequencyMonth = $("#frequencyMonth").val();
-	               var timesheetFrequency = $('#timesheetFrequency').val();
+	               
+	               var frequencyMonth = $('input[id=frequencyMonth]:checked').val();
+	               var timesheetFrequency = $('input[id=timesheetFrequency]:checked').val();
+	               var weekFrequency = $('input[id=weekFrequency]:checked').val();
+	               var client = $('input[id=client]:checked').val();
+	               var project = $('input[id=project]:checked').val();
+	               
 	               var searchData = $('#dataTableSearchExpenses').val();
-	               var weekFrequency = $('#weekFrequency').val();
 	               var projectName = '';
-	               var stage = $('#stage').val();
-	               var client = $('#client').val();
-	               var project = $('#project').val();
+	               var stage = $('input[id=stage]:checked').val();
 	               if(filter != null && filter != '' && filter != 'undefined' &&  filter == 'notifyLink'){
 	            	   frequencyMonth = '${frequencyMonth}';
 	            	   timesheetFrequency = '${timesheetFrequency}';

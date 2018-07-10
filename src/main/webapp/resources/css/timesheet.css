@@ -8635,3 +8635,137 @@ max-width: 100% !important;
 .staPdfExl i:hover {
 	background-color: #f5f5f5;
 }
+
+
+
+
+
+
+
+.movIcon {
+    position: absolute; right: 3px; top: 3px; color: #ccc; background-image: url(../images/movearrow.png); height: 23px; width: 23px;
+    background-size: 16px;background-repeat: no-repeat; background-position: center;
+}
+.moveListAlign {
+    margin: 0px 0px; padding: 0px 0px; clear: both;
+}
+.moveListAlign li {
+    list-style-type: none; float: left; margin: 1%; border: 1px solid #b3ffb3; background-color: #f3fff2; padding: 4px 8px;
+    font-size: 15px; color: #545454; cursor: pointer; /* height: 32px !important; */
+}
+.moveListAlign li.unCheck {
+    border: 1px solid #ffd2be; background-color: #fff7f7;
+}
+.dashboard_loading {
+    position: absolute; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.7); left: 0px; top: 0px;
+    text-align: center; background-image: url(../images/loading.gif); background-size: 80px; background-repeat: no-repeat;
+    background-position: center; z-index: 100;
+}
+.moveListAlign .checkbox-custom {
+    position: relative; width: 18px; height: 18px; display: inline-block; -webkit-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; -o-user-select: none; user-select: none; -webkit-appearance: none; -moz-appearance: none;
+    appearance: none;  margin: 1px 10px 0px 0px !important; outline: 0; opacity: 1;
+}
+.moveListAlign .checkbox-custom:after {
+    content: ''; position: absolute; display: block; z-index: 1; width: 18px; height: 18px; border: 1px solid #f5baa0; border-radius: 2px;
+}
+.moveListAlign .checkbox-custom[type=checkbox]:before {
+    background: #82e482 url(../images/tick.png); background-size: 10px 7px; background-repeat: no-repeat; background-position: 3px 5px;
+    position: absolute; left: 2px; z-index: 2; opacity: 0; width: 100%; height: 100%; color: #82e482;
+}
+.moveListAlign .checkbox-custom[type=checkbox]:checked:before {
+    content: ''; position: absolute; top: 0px; opacity: 1; left: 0px; border: 1px solid #82e482; border-radius: 2px;
+}
+.filter-popupMid {
+	width: 500px; margin: 0px auto; left: 0px; right: 0px; top: 5%;
+}
+#configureDashboard .addInner {
+	background-color: #fff; max-height: 500px;
+}
+.events-tabs {
+	float: left;
+	padding: 0px 15px;
+}
+
+
+
+
+
+.multiJob {
+	background-color: #f9f9f9; padding: 6px 10px 10px;
+}
+.multiJob_detail {
+	margin: 10px;
+	width: 48%;
+}
+.multiJobMain {
+	margin: 18px 0px;
+}
+/* .multiJobMain i {
+	font-weight: 400; font-size: 18px; color: #ff6464; cursor: pointer; padding: 0px; float: right;
+} */
+.calendarIcon {
+	background-color: #ede9e9 !important; width: 39px; background-position: center; border: none !important; overflow: hidden;
+	 text-indent: 40px; cursor: pointer;
+}
+.multiJobTitle {
+	padding: 0px 0px 5px 0px;
+}
+.multiJobTitle h2 {
+	padding: 0px 0px; margin: 0px 0px; font-size: 14px; font-weight: 500; color: #454545; height: 34px; line-height: 34px;
+}
+.multiJobDate {
+	clear: both;
+}
+.multiJobDate span {
+	float: left; display: block; padding: 4px 20px 4px 10px; font-size: 12px; background-color: #e1f1ff; border-radius: 2px; margin: 0px 5px 5px 0px;
+	position: relative;
+}
+.multiJobDate span i {
+	position: absolute; right: 0px; top: 0px; display: block; font-weight: 400; font-size: 10px; color: #ff6464; width: 20px; height: 20px; text-align: center;
+	cursor: pointer; padding: 6px 0px 0px 0px;
+}
+
+
+
+.events .eventCalendar {
+    float: left; width: auto; padding: 2px 10px 0 10px; color: #607d8b;
+}
+
+#jobFairCalendar .ui-widget.ui-widget-content, #scheduleCalendar .ui-widget.ui-widget-content   {
+    border: 1px solid #dedfe4; box-shadow: none; width: 100%; border-radius: 0;
+    background: #ededed; padding: 10px;
+}
+#jobFairCalendar .ui-widget-header, #scheduleCalendar .ui-widget-header {
+    background: #bbb !important; border: none !important; color: #333; font-weight: bold;
+    height: 45px; border-radius: 0; z-index: 9 !important;
+}
+#jobFairCalendar .ui-datepicker select.ui-datepicker-month, #jobFairCalendar .ui-datepicker select.ui-datepicker-year {
+    color: #202020; height: 30px; margin-top: 4px;
+}
+#scheduleCalendar .ui-datepicker select.ui-datepicker-month, #scheduleCalendar .ui-datepicker select.ui-datepicker-year {
+    color: #202020; height: 30px; margin-top: 4px;
+}
+#jobFairCalendar .ui-datepicker .ui-datepicker-prev, #jobFairCalendar .ui-datepicker .ui-datepicker-next {
+    top: 8px;
+}
+#scheduleCalendar .ui-datepicker .ui-datepicker-prev, #scheduleCalendar .ui-datepicker .ui-datepicker-next {
+    top: 8px;
+}
+#jobFairCalendar .ui-widget-content a, #scheduleCalendar .ui-widget-content a {
+    color: #333333; height: 30px; line-height: 25px;
+}
+
+.dashboard_fair_table {
+	width: 100%;
+	padding: 10px;
+}
+.dashboard_fair_table p {
+	padding: 2px 0px;
+}
+.dashboard_fair_table label {
+    width: 20%;
+}
+.hide_filters {
+	opacity: 0;
+}

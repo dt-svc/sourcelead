@@ -51,10 +51,12 @@ public class DayEntriesReportController {
 		
 		ResponseList<DayWiseTimesheetReoprtsListDTO>  listDto = dayEntryReportsService.getDayEntriesList(dayWiseTimesheetReoprtsDto,orgLocations, loginUser,isGlobalUser) ;
 		model.addObject("dayWiseTimesheetReoprtsList",listDto.getData());
-		for (DayWiseTimesheetReoprtsListDTO totalHours : listDto.getData()) {
-			model.addObject("totalBillable",totalHours.getBillableTotalCount());
-			model.addObject("totalNonBillable",totalHours.getNonBillableTotalCount());
-		}
+	    if(listDto != null && listDto.getData() != null && !listDto.getData().isEmpty()) {
+	    	for (DayWiseTimesheetReoprtsListDTO totalHours : listDto.getData()) {
+				model.addObject("totalBillable",totalHours.getBillableTotalCount());
+				model.addObject("totalNonBillable",totalHours.getNonBillableTotalCount());
+			}
+	    }
 		model.addObject("startDate",dayWiseTimesheetReoprtsDto.getStartDate());
 		model.addObject("endDate",dayWiseTimesheetReoprtsDto.getEndDate());
 		model.addObject("sourceleadUrl", sourceleadUrl);

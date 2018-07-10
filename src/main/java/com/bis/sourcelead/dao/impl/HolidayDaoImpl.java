@@ -106,7 +106,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	public List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate, Date endDate, Long orgLocationId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Holiday hday where (hday.fromDate >= :fromDate and hday.fromDate <= :endDate) and hday.orgLocations.id = :orgLocationId";
+		String query = "from Holiday hday where (hday.fromDate >= :fromDate and hday.fromDate <= :endDate) and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
 		List<Holiday> holiday = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
 		if (holiday.size() > 0) {
 			return holiday;

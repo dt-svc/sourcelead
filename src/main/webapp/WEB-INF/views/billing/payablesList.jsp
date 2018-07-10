@@ -998,7 +998,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	     
 	     '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
 // 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
- 		 result = result+' <a href="'+fileUrl+'" title="Download" target="_blank"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a>';
+ 		 result = result+' <a href="'+fileUrl+'" title="Download" download><i class="fa fa-download paddingLeft paddingRight"></i>Download</a>';
 	     '</sec:authorize>'
 	     if(invoiceStatus != 'DRAFT')
 	     {
