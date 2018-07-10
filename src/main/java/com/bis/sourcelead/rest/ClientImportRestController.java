@@ -63,7 +63,7 @@ public class ClientImportRestController {
 	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_CLIENT_BULK_IMPORTS')")
 	@RequestMapping(value = "/clientExcelFileUpload", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<BulkClientDetails> fileUploaded(ClientVendorUploadDTO clientVendorUploadDTO,MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
+	public ResponseList<BulkClientDetails> fileUploaded(ClientVendorUploadDTO clientVendorUploadDTO,MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType,@RequestParam(value = "isMailCheck", required = false) String isMailCheck)throws Exception{
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -77,22 +77,18 @@ public class ClientImportRestController {
 		
 		List<BulkClientDetails> fileList = null;
 		if(multipartFile != null){
-			fileList = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"Y",responderType);
+			fileList = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,isMailCheck,responderType);
 		}
 		
 		if(fileList != null && fileList.size() > 0) {
-			ResponseList<BulkClientDetails> response = clientImportsService.getbulkClientDetailsByOrgLocationId(fileList,clientVendorUploadDTO,orgLocation,user,org,"Y",responderType);
+			ResponseList<BulkClientDetails> response = clientImportsService.getbulkClientDetailsByOrgLocationId(fileList,clientVendorUploadDTO,orgLocation,user,org,isMailCheck,responderType);
 			
 			
 			if(response !=null) {
 				if(response.getData().isEmpty() && response.getData().size() == 0) {
 					response.setStatusCode("success");
 				}else if(!response.getData().isEmpty() && response.getData().size() >0) {
-					List<BulkClientDetails> filteredBulkClientDetailsList = response.getData().stream()
-							
-							.filter(bulkClientDetails -> bulkClientDetails.getEmail() != null
-									&& !"".equalsIgnoreCase(bulkClientDetails.getEmail()))
-							.collect(Collectors.toList());
+					List<BulkClientDetails> filteredBulkClientDetailsList = response.getData();
 					response.setData(filteredBulkClientDetailsList);
 					if(response.getData() !=null ) {
 						response.setStatusCode("success");

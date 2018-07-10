@@ -231,7 +231,7 @@ function getProfessionalInfo(){
 				 result = result +'	        </ul>';
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-3">';
-				 result = result +'	        <h5>Can be Reached at</h5>';
+				 result = result +'	        <h5>Contact information</h5>';
 				 result = result +'<div class="socialnetwork-details">';
 				 result = result +'<ul class="list-inline list-unstyled">';
 				 if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
@@ -273,14 +273,14 @@ function getProfessionalInfo(){
 				 result = result +'	    </div>';
 				 
 				 result = result +'	    <div class="col-md-4">';
-				 result = result +'	        <h5>Rates</h5>';
+				 result = result +'	        <h5>Remuneration</h5>';
 				 result = result +'	        <div class="skills mt10">';
 				 result = result +'<ul class ="list-unstyled">';
 				 result = result +'	            <li> <i class="fa fa-money" title="Current Rate"></i>';
-				 result = result +'	                <span><strong>Current Rate: </strong>'+currentRate+'&nbsp;'+currentRateCurrency+' '+currentRateType+'</span>';
+				 result = result +'	                <span><strong>Current: </strong>'+currentRate+'&nbsp;'+currentRateCurrency+' '+currentRateType+'</span>';
 				 result = result +'	            </li>';
 				 result = result +'	            <li> <i class="fa fa-money" title="Expected Rate"></i>';
-				 result = result +'	                <span><strong>Expected Rate:</strong> '+expectedRate+' &nbsp;'+expectedRateCurrencey+' '+rateType+'</span>';
+				 result = result +'	                <span><strong>Expected:</strong> '+expectedRate+' &nbsp;'+expectedRateCurrencey+' '+rateType+'</span>';
 				 result = result +'	            </li>';
 				 result = result +'</ul>';
 				 result = result +'	            </div>';

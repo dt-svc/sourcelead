@@ -46,6 +46,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
+import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -98,6 +99,9 @@ public class ExpensesApprovalRestController {
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Autowired
+	private ExpensesCategoryService expensesCategoryService;
+	
 	/*@RequestMapping(value = "/getExpensesApprovalList")
 	public List<ExpensesApproverHierarchy> getExpensesApprovalList(HttpServletRequest request, String expenseStatus, String startDate, String endDate) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -113,7 +117,8 @@ public class ExpensesApprovalRestController {
 		try {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ExpensesApproverDTO expApperoverdto = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO);
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		ExpensesApproverDTO expApperoverdto = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO,isGlobalAccess);
 		model.addObject("totalRows",expApperoverdto.getTotalRows());
 		model.addObject("pageCount",expApperoverdto.getPageCount());
 		model.addObject("pageSize",expApperoverdto.getPageSize());
@@ -136,14 +141,15 @@ public class ExpensesApprovalRestController {
 
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		File file=null;
-		ExpensesApproverDTO expApperoverHierarchyList = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO);
+		ExpensesApproverDTO expApperoverHierarchyList = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO,isGlobalAccess);
 		List<ExpensesApproverHierarchyDTO> expApperoverHierarchy = expApperoverHierarchyList.getExpensesApproverHierarchyDTO();
 		if(expApperoverHierarchy != null && !expApperoverHierarchy.isEmpty()) {
 			if(expensesApproverDTO.getType().equalsIgnoreCase("pdf"))
-				file = expensesApprovalService.getExpensesApproverHierarchyListForPdf(expApperoverHierarchy,orgLoc,loginUser);
+				file = expensesApprovalService.getExpensesApproverHierarchyListForPdf(expApperoverHierarchy,orgLoc,loginUser,isGlobalAccess);
 			else
-				file = expensesApprovalService.getExpensesApproverHierarchyListForExcel(expApperoverHierarchy,orgLoc,loginUser);
+				file = expensesApprovalService.getExpensesApproverHierarchyListForExcel(expApperoverHierarchy,orgLoc,loginUser,isGlobalAccess);
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";
@@ -198,11 +204,12 @@ public class ExpensesApprovalRestController {
     	Response<String> reponse = new Response<String>();
     	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		if(user != null && orgLoc != null) {
     	try {
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 	 	expensesApprovalService.updateApprovalStatusByApproverForExpense(expenseId, user.getId(),approvalStatus, rejectedReason,orgLoc);
-	 	ExpensesApproverHierarchy eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(user.getId(), expenseId, orgLoc.getId());
+	 	ExpensesApproverHierarchy eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(user.getId(), expenseId, orgLoc.getId(),isGlobalAccess);
 	 	if(eah != null && eah.getExpenseId() != null){
 	 		 String submissionStatusStr = eah.getExpenseId().getExpenseStatus().getValue();
 	 		 if(StringUtils.isNotEmpty(submissionStatusStr) && 
@@ -219,7 +226,8 @@ public class ExpensesApprovalRestController {
 			 		 
 			 		//For Approvers of EndClient
 			 		 List<ProjectApproverHierarchy> approverList =  projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
-			 		 if(approverList != null && approverList.isEmpty()){
+			 		 if(approverList != null && !approverList.isEmpty()){
+
 			 			 for(ProjectApproverHierarchy  approver : approverList){
 			 				if(!user.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())){
 			 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
@@ -401,5 +409,11 @@ public class ExpensesApprovalRestController {
 		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());  
    }
 	
+    @RequestMapping(value="/getExpenseAttachmentStatus")
+    public String getExpenseAttachmentStatusByCategoryId(@RequestParam(value="categoryId" ,required=true)long categoryId) {
+    	 String isAttachemtRequired = expensesCategoryService.getExpenseAttachmentStatusByCategoryId(categoryId);
+    	return isAttachemtRequired;
+    }
+    
 	
 }

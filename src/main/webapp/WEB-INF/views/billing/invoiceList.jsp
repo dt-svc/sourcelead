@@ -46,7 +46,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Invoices</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoice List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoices List</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="billing_dashboard">
@@ -79,12 +79,7 @@ $(document).ready(function(){
                             </div>
                                 <div class="pull-right ml10">
                                <div class="count" id="unbilledAmoumt"></div>
-                               <c:if test="${!empty draftInvoiceCount }">
-                                <h5>Draft Invoices <span class="paddingLeft" id="draftInvoiceCount"></span></h5>
-                                </c:if>
-                                <c:if test="${empty draftInvoiceCount }">
-                                <h5>Draft Invoices<br><span class="paddingright pull-right">0.0</span></h5>
-                                </c:if>
+                                <h5>Draft Invoices <span class="paddingLeft" id="draftInvoiceCount">0.0</span></h5>
                                 </div>
                         </a>
                     </li>
@@ -96,12 +91,7 @@ $(document).ready(function(){
                             </div>
                             <div class="pull-right ml10">
                             <div class="count" id="dueAfterInvoiceAmount"></div>
-                            <c:if test="${!empty dueAfterInvoiceCount }">
-                              <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
-                           </c:if>
-                            <c:if test="${empty dueAfterInvoiceCount }">
-                              <h5>Overdue Invoices<br><span class="paddingright pull-right">0.0</span></h5>
-                           </c:if>
+                              <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount">0.0</span></h5>
                             </div>
                         
                         </a>
@@ -114,12 +104,7 @@ $(document).ready(function(){
                             </div>
                             <div class="pull-right ml10">
                             <div class="count" id="dueBeforeInvoiceAmount"></div>
-                             <c:if test="${!empty dueBeforeInvoiceCount }">
-                             <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
-                             </c:if>
-                              <c:if test="${empty dueBeforeInvoiceCount }">
-                             <h5>Open Invoices<br><span class="paddingright pull-right">0.0</span></h5>
-                             </c:if>
+                             <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount">0.0</span></h5>
                           </div>
                         </a>
                     </li>
@@ -131,14 +116,7 @@ $(document).ready(function(){
                             </div> 
                             <div class="pull-right ml10">
                             <div class="count" id="paidInvoiceAmount"></div>
-                             <c:if test="${!empty paidInvoiceCount }">
-                              <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
-                             </c:if>
-                             
-                              <c:if test="${empty paidInvoiceCount }">
-                              <h5>Paid Invoices<br><span class="paddingright pull-right">0.0</span></h5>
-                             </c:if>
-                             
+                              <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount">0.0</span></h5>
                             </div>
                         </a>
                     </li>
@@ -163,80 +141,39 @@ $(document).ready(function(){
               <div class="timesheet_out mt">
                 <div class="clearfix">
                   <div class="timesheet_head">
+                  <div class="pull-left cand-advsrch advsrch_chosen">
+				     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetInvoiceFilter();" title="Refresh">
+					    <span class="fa fa-refresh"></span>
+					</button>
+					<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openInvoiceFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+					</a>
+			      </div>
+			    
                     <ul>
-                    
-                      		<li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
-					        	<div id="exportPop" class="ExpPop">
-					              <ul>
-					                <li onclick="exportToReceivablePdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-					                <li onclick="exportToReceivableExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
-					              </ul>
-					            </div>
-					          </li>                    
-                    	
-                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
-                        <div class="approved_pop" id="invoiceTabOne">
-                          <ul>
-                            <li>
-                              <input type="checkbox" value="DRAFT" name="invoiceStatus" id="" onclick="getInvoiceList();" >
-                              <label for="onboard1">Draft</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Sent</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" value="RECEIVED" name="invoiceStatus" id="" onclick="getInvoiceList();" >
-                              <label for="onboard1">Received</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="ACCEPTED" name="invoiceStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Accepted</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="REJECTED" name="invoiceStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Rejected</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="LINKED" name="invoiceStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Linked</label>
-                            </li>
-                          </ul>
-                        </div>
-                      </li>
-                      
-                      <li id="paymentID1"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i>|
-                        <div class="approved_pop" id="paymentTabOne">
-                          <ul>
-                            <li>
-                              <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getInvoiceList();">
-                              <label for="onboard3">Paid</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Partially Paid</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="Overdue" name="paymentStatus" onclick="getInvoiceList();">
-                              <label for="onboard4">Overdue</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getInvoiceList();">
-                              <label for="onboard1">Unpaid</label>
-                            </li>
-                          </ul>
-                        </div>
-                      </li>     
-                       <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
-                      <li><a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
-                     </sec:authorize>
-                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
-                      <div class="clearfix"></div>
+                    <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
+			        	<div id="exportPop" class="ExpPop">
+			              <ul>
+			                <li onclick="exportToReceivablePdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+			                <li onclick="exportToReceivableExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+			              </ul>
+			            </div>
+			          </li>
+			          
+			          <li>
+						<a class="action" onclick="getActions();" href="javascript:void(0)"><i class="fa fa-user-plus"></i>&nbsp;Add<i class="fa fa-caret-down"></i></a>
+						<div class="action-pop">	
+							<span style="width:225px;">
+							 <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
+			                      <a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
+			                  </sec:authorize>
+			                   <a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-gears paddingRight"></i>Generate Automatic Invoice</a>
+							<div class="clearfix"></div>
+							</span>
+						</div>
+					  </li>
                     </ul>
                     <div class="clearfix"></div>
-                     
                   </div>
-                  
                   
                   <div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
@@ -692,6 +629,7 @@ function invoicePagination(url){
 		    	  	if(report.dueAfterInvoiceCount != null && report.dueAfterInvoiceCount != '' && report.dueAfterInvoiceCount != 'undefined'){
 		    	  		$("#dueAfterInvoiceCount").html(report.dueAfterInvoiceCount);
 					}
+		    	  	
 		    	  	if(report.draftInvoiceCount != null && report.draftInvoiceCount != '' && report.draftInvoiceCount != 'undefined'){
 	 					$("#draftInvoiceCount").html(report.draftInvoiceCount);
 					}
@@ -907,7 +845,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
 		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_INVOICE_REMINDER\')">';
-			 result = result +'      <li onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 result = result +'      <a onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</a> ';
 			'</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
@@ -916,11 +854,11 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	 	'</sec:authorize>'
 	 	
 	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
-	     result = result+'<li><a target="_blank" href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
+	     result = result+'<li><a download href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 	     '</sec:authorize>'
 	     if(invoiceStatus != 'DRAFT')
 	     {
-	     result = result +'      <li onclick="linkInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
+	     result = result +'      <a onclick="linkInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</a>';
 	     }
 	     result = result +'    </ul>';
     	 $("#popupDiv"+invoiceUUID+"").append(result);
@@ -999,7 +937,8 @@ function sendReminder(invoiceUUID){
            		} else if (result.response === "AWKWARD") {
            		    location.href = "/errorPage";
            		} else if (result.response === "SUCCESS") {
-           			
+           			$("#msgDiv").html("Successfully you have sent a reminder Mail..");
+          			msgFadein();
            		} else if (result.indexOf('Sign In') !== -1) {
            			location.replace(sourceleadUrl);
            		} else {
@@ -1719,7 +1658,89 @@ function cancelExport(){
 <script>
   $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
-	
 	 
 </script> 
+<!-- ========================== Filter popup Written By Laxman ===============================  -->
+<script>
+function closeInvoiceFilterPop(){
+	$("#invoiceFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openInvoiceFilterPop(){
+	 $("#invoiceFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+function resetInvoiceFilter(){
+	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	getInvoiceList();
+	
+}
+</script>
+
+
+     <div class="advancedsearch-mask"></div>
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="invoiceFilterId">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeInvoiceFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Payment</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="paymnetFilter">
+									<li class="checkBox positionRelative" ><input type="checkbox"  value="Paid" name="paymentStatus"><label for="onboard3">Paid</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="Partial Paid" name="paymentStatus"><label for="onboard2">Partially Paid</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="Overdue" name="paymentStatus"><label for="onboard4">Overdue</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="Unpaid" name="paymentStatus"><label for="onboard1">Unpaid</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						
+						<div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+									<li class="checkBox positionRelative" ><input type="checkbox" value="DRAFT" name="invoiceStatus"><label for="onboard1">Draft</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" value="SENT" name="invoiceStatus"><label for="onboard2">Sent</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" value="RECEIVED" name="invoiceStatus"><label for="onboard1">Received</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="ACCEPTED" name="invoiceStatus"><label for="onboard2">Accepted</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="REJECTED" name="invoiceStatus"><label for="onboard2">Rejected</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="LINKED" name="invoiceStatus"><label for="onboard2">Linked</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+					  </div>
+					  
+					  
+					  
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeInvoiceFilterPop();getInvoiceList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetInvoiceFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+}	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+</script>	
  <jsp:include page="../masterFooter.jsp" />	

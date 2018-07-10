@@ -525,6 +525,11 @@ public class Candidate implements Serializable {
 	 @JsonProperty
 	 private String dateofBirthString;
 	 
+	 
+     @Transient
+	 @JsonProperty
+	 private String candidateTags;
+	 
 	public int getProfilePercentage()
 	{
 
@@ -1647,6 +1652,14 @@ public class Candidate implements Serializable {
 
 	public void setResidenceEndDate(Date residenceEndDate) {
 		this.residenceEndDate = residenceEndDate;
+	}
+
+	public String getCandidateTags() {
+		return candidateTags;
+	}
+
+	public void setCandidateTags(String candidateTags) {
+		this.candidateTags = candidateTags;
 	}
 
 }

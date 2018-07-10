@@ -39,12 +39,21 @@
                   </select>
               </div>
           </div> 
-
+			<div class="form-group">
+              <label class="col-md-4">Process type<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-8 dropdown-select">
+                  <select id="processType" name="processType" class="form-control	" field-name="Process type" data-validation="required">
+                  <option selected value="">--Select Type --</option>
+                  <option ${immigrationDTO.processType == 'Normal' ? 'selected': ''} value='Normal' >Normal (Regular)</option>
+                  <option ${immigrationDTO.processType == 'Premium' ? 'selected': ''} value='Premium' >Premium</option>
+                  </select>
+              </div>
+          	</div> 
             <div class="form-group">
               <label class="col-md-4">Open date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
                <div class="input-group errorInptgroup">
-                <input type="text" id ="openDate" class="form-control calendar" value="${immigrationDTO.openDate}" name="openDate" placeholder="Open Date" field-name="Open date" data-validation="required"/>
+                <input type="text" id ="openDate" class="form-control calendar" value="${immigrationDTO.openDate}" name="openDate" readonly='true' placeholder="Open Date" field-name="Open date" data-validation="required"/>
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('openDate');"></i></span>
               </div>
             </div>
@@ -54,7 +63,7 @@
              <div class="form-group">
               <label class="col-md-4">Receipt No</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" value="${immigrationDTO.receiptNo}" name="receiptNo" id="receiptNo">
+					<input type="text" class="form-control" value="${immigrationDTO.receiptNo}" name="receiptNo" id="receiptNo" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
           </div>
             
@@ -72,7 +81,7 @@
               <label class="col-md-4">Date of arrival</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" id="arrivalDate" class="form-control calendar" value="${immigrationDTO.arrivalDate}" name="arrivalDate" placeholder="Date of arrival"/>
+                <input type="text" id="arrivalDate" readonly='true' class="form-control calendar" value="${immigrationDTO.arrivalDate}" name="arrivalDate" placeholder="Date of arrival"/>
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('arrivalDate');"></i></span>
               </div>
               </div>
@@ -143,7 +152,7 @@
             </c:if>
             <c:if test="${empty immigrationDTO}">
             <c:choose>
-				<c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y' && SourceLeadWeb_orgLocations.isAccountingFirm == 'Y'}">
+				<c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y'}">
 					 <h4 class="col-md-12 mb">2. Company Details</h4>
 				</c:when>
 				<c:otherwise>
@@ -166,7 +175,7 @@
 									</c:if>
 									 <c:if test="${empty immigrationDTO}">
 									 <c:choose>
-									 <c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y' && SourceLeadWeb_orgLocations.isAccountingFirm == 'Y'}">
+									 <c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y'}">
 									 <label class="col-md-4"><span class="pull-left">Company Name</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
 									</c:when>
@@ -229,7 +238,7 @@
 							</c:if>
 							<c:if test="${empty immigrationDTO}">
 							<c:choose>
-								<c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y' && SourceLeadWeb_orgLocations.isAccountingFirm == 'Y'}">
+								<c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y'}">
 									 <label class="col-md-4"><span class="pull-left">Company Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
 								</c:when>
 								<c:otherwise>
@@ -334,7 +343,7 @@
           <div class="form-group">
               <label class="col-md-4">Middle Name</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" value="${immigrationDTO.middleName}" name="middleName" id="middleName">
+					<input type="text" class="form-control" value="${immigrationDTO.middleName}" name="middleName" id="middleName" data-validation="required validate_Space validate_length length1-100" data-validation-optional="true">
               </div>
           </div> 
           <div class="form-group">
@@ -362,14 +371,14 @@
           <div class="form-group">
               <label class="col-md-4">Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="mobile" id="mobile" value="${immigrationDTO.mobile}">
+					<input type="text" class="form-control" name="mobile" id="mobile" value="${immigrationDTO.mobile}" data-validation="required validate_Space validate_phone validate_length length2-100" data-validation-optional="true">
               </div>
           </div>
           
            <div class="form-group">
               <label class="col-md-4">Alternative Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile" value="${immigrationDTO.alternateMobile}">
+					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile" value="${immigrationDTO.alternateMobile}" data-validation="required validate_Space validate_length validate_phone length2-100" data-validation-optional="true">
               </div>
           </div> 
             
@@ -377,7 +386,7 @@
               <label class="col-md-4">DOB<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group errorInptgroup">
-                <input type="text" class="form-control calendar" name="birthDate" id="birthDate" value="${immigrationDTO.birthDate}" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
+                <input type="text" class="form-control calendar" readonly='true' name="birthDate" id="birthDate" value="${immigrationDTO.birthDate}" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('birthDate');"></i></span>
               </div>
               </div>
@@ -413,33 +422,33 @@
              <div class="form-group">
               <label class="col-md-4">SSN</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="ssnNumber" id="ssnNumber" value="${immigrationDTO.ssnNumber}" placeholder="000-00-0000">
+                <input type="text" class="form-control" name="ssnNumber" id="ssnNumber" value="${immigrationDTO.ssnNumber}" placeholder="000-00-0000" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
              <div class="form-group">
               <label class="col-md-4">I-94 Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" value="${immigrationDTO.i_94_number}" placeholder="XXXXXXXXX-XX">
+                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" value="${immigrationDTO.i_94_number}" placeholder="XXXXXXXXX-XX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
            
              <div class="form-group">
               <label class="col-md-4">I-20 SEVIS Number If Student</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="i_20_number"  id="i_20_number" value="${immigrationDTO.i_20_number}" placeholder="N-XXXXXXXXXX">
+					<input type="text" class="form-control" name="i_20_number"  id="i_20_number" value="${immigrationDTO.i_20_number}" placeholder="N-XXXXXXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
                          
             <div class="form-group">
               <label class="col-md-4">EAD Number If Student</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="eadNumber" id="eadNumber" value="${immigrationDTO.eadNumber}" placeholder="">
+                <input type="text" class="form-control" name="eadNumber" id="eadNumber" value="${immigrationDTO.eadNumber}" placeholder="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX">
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
             
@@ -447,7 +456,7 @@
               <label class="col-md-4">Previous LCA Start Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" id="prevLcaStartDate" name="prevLcaStartDate" value="${immigrationDTO.prevLcaStartDate}" placeholder="Previous LCA Start Dates" type="text">
+                <input class="form-control calendar" readonly='true' id="prevLcaStartDate" name="prevLcaStartDate" value="${immigrationDTO.prevLcaStartDate}" placeholder="Previous LCA Start Dates" type="text">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaStartDate');"></i></span>
             </div>
               </div>
@@ -457,7 +466,7 @@
               <label class="col-md-4">Previous LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" id="prevLcaEndDate" name="prevLcaEndDate" value="${immigrationDTO.prevLcaEndDate}" placeholder="Previous LCA End date" type="text">
+                <input class="form-control calendar" readonly='true' id="prevLcaEndDate" name="prevLcaEndDate" value="${immigrationDTO.prevLcaEndDate}" placeholder="Previous LCA End date" type="text">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaEndDate');"></i></span>
             </div>
               </div>
@@ -545,7 +554,7 @@
             <div class="form-group">
               <label class="col-md-4">Employer</label>
               <div class="col-md-8">
-                <input type="text"  class="form-control" value="${immigrationDTO.employer}" name="employer" id="employer">
+                <input type="text"  class="form-control" value="${immigrationDTO.employer}" name="employer" id="employer" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
             
@@ -603,7 +612,7 @@
               <label class="col-md-4">Start Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" id="jobStartDate" value="${immigrationDTO.jobStartDate}" name="jobStartDate" placeholder="Start Date">
+                <input type="text" class="form-control calendar" readonly='true' id="jobStartDate" value="${immigrationDTO.jobStartDate}" name="jobStartDate" placeholder="Start Date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('jobStartDate');"></i></span>
             </div>
               </div>
@@ -613,7 +622,7 @@
               <label class="col-md-4">End Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" value="${immigrationDTO.jobEndDate}" name="jobEndDate" id="jobEndDate" placeholder="End Date">
+                <input type="text" class="form-control calendar" readonly='true' value="${immigrationDTO.jobEndDate}" name="jobEndDate" id="jobEndDate" placeholder="End Date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('jobEndDate');"></i></span>
             </div>
               </div>
@@ -622,7 +631,7 @@
              <div class="form-group">
               <label class="col-md-4">LCA Number</label>
               <div class="col-md-8">
-                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="I-XXX-XXXXX-XXXXXX">
+                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
           </div>
             
@@ -630,7 +639,7 @@
               <label class="col-md-4">LCA Start date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start dates">
+                <input type="text" class="form-control calendar" readonly='true' id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start dates">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaStartDate');"></i></span>
             </div>
               </div>
@@ -639,7 +648,7 @@
               <label class="col-md-4">LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" value="${immigrationDTO.lcaEndDate}" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
+                <input type="text" class="form-control calendar" readonly='true' value="${immigrationDTO.lcaEndDate}" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaEndDate');"></i></span>
             </div>
               </div>
@@ -696,7 +705,7 @@
               <label class="col-md-4">Zip Code</label>
               <div class="col-md-8">
                   <input class="form-control" value="${immigrationDTO.zipcode}" id="zipcode" name="zipcode"
-								placeholder="Zip code" type="text" ></input>
+								placeholder="Zip code" type="text" data-validation="validate_Space validate_length validate_zipcode length2-8" data-validation-optional="true"></input>
               </div>
             </div>
 		    
@@ -711,7 +720,7 @@
               <label class="col-md-4">Start Date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group errorInptgroup">
-                <input type="text" class="form-control calendar" id="residenceStartDate" value="${immigrationDTO.residenceStartDate}" name="residenceStartDate" placeholder="Start Date" field-name="Start Date" data-validation="required">
+                <input type="text" class="form-control calendar" readonly='true' id="residenceStartDate" value="${immigrationDTO.residenceStartDate}" name="residenceStartDate" placeholder="Start Date" field-name="Start Date" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceStartDate')"></i></span>
               </div>
               </div>
@@ -722,12 +731,13 @@
          </div> <!--  dynamic div end -->
 		<div class="clearfix"></div>
 		<div class="addImmiFoot">
+		<div class="pull-right">
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
-			
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('save')" class="nextBtn">Save As Draft</a>
-			<a href="javascript:void(0)" id="sendRequestButton" onclick="immigration.savePageAndContinue('sendRequest')" class="nextBtn">Send Request</a><!--  should be Send Request -->.
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('saveContinue')" id="savePageOneContinue" class="nextBtn">Save &amp; Continue</a>
+			<input type="button" value="Save & Continue" id="savePageOneContinue" onclick="immigration.savePageAndContinue('saveContinue');" class="btn btn-primary">
+			<input type="button" value="Send Request" id="sendRequestButton" onclick="immigration.savePageAndContinue('sendRequest');" class="btn btn-primary">
+			<input type="button" value="Save As Draft" id="saveAsDraftButton" onclick="immigration.savePageAndContinue('save');" class="btn btn-primary">
 			<div class="clearfix"></div>
+		</div>
 		</div>
 	</div>
 	</form>
@@ -806,7 +816,7 @@
 	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Zip Code</label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ "          <input class='form-control' id='zipcode"+rowId+"' value='"+(typeof residenceVal[6]==="undefined"?"":residenceVal[6])+"' name='residenceList["+rowId+"].zipcode'";
+	   prepareResidencediv =prepareResidencediv+ "          <input class='form-control' id='zipcode"+rowId+"' value='"+(typeof residenceVal[6]==="undefined"?"":residenceVal[6])+"' name='residenceList["+rowId+"].zipcode' data-validation='validate_Space validate_length validate_zipcode length2-8' data-validation-optional='true'";
 	   prepareResidencediv =prepareResidencediv+ " 						placeholder='Zip code' type='text' ></input>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "     </div>";
@@ -815,7 +825,7 @@
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Start Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group errorInptgroup'>";
-	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' id='residenceStartDate"+rowId+"' value='"+(typeof residenceVal[7]==="undefined"?"":residenceVal[7])+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' field-name='Start Date' data-validation='required' placeholder='Start Date'>";
+	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' readonly='true' id='residenceStartDate"+rowId+"' value='"+(typeof residenceVal[7]==="undefined"?"":residenceVal[7])+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' field-name='Start Date' data-validation='required' placeholder='Start Date'>";
 	   prepareResidencediv =prepareResidencediv+ "         <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceStartDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
@@ -824,7 +834,7 @@
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>End Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group errorInptgroup'>";
-	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar'  id='residenceEndDate"+rowId+"' value='"+(typeof residenceVal[8]==="undefined"?"":residenceVal[8])+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' field-name='End Date' data-validation='required' placeholder='End Date'>";
+	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar' readonly='true' id='residenceEndDate"+rowId+"' value='"+(typeof residenceVal[8]==="undefined"?"":residenceVal[8])+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' field-name='End Date' data-validation='required' placeholder='End Date'>";
 	   prepareResidencediv =prepareResidencediv+ "        <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceEndDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "      </div>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
@@ -952,14 +962,11 @@ $("#experienceValue").change(function () {
 		        url: sourceleadUrl+immiModulePath+"/getUscisTypeDropDown", 
 		        success: function(data) {
 		        	$('#currUscisStatus').empty();
-		        	$('#currUscisStatus').append('<option value="">--Select Type --</option>');
+		        	$('#currUscisStatus').append('<option selected value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
 		            	  if(opt.id == status){
 		            		$('#currUscisStatus').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
-		            		if(opt.name != 'Draft'){
-		            			$("#sendRequestButton").hide();
-		            		}
 		            	  }else{
 		            		$('#currUscisStatus').append('<option value='+opt.id+' >'+opt.name+'</option>');
 		            	  }
@@ -1053,7 +1060,11 @@ $("#experienceValue").change(function () {
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#attorneyId').empty();
-		        	$('#attorneyId').append('<option value="">--Select Attorney --</option>');
+		        	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+		        		$('#attorneyId').append('<option value="">--Select Company --</option>');
+		        	}else{
+		        		$('#attorneyId').append('<option value="">--Select Attorney --</option>');
+		        	}
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            	  if(opt.id == attorneyId){
@@ -1092,7 +1103,11 @@ $("#experienceValue").change(function () {
 			        success: function(json) {
 			        	//var json = JSON.parse(data);
 			        	$('#attorneyContact').empty();
-			        	$('#attorneyContact').append('<option value="">--Select Attorney contact--</option>');
+			        	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+			        		$('#attorneyContact').append('<option value="">--Select Company contact--</option>');
+			    		}else{
+			    			$('#attorneyContact').append('<option value="">--Select Attorney contact--</option>');
+			    		}
 			             for(var i=0;i<json.data.length;i++){
 			            	 var opt = json.data[i];
 			            	 if(opt.id == attorneyContactId){
@@ -1110,11 +1125,23 @@ $("#experienceValue").change(function () {
  </script>
    <script type="text/javascript">
    
-   function onLoadStatusChange(){
-	   if($( "#currUscisStatus option:selected" ).text() != "Draft"){
+   function onLoadStatusChange(status){
+	   var uscisStatusVal = $("#currUscisStatus option:selected").text();
+	   if(status != null){
+		   uscisStatusVal = status;
+	   }
+	   if(uscisStatusVal == "Draft"){
 		   $("#sendRequestButton").hide();
-	   }else{
+		   $("#savePageOneContinue").hide();
+		   $("#saveAsDraftButton").show();
+	   }else if(uscisStatusVal == "Request to fill"){
 		   $("#sendRequestButton").show();
+		   $("#savePageOneContinue").hide();
+		   $("#saveAsDraftButton").hide();
+	   }else{
+		   $("#sendRequestButton").hide();
+		   $("#savePageOneContinue").show();
+		   $("#saveAsDraftButton").hide();
 	   }
    }
    
@@ -1126,10 +1153,8 @@ $("#experienceValue").change(function () {
 		  getAttorneyContactList("${immigrationDTO.attorneyId}","${immigrationDTO.attorneyContact}");
 		 getCandidatesByOrgLocation("${immigrationDTO.candidateId}");
 		  getPetitionTypeDropDown("${immigrationDTO.petitionType}");
-		  if("${immigrationDTO.currUscisStatus}" == null){
-		  	onLoadStatusChange();
-		  }
-		  getUscisTypeDropDown("${immigrationDTO.currUscisStatus}");
+		  getUscisTypeDropDown("${immigrationDTO.currUscisStatusId}");
+		  onLoadStatusChange("${immigrationDTO.currUscisStatus}");
 		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
 		  jobTitleDropDown("${immigrationDTO.jobId}");
 		  if("${immigrationDTO.immigrationId}" == ""){
@@ -1249,28 +1274,14 @@ $("#experienceValue").change(function () {
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
-		      onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '+1d');
-		            console.log("dt");
-			           console.log(dt);
-			           console.log("dt.getDate()");
-			           console.log(dt.getDate());
-		            dt.setDate(dt.getDate() + 1);
-		            $("#lcaEndDate").datepicker("option", "minDate", dt);
-		        }
+		  	  maxDate:0  
 		  });
 		  
 		  $('#lcaEndDate').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
-		        onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '-1d');
-		            dt.setDate(dt.getDate() - 1);
-		            $("#lcaStartDate").datepicker("option", "maxDate", dt);
-		        }
+		  	   minDate:1 
 		  });
 		  ///
 		  
@@ -1327,7 +1338,7 @@ function  removeValidationAttorneyContact() {
 </script>
 <script>
 	 function selectedAttorney(){
-		 var vid =  $('#attorneys').val();
+		 var vid =  $('#attorneyId').val();
 		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>

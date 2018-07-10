@@ -344,6 +344,7 @@ public class TimesheetEmailUtil {
 				emailMessage.setToEmail(projectManager.getEmail());
 				emailMessage.setFromEmail(loginUser.getEmail());
 				emailMessage.setCreatedBy(loginUser.getUserCode());
+				emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyStartDate);
 				String endDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyEndDate);
 

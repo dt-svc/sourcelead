@@ -89,14 +89,14 @@
         <div class="clearfix"></div>  
           
           
-          <div class="candidate_wrap_table datatable_filter positionRelative">
+          <div class="candidate_wrap_table datatable_filter positionRelative" style='position:relative; top:-20px;'>
 	          <div id="onboardingLoading"></div>
 	         
 		    <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
 		    	<div id="onboardingCandidatesList" class="datatable_filter"></div>
 			</div>	  
 	         
-	        <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
+	        <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
 		    	<div id="offboardingCandidatesList" class="datatable_filter"></div>
 			</div>	
 	          
@@ -132,8 +132,10 @@
 	  
 	  
 	    var result = "";
-	 	result = result +" <div class='remove_search' style='top:-20px;'>";
+	 	result = result +" <div class='dynamic_search pull-right mr'>";
 	 	result = result +" <input type='text' placeholder='Search' id='onboardDataTableSearch'/>";
+	 	result = result +" <span class='cursorPointer faSearch' title='Search'><i class='fa fa-search' onClick='onboardDataTableList();'></i></span>";
+
 	 	result = result +"</div>";
 	 	
 	 	result = result + '<table id="onboardListTable" class="display mt10" cellspacing="0" width="100%" >';
@@ -342,11 +344,12 @@ function onboardPagination(url,sourceleadUrl){
 	  
 	  
 	    var result = "";
-	 	result = result +" <div class='remove_search' style='top:-20px;'>";
+	 	result = result +" <div class='dynamic_search pull-right mr'>";
 	 	result = result +" <input type='text' placeholder='Search' id='offboardDataTableSearch'/>";
+	 	result = result +" <span class='cursorPointer faSearch' title='Search'><i class='fa fa-search' onClick='offboardDataTableList();'></i></span>";
 	 	result = result +"</div>";
 	 	
-	 	result = result + '<table id="offboardListTable" class="display" cellspacing="0" width="100%" >';
+	 	result = result + '<table id="offboardListTable" class="display mt10" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result +'	<th>Candidate Name</th>';

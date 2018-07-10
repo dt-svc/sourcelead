@@ -1,7 +1,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <jsp:include page="../masterHeader.jsp" />
@@ -21,25 +20,36 @@
 background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 }
 </style>
+<c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/>
 <c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
 <c:set var ="visaOnLoadCount" value = "${tabRecordCountMap['Visa']}" scope="request"/>
 <c:set var ="empOnLoadCount" value  =  "${tabRecordCountMap['Employers']}" scope="request"/>
 <c:set var ="resiOnLoadCount" value = "${tabRecordCountMap['Residence']}" scope="request"/>
 <c:set var ="eduOnLoadCount" value  = "${tabRecordCountMap['Education']}" scope="request"/>
 <c:set var ="familyOnLoadCount" value  = "${tabRecordCountMap['Family']}" scope="request"/>
+<c:set var ="taskOnLoadCount" value  = "${tabRecordCountMap['Tasks']}" scope="request"/>
 <c:set var ="curUscisMyImmi" value = "${immigration.currUscisStatus}" scope="session"/>
  <section class="content-wraper content-wraperNew">
-   
+	        <div class="success_pop" id="selector" >
+	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+			</div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>${immigration.generatedId}</h2>
         <!-- <span id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download Package</span> -->
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigrations List</a> &raquo; Immigration Summery</div>
-      <input type="hidden" id = "candidateID" value = "${candidateId}">
+       <c:choose>
+	   		<c:when test="${myImmigrationPage =='Y'}">
+	   			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/myImmigration">My Immigration List</a> &raquo; My Immigration Summary</div>
+			</c:when>
+			<c:otherwise>
+				<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigration List</a> &raquo; Immigration Summary</div>
+			</c:otherwise>
+		</c:choose>
+      
+        <input type="hidden" id = "candidateID" value = "${candidateId}">
 		<input type="hidden" id = "immigrationID" value = "${immigrationId}">
 		<input type="hidden" id = "templateID" value = "${templateId}">
-      
     </section>
     
 	<section class="immigraTabsWrap">
@@ -54,19 +64,21 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 				<p><strong>Visa Type</strong>: ${immigration.petitionType}</p>
 				<p><strong>Attorney</strong>: ${immigration.attorneyName}</p>
   			</div>
-  			
+  			<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				       <div class="col-md-4">
+	  						<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
+	  					</div>
+				    </c:when>
+				    <c:otherwise>
+				    </c:otherwise>
+			</c:choose>
   			<div class="col-md-2 clearfix mt10">
   				<p id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt mr10"></i>Download Package</p>
   			</div>
   			
   			<div class="col-md-2 immHeadactions clearfix">
-  			
-  			
-  			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val(),${immigration.currUscisStatusId});" <c:if test = "${myImmigrationPage =='Y'}">disabled</c:if> class="form-control selectdisabled selstyles-new">
-  				<c:forEach var="item" items="${uscisStatusList}">
-  					<option ${immigration.currUscisStatusId == item.id ? 'selected' : '' } value="${item.id}">${item.name}</option>
-  				</c:forEach>
-  			</select>
+  				<span>${immigration.currUscisStatus}</span>
   			</div>
   		</div>
 		<div class="immigraHead">
@@ -75,70 +87,80 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
               <li><a href="#passportsTab"><i id ="passportfilled" class="fa fa-check-circle-o"></i>Passport</a></li>
               <li><a href="#visasTab"  id="visaInfoTab" class="${visaOnLoadCount==null?'disabledLink':''}"><i id ="visafilled" class="fa fa-check-circle-o"></i>Visa</a></li>
               <li><a href="#employersTab" id="employersInfoTab" class="${empOnLoadCount==null?'disabledLink':''}"><i id ="employersfilled" class="fa fa-check-circle-o"></i>Employers</a></li>
-              <li><a href="#residencesTab" id="residenceInfoTab" class="${resiOnLoadCount==null?'disabledLink':''}"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
               <li><a href="#educationsTab" id="educationInfoTab" class="${eduOnLoadCount==null?'disabledLink':''}"><i id ="educationfilled" class="fa fa-check-circle-o"></i>Educations</a></li>
+              <li><a href="#residencesTab" id="residenceInfoTab" class="${resiOnLoadCount==null?'disabledLink':''}"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
               <li><a href="#familiesTab" class="${familyOnLoadCount==null?'disabledLink':''}"><i id ="familyfilled" class="fa fa-check-circle-o"></i>Family</a></li>
               <li><a href="#formsTab"><i id="allFormsfilled" class="fa fa-check-circle-o"></i>Forms</a></li>
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
-              <li><a href="#tasksTab"><i id="tasksInfoTab" class="fa fa-check-circle-o"></i>Tasks</a></li>
+              <li><a href="#tasksTab"><i id="tasksInfoTab" class="${taskOnLoadCount==null?'fa fa-check-circle-o':''}"></i>Tasks</a></li>
               <li><a href="#notesTab">Notes</a></li>
-              <li><a href="#activitiesTab" id= "#activitiesId">Activities</a></li>
+              <li><a href="#activitiesTab" id= "#activitiesId">Timeline</a></li>
               <div class="clearfix"></div>
             </ul>
 		</div>	
 		
 		</div>
-		
-	
-	
+
   
 	  <div id="detailsTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingDetailsTab"></div>
 		 	<jsp:include page="petitionDetailsTab.jsp" />	  		  		  
 		
 	  </div>
 	  
 	  <div id="docsTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingDocsTab"></div>
 		<jsp:include page="documentDetailsTab.jsp" />	
 		
 	  </div>
 	  
 	  <div id="employersTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingEmployersTab"></div>
 		<jsp:include page="employerDetailsTab.jsp" />	
 	  </div>
 	  
 	  <div id="residencesTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingResidencesTab"></div>
 		<jsp:include page="residenceDetailsTab.jsp" />
 	  </div>	 
 	   
 	  <div id="educationsTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingEducationsTab"></div>
 		<jsp:include page="educationDetailsTab.jsp" />
 	  </div>
 	  
 	  <div id="familiesTab" class="immigraTabs_inn">
+	 	 <div id="immigrationLoadingFamiliesTab"></div>
 		<jsp:include page="familyDetailsTab.jsp" />
 	  </div>	
 	  
 	  <div id="notesTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingNotesTab"></div>
 		<jsp:include page="noteDetailsTab.jsp" />
 	  </div>  
 	  
 	  <div id="activitiesTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingActivitiesTab"></div>
 		<jsp:include page="activityDetailsTab.jsp" />
 	  </div> 
 	   
 	   <div id="visasTab" class="immigraTabs_inn">
+	   <div id="immigrationLoadingVisasTab"></div>
 		<jsp:include page="visaDetailsTab.jsp" />
 	  </div>
 	  	  
 	  <div id="passportsTab" class="immigraTabs_inn">
+	   <div id="immigrationLoadingPassportsTab"></div>
 		<jsp:include page="passportDetailsTab.jsp" />
 	  </div>	  
 	  
 	   <div id="formsTab" class="immigraTabs_inn">
+	   <div id="immigrationLoadingFormsTab"></div>
 		<jsp:include page="formDetailsTab.jsp" />
 	  </div>
 	  
 	  <div id="tasksTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingTasksTab"></div>
 		<jsp:include page="taskDetailsTab.jsp" />
 	  </div>
 
@@ -153,6 +175,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 
 <!--   Popup Code  -->
 <div class="popMask"></div>
+	<div id="deletepopUp"></div>
 
 <script>
 $(document).ready(function() {
@@ -188,6 +211,8 @@ var addfamilyPopupEventListener = function() {
 // project side bar tabs
 $(document).ready(function() {
 	$("#detailsTab").show()
+	$("#remove_immigration_pop").remove();
+	$(".project_inn_mask").remove();
 	addfamilyPopupEventListener();
     $(".immigraTabs a").click(function(event) {
         event.preventDefault();
@@ -195,31 +220,41 @@ $(document).ready(function() {
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
         $(".immigraTabs_inn").not(tab).css("display", "none");
-        if(tab=='#deatilsTab'){
-        	immigration.displayPetitionDetails(immigrationId);
+        if(tab=='#detailsTab'){
+        	showLoading("immigrationLoadingDetailsTab");
+      		immigration.displayPetitionDetails(immigrationId);
         }else if(tab=='#familiesTab'){
+        	showLoading("immigrationLoadingFamiliesTab");
         	immigration.displayFamilyDetails(candidateId);
         }else if(tab=='#educationsTab'){
+        showLoading("immigrationLoadingEducationsTab");
         getCandidateEducationList(candidateId);
         } else if(tab=='#employersTab'){
+        showLoading("immigrationLoadingEmployersTab");
         getCandidateEmployerList(candidateId);
         }else if(tab=='#residencesTab'){
+        	showLoading("immigrationLoadingResidencesTab");
         	getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
+        showLoading("immigrationLoadingPassportsTab");
         immigration.displayPassportDetails(candidateId,'Passport');
         }else if(tab=='#visasTab'){
+        showLoading("immigrationLoadingVisasTab");
         immigration.displayVisaDetails(candidateId,'Visa');
         }else if(tab=='#docsTab'){
-        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"");
+        	showLoading("immigrationLoadingDocsTab");
+        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
         }else if(tab =='#notesTab'){
+        	showLoading("immigrationLoadingNotesTab");
         	getNotesListByImmigration(candidateId);
         } else if(tab=='#formsTab'){
-        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"");
-        	console.log("immigrationId --->"+immigrationId)
+        	showLoading("immigrationLoadingFormsTab");
+        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
         }else if(tab=='#activitiesTab'){
+        	showLoading("immigrationLoadingActivitiesTab");
         	getImmigrationActivies();
         }else if(tab=='#tasksTab'){
-        	
+        	showLoading("immigrationLoadingTasksTab");
         	getImmigrationTasks(immigrationId,"${myImmigrationPage}","");
         }
         
@@ -255,6 +290,10 @@ $(document).ready(function() {
 </script> 
     <!-- Script for Linked Invoice pop -->
     <script>
+    function showLoading(loadingId){
+    	$("#"+loadingId).attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; right:0px; margin:0px auto; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    }
+    
         $(".sendReminder").click(function(){
         $('.modal.modal_invoice').fadeIn(200);
         $('.side_mask').fadeIn(200);
@@ -294,26 +333,65 @@ $("#packageZipfile").click(function() {
 });
 </script>
 <script>
-	function goToSummaryTab(tabName) {
+
+
+	function deleteImmigrationRecord(elem,arg1,arg2){
+    	$(".project_inn_mask").remove();
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_immigration_popup' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <b>Do you want to remove record permanently?</b>";
+		result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+		result = result +"	</div>";
+		$("#deletepopUp").append(result);
+		$("#remove_immigration_popup").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+   
+		}
+	
+	function deleteImmigrationPopupDiv(){
+		$("#remove_immigration_popup").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+		$("#deletepopUp").empty();
+	}
+	function deleteImmigrationRecordById(elem, arg1, arg2){	
+		if(typeof elem ==='function') {
+			elem(arg1, arg2);
+		}
+		else{
+			alert("Not a valid Function call.");
+		}
+	}
+	
+	
+	 function cancelImmigrationDelete(){
+		 deleteImmigrationPopupDiv();
+		}
+
+
+	
+
+	function goToSummaryNextTab(tabName) {
 		if(tabName=="#visasTab"){
 			if($('#passportTbl tr').length<=1){
 				showWarningPopup("Passport");
 			return;
 			}
 		}else if(tabName=="#residencesTab"){
-			if($('#employerTbl tr').length<=1){
-				showWarningPopup("Employer");
+			if($('#educationTbl tr').length<=1){
+				showWarningPopup("Education");
 			return;
 			}
 		}else if(tabName=="#educationsTab"){
-			if($('#residenceTbl tr').length<=1){
-				showWarningPopup("Residence");
+			if($('#employerTbl tr ').length<=1){
+				showWarningPopup("Employer");
 			return;
 			}
 		}
 		else if(tabName=="#familiesTab"){
-			if($('#educationTbl tr').length<=1){
-				showWarningPopup("Education");
+			if($('#residenceTbl tr').length<=1){
+				showWarningPopup("Residence");
 			return;
 			}
 		}	
@@ -346,8 +424,11 @@ $("#packageZipfile").click(function() {
 		$("a[href='" + tabName + "']").removeClass("disabledLink");
 		$("a[href='" + tabName + "']").click();
 	}
-
 	
+	function goToSummaryTab(tabName) {
+		$("a[href='" + tabName + "']").removeClass("disabledLink");
+		$("a[href='" + tabName + "']").click();
+	}
 	function changeUscisStatusForImmigration(uscisStatusId,uscisOldId){
 		 $.ajax({
 		    	type: "GET",
@@ -388,6 +469,11 @@ function showWarningPopup(tabName, multiWarnMsg){ // multiWarnMsg populated when
 		$(".project_inn_mask").fadeOut(200);
 		$(".project_inn_mask").remove();
 		$("#remove_immigration_pop").remove();
+	}
+	function showSuccessMsg(msg){
+		$('#selector').show();
+		$('#msgDiv').text(msg)
+		setTimeout(function(){ $('#selector').hide();$('#msgDiv').text("") }, 1000);
 	}
 </script>
 <jsp:include page="../masterFooter.jsp" />

@@ -36,7 +36,7 @@
 				</c:choose>
 		  	<span><input class="immigraTabSerach" id="familySerach" type="text" placeholder="Name/Relationship"></span>
 		</div>
-	  	<div class="immigraTable">
+	  	<div class="immigraTable overflow_Auto">
 		  <table>
 			<tbody>
 			  <tr>
@@ -62,16 +62,16 @@
 			  </tr>
 			  <c:forEach var="items" items="${familyList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-me">${items.firstName}</div></td>
-				<td><div class="tbldata-dotdot-me">${items.relation}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${items.dateOfBirthStr}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${!empty items.placeOfBirth ? items.placeOfBirth : '---'}</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty items.currentAddress ? items.currentAddress : '---'}</div></td>
+				<td><div class="tbldata-dotdot inlineBlock" title = "${items.firstName}">${items.firstName}</div></td>
+				<td><div class="tbldata-dotdot-100 inlineBlock" title = "${items.relation}">${items.relation}</div></td>
+				<td><div class="tblminwidth-75" title = "${items.dateOfBirthStr}">${items.dateOfBirthStr}</div></td>
+				<td><div class="tbldata-dotdot-vsm" title = "${items.placeOfBirth}">${!empty items.placeOfBirth ? items.placeOfBirth : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${items.currentAddress}">${!empty items.currentAddress ? items.currentAddress : '---'}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" class="glyphicon glyphicon-pencil cursorPointer"onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
 							></i><i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer"
-							 onclick="immigration.deleteFamilyDetailsById(${items.id});" 
+							 onclick="deleteImmigrationRecord('immigration.deleteFamilyDetailsById',${items.id});" 
 							 ></i></div></td>
 				    </c:when>
 				    <c:otherwise>
@@ -79,7 +79,7 @@
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
 						        <td><div><i id="edit" class="glyphicon glyphicon-pencil cursorPointer"onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
 									></i><i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer"
-									 onclick="immigration.deleteFamilyDetailsById(${items.id});" 
+									 onclick="deleteImmigrationRecord('immigration.deleteFamilyDetailsById',${items.id});" 
 									 ></i></div></td>
 						    </c:when>
 						    <c:otherwise>
@@ -116,25 +116,25 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
+              		<input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="middleName" name="middleName" placeholder="Middle Name"class="form-control" />
+              		<input type="text" id="middleName" name="middleName" placeholder="Middle Name"class="form-control" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true"/>
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="lastName" name="lastName" class="form-control" placeholder="last Name" field-name="Last Name" data-validation="required" />
+              		<input type="text" id="lastName" name="lastName" class="form-control" placeholder="last Name" field-name="Last Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Marriage<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="marriagePlace" name="marriagePlace" class="form-control" placeholder="Place Of Marriage" field-name="Place Of Marriage" data-validation="required"/>
+              		<input type="text" id="marriagePlace" name="marriagePlace" class="form-control" placeholder="Place Of Marriage" field-name="Place Of Marriage" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"/>
 				</div>
 			</div>                           				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -167,20 +167,21 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="placeOfBirthSpouse" name="placeOfBirth"  class="form-control" placeholder="Place Of Birth" />
+              		<input type="text" id="placeOfBirthSpouse" name="placeOfBirth"  class="form-control" placeholder="Place Of Birth" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="currentAddress" name="currentAddress" class="form-control" placeholder="Address"/>
+              	<input class="form-control positionRelative" id="currentAddress" name="currentAddress" onclick="initLocationAuto('currentAddress');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('currentAddress');"></i>
 				</div>
 			</div>																		
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Spouse');" class="" type="button">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Spouse');" class="" type="button">
+            <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div>	<!--  spouse popup end -->
 	</form>.
@@ -195,19 +196,19 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
+              		<input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  />
+              		<input type="text" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true"/>
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required" />
+              		<input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" />
 				</div>
 			</div>                         				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -222,20 +223,22 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth"/>
+              		<input type="text" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="currentAddress" name="currentAddress" placeholder="Address" class="form-control"  />
+              	<input class="form-control positionRelative" id="currentAddressChild" name="currentAddress" onclick="initLocationAuto('currentAddressChild');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('currentAddressChild');"></i>
+				
 				</div>
 			</div>																		
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Child');" class="" type="button">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Child');" class="" type="button">
+            <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!--  child popup end -->	
 	</form>
@@ -250,19 +253,19 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
+              		<input type="text" class="form-control" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  />
+              		<input type="text" class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true"/>
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required" />
+              		<input type="text" class="form-control" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" />
 				</div>
 			</div>                         				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -277,20 +280,22 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth"/>
+              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="currentAddress" name="currentAddress" placeholder="Address" class="form-control" />
+              	<input class="form-control positionRelative" id="currentAddressFather" name="currentAddress" onclick="initLocationAuto('currentAddressFather');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('currentAddressFather');"></i>
+				
 				</div>
 			</div>																		
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Father');"class="" type="button">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Father');"class="" type="button">
+            <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div>	<!--  Father popup start -->
 	</form>
@@ -305,19 +310,19 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text"  class="form-control" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
+              		<input type="text"  class="form-control" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text"  class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  />
+              		<input type="text"  class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true"/>
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required" />
+              		<input type="text" class="form-control" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" />
 				</div>
 			</div>                         				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -332,30 +337,34 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth"/>
+              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="currentAddress" name="currentAddress" placeholder="Address" class="form-control" />
+              	<input class="form-control positionRelative" id="currentAddressMother" name="currentAddress" onclick="initLocationAuto('currentAddressMother');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('currentAddressMother');"></i>
+				
 				</div>
 			</div>																		
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Mother');"class="" type="button">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Mother');"class="" type="button">
+            <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div>	<!--mother popcode end  -->
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
-				<input type="button" value="Back" onclick="goToSummaryTab('#educationsTab');" class="btn btn-default btn-sm">
-             	<input type="button" value="Skip" onclick="goToSummaryTab('#formsTab');" class="btn btn-default btn-sm"> 
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#formsTab');" class="btn btn-primary btn-sm ml10">
+				<input type="button" value="Back" onclick="goToSummaryTab('#residencesTab');" class="btn btn-default btn-sm">
+             	<input type="button" value="Skip" onclick="goToSummaryNextTab('#formsTab');" class="btn btn-default btn-sm"> 
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#formsTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 	</form>
+	
+	
 	<script>
 	   function resetFormData(id){
 		   $('#'+id)[0].reset() // reset the form data.
@@ -389,6 +398,17 @@
 				$("#spousePopView, #childPopView, #fathPopView, #mothPopView").fadeOut(100);
 				familyMemberId =""; 
 			});	
+            
+            
+			function popFun() {
+				$('#spousePopView').find('p.jquery_form_error_message').remove();
+				$('#childPopView').find('p.jquery_form_error_message').remove();
+				$('#fathPopView').find('p.jquery_form_error_message').remove();
+				$('#mothPopView').find('p.jquery_form_error_message').remove();
+				$("#family_SaveButton").removeAttr("disabled");
+			}
+		
+		
 		</script>
 	
 	<script>	

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -156,13 +157,14 @@ public class JobPipelineReoprtsRestController {
 		            
 					JobPipelineDTO report = new JobPipelineDTO();
 					
-					Integer openJobcount    = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "OPEN");
-					Integer onholdJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "ONHOLD");
-					Integer closedJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "CLOSED");
-					Integer unfilledclosedJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "UNFILLEDCLOSED");
-					Integer filledclosedJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "FILLEDCLOSED");
-					Integer cancelJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "CANCEL");
-					
+					List<Requirement> requirementList = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates);
+					Integer openJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("OPEN")).collect(Collectors.toList()).size();
+					Integer onholdJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("ONHOLD")).collect(Collectors.toList()).size();
+					Integer closedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("CLOSED")).collect(Collectors.toList()).size();
+					Integer unfilledclosedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("UNFILLEDCLOSED")).collect(Collectors.toList()).size();
+					Integer filledclosedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("FILLEDCLOSED")).collect(Collectors.toList()).size();
+					Integer cancelJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("CANCEL")).collect(Collectors.toList()).size();
+
 					int count = 1;
 					int dupCount = 0;
 			    	List<RequirementSubmission> reqSubmissionList = jobsPipelineReportService.getAllJobsReportCountByOrglocationIdAndLoginUserCodeAndStartAndEndDate(jobIdList, searchDates);

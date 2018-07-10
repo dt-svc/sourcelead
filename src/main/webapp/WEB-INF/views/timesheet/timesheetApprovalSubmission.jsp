@@ -83,11 +83,20 @@ function datatableBody(){
 <script>
 function exportTimeSheetToPdfOrExcel(exportType){
 	 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-		var frequencyMonth = $("#frequencyMonth").val();
-		var timesheetFrequency = $('#timesheetFrequency').val();
-		var stage = $('#stage').val();
-		var client = $('#client').val();
-		var weekFrequency = $('#weekFrequency').val();
+		
+	    var frequencyMonth = $('input[id=frequencyMonth]:checked').val();
+        var timesheetFrequency = $('input[id=timesheetFrequency]:checked').val();
+          
+		var stage = $('input[id=stage]:checked').val();
+		var client ='';
+		if(client!= null && client !='' && client !='undefined'){
+		   client = $('input[id=client]:checked').val();
+		}
+		var project = '';
+		if(project!= null && project !='' && project !='undefined'){
+			project = $('input[id=project]:checked').val();
+		}
+		var weekFrequency = $('input[id=weekFrequency]:checked').val();
 		if(weekFrequency != null && weekFrequency !='undefined'){
 		var date = weekFrequency.split("To");
 		var startDate = date[0];
@@ -95,7 +104,7 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		}
 		window.location.href = sourceleadUrl
 				+ "/getExportTimeSheetForApprovalMechanizm?&startDate="
-				+ startDate + "&endDate=" + endDate + "&client=" + client
+				+ startDate + "&endDate=" + endDate + "&client=" + client+ "&project=" + project
 				+ "&stage=" + stage + "&timesheetFrequency="
 				+ timesheetFrequency +"&frequencyMonth="+frequencyMonth+"&weekFrequency="+weekFrequency+"&exportType=" + exportType;
 	}
@@ -148,21 +157,36 @@ function displayAcceptRejectButtonOnHedder() {
 		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           var locationCode ='${SourceLeadWeb_locationCode}';
           var userId = '${SourceLeadWeb_user.id}';
-          var frequencyMonth = $("#frequencyMonth").val();
-	      var timesheetFrequency = $('#timesheetFrequency').val();
-	      var weekFrequency = $('#weekFrequency').val();
+          
+          var frequencyMonth = $('input[id=frequencyMonth]:checked').val();
+          var timesheetFrequency = $('input[id=timesheetFrequency]:checked').val();
+          var weekFrequency = $('input[id=weekFrequency]:checked').val();
+          var client = $('input[id=client]:checked').val();
+          var project = $('input[id=project]:checked').val();
+          if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
+       	      frequencyMonth = '';
+	       if(timesheetFrequency == null || timesheetFrequency == '' || timesheetFrequency == 'undefined')
+	         timesheetFrequency = '';
+          if(weekFrequency == null || weekFrequency == '' || weekFrequency == 'undefined')
+       	      weekFrequency = '';
+          if(stage == null || stage == '' || stage == 'undefined')
+       	       stage = '';
+          if(client == null || client == '' || client == 'undefined')
+       	      client = '';
+          if(project == null || project == '' || project == 'undefined')
+       	      project = '';
+          
 	      if(weekFrequency == null || weekFrequency == '' || weekFrequency == 'undefined')
 	    	  weekFrequency = '';
-          var stage = $('#stage').val();
-          var client = $('#client').val();
+          var stage = $('input[id=stage]:checked').val();
           var pageSize = $("#pageSize").val();
           var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
           var frequencyStartDate = '${timesheetApprovalDTO.frequencyStartDate}';
           var frequencyEndDate = '${timesheetApprovalDTO.frequencyEndDate}';
-          $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+          $("#loadTime1").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({
           	          type : "POST",
-          	        url: sourceleadUrl+"/timesheetEmployeeSubmissionDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&frequencyStartDate="+frequencyStartDate+"&frequencyEndDate="+frequencyEndDate+"&locationCode="+locationCode+"&userId="+userId+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
+          	        url: sourceleadUrl+"/timesheetEmployeeSubmissionDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&project="+project+"&stage="+stage+"&frequencyStartDate="+frequencyStartDate+"&frequencyEndDate="+frequencyEndDate+"&locationCode="+locationCode+"&userId="+userId+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
         		      success :function(data) {
         		    	  $("#approvalTableData").empty();
         		    	  $("#approvalTableData").append(data);
@@ -181,7 +205,7 @@ function displayAcceptRejectButtonOnHedder() {
 		             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
 		             	    });
         		    	  var totalRows =  $('#totalRows').val();
-        		    		  $("#loadTime").removeAttr('style');
+        		    		  $("#loadTime1").removeAttr('style');
             		    	  preparePagination(pageNo);
         		    	 
         		      }

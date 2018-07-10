@@ -16,7 +16,7 @@
 				<div class="project_details project_detailsExp">
                 
 					<div class="Expdit pull-right">
-					     <c:if test="${submissionStatus == 'DRAFT' || submissionStatus == 'REJECTED'}">
+					     <c:if test="${submissionStatus == 'DRAFT' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
 					        <a href="${sourceleadUrl}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
@@ -31,6 +31,9 @@
 						       <b class='proj_new pull-right'>${submissionStatus}</b>
 						  </c:if>
 						  <c:if test="${submissionStatus == 'DRAFT'}">
+						       <b class='proj_draft pull-right' >${submissionStatus}</b>
+						  </c:if>
+						   <c:if test="${submissionStatus == 'REOPENED'}">
 						       <b class='proj_draft pull-right' >${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'SUBMITTED'}">

@@ -106,16 +106,19 @@ overflow-x: auto;
 				 
 	             
 	             <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
-							<a onclick="getActions();" class="action"
+	             
+	               <li><b><a onClick="getClientProjectPop();" title="Add Project"><i class="fa fa-plus"></i>&nbsp;Add Project</b></li></a>
+						<%-- 	<a onclick="getActions();" class="action"
 								href="javascript:void(0)">Add Project <i
 								class="fa fa-caret-down"></i>
 							</a>
 							<div class="action-pop">
 								<span> 
-								<a href="<c:url value='${appPath}/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
-								<a href="<c:url value='${appPath}/clientProject'/>"><i class="fa fa-plus"></i>Client Project</a>
+								  <a href="<c:url value='${appPath}/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
+								  <a href="<c:url value='${appPath}/clientProject'/>"><i class="fa fa-plus"></i>Client Project</a> 
+								 <a href="#" onclick='getClientProjectPop();'><i class="fa fa-plus"></i>Client Project</a>
 								</span>
-							</div>
+							</div> --%>
 						</sec:authorize></li>
                 <div class="clearfix"></div>
             </ul>
@@ -164,7 +167,7 @@ overflow-x: auto;
 							 
 							 
 					 	<div class="col-md-12 mb">
-							<label><strong>Invoice Frequency</strong></label>
+							<label><strong>Timesheet Frequency</strong></label>
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="frequencyFilter">
 		                    	    <li class="checkBox positionRelative" ><input  name="invoiceFrequency" type="checkbox" value ="Weekly"><label for="c7">Weekly</label></li>
@@ -188,7 +191,7 @@ overflow-x: auto;
 									 <div class="clearfix filterSearch-ul">
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
 										    <c:forEach var="report" items="${add_client}">
-											     <li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${report.id}" ><label>${report.clientName}</label></li>
+											     <li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${report.orgRelId}" ><label>${report.clientName}</label></li>
 											</c:forEach>
 										</ul>
 									 </div> 
@@ -241,7 +244,70 @@ overflow-x: auto;
 		   </div>		
 	   </section>
 	   <div id="popUp"></div>
+	   
+	   
+ 	   <div class="addcandidate-popup">
+				  <div class="row">
+                <div class="col-md-offset-1 col-md-10">
+				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeClientProject()"><i class="fa fa-close"></i></a>
+                       
+                       <div class="col-md-4 mt">
+                        <div class="small-widget bgGreen">
+                            <a href="<c:url value='${appPath}/project'/>" >
+                                <div class="clearfix mb10">
+                                <i class="fa fa-bar-chart fa-4x"></i>
+                                </div>
+                                <strong class="clearfix">Internal Project</strong>
+                                </a>
+                        </div>
+					  </div>
+                       
+					  <div class="col-md-4 mt">
+                          <div class="small-widget bg-purple">
+                              <a href="<c:url value='${appPath}/clientProject'/>" >
+                                  <div class="clearfix mb10">
+                                      <i class="fa fa-bar-chart fa-4x"></i>
+                                  </div>
+                                  <strong class="clearfix">Client Project</strong>
+                                </a>
+                                
+                          </div>
+					  </div>
+					  
+					  <div class="col-md-4 mt">
+                        <div class="small-widget bg-yellow">
+                            <a href="<c:url value='${appPath}/project?projectType=sharedProject'/>" >
+                                <div class="clearfix mb10">
+                                <i class="fa fa-bar-chart fa-4x"></i>
+                                </div>
+                                <strong class="clearfix">Client Project(Managed)</strong>
+                                </a>
+                        </div>
+					  </div>
+					  
+                 </div>
+                          
+				  </div>
+			  </div>
+      <div class="pop_mask"></div>
+     
+	   
+	   
 <!--   Popup's   -->
+
+
+<script>
+function getClientProjectPop(){
+	 $('.addcandidate-popup').fadeIn(200);
+     $('.pop_mask').fadeIn(200);
+     $('#addmorepop').slideUp(200);
+}
+
+function closeClientProject(){
+    $('.addcandidate-popup').fadeOut(200);
+    $('.pop_mask').fadeOut(200);
+   }
+</script>
                
 <script>
 function resetProjectFilter(){
@@ -389,7 +455,7 @@ function filter(){
 		result = result +'	<th>Project Id</th>';
     	result = result +'    <th>Name</th>'; 
     	result = result +'     <th>Manager</th>';
-    	result = result +'     <th>Invoice Frequency</th>';
+    	result = result +'     <th>Timesheet Frequency</th>';
     	result = result +'     <th>Budget</th>';
     	result = result +'     <th>Date<br>(<small class="custom-small">'+projectListDate+'</small>)</th>';
     	result = result +'      <th>Client</th>';
@@ -495,7 +561,12 @@ function projectsPagination(url,sourceleadUrl){
             	  
             	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_CREATE_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
  		    		if(opt.projectMode != null && opt.projectMode == 'Draft'){
- 		    			result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    			if(opt.isProjectShared == 'Y'){
+ 		    				result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectType=sharedProject&projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    			}else{
+ 		    				result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    			}
+ 		    			
  		    		}else{
  		    			result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
  		    		}

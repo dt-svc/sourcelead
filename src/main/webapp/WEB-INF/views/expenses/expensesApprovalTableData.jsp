@@ -9,6 +9,7 @@
 
 <c:forEach var="expApproverHierarchy" items="${expApperoverHierarchydto}">
  <tr id="row${expApproverHierarchy.expId}">
+ 
  <td>
 	 <div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="${expApproverHierarchy.userFileUrl}" alt="Profile Image" class="img-circle img-responsive">
 		 <span>
@@ -19,6 +20,12 @@
  </td>
  
  <td>
+		 <span>
+			 <b title="${expApproverHierarchy.expenseId}">${expApproverHierarchy.expenseId}</b>
+		 </span>
+ </td>
+ 
+ <td>
  	<div class="tblminwidth-100">
  		<span title="${expApproverHierarchy.expenseEmpUserType}">${expApproverHierarchy.expenseEmpUserType}</span><br>
  		<span title="${expApproverHierarchy.userTypeVendorName}">${expApproverHierarchy.userTypeVendorName}</span>
@@ -26,15 +33,18 @@
  </td>
  	
 <c:if test="${not empty expApproverHierarchy.clientName}">
-<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 	 <td>
 		 <div class="tbldata-dotdot-100"><span title="${expApproverHierarchy.expensesProjectName}">${expApproverHierarchy.expensesProjectName}</span><br>
-			 <c:if test="${!empty expApproverHierarchy.orgRelationUUID}">
-			 	<span title="${expApproverHierarchy.clientName}"> <a href="/app/clientDashboard?orgRelationUUID=${expApproverHierarchy.orgRelationUUID}" title="${expApproverHierarchy.clientName}" class="aLink"> ${expApproverHierarchy.clientName}</a></span>
-			 </c:if>
+			 <sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
+				 <c:if test="${not empty expApproverHierarchy.orgRelationUUID}">
+				 	<span title="${expApproverHierarchy.clientName}"> <a href="/app/clientDashboard?orgRelationUUID=${expApproverHierarchy.orgRelationUUID}" title="${expApproverHierarchy.clientName}" class="aLink"> ${expApproverHierarchy.clientName}</a></span>
+				 </c:if>
+			 </sec:authorize>
+				 <c:if test="${not empty expApproverHierarchy.clientName}">
+				 	<span title="${expApproverHierarchy.clientName}"> <a title="${expApproverHierarchy.clientName}" class="aLink"> ${expApproverHierarchy.clientName}</a></span>
+				 </c:if>
 		 </div>
 	 </td>
-</sec:authorize>
 </c:if>
 
 <c:if test="${empty expApproverHierarchy.clientName}">
@@ -93,11 +103,26 @@
 	   	 		 <br><p title="${expApproverHierarchy.actionPerformedBy}">By :${expApproverHierarchy.actionPerformedBy}</p>
    	 	 </div>
       </c:if>
+      
+      
+       <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus == 'REOPENED'}">
+       	  <div class='sm text-center' title="Reopened"><h3 class='bg-blue'>Reopened</h3>
+	       	 <%--  <i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i>
+	       	 	<div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.reopenReason}</div> --%>
+	   	 		 <br><p title="${expApproverHierarchy.actionPerformedBy}">By :${expApproverHierarchy.actionPerformedBy}</p>
+   	 	 </div>
+      </c:if>
+      
+      
       <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus ==  'APPROVED'}">
       	<c:if test="${not empty expApproverHierarchy.reopenRejectedReason}">
-      		 <div class='sm text-center'title="Rejected"><h3 class='reje_color'>Rejected</h3></div>
-      		  	<i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i>
+      		<!--  <div class='sm text-center'title="Rejected"><h3 class='reje_color'>Rejected</h3></div> -->
+
+      		 <%--  	<i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i> --%>
+      		<%--  <div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.reopenRejectedReason}</div> --%
+      		  	<%-- <i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i> --%>
       		 <div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.reopenRejectedReason}</div>
+
       	</c:if>
       	<c:if test="${not empty expApproverHierarchy.actionPerformedBy}">
       		 <div class='sm text-center' title="Approved"> <h3>Approved</h3><br>By : ${expApproverHierarchy.actionPerformedBy}</div> 

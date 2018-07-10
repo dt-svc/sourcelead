@@ -12,13 +12,13 @@
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
-<c:set var ="myImmigrationPage" value = "Y" scope="session"/>
+<%-- <c:set var ="myImmigrationPage" value = "Y" scope="session"/> --%>
 <title>Insert title here</title>
     <section class="content-wraper content-wraperNew">
    
     <section class="content-header clearfix addImmiHead">
       <div class="pull-left"><h2>Immigration list</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Immigrations List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Immigrations List</div>
 	<div class="clearfix"></div>
     </section>    
     
@@ -361,7 +361,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.generatedId !== null && opt.generatedId !== '' && opt.generatedId !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.generatedId+"</a></div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/app/immigration/viewImmigration?immigrationUUID="+opt.immigrationUUID+"&candidateUUID="+opt.candidateUUID+"&immiTemplateUUID="+opt.immiTemplateUUID+"&myImmigrationPage=Y>"+opt.generatedId+"</a></div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }

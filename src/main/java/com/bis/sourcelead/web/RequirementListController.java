@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.JobBoardConfigurationService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectClientService;
@@ -70,6 +71,9 @@ public class RequirementListController {
 	
 	@Autowired
 	StatesService statesService;
+        
+        @Autowired
+        private JobBoardConfigurationService jobBoardConfigurationService;
 	
 	@RequestMapping(value = "/jobs")
 	public ModelAndView requirementList(HttpServletRequest request,@RequestParam(value="searchResult", required=false)String  searchResult
@@ -135,10 +139,11 @@ public class RequirementListController {
 			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
 			}
+			if(countries!= null && countries.getName()!= null) {
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);
 		}
-	    
+	}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementList");
 		
@@ -182,7 +187,7 @@ public class RequirementListController {
 	public ModelAndView releaseRequirementToClientOrVendors(String requirementUUID,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+                User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
 		
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
@@ -191,6 +196,8 @@ public class RequirementListController {
 			model.addObject("sourceleadShareUrl", sourceleadShareUrl);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("requirement", requirement);
+			model.addObject("jobBoardList", jobBoardConfigurationService.getOrgJobBoardList(orgLoc.getOrg().getId(), true));
+			model.addObject("jobBoardAccountList", jobBoardConfigurationService.getOrgJobBoardAccountList(orgLoc.getOrg().getId(), 0, null, user.getId(), orgLoc.getId()));
 			model.setViewName("requirement/releaseRequirement");
 			getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
 		}else{
@@ -205,9 +212,9 @@ public class RequirementListController {
 	public ModelAndView jobReleaseManagement(String requirementUUID,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
-		
+	
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
 			model.addObject("jobRecommendations", "jobRecommendations");
@@ -215,8 +222,10 @@ public class RequirementListController {
 			model.addObject("sourceleadShareUrl", sourceleadShareUrl);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("requirement", requirement);
+                        model.addObject("jobBoardList", jobBoardConfigurationService.getOrgJobBoardList(orgLoc.getOrg().getId(), true));
+			model.addObject("jobBoardAccountList", jobBoardConfigurationService.getOrgJobBoardAccountList(orgLoc.getOrg().getId(), 0, null, user.getId(), orgLoc.getId()));
 			model.setViewName("requirement/requirementRelease");
-			getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
+                        getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}

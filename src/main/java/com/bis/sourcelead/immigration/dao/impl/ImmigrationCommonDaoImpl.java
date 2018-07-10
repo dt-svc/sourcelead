@@ -1,5 +1,6 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -27,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
-import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
+import com.bis.sourcelead.entity.ImmigrationListExportView;
 import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -67,9 +68,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-
-	@Autowired
-	private UserRoleDao userRoleDao;
 
 	@Autowired
 	CandidateDao candidateDao;
@@ -103,10 +101,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		List<ImmigrationTemplate> templateLst = new ArrayList<ImmigrationTemplate>();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			System.out.println(" before query execute templateLst size -->" + templateLst.size());
+			logger.debug(" before query execute templateLst size -->" + templateLst.size());
 			String queryString = "from ImmigrationTemplate it where it.status = 1 and it.orgLocations.id =:orgLocationId";
 			templateLst = session.createQuery(queryString).setLong("orgLocationId", orgLocations.getId()).list();
-			System.out.println("tempalte Details loaded Successfully templateLst size -->" + templateLst.size());
+			logger.debug("tempalte Details loaded Successfully templateLst size -->" + templateLst.size());
 
 			logger.debug("tempalte Details loaded Successfully-->");
 		} catch (Exception exception) {
@@ -151,7 +149,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 																		// immigration
 				for (CandidateResidence residence : residenceList) {
 					session.saveOrUpdate(residence);
-					System.out.println("The residence id is: +++++++++++++++ :" + residence.getId());
+					logger.debug("The residence id is: +++++++++++++++ :" + residence.getId());
 				}
 			}
 		} catch (Exception exception) {
@@ -326,7 +324,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public String deletetCandidateFamilyDetails(Long id) {
-		System.out.println("Delete deletetCandidateFamilyDetails candidateId ---> " + id);
+		logger.debug("Delete deletetCandidateFamilyDetails candidateId ---> " + id);
 
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -338,7 +336,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("Deleted record id -->" + id);
+		logger.debug("Deleted record id -->" + id);
 		return "success";
 	}
 
@@ -364,7 +362,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			canCurrResiCand = (Candidate) session.createQuery(queryStringCand).setLong("candidateId", candidateId)
 					.uniqueResult();
 		}
-		// System.out.println(" inside canCurrResiCand -->"+canCurrResiCand);
+		// logger.debug(" inside canCurrResiCand -->"+canCurrResiCand);
 		CandidateResidence currResidence = new CandidateResidence();
 		if (canCurrResiCand != null) {
 			currResidence.setLocation(canCurrResiCand.getLocation());
@@ -386,10 +384,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			String queryString = "from CandidateResidence cr where cr.candidate.id=:candidateId order by cr.updatedDate desc";
 			candidatesResidenceList = session.createQuery(queryString).setLong("candidateId", candidateId).list();
 		}
-		// System.out.println(" inside candidatesResidenceList size
+		// logger.debug(" inside candidatesResidenceList size
 		// -->"+candidatesResidenceList.size());
 		candidatesMasterResidenceList.addAll(candidatesResidenceList);
-		// System.out.println(" inside candidatesMasterResidenceList size
+		// logger.debug(" inside candidatesMasterResidenceList size
 		// -->"+candidatesMasterResidenceList.size());
 		return candidatesMasterResidenceList;
 	}
@@ -417,7 +415,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateFamilyDetails getCandidateFamilyDetailsById(Long id) {
-		System.out.println("get CandidateFamilyDetails id ---> " + id);
+		logger.debug("get CandidateFamilyDetails id ---> " + id);
 		CandidateFamilyDetails familyObj = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -426,7 +424,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("got the record id -->" + id);
+		logger.debug("got the record id -->" + id);
 		return familyObj;
 	}
 
@@ -444,7 +442,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("Deleted record id -->" + id);
+		logger.debug("Deleted record id -->" + id);
 
 	}
 
@@ -452,7 +450,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public String deleteCandidateResidenceDetails(Long id, Long candidateId) {
 
-		System.out.println("Delete deletetCandidateFamilyDetails candidateId ---> " + id);
+		logger.debug("Delete deletetCandidateFamilyDetails candidateId ---> " + id);
 
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -463,7 +461,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("Deleted record id -->" + id);
+		logger.debug("Deleted record id -->" + id);
 
 		return "success";
 
@@ -472,7 +470,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateResidence getCandidateResidenceDetailsById(Long id) {
-		System.out.println("get CandidateResidenceDetails id ---> " + id);
+		logger.debug("get CandidateResidenceDetails id ---> " + id);
 		CandidateResidence residenceObj = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -481,14 +479,14 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("got the record id -->" + id);
+		logger.debug("got the record id -->" + id);
 		return residenceObj;
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id) {
-		System.out.println("get CandidateFamilyDetails id ---> " + id);
+		logger.debug("get CandidateFamilyDetails id ---> " + id);
 		CandidatePassportVisa passportVisaObj = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -497,7 +495,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("got the record id -->" + id);
+		logger.debug("got the record id -->" + id);
 		return passportVisaObj;
 	}
 
@@ -596,7 +594,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("got the record id -->" + id);
+		logger.debug("got the record id -->" + id);
 		return immigration;
 	}
 
@@ -617,7 +615,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,
-			Long candidateId, String searchVal) {
+			Long candidateId, String searchVal, String myImmigration) {
 		logger.debug("Getting  CandidatepassportDetails --->  ");
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder("");
@@ -626,13 +624,21 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			query1.append(" or (cd.documentStatus like :searchVal )");
 			query1.append(" or (cd.description like :searchVal ))");
 		}
+		StringBuilder myImmiQuery = new StringBuilder("");
+		if(myImmigration.equalsIgnoreCase("Y")) {
+			myImmiQuery.append(" and cd.docCategory = :docCategory");
+		}
 		List<ImmigrationCandidateDocuments> immigrationCandidateDocumentsList = new ArrayList<ImmigrationCandidateDocuments>();
 		String queryString = "from ImmigrationCandidateDocuments cd where cd.candidateId.id=:candidateId and cd.immigrationId.id=:immigrationId and cd.immigrationTemplateId.id=:templateId ";
 		String orderByString = " order by cd.updatedDate desc";
-		Query query = session.createQuery(queryString + query1 + orderByString).setLong("candidateId", candidateId)
+		Query query = session.createQuery(queryString + query1 + myImmiQuery + orderByString).setLong("candidateId", candidateId)
 				.setLong("templateId", templateId).setLong("immigrationId", immigrationId);
 		if (StringUtils.isNotEmpty(searchVal) && searchVal != null) {
 			query.setParameter("searchVal", "%" + searchVal + "%");
+		}
+		
+		if(myImmigration.equalsIgnoreCase("Y")) {
+			query.setParameter("docCategory", "PetitionerCategory");
 		}
 		immigrationCandidateDocumentsList = query.list();
 		return immigrationCandidateDocumentsList;
@@ -666,7 +672,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId,
-			Long immigrationId, String searchVal) {
+			Long immigrationId, String searchVal, String myImmigration) {
 		List<ImmigrationCandidateForms> candidateFormLst = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -676,13 +682,20 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				query1.append(" or (icf.formStatus like :searchVal ))");
 			}
 			String queryString = "from ImmigrationCandidateForms icf where  icf.immigrationTempId.id= :templateId and icf.immigration.id=:immigrationId and icf.candidate=:candidateId";
+			if(myImmigration.equalsIgnoreCase("Y")) {
+				queryString = queryString + " and icf.formCategory = :formCategory";
+			}
+			
 			Query query = session.createQuery(queryString + query1).setLong("templateId", templateId)
 					.setLong("immigrationId", immigrationId).setLong("candidateId", candidateId);
 			if (StringUtils.isNotEmpty(searchVal) && searchVal != null) {
 				query.setParameter("searchVal", "%" + searchVal + "%");
 			}
+			if(myImmigration.equalsIgnoreCase("Y")) {
+				query.setParameter("formCategory", "PetitionerCategory");
+			}
 			candidateFormLst = query.list();
-			System.out.println("candidateFormLst size is ---> " + candidateFormLst.size());
+			logger.debug("candidateFormLst size is ---> " + candidateFormLst.size());
 		} catch (HibernateException e) {
 			logger.error(
 					"SQL Exception occured while doing getting ImmigrationCandidateForms records -->" + e.getMessage());
@@ -710,7 +723,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			String newDate = parsedDate.format(f2);
 			Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
 			java.sql.Date sqlDate1 = new java.sql.Date(searchDate.getTime());
-			System.out.println("---test-----" + sqlDate1);
+			logger.debug("---test-----" + sqlDate1);
 			// listQuery = "from ImmigrationListView immView where
 			// immView.openDate =:sqlDate1";
 			query1.append(" and ((immView.openDate like '%" + sqlDate1 + "%' )");
@@ -726,7 +739,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			query1.append(" or (immView.currUscisStatus like '%" + searchValue + "%' )");
 			query1.append(" or (immView.country like '%" + searchValue + "%' )");
 			query1.append(" or (immView.petitionType like '%" + searchValue + "%' )");
-			if (orgLocations.getId() == immigrationListDTO.getOrgLocationId()) {
+			if (orgLocations.getId().equals(immigrationListDTO.getOrgLocationId())) {
 				query1.append(" or (immView.vendor like '%" + searchValue + "%' )");
 			} else {
 				query1.append(" or (immView.client like '%" + searchValue + "%' )");
@@ -758,7 +771,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		if (StringUtils.isNotBlank(immigrationListDTO.getSortColumn())) {
 			String sortColumnName = immigrationListDTO.getSortColumn();
 			if (sortColumnName.equalsIgnoreCase("orgName")) {
-				if (orgLocations.getId() == immigrationListDTO.getOrgLocationId()) {
+				if (orgLocations.getId().equals(immigrationListDTO.getOrgLocationId())) {
 					sortColumnName = "vendor";
 				} else {
 					sortColumnName = "client";
@@ -770,7 +783,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		String listQuery = "";
 
-		System.out.println(" latest code deployed 6666 --->" + orgLocations.getId());
+		logger.debug(" latest code deployed 6666 --->" + orgLocations.getId());
 		listQuery = "from ImmigrationListView immView  where immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
 		String listQueryCount = "select count(*) from ImmigrationListView immView where  immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId)  ";
 		String resultQuery = null;
@@ -837,14 +850,11 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 		List<ImmigrationListViewDTO> ImmigarionDTOList = new ArrayList<ImmigrationListViewDTO>();
 		if (!ImmigrationViewLst.isEmpty()) {
-			List<LookUpData> caEmployerDTOs = immigrationTemplateDao
-					.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
 			for (ImmigrationListView source : ImmigrationViewLst) {
-				// System.out.println(" DocsCount"+source.getDocsCount());
+				// logger.debug(" DocsCount"+source.getDocsCount());
 				ImmigrationListViewDTO target = new ImmigrationListViewDTO();
 				BeanUtils.copyProperties(source, target);
-				target.setCurrUsicisStatusList(caEmployerDTOs);
-				// System.out.println(" DocsCount
+				// logger.debug(" DocsCount
 				// target"+target.getDocsCount());
 				target.setOpenDateStr(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
@@ -852,7 +862,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
 				target.setLcaEndDateStr(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
-				if (orgLocations.getId() == source.getOrgLocationId()) {
+				if (orgLocations.getId().equals(source.getOrgLocationId())) {
 					target.setOrgName(source.getVendor());
 					target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG2);
 					target.setSpocName(source.getSpocNameVendor());
@@ -866,19 +876,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		responseList.setData(ImmigarionDTOList);
 
-		System.out.println(" after dao impl  ---responseList getRecordsTotal is -->" + responseList.getRecordsTotal());
+		logger.debug(" after dao impl  ---responseList getRecordsTotal is -->" + responseList.getRecordsTotal());
 		return responseList;
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
 	private List<String> getOrgNamesById(Long[] longs, Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrgRelations orgr  where orgr.locationId = :currOrgLocationId and orgr.id IN ( :relationIds ) ";
+		String query = "from OrgRelations orgr  where (orgr.locationId = :currOrgLocationId or orgr.responderLocationId = :currOrgLocationId) and orgr.id IN ( :relationIds ) ";
 		List<OrgRelations> orgRelations = session.createQuery(query).setLong("currOrgLocationId", orgLocationId)
 				.setParameterList("relationIds", longs).list();
 		List<String> orgNames = new ArrayList<String>();
 		for (OrgRelations orgRelation : orgRelations) {
+			if(orgLocationId.equals(orgRelation.getLocationId().getId())){
 			orgNames.add(orgRelation.getResponderLocationId().getOrg().getOrgName());
+			}if(orgLocationId.equals(orgRelation.getResponderLocationId().getId())){
+			orgNames.add(orgRelation.getLocationId().getOrg().getOrgName());
+			}
 		}
 		return orgNames;
 	}
@@ -931,12 +945,34 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations) {
-		ImmigrationDashboardView dashboardObj = null;
+		ImmigrationDashboardView dashboardObj = new ImmigrationDashboardView();
+		
+		List<ImmigrationDashboardView> dashboardObjLst= new ArrayList<ImmigrationDashboardView>();
+		dashboardObj.setDraftsCount(BigDecimal.ZERO);  // set default values as zero.
+		dashboardObj.setReqSentCount(BigDecimal.ZERO);
+		dashboardObj.setInProgressCount(BigDecimal.ZERO);
+		dashboardObj.setApporovedCount(BigDecimal.ZERO);
+		dashboardObj.setRejectedCount(BigDecimal.ZERO);
+		dashboardObj.setRfeCount(BigDecimal.ZERO);
+		dashboardObj.setDeniedCount(BigDecimal.ZERO);
+		dashboardObj.setOthersCount(BigDecimal.ZERO);
+		
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String queryString = "from ImmigrationDashboardView dbview where dbview.orgLocationId=:orgLocationId";
-			dashboardObj = (ImmigrationDashboardView) session.createQuery(queryString)
-					.setLong("orgLocationId", orgLocations.getId()).uniqueResult();
+			String queryString = "from ImmigrationDashboardView immDview where immDview.orgLocationId = :orgLocationsId or "
+					+ "immDview.attorneyLocationId = :attorneyLocationId";
+			dashboardObjLst = session.createQuery(queryString).setLong("orgLocationsId", orgLocations.getId()).setLong("attorneyLocationId", orgLocations.getId()).list();
+			for(ImmigrationDashboardView Obj: dashboardObjLst) {
+				dashboardObj.setDraftsCount(dashboardObj.getDraftsCount().add(Obj.getDraftsCount()));
+				dashboardObj.setReqSentCount(dashboardObj.getReqSentCount().add(Obj.getReqSentCount()));
+				dashboardObj.setInProgressCount(dashboardObj.getInProgressCount().add(Obj.getInProgressCount()));
+				dashboardObj.setApporovedCount(dashboardObj.getApporovedCount().add(Obj.getApporovedCount()));
+				dashboardObj.setRejectedCount(dashboardObj.getRejectedCount().add(Obj.getRejectedCount()));
+				dashboardObj.setRfeCount(dashboardObj.getRfeCount().add(Obj.getRfeCount()));
+				dashboardObj.setDeniedCount(dashboardObj.getDeniedCount().add(Obj.getDeniedCount()));
+				dashboardObj.setOthersCount(dashboardObj.getOthersCount().add(Obj.getOthersCount()));
+			  }
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1030,7 +1066,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				return count;
 			}
 		} catch (Exception e) {
-			System.out.println("Exception caught  while getting result of entity " + entityName);
+			logger.debug("Exception caught  while getting result of entity " + entityName);
 			e.printStackTrace();
 		}
 		return null;
@@ -1049,7 +1085,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				return count;
 			}
 		} catch (Exception e) {
-			System.out.println("Exception caught  while getting result of template entity " + entityName);
+			logger.debug("Exception caught  while getting result of template entity " + entityName);
 			e.printStackTrace();
 		}
 		return null;
@@ -1063,7 +1099,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			session.saveOrUpdate(immigration);
 			return immigration;
 		} catch (Exception e) {
-			System.out.println("Exception caught  while updating immigration entity " + immigration.getId());
+			logger.debug("Exception caught  while updating immigration entity " + immigration.getId());
 			e.printStackTrace();
 		}
 		return null;
@@ -1073,7 +1109,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO,
 			OrgLocations orgLocations, Long userId) {
-		System.out.println("inside getMyImmigrationsList -->");
+		logger.debug("inside getMyImmigrationsList -->");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Long> countlist = null;
 		Integer filterCount = 0;
@@ -1123,11 +1159,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		List<MyImmigrationViewDTO> ImmigarionDTOList = new ArrayList<MyImmigrationViewDTO>();
 		if (!ImmigrationViewLst.isEmpty()) {
 			for (MyImmigrationView source : ImmigrationViewLst) {
-				// System.out.println(" DocsCount"+source.getDocsCount());
 				MyImmigrationViewDTO target = new MyImmigrationViewDTO();
 				BeanUtils.copyProperties(source, target);
-				// System.out.println(" DocsCount
-				// target"+target.getDocsCount());
 				target.setOpenDateStr(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
 				target.setLcaStartDateStr(
@@ -1139,7 +1172,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		responseList.setData(ImmigarionDTOList);
 
-		System.out.println(
+		logger.debug(
 				" after dao impl  ---getMyImmigrationsList getRecordsTotal is -->" + responseList.getRecordsTotal());
 		return responseList;
 	}
@@ -1173,7 +1206,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			if (!tasksList.isEmpty()) {
 				for (Tasks tasks : tasksList) {
 					session.save(tasks);
-					System.out.println(tasks.getId());
 				}
 			}
 		} catch (Exception exception) {
@@ -1213,4 +1245,235 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		logger.debug("Successfully Fetched Candidate Activities");
 		return immigrationActivityHistory;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getTableRecordCountByImmigrationId(String entityName, Long immigrationId, String condition) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String queryString = "";
+		try {
+			if (StringUtils.isNotEmpty(entityName) && immigrationId != null && StringUtils.isNotEmpty(condition)) {
+				queryString = "select 1 from " + entityName + " " + condition;
+				Integer count = (Integer) session.createQuery(queryString).setLong("immigrationId", immigrationId)
+						.setMaxResults(1).uniqueResult();
+				return count;
+			}
+		} catch (Exception e) {
+			logger.debug("Exception caught  while getting result of entity " + entityName);
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateCandidatePassportVisa(Long candidateId, String idType,String idNumVal) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from CandidatePassportVisa cPassportVisa where cPassportVisa.candidate.id = :candidateId and cPassportVisa.idType = :idType and cPassportVisa.idNumber = :idNumVal";
+		List<CandidatePassportVisa> passportVisaList = session.createQuery(query).setLong("candidateId", candidateId).setString("idType", idType).setString("idNumVal", idNumVal).list();
+		if (passportVisaList != null && passportVisaList.size() > 0) {
+			flag = true;
+			return flag;
+		}
+		else {
+			return flag;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType,
+			Long candidateId,Long id) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from CandidatePassportVisa cPassportVisa where cPassportVisa.idNumber = :idNumber and cPassportVisa.candidate.id = :candidateId and cPassportVisa.idType = :idType and cPassportVisa.id = :id and cPassportVisa.status = 1";
+		List<CandidatePassportVisa> passportVisaList =  session.createQuery(query) .setString("idNumber", idNumber).setString("idType", idType).setLong("candidateId", candidateId).setLong("id", id).list();
+		CandidatePassportVisa candidatePassportVisa = null;
+		if(passportVisaList != null && !passportVisaList.isEmpty())
+		{
+			candidatePassportVisa = (CandidatePassportVisa) passportVisaList.iterator().next();
+		}
+		return candidatePassportVisa;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Immigration getImmigrationByUUID(String immigrationUUID) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Immigration immi where immi.immigrationUuid = :immigrationUUID";
+		Immigration immigration = (Immigration) session.createQuery(query).setString("immigrationUUID", immigrationUUID).uniqueResult();
+		return immigration;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getImmigrationIdByUUID(String immigrationUUID) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "select immi.id from Immigration immi where immi.immigrationUuid = :immigrationUUID";
+		Long immigrationId = (Long) session.createQuery(query).setString("immigrationUUID", immigrationUUID).uniqueResult();
+		return immigrationId;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCandidateIdByUUID(String candidateUUID) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "select candidate.id from Candidate candidate where candidate.candidateUUID = :candidateUUID";
+		Long candidateId = (Long) session.createQuery(query).setString("candidateUUID", candidateUUID).uniqueResult();
+		return candidateId;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ImmigrationListViewDTO> getImmigrationsListByCountsLink(
+			ImmigrationListViewDTO immigrationListDTO, String searchValue, OrgLocations orgLocations) throws Exception {
+		List<String> paramList = new ArrayList<String>();
+		Integer filterCount = 0;
+		List<Long> countlist = null;
+		
+		List<ImmigrationListView> ImmigrationViewLst = null;
+		ResponseList<ImmigrationListViewDTO> responseList = new ResponseList<>();
+		
+		if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_INPROGRESS_STATUS)){
+			paramList.addAll(ImmigrationConstants.IMMIGRATION_INPROGRESS_STATUS_LIST)	;
+		}else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_DRAFT_STATUS)){
+			paramList.add(ImmigrationConstants.IMMIGRATION_DRAFT_STATUS);
+		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_APPROVED_STATUS)){
+			paramList.add(ImmigrationConstants.IMMIGRATION_APPROVED_STATUS);
+		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_OTHERS_STATUS)){
+			paramList.addAll(ImmigrationConstants.IMMIGRATION_OTHER_STATUS_LIST);
+		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_REQUEST_TO_FILL_STATUS)){
+			paramList.add(ImmigrationConstants.IMMIGRATION_REQUEST_TO_FILL_STATUS);
+		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_RFE_STATUS)){
+			paramList.addAll(ImmigrationConstants.IMMIGRATION_RFE_STATUS_LIST);
+		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_DENIED_STATUS)){
+			paramList.add(ImmigrationConstants.IMMIGRATION_DENIED_STATUS);
+		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_REJECTED_STATUS)){
+			paramList.add(ImmigrationConstants.IMMIGRATION_REJECTED_STATUS);
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String resultQuery = "from ImmigrationListView immView  where immView.status = 1  and immView.currUscisStatus IN (:paramList) and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
+		String listQueryCount = "select count(*) from ImmigrationListView immView where  immView.status = 1  and immView.currUscisStatus IN (:paramList) and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId)  ";
+		Query hqlQuery = session.createQuery(resultQuery);
+		Query hqlQuery1 = session.createQuery(listQueryCount);
+		hqlQuery = hqlQuery.setLong("orgLocationId", orgLocations.getId());
+		hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId());
+		hqlQuery = hqlQuery.setParameterList("paramList", paramList);
+		hqlQuery1 = hqlQuery1.setParameterList("paramList", paramList);
+		
+		ImmigrationViewLst = hqlQuery.list();
+
+		countlist = hqlQuery1.setFirstResult(immigrationListDTO.getStart())
+				.setMaxResults(immigrationListDTO.getLength()).list();
+		int totalCount = 0;
+		if (immigrationListDTO != null) {
+			if (countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+				filterCount = totalCount;
+			}
+		}
+		responseList.setRecordsTotal(totalCount);
+		if (resultQuery.toString() != null && !resultQuery.toString().isEmpty()) {
+			responseList.setRecordsFiltered(filterCount);
+		} else {
+			responseList.setRecordsFiltered(totalCount);
+		}
+		
+		List<ImmigrationListViewDTO> ImmigarionDTOList = new ArrayList<ImmigrationListViewDTO>();
+		if (!ImmigrationViewLst.isEmpty()) {
+			for (ImmigrationListView source : ImmigrationViewLst) {
+			
+				ImmigrationListViewDTO target = new ImmigrationListViewDTO();
+				BeanUtils.copyProperties(source, target);
+				target.setOpenDateStr(
+						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
+				target.setLcaStartDateStr(
+						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
+				target.setLcaEndDateStr(
+						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
+				if (orgLocations.getId().equals(source.getOrgLocationId())) {
+					target.setOrgName(source.getVendor());
+					target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG2);
+					target.setSpocName(source.getSpocNameVendor());
+				} else {
+					target.setOrgName(source.getClient());
+					target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG1);
+					target.setSpocName(source.getSpocNameClient());
+				}
+				ImmigarionDTOList.add(target);
+			}
+		}
+		responseList.setData(ImmigarionDTOList);
+		return responseList;
+			}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })		
+	public ImmigrationCandidateForms getImmigrationCandidateFormsDetailsByFormNameAndId(String formName,
+			 Long candidateId,Long immigrationId, Long id) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from ImmigrationCandidateForms immCandidateForms where immCandidateForms.formName = :formName and immCandidateForms.candidate.id = :candidateId and immCandidateForms.immigration.id = :immigrationId and immCandidateForms.id = :id and immCandidateForms.status = 1";
+		List<ImmigrationCandidateForms> immigrationCandidateFormsList =  session.createQuery(query) .setString("formName", formName).setLong("candidateId", candidateId).setLong("immigrationId", immigrationId).setLong("id", id).list();
+		ImmigrationCandidateForms immigrationCandidateForms = null;
+		if(immigrationCandidateFormsList != null && !immigrationCandidateFormsList.isEmpty())
+		{
+			immigrationCandidateForms = (ImmigrationCandidateForms) immigrationCandidateFormsList.iterator().next();
+		}
+		return immigrationCandidateForms;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateImmigrationCandidateForms(String formName, Long candidateId, Long immigrationId)
+			throws Exception {
+	
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from ImmigrationCandidateForms immCandidateForms where immCandidateForms.formName = :formName and immCandidateForms.candidate.id = :candidateId and immCandidateForms.immigration.id = :immigrationId";
+		List<ImmigrationCandidateForms> immigrationCandidateFormsList = session.createQuery(query).setString("formName", formName).setLong("candidateId", candidateId).setLong("immigrationId", immigrationId).list();
+		if (immigrationCandidateFormsList != null && immigrationCandidateFormsList.size() > 0) {
+			flag = true;
+			return flag;
+		}
+		else {
+			return flag;
+		}
+			}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationListExportView> getImmigrationListExportDetails(OrgLocations orgLocations) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String listQuery = "from ImmigrationListExportView immView  where immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
+		List<ImmigrationListExportView> listExportViews = session.createQuery(listQuery).setParameter("orgLocationId", orgLocations.getId()).list();
+		return listExportViews;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getTemplateDetailsByNameAndOrgLoacationId(String templateName, OrgLocations orgLocations) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select temp.id from ImmigrationTemplate temp where temp.name = :templateName and temp.orgLocations.id= :orgLocationId";
+		Long tempId = (Long) session.createQuery(query).setString("templateName", templateName).setLong("orgLocationId", orgLocations.getId()).uniqueResult();
+		return tempId;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Immigration> getImmigrationsByOrgId(Long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String listQuery = "from Immigration immi  where immi.status = 1  and (immi.orgLocationId.id = :id or immi.attorneyOrgLocationId.id = :id)";
+		List<Immigration> immigrations = session.createQuery(listQuery).setParameter("id", id).list();
+		return immigrations;
+	}
+
 }

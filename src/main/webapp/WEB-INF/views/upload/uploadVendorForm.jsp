@@ -130,7 +130,7 @@ margin:10px 220px 0;
 			  </span>
             </div>
             <div class="panel-body checkBox">
-				  <label><input type="checkbox" checked="checked" value="Y" name="email"></label><span>Send Emails</span>
+				  <label><input type="checkbox" value="Y" name="email"></label><span>Send Emails</span>
 		    </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -651,7 +651,6 @@ $(function(){
   <!-- Footer Area -->
   <footer class="footer-area clearfix">
     <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-    <div class="powered-by"> Powered by: businessintelli.com </div>
   </footer>
   <!-- Footer Area -->
 

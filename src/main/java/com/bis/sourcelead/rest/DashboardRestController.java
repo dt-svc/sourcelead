@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,11 +31,13 @@ import com.bis.sourcelead.constants.Constants;
 
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dto.DashboardCountsDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.EventsDTO;
 
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
@@ -82,6 +86,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.DashboardController;
+import com.ibm.icu.util.Calendar;
 
 /**
  * This class is used for...
@@ -181,9 +186,10 @@ public class DashboardRestController {
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 		if("employes".equalsIgnoreCase(timesheetType)){
-			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),timesheetCountType);
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),timesheetCountType,isGlobalAccess);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), loginOrgLocations.getId(),timesheetCountType);
 		}
@@ -202,6 +208,7 @@ public class DashboardRestController {
 			loginUser = userService.getUserById(tedDTO.getUserId());
 		}
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		if(orgLoc == null && StringUtils.isNotEmpty(tedDTO.getLocationCode())){
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(tedDTO.getLocationCode());
 		}
@@ -222,7 +229,7 @@ public class DashboardRestController {
 			 expensesAndTimesheetDashBordCountDTO = new ExpensesAndTimesheetDashBordCountDTO();
 			TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 			if("employes".equalsIgnoreCase(timesheetFor)){
-				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),"All");
+				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),"All",isGlobalAccess);
 			}else if("myTimesheets".equalsIgnoreCase(timesheetFor)){
 				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLoc.getId(),"All");
 			}
@@ -286,12 +293,11 @@ public class DashboardRestController {
 	}
 	
 	
-	@RequestMapping(value = "/dashboard/{orgLocationId}" , method = RequestMethod.GET)
-	 public @ResponseBody void userSummary(@PathVariable Long orgLocationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	@RequestMapping(value = "/dashboard/{orgLocationId}/{userId}" , method = RequestMethod.GET)
+	 public @ResponseBody void userSummary(@PathVariable Long orgLocationId,@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 		     //to update user state in user role based on location----> Prasad Salina
-		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     User user = userService.getUserById(userId);
 
 		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
@@ -379,12 +385,11 @@ public class DashboardRestController {
 	}
 	
 	
-	@RequestMapping(value = "/dashboard/{orgLocationId}/{switchUserType}" , method = RequestMethod.GET)
-	 public @ResponseBody void userSummaryWithUserType(@PathVariable Long orgLocationId,@PathVariable String switchUserType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	@RequestMapping(value = "/dashboard/{orgLocationId}/{switchUserType}/{userId}" , method = RequestMethod.GET)
+	 public @ResponseBody void userSummaryWithUserType(@PathVariable Long orgLocationId,@PathVariable String switchUserType,@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 		     //to update user state in user role based on location----> Prasad Salina
-		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     User user = userService.getUserById(userId);
 		     UserRole userRole = null;
 		     if(!isNullOrEmpty(switchUserType) && (switchUserType.equalsIgnoreCase("Professional") || switchUserType.equalsIgnoreCase("Recruiter")) && orgLocationId == 1L){
 		    	 userRole =  userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(), orgLocationId, switchUserType);
@@ -455,7 +460,7 @@ public class DashboardRestController {
 	 
 	 @PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getAssignedRequirementListByOrgLocationIDAndUserId")
-	 public ResponseList<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
+	 public ResponseList<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,@RequestParam(defaultValue="false") boolean isWalkIn, @RequestParam(defaultValue="-1") int walkInDay, HttpServletRequest request) throws Exception {
 		ResponseList<Requirement> response = new ResponseList<>();
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
@@ -466,14 +471,27 @@ public class DashboardRestController {
 				String userCode = user.getUserCode();
 				String userType = null;
 				List<Requirement>   requirementList = null;
-				
+				String dayString = "";
+				String selectedDayString = "";
+				int selectedDay = walkInDay;
+				if(isWalkIn) {
+					Calendar c = Calendar.getInstance();
+					if(walkInDay >= 0) {
+						selectedDay = walkInDay;
+						c.set(Calendar.DAY_OF_WEEK, walkInDay);
+					} else {
+						selectedDay = c.get(Calendar.DAY_OF_WEEK);
+					}
+					dayString = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(c.getTime());
+					selectedDayString = new SimpleDateFormat("EEEE (dd/MM/yyyy)", Locale.ENGLISH).format(c.getTime());
+				}
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 					userType = Constants.ADMIN;
 					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
 				}else{
 					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
 				}
 				
 				//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
@@ -495,18 +513,23 @@ public class DashboardRestController {
 					
 					Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
 		    		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
+		    		
+		    		
+		    		RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, loginOrgLocation, "ALL");
 					
-					int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
+					/*int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
 					int shortlistedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SHORTLISTED");
 					int submittedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SUBMITTED");
 					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "INTERVIEWED");
 					int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "OFFERED");
-					
-					requirement.setNoOfApplicants(String.valueOf(applicantsCount));
-					requirement.setNoOfShortlistedApplicants(String.valueOf(shortlistedCount));
-					requirement.setNoOfSubmittedApplicants(String.valueOf(submittedCount));
-					requirement.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
-					requirement.setNoOfOfferedApplicants(String.valueOf(offeredCount));
+					int joinedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "JOINED");
+					*/
+					requirement.setNoOfApplicants(String.valueOf(rsCount.getApplicantsCount()));
+					requirement.setNoOfShortlistedApplicants(String.valueOf(rsCount.getShortlistCount()));
+					requirement.setNoOfSubmittedApplicants(String.valueOf(rsCount.getSubmitToClientCount()));
+					requirement.setNoOfInterviewedApplicants(String.valueOf(rsCount.getInterviewCount()));
+					requirement.setNoOfOfferedApplicants(String.valueOf(rsCount.getOffersCount()));
+					requirement.setNoOfJoinedApplicants(String.valueOf(rsCount.getJoinedCount()));
 					
 					if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
 						List<Long> userId = new ArrayList<Long>();
@@ -528,7 +551,10 @@ public class DashboardRestController {
 				}
 				response.setData(requirementList);
 			    response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
+			    if(isWalkIn)
+			    	response.setResponseMessage(Result.SUCCESS.getValue() + ":" + selectedDay +":"+selectedDayString);
+			    else
+			    	response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch (Exception e) {
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
@@ -1632,6 +1658,26 @@ public class DashboardRestController {
 		return responseList;
 		
   }
+	
+	@RequestMapping(value = "/saveDashboardItems", method = RequestMethod.POST)
+	public Response<String> saveDashboardItems(HttpServletRequest request, DashboardItemsDTO dashboardItemsDTO) {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+			if (user != null) {
+//				JSONArray jsonArray = new JSONArray(dashboardItemsDTO.getItems());
+				response = userService.saveDashboardItems(dashboardItemsDTO, user, loginOrgLocations);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
 	
 	
 }

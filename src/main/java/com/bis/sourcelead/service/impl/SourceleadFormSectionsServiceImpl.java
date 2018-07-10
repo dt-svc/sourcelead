@@ -107,7 +107,28 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		}
 		customDTO.setLabelinfo(customList.getLabelInfo());
 		customDTO.setLabelName(customList.getLabelName());
-		customDTO.setPlaceHolder(customList.getPlaceHolder());
+		
+		if(StringUtils.isEmpty(customList.getPlaceHolder())) {
+			
+			if(customList.getFieldType().equalsIgnoreCase("TextBox")){
+				customDTO.setPlaceHolder("Enter Text");
+			}else if(customList.getFieldType().equalsIgnoreCase("Date")){
+				customDTO.setPlaceHolder("Enter Date");
+			}else if(customList.getFieldType().equalsIgnoreCase("selectBox")){
+				customDTO.setPlaceHolder("Select");
+			}else if(customList.getFieldType().equalsIgnoreCase("checkBox")){
+				customDTO.setPlaceHolder("Select");
+			}else if(customList.getFieldType().equalsIgnoreCase("radioButton")){
+				customDTO.setPlaceHolder("Select");
+			}else if(customList.getFieldType().equalsIgnoreCase("textArea")){
+				customDTO.setPlaceHolder("Enter TextArea");
+			}else if(customList.getFieldType().equalsIgnoreCase("email")){
+				customDTO.setPlaceHolder("Enter Email");
+			}
+		}else{
+				customDTO.setPlaceHolder(customList.getPlaceHolder());
+			}
+	
 		customDTO.setOrglocationId(customList.getOrgLocations().getId());
 		customDTO.setOrgId(customList.getOrg().getId());
 		customDTO.setMinDate(customList.getMinDate());
@@ -165,6 +186,11 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 			customDTO.setOptionData(orglocationFormSubfieldDTO);
 		}
 		return customDTO;
+	}
+
+	private void elseif() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private List<OrglocationFormSubFieldsDTO> getorgLocationCustomSubFields(List<OrglocationFormSubFields> customFieldsubList) {

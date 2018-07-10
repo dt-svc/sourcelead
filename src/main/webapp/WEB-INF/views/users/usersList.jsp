@@ -16,7 +16,6 @@ clear: both;
 display: inline-block;
 margin: auto;
 width: 100%;
-
 }
 #loadMoreDiv .fa-spinner{
 margin-right: 15px;
@@ -77,11 +76,7 @@ $(document).ready(function() {
     });
     
 }); 
-
 </script>
-
-
-
 
 <script type="text/javascript">
 window.onload = function () {
@@ -176,9 +171,10 @@ function getUsersSearchResult(searchValue){
 			    <span class="fa fa-refresh"></span>
 			</button>
 			
-			
-			<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')"> 
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
 				</a>
+			</sec:authorize>
 				
 	    </div>
 	    
@@ -233,7 +229,7 @@ function getUsersSearchResult(searchValue){
 									 <div class="clearfix filterSearch-ul">
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
 											<c:forEach var="manager" items="${reportingManagersList}">
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgManagers" value ="${manager.id}" ><label>${manager.fullName}</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgManagers" value ="${manager.userId}" ><label>${manager.fullName}</label></li>
 											</c:forEach>
 										</ul>
 									 </div> 
@@ -263,7 +259,7 @@ function getUsersSearchResult(searchValue){
 							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
 									<c:forEach var="client" items="${clientsList}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.id}" ><label>${client.clientName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.orgRelId}" ><label>${client.clientName}</label></li>
 									</c:forEach>
 								</ul>
 							 </div> 
@@ -1323,10 +1319,23 @@ function dynamicUserListPagination(url){
 		        "render": function ( data, type, userRole, meta ) {
 		        	var result = "";
 		            if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
-		       	    	  result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
-		 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
+		            	'<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+		            	result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
+		            	'</sec:authorize>';
+	 			    	
+	 			    	'<sec:authorize access="!hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+	 			    			result = result +"<td><p class='tblminwidth-50'>---</p></td>";
+	 			    	'</sec:authorize>';    
+		            
+		            }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
 		 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
-		 			    	 result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
+		 			    	'<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+		 			    		result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
+		 			    	'</sec:authorize>';
+		 			    	
+		 			    	'<sec:authorize access="!hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+		 			    			result = result +"<td><p class='tblminwidth-50'>---</p></td>";
+		 			    	'</sec:authorize>';
 		 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
 		 			    	result = result +"<td><p class='tblminwidth-50'><label class='label label-success'><b class='fa fa-check'></b>&nbsp;&nbsp;Active</label></p></td>";
 		 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){

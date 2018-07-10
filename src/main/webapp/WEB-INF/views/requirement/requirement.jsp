@@ -71,8 +71,8 @@ $(document).ready(function() {
 				}
 			
 			
-			removeEditButton();
-			disableMonths();
+			/* removeEditButton(); 
+			disableMonths(); */
 			
 			$(".cd1").click(function(){  
 		        $(".col-md-12 clearfix").toggleClass('hidden', 500);
@@ -205,7 +205,7 @@ $(document).ready(function () {
     <div class="success_pop" id="selector2" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgJobDiv"></span>
        </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Add Job </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; Add Job </div>
   	
   </section>
   <div class="content-area content-new clearfix">
@@ -520,7 +520,7 @@ $(document).ready(function () {
 		
 		 
 		 <div class="form-group">
-                      <label class="col-md-3">Closed Date</label>
+                      <label class="col-md-3">Date of Closure</label>
                          <div class="col-md-9">
                            <div class="input-group">
                               <input type="text"  name="closedDate" class="form-control calendar" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
@@ -932,8 +932,36 @@ $(document).ready(function () {
 					</label>
 				</div>
 			</div>
-        
-         <c:if test="${!empty sourceleadSectionList}">
+			
+			<div class="form-group">
+				<div class="ml">
+					<input type="checkbox" name="walkIn" id="isWalkIn" ${requirement.walkIn ? "checked='checked'" : ""}>
+						<label for="isWalkIn">&nbsp;&nbsp;<strong>Is Daily Drive</strong> &nbsp;&nbsp;
+						</label>
+				</div>
+				<div id="selectWalkInDiv" ${requirement.walkIn ? "" : "style='display: none;'"}>
+					<label class="col-md-3">Select Drive Day(s)</label>
+					<div class="col-md-6">
+						<select multiple class="chosen-select form-control"
+							name="walkInDays" data-placeholder="Select WalkIn Day(s)"
+							id="walkInDays" field-name="Drive Day">
+							<c:forEach items="Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday" var="day">
+								<c:set var="selected" value="false"></c:set>
+								<c:if test="${requirement.walkInDays!=null && requierment.walkInDays != ''}">
+									<c:forEach items="${requirement.walkInDays.split(',')}" var="selectedDay">
+										<c:if test="${selectedDay eq day}">
+											<c:set var="selected" value="true"></c:set>
+										</c:if>
+									</c:forEach>
+								</c:if>
+								<option value="${day}" ${selected?"selected='selected'":""}>${day}</option>	
+							</c:forEach>
+						</select>
+					</div>
+				</div>
+			</div>
+
+								<c:if test="${!empty sourceleadSectionList}">
 	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	               <c:if test="${sectionOrder.index == 0}">
 	                  <div id="customDiv${section.id}"></div>
@@ -1218,7 +1246,7 @@ $(document).ready(function () {
 		          <h3>Locations</h3>
 		        </div>
 		       <div class="col-md-6">
-				 <label class="col-md-12">Job Locations (Format  city,state,country)</label>
+				 <label class="col-md-12"> City, State, Country</label>
 				 <div class="clearfix"></div>
 					<div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom jobdocsCustom">
 		                      <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
@@ -1344,7 +1372,7 @@ $(document).ready(function () {
             <label class="col-md-3">Manager<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9">
            
-              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager" id="managerId">
+              <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager" id="managerId" onchange="checkManagerAndPrimaryRecruiterSelection(this);">
                        
                        <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == null}">
                        <option selected="selected" value="${SourceLeadWeb_user.id}">${SourceLeadWeb_user.firstName}&nbsp;${SourceLeadWeb_user.lastName}</option>
@@ -1358,7 +1386,29 @@ $(document).ready(function () {
               </select>
             </div>
           </div>
-          <div class="form-group">
+
+		<div class="form-group">
+			<label class="col-md-3">Primary Recruiter</label>
+			<div class="col-md-9">
+				<c:choose>
+					<c:when test="${loginUser.id == requirement.primaryRecruiterUserId.id}">
+						<select style="display: none;" class="chosen-select form-control" name="primaryRecruiterUserId" id="primaryRecruiterUserId">
+							<option value="${requirement.primaryRecruiterUserId.id}">${requirement.primaryRecruiterUserId.fullName}</option>
+						</select>
+					</c:when>
+					<c:otherwise>
+						<select class="chosen-select form-control" name="primaryRecruiterUserId" id="primaryRecruiterUserId" onchange="checkManagerAndPrimaryRecruiterSelection(this);">
+							<option value="0">Select Primary Recruiter</option>
+							<c:forEach var="report" items="${approverList}">
+								<option value="${report.id}" ${report.id == requirement.primaryRecruiterUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
+							</c:forEach>
+						</select>					
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</div>
+
+		<div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9">
               <select class="selectpicker" id="priority" name="priority" data-validation = "required" field-name = "priority">
@@ -1536,6 +1586,26 @@ $(document).ready(function () {
    <i class="fa fa-times" onclick="removeLocationRow(REPLACEROWID);"></i> 
 </div> 
 
+<script type="text/javascript">
+	function checkManagerAndPrimaryRecruiterSelection(ele) {
+		if($("#managerId").val() === $("#primaryRecruiterUserId").val()){
+			$(ele).parent().append("<p class='jquery_form_error_message'>Manager & Primary Recruiter can't be same</p>");
+		} else {
+			$("#managerId").parent().find("p").remove();
+			$("#primaryRecruiterUserId").parent().find("p").remove();
+		}
+	}
+	$("#isWalkIn").change(function(){
+		if($(this).is(":checked")) {
+			$("#selectWalkInDiv").show();
+			$("#walkInDays").attr("data-validation", "required");
+		} else {
+			$("#selectWalkInDiv").hide();
+			$("#walkInDays").removeAttr("data-validation");
+		}
+	});
+</script>
+
 <script>
 function changeValidationType() {
 	var isVisible	= $("div[name=fieldVisible]").attr("data-visible");
@@ -1601,7 +1671,7 @@ selectedFile.addEventListener("change", function() {
 	 $("#uploadFile").focus();
 	 if(validate_fileupload(this.value)){
 		 var docSize =  $("#uploadBtn")[0].files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+		  $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
 	      if(docSize > 2097152){
 	    	  document.getElementById("uploadFile").value = '';
 	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
@@ -1732,58 +1802,62 @@ function validate_fileupload(fileName)
 				 jobSaveType = saveType;
 			 }
 			 
-		     if ($('#requirement_form').validate(false, validationSettings)){ 
-      		var formData = getFormData1("requirement_form");
-			$( "#submitForApproval" ).addClass('button').val('Processing..');
-			$("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		         $.ajax({
-					 type : "POST",
-					 data: formData,
-	  		         processData: false,
-	  		         contentType:false, 
-					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+jobSaveType,
-					  	success : function(result) {
-					  		if(result.object === 'MissingData'){
-					  			showError("Invalid data");
-					  			$("#requirementLoading").removeAttr("style");	
-					  		}else{
-					  			if (result.response === "SESSION_TIMEDOUT") {
-					  				location.replace(sourceleadUrl);
-				                } else if (result.response === "AWKWARD") {
-				                    location.href = "/errorPage";
-				                } else if (result.response === "SUCCESS") {
-								  	if(saveType != 'saveAndContinue'){
-								  		location.replace(sourceleadUrl+"/jobs");
-								  	}
-									$("#selector2").removeAttr("style");
-						    		$("#selector2").css({ display: "block" });
-						    		if(saveType == 'save'){
-						    			$("#msgJobDiv").html("Successfully job  saved..");
-						    		}else if(saveType == 'draft'){
-						    			$("#msgJobDiv").html("Successfully job  saved to Draft");
-						    		}
-						    		else if(saveType == 'submitForApproval'){
-						    			$("#msgJobDiv").html("Successfully job  submitted for approval");
-						    		}else if(saveType == 'saveAndContinue'){
-						    			if(result.object != 'MissingData'){
-						    				$("#msgJobDiv").html("Successfully job saved..");
-						    				location.replace(sourceleadUrl+"/jobReleaseManagement?requirementUUID="+result.object);	
-						    			}
-						    		}
-					     			msgFadein();
-				     			
-				                } else if (result.indexOf('Sign In') !== -1) {
-									location.replace(sourceleadUrl);
-								} else {
-				                    showError("Operation failed, please try again");
-				                }
-					  		}
-					},
-				});
-			return true;
-		   }else{ 
-				return false;
-		 }   
+		    if ($('#requirement_form').validate(false, validationSettings)) {
+		    	checkManagerAndPrimaryRecruiterSelection($("#managerId"));
+		    	if(($("#managerId").parent().find("p").length === 0) && ($("#primaryRecruiterUserId").parent().find("p").length === 0)){
+		    		var formData = getFormData1("requirement_form");
+					$( "#submitForApproval" ).addClass('button').val('Processing..');
+					$("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				         $.ajax({
+							 type : "POST",
+							 data: formData,
+			  		         processData: false,
+			  		         contentType:false, 
+							  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+jobSaveType,
+							  	success : function(result) {
+							  		if(result.object === 'MissingData'){
+							  			showError("Invalid data");
+							  			$("#requirementLoading").removeAttr("style");	
+							  		}else{
+							  			if (result.response === "SESSION_TIMEDOUT") {
+							  				location.replace(sourceleadUrl);
+						                } else if (result.response === "AWKWARD") {
+						                    location.href = "/errorPage";
+						                } else if (result.response === "SUCCESS") {
+										  	if(saveType != 'saveAndContinue'){
+										  		location.replace(sourceleadUrl+"/jobs");
+										  	}
+											$("#selector2").removeAttr("style");
+								    		$("#selector2").css({ display: "block" });
+								    		if(saveType == 'save'){
+								    			$("#msgJobDiv").html("Successfully job  saved..");
+								    		}else if(saveType == 'draft'){
+								    			$("#msgJobDiv").html("Successfully job  saved to Draft");
+								    		}
+								    		else if(saveType == 'submitForApproval'){
+								    			$("#msgJobDiv").html("Successfully job  submitted for approval");
+								    		}else if(saveType == 'saveAndContinue'){
+								    			if(result.object != 'MissingData'){
+								    				$("#msgJobDiv").html("Successfully job saved..");
+								    				location.replace(sourceleadUrl+"/jobReleaseManagement?requirementUUID="+result.object);	
+								    			}
+								    		}
+							     			msgFadein();
+						     			
+						                } else if (result.indexOf('Sign In') !== -1) {
+											location.replace(sourceleadUrl);
+										} else {
+						                    showError("Operation failed, please try again");
+						                }
+							  		}
+							},
+						});
+					return true;
+		    	} else {
+		    		
+		    	}
+		   } 
+		return false;
 	} 
 	
 	$('body').on('blur', '#requirement_form', function() {
@@ -3138,7 +3212,6 @@ function deleteSavedLocation(id){
 	
 }
 </script>
-
 
 <script>
 function addLocationAuto(locationId,rowId,longtitudeId,latitudeId) {

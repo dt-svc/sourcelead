@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
-import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
@@ -54,9 +53,6 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
     @Autowired
     private CommonUtil commonUtil;
 
-    @Autowired
-    private UserDao userDao;
-
     @Override
     public Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, OrgLocations orgLocations,
             String templateId) {
@@ -72,7 +68,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         	immigrationTemplate = new ImmigrationTemplate();
         	immigrationTemplate.setCreatedDate(latestDate);
             immigrationTemplate.setCreatedBy(user);
-        	immigrationTemplate.setStatus(Constants.RECORD_INACTIVE);
+        	immigrationTemplate.setStatus(Constants.RECORD_DRAFT); // Changed to in active state to Draft State.
         }
         
         immigrationTemplate.setOrgLocations(orgLocations);
@@ -110,6 +106,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             if(tempObj.getId() != null){
             	immigrationTemplateDocs = new ImmigrationTemplateDocs();
             	immigrationTemplateDocs.setId(tempObj.getId());
+            	immigrationTemplateDocs.setDocumentCategory(tempObj.getDocumentCategory());
             }else{
             	immigrationTemplateDocs = new ImmigrationTemplateDocs();
             	 immigrationTemplateDocs.setCreatedDate(latestDate);
@@ -118,9 +115,13 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             immigrationTemplateDocs.setImmigrationTempId(immiTemplate);
             immigrationTemplateDocs.setUpdatedDate(latestDate);
             immigrationTemplateDocs.setUpdatedBy(user);
+            immigrationTemplateDocs.setDocumentCategory(tempObj.getDocumentCategory());
+            
             LookUpData documentTypeId = new LookUpData();
+           
             documentTypeId.setId(tempObj.getDocumentType());
             immigrationTemplateDocs.setDocumentType(documentTypeId);
+            
             immigrationTemplateDocs.setDescription(tempObj.getDescription());
             immigrationTemplateDocs.setDocumentOtherType(tempObj.getOtherType());
             if(!StringUtils.isEmpty(tempObj.getOtherType())){ // if other the value is not empty overriding the description value.
@@ -242,6 +243,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             immigrationTemplateForms.setImmigrationTempId(immiTemplate);
             immigrationTemplateForms.setFormName(tempObj.getFormName());
             immigrationTemplateForms.setDescription(tempObj.getFormDescription());
+            immigrationTemplateForms.setFormCategory(tempObj.getFormCategory());
             if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
                 immigrationTemplateForms.setIsRequired(tempObj.getIsRequired());
             } else {
@@ -386,6 +388,21 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	public List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal) {
 		 List<LookUpData> lookUpDatas = immigrationTemplateDao.getLookupDataByTypeAndLocation(petitionType, locationVal);
 	     return lookUpDatas;
+	}
+
+	@Override
+	public Long getTemplateIdByUUID(String immiTemplateUUID) {
+		return immigrationTemplateDao.getTemplateIdByUUID(immiTemplateUUID);
+	}
+
+	@Override
+	public List<ImmigrationTemplateTasks> getImmigrationTemplateTasksByTempId(Long templateId) {
+		return immigrationTemplateDao.getImmigratonTemplateTasksByTemplateId(templateId);
+	}
+
+	@Override
+	public boolean validateTemplateTaskNameExistance(String templateTaskName, Long templateId, Long immiTaskId) {
+		return immigrationTemplateDao.validateTemplateTaskNameExistance(templateTaskName, templateId, immiTaskId);
 	}
 
 }

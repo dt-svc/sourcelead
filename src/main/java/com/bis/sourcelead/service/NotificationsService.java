@@ -2,7 +2,10 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.NotificationDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.Timezone;
 
 /**
  * 
@@ -29,4 +32,7 @@ public interface NotificationsService {
 
 	Notifications getNotificationBySpocUUID(String spocUUID) throws Exception;
 
+	Notifications getNotificationDetailsByUUID(String UUID) throws Exception;
+
+	ResponseList<Notifications> getDynamicAllNotificationsListByUserId(NotificationDTO notificationDTO, Long userId, String orgCode, String locationCode, Timezone timezone);
 }

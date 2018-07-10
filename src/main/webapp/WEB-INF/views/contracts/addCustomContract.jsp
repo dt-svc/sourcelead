@@ -215,6 +215,16 @@ $(document).ready(function(){
               </div>
             </div>
           
+          
+          <c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
+       			<c:if test="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'}">
+       				<input type="hidden" value="${contract.orgRelations.id}" id="orgRelationId" name="orgRelationId"/>
+       			</c:if>
+       			<c:if test="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW'}">
+       				<input type="hidden" value="${contract.orgRelations.id}" id="clientOrgRelationId" name="clientOrgRelationId"/>
+       			</c:if>
+           	</c:if>
+          
          <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorVendor">
@@ -407,32 +417,59 @@ $(document).ready(function(){
 	   		<!-- Radio buttons for Sequential or Parallel function -->
 	   		 <div  class="clearfix"></div>
                 <div  class="ml pull-left apprverReq" >
-                <label class="rad" id="parallel">
-                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" checked="checked" onclick="getParallelApprovers();">
-                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
-                </label>
-                <label class="rad" id="sequential">
-                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" ${'SEQUENTIAL'  == contract.ownersType ? 'checked' : ''} onclick="getSequentialApprovers();">
-                <i class="fa fa-retweet" title="Sequential"></i>
-                </label>
+                	<c:if test="${!empty contract.ownersType}">
+		                <label class="rad" id="parallel">
+		                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" ${'Parallel'  == contract.ownersType ? 'checked' : ''} onclick="getParallelApprovers();">
+		                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
+		                </label>
+		                <label class="rad" id="sequential">
+		                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" ${'Sequential'  == contract.ownersType ? 'checked' : ''} onclick="getSequentialApprovers();">
+		                <i class="fa fa-retweet" title="Sequential"></i>
+		                </label>
+                	</c:if>
+                	<c:if test="${empty contract.ownersType}">
+		                <label class="rad" id="parallel">
+		                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" checked onclick="getParallelApprovers();">
+		                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
+		                </label>
+		                <label class="rad" id="sequential">
+		                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" onclick="getSequentialApprovers();">
+		                <i class="fa fa-retweet" title="Sequential"></i>
+		                </label>
+                	</c:if>
+                
                  
                   <div id="navbar" class="glyphicon glyphicon-info-sign text-info ml"></div>
                 </div>
-                <!-- Radio buttons for Sequential or Parallel function -->
+                        <!-- Radio buttons for Sequential or Parallel function -->
            
              <div  class="clearfix"></div>
           <div class="form-group row" id="parallelAppDiv" style="display:block">
               <label class="col-md-4">Signing Authority<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select multiple class="chosen-select form-control" id="parallelOwner" name="parallelOwner" data-placeholder="Select signing authority" data-validation="required" field-name="Owner">
+                  
                   <c:forEach var="user" items="${userList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="ownerId" items="${contract.parallelOwnerId}">
+					    <c:if test="${ownerId eq user.id}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${user.id}">${user.firstName} ${user.lastName}</option>
+					    </c:if>
+					</c:forEach>
+					<c:if test="${NUM == 0}">
+						<option  value="${user.id}">${user.firstName} ${user.lastName}</option>
+					</c:if>
+                </c:forEach>
+                  
+                 <%--  <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.ownerUserId.id}">
 	                 	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == contract.ownerUserId.id ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
 	                  </c:if>
 	                  <c:if test = "${empty contract.ownerUserId.id}">
 	                  	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
 	                  </c:if>
-                  </c:forEach>
+                  </c:forEach> --%>
                   </select>
               </div>
           </div> 
@@ -441,8 +478,8 @@ $(document).ready(function(){
           <div class="form-group row">
               <label class="col-md-4">Signing Authority1<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="sequentialOwner1" name="sequentialOwner1" data-placeholder="Select signing authority1" data-validation="required" onchange="refreshSigningAuthority2();" field-name="Owner">
-                  <option value=''>Select Signing Authority1</option>
+                  <select class="chosen-select form-control" id="sequentialOwner1" name="sequentialOwner1" data-placeholder="Select signing authority1" data-validation="required" onchange="refreshSigningAuthority2();" field-name="Sequential Owner1">
+<!--                   <option value='' disabled>Select Signing Authority1</option> -->
                   <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.sequentialOwner1}">
 	                 	 <option value="${user.id}" ${user.id  == contract.sequentialOwner1 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
@@ -458,8 +495,8 @@ $(document).ready(function(){
           <div class="form-group row">
               <label class="col-md-4">Signing Authority2<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="sequentialOwner2" name="sequentialOwner2" data-placeholder="Select signing authority2" onchange="changeSaveButton();" data-validation="required" field-name="Owner">
-                  <option value=''>Select Signing Authority2</option>
+                  <select class="chosen-select form-control" id="sequentialOwner2" name="sequentialOwner2" data-placeholder="Select signing authority2" onchange="changeSaveButton();" data-validation="required" field-name="Sequential Owner2">
+<!--                   <option value='' disabled>Select Signing Authority2</option> -->
                   <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.sequentialOwner2}">
 	                 	 <option value="${user.id}" ${user.id  == contract.sequentialOwner2 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
@@ -795,6 +832,51 @@ function removeDocument(id){
  });  
 	}
 </script>
+
+    <script>
+    $("#uasrch").selectpicker('refresh');
+    </script>
+<script>
+function getParallelApprovers(){
+	$("#parallel i").addClass("apprverReq-active");
+	$("#sequential i").removeClass("apprverReq-active");
+	$("#parallelAppDiv").show();
+	$("#sequentialAppDiv").hide();
+	$("#sequentialOwner1").val('');
+	$("#sequentialOwner2").val('');
+// 	$("#parallelOwner").val('');
+	$('#sequentialOwner1').trigger("chosen:updated");
+	$('#sequentialOwner2').trigger("chosen:updated");
+// 	$('#parallelOwner').trigger("chosen:updated");
+	
+	$('#parallelOwner').removeAttr('data-validation-optional');
+	$('#parallelOwner').attr('data-validation',"required");
+	$('#sequentialOwner2').removeAttr('data-validation');
+	$('#sequentialOwner2').attr('data-validation-optional',"true");
+	$('#sequentialOwner1').removeAttr('data-validation');
+	$('#sequentialOwner1').attr('data-validation-optional',"true");
+}
+
+function getSequentialApprovers(){
+		$("#parallel i").removeClass("apprverReq-active");
+		$("#sequential i").addClass("apprverReq-active");
+		$("#sequentialAppDiv").show();
+		$("#parallelAppDiv").hide();
+//	 	$("#sequentialOwner1").val('');
+//	 	$("#sequentialOwner2").val('');
+		$("#parallelOwner").val('');
+		
+//	 	$('#sequentialOwner1').trigger("chosen:updated");
+//	 	$('#sequentialOwner2').trigger("chosen:updated");
+		$('#parallelOwner').trigger("chosen:updated");
+		$('#sequentialOwner1').removeAttr('data-validation-optional');
+		$('#sequentialOwner1').attr('data-validation',"required");
+		$('#sequentialOwner2').removeAttr('data-validation-optional');
+		$('#sequentialOwner2').attr('data-validation',"required");
+		$('#parallelOwner').removeAttr('data-validation');
+		$('#parallelOwner').attr('data-validation-optional',"true");
+}
+</script>
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -809,7 +891,10 @@ function removeDocument(id){
 			$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				})	
+				$("#parallelOwner_chosen").on('change', function (e) {
+					changeSaveButton();
+			       });
 				$(document).ready(function(){
 					$("#cd").click(function(){
 						$(".clientDetails").toggleClass('hidden', 500);
@@ -817,11 +902,6 @@ function removeDocument(id){
 	
 	});
  		</script>
-    <script>
-    $("#uasrch").selectpicker('refresh');
-    </script>
-
-
 <script>
 	$(function() {
 		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -1757,13 +1837,21 @@ function hideCommonSOWFields(){
 			saveType = '${contractFromType}';
  		}
 			$("#customLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			 var formData = getFormData("newcontract_form");
+			var formData = getFormData1("newcontract_form");
 				var sourceleadUrl = '${sourceleadUrl}';
-	            $.post( sourceleadUrl+ "/saveCustomContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&typeOfContract="+conType1, formData, function(data) {
-	                       if(data == true){
+				
+				$.ajax({
+					type : "POST",
+					data: formData,
+	  		        processData: false,
+	  		        contentType:false, 
+					url : sourceleadUrl+ "/saveCustomContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&typeOfContract="+conType1,
+					success : function(result) {
+						 if(result == true){
 	                    	   location.replace(sourceleadUrl+"/contractListbyStatus");
 	                       }
-	                    });
+					}
+                   });
 			return true;
 		} else {
 			$('#submissionOffersListDiv').find('p.text-primary').remove();
@@ -2036,6 +2124,9 @@ function getTaxPercentageValue(){
 function changeSaveButton(){
 	var userId = '${SourceLeadWeb_userId}';
 	 var approverId = $("#approver").val();
+	 var seqOwner1 = $("#sequentialOwner1").val();  
+		var seqOwner2 = $("#sequentialOwner2").val();
+	 var parallelOwner = $("#parallelOwner").val();
 	if(approverId !='' && approverId != null){
 		if(approverId == userId){
 			document.getElementById("save_approver_template").value="Approve";
@@ -2251,6 +2342,22 @@ function addCustomEmptyClientContact(){
 }
 
 </script>
+
+<script>
+function refreshSigningAuthority2(){
+	var sequentialOwner1 = $("#sequentialOwner1").val();
+	var result = "";
+	<c:forEach var="user" items="${userList}">
+		if(sequentialOwner1 != "${user.id}"){
+			result = result +  '<option value="${user.id}"> ${user.firstName} ${user.lastName}</option>';
+		}
+	</c:forEach>
+	$("#sequentialOwner2").empty();
+	$("#sequentialOwner2").append(result);
+	$('#sequentialOwner2').trigger("chosen:updated");
+}
+</script>
+
 <script>
 	 function selectedVendor(){
 		 var vid =   $("#orgRelationId").val();

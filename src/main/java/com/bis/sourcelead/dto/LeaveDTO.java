@@ -90,6 +90,20 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	
 	private String exportType;
 	private float leaveNoDays;
+	private String leaveName;
+	private boolean isSuperUser;
+	
+	private String withdrawReason;
+	private Long leaveId;
+	private String currentStage;
+	
+	private String fromDateFromHalfTime;
+	private String fromDateToHalfTime;
+	private String toDateFromHalfTime;
+	private String toDateToHalfTime;
+	
+	private List<String> otherApproverUser;
+	private String notifyToOthers;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -636,5 +650,72 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setLeaveNoDays(float leaveNoDays) {
 		this.leaveNoDays = leaveNoDays;
 	}
-
+	public String getLeaveName() {
+		return leaveName;
+	}
+	public void setLeaveName(String leaveName) {
+		this.leaveName = leaveName;
+	}
+	public boolean getIsSuperUser()
+	{
+		return isSuperUser;
+	}
+	public void setIsSuperUser(boolean isSuperUser)
+	{
+		this.isSuperUser = isSuperUser;
+	}
+	public String getWithdrawReason() {
+		return withdrawReason;
+	}
+	public void setWithdrawReason(String withdrawReason) {
+		this.withdrawReason = withdrawReason;
+	}
+	public Long getLeaveId() {
+		return leaveId;
+	}
+	public void setLeaveId(Long leaveId) {
+		this.leaveId = leaveId;
+	}
+	public String getCurrentStage() {
+		return currentStage;
+	}
+	public void setCurrentStage(String currentStage) {
+		this.currentStage = currentStage;
+	}
+	public List<String> getOtherApproverUser() {
+		return otherApproverUser;
+	}
+	public void setOtherApproverUser(List<String> otherApproverUser) {
+		this.otherApproverUser = otherApproverUser;
+	}
+	public String getNotifyToOthers() {
+		return notifyToOthers;
+	}
+	public void setNotifyToOthers(String notifyToOthers) {
+		this.notifyToOthers = notifyToOthers;
+	}
+	public String getFromDateFromHalfTime() {
+		return fromDateFromHalfTime;
+	}
+	public void setFromDateFromHalfTime(String fromDateFromHalfTime) {
+		this.fromDateFromHalfTime = fromDateFromHalfTime;
+	}
+	public String getFromDateToHalfTime() {
+		return fromDateToHalfTime;
+	}
+	public void setFromDateToHalfTime(String fromDateToHalfTime) {
+		this.fromDateToHalfTime = fromDateToHalfTime;
+	}
+	public String getToDateFromHalfTime() {
+		return toDateFromHalfTime;
+	}
+	public void setToDateFromHalfTime(String toDateFromHalfTime) {
+		this.toDateFromHalfTime = toDateFromHalfTime;
+	}
+	public String getToDateToHalfTime() {
+		return toDateToHalfTime;
+	}
+	public void setToDateToHalfTime(String toDateToHalfTime) {
+		this.toDateToHalfTime = toDateToHalfTime;
+	}
 }

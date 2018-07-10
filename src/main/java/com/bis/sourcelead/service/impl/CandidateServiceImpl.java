@@ -3,8 +3,10 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -23,6 +26,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -69,8 +75,10 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
@@ -207,6 +215,10 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
 	ReferContactsDao referContactsDao;
+    
+    @Value("${static.path}")
+	private String staticPath;
+
     
        
     protected boolean isNullOrEmpty(String str) {
@@ -856,8 +868,8 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter) throws Exception {
-		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate,candidateFilterSkills,availability,candidateTypeFilter);
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter,String createdByFilter,User user) throws Exception {
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for(Candidate can :candidateList){
@@ -1324,7 +1336,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 			
 			if(StringUtils.isNotBlank(candidateDTO.getDateofBirth())){
-				candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(candidateDTO.getDateFormat(), candidateDTO.getDateofBirth()));
+				candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), candidateDTO.getDateofBirth()));
 			}else{
 				candidate.setDateOfBirth(null);
 			}
@@ -1581,8 +1593,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception {
-		return candidateDao.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC,endDateUTC);
+	public BigInteger getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception {
+		return candidateDao.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC,endDateUTC,isGlobalUser,orgId);
 	}
 
 	@Override
@@ -1772,6 +1784,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(candidateUser.getDateOfBirth() != null){
 			candidate.setDateOfBirth(commonUtil.orgLocationCommonDate(candidateUser.getDateOfBirth(),orgLocations));
 			}
+		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
+			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
+		}
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);
 		return candidate;
@@ -2167,6 +2182,288 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Candidate getCandidateByParentCandidateIdAndOrgLocationId(Long parentCandidateId, Long orgLocationId)
 			throws Exception {
 		return candidateDao.getCandidateByParentCandidateIdAndOrgLocationId(parentCandidateId, orgLocationId);
+	}
+
+	@Override
+	public List<RecruiterReportCandidateCountView> getCandidateCountsCreatedUserList(Long orgLocationId,
+			List<String> userCodesList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception {
+		return candidateDao.getCandidateCountsCreatedUserList(orgLocationId, userCodesList, startDateUTC, endDateUTC, isGlobalUser, orgId);
+	}
+
+	@Override
+	public ResponseList<SubmissionCandidateListView> getSubmissionCandidateListView(CandidateDTO candidateDTO,
+			OrgLocations orgLcoations) throws Exception {
+		return candidateDao.getSubmissionCandidateListView(candidateDTO, orgLcoations);
+	}
+
+	@Override
+	public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception {
+		return candidateDao.getCandidateDTOByCandidateId(candidateId);
+	}
+
+	@Override
+	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,
+			Long requirementId,String skills,String candidateDetails) throws Exception {
+		return candidateDao.getCandidateListForAddApplicant(orgLcoations, requirementId,skills,candidateDetails);
+	}
+
+	@Override
+	public void saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception {
+		
+		if (null != candidateDTO.getExperienceYears()) {
+			if (candidateDTO.getExperienceYears().matches("[-a-zA-Z]+")) {
+				candidateDTO.setExperienceYears("0");
+				candidateDTO.setExperienceMonths("0");
+			}else{
+				 String exp[] = getExperienceYearsAndMonths(candidateDTO.getExperienceYears());
+				 if(exp.length >1){
+					 candidateDTO.setExperienceYears(exp[0]);
+						if(!exp[1].matches("[a-zA-Z]+")){
+							if(!"years".equalsIgnoreCase(exp[1])){
+							int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
+							candidateDTO.setExperienceMonths(String.valueOf(months));
+							}
+								
+						} 
+				 }else{
+					 if(exp[0].contains("years") || exp[0].contains("Years") ){
+						 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
+						 candidateDTO.setExperienceYears(String.valueOf(years));
+						 candidateDTO.setExperienceMonths("0");
+					 }else{
+						 candidateDTO.setExperienceYears("");
+						 candidateDTO.setExperienceMonths("");
+					 }
+					 
+				 }
+					
+					
+			}
+		}
+		
+		if (null != candidateDTO.getDesignationType()) {
+			if(candidateDTO.getDesignationType().equalsIgnoreCase("W2")) {
+				candidateDTO.setDesignationType("W-2");
+			}
+			
+			else if(!candidateDTO.getDesignationType().equalsIgnoreCase("C2C") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("C2C-1099") &&
+					!candidateDTO.getDesignationType().equalsIgnoreCase("W-2") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("C2H") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("C2H -1099") &&
+					!candidateDTO.getDesignationType().equalsIgnoreCase("Part Time") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("Full Time") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("Off Shore")) {
+				
+				candidateDTO.setDesignationType("C2C");
+			}
+		}
+		
+		if (null != candidateDTO.getExpectedRate()) {
+			String rate = getExpectedRate(candidateDTO.getExpectedRate());
+			if (null != rate) {
+				candidateDTO.setExpectedRate(rate);
+				String countryCheck = orgLocations.getCountry();
+				switch (countryCheck) {
+					case "India":
+						candidateDTO.setRateType("Monthly");
+						break;
+					default:
+						candidateDTO.setRateType("Hourly");
+				}
+				
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					//jsonObj.put("expectedRateCurrencey", "INR");
+					candidateDTO.setExpectedRateCurrencey("INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("EUR");
+				}
+			}
+			else {
+				
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("EUR");
+				}
+				String countryCheck = orgLocations.getCountry();
+				switch (countryCheck) {
+					case "India":
+						//jsonObj.put("rateType", "Monthly");
+						candidateDTO.setRateType("Monthly");
+						break;
+					default:
+						candidateDTO.setRateType("Hourly");
+				}
+			}
+		}
+		
+		
+		
+		if (null != candidateDTO.getExperienceYears()) {
+			if (candidateDTO.getExperienceYears().matches("[-a-zA-Z]+")) {
+				candidateDTO.setExperienceYears("0");
+				candidateDTO.setExperienceMonths("0");
+			}else{
+				 String exp[] = getExperienceYearsAndMonths(candidateDTO.getExperienceYears());
+				 if(exp.length >1){
+					 candidateDTO.setExperienceYears(exp[0]);
+						if(!exp[1].matches("[a-zA-Z]+")){
+							if(!"years".equalsIgnoreCase(exp[1])){
+							int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
+							candidateDTO.setExperienceMonths(String.valueOf(months));
+							}
+								
+						} 
+				 }else{
+					 if(exp[0].contains("years") || exp[0].contains("Years") ){
+						 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
+						 candidateDTO.setExperienceYears(String.valueOf(years));
+						 candidateDTO.setExperienceMonths("0");
+					 }else{
+						 candidateDTO.setExperienceYears("");
+						 candidateDTO.setExperienceMonths("");
+					 }
+					 
+				 }
+					
+					
+			}
+			
+			
+		}
+		
+		
+		// Vendor and Vendor Contact
+		if(candidateDTO.getVendor() != null && !candidateDTO.getVendor().equals("") && candidateDTO.getVendorcontact() != null && !candidateDTO.getVendorcontact().equals("")) {
+			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+			Long vendorId = 0l;
+			for(OrgRelations rel : vendorsList) {
+				if((candidateDTO.getVendor().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (candidateDTO.getVendor().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+					vendorId = rel.getId();
+				}
+			}
+			if(vendorId > 0) {
+				candidateDTO.setVendors(String.valueOf(vendorId));
+			}
+			
+			List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
+			
+			for(OrgSpoc vendorContacts : vendorContactsList) {
+				if(candidateDTO.getVendorcontact().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
+					candidateDTO.setVendorcontact(String.valueOf(vendorContacts.getId()));
+				}
+			}
+		}
+		
+		Candidate candidate = storeCandidate(candidateDTO, orgLocations, user);
+		
+		if(candidateDTO.getDocFile() != null && !candidateDTO.getDocFile().equals("")) {
+			
+			long time = new Date().getTime();
+			File folder = new File(staticPath+"/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/");
+			if (!folder.exists())
+				folder.mkdirs();
+			File file = new File(folder,candidateDTO.getFirstName() + time+".docx");
+			String fileUrl = "/slead-static/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/"+file.getName();
+			XWPFDocument document = new XWPFDocument(); 
+			FileOutputStream out = new FileOutputStream(file);
+			XWPFParagraph paragraph = document.createParagraph();
+			XWPFRun run = paragraph.createRun();
+			
+			Scanner scanner = new Scanner(candidateDTO.getDocFile());
+			while (scanner.hasNextLine()) {
+			  String line = scanner.nextLine();
+			  run.setText(line);
+			  run.setFontFamily("verdana");
+			  run.setFontSize(12);
+			  run.addBreak();
+			}
+			
+	        document.write(out);
+	        out.close();
+	        document.close();
+	        scanner.close();
+	        
+	        CandidateResumes resume = new CandidateResumes();
+	        resume.setOrgLocationId(orgLocations);
+	        resume.setCandidateId(candidate);
+	        resume.setFileContentType("application/msword");
+	        resume.setFileName(candidateDTO.getFirstName()+" Resume.doc");
+	        resume.setStatus(Constants.CANDIDATE_ACTIVE);
+	        resume.setCreatedDate(new Date());
+	        resume.setCreatedBy(user.getUserCode());
+	        resume.setUpdatedDate(new Date());
+	        resume.setUpdatedBy(user.getUserCode());
+	        resume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	        resume.setTitle(candidateDTO.getFirstName()+" Resume");
+	        resume.setFileURL(fileUrl);
+	        candidateResumesService.updateCandidateResume(resume);
+		}
+	
+		
+	}
+	
+	private String[] getExperienceYearsAndMonths(String experience) {
+	    
+		return experience.split("[\\p{Punct}\\s]+");
+		
+	}
+	
+	private String getExpectedRate(String expectedRate)
+	{
+		
+		String[] Res = expectedRate.split("[\\p{Punct}\\s]+");
+		for (String s : Res) {
+			if (isNumeric(s)) {
+				return s;
+			}
+		}
+		return null;
+	}
+	
+	public static boolean isNumeric(String str)
+	{
+		return str.matches("-?\\d+(\\.\\d+)?");
 	}
 
 }

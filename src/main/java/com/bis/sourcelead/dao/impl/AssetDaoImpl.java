@@ -281,11 +281,11 @@ public class AssetDaoImpl implements AssetDao{
 			subQuery = " and asset.id NOT IN ( select aa.asset.id from AssetAssign aa where aa.shift.id IN("+assetDTO.getShiftIds()+"))";
 		}
 		String query = "from Asset asset  where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subQuery+subquery1+" "+subquery2+" "+query1+" "+sortingQry+""; 
-		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setFirstResult(assetDTO.getStart()).setMaxResults(assetDTO.getLength()).list();
 		
-		String queryStrForCount = "Select count (*) from Asset asset   where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subQuery+subquery1+" "+subquery2+" " ;
+		String queryStrForCount = "Select count (*) from Asset asset   where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subQuery+subquery1+" "+subquery2+" "+query1+"" ;
 		countlist = session.createQuery(queryStrForCount.toString()).setLong("orgLocationId", orgLocationId).list();
-		
+		filterCount = countlist.iterator().next().intValue();
 		int totalCount = 0;
 		if (assetDTO != null) {
 			if(countlist != null && !countlist.isEmpty()) {

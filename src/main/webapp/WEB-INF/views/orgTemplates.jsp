@@ -29,7 +29,7 @@
 		<p>Manage Your Applicant Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE')"> 
-			<a class="btn btn-info btn-sm mr10" href="<c:url value="${appPath}/orgSubmissionTemplate" />">Add</a>
+			<a class="btn btn-info btn-sm mr10" href="<c:url value="${appPath}/orgSubmissionTemplate?type=addTemplate" />">Add</a>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
 			<a class="btn btn-primary btn-sm" href="<c:url value="${appPath}/orgSubmissionTemplate" />">View</a>
@@ -127,7 +127,7 @@
 		<p>Manage Your Interview Templates</p>
 		<span>
 		<sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/interViewFeedBackTemplate'/>">Add</a> 
+			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/interViewFeedBackTemplate?type=addInterViewFeedBackTemplate'/>">Add</a> 
 			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/interViewFeedBackTemplate" />">View</a>
 			</sec:authorize>
 		</span>
@@ -149,7 +149,6 @@
 		</div>
 	</div>
 	
-	<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 	<div class="landTempCta nomr">
 	<div class="pull-left mr10">
            <i class="fa fa-file fa-2x text-success"></i>
@@ -181,7 +180,7 @@
 	
 	<div class="landTempCta nomr">
 	<div class="pull-left mr10">
-           <i class="fa fa-address-card-o fa-2x text-info"></i>
+           <i class="fa fa-envelope fa-2x text-info"></i>
     </div>
 		<div class="pull-left">
 		<h2 class="text-info">Email</h2>
@@ -195,8 +194,7 @@
 
 		</span>
 		</div>
-	</div>
-	</c:if>
+	</div> 
 	<div class="clearfix"></div>
 </section>
     

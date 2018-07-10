@@ -16,7 +16,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "IMMIGRATION", schema = "SOURCELEAD")
@@ -35,6 +39,9 @@ public class Immigration implements Serializable {
 	
 	@Column(name = "RECEIPT_NO ")
 	private String receiptNo;
+	
+	@Column(name = "PROCESS_TYPE")
+	private String processType;
 
 	@ManyToOne
 	@JoinColumn(name = "CURRENT_USCIS_STATUS")
@@ -76,6 +83,7 @@ public class Immigration implements Serializable {
 	@JoinColumn(name = "CANDIDATE_USER_ID")
 	private User candidateUserId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "JOB_ID")
 	private Requirement job;
@@ -129,6 +137,15 @@ public class Immigration implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigration",orphanRemoval=true)
 	private List<SourceleadNotes> notes;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigrationId",orphanRemoval=true)
+	private List<Tasks> tasks;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigrationId",orphanRemoval=true)
+	private List<ImmigrationActivityHistory> immigrationActivityHistory;   
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigration",orphanRemoval=true)
+	private List<ImmigrationTasks> immigrationTasks;
 	
 	public List<ImmigrationCandidateDocuments> getCandidateDocuments() {
 		return candidateDocuments;
@@ -362,5 +379,36 @@ public class Immigration implements Serializable {
 		this.candidateUserId = candidateUserId;
 	}
 
-	
+	public List<Tasks> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<Tasks> tasks) {
+		this.tasks = tasks;
+	}
+
+	public List<ImmigrationActivityHistory> getImmigrationActivityHistory() {
+		return immigrationActivityHistory;
+	}
+
+	public void setImmigrationActivityHistory(List<ImmigrationActivityHistory> immigrationActivityHistory) {
+		this.immigrationActivityHistory = immigrationActivityHistory;
+	}
+
+	public List<ImmigrationTasks> getImmigrationTasks() {
+		return immigrationTasks;
+	}
+
+	public void setImmigrationTasks(List<ImmigrationTasks> immigrationTasks) {
+		this.immigrationTasks = immigrationTasks;
+	}
+
+	public String getProcessType() {
+		return processType;
+	}
+
+	public void setProcessType(String processType) {
+		this.processType = processType;
+	}
+
 }

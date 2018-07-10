@@ -51,7 +51,7 @@ public class Contracts {
 	private String typeOfContract;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY) 
+	@ManyToOne(fetch = FetchType.EAGER) 
     @JoinColumn(name="TEMPLATE_ID", nullable=false )  
 	private ContractsTemplate contractsTemplate; 
 	 
@@ -391,6 +391,10 @@ public class Contracts {
 	@Transient
 	@JsonProperty
 	private Long parallelOwner;
+	
+	@Transient
+	@JsonProperty
+	private List<Long> parallelOwnerId;
 	
 	@Transient
 	@JsonProperty
@@ -1259,5 +1263,15 @@ public class Contracts {
 	public void setIsParentContract(String isParentContract)
 	{
 		this.isParentContract = isParentContract;
+	}
+
+	public List<Long> getParallelOwnerId()
+	{
+		return parallelOwnerId;
+	}
+
+	public void setParallelOwnerId(List<Long> parallelOwnerId)
+	{
+		this.parallelOwnerId = parallelOwnerId;
 	}
 }

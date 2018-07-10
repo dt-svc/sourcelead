@@ -13,9 +13,9 @@
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Employment Verfication Template</h2>
+        <h2>Employment Verification Template</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Employment Verfication Template</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Employment Verification Template</div>
     </section>
 <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal">
@@ -33,17 +33,13 @@
               <div class="col-md-8">
                   <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="letterHead" field-name="Letterhead" data-validation="required">
                     <c:forEach var="letter" items="${letterHeadList}">
-				         <option value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
-                     </c:forEach>
-                     
-                       <c:forEach var="letter" items="${letterHeadList}">
-					<c:if test = "${letter.id == empTemplate.letterHead.id}">
+                    <c:if test = "${letter.id == empTemplate.letterHead.id}">
 				         <option selected value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
 				    </c:if>
 				    <c:if test = "${letter.id != empTemplate.letterHead.id}">
-				         <option value="${title.associateId}">${title.firstName} ${title.lastName}</option>
-				    </c:if>
-                     </c:forEach>    
+				         <option value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
+				         </c:if>
+                    </c:forEach>
                   </select>
             </div>
             </div>

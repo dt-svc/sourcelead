@@ -1,6 +1,5 @@
 package com.bis.sourcelead.immigration.dao;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +19,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
+import com.bis.sourcelead.entity.ImmigrationListExportView;
 import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -90,14 +90,16 @@ public interface ImmigrationCommonDao {
 	 
 	Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception;
 	
-	List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,Long candidateId, String searchVal);
+	List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,Long candidateId, String searchVal, String myImmigration);
 
-	List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId, Long immigrationId, String searchVal);
+	List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId, Long immigrationId, String searchVal, String myImmigration);
 
 	ImmigrationCandidateForms getImmigrationCandidateFormsById(Long id, Long candidateId, Long immigrationId) throws Exception;
 
 	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,	String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal)throws Exception;
-
+	
+	ResponseList<ImmigrationListViewDTO> getImmigrationsListByCountsLink(ImmigrationListViewDTO immigrationListDTO,	String searchValue, OrgLocations orgLocations)throws Exception;
+	
 	String updateUscisTypeDropDown(Immigration immigration);
 
 	ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations);
@@ -125,6 +127,27 @@ public interface ImmigrationCommonDao {
 	public ImmigrationActivityHistory storeImmigrationActivities(ImmigrationActivityHistory immigrationActivityHistory) throws Exception;
 
 	public List<ImmigrationActivityHistory> getImmigrationActivitiesList(Long immigrationId, Long orgLocationId) throws Exception;
+	
+	Integer getTableRecordCountByImmigrationId(String entityName,Long immigrationId, String condition);
 
+	public Boolean validateCandidatePassportVisa(Long candidateId,String idType,String idNumber) throws Exception;
+	
+	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType, Long candidateId,Long id) throws Exception;
 
+	Immigration getImmigrationByUUID(String immigrationUUID);
+
+	Long getImmigrationIdByUUID(String immigrationUUID);
+
+	Long getCandidateIdByUUID(String candidateUUID);
+	
+	public ImmigrationCandidateForms getImmigrationCandidateFormsDetailsByFormNameAndId(String formName, Long candidateId,Long immigrationId,Long id) throws Exception;
+	
+	public Boolean validateImmigrationCandidateForms(String formName, Long candidateId,Long immigrationId) throws Exception;
+
+	List<ImmigrationListExportView> getImmigrationListExportDetails(OrgLocations orgLocations);
+
+	Long getTemplateDetailsByNameAndOrgLoacationId(String name, OrgLocations orgLocations);
+
+	List<Immigration> getImmigrationsByOrgId(Long id);
+	
 }

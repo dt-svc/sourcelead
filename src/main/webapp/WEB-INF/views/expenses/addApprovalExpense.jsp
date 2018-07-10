@@ -60,7 +60,7 @@ $(document).ready(function(){
                 <div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-					<c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'}">
+					<c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'and submissionStatus ne 'REOPENED'}">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
 
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
@@ -71,7 +71,7 @@ $(document).ready(function(){
 							</c:forEach>
 						</select>
 					</c:if>
-					<c:if test ="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED'}">
+					<c:if test ="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED'or submissionStatus eq 'REOPENED'}">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" disabled="disabled" >
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
 								<option value="">Select Project</option>
@@ -225,9 +225,11 @@ $(document).ready(function(){
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 						<select class="chosen-select form-control" id="categoryType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${(2*(entryCount.count))-1});">
 						<option value="">Select Category Type</option>
+						<c:set var="isAttachmentRequired" value="Y"/>
 						<c:forEach var="project" items="${expEntry.projectsList}">
 						   <c:if test="${project.id == expenses.projectId}">
 					 	    	 <c:forEach var="expCat" items="${project.expenseCategoryList}">
+					 	    	      <c:set var="isAttachmentRequired" value="${!empty expCat.isAttachemtRequired && expCat.isAttachemtRequired == \"Y\" ? 'Y' :'N'}"/>
 					 	    	      <option ${entry.categoryTypeId == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>
 					 	    	 </c:forEach>
 						  </c:if>
@@ -303,7 +305,7 @@ $(document).ready(function(){
 			                 <span> 
 			                     <table class='timesheetAttachment' id='attachmentTable${(2*(entryCount.count))-1}' cellpadding='0' cellspacing='0' width="100%">
 			                       <tr id='${(2*(entryCount.count))-1}divAttachmentTsRow0'>
-			                           <td><div id='0docFileuploadFileGroup${(2*(entryCount.count))-1}'><input type='file' name='0docFile${(2*(entryCount.count))-1}' id='0docFile${(2*(entryCount.count))-1}' field-name='Attachment' onchange='validateUploadFile(0,${(2*(entryCount.count))-1})' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(${(2*(entryCount.count))-1},"EDIT")'></i></div></td> 
+			                           <td><div id='0docFileuploadFileGroup${(2*(entryCount.count))-1}'><input type='file' name='0docFile${(2*(entryCount.count))-1}' id='0docFile${(2*(entryCount.count))-1}' field-name='Attachment' onchange='validateUploadFile(0,${(2*(entryCount.count))-1})' ><i class='fa fa-plus' onClick='addAttachment(${(2*(entryCount.count))-1},"EDIT")'></i></div></td> 
 			                       </tr>
 			                   </table>
 			                 </span>
@@ -329,7 +331,7 @@ $(document).ready(function(){
 		
 		
 			<div class="pull-right">
-			<!-- <input type="button" value="Save" class="btn btn-sm btn-primary"> -->
+			 <input type="button" value="Save" class="btn btn-sm btn-primary"> 
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('submitted');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Approve" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('approved');">
 			<c:if test ="${!empty expenses.id}">

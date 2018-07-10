@@ -638,6 +638,7 @@ public class CompanyOnboardRestController {
 		OrglocationSignatory signatory = orglocationSignatoryService.getOrglocationSignatoryByUUID(orglocationSignatoryDTO.getUuid());
 		OrglocationSignatoryDTO signDto = new OrglocationSignatoryDTO();
 		signDto.setUuid(signatory.getUuid());
+		signDto.setFirstName(signatory.getUserId().getFullName());
 		signDto.setAssociateId(signatory.getUserId().getId());
 		if(StringUtils.isNotBlank(signatory.getAuthorizedType())){
 			signDto.setAuthorizedType(Arrays.asList(signatory.getAuthorizedType().split("\\s*,\\s*")));

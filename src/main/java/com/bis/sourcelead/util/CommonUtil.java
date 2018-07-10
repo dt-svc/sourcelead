@@ -41,7 +41,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
@@ -63,16 +62,18 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dao.ShiftDao;
+import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
-import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
@@ -92,6 +93,9 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
@@ -101,10 +105,12 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.MasterCandidateService;
@@ -116,6 +122,8 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -125,9 +133,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.DecimalFormat;
 import com.thoughtworks.xstream.XStream;
@@ -236,6 +242,17 @@ public class CommonUtil {
 	@Value("${static.path}")
     private String staticPath;
 	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioconService;
+	
+	@Autowired
+	private ShiftDao shiftDao;
+
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
+
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	/**
 	 * This method is used to convert JSON String to HashMap<Key,Value>
@@ -400,7 +417,17 @@ public class CommonUtil {
 	    }
 		return date;
 	}
-	
+
+	public static boolean isValidDate(String inDate) {
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	  //  dateFormat.setLenient(false);
+	    try {
+	      dateFormat.parse(inDate.trim());
+	    } catch (ParseException pe) {
+	      return false;
+	    }
+	    return true;
+	  }
 	/**
 	 *  returns current date based on orglocation date format
 	 * @param orgDateFormat
@@ -1306,11 +1333,13 @@ public class CommonUtil {
 			float cthHours = hours1;
 			float cthHoursValue = (int) cthHours;
 			float cthMinutesValue = cthHours - cthHoursValue;
+			cthMinutesValue = (float) Math.round(cthMinutesValue * 100) / 100;
 			float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
 
 			float wthHours = hours2;
 			float wthHoursValue = (int) wthHours;
 			float wthMinutesValue = wthHours - wthHoursValue;
+			wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
 			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
 			float totalMinutes = totalCthMinutes+totalWthMinutes;
@@ -1332,6 +1361,7 @@ public class CommonUtil {
 			float wthHours = hours2;
 			float wthHoursValue = (int) wthHours;
 			float wthMinutesValue = wthHours - wthHoursValue;
+			wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
 			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
 			float totalMinutes = totalCthMinutes+totalWthMinutes;
@@ -2041,12 +2071,12 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		return usersDTOList;
 	}
 	
-	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId) {
+	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId,String isGlobalAccess) {
 		boolean flag = false;
 		try {
 			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
 			if(projectClients != null) {
-				if(projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+				if((projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) || (StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES))) {
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
@@ -2408,6 +2438,7 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 	}
 	  
   }
+
 /**
  * Conert Date to OrgLocation format with HH:MM:SS 
  * @param dateFormat
@@ -2419,4 +2450,112 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 	DateFormat sdf = new SimpleDateFormat(dateFormat+" HH:mm:ss");
 	return sdf.format(date);
 }
+
+  
+  
+  public String getConfiguredFromEmail(Long orgLocationId,EmailScenario  emailScenario) throws Exception{
+	  
+	     String fromEmail = null;
+		 EmailConfigurationFromMail confFromMail=null;
+		 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocationId);
+		 if(emailConfigMailList != null){
+			 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+				 if( fromMail.getEmailModules() != null){
+ 					String[] jobIds = fromMail.getEmailModules().split(",");
+						for(int i=0; i<jobIds.length; i++) {
+							if(Long.valueOf(jobIds[i]) == emailScenario.getTabId().getId() ){
+								confFromMail=fromMail;
+							}
+						}
+				 }
+			 } 
+			 
+			 if(confFromMail == null){
+				 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocationId);
+				 if(confFromMail != null){
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }else{
+				 fromEmail = confFromMail.getEmail();
+			 }
+		 }
+		 
+		 return fromEmail;
+  }
+  
+  public Shift saveDefaultGenaeralShift(OrgLocations orgLocations, User user,String shiftName) throws Exception {
+	     Shift shift = new Shift();
+	     shift.setShiftUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	     shift.setOrgLocations(orgLocations);
+	     shift.setShiftName(shiftName);
+	     shift.setTimeIn("9:00 AM");
+	     shift.setTimeOut("6:00 PM");
+	     shift.setMinmumHours("9 hrs");
+	     shift.setTotalHours("9 hrs");
+	     shift.setShiftDescription("Genearal Shift");
+	     
+	     shift.setMondayInTime("9:00 AM");
+	     shift.setMondayOutTime("6:00 PM");
+	     
+	     shift.setTuesdayInTime("9:00 AM");
+	     shift.setTuesdayOutTime("6:00 PM");
+	     
+	     shift.setWednesdayInTime("9:00 AM");
+	     shift.setWednesdayOutTime("6:00 PM");
+	     
+	     shift.setThursdayInTime("9:00 AM");
+	     shift.setThursdayOutTime("6:00 PM");
+	     
+	     shift.setFridayInTime("9:00 AM");
+	     shift.setFridayOutTime("6:00 PM");
+	     
+	     shift.setSaturdayInTime("9:00 AM");
+	     shift.setSaturdayOutTime("6:00 PM");
+	     
+	     shift.setSundayInTime("9:00 AM");
+	     shift.setSundayOutTime("6:00 PM");
+	     shift.setDefaultStatus("Y");
+	     shift.setStatus(Constants.RECORD_ACTIVE.toString());
+	     if(user != null) {
+			 shift.setUpdatedBy(user.getUserCode());
+			 shift.setCreatedBy(user.getUserCode());
+	     }
+		 shift.setUpdatedDate(new Date());
+		 shift.setCreatedDate(new Date());
+		 shiftDao.saveShift(shift);
+		 return shift;
+	}
+  
+  
+  public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+
+		// to update submission history
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
+
+		// to update Submission status
+		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
+		requirementSubmission.setUpdatedBy(user.getUserCode());
+		StringBuilder sb = new StringBuilder();
+		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		requirementSubmission.setUpdatedDate(new Date());
+		
+		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getJoinDate()) && !"".equalsIgnoreCase(applicantRejectBackOutDTO.getJoinDate())) {
+			try {
+				Date convertedDate = orgLocationDateFormat(orgLocations.getDateFormat(), applicantRejectBackOutDTO.getJoinDate());
+				requirementSubmission.setJoinedDate(convertedDate);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			requirementSubmission.setJoinedDate(null);
+		}
+		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		return "success";
+	}
+
 }
