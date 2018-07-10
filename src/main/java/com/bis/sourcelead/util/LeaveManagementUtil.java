@@ -787,6 +787,10 @@ public class LeaveManagementUtil {
                 int fromHours = (int) Math.floor((fromElapsed / 3600000)/60);
                 int fromMinutes = (int) Math.floor((fromElapsed - fromHours * 3600000) / 60000);
                 
+                if("Half Day".equalsIgnoreCase(leaveType.getDuration())){
+                	workingHours = workingHours / 2;
+                }
+                
                 if(Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod())){
                 	double oneHr = leaveType.getNoOfDaysPerPeriod() / workingHours;
                 	double oneHrMin = oneHr / 60;

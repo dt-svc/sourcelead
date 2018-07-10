@@ -1270,6 +1270,7 @@ $("#toDateToHalfTime").timepicker({
 	 'step': 15
 }).on('changeTime', function() {
     $("#toDateFromHalfTime").timepicker('option', 'maxTime', $(this).val());
+    calcaulateDuraton();
 }); 
 
 

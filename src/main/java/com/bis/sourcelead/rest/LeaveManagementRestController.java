@@ -2631,7 +2631,7 @@ public class LeaveManagementRestController {
 		return flag;
 	}
 
-	@RequestMapping(value = { "/getApproversForLeave" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getApproversForLeave", "/rest/getApproversForLeave" }, method = RequestMethod.GET)
 	public @ResponseBody List<User> getApproversForLeave(@RequestParam(value = "userId", required = true) Long userId,@RequestParam(value = "notifyToOthers", required = false) String notifyToOthers,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
