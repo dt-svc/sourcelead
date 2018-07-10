@@ -66,7 +66,7 @@ public class AssociateSalary {
 	@Column( name ="EFFECTIVE_DATE")
 	private Date effectiveDate;
 	
-	@Column( name ="CHANGE_REASON")
+	@Column( name ="CHANGE_REASON",columnDefinition = "TEXT default NULL")
 	private String changeReason;
 	
 
