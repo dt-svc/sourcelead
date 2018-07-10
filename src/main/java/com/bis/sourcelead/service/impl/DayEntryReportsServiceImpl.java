@@ -492,7 +492,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		}
 		*/
 		private String[] prepareDaywiseReportPdfData(String[] headers, DayWiseTimesheetReoprtsListDTO dayEntries, OrgLocations orgloc, long totalBillable, long totalNonbillable) {
-			 String dayArray[] = new String[headers.length];
+			    String dayArray[] = new String[headers.length];
 				String weekDayName;
 				SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
 				weekDayName = dayFormat.format(dayEntries.getTimesheetDate());
@@ -536,7 +536,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				}
 				
 				String status = null;
-				if(dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
+				if(StringUtils.isNotEmpty(dayEntries.getStatus()) && dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
 					status = "SUBMITTED";
 				}else {
 					status = dayEntries.getStatus();
@@ -544,31 +544,18 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				
 				String submittedDate =  null;
 				String approvedDate =  null;
-				/*Map<String,Date>dateMap = getSubmittedAndApprovedDate(dayEntries.getProjectId().longValue(),dayEntries.getMasterCandidateId().longValue(),dayEntries.getSahFrequenchStartDate(),dayEntries.getSahFrequenchEndDate(),status);
-				String submittedDate =  null;
-				String approvedDate =  null;
-				if(dateMap != null && !dateMap.isEmpty()) {
-					if(dateMap.get("SUBMITTED") != null) {
-						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("SUBMITTED"));
-					}
-					
-                    if(dateMap.get("APPROVED") != null) {
-                    	approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("APPROVED")); 
-					}
+				
+				if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
+					if(dayEntries.getSubmittedDate() != null)
+					submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+				}else if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("APPROVED")) {
+					if(dayEntries.getSubmittedDate() != null)
+					submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+					if(dayEntries.getApprovedDate() != null)
+					approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getApprovedDate()); 
 				}
-				else {*/
-					if(status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
-						if(dayEntries.getSubmittedDate() != null)
-						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
-					}else {
-						if(dayEntries.getSubmittedDate() != null)
-						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
-						if(dayEntries.getApprovedDate() != null)
-						approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getApprovedDate()); 
-					}
-				//}
-				 dayArray[12] = submittedDate;
-				 dayArray[13] = approvedDate;
+			    dayArray[12] = submittedDate;
+				dayArray[13] = approvedDate;
 				if(dayEntries.getCandidateLocation()!= null) {
 					if(dayEntries.getCandidateLocation().endsWith(","))
 					{
