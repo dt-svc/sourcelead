@@ -1530,6 +1530,8 @@ $('.chosen-select').chosen().on('change', function() {
 	var roles = $("#roles").val();
 	var leveEmpType = $("#leveEmpType").val();
 	var department = $("#department").val();
+	var gradeListId = $("#gradeListId").val();
+	var roleListId = $("#roleListId").val();
 	if(roles != null && roles !="" && roles !="undefined"){
 		$("#saveLeaveType").removeAttr('disabled');
 		document.getElementById("applicableId").style.display="none";
@@ -1546,6 +1548,9 @@ $('.chosen-select').chosen().on('change', function() {
 		$("#saveLeaveType").prop('disabled',true);
 		document.getElementById("applicableId").style.display="block";
 		
+	}
+	if(gradeListId != "" || roleListId != ""){
+		$("#saveLeaveType").removeAttr('disabled');
 	}
 	 if(roles == null){
 		$("#roles").val('').trigger("chosen:updated");
