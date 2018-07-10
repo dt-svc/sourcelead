@@ -9114,6 +9114,16 @@ position: fixed; top: 15px; right: 0; bottom: 0; z-index: 105000; display: none;
 	min-width: 50px; max-width: 300px; display: inline-block; text-overflow: ellipsis; white-space: nowrap;
 	overflow: hidden;
 }
+.sel.selheight30 {
+	height: 30px !important; text-overflow: ellipsis; overflow: hidden; width: 100%; display: inline-block;
+	 white-space: nowrap;
+}
+.noboderInput {
+border: transparent !important; box-shadow: none !important; text-align: center; background-color: transparent !important;
+}
+.tablecustom-styles table tbody > tr:nth-child(2n+2) td {
+border-top: 1px solid #fff !important;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
