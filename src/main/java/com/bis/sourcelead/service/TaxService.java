@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.CentralTaxDTO;
 
@@ -10,6 +11,7 @@ import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionItemDTO;
+import com.bis.sourcelead.dto.SourceleadTaxSubmissionDocumentDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -66,10 +68,15 @@ public interface TaxService {
 
 	Tds getTDSById(long id);
 
-	Response<String> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO, User loggedInUser);
+	Response<Long> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO, User loggedInUser);
 
 	List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid, int year);
 
 	SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID);
+
+	void saveUploadedDocuments(List<SourceleadTaxSubmissionDocumentDTO> documentList, String staticPath, Long orgId, Long orgLocationId,
+			long submissionId);
+
+	List<SourceleadTaxSubmissionDocumentDTO> getUploadedDocumentsBySubmissionId(long submissionId);
 
 }

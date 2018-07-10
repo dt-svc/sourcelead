@@ -12,6 +12,7 @@ import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmissionItem;
+import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocument;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -75,9 +76,13 @@ public interface TaxDao {
 	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, int year);
 
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(String taxFormUUID, String formUUID);
-	
+
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(long id);
 
 	public SourceleadTaxITDeclarationSubmissionItem getITDeclarationSubmissionItem(long id);
+
+	public boolean saveDocument(SourceleadTaxSubmissionDocument taxSubmissionDocument);
+
+	public List<SourceleadTaxSubmissionDocument> getUploadedDocumentsBySubmissionId(long submissionId);
 
 }

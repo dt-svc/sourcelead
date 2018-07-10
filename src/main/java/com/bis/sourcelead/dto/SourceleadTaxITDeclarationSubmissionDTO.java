@@ -3,6 +3,7 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 
@@ -28,6 +29,10 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 	private List<SourceleadTaxITDeclarationSubmissionItemDTO> submissionItemList;
 
 	private List<SourceleadTaxITDeclarationSubmissionSectionDTO> submittedSectionList;
+
+	private Map<String, String> documentsMap;
+
+	private List<SourceleadTaxSubmissionDocumentDTO> documentList;
 
 	public long getId() {
 		return id;
@@ -165,6 +170,22 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 
 	public void setSubmittedSectionList(List<SourceleadTaxITDeclarationSubmissionSectionDTO> submittedSectionList) {
 		this.submittedSectionList = submittedSectionList;
+	}
+
+	public Map<String, String> getDocumentsMap() {
+		return documentsMap;
+	}
+
+	public void setDocumentsMap(Map<String, String> documentsMap) {
+		this.documentsMap = documentsMap;
+	}
+
+	public List<SourceleadTaxSubmissionDocumentDTO> getDocumentList() {
+		return documentList;
+	}
+
+	public void setDocumentList(List<SourceleadTaxSubmissionDocumentDTO> documentList) {
+		this.documentList = documentList;
 	}
 
 }

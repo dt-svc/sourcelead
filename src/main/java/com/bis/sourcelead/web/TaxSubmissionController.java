@@ -1,7 +1,5 @@
 package com.bis.sourcelead.web;
 
-import static org.mockito.Matchers.isNotNull;
-
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,8 +19,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
-import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -38,6 +36,9 @@ public class TaxSubmissionController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+
+	@Value("${static.path}")
+	private String staticPath;
 
 	@Autowired
 	private TaxService taxService;
@@ -119,6 +120,7 @@ public class TaxSubmissionController {
 					SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO = taxService.getITDeclarationSubmission(uuid,
 							formUUID);
 					modelAndView.addObject("form", itDeclarationSubmissionDTO);
+					modelAndView.addObject("documents", taxService.getUploadedDocumentsBySubmissionId(itDeclarationSubmissionDTO.getId()));
 					modelAndView.setViewName("tax/org/edit_" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
 				} else {
 					// modelAndView.addObject("activeFormTabUUID", uuid);
@@ -139,13 +141,23 @@ public class TaxSubmissionController {
 
 	@RequestMapping(value = "/itDeclaration/save")
 	@ResponseBody
-	public Response<String> saveITDeclarationForm(HttpServletRequest request,
+	public Response<Long> saveITDeclarationForm(HttpServletRequest request,
 			SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO) {
-		Response<String> response = new Response<>();
+		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				response = taxService.submitITDeclaration(itDeclarationSubmissionDTO, user);
+				response.setResponse(Result.SUCCESS.name());
+				if (response.getResponse().equals(Result.SUCCESS.name())) {
+					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+					if (itDeclarationSubmissionDTO.getDocumentList() != null && !itDeclarationSubmissionDTO.getDocumentList().isEmpty()) {
+						taxService.saveUploadedDocuments(itDeclarationSubmissionDTO.getDocumentList(), staticPath, org.getId(),
+								loginOrgLocation.getId(), response.getObject());
+					}
+				}
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

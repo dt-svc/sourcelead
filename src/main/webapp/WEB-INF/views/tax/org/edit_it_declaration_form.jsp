@@ -2,6 +2,7 @@
 <jsp:include page="../../masterSideNav.jsp" />
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript" src="/resources/js/tax/it_declaration.js"></script>
+<c:set var="uploadCount" value="0"></c:set>
 <section class="content-wraper contentWraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
@@ -142,37 +143,65 @@
 								</tr>
 							</thead>
 							<tbody id="documentsTable">
+							<c:forEach items="${documents}" var="document">
 								<tr>
-									<td><input type="text" class="form-control input-sm"
-										field-name='Document Name' data-validation='required'
-										placeholder="Enter Document Name"
-										onchange="enableDisableRefresh(this)"
-										onkeyup="enableDisableRefresh(this)"></td>
+									<td>
+										<div style="display: none;" class="attachments" data-index="${uploadCount}"></div>
+										<input type="hidden" name="documentList[${uploadCount}].id" data-name="documentId" value="${document.id}"/>
+										<input type="hidden" name="documentList[${uploadCount}].name" data-name="documentName" value="${document.name}"/>
+										<input type="hidden" name="documentList[${uploadCount}].fileNames" data-name="documentFileNames" />
+										<input data-name='docName' type="text" value="${document.name}" 
+										class="form-control input-sm" field-name='Document Name'
+										data-validation='required' placeholder="Enter Document Name"
+										onchange="enableDisableRefresh(this);applyKeyToDocument(this);"
+										onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);">
+									</td>
 									<td>
 										<div class="clearfix attchments">
 											<div class="input-group">
-												<label class="input-group-btn"> <span
-													class="btn btn-primary">Browse File <input
+												<label class="input-group-btn">
+													<span class="btn btn-primary">Browse File <input
+														data-name='docFiles'
 														style="visibility: hidden; height: 0; width: 10px; overflow: hidden"
 														multiple="multiple" id="uploadBtn1" class="upload"
 														onchange="fileUploadEvent(this)" type="file">
-												</span>
-												</label> <input class="form-control" readonly="readonly"
+													</span>
+												</label>
+												<input class="form-control" readonly="readonly"
 													field-name='Document File' data-validation='required'
-													id="uploadFile1" placeholder="Select File(s)" type="text">
+													id="uploadFile1" placeholder="Select File(s)" type="text" value="${document.attachmentList.size()} file(s) selected">
 											</div>
 										</div>
-
+										<div class="uploadedFiles">
+											<c:set var="attachmentCount" value="0"></c:set>
+											<c:forEach items="${document.attachmentList}" var="attachment">
+												<input name='documentList[${uploadCount}].attachmentList[${attachmentCount}].attachment' data-name='documentFileNames' type='hidden' value='" + fileURL + "'>
+												<div data-index="${attachmentCount}">
+													<i onclick="$(this).parent().remove();" class="text-danger fa fa-remove cursorPointer"></i>
+												${attachment.attachment}</div>
+												<c:set var="attachmentCount" value="${attachmentCount + 1}"></c:set>
+											</c:forEach>
+										</div>
 									</td>
 									<td>
 										<div class="tblminwidth-75 text-center">
-											<i class="fa fa-plus mr cursorPointer"
-												onclick="addDocumentRow()"></i> <i
-												class="fa fa-refresh cursorPointer disableBtn"
-												onclick="refreshDocumentRow(this)"></i>
+											<c:choose>
+												<c:when test="${uploadCount == 0}">
+													<i class="fa fa-plus mr cursorPointer" onclick="addDocumentRow()"></i>	
+												</c:when>
+												<c:otherwise>
+													<i class="fa fa-trash text-danger mr cursorPointer" onclick="removeDocumentRow(this)"></i>	
+												</c:otherwise>
+											</c:choose>
+											<i class="fa fa-refresh cursorPointer disableBtn" onclick="refreshDocumentRow(this)"></i>
 										</div>
 									</td>
 								</tr>
+								<c:set var="uploadCount" value="${uploadCount+1}"></c:set>
+									<script type="text/javascript">
+										var uploadCount = ${uploadCount};
+									</script>
+							</c:forEach>
 							</tbody>
 						</table>
 					</div>

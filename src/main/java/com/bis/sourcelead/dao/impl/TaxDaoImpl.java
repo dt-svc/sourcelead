@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmissionItem;
+import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocument;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -497,6 +498,33 @@ public class TaxDaoImpl implements TaxDao {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			return session.get(SourceleadTaxITDeclarationSubmissionItem.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean saveDocument(SourceleadTaxSubmissionDocument taxSubmissionDocument) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(taxSubmissionDocument);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SourceleadTaxSubmissionDocument> getUploadedDocumentsBySubmissionId(long submissionId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from SourceleadTaxSubmissionDocument doc where doc.sourceleadTaxITDeclarationSubmission.id = :submissionId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("submissionId", submissionId);
+			return queryObj.list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

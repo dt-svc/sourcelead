@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -20,6 +21,8 @@ import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionItemDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionSectionDTO;
+import com.bis.sourcelead.dto.SourceleadTaxSubmissionDocumentAttachmentDTO;
+import com.bis.sourcelead.dto.SourceleadTaxSubmissionDocumentDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
@@ -31,6 +34,8 @@ import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmissionItem;
+import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocument;
+import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocumentAttachment;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -40,6 +45,7 @@ import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -621,8 +627,8 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public Response<String> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO, User loggedInUser) {
-		Response<String> response = new Response<>();
+	public Response<Long> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO, User loggedInUser) {
+		Response<Long> response = new Response<>();
 		try {
 			SourceleadTaxITDeclarationSubmission itDeclarationSubmission = null;
 			if (itDeclarationSubmissionDTO.getId() > 0) {
@@ -659,6 +665,7 @@ public class TaxServiceImpl implements TaxService {
 			if (result > 0) {
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
+				response.setObject(itDeclarationSubmission.getId());
 			} else if (result == -2) {
 				response.setResponse(Result.INVALID_DATA.name());
 				response.setResponseMessage(Result.INVALID_DATA.getValue());
@@ -753,6 +760,80 @@ public class TaxServiceImpl implements TaxService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public void saveUploadedDocuments(List<SourceleadTaxSubmissionDocumentDTO> documentList, String staticPath, Long orgId,
+			Long orgLocationId, long submissionId) {
+		try {
+			String path = staticPath + System.getProperty("file.separator") + orgId + System.getProperty("file.separator") + orgLocationId
+					+ System.getProperty("file.separator") + "temp";
+			for (SourceleadTaxSubmissionDocumentDTO submissionDocumentDTO : documentList) {
+
+				SourceleadTaxSubmissionDocument taxSubmissionDocument;
+				if (submissionDocumentDTO.getId() > 0)
+					taxSubmissionDocument = new SourceleadTaxSubmissionDocument();
+				else {
+					taxSubmissionDocument = new SourceleadTaxSubmissionDocument();
+				}
+				taxSubmissionDocument.setName(submissionDocumentDTO.getName());
+				taxSubmissionDocument.setSourceleadTaxITDeclarationSubmission(taxDao.getITDeclarationSubmission(submissionId));
+
+				List<SourceleadTaxSubmissionDocumentAttachment> attachmentList = new LinkedList<>();
+				for (SourceleadTaxSubmissionDocumentAttachmentDTO attachmentDTO : submissionDocumentDTO.getAttachmentList()) {
+					File file = new File(path, attachmentDTO.getAttachment());
+					SourceleadTaxSubmissionDocumentAttachment attachment;
+					if (attachmentDTO.getId() > 0)
+						attachment = new SourceleadTaxSubmissionDocumentAttachment();
+					else {
+						attachment = new SourceleadTaxSubmissionDocumentAttachment();
+						attachment.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
+					}
+					attachment.setAttachment(attachmentDTO.getAttachment());
+					attachment.setSourceleadTaxSubmissionDocument(taxSubmissionDocument);
+					attachment.setActive(true);
+					attachmentList.add(attachment);
+					// boolean flag = taxDao.saveDocumentAttachment(attachment);
+					// if (flag)
+					FileUploadUtil.moveFile(staticPath, orgId, orgLocationId, "taxDocuments", file);
+				}
+				taxSubmissionDocument.setAttachmentList(attachmentList);
+				taxDao.saveDocument(taxSubmissionDocument);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public List<SourceleadTaxSubmissionDocumentDTO> getUploadedDocumentsBySubmissionId(long submissionId) {
+		List<SourceleadTaxSubmissionDocumentDTO> documentList = new LinkedList<>();
+		try {
+			List<SourceleadTaxSubmissionDocument> dList = taxDao.getUploadedDocumentsBySubmissionId(submissionId);
+			if (dList != null && !dList.isEmpty()) {
+				for (SourceleadTaxSubmissionDocument document : dList) {
+					SourceleadTaxSubmissionDocumentDTO documentDTO = new SourceleadTaxSubmissionDocumentDTO();
+					documentDTO.setId(document.getId());
+					documentDTO.setName(document.getName());
+					documentDTO.setTaxITSubmissionId(document.getSourceleadTaxITDeclarationSubmission().getId());
+					List<SourceleadTaxSubmissionDocumentAttachmentDTO> attachmentList = new LinkedList<>();
+					for (SourceleadTaxSubmissionDocumentAttachment attachment : document.getAttachmentList()) {
+						SourceleadTaxSubmissionDocumentAttachmentDTO attachmentDTO = new SourceleadTaxSubmissionDocumentAttachmentDTO();
+						attachmentDTO.setId(attachment.getId());
+						attachmentDTO.setUuid(attachment.getUuid());
+						attachmentDTO.setAttachment(attachment.getAttachment());
+						attachmentDTO.setTaxSubmissionDocumentId(attachment.getSourceleadTaxSubmissionDocument().getId());
+						attachmentDTO.setActive(attachment.isActive());
+						attachmentList.add(attachmentDTO);
+					}
+					documentDTO.setAttachmentList(attachmentList);
+					documentList.add(documentDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return documentList;
 	}
 
 }
