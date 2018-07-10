@@ -105,6 +105,7 @@ public class TaxSubmissionController {
 		return "";
 	}
 
+
 	@RequestMapping(value = { "/forms/getForm", "/forms/editForm", "/forms/viewForm" })
 	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam String uuid,
 			@RequestParam(defaultValue = "") String formUUID) {
@@ -133,6 +134,27 @@ public class TaxSubmissionController {
 				}
 			} else
 				modelAndView.setViewName("errorPage");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/itDeclaration/getForm")
+	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam String uuid) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
+			modelAndView.addObject("form", sourceleadTaxFormDTO);
+			modelAndView.addObject("formList", taxService.getTaxFormTypeList(false));
+			modelAndView.addObject("activeFormTabUUID", uuid);
+
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
+
+			modelAndView.addObject("userRoleList", userRoleList);
+			modelAndView.setViewName("tax/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
