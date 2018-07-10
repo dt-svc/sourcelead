@@ -219,8 +219,13 @@ public class LeaveServiceImpl implements LeaveService{
 		}else {
 			leave.setUser(user);
 		}
-		leave.setToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getToDate()));
+		
 		LeaveType leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
+		if(leaveType.getDuration().contains("Half Day")) {
+			leaveDTO.setFromHalfDay(Constants.YES);
+			leaveDTO.setToDate(leaveDTO.getFromDate());
+		}
+		leave.setToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getToDate()));
 		
 		if(leaveType.getCreatedBy() != null){
 			User createdUser = userService.getUserByUserCode(leaveType.getCreatedBy());
@@ -243,6 +248,7 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		leave.setLeaveType(leaveType);
 		leave.setReason(leaveDTO.getReason());
+		
 		if(StringUtils.isNotBlank(leaveDTO.getFromHalfDay())) {
 			leave.setFromHalfDay(leaveDTO.getFromHalfDay());
 		}else {
