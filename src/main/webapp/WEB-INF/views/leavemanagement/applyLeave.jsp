@@ -505,8 +505,27 @@ function calcaulateDuraton(){
 	 }else{
 		 userId = '${SourceLeadWeb_userId}';
 	 }
+	
+	var fromHalfcheck = $('#checkbox-2');
+	var toHalfcheck = $('#checkbox-3');
+	var fromHalfDay = "";
+	var toHalfDay = "";
+	if (fromHalfcheck.is(':checked')) {
+		fromHalfDay = "Yes";
+	}
+	if (toHalfcheck.is(':checked')) {
+		toHalfDay = "Yes";
+	}
+	var fromDateFromHalfTime = $("#fromDateHalfTime").val();
+	var fromDateToHalfTime = $("#toDateHalfTime").val();  
+	var toDateFromHalfTime = $("#toDateFromHalfTime").val();
+	var toDateToHalfTime = $("#toDateToHalfTime").val();
+	
 	if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined' && leaveTypeUUID != null && leaveTypeUUID != '' && leaveTypeUUID != 'undefined'){
-		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId,  function(result) {
+		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId+
+				"&fromHalfDay="+fromHalfDay+"&toHalfDay="+toHalfDay+"&fromDateFromHalfTime="+fromDateFromHalfTime+
+				"&fromDateToHalfTime="+fromDateToHalfTime+"&toDateFromHalfTime="+toDateFromHalfTime+
+				"&toDateToHalfTime="+toDateToHalfTime,  function(result) {
 			if(result != null){
 				$("#durationDiv").show();
 				$("#durationId").html("Duration : "+result+" day(s)");
@@ -518,7 +537,7 @@ function calcaulateDuraton(){
 	}
 	
 }
- </script>
+</script>
 
 
 <script type="text/javascript">
@@ -584,7 +603,7 @@ function calcaulateDuraton(){
             	  var totalBalanceCounts = counts.totalBalanceLeaveCounts;
             	  var totalPendingCounts = counts.pendingLeaveCounts;
             	  var totalTakenCounts = counts.takenLeaves;
-        		  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
+        		  getpieChar(totalBalanceCounts.toFixed(2),totalPendingCounts,totalTakenCounts);
         		  
         		  
         		  var result = "";
@@ -793,7 +812,8 @@ function applyLeave(){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
-	  	var formData = $($('#apply_leave_form')[0]).serialize();
+// 	  	var formData = $($('#apply_leave_form')[0]).serialize();
+	  	var formData = getFormData('apply_leave_form');
 		$("#leaveLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveId="+leaveId+"&currentStage="+currentStage, formData, function(result) {
 			if (result && result.response === "INVALID_DATA") {

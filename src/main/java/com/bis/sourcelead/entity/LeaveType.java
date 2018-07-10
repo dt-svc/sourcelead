@@ -230,7 +230,7 @@ public class LeaveType {
 	
 	@Transient
 	@JsonProperty
-	private int pendingLeaveCounts;
+	private float pendingLeaveCounts;
 	
 	@Transient
 	@JsonProperty
@@ -886,12 +886,12 @@ public class LeaveType {
 		this.remainingTotalLeaveCounts = remainingTotalLeaveCounts;
 	}
 
-	public int getPendingLeaveCounts()
+	public float getPendingLeaveCounts()
 	{
 		return pendingLeaveCounts;
 	}
 
-	public void setPendingLeaveCounts(int pendingLeaveCounts)
+	public void setPendingLeaveCounts(float pendingLeaveCounts)
 	{
 		this.pendingLeaveCounts = pendingLeaveCounts;
 	}
