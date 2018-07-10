@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -118,6 +120,7 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.DecimalFormat;
 
@@ -326,8 +329,13 @@ public class LeaveManagementRestController {
 	public ModelAndView leaveManagementReportsJsp(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (null == sessionData) {
+			sessionData = new SessionMaintainanceData();
+		}
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		sessionData.setNav(Constants.LEAVE_MANAGENENT);
 		List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocations.getId(),
 				Constants.RECORD_ACTIVE.toString());
 
@@ -338,7 +346,7 @@ public class LeaveManagementRestController {
 		model.setViewName("leavemanagement/leaveManagementReports");
 		return model;
 	}
-
+	
 	/**
 	 * retuens leave Management Reports leaves jsp
 	 * 

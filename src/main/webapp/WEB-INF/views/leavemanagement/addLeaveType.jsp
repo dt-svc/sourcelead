@@ -73,6 +73,7 @@
 		}else{
 			$('#autoApproveDiv').hide();
 		}
+		carryForwardYesUsers();
 		
 	});
 </script>
@@ -262,7 +263,7 @@
 							<div class="form-group" id="departmentDiv">
 								<label class="col-md-4">Select Department</label>
 								<div class="col-md-6 dropdown-select">
-									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();valid();"
+									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
 										<option value="">--Select Department--</option>
@@ -371,55 +372,12 @@
 							</span>
 							</div>
 							</label>
-							<div class="col-md-3">
-								<input type="text" id="noOfdaysToCarryforward" name="noOfdaysToCarryforward" field-name="No Of Days To CarryForward" placeholder="Enter no of Days" class="form-control" value="${leaveType.maxDaysToCarryforward}">
+							<div class="col-md-3" id="errorNoOfdaysToCarryforward">
+								<input type="text" id="noOfdaysToCarryforward" name="noOfdaysToCarryforward" field-name="No Of Days To CarryForward" onblur="validateNoDays();" placeholder="Enter no of Days" class="form-control" value="${leaveType.maxDaysToCarryforward}">
 							</div>
 						</div>
 						
-						<div class="form-group" id="noOfDaysDiv">
-							<label class="col-md-4">No Of Days Annually<span class="text-danger paddingLeft" >*</span>
-							<div class="tooltip">
-							<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
-							<span class="tooltiptext">No of leaves are applicable for this leave type annually</span>
-							</span>
-							</div>
-							</label>
-							<div class="col-md-3">
-							   <input type="hidden" name="previousNoOfdays" id="previousNoOfdays" value="${leaveType.noOfDays}"/>
-								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" placeholder="Enter no of Days" onblur="getNoOfDaysPerPeriod();" class="form-control" value="${leaveType.noOfDays}">
-							</div>
-						</div>
 						
-						<div class="form-group">
-							<label class="col-md-4">Accural Period<span
-								class="text-danger paddingLeft">*</span>
-								<div class="tooltip">
-								<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
-								<span class="tooltiptext">Configure how the leave type should calculate Annually/Half-yearly/Quarterly/Monthly.</span>
-								</span>
-								</div>
-								</label>
-							<div class="col-md-6 dropdown-select">
-								<select class="form-control" name="period" id="period" onchange="getNoOfDaysPerPeriod();">
-								<option ${leaveType.period == 'Annually' ? 'selected' : ''}>Annually</option>
-								<option ${leaveType.period == 'HalfYearly' ? 'selected' : ''}>HalfYearly</option>
-								<option ${leaveType.period == 'Quarterly' ? 'selected' : ''}>Quarterly</option>
-								<option ${leaveType.period == 'Monthly' ? 'selected' : ''}>Monthly</option>
-<%-- 								<option ${leaveType.period == 'SemiMonthly' ? 'selected' : ''}>SemiMonthly</option> --%>
-<%-- 								<option ${leaveType.period == 'BiWeekly' ? 'selected' : ''}>BiWeekly</option> --%>
-								</select>
-							</div>
-						</div>
-						
-						<div class="form-group" id="calculatedNoOfDaysDiv">
-							<label class="col-md-4">No Of Days per Period<span class="text-danger paddingLeft" ></span></label>
-							<div class="col-md-3">
-							    <input type="hidden" value="${leaveType.noOfDaysPerPeriod}" id="previousNoOfDaysPerPeriod" name="previousNoOfDaysPerPeriod"/>
-								<input type="text" id="noOfDaysPerPeriod" name="noOfDaysPerPeriod" field-name="No Of Days" readonly placeholder="Enter no of Days" class="form-control" value="${leaveType.noOfDaysPerPeriod}">
-							</div>
-						</div>
-						
-
 						<div class="form-group">
 						 <label class="col-md-4">Leave Effective<span
 								class="text-danger paddingLeft">*</span>
@@ -463,12 +421,65 @@
 							</div>
 						</div>
 						
+						<div class="form-group" id="noOfDaysAnnuallyDiv">
+							<label class="col-md-4">No Of Days Annually<span class="text-danger paddingLeft" >*</span>
+							<div class="tooltip">
+							<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+							<span class="tooltiptext">No of leaves are applicable for this leave type annually</span>
+							</span>
+							</div>
+							</label>
+							<div class="col-md-3">
+							   <input type="hidden" name="previousNoOfdays" id="previousNoOfdays" value="${leaveType.noOfDays}"/>
+								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" placeholder="Enter no of Days" onblur="getNoOfDaysPerPeriod();" class="form-control" value="${leaveType.noOfDays}">
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-4">Accural Period<span
+								class="text-danger paddingLeft">*</span>
+								<div class="tooltip">
+								<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+								<span class="tooltiptext">Configure how the leave type should calculate Annually/Half-yearly/Quarterly/Monthly.</span>
+								</span>
+								</div>
+								</label>
+							<div class="col-md-6 dropdown-select">
+								<select class="form-control" name="period" id="period" onchange="getNoOfDaysPerPeriod();">
+								<option ${leaveType.period == 'Annually' ? 'selected' : ''}>Annually</option>
+								<option ${leaveType.period == 'HalfYearly' ? 'selected' : ''}>HalfYearly</option>
+								<option ${leaveType.period == 'Quarterly' ? 'selected' : ''}>Quarterly</option>
+								<option ${leaveType.period == 'Monthly' ? 'selected' : ''}>Monthly</option>
+<%-- 								<option ${leaveType.period == 'SemiMonthly' ? 'selected' : ''}>SemiMonthly</option> --%>
+<%-- 								<option ${leaveType.period == 'BiWeekly' ? 'selected' : ''}>BiWeekly</option> --%>
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group" id="calculatedNoOfDaysDiv">
+							<label class="col-md-4">No Of Days per Period<span class="text-danger paddingLeft" ></span></label>
+							<div class="col-md-3">
+							    <input type="hidden" value="${leaveType.noOfDaysPerPeriod}" id="previousNoOfDaysPerPeriod" name="previousNoOfDaysPerPeriod"/>
+								<input type="text" id="noOfDaysPerPeriod" name="noOfDaysPerPeriod" field-name="No Of Days" readonly placeholder="Enter no of Days" class="form-control" value="${leaveType.noOfDaysPerPeriod}">
+							</div>
+						</div>
+						
+
+						
+						
 				<!-- experiencedGroup -->
 					<div id="experiencedGroup" style="display:none">
 						<div class="form-group" id="newJoineeDiv">
 							<label class="col-md-4">No.of Days for Fresher<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-3">
-								<input type="text" id="newJoinee" name="newJoinee" placeholder="Enter no.of Days" field-name="ApplicableDays" class="form-control" value="${leaveType.newJoinee}">
+								<input type="text" id="newJoinee" name="newJoinee" placeholder="Enter no.of Days" field-name="ApplicableDays" onblur="getNoOfDaysPerPeriodFresher();" class="form-control" value="${leaveType.newJoinee}">
+							</div>
+						</div>
+						
+						<div class="form-group" id="newJoineeDiv2">
+							<label class="col-md-4">No.of Days for Fresher Period</label>
+							<div class="col-md-3">
+								<input type="text" id="fresherPeriod" name="fresherPeriod" placeholder="Enter Per Day"  class="form-control" value="${leaveType.newJoinPerPeriod}" readonly>
 							</div>
 						</div>
 						
@@ -476,30 +487,41 @@
 							<label class="col-md-4">Experienced<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-6">
 								<div class="row">
-								<div class="col-md-3 padding_right">
+								<div class="col-md-4 padding_right">
 									<input type="text" class="form-control" id="experiencedDuration" name="experiencedDuration" placeholder="Experience" field-name="Duration" value="${leaveType.experiencedDuration}">
 								</div>
-								<div class="col-md-5 dropdown-select padding_left">
+								<div class="col-md-4 dropdown-select padding_right padding_left">
 									<select id="experiencedType" name="experiencedType" field-name="experiencedType" >
 									<option ${leaveType.experiencedType == 'Year' ? 'selected' : ''}>Year</option>
 									<option ${leaveType.experiencedType == 'Month' ? 'selected' : ''}>Month</option>
 									<option ${leaveType.experiencedType == 'Days' ? 'selected' : ''}>Days</option>
 									</select>
 								</div>
-								<div class="col-md-4" id="experiencedApplicableDaysDiv">
-								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" placeholder="No.of Days for exp" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
+								<div class="col-md-4 padding_left" id="experiencedApplicableDaysDiv">
+								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" placeholder="No. of Days for exp" onblur="getNoOfDaysPerPeriodExperienced();" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
 								</div>
-								
 							</div>
 						</div>
+						<div class="clearfix mt mb"></div>
+						<label class="col-md-4">No.of Days for Experienced Period</label>
+						<div class="col-md-3">
+						<input type="text" class="form-control" id="experiencedPeriod" name="experiencedPeriod" placeholder="Experience" field-name="Duration" value="${leaveType.experiencedPerPeriod}" readonly>
 						</div>
+						</div>
+						
 					</div>
 <!-- experiencedGroup -->
 
 						<div class="form-group">
 
 							<label class="col-md-4">Color Picker<span
-								class="text-danger">&nbsp;* </span><i class='fa fa-info-circle text-muted' title='Color coding for the leave type throughout the application'></i></label>
+								class="text-danger">&nbsp;* </span>
+								<div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Color coding for the leave type throughout the application.</span>
+									</span>
+								</div>
+								</label>
 							<div class="col-md-6">
 
 							
@@ -1086,7 +1108,12 @@
 									<input type="checkbox" checked="true" name="leavePolicy" id="leavePolicy" value="Y">Leave Policy
 	                           </c:if>
 								<c:if test="${empty leaveType.leavePolicy}">
-									<input type="checkbox" name="leavePolicy" id="leavePolicy" value="N">Leave Policy<i class='fa fa-info-circle text-muted' title='provides the leave policy for a particluar leave type.'></i>
+									<input type="checkbox" name="leavePolicy" id="leavePolicy" value="N">Leave Policy
+									    <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Provides the leave policy for a particluar leave type.</span>
+									</span>
+									</div>
 
 									
 
@@ -1409,14 +1436,6 @@ function leavepolicyDescription(){
 	 
 	
 // 	${leaveType.leavesCarryforward == 'Y'}
-	function valid(){
-		var id = $('#department').val();
-		if(id != "" && id != null && id != "undefined"){
-			$("#saveLeaveType").attr("disabled", false);
-		}else{
-			$("#saveLeaveType").attr("disabled", true);
-		}
-	}
 	/* $("#roles").chosen().change({
 		("#roles").attr("disabled", false);
 	  }); */
@@ -1429,15 +1448,28 @@ function leavepolicyDescription(){
 	} */
 	//Select Leave Carry Forward Users
 	function carryForwardNoUsers(){
+		$('#noOfdaysToCarryforward').attr('data-validation-optional', "true");
+		$('#errorNoOfdaysToCarryforward').find('p.jquery_form_error_message').remove();
 		$("#noOfDaysDiv").hide();
 		$("#noOfdaysToCarryforward").val();
 	}
 	
 	function carryForwardYesUsers(){
+// 		$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
 		$("#noOfDaysDiv").show();
 		$("#noOfdaysToCarryforward").val('');
 	}
 	
+	function validateNoDays(){
+		var val = $('#noOfdaysToCarryforward').val();
+		if(val == ''){
+			$('#noOfdaysToCarryforward').removeAttr('data-validation', "validate_int");
+			$('#errorNoOfdaysToCarryforward').find('p.jquery_form_error_message').remove();
+		}else{
+			$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
+		}
+		
+	}
 	//Select All Employees And Experienced
 	function hideExperienced() {
 		
@@ -1458,6 +1490,12 @@ function leavepolicyDescription(){
 		$("#experiencedDuration").val("");
 		$("#experiencedApplicableDays").val("");
 		$("#newJoinee").val("");
+		
+		//Writte By Laxman
+		$("#noOfDaysAnnuallyDiv").show();
+		$("#calculatedNoOfDaysDiv").show();
+		$("#experiencedPeriod").val("");
+		$("#fresherPeriod").val("");
 	}
 	function showExperienced() {
 		$('#newJoinee').removeAttr('data-validation-optional');
@@ -1470,9 +1508,13 @@ function leavepolicyDescription(){
 		$('#experiencedApplicableDays').attr('data-validation', "required validate_int validate_length length1-3");
 		$("#experiencedGroup").show();
 		$("#noOfDays").val("");
-// 		$("#noOfDaysDiv").hide();
 		$('#noOfDays').removeAttr('data-validation');
 		$('#noOfDays').attr('data-validation-optional', "true");
+		
+		//Writte By Laxman
+		$("#noOfDaysAnnuallyDiv").hide();
+		$("#calculatedNoOfDaysDiv").hide();
+		$('#noOfDaysAnnuallyDiv').find('p.jquery_form_error_message').remove();
 	}
 </script>
 <script>
@@ -1485,10 +1527,11 @@ function leavepolicyDescription(){
 
 <script>
 $('.chosen-select').chosen().on('change', function() {
-	
 	var roles = $("#roles").val();
 	var leveEmpType = $("#leveEmpType").val();
 	var department = $("#department").val();
+	var gradeListId = $("#gradeListId").val();
+	var roleListId = $("#roleListId").val();
 	if(roles != null && roles !="" && roles !="undefined"){
 		$("#saveLeaveType").removeAttr('disabled');
 		document.getElementById("applicableId").style.display="none";
@@ -1499,9 +1542,21 @@ $('.chosen-select').chosen().on('change', function() {
 		$("#saveLeaveType").removeAttr('disabled');
 		document.getElementById("applicableId").style.display="none";
 	}else{
-		$("#saveLeaveType").removeAttr('disabled');
+		$("#department").val('').trigger("chosen:updated");
+		$("#roles").val('').trigger("chosen:updated");
+		$("#leveEmpType").val('').trigger("chosen:updated");
+		$("#saveLeaveType").prop('disabled',true);
 		document.getElementById("applicableId").style.display="block";
+		
 	}
+	if(gradeListId != "" || roleListId != ""){
+		$("#saveLeaveType").removeAttr('disabled');
+	}
+	 if(roles == null){
+		$("#roles").val('').trigger("chosen:updated");
+	}else if(department == null){
+		$("#department").val('').trigger("chosen:updated");
+	} 
 	
 	
 })
@@ -1569,8 +1624,49 @@ function getNoOfDaysPerPeriod(){
 	 }else{
 		 $("#noOfDaysPerPeriod").val(calculatedDays);
 	 }
-	
+	 getNoOfDaysPerPeriodFresher();
+	 getNoOfDaysPerPeriodExperienced();
  }
+ 
+function getNoOfDaysPerPeriodFresher(){
+	 var period = $("#period").val();
+	 var noOfDays = $("#newJoinee").val();
+	 var calculatedDays = "";
+	 if(period == "Annually"){
+		 calculatedDays = noOfDays;
+	 }else if(period == "HalfYearly"){
+		 calculatedDays = noOfDays / 2 ;
+	 }else if(period == "Quarterly"){
+		 calculatedDays = noOfDays / 4 ;
+	 }else if(period == "Monthly"){
+		 calculatedDays = noOfDays / 12 ;
+	 }
+	 if(period != "Annually"){
+		 $("#fresherPeriod").val(calculatedDays.toFixed(2));
+	 }else{
+		 $("#fresherPeriod").val(calculatedDays);
+	 }
+	
+}
+function getNoOfDaysPerPeriodExperienced(){
+	 var period = $("#period").val();
+	 var noOfDays = $("#experiencedApplicableDays").val();
+	 var calculatedDays = "";
+	 if(period == "Annually"){
+		 calculatedDays = noOfDays;
+	 }else if(period == "HalfYearly"){
+		 calculatedDays = noOfDays / 2 ;
+	 }else if(period == "Quarterly"){
+		 calculatedDays = noOfDays / 4 ;
+	 }else if(period == "Monthly"){
+		 calculatedDays = noOfDays / 12 ;
+	 }
+	 if(period != "Annually"){
+		 $("#experiencedPeriod").val(calculatedDays.toFixed(2));
+	 }else{
+		 $("#experiencedPeriod").val(calculatedDays);
+	 }
+}
  </script>
  <script>
  function validateAutoApprove(){

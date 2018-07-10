@@ -164,7 +164,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		return (Projects) session.get(Projects.class, id);*/
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Projects project left join fetch project.orgRelationId left join fetch project.orgLocationsId orgLoc left join fetch orgLoc.org  where project.id = :id ";
+		String query = "from Projects project left join fetch project.orgRelationId left join fetch project.orgLocationsId orgLoc "
+				+ "left join fetch orgLoc.org left join fetch project.sharedLocationId  where project.id = :id ";
 		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("id", id).list();
 
 		Projects projects = null;
@@ -735,8 +736,6 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			 queryObj = session.createQuery(query + query1.toString()+sortingQry);
 		}
 		
-		System.out.println(query);
-		
 		queryObj.setFirstResult(projectsDTO.getStart());
 		queryObj.setMaxResults(projectsDTO.getLength());
 		if(StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
@@ -1186,7 +1185,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Projects> projects = new ArrayList<Projects>();
 		logger.debug("getProjectByProjectUUID start");
-		projects = session.createQuery("from Projects projects left join fetch projects.orgLocationsId where projects.projectUUID = :projectUUID" ).setString("projectUUID", projectUUID ).list();
+		projects = session.createQuery("from Projects projects left join fetch projects.orgLocationsId left join fetch projects.sharedLocationId where projects.projectUUID = :projectUUID" ).setString("projectUUID", projectUUID ).list();
 		logger.debug("getProjectByProjectUUID end");
 		if (projects != null && projects.size() > 0) {
 			return projects.get(0);

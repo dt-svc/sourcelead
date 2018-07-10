@@ -219,8 +219,13 @@ public class LeaveServiceImpl implements LeaveService{
 		}else {
 			leave.setUser(user);
 		}
-		leave.setToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getToDate()));
+		
 		LeaveType leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
+		if(leaveType.getDuration().contains("Half Day")) {
+			leaveDTO.setFromHalfDay(Constants.YES);
+			leaveDTO.setToDate(leaveDTO.getFromDate());
+		}
+		leave.setToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getToDate()));
 		
 		if(leaveType.getCreatedBy() != null){
 			User createdUser = userService.getUserByUserCode(leaveType.getCreatedBy());
@@ -243,26 +248,41 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		leave.setLeaveType(leaveType);
 		leave.setReason(leaveDTO.getReason());
+		
 		if(StringUtils.isNotBlank(leaveDTO.getFromHalfDay())) {
 			leave.setFromHalfDay(leaveDTO.getFromHalfDay());
+		}else {
+			leave.setFromHalfDay(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getToHalfDay())) {
 			leave.setToHalfDay(leaveDTO.getToHalfDay());
+		}else {
+			leave.setToHalfDay(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getFromDateFromHalfTime())) {
 			leave.setFromDateFromHalfTime(leaveDTO.getFromDateFromHalfTime());
+		}else {
+			leave.setFromDateFromHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getFromDateToHalfTime())) {
 			leave.setFromDateToHalfTime(leaveDTO.getFromDateToHalfTime());
+		}else {
+			leave.setFromDateToHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getToDateFromHalfTime())) {
 			leave.setToDateFromHalfTime(leaveDTO.getToDateFromHalfTime());
+		}else {
+			leave.setToDateFromHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getToDateToHalfTime())) {
 			leave.setToDateToHalfTime(leaveDTO.getToDateToHalfTime());
+		}else {
+			leave.setToDateToHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getNotifyToOthers())) {
 			leave.setNotifyToOthers(leaveDTO.getNotifyToOthers());
+		}else {
+			leave.setNotifyToOthers(null);
 		}
 		if(leaveDTO.getFileInfo() !=null) {
 			FileInfo fileinfo = leaveDTO.getFileInfo().get(0);

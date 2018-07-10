@@ -747,6 +747,7 @@ public class LeaveManagementUtil {
 		return flag;
 	}
 
+
 	public float calculateAppliedLeavesCountWithHalfDaysAndWorkingHours(Leave leave, Float noOfDaysPerPeriod, Integer averageWorkingHours)
 	{
 		float halfday = 0;
@@ -805,5 +806,53 @@ public class LeaveManagementUtil {
 		
 		
 		return Float.valueOf(decimal.format(actualAppliedLeave));
+	}
+
+
+	public float getNumberofDaysPerPeriodForLeaveType(LeaveType type, Employees emp, User loginUser) throws ParseException
+	{
+		float totalLeaves = 0;
+		if (type.getPeriod() != null) {
+					if (emp.getHireDate() != null) {
+						Date joinDate = emp.getHireDate();
+						Date currentDate = new Date();
+						int diffDays = commonUtil.getNumberOfDaysBetweenTwoDates(joinDate, currentDate);
+						int expDays = 0;
+						if ("Year".equalsIgnoreCase(type.getExperiencedType())) {
+							expDays = type.getExperiencedDuration() * 365;
+						}
+						else if ("Month".equalsIgnoreCase(type.getExperiencedType())) {
+							expDays = type.getExperiencedDuration() * 30;
+						}
+						else {
+							expDays = type.getExperiencedDuration();
+						}
+						if (diffDays > expDays) {
+							if(Constants.ANNUALLY.equalsIgnoreCase(type.getPeriod()) || Constants.NO.equalsIgnoreCase(type.getAccuralPolicy())) {
+								totalLeaves = type.getExperiencedApplicableDays();
+							}else {
+								totalLeaves = type.getExperiencedPerPeriod();
+							}
+							
+						}
+						else {
+							if(Constants.ANNUALLY.equalsIgnoreCase(type.getPeriod()) || Constants.NO.equalsIgnoreCase(type.getAccuralPolicy())) {
+								totalLeaves = type.getNewJoinee();
+							}else {
+								totalLeaves = type.getNewJoinPerPeriod();
+							}
+							
+						}
+					}
+					else {
+						if(Constants.ANNUALLY.equalsIgnoreCase(type.getPeriod()) || Constants.NO.equalsIgnoreCase(type.getAccuralPolicy())) {
+							totalLeaves = type.getExperiencedApplicableDays();
+						}else {
+							totalLeaves = type.getExperiencedPerPeriod();
+						}
+						
+					}
+		}
+		return totalLeaves;
 	}
 }

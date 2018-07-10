@@ -251,16 +251,45 @@ public class InterviewFeedbackRestController {
     @RequestMapping(value = "/getInterviewFeedbackTemplatesList", method = RequestMethod.POST)
  	@ResponseBody ResponseList<SubmissionTemplate> getInterviewFeedbackTemplatesList(HttpServletRequest request) throws Exception {
     	ResponseList<SubmissionTemplate> response = new ResponseList<>();
-    	try {
- 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
- 	 		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getInterviewFeedbackTemplatesByOrgLocationId(orgLocations.getId());
- 	 		response.setData(submissiontTemplateList);
- 	 		response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
- 		}catch (Exception e) {
- 			response.setResponse(Result.AWKWARD.name());
-			response.setResponseMessage(Result.AWKWARD.getValue());
-		}
+    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	if(user != null) {
+    		try {
+     			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+     	 		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getInterviewFeedbackTemplatesByOrgLocationId(orgLocations.getId());
+     	 		response.setData(submissiontTemplateList);
+     	 		response.setResponse(Result.SUCCESS.name());
+    			response.setResponseMessage(Result.SUCCESS.getValue());
+     		}catch (Exception e) {
+     			e.printStackTrace();
+     			response.setResponse(Result.AWKWARD.name());
+    			response.setResponseMessage(Result.AWKWARD.getValue());
+    		}
+    	}else {
+    		response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+    	}
+ 		return response;
+ 	}
+    
+    
+    @RequestMapping(value = "/getInterviewerAndRatingListByInterviewId", method = RequestMethod.POST)
+ 	@ResponseBody ResponseList<InterviewFeedbackTemplate> getInterviewerAndRatingListByInterviewId(@RequestParam(value="interviewId", required=false) Long interviewId, HttpServletRequest request) throws Exception {
+    	ResponseList<InterviewFeedbackTemplate> response = new ResponseList<>();
+    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	if(user != null) {
+	    	try {
+	 	 		List<InterviewFeedbackTemplate> interviewFeedbackTemplateList  = interviewFeedbackTemplateService.getInterviewerAndRatingListByInterviewId(interviewId);
+	 	 		response.setData(interviewFeedbackTemplateList);
+	 	 		response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+	 		}catch (Exception e) {
+	 			response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+    	}else {
+    		response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+    	}
  		return response;
  	}
     

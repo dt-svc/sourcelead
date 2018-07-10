@@ -176,6 +176,19 @@ public class HomeController {
 		return model;
 
 	}
+	
+	
+	
+	@RequestMapping(value = {"/demoRequest"}, method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView sourceleadDemoRequest() {
+
+		ModelAndView model = new ModelAndView();
+		model.addObject("demoRequest", "demoRequest");
+		model.setViewName("static-web/index");
+
+		return model;
+
+	}
 
 	@RequestMapping(value = {"/login"}, method = { RequestMethod.GET, RequestMethod.POST })
 	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout,
