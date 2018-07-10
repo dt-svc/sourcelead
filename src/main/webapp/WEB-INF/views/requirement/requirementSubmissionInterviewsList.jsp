@@ -183,6 +183,7 @@ function getInterviewRatings(interviewId){
 		    	    			    case 'Outstanding':
 		    	    			    	value = 5;
 		    	    			        break;
+		    	    			    default: value = 0;
 		    	    			}
 		    	    			   for (var j=0; j<5; j++){
 		    	    				   var active = '';
