@@ -113,6 +113,9 @@ public class AssociateTaxDedContriView {
 	
 	@Column (name = "BANK_LOCATION_ID")
 	private Long bankLocationId;
+	
+	@Column (name="TAX_TYPE")
+	private String taxType;
 
 	public Long getUserId()
 	{
@@ -446,8 +449,14 @@ public class AssociateTaxDedContriView {
 		this.bankLocationId = bankLocationId;
 	}
 
-	
-	
-	
+	public String getTaxType()
+	{
+		return taxType;
+	}
+
+	public void setTaxType(String taxType)
+	{
+		this.taxType = taxType;
+	}
 	
 }
