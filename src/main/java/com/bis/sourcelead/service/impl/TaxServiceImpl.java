@@ -15,6 +15,9 @@ import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
+import com.bis.sourcelead.dto.SourceleadTaxChallanItemDTO;
+import com.bis.sourcelead.dto.SourceleadTaxChallanItemSubFormFieldDTO;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
@@ -29,6 +32,9 @@ import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProfessionalTax;
+import com.bis.sourcelead.entity.SourceleadTaxChallan;
+import com.bis.sourcelead.entity.SourceleadTaxChallanItem;
+import com.bis.sourcelead.entity.SourceleadTaxChallanItemSubFormField;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
@@ -836,4 +842,89 @@ public class TaxServiceImpl implements TaxService {
 		return documentList;
 	}
 
+	public long addITChallanSectionItem(SourceleadTaxChallanItemDTO sectionItemDTO) {
+			try {
+				SourceleadTaxChallanItem sectionItem = null;
+				if (sectionItemDTO.getId() != null && sectionItemDTO.getId() > 0) {
+					//sectionItem = taxDao.getTaxSectionItem(sectionItemDTO.getId());
+				} else {
+					sectionItem = new SourceleadTaxChallanItem();
+				}
+				if (sectionItem != null) {
+					sectionItem.setCreatedDate(sectionItemDTO.getCreatedDate());
+					sectionItem.setDataValidationRange(sectionItemDTO.getDataValidationRange());
+					sectionItem.setDataValidationType(sectionItemDTO.getDataValidationType());
+					sectionItem.setDiscription(sectionItemDTO.getDiscription());
+					sectionItem.setFieldType(sectionItemDTO.getFieldType());
+					sectionItem.setId(sectionItemDTO.getId());
+					sectionItem.setLabelName(sectionItemDTO.getLabelName());
+					sectionItem.setMaxDate(sectionItemDTO.getMaxDate());
+					sectionItem.setMaxLength(sectionItemDTO.getMaxLength());
+					sectionItem.setMaxNumber(sectionItemDTO.getMaxNumber());
+					sectionItem.setMinDate(sectionItemDTO.getMinDate());
+					sectionItem.setMinNumber(sectionItemDTO.getMinNumber());
+					sectionItem.setMinLength(sectionItemDTO.getMinLength());
+					sectionItem.setPlaceHolder(sectionItemDTO.getPlaceHolder());
+					sectionItem.setUpdatedDate(sectionItemDTO.getUpdatedDate());
+					sectionItem.setStatus(true);
+					sectionItem.setFieldRequired(false);
+					//sectionItem.setSourceleadTaxITDeclaration(taxDao.getTaxSection(sectionItemDTO.getTaxSectionId()));
+					return taxDao.addITChallanSectionItem(sectionItem);
+				} else
+					return -1;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return 0;
+		}
+
+	
+		@Override
+		public long addItChallanSection(SourceleadTaxChallanDTO sourceleadTaxSectionDTO) {
+			try {
+				SourceleadTaxChallan section = null;
+				if (sourceleadTaxSectionDTO.getId() > 0) {
+					//section = taxDao.getTaxSection(sourceleadTaxSectionDTO.getId());
+				} else {
+					section = new SourceleadTaxChallan();
+					section.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
+				}
+				if (section != null) {
+					section.setDescription(sourceleadTaxSectionDTO.getDescription());
+					
+					section.setName(sourceleadTaxSectionDTO.getName());
+					section.setActive(true);
+					section.setId(sourceleadTaxSectionDTO.getId());
+					section.setUuid(sourceleadTaxSectionDTO.getUuid());
+					
+					
+					//section.setSourceleadTaxForm(taxDao.getTaxFormType(sectionDTO.getTaxFormId()));
+					return taxDao.addItChallanSection(section);
+				} else
+					return -1;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return 0;
+		}
+
+		@Override
+		public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormFieldDTO optionData,long addChallanSectionItemId) {
+			SourceleadTaxChallanItemSubFormField challanSubField = new SourceleadTaxChallanItemSubFormField();
+			if(optionData.getActive()!=null){
+				challanSubField.setActive(optionData.getActive());
+			}
+			challanSubField.setFieldDesc(optionData.getFieldDesc());
+			challanSubField.setFieldName(optionData.getFieldName());
+			challanSubField.setId(optionData.getId());
+			challanSubField.setLabelName(optionData.getLabelName());
+			challanSubField.setSourceleadTaxChallanItem(optionData.getSourceleadTaxChallanItemId());
+			SourceleadTaxChallanItem sourceleadTaxChallanItem = taxDao.getSourceleadTaxChallanItemById(addChallanSectionItemId);
+			if(sourceleadTaxChallanItem != null){
+				challanSubField.setSourceleadTaxChallanItem(sourceleadTaxChallanItem);
+			}
+			
+			return taxDao.addSourceleadTaxChallanItemSubFormField(challanSubField);
+			// TODO Auto-generated method stub
+		}
 }

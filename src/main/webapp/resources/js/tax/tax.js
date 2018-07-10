@@ -779,3 +779,116 @@ function callAddITDeclarationSectionItemRestService(formData, type) {
 		},
 	});
 }
+
+
+
+
+function addITChallanSection() {
+	if($('#itChallanSectionForm').validate(false, validationSettings)) {
+		$("#addITChallanSectionBtn").attr("disabled","disabled");
+		var formData = getFormData("itChallanSectionForm");
+		callAddITChallanSectionRestService(formData, 1);
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+function callAddITChallanSectionRestService(formData, type) {
+	alert("inside");
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+		type : "POST",
+	    data: formData,
+		url : sourceleadUrl+"/form/addITChallanSection",
+		success : function(response) {
+			if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+    			modalClose();
+				$(".success_pop").css("display","block");
+        		$(".success_pop span").html("Tax Section " + (type === 1 ? "added" : "name updated") + " successfully....");
+        		setTimeout(function() {
+        			tax.getDynamicTaxForm($("#taxFormId").val(), true);
+        			$(".success_pop").css("display","none");
+		 		},1000);
+        	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
+        		showError(response.responseMessage);
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+			$("#addITDeclarationSectionBtn").removeAttr("disabled","disabled");
+			$("#loading").removeAttr("style");
+		},
+	});
+}
+
+
+
+
+function addITChallanSectionItem() {
+	alert("i am inside c data");
+	/*if($('#itChallanSectionItemForm').validate(false, validationSettings)) {*/
+		$("#addITChallanSectionItemBtn").attr("disabled","disabled");
+		var formData = getFormData("itChallanSectionItemForm");
+		callAddITChallanSectionItemRestService(formData, 2)
+		return true;
+	/*} else {
+		return false;
+	}*/
+}
+
+
+function callAddITChallanSectionItemRestService(formData, type) {
+	alert("inside");
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+		type : "POST",
+	    data: formData,
+		url : sourceleadUrl+"/form/addITChallanSectionItem",
+		success : function(response) {
+			if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+    			modalClose();
+				$(".success_pop").css("display","block");
+        		$(".success_pop span").html("Tax Section Item " + (type === 1 ? "added" : "updated") + " successfully....");
+        		setTimeout(function() {
+        			tax.getDynamicTaxForm($("#taxFormId").val(), true);
+        			$(".success_pop").css("display","none");
+		 		},1000);
+        	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
+        		showError(response.responseMessage);
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+			$("#addITDeclarationSectionBtn").removeAttr("disabled","disabled");
+			$("#loading").removeAttr("style");
+			flushPopupData();
+		},
+	});
+}
+
+function flushPopupData(){
+	$("#customFieldId").val('');
+	$("#addITChallanSectionItemBtn").removeAttr('onclick');
+	$("#addITChallanSectionItemBtn").attr('onclick','saveAddFormField("")');
+	$("#labelName").val('');
+	$("#isRequired").val('');
+	$('#isRequired').removeAttr('checked');
+	$("#selectOptionId").val('');
+	$("#placeHolder").val(''); 
+	$("#status").val('');
+	$("#description").val('');
+	$('#addITChallanSectionItemBtn').find('p.jquery_form_error_message').remove();
+	$('#fieldtype').val('textfield');
+	$('#fieldtype').trigger('chosen:updated');
+	getSelectedFieldDetails();
+	
+	
+}

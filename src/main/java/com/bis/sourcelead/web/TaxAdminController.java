@@ -23,6 +23,9 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
+import com.bis.sourcelead.dto.SourceleadTaxChallanItemDTO;
+import com.bis.sourcelead.dto.SourceleadTaxChallanItemSubFormFieldDTO;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
@@ -509,4 +512,74 @@ public class TaxAdminController {
 		return response;
 	}
 
+	@RequestMapping(value = "/form/addITChallanSectionItem", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Long> addITChallanSectionItem(HttpServletRequest request, SourceleadTaxChallanItemDTO sectionItemDTO) {
+		Response<Long> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				long addChallanSectionItemId = taxService.addITChallanSectionItem(sectionItemDTO);
+				for(SourceleadTaxChallanItemSubFormFieldDTO optionData:sectionItemDTO.getOptionData()){
+					taxService.addSourceleadTaxChallanItemSubFormField(optionData,addChallanSectionItemId);
+				}
+							
+				
+				if (addChallanSectionItemId > 0) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else if (addChallanSectionItemId == -1) {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+				response.setObject(addChallanSectionItemId);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+	@RequestMapping(value = "/form/addITChallanSection", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Long> addItChallanSection(HttpServletRequest request, SourceleadTaxChallanDTO sourceleadTaxSectionDTO) {
+		Response<Long> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				// Add ItDeclarationSection
+				long result = taxService.addItChallanSection(sourceleadTaxSectionDTO);
+				if (result > 0) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else if (result == -1) {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+				response.setObject(result);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+	
+	
 }

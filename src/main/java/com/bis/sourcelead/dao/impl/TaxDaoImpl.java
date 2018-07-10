@@ -16,6 +16,9 @@ import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.ProfessionalTax;
+import com.bis.sourcelead.entity.SourceleadTaxChallan;
+import com.bis.sourcelead.entity.SourceleadTaxChallanItem;
+import com.bis.sourcelead.entity.SourceleadTaxChallanItemSubFormField;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
@@ -25,6 +28,7 @@ import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocument;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
+import com.bis.sourcelead.entity.UserCustomFieldData;
 
 @Repository
 @Transactional
@@ -530,5 +534,57 @@ public class TaxDaoImpl implements TaxDao {
 		}
 		return null;
 	}
+
+		@Override
+		public long addITChallanSectionItem(SourceleadTaxChallanItem sectionItem) {
+			try {
+				Session session = this.sessionFactory.getCurrentSession();
+				session.saveOrUpdate(sectionItem);
+				return sectionItem.getId();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return 0;
+		}
+
+		
+
+			@Override
+			@Transactional
+			public long addItChallanSection(SourceleadTaxChallan section) {
+				try {
+					Session session = this.sessionFactory.getCurrentSession();
+					session.saveOrUpdate(section);
+					return section.getId();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return 0;
+			}
+
+			@Override
+			@Transactional
+			public SourceleadTaxChallanItem getSourceleadTaxChallanItemById(long addChallanSectionItemId) {
+				SourceleadTaxChallanItem sourceleadTaxChallanItem = null;
+				try {
+					Session session = this.sessionFactory.getCurrentSession();
+					sourceleadTaxChallanItem = (SourceleadTaxChallanItem) session.get(SourceleadTaxChallanItem.class, addChallanSectionItemId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return sourceleadTaxChallanItem;
+			}
+
+			@Override
+			public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormField challanSubField) {
+				try {
+					Session session = this.sessionFactory.getCurrentSession();
+					session.saveOrUpdate(challanSubField);
+					return challanSubField.getId();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return 0;
+			}
 
 }
