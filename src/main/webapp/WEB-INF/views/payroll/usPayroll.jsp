@@ -1,6 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <!-- <script>
@@ -16,87 +16,95 @@ $(document).ready(function(){
 
 !-- Content Area -->
 <section class="content-wraper contentWraper">
-<section class="content-header clearfix">
-<div class="pull-left">
-<h2>Payroll</h2>
-</div>
-<div class="pull-right brud-crum">Home &raquo; Payroll</div>
-</section>
+	<section class="content-header clearfix">
+		<div class="pull-left">
+			<h2>Payroll</h2>
+		</div>
+		<div class="pull-right brud-crum">Home &raquo; Payroll</div>
+	</section>
 
 
-<div class="clearfix"></div>
-<div class="timesheet_out">
-
-<div class="tablelist-wrap">
-<div class="timesheet_head minHeight">
-<form:form id="generate_payroll_form" name="generate_payroll_form" method="post">
-<div class="col-md-7 mt">
-	<div class="row">
-		<div class="col-md-3">
-			<div class="dropdown-select">
-			<select id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
-				<option value="">--Select User Group--</option>
-                    <c:forEach var="ug" items="${userGroupList}">
-					<option value="${ug.groupUUID}">${ug.groupName}</option>
-				</c:forEach>
-			</select>
+	<div class="clearfix"></div>
+	<div class="timesheet_out">
+	<div id="paysheetLoading"></div>
+		<div class="tablelist-wrap">
+		<form:form id="generate_paysheet_form" name="generate_paysheet_form" method="post">
+			<div class="timesheet_head minHeight">
+				
+					<div class="col-md-7 mt">
+						<div class="row">
+							<div class="col-md-3">
+								<div class="dropdown-select">
+									<select id="groupId" name="groupId"
+										onchange="getGroupFrequency();" data-validation="required"
+										field-name="User Group">
+										<option value="">--Select User Group--</option>
+										<c:forEach var="ug" items="${userGroupList}">
+											<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4 paddingLeft paddingRight">
+								<div class="dropdown-select">
+									<select id="payPeriod" name="payPeriod"
+										data-validation="required" field-name="Pay Period">
+									</select>
+								</div>
+							</div>
+							<!-- <div class="col-md-3 paddingRight">
+								<input name="" class="form-control calendar"
+									placeholder="Check Date" id="payrollPayDate"
+									name="payrollPayDate" type="text" data-validation="required"
+									field-name="Pay Date">
+							</div> -->
+							<div class="col-md-2">
+								<a class="btn btn-success btnSuccess btn-sm anchorWhite"
+									id="generateUSPaysheet" onclick="runUSPaysheet();">Run
+									Payroll</a>
+							</div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="remove_search">
+						<input placeholder="Search" type="text">
+					</div>
+				
 			</div>
-		</div>
-		<div class="col-md-4 paddingLeft paddingRight">
-			<div class="dropdown-select">
-			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period">
-			</select>
+
+			<div class="tableScroll">
+				<div class="styleTables clearfix mt">
+					<div id="USPayrollDiv"></div>
+					<div id="payheetDIV"></div>
+				</div>
 			</div>
+			<div class="clearfix mt"></div>
+			<nav class="clearfix">
+
+				<!-- <div class="col-md-2">
+					<a href="javascript:void(0)" class="btn anchorBlue">Exclude</a>
+				</div> -->
+				<ul class="pull-right mr list-unstyled list-inline">
+					<li><a href="#" class="btn btn-primary btnSuccess" id="paysheetSubmitDiv"  onclick="submitPaysheet();">Submit for Approve</a></li>
+					<li><a href="#" class="btn btn-default ml mr">Confirm</a></li>
+					<li><a href="#" class="btn btn-default">Cancel</a></li>
+				</ul>
+				<div class="clearfix"></div>
+			</nav>
+
+
+       </form:form>
 		</div>
-		<div class="col-md-3 paddingRight">
-			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date">
-		</div>
-		<div class="col-md-2">
-			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runUSPayroll();">Run Payroll</a>
-		</div>
-	</div>						
-</div>
-<div class="clearfix"></div>
-<div class="remove_search">
-	<input placeholder="Search" type="text">
-</div>              
-</form:form>
-</div>
-
-<div class="tableScroll">
- <div class="styleTables clearfix mt">
- <div id="USPayrollDiv"></div>
- <div id="testDiv"></div>
-</div> 
-</div>
-<div class="clearfix mt"></div>
-<nav class="clearfix">
-	
-<div class="col-md-2">
-			<a href="javascript:void(0)" class="btn anchorBlue">Exclude</a>
-</div>
-	<ul class="pull-right mr list-unstyled list-inline">
-		<li><a href="#" class="btn btn-primary btnSuccess">Sent for Approve</a></li>
-		<li><a href="#" class="btn btn-default ml mr">Confirm</a></li>
-		<li><a href="#" class="btn btn-default">Cancel</a></li>
-	</ul>
-<div class="clearfix"></div>
-</nav>	
 
 
-
-</div>
-
-
-</div>  
+	</div>
 
 
-<!-- New Code Here -->
+	<!-- New Code Here -->
 
-<script>
+	<script>
 function getGroupFrequency(){
 	var groupUUID = $("#groupId").val();
-	alert(groupUUID);
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
@@ -114,80 +122,23 @@ function getGroupFrequency(){
 	    });
 }
 </script>
-<!-- New Code End Here -->
+	<!-- New Code End Here -->
 
-<!--   Error Message   -->
-<div class="vendor_wrap_mask"></div>
-<div class="vendor_error">
-<textarea placeholder="Enter message"></textarea>
-<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
+	<!--   Error Message   -->
+	<div class="vendor_wrap_mask"></div>
+	<div class="vendor_error">
+		<textarea placeholder="Enter message"></textarea>
+		<a class="close_color" href="javascript:void(0)">Yes</a><a
+			href="javascript:void(0)">No</a>
+	</div>
 
-<!--   Error Message   --> 
+	<!--   Error Message   -->
 
 
 </section>
 
- <!-- Content Area -->
- <%--  <section class="content-wraper">
-    <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Generate Payroll</h2>
-      </div>
-      <div class="pull-right brud-crum">Home &raquo; Generate Payroll</div>
-    </section>
-    <section class="contrHead">
-      <ul>
-        <li title="Draft"><a href="us-payrollgenerate.html" class="wVer">Generate Payroll</a></li>
-        <li title="Finalised"><a href="javascript:void(0)">Advance</a></li>
-        <div class="clearfix"></div>
-      </ul>
-    </section>
-    
-    <!-- Timesheet -->
-    <div class="timesheet_out">
-      <div class="project_wrap">
-        <div class="clearfix mt"></div>
-        <div class="timesheet_head minHeight40 mb10 mt">
-        <form:form id="generate_payroll_form" name="generate_payroll_form" method="post">
-          <div id="payrollCycleDiv" class="col-md-7 payrollFilter paddingRight">
-            <div class="form-inline"> <span class="form-group">
-              <input type="text" class="form-control calendar" value="" id="payrollStartDate" name="payrollStartDate" data-validation="required" field-name="Payroll Start Date" placeholder="Start Date">
-              </span>
-              <span class="form-group">
-              <input type="text" class="form-control calendar" value="" id="payrollEndDate" name="payrollEndDate" data-validation="required" field-name="Payroll End Date" placeholder="End Date">
-              </span>
-              <span class="form-group">
-              <input type="text" class="form-control calendar" value="" id="payrollPayDate" name="payrollPayDate" data-validation="required" field-name="Payroll Pay Date" readonly placeholder="Pay Date">
-              </span>
-              <div class="form-group">
-                <button type="button" class="btn btn-primary btn-block" id="generateUSPayroll" onclick="runUSPayroll();">Run Payroll</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-2">
-          <a href="javascript:void(0)" class="selectEmployee mt5 pull-left">Select Employee</a>
-			</div>
-          <div class="col-md-3 searchStyles">
-            <input placeholder="" type="text" class="">
-          </div>
-          </form:form>
-          
-        </div>
-        <div class="tableStyles-new">
-        <div class='remove_search'>
- 	 <input type='text' placeholder='Search' id='dataTableSearch'/>
- 	</div>
-        <div id="USPayrollDiv" class="clients_wrap_table datatable_filter"></div>
-        
-         
-        </div>
-     
-      </div>
-    </div>
-  </section> --%>
 
-  
-  <script>
+<script>
   $( function() {
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  // written common method in slead-common.js for date formats start
@@ -242,9 +193,8 @@ function getGroupFrequency(){
 
 
 <script>
-function runUSPayroll(){
-	alert("Hiu");
-	if ($('#generate_payroll_form').validate(false, validationSettings)){  
+function runUSPaysheet(){
+	if ($('#generate_paysheet_form').validate(false, validationSettings)){  
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 		var groupId = $("#groupId").val();
@@ -252,7 +202,7 @@ function runUSPayroll(){
 		var payrollPayDate = $("#payrollPayDate").val();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate,                 
+		        url: sourceleadUrl+"/generatePaySheet?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate,                 
 		        success: function(data) {
 		        	
 		            var json = data.data;
@@ -266,16 +216,25 @@ function runUSPayroll(){
 		        	result += '<label for="all" class="checkbox-custom-label"></label>';
 		        	result += '</div>';
 		        	result += '</th>';
-		        	result += '<th>Emp ID</th>';
-		        	result += '<th>Emp Name</th>';
-		        	result += '<th>Regular<br>Hours</th>';
-		        	result += '<th>Payrate</th>';
-		        	result += '<th>OT<br>Hours</th>';
-		        	result += '<th>Gross<br>Pay</th>';
-		        	result += '<th>Pretax<br>Deduction</th>';
-		        	result += '<th>Post<br>Deduction</th>';
-		        	result += '<th>Taxes</th>';
-		        	result += '<th>Net<br>Pay</th>';
+		        	result += '<th>EMPID</th>';
+		        	result += '<th>Status</th>';
+		        	result += '<th>Emp NAME</th>';
+		        	result += '<th>Status</th>';
+		        	result += '<th>Hours</th>';
+		        	result += '<th>Proj Bill Rate</th>';
+		        	result += '<th>Proj %</th>';
+		        	result += '<th>Proj Pay Rate</th>';
+		        	result += '<th>Exp. Remb</th>';
+		        	result += '<th>PreDeduction/Health Insurance</th>';
+		        	result += '<th>LCA Salary Month</th>';
+		        	result += '<th>Additional Pay</th>';
+		        	result += '<th>Gross Pay</th>';
+		        	result += '<th>Bonus Accrual Pay Period</th>';
+		        	result += '<th>Bonus Accrual YTD</th>';
+		        	result += '<th>Advance/Post Deduction</th>';
+		        	result += '<th>Vendor Last Paid Date</th>';
+		        	result += '<th>Mode of Pay</th>';
+		        	result += '<th>Notes</th>';
 		        	result += '</tr>';
 		        	result += '</thead>	';
 		        	result += '<tbody>';
@@ -283,35 +242,131 @@ function runUSPayroll(){
 		        		for (var i=0; i<json.length; i++){
 		        			var opt = json[i];
 		        			result += '<tr>';
-				        	result += '<td>';
-				        	result += '<div class="checkbox-new pull-left ml5">';
-				        	result += '<input id="emp1" class="checkbox-custom" name="paidComponent" type="checkbox">';
-				        	result += '<label for="emp1" class="checkbox-custom-label"></label>';
-				        	result += '</div>';
-				        	result += '</td>';
-				        	result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
-				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
-				        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
-				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.payRate+'</div></td>';
-				        	if(opt.overtimeHours != null && opt.overtimeHours != '' && opt.overtimeHours != 'undefined'){
-				        		result += '<td><div class="tblminwidth-50">'+opt.overtimeHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.otHoursTotalAmt.toFixed(2)+'</div></td>';
-				        	}else{
-				        		result += '<td><div class="tblminwidth-50">0.00</div><div class="tblminwidth-50 clearfix text-danger">$ 0.00</div></td>';
-				        	}
-				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
-				        	result += '</td><td><div class="tblminwidth-50 clearfix">$ '+opt.preTaxDeduction.toFixed(2)+'</div></td>';
-				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.postTaxDeduction.toFixed(2)+'</div></td>';
-				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
-				        	result += '<td><div class="tblminwidth-50 clearfix"><a href="javascript:void(0)">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
-				        	result += '</tr>';  	
+		        			
+		        			result += ' <td>';
+		        			result += ' <div class="tblminwidth-50"></div>';
+		        			result += ' </td>';
+		        			
+		        			result += ' <td>';
+		        			result += ' <div class="width150px"><input type="text" class="form-control noboderInput"  id="'+i+'employeeId" name="uSPaysheetDTO['+i+'].employeeId" value="'+opt.employeeId+'" readonly></div>';
+		        			result += ' </td>';
+		        			
+		        			result += ' <td>';
+		        			result += ' <div class="width100px">';
+		        			result += ' <select class="sel" id="'+i+'processreview" name="'+i+'processreview">';
+		        			result += ' <option value="">Select</option>';
+		        			result += ' <option value="Review">Review</option>';
+		        			result += ' <option value="Process">Process</option>';
+		        			result += ' </select>';
+		        			result += ' </div>';
+		        			result += ' </td>';
+		        			
+		        			result += ' <td>';
+		        			result += ' <div class="tbldata-dotdot"><input type="text" class="form-control noboderInput" id="'+i+'employeeName" name="uSPaysheetDTO['+i+'].employeeName" value="'+opt.employeeName+'" readonly></div>';
+		        			result += ' <div class="tbldata-dotdot"><input type="hidden" id="'+i+'userId" name="uSPaysheetDTO['+i+'].userId" value="'+opt.userId+'"></div>';
+		        			result += ' <div class="tbldata-dotdot"><input type="hidden" id="'+i+'projectMemberId" name="uSPaysheetDTO['+i+'].projectMemberId" value="'+opt.userId+'" readonly></div>';
+		        			result += '  </td>';
+		        			
+		        			result += '  <td>';
+		        			result += ' 	<div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'immiStatus" name="uSPaysheetDTO['+i+'].immiStatus" value="OPT" readonly></div>';
+		        			result += '  </td>';
+		        			
+		        			result += ' <td>';
+		        			result += ' <div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'hours" name="uSPaysheetDTO['+i+'].hours" value="'+opt.hours+'" readonly></div>';
+		        			result += '  </td>';
+		        			
+		        			result += '    <td>';
+		        			if(opt.projBillRate != null){
+		        				result += '   <div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'projBillRate" name="uSPaysheetDTO['+i+'].projBillRate" value="'+opt.projBillRate+'" readonly></div>';	
+		        			}else{
+		        				result += '   <div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'projBillRate" name="uSPaysheetDTO['+i+'].projBillRate" value="0" readonly></div>';
+		        			}
+		        			
+		        			result += ' </td>';
+		        			
+		        			result += '  <td>';
+		        			result += '  <div class="tblminwidth-100">';
+		        			result += ' 	<input type="text" class="form-control input-sm" id="'+i+'projPayPercent"  name="uSPaysheetDTO['+i+'].projPayPercent" onblur="calGrossByPaypercent('+i+');" value="" placeholder="%">';
+		        			result += ' 	</div>';
+		        			result += '   </td>';
+		        			
+		        			result += '   <td>';
+		        			result += '  <div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'projPayRate" name="uSPaysheetDTO['+i+'].projPayRate" value="0" readonly></div>';
+		        			result += ' </td>';
+		        			result += '  <td>';
+		        			
+		        			result += '  <div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'expensesReimbursement" name="uSPaysheetDTO['+i+'].expensesReimbursement" value="00.00" readonly></div>';
+		        			result += ' </td>';
+		        			result += '  <td>';
+		        			if(opt.preDeduction != null){
+		        				result += ' <div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'preDeduction" name="uSPaysheetDTO['+i+'].preDeduction"  value="'+opt.preDeduction+'" readonly></div>';
+		        			}else{
+		        				result += ' <div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'preDeduction" name="uSPaysheetDTO['+i+'].preDeduction"  value="'+0+'" readonly></div>';
+		        			}
+		        			result += '  </td>';
+		        			
+		        			result += '  <td>';
+		        			result += '  <div class="tblminwidth-100">';
+		        			result += ' <div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'lcaSalaryMonth" name="uSPaysheetDTO['+i+'].lcaSalaryMonth"  value="0" readonly></div>';
+		        			result += ' 	</div>';
+		        			result += '   </td>';
+		        			
+		        			result += '   <td>';
+		        			result += '   <div class="tblminwidth-100">';
+		        			result += '   	<input type="text" class="form-control input-sm" value="" id="'+i+'additionalPay" name="uSPaysheetDTO['+i+'].additionalPay" onblur = addAdditiobalPayToSal('+i+'); placeholder="Enter">';
+		        			result += ' 	</div>';
+		        			result += '</td>';
+		        			
+		        			result += '<td>';
+		        			result += '	<div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'grossPay" name="uSPaysheetDTO['+i+'].grossPay" value="0" readonly></div>';
+		        			result += '  </td>';
+		        			
+		        			result += '  <td>';
+		        			result += '	<div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'bonusAccrualPayPeriod" name="uSPaysheetDTO['+i+'].bonusAccrualPayPeriod"  value="0" readonly></div>';
+		        			result += '  </td>';
+		        			
+		        			result += '   <td>';
+		        			result += '		<div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'bonusAccrualYTD" name="uSPaysheetDTO['+i+'].bonusAccrualYTD" value="0" readonly></div>';
+		        			result += '    </td>';
+		        			
+		        			result += '    <td>';
+		        			if(opt.postDeduction != null){
+		        			result += '   	<div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'postDeduction" name="uSPaysheetDTO['+i+'].postDeduction" value="'+opt.postDeduction+'" readonly></div>';
+		        			}else{
+		        				result += '   	<div class="width100px"><input type="text" class="form-control noboderInput" id="'+i+'postDeduction" name="uSPaysheetDTO['+i+'].postDeduction" value="0" readonly></div>';
+		        				}
+		        			result += '    </td>';
+		        			
+		        			result += '    <td>';
+		        			result += '    <div class="tblminwidth-125">';
+		        			result += ' 	<input type="text" class="form-control input-sm calendar" id="'+i+'vendorLastpaidDate" name="uSPaysheetDTO['+i+'].vendorLastpaidDate" value="" placeholder="Enter">';
+		        			result += '	</div>';
+		        			result += '   </td>';
+		        			
+		        			result += '   <td>';
+		        			result += '     <div class="width150px">';
+		        			result += '      <select class="sel" id="'+i+'modeOfPay" name="uSPaysheetDTO['+i+'].modeOfPay">';
+		        			result += '     <option value="">Select</option>';
+		        			result += '   	<option value="Check">Check</option>';
+		        			result += '   	<option value="Direct Deposit">Direct Deposit</option>';
+		        			result += '       </select>';
+		        			result += '   </div>';
+		        			result += '  </td>';
+		        			
+		        			result += '  <td>';
+		        			result += ' <div class="tbldata-dotdot-big">';
+		        			result += '  	<input type="text" class="form-control input-sm" id="notes" name="uSPaysheetDTO['+i+'].notes" value="" placeholder="Enter">';
+		        			result += '	</div>';
+		        			result += '  </td>';
+		        			
+		        			result += '</tr>';
 			        	}
 			        	
 		        	}
 		        	result += '</tbody>';
 		        	result += '</table>';
-		        	alert(result);
-		        	$("#testDiv").empty();
-		        	$("#testDiv").append(result);
+		        	$("#payheetDIV").empty();
+		        	$("#payheetDIV").append(result);
 		        },
 		    });
 		 
@@ -321,9 +376,9 @@ function runUSPayroll(){
    	  } 
 	}
 	
-$('body').on('blur', '#generate_payroll_form', function() {
-	$("#generate_payroll_form").showHelpOnFocus();
-	$("#generate_payroll_form").validateOnBlur(false, validationSettings);  
+$('body').on('blur', '#generate_paysheet_form', function() {
+	$("#generate_paysheet_form").showHelpOnFocus();
+	$("#generate_paysheet_form").validateOnBlur(false, validationSettings);  
 });
 
 
@@ -331,7 +386,37 @@ $('body').on('blur', '#generate_payroll_form', function() {
 
 
 
- 
+<script type="text/javascript">
+	function submitPaysheet() {
+		alert("Hi");
+		 var formData = getFormData("generate_paysheet_form");
+		  	$("#paysheetLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.post(sourceleadUrl+"/submitPaysheet?"+tokenParamName+"="+tokenValue, formData, function(result) {
+				if (result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			$("#paysheetLoading").removeAttr("style");	
+					// location.replace(sourceleadUrl+ "/viewHoliday"); 
+	    		} else if (result.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
+				 $("#paysheetLoading").hide();
+			}); 
+	}
+		
+</script>
+
+
+
+
+
+
+
+
 <script type="text/javascript">
 function runUSPayrollRajashekar(){
 	if ($('#generate_payroll_form').validate(false, validationSettings)){  
@@ -348,7 +433,7 @@ function runUSPayrollRajashekar(){
 		    	  } 
 	}
 
-</script> 
+</script>
 
 <script>
 function prepareUSPayrollList(url){
@@ -511,5 +596,54 @@ function prepareUSPayrollPagination(url){
 }
 </script>
 
+
+<script>
+function calGrossByPaypercent(rowId){
+	var projPayPercent = $("#"+rowId+"projPayPercent").val();
+	var percentValue = projPayPercent /100;
+	var projBillRate = $("#"+rowId+"projBillRate").val();
+	var payRate = parseFloat(projBillRate) * parseFloat(percentValue);
+	$("#"+rowId+"projPayRate").val(payRate)
+	
+	calculateGross(payRate,rowId);
+}
+</script>
+
+<script>
+function calculateGross(payRate,rowId){
+	     var hours = $("#"+rowId+"hours").val();
+	     var split = hours.split('.');
+	     var splitHours = split[0];
+	     var minute = split[1];
+	     var hourminits = splitHours * 60;
+		 var finalmin = parseInt(hourminits) + parseInt(minute);
+	     var perMinit = payRate / 60;
+	     var totlalAmount = (perMinit * finalmin);
+	     $('#'+rowId+"grossPay").val(totlalAmount.toFixed(2));
+	     calculateBonusAccuralPayPeriod(totlalAmount,rowId);
+}
+</script>
+
+<script>
+function calculateBonusAccuralPayPeriod(grossPay,rowId){
+	var preDeduction = $("#"+rowId+"preDeduction").val();
+	var  resultValue = grossPay - preDeduction;
+	var gross = $('#'+rowId+"grossPay").val();
+	var bonusAccuralPay = resultValue - gross ;
+	$("#"+rowId+"bonusAccrualPayPeriod").val(bonusAccuralPay);
+	
+}
+</script>
+
+
+<script>
+function addAdditiobalPayToSal(rowId){
+	var additionalPay = $("#"+rowId+"additionalPay").val();
+	var gross = $('#'+rowId+"grossPay").val();
+	var pay = parseFloat(additionalPay) + parseFloat(gross) ;
+	$('#'+rowId+"grossPay").empty();
+	$('#'+rowId+"grossPay").val(pay);
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
