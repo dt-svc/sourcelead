@@ -645,7 +645,7 @@ function invoicePagination(url){
 	    		     
 	    	  	    result = result +'         <td>';
 	    	  	    
-	    	  	  if(report.invoiceStatus == "DRAFT" || (report.invoiceStatus == "Rejected" && report.invoiceParentId != null)){
+	    	  	  if(report.invoiceStatus == "Rejected" && report.invoiceParentId != null){
 						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
 						'</sec:authorize>' ;
