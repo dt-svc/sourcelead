@@ -162,6 +162,10 @@ function resourceRequestsTab(){
 	 var projectUUID = '${projectUUID}';
 	 var projectClientUUID = '${projectClientUUID}';
 	 
+	 var postedOrgLocationId = '${postedOrgLocationId}';
+	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
+	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  resourceReqListDate = 'YYYY-MM-DD';
@@ -190,6 +194,8 @@ function resourceRequestsTab(){
 	    		result = result + '	<div class="timesheet_head anchorTag-black">';
 	    		result = result + '	<ul>';
 	    		
+	    		if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){  
+	    			+	    
 	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_RESOURCE_REQUEST\')">';
 		    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Associate Request</a></li>';
@@ -199,6 +205,7 @@ function resourceRequestsTab(){
 		    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
 	    		 '</sec:authorize>';
+	    		}
 		    		 
 	    		result = result + '	</ul>';
 	    		result = result + '	       </div>';

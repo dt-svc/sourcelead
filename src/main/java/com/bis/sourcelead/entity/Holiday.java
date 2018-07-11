@@ -91,6 +91,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "HOLIDAY_UUID")
 	private String holidayUUID;
 	
+	@Column(name = "ORG_AVG_HRS")
+	private Integer orgAvgHrs;
+	
 	@Transient
 	private String fromDateStr;
 	
@@ -273,12 +276,21 @@ private static final long serialVersionUID = 1L;
 		this.holidayUUID = holidayUUID;
 	}
 
-
 	public Set<HolidayShift> getHolidayShift() {
 		return holidayShift;
 	}
 
 	public void setHolidayShift(Set<HolidayShift> holidayShift) {
 		this.holidayShift = holidayShift;
+	}
+
+	public Integer getOrgAvgHrs()
+	{
+		return orgAvgHrs;
+	}
+
+	public void setOrgAvgHrs(Integer orgAvgHrs)
+	{
+		this.orgAvgHrs = orgAvgHrs;
 	}
 }

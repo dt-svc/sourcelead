@@ -33,7 +33,7 @@
             	  <div class="col-md-6">
               <label class="clearfix">From Date<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix input-group errorInptgroup">
-                <input type="text" class="form-control calendar" name="Website" value="" id="fromDate">
+                <input type="text" class="form-control calendar"  value="" id="fromDate">
                  <span class="input-group-addon">
                  	<i class="colorRed fa fa-times cursorPointer"></i>
                  </span>
@@ -42,7 +42,7 @@
             	  <div class="col-md-6">
               <label class="clearfix">To Date<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix input-group errorInptgroup">
-                <input type="text" class="form-control calendar" name="Website" value="" id="toDate">
+                <input type="text" class="form-control calendar"  value="" id="toDate">
                  <span class="input-group-addon">
                  	<i class="colorRed fa fa-times cursorPointer"></i>
                  </span>

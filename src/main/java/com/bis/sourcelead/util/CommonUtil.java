@@ -562,9 +562,9 @@ public class CommonUtil {
 		 }
 		 
 		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-		 emailMessage.setLastName(pmh.getProjectMemberId().getEmployee().getUser().getLastName());
-		 emailMessage.setToEmail(pmh.getProjectMemberId().getEmployee().getUser().getEmail());
+		 emailMessage.setFirstName(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+		 emailMessage.setLastName(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+		 emailMessage.setToEmail(pmh.getProjectMemberId().getProjectMemberCandidteId().getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		// StringBuilder msgBuild = new StringBuilder();
@@ -577,17 +577,15 @@ public class CommonUtil {
 		 
 		 String statrDate = dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectAssignedDate());
 		 
-		 if(null!= pmh.getProjectMemberId().getEmployee()){
-			 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
-				 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
-					 StringBuilder empName = new StringBuilder();
-					 globalVarsMap.put("EmployeeName", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
-				 }	 
-		 else{
-			 globalVarsMap.put("EmployeeName", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-			}
-		 }
-		 }
+		 StringBuilder employeeName = new StringBuilder();
+		 	 if(StringUtils.isNotBlank(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName())) {
+		 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName()).append(" ").append(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+		 	 }else {
+		 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+		  		 }
+		  		 
+		 	 globalVarsMap.put("EmployeeName", employeeName.toString());
+		 	 
 		 
 		 if(null != pmh.getProjectMemberId().getProjects()){
 			 if(null != pmh.getProjectMemberId().getProjects().getProjectName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getProjects().getProjectName())){
@@ -647,14 +645,20 @@ public class CommonUtil {
 		 
 		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
-
-		 
-		 User toUser = pmh.getProjectMemberId().getEmployee().getUser();
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_TERMINATION,new ArrayList<EmailAttachment>());
-		 String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario,new HashMap<String,String>());
+		 
+		 if(pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser() != null) {
+	 			 User toUser = pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
+	 			 String actionLink="";
+	 			 emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getProjectMemberCandidteId().getOrgLocationId(), notificationScenario,new HashMap<String,String>());
+			  
+ 		 }
+
+		 
+		 
+		
 
 			
 		}
@@ -2173,15 +2177,14 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 String endDate = dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
 		 
-		 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
-			 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
-				 StringBuilder empName = new StringBuilder();
-				 globalVarsMap.put("EmployeeName", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
-			 }
-		 else{
-			 globalVarsMap.put("EmployeeName", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-			}
-		 }
+	     StringBuilder employeeName = new StringBuilder();
+	 		 if(StringUtils.isNotBlank(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName())) {
+	 			 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName()).append(" ").append(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+	 		 }else {
+	 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+	  		 }
+	  		 
+	 	 globalVarsMap.put("EmployeeName", employeeName.toString());
 		 
 		 
 		 if(null != pmh.getProjectMemberId().getProjects()){
@@ -2470,6 +2473,7 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 		 return fromEmail;
   }
   
+	
   public Shift saveDefaultGenaeralShift(OrgLocations orgLocations, User user,String shiftName) throws Exception {
 	     Shift shift = new Shift();
 	     shift.setShiftUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -2543,5 +2547,14 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		return "success";
+	}
+
+	public static String toFixed2(double d) {
+		String str;
+		d = d * 100;
+		d = Math.round(d);
+		d = d / 100;
+		str = ("" + d).lastIndexOf(".") == ("" + d).length() - 2 ? d + "0" : d + "";
+		return str;
 	}
 }

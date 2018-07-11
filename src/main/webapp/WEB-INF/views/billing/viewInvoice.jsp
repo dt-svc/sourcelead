@@ -335,6 +335,15 @@ function getViewInvoice(){
 					
 					result = result +'</div>                                                               ';
 					result = result +'</div>                                                                 ';
+					
+					if(report.invoiceStatus == "Rejected"){
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">Invoice Status :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.invoiceStatus+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';
+					}
 					result = result +'<div class="col-md-6">                                                 ';
 					result = result +'<label class="col-md-4 control-label">Contact Name :</label>         ';
 					result = result +'<div class="col-md-8">                                               ';
@@ -525,12 +534,12 @@ function getViewInvoice(){
 							sowName = "--";
 						}
 						if(items.startDateStr != null && items.startDateStr != '' && items.startDateStr != 'undefined'){
-							startDateStr = items.startDateStr+' To';
+							startDateStr = items.startDateStr;
 						}else{
 							startDateStr = "-";
 						}
 						if(items.endDateStr != null && items.endDateStr != '' && items.endDateStr != 'undefined'){
-							endDateStr = items.endDateStr;
+							endDateStr = 'TO ' +items.endDateStr;
 						}else{
 							endDateStr = "-";
 						}
@@ -598,16 +607,12 @@ function getViewInvoice(){
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
                             result = result +'                     </td>                                                     ';
-                            
-                            result = result +'                     <td>                                                      ';
-                            result = result +'                         <div class="tbldata-dotdot_80" title="'+amount+'">'+amount+'</div>       ';
-                            result = result +'                     </td>                                                     ';
                         }else{
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_80" title="'+sowName+'">'+sowName+'</div>       ';
                             result = result +'                     </td>                                                     ';
                             result = result +'                     <td>                                                      ';
-                            result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDateStr+'" >'+startDateStr+' &nbsp; '+endDateStr+'</div>       ';
+                            result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDateStr+'" >'+startDateStr+' &nbsp; '+ endDateStr+'</div>       ';
                             result = result +'                     </td>                                                     ';
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';

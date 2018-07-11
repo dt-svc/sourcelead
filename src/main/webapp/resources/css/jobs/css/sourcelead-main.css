@@ -3903,9 +3903,7 @@ background: #f6f6f6; border-radius: 5px; padding: 0 10px 10px; clear: both; disp
 .events:nth-child(even){
     background:#fafafa;
 }
-.events .eventCalendar {
-    float: left; width: auto; padding: 2px 10px 0 10px; color: #607d8b;
-}
+48
 .events .eventContent {
     float:left; width: 85%; padding: 0;
 }
