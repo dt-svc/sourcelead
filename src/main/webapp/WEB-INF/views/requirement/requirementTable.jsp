@@ -6,7 +6,67 @@
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
 <script>
+function jobFairListCheck(){
+	viewTab = "jobFair";
+	$("#filtersDiv").addClass("hide_filters");
+	$("#jobsTab").removeClass("current");
+    $("#jobFairTab").addClass("current");
+	
+	$("#jobsTabContent").hide();
+	$("#jobFairTabContent").show();
+	
+	
+	$("#jobFairList").empty();
+	$("#jobFairList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  var canEduDatePattern = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  var canEduDatePattern = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  var canEduDatePattern = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  var canEduDatePattern = 'YYYY-DD-MM'; 
+	  }
+	var orgATS = '${SourceLeadWeb_ats}';
+	var orgVMS = '${SourceLeadWeb_vms}';
+	 $("#jobFairList").removeAttr("style");
+	 $("#jobFairList").empty();
+	var result = "";
+	result = result +"<table id='jobFairPagination' class='display' cellspacing='0' width='100%' >"; 
+ 	result = result +"<thead>"; 
+ 	result = result +"	<tr>"; 
+ 	result = result +"		<th>Title</th>";
+ 	result = result +"		<th>StartDate</th>";
+ 	result = result +"		<th>End Date</th>";
+ 	result = result +"		<th>No.of Jobs</th>";
+ 	result = result +"		<th>Venue</th>"; 
+ 	result = result +"		<th>Status</th>";
+ 	result = result +"		<th>Action(s)</th>";
+	result = result +"	</tr>"; 
+ 	result = result +"</thead>";
+ 	result = result +"<tbody>"; 
+     
+  	result = result + '<div class="new_side_wrap">';
+	result = result + '<div class="new_side_wrap_inn">';
+	result = result + '<div class="new_side_wrap_cta">';
+	result = result +'<div id="addApplicantDiv"></div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+ 	result = result +" </tbody>";
+ 	result = result +"</table>"; 
+ 	$("#noReq").val('');
+ 	$("#jobFairList").append(result); 
+ 	var url = sourceleadUrl+"/searchJobFairs?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
+ 	jpaginationForJobFairs(url); 
+ 
+	 /* to call requirement conformation saving message */
+ 	msgFadein1();
+}
 function requirementListCheck(searchValue,universalRequirementSearchList,searchType,sourceleadUrl){
+	viewTab = "jobs";
+	$("#filtersDiv").removeClass("hide_filters");
 	if(universalRequirementSearchList != null && universalRequirementSearchList != '' && universalRequirementSearchList != 'undefined' 
 		 && universalRequirementSearchList=="universalRequirementList")	 {
 		 $("#dataTableSearch").val(searchValue);
@@ -106,6 +166,13 @@ function requirementList(searchType,sourceleadUrl){
 	    }
 	    $('#dataTableSearch').removeAttr('disabled');
 	    $('#dataTableSearch').attr('disabled','disabled');
+	    
+	    $("#jobsTab").addClass("current");
+	    $("#jobFairTab").removeClass("current");
+	    $(".advsrch_chosen").show();
+	    $("#jobsTabContent").show();
+	    $("#jobFairTabContent").hide();
+	    
 	    prepareRequirementData(url,sourceleadUrl);
  } 
 
@@ -686,10 +753,192 @@ function jpagination(url,sourceleadUrl){
    	   }
    	});
  }
+ 
+ 
+function jpaginationForJobFairs(url){ 
+	var colIndex = 0;
+    $('#jobFairPagination').DataTable( { 
+   		"processing": true,
+       "serverSide": true,
+       "ajax": $.fn.dataTable.pipeline( {
+           url: url,
+           method: 'POST',
+           pages: 1
+       }),
+       "columns": [
+           {"data": "name"},
+           {"data": "startDate"},
+           {"data": "endDate"},
+           {"data": "requirementsList"},
+           {"data": "venue"},
+           {"data": "status"},
+           {"data": "actions" }
+       	],
+	       "columnDefs": [
+	        {
+	           "targets": colIndex++,
+	           "data": "name",
+	           "render": function ( data, type, opt, meta ) {
+	           		var result = "";
+	       		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+	       		    	result = result +"<td><a href='<c:url value='/app/jobFairSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	       		    '</sec:authorize>';
+		            return result;
+	            }
+            },
+            {
+	            "targets": colIndex++,
+	            "data": "startDate",
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+           		   if(opt.startDate != null && opt.startDate != '' && opt.startDate != 'undefined') {
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.startDate+'</div></td>';
+           		   } else {
+						result = result +"<td><div>-----</div></td>";
+           	       }
+		           		return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "endDate",
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+           		   if(opt.endDate != null && opt.endDate != '' && opt.endDate != 'undefined'){
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.endDate+'</div></td>';
+           		   } else {
+						result = result +"<td><div>-----</div></td>";
+           	       }
+		                return result;
+	             }
+	        },
+			{
+	            "targets": colIndex++,
+	            "data": "requirementsList",
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+           		   if(opt.jobFairRequirementList != null && opt.requirementsLjobFairRequirementListist != '' && opt.jobFairRequirementList != 'undefined') {
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.jobFairRequirementList.length +'</div></td>';
+           		   } else {
+						result = result +"<td><div>-----</div></td>";
+           	       }
+		           		return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "venue",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+           		   if(opt.venue != null && opt.venue != '' && opt.venue != 'undefined'){
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.venue+'</div></td>';
+           		   } else {
+						result = result +"<td><div>-----</div></td>";
+           	       }
+		                return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "status",
+	            "render": function ( data, type, opt, meta ) {
+            		var result = "";
+     	        	result = result + '<td><div  class="tbldata-dotdot-sm">';
+     	        	result += '<select class="fairStatus">';
+     	        	result += '<option data-id='+opt.id+' value="1" ' + (opt.status == 1?'selected=""':'') + '>OPEN</option>';
+     	        	result += '<option data-id='+opt.id+' value="0" ' + (opt.status == 0?'selected=""':'') + '>CLOSE</option>';
+     	        	result += '</select>';
+     	        	result += '</div></td>';
+	                return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "actions",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            	var result = '<div class=" widthIcon widthIcon-three">';
+	            	result +='	<div class="text-center">';
+	            	result +='		<a href="' + sourceleadUrl + '/editJobFair?uuid=' + opt.uuid + '" title="Edit Fair" onclick="" class="add-applicant">';
+	            	result +='			<i class="fa fa-edit"></i>';
+	            	result +='		</a>';
+	            	result +='	</div>';
+	            	result +='	<div class="text-center">';
+	            	result +='		<a href="javascript:void(0)" title="Delete Fair" onclick="showChangeJobFairStatusPopup(' + opt.id + ', -1)">';
+	            	result +='		<i class="fa fa-trash-o"></i>';
+	            	result +='		</a>';
+	            	result +='	</div>';
+	            	result +='</div>';
+           	        return result;
+	             }
+	        }
+           ],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	/* "aaSorting": [[10,'desc']], */
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"createdRow": function ( row, data, index ) {
+	    		row.setAttribute('id',"jobFair_"+data.id);
+    	    },
+	    	"initComplete": function( settings, json ) {
+	    		 $('#dataTableSearch').removeAttr('disabled');
+	    	},
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     },
+	     drawCallback: function(){
+   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+   	    	jobFairSearchHighlight();
+   	      });
+   	   		updateFairStatusEvents();
+   	   	}
+  
+   });
+   
+  
+   $("#jobFairPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+   $("input[type=search]").hide();
+  
+   $("#dataTableSearch").keyup(function(e) {
+   	   if(e.which === 13) {
+   		 requirementList('list',sourceleadUrl);
+   		jobFairSearchHighlight();
+   	   }
+   	});
+   /* updateFairStatusEvents(); */
+ }
+function updateFairStatusEvents() {
+	$(".fairStatus").each(function() {
+		$(this).on('focusin', function(){
+		    /* console.log("Saving value " + $(this).val()); */
+		    $(this).data('prev_value', $(this).val());
+		}).on('change', function(){
+			var jobFairId = $(this).find("option:selected").data("id");
+		    var prev = $(this).data("prev_value");
+		    /* var current = $(this).val();
+		    console.log("Prev value " + prev);
+		    console.log("New value " + current); */
+		    showChangeJobFairStatusPopup(jobFairId, $(this).val(), prev, $(this));
+		});
+	});
+}
 </script>
 
 <script>
  function jobSearchHighlight(){
+	 setTimeout(function () {
+ 		var body = $( table.table().body() );
+	        body.unhighlight();
+	        body.highlight( $("#dataTableSearch").val() );   
+			
+			}, 1000); 
+ }
+ function jobFairSearchHighlight(){
 	 setTimeout(function () {
  		var body = $( table.table().body() );
 	        body.unhighlight();

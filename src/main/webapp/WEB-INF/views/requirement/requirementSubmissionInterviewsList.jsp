@@ -166,7 +166,25 @@ function getInterviewRatings(interviewId){
 		        		   $.each(details, function( k, v ) {
 		    	    		   var value = '';
 		    	    		   if(v['label'].trim() === "Rating"){
-		    	    			   value = v['value'];
+		    	    			   
+		    	    			   switch (v['value']) {
+		    	    			    case 'Inadequate':
+		    	    			    	value = 1;
+		    	    			        break;
+		    	    			    case 'Adequate':
+		    	    			    	value = 2;
+		    	    			        break;
+		    	    			    case 'Good':
+		    	    			    	value = 3;
+		    	    			        break;
+		    	    			    case 'Excellent':
+		    	    			    	value = 4;
+		    	    			        break;
+		    	    			    case 'Outstanding':
+		    	    			    	value = 5;
+		    	    			        break;
+		    	    			    default: value = 0;
+		    	    			}
 		    	    			   for (var j=0; j<5; j++){
 		    	    				   var active = '';
 		    	    				   if(value > j){

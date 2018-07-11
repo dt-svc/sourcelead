@@ -32,14 +32,18 @@ import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.JobBoard;
 import com.bis.sourcelead.entity.JobBoardData;
+import com.bis.sourcelead.entity.JobFair;
+import com.bis.sourcelead.entity.JobFairRequirements;
 import com.bis.sourcelead.entity.OrgJobBoardAccount;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
@@ -62,6 +66,9 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
+
+import static org.mockito.Matchers.startsWith;
+
 import java.io.StringReader;
 import java.util.TimeZone;
 import javax.xml.parsers.DocumentBuilder;
@@ -702,6 +709,69 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		return query.list();
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getJobFairDaysListByOrgLocationIDAndUserId(Long orgLocationId, String userType,
+			Long userId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			User user = userDao.getUserById(userId);
+			Map<String, Object> params = new HashMap<String, Object>();
+
+			/* String subQueryRole = ""; */
+			String from = "from Requirement requirement left join fetch requirement.parentRequirement ";
+			String subQuery = "";
+			if (!StringUtils.equalsIgnoreCase(userType, "ADMIN")) {
+
+				String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId and rah.status <> '0')   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT'  ";
+				params.put("userId", userId);
+
+				String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+				params.put("managerUserId", userId);
+
+				String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+				params.put("userId", userId);
+
+				if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "") {
+					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ")  or (" + subQuery3 + ") ) ";
+					params.put("orgLocationId", orgLocationId);
+				}
+			} else {
+				String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT' and rah.status <> '0') ";
+
+				String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+				params.put("managerUserId", userId);
+
+				if (subQuery1 != "" || subQuery2 != "") {
+					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ")) ";
+					params.put("orgLocationId", orgLocationId);
+				}
+			}
+
+			subQuery += " and requirement.walkIn=:isWalkIn";
+			params.put("isWalkIn", true);
+
+			String whereCondition = subQuery;
+			Query query = session.createQuery(from + " " + whereCondition + " ORDER BY requirement.id DESC");
+			query.setMaxResults(10);
+			for (String str : query.getNamedParameters()) {
+				if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")) {
+					query.setLong(str, (long) params.get(str));
+				} else {
+					query.setParameter(str, params.get(str));
+				}
+
+			}
+			return query.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1382,9 +1452,12 @@ public class RequirementDaoImpl implements RequirementDao {
 		Date todayDate = c.getTime();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		String startTimeTS = Constants.TZ_DF.format(todayDate);
+		/*String startTimeTS = Constants.TZ_DF.format(todayDate);
 		String startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
-		Date startUTCDate = dateFormat.parse(startDateString);
+		Date startUTCDate = dateFormat.parse(startDateString);*/
+		
+		//@Mahaveer Manoj commented above code for testing jobFairs, uncomment this in commit
+		Date startUTCDate = todayDate;
 
 		int hrs;
 		switch (numberOfDays) {
@@ -2682,11 +2755,358 @@ public class RequirementDaoImpl implements RequirementDao {
 			return response;
 		
 	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public long saveJobFair(JobFair jobFair) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(jobFair);
+			return jobFair.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	@Transactional
+	public JobFair getJobFair(long jobFairId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(JobFair.class, jobFairId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	@Transactional
+	public JobFair getJobFairByUUID(String uuid) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from JobFair jobFair where jobFair.uuid=:uuid";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("uuid", uuid);
+			List<JobFair> jobFairList = queryObj.list();
+			if (jobFairList != null && !jobFairList.isEmpty())
+				return jobFairList.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ResponseList<JobFair> getJobFairList(JobFairDTO jobFairDTO, boolean includeInactive) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<JobFair> jobFairList = null;
+			List<Long> countlist = null;
+//			Integer filterCount = 0;
+			ResponseList<JobFair> response = new ResponseList<>();
+			StringBuilder query1 = new StringBuilder("");
+			if(jobFairDTO.getSearchValue() !=null && !"".equalsIgnoreCase(jobFairDTO.getSearchValue())) {
+			 query1.append("and (jobFair.name like '%" + jobFairDTO.getSearchValue() + "%' ")
+				   .append("OR jobFair.venue like '%" + jobFairDTO.getSearchValue() + "%' )");
+			}
+			
+			String query = "from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
+			Query queryObj = session.createQuery(query + query1);
+			jobFairList = queryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).setFirstResult(jobFairDTO.getStart()).setMaxResults(jobFairDTO.getLength()).list();
+			
+			String  countQuery = "select count(*) from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
+			Query countQueryObj = session.createQuery(countQuery + query1); 
+			countlist = countQueryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).list();
+			
+			int totalCount = 0;
+			if (jobFairDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+			} 
+//			if(query1.toString() != null && !query1.toString().isEmpty()){
+//				response.setRecordsFiltered(filterCount);
+//			}else {
+//				response.setRecordsFiltered(totalCount);
+//			}
+			response.setRecordsFiltered(totalCount);
+			response.setRecordsTotal(totalCount);
+			response.setData(jobFairList);
+			
+			return response;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public boolean changeJobFairStatus(Long jobFairId, int status) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			JobFair jobFair = session.get(JobFair.class, jobFairId);
+			if (jobFair != null) {
+				jobFair.setStatus(status);
+				session.saveOrUpdate(jobFair);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	
 
+	@Override
+	@Transactional
+	public long saveJobFairRequirements(JobFairRequirements jobFairRequirements) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(jobFairRequirements);
+			return jobFairRequirements.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	@Override
+	@Transactional
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat) {
+		try {
+			List<String> finalDatesList = new LinkedList<>();
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			// Checking for jobFairRequirements with no date selected, set all dates in between startDate and endDate
+			String query2 = "select jobFair.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirementList where jobFair.status in (1) and jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationsId and (jobFairRequirementList.fairDates = '' or jobFairRequirementList.fairDates = null)";
+			Query queryObj2 = session.createQuery(query2);
+			queryObj2.setLong("userId", userId);
+			queryObj2.setLong("orgLocationsId", orgLocationId);
+			List<Long> jobFairIdList = queryObj2.list();
+			if (jobFairIdList != null && !jobFairIdList.isEmpty()) {
+				SimpleDateFormat dateFormatSDF = new SimpleDateFormat(dateFormat);
+				for (Long jobFairId : jobFairIdList) {
+					JobFair jobFair = getJobFair(jobFairId);
+					if (jobFair != null) {
+						Calendar startDate = Calendar.getInstance();
+						startDate.setTime(jobFair.getStartDate());
+
+						Calendar endDate = Calendar.getInstance();
+						endDate.setTime(jobFair.getEndDate());
+						endDate.roll(Calendar.DATE, true);
+						/*System.out.println("Start Date : " + startDate.getTime() + " ,End Date : " + endDate.getTime());*/
+
+						while (startDate.before(endDate)) {
+							finalDatesList.add(dateFormatSDF.format(startDate.getTime()));
+							/*System.out.println("Date : " + startDate.getTime() + ", Converted Date : " + startDate.getTime().toString());*/
+//							startDate.roll(Calendar.DATE, true);
+							startDate.add(Calendar.DATE, 1);
+						}
+					}
+				}
+			}
+			
+			// Checking jobFairRequirements with dates selected
+			String query1 = "select jobFairRequirementList.fairDates from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirementList where jobFair.status in (1) and jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationsId";
+			Query queryObj1 = session.createQuery(query1);
+			queryObj1.setLong("userId", userId);
+			queryObj1.setLong("orgLocationsId", orgLocationId);
+			List<String> datesList = queryObj1.list();
+			for (String date : datesList) {
+				finalDatesList.add(date);
+			}
+
+			
+			if (finalDatesList != null && !finalDatesList.isEmpty() && !finalDatesList.get(0).isEmpty()) {
+				return finalDatesList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public JobFairRequirements getJobFairRequirementsById(Long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(JobFairRequirements.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	@Transactional
+	public long getJobFairRequirementsIdByJobFairIdAndRequirementId(long jobFairId, long requirementId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select jobFairRequirements.id from JobFairRequirements jobFairRequirements where jobFairRequirements.jobFair.id=:jobFairid and jobFairRequirements.requirement.id=:requirementId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("jobFairid", jobFairId);
+			queryObj.setLong("requirementId", requirementId);
+			/*List<JobFairRequirements> jobFairRequirementList = queryObj.list();
+			if (jobFairRequirementList != null && !jobFairRequirementList.isEmpty()) {
+				return jobFairRequirementList.get(0).getId();
+			}*/
+			List<Long> jobFairRequirementIdList = queryObj.list();
+			if (jobFairRequirementIdList != null && !jobFairRequirementIdList.isEmpty()) {
+				return jobFairRequirementIdList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	@Transactional
+	public List<JobFair> getJobFairListByRequirementId(Long requirementId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select jobFair from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements where jobFair.status in (1) and jobFairRequirements.requirement.id = :requirementId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("requirementId", requirementId);
+			List<JobFair> jobFairList = queryObj.list();
+			if (jobFairList != null && !jobFairList.isEmpty())
+				return jobFairList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public List<Requirement> getRequirementsByJobFairDate(long userId, long orgLocationId, String dateFormat, String selectedDate) {
+		List<Requirement> requirementList = new LinkedList<>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Set<Long> requirementIds = new HashSet<>();
+			
+			String year = "", month = "", date = "";
+			if (selectedDate != null && !selectedDate.isEmpty()) {				
+				switch (dateFormat) {
+				case "yyyy-MM-dd":
+					year = selectedDate.split("-")[0];
+					month = selectedDate.split("-")[1];
+					date = selectedDate.split("-")[2];
+					break;
+				case "dd-MM-yyyy":
+					year = selectedDate.split("-")[2];
+					month = selectedDate.split("-")[1];
+					date = selectedDate.split("-")[0];
+					break;
+				case "MM-dd-yyyy":
+					year = selectedDate.split("-")[2];
+					month = selectedDate.split("-")[0];
+					date = selectedDate.split("-")[1];
+					break;
+				case "yyyy-dd-MM":
+					year = selectedDate.split("-")[0];
+					month = selectedDate.split("-")[2];
+					date = selectedDate.split("-")[1];
+					break;
+				default:
+					break;
+				}
+			}
+			String finalDate = year + "-" + month + "-" + date;
+			// getting the jobFairRequirements with no dates selected
+			String query1 = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements where jobFair.status in (1) and jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId and jobFair.startDate <= '" + finalDate + "' and jobFair.endDate >= '" + finalDate + "' and (jobFairRequirements.fairDates='' or jobFairRequirements.fairDates = null)";
+			requirementList = getRequirementsForSelectedDate(session, userId, orgLocationId, query1, requirementIds, requirementList);
+
+			// getting the jobFairRequirements with selected date
+			String query = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements where jobFair.status in (1) and jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId and jobFairRequirements.fairDates like '%"
+					+ selectedDate + "%'";
+			requirementList = getRequirementsForSelectedDate(session, userId, orgLocationId, query, requirementIds, requirementList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return requirementList;
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Requirement> getRequirementsForSelectedDate(Session session, long userId, long orgLocationId, String query,
+			Set<Long> requirementIds, List<Requirement> requirementList) {
+		try {
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("userId", userId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			List<Long> idList = queryObj.list();
+			for (Long id : idList) {
+				JobFairRequirements jobFairRequirements = getJobFairRequirementsById(id);
+				if (jobFairRequirements != null) {
+					boolean addFlag = true;
+					Requirement requirement = jobFairRequirements.getRequirement();
+					List<JobFair> jobFairList = new LinkedList<>();
+					if (!requirementIds.contains(requirement.getId())) {
+						requirementIds.add(requirement.getId());
+						jobFairList = new LinkedList<>();
+					} else {
+						jobFairList = requirement.getJobFairList();
+						addFlag = false;
+					}
+
+					JobFair jobFair = jobFairRequirements.getJobFair();
+					// System.out.println("JOBFAIR_ID : " + jobFair.getId() + ":" +
+					// jobFair.getName());
+					jobFairList.add(jobFair);
+
+					requirement.setJobFairList(jobFairList);
+					if (requirement != null && addFlag) {
+						requirementList.add(requirement);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return requirementList;
+	}
+	
+	@Override
+	@Transactional
+	public List<Long> getJobFairRequirementsIdListByRequirementId(long requirementId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select jobFairRequirements.id from JobFairRequirements jobFairRequirements where jobFairRequirements.requirement.id=:requirementId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("requirementId", requirementId);
+			List<Long> jobFairRequirementsIdListList = queryObj.list();
+			return jobFairRequirementsIdListList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public void deleteJobFairRequirement(long jobFairRequirementId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			JobFairRequirements jobFairRequirements = session.get(JobFairRequirements.class, jobFairRequirementId);
+			if(jobFairRequirements!=null) {
+				session.delete(jobFairRequirements);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	public static void main(String[] args) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		System.out.println(sdf.format(new Date(1519216393485L)));
+	}
 
 }
-
-
-
-

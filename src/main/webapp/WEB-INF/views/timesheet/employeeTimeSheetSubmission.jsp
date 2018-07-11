@@ -54,7 +54,6 @@
 						                        <th class="timeTabFix">Status</th>              
 						                    </tr>  
 						                     <c:set var="leaveIndex" value="0"/>
-						                     <c:set var="entryIndex" value="0"/>
 						                     <c:if test="${!empty employeeTimesheetEntryDetailsDTO.empLeaveMap}">
 						                      <c:forEach var="empLeaveMap" items="${employeeTimesheetEntryDetailsDTO.empLeaveMap}" varStatus="empLeaveMapCount">
 						                      <c:set var="leaveIndex" value="${leaveIndex+1}"/>
@@ -83,7 +82,6 @@
 	                                                               </span>
 	                                                             </div>
 											                   </c:if>
-													           <c:set var="entryIndex" value="${entryIndex+1}"/>
 											              </td>
 								                      </c:forEach>
 								                      <td  class="timeTabFix" >
@@ -471,8 +469,8 @@
 													    </tr>
 												    </c:forEach>
 												 </c:if>
-												  <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}" varStatus="attCount">
-												      <c:set var="attCount" value="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 0}"/>
+												  <c:set var="attCount" value="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 0}"/>
+												  <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}" >
 												      <c:set var="projAttAvailable" value="0"/>
 												      <c:if test="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
 													      <c:forEach var="attachment" items="${employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
@@ -1104,54 +1102,55 @@ function withdrawMyTimesheet(projectMemberId){
    function addOrRemoveTimeSheetCommentRow(pmId) { 
 	   var projectMemberId = $("#"+pmId).val();
 	   if(projectMemberId != null && projectMemberId != '' && projectMemberId != 'undefined' && ($("#existedAttProjectMember"+projectMemberId).val() == '' || $("#existedAttProjectMember"+projectMemberId).val() == null ||  $("#existedAttProjectMember"+projectMemberId).val() == 'undefined')){
-		   var tbl = document.getElementById("attTimesheet");
-			var rowNum = $("#maxAttRowNumber").val();
-			var maxRowNum = parseInt(rowNum);
-		   
-			$("#maxAttRowNumber").val(maxRowNum+1); 
-			var row = tbl.insertRow(maxRowNum);
-			row.setAttribute("id", "timesheetAttRow"+maxRowNum);
-			
-			var projectMemberId = $("#"+pmId).val();
-			var projectName = $("#"+pmId+" :selected").text();
-			
-			var cell0 = row.insertCell(0);
-			var divadcmTd0Str = document.getElementById("divComentTd0").innerHTML;
-			divadcmTd0Str = divadcmTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadcmTd0Str = divadcmTd0Str.replace(/ATTACHMENTPROJECTNAME/g,projectName);
-			divadcmTd0Str = divadcmTd0Str.replace(/ATTACHMENTEXISTEDCLASS/g,"existedAttProjectMembers");
-			divadcmTd0Str = divadcmTd0Str.replace(/ATTACHMENTPMID/g,projectMemberId);
-			divadcmTd0Str = divadcmTd0Str.replace(/disabled/g, ''); 
-			cell0.innerHTML = divadcmTd0Str;
-			
-			var cell1 = row.insertCell(1);
-			var divadcmTd1Str = document.getElementById("divComentTd1").innerHTML;
-			divadcmTd1Str = divadcmTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadcmTd1Str = divadcmTd1Str.replace(/disabled/g, ''); 
-			cell1.innerHTML = divadcmTd1Str;
-			
-			var cell2 = row.insertCell(2);
-			var divadcmTd2Str = document.getElementById("divComentTd2").innerHTML;
-			divadcmTd2Str = divadcmTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadcmTd2Str = divadcmTd2Str.replace(/disabled/g, ''); 
-			cell2.innerHTML = divadcmTd2Str;
-			
-			
-		    <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
-			    if('${statusEntry.key}' == projectMemberId){
-			    	var timesheetDocumentRequired = '${statusEntry.value.timesheetDocumentRequired}';
-			    	if(timesheetDocumentRequired == "true"){
-			    		$("#dbIsTimesheetAttachmentRequired"+maxRowNum).val('1'); 
-			    		$("#isTimesheetAttachmentRequired"+maxRowNum).val('Y'); 
-			    		$('#timesheetAttValidationInput'+maxRowNum).attr("data-validation","required"); 
-			    	}else{
-			    		$("#dbIsTimesheetAttachmentRequired"+maxRowNum).val('0');
-			    		$("#isTimesheetAttachmentRequired"+maxRowNum).val('N'); 
-			    		$('#timesheetAttValidationInput'+maxRowNum).removeAttr("data-validation"); 
-			    	}
-			    }
-             </c:forEach>
+		    var tbl = document.getElementById("attTimesheet");
+		    if(tbl != null && tbl !='' && tbl != 'undefined'){
+		    	var rowNum = $("#maxAttRowNumber").val();
+				var maxRowNum = parseInt(rowNum);
 			   
+				$("#maxAttRowNumber").val(maxRowNum+1); 
+				var row = tbl.insertRow(maxRowNum);
+				row.setAttribute("id", "timesheetAttRow"+maxRowNum);
+				
+				var projectMemberId = $("#"+pmId).val();
+				var projectName = $("#"+pmId+" :selected").text();
+				
+				var cell0 = row.insertCell(0);
+				var divadcmTd0Str = document.getElementById("divComentTd0").innerHTML;
+				divadcmTd0Str = divadcmTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divadcmTd0Str = divadcmTd0Str.replace(/ATTACHMENTPROJECTNAME/g,projectName);
+				divadcmTd0Str = divadcmTd0Str.replace(/ATTACHMENTEXISTEDCLASS/g,"existedAttProjectMembers");
+				divadcmTd0Str = divadcmTd0Str.replace(/ATTACHMENTPMID/g,projectMemberId);
+				divadcmTd0Str = divadcmTd0Str.replace(/disabled/g, ''); 
+				cell0.innerHTML = divadcmTd0Str;
+				
+				var cell1 = row.insertCell(1);
+				var divadcmTd1Str = document.getElementById("divComentTd1").innerHTML;
+				divadcmTd1Str = divadcmTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divadcmTd1Str = divadcmTd1Str.replace(/disabled/g, ''); 
+				cell1.innerHTML = divadcmTd1Str;
+				
+				var cell2 = row.insertCell(2);
+				var divadcmTd2Str = document.getElementById("divComentTd2").innerHTML;
+				divadcmTd2Str = divadcmTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divadcmTd2Str = divadcmTd2Str.replace(/disabled/g, ''); 
+				cell2.innerHTML = divadcmTd2Str;
+				
+				
+			    <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
+				    if('${statusEntry.key}' == projectMemberId){
+				    	var timesheetDocumentRequired = '${statusEntry.value.timesheetDocumentRequired}';
+				    	if(timesheetDocumentRequired == "true"){
+				    		$("#dbIsTimesheetAttachmentRequired"+maxRowNum).val('1'); 
+				    		$("#isTimesheetAttachmentRequired"+maxRowNum).val('Y'); 
+				    		$('#timesheetAttValidationInput'+maxRowNum).attr("data-validation","required"); 
+				    	}else{
+				    		$("#dbIsTimesheetAttachmentRequired"+maxRowNum).val('0');
+				    		$("#isTimesheetAttachmentRequired"+maxRowNum).val('N'); 
+				    		$('#timesheetAttValidationInput'+maxRowNum).removeAttr("data-validation"); 
+				    	}
+				    }
+	             </c:forEach>
+		    }
 	   }
 	   var existedProjectMembers = [];
 	   $('.existedProjectMembers').each(function() {

@@ -2,8 +2,7 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
  <!-- Applicant Authorization -->
-      <div class="col-md-12 mb pdRight pdLeft">
-        <div class="dashboardWidget-new">
+        <div class="dashboard-widget">
           <h4 class="clearfix">Applicant Permission
           </h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
@@ -22,7 +21,6 @@
               <div id="requestSent" class="tab-pane fade"></div>
             </div> 
           </div>
-        </div>
       </div>
 <!-- Applicant Authorization Ends --> 
 <script>
