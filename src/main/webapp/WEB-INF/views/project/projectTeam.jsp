@@ -507,12 +507,14 @@ function filterStatus() {
 			                     }
 		                	
 		                }else{
-		                	result = result + '<td><div class="tblminwidth-50">---</div></td>';
+		                	 result = result + '<td><div class="tblminwidth-50">';
+			                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
+			                		 result = result + '<font color="green">&nbsp;Active</font>';	 
+			                	 }else{
+			                		 result = result + '<font color="red">&nbsp;In-Active</font>';	
+			                	 }
+		                	 result = result +'</div></td>';
 		                }
-		                
-		               
-	                    	 
-		                
 		                
 		                
 		                result = result + '	 </tr>';
