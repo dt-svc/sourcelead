@@ -879,6 +879,7 @@ function editEducationDEtailsByRowId(id){
         			$('#eduName option[value="'+data.name+'"]').prop("selected", true);
         	        $('#eduName').trigger("chosen:updated");
         			$('#scoreEducationType').val(data.gradeType);
+        			 $('#scoreEducationType').trigger("chosen:updated");
         			$('#immigrationEduStartDate12').val(data.startDateStr);
         			$('#immigrationEduEndDate').val(data.endDateStr);
         			if(data.educationFileName != null){

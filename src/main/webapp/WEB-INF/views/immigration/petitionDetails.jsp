@@ -295,9 +295,8 @@
 									class="text-danger pull-left" id="man1">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
-									<select class="chosen-select form-control" name="candidateId" field-name="Associate" data-validation="required"
-										id="candidateId" placeholder="Select Beneficiary" onchange="getCandidatesResumeDetailsById($(this).val());updateCandiateInfo($(this));">
-									</select>
+									<input type="text" class="form-control" name="candidateId" field-name="Associate" data-validation="required"
+										id="candidateId" placeholder="Select Beneficiary" onkeyup="getCandidatesByOrgLocation(${immigrationDTO.candidateId});" />
 								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation(${immigrationDTO.candidateId});"><i class="fa fa-refresh "></i></span>
 									
 								</div>
@@ -323,9 +322,8 @@
 									class="text-danger pull-left" id="man1">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
-									<select class="chosen-select form-control" name="candidateId" field-name="Associate" data-validation="required"
-										id="candidateId" placeholder="Select Beneficiary" onchange="getCandidatesResumeDetailsById($(this).val());updateCandiateInfo($(this));">
-									</select>
+									<input type="text" class="form-control" name="candidateId" field-name="Associate" data-validation="required"
+										id="candidateId" placeholder="Select Beneficiary" onkeyup="getCandidatesByOrgLocation(${immigrationDTO.candidateId});" />
 								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation(${immigrationDTO.candidateId});"><i class="fa fa-refresh "></i></span>
 									
 								</div>
@@ -864,15 +862,100 @@
 <script>
 
 var candidateByOrgObject = {};
-function getCandidatesByOrgLocation(candidateId){
+/*$("#candidateId").autocomplete({ 
+	minLength: 2, 
+	source : function(request, response) {
+		$.ajax({
+			url :sourceleadUrl+immiModulePath+ "/getAllActiveCandidatesByName",
+			type : "GET",
+			data : {
+				name : request.term
+			},
+			dataType : "json",
+			success : function(data) {
+				response(data);
+				// console.log(data)
+			}
+		});
+	},
+	select: function( event, ui ) {
+		$("#candidateId").val(ui.item.label);
+		return false;
+	}
+}); */
+
+
+/* function getCandidatesByOrgLocation(candidateId){
+	alert("hi");
 	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 	var locationId = responderLocationId;
 	}else{
 	var locationId ='${SourceLeadWeb_orgLocations.id}';
 	}
 	// $("#loadingPetitionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
-		 $.ajax({
+	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation"; */
+	 $("#candidateId").autocomplete({ 
+			minLength: 2, 
+			source : function(request, response) {
+				$.ajax({
+					url :sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation",
+					type : "GET",
+					data : {
+						name : request.term,
+						locationIdVal : "${SourceLeadWeb_orgLocation.isLawFirm == 'Y' ? "+responderLocationId+" : ''}"
+					},
+					dataType : "json",
+					success : function(data) {
+						response(data);
+					}
+				});
+			},
+			select: function( event, ui ) {
+				$("#candidateId").val(ui.item.label);
+				 $.ajax({
+				    	type: "GET",
+				        url: sourceleadUrl+immiModulePath+"/getCandidateById?id="+ui.item.value, 
+				        success: function(candidateObj) {
+				        	$("#firstName").val(candidateObj.firstName);
+				    		$("#lastName").val(candidateObj.lastName);
+				    		$("#middleName").val(candidateObj.middleName);
+				    		$("#email").val(candidateObj.email);
+				    		$("#mobile").val(candidateObj.mobilePhone);
+				    		$("#alternateMobile").val(candidateObj.alternateMobilePhone);
+				    		
+				    		// gender radio button  
+				    		$('input[name="gender"]').prop('checked', false); // reset the value 
+				    		if(typeof candidateObj.gender !='undefined' && candidateObj.gender!=''){  // set the value if not empty
+				    		$('input:radio[name=gender][value='+candidateObj.gender+']').click();
+				    		}
+				    		//  radio button  maritalStatus
+				    		$('input[name="maritalStatus"]').prop('checked', false); // reset the value 
+				    	
+				    		if(typeof candidateObj.maritalStatus !='undefined' && candidateObj.maritalStatus!=''){ // set the value if not empty
+				    		$('input:radio[name=maritalStatus][value='+candidateObj.maritalStatus+']').click();
+				    		}
+				    		// set the residenc details
+				    		$("#country").val(candidateObj.country);
+				    		$("#state").val(candidateObj.state);
+				    		$("#city").val(candidateObj.city);
+				    		$("#address").val(candidateObj.address);
+				    		$("#zipcode").val(candidateObj.zipcode);
+				    		$("#location").val(candidateObj.location);
+				    		$("#experienceYears").val(candidateObj.experienceYears);
+				    		$("#experienceMonths").val(candidateObj.experienceMonths);
+				    		
+				    		// setting the date for the date of birth field.
+				    		if(candidateObj.dateOfBirth != null && typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
+				    			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
+				    		   $("#birthDate").val(dateOfBirth);
+				    		}
+				        }
+				 });
+				return false;
+			}
+	 });
+			
+		 /* $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation?locationId="+locationId, 
 		        success: function(data) {
@@ -888,11 +971,11 @@ function getCandidatesByOrgLocation(candidateId){
 		            	 }
 		            }
 		            $('#candidateId').trigger("chosen:updated"); 
-		           /*  updateCandiateInfo(); */
+		           /*  updateCandiateInfo(); 
 		            $("#loadingPetitionDiv").removeAttr("style"); 
 		   }
-   });
-}
+   }); */
+/* } */
 
 function deleteResumeDoc(){
 	$("#docNameDiv").hide();
@@ -1375,42 +1458,44 @@ function  removeValidationAttorneyContact() {
 		alert(this.val()) 
 	 }); */
 	 //$( "#myselect option:selected" ).val()
-	 function updateCandiateInfo(obj){
-		var candidateObj=candidateByOrgObject[obj.val()];
-		$("#firstName").val(candidateObj.firstName);
-		$("#lastName").val(candidateObj.lastName);
-		$("#middleName").val(candidateObj.middelName);
-		$("#email").val(candidateObj.email);
-		$("#mobile").val(candidateObj.mobilePhone);
-		$("#alternateMobile").val(candidateObj.alternateMobilePhone);
-		
-		// gender radio button  
-		$('input[name="gender"]').prop('checked', false); // reset the value 
-		if(typeof candidateObj.gender !='undefined' && candidateObj.gender!=''){  // set the value if not empty
-		$('input:radio[name=gender][value='+candidateObj.gender+']').click();
-		}
-		//  radio button  maritalStatus
-		$('input[name="maritalStatus"]').prop('checked', false); // reset the value 
-	
-		if(typeof candidateObj.maritalStatus !='undefined' && candidateObj.maritalStatus!=''){ // set the value if not empty
-		$('input:radio[name=maritalStatus][value='+candidateObj.maritalStatus+']').click();
-		}
-		// set the residenc details
-		$("#country").val(candidateObj.country);
-		$("#state").val(candidateObj.state);
-		$("#city").val(candidateObj.city);
-		$("#address").val(candidateObj.address);
-		$("#zipcode").val(candidateObj.zipCode);
-		$("#location").val(candidateObj.location);
-		$("#experienceYears").val(candidateObj.experienceYears);
-		$("#experienceMonths").val(candidateObj.experienceMonths);
-		
-		// setting the date for the date of birth field.
-		if(candidateObj.dateOfBirth != null && typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
-			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
-		   $("#birthDate").val(dateOfBirth);
-		}
-	 }
+	 /* function updateCandiateInfo1(candidateObj){
+		 alert("inside function");
+		        	alert(candidateObj.firstName);
+		        	$("#firstName").val(candidateObj.firstName);
+		    		$("#lastName").val(candidateObj.lastName);
+		    		$("#middleName").val(candidateObj.middleName);
+		    		$("#email").val(candidateObj.email);
+		    		$("#mobile").val(candidateObj.mobilePhone);
+		    		$("#alternateMobile").val(candidateObj.alternateMobilePhone);
+		    		
+		    		// gender radio button  
+		    		$('input[name="gender"]').prop('checked', false); // reset the value 
+		    		if(typeof candidateObj.gender !='undefined' && candidateObj.gender!=''){  // set the value if not empty
+		    		$('input:radio[name=gender][value='+candidateObj.gender+']').click();
+		    		}
+		    		//  radio button  maritalStatus
+		    		$('input[name="maritalStatus"]').prop('checked', false); // reset the value 
+		    	
+		    		if(typeof candidateObj.maritalStatus !='undefined' && candidateObj.maritalStatus!=''){ // set the value if not empty
+		    		$('input:radio[name=maritalStatus][value='+candidateObj.maritalStatus+']').click();
+		    		}
+		    		// set the residenc details
+		    		$("#country").val(candidateObj.country);
+		    		$("#state").val(candidateObj.state);
+		    		$("#city").val(candidateObj.city);
+		    		$("#address").val(candidateObj.address);
+		    		$("#zipcode").val(candidateObj.zipcode);
+		    		$("#location").val(candidateObj.location);
+		    		$("#experienceYears").val(candidateObj.experienceYears);
+		    		$("#experienceMonths").val(candidateObj.experienceMonths);
+		    		
+		    		// setting the date for the date of birth field.
+		    		if(candidateObj.dateOfBirth != null && typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
+		    			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
+		    		   $("#birthDate").val(dateOfBirth);
+		    		}
+	 } */
+	 
 	 $(function() {
 			$("#uploadBtn").change(function() {
 				fileUpload("uploadBtn", "resumes", "petitionDetailsForm","resumeInfo");

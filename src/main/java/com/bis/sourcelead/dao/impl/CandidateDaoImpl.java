@@ -29,6 +29,7 @@ import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -989,6 +990,15 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.status ='1' and candidate.isAssociate = 'Y' ORDER BY candidate.id DESC";  
         return  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long orgLocationId, String name) {
+		Session session = this.sessionFactory.getCurrentSession(); // below query is used for auto populate in UI.
+		String query = "SELECT LOWER(CONCAT(FIRST_NAME,' ',LAST_NAME,'(',EMAIL,')')) as label, ID as value FROM CANDIDATE WHERE STATUS ='1' AND CONSULTANT_USER_ID IS NOT NULL AND ORG_LOCATION_ID =:orgLocationId AND ( EMAIL LIKE :name  OR LOWER(CONCAT(FIRST_NAME,LAST_NAME)) LIKE :name OR LOWER(CONCAT(FIRST_NAME,' ',LAST_NAME)) LIKE :name) ORDER BY FIRST_NAME";
+		return session.createSQLQuery(query).setString("name", "%"+name+"%").setLong("orgLocationId", orgLocationId).setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 	}
 
 	@Override
