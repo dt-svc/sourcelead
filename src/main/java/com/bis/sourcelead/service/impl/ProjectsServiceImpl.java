@@ -1360,7 +1360,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    projectsDTO.setIsTicketNumberRequired(projects.getIsTicketNumberRequired());
 	    if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 	    	 ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
-	    	 if(StringUtils.isNotBlank(pc.getIsProjectShared()) && pc.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+	    	 if(pc != null && StringUtils.isNotBlank(pc.getIsProjectShared()) && pc.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 	    		 projectsDTO.setIsProjectShared(projects.getIsProjectShared());
 		    	 projectsDTO.setSharedProjectCreatedOrgLocId(loginOrgLocations.getId());
 	    	 }
