@@ -635,42 +635,43 @@ function toggleAssociates(source) {
 	function addRequestedResources() {
 		var projectStartDate = '${projectStartDate}';
 		var projectEndDate = '${projectEndDate}';
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 
 		if(projectStartDate == ""){
 		  projectStartDate = $("#startDateStr").val();
+		  var projectStartDateString = projectStartDate.split("-");
+			
+			if(locationDate.match("yyyy-MM-dd")){
+				projectStartDate = projectStartDateString[0]+"-"+projectStartDateString[1]+"-"+projectStartDateString[2];
+		    }if(locationDate.match("dd-MM-yyyy")){
+		    	projectStartDate = projectStartDateString[2]+"-"+projectStartDateString[1]+"-"+projectStartDateString[0];
+		    }if(locationDate.match("MM-dd-yyyy")){
+		    	projectStartDate = projectStartDateString[1]+"-"+projectStartDateString[2]+"-"+projectStartDateString[0];
+		    }if(locationDate.match("yyyy-dd-MM")){
+		    	projectStartDate = projectStartDateString[0]+"-"+projectStartDateString[2]+"-"+projectStartDateString[1];
+		    }
+		  
 		}
+		
 		if(projectEndDate == ""){
 		  projectEndDate = $("#endDateStr").val();
+		  
+		    if(projectEndDate != null && projectEndDate != 'undefined' && projectEndDate != ''){
+		    	  var projectEndDateString = projectEndDate.split("-");
+		  		
+	    	   if(locationDate.match("yyyy-MM-dd")){
+	    		   projectEndDate = projectEndDateString[0]+"-"+projectEndDateString[1]+"-"+projectEndDateString[2];
+		  	    }if(locationDate.match("dd-MM-yyyy")){
+		  	    	projectEndDate = projectEndDateString[2]+"-"+projectEndDateString[1]+"-"+projectEndDateString[0];
+		  	    }if(locationDate.match("MM-dd-yyyy")){
+		  	    	projectEndDate = projectEndDateString[1]+"-"+projectEndDateString[2]+"-"+projectEndDateString[0];
+		  	    }if(locationDate.match("yyyy-dd-MM")){
+		  	    	projectEndDate = projectEndDateString[0]+"-"+projectEndDateString[2]+"-"+projectEndDateString[1];
+		  	    }
+		  	    
+		    }
 		}
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		var projectStartDateString = projectStartDate.split("-");
-		var startDateString = '';
-		if(locationDate.match("yyyy-MM-dd")){
-			startDateString = projectStartDateString[0]+"-"+projectStartDateString[1]+"-"+projectStartDateString[2];
-	    }if(locationDate.match("dd-MM-yyyy")){
-	    	startDateString = projectStartDateString[2]+"-"+projectStartDateString[1]+"-"+projectStartDateString[0];
-	    }if(locationDate.match("MM-dd-yyyy")){
-	    	startDateString = projectStartDateString[1]+"-"+projectStartDateString[2]+"-"+projectStartDateString[0];
-	    }if(locationDate.match("yyyy-dd-MM")){
-	    	startDateString = projectStartDateString[0]+"-"+projectStartDateString[2]+"-"+projectStartDateString[1];
-	    }
-	    
-	    var endDateString = '';
-	    if(projectEndDate != null && projectEndDate != 'undefined' && projectEndDate != ''){
-	    	  var projectEndDateString = projectEndDate.split("-");
-	  		
-	    	  if(locationDate.match("yyyy-MM-dd")){
-	    		  endDateString = projectEndDateString[0]+"-"+projectEndDateString[1]+"-"+projectEndDateString[2];
-	  	    }if(locationDate.match("dd-MM-yyyy")){
-	  	    	endDateString = projectEndDateString[2]+"-"+projectEndDateString[1]+"-"+projectEndDateString[0];
-	  	    }if(locationDate.match("MM-dd-yyyy")){
-	  	    	endDateString = projectEndDateString[1]+"-"+projectEndDateString[2]+"-"+projectEndDateString[0];
-	  	    }if(locationDate.match("yyyy-dd-MM")){
-	  	    	endDateString = projectEndDateString[0]+"-"+projectEndDateString[2]+"-"+projectEndDateString[1];
-	  	    }
-	  	    
-	    }
-	    
-	    
+		
 	  
 	      for(var e in checkedAssociatedUsers) {
 	    	   if(!e || !checkedAssociatedUsers[e] || checkedAssociatedUsers[e] === "")
@@ -730,7 +731,7 @@ function toggleAssociates(source) {
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  data-validation="required" field-name="Start Date" value="'+startDateString+'" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  data-validation="required" field-name="Start Date" value="'+projectStartDate+'" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -738,7 +739,7 @@ function toggleAssociates(source) {
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+endDateString+'" name="projectMembers['+maxRowNum+'].memberEndDate" readonly>';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" readonly>';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			
