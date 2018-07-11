@@ -447,7 +447,7 @@ function filterStatus() {
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedBudget+'">'+estimatedBudget+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
 		                
-		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
+		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N" || '${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
 		                	
 		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 				                	result = result + '	<td><div class="tbldata-dotdot_80">';

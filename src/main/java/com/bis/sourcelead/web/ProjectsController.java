@@ -379,7 +379,7 @@ public class ProjectsController {
 					model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());
 					
 					if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
-						ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
+						ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
 						if(StringUtils.isNotBlank(pc.getIsProjectShared()) && pc.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 							model.addObject("postedSharedProjectOrgLocationId", orgLocations.getId());
 						}
