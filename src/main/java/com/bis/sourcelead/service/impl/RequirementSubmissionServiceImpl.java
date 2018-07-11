@@ -2111,30 +2111,31 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 for(int j=0; j<array.length(); j++){
    			JSONObject jsonObj = new JSONObject();
    			jsonObj =  array.getJSONObject(j);
-   			if(jsonObj.getString("name").equalsIgnoreCase("CurrentCTC")){
-   			 jsonObj.put("value", "-----");
+   			if(jsonObj.has("name")){
+	   			if(jsonObj.getString("name").equalsIgnoreCase("CurrentCTC")){
+	   			 jsonObj.put("value", "-----");
+	   			}
+	   			else if(jsonObj.getString("name").equalsIgnoreCase("ExpectedCTC")){
+	   				if(clientShortlistsRate != null && clientShortlistsRate.length>i && !isNullOrEmpty(clientShortlistsRate[i])){
+	   					String clientRate = clientShortlistsRate[i];
+	   					String submissionPer = "";
+	   					if(submissionratePer.length > 0 && !isNullOrEmpty(submissionratePer[i])){
+	   		  			 submissionPer = submissionratePer[i]; 
+	   		  		 }
+	   	   				if(!isNullOrEmpty(clientRate)){
+	   	   				    StringBuilder rateBuilder = new StringBuilder();
+	   	   				    rateBuilder = rateBuilder.append(templateFields.getExpectedRateType()).append(" ").append(clientRate).append(" / ").append(submissionPer);
+	   	   					jsonObj.put("value", rateBuilder.toString());
+	   	   				}else{
+	   	   					jsonObj.put("value", "");
+	   	   				}
+	   				}
+	  				
+	  			 }
+	   			else{
+	   			   jsonObj.put("value", jsonObj.getString("value"));
+	   			}
    			}
-   			else if(jsonObj.getString("name").equalsIgnoreCase("ExpectedCTC")){
-   				if(clientShortlistsRate != null && clientShortlistsRate.length>i && !isNullOrEmpty(clientShortlistsRate[i])){
-   					String clientRate = clientShortlistsRate[i];
-   					String submissionPer = "";
-   					if(submissionratePer.length > 0 && !isNullOrEmpty(submissionratePer[i])){
-   		  			 submissionPer = submissionratePer[i]; 
-   		  		 }
-   	   				if(!isNullOrEmpty(clientRate)){
-   	   				    StringBuilder rateBuilder = new StringBuilder();
-   	   				    rateBuilder = rateBuilder.append(templateFields.getExpectedRateType()).append(" ").append(clientRate).append(" / ").append(submissionPer);
-   	   					jsonObj.put("value", rateBuilder.toString());
-   	   				}else{
-   	   					jsonObj.put("value", "");
-   	   				}
-   				}
-  				
-  			 }
-   			else{
-   			   jsonObj.put("value", jsonObj.getString("value"));
-   			}
-   			
    			jsonArray.put(jsonObj);
    				 
    		 }
