@@ -295,10 +295,9 @@
 									class="text-danger pull-left" id="man1">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
-									<input type="text" class="form-control" name="candidateId" field-name="Associate" data-validation="required"
-										id="candidateId" placeholder="Select Beneficiary" onkeyup="getCandidatesByOrgLocation(${immigrationDTO.candidateId});" />
-								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation(${immigrationDTO.candidateId});"><i class="fa fa-refresh "></i></span>
-									
+									<input type="text" class="form-control" name="candidateNameEmail" field-name="Associate" data-validation="required"
+										id="candidateNameEmail" placeholder="Select Beneficiary" value="${immigrationDTO.candidateNameEmail}"/>
+									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							</div>
 							</div>
@@ -310,7 +309,7 @@
 					  <label class="col-md-4"><span class="pull-left">Associate (Beneficiary)</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
 									<div class="col-md-8">
-									<input class="form-control" type="text" readonly name="candidateId" id="candidateId" value="${immigrationDTO.firstName}"/>
+									<input class="form-control" type="text" readonly name="candidateNameEmail" id="candidateNameEmail" value="${immigrationDTO.candidateNameEmail}"/>
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 						
 						</div>			
@@ -322,10 +321,9 @@
 									class="text-danger pull-left" id="man1">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
-									<input type="text" class="form-control" name="candidateId" field-name="Associate" data-validation="required"
-										id="candidateId" placeholder="Select Beneficiary" onkeyup="getCandidatesByOrgLocation(${immigrationDTO.candidateId});" />
-								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation(${immigrationDTO.candidateId});"><i class="fa fa-refresh "></i></span>
-									
+									<input type="text" class="form-control" name="candidateNameEmail" value="${immigrationDTO.candidateNameEmail}" field-name="Associate" data-validation="required"
+										id="candidateNameEmail" placeholder="Select Beneficiary"/>
+									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							</div>
 							</div>
@@ -840,61 +838,21 @@
 	   prepareResidencediv =prepareResidencediv+ "   </div>";
 		return prepareResidencediv; 
    }
-	
- //  var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
   var rowId =0;
    function appendDynamicResidenceDiv(){
 	   console.log("rowId value is --->"+rowId);
 	   $("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(rowId++,"")); 
    }
-   //var deletedResicenceListIds = new Array();
    var removedResidenceIds = [];
    function removeDynamicResidenceDiv(id,residenceId){
 	   removedResidenceIds.push(residenceId);
-	   /* if($("#templateId"+id).val() !==  undefined ){
-		   deletedResicenceListIds.push($("#templateId"+id).val());   
-	   } */
 	   $("#dynamicResidenceDiv"+id).remove();
 	   rowId--;// decrement rowid when deleted in UI.
    } 
    	</script>
 	
 <script>
-
-var candidateByOrgObject = {};
-/*$("#candidateId").autocomplete({ 
-	minLength: 2, 
-	source : function(request, response) {
-		$.ajax({
-			url :sourceleadUrl+immiModulePath+ "/getAllActiveCandidatesByName",
-			type : "GET",
-			data : {
-				name : request.term
-			},
-			dataType : "json",
-			success : function(data) {
-				response(data);
-				// console.log(data)
-			}
-		});
-	},
-	select: function( event, ui ) {
-		$("#candidateId").val(ui.item.label);
-		return false;
-	}
-}); */
-
-
-/* function getCandidatesByOrgLocation(candidateId){
-	alert("hi");
-	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
-	var locationId = responderLocationId;
-	}else{
-	var locationId ='${SourceLeadWeb_orgLocations.id}';
-	}
-	// $("#loadingPetitionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation"; */
-	 $("#candidateId").autocomplete({ 
+	 $("#candidateNameEmail").autocomplete({ 
 			minLength: 2, 
 			source : function(request, response) {
 				$.ajax({
@@ -911,7 +869,8 @@ var candidateByOrgObject = {};
 				});
 			},
 			select: function( event, ui ) {
-				$("#candidateId").val(ui.item.label);
+				$("#candidateNameEmail").val(ui.item.label);
+				$("#candidateId").val(ui.item.value);
 				 $.ajax({
 				    	type: "GET",
 				        url: sourceleadUrl+immiModulePath+"/getCandidateById?id="+ui.item.value, 
@@ -955,28 +914,6 @@ var candidateByOrgObject = {};
 			}
 	 });
 			
-		 /* $.ajax({
-		    	type: "GET",
-		        url: sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation?locationId="+locationId, 
-		        success: function(data) {
-		        	 $('#candidateId').empty();
-		        	$('#candidateId').append('<option value="">--Select Beneficiary --</option>');
-		            for(var i=0;i<data.length;i++){
-		            	 var opt = data[i];
-		            	 candidateByOrgObject[opt.id]= opt;
-		            	 if(opt.id == candidateId){
-		            		 $('#candidateId').append('<option selected value='+opt.id+' >'+opt.firstName+" "+opt.lastName+" ( "+opt.email+" )"+'</option>');
-		            	 }else{
-		            		$('#candidateId').append('<option value='+opt.id+' >'+opt.firstName+" "+opt.lastName+" ( "+opt.email+" )"+'</option>');
-		            	 }
-		            }
-		            $('#candidateId').trigger("chosen:updated"); 
-		           /*  updateCandiateInfo(); 
-		            $("#loadingPetitionDiv").removeAttr("style"); 
-		   }
-   }); */
-/* } */
-
 function deleteResumeDoc(){
 	$("#docNameDiv").hide();
 	$("#resumeEmpty").show();
@@ -1123,8 +1060,6 @@ $("#experienceValue").change(function () {
 		            	  }
 		            }
 		            $('#attorneyId').trigger("chosen:updated");
-		            //getVendorContactList();
-		            
 		        }
 		 });
  }
@@ -1154,13 +1089,9 @@ $("#experienceValue").change(function () {
 		            		  $('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' selected value='+opt.id+' >'+opt.orgName+'</option>');
 		            	  }else{
 		            		$('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value='+opt.id+' >'+opt.orgName+'</option>');
-		            		//$('#abbb').val(opt.responderLocationId.id);
 		            	  }
 		            }
 		            $('#attorneyId').trigger("chosen:updated");
-		           
-		            //getVendorContactList();
-		            
 		        }
 		 });
  }
@@ -1184,7 +1115,6 @@ $("#experienceValue").change(function () {
 				    type: "POST",
 			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type="+type,  
 			        success: function(json) {
-			        	//var json = JSON.parse(data);
 			        	$('#attorneyContact').empty();
 			        	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 			        		$('#attorneyContact').append('<option value="">--Select Company contact--</option>');
@@ -1200,7 +1130,6 @@ $("#experienceValue").change(function () {
 			            	 }
 			            } 
 			            $('#attorneyContact').trigger("chosen:updated");
-			            getCandidatesByOrgLocation("${immigrationDTO.candidateId}");
 			            jobTitleDropDown("${immigrationDTO.jobId}");
 			        }
 			 }); 
@@ -1231,10 +1160,8 @@ $("#experienceValue").change(function () {
 	  $( document ).ready(function() {
 		  $('#rateCurrency').selectpicker('refresh');  // manually refreshing select picker due to bootstrap css loading issue.
 		  $('#rateType').selectpicker('refresh');
-		 // getAttorneysByOrgLocation("${immigrationDTO.attorneyId}");
 		  getAllRelationssByOrgLocation("${immigrationDTO.attorneyId}")
 		  getAttorneyContactList("${immigrationDTO.attorneyId}","${immigrationDTO.attorneyContact}");
-		 getCandidatesByOrgLocation("${immigrationDTO.candidateId}");
 		  getPetitionTypeDropDown("${immigrationDTO.petitionType}");
 		  getUscisTypeDropDown("${immigrationDTO.currUscisStatusId}");
 		  onLoadStatusChange("${immigrationDTO.currUscisStatus}");
@@ -1376,21 +1303,7 @@ $("#experienceValue").change(function () {
 		  	  yearRange: "-100:+0",
 		  	  maxDate:0  
 		  })
-		  // 
 		  
-		  /* $('#jobTitleValues').autocomplete({
-				serviceUrl:  sourceleadUrl+immiModulePath+'/getJobTitleAutoComplete',
-				paramName: "searchValue",
-				delimiter: ",",
-			   transformResult: function(response) {
-				return {
-				  //must convert json to javascript object before process
-				  suggestions: $.map($.parseJSON(response), function(item) {
-				      return { value: item.jobTitle, data: item.id };
-				   })
-				 };
-		      }
-		}); */
  });
    </script>
    <script>
@@ -1454,48 +1367,6 @@ function  removeValidationAttorneyContact() {
 	 }
 	 </script>
 	 <script>
-	/*  $(document).on("change", "#candidates", function() {
-		alert(this.val()) 
-	 }); */
-	 //$( "#myselect option:selected" ).val()
-	 /* function updateCandiateInfo1(candidateObj){
-		 alert("inside function");
-		        	alert(candidateObj.firstName);
-		        	$("#firstName").val(candidateObj.firstName);
-		    		$("#lastName").val(candidateObj.lastName);
-		    		$("#middleName").val(candidateObj.middleName);
-		    		$("#email").val(candidateObj.email);
-		    		$("#mobile").val(candidateObj.mobilePhone);
-		    		$("#alternateMobile").val(candidateObj.alternateMobilePhone);
-		    		
-		    		// gender radio button  
-		    		$('input[name="gender"]').prop('checked', false); // reset the value 
-		    		if(typeof candidateObj.gender !='undefined' && candidateObj.gender!=''){  // set the value if not empty
-		    		$('input:radio[name=gender][value='+candidateObj.gender+']').click();
-		    		}
-		    		//  radio button  maritalStatus
-		    		$('input[name="maritalStatus"]').prop('checked', false); // reset the value 
-		    	
-		    		if(typeof candidateObj.maritalStatus !='undefined' && candidateObj.maritalStatus!=''){ // set the value if not empty
-		    		$('input:radio[name=maritalStatus][value='+candidateObj.maritalStatus+']').click();
-		    		}
-		    		// set the residenc details
-		    		$("#country").val(candidateObj.country);
-		    		$("#state").val(candidateObj.state);
-		    		$("#city").val(candidateObj.city);
-		    		$("#address").val(candidateObj.address);
-		    		$("#zipcode").val(candidateObj.zipcode);
-		    		$("#location").val(candidateObj.location);
-		    		$("#experienceYears").val(candidateObj.experienceYears);
-		    		$("#experienceMonths").val(candidateObj.experienceMonths);
-		    		
-		    		// setting the date for the date of birth field.
-		    		if(candidateObj.dateOfBirth != null && typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
-		    			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
-		    		   $("#birthDate").val(dateOfBirth);
-		    		}
-	 } */
-	 
 	 $(function() {
 			$("#uploadBtn").change(function() {
 				fileUpload("uploadBtn", "resumes", "petitionDetailsForm","resumeInfo");
@@ -1516,7 +1387,6 @@ function  removeValidationAttorneyContact() {
 		      changeMonth: true,
 		  	  changeYear: true, 
 		      onSelect: function (selected) {
-		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '+1d');
 		            dt.setDate(dt.getDate() + 1);
 		            $("#residenceEndDate"+id).datepicker("option", "minDate", dt);
@@ -1529,7 +1399,6 @@ function  removeValidationAttorneyContact() {
 		      changeMonth: true,
 		  	  changeYear: true, 
 		        onSelect: function (selected) {
-		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '-1d');
 		            dt.setDate(dt.getDate() - 1);
 		            $("#residenceStartDate"+id).datepicker("option", "maxDate", dt);
@@ -1545,6 +1414,5 @@ function  removeValidationAttorneyContact() {
 		    	}
 		    });
 		});
-		
 	 </script>
 	

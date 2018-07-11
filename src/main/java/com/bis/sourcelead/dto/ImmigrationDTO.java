@@ -208,6 +208,8 @@ public class ImmigrationDTO extends SearchDTO {
     
     private String isOwnTemplateId;
     
+    private String candidateNameEmail;
+    
 	public Long getId() {
 		return id;
 	}
@@ -931,5 +933,15 @@ public class ImmigrationDTO extends SearchDTO {
 	public void setProcessType(String processType) {
 		this.processType = processType;
 	}
+
+	public String getCandidateNameEmail() {
+		return candidateNameEmail;
+	}
+
+	public void setCandidateNameEmail(String candidateNameEmail) {
+		this.candidateNameEmail = candidateNameEmail;
+	}
+	
+	
 	
 }
