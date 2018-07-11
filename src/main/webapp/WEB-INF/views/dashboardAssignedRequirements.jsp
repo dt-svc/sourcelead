@@ -8,9 +8,9 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <jsp:include page="../views/requirement/requirementAssignedTo.jsp"/>
-<div class="content-dashboard clearfix" id="assignedRequirementsDiv">
+<div class="mb col-md-12 clearfix" >
       <!-- Assigned Requirements -->
-      <div class="clearfix dashboard-widget mb col-md-12" >
+      <div class=" dashboard-widget col-md-12" id="assignedRequirementsDiv">
         <h4 class="clearfix">Jobs</h4>
         <!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span> -->
@@ -18,8 +18,8 @@
         <div class="project_side_wrap_inn_tabs">
       	    <div id="resourceRequestsDivLoading"></div>
 		    <ul class="project-tabs-menu tabnewStyles">
-		        <li class="current" id="assigned"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementList(false, -1);">Assigned</a></li>
-		        <li id="drive"><a data-toggle="tab" href="javascript:void(0)"  onclick="requirementList(true, -1);">Daily Drives</a></li>
+		        <!-- <li class="current" id="assigned"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementList(false, -1);">Assigned</a></li> -->
+		        <!-- <li id="drive"><a data-toggle="tab" href="javascript:void(0)"  onclick="requirementList(true, -1);">Daily Drives</a></li> -->
 		    </ul>
 			<div id="requirementListTabHead">
 				<div id="requirementListActions">
@@ -30,7 +30,7 @@
 				</div>
 
 				<!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-				<div class="clearfix require_wrap_table dashboard-data filter_position" style="min-height: 200px;">
+				<div class="clearfix require_wrap_table dashboard-data filter_position positionRelative" style="min-height: 200px;">
 					<div id="requirementLoading" style="display: none;"></div>
 					<div id="requirementList">
 					</div>
@@ -76,7 +76,7 @@ function requirementList(isWalkIn, walkInDay){
 	  $("#requirementListActions").empty();
 	  $("#requirementList").empty();
 	  $("#requirementLoading").show();
-	  $("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:35px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAssignedRequirementListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}"+ (isWalkIn ? "&isWalkIn="+isWalkIn+"&walkInDay="+walkInDay : ""),    

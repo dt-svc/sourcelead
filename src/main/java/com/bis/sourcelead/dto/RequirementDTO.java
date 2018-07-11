@@ -186,11 +186,36 @@ public class RequirementDTO extends CommonDTO {
 	private boolean walkIn;
 	
 	private String walkInDays;
+	
+	private boolean jobFair;
+	
+	private long jobFairId;
+	
+	private String[] jobFairDates;
+	
+	private Map<Long, String[]> jobFairMap;
+	
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
 	 * private List<AssinedTo> assinedTeamInfo;
 	 */
+
+	public Map<Long, String[]> getJobFairMap() {
+		return jobFairMap;
+	}
+
+	public boolean isJobFair() {
+		return jobFair;
+	}
+
+	public void setJobFair(boolean jobFair) {
+		this.jobFair = jobFair;
+	}
+
+	public void setJobFairMap(Map<Long, String[]> jobFairMap) {
+		this.jobFairMap = jobFairMap;
+	}
 
 	public String getNoOfOfferedApplicants() {
 		return noOfOfferedApplicants;
@@ -1398,4 +1423,22 @@ public class RequirementDTO extends CommonDTO {
 	public void setRequirementCreatedUserId(BigInteger requirementCreatedUserId) {
 		this.requirementCreatedUserId = requirementCreatedUserId;
 	}
+
+	public long getJobFairId() {
+		return jobFairId;
+	}
+
+	public void setJobFairId(long jobFairId) {
+		this.jobFairId = jobFairId;
+	}
+
+	public String[] getJobFairDates() {
+		return jobFairDates;
+	}
+
+	public void setJobFairDates(String[] jobFairDates) {
+		this.jobFairDates = jobFairDates;
+	}
+	
+	
 }

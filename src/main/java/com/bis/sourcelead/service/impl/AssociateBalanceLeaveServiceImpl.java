@@ -279,7 +279,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					totalLeaveDTO.setUserId(String.valueOf(user.getId()));
 					totalLeaveDTO.setLeaveTypeId(String.valueOf(leaveType.getId()));
 					if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())  && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-						if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+						if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
 							totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDaysPerPeriod()));
 						}else {
 							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());
@@ -291,7 +291,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 							}
 						}
 					}else {
-						if("All Employees".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+						if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
 							totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));
 						}else {
 							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());

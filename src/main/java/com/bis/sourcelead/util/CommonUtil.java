@@ -2470,6 +2470,7 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 		 return fromEmail;
   }
   
+	
   public Shift saveDefaultGenaeralShift(OrgLocations orgLocations, User user,String shiftName) throws Exception {
 	     Shift shift = new Shift();
 	     shift.setShiftUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -2543,5 +2544,14 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		return "success";
+	}
+
+	public static String toFixed2(double d) {
+		String str;
+		d = d * 100;
+		d = Math.round(d);
+		d = d / 100;
+		str = ("" + d).lastIndexOf(".") == ("" + d).length() - 2 ? d + "0" : d + "";
+		return str;
 	}
 }
