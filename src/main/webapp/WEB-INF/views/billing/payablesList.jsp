@@ -799,18 +799,20 @@ function payablePagination(url){
 						}
 		    		     
 				    	result = result +'         <td>';
-						if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+				    	if(report.invoiceStatus == "Rejected" && report.invoiceParentId != null){
+							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							'</sec:authorize>';
+						}
+				    	else if(report.invoiceStatus == "DRAFT" || (report.invoiceStatus == "Rejected" && report.invoiceParentId == null)){
 							if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
 								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 								'</sec:authorize>';
-							}else{
-								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 							}
 							
-	
 						}
-						if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
+				    	else if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
 							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
@@ -998,7 +1000,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	     
 	     '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
 // 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
- 		 result = result+' <a href="'+fileUrl+'" title="Download" target="_blank"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a>';
+ 		 result = result+' <a href="'+fileUrl+'" title="Download" download><i class="fa fa-download paddingLeft paddingRight"></i>Download</a>';
 	     '</sec:authorize>'
 	     if(invoiceStatus != 'DRAFT')
 	     {

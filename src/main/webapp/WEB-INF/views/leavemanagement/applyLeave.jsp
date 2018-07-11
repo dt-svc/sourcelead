@@ -124,7 +124,7 @@ window.onload = function() {
                 </div>
               </div>
             </div>
-              <div class="form-group">
+              <div class="form-group" id="halfDayHidingDiv" style="display: block;">
               <label class="col-md-3">To<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
                 <div class="row">
@@ -464,8 +464,8 @@ window.onload = function() {
 			removeStartValid();
 			checkFromDate();
 			calcaulateDuraton();
-			validateDate();
-// 			getLeaveDetails(finalDateFormatEndDate);
+// 			validateDate();
+			getLeaveDetails(finalDateFormatEndDate);
 			}
 		});
 		
@@ -498,6 +498,9 @@ function removeEndValid(){
 function calcaulateDuraton(){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
+	if(toDate == ""){
+		toDate = $("#fromDate").val();
+	}
 	var leaveTypeUUID = $("#leaveType").val();
 	var ckbox = $('#checkbox-1');
 	if (ckbox.is(':checked')) {
@@ -906,9 +909,16 @@ function getLeaveDetails(finalDateFormatEndDate){
           			if(splitDuration[0] == "Full Day" && splitDuration[1] == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
+    		    		$("#toDate").attr('data-validation');
+    		    		document.getElementById("halfDayHidingDiv").style.display = 'block';
     		    	}else if(duration == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
+    		    		$("#checkbox-2").prop("checked",true);
+    		    		$("#checkbox-2").prop('disabled', true);
+    		    		checkFromHalfDay();
+    		    		document.getElementById("halfDayHidingDiv").style.display = 'none';
+    		    		$("#toDate").removeAttr('data-validation');
     		    	}else if(duration == "Full Day"){
     		    		$("#checkbox-2").removeAttr("checked");
     		    		$("#checkbox-3").removeAttr("checked");
@@ -918,6 +928,8 @@ function getLeaveDetails(finalDateFormatEndDate){
      		 		    $("#toTimeDiv").hide();
      		 		    $("#toDateFromTimeDiv").hide();
      					$("#toDateTimeDiv").hide();
+     					document.getElementById("halfDayHidingDiv").style.display = 'block';
+     					$("#toDate").attr('data-validation',"required");
     		    	} 
     		    	
     		    	if(report.reasonRequired == "Y"){
@@ -975,14 +987,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
     		    	}
     		    	
-    		    	if(errorMessage != ""){
-//     		        	$("#ApplyLeave").attr('disabled','disabled');
-    		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
-    		        	$(".warMess").fadeIn();
-    		        	$(".comMask").fadeIn();
-    		        }else{
-    		    		$("#ApplyLeave").removeAttr('disabled');
-    		        }
+    		    	
     		    	if(skipPolicy != true){
     		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
     		 				$("#termsAndConditions").html(report.policyDescription);
@@ -1002,6 +1007,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 	calcaulateDuraton();
 	setTimeout(function(){ validateDate(); }, 800);
 		
+	
 }
 
 </script>
@@ -1016,7 +1022,7 @@ function validateOverDrawLeaves(leaveTypeName){
 	
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = $("#"+typeName+"Span").text();
-	if((dayDiff > typeIdBalCount) || typeIdBalCount ==  0){
+	if(((dayDiff > typeIdBalCount) || typeIdBalCount ==  0) && typeIdBalCount != "" ){
 		errorMessage += "You Have Not Enough Leaves To Apply.";
 	}
 }
@@ -1134,18 +1140,27 @@ function validateDate(){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data !=null && data.validateType == 'SAMEDAY'){
 				errorMessage += data.errorMessage;
-				$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+				/* $("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
 // 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
 				$("#ApplyLeave").attr('disabled','disabled');
 				$(".warMess").fadeIn();
-				$(".comMask").fadeIn();
+				$(".comMask").fadeIn(); */
 			}else if(data != null && data.validateType == 'HOLIDAY'){
 				errorMessage += data.errorMessage;
-				$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
-// 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
-				$("#ApplyLeave").removeAttr('disabled');
-				$(".comMask").fadeIn();	
+// 				$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+// // 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
+// 				$("#ApplyLeave").removeAttr('disabled');
+// 				$(".comMask").fadeIn();	
 			}
+			
+			if(errorMessage != ""){
+//		     	$("#ApplyLeave").attr('disabled','disabled');
+		    	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+		    	$(".warMess").fadeIn();
+		    	$(".comMask").fadeIn();
+		    }else{
+				$("#ApplyLeave").removeAttr('disabled');
+		    }
 		});
 	}
 	 
@@ -1219,6 +1234,7 @@ $("#toDateHalfTime").timepicker({
 	 'step': 15
 }).on('changeTime', function() {
     $("#fromDateHalfTime").timepicker('option', 'maxTime', $(this).val());
+    calcaulateDuraton();
 }); 
 
 $("#toDateFromHalfTime").timepicker({
