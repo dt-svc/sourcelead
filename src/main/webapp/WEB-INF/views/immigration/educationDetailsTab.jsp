@@ -157,7 +157,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Score Type</label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name="gradeType" id="scoreEducationType">
+					<select class="chosen-select form-control" name="gradeType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">
 					  <option value="" selected="selected">Score Type</option>
 						 <option value="Percentage">Percentage</option>
 	              <option value="CGPA">CGPA</option>
@@ -167,8 +167,8 @@
 			</div>	
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Score</label>
-              	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id = "grade" name="grade" placeholder="Score" placeholder="Score" data-validation="required validate_Space validate_length length1-4" data-validation-optional="true"/>
+              	<div class="col-md-8 padding_right" id="candidateScoreDiv">
+              		<input type="text" class="form-control" name="grade" onkeyup="educationSelectScoreType();educationscoreAndScoreType();" id="candidateEducationScore" placeholder="Score" placeholder="Score" data-validation="required validate_Space validate_length length1-4" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
@@ -222,6 +222,92 @@
 		</div>
 	</form>
 		<script>
+		function educationSelectScoreType(){
+			var str = $("#candidateEducationScore").val();
+			if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+				var strToUpper = str.toUpperCase();
+				$('#candidateEducationScore').val(strToUpper);
+			}
+			 var selectedText = document.getElementById("scoreEducationType").value;
+			 var canScore = document.getElementById("candidateEducationScore").value;
+			 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
+			 if(selectedText =='Percentage'){
+				  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+				  if(canScore.match(floatNum)){
+					  $("#eduSave_Button").removeAttr("disabled");
+					   return true;
+				  }		  
+				 else{
+						$("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
+						 $("#eduSave_Button").attr("disabled", "disabled");
+						return false; 
+				 	 }
+			  }
+			 else if(selectedText =='CGPA'){
+				  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
+					  if(canScore.match(cgpanum)){
+						  $("#eduSave_Button").removeAttr("disabled");
+						   return true;
+					  }		  
+					 else{
+						 $("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid CGPA value</span>");
+						 $("#eduSave_Button").attr("disabled", "disabled");
+					return false; 
+					 }
+			  } 
+			 else if(selectedText =='GRADE'){
+				 var grades = /^([A-E][-+]{0,2})?$/
+					 if (canScore.match(grades)) {
+						 $("#eduSave_Button").removeAttr("disabled");
+						 return true;
+					}else{
+						$("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
+						 $("#eduSave_Button").attr("disabled", "disabled");
+			    		return false;
+			    		
+					}
+		   		}
+				 }
+		
+		function educationscoreAndScoreType(){
+			 var candidateScore = document.getElementById("candidateEducationScore").value;
+			 var selectedText = document.getElementById("scoreEducationType").value;
+			 var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+			 var cgpanum = /^(([\d][\.])?([\d])|10)?$/
+			 var grades = /^([A-E][-+]{0,2})?$/
+			 if(candidateScore.match(floatNum)){
+				 $("#scoreEducationType").val('Percentage'); 
+				 $('#scoreEducationType').trigger("chosen:updated");
+				 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+				 $("#eduSave_Button").removeAttr("disabled");
+			 }
+			 if(candidateScore.match(grades)){
+				 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+				 $("#scoreEducationType").val('GRADE'); 
+				 $('#scoreEducationType').trigger("chosen:updated");
+				 $("#eduSave_Button").removeAttr("disabled");
+			 }
+			 if(candidateScore.match(cgpanum)){
+				 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+				 $("#scoreEducationType").val('CGPA'); 
+				 $('#scoreEducationType').trigger("chosen:updated");
+				 $("#eduSave_Button").removeAttr("disabled");
+			 }
+			 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
+				 $("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");
+			 }
+			 if(selectedText == '' && candidateScore == ''){
+				 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
+			 }
+			 if(candidateScore == ''){
+				 $("#scoreEducationType").val('');
+			 }
+		}
+		$(document).on('change','#specialization', function () {
+			if (this.value.match(/[^a-zA-Z0-9 ]/g)) {
+				this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '');
+			}
+		});
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatImmiEduSave = getJSDateFormat(locationDate);
 		$('#immigrationEduStartDate12').datepicker({
