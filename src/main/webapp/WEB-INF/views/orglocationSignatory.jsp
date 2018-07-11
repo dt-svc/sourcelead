@@ -377,7 +377,7 @@ function saveSignatory(){
          }
       var sourceleadUrl ='${sourceleadUrl}';
   	  var formData = $($('#signatory_form')[0]).serialize();
-  	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue+"&associateId="+associateId, formData, function(result) {
+  	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue,formData, function(result) {
   		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
   		    showError(result.responseMessage);
   		    $("#loading").removeAttr('style');
