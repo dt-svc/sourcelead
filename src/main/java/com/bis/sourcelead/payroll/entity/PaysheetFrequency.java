@@ -42,6 +42,9 @@ public class PaysheetFrequency {
 	@Column(name = "FREQUENCY_END_DATE")
 	private Date frequencyEndDate;
 	
+	@Column (name = "PAY_CHECK_DATE")
+	private Date PAY_CHECK_DATE;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -178,6 +181,16 @@ public class PaysheetFrequency {
 	public void setPaysheet(Set<Paysheet> paysheet)
 	{
 		this.paysheet = paysheet;
+	}
+
+	public Date getPAY_CHECK_DATE()
+	{
+		return PAY_CHECK_DATE;
+	}
+
+	public void setPAY_CHECK_DATE(Date pAY_CHECK_DATE)
+	{
+		PAY_CHECK_DATE = pAY_CHECK_DATE;
 	}
 	
 	

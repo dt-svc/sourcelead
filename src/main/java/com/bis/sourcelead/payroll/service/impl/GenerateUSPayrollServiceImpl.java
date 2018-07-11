@@ -107,16 +107,17 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				usPayrollDTO.setPreTaxDeduction(BigDecimal.valueOf(0.00));
 				usPayrollDTO.setPostTaxDeduction(BigDecimal.valueOf(0.00));
 				usPayrollDTO.setGrossPay(BigDecimal.valueOf(amount));
-				STEPayrollCalculator STE = helloPayrollWorld.runUSPayroll(user,totalHours,amount,invoiceFrequency,associateTaxDTO,STEhome,jniHome);
+				STEPayrollCalculator STE = helloPayrollWorld.runUSPayroll(user,totalHours,amount,invoiceFrequency,associateTaxDTO,STEhome,jniHome,user.getResidenceState());
 				
-				System.out.println("FICA Withholding:" + STE.getFICACalc());
-				System.out.println("Medicare Withholding: " + STE.getMedicareCalc());
-				System.out.println("Federal Withholding: " + STE.getFederalCalc());
-				System.out.println("Earned Inc. Credit: " + STE.getEICCalc());
-//				System.out.println("State Withholding: " + STE.getStateCalc(locationCode));
-//				System.out.println("County Withholding:" + STE.getCountyCalc(locationCode));
-				usPayrollDTO.setTaxes(BigDecimal.valueOf(0.00));
-				usPayrollDTO.setNetPay(BigDecimal.valueOf(0.00));
+				BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal();
+				usPayrollDTO.setTaxes(taxes);
+				System.out.println("*** Taxes :"+taxes);
+//				Need to state with holding
+//				Need to Add County
+				BigDecimal netPay = BigDecimal.valueOf(amount).subtract(taxes);
+				System.out.println("*** Net Pay :"+netPay);
+				usPayrollDTO.setNetPay(netPay);
+
 				if (pm.getEmployee() != null) {
 					usPayrollDTO.setEmpId(pm.getEmployee().getEmployeeId());
 				}
@@ -124,8 +125,21 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					usPayrollDTO.setEmpId("--");
 				}
 				usPayrollDTO.setRegularHours(totalHours);
+				
+				// Employer Taxes
+				// Calculating Employer FICA
+				Money empficaCalc = STE.getEmployerFICACalc();
+				System.out.println("Employer FICA calc: " +empficaCalc);
+				
+				// Calculating Employer Medicare
+				Money empMediCalc = STE.getEmployerMedicareCalc();
+				System.out.println("Employer Medicare calc: " +empMediCalc);
+				
+				
 				list.add(usPayrollDTO);
 			}
+			
+			
 			usPayrollDTOResponse.setData(list);
 			usPayrollDTOResponse.setRecordsFiltered(list.size());
 			usPayrollDTOResponse.setRecordsTotal(list.size());

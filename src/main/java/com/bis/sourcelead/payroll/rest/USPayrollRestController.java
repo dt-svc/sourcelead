@@ -630,13 +630,13 @@ public class USPayrollRestController {
 		}
 		
 		/**
-		 * Returning US Payroll Generate JSP
+		 * Returning Generate Paysheet JSP
 		 * @param request
 		 * @param response
 		 * @return ModelAndView
 		 * @throws Exception
 		 */
-		@RequestMapping(value = { "/usPayroll","/rest/usPayroll" })
+		@RequestMapping(value = { "/generatePaysheet","/rest/generatePaysheet" })
 		public ModelAndView usPayroll(HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			ModelAndView model = new ModelAndView();
@@ -646,6 +646,26 @@ public class USPayrollRestController {
 			model.setViewName("payroll/usPayroll");
 			return model;
 		}
+		
+		
+		/**
+		 * Returning payroll JSP
+		 * @param request
+		 * @param response
+		 * @return ModelAndView
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/runPayroll","/rest/runPayroll" })
+		public ModelAndView payroll(HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			ModelAndView model = new ModelAndView();
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+			model.addObject("userGroupList",userGroupList);
+			model.setViewName("payroll/runPayroll");
+			return model;
+		}
+		
 		
 		//TODO Need to Resuse this method later Do not Remove
 		@RequestMapping(value = { "/generateUSPayroll","/rest/generateUSPayroll" }, method = RequestMethod.POST)
