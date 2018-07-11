@@ -326,14 +326,14 @@ function errRemoveVendorContact(){
          result = result +'  <label class="pull-left mb10"><strong>Attachments</strong></label>';
          
          result = result +' <div id="timesheetDocumentsId">';
-         result = result +' <div class="timesheet_week_comm invoiceDocs">';
+         result = result +' <div class="timesheet_week_comm invoiceDocs width100percnt">';
          result = result +' <span>';
          result = result +' <div id="savedAttachments"></div>';
          result = result +' </span>';
          result = result +' </div>';
          result = result +' </div>';
          
-         result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add" >';
+         result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add width100percnt">';
          result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
          result = result +'  <input type="file" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOvere="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
@@ -1483,7 +1483,7 @@ function calculateDiscount(){
 <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
 
 <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-	<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
+	<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt">
 		<div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup">
 			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
 				id='REPLACEROWIDinvoicedocFile'
