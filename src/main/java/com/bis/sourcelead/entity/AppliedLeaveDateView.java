@@ -41,6 +41,24 @@ public class AppliedLeaveDateView {
 	
 	@Column (name = "LEAVE_TYPE_ID")
 	private Long leaveTypeId;
+	
+	@Column(name = "FROM_HALF_DAY")
+	private String fromHalfDay;
+	
+	@Column(name = "TO_HALF_DAY")
+	private String toHalfDay;
+	
+	@Column(name = "FROM_DATE_FROM_TIME")
+	private String fromDateFromHalfTime;
+	
+	@Column(name = "FROM_DATE_TO_TIME")
+	private String fromDateToHalfTime;
+	
+	@Column(name = "TO_DATE_FROM_TIME")
+	private String toDateFromHalfTime;
+	
+	@Column(name = "TO_DATE_TO_TIME")
+	private String toDateToHalfTime;
 
 	public Long getUserId()
 	{
@@ -141,5 +159,64 @@ public class AppliedLeaveDateView {
 	{
 		this.id = id;
 	}
-	
+
+	public String getFromHalfDay()
+	{
+		return fromHalfDay;
+	}
+
+	public void setFromHalfDay(String fromHalfDay)
+	{
+		this.fromHalfDay = fromHalfDay;
+	}
+
+	public String getToHalfDay()
+	{
+		return toHalfDay;
+	}
+
+	public void setToHalfDay(String toHalfDay)
+	{
+		this.toHalfDay = toHalfDay;
+	}
+
+	public String getFromDateFromHalfTime()
+	{
+		return fromDateFromHalfTime;
+	}
+
+	public void setFromDateFromHalfTime(String fromDateFromHalfTime)
+	{
+		this.fromDateFromHalfTime = fromDateFromHalfTime;
+	}
+
+	public String getFromDateToHalfTime()
+	{
+		return fromDateToHalfTime;
+	}
+
+	public void setFromDateToHalfTime(String fromDateToHalfTime)
+	{
+		this.fromDateToHalfTime = fromDateToHalfTime;
+	}
+
+	public String getToDateFromHalfTime()
+	{
+		return toDateFromHalfTime;
+	}
+
+	public void setToDateFromHalfTime(String toDateFromHalfTime)
+	{
+		this.toDateFromHalfTime = toDateFromHalfTime;
+	}
+
+	public String getToDateToHalfTime()
+	{
+		return toDateToHalfTime;
+	}
+
+	public void setToDateToHalfTime(String toDateToHalfTime)
+	{
+		this.toDateToHalfTime = toDateToHalfTime;
+	}
 }
