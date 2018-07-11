@@ -298,6 +298,17 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
+	public SourceleadTaxChallan getTaxChallanSection(long taxSectionId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(SourceleadTaxChallan.class, taxSectionId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
 	@Transactional
 	public long addITDeclarationSection(SourceleadTaxITDeclaration taxSection) {
 		try {

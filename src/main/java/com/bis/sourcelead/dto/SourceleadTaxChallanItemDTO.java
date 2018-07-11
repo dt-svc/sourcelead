@@ -29,6 +29,7 @@ public class SourceleadTaxChallanItemDTO implements Serializable {
 	private boolean status;
 	private Date createdDate;
 	private Date updatedDate;
+	private Long taxSectionId;
 	private List< SourceleadTaxChallanItemSubFormFieldDTO > optionData;
 	public Long getId() {
 		return id;
@@ -141,4 +142,12 @@ public class SourceleadTaxChallanItemDTO implements Serializable {
 	public void setOptionData(List<SourceleadTaxChallanItemSubFormFieldDTO> optionData) {
 		this.optionData = optionData;
 	}
+	public Long getTaxSectionId() {
+		return taxSectionId;
+	}
+	public void setTaxSectionId(Long taxSectionId) {
+		this.taxSectionId = taxSectionId;
+	}
+	
+	
 }

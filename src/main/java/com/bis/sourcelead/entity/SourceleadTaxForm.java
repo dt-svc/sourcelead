@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
+
 @Entity
 @Table(name = "SOURCELEAD_TAX_FORM")
 public class SourceleadTaxForm implements Serializable {
@@ -46,6 +48,19 @@ public class SourceleadTaxForm implements Serializable {
 
 	@OneToMany(mappedBy = "sourceleadTaxForm", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<SourceleadTaxITDeclaration> sourceleadTaxSectionList;
+
+	@OneToMany(mappedBy = "sourceleadTaxForm", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<SourceleadTaxChallan> sourceleadTaxChallanSectionList;
+
+	
+	
+	public List<SourceleadTaxChallan> getSourceleadTaxChallanSectionList() {
+		return sourceleadTaxChallanSectionList;
+	}
+
+	public void setSourceleadTaxChallanSectionList(List<SourceleadTaxChallan> sourceleadTaxChallanSectionList) {
+		this.sourceleadTaxChallanSectionList = sourceleadTaxChallanSectionList;
+	}
 
 	public long getId() {
 		return id;
@@ -82,5 +97,7 @@ public class SourceleadTaxForm implements Serializable {
 	public void setSourceleadTaxSectionList(List<SourceleadTaxITDeclaration> sourceleadTaxSectionList) {
 		this.sourceleadTaxSectionList = sourceleadTaxSectionList;
 	}
+
+	
 
 }
