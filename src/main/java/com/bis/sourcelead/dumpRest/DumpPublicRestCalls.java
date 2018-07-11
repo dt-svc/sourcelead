@@ -19,8 +19,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
+import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
+import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 
@@ -38,6 +41,9 @@ public class DumpPublicRestCalls {
 	
 	@Autowired
 	private AppliedLeaveDateDao appliedLeaveDateDao;
+	
+	@Autowired
+	HolidayDAO holidayDao;
 	
 	@RequestMapping(value = "/ws/dumpAllAppliedLeaveDatesData", method = RequestMethod.GET)
 	@ResponseBody
@@ -91,5 +97,19 @@ public class DumpPublicRestCalls {
 		    return monthName;
 	}
 
+	@RequestMapping(value = "/ws/dumpOrgAvgHrsForAllHolidays", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Holiday> dumpOrgAvgHrsForAllHolidays() throws Exception {
+		
+		logger.info("Start Time"+java.time.LocalDateTime.now());
+		List<Holiday> list = holidayDao.getAllHoliday();
+		for(Holiday day : list){
+			day.setOrgAvgHrs(day.getOrgLocations().getAverageWorkingHours());
+			holidayDao.storeHoliday(day);
+		}
+		logger.info("End Time"+java.time.LocalDateTime.now());
+		return list;
+		
+	}
 
 }
