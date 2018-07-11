@@ -911,7 +911,10 @@
 				        }
 				 });
 				return false;
-			}
+			},
+			focus: function(event, ui){
+		          return false;
+		    }
 	 });
 			
 function deleteResumeDoc(){
