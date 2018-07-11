@@ -54,7 +54,6 @@
 						                        <th class="timeTabFix">Status</th>              
 						                    </tr>  
 						                     <c:set var="leaveIndex" value="0"/>
-						                     <c:set var="entryIndex" value="0"/>
 						                     <c:if test="${!empty employeeTimesheetEntryDetailsDTO.empLeaveMap}">
 						                      <c:forEach var="empLeaveMap" items="${employeeTimesheetEntryDetailsDTO.empLeaveMap}" varStatus="empLeaveMapCount">
 						                      <c:set var="leaveIndex" value="${leaveIndex+1}"/>
@@ -83,7 +82,6 @@
 	                                                               </span>
 	                                                             </div>
 											                   </c:if>
-													           <c:set var="entryIndex" value="${entryIndex+1}"/>
 											              </td>
 								                      </c:forEach>
 								                      <td  class="timeTabFix" >
@@ -471,8 +469,8 @@
 													    </tr>
 												    </c:forEach>
 												 </c:if>
-												  <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}" varStatus="attCount">
-												      <c:set var="attCount" value="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 0}"/>
+												  <c:set var="attCount" value="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 0}"/>
+												  <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}" >
 												      <c:set var="projAttAvailable" value="0"/>
 												      <c:if test="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
 													      <c:forEach var="attachment" items="${employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
