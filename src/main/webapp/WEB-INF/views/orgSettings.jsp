@@ -161,7 +161,7 @@ function cancelOrgImg(){
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
-      <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
+      <div class="clearfix form-area form-horizontal mt customedTabStyles">
       <div id="loading"></div>
       <div id="regLoading"></div>
       <div id="popUp"></div>  

@@ -2231,13 +2231,13 @@ public class LeaveManagementRestController {
 	 * @return String
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/validateRestrictDate")
+	@RequestMapping(value = {"/validateRestrictDate", "/rest/validateRestrictDate" })
 	@ResponseBody
 	public ValidateDateDTO validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate, @RequestParam(value = "toDate", required = false) String toDate, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "leaveUUID", required = false) String leaveUUID, HttpServletRequest request) throws Exception
 	{
 		String isTrue = null;
 //		StringBuilder sb = null;
-		ValidateDateDTO validateDateDTO = null;
+		ValidateDateDTO validateDateDTO = new ValidateDateDTO();
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = null;
 		if (userId == null) {
@@ -2253,7 +2253,7 @@ public class LeaveManagementRestController {
 		
 		List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
 		if(leaveList != null && !leaveList.isEmpty()) {
-			validateDateDTO = new ValidateDateDTO();
+//			validateDateDTO = new ValidateDateDTO();
 			validateDateDTO.setValidateType("SAMEDAY");	
 			validateDateDTO.setErrorMessage(" You cannot apply two leaves on same day.!");
 //			sb = new StringBuilder();
@@ -2289,7 +2289,7 @@ public class LeaveManagementRestController {
 		int i = 0;
 		Collections.sort(daysList);
 		if (daysList.size() > 0) {
-			validateDateDTO = new ValidateDateDTO();
+//			validateDateDTO = new ValidateDateDTO();
 			StringBuilder sb = new StringBuilder();
 			sb.append(" You cannot apply for leave on restricted/holiday day ");
 			for (Date d : daysList) {
@@ -2302,50 +2302,13 @@ public class LeaveManagementRestController {
 			validateDateDTO.setValidateType("HOLIDAY");
 			validateDateDTO.setErrorMessage(sb.toString());
 			return validateDateDTO;
-		}/*else {
-			List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
-			if(leaveList != null && !leaveList.isEmpty()) {
-					sb = new StringBuilder();
-					sb.append("you cannot apply two leaves on same day.!");
-			}
-		}*/
+		}
 		
+		if(validateDateDTO.getValidateType() == null){
+			validateDateDTO.setValidateType("N/A");
+			validateDateDTO.setErrorMessage("N/A");
+		}
 		
-		/*
-		 * List<RestrictDay> restDay =
-		 * restrictDayService.validateRestrictDayDates(fromDate, toDate,
-		 * orgLocations);
-		 * 
-		 * Set<Long> roleIds = new HashSet<>(); for (RestrictDay resDay :
-		 * restDay) { if (!"Y".equalsIgnoreCase(resDay.getApplicableToAll())) {
-		 * for (LeaveRole leaveRole : resDay.getRestrictDayRolesList()) {
-		 * roleIds.add(leaveRole.getRoleId().getId()); } } else if
-		 * (roleIds.contains(roleId)) { restrictDayList.add(resDay); } else {
-		 * restrictDayList.add(resDay); } } if (restrictDayList != null &&
-		 * restrictDayList.size() > 0) { sb = new StringBuilder();
-		 * for(RestrictDay day : restrictDayList) {
-		 * if(day.getStartDate().equals(day.getEndDate())) {
-		 * sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.
-		 * getDateFormat(), day.getStartDate())); }else {
-		 * sb.append(commonUtil.getDaysBetweenDates(day.getStartDate(),day.
-		 * getEndDate(),orgLocations.getDateFormat())); } } isValid = true; } if
-		 * (!isValid) { List<Holiday> holiDayList =
-		 * holidayService.validateHoliDayDates(fromDate, toDate, orgLocations);
-		 * if (holiDayList != null && holiDayList.size() > 0) { sb = new
-		 * StringBuilder(); for(Holiday hlday : holiDayList) {
-		 * if(Constants.HOLIDAY_RESTRICTED.equalsIgnoreCase(hlday.
-		 * getHolidayStatus())) {
-		 * if(hlday.getFromDate().equals(hlday.getToDate())) {
-		 * sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.
-		 * getDateFormat(), hlday.getFromDate())); }else {
-		 * sb.append(commonUtil.getDaysBetweenDates(hlday.getFromDate(),hlday.
-		 * getToDate(),orgLocations.getDateFormat())); } }
-		 * 
-		 * } isValid = true; } }
-		 */
-//		if (sb != null) {
-//			isTrue = sb.toString();
-//		}
 		return validateDateDTO;
 	}
 
