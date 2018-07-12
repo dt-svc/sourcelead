@@ -843,6 +843,17 @@ function addITChallanSectionItem() {
 	}*/
 }
 
+function editChallanSectionItems(){
+	if($('#itChallanSectionItemForm').validate(false, validationSettings)) {
+	var formData = getFormData("AddItChallanSectionItemForm");
+	callAddITChallanSectionItemRestService(formData, 2)
+	return true;
+} else {
+	return false;
+}
+}
+
+
 
 function callAddITChallanSectionItemRestService(formData, type) {
 	document.getElement

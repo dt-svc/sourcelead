@@ -66,8 +66,7 @@
 									<ul class="list-unstyled list-inline mt5 text-center">
 										<li><a title="Delete Row"
 											class="fa fa-trash text-danger deleteRow"></a></li>
-										<li><a title="Add Row"
-											class="fa fa fa-floppy-o text-primary"></a></li>
+										<li><a title="EditItem" class="fa fa fa-floppy-o text-primary"  id="itChallanSectionItemForm" onclick="$('.popMask').show(); $('.cusFielPopup').show();" =></a></li>
 									</ul>
 								</td>
 							</tr>
