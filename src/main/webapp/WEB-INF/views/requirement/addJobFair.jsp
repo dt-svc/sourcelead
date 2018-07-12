@@ -464,6 +464,7 @@
 				}
 			}
 			if (flag) {
+				var id = $("#id").val();
 				$("#notifyTo").parent().find("p").remove();
 				/* var formData = $($('#jobFairForm')[0]).serialize(); */
 				var requirements = [];
@@ -479,7 +480,7 @@
 					});
 				});
 				var data = {
-						id: $("#id").val(),
+						id: id,
 						name : $("#fairName").val(),
 						budget : $("#budget").val(),
 						description : $("#description").val(),
@@ -497,7 +498,11 @@
 					} else if (result.response === "AWKWARD") {
 						location.href = "/errorPage";
 					} else if (result.response === "SUCCESS") {
-						location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+						$(".success_pop span").html("JobFair " + (id > 0 ? "updated":"created") + " successfully...");
+						$(".success_pop").show();
+						setTimeout(function() {
+							location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+				 		}, 500);
 					} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {

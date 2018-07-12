@@ -1339,7 +1339,11 @@ function resetJobFilter(){
 			} else if (result.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (result.response === "SUCCESS") {
-				location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+				$(".success_pop span").html("JobFair status changed to " + (status === "1" ? "OPEN":"CLOSE"));
+				$(".success_pop").show();
+				setTimeout(function() {
+					location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+		 		}, 500);
 			} else if (result.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);
 			} else {
