@@ -100,7 +100,6 @@ public class DumpPublicRestCalls {
 	@RequestMapping(value = "/ws/dumpOrgAvgHrsForAllHolidays", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Holiday> dumpOrgAvgHrsForAllHolidays() throws Exception {
-		
 		logger.info("Start Time"+java.time.LocalDateTime.now());
 		List<Holiday> list = holidayDao.getAllHoliday();
 		for(Holiday day : list){
@@ -109,7 +108,6 @@ public class DumpPublicRestCalls {
 		}
 		logger.info("End Time"+java.time.LocalDateTime.now());
 		return list;
-		
 	}
 
 }
