@@ -126,7 +126,7 @@ public class OrglocationSignatoryDaoImpl implements OrglocationSignatoryDao{
 
 		Session session = this.sessionFactory.getCurrentSession();
 		//String query = "from OrglocationSignatory signatory where signatory.orgLocationId.id = :locationId";
-		String query="SELECT * FROM sourcelead.orglocation_signatory os where os.ORGLOCATION_ID=:locationId ";
+		String query="SELECT * FROM ORGLOCATION_SIGNATORY os where os.ORGLOCATION_ID=:locationId ";
 		List<OrglocationSignatory> orglocationSignatoryList =  session.createSQLQuery(query).addEntity(OrglocationSignatory.class).setLong("locationId", locationId).list();
 		//List<OrglocationSignatory> orglocationSignatoryList =  session.createQuery(query).setLong("locationId", locationId).list();
 		return orglocationSignatoryList;
