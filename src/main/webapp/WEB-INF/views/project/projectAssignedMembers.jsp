@@ -636,40 +636,13 @@ function toggleAssociates(source) {
 		var projectStartDate = '${projectStartDate}';
 		var projectEndDate = '${projectEndDate}';
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		 
+		
 		if(projectStartDate == ""){
 		  projectStartDate = $("#startDateStr").val();
-		  var projectStartDateString = projectStartDate.split("-");
-			
-			if(locationDate.match("yyyy-MM-dd")){
-				projectStartDate = projectStartDateString[0]+"-"+projectStartDateString[1]+"-"+projectStartDateString[2];
-		    }if(locationDate.match("dd-MM-yyyy")){
-		    	projectStartDate = projectStartDateString[2]+"-"+projectStartDateString[1]+"-"+projectStartDateString[0];
-		    }if(locationDate.match("MM-dd-yyyy")){
-		    	projectStartDate = projectStartDateString[1]+"-"+projectStartDateString[2]+"-"+projectStartDateString[0];
-		    }if(locationDate.match("yyyy-dd-MM")){
-		    	projectStartDate = projectStartDateString[0]+"-"+projectStartDateString[2]+"-"+projectStartDateString[1];
-		    }
-		  
 		}
 		
 		if(projectEndDate == ""){
 		  projectEndDate = $("#endDateStr").val();
-		  
-		    if(projectEndDate != null && projectEndDate != 'undefined' && projectEndDate != ''){
-		    	  var projectEndDateString = projectEndDate.split("-");
-		  		
-	    	   if(locationDate.match("yyyy-MM-dd")){
-	    		   projectEndDate = projectEndDateString[0]+"-"+projectEndDateString[1]+"-"+projectEndDateString[2];
-		  	    }if(locationDate.match("dd-MM-yyyy")){
-		  	    	projectEndDate = projectEndDateString[2]+"-"+projectEndDateString[1]+"-"+projectEndDateString[0];
-		  	    }if(locationDate.match("MM-dd-yyyy")){
-		  	    	projectEndDate = projectEndDateString[1]+"-"+projectEndDateString[2]+"-"+projectEndDateString[0];
-		  	    }if(locationDate.match("yyyy-dd-MM")){
-		  	    	projectEndDate = projectEndDateString[0]+"-"+projectEndDateString[2]+"-"+projectEndDateString[1];
-		  	    }
-		  	    
-		    }
 		}
 		
 	  
