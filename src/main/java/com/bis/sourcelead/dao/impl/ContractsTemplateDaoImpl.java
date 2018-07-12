@@ -10,11 +10,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -24,10 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dto.AccountDeductionsDTO;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
@@ -747,8 +748,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	public List<User> getSigningAuthoritiesForContract(Long orgLocationsId, Long tabId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		
-		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+	/*	 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
 	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
 	     
 	     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
@@ -756,16 +756,17 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	     List<Long> ownerRolesList = new ArrayList<Long>();
 	     
 	     for(Roles roles : rolesList){
-	    	 if(null != roles.getActionId()){
+	    	 if(roles.getActionId()!=null){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 /*for (String s : roles.getActionId().split(",")){
-	        		 roleActionsList.add(Long.parseLong(s));
-	        	 }*/
+	    		 //for (String s : roles.getActionId().split(",")){
+	        		// roleActionsList.add(Long.parseLong(s));
+	        	 //}
 	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
+
 	        	 if(roleActionsList.size() > 0){
 	        		 ownerRolesList.add(roles.getId());
 	        	 }
@@ -775,6 +776,16 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		 
 	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) and user.id IN (Select ols.userId.id from OrglocationSignatory ols where ols.authorizedType LIKE '%Contracts%' and ols.status='1')";
 	     List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).list();
+	     
+		
+//		//String Query = "SELECT U.* FROM SOURCELEAD_ACTIONS SA,ROLES R "
+//						+ " INNER JOIN  USER_ROLE UR ON UR.ROLE_ID = R.ID AND UR.USER_STATE != 'INACTIVE' AND UR.ORG_LOCATIONS_ID = R.ORG_LOCATION_ID "
+//						+ " INNER JOIN  USER U ON U.ID = UR.USER_ID  "
+//						+ " WHERE R.ORG_LOCATION_ID = :locationId AND SA.TAB_ID = :tabId "
+//						+ " AND (R.ID LIKE CONCAT(SA.ID,'%') OR R.ID LIKE CONCAT('%,',SA.ID,',%') OR R.ID LIKE CONCAT('%,',SA.ID)) "
+//						+"  AND U.ID IN(SELECT SO.USER_ID FROM ORGLOCATION_SIGNATORY SO WHERE SO.AUTHORIZED_TYPE LIKE '%Contracts%' AND SO.STATUS = 1 AND SO.ORGLOCATION_ID = :locationId) ";
+*/	String Query ="SELECT u.* FROM USER u,USER_ROLE ur where u.ID IN (SELECT so.USER_ID from ORGLOCATION_SIGNATORY so where so.AUTHORIZED_TYPE LIKE '%Contracts%' and so.ORGLOCATION_ID=:ORGLOCATION_ID and so.STATUS=1 )";
+		List<User> userRoleList = session.createSQLQuery(Query).addEntity(User.class).setLong( "ORGLOCATION_ID", orgLocationsId).list();
 	     return userRoleList;
 	}
 

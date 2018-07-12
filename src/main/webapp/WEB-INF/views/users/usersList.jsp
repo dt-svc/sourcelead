@@ -125,9 +125,7 @@ function getUsersSearchResult(searchValue){
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-      <div class="pull-left">
-        <h2>Associates </h2>
-      </div>
+      <div class="pull-left"><h2>Associates </h2></div>
       
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Associates List </div>
     </section>
@@ -166,17 +164,6 @@ function getUsersSearchResult(searchValue){
       </div>
       </section>
       
-      	<div class="pull-left cand-advsrch advsrch_chosen">
-		<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onClick="resetFilter();" title="Refresh">
-			    <span class="fa fa-refresh"></span>
-			</button>
-			
-			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')"> 
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
-				</a>
-			</sec:authorize>
-				
-	    </div>
 	    
 				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
 				<h5 class="headerAdsrch">Filters
@@ -318,55 +305,67 @@ function getUsersSearchResult(searchValue){
 			
       
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
-      <div class="positionRelative table_head section-action-btns section-action-btns-associates clearfix">
+      <div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
 	                    
                   <c:if test="${orgLocationsCount > 1}">
 		                    <li>
-								<a class="action" onclick="getActions();"
-									href="javascript:void(0)"><i class="fa fa-user-plus"></i>&nbsp;Add<i
-									class="fa fa-caret-down"></i>
-								</a>
+								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span> 
-									<a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-plus"></i>Add Associate</a>
-									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>"><i class="fa fa-plus"></i>Add From Loc</a>
+									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
 									</span>
 								</div>
 							</li>
 				</c:if>
 				
 				<c:if test="${orgLocationsCount == 1}">
-				<li><a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add Associate</a></li>
+				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
 				</c:if>		
 	           
 						
 	       </sec:authorize>
-
-		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-	                      <li title="Import"><a href="<c:url value='${appPath}/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+			
+			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')"> 
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
+			</sec:authorize>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+							<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+						</sec:authorize>	
+						<sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
+							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
+						</sec:authorize>
+						</span>
+					</div>
+				</li>
+				
+<%-- 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+	           <li><a href="<c:url value='${appPath}/uploadForm'/>" class="btn btn-default btn-sm repFilIcon newExpIcon" title="Import"><i class="glyphicon glyphicon-import expIcon"></i></a></li>
 	         </sec:authorize>		  
 		  
 		   <sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
-		   <li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			    <div id="exportPop" class="user_exp">
-				   <ul class="ul_padding">
-				   <li onclick="exportToPdf();" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-				   <li onclick="exportUserData();" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-				   </ul>
-				</div>
+		   <li class="staPdfExl">
+		   		<i onclick="exportToPdf();" title="PDF" class="fa fa-file-pdf-o text-danger"></i>
+		   		<i onclick="exportUserData();" title="Excel" class="fa fa-file-excel-o text-primary"></i>
 		   </li>
-		    </sec:authorize>
-		  <li class="positionRelative">
-			  <div class="dynamic_search">
-	   			<input type='text' placeholder='Search' id='dynamicUserDataTableSearch'/>
-	   			<span class="cursorPointer" title="Search"><i class="fa fa-search" onClick="getDynamciUserList();"></i></span>
-			  </div>
-		  </li>
+		    </sec:authorize> --%>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dynamicUserDataTableSearch'/><span class="repSearchIcon" onClick="getDynamciUserList();"></span></li>
         </ul>
       </div>
+      
+      
+      
+      
               <div id="dynamicUserListViewDiv" class="filter_position positionRelative"></div> 
           </div>  
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
@@ -1403,5 +1402,17 @@ function getActions(){
 	 	e.stopPropagation();
  	});	
 }
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	
+	$("html").click(function(){
+		$(".newActPop").slideUp(200);
+	});
+	$(".overIcon, .newActPop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
+
 </script>
     
