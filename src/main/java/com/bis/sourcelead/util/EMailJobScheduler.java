@@ -701,8 +701,8 @@ public class EMailJobScheduler {
 	 * this is for Admin
 	 * Fires on Friday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
-	//@Scheduled(cron = "0 45 23 ? * FRI")
-	@Scheduled(cron = "0 0/2 * 1/1 * ?")
+	@Scheduled(cron = "0 45 23 ? * FRI")
+	//@Scheduled(cron = "0 0/2 * 1/1 * ?")
 	public void runJobSchedulerByFRIDay() {
 		logger.info("******************  Notification Job Scheduler WednesDay of every week of the Month started (Weekly) to Admin..! **********");
 		try {
