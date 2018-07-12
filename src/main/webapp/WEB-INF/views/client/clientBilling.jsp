@@ -1081,7 +1081,14 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	     if(invoiceParentId == 'undefined'){
 	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }else{
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
+	    	 if(invoiceStatus == 'DRAFT'){
+	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	    	  }else if(invoiceParentId != 'null'){
+	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
+	    	  }else{
+	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
+
+	    	  }
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
@@ -1097,9 +1104,11 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
 		 result = result +'      <li><a target="_blank" href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 		 '</sec:authorize>'
-		 
+		  if(invoiceStatus != 'DRAFT')
+	     {
 		 result = result +'      <li><a title="Link Invoice" onclick="linkInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight"></i>Link Invoice</a></li>';
-	     result = result +'    </ul>';
+	     }
+		 result = result +'    </ul>';
     	 $("#popupDiv"+invoiceUUID+"").append(result);
     	 showMenu();
 }
