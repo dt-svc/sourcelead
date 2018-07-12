@@ -327,18 +327,21 @@ public class ProjectsController {
 					
 					if(StringUtils.isNotEmpty(projectClientUUID)){
 						 projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
-						if(projectClients != null && projectClients.getOrgRelationId() != null){
-							if(projectClients.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
-								clientOrgLocations = projectClients.getOrgRelationId().getLocationId();
-							}else{
-								clientOrgLocations = projectClients.getOrgRelationId().getResponderLocationId();
-							}
-							
-							if(clientOrgLocations.getStatus() != null && clientOrgLocations.getStatus().equals(Status.ACTIVE)){
-								isClientOrgActive = Constants.YES;
-							}else {
-								isClientOrgActive = Constants.NO;
-							}
+						 if(projectClients != null && projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+							 if(projectClients != null && projectClients.getOrgRelationId() != null){
+									if(projectClients.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
+										clientOrgLocations = projectClients.getOrgRelationId().getLocationId();
+									}else{
+										clientOrgLocations = projectClients.getOrgRelationId().getResponderLocationId();
+									}
+									
+									if(clientOrgLocations.getStatus() != null && clientOrgLocations.getStatus().equals(Status.ACTIVE)){
+										isClientOrgActive = Constants.YES;
+									}else {
+										isClientOrgActive = Constants.NO;
+									}
+						 }
+						
 						}
 						
 						
@@ -379,8 +382,8 @@ public class ProjectsController {
 					model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());
 					
 					if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
-						ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
-						if(StringUtils.isNotBlank(pc.getIsProjectShared()) && pc.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+						ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+						if(pc != null && StringUtils.isNotBlank(pc.getIsProjectShared()) && pc.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 							model.addObject("postedSharedProjectOrgLocationId", orgLocations.getId());
 						}
 								
