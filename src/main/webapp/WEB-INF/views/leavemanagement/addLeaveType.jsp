@@ -1679,7 +1679,7 @@ function getNoOfDaysPerPeriodExperienced(){
  function validateAutoApprove(){
 	 var ckbox = $('#autoApproveChekBox');
 		if (ckbox.is(':checked')) {
-			$("#grade").attr('checked', true);
+			$("#grade").prop('checked', true);
 			getGradeList();
 		}else{
 			$("#grade").removeAttr("checked");

@@ -1327,6 +1327,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			/* ============================from immigration Table================= */
 			immigrationDTO.setImmigrationId(immigration.getId().toString());
 			immigrationDTO.setCandidateId(immigration.getCandidate().getId().toString());
+			immigrationDTO.setCandidateNameEmail(immigration.getCandidate().getFullName()+"("+immigration.getCandidate().getEmail()+")");
 			// check whether the template id own or not
 			Integer count = immigrationCommonDao.getTableRecordCountByTemplateId("ImmigrationTemplate",
 					immigration.getImmigrationTemplateId().getId(),

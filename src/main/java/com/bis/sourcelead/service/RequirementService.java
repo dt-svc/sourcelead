@@ -5,10 +5,13 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
@@ -65,8 +68,10 @@ public interface RequirementService {
 
     public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 
-    public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception;
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception;
 
+    public List<String> getJobFairDaysListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId);
+    
     public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode, String statusType) throws Exception;
 
     public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, Long userId) throws Exception;
@@ -201,5 +206,25 @@ public interface RequirementService {
 
     
     public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,Long userId,OrgLocations orgLocations) throws Exception;
+
+    /*public long addRequirementToJobFairs(List<JobFairDTO> jobFairDTOList);*/
+    
+    /*public long addRequirementToJobFair(long jobFairId, long requirementId, String[] jobFairDates);*/
+    
+    public Response<String> saveJobFair(JobFairDTO jobFairDTO, User user, OrgLocations orgLocation);
+    
+    public ResponseList<JobFairDTO> getJobFairsList(JobFairDTO jobFairDTO, boolean includeInactive);
+    
+    public JobFairDTO getJobFairByUUID(String uuid);
+    
+    public boolean changeJobFairStatus(Long jobFairId, int status);
+
+	public List<JobFair> getJobFairsListByRequirementId(Long requirementId);
+
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat);
+
+	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date);
+
+	public List<JobFairDTO> getJobFairsDTOListByRequirementId(long requirementId);
 
 }

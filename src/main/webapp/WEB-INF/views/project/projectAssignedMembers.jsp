@@ -635,15 +635,17 @@ function toggleAssociates(source) {
 	function addRequestedResources() {
 		var projectStartDate = '${projectStartDate}';
 		var projectEndDate = '${projectEndDate}';
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		
 		if(projectStartDate == ""){
 		  projectStartDate = $("#startDateStr").val();
 		}
+		
 		if(projectEndDate == ""){
 		  projectEndDate = $("#endDateStr").val();
 		}
 		
-		
-			   
+	  
 	      for(var e in checkedAssociatedUsers) {
 	    	   if(!e || !checkedAssociatedUsers[e] || checkedAssociatedUsers[e] === "")
 				   continue;
@@ -714,7 +716,7 @@ function toggleAssociates(source) {
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			
-			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			
 			  var finalDateFormatAssignEmpUpdate = '';
 			  if(locationDate.match("yyyy-MM-dd")){
 				  finalDateFormatAssignEmpUpdate = 'yy-mm-dd';

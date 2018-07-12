@@ -162,8 +162,14 @@ top: 18px;height: 32px; line-height: 18px;
 }
 </style>
 <script>
- window.onload = function() { 
- 	requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch",'${sourceleadUrl}');
+ window.onload = function() {
+	 var viewTab = "${viewTab}";
+		if(viewTab === 'jobFair') {
+			/* alert("viewTab : " + viewTab); */
+			jobFairListCheck();
+		} else {
+ 			requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch",'${sourceleadUrl}');
+		}
 };
 </script>
 
@@ -172,6 +178,19 @@ function statusvalidating(id){
 	changeStatusAuthorisation(id);
 }
 </script>
+
+<div class='project_inn_mask'></div>
+
+<div id='changeStatusPopup' class='remove_user_pop remove_user_pop_a'>
+	<p>Are are sure you want to delete the JobFair?</p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b>
+		<input id='confirmId' type='button' value='Ok' onclick='changeJobFairStatus()' class="pull-left">
+		<input id="cancelStatusPopup" class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup()'>
+	</b>
+</div>
+
+
 <jsp:include page="requirementTable.jsp" />
 <jsp:include page="requirementAssignedTo.jsp"/>
 <!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
@@ -180,24 +199,35 @@ function statusvalidating(id){
 <div id="popUp"></div>
 <section class="content-wraper">
 	<section class="content-header clearfix">
+		<div class="pull-left">
+        	<h2>Jobs</h2>
+      	</div>
 		<c:if test="${!empty msg}">
 			<div class="success_pop" id="selector2" style="display: block;">
 				<div class="pull-left"><i class="fa fa-check-circle"></i></div>
 				<div class="pull-left" style="width:325px; padding:10px 0;"><span>${msg}</span></div>
 			</div>
 		</c:if>
-		<div class="pull-left">
+		
+		<%-- <div class="pull-left">
 			<h2 class="pull-left paddingRight">Jobs List</h2>
 			<span class="paddingLeft pull-left">|<a class="paddingLeft"
 				href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing
 					Jobs</a></span>
-		</div>
+		</div> --%>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo; Job List
 		</div>
 	</section>
-	<div class="clearfix">
+	
+	<ul class="project-tabs-menu projecttabs-custom">
+            <li class="current" id="jobsTab"><a href="javascript:void(0)" onclick="requirementListCheck('','','','${sourceleadUrl}');">Jobs</a></li>
+            <li id="jobFairTab"><a href="javascript:void(0)"  onclick="jobFairListCheck();">Job Fair</a></li>
+            <div class="clearfix"></div>
+          </ul>
+	
+	<div class="clearfix" id="filtersDiv">
 		<div class="pull-left cand-advsrch advsrch_chosen">
 			<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr pull-left" onClick="clearList();" title="Refresh">
 			    <span class="fa fa-refresh"></span>
@@ -458,8 +488,8 @@ function statusvalidating(id){
 				</div>
 			</form:form>
 	</div>
-	<div class="timesheet_out">
-		<div class="vendor_wrap">
+	<div class="timesheet_out" id="jobsTabContent">
+		<div class="vendor_wrap project_tabs">
 			<div class="timesheet_head timesheetHead_filters topfilters">
 				<ul class="padding_right">
 					<sec:authorize
@@ -577,6 +607,7 @@ function statusvalidating(id){
 					</sec:authorize>
 
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+						<li><a href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing Jobs</a></li>
 						<li><a href="<c:url value='${appPath}/requirement'/>"><i
 								class="fa fa-plus"></i>Add Job</a></li>
 					</sec:authorize>
@@ -594,8 +625,8 @@ function statusvalidating(id){
 							class="glyphicon glyphicon-export"></i>
 							<div id="exportPop">
 								<ul>
-									<li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-									<li onclick="exportToExcel();"><i
+									<li onclick="exportToPdf(1);"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+									<li onclick="exportToExcel(1);"><i
 										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
 								</ul>
 							</div></li>
@@ -616,7 +647,39 @@ function statusvalidating(id){
 		</div>
 	</div>
 	
-	
+	<div class="timesheet_out" id="jobFairTabContent">
+		<div class="vendor_wrap">
+			<div class="timesheet_head timesheetHead_filters topfilters">
+				<ul class="padding_right">
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+						<li><a href="<c:url value='${appPath}/addJobFair'/>"><i class="fa fa-plus"></i>Job Fair</a></li>
+					</sec:authorize>
+
+					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
+						<li title="Export" class="mrPOP" id="mypopJobFair"><i
+							class="glyphicon glyphicon-export"></i>
+							<div id="exportPopJobFair">
+								<ul>
+									<li onclick="exportToPdf(2);"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+									<li onclick="exportToExcel(2);"><i
+										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+								</ul>
+							</div></li>
+					</sec:authorize>
+					<li>
+						<div class='dynamic_search'>
+			        		<input type='text' placeholder='Search' id='jobFairDataTableSearch'/>
+		   					<span class="cursorPointer padding_right" title="Search"><i class="fa fa-search padding_right" onClick="jobFairListCheck();"></i></span>
+			        	</div>
+					</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<div class="require_wrap_table datatable_filter">
+				<div id="jobFairList"></div>
+			</div>
+		</div>
+	</div>
 	<div class="side_mask">
   <div class="proj_close" onClick="activeTab();"></div>
 </div>
@@ -740,77 +803,88 @@ function changeStatus(requirementId, requirementStatus){
 	};
 </script>
 <script>
-$('#mypop').click(function(){
+	$('#mypop').click(function(){
 		$("#exportPop").toggle();
 		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
- });
- $("html").click(function(){
-	$("#exportPop").hide(200);
- });
- $("#exportPop, #mypop").click(function(e) {  
-     e.stopPropagation();
- });
+ 	});
+	$('#mypopJobFair').click(function(){
+		$("#exportPopJobFair").toggle();
+		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+ 	});
+	$("html").click(function(){
+		$("#exportPop").hide(200);
+		/* $("#exportPopJobFair").hide(200); */
+	});
+	$("#exportPop, #exportPopJobFair, #mypop").click(function(e) {  
+	    e.stopPropagation();
+	});
 </script>
 <script>
-function exportToPdf(){
-	var req = $("#noReq").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-	  var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() 
-	    {
+function exportToPdf(type) {
+	if(type === 1) {
+		var req = $("#noReq").val();
+	 	var sourceleadUrl ='${sourceleadUrl}';
+	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
+	  	var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() {
 			status.push($(this).val());
 	    });
-	 var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() 
-	    {
+	 	var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage > 0){
-		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
-		}else{
-			 var result = "";
-				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Jobs List is Empty</p>";
-				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-				result = result +"	</div>";
-				$("#popUp").append(result);
-				$("#empty_requirement_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200);
+		if(requirementEmptyMessage > 0) {
+			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
+		} else {
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Jobs List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_requirement_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
 		}
+	} else {
+		/* alert("Export JobFair to PDF"); */
+		$(".buttons-pdf").click();
+	}
 }
 </script>
 <script>
-function exportToExcel(){
-	var req = $("#noReq").val();
-	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	  var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() 
-	    {
+function exportToExcel(type) {
+	if(type === 1) {
+		var req = $("#noReq").val();
+		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
+		var sourceleadUrl ='${sourceleadUrl}';
+	  	var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() {
 			status.push($(this).val());
 	    });
-	 var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() 
-	    {
+	 	var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage > 0){
+		if(requirementEmptyMessage > 0) {
 			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=xls";	
-		}else{
-			 var result = "";
-				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Jobs List is Empty</p>";
-				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-				result = result +"	</div>";
-				$("#popUp").append(result);
-				$("#empty_requirement_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200);
+		} else {
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Jobs List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_requirement_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
 		}
+	} else {
+		/* alert("Export JobFair to Excel"); */
+		$(".buttons-excel").click();
+	}
 }
 </script>
 <script type="text/javascript">
@@ -828,7 +902,7 @@ function cancel(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
-	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop").slideUp(200);
+	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop, #exportPopJobFair").slideUp(200);
 	
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);
@@ -1011,6 +1085,7 @@ function refreshGoogleApiCity(cityId){
  	<ul id="assignTo" class="list-unstyled">
 		<li class="radioIput positionRelative"><input id="r1" type="radio" name="requirementAssignTo" value="Alljobs" ><label for="r1">All Jobs </label></li>
 		<li class="radioIput positionRelative"><input id="r2" type="radio" name="requirementAssignTo" value="Myjobs" ><label for="r2">My Jobs </label></li>
+		<!-- <li class="radioIput positionRelative"><input id="r3" type="radio" name="requirementAssignTo" value="CrowdsourcingJobs" ><label for="r3">Crowdsourcing Jobs</label></li> -->
 	</ul>
 	</div>
  </div>
@@ -1223,6 +1298,55 @@ function resetJobFilter(){
 	
 	requirementList('list','${sourceleadUrl}');
 }
+</script>
+<script type="text/javascript">
+	var ele = "";
+	function showChangeJobFairStatusPopup(jobFairId, status, oldValue, element) {
+		ele = element;
+		var statusText = "";
+		if(status === "0") {
+			statusText = "Are you sure to make the JobFair status to 'CLOSE' ?";
+		} else if(status === "1") {
+			statusText = "Are you sure to make the JobFair status to 'OPEN' ?";
+		} else {
+			statusText = "Are you sure to delete the JobFair ?";
+		}
+		$("#changeStatusPopup p").html(statusText);
+		$("#confirmId").data("job_fair_id", jobFairId);
+		$("#confirmId").data("status",status);
+		$("#cancelStatusPopup").data("old_value", oldValue);
+		$("#changeStatusPopup").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
+	function closeChangeStatusPopup() {
+		var oldValue = $("#cancelStatusPopup").data("old_value");
+		$(ele).val(oldValue);
+		$("#changeStatusPopup").slideUp(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
+	
+	function changeJobFairStatus() {
+		var jobFairId = $("#confirmId").data("job_fair_id");
+		var status = $("#confirmId").data("status");
+		var data = {
+				jobFairId: jobFairId,
+				status : status
+		};
+		$.post(sourceleadUrl + "/changeJobFairStatus?", data, function(result) {
+			if (result.response === "SESSION_TIMEDOUT") {
+				location.replace(sourceleadUrl);
+			} else if (result.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+		});
+	}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
