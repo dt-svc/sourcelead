@@ -293,6 +293,7 @@ public class ProjectPlanningRestController {
 		    	 }catch (Exception e) {
 						response.setResponse(Result.AWKWARD.name());
 						response.setResponseMessage(Result.AWKWARD.getValue());
+						e.printStackTrace();
 					}
 		     }else {
 					response.setResponse(Result.SESSION_TIMEDOUT.name());
@@ -334,6 +335,7 @@ public class ProjectPlanningRestController {
 				}catch (Exception e) {
 					response.setResponse(Result.AWKWARD.name());
 					response.setResponseMessage(Result.AWKWARD.getValue());
+					e.printStackTrace();
 				}
 		    } else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
@@ -359,6 +361,7 @@ public class ProjectPlanningRestController {
 		    }catch (Exception e) {
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
 			}
 		  
 		  return response;
@@ -1177,6 +1180,7 @@ public class ProjectPlanningRestController {
 	        	}catch (Exception e) {
 					response.setResponse(Result.AWKWARD.name());
 					response.setResponseMessage(Result.AWKWARD.getValue());
+					e.printStackTrace();
 				}
 	        	
 			    
@@ -1207,6 +1211,7 @@ public class ProjectPlanningRestController {
 			    	   }catch (Exception e) {
 							response.setResponse(Result.AWKWARD.name());
 							response.setResponseMessage(Result.AWKWARD.getValue());
+							e.printStackTrace();
 						}
 			       } else {
 						response.setResponse(Result.SESSION_TIMEDOUT.name());
