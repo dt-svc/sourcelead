@@ -34,7 +34,7 @@
     color: #737373;
     border-color: #c5c5c5;
     background: #ededed url('../img/buttons-disabled.png') no-repeat 0 center;
-	cursor: default;
+	cursor: not-allowed;pointer-events: none;
 }
 
 .plupload_add {

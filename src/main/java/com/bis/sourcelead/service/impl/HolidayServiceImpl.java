@@ -67,7 +67,7 @@ public class HolidayServiceImpl implements HolidayService{
 		if(holidayDTO != null)
 		{
 			
-			
+			holiday.setOrgAvgHrs(orgLocations.getAverageWorkingHours());
 			if(StringUtils.isNotBlank(holidayDTO.getOrgLocationId()))
 			{
 				holiday.setOrgLocations(orgLocations);
