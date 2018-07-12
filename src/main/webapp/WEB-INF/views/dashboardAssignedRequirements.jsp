@@ -11,7 +11,7 @@
 <div class="mb col-md-12 clearfix" >
       <!-- Assigned Requirements -->
       <div class=" dashboard-widget col-md-12" id="assignedRequirementsDiv">
-        <h4 class="clearfix">Jobs</h4>
+        <h4 class="pull-left">Jobs</h4>
         <!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span> -->
         
