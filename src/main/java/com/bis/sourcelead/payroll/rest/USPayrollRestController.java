@@ -67,6 +67,7 @@ import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -885,6 +886,26 @@ public class USPayrollRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<PaysheetFrequencyDTO>  resObj = uSPaysheetService.submitPaysheet(orgLocation,paysheetFrequencyDTO,loginUser);
 		return resObj;
+	}
+	
+	@RequestMapping(value = "/addAssociateDeduction")
+	public ModelAndView addAssociateDeduction(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("userId", userId);
+		model.setViewName("users/addAssociateSummaryDeduction");
+		return model;
+	}
+	
+	@RequestMapping(value = "/addAssociateContribution")
+	public ModelAndView addAssociateContribution(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("userId", userId);
+		model.setViewName("users/addAssociateSummaryContribution");
+		return model;
 	}
 	
 }

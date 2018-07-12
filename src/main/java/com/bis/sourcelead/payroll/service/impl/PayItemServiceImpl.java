@@ -103,7 +103,11 @@ public class PayItemServiceImpl implements PayItemService{
 					payItemDTO.setAllowOverTime(item.getAllowOverTime());
 					payItemDTO.setDescription(item.getDescription());
 					payItemDTO.setPayItemUUID(item.getPayItemUuid());
-					if(item.getAllowEmployeementType().contains(associateEmpType)) {
+					if(StringUtils.isNotBlank(associateEmpType)){
+						if(item.getAllowEmployeementType().contains(associateEmpType)) {
+							list.add(payItemDTO);
+						}
+					}else {
 						list.add(payItemDTO);
 					}
 					
