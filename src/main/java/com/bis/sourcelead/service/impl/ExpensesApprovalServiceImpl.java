@@ -807,10 +807,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 						
 						 
 //						 globalVarsMap.put("loginUrl",amopuntRate.toString());
-					/*	 ExpensesApproverHierarchy eah = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(reopenedUser.getId(), expenses.getId(), orgLoc.getId(), "");
-						 globalVarsMap.put("reason",eah.getReopenReason());*/
+						 ExpensesApproverHierarchy eah = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(reopenedUser.getId(), expenses.getId(), orgLoc.getId(), "");
+						 globalVarsMap.put("reason",eah.getReopenReason());
 						 
-						 
+						 List<ExpensesApproverHierarchy> eah1 = expensesApprovalDao.makeReopenReasonStatusNull( eah.getExpenseId().getId());
 						 //setting the Recipient information
 						 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 						 EmailScenario emailScenario = null;
@@ -930,11 +930,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 					}
 			 
 			
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
+				 //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				 String signature = null;
+				 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+					 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+				 }
+				 String url = sourceleadUrl;
+				 
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg(), orgLoc);

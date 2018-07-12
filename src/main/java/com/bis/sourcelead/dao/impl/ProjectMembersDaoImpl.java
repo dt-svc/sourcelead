@@ -1458,10 +1458,10 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				+ " pm.projects.id = :projectId and pm.masterCandidateId.id = :masterCandidateId and (loc.id = :locationId  " ;
 	
 		if(StringUtils.isNotEmpty(isGlobalAccess)) {
-			query = query+" OR  loc.org.id = :orgId ";
+			query = query+" OR  loc.org.id = '"+orgId+"'";
 		}
 		query = query+")";
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setLong("orgId", orgId).setLong("masterCandidateId", masterCandidateId).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setLong("masterCandidateId", masterCandidateId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {
 			pm  = pmList.iterator().next();

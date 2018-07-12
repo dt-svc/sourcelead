@@ -478,8 +478,8 @@ $(document).ready(function(){
           <div class="form-group row">
               <label class="col-md-4">Signing Authority1<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="sequentialOwner1" name="sequentialOwner1" data-placeholder="Select signing authority1" data-validation="required" onchange="refreshSigningAuthority2();" field-name="Owner">
-                  <option value=''>Select Signing Authority1</option>
+                  <select class="chosen-select form-control" id="sequentialOwner1" name="sequentialOwner1" data-placeholder="Select signing authority1" data-validation="required" onchange="refreshSigningAuthority2();" field-name="Sequential Owner1">
+<!--                   <option value='' disabled>Select Signing Authority1</option> -->
                   <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.sequentialOwner1}">
 	                 	 <option value="${user.id}" ${user.id  == contract.sequentialOwner1 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
@@ -495,8 +495,8 @@ $(document).ready(function(){
           <div class="form-group row">
               <label class="col-md-4">Signing Authority2<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="sequentialOwner2" name="sequentialOwner2" data-placeholder="Select signing authority2" onchange="changeSaveButton();" data-validation="required" field-name="Owner">
-                  <option value=''>Select Signing Authority2</option>
+                  <select class="chosen-select form-control" id="sequentialOwner2" name="sequentialOwner2" data-placeholder="Select signing authority2" onchange="changeSaveButton();" data-validation="required" field-name="Sequential Owner2">
+<!--                   <option value='' disabled>Select Signing Authority2</option> -->
                   <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.sequentialOwner2}">
 	                 	 <option value="${user.id}" ${user.id  == contract.sequentialOwner2 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
@@ -849,7 +849,7 @@ function getParallelApprovers(){
 	$('#sequentialOwner2').trigger("chosen:updated");
 // 	$('#parallelOwner').trigger("chosen:updated");
 	
-	$('#parallelOwner').removeAttr('data-validation');
+	$('#parallelOwner').removeAttr('data-validation-optional');
 	$('#parallelOwner').attr('data-validation',"required");
 	$('#sequentialOwner2').removeAttr('data-validation');
 	$('#sequentialOwner2').attr('data-validation-optional',"true");
@@ -869,9 +869,9 @@ function getSequentialApprovers(){
 //	 	$('#sequentialOwner1').trigger("chosen:updated");
 //	 	$('#sequentialOwner2').trigger("chosen:updated");
 		$('#parallelOwner').trigger("chosen:updated");
-		$('#sequentialOwner1').removeAttr('data-validation');
+		$('#sequentialOwner1').removeAttr('data-validation-optional');
 		$('#sequentialOwner1').attr('data-validation',"required");
-		$('#sequentialOwner2').removeAttr('data-validation');
+		$('#sequentialOwner2').removeAttr('data-validation-optional');
 		$('#sequentialOwner2').attr('data-validation',"required");
 		$('#parallelOwner').removeAttr('data-validation');
 		$('#parallelOwner').attr('data-validation-optional',"true");

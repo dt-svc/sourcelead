@@ -630,8 +630,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setSharedLocationId(loginOrgLocation);
 			projects.setIsProjectShared(Constants.YES);
 			projects.setIsClientProject(Constants.YES);
-			OrgRelations orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(loginOrgLocation.getId(), clientOrgLocationId);
-			
+			OrgRelations orgRelations = null;
+			orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(loginOrgLocation.getId(), clientOrgLocationId);
+			if(orgRelations == null) {
+				orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(loginOrgLocation.getId(), clientOrgLocationId);
+			}
 			if(projects.getId() == null) {
 				Set<ProjectClients> clientProjectClientsList = getProjectClientsForSharedClientProject(projectsDTO,projects,loginOrgLocation,clientOrgLocationId,user,orgRelations);
 				projects.setSharedClientProjectClients(clientProjectClientsList);
@@ -1357,7 +1360,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    projectsDTO.setIsTicketNumberRequired(projects.getIsTicketNumberRequired());
 	    if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 	    	 ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
-	    	 if(StringUtils.isNotBlank(pc.getIsProjectShared()) && pc.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+	    	 if(pc != null && StringUtils.isNotBlank(pc.getIsProjectShared()) && pc.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 	    		 projectsDTO.setIsProjectShared(projects.getIsProjectShared());
 		    	 projectsDTO.setSharedProjectCreatedOrgLocId(loginOrgLocations.getId());
 	    	 }

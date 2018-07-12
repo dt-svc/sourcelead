@@ -27,9 +27,11 @@ import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
@@ -338,7 +340,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		    			eah.setExpenseStatus(Submission_Status.REOPENED);
 		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.REOPENED);
 		    			eah.setReopenRejectedReason(null);
-		    			eah.setReopenReason(null);
+		    			//eah.setReopenReason(null);
 		    		}
 	    		}
 	    		try {
@@ -735,6 +737,28 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return expensesApproverHierarchy;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override	
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ExpensesApproverHierarchy> makeReopenReasonStatusNull(Long expenseId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ExpensesApproverHierarchy> eah=null;
+		String query = "from ExpensesApproverHierarchy eah  where eah.expenseId =:expenseId"; 
+		 eah = session.createQuery(query).setLong("expenseId", expenseId).list();
+			if(eah != null && !eah.isEmpty())
+			{
+				for(ExpensesApproverHierarchy e :eah) {
+					e.setReopenReason(null);
+					session.saveOrUpdate(e);
+				}
+				
+			}
+			return eah;
+		
+		
 	}
 
 

@@ -644,12 +644,18 @@ function invoicePagination(url){
 					}
 	    		     
 	    	  	    result = result +'         <td>';
-	    	  	    if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+	    	  	    
+	    	  	  if(report.invoiceStatus == "Rejected" && report.invoiceParentId != null){
+						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
+						'</sec:authorize>' ;
+					}
+	    	  	  else if(report.invoiceStatus == "DRAFT" || (report.invoiceStatus == "Rejected" && report.invoiceParentId == null)){
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor2"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 						'</sec:authorize>' ;
 					}
-					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
+	    	  	  else if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
 						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
 						'</sec:authorize>' ;
@@ -854,7 +860,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	 	'</sec:authorize>'
 	 	
 	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
-	     result = result+'<li><a target="_blank" href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
+	     result = result+'<li><a download href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 	     '</sec:authorize>'
 	     if(invoiceStatus != 'DRAFT')
 	     {

@@ -724,7 +724,5 @@ function generateTemplateForm(sourceleadUrl,templateId) {
     
     
 }
-
-
 </script>
 <jsp:include page="../masterFooter.jsp" />	

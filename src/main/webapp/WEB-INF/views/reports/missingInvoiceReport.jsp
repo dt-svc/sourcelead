@@ -2,7 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <script src="/resources/amcharts/amcharts.js"></script>
 <script src="/resources/amcharts/serial.js"></script>
 <script src="/resources/amcharts/plugins/export/export.min.js"></script>
@@ -71,7 +70,7 @@ $(document).ready(function(){
 
         </div>
         <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingInvoiceReportData();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingInvoiceReportData();">Run</button>
 		</div>
 		<!-- <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
@@ -115,6 +114,7 @@ $(document).ready(function(){
   
   <script>
 function missingInvoiceReportData(){
+	  $("#total").html("0.00"); // reset the total value when applied filters.
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
@@ -148,7 +148,6 @@ function prepareMissingInvoiceData(url){
 		result = result + '<th>Project Frequency</th>';
 		result = result + '<th>Date</th>';
 		result = result + '<th>Total Amount</th>';
-		result = result + '<th>Action</th>';
 		result = result + '</tr>';
         result = result +"</thead>";
         result = result +"<tbody>"; 
@@ -180,8 +179,7 @@ function missingInvoice(url){
             { "data": "projectName"},
             { "data": "frequencyDate"},
             { "data": "date"},
-            { "data": "totalAmount" },
-            { "data": "action"}
+            { "data": "totalAmount"}
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -194,6 +192,8 @@ function missingInvoice(url){
 	    	  		}else{
 	    	  			 result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 	    	  		}
+	    	  		if(opt.totalCalAmount >0 )
+		    	  		$("#total").html(opt.totalCalAmount.toFixed(2));
 		             return result;
 	    	  	}
 	      },{
@@ -261,25 +261,14 @@ function missingInvoice(url){
                 		var result = "";
                 		var total = 0; 
                 		if(opt.invoiceAmount !=null && opt.invoiceAmount !='' && opt.invoiceAmount != 'undefined'){
-                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.invoiceAmount+'</div></td>';	
-                			 total = parseFloat(total)+parseFloat(opt.invoiceAmount);
-                			 $("#total").html(total.toFixed(2));
+                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.invoiceAmount.toFixed(2)+'</div></td>';	
                 		}else{
                 			 result = result + ' <td><div class="tbldata-dotdot-sm"">0.00</div></td>';
                 		}
 						
     	              return result;
                 }
-          },{
-	    	  	"targets": colIndex++,
-	    	  	"data": "action",
-	    		"sortable": false,
-	    	  	"render": function(data, type, opt, meta) {
-	    	  		var result = "";
-					 result = result + '<td><div class="tblminwidth-50">Action</div></td>';
-  	              return result;
-	    	  	}
-	    	  } ],
+          }],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[0,'desc']],

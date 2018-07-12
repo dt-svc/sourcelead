@@ -37,5 +37,8 @@ public interface ExpensesApprovalDao {
     
     public ExpensesApproverHierarchy getApprovedExpenseByExpenseIdAndLocationId(Long expenseId,Long locationsId);
 
+
+	 public List<ExpensesApproverHierarchy> makeReopenReasonStatusNull(Long id);
+
     //ExpensesApproverHierarchy getExpensesApproverHierarchyByExpenseIdAndApproverUserId(Long expenseId,Long approverUserId);
 }

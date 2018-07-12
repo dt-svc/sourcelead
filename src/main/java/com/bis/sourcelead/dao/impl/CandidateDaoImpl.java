@@ -29,6 +29,7 @@ import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -990,6 +991,15 @@ public class CandidateDaoImpl implements CandidateDao {
 		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.status ='1' and candidate.isAssociate = 'Y' ORDER BY candidate.id DESC";  
         return  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long orgLocationId, String name) {
+		Session session = this.sessionFactory.getCurrentSession(); // below query is used for auto populate in UI.
+		String query = "SELECT LOWER(CONCAT(FIRST_NAME,' ',LAST_NAME,'(',EMAIL,')')) as label, ID as value FROM CANDIDATE WHERE STATUS ='1' AND CONSULTANT_USER_ID IS NOT NULL AND ORG_LOCATION_ID =:orgLocationId AND ( EMAIL LIKE :name  OR LOWER(CONCAT(FIRST_NAME,LAST_NAME)) LIKE :name OR LOWER(CONCAT(FIRST_NAME,' ',LAST_NAME)) LIKE :name) ORDER BY FIRST_NAME";
+		return session.createSQLQuery(query).setString("name", "%"+name+"%").setLong("orgLocationId", orgLocationId).setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -1160,12 +1170,12 @@ public class CandidateDaoImpl implements CandidateDao {
 		if(!isNullOrEmpty(resourceType)){
 			String[] type = resourceType.split(",");
 			if(type.length > 1){
-				subQuery2 = " and ((candidate.isFavourite = '1') OR (candidate.consultantUser.id IN (select pm.projectMemberCandidteId.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' )))";
+				subQuery2 = " and ((candidate.isFavourite = '1') OR (candidate.consultantUser.id IN (select pm.projectMemberCandidteId.id from ProjectMembers pm where pm.projectMemberCandidteId.orgLocationId.id = :orgLocationsId and pm.status = '1' )))";
 			}else{
 				if(type[0].equalsIgnoreCase("hotlist")){
 				subQuery2 = " and candidate.isFavourite = '1' ";
 				}else{
-					subQuery2 = " and candidate.consultantUser.id IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' )  and candidate.orgLocationId.id = :orgLocationsId ";
+					subQuery2 = " and candidate.consultantUser.id IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projectMemberCandidteId.orgLocationId.id = :orgLocationsId and pm.status = '1' )  and candidate.orgLocationId.id = :orgLocationsId ";
 				}
 			}
 		}
@@ -1174,7 +1184,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		
 		
-		String subQuery5 = " and candidate.consultantUser.id NOT IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projectClientsId.orgLocationsId.id = :orgLocationsId and pm.projectClientsId.projectId.id = :projectId ) and candidate.orgLocationId.id = :orgLocationsId ";
+		String subQuery5 = " and candidate.consultantUser.id NOT IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projectClientsId.orgLocationsId.id = :orgLocationsId and pm.projectClientsId.projectId.id = :projectId and pm.projectMemberCandidteId.consultantUser IS NOT NULL ) and candidate.orgLocationId.id = :orgLocationsId ";
 		
 		// Dont delete this logic., It will be used further
 		/*String subQuery6 = " and candidate.consultantUser.id NOT IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = :projectId) and candidate.orgLocationId.id = :orgLocationsId ";

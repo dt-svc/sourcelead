@@ -483,13 +483,12 @@ if(type == 'C2C' || type == 'C2C-1099'){
 	 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
 		        	$('#vendors').empty();
 		        	$('#vendors').append('<option value="">--Select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
-		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+		            		$('#vendors').append('<option value='+opt.orgRelId+' >'+opt.vendorName+'</option>');
 		            }
 		            $('#vendors').trigger("chosen:updated");
 		        }
@@ -580,16 +579,17 @@ function getEmployeementType(designationType){
 	 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
 	 var military = /^\s*([01]?\d|2[0-3]):[0-5]\d\s*$/i;
      var standard = /^\s*(0?\d|1[0-2]):[0-5]\d(\s+(AM|PM))?\s*$/i;
-	
+	alert("military >> "+DayHours.match(military))
+	alert("standard >> "+DayHours.match(standard))
 	if(DayHours.match(military) || DayHours.match(standard)){
-		
+		alert("1")
 		 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
 		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg"); 
 	/* 	$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
 		 document.getElementById("DayHours").setAttribute('record-exist','yes');
 		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');  */
 	}else{
-		
+		alert("2")
 		$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
 		 document.getElementById("DayHours").setAttribute('record-exist','yes');
 		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours'); 

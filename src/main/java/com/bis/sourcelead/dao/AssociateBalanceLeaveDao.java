@@ -6,9 +6,11 @@ import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 
 public interface AssociateBalanceLeaveDao {
 
@@ -27,4 +29,10 @@ public interface AssociateBalanceLeaveDao {
 	AssociateBalanceLeave saveOrUpdateAssocicateBalanceLeaves(AssociateBalanceLeave assBalLeave);
 
 	int updateAssociateAccuralBalanceLeaveCount(List<AssociateBalanceLeaveDTO> assBalList);
+
+	List<AssociateBalanceLeave> getAssoBalLeavesByUserId(Long userId, Long orgLocationId);
+	
+	int updateAssociateDateOfJoinBalanceLeaveType(Long orgLocationId, User user, int status, String methodType);
+
+	int addAssociateLeaveType(User loginUser, Long orgLocationId, Employees employee, UserRole userRole);
 }

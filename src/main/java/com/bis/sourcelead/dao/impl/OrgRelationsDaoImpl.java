@@ -1181,7 +1181,10 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
  	  query ="SELECT "
  			+" ORL.ID AS orgRelId, "
-			+" ORL.RESPONDER_LOCATION_ID AS clientLocationId, "
+			+" CASE WHEN "
+			+" ORL.LOCATION_ID = :orgLocationId  AND ORL.INITIATOR_TYPE = 'Vendor' THEN ORL.RESPONDER_LOCATION_ID "
+			+" ELSE  ORL.LOCATION_ID "
+			+" END AS  clientLocationId, "
 			+" (SELECT "
 			+" ORG_NAME"
 			+" FROM"
@@ -1214,7 +1217,10 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
  	  query ="SELECT "
  			+" ORL.ID AS orgRelId, "
-			+" ORL.RESPONDER_LOCATION_ID AS clientLocationId, "
+ 			+" CASE WHEN "
+			+" ORL.LOCATION_ID = :orgLocationId  AND ORL.INITIATOR_TYPE = 'Client' THEN ORL.RESPONDER_LOCATION_ID "
+			+" ELSE  ORL.LOCATION_ID "
+			+" END AS  vendorLocationId, "
 			+" (SELECT "
 			+" ORG_NAME"
 			+" FROM"
@@ -1226,7 +1232,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			+" WHERE"
 			+" (ORL.LOCATION_ID = :orgLocationId AND ORL.INITIATOR_TYPE = 'Client') OR (ORL.RESPONDER_LOCATION_ID = :orgLocationId AND ORL.RESPONDER_TYPE = 'Client')"
 			+" GROUP BY ORL.ID";
-		    
+ 	  
             Query queryObj = session.createSQLQuery(query);
 			queryObj.setLong("orgLocationId", orgLocationId);
 			queryObj.setResultTransformer(Transformers.aliasToBean(OrgRelationDTO.class));

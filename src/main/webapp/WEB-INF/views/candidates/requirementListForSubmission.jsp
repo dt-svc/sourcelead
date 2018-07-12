@@ -491,7 +491,7 @@ function submitCandidtesToJob(){
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>Select Requirement</p>";
+			result = result +"		<p>Select Job</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='okPopUp();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPopUp();'></b>";
 			result = result +"	</div>";

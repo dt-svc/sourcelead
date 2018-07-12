@@ -111,6 +111,7 @@ public class FinanceServiceImpl implements FinanceService{
 		try {
 			if (sahList != null) {
 				int count = 0;
+				double totalAmount = 0;
 				if(!"invoice".equalsIgnoreCase(missingInvoiceDto.getInvoiceType())) {
 					for (SubmissionApproverHierarchy sah : sahList.getData()) {
 						MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
@@ -158,6 +159,7 @@ public class FinanceServiceImpl implements FinanceService{
 								missingInvoice.setBillAmount(amount);
 								missingInvoiceDTOList.add(missingInvoice);
 								count++;
+								totalAmount = totalAmount+amount;
 							}
 						}
 						
@@ -216,6 +218,7 @@ public class FinanceServiceImpl implements FinanceService{
 							missingInvoice.setInvoiceAmount(amount);
 							missingInvoiceDTOList.add(missingInvoice);
 							count++;
+							totalAmount = totalAmount+amount;
 						}
 					}
 
@@ -226,12 +229,16 @@ public class FinanceServiceImpl implements FinanceService{
 				response.setRecordsTotal(count);
 				response.setStatusCode("200");
 				
-				
+				missingInvoiceDTOList = response.getData();
+				if(missingInvoiceDTOList.size()>0){
+					MissingInvoiceDTO  firstDto = missingInvoiceDTOList.get(0);	
+					firstDto.setTotalCalAmount(totalAmount);
+				}
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+	
 		return response;
 	}
 	

@@ -11,65 +11,60 @@ window.onload = function () {
 
  <section class="content-wraper">
     <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Associate(s) ROI</h2>
-      </div>
+      <div class="pull-left"><h2>Associate(s) ROI</h2></div>
 
 <%--       <a href="<c:url value='/payrollAllBalanceReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">All Balance Report</a> --%>
  <%--  <a href="<c:url value='/searchBasedReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Search Based Report</a>--%>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/associateReportsList'/>">Associate Reports</a> &raquo; Associate(s) ROI</div>
-
     </section>
-    <section class="project_side_wrap_inn_tabs payroll-invoice">
-        <div class="clearfix mb">
-         <form:form id="payroll_report_form" name="payroll_report_form"  enctype='multipart/form-data' >
-            <label class="col-md-2 col-md-offset-3">
-                Employee Name
-            </label>
-            <div class="col-md-4">
-                <select class="chosen-select" id="empId" name="empName" onchange="getWagesTaxSummaryByEmpId(); redirect();">
-                  <option value=" " selected >-Select Employee-</option>
-	            <c:forEach var="wage" items="${wageTaxSummaryList}">
-					<option value="${wage.employeeId}">${wage.employeeName}</option>
-				</c:forEach>
-                </select>
-            </div>
-             <!-- <div class='remove_search'>
-        		          <input type='text' placeholder='search' id='dataTableSearch'/>
-                </div>  -->
-                </form:form>
-        </div>
+    
+    <section class="project_side_wrap_inn_tabs">
+    
+    
+<div class="reportHead">
+    	<ul class="clearfix pull-right">
+    		<li>
+    			<form:form id="payroll_report_form" name="payroll_report_form"  enctype='multipart/form-data' >
+        		<div class="dropdown-select positionRelative repSelWrap repSelWrapChoosen clearfix">
+	                <select class="chosen-select" id="empId" name="empName"  redirect();">
+	                  <option value=" " selected >-Select Employee-</option>
+		            <c:forEach var="wage" items="${wageTaxSummaryList}">
+						<option value="${wage.employeeId}">${wage.employeeName}</option>
+					</c:forEach>
+	                </select>			
+				<div id="runButtonDiv" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getWagesTaxSummaryByEmpId();">Run</button></div> 
+        		</div>  
+       			</form:form>  		
+    		</li>
+    	</ul>
+    	<div class="clearfix"></div>
+    </div>      
+        
+<div class="backWhite pt5">        
+        
+<div class="clearfix">
       <ul class="project-tabs-menu" id="menuli">
-        <li class="current" id="wtsli"><a href="#tab-1" onclick="getWagesTaxSummaryByEmpId();">Wages & Tax Summary</a></li>
-        <li><a href="#tab-2" onclick="getIncomeData();">Income</a></li>
-        <li><a href="#tab-3" onclick="getChecks();">Manual checks</a></li>
-        <li><a href="#tab-4" onclick="getAccontDeductions();">Account Deductions</a></li>
-        <li><a href="#tab-5" onclick="getHRDeductions();">HR Deductions</a></li>
-        <li><a href="#tab-6" onclick="finalBalance();">Balance</a></li>
-        <div class="clearfix"></div>
+	        <li class="current" id="wtsli"><a href="#tab-1" onclick="getWagesTaxSummaryByEmpId();">Wages & Tax Summary</a></li>
+	        <li><a href="#tab-2" onclick="getIncomeData();">Income</a></li>
+	        <li><a href="#tab-3" onclick="getChecks();">Manual checks</a></li>
+	        <li><a href="#tab-4" onclick="getAccontDeductions();">Account Deductions</a></li>
+	        <li><a href="#tab-5" onclick="getHRDeductions();">HR Deductions</a></li>
+	        <li><a href="#tab-6" onclick="finalBalance();">Balance</a></li>
+        	<div class="clearfix"></div>
       </ul>
-        <div id="loading"></div>
+</div>
+      
+      <div id="loading"></div>
+        
       <div class="project_tabs clearfix pdtop">
-        <div id="tab-1" class="project_tabs_inn  require_wrap_table datatable_filter filter_position" style="display: block">
-        </div>
-        <div id="tab-2" class="project_tabs_inn require_wrap_table datatable_filter filter_position">
-          </div>
-        <div id="tab-3" class="project_tabs_inn require_wrap_table datatable_filter filter_position">
-          </div>
-     
-      <div id="tab-4" class="project_tabs_inn  require_wrap_table datatable_filter filter_position">
-        </div>
-        
-         <div id="tab-5" class="project_tabs_inn  require_wrap_table datatable_filter filter_position">
-        
-          </div>
-          
-        <div id="tab-6" class="project_tabs_inn">
-        
-        </div>          
-          
-        </div>
-
+	        <div id="tab-1" class="project_tabs_inn  require_wrap_table datatable_filter filter_position" style="display: block"></div>
+	        <div id="tab-2" class="project_tabs_inn require_wrap_table datatable_filter filter_position"></div>
+	        <div id="tab-3" class="project_tabs_inn require_wrap_table datatable_filter filter_position"></div>
+	      	<div id="tab-4" class="project_tabs_inn  require_wrap_table datatable_filter filter_position"></div>
+	        <div id="tab-5" class="project_tabs_inn  require_wrap_table datatable_filter filter_position"></div>
+	        <div id="tab-6" class="project_tabs_inn"></div>          
+      </div>
+</div>
      <!--  </div> -->
     </section>
     

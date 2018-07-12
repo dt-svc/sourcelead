@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.ibm.icu.text.DecimalFormat;
 
 @Service
@@ -276,9 +279,31 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					totalLeaveDTO.setUserId(String.valueOf(user.getId()));
 					totalLeaveDTO.setLeaveTypeId(String.valueOf(leaveType.getId()));
 					if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())  && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-						totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDaysPerPeriod()));
+						if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+							totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDaysPerPeriod()));
+						}else {
+							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());
+							 try {
+								float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+								totalLeaveDTO.setNoOfLeaves(String.valueOf(days));
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+						}
 					}else {
-						totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));	
+						if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+							totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));
+						}else {
+							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());
+							 try {
+								float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+								totalLeaveDTO.setNoOfLeaves(String.valueOf(days));
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+						}
+						
+							
 					}
 
 //					if(user.getGender() != null) {
@@ -305,14 +330,17 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 //			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
 //				for (LeaveType leaveType : leaveTypeList) {
-			Employees emp = employeesService.getEmployeByUserIdAndOrgRelationId(userRole.getUser().getId(), orgLocation.getId());
-					Set<Long> roleIds = new HashSet<>();
+			Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocation.getId());
+				
+			isLeaveApplicable = leaveManagementUtil.checkGenderAndDepartmentAndRoleAndEmpType(leaveType, emp, userRole);
+			
+			/*Set<Long> roleIds = new HashSet<>();
 					if(leaveType.getLeaveTypeRolesSet() != null) {
 						for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
 							roleIds.add(leaveRole.getRoleId().getId());
 						}
 						if (roleIds.contains(userRole.getRoles().getId()) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
-							if(leaveType.getDepartmentId() != null){
+							if(leaveType.getDepartmentId() != null && emp.getDepartmentId() != null){
 								if(leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()){
 									isLeaveApplicable = true;
 								}
@@ -325,7 +353,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 						if("Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 							isLeaveApplicable = true;
 						}
-					}
+					}*/
 				
 //				}
 //			}
@@ -379,7 +407,11 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 			 List<AssociateBalanceLeaveDTO> assBalList = new ArrayList<>();
 			 for(User user : userList){
 				 if(map.keySet().contains(user.getId())){
-					float associateBalanceLeaves = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocations.getId());
+					 
+					 float associateBalanceLeaves = 0;
+					 if(Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
+						 associateBalanceLeaves = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocations.getId());
+					 }
 					float totalBal = 0f;
 					
 					AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
@@ -490,6 +522,71 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 			   e.printStackTrace();
 		   }
 		return stat;
+	}
+
+	@Override
+	public int updateAssociateBalanceLeaves(User updatedUser,OrgLocations orgLocations,Employees employees, UserRole userRole)
+	{
+		int updated = 0;
+		try {
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocations.getId()));
+			List<LeaveType> roleLeaveType = new ArrayList<>();
+			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
+			   // Filter by Role,Department, Employee Type and Gender
+				for (LeaveType leaveType : leaveTypeList) {
+						boolean flag = leaveManagementUtil.checkGenderAndDepartmentAndRoleAndEmpType(leaveType,employees,userRole);
+						if(flag){
+							roleLeaveType.add(leaveType);
+						}
+				}
+				List<AssociateBalanceLeave> associateBalLeave = associateBalanceLeaveDao.getAssoBalLeavesByUserId(updatedUser.getId(), orgLocations.getId());
+				// remove Associate Balance if  Role,Department, Employee Type and Gender not matched 
+				for(AssociateBalanceLeave balLeave : associateBalLeave) {
+					 LeaveType leaveType = leaveTypeService.getLeaveTypeById(balLeave.getLeaveTypeId());
+					 boolean flag = leaveManagementUtil.checkGenderAndDepartmentAndRoleAndEmpType(leaveType,employees,userRole);
+					 if(!flag) {
+						 balLeave.setStatus(1);
+						 associateBalanceLeaveDao.saveOrUpdateAssocicateBalanceLeaves(balLeave);
+					 }
+				 }
+				 // Adding Associate Balance if  Role,Department, Employee Type and Gender is matched 
+				 for(LeaveType type : roleLeaveType) {
+					 if(!containsName(associateBalLeave,type)) {
+						 AssociateBalanceLeave associateBalanceLeave = new AssociateBalanceLeave();
+						 associateBalanceLeave.setLeaveTypeId(type.getId());
+						 associateBalanceLeave.setUser(updatedUser);
+						 associateBalanceLeave.setAssoBalLeaveUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+						 associateBalanceLeave.setStatus(1);
+						 associateBalanceLeave.setCreatedDate(new Date());
+						 associateBalanceLeave.setUpdatedDate(new Date());
+						 associateBalanceLeave.setTotalLeaves(String.valueOf(type.getNoOfDays()));
+						AssociateBalanceLeave upDatedass  =  associateBalanceLeaveDao.saveOrUpdateAssocicateBalanceLeaves(associateBalanceLeave);
+					    if(upDatedass != null) {
+					    	updated = 1;
+					    }
+					 }
+				 }
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return updated;
+	}
+
+	private boolean containsName(List<AssociateBalanceLeave> associateBalLeave, LeaveType type)
+	{
+		 return associateBalLeave.stream().filter(o -> o.getId().longValue()== type.getId().longValue()).findFirst().isPresent();
+	}
+
+	@Override
+	public int updateAssociateDateOfJoinBalanceLeaveType(Long orgLocationId, User user,int status, String methodType) {
+		return associateBalanceLeaveDao.updateAssociateDateOfJoinBalanceLeaveType(orgLocationId, user, status,  methodType);
+	}
+
+	@Override
+	public int addAssociateLeaveType(User user, Long orgLocationId,Employees employee, UserRole userRole) {
+		return associateBalanceLeaveDao.addAssociateLeaveType(user, orgLocationId,employee,userRole);
 	}
 	
 }

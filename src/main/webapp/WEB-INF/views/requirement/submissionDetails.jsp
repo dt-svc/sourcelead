@@ -335,7 +335,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				result = result + '</div>';
 				result = result + '<div class="clearfix"></div>';
 				/* New comments div creation Nov 8th, 2016 */ 
-	            /* result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
+	            result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
 	            result = result+'    <div class="commentsimg">';
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
@@ -360,7 +360,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+','+submissionId+');">View more <span class="label label-warning">'+json.candidateCommentsCount+'</span></a>';
 	 			result = result+'		</div>';
 	            result = result+'     </div>';
-	            result = result+'</div>'; */
+	            result = result+'</div>';
 	 		    /* New comments div creation Nov 8th, 2016 */
 			
 		       result = result + '</div>';
@@ -699,6 +699,8 @@ function getInternalInterviewsList(submissionId){
 		                    	   //Latest interview for Reschedule  start
 		                    	   //This condition  is to enable the feedback  and reschedule icon for Own Interviews
 		                    	   if(report.submissionStatus == "REJECTED"){
+		                    	   }else if(report.submissionStatus == "SELECTED_ON_INTERVIEW"){
+		                    		   
 		                    	   }else{
 				                    	//Latest interview for Reschedule  ends
 			                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
@@ -719,17 +721,24 @@ function getInternalInterviewsList(submissionId){
 		                    }
 		                    	 if(submissionId == report.interviewSubmissionId){
 		                    		   if(i == 0){
-				                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
-											result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
-											result = result + '			</div>';
-											result = result + '			 </a> ';
-				                    				                    		
+		                    			   if(report.interviewId.interviewPhase != "Selected"){
+					                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
+												result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
+												result = result + '			</div>';
+												result = result + '			 </a> ';
+		                    			   }		                    		
 				                    	}
 		                    	   }
 	                    	 result = result + '</span>';
 	                    	 result = result + '<span id="'+report.interviewId.id+'showStatus"></span>';
 	                    	 if(report.interviewId.interviewStatus == "Attending"){
-	                    		 result = result +' <font color="green" class="brder-int">Attending</font>';
+	                    		 if(report.interviewId.interviewPhase == "Selected"){
+	                    			 result = result +' <font color="green" class="brder-int">Selected</font>';
+	                    		 }else if(report.interviewId.interviewPhase == "Rejected"){
+	                    			 result = result +' <font color="red" class="brder-int">Rejected</font>';
+	                    		 }else{
+	                    			 result = result +' <font color="green" class="brder-int">Attending</font>';
+	                    		 }
 	                    	 }
 	                    	 if(report.interviewId.interviewStatus == "Not_Attending"){
 	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';
@@ -992,7 +1001,13 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 result = result + '</span>';
 	                    	 result = result + '<span id="'+report.id+'showStatus"></span>';
 	                    	 if(report.interviewStatus == "Attending"){
-	                    		 result = result +' <font color="green">Attending</font>';
+	                    		 if(report.interviewId.interviewPhase == "Selected"){
+	                    			 result = result +' <font color="green">Selected</font>';
+	                    		 }else if(report.interviewId.interviewPhase == "Rejected"){
+	                    			 result = result +' <font color="red">Rejected</font>';
+	                    		 }else{
+	                    			 result = result +' <font color="green">Attending</font>';
+	                    		 }
 	                    	 }
 	                    	 if(report.interviewStatus == "Not Attending"){
 	                    		 result = result +' <font color="red">Not Attending</font>';
@@ -1747,7 +1762,7 @@ function getApplicantOtherizationRejectedCategory(){
 </script>
 
 <script>
-/* function showComment(candidateId,submissionId){
+function showComment(candidateId,submissionId){
 	var result = "";
 		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
 	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
@@ -1759,7 +1774,7 @@ function getApplicantOtherizationRejectedCategory(){
 	$('.add-comment').empty();
 	$('.add-comment').append(result);
 	$('.add-comment').toggle(200);
-} */
+}
 function closeComment(){
 	$('.add-comment').toggle(200);
 }
@@ -1791,7 +1806,7 @@ function closeComment(){
          		$("#submit_comment" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
 		        var jsonData = encodeURIComponent(con);
-				/* $.ajax({
+				$.ajax({
 						type : "POST",
 		        	    data: formData,
 		        	    contentType : 'application/json; charset=utf-8',
@@ -1813,7 +1828,7 @@ function closeComment(){
 							    showError("Operation failed, please try again");
 							}
 						},
-				}); */
+				});
 				$.post(sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,{},function(result){
 					if (result && result.response === "INVALID_USER") {
 		    		    showError(result.responseMessage);

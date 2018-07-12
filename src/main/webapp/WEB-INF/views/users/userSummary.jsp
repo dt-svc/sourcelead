@@ -2084,16 +2084,15 @@ function updateUserDesignationOtherType(){
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
 		        	$('#vendors').empty();
 		        	$('#vendors').append('<option value="">--select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
-		            		  $('#vendors').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
+		            		  $('#vendors').append('<option '+ (opt.orgRelId == vendorOrgRelationId ? "selected" : '') +' value="'+opt.orgRelId+'">'+opt.vendorName+'</option>');
 			            	}else{
-			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+			            		$('#vendors').append('<option value='+opt.orgRelId+' >'+opt.vendorName+'</option>');
 			            	}
 		            	  
 		            }

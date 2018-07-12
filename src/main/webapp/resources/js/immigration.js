@@ -879,6 +879,7 @@ function editEducationDEtailsByRowId(id){
         			$('#eduName option[value="'+data.name+'"]').prop("selected", true);
         	        $('#eduName').trigger("chosen:updated");
         			$('#scoreEducationType').val(data.gradeType);
+        			 $('#scoreEducationType').trigger("chosen:updated");
         			$('#immigrationEduStartDate12').val(data.startDateStr);
         			$('#immigrationEduEndDate').val(data.endDateStr);
         			if(data.educationFileName != null){
@@ -1011,7 +1012,7 @@ function validateTemplateName() {
     }
 }
 
-function checkFormNames() {
+/*function checkFormNames() {
     formNames = [];
     var focusedElement;
     $("input[data-name='formName']").each(function () {
@@ -1045,7 +1046,7 @@ function checkFormNames() {
         return true;
     }
     return false;
-}
+}*/
 function checkTaskNames(newName, immiTaskId) {
     if (newName !== null && newName !== "") {
         $.ajax({

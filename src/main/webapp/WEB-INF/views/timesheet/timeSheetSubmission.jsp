@@ -242,7 +242,6 @@
 				<div class="project_tabs">
 					<div id="tab-1" class="project_tabs_inn" style="display: block;">
 						<div class="timesheet_tableNew">
-						   <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${timesheetSubmissionDTO.maxRowCount > 0 ? timesheetSubmissionDTO.maxRowCount : 1}' />
 							<table id="timesheet" cellspacing="0" cellpadding="0" style="display: inline-table;">
 								<tbody>
 									<tr>
@@ -253,18 +252,51 @@
 										   <th>${weekDays.dayOfTheDate}<i>${weekDays.date}</i></th>
 										</c:forEach>
 									</tr>
+									 <c:set var="leaveIndex" value="0"/>
+						             <c:if test="${!empty timesheetSubmissionDTO.empLeaveMap}">
+						                <c:forEach var="empLeaveMap" items="${timesheetSubmissionDTO.empLeaveMap}" varStatus="empLeaveMapCount">
+						                      <c:set var="leaveIndex" value="${leaveIndex+1}"/>
+							                      <tr>
+								                      <c:set var="leaveMapArr" value="${fn:split(empLeaveMap.key,'##')}"/>
+							                          <td>
+								                            <p>${leaveMapArr[0]}</p>   
+								                      </td>
+								                       <td>
+								                         <span>${leaveMapArr[1]}</span>
+								                          <input type="hidden" id="${leaveIndex}task1IdBillableTypeId" name="${leaveIndex}task1IdBillableTypeId" value="${leaveMapArr[1]}"/>
+								                      </td>
+								                      <td>
+								                         <p>--</p>
+								                      </td>
+								                      <c:forEach var="empLeave" items="${empLeaveMap.value}" varStatus="empLeaveCount">
+								                        <td>
+								                              <input readonly="readonly" class="inline_field"   value="${empLeave.hours}" placeholder="HH:MM" type="text" id="${leaveIndex}timeSheetDay${empLeaveCount.index+1}Id" >
+											                   <c:if test="${!empty empLeave.leaveReason}">
+	                                                              <div class=" timesheet_comm">                
+											                       <i id="leaveReason${empLeaveCount.index}" class='glyphicon glyphicon-comment com_active' onclick='timesheetComment("leaveReason${empLeaveCount.index}Id");'></i>
+											                       <span class='teskcomment' id='leaveReason${empLeaveCount.index}Id'>
+											                             <textarea  disabled="disabled">${empLeave.leaveReason}</textarea>
+	                                                               </span>
+	                                                             </div>
+											                   </c:if>
+											              </td>
+								                      </c:forEach>
+							                       </tr>
+						                </c:forEach>
+						              </c:if>
+						            <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${fn:length(timesheetSubmissionDTO.empLeaveMap)+fn:length(entriesMap)}' />
 									<c:set var="entryIndex" value="0"/>
 									<c:forEach var="entry" items="${entriesMap}" varStatus="entryCount">
-									    <tr id="timesheetRow${entryCount.index+1}">
-									      <td id="${entryCount.index+1}taskTd"> <!-- rowspan="2" -->
+									    <tr id="timesheetRow${leaveIndex+entryCount.index+1}">
+									      <td id="${leaveIndex+entryCount.index+1}taskTd"> <!-- rowspan="2" -->
 											<div class="taskDropDown">
 											  <c:set var="taskType" value=""/>
 											  <c:set var="taskId" value=""/>
 											  <c:set var="taskName" value=""/>
 											  <c:set var="ticketNumber" value=""/>
 											  <c:if test="${timesheetSubmissionDTO.submitButtonVisible ||  timesheetSubmissionDTO.saveButtonVisible}">
-												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId} timSelWid"  onchange='prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
-														<option value=''>--select task--</option>
+												   <select id="${leaveIndex+entryCount.index+1}task1Id" name="${leaveIndex+entryCount.index+1}task1Id" title="--select task--"  data-dropup-auto="false" data-size="8" data-live-search="true" class="selectpicker existedProjectTaskId${timesheetEntryDetailsDTO.projectId} timSelWid"  onchange='prepareProjectTaskDetails("${entryIndex}","${leaveIndex+entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
+														<!-- <option value=''>--select task--</option> -->
 														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
 														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
 														       <c:set var="taskId" value="${fn:split(entry.key, '##')[0]}"/>
@@ -294,10 +326,10 @@
 														</c:if>
 													</select>
 													 <c:if test="${entryCount.index == 0}">
-													    <input value="" onclick="addTimeSheetRow('${timesheetEntryDetailsDTO.projectId}')" class="addtaskfield" type="button">
+													    <input value="" onclick="addTimeSheetRow('${timesheetEntryDetailsDTO.projectId}','${leaveIndex}')" class="addtaskfield" type="button">
 													 </c:if>
 													 <c:if test="${entryCount.index > 0}">
-													    <input value="" onclick="removeTimeSheetRow('${entryCount.index+1}');" class="addtaskfield removetaskfield" type="button">
+													    <input value="" onclick="removeTimeSheetRow('${leaveIndex+entryCount.index+1}');" class="addtaskfield removetaskfield" type="button">
 													 </c:if>
 											  </c:if>
 											   <c:if test="${!timesheetSubmissionDTO.saveButtonVisible}">
@@ -330,19 +362,18 @@
 											</div>
 									      </td>
 									      <td> <!-- rowspan="2" -->
-									        <div>
+									        <div class='taskDropDown'>
 									          <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
 									               <span>${!empty taskType ? taskType : '--'}</span>
-									               <input type="hidden" id="${entryCount.index+1}task1IdBillableTypeId" name="${entryCount.index+1}task1IdBillableTypeId" value="${taskType}"/>
+									               <input type="hidden" id="${leaveIndex+entryCount.index+1}task1IdBillableTypeId" name="${leaveIndex+entryCount.index+1}task1IdBillableTypeId" value="${taskType}"/>
 									          </c:if>
 									         <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-			                                      <select id="${entryCount.index+1}task1IdBillableTypeId" name="${entryCount.index+1}task1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('${entryIndex}','${entryCount.index+1}task1IdBillableTypeId')">  
-									                  <option value=''>--select BillableType--</option>
+			                                      <select id="${leaveIndex+entryCount.index+1}task1IdBillableTypeId" style="width:220px;" data-dropup-auto="false" data-size="8"  class="selectpicker" name="${leaveIndex+entryCount.index+1}task1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('${entryIndex}','${leaveIndex+entryCount.index+1}task1IdBillableTypeId')">  
 									                  <option value='Billable' ${!empty taskType && taskType == 'Billable' ?'selected':''}>Billable</option>
 									                  <option value='Non-Billable' ${!empty taskType && taskType == 'Non-Billable' ?'selected':''}>Non-Billable</option>
 								                  </select>
 							                  </c:if>
-									           <%-- <span id="${entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span> --%>
+									           <%-- <span id="${leaveIndex+entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span> --%>
 									        </div>
 									      </td>
 									      <td>
@@ -351,7 +382,7 @@
 									          </c:if>
 									          <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
 									          <div>
-									        	<input type="text"   id="${entryCount.index+1}ticketNumber1Id" name="${entryCount.index+1}ticketNumber1Id" value="${ticketNumber}" field-name="" onblur="setTicketNumber('${entryIndex}','${entryCount.index+1}ticketNumber1Id');" class="timeTick">
+									        	<input type="text"   id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id" value="${ticketNumber}" field-name="" onblur="setTicketNumber('${entryIndex}','${leaveIndex+entryCount.index+1}ticketNumber1Id');" class="timeTick">
 									          </div>
 									         </c:if>
 									      </td>	
@@ -365,11 +396,11 @@
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
-										               <input onblur="editMe(this);"  ${te.editable ? '' : 'disabled="disabled"'} id="${entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
+										               <input onblur="editMe(this);"  ${te.editable ? '' : 'disabled="disabled"'} id="${leaveIndex+entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
 										               <div class='timesheet_comm'>
 										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment${teStatus.index+1}Id");'></i>
-										                       <span class='teskcomment' id='${entryCount.index+1}comment${teStatus.index+1}Id'>
+										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${leaveIndex+entryCount.index+1}comment${teStatus.index+1}Id");'></i>
+										                       <span class='teskcomment' id='${leaveIndex+entryCount.index+1}comment${teStatus.index+1}Id'>
 										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
                                                                </span>
 										                   </c:if>
@@ -592,7 +623,7 @@ function setTotals(){
 	 var nonBillableTotal;
 	 var nonBillableSum = 0;
 	 var rowNum = $("#maxRowNumber").val();
-	 var jValue = parseInt(rowNum)+1
+	 var jValue = parseInt(rowNum)+1;
 	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
@@ -625,7 +656,7 @@ function setTotals(){
 						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
 				    }
 				     
-				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Non-Billable') {
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && (billableType == 'Non Billable' || billableType == 'Non-Billable')) {
 				    	 var nonBillableHours = btemp;
 				    	 var nonBillableSplit = nonBillableHours.split(':');
 				    	 var nonBillableFirst = nonBillableSplit[0];
@@ -1102,12 +1133,14 @@ var validationSettings = {
 		scrollToTopOnError : true,
 		dateFormat : 'yyyy/mm/dd' 
 }; 
-function addTimeSheetRow(projectId) {
+function addTimeSheetRow(projectId,leaveIndex) {
+	  
 	 $('#0docFile').removeAttr('data-validation');
 	 $('#0docFile').attr("data-validation-optional","true"); 
 	 /* $('#0docFile').removeClass('error'); */
 	/*  $('#0docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); */ 
 	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){   
+		    var nonLeaveRowId = 0;
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
 			var maxRowNum = parseInt(rowNum);
@@ -1127,6 +1160,10 @@ function addTimeSheetRow(projectId) {
 			/* cell0.setAttribute("class", "pname");*/
 			cell0.innerHTML = divadttTd0Str;
 			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
+			$("#"+maxRowNum+"task1Id").addClass('selectpicker');
+			$("#"+maxRowNum+"task1Id").attr('data-live-search','true');
+			$("#"+maxRowNum+"task1Id").attr('title','--select task--');
+			$("#"+maxRowNum+"task1Id").attr('data-size',8);
 			
 			var cell1 = row.insertCell(1);
 			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
@@ -1134,7 +1171,11 @@ function addTimeSheetRow(projectId) {
 			divadttTd1Str = divadttTd1Str.replace(/projectId/g, (projectId)); 
 			divadttTd1Str = divadttTd1Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			cell1.innerHTML = divadttTd1Str;
-			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
+			$("#"+maxRowNum+"task1IdBillableTypeId").attr('data-validation','required');
+			$("#"+maxRowNum+"task1IdBillableTypeId").addClass('selectpicker');
+			$("#"+maxRowNum+"task1IdBillableTypeId").attr('title','BillableType');
+			$("#"+maxRowNum+"task1IdBillableTypeId").attr('data-size',8);
+			
 			
 			var cell2 = row.insertCell(2);
 			var divadttTd10Str = document.getElementById("divadttTd10").innerHTML;
@@ -1302,6 +1343,8 @@ function addTimeSheetRow(projectId) {
 			var projectTaskId = maxRowNum+"task1Id"; 
 			getProjectTasks(projectTaskId);  
 			
+			$('.selectpicker').selectpicker('refresh');
+		    $('.selectpicker').selectpicker({dropupAuto: false});
 		   var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
 		   if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
 			 $('#0docFile').removeAttr('data-validation-optional');
@@ -1319,7 +1362,8 @@ function addTimeSheetRow(projectId) {
         function prepareProjectTaskDetails(entryIndex,projectTaskId){
         	 if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
         		   var taskId = $("#" + projectTaskId).val().split(",");
-    			   $("#" + projectTaskId + "BillableTypeId").val(taskId[1]);
+    			   /* $("#" + projectTaskId + "BillableTypeId").val(taskId[1]); */
+    			   $('select[name="'+ projectTaskId +'BillableTypeId"]').selectpicker('val', taskId[1]);
     			   setTotals(); 
 	  			   var taskDetails = $("#" + projectTaskId).val().split(",");
 	  			   var taskId = taskDetails[0];
@@ -1355,7 +1399,7 @@ function addTimeSheetRow(projectId) {
 		   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
 		      var taskId = '${pt.id}';
 		      var taskType = '${pt.taskType}';
-		      var taskName = '${pt.taskName}';
+		      var taskName = '${fn:replace(pt.taskName, "'", "`")}';
 		      var generatedId = '${pt.generatedId}';
 		     
 		      if(generatedId != null && generatedId !='undefined' && generatedId !=''){

@@ -10,7 +10,7 @@ window.onload = function() {
 
 	var leaveUUID = '${leaveUUID}';
 	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
-		getLeaveDetails();
+// 		getLeaveDetails();
 		getUsersBasedOnHierarchy('edit');
 		var checkFromEdit = '${leave.fromHalfDay}';
 		var checkToEdit = '${leave.toHalfDay}';
@@ -31,8 +31,10 @@ window.onload = function() {
    var isSuperUser = '${SourceLeadWeb_isSuperUser}';
    if(isSuperUser){
 	   $("#approvalDiv").hide();
+	   $("#notifyToOthersDiv").hide();
    }else{
 	   $("#approvalDiv").show();
+	   $("#notifyToOthersDiv").show();
    }
 }
 </script>
@@ -122,7 +124,7 @@ window.onload = function() {
                 </div>
               </div>
             </div>
-              <div class="form-group">
+              <div class="form-group" id="halfDayHidingDiv" style="display: block;">
               <label class="col-md-3">To<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
                 <div class="row">
@@ -170,6 +172,10 @@ window.onload = function() {
               </div>
             </div>
               
+            <div class="form-group" id="durationDiv" style="display:none">
+             	<label class="col-md-12" id="durationId"></label>
+            </div>
+              
             <div class="form-group">
               <label class="col-md-3" id="reasonIdY" style="display:block">Reason<span class="text-danger paddingLeft" >*</span></label>
               <label class="col-md-3" id="reasonIdN" style="display:none">Reason</label>
@@ -184,7 +190,7 @@ window.onload = function() {
               <div class="col-md-9 errorInptgroup" id="attachmentId">
                   <div class="positionRelative clearfix"><i class="clearUpload" title="clear" onClick="removedocfile();"></i>
                   
-                  <div class="input-group ratetype col-md-12 pull-left" title="">
+                  <div class="input-group ratetype col-md-12 pull-left" title="" id="uploadFileGroup">
 	                      <label class="input-group-btn"> 
 	                        <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Choose File
 	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
@@ -208,7 +214,7 @@ window.onload = function() {
 
 		<div class="clearfix"></div>
 		<c:if test="${!empty leave.notifyToOthers}">
-         <div class="form-group">
+         <div class="form-group" id="notifyToOthersDiv">
 				<div class="ml">
 							<input  type="checkbox" checked name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
 					<label>&nbsp;&nbsp;Notify to others
@@ -219,8 +225,7 @@ window.onload = function() {
 			</c:if>
 			
 		<c:if test="${empty leave.notifyToOthers}">
-		<c:if test="${SourceLeadWeb_isSuperUser != true}">
-         <div class="form-group">
+         <div class="form-group" id="notifyToOthersDiv">
 				<div class="ml">
 							<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
 					<label>&nbsp;&nbsp;Notify to others
@@ -228,7 +233,6 @@ window.onload = function() {
 					</label>
 				</div>
 			</div>
-		</c:if>
 		</c:if>
 			
 			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
@@ -241,7 +245,7 @@ window.onload = function() {
 		
               
           </div>
-          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" oncontextmenu="return false" onkeydown="return false;" onmousedown="return false;">
             <div class="well-sm well well-custom clearfix amchartAnchor-Hide">
                  <h5>Leaves Status</h5>
                 <div id="leavestatsu" style="width: 100%; height: 150px;"></div>
@@ -317,8 +321,11 @@ window.onload = function() {
 	    {
 		 if(fromDate == toDate)
 		 {
-			 
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 		 }
 		else
 			{
@@ -340,6 +347,10 @@ window.onload = function() {
 		 if(fromDate == toDate)
 		 {
 			$("#fromHalfDayDiv").hide();
+			$("#fromTimeDiv").hide();
+			 $("#toTimeDiv").hide();
+			 $("#fromDateHalfTime").val('');
+			 $("#toDateHalfTime").val('');
 			
 		  }
 		   else
@@ -359,6 +370,10 @@ window.onload = function() {
 		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 		 }else{
 			 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) )
 			 {
@@ -390,6 +405,10 @@ window.onload = function() {
 		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
+			 $("#toDateFromTimeDiv").hide();
+			 $("#toDateTimeDiv").hide();
+			 $("#toDateFromHalfTime").val('');
+			 $("#toDateToHalfTime").val('');
 	  }
 	 else
 	 {
@@ -444,6 +463,8 @@ window.onload = function() {
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
 			checkFromDate();
+			calcaulateDuraton();
+// 			validateDate();
 			getLeaveDetails(finalDateFormatEndDate);
 			}
 		});
@@ -458,15 +479,10 @@ window.onload = function() {
 			$("#fromdate").datepicker("option", "maxDate", dt);
 			removeEndValid();
 			checkToDate();
-			getLeaveDetails();
+			getLeaveDetails(finalDateFormatEndDate);
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
 		});
-	  
-	  document.getElementById("uploadBtn").onchange = function () {
-  	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
-  	    };
-		
 	});
 </script>
 
@@ -478,7 +494,53 @@ function removeStartValid(){
 function removeEndValid(){
 	$('#toDateDiv').find('p.jquery_form_error_message').remove();
 }
- </script>
+
+function calcaulateDuraton(){
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
+	if(toDate == ""){
+		toDate = $("#fromDate").val();
+	}
+	var leaveTypeUUID = $("#leaveType").val();
+	var ckbox = $('#checkbox-1');
+	if (ckbox.is(':checked')) {
+		 userId = $("#user").val();
+	 }else{
+		 userId = '${SourceLeadWeb_userId}';
+	 }
+	
+	var fromHalfcheck = $('#checkbox-2');
+	var toHalfcheck = $('#checkbox-3');
+	var fromHalfDay = "";
+	var toHalfDay = "";
+	if (fromHalfcheck.is(':checked')) {
+		fromHalfDay = "Yes";
+	}
+	if (toHalfcheck.is(':checked')) {
+		toHalfDay = "Yes";
+	}
+	var fromDateFromHalfTime = $("#fromDateHalfTime").val();
+	var fromDateToHalfTime = $("#toDateHalfTime").val();  
+	var toDateFromHalfTime = $("#toDateFromHalfTime").val();
+	var toDateToHalfTime = $("#toDateToHalfTime").val();
+	
+	if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined' && leaveTypeUUID != null && leaveTypeUUID != '' && leaveTypeUUID != 'undefined'){
+		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId+
+				"&fromHalfDay="+fromHalfDay+"&toHalfDay="+toHalfDay+"&fromDateFromHalfTime="+fromDateFromHalfTime+
+				"&fromDateToHalfTime="+fromDateToHalfTime+"&toDateFromHalfTime="+toDateFromHalfTime+
+				"&toDateToHalfTime="+toDateToHalfTime,  function(result) {
+			if(result != null){
+				$("#durationDiv").show();
+				$("#durationId").html("Duration : "+result+" day(s)");
+			}
+		}); 
+	}else{
+		$("#durationDiv").hide();
+		$("#durationId").html("Duration : 0 day(s)");
+	}
+	
+}
+</script>
 
 
 <script type="text/javascript">
@@ -544,7 +606,7 @@ function removeEndValid(){
             	  var totalBalanceCounts = counts.totalBalanceLeaveCounts;
             	  var totalPendingCounts = counts.pendingLeaveCounts;
             	  var totalTakenCounts = counts.takenLeaves;
-        		  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
+        		  getpieChar(totalBalanceCounts.toFixed(2),totalPendingCounts,totalTakenCounts);
         		  
         		  
         		  var result = "";
@@ -552,11 +614,14 @@ function removeEndValid(){
     	    	  result = result +'			<label>Balance Leaves :</label>';
     	          for (var i = 0; i < json.length; i++) { 
     	        		  var leaveType = json[i];
-    				        result = result +'	<li>';
-    				  		result = result +'			<label>'+leaveType.name+'</label>';
-    				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
-    				  		result = result +'	</li>'; 
+    	        		  if(leaveType.leaveTypeBalanceLeaveCount > 0){
+    	        			  result = result +'	<li>';
+      				  		result = result +'			<label>'+leaveType.name+'</label>';
+      				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
+      				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount.toFixed(2)+'</span>';
+      				  		result = result +'	</li>'; 
+    	        		  }
+    				       
     	        	  }
    	        	  result = result +'	</ul>'; 
    	        	  $("#leaveStatusIdDiv").empty();
@@ -657,6 +722,53 @@ function onbehalf() {
 }
 </script>
 
+
+<script>
+var selectedFile = document.getElementById("uploadBtn");
+selectedFile.addEventListener("change", function() {
+	 $("#uploadFile").focus();
+	 if(validate_fileupload(this.value)){
+		 var docSize =  $("#uploadBtn")[0].files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+// 	    	  $('#leaveLoading').removeAttr('style');
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+			  $("input#uploadFile").after("<p class='jquery_form_error_message'>File size should be less then 2MB </span>");
+			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','File size should be less then 2MB');
+			  document.getElementById("uploadFile").value="";
+	      }else{
+	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+  		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	    }
+	 }
+});
+
+/* upload file script */
+document.getElementById("uploadBtn").onchange = function () {
+	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+};
+
+</script>
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+    var allowed_extensions = new Array("docx","doc","pdf","rtf");
+    var file_extension = fileName.split('.').pop(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i]==file_extension)
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+
 <script>
 $(function() {
 	$("#uploadBtn").change(function() {
@@ -707,7 +819,8 @@ function applyLeave(){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
-	  	var formData = $($('#apply_leave_form')[0]).serialize();
+// 	  	var formData = $($('#apply_leave_form')[0]).serialize();
+	  	var formData = getFormData('apply_leave_form');
 		$("#leaveLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveId="+leaveId+"&currentStage="+currentStage, formData, function(result) {
 			if (result && result.response === "INVALID_DATA") {
@@ -797,7 +910,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 	}else{
 		userId = '${SourceLeadWeb_userId}';
 	}
-	
+	errorMessage = "";
 	if(leaveTypeUUID !=null && leaveTypeUUID != '' && leaveTypeUUID !='undefined'){
 		$.ajax({
 		   	type: "POST",
@@ -810,12 +923,33 @@ function getLeaveDetails(finalDateFormatEndDate){
           		} else if (result.response === "SUCCESS") {
           			var report = result.object;
           			
-          			if(report.duration == "Half Day"){
+          			var duration = report.duration;
+          			var splitDuration = duration.split(",");
+          			
+          			if(splitDuration[0] == "Full Day" && splitDuration[1] == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
-    		    	}else{
+    		    		$("#toDate").attr('data-validation');
+    		    		document.getElementById("halfDayHidingDiv").style.display = 'block';
+    		    	}else if(duration == "Half Day"){
+    		    		$("#fromHalfDayDiv").show();
+    		    		$("#toHalfDayDiv").show();
+    		    		$("#checkbox-2").prop("checked",true);
+    		    		$("#checkbox-2").prop('disabled', true);
+    		    		checkFromHalfDay();
+    		    		document.getElementById("halfDayHidingDiv").style.display = 'none';
+    		    		$("#toDate").removeAttr('data-validation');
+    		    	}else if(duration == "Full Day"){
+    		    		$("#checkbox-2").removeAttr("checked");
+    		    		$("#checkbox-3").removeAttr("checked");
     		    		$("#fromHalfDayDiv").hide();
     		    		$("#toHalfDayDiv").hide();
+    		    		$("#fromTimeDiv").hide();
+     		 		    $("#toTimeDiv").hide();
+     		 		    $("#toDateFromTimeDiv").hide();
+     					$("#toDateTimeDiv").hide();
+     					document.getElementById("halfDayHidingDiv").style.display = 'block';
+     					$("#toDate").attr('data-validation',"required");
     		    	} 
     		    	
     		    	if(report.reasonRequired == "Y"){
@@ -829,7 +963,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	}
     		    	
     		    	if(report.attachmentRequired == "Y"){
-    			 		$("#uploadBtn").attr('data-validation',"required");
+    			 		$("#uploadFile").attr('data-validation',"required");
     			 		document.getElementById("attachmentY").style.display = 'block';
     			 		document.getElementById("attachmentN").style.display = 'none';
     		    	}else{
@@ -844,15 +978,20 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	
     		    	if(report.autoApprove == "Y"){
     		    		$("#approvalDiv").hide();
+    		    		$("#notifyToOthersDiv").hide();
+    		    		
     		    	}else{
     		    		if(userId === '${SourceLeadWeb_userId}'){
     		    			if(isSuperUser == 'true'){
     	   	   		    		   $("#approvalDiv").hide();
+    	   	   		    			$("#notifyToOthersDiv").hide();
     	   	   		    	   }else{
     	   	   		    		   $("#approvalDiv").show();
+    	   	   		    		   $("#notifyToOthersDiv").show();
     	   	   		    	   }
     		    		}else{
-	   	   		    		   $("#approvalDiv").show();
+	   	   		    		 $("#approvalDiv").show();
+    		    			 $("#notifyToOthersDiv").show();
 	   	   		    	   }
     		    	}
     		    	
@@ -860,7 +999,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		validateMinMaxDays(report.minDays, report.maxDays);
     		    	}
     		    	
-    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "Y"){
+    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
     		    		validateOverDrawLeaves(report.name);
     		    	}
     		    	
@@ -868,15 +1007,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
     		    	}
     		    	
-    		    	if(errorMessage != ""){
-//     		        	$("#ApplyLeave").attr('disabled','disabled');
-    		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
-    		        	$(".warMess").fadeIn();
-    		        	$(".comMask").fadeIn();
-    		        	errorMessage = "";
-    		        }else{
-    		    		$("#ApplyLeave").removeAttr('disabled');
-    		        }
+    		    	
     		    	if(skipPolicy != true){
     		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
     		 				$("#termsAndConditions").html(report.policyDescription);
@@ -893,8 +1024,10 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    }
 		});
 	}
-	setTimeout(function(){ validateDate(); }, 1500);
+	calcaulateDuraton();
+	setTimeout(function(){ validateDate(); }, 800);
 		
+	
 }
 
 </script>
@@ -909,7 +1042,7 @@ function validateOverDrawLeaves(leaveTypeName){
 	
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = $("#"+typeName+"Span").text();
-	if((dayDiff > typeIdBalCount) || typeIdBalCount ==  0){
+	if(((dayDiff > typeIdBalCount) || typeIdBalCount ==  0) && typeIdBalCount != "" ){
 		errorMessage += "You Have Not Enough Leaves To Apply.";
 	}
 }
@@ -1011,7 +1144,7 @@ function validateCarryForwardLeaves(){
 <div class='comMask'></div>
 <script>
 function validateDate(){
-	$('.warMess').hide();
+// 	$('.warMess').hide();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var roleId = '${SourceLeadWeb_loginUserRoleId}';
 	var fromDate = $("#fromDate").val();
@@ -1026,14 +1159,28 @@ function validateDate(){
 	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data !=null && data.validateType == 'SAMEDAY'){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
+				errorMessage += data.errorMessage;
+				/* $("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+// 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
 				$("#ApplyLeave").attr('disabled','disabled');
-				$(".comMask").fadeIn();
+				$(".warMess").fadeIn();
+				$(".comMask").fadeIn(); */
 			}else if(data != null && data.validateType == 'HOLIDAY'){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
-				$("#ApplyLeave").removeAttr('disabled');
-				$(".comMask").fadeIn();	
+				errorMessage += data.errorMessage;
+// 				$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+// // 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
+// 				$("#ApplyLeave").removeAttr('disabled');
+// 				$(".comMask").fadeIn();	
 			}
+			
+			if(errorMessage != ""){
+//		     	$("#ApplyLeave").attr('disabled','disabled');
+		    	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+		    	$(".warMess").fadeIn();
+		    	$(".comMask").fadeIn();
+		    }else{
+				$("#ApplyLeave").removeAttr('disabled');
+		    }
 		});
 	}
 	 
@@ -1071,6 +1218,7 @@ function getApproversList(){
 			result += '<input type="text" class="form-control" id="approverUser" readOnly value="'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')"/>';
 			result += '<input type="hidden" class="form-control" name="approverUser" readOnly value="'+opt.id+'"/>';
 			$("#approvalDiv").show();
+			$("#notifyToOthersDiv").show();
 			$("#approverUserDiv").empty();
 			$("#approverUserDiv").append(result);
 	// 		$('#approverUser').trigger("chosen:updated");
@@ -1106,6 +1254,7 @@ $("#toDateHalfTime").timepicker({
 	 'step': 15
 }).on('changeTime', function() {
     $("#fromDateHalfTime").timepicker('option', 'maxTime', $(this).val());
+    calcaulateDuraton();
 }); 
 
 $("#toDateFromHalfTime").timepicker({
@@ -1122,6 +1271,7 @@ $("#toDateToHalfTime").timepicker({
 	 'step': 15
 }).on('changeTime', function() {
     $("#toDateFromHalfTime").timepicker('option', 'maxTime', $(this).val());
+    calcaulateDuraton();
 }); 
 
 
@@ -1168,5 +1318,6 @@ function getUsersBasedOnHierarchy(type){
    }
 }
 </script>
+
 
 <jsp:include page="../masterFooter.jsp" />
