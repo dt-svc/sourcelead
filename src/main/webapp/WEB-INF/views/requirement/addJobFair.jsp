@@ -2,17 +2,21 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<section class="content-wraper contentWraper">
+<section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>Job Fair</h2>
 		</div>
-		<div class="pull-right brud-crum">Home &raquo; Job Fair</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/jobs?viewTab=jobFair'/>"> Jobs </a> &raquo; JobFair</div>
 	</section>
+	
+	
+	<div class="content-area content-new clearfix">
+	
 	<form id="jobFairForm" method="post">
 		<div class="contentareaInner-styles clearfix">
 			<div class="clearfix form-horizontal minHeight_225 minHeightcol5">
-				<div class="row min">
+				<div class="min">
 					<input type="hidden" id="id" value="${jobFair!=null ? jobFair.id : 0}"/>
 					<div class="col-md-5">
 						<label class="clearfix">Name<span class="text-danger">&nbsp;*</span></label>
@@ -69,9 +73,9 @@
 						</div>
 					</div>
 					
-					<div class="col-md-5">
+					<div class="col-md-5 noPad mt">
 						<div class="col-md-6">
-							<label class="clearfix">Posted From<span class="text-danger">&nbsp;*</span></label>
+							<label class="clearfix">Posted On<span class="text-danger">&nbsp;*</span></label>
 							<div class="clearfix dropdown-select">
 								<select class="form-control" id="requirementsTimeRange" field-name="Posted From" data-validation="required"
 									onchange="getRequirements();updateSelectedJobRows(0, true);" ${jobFair.id == 0 ? "disabled='disabled'" : ""}>
@@ -110,7 +114,7 @@
 						</div>
 					</div>
 					<div class="clearfix"></div>
-					<div class="col-md-5">
+					<div class="col-md-5" id="selectedJobsParentDiv" style="${jobFair.jobFairRequirementList.size() > 0 ? '': 'display:none;'}">
 						<label class="clearfix">Selected Job(s)</label>
 						<div class="clearfix" id="selectedJobsDiv">
 
@@ -160,6 +164,7 @@
 			</div>
 		</div>
 	</form>
+	</div>
 	<!-- Content Area Ends-->
 </section>
 
@@ -177,12 +182,16 @@
 	function updateSelectedJobRows(id, removedFlag) {
 		if(id===0 && removedFlag){
 			$("#selectedJobsDiv").empty();
+			$("#selectedJobsParentDiv").hide();
 		} else {		
 			$("#requirementsList option").each(function () {
 				if($(this).val() === id) {
 					/* console.log($(this).text() + " " + $(this).val()); */
 					if(removedFlag) {
 						$("#selectedJobsDiv").find("div[data-requirement_id=" + $(this).val() + "]").remove();
+						if($(".multiJob").length === 0) {
+							$("#selectedJobsParentDiv").hide();
+						}
 						return;
 					} else {
 						var text="<div class='multiJob' data-requirement_id=" + $(this).val() + ">";
@@ -195,6 +204,7 @@
 						text += "</div>";
 						text += "</div>";
 						$("#selectedJobsDiv").append(text);
+						$("#selectedJobsParentDiv").show();
 						return;
 					}
 				}
@@ -214,8 +224,40 @@
 				var parentDiv = $(this).parents(".multiJob").find(".multiJobDate");
 				parentDiv.find("div").remove();
 				if(parentDiv.find("span[data-value='" + $(this).val() + "']").length === 0) {
-					var text = "<span class='reqDate' data-value='" + $(this).val() + "'>" + $(this).val() + "<i class='fa fa-times' onclick='removeJobFairDate($(this))'></i></span>";
+					var selectedDate = $(this).val();
+					var text = "<span class='reqDate' data-value='" + selectedDate + "'>" + selectedDate + "<i class='fa fa-times' onclick='removeJobFairDate($(this))'></i></span>";
 					parentDiv.append(text);
+/* 					if(parentDiv.find("span").length > 0) {
+						var inserted = false;
+						parentDiv.find("span").each(function() {
+							var savedDate = $(this).data("value");
+							var formattedSavedDate = "";
+							var formattedSelectedDate = "";
+							if(dateFormat.match("yy-mm-dd")) {
+								formattedSavedDate = savedDate.split("-")[0] + "-" + savedDate.split("-")[1] + "-" + savedDate.split("-")[2];
+								formattedSelectedDate = selectedDate.split("-")[0] + "-" + selectedDate.split("-")[1] + "-" + selectedDate.split("-")[2];
+							} if(dateFormat.match("dd-mm-yy")) {
+								formattedSavedDate = savedDate.split("-")[2] + "-" + savedDate.split("-")[1] + "-" + savedDate.split("-")[0];
+								formattedSelectedDate = selectedDate.split("-")[2] + "-" + selectedDate.split("-")[1] + "-" + selectedDate.split("-")[0];
+							} if(dateFormat.match("mm-dd-yy")) {
+								formattedSavedDate = savedDate.split("-")[2] + "-" + savedDate.split("-")[0] + "-" + savedDate.split("-")[1];
+								formattedSelectedDate = selectedDate.split("-")[2] + "-" + selectedDate.split("-")[0] + "-" + selectedDate.split("-")[1];
+							} if(dateFormat.match("yy-dd-mm")) {
+								formattedSavedDate = savedDate.split("-")[0] + "-" + savedDate.split("-")[2] + "-" + savedDate.split("-")[1];
+								formattedSelectedDate = selectedDate.split("-")[0] + "-" + selectedDate.split("-")[2] + "-" + selectedDate.split("-")[1];
+							}
+							
+							if(new Date(formattedSelectedDate) > new Date(formattedSavedDate)) {
+								$(this).append(text);
+								inserted = true;
+								return;
+							}
+						});
+						if(!inserted)
+							parentDiv.append(text);
+					} else {					
+						parentDiv.append(text);
+					} */
 				}
 			}
 		});
