@@ -58,7 +58,7 @@ a { cursor:pointer;}
 .timesheet_head .glyphicon-chevron-left {
     font-size:12px; color:#545454; font-weight:300; cursor:pointer; position:relative; right:20px;
     }
-.export_pop, .approved_pop, .export_pipline, #exportPop, .userExp {
+.export_pop, .approved_pop, .export_pipline, #exportPop, #exportPopJobFair, .userExp {
     position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none;
     }
 .export_pipline ul {
@@ -70,15 +70,15 @@ a { cursor:pointer;}
 .export_pop, .export_pipline {
     width:100px; right:12px;
     }  
-.export_pop ul, .approved_pop ul, .export_pipline ul, #exportPop ul, .userExp ul {
+.export_pop ul, .approved_pop ul, .export_pipline ul, #exportPop ul, .userExp ul, #exportPopJobFair ul {
     position:relative; margin:0px 0px; background-color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); padding:5px 0px !important;
     border-radius:4px; max-height: 150px; overflow-y: auto; width:180px !important; overflow-x: hidden;
     }
-.export_pop ul:after, .approved_pop ul:after, .export_pipline ul:after, #exportPop ul:after, .userExp ul:after {
+.export_pop ul:after, .approved_pop ul:after, .export_pipline ul:after, #exportPop ul:after, .userExp ul:after, #exportPopJobFair ul:after {
     bottom: 100%; left: 80%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
     border-color: rgba(136, 183, 213, 0); border-bottom-color: #fff; border-width: 8px; margin-left: -8px;       
     }  
-.export_pop ul li, .approved_pop ul li, .export_pipline ul li, #exportPop ul li, .userExp ul li {
+.export_pop ul li, .approved_pop ul li, .export_pipline ul li, #exportPop ul li, .userExp ul li,  #exportPopJobFair ul li {
     list-style-type:none; padding:5px 10px !important; margin:0px 0px !important; width:100%; position:relative;
     font-size:13px; font-weight:500; color:#454545; display:inline-flex; cursor: pointer;
     }
@@ -101,7 +101,7 @@ a { cursor:pointer;}
 .export_pop ul li i {
     display:inline-block; float:right; font-size:14px; font-weight:500; color:#368ee0; padding:2px 0px 0px 0px;
     }
-.export_pop ul li i.fa-file-pdf-o, #exportPop ul li .fa-file-pdf-o { color:#f31113;}
+.export_pop ul li i.fa-file-pdf-o, #exportPop ul li .fa-file-pdf-o, #exportPopJobFair ul li .fa-file-pdf-o { color:#f31113;}
 .export_pop ul li i.fa-file-word-o{ color:#454545;}       
 .export_pop ul li:hover, .approved_pop ul li:hover {
     background-color:#efefef;
@@ -713,7 +713,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     padding:0px; display:none; position: relative;
     }
 .project_tabs_inn_head, .canreq-tabs-menu_inn_head {
-    padding:5px 10px; text-align:right;
+    /* padding:5px 10px; */ text-align:right;
     }  
 .project_tabs_inn_head a, .canreq-tabs-menu_inn_head a{
     padding:5px; font-size:13.5px; font-weight:500; color:#666; display:inline-block; margin:0px 0px 0px 10px;
@@ -1751,10 +1751,6 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     margin: 0px; border: none; border-bottom: 1px solid #bdbdbd; padding: 3px 25px 3px 5px; background-color: transparent; width:210px;
     background-image:url("../images/search-icon.png"); background-repeat:no-repeat; background-position:98% center; background-size:16px;
     }
-
-.dataTables_filter input:focus {
-    border-bottom: 1px solid #368ee0;
-    }  
 .paginate_button {
     padding: 6px 12px !important; height: auto !important; min-width: inherit !important; margin: 0px !important; border: 1px solid #ccc !important;
     color: #337ab7 !important; background-color: #FFF !important; border-radius: 0px !important; margin-left: -1px !important;     
@@ -5060,8 +5056,8 @@ color: #368ee0;
 /*   Onboard Carosel CSS   */
 
 .dataTables_filter input:focus {
-padding: 3px 25px 3px 5px !important; background-color: transparent !important; border: none !important; 
-	border-bottom: 1px solid #358ddf !important;
+	padding: 3px 25px 3px 5px !important; background-color: transparent !important;
+
 }
 .pt5 {
 padding:5px 0px 0px 0px;
@@ -8688,8 +8684,8 @@ max-width: 100% !important;
 	padding: 8px 0px 0px 12px;
 }
 .newAdBtn {
-	height: 32px; color: #fff !important; background-color: #368ee0; display: block; line-height: 32px; padding: 0px 8px 0px 10px;
-    border-radius: 3px; border: 1px solid #2b7ecc;
+	height: 32px; color: #fff !important; background-color: #368ee0; display: block; line-height: 32px; padding: 0px 8px 0px 10px !important;
+    border-radius: 3px; border: 1px solid #2b7ecc; font-weight: 400 !important; font-size: 14px !important;
 }
 .newAdBtn i {
 	color: #fff;
@@ -8748,18 +8744,23 @@ max-width: 100% !important;
 .newActPop a:hover {
 	background-color: #f1f1f1;
 }
-
-.dataSeaNew {
-	
+#jobFairPagination_wrapper .buttons-excel, #jobFairPagination_wrapper .buttons-pdf {
+    display: none;
 }
+
+.dataSeaNew {}
+.dataSeaNew .dataTables_filter {
+    margin-top: 10px; margin-bottom: 3px;
+    }
 .dataSeaNew .dataTables_wrapper .dataTables_filter input {
 	width: 220px; height: 32px; border: 1px solid #E6EAEE; background-color: #fff !important; border-radius: 4px;
-	background: url("../images/search.svg"); background-repeat: no-repeat; background-position: 92px center;
-	background-size: 38px; padding: 0px 10px 0px 38px; font-size: 12px; font-family: "Proxima Nova"; color: #303345;
+	background: url("../images/search.svg"); background-repeat: no-repeat; background-position: 184px center;
+	background-size: 34px; padding: 0px 36px 0px 10px; font-size: 12px; font-family: "Proxima Nova"; color: #303345;
 	box-sizing: border-box; margin: 0px 0px;
 }
-
-
+.dataSeaNew .dataTables_filter input:focus {
+	padding: 0px 36px 0px 10px !important;
+}
 
 
 
