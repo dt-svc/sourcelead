@@ -125,10 +125,10 @@ $(document).ready(function(){
 		 result = result + ' <div id="tab-18" class="project_tabs_inn">';
 		 result = result + '</div>';
 		  	
-		 result = result + '<div id="tab-19" class="project_tabs_inn project_tabs_inn_table datatable_filter dataTablesFilter-relative">';
+		 result = result + '<div id="tab-19" class="project_tabs_inn project_tabs_inn_table datatable_filter dataTablesFilter-relative dataSeaNew">';
 		 result = result + '</div>';
 		 
-		 result = result + '<div id="tab-20" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
+		 result = result + '<div id="tab-20" class="project_tabs_inn project_tabs_inn_table datatable_filter dataTablesFilter-relative dataSeaNew">';
 		 result = result + '</div>';
 		 
 		 result = result + '<div id="tab-17" class="project_tabs_inn project_tabs_inn_table">';

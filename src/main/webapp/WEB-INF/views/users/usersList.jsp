@@ -347,17 +347,6 @@ function getUsersSearchResult(searchValue){
 						</span>
 					</div>
 				</li>
-				
-<%-- 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-	           <li><a href="<c:url value='${appPath}/uploadForm'/>" class="btn btn-default btn-sm repFilIcon newExpIcon" title="Import"><i class="glyphicon glyphicon-import expIcon"></i></a></li>
-	         </sec:authorize>		  
-		  
-		   <sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
-		   <li class="staPdfExl">
-		   		<i onclick="exportToPdf();" title="PDF" class="fa fa-file-pdf-o text-danger"></i>
-		   		<i onclick="exportUserData();" title="Excel" class="fa fa-file-excel-o text-primary"></i>
-		   </li>
-		    </sec:authorize> --%>
 		    
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dynamicUserDataTableSearch'/><span class="repSearchIcon" onClick="getDynamciUserList();"></span></li>
         </ul>
@@ -1394,25 +1383,25 @@ $("#dynamicUserDataTableSearch").keydown(function(e) {
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
-	
-	$("html").click(function(){
-		$(".action-pop").slideUp(200);
-	});
-	$(".action, .action-pop").click(function(e){
-	 	e.stopPropagation();
- 	});	
-}
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
 
 function newActions(){
 	$(".newActPop").slideToggle(200);
-	
-	$("html").click(function(){
-		$(".newActPop").slideUp(200);
-	});
-	$(".overIcon, .newActPop").click(function(e){
-	 	e.stopPropagation();
- 	});	
+	$(".action-pop").slideUp(200);
 }
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
 
 </script>
     

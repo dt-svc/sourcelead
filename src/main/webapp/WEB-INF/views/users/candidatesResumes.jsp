@@ -47,7 +47,7 @@ function candidateResume(candidateId){
 	var candidateType = '${candidateType}';
 	var result ="";
 	
-	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
+	result = result+'	    <div class="project_tabs_inn_head addUser-org noPad">';
 	
 	result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="resMsgDiv"></span>';
@@ -73,7 +73,12 @@ function candidateResume(candidateId){
 			'</sec:authorize>';
 		}else{
 			'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_RESUMES\')">';
-			   result = result+'<a href="javascript:void(0)" onClick="refreshResumeList('+candidateId+'); addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
+			   /* result = result+'<a href="javascript:void(0)" onClick="refreshResumeList('+candidateId+'); addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resumesxcx</a>'; */
+			   result = result+'<div class="reportHead clearfix">';
+			   result = result+'<ul class="pull-right list-unstyled list-inline">';
+			   result = result+'<li><a href="javascript:void(0)" onClick="refreshResumeList('+candidateId+'); addResume('+candidateId+');" class="newAdBtn" id="addCandidateResume">+ Resume</a></li>';
+			   result = result+'</ul>';
+			   result = result+'</div>	';		   
 			'</sec:authorize>';
 		}
 		
