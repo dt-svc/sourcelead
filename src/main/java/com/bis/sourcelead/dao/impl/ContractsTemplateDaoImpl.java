@@ -748,7 +748,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	public List<User> getSigningAuthoritiesForContract(Long orgLocationsId, Long tabId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		/* String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+	/*	 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
 	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
 	     
 	     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
@@ -766,6 +766,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
+
 	        	 if(roleActionsList.size() > 0){
 	        		 ownerRolesList.add(roles.getId());
 	        	 }
@@ -775,9 +776,16 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		 
 	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) and user.id IN (Select ols.userId.id from OrglocationSignatory ols where ols.authorizedType LIKE '%Contracts%' and ols.status='1')";
 	     List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).list();
-	     */
-		String Query ="SELECT * FROM sourcelead.user u where u.ID IN (SELECT so.USER_ID from sourcelead.orglocation_signatory so where so.AUTHORIZED_TYPE LIKE '%Contracts%' and so.ORGLOCATION_ID=:orgLocationsId and so.STATUS=1)";
-		List<User> userRoleList = session.createSQLQuery(Query).addEntity(User.class).setLong( "orgLocationsId", orgLocationsId).list();
+	     
+		
+//		//String Query = "SELECT U.* FROM SOURCELEAD_ACTIONS SA,ROLES R "
+//						+ " INNER JOIN  USER_ROLE UR ON UR.ROLE_ID = R.ID AND UR.USER_STATE != 'INACTIVE' AND UR.ORG_LOCATIONS_ID = R.ORG_LOCATION_ID "
+//						+ " INNER JOIN  USER U ON U.ID = UR.USER_ID  "
+//						+ " WHERE R.ORG_LOCATION_ID = :locationId AND SA.TAB_ID = :tabId "
+//						+ " AND (R.ID LIKE CONCAT(SA.ID,'%') OR R.ID LIKE CONCAT('%,',SA.ID,',%') OR R.ID LIKE CONCAT('%,',SA.ID)) "
+//						+"  AND U.ID IN(SELECT SO.USER_ID FROM ORGLOCATION_SIGNATORY SO WHERE SO.AUTHORIZED_TYPE LIKE '%Contracts%' AND SO.STATUS = 1 AND SO.ORGLOCATION_ID = :locationId) ";
+*/	String Query ="SELECT u.* FROM USER u,USER_ROLE ur where u.ID IN (SELECT so.USER_ID from ORGLOCATION_SIGNATORY so where so.AUTHORIZED_TYPE LIKE '%Contracts%' and so.ORGLOCATION_ID=:ORGLOCATION_ID and so.STATUS=1 )";
+		List<User> userRoleList = session.createSQLQuery(Query).addEntity(User.class).setLong( "ORGLOCATION_ID", orgLocationsId).list();
 	     return userRoleList;
 	}
 
