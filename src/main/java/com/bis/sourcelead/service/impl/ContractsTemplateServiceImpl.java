@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -3306,15 +3307,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	public List<User> getSigningAuthoritiesForContract(Long orgLocationsId, Long tabId) throws Exception
 	{
 		List<User> userList = null;
+		List<User> user = new ArrayList<>();
 		userList = contractsTemplateDao.getSigningAuthoritiesForContract(orgLocationsId, tabId);
-		if(null != userList && !userList.isEmpty()){
-			for (User user : userList) {
+//		if(null != userList && !userList.isEmpty()){
+//			
+//			
+//			
+//			user = (List<User>)(Object)userList; 
+//				
+//			}
+			
+			/*for (User user : userList) {
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationsId);
 				if(null != userRole){
 					user.setUserType(userRole.getUserType());
 				}
-			}
-		}
+				}*/
 		return userList;
 	}
 

@@ -880,7 +880,7 @@ function getPieChartBasedOnUser(){
       	            result = result +'   <div class="text-center">';
       	            result = result +'     <h2>';
       	            //result = result +'       <label class="small text-muted">Remaining:</label>';
-      	            result = result +'       <label class="clearfix width100percnt mt5">'+numberOfDaysCount+' / '+opt.noOfLeavesPerYear+'</label>';
+      	            result = result +'       <label class="clearfix width100percnt mt5">'+numberOfDaysCount.toFixed(2)+' / '+opt.noOfLeavesPerYear.toFixed(2)+'</label>';
       	            result = result +'     </h2>';
       	            result = result +'   </div>';
       	            result = result +' </div>';

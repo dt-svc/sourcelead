@@ -2,9 +2,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script type="text/javascript">
-    var staticTime='${staticTime}'
-    
-    	var tokenParamName = "${_csrf.parameterName}";
+    var staticTime='${staticTime}';
+    var tokenParamName = "${_csrf.parameterName}";
     var tokenValue = "${_csrf.token}";
     var senderId =  "${sender.id}";
     if(senderId !=null && senderId != '' && senderId != 'undefined'){
@@ -61,7 +60,6 @@
             <input value="Reset" class="btn btn-primary" type="button" id="resetForm">
             <input onclick="senderClose();" value="Cancel" class="btn btn-default" type="button">
           </div>		
-		
 		</form:form>
 		
 <div id="popUp"></div>
