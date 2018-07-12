@@ -655,7 +655,7 @@ function statusvalidating(id){
 						<li><a href="<c:url value='${appPath}/addJobFair'/>"><i class="fa fa-plus"></i>Job Fair</a></li>
 					</sec:authorize>
 
-					<%-- <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
+					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
 						<li title="Export" class="mrPOP" id="mypopJobFair"><i
 							class="glyphicon glyphicon-export"></i>
 							<div id="exportPopJobFair">
@@ -665,7 +665,7 @@ function statusvalidating(id){
 										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
 								</ul>
 							</div></li>
-					</sec:authorize> --%>
+					</sec:authorize>
 					<li>
 						<div class='dynamic_search'>
 			        		<input type='text' placeholder='Search' id='jobFairDataTableSearch'/>
@@ -848,7 +848,8 @@ function exportToPdf(type) {
 			$(".project_inn_mask").fadeIn(200);
 		}
 	} else {
-		alert("Export JobFair to PDF");
+		/* alert("Export JobFair to PDF"); */
+		$(".buttons-pdf").click();
 	}
 }
 </script>
@@ -881,7 +882,8 @@ function exportToExcel(type) {
 			$(".project_inn_mask").fadeIn(200);
 		}
 	} else {
-		alert("Export JobFair to Excel");
+		/* alert("Export JobFair to Excel"); */
+		$(".buttons-excel").click();
 	}
 }
 </script>
