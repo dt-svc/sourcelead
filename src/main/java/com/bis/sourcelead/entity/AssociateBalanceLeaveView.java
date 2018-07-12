@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "ASSOCIATE_BAL_LEAVE_VIEW")
@@ -70,6 +71,24 @@ public class AssociateBalanceLeaveView {
 	
 	@Column (name = "EFFECTIVE_GENDER")
 	private String effectiveGender;
+	
+	@Transient
+	private String fromHalfDay;
+	
+	@Transient
+	private String toHalfDay;
+	
+	@Transient
+	private String fromHalfFromTime;
+	
+	@Transient
+	private String fromHalfToTime;
+	
+	@Transient
+	private String toHalfFromTime;
+	
+	@Transient
+	private String toHalfToTime;
 
 	public Float getNoOfDaysPerPeriod()
 	{
@@ -266,7 +285,64 @@ public class AssociateBalanceLeaveView {
 	{
 		this.effectiveGender = effectiveGender;
 	}
-	
-	
-	
+
+	public String getFromHalfDay()
+	{
+		return fromHalfDay;
+	}
+
+	public void setFromHalfDay(String fromHalfDay)
+	{
+		this.fromHalfDay = fromHalfDay;
+	}
+
+	public String getToHalfDay()
+	{
+		return toHalfDay;
+	}
+
+	public void setToHalfDay(String toHalfDay)
+	{
+		this.toHalfDay = toHalfDay;
+	}
+
+	public String getFromHalfFromTime()
+	{
+		return fromHalfFromTime;
+	}
+
+	public void setFromHalfFromTime(String fromHalfFromTime)
+	{
+		this.fromHalfFromTime = fromHalfFromTime;
+	}
+
+	public String getFromHalfToTime()
+	{
+		return fromHalfToTime;
+	}
+
+	public void setFromHalfToTime(String fromHalfToTime)
+	{
+		this.fromHalfToTime = fromHalfToTime;
+	}
+
+	public String getToHalfFromTime()
+	{
+		return toHalfFromTime;
+	}
+
+	public void setToHalfFromTime(String toHalfFromTime)
+	{
+		this.toHalfFromTime = toHalfFromTime;
+	}
+
+	public String getToHalfToTime()
+	{
+		return toHalfToTime;
+	}
+
+	public void setToHalfToTime(String toHalfToTime)
+	{
+		this.toHalfToTime = toHalfToTime;
+	}
 }
