@@ -636,11 +636,11 @@ public class LeaveManagementUtil {
 			actualLeaves = (appliedLeaves.size() - appLeaves) + (fromHours + toHours);
 		}else{
 			for(AppliedLeaveDateView ald : appliedLeaves){
-				if (Constants.STATUS_YES.equalsIgnoreCase(ald.getFromHalfDay())) {
+				if (Constants.STATUS_YES.equalsIgnoreCase(ald.getFromHalfDay()) && ald.getFromDate().equals(ald.getApplyLeaveDate())) {
 					appLeaves += 1;
 					fromHours += calculateActualHoursForHalfDay(ald.getFromDateFromHalfTime(), ald.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leaveType);
 				}
-				if (Constants.STATUS_YES.equalsIgnoreCase(ald.getToHalfDay())) {
+				if (Constants.STATUS_YES.equalsIgnoreCase(ald.getToHalfDay()) && ald.getToDate().equals(ald.getApplyLeaveDate())) {
 					appLeaves += 1;
 					toHours += calculateActualHoursForHalfDay(ald.getToDateFromHalfTime(), ald.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leaveType);
 				}
