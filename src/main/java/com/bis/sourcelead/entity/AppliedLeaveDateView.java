@@ -30,6 +30,12 @@ public class AppliedLeaveDateView {
 	@Column (name = "APPLY_LEAVE_DATE")
 	private Date applyLeaveDate;
 	
+	@Column (name = "FROM_DATE")
+	private Date fromDate;
+	
+	@Column (name = "TO_DATE")
+	private Date toDate;
+	
 	@Column (name = "APPLY_MONTH_NAME")
 	private String applyMonthName;
 	
@@ -218,5 +224,25 @@ public class AppliedLeaveDateView {
 	public void setToDateToHalfTime(String toDateToHalfTime)
 	{
 		this.toDateToHalfTime = toDateToHalfTime;
+	}
+
+	public Date getFromDate()
+	{
+		return fromDate;
+	}
+
+	public void setFromDate(Date fromDate)
+	{
+		this.fromDate = fromDate;
+	}
+
+	public Date getToDate()
+	{
+		return toDate;
+	}
+
+	public void setToDate(Date toDate)
+	{
+		this.toDate = toDate;
 	}
 }
