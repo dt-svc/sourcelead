@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,10 +43,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
+import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
@@ -236,11 +239,16 @@ public class ImmigrationRestController {
 	}
 
 	@RequestMapping(value = { "/getAllActiveCandidatesByLocation" }, method = RequestMethod.GET)
-	public @ResponseBody List<Candidate> getAllActiveCandidatesByLocation(
-			@RequestParam(value = "locationId", required = false) Long locationId, HttpServletRequest request) {
-		List<Candidate> candidateList = null;
+	public @ResponseBody List<Map<String, BigInteger>> getAllActiveCandidatesByLocation(
+			@RequestParam(value = "locationIdVal", required = false) Long locationId, @RequestParam(value = "name", required = false) String name,  HttpServletRequest request) {
+		List<Map<String, BigInteger>> candidateList = null;
 		try {
-			candidateList = candidateService.getAllActiveCandidatesByLocation(locationId);
+			if("".equals(locationId) || locationId == null) {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+						"orgLocations");
+				locationId = orgLocations.getId();
+			}
+			candidateList = candidateService.getAllActiveCandidatesByLocationName(locationId, name);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -2205,6 +2213,12 @@ public class ImmigrationRestController {
          
 		 
 		return docTypeList;
-	}	
+	}
+	
+	@RequestMapping(value = { "/getCandidateById" })
+	public @ResponseBody Candidate getCandidateById(
+			@RequestParam(value = "id", required = false) Long id,  HttpServletRequest request) throws Exception {
+		return candidateService.getCandidateByCandidateId(id);
+	}
 
 }
