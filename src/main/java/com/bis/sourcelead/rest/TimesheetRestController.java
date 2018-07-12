@@ -2553,7 +2553,7 @@ public class TimesheetRestController {
 					}
 				}
 			}
-			if (status != null && status.equalsIgnoreCase("Submitted")) {
+			if ((StringUtils.isNotEmpty(recordStatus) && !recordStatus.equalsIgnoreCase("removed")  || StringUtils.isEmpty(recordStatus))&& status != null && status.equalsIgnoreCase("Submitted")) {
 				if (timeSubFrequencies != null && !timeSubFrequencies.isEmpty()) {
 					LinkedList<String> tabDates = new LinkedList<String>(timeSubFrequencies.keySet());
 					if (tabDates != null && !tabDates.isEmpty()) {

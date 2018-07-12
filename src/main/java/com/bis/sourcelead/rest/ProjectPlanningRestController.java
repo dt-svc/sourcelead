@@ -617,19 +617,40 @@ public class ProjectPlanningRestController {
 	    		 projectPlanningRequest.setAllocatedResources(allocatedResouresCount);
 	    		 
 	    		 OrgRelations orgRelations = null;
+	    		 OrgLocations clientOrgLocation = null;
 	    		 Candidate candidate = candidateService.getCandidateByCandidateId(projectPlanningResourceRequest.getCandidateId().getId());
+	    		 Projects project = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId();
 	    		 if(candidate != null && !candidate.getOrgLocationId().getId().equals(projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getOrgLocationsId().getId())) {
 	    			
 					 OrgLocations vendorOrgLocation = candidate.getOrgLocationId();
-					 OrgLocations clientOrgLocation = null;
-					 /* Projects project = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId();
-						if(StringUtils.isNotBlank(project.getIsProjectShared()) && project.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
-						 clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getSharedLocationId();
+					
+						if(StringUtils.isNotBlank(project.getIsProjectShared()) && project.getIsProjectShared().equalsIgnoreCase(Constants.YES) 
+								&& project.getSharedLocationId().getId().equals(vendorOrgLocation.getId())) {
+						 ProjectClients sharedPc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(project.getId(), vendorOrgLocation.getId());
+						 OrgRelations orgRel = sharedPc.getOrgRelationId();
+						 if(orgRel.getResponderLocationId().getId().equals(vendorOrgLocation.getId())) {
+							 clientOrgLocation = orgRel.getLocationId();
+						 }else {
+							 clientOrgLocation = orgRel.getResponderLocationId();
+						 }
 					 }else {
-						 clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getOrgLocationsId();
-					 }*/
+						 if(projectPlanningResourceRequest.getProjectPlanningRequestId().getOrgLocationId().getId().equals(vendorOrgLocation.getId())) {
+							 ProjectClients sharedPc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(project.getId(), vendorOrgLocation.getId());
+							 if(sharedPc != null && sharedPc.getOrgRelationId() != null) {
+								 OrgRelations orgRel = sharedPc.getOrgRelationId();
+								 if(orgRel.getResponderLocationId().getId().equals(vendorOrgLocation.getId())) {
+									 clientOrgLocation = orgRel.getLocationId();
+								 }else {
+									 clientOrgLocation = orgRel.getResponderLocationId();
+								 } 
+							 }
+						 }else {
+							 clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getOrgLocationId();
+						 }
+						 
+					 }
 					 
-					 clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getOrgLocationId();
+					
 					 
 		    		 orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),clientOrgLocation.getId());
 		    		 if(orgRelations == null) {
@@ -798,9 +819,6 @@ public class ProjectPlanningRestController {
 		    		 projectAssignedMembersDTO.setProjectMembers(projectMembersDTOList);
 	    			 projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projects.getProjectUUID(), user, orgLocations,isGlobalAccess);
 	    		 }else {
-	    			 OrgLocations clientOrgLocation = null;
-	    			 Projects project = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId();
-	    			 clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getOrgLocationId();
 	    			 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), candidate.getOrgLocationId().getId());
 						if(projectClients == null){
 							projectClients = new ProjectClients();
