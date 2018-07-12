@@ -27,34 +27,120 @@
 			<ul class="clearfix">
 				<li class="clearfix" title="${!empty dashboardResult.draftsCount ? dashboardResult.draftsCount : 0}" >
 					<span><i class="fa fa-plane"></i></span>
-					<p>Draft <b>${!empty dashboardResult.draftsCount ? dashboardResult.draftsCount : 0}</b></p>
+					<p>Draft <b>
+					
+					<c:choose>
+							<c:when test="${!empty dashboardResult.draftsCount and dashboardResult.draftsCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "Draft")'>${dashboardResult.draftsCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
 				</li>			
 				<li class="clearfix" title="${!empty dashboardResult.reqSentCount ? dashboardResult.reqSentCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p> Sent Request <b>${!empty dashboardResult.reqSentCount ? dashboardResult.reqSentCount : 0}</b></p>
+					<p> Sent Request <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.reqSentCount and dashboardResult.reqSentCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "Request to fill")'>${dashboardResult.reqSentCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
 				</li>
 				<li class="clearfix" title="${!empty dashboardResult.inProgressCount ? dashboardResult.inProgressCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p> Inprogress <b>${!empty dashboardResult.inProgressCount ? dashboardResult.inProgressCount : 0}</b></p>
+					<p> Inprogress <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.inProgressCount  and dashboardResult.inProgressCount ne 0}">
+								<a href='javascript:getDynamicImmigrationList(null, "inProgress")'>${dashboardResult.inProgressCount}</a>
+							</c:when>
+							<c:otherwise>
+					         0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
 				</li>
 				<li class="clearfix" title="${!empty dashboardResult.apporovedCount ? dashboardResult.apporovedCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Approved <b>${!empty dashboardResult.apporovedCount ? dashboardResult.apporovedCount : 0}</b></p>
+					<p>Approved <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.apporovedCount and dashboardResult.apporovedCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "Approved")'>${dashboardResult.apporovedCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
 				</li>
 				<li class="clearfix" title="${!empty dashboardResult.rejectedCount ? dashboardResult.rejectedCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Rejected <b>${!empty dashboardResult.rejectedCount ? dashboardResult.rejectedCount : 0}</b></p>
+					<p>Rejected <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.rejectedCount and dashboardResult.rejectedCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "Rejected")'>${dashboardResult.rejectedCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+						
+					</b></p>
 				</li>
+				<li class="clearfix"title="${!empty dashboardResult.rfeCount ? dashboardResult.rfeCount : 0}">
+					<span><i class="fa fa-plane"></i></span>
+					<p>RFE <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.rfeCount and dashboardResult.rfeCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "rfe")'>${dashboardResult.rfeCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
+				</li>	
+				<li class="clearfix"title="${!empty dashboardResult.deniedCount ? dashboardResult.deniedCount : 0}">
+					<span><i class="fa fa-plane"></i></span>
+					<p>Denied <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.deniedCount and dashboardResult.deniedCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "denied")'>${dashboardResult.deniedCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
+				</li>	
+				
 				<li class="clearfix"title="${!empty dashboardResult.othersCount ? dashboardResult.othersCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Others <b>${!empty dashboardResult.othersCount ? dashboardResult.othersCount : 0}</b></p>
+					<p>Others <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.othersCount and dashboardResult.othersCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "others")'>${dashboardResult.othersCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
 				</li>				
 			</ul>
 		</div>
    
 		<div class="immigraInnWrap">
+		
 			<div class="timesheet_head clearfix">
-			
+			<button type="button" class="btn btn-primary dropdown-toggle btn-sm" onClick="clearFilters();" title="Refresh">
+			    <span class="fa fa-refresh"></span>
+			</button>
 			<div class="pull-left colCho">
 				<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="btn btn-sm btn-default"><i class="fa fa-table"></i></a>
 			</div>
@@ -139,10 +225,21 @@
 			</div>
 			  <ul class="pull-right">
 			    <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
-			    <!-- <li title="Import"><a href="/app/uploadImmigrationForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li> -->
+			    
 				  <li class="noPad">
 					  <a href="${appPath}/immigration/loadNewPetition" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="fa fa-plus paddingRight"></i> New </a>
 				  </li>
+				 <li title="Import"><a href="/app/uploadImmigrationForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+				 <li title="Export" class="mrPOP" id="mypop"><i
+							class="glyphicon glyphicon-export"></i>
+							<div id="exportPop">
+								<ul>
+									<!-- <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li> -->
+									<li onclick="exportToExcel();"><i
+										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+								</ul>
+							</div>
+				</li>
                  </sec:authorize>
 			  </ul>
 			  <div class="remove_search">
@@ -196,7 +293,7 @@
 						<div class="row">
 							<div class="col-md-12 mb">
 								<div class="clearfix dynamic_search filterDynamicsearch">
-										<input type="text" id="attorneyFilterInput"  onkeyup="myClientsFunction('attorneyFilterInput','attorneyFilter');" placeholder="Attorney" title="Type in a managers">
+										<input type="text" id="attorneyFilterInput"  onkeyup="myClientsFunction('attorneyFilterInput','attorneyFilter');" placeholder="Attorney/Company" title="Type in a managers">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 									</div>
 								 <div class="clearfix filterSearch-ul mt5 filterSearch">
@@ -247,6 +344,22 @@
 </div>
 
 <script>
+		function exportToPdf(){
+			window.location.href = sourceleadUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
+		}
+		
+		function exportToExcel(){
+			if (!table.data().count() ) {
+			    alert( 'Empty table' );
+			}else{
+				window.location.href = sourceleadUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=excel";
+			}
+		}
+
+		$('#mypop').click(function(){
+			$("#exportPop").toggle();
+			$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+		}); 
 	// Close Advanced Search
 		function closePop(){
 			$("#immigrationFilterPopup").hide();
@@ -297,7 +410,7 @@
         $(".clientDetails").toggleClass('hidden', 500);
         });
 
-    	$('#filterFromYear').append($('<option />').val("").html("--Select--"));
+    	$('#filterFromYear').append($('<option />').val("").html("--Start Year--"));
         for (i = new Date().getFullYear(); i > 1900; i--)
         {
             $('#filterFromYear').append($('<option />').val(i).html(i));
@@ -306,7 +419,7 @@
         
         function getFilterTwoYear(selectedFrmYear){
         	$('#filterToYear').empty();
-        	$('#filterToYear').append($('<option />').val("").html("--Select--"));
+        	$('#filterToYear').append($('<option />').val("").html("--End Year--"));
         	for (i = new Date().getFullYear(); i >= selectedFrmYear ; i--)
             {
                 $('#filterToYear').append($('<option />').val(i).html(i));
@@ -409,7 +522,7 @@
      });
 });
 
- function getDynamicImmigrationList(filterVal) {
+ function getDynamicImmigrationList(filterVal, DashBoardFilterStatus) {
 	 var filterAttorneyVal = [];
 	 var filterTypeVal = [];
 	 var filterStatusVal = [];
@@ -452,7 +565,13 @@
 //     var statusFilter = $("#statusFilter").val();
      var searchValue = $("#immiListSerach").val();
      searchValue = searchValue ? searchValue : "";
-     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal;
+     var url ="";
+     if(DashBoardFilterStatus !== null && typeof DashBoardFilterStatus !='undefined'){
+    	 url = sourceleadUrl + "/immigration/getImmigrationDashBoardFilterList?filterStatus="+DashBoardFilterStatus; 
+     }
+     else{
+      url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal;
+     }
      dynamicImmigrationListPagination(url);
  }
  //var count = 0;
@@ -492,19 +611,8 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.currUscisStatusId !== null && opt.currUscisStatusId !== '' && opt.currUscisStatusId !== 'undefined') {
-                    	 result = result + "<td><div class='mt5 mb5 dropdown-select' style='width:150px;'><select id='currUscisStatus' title='"+opt.currUscisStatus+"' onchange='changeSaveUscisStatus($(this),"+opt.id+","+opt.currUscisStatusId+");' name='currUscisStatus' class='form-control'>";
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.currUscisStatus +"'>" + opt.currUscisStatus + "</div></td>";
                     	 //alert(opt.currUscisStatusId);
-                    	 for(var i=0;i<opt.currUsicisStatusList.length;i++){
-                        	data = opt.currUsicisStatusList[i];
-                        	if(data.id == opt.currUscisStatusId){
-                        		//alert("inside selected");
-                        		result = result + "<option selected value="+data.id+">"+data.name+"</option>";
-                        	}else{
-                        		result = result + "<option value="+data.id+">"+data.name+"</option>";
-                        	}
-                    	 }
-                         result = result + "</select></div></td>";
-                         $('#currUscisStatus').trigger("chosen:updated");
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
                      }
@@ -517,7 +625,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.generatedId !== null && opt.generatedId !== '' && opt.generatedId !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.generatedId+"</a></div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/app/immigration/viewImmigration?immigrationUUID="+opt.immigrationUUID+"&candidateUUID="+opt.candidateUUID+"&immiTemplateUUID="+opt.immiTemplateUUID+"&myImmigrationPage=N>"+opt.generatedId+"</a></div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }
@@ -652,10 +760,10 @@
                 	 }
                      var result = "";
                      '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION\')">';
-                     result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationId='+opt.id+'><i id="edit' + opt.id + '" class="glyphicon glyphicon-pencil"></i></a>';
+                     result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationUUID='+opt.immigrationUUID+'><i id="edit' + opt.immigrationUUID + '" class="glyphicon glyphicon-pencil"></i></a>';
                      '</sec:authorize>';
                       '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION\')">';
-                     result = result + '<i id="delete' + opt.id + '" onclick="deleteImmigrationListId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                     result = result + '<i id="delete' + opt.immigrationUUID + '" onclick="deleteImmigrationListId(\''+opt.immigrationUUID+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                      '</sec:authorize>';
                      return result;
                  }
@@ -690,15 +798,15 @@
     // $("table").colResizable(); // for resizing columns in tables.
  }
  
- function deleteImmigrationListId(immigrationId){ // only stauts updated with reason. active 1 , deactive 0.
-		$(".project_inn_mask").remove();
+ function deleteImmigrationListId(immigrationUUID){ // only stauts updated with reason. active 1 , deactive 0.
+	 $(".project_inn_mask").remove();
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
 		/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
 		result = result +" <b>Do you want to remove record permanently?</b>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteImmigrationDetailsByRowId("+immigrationId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteImmigrationDetailsByRowId(\""+immigrationUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#remove_immigration_pop").slideDown(200);
@@ -748,6 +856,7 @@
 			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
 			  }
 	    });
+		$(".colPop").hide();
 	   
 	}
 	function checkAllColumns(obj){
@@ -776,9 +885,15 @@
 	}
 	
 	function getAttorneysByOrgLocation(){
-			 $.ajax({
+		var type = null ;
+		if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+			type = "Client";
+		}else{
+			type = "Vendor";
+		}	 
+		$.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+			        url: sourceleadUrl+"/getAllRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue+"&type="+type, 
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	$('#attorneyFilter').empty();
@@ -865,6 +980,9 @@
 	            li[i].style.display = "none";
 	        }
 	    }
+	}
+	function clearFilters(){
+		location.reload();
 	}
 </script>
 

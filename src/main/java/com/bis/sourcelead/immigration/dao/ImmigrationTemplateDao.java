@@ -83,4 +83,9 @@ public interface ImmigrationTemplateDao {
 	ImmigrationTemplateTasks getImmigratonTemplateTasksById(Long id);
 
 	List<ImmigrationTemplateTasks> getImmigratonTemplateTasksByTemplateId(Long templateId);
+
+	Long getTemplateIdByUUID(String immiTemplateUUID);
+
+	boolean validateTemplateTaskNameExistance(String templateTaskName, Long templateId, Long immiTaskId);
+
 }

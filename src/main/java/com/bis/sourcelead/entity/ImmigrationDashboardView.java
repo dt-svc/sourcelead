@@ -22,9 +22,15 @@ public class ImmigrationDashboardView implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@Column(name = "IMMIGRATION_ID")
+	private Long immigrationId;
+	
 	@Column(name = "ORG_LOCATION_ID ")
 	private Long orgLocationId;
 
+	@Column(name = "ATTORNEY_LOCATION_ID ")
+	private Long attorneyLocationId;
+	
 	@Column(name = "DRAFT_COUNT ")
 	private BigDecimal draftsCount;
 
@@ -42,6 +48,12 @@ public class ImmigrationDashboardView implements Serializable {
 	
 	@Column(name = "OTHERS_COUNT")
 	private BigDecimal othersCount;
+	
+	@Column(name = "RFE_COUNT")
+	private BigDecimal rfeCount;
+	
+	@Column(name = "DENIED_COUNT")
+	private BigDecimal deniedCount;
 
 	public Long getOrgLocationId() {
 		return orgLocationId;
@@ -97,6 +109,38 @@ public class ImmigrationDashboardView implements Serializable {
 
 	public void setOthersCount(BigDecimal othersCount) {
 		this.othersCount = othersCount;
+	}
+
+	public Long getAttorneyLocationId() {
+		return attorneyLocationId;
+	}
+
+	public void setAttorneyLocationId(Long attorneyLocationId) {
+		this.attorneyLocationId = attorneyLocationId;
+	}
+
+	public BigDecimal getRfeCount() {
+		return rfeCount;
+	}
+
+	public void setRfeCount(BigDecimal rfeCount) {
+		this.rfeCount = rfeCount;
+	}
+
+	public BigDecimal getDeniedCount() {
+		return deniedCount;
+	}
+
+	public void setDeniedCount(BigDecimal deniedCount) {
+		this.deniedCount = deniedCount;
+	}
+
+	public Long getImmigrationId() {
+		return immigrationId;
+	}
+
+	public void setImmigrationId(Long immigrationId) {
+		this.immigrationId = immigrationId;
 	}
 
 	

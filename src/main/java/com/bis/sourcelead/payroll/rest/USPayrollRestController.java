@@ -44,7 +44,9 @@ import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollContributionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.PayItem;
@@ -59,11 +61,13 @@ import com.bis.sourcelead.payroll.service.PayItemService;
 import com.bis.sourcelead.payroll.service.PayrollContributionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
+import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.service.AssociateSalaryHistoryService;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -123,6 +127,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	AssociateSalaryHistoryService associateSalaryHistoryService;
+	
+	@Autowired
+	USPaysheetService uSPaysheetService;
 	
 	/**
 	 * find all deduction types from lookup_data table 
@@ -641,6 +648,7 @@ public class USPayrollRestController {
 			return model;
 		}
 		
+		//TODO Need to Resuse this method later Do not Remove
 		@RequestMapping(value = { "/generateUSPayroll","/rest/generateUSPayroll" }, method = RequestMethod.POST)
 		public ResponseList<USPayrollDTO> generateUSPayroll(GenerateUSPayrollDTO generateUSPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
@@ -650,6 +658,13 @@ public class USPayrollRestController {
 		}
 		
 		
+		@RequestMapping(value = { "/generatePaySheet","/rest/generatePaySheet" }, method = RequestMethod.POST)
+		public ResponseList<USPaysheetDTO> generatePaySheet(GenerateUSPayrollDTO generateUSPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			ResponseList<USPaysheetDTO> res = uSPaysheetService.generateUSPaysheet(orgLocation,generateUSPayrollDTO);
+			return res;
+		}
 		/**
 		 * Get  user groups Deductions 
 		 * @param payrollDeductionDTO
@@ -688,7 +703,8 @@ public class USPayrollRestController {
 	{
 		List<String> listDates = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Response<UserGroupDTO> userGroup = userGroupService.findUserGroupById(groupUUID);
+		String [] str = groupUUID.split(",");
+		Response<UserGroupDTO> userGroup = userGroupService.findUserGroupById(str[0]);
 		if ("Weekly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
 			Calendar now = Calendar.getInstance(); // Gets the current date and
 			int year = now.get(Calendar.YEAR);
@@ -851,6 +867,45 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<AssociateSalaryHistoryDTO>  associateSalaryHisDTO = associateSalaryHistoryService.findAssociateSalHistory(associateSalid,orgLocation);
 		return associateSalaryHisDTO;
+	}
+	
+	
+	/**
+	 * save paysheet for approvel
+	 * @param associateSalaryDTO
+	 * @param request
+	 * @param response
+	 * @return Response<AssociateSalaryDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/submitPaysheet","/rest/submitPaysheet" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<PaysheetFrequencyDTO> submitPaysheet(PaysheetFrequencyDTO paysheetFrequencyDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<PaysheetFrequencyDTO>  resObj = uSPaysheetService.submitPaysheet(orgLocation,paysheetFrequencyDTO,loginUser);
+		return resObj;
+	}
+	
+	@RequestMapping(value = "/addAssociateDeduction")
+	public ModelAndView addAssociateDeduction(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("userId", userId);
+		model.setViewName("users/addAssociateSummaryDeduction");
+		return model;
+	}
+	
+	@RequestMapping(value = "/addAssociateContribution")
+	public ModelAndView addAssociateContribution(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("userId", userId);
+		model.setViewName("users/addAssociateSummaryContribution");
+		return model;
 	}
 	
 }

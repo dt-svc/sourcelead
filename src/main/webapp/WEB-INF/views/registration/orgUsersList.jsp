@@ -461,7 +461,8 @@ function getUserList(){
  		result = result +'<th>Phone</th>';
  		result = result +'<th>Role</th>';
  		result = result +'<th>Status</th>';
- 		result = result +'<th>Action</th>';
+ 		result = result +'<th>Location Admin</th>';
+ 		result = result +'<th>Org Admin</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 	    result = result +"</table>";
@@ -523,7 +524,8 @@ function usersListPagination(url,sourceleadUrl){
             { "data": "mobilePhone"},
             { "data": "role" },
             { "data": "status" },
-            { "data": "actions" }
+            { "data": "primaryAdmin" },
+            { "data": "superAdmin" }
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -598,7 +600,7 @@ function usersListPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
-	              "data": "actions",
+	              "data": "primaryAdmin",
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
@@ -618,12 +620,50 @@ function usersListPagination(url,sourceleadUrl){
 							checked = "value = 'N'";
 						}
 	            	 
-	               	 if(opt.userState == 'ACTIVE' && opt.role == 'Admin'){
+	               	 if((opt.userState == 'ACTIVE' || opt.userState == 'NOT_LOGGEDIN') && opt.role == 'Admin'){
                     	     result = result +'<td>'
 	                    	 result = result +'<div class="col-md-7 orgrole-switch">';
 	                    	 result = result +'<label class="switch">';
 	                    	 result = result +'<input type="checkbox" onclick="checkUser('+opt.id+',\''+name+'\')"  name="check'+opt.id+'"  id="check'+opt.id+'" '+checked+'  >';
-	                    	 result = result +'<div class="slider round" title="Make as super admin"></div>';
+	                    	 result = result +'<div class="slider round" title="Make as location primary admin"></div>';
+	                    	 result = result +'</label>';
+	                    	 result = result +'</div>';
+                    	
+                         result = result +'</td>'; 
+                	 }else{
+                		 result = result +'<td>-----</td>';
+                	 }
+	               	 
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "superAdmin",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  
+	            	     var name = "";
+	            	     var checked = "";
+		    	  		 if(opt.lastName && opt.lastName != '' && opt.lastName != 'undefined'){
+	                		 name = opt.firstName +" "+ opt.lastName;
+	                	 }
+	                	 else{
+	                		 name = opt.firstName;
+	                	 }
+		    	  		 
+		    	  		if(opt.isSuperAdmin == 'Y'){
+							checked = "checked"+" "+"value = 'Y'"+" "+"disabled = 'disabled'";
+						}else{
+							checked = "value = 'N'";
+						}
+	            	 
+	               	 if((opt.userState == 'ACTIVE' || opt.userState == 'NOT_LOGGEDIN') && opt.role == 'Admin'){
+                    	     result = result +'<td>'
+	                    	 result = result +'<div class="col-md-7 orgrole-switch">';
+	                    	 result = result +'<label class="switch">';
+	                    	 result = result +'<input type="checkbox" onclick="checkSuperUser('+opt.id+',\''+name+'\')"  name="checkSuper'+opt.id+'"  id="checkSuper'+opt.id+'" '+checked+'  >';
+	                    	 result = result +'<div class="slider round" title="Make as org super admin"></div>';
 	                    	 result = result +'</label>';
 	                    	 result = result +'</div>';
                     	
@@ -666,9 +706,17 @@ function usersListPagination(url,sourceleadUrl){
 function checkUser(userId,name){
 	var checked = document.getElementById("check"+userId).checked
 	if(checked == true){
-		alertMessage("Do you want to make "+name+" as admin?",userId);
+		alertMessage("Do you want to make "+name+" as primary admin?",userId);
 	}
 }
+
+function checkSuperUser(userId,name){
+	var checked = document.getElementById("checkSuper"+userId).checked
+	if(checked == true){
+		alertSuperAdminMessage("Do you want to make "+name+" as super admin?",userId);
+	}
+}
+
 </script>
 
 <script type="text/javascript">
@@ -676,6 +724,12 @@ function cancel(userId){
 	$("#choicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	document.getElementById("check"+userId).checked = false;
+}
+
+function cancelSuperPopUp(userId){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	document.getElementById("checkSuper"+userId).checked = false;
 }
 </script>
 
@@ -687,6 +741,20 @@ function alertMessage(message,userId){
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='makeAsPrimaryAdmin("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+userId+");'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+
+function alertSuperAdminMessage(message,userId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='makeAsSuperAdmin("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSuperPopUp("+userId+");'></b>";
 	result = result +"	</div>";
 	$("#choicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -713,7 +781,36 @@ function makeAsPrimaryAdmin(userId){
 		    	type: "POST",
 		        url: sourceleadUrl+"/changePrimaryAdmin?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId, 
 		        success: function(result) {
-		        	location.replace(sourceleadUrl+"/enrolledOrgSummary?orgCode="+orgCode);
+		        	cancel(userId);
+		        	usersListDataTableList();
+		        	$("#loading").removeAttr("style");
+		        },
+		    });
+	 }
+	 
+}
+
+
+function makeAsSuperAdmin(userId){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	
+	var orgLocationId =   $('input[name=subscribedOrgLocation]:checked').val();
+	 if(orgLocationId == null || orgLocationId == '' || orgLocationId == 'undefined'){
+		 orgLocationId = '${registeredOrgLocationId}'
+	 }
+	var orgCode = '${orgCode}';
+	
+ 	$("#loading").attr('style','position:absolute; width:100%; height:450px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(userId != null && userId != "" && orgLocationId != null && orgLocationId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/changeSuperAdmin?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId, 
+		        success: function(result) {
+		        	cancelSuperPopUp(userId);
+		        	usersListDataTableList();
+		        	$("#loading").removeAttr("style");
 		        },
 		    });
 	 }

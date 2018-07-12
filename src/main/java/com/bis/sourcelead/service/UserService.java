@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import org.json.JSONObject;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
@@ -205,7 +208,40 @@ public interface UserService  {
 	
 	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception;
 
-	ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation) throws Exception;
+	ResponseList<UserRole> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation,Date[] searchDates) throws Exception;
+	
+	List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception;
+
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
+
+	List<User> getGlobalUsersByOrgId(Long roleId,Long orgId,Long tabId) throws Exception;
+	
+	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgLocationId,Long orgId,Long tabId) throws Exception;
+	
+	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId, Long orgId,Long tabId)throws Exception;
+	
+	List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+
+	List<User> getUsersListForSignatoryByOrglocationId(Long id);
+	
+	List<User> getReportingManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId) throws Exception;
+	
+	List<User> getGlobalReportingManagersUsersByOrgId(Long roleId,Long orgId) throws Exception;
+	
+	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
+	
+	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList) throws Exception;
+
+	
+//	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
+
+	/**
+	 * @author Mahaveer Manoj
+	 * @purpose - to get Dashboard Items by user
+	 **/
+	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId);
+
+	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 
 	User getUserbyConsultantUserId(Long consultantUserId);
 

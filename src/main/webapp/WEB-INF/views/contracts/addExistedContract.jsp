@@ -35,7 +35,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Add Existing Contract</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts</a> &raquo; Existing Contract</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts</a> &raquo;Add Existing Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="existLoading"></div>
@@ -332,7 +332,7 @@ $(document).ready(function(){
           <div class="form-group row">
               <label class="col-md-4">Signing Authority1<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="sequentialOwner1" name="sequentialOwner1" data-placeholder="Select signing authority1" data-validation="required" onchange="refreshSigningAuthority2();" field-name="Owner">
+                  <select class="chosen-select form-control" id="sequentialOwner1" name="sequentialOwner1" data-placeholder="Select signing authority1" data-validation="required" onchange="refreshSigningAuthority2();" field-name="sequentialOwner1">
                   <option value=''>Select Signing Authority1</option>
                   <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.sequentialOwner1}">
@@ -349,7 +349,7 @@ $(document).ready(function(){
           <div class="form-group row">
               <label class="col-md-4">Signing Authority2<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="sequentialOwner2" name="sequentialOwner2" data-placeholder="Select signing authority2" onchange="changeSaveButton();" data-validation="required" field-name="Owner">
+                  <select class="chosen-select form-control" id="sequentialOwner2" name="sequentialOwner2" data-placeholder="Select signing authority2" onchange="changeSaveButton();" data-validation="required" field-name="sequentialOwner2">
                   <option value=''>Select Signing Authority2</option>
                   <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.sequentialOwner2}">
@@ -1615,7 +1615,47 @@ function contractTypeLabels(){
 	$("#billingRatePer").val("").trigger('change');
 	}
 </script>
+<script>
+function getParallelApprovers(){
+	$("#parallel i").addClass("apprverReq-active");
+	$("#sequential i").removeClass("apprverReq-active");
+	$("#parallelAppDiv").show();
+	$("#sequentialAppDiv").hide();
+	$("#sequentialOwner1").val('');
+	$("#sequentialOwner2").val('');
+// 	$("#parallelOwner").val('');
+	$('#sequentialOwner1').trigger("chosen:updated");
+	$('#sequentialOwner2').trigger("chosen:updated");
+// 	$('#parallelOwner').trigger("chosen:updated");
+	
+	$('#parallelOwner').removeAttr('data-validation-optional');
+	$('#parallelOwner').attr('data-validation',"required");
+	$('#sequentialOwner2').removeAttr('data-validation');
+	$('#sequentialOwner2').attr('data-validation-optional',"true");
+	$('#sequentialOwner1').removeAttr('data-validation');
+	$('#sequentialOwner1').attr('data-validation-optional',"true");
+}
 
+function getSequentialApprovers(){
+		$("#parallel i").removeClass("apprverReq-active");
+		$("#sequential i").addClass("apprverReq-active");
+		$("#sequentialAppDiv").show();
+		$("#parallelAppDiv").hide();
+//	 	$("#sequentialOwner1").val('');
+//	 	$("#sequentialOwner2").val('');
+		$("#parallelOwner").val('');
+		
+//	 	$('#sequentialOwner1').trigger("chosen:updated");
+//	 	$('#sequentialOwner2').trigger("chosen:updated");
+		$('#parallelOwner').trigger("chosen:updated");
+		$('#sequentialOwner1').removeAttr('data-validation-optional');
+		$('#sequentialOwner1').attr('data-validation',"required");
+		$('#sequentialOwner2').removeAttr('data-validation-optional');
+		$('#sequentialOwner2').attr('data-validation',"required");
+		$('#parallelOwner').removeAttr('data-validation');
+		$('#parallelOwner').attr('data-validation-optional',"true");
+}
+</script>
 <script>
 function showCommonSOWFields(){
 	document.getElementById("hoursPerWeekDiv").style.display="block";
@@ -2210,6 +2250,21 @@ function clearExistedContractEndDate(){
 function clearExistedContractJoinDate(){
 	$("#joinDate").val("");
 	};
+</script>
+
+<script>
+function refreshSigningAuthority2(){
+	var sequentialOwner1 = $("#sequentialOwner1").val();
+	var result = "";
+	<c:forEach var="user" items="${userList}">
+		if(sequentialOwner1 != "${user.id}"){
+			result = result +  '<option value="${user.id}"> ${user.firstName} ${user.lastName}</option>';
+		}
+	</c:forEach>
+	$("#sequentialOwner2").empty();
+	$("#sequentialOwner2").append(result);
+	$('#sequentialOwner2').trigger("chosen:updated");
+}
 </script>
 <!-- <script>
 	$(".clearUpload").click(function(){

@@ -24,7 +24,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
@@ -42,15 +41,30 @@ import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 import net.coobird.thumbnailator.Thumbnails;
 
 public class FileUploadUtil {
+
+    public static String getFileContent(String staticPath, String contentFileUrl) {
+        StringBuilder fileContent = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(new File(staticPath, contentFileUrl)));
+            String line;
+            while((line = br.readLine()) != null) {
+                fileContent.append(line).append(System.getProperty("line.separator"));
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return fileContent.toString();
+    }
 
 	public String cropImage(String staticPath, File inFile, int x, int y, int w, int h) {
 		try {
@@ -85,7 +99,10 @@ public class FileUploadUtil {
 	public String uploadFile(String staticPath, long orgId, long locationId, String fileType,
 			File inFile) {
 		String fileName = inFile.getName().replace("&", "").replace("%", "").replace("?", "");;
-		String extenstion = fileName.substring(fileName.lastIndexOf("."));
+		String extenstion = "";
+		if(fileName.lastIndexOf(".") != -1)
+		extenstion = fileName.substring(fileName.lastIndexOf("."));
+		if(fileName.lastIndexOf(".") != -1)
 		fileName = fileName.substring(0, fileName.lastIndexOf("."));
 		long time = new Date().getTime();
 		String url = staticPath.substring(staticPath.lastIndexOf("/")) + "/" + orgId + "/" + locationId + "/" + fileType
@@ -503,6 +520,43 @@ public class FileUploadUtil {
 					}
 				} ///
 			} // adding files to immigration doc folder is completed.
+			// Adding canidate Resume to candidate docs list folder
+			CandidateResumes candidateResume = (CandidateResumes) docsListMap.get("cadidateResume");
+			if(candidateResume != null) {
+				File resumeDocfolder = new File(staticPath, orgId + "/" + orgLocationId + "/resumes");
+				files = resumeDocfolder.listFiles();
+				if (resumeDocfolder.exists() || resumeDocfolder.list().length > 0) {
+					DocsFoundFlag =true;
+				}
+				inStream = null;
+				outStream = null;
+				for (File f : files) {
+						String fullFileName = FilenameUtils.getName(candidateResume.getFileURL());
+						if (f.getName().equalsIgnoreCase(fullFileName)) {
+							File afile = new File(f.getAbsolutePath());
+							File bfile = new File(immDocFolder.getAbsolutePath() + File.separator + f.getName());
+							try {
+								inStream = new FileInputStream(afile);
+								outStream = new FileOutputStream(bfile);
+	
+								byte[] buffer = new byte[1024];
+	
+								int length;
+								// copy the file content in bytes
+								while ((length = inStream.read(buffer)) > 0) {
+									outStream.write(buffer, 0, length);
+								}
+								inStream.close();
+								outStream.close();
+								// delete the original file
+								// afile.delete();
+								// System.out.println("File is copied successful!");
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+				}// end adding candidate resume to candidate docs folder. 
+			}
 			
 			// adding files to candidate employer doc folder is starts here.
 			List<CandidateEmployers> empdocsList = (List<CandidateEmployers>) docsListMap.get("employerDocs");

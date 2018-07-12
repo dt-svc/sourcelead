@@ -1,9 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,9 +7,7 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +31,6 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
-import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -53,6 +46,7 @@ import com.bis.sourcelead.service.ExpensesEntryDocumentsService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
@@ -64,12 +58,16 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 @RequestMapping("/app")
 public class AddExpensesRestController {
-	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
 	@Autowired
 	private ProjectsService projectsService; 
+	
+	@Autowired
+	private ProjectApproverHierarchyService projectApproverHierarchyService; 
+	
+	
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
@@ -164,6 +162,7 @@ public class AddExpensesRestController {
 			
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		    User reopenedUser = userService.getUserById(reOpenedUserId);
 			if(expenseId != null && null != type && "accept".equalsIgnoreCase(type)){
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
@@ -171,19 +170,23 @@ public class AddExpensesRestController {
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
 				Expenses expense = expensesService.getExpenseById(expenseId);
 				User superUser = userService.getUserById(reOpenedUserId);
-				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId());
-				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
-			  	
+				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId(),isGlobalAccess);
+
+				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser,loginUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
+				expensesApprovalService.sendExpenseReopenAcceptMailToEmployee(expense,orgLoc,type,reopenedUser,loginUser);
+
 			}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
 			    //send mail & notification logic
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
 				Expenses expense = expensesService.getExpenseById(expenseId);
 				User superUser = userService.getUserById(reOpenedUserId);
-				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId());
-				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
+				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId(),isGlobalAccess);
+				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser,loginUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
 
 			}
+			
+			
 		
 	}
 	
@@ -213,7 +216,6 @@ public class AddExpensesRestController {
 			  	if(isSuperUser.equalsIgnoreCase(Constants.NO)){
 			  		sendEmailToSuperUserForReOpenExpenseApprovalStatus(expenses.getProjectMembers().getId(),expenses,loginUser,orgLoc,reason,currencyCode);
 			  	}
-			  	
 			}
 		
 	}
@@ -306,8 +308,9 @@ public class AddExpensesRestController {
 		 	List<ProjectMembers> projectMembers = null;
 		 	if(projectId != null){
 		 		Projects project = projectsService.getProjectById(projectId);
+		 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		 	    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				projectMembers = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLoc.getId());
+				projectMembers = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLoc.getId(),isGlobalAccess);
 				for(ProjectMembers pm:projectMembers) {
 					pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), pm.getProjectAssignedDate()));
 				if(pm.getProjectEndDate() != null) {
@@ -401,7 +404,7 @@ public class AddExpensesRestController {
 				 
 				 
 						 if(null != clientProjectMember.getProjects()){
-					      globalVarsMap.put("projectName",clientProjectMember.getProjectName());
+					      globalVarsMap.put("projectName", clientProjectMember.getProjects().getProjectName());
 					 }
 				 
 //				 if(null != sah.getExpenseId()){
@@ -466,14 +469,22 @@ public class AddExpensesRestController {
 //				 }
 				 
 				
-				 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
-				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-				 String url = sourceleadUrl;
-				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg(),orgLoc);
+				
+					 
+					 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+					 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+					 String signature = null;
+					 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+						 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+					 }
+					 String url = sourceleadUrl;
+				 
+				 //construct HTML template using required data
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg(), orgLoc);
 				 emailMessage.setSubject(subject);
-				 emailMessage.setMessageBody(emailTemplate);
+				 emailMessage.setMessageBody(emailTemplate);	 
+					 
+					 
 				 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 
 				 EmailScenario  notificationScenario = null;
@@ -493,4 +504,7 @@ public class AddExpensesRestController {
 			
 		}
 	
+	
+	 
+	 
 }

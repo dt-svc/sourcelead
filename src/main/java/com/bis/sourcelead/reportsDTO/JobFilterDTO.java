@@ -13,6 +13,8 @@ public class JobFilterDTO {
 	private String fromtype;
 
 	private String year;
+	
+	private String searchValue;
 
 
 	public String getJobIds() {
@@ -62,5 +64,15 @@ public class JobFilterDTO {
 	public void setYear(String year) {
 		this.year = year;
 	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+	
+	
 	
 }

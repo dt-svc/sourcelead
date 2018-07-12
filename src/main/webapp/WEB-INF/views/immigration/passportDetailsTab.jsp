@@ -30,6 +30,7 @@
 				<th>Country</th>
 				<th>Valid From</th>
 				<th>Valid To</th>
+				<th>Status</th>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <th>Action</th>
@@ -48,15 +49,16 @@
 			  </tr>
 			  <c:forEach var="passportdetails" items="${PassportList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-custom">${!empty passportdetails.idNumber ? passportdetails.idNumber : '---'}</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty passportdetails.country ? passportdetails.country : '---'}</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty passportdetails.validFromDateStr ? passportdetails.validFromDateStr : '---'}</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty passportdetails.validToDateStr ? passportdetails.validToDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-custom" title = "${passportdetails.idNumber}">${!empty passportdetails.idNumber ? passportdetails.idNumber : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.country}">${!empty passportdetails.country ? passportdetails.country : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.validFromDateStr}">${!empty passportdetails.validFromDateStr ? passportdetails.validFromDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.validToDateStr}">${!empty passportdetails.validToDateStr ? passportdetails.validToDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.currentStatus}">${passportdetails.currentStatus}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="immigration.deletePassportVisaDetailsById(${passportdetails.id},'${passportdetails.idType}');" 
+				 onclick="deleteImmigrationRecord('deletePassportVisaDetails',${passportdetails.id},'${passportdetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 				    </c:when>
 				    <c:otherwise>
@@ -64,7 +66,7 @@
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
 						       <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="immigration.deletePassportVisaDetailsById(${passportdetails.id},'${passportdetails.idType}');" 
+				 onclick="deleteImmigrationRecord('deletePassportVisaDetails',${passportdetails.id},'${passportdetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
@@ -88,18 +90,18 @@
 			<h2>Add Passport</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
 		
-		<div class="popupMid clearfix">
+		<div class="popupMid clearfix overflow_inherint">
         
-          <div class="col-sm-12 noPad mt clearfix">
+          <div class="col-sm-12 noPad mt clearfix" id="idNumberPassportDiv">
 				<label class="col-md-4 padding_left">Passport Id<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-8 padding_right">
-              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Passport Id" field-name = "Passport Id" class="form-control" data-validation = "required validate_length length8-12 validate_AlphaNumber"/>
+              	<div class="col-md-8 padding_right" >
+              		<input type="text" name ="idNumber" id ="idNumber" placeholder="Passport Id" field-name = "Passport Id" class="form-control" data-validation ="required validate_length length8-12 validate_AlphaNumber"  onkeyup = "validateCandidatePassportVisa('Passport');"/>
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Country<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name="country" id= "countryName" field-name="Country" data-validation="required">
+					<select class="selectpicker width100percnt" name="country" id="countryName" field-name="Country" data-validation="required" data-live-search="true">
 					<option value="" selected>--Select Country--</option>
 					  <c:forEach var="country" items="${countryList}">
 						<option value="${country.name}">${country.name}</option>
@@ -125,13 +127,14 @@
 				<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('validTo');"></i></span>
 				</div>
 				</div>
+			</div>
 			</div>		
 			<div class="clearfix"></div>							
-		<div class="immiPopFoot mt clearfix">
+		<div class="immiPopFoot">
             <input value="Save" class="" type="button" id="passport_save_id" onclick="immigration.savePassportVisaDetails('Passport')">
             <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
-	</div>
+	
 	</div>
 	
 	
@@ -139,7 +142,7 @@
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#detailsTab');" class="btn btn-default btn-sm">
              	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#visasTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#visasTab');" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#visasTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>	
 	
@@ -157,6 +160,8 @@
 				$("#popPassView").fadeOut(200);
 				$("#CandidatePassportform")[0].reset();
 				$("#candidatePassportId").val('');
+				$('#popPassView').find('p.jquery_form_error_message').remove();
+				$("#passport_save_id").removeAttr("disabled");
 			}
 		</script>
 		<script>
@@ -185,11 +190,29 @@
 		            $("#validFrom").datepicker("option", "maxDate", dt);
 		        }
 		  });
-		  $("#searchValuePassport").keyup(function (e) {
-			    if (e.which === 13) {
-			    	searchPassportValue();
-			    }
-			});
+		  
+			  var config = {
+					  '.chosen-select'           : {},
+					  '.chosen-select-deselect'  : {allow_single_deselect:true},
+					  '.chosen-select-no-single' : {disable_search_threshold:10},
+					  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+					  '.chosen-select-width'     : {width:"70%"}
+					}
+			
+			  $("#searchValuePassport").keyup(function (e) {
+				    if (e.which === 13) {
+				    	searchPassportValue();
+				    }
+				});
+			
+			  for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+				})
+			  
 		</script>
 
 <script>
@@ -201,5 +224,7 @@
 	else {
         $('#passportfilled').hide()
 	}
+  
+  $('#countryName').selectpicker('refresh');
 </script>
 

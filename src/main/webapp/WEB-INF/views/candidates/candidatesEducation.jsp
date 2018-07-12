@@ -42,11 +42,11 @@ function candidateEducation(candidateId){
 	}else{
 		if(candidateType == "Candidates"){
 			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onclick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
 			'</sec:authorize>';
 		}else{
 			'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\')">';
-			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onclick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
 			'</sec:authorize>';
 		}
 		
@@ -256,7 +256,6 @@ function closePopup(){
 --%>
 <script>
 function addEducation(candidateId) {	
-	
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="education_form" name="education_form" method="post" > ';
@@ -274,7 +273,7 @@ function addEducation(candidateId) {
 	                				    	 
 	                				    	 
     result = result + '						</select>';
-	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                  </div>  ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';

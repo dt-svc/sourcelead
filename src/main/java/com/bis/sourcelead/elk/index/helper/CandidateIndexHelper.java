@@ -218,6 +218,7 @@ public class CandidateIndexHelper {
 				}else{
 					candidateIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
 				}
+				candidateIndex.setCreatedByUserCode(user.getUserCode());
 			}
 			
 			
@@ -228,6 +229,11 @@ public class CandidateIndexHelper {
 			if(null != candidate.getIsProfilePublic()){
 				candidateIndex.setIsProfilePublic(candidate.getIsProfilePublic());
 			}
+			
+			if(candidate.getCandidateTags() != null && !candidate.getCandidateTags().isEmpty()) {
+				candidateIndex.setTags(candidate.getCandidateTags());
+			}
+			
 			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());
 			

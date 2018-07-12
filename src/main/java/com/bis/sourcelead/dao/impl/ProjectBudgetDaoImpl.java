@@ -91,8 +91,8 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<ProjectBudget> getProjectBudgetByProjectTaskId(Long projectId,Long loginOrgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.projectId.orgLocationsId =:loginOrgLocationId and projectbudget.status = '1'";
-		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setLong("loginOrgLocationId", loginOrgLocationId).list();
+		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId  and projectbudget.status = '1'";
+		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).list();
 		return ProjectBudgetList;
 	}
 

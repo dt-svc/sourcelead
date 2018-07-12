@@ -49,6 +49,12 @@ public class OrgSettings {
     private String poEmail;
     
     private String remittanceEmail;
+    
+    private String workingDaysPerWeek;
+    
+    private String weekOffDays;
+    
+    private String isTimesheetAvgHoursRequired;
 	
 
 	public Integer getId() {
@@ -231,6 +237,30 @@ public class OrgSettings {
 
 	public void setRemittanceEmail(String remittanceEmail) {
 		this.remittanceEmail = remittanceEmail;
+	}
+
+	public String getWorkingDaysPerWeek() {
+		return workingDaysPerWeek;
+	}
+
+	public void setWorkingDaysPerWeek(String workingDaysPerWeek) {
+		this.workingDaysPerWeek = workingDaysPerWeek;
+	}
+
+	public String getWeekOffDays() {
+		return weekOffDays;
+	}
+
+	public void setWeekOffDays(String weekOffDays) {
+		this.weekOffDays = weekOffDays;
+	}
+
+	public String getIsTimesheetAvgHoursRequired() {
+		return isTimesheetAvgHoursRequired;
+	}
+
+	public void setIsTimesheetAvgHoursRequired(String isTimesheetAvgHoursRequired) {
+		this.isTimesheetAvgHoursRequired = isTimesheetAvgHoursRequired;
 	}
 
 }

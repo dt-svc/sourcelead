@@ -40,6 +40,11 @@ public class RequirementLocationsServiceImpl implements RequirementLocationsServ
 		requirementLocationsDao.deleteRequirementLocations(requirementLocations);
 	}
 
+	@Override
+	public List<Object[]> getRequirementLocationsListByRequirementIdMap(List<Long> reqIdsList) throws Exception {
+		return requirementLocationsDao.getRequirementLocationsListByRequirementIdMap(reqIdsList);
+	}
+
 	
 
 }

@@ -79,9 +79,9 @@ public interface SubmissionApproverHierarchyDao {
 
 	public  List<SubmissionApproverHierarchy>  getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(Long userId,Long orgLocationId, String submissionStatus); 
 	
-	ResponseList<SubmissionApproverHierarchy> getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(Long userId, Long orgLocationId, String submissionStatus,String searchValue,int start,int length);
+	ResponseList<SubmissionApproverHierarchy> getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(Long userId, Long orgLocationId, String submissionStatus,String searchValue,int start,int length,String isGlobalUser);
 	
-	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long userId, Long orgLocationId, String submissionStatus);
+	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long userId, Long orgLocationId, String submissionStatus,String isGlobalUser);
 	
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId);
 	
@@ -94,13 +94,13 @@ public interface SubmissionApproverHierarchyDao {
  
 	//public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectMemberId, Date startDate, Date endDate) throws Exception;
 
-	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectId,Long pmMasterCandidateId,Long locationsId,Date startDate, Date endDate) throws Exception;
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectId,Long pmMasterCandidateId,Long locationsId,Date startDate, Date endDate,String isGlobalUser) throws Exception;
 	
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId,Long approverUserId, Date startDate, Date endDate, String status,String rejectedReason, OrgLocations orglocations) throws Exception;
 
 	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId);
 
-	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId,Long locationsId,Long projectMemberId, Date startDate, Date endDate) throws Exception;
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId,Long locationsId,Long projectMemberId, Date startDate, Date endDate,String isGlobalUser) throws Exception;
 	
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForProjectMember(Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String approvalStatus);
 	

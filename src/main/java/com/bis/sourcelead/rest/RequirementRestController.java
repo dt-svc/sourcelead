@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
@@ -67,6 +70,7 @@ import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadRolesService;
@@ -74,6 +78,7 @@ import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -165,6 +170,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 JobShareService jobShareService;
+	 
+	 @Autowired
+	 RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	/**
 	 * @author prasad k
 	 * @since sept 13 2016
@@ -1041,6 +1049,7 @@ public class RequirementRestController {
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch (Exception e) {
+				e.printStackTrace();
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
@@ -1070,7 +1079,7 @@ public class RequirementRestController {
 					}
 					else {
 						existedUser = existedUser + comma+requirementAssignTo.getAssignUserId().getId().toString()
-								+ ",undefined";
+								+ ",null";
 					}
 				}
 				response.setObject(existedUser);
@@ -1136,6 +1145,160 @@ public class RequirementRestController {
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
+	
+	
+	@RequestMapping(value = "/submitRecommendationCandidates", method = RequestMethod.POST)
+	public @ResponseBody Response<String> submitRecommendationCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId, 
+			@RequestParam(value = "candidateIds", required = false) String candidateIds,
+			@RequestParam(value = "candidateResume", required = false) String candidateResume,
+			HttpServletRequest request)throws Exception {
+		Response<String> response = new Response<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		if(loginUser != null) {
+			try {
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				
+				String[] candidateId = candidateIds.split(",");
+				if(candidateId != null &&  candidateId.length > 0){
+					for(String candidateid   : candidateId){
+						
+						
+						boolean flag = requirementSubmissionService.getRequirementSubmissionByCandidateIdAndJobId(Long.valueOf(candidateid),requirement.getId());
+						if(flag == false) {
+						
+							CandidateDTO candidate = candidateService.getCandidateDTOByCandidateId(Long.valueOf(candidateid));
+							JSONObject labelItems = new JSONObject();
+							labelItems.put("requirementId", requirementId);
+							labelItems.put("reqCoolingOffPeriod", requirement.getReqCoolingOffPeriod());
+							labelItems.put("candidateId", candidate.getCandId());
+							labelItems.put("candidateResumeRequired", candidateResume);
+							
+							JSONArray array = new JSONArray();
+							JSONObject firstNameItem = new JSONObject();
+							firstNameItem.put("label", "First Name");
+							firstNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+							firstNameItem.put("name", "FirstName");
+							firstNameItem.put("value", candidate.getFirstName());
+							labelItems.put("FirstName", candidate.getFirstName());
+							array.put(firstNameItem);
+							
+							JSONObject lastNameItem = new JSONObject();
+							lastNameItem.put("label", "Last Name");
+							lastNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+							lastNameItem.put("name", "LastName");
+							lastNameItem.put("value", candidate.getLastName());
+							labelItems.put("LastName", candidate.getLastName());
+							array.put(lastNameItem);
+							
+							if(StringUtils.isNotBlank(candidate.getPhoneNumber())) {
+								JSONObject mobilePhoneItem = new JSONObject();
+								mobilePhoneItem.put("label", "Phone Number");
+								mobilePhoneItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+								mobilePhoneItem.put("name", "PhoneNumber");
+								mobilePhoneItem.put("value", candidate.getPhoneNumber());
+								array.put(mobilePhoneItem);
+								labelItems.put("PhoneNumber", candidate.getPhoneNumber());
+							}
+							
+							JSONObject emailItem = new JSONObject();
+							emailItem.put("label", "Email Id");
+							emailItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+							emailItem.put("name", "EmailId");
+							emailItem.put("value", candidate.getEmail());
+							labelItems.put("EmailId", candidate.getEmail());
+							array.put(emailItem);
+							
+							JSONObject locationItem = new JSONObject();
+							locationItem.put("label", "Location");
+							locationItem.put("id", "submissionLocation");
+							locationItem.put("name", "location");
+							locationItem.put("value", candidate.getLocation());
+							labelItems.put("location", candidate.getLocation());
+							array.put(locationItem);
+							
+							JSONObject countryItem = new JSONObject();
+							countryItem.put("label", "Country");
+							countryItem.put("id", "submissionCountry");
+							countryItem.put("name", "country");
+							countryItem.put("value", candidate.getCountry());
+							labelItems.put("country", candidate.getCountry());
+							array.put(countryItem);
+							
+							if(StringUtils.isNotBlank(candidate.getState())) {
+								JSONObject stateItem = new JSONObject();
+								stateItem.put("label", "State");
+								stateItem.put("id", "submissionState");
+								stateItem.put("name", "state");
+								stateItem.put("value", candidate.getState());
+								labelItems.put("state", candidate.getState());
+								array.put(stateItem);
+							}
+							
+							if(StringUtils.isNotBlank(candidate.getCity())) {
+								JSONObject cityItem = new JSONObject();
+								cityItem.put("label", "City");
+								cityItem.put("id", "submissionCity");
+								cityItem.put("name", "city");
+								cityItem.put("value", candidate.getCity());
+								labelItems.put("city", candidate.getCity());
+								array.put(cityItem);
+							}
+							
+							if(StringUtils.isNotBlank(candidate.getNoticePeriod())) {
+								JSONObject npItem = new JSONObject();
+								npItem.put("label", "Notice Period");
+								npItem.put("id", "select-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+								npItem.put("name", "NoticePeriod");
+								npItem.put("value", candidate.getNoticePeriod());
+								labelItems.put("NoticePeriod", candidate.getNoticePeriod());
+								array.put(npItem);
+							}
+							
+							
+							String con = array.toString();
+							RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(labelItems,loginUser, orgLocation, con, loginUserRole);
+					
+							RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+							requirementSubmissionHistory.setFromStage("NEW");
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser,requirementSubmissionHistory);
+							
+							if(null != requirement){
+								Integer totalApplicatsCountForRequirement = 0;
+							   //updating total number of applicants for requrement
+								totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+								if(totalApplicatsCountForRequirement > 0){
+									requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+									requirementService.updateRequirement(requirement);
+								}else{
+									requirement.setTotalApplicants(0); 
+								}
+								
+								// pass dto as parameter
+								RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+								requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
+							}
+						
+					  }
+					}
+					
+					response.setObject("success");
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			}catch(Exception e) {
 					response.setResponse(Result.AWKWARD.name());
 					response.setResponseMessage(Result.AWKWARD.getValue());
 			}

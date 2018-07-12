@@ -360,7 +360,9 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         tasks.setCreatedBy(user.getUserCode());
         tasks.setPercentage(Constants.CANDIDATE_IN_ACTIVE);
         tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
-        tasks.setGeneratedId(getProjectTaskGenaratedId(projects));
+        if(projects.getProjectShortCode() != null) {
+            tasks.setGeneratedId(getProjectTaskGenaratedId(projects));
+        }
         tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
         tasks.setCreatedDate(commonUtil.currentDate());
         ProjectTasks savedTask  = tasksDao.addTasks(tasks);
@@ -394,9 +396,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	public void SendMailtoAssigntoMembersaboutAddingTask(ProjectAssignTask projectAssignTask, ProjectTasksDTO projectTasksDTO, ProjectTasks tasks, OrgLocations loginOrgLocation, User loginUser) throws Exception
 	{
 		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-		String Assignmember = projectAssignTask.getProjectMemberId().getEmpName();
-		Employees employee = projectAssignTask.getProjectMemberId().getEmployee();
-		User user = employee.getUser();
+		User user = projectAssignTask.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
 		StringBuilder fromNameBuilder = new StringBuilder();
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
@@ -466,7 +466,10 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectTaskSummary?"
 				+ "taskUUID=" + tasks.getProjectTasksUUID() + "&projectClientUUID="
 				+ projectTasksDTO.getProjectClientUUID()).toString();
-		emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario, new HashMap<String, String>());
+		if(user != null) {
+			emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario, new HashMap<String, String>());
+		}
+		
 	}
 
 	private Set<ProjectAssignTask> getAssignProjectTasks(ProjectTasksDTO projectTasksDTO, ProjectTasks tasks) throws Exception {

@@ -77,8 +77,13 @@ public interface OrgRelationsService {
 	
 	OrgRelations getOrgRelationsByUUID(String UUID) throws Exception;
 	
+	List<OrgRelations> getAllVendorsByOrgLocationId(Long orgLocationId);
+	
 	ResponseList<OrgSpoc>  getAllVendorsContactFilterListByOrgLocationIdAndTabAccessAndDTO(OrgSpocDTO orgSpocDTO,Long id, Long orgLocationId, String relationType,String vendorStatus, List<Long> vendorOrgLocationsIds) throws Exception;
 
 	ResponseList<OrgRelations> getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(OrgRelationDTO orgRelationDTO ,Long id,String status, String vendorsRelationId) throws Exception;
 
+	List<OrgRelationDTO> getAllClientsListOrgLocationId(Long orgLocationId) throws Exception;
+	
+	List<OrgRelationDTO> getAllVendorsListOrgLocationId(Long orgLocationId) throws Exception;
 }

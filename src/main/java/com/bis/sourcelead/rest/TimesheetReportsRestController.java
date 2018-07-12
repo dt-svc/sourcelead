@@ -235,8 +235,9 @@ public class TimesheetReportsRestController {
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(timesheetReportsDTO.getFrequencyMonth(),timesheetReportsDTO.getFrequencyYear());
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
-		
-		ResponseList<ProjectMembers> projRespList = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(),timesheetReportsDTO.getSearchValue(),null,start,length,"reports");
+			String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+
+		ResponseList<ProjectMembers> projRespList = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null,null, orgLocations.getId(), loginUser.getId(),timesheetReportsDTO.getSearchValue(),null,start,length,"reports",isGlobalAccess);
 		if(projRespList.getData() != null){
 			
 		List<ProjectMembers> projectMembers = projRespList.getData();
@@ -301,7 +302,7 @@ public class TimesheetReportsRestController {
 		     }else{
 		    	 details.setRate("--");	 
 		     }
-		     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate);
+		     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate,isGlobalAccess);
 	    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
 		     float monthTotalHours            = 0f;
 			 float monthBillableTotalHours    = 0f;
@@ -453,10 +454,11 @@ public class TimesheetReportsRestController {
 		   try {
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		   if(timesheetReportsDTO.getExportType().equalsIgnoreCase("pdf")){
-		    timesheetReportFile = timesheetReportService.prepareTimeSheetExport(timesheetReportsDTO,user,orgLocations);
+		    timesheetReportFile = timesheetReportService.prepareTimeSheetExport(timesheetReportsDTO,user,orgLocations,isGlobalAccess);
 		   }else{
-			timesheetReportFile = timesheetReportService.prepareTimeSheetExportExcel(timesheetReportsDTO,user,orgLocations);   
+			timesheetReportFile = timesheetReportService.prepareTimeSheetExportExcel(timesheetReportsDTO,user,orgLocations,isGlobalAccess);   
 		   }
 		   String mimeType = URLConnection.guessContentTypeFromName(timesheetReportFile.getName());
 			if (mimeType == null) {

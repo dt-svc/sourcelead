@@ -21,7 +21,7 @@
 							"ajax" : $.fn.dataTable.pipeline({
 								url : url,
 								method : 'POST',
-								pages : 2
+								pages : 1
 							}),
 							"columns" : [ {
 								"data" : "name"
@@ -586,10 +586,8 @@
 															+ ',\''
 															+ submissionType
 															+ '\')";>';
-													result = result
-															+ "<option value='Status'>"
-															+ opt.submissionDisplayStatus
-															+ "</option><option value='Reject'>Reject</option>";
+													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
+													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERACCEPTED'
 															|| opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
 														result = result

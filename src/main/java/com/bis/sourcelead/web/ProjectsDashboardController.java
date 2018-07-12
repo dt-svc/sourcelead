@@ -10,6 +10,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -104,22 +107,7 @@ public class ProjectsDashboardController {
         sessionData.setNav(Constants.Projects);
         request.getSession().setAttribute("sessionData",sessionData);
         
-        List<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
-        for(OrgRelations orgRelations:orgClientList){
-        	//orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
-        	if(null != orgRelations.getLocationId() && orgRelations.getLocationId().getId() != null && orgRelations.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-				if(orgRelations.getResponderLocationId() != null){
-					orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
-				}
-			}
-			if(null != orgRelations.getResponderLocationId() && null != orgRelations.getResponderLocationId().getId() && orgRelations.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-				if(orgRelations.getLocationId() != null){
-					orgRelations.setClientName(orgRelations.getLocationId().getOrgLocationName());
-				}
-			}
-			
-			
-        }
+        List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(loginOrgLocations.getId()); 
         model.addObject("add_client", orgClientList);
         model.addObject("clientListSize", orgClientList.size());
         model.addObject(orgClientList);
@@ -222,7 +210,16 @@ public class ProjectsDashboardController {
 			 @RequestParam(value="status", required=false) String status,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
 		
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, orgLocations.getId());
+		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		 String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		 ProjectClients projectClients = null;
+		 
+		 if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
+			 projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projectId, org.getId());
+		 }else {
+			 projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, orgLocations.getId());
+		 }
+		
 		 List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status);
 		 Projects project = projectsService.getProjectById(projectId);
 		 

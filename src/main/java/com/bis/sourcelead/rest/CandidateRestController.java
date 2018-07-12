@@ -269,65 +269,14 @@ public class CandidateRestController {
 	 * candidateSkillsService.validateSkillName(skillName); } return flag; }
 	 */
 	@RequestMapping(value = "/app/getCandidatesList", method = RequestMethod.POST)
-	public @ResponseBody ResponseList<CandidateIndex> getCandidatesList(
-			@RequestParam(value = "requirementId", required = false) Long requirementId,
-			@RequestParam(value = "candidateType", required = false) String candidateType,
-			@RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request) throws Exception {
-		ResponseList<CandidateIndex> responseList = new ResponseList<>();
+	public @ResponseBody ResponseList<CandidateDTO> getCandidatesList(
+			@RequestParam(value = "requirementId", required = false) Long requirementId,HttpServletRequest request) throws Exception {
+		ResponseList<CandidateDTO> responseList = new ResponseList<>();
 		try {
-			String candidateStatus = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			// List<Candidate> candidatesList =
-			// candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId,candidateType);
-			List<Long> candidateIdsList = requirementSubmissionService.getSubmittedCandidateIdsByRequirementId(requirementId);
 			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-			List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			df.setTimeZone(TimeZone.getTimeZone("GMT"));
-			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
-			// boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType",
-			// candidateType));
-			boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
-			// Long maxResults =
-			// candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
-			if (null != candidateIdsList && candidateIdsList.size() > 0) {
-				BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
-				for (Long candidateId : candidateIdsList) {
-					candidateBoolQueryBuilder.should(QueryBuilders.matchQuery("candidateId", candidateId));
-				}
-				boolQueryBuilder.mustNot(candidateBoolQueryBuilder);
-			}
-			if (null != requirement && !isNullOrEmpty(requirement.getSkills())) {
-				String[] skills = requirement.getSkills().split(",");
-				BoolQueryBuilder skillsBoolQuery = QueryBuilders.boolQuery();
-				for (int i = 0; i < skills.length; i++) {
-					skillsBoolQuery.should(QueryBuilders.matchQuery("skillsName", skills[i]));
-				}
-				boolQueryBuilder.must(skillsBoolQuery);
-			}
-			if (null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)) {
-				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
-				boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", "1"));
-			} else {
-				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
-			}
-			try {
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX,
-						Constants.ELK_CANDIDATE_TYPE, 0, Constants.MAX_RESULTS_200, boolQueryBuilder).getHits();
-				if (null != searchHits && searchHits.length > 0) {
-					ObjectMapper mapper = new ObjectMapper();
-					for (SearchHit hit : searchHits) {
-						String json = hit.getSourceAsString();
-						mapper.setDateFormat(df);
-						CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
-						candidatesList.add(candidateIndex);
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			responseList.setData(candidatesList);
+			List<CandidateDTO> candidateDTOList  = candidateService.getCandidateListForAddApplicant(orgLocations, requirementId,requirement.getSkills(),null);
+			responseList.setData(candidateDTOList);
 			responseList.setResponse(Result.SUCCESS.name());
 			responseList.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
@@ -615,6 +564,7 @@ public class CandidateRestController {
 			List<RequirementSubmission> requirementSubmission = requirementSubmissionService
 					.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
 			for (RequirementSubmission req : requirementSubmission) {
+				if(req.getRequirement() != null) {
 				req.setPositionType(req.getRequirement().getJobTitle());
 				req.setCountry(req.getRequirement().getCountry());
 				req.setState(req.getRequirement().getState());
@@ -646,7 +596,7 @@ public class CandidateRestController {
 						req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
 					}
 				}
-
+			}
 			}
 			responseList.setData(requirementSubmission);
 			responseList.setResponse(Result.SUCCESS.name());

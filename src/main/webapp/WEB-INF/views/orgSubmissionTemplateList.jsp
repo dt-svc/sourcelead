@@ -14,6 +14,10 @@
 //On document ready
 $(function(){
 	submissionTemplateList();
+	if('${type}' != 'undefined' && '${type}' != '' && '${type}' != null && '${type}' == 'addTemplate'){
+		$("#add-tm").click();
+	}
+	
 });
 </script>
 
@@ -212,8 +216,8 @@ function templatepagination(){
 
 
 <script type="text/javascript">
-function alertMessage(message){hello")
-sult = "";
+function alertMessage(message){
+    var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";

@@ -5,19 +5,15 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.TreeMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
-import com.bis.sourcelead.enums.Submission_Status;
-import com.bis.sourcelead.service.ExpensesApprovalService;
+import com.bis.sourcelead.entity.OrgLocations;
 
 public class ExpensesDTOConverter {
 
-	public static ExpensesDTO  getExpensesDTOFromExpenses(Expenses expenses,ExpensesDTO expensesDTO){
+	public static ExpensesDTO  getExpensesDTOFromExpenses(OrgLocations orgLoc,Expenses expenses,ExpensesDTO expensesDTO){
 		expensesDTO = new ExpensesDTO();
 		expensesDTO.setId(expenses.getId());
 		expensesDTO.setExpenseAutoId(expenses.getExpenseId());
@@ -53,7 +49,7 @@ public class ExpensesDTOConverter {
 		if(expenses.getExpensesEntries() != null && !expenses.getExpensesEntries().isEmpty() && expenses.getExpensesEntries().size() > 0){
 			for(ExpensesEntries ee : expenses.getExpensesEntries()){
 				if(ee != null) {
-					eeDTOMap.put(ee.getId(), ExpensesEntriesDTOConverter.getExpensesEntriesDTOFromExpensesEntries(ee, expensesDTO));
+					eeDTOMap.put(ee.getId(), ExpensesEntriesDTOConverter.getExpensesEntriesDTOFromExpensesEntries(orgLoc,ee, expensesDTO));
 				}
 			}
 		}

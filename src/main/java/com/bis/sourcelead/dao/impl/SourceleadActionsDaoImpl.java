@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -59,9 +60,12 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.org.id = :orgId" ).setLong( "roleId", roleId ).setLong( "orgId", orgId).list();
 		 List<Long> roleActonList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
-			 for (String s : roles.getActionId().split(",")){
+			 /*for (String s : roles.getActionId().split(",")){
 				 roleActonList.add(Long.parseLong(s));
-			 }
+			 }*/
+			 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+				 roleActonList.add(Long.parseLong(s));
+        	 }
 		 }
 		
 	    String query = "from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) "
@@ -81,9 +85,13 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).list();
 		 List<Long> roleActonList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
-			 for (String s : roles.getActionId().split(",")){
+			 /*for (String s : roles.getActionId().split(",")){
 				 roleActonList.add(Long.parseLong(s));
-			 }
+			 }*/
+			 /*Remove/filter null & empty string objects from array-lambda stream*/
+			 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+				 roleActonList.add(Long.parseLong(s));
+        	 }
 		 }
 		
 	    String query = "from SourceleadActions sa where sa.id IN (:roleActonList) ";
@@ -169,9 +177,12 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId" ).setLong( "roleId", roleId ).list();
 		 List<Long> roleActonList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
-			 for (String s : roles.getActionId().split(",")){
+			 /*for (String s : roles.getActionId().split(",")){
 				 roleActonList.add(Long.parseLong(s));
-			 }
+			 }*/
+			 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+				 roleActonList.add(Long.parseLong(s));
+        	 }
 		 }
 		
 	    String query = "from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = '5' "

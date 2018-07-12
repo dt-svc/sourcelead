@@ -113,6 +113,12 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         orgLocations.setOrgLocationAddress(orgSettings.getAddress());
         orgLocations.setWebsite(convertWebsite(orgSettings.getWebsite()));
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());
+        if(StringUtils.isNotBlank(orgSettings.getIsTimesheetAvgHoursRequired()) && orgSettings.getIsTimesheetAvgHoursRequired().equalsIgnoreCase(Constants.YES)) {
+        	orgLocations.setIsTimesheetAvgHoursRequired(Constants.YES);
+        }else {
+        	orgLocations.setIsTimesheetAvgHoursRequired(Constants.NO);
+        }
+        
         
         if(StringUtils.isNotBlank(orgSettings.getBusinessType()) && !orgSettings.getBusinessType().equalsIgnoreCase("Other")){
           LookUpData businessTypeLookUpData = new LookUpData();
@@ -131,6 +137,17 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         
         if(StringUtils.isNotBlank(orgSettings.getGeneratedUserId())){
         	orgLocations.setGeneratedUserId(orgSettings.getGeneratedUserId().toUpperCase());
+        }
+        
+        if(StringUtils.isNotBlank(orgSettings.getWeekOffDays())) {
+        	orgLocations.setWeekOffDays(orgSettings.getWeekOffDays());
+            String [] weekOffDays = orgSettings.getWeekOffDays().split(",");
+            Integer workingDaysPerWeek = 7-weekOffDays.length;
+            orgLocations.setWeekOffDays(orgSettings.getWeekOffDays());
+            orgLocations.setWorkingDaysPerWeek(workingDaysPerWeek);
+        }else {
+        	 orgLocations.setWeekOffDays(null);
+        	 orgLocations.setWorkingDaysPerWeek(7);
         }
         
         if(StringUtils.isNotBlank(orgSettings.getPoEmail())){

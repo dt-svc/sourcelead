@@ -520,12 +520,12 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
              init();
 //             changeRateLabels();
              var d = new Date();
-             var year = d.getFullYear() - 18;
+             var year = d.getFullYear() - 10;
              d.setFullYear(year);
              $(".DatePicker").datepicker({
             	 dateFormat: finalDateFormatScript,
-            	 //yearRange: "-70Y:-18Y" ,
-            	// defaultDate: d,
+            	 yearRange: "-70Y:-10Y" ,
+            	 defaultDate: d,
             	 changeMonth: true,
                  changeYear: true,
                  showOn: 'focus',

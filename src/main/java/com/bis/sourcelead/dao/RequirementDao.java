@@ -1,16 +1,20 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 
@@ -25,12 +29,15 @@ public interface RequirementDao {
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
+	public Requirement getRequirementByRequirementIdAndSearchValue(Long requirementId,String searchValue) throws Exception;
+	
 	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String url) throws Exception;
 	
 	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
 	
 	public List<Requirement> getRequirementListByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
-
+	
+	public Requirement getRequirementByGeneratedIdAndLocationId(String generatedId,Long orgLocationId)throws Exception;
 	
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)throws Exception;
 	
@@ -40,7 +47,7 @@ public interface RequirementDao {
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
-	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception;
 	
 	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType) throws Exception;
 	
@@ -99,7 +106,7 @@ public interface RequirementDao {
 
 	List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(Long orgLocationId,  TeamMembers teamMembers) throws Exception ;
 	
-	Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
+	BigInteger getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
 
 	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId, Date startDateUTC, Date endDateUTC);
 	
@@ -172,6 +179,12 @@ public interface RequirementDao {
     public ResponseList<RequirementDTO> getRequirementList(Long id, String search, Long location, String employmentType, int pageNo, int pageSize);
     
     public List<RequirementDTO> getAllManagerRequirementForJobSharing(Date[] searchDates,Long managerUserId,Long orgLocationId) throws Exception;
+    
+    List<RecruiterReportAssociateCountView> getAssociateCountsCreatedUserList(Long orgLocationId, List<Long> userIdsList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
+    
+    List<RecruiterRrportDTO> getAssociateCountsCreatedUserListByLocation(Long orgLocationId,List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)throws Exception ;
+    
+    public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,Long userId,OrgLocations orgLocations) throws Exception;
 
 	
 }

@@ -19,12 +19,15 @@
         color: red !important;
     }
 
+.temp_Draft {
+    color:#447fb5;
+}
 </style>
 <section class="content-wraper content-wraperNew">
 
     <section class="content-header clearfix cusFieldHead">
         <div class="pull-left positionRelative"><h2>Petition Templates</h2></div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Petition Templates</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a>&raquo; Petition Templates</div>
         <div class="clearfix"></div>
     </section>
 
@@ -162,6 +165,7 @@
                     <option value="-1">All</option>
                     <option value="1" selected="selected">Active</option>
                     <option value="0">Inactive</option>
+                      <option value="2">Draft</option>
                 </select>
                 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE','ROLE_DELETE_PETITION_TEMPLATE')">
                 <a href="<c:url value='${appPath}/immigration/addNewPetitionTemplate'/>"><i class="glyphicon glyphicon-plus"></i> Add Template</a>
@@ -272,7 +276,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.name !== null && opt.name !== '' && opt.name !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot'>" + opt.name + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot' title='"+opt.name+"' >" + opt.name + "</div></td>";
                         } else {
                             result = result + "<td><div class='tbldata-dotdot'>---</div></td>";
                         }
@@ -285,7 +289,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.country !== null && opt.country !== '' && opt.country !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.country + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot-vsm'  title='"+opt.country+"'>" + opt.country + "</div></td>";
                         } else {
                             result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                         }
@@ -298,7 +302,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.petitionType !== null && opt.petitionType !== '' && opt.petitionType !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.petitionType + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot-vsm'  title='"+opt.petitionType+"'>" + opt.petitionType + "</div></td>";
                         } else {
                             result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                         }
@@ -311,7 +315,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.description !== null && opt.description !== '' && opt.description !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot'>" + opt.description + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot' title='"+opt.description+"'>" + opt.description + "</div></td>";
                         } else {
                             result = result + "<td><div class='tbldata-dotdot'>---</div></td>";
                         }
@@ -364,7 +368,19 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.status !== null && opt.status !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot_80 " + (opt.status === 1 ? 'temp_active' : 'temp_inactive') + "'>" + (opt.status === 1 ? "Active" : "Inactive") + "</div></td>";
+                        	var tempStatusVal = opt.status;
+                        	var tmpStatusClass='';
+                        	if(opt.status == 0){
+                        		tempStatusVal ="Inactive";
+                        		tmpStatusClass ="temp_inactive";
+                        	}else if(opt.status == 1){
+                        		tempStatusVal ="Active";
+                        		tmpStatusClass ="temp_active";
+                        	}if(opt.status ==2){
+                        		tempStatusVal ="Draft";
+                        		tmpStatusClass ="temp_Draft";
+                        	}
+                            result = result + "<td><div class='tbldata-dotdot_80  " + tmpStatusClass + "'>" + tempStatusVal + "</div></td>";
                         } else {
                             result = result + "<td><div class='tbldata-dotdot_80 '>---</div></td>";
                         }
@@ -380,17 +396,17 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     	if (opt.status !== null && opt.status !== '' && opt.status !== 0) {
                         result = result + '<td><div>';
                         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION_TEMPLATE\')">';
-                        result = result +' <i id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i>';
+                        result = result +' <i id="edit' + opt.templateUUID + '" onclick="immigration.editTemplateDetailsByRowId(\''+ opt.templateUUID + '\');" class="glyphicon glyphicon-pencil"></i>';
                         '</sec:authorize>';
                         '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION_TEMPLATE\')">';
-                        result = result +' <i id="delete' + opt.id + '" onclick="disableTemplateStatus(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                        result = result +' <i id="delete' + opt.templateUUID + '" onclick="disableTemplateStatus(\''+ opt.templateUUID + '\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                         '</sec:authorize>';
                         
                     	}else{
                     		
                     		result = result +' <div class="tblminwidth-75">';
                     		result = result + "<span class='glyphicon glyphicon-comment ml10 edit-reason text-info cursorPointer'><div class='edit-status'><p>"+opt.rejectReason+"</p></div></span>";
-                            result = result +' <span onclick="immigration.reactiveImmigrationTemplateById(' + opt.id + ');" class="cursorPointer glyphicon fa fa-repeat ml10 text-success"></span></div></td>';
+                            result = result +' <span onclick="immigration.reactiveImmigrationTemplateById(\''+ opt.templateUUID + '\');" class="cursorPointer glyphicon fa fa-repeat ml10 text-success"></span></div></td>';
                             result = result +' </div>';
 
                     	}
@@ -435,14 +451,14 @@ function cancelTerminationReson(){
 	$("#reasonForTemplateDiv").find("p.jquery_form_error_message").remove();
 	$("#reasonForTemplateDiv").empty(); 
 }
-function disableTemplateStatus(templateId){ // only stauts updated with reason. active 1 , deactive 0.
+function disableTemplateStatus(temlateUuid){ // only stauts updated with reason. active 1 , deactive 0.
 	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_template_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
 	result = result + ' <div id="reasonForTemplateDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteTempalteDetailsByRowId("+templateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteTempalteDetailsByRowId(\""+temlateUuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_template_pop").slideDown(200);
@@ -468,8 +484,9 @@ function columHide(){
 		      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
 		  }
     });
-   
+	$(".colPop").hide();
 }
+
 function checkAllColumns(obj){
 	var id = obj.id;
 	if(id =='columnsPickerCheckAll'){

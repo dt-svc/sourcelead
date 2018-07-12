@@ -36,6 +36,7 @@ $(document).ready(function(){
                     </select>
             </div>
         </li>
+        
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
@@ -71,7 +72,7 @@ $(document).ready(function(){
 
   </section>
   <!-- Content Area Ends--> 
-  
+
 <script>
 function redirectlocation(location){
 	window.location.href = sourceleadUrl + location;
@@ -103,8 +104,8 @@ function prepareApprovedEmployeesList(url){
 		result = result + '<th>Leave Type</th>';
 		result = result + '<th>Duration</th>';
 		result = result + '<th>No Of Days</th>';
-		result = result + '<th>No Of Extra Days</th>';
-		result = result + '<th>Leaves Taken</th>';
+// 		result = result + '<th>No Of Extra Days</th>';
+	/* 	result = result + '<th>Leaves Taken</th>'; */
 		result = result + '<th>Approved By</th>';
 		result = result + '<th>Approved On</th>';
 		result = result + '<th>Action</th>';
@@ -132,8 +133,9 @@ function approvedEmployeesPagination(url){
             { "data": "empName" },
             { "data": "leaveType"},
             { "data": "duration"},
-            { "data": "noOfDays" },
-            { "data": "leavesTaken"},
+            { "data": "noOfDays"},
+//             { "data": "extraLeavesTaken"},
+    /*         { "data": "leavesTaken"}, */
             { "data": "approvedBy" },
             { "data": "updatedDate" },
             { "data": "action"},
@@ -145,7 +147,7 @@ function approvedEmployeesPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  		  result = result + '     <div class="proj_show divmax-width">';
-	    	  		  result = result + ' <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');"></i>'; 
+	    	  		  result = result + ' <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+','+opt.totalBalLeaves+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+','+opt.totalBalLeaves+');"></i>'; 
 	    	  		  result = result + '     </div>';
 	    	  		  return result; 
 	    	  	}
@@ -174,15 +176,15 @@ function approvedEmployeesPagination(url){
             	   result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+'</div>';		 
             	    return result; 
               }
-            },{
+            },/* {
                 "targets": colIndex++,
-                "data": "noOfDays",
+                "data": "extraLeavesTaken",
                 "render": function ( data, type, opt, meta ) {
               	   var result = "";
-              	      result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+'</div>';	 
+                  result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+'</div>';	 
               	    return result; 
                 }
-              }, {
+              }, */ /* {
                 "targets": colIndex++,
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {
@@ -190,7 +192,7 @@ function approvedEmployeesPagination(url){
                 		result = result + '     <div class="tblminwidth-75">'+opt.actualLeavesTaken+'</div>';
     	                return result; 
                 }
-          },{
+          }, */{
 	    	  	"targets": colIndex++,
 	    	  	"data": "approvedBy",
 	    	  	"render": function(data, type, opt, meta) {
@@ -325,7 +327,7 @@ function cancelTermination(){
 
 
 <script>
-function getRequestedAproveSummary(leaveUUID,orgLocationId){
+function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
 	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
 		   if(response.response === "SUCCESS") {
 			   if(response != null){
@@ -417,7 +419,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 	            }
              result = result +' </div>';
              result = result +' </div>';
-             result = result +'<div class="col-md-12 mb">';
+           /*   result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
              if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
@@ -426,22 +428,22 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 	            	result = result +' <span>--</span>';
 	            }
              result = result +'</div>';
-             result = result +'</div>';
+             result = result +'</div>'; */
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(data.thisMonthLeavesTaken != null && data.thisMonthLeavesTaken !='' && data.thisMonthLeavesTaken !='undefined'){
+             /* if(data.thisMonthLeavesTaken != null && data.thisMonthLeavesTaken !='' && data.thisMonthLeavesTaken !='undefined'){ */
 				 result = result +'<span>'+data.thisMonthLeavesTaken+'</span>';
-			 }else{
+			 /* }else{
 	            	result = result +' <span>--</span>';
-	            }
+	            } */
              result = result +'</div>';
              result = result +'</div>';
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Balance leaves:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(data.totalBalLeaves != null && data.totalBalLeaves !='' && data.totalBalLeaves !='undefined'){
-				 result = result +'<span>'+data.totalBalLeaves+'</span>';
+             if(totalBalLeaves != null && totalBalLeaves !='' && totalBalLeaves !='undefined'){
+				 result = result +'<span>'+totalBalLeaves+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -521,23 +523,5 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 	});  
 }
 </script>
-  
-<!-- <script>
-function approvedLeavesTable(){ 
-    $('#approvedLeavesTable').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-            "sSearch": "",
-            "sZeroRecords": "", "sEmptyTable": ""
-       }
-    });
-    $("#approvedLeavesTable").wrap("<div class='overflow_Auto width100percnt'></div>")
-}
-</script> -->
-
   
 <jsp:include page="../masterFooter.jsp" />

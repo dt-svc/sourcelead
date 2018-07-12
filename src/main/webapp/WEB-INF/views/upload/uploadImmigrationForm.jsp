@@ -105,7 +105,12 @@
 							<p class="clearfix mt">
 								According to this template, the Users need to <span
 									class="text-danger"><strong>Import Required
-										Fields</strong></span>
+										Fields.</strong></span>
+							</p>
+							<p class="clearfix mt">
+								 According to passport and visa <span
+									class="text-danger"><strong>all related
+										Fields are mandatory</strong></span>
 							</p>
 						</span>
 					</div>

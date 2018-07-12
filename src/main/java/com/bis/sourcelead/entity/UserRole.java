@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,11 @@ public class UserRole implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "RESOURCE_MANAGER_ID")
+	private User resourceManager;
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -62,6 +68,9 @@ public class UserRole implements Serializable {
 	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
 	private OrgLocations orgLocations;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "SHIFT_ID")
+	private Shift shift;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
@@ -87,6 +96,9 @@ public class UserRole implements Serializable {
 
 	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
 	private String terminateReason;
+	
+	@Column(name = "TERMINATE_DATE")
+	private Date terminateDate;
 
 	@Column(name = "DESIGNATION")
 	private String designation;
@@ -96,6 +108,9 @@ public class UserRole implements Serializable {
 
 	@Column(name = "STATUS")
 	private String status;
+	
+	@Column(name = "IS_GLOBAL")
+	private String isGlobal;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -121,6 +136,11 @@ public class UserRole implements Serializable {
     
     @Column(name = "LOGIN_SECURITY")
 	private String loginSecurity;
+    
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "GRADE_ID", nullable = false)
+	private AssociateGrades gradeId;
 
 	@Transient
 	@JsonProperty
@@ -181,6 +201,10 @@ public class UserRole implements Serializable {
 	
 	@Transient
 	@JsonProperty
+	private String terminateDateStr;
+	
+	@Transient
+	@JsonProperty
 	private String dateofBirthStr;
 
 	@Transient
@@ -194,6 +218,14 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	List<User> allReportingManagers;
+	
+	@Transient
+	@JsonProperty
+	List<AssociateGrades> gradesList;
+	
+	@Transient
+	@JsonProperty
+	List<User> allResourceManagers;
 
 	@Transient
 	@JsonProperty
@@ -218,6 +250,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	List<User> reportingManagers;
+	
+	@Transient
+	@JsonProperty
+	List<User> resourceManagers;
 
 	@Transient
 	@JsonProperty
@@ -256,6 +292,9 @@ public class UserRole implements Serializable {
 
 	@Transient
 	private Integer assignedUsersCountToReportingManager;
+	
+	@Transient
+	private Integer assignedUsersCountToResourceManager;
 
 	@Transient
 	private Integer assignedAsVendorOwnerOrSpocCount;
@@ -281,14 +320,11 @@ public class UserRole implements Serializable {
 	@Transient
 	private Integer vendorDocumentsOwnerCount;
 	
-	
 	@Transient
 	List<User> clientDocumentsOwnerList;
 
-	
 	@Transient
 	List<User> vendorDocumentsOwnerList;
-
 
 	@Transient
 	@JsonProperty
@@ -319,11 +355,48 @@ public class UserRole implements Serializable {
 	
 	@Transient
 	private String employeMentType; 
+	
+	@Transient
+	@JsonProperty
+	private String candidateDesignation;
 
 	@Transient
 	@JsonProperty
 	private Map<Long,String> userCustomFieldlabelNameAndValue;
 	
+	
+	@Transient
+	@JsonProperty
+	private Long shiftId;
+	
+	@Transient
+	@JsonProperty
+	private String shiftName;
+	
+	@Transient
+	@JsonProperty
+	private BigInteger orgLocId;
+	
+	@Transient
+	@JsonProperty
+	private BigInteger userRoleShiftId;
+	
+	@Transient
+	@JsonProperty
+	private BigInteger userRoleId;
+	
+	
+	public BigInteger getUserRoleId() {
+		if(id != null) {
+			userRoleId = BigInteger.valueOf(id);
+		}
+		return userRoleId;
+	}
+
+	public void setUserRoleId(BigInteger userRoleId) {
+		this.userRoleId = userRoleId;
+	}
+
 	public String getUserName() {
 		return userName;
 	}
@@ -947,6 +1020,124 @@ public class UserRole implements Serializable {
 		this.orgName = orgName;
 
 	}
-	
-	
+
+	public String getIsGlobal() {
+		return isGlobal;
+	}
+
+	public void setIsGlobal(String isGlobal) {
+		this.isGlobal = isGlobal;
+	}
+
+	public User getResourceManager() {
+		return resourceManager;
+	}
+
+	public void setResourceManager(User resourceManager) {
+		this.resourceManager = resourceManager;
+	}
+
+	public List<User> getAllResourceManagers() {
+		return allResourceManagers;
+	}
+
+	public void setAllResourceManagers(List<User> allResourceManagers) {
+		this.allResourceManagers = allResourceManagers;
+	}
+
+	public List<User> getResourceManagers() {
+		return resourceManagers;
+	}
+
+	public void setResourceManagers(List<User> resourceManagers) {
+		this.resourceManagers = resourceManagers;
+	}
+
+	public Integer getAssignedUsersCountToResourceManager() {
+		return assignedUsersCountToResourceManager;
+	}
+
+	public void setAssignedUsersCountToResourceManager(Integer assignedUsersCountToResourceManager) {
+		this.assignedUsersCountToResourceManager = assignedUsersCountToResourceManager;
+	}
+
+	public String getCandidateDesignation() {
+		return candidateDesignation;
+	}
+
+	public void setCandidateDesignation(String candidateDesignation) {
+		this.candidateDesignation = candidateDesignation;
+	}
+
+	public AssociateGrades getGradeId() {
+		return gradeId;
+	}
+
+	public void setGradeId(AssociateGrades gradeId) {
+		this.gradeId = gradeId;
+	}
+
+	public List<AssociateGrades> getGradesList() {
+		return gradesList;
+	}
+
+	public void setGradesList(List<AssociateGrades> gradesList) {
+		this.gradesList = gradesList;
+	}
+
+	public Date getTerminateDate() {
+		return terminateDate;
+	}
+
+	public void setTerminateDate(Date terminateDate) {
+		this.terminateDate = terminateDate;
+	}
+
+	public String getTerminateDateStr() {
+		return terminateDateStr;
+	}
+
+	public void setTerminateDateStr(String terminateDateStr) {
+		this.terminateDateStr = terminateDateStr;
+	}
+
+	public Shift getShift() {
+		return shift;
+	}
+
+	public Long getShiftId() {
+		return shiftId;
+	}
+
+	public void setShift(Shift shift) {
+		this.shift = shift;
+	}
+
+	public void setShiftId(Long shiftId) {
+		this.shiftId = shiftId;
+	}
+
+	public String getShiftName() {
+		return shiftName;
+	}
+
+	public void setShiftName(String shiftName) {
+		this.shiftName = shiftName;
+	}
+
+	public BigInteger getOrgLocId() {
+		return orgLocId;
+	}
+
+	public void setOrgLocId(BigInteger orgLocId) {
+		this.orgLocId = orgLocId;
+	}
+
+	public BigInteger getUserRoleShiftId() {
+		return userRoleShiftId;
+	}
+
+	public void setUserRoleShiftId(BigInteger userRoleShiftId) {
+		this.userRoleShiftId = userRoleShiftId;
+	}
 }

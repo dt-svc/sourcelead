@@ -139,16 +139,16 @@ padding: 2px 300px 2px 0px;
 
 <section class="contrHead"> 
 <ul> 
-<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList();">Draft (${contractsCount.totalDraftCount})</a></li>
-<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Waiting (${contractsCount.totalWTACount})</a></li> 
-<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
-<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Counter sign (${contractsCount.totalWTVCount})</a></li>
-<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Completed (${contractsCount.totalFinalizedCount})</a></li>
-<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getTemplateList();">Expired (${contractsCount.totalExpiredCount})</a></li>
-<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList();">Rejected (${contractsCount.totalRejectedCount})</a></li>
+<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList('main');">Draft (${contractsCount.totalDraftCount})</a></li>
+<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Waiting (${contractsCount.totalWTACount})</a></li> 
+<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
+<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Counter sign (${contractsCount.totalWTVCount})</a></li>
+<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList('main');">Completed (${contractsCount.totalFinalizedCount})</a></li>
+<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getTemplateList('main');">Expired (${contractsCount.totalExpiredCount})</a></li>
+<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList('main');">Rejected (${contractsCount.totalRejectedCount})</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
 <div class="conBtn">
-  <span onclick="addContracts();">Add<i class="fa fa-caret-down"></i></span>
+  <span onclick="addContracts();"><i class="fa fa-plus mr10"></i>Add Contracts</span>
 <%--   <ul>  
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
 	  <li><a href="<c:url value="/addNewContract" />"><i class="fa fa-caret-right"></i>New Contract</a></li>
@@ -209,7 +209,7 @@ padding: 2px 300px 2px 0px;
 	
 <div class="content-area content-new clearfix">
  <div class="project_wrap">
-	<div class="timesheet_head exportUl">
+	<div class="timesheet_head">
 		<div class="ContrBut">
 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'>
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
@@ -418,7 +418,7 @@ function previewTemplatePDF(uuid, templateName){
 </script>
 
 <script type="text/javascript">
-function getTemplateList(){
+function getTemplateList(listType){
 	var contractSubmissionType = $("#contractStage").val();
 	if(contractSubmissionType == 'WAITING_TO_BE_SIGNED'){
 		$("#filterContractTypePop-2").css("display", "block");
@@ -426,27 +426,39 @@ function getTemplateList(){
 		$("#addCustomContractFromWTV").css("display", "none");
 		$("#signedDiv").css("display", "block");
 		$("#waitingLiDiv").css("display", "none");
-		$("#status1").prop("checked", "checked");
-		$("#status3").prop("checked", "checked");
-		$("#status5").removeAttr("checked");
+		if(listType == "main"){
+			$("#status1").prop("checked", true);
+			$("#status3").prop("checked", true);
+			$("#status5").removeAttr("checked");
+			$("#status2").removeAttr("checked");
+			$("#status4").removeAttr("checked");
+		}
 	}else if(contractSubmissionType == 'WAITING_TO_BE_VERIFY'){
 		$("#filterContractTypePop-2").css("display", "block");
 		$("#signedDiv").css("display", "none");
 		$("#verifyDiv").css("display", "block");
 		$("#addCustomContractFromWTV").css("display", "block");
 		$("#waitingLiDiv").css("display", "none");
-		$("#status5").removeAttr("checked");
-		$("#status1").removeAttr("checked");
-		$("#status3").removeAttr("checked");
+		if(listType == "main"){
+			$("#status5").removeAttr("checked");
+			$("#status1").removeAttr("checked");
+			$("#status3").removeAttr("checked");
+			$("#status2").prop("checked", true);
+			$("#status4").prop("checked", true);
+		}
 	}else if(contractSubmissionType == 'WAITING_FOR_APPROVER'){
 		$("#filterContractTypePop-2").css("display", "block");
 		$("#signedDiv").css("display", "none");
 		$("#waitingLiDiv").css("display", "block");
 		$("#verifyDiv").css("display", "none");
 		$("#addCustomContractFromWTV").css("display", "none");
-		$("#status5").prop("checked", "checked");
-		$("#status1").removeAttr("checked");
-		$("#status3").removeAttr("checked");
+		if(listType == "main"){
+			$("#status5").prop("checked", "checked");
+			$("#status1").removeAttr("checked");
+			$("#status3").removeAttr("checked");
+			$("#status2").removeAttr("checked");
+			$("#status4").removeAttr("checked");
+		}
 	}else{
 		$("#filterContractTypePop-2").css("display", "none");
 		$("#waitingLiDiv").css("display", "none");
@@ -3798,7 +3810,7 @@ function mainTabEnable(local){
         $("#finalised").addClass("fin");
         $("#expired").removeClass("exp");
         $("#rejected").removeClass("rej");
-        
+        $("#addCustomContractFromWTV").css("display", "none");
         $("#contractStage").val("Finalized");
         }
     if(tabId == 'expired'){
@@ -3809,7 +3821,7 @@ function mainTabEnable(local){
         $("#finalised").removeClass("fin");
         $("#expired").addClass("exp");
         $("#rejected").removeClass("rej");
-        
+        $("#addCustomContractFromWTV").css("display", "none");
         $("#contractStage").val("EXPIRED");
         }
     if(tabId == 'rejected'){
@@ -3820,7 +3832,7 @@ function mainTabEnable(local){
         $("#finalised").removeClass("fin");
         $("#expired").removeClass("exp");
         $("#rejected").addClass("rej");
-        
+        $("#addCustomContractFromWTV").css("display", "none");
         $("#contractStage").val("REJECTED");
         }
 	
@@ -3834,8 +3846,7 @@ function getStageCounts(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
       type : "POST",
-       url: sourceleadUrl+"/getContractStageCounts?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
-       success :function(data) {
+       url: sourceleadUrl+"/getContractStageCounts?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,success :function(data) {
     	   var json = JSON.parse(data);
     	   
     	   if(json.totalDraftCount != null && json.totalDraftCount != "" && json.totalDraftCount != 'undefined'){

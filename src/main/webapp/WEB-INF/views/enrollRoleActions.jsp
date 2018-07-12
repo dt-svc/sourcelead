@@ -111,13 +111,7 @@ function cancel(){
  <script type="text/javascript">
  // Multiselect script
       var roleName = '${roleName}';
-      if(roleName == 'ROLE_ADMIN'){
-    	  $("#test-select").treeMultiselect({ enableSelectAll: false},roleName);
-      }else{
-    	  $("#test-select").treeMultiselect({ enableSelectAll: true },roleName);
-      }
-      
-      
+      $("#test-select").treeMultiselect({ enableSelectAll: true},roleName);
     </script>
     
     
@@ -125,7 +119,7 @@ function cancel(){
     <script type="text/javascript">
 	function saveActions() {
 		
-		var roleId = '${roleId}';
+		var uuid = '${uuid}';
 		var sourceleadUrl = '${sourceleadUrl}';
 		var actionIds = [];
 		  
@@ -137,10 +131,10 @@ function cancel(){
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
-		    	url: sourceleadUrl+"/saveRoleActions?${_csrf.parameterName}=${_csrf.token}&roleId="+roleId+"&actionIds="+actionIds,
+		    	url: sourceleadUrl+"/saveRoleActions?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid+"&actionIds="+actionIds,
 		        success: function(result) {
 		        	if((result == 'success')){
-		        		location.replace(sourceleadUrl+"/enrollRoleActions?roleId="+roleId); 
+		        		location.replace(sourceleadUrl+"/enrollRoleActions?uuid="+uuid); 
 			        } 
 		        },
 		 }); 

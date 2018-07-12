@@ -17,6 +17,10 @@
 	<div class="clearfix"></div>
     </section>
     <div id="addNewPetitionTemplateDiv"></div>
+   <div class="success_pop" id="selector"  style="display: none;">
+		         <i class="fa fa-check-circle"></i><span></span>
+			</div>
+    
 </section>
   <!-- Content Area -->
   <script type="text/javascript">
@@ -24,5 +28,12 @@
 	  $("#addNewPetitionTemplateDiv").load("/app/immigration/addPetitionTemplate?forwardTo=tempDetails");
 	  /* $("#newPetitonPageTwoDiv").hide(); */
 	});
+  
+  function showTemplateMsg(msg){
+		$('#selector').show();
+		$('#selector').text(msg)
+		setTimeout(function(){ $('#selector').hide();$('#selector').text("") }, 1000);
+	}
+     
   </script>
   <jsp:include page="../masterFooter.jsp" />

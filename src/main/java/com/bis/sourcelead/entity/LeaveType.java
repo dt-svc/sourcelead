@@ -153,13 +153,74 @@ public class LeaveType {
 	private String leaveDuration;
 	
 	@Column(name = "MIN_DAYS")
-	private Integer minDays;
+	private Float minDays;
 	
 	@Column(name = "MAX_DAYS")
-	private Integer maxDays;
+	private Float maxDays;
 	
 	@Column(name = "NO_OF_DAYS")
 	private Integer noOfDays;
+	
+	@Column(name = "NO_OF_DAYS_PER_PERIOD")
+	private Float noOfDaysPerPeriod;
+	
+	@Column(name = "AUTO_APPROVE")
+	private String autoApprove;
+	
+	@Column(name = "AUTO_APPROVE_TYPE")
+	private String autoApproveType;
+	
+	@Column(name = "AUTO_APPROVE_TYPE_LIST")
+	private String autoApproveTypeList;
+	
+	@Column(name = "TIMESHEET_AUTOFILL")
+	private String timeSheetAutofill;
+	
+	@Column(name = "EFFECTIVE_GENDER")
+	private String effectiveGender;
+	
+	@Column(name = "INCLUDE_WEEKOFF")
+	private String includeWeekoff;
+	
+	@Column(name = "INCLUDE_HOLIDAYS")
+	private String includeHolidays;
+	
+	@Column(name = "VISIBLE_IN_BALANCE_LEAVES")
+	private String visibleInBalanceLeaves;
+	
+	@Column(name = "LEAVE_EMP_TYPE")
+	private String leaveEmpType;
+	
+	@Column(name = "ALLOWABILITY")
+	private String allowability;
+	
+	@Column(name = "MAX_DAYS_TO_CARRYFORWARD")
+	private Integer maxDaysToCarryforward;
+	
+	@Column(name = "INCLUDE_IN_PAYROLL")
+	private String includeInPayroll;
+	
+	@Column(name = "LEAVE_ENCASHMENT")
+	private String leaveEncashment;
+	
+	@Column(name = "LEAVE_ENCASH_MIN_DAYS")
+	private Integer leaveEncashMinDays;
+	
+	@Column(name = "LEAVE_ENCASH_MAX_DAYS")
+	private Integer leaveEncashMaxDays;
+	
+	@Column(name = "ACCURAL_POLICY")
+	private String accuralPolicy;
+	
+	@Column(name = "NEW_JOINEE_PER_PERIOD")
+	private Float newJoinPerPeriod;
+	
+	@Column(name = "EXPERIENCED_PER_PERIOD")
+	private Float experiencedPerPeriod;
+	
+	@Transient
+	@JsonProperty
+	private String autoApproveTypeListNames;
 	
 	@Transient
 	@JsonProperty
@@ -196,6 +257,10 @@ public class LeaveType {
 	@Transient
 	@JsonProperty
 	private float takenLeaves;
+	
+	@Transient
+	@JsonProperty
+	private String userGender;
 
 	public Long getId()
 	{
@@ -385,6 +450,16 @@ public class LeaveType {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getLeaveTypeUUID()
+	{
+		return leaveTypeUUID;
+	}
+
+	public void setLeaveTypeUUID(String leaveTypeUUID)
+	{
+		this.leaveTypeUUID = leaveTypeUUID;
 	}
 
 	public Set<LeaveRole> getLeaveTypeRolesSet()
@@ -577,22 +652,22 @@ public class LeaveType {
 		this.leaveDuration = leaveDuration;
 	}
 
-	public Integer getMinDays()
+	public Float getMinDays()
 	{
 		return minDays;
 	}
 
-	public void setMinDays(Integer minDays)
+	public void setMinDays(Float minDays)
 	{
 		this.minDays = minDays;
 	}
 
-	public Integer getMaxDays()
+	public Float getMaxDays()
 	{
 		return maxDays;
 	}
 
-	public void setMaxDays(Integer maxDays)
+	public void setMaxDays(Float maxDays)
 	{
 		this.maxDays = maxDays;
 	}
@@ -605,6 +680,186 @@ public class LeaveType {
 	public void setNoOfDays(Integer noOfDays)
 	{
 		this.noOfDays = noOfDays;
+	}
+
+	public Float getNoOfDaysPerPeriod()
+	{
+		return noOfDaysPerPeriod;
+	}
+
+	public void setNoOfDaysPerPeriod(Float noOfDaysPerPeriod)
+	{
+		this.noOfDaysPerPeriod = noOfDaysPerPeriod;
+	}
+
+	public String getAutoApprove()
+	{
+		return autoApprove;
+	}
+
+	public void setAutoApprove(String autoApprove)
+	{
+		this.autoApprove = autoApprove;
+	}
+
+	public String getAutoApproveType()
+	{
+		return autoApproveType;
+	}
+
+	public void setAutoApproveType(String autoApproveType)
+	{
+		this.autoApproveType = autoApproveType;
+	}
+
+	public String getAutoApproveTypeList()
+	{
+		return autoApproveTypeList;
+	}
+
+	public void setAutoApproveTypeList(String autoApproveTypeList)
+	{
+		this.autoApproveTypeList = autoApproveTypeList;
+	}
+
+	public String getTimeSheetAutofill()
+	{
+		return timeSheetAutofill;
+	}
+
+	public void setTimeSheetAutofill(String timeSheetAutofill)
+	{
+		this.timeSheetAutofill = timeSheetAutofill;
+	}
+
+	public String getEffectiveGender()
+	{
+		return effectiveGender;
+	}
+
+	public void setEffectiveGender(String effectiveGender)
+	{
+		this.effectiveGender = effectiveGender;
+	}
+
+	public String getIncludeWeekoff()
+	{
+		return includeWeekoff;
+	}
+
+	public void setIncludeWeekoff(String includeWeekoff)
+	{
+		this.includeWeekoff = includeWeekoff;
+	}
+
+	public String getIncludeHolidays()
+	{
+		return includeHolidays;
+	}
+
+	public void setIncludeHolidays(String includeHolidays)
+	{
+		this.includeHolidays = includeHolidays;
+	}
+
+	public String getVisibleInBalanceLeaves()
+	{
+		return visibleInBalanceLeaves;
+	}
+
+	public void setVisibleInBalanceLeaves(String visibleInBalanceLeaves)
+	{
+		this.visibleInBalanceLeaves = visibleInBalanceLeaves;
+	}
+
+	public String getLeaveEmpType()
+	{
+		return leaveEmpType;
+	}
+
+	public void setLeaveEmpType(String leaveEmpType)
+	{
+		this.leaveEmpType = leaveEmpType;
+	}
+
+	public String getAllowability()
+	{
+		return allowability;
+	}
+
+	public void setAllowability(String allowability)
+	{
+		this.allowability = allowability;
+	}
+
+	public Integer getMaxDaysToCarryforward()
+	{
+		return maxDaysToCarryforward;
+	}
+
+	public void setMaxDaysToCarryforward(Integer maxDaysToCarryforward)
+	{
+		this.maxDaysToCarryforward = maxDaysToCarryforward;
+	}
+
+	public String getIncludeInPayroll()
+	{
+		return includeInPayroll;
+	}
+
+	public void setIncludeInPayroll(String includeInPayroll)
+	{
+		this.includeInPayroll = includeInPayroll;
+	}
+
+	public String getLeaveEncashment()
+	{
+		return leaveEncashment;
+	}
+
+	public void setLeaveEncashment(String leaveEncashment)
+	{
+		this.leaveEncashment = leaveEncashment;
+	}
+
+	public Integer getLeaveEncashMinDays()
+	{
+		return leaveEncashMinDays;
+	}
+
+	public void setLeaveEncashMinDays(Integer leaveEncashMinDays)
+	{
+		this.leaveEncashMinDays = leaveEncashMinDays;
+	}
+
+	public Integer getLeaveEncashMaxDays()
+	{
+		return leaveEncashMaxDays;
+	}
+
+	public void setLeaveEncashMaxDays(Integer leaveEncashMaxDays)
+	{
+		this.leaveEncashMaxDays = leaveEncashMaxDays;
+	}
+
+	public String getAccuralPolicy()
+	{
+		return accuralPolicy;
+	}
+
+	public void setAccuralPolicy(String accuralPolicy)
+	{
+		this.accuralPolicy = accuralPolicy;
+	}
+
+	public String getAutoApproveTypeListNames()
+	{
+		return autoApproveTypeListNames;
+	}
+
+	public void setAutoApproveTypeListNames(String autoApproveTypeListNames)
+	{
+		this.autoApproveTypeListNames = autoApproveTypeListNames;
 	}
 
 	public String getCreatedUser()
@@ -667,16 +922,6 @@ public class LeaveType {
 		this.takenLeaveCounts = takenLeaveCounts;
 	}
 
-	public String getLeaveTypeUUID()
-	{
-		return leaveTypeUUID;
-	}
-
-	public void setLeaveTypeUUID(String leaveTypeUUID)
-	{
-		this.leaveTypeUUID = leaveTypeUUID;
-	}
-
 	public float getTotalBalanceLeaveCounts()
 	{
 		return totalBalanceLeaveCounts;
@@ -706,5 +951,31 @@ public class LeaveType {
 	{
 		this.takenLeaves = takenLeaves;
 	}
-	
+
+	public String getUserGender()
+	{
+		return userGender;
+	}
+
+	public void setUserGender(String userGender)
+	{
+		this.userGender = userGender;
+	}
+
+	public Float getNewJoinPerPeriod() {
+		return newJoinPerPeriod;
+	}
+
+	public Float getExperiencedPerPeriod() {
+		return experiencedPerPeriod;
+	}
+
+	public void setNewJoinPerPeriod(Float newJoinPerPeriod) {
+		this.newJoinPerPeriod = newJoinPerPeriod;
+	}
+
+	public void setExperiencedPerPeriod(Float experiencedPerPeriod) {
+		this.experiencedPerPeriod = experiencedPerPeriod;
+	}
+
 }

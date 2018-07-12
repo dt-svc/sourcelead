@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -99,6 +100,10 @@ public class OrgSpoc implements Serializable{
 	@Transient
 	@JsonProperty
 	private String spocUserCode;
+	
+	@Transient
+	@JsonProperty
+	private Map<String,String> clientCustomFieldlabelNameAndValue;
 	
 	public String getVendorCurrency() {
 		return vendorCurrency;
@@ -654,5 +659,12 @@ public class OrgSpoc implements Serializable{
 	{
 		this.spocExtensionNumber = spocExtensionNumber;
 	}
-	
+
+	public Map<String, String> getClientCustomFieldlabelNameAndValue() {
+		return clientCustomFieldlabelNameAndValue;
+	}
+
+	public void setClientCustomFieldlabelNameAndValue(Map<String, String> clientCustomFieldlabelNameAndValue) {
+		this.clientCustomFieldlabelNameAndValue = clientCustomFieldlabelNameAndValue;
+	}
 }

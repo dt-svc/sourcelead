@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -757,8 +758,11 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -846,5 +850,16 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		String query = "from Contracts contracts where contracts.orgLocationId.id =:orgLocationId and contracts.templateSubmissionStatus =:status and contracts.id IN (select contractHistory.contractsId.id from ContractsHistory contractHistory where contractHistory.contractsId.id = contracts.id and contractHistory.createdDate <= :date)";
 		contractList = session.createQuery(query).setLong("orgLocationId", locationId).setString("status", status).setParameter("date", date).list();
 		return contractList;
+	}
+
+	@Override
+	@Transactional
+	public Integer deleteContractOwnerHierarchyListByContractId(Long id)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer status = null;
+		Query q = session.createQuery("delete ContractOwnerHierarchy coh where coh.contract.id =:id").setLong("id", id);
+		status = q.executeUpdate();
+		return status;
 	}
 }

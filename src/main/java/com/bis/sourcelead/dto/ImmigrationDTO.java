@@ -37,6 +37,9 @@ public class ImmigrationDTO extends SearchDTO {
 	@Required(desc = "petition type")
 	private String petitionType;
 	
+	@Required(desc = "process type")
+	private String processType;
+	
 	private String receiptNo;
 
 	private String currUscisStatus;
@@ -192,6 +195,8 @@ public class ImmigrationDTO extends SearchDTO {
     private List<ImmigrationResidenceDTO> residenceList;
     
     private String immigrationId;
+    
+    private String immigrationUUID;
     
     private String[] removedResidenceIds;
     
@@ -909,6 +914,22 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setIsOwnTemplateId(String isOwnTemplateId) {
 		this.isOwnTemplateId = isOwnTemplateId;
+	}
+
+	public String getImmigrationUUID() {
+		return immigrationUUID;
+	}
+
+	public void setImmigrationUUID(String immigrationUUID) {
+		this.immigrationUUID = immigrationUUID;
+	}
+
+	public String getProcessType() {
+		return processType;
+	}
+
+	public void setProcessType(String processType) {
+		this.processType = processType;
 	}
 	
 }

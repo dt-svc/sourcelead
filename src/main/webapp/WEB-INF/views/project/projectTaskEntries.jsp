@@ -91,7 +91,7 @@
 					</form>
 					                <!-- TimeEntry Modal Pop Ends -->	        
                      
-					 <div id="tableContent" class="clearfix project_wrap_table">
+					 <div id="tableContent" class="clearfix project_wrap_table overflow_Auto">
 			                    <table>
 			                        <thead>
 			                            <tr>
@@ -233,6 +233,19 @@ function editProjectTaskTimesheetDayEntry(timesheetDate,type){
 				},
 			});
 	}
+}
+</script>
+
+
+<script>
+function deleteProjectTaskEntry(timesheetEntryId){
+$.ajax({
+	 type : "POST",
+	 	 url : sourceleadUrl+"/ProjectTasks/deleteProjectTaskTimesheetDayEntry?&timesheetEntryId="+timesheetEntryId,
+	  		success : function(data) {
+	  			getSavedTaskDetails();
+	  		},
+		});
 }
 </script>
 
