@@ -157,7 +157,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 
 		 String subQuery = "";
 		 if(isClientOffer != null && "Y".equalsIgnoreCase(isClientOffer)){
-			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' ) "; 
+			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW') "; 
 		 }else{
 			if(isClientRequirement.equalsIgnoreCase(Constants.NO)){
 				 /*subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "*/
@@ -165,7 +165,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					 		+ " rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED') ";
 			}else{
 				 subQuery = " and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' "
-					 		+ "  OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED') ";
+					 		+ "  OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW') ";
 			}
 			 
 		 }
