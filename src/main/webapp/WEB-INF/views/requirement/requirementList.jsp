@@ -489,7 +489,7 @@ function statusvalidating(id){
 			</form:form>
 	</div>
 	<div class="timesheet_out" id="jobsTabContent">
-		<div class="vendor_wrap project_tabs projecttabs-custom">
+		<div class="vendor_wrap project_tabs">
 			<div class="timesheet_head timesheetHead_filters topfilters">
 				<ul class="padding_right">
 					<sec:authorize
@@ -625,8 +625,8 @@ function statusvalidating(id){
 							class="glyphicon glyphicon-export"></i>
 							<div id="exportPop">
 								<ul>
-									<li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-									<li onclick="exportToExcel();"><i
+									<li onclick="exportToPdf(1);"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+									<li onclick="exportToExcel(1);"><i
 										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
 								</ul>
 							</div></li>
@@ -653,6 +653,18 @@ function statusvalidating(id){
 				<ul class="padding_right">
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
 						<li><a href="<c:url value='${appPath}/addJobFair'/>"><i class="fa fa-plus"></i>Job Fair</a></li>
+					</sec:authorize>
+
+					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
+						<li title="Export" class="mrPOP" id="mypopJobFair"><i
+							class="glyphicon glyphicon-export"></i>
+							<div id="exportPopJobFair">
+								<ul>
+									<li onclick="exportToPdf(2);"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+									<li onclick="exportToExcel(2);"><i
+										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+								</ul>
+							</div></li>
 					</sec:authorize>
 					<li>
 						<div class='dynamic_search'>
@@ -791,77 +803,88 @@ function changeStatus(requirementId, requirementStatus){
 	};
 </script>
 <script>
-$('#mypop').click(function(){
+	$('#mypop').click(function(){
 		$("#exportPop").toggle();
 		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
- });
- $("html").click(function(){
-	$("#exportPop").hide(200);
- });
- $("#exportPop, #mypop").click(function(e) {  
-     e.stopPropagation();
- });
+ 	});
+	$('#mypopJobFair').click(function(){
+		$("#exportPopJobFair").toggle();
+		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+ 	});
+	$("html").click(function(){
+		$("#exportPop").hide(200);
+		/* $("#exportPopJobFair").hide(200); */
+	});
+	$("#exportPop, #exportPopJobFair, #mypop").click(function(e) {  
+	    e.stopPropagation();
+	});
 </script>
 <script>
-function exportToPdf(){
-	var req = $("#noReq").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-	  var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() 
-	    {
+function exportToPdf(type) {
+	if(type === 1) {
+		var req = $("#noReq").val();
+	 	var sourceleadUrl ='${sourceleadUrl}';
+	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
+	  	var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() {
 			status.push($(this).val());
 	    });
-	 var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() 
-	    {
+	 	var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage > 0){
-		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
-		}else{
-			 var result = "";
-				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Jobs List is Empty</p>";
-				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-				result = result +"	</div>";
-				$("#popUp").append(result);
-				$("#empty_requirement_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200);
+		if(requirementEmptyMessage > 0) {
+			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
+		} else {
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Jobs List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_requirement_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
 		}
+	} else {
+		/* alert("Export JobFair to PDF"); */
+		$(".buttons-pdf").click();
+	}
 }
 </script>
 <script>
-function exportToExcel(){
-	var req = $("#noReq").val();
-	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	  var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() 
-	    {
+function exportToExcel(type) {
+	if(type === 1) {
+		var req = $("#noReq").val();
+		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
+		var sourceleadUrl ='${sourceleadUrl}';
+	  	var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() {
 			status.push($(this).val());
 	    });
-	 var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() 
-	    {
+	 	var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage > 0){
+		if(requirementEmptyMessage > 0) {
 			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=xls";	
-		}else{
-			 var result = "";
-				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Jobs List is Empty</p>";
-				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-				result = result +"	</div>";
-				$("#popUp").append(result);
-				$("#empty_requirement_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200);
+		} else {
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Jobs List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_requirement_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
 		}
+	} else {
+		/* alert("Export JobFair to Excel"); */
+		$(".buttons-excel").click();
+	}
 }
 </script>
 <script type="text/javascript">
@@ -879,7 +902,7 @@ function cancel(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
-	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop").slideUp(200);
+	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop, #exportPopJobFair").slideUp(200);
 	
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);

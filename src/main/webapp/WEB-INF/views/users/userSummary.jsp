@@ -115,8 +115,9 @@ $(document).ready(function(){
 			 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
 		 '</sec:authorize>';
 		 
-		 result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
-		 
+		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
+		 '</sec:authorize>';
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
 		 
