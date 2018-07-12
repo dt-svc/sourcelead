@@ -1394,25 +1394,32 @@ $("#dynamicUserDataTableSearch").keydown(function(e) {
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
 	
-	$("html").click(function(){
-		$(".action-pop").slideUp(200);
-	});
-	$(".action, .action-pop").click(function(e){
-	 	e.stopPropagation();
- 	});	
 }
+
+$("html").click(function(){
+$(".action-pop").slideUp(200);
+}); 
+
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+	});	
 
 function newActions(){
 	$(".newActPop").slideToggle(200);
-	
-	$("html").click(function(){
-		$(".newActPop").slideUp(200);
-	});
-	$(".overIcon, .newActPop").click(function(e){
-	 	e.stopPropagation();
- 	});	
+	$(".action-pop").slideUp(200);
+		
 }
+
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+	}); 
+	
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+	});
+
 
 </script>
     

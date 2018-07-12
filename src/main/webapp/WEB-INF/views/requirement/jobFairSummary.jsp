@@ -9,7 +9,7 @@
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="/app/dashboard/3">Home</a> »<a
-				href="/app/jobs?viewTab=jobFair">Jobs Fairs</a>» Fair Details
+				href="/app/jobs?viewTab=jobFair">Jobs Fairs</a>»Job Fair Details
 		</div>
 	</section>
 	<div class="timesheet_out">
@@ -23,12 +23,11 @@
 						<div id="details-div" class="require_wrap_details">
 							<div class="clearfix">
 								<div class="clearfix row">
-									<div class="col-md-12">
+									<div class="col-md-12 divskill divsAssigned pull-left">
+									<div class="clearfix">
+										<h2 class="pull-left noPad mt5">Job Fair Details:</h2>
 										<button class="btn btn-primary pull-right btn-sm mb10" onclick="editJobFair();" type="button">Edit</button>
 									</div>
-									<div class="col-md-12 divskill divsAssigned pull-left">
-
-										<h2>Fair Details:</h2>
 										<div class="clearfix"></div>
 										<div class="require_one">
 											<div class="require_wrap_details_cta">
@@ -64,7 +63,7 @@
 										<h1>Fair Job(s):</h1>
 										<div class="clearfix" id="selectedJobsDiv">
 											<c:forEach items="${jobFair.jobFairRequirementList}" var="req">
-												<div class="multiJob multiJob_detail">
+												<div class="require_one">
 													<div class="multiJobTitle clearfix">
 														<h2 class="pull-left">${req.requirementTitle}</h2>
 													</div>

@@ -2815,10 +2815,12 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 			
 			String query = "from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
+			query += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();
 			Query queryObj = session.createQuery(query + query1);
 			jobFairList = queryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).setFirstResult(jobFairDTO.getStart()).setMaxResults(jobFairDTO.getLength()).list();
 			
 			String  countQuery = "select count(*) from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
+			countQuery += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();
 			Query countQueryObj = session.createQuery(countQuery + query1); 
 			countlist = countQueryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).list();
 			

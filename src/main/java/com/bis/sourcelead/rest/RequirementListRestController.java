@@ -1629,8 +1629,19 @@ public class RequirementListRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
+				String[] tableColumns = {"name", "startDate", "endDate", "noOfJobs", "", "status"};
+				jobFairDTO.setSortColumn("id");
+				jobFairDTO.setSortOrder("desc");
 				
-				String[] tableColumns = {"", "generatedId.keyword","jobTitle.keyword", "client.keyword","","", "jobType.keyword", "country.keyword", "", "manager.keyword", "createdDate", ""};
+				int sortColumnIndex = 10; //by default sorting using updated date
+				boolean sortColumnOrder = false; //by default descending order
+				if(jobFairDTO.getOrder() != null && !jobFairDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(jobFairDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = !jobFairDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
+					
+					jobFairDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					jobFairDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
+				}
 				
 				jobFairDTO.setUserId(user.getId());
 				jobFairDTO.setOrgLocationId(orgLocation.getId());
