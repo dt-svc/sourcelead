@@ -2,7 +2,7 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
  <!-- Applicant Authorization -->
-        <div class="dashboard-widget">
+        <div class="dashboardWidget-new">
           <h4 class="clearfix">Applicant Permission
           </h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
