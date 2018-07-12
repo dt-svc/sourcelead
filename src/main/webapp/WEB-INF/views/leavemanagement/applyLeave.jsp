@@ -1174,7 +1174,7 @@ function validateDate(){
 			}
 			
 			if(errorMessage != ""){
-//		     	$("#ApplyLeave").attr('disabled','disabled');
+		     	$("#ApplyLeave").attr('disabled','disabled');
 		    	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
 		    	$(".warMess").fadeIn();
 		    	$(".comMask").fadeIn();

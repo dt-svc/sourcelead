@@ -394,41 +394,42 @@ result = result + '</div>';
 					} 
 					result = result +'  </div> ';                                                                                                    
 					if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
-						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
 							if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="successBtn primary pull-left" >Paid</span>   ';	
+								result = result +'           <span class="text-primary primary pull-left" >Paid</span>   ';
+							}else if(report.invoiceStatus == "DRAFT"){
+								result = result +'           <span class="successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice(\''+report.invoiceUUID+'\');";></i>';	
+							}else if(report.invoiceStatus == "Rejected"){
+								result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';	
+							}else{
+								result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';	
+							}
+								
 						}else{
-							result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice(\''+report.invoiceUUID+'\');";></i></td>          ';
-						}
-						}else if(report.invoiceStatus == "Linked"){
-							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
-						}else if(report.invoiceStatus == "SENT"){
-							result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';
-						}else{
-							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
+							if(report.invoiceStatus == "Linked"){
+								result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+							}else{
+								result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
+							}
 						}
 					}else{
 						if(report.invoiceStatus == "Accepted"){
 							if(report.paymentStatus == "Paid"){
-								result = result +'           <span class="successBtn primary pull-left" >Paid</span>   ';	
+								result = result +'           <span class=" primary pull-left">Paid</span>   ';	
 							}else{
 								result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
 							}
 							
 						}else{
 							if(report.invoiceStatus == "Rejected"){
-
-								result = result +'           <span class="successBtn primary pull-left" >Send</span>           ';	
-							}else if(report.invoiceStatus == "SENT"){
-								result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';
-							}
-							else if(report.invoiceStatus == "DRAFT"){
-
-								result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice(\''+report.invoiceUUID+'\');";></i></td>          ';	
+								result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';	
+							}else if(report.invoiceStatus == "Linked"){
+								result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 							}else{
-
 								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
-							}
+
+							}                                                                         
+
 							
 						}
 					}

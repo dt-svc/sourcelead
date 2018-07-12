@@ -607,12 +607,22 @@ public class Projects implements Serializable{
 	public String getStartDateStr() {
 		if(startDate != null){
 			SimpleDateFormat dateFormat = null;
-			if(orgLocationsId != null && orgLocationsId.getDateFormat() != null && StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
-				dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
+			if(StringUtils.isNotBlank(isProjectShared) && isProjectShared.equalsIgnoreCase(Constants.YES)) {
+				if(sharedLocationId != null && sharedLocationId.getDateFormat() != null && StringUtils.isNotEmpty(sharedLocationId.getDateFormat())){
+					dateFormat = new SimpleDateFormat(sharedLocationId.getDateFormat());
+				}
+				else{
+					dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+				}
+			}else {
+				if(orgLocationsId != null && orgLocationsId.getDateFormat() != null && StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
+					dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
+				}
+				else{
+					dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+				}
 			}
-			else{
-				dateFormat = (SimpleDateFormat) Constants.DF_YMD;
-			}
+			
 			startDateStr = dateFormat.format(startDate);	
 		}
 		return startDateStr;
