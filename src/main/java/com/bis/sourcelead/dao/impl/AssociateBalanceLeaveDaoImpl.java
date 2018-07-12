@@ -79,7 +79,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 				public void execute(java.sql.Connection connection) throws SQLException {
 					boolean initialAutocommitSetting = connection.getAutoCommit();
 					connection.setAutoCommit(false);
-					CallableStatement stmt = connection.prepareCall("{call associateBalanceLeave(?,?,?,?,?,?,?,?,?,?)}");
+					CallableStatement stmt = connection.prepareCall("{call associateBalanceLeave(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 					for (TotalLeaveDTO leave : associateBalanceLeaveDTO.getTotalLeavesDto()) {
 						if(StringUtils.isNotBlank(leave.getUserId())) {
 							stmt.setLong(1, Long.parseLong(leave.getUserId()));
@@ -90,11 +90,27 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						stmt.setLong(3, Long.parseLong(leave.getLeaveTypeId()));
 						stmt.setString(4, leave.getNoOfLeaves());
 						stmt.setString(5, SourceLeadRandomCodeHelper.generateRandomUUID());
-						stmt.setInt(6, 1);
-						stmt.setLong(7, loginUser.getId());
-						stmt.setDate(8, new java.sql.Date(new Date().getTime()));
-						stmt.setLong(9, loginUser.getId());
-						stmt.setDate(10, new java.sql.Date(new Date().getTime()));
+						if(leave.getLeavetypeRoles() != null) {
+							stmt.setString(6, leave.getLeavetypeRoles());
+						}else {
+							stmt.setString(6, null);
+						}
+						if(leave.getLeavetypeDepartment() != null) {
+							stmt.setString(7, leave.getLeavetypeDepartment());
+						}else {
+							stmt.setString(7, null);
+						}
+						if(leave.getLeavetypeEmpType() != null) {
+							stmt.setString(8, leave.getLeavetypeEmpType());
+						}else {
+							stmt.setString(8, null);
+						}
+						stmt.setString(8, leave.getLeavetypeEmpType());
+						stmt.setInt(9, 1);
+						stmt.setLong(10, loginUser.getId());
+						stmt.setDate(11, new java.sql.Date(new Date().getTime()));
+						stmt.setLong(12, loginUser.getId());
+						stmt.setDate(13, new java.sql.Date(new Date().getTime()));
 						
 						stmt.addBatch();
 					}
@@ -158,11 +174,11 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 
 	@Override
 	@Transactional
-	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId,Long orgLocationId,int status)
+	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId,Long orgLocationId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateBalanceLeave associateBalanceLeave = null;
-		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId and balLeave.orgLocationId.id = :orgLocationId and balLeave.status= :status").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).setInteger("status", status).list();
+		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId and balLeave.orgLocationId.id = :orgLocationId").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).list();
 		if (assoBalLeave != null && assoBalLeave.size() > 0) {
 			associateBalanceLeave = assoBalLeave.get(0);
 		}
@@ -181,22 +197,22 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 				public void execute(java.sql.Connection connection) throws SQLException {
 					boolean initialAutocommitSetting = connection.getAutoCommit();
 					connection.setAutoCommit(false);
-					CallableStatement stmt = connection.prepareCall("{call deleteAssociateBalLeave(?,?,?,?,?)}");
+					CallableStatement stmt = connection.prepareCall("{call deleteAssociateBalLeave(?,?,?,?,?,?,?,?)}");
 					for (User user : userList) {
 						if(Constants.UPDATE.equalsIgnoreCase(methodType)) {
 							OrgLocations orgLocations = new OrgLocations();
 							orgLocations.setId(orgLocationId);
-							boolean b = getOrgLevelLeaves(orgLocations, user.getId(), leaveType);
+							/*boolean b = getOrgLevelLeaves(orgLocations, user.getId(), leaveType);
 							if(!b) {
 								stmt.setLong(1, 0);
-							}else{
+							}else{*/
 								stmt.setLong(1, status);
-							}
+//							}
 						}else {
 							stmt.setLong(1, status);
 						}
 						if(!"NONE".equalsIgnoreCase(actionType)) {
-							AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId,Integer.parseInt(leaveType.getStatus()));
+							AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
 							float assoBalLeaves = Float.parseFloat(associateBalanceLeave.getTotalLeaves());
 							float additionLeaves = 0;
 							if("ADD".equalsIgnoreCase(actionType)) {
@@ -238,6 +254,23 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						stmt.setLong(3, orgLocationId);
 						stmt.setLong(4, user.getId());
 						stmt.setLong(5, leaveType.getId());
+						if(leaveType.getLeaveTypeRolesSet() != null && !leaveType.getLeaveTypeRolesSet().isEmpty() && leaveType.getLeaveTypeRolesSet().size() > 0) {
+							String s = leaveType.getLeaveTypeRolesSet().stream().map(r->r.getRoleId().getId().toString()).collect(Collectors.joining(","));
+							stmt.setString(6, s);
+						}else {
+							stmt.setString(6, null);
+						}
+						
+						if(leaveType.getDepartmentIds() != null) {
+							stmt.setString(7, leaveType.getDepartmentIds());
+						}else {
+							stmt.setString(7, null);
+						}
+						if(!leaveType.getLeaveEmpType().isEmpty()) {
+							stmt.setString(8, leaveType.getLeaveEmpType());
+						}else {
+							stmt.setString(8, null);
+						}
 						stmt.addBatch();
 					}
 					int[] updateCount = stmt.executeBatch();
@@ -359,17 +392,17 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 					public void execute(java.sql.Connection connection) throws SQLException {
 						boolean initialAutocommitSetting = connection.getAutoCommit();
 						connection.setAutoCommit(false);
-						CallableStatement stmt = connection.prepareCall("{call deleteAssociateBalLeave(?,?,?,?,?)}");
+						CallableStatement stmt = connection.prepareCall("{call deleteAssociateBalLeave(?,?,?,?,?,?,?,?)}");
 						for (LeaveType leaveType : leavetypeList) {
 							if(Constants.UPDATE.equalsIgnoreCase(methodType)) {
 								OrgLocations orgLocations = new OrgLocations();
 								orgLocations.setId(orgLocationId);
-								boolean b = getOrgLevelLeaves(orgLocations, user.getId(), leaveType);
-								if(!b) {
-									stmt.setLong(1, 0);
-								}else{
+//								boolean b = getOrgLevelLeaves(orgLocations, user.getId(), leaveType);
+//								if(!b) {
+//									stmt.setLong(1, 0);
+//								}else{
 									stmt.setLong(1, status);
-								}
+//								}
 							}else {
 								stmt.setLong(1, status);
 							}
@@ -402,6 +435,23 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 							stmt.setLong(3, orgLocationId);
 							stmt.setLong(4, user.getId());
 							stmt.setLong(5, leaveType.getId());
+							if(leaveType.getLeaveTypeRolesSet() != null && !leaveType.getLeaveTypeRolesSet().isEmpty() && leaveType.getLeaveTypeRolesSet().size() > 0) {
+								String s = leaveType.getLeaveTypeRolesSet().stream().map(r->r.getRoleId().getId().toString()).collect(Collectors.joining(","));
+								stmt.setString(6, s);
+							}else {
+								stmt.setString(6, null);
+							}
+							
+							if(leaveType.getDepartmentIds() != null) {
+								stmt.setString(7, leaveType.getDepartmentIds());
+							}else {
+								stmt.setString(7, null);
+							}
+							if(!leaveType.getLeaveEmpType().isEmpty()) {
+								stmt.setString(8, leaveType.getLeaveEmpType());
+							}else {
+								stmt.setString(8, null);
+							}
 							stmt.execute();
 							connection.commit();
 						}

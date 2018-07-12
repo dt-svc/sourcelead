@@ -106,9 +106,9 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			leaveType.setTypeOfHours(leaveTypeDTO.getHoursType());
 		if (leaveTypeDTO.getBillingType() != null)
 			leaveType.setLeaveType(leaveTypeDTO.getBillingType());
-		if (leaveTypeDTO.getDepartment() != null && !"".equalsIgnoreCase(leaveTypeDTO.getDepartment())) {
-			Department dep = departmentService.getDepartmentById(Long.parseLong(leaveTypeDTO.getDepartment()));
-			leaveType.setDepartmentId(dep);
+		if (leaveTypeDTO.getDepartment() != null) {
+//			Department dep = departmentService.getDepartmentById(Long.parseLong(leaveTypeDTO.getDepartment()));
+			leaveType.setDepartmentIds(leaveTypeDTO.getDepartment());
 		}else {
 			leaveType.setDepartmentId(null);
 		}

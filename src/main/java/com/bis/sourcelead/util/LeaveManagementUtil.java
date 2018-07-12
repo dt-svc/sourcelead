@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -617,11 +618,17 @@ public class LeaveManagementUtil {
 	public boolean checkGenderAndDepartmentAndRoleAndEmpType(LeaveType leaveType, Employees emp, UserRole userRole)
 	{
 		boolean flag = false;
+		boolean isDeptExist = false;
 		Set<Long> roleIds = new HashSet<>();
 		if(leaveType.getLeaveTypeRolesSet() != null){
 			for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
 				roleIds.add(leaveRole.getRoleId().getId());
 			}
+		}
+		if(leaveType.getDepartmentIds() != null) {
+			String[] arr = leaveType.getDepartmentIds().split(",");
+			List<String> strList = Arrays.asList(arr);
+	 		 isDeptExist = strList.stream().anyMatch(d->emp.getDepartmentId() != null && d.equals(emp.getDepartmentId().getId().toString())); 
 		}
 		
 		if ((leaveType.getEffectiveGender() != null
@@ -631,57 +638,54 @@ public class LeaveManagementUtil {
 			// if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender())
 			// || "All".equalsIgnoreCase(leaveType.getEffectiveGender())){
 			if ("N".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
-				if (roleIds.size() > 0 && leaveType.getDepartmentId() != null
+				if (roleIds.size() > 0 && StringUtils.isNotBlank(leaveType.getDepartmentIds())
 						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (emp.getDepartmentId() != null) {
 						if (roleIds.contains(userRole.getRoles().getId())
-								&& leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
-								&& leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
+								&& isDeptExist == true	&& leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
 							flag = true;
 						}
 					}
 				}
-				else if (roleIds.size() > 0 && leaveType.getDepartmentId() != null
+				else if (roleIds.size() > 0 && StringUtils.isNotBlank(leaveType.getDepartmentIds())
 						&& !StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (emp.getDepartmentId() != null) {
-						if (roleIds.contains(userRole.getRoles().getId())
-								&& leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+						if (roleIds.contains(userRole.getRoles().getId()) && isDeptExist == true) {
 							flag = true;
 						}
 					}
 				}
-				else if (roleIds.size() == 0 && leaveType.getDepartmentId() != null
+				else if (roleIds.size() == 0 && StringUtils.isNotBlank(leaveType.getDepartmentIds())
 						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (emp.getDepartmentId() != null) {
-						if (leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()
-								&& leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
+						if (isDeptExist == true	&& leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
 							flag = true;
 						}
 					}
 				}
-				else if (roleIds.size() > 0 && leaveType.getDepartmentId() == null
+				else if (roleIds.size() > 0 && !StringUtils.isNotBlank(leaveType.getDepartmentIds())
 						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (roleIds.contains(userRole.getRoles().getId())
 							&& leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
 						flag = true;
 					}
 				}
-				else if (roleIds.size() == 0 && leaveType.getDepartmentId() == null
+				else if (roleIds.size() == 0 && !StringUtils.isNotBlank(leaveType.getDepartmentIds())
 						&& StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
-					if (leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
+					if (emp.getUserEmploymentType() != null && leaveType.getLeaveEmpType().contains(emp.getUserEmploymentType())) {
 						flag = true;
 					}
 				}
-				else if (roleIds.size() > 0 && leaveType.getDepartmentId() == null
+				else if (roleIds.size() > 0 && !StringUtils.isNotBlank(leaveType.getDepartmentIds())
 						&& !StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (roleIds.contains(userRole.getRoles().getId())) {
 						flag = true;
 					}
 				}
-				else if (roleIds.size() == 0 && leaveType.getDepartmentId() != null
+				else if (roleIds.size() == 0 && StringUtils.isNotBlank(leaveType.getDepartmentIds())
 						&& !StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 					if (emp.getDepartmentId() != null) {
-						if (leaveType.getDepartmentId().getId().longValue() == emp.getDepartmentId().getId().longValue()) {
+						if (isDeptExist) {
 							flag = true;
 						}
 					}

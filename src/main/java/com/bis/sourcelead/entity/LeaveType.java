@@ -79,6 +79,9 @@ public class LeaveType {
 	@Column(name = "COLOR_CODE")
 	private String colorCode;
 
+	@Column(name = "DEPARTMENT_IDS")
+	private String departmentIds;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
@@ -978,4 +981,11 @@ public class LeaveType {
 		this.experiencedPerPeriod = experiencedPerPeriod;
 	}
 
+	public String getDepartmentIds() {
+		return departmentIds;
+	}
+
+	public void setDepartmentIds(String departmentIds) {
+		this.departmentIds = departmentIds;
+	}
 }
