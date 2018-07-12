@@ -460,7 +460,7 @@ public class EMailJobScheduler {
 		            	 flag = false;
 		             }
 					
-		             if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getId()) && (flag)){
+		             if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId()) && (flag)){
 				    	finalTFMap.put(key, value);
 					}
 				}
@@ -701,7 +701,8 @@ public class EMailJobScheduler {
 	 * this is for Admin
 	 * Fires on Friday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
-	@Scheduled(cron = "0 45 23 ? * FRI")
+	//@Scheduled(cron = "0 45 23 ? * FRI")
+	@Scheduled(cron = "0 0/2 * 1/1 * ?")
 	public void runJobSchedulerByFRIDay() {
 		logger.info("******************  Notification Job Scheduler WednesDay of every week of the Month started (Weekly) to Admin..! **********");
 		try {
@@ -751,7 +752,10 @@ public class EMailJobScheduler {
 	
 	@Async
 	private void adminCronRemainder(String invoiceFrequency) throws Exception {
-		List<Org> orgList = orgService.getOrgs();
+		List<Org> orgList = new ArrayList<>();
+		Org org1 = new Org();
+				org1.setId(2691l);
+		orgList.add(org1);
 		Map<String,String>  timesheetFrequencyMap = null;
 		for (Org org : orgList) {
 				StringBuilder tempHTML = new StringBuilder();
@@ -778,28 +782,35 @@ public class EMailJobScheduler {
 									  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
 									            LinkedList<String> frequency = new LinkedList<>();
 												 tempHTML.append("<tr>");
-												 if(projectMembers.getEmployee().getUser().getFirstName()!= null && projectMembers.getEmployee().getUser().getLastName() !=null){
-													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
+												 if(projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()!= null && projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName() !=null){
+													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()+" "+projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName()+"</td>");
 												 }else{
-													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
+													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()+"</td>");
 												 }
 												 
+												// Date cronStartDate = null;
+												// Date cronEndDate = null;
 												 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 													    String key = entry.getKey();
 													    String value =entry.getValue();
 													    
+													    Date frequencyStartDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),key.replaceAll("/", "-"));
 														Date frequencyEndDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),value.replaceAll("/", "-"));
+														
+														//cronStartDate = frequencyStartDate;
+														//cronEndDate = frequencyEndDate;
+														
 														Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 														currentCal.setLenient(false);
 														currentCal.setTime(CommonUtil.currentDate());
-														
 											             Boolean flag = true;
 											             if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()) <-2 && invoiceFrequency.equalsIgnoreCase(Constants.BI_WEEKLY)){
 											            	 flag = false;
 											             }
-											             if(flag){
+											             
+											             if(flag && submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMembers.getMasterCandidateId().getId(),projectMembers.getProjects().getId()) && (flag)){
 											            	 frequency.add("<b>"+key.replaceAll("/", "-")+" To "+value.replaceAll("/", "-"));
-											             }
+														 }
 													    
 												 }
 											     if(frequency != null && !frequency.isEmpty()){
