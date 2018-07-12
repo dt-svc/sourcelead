@@ -395,7 +395,7 @@ result = result  +'    <div class="billingArea"> ';
 					result = result +'     <div class="tblminwidth-90">';
 					 result = result +'  <div class="pull-right positionRelative menuWidget" >';
 					 if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected"){
-						 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.paymentStatus+'\');" ></i>  ';
+						 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.paymentStatus+'\',\''+report.fileUrl+'\');" ></i>  ';
 							result = result +'  <div id="popupDiv'+report.invoiceUUID+'"></div>';
 					} 
 					result = result +'  </div> ';  
@@ -680,7 +680,7 @@ function saveBillRejectedReason(invoiceUUID){
 
 <!-- modal pop -->
 <div class="side_mask" style="display: none"></div>
-<div class="modal modal_invoice" style="display: none;">
+<div class="modal modal_invoice datatable_filter" style="display: none;">
    <div id="linkPayblePopup" ></div>
 </div>
 <!-- modal pop -->
@@ -1083,7 +1083,7 @@ function cancelbtn(){
 </script>
   
 <script>
-function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,paymentStatus){
+function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,paymentStatus,fileUrl){
 		 removePopup();
 	     result = "";
 	     if(invoiceParentId == 'undefined'){
@@ -1106,11 +1106,11 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,payment
 			 '</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
-		 result = result +'      <li><a onclick="getPrint(\''+invoiceUUID+'\');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</a></li>';
+		 result = result +'      <li><a class="" href="'+fileUrl+'" title="Print" target="_blank"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</a></li>';
 		 '</sec:authorize>'
 		 
 		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
-		 result = result +'      <li><a onclick="downloadInvoice(\''+invoiceUUID+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</a></li>';
+		 result = result +'      <li><a class="" href="'+fileUrl+'" title="Print" download><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</a></li>';
 		 '</sec:authorize>'
 		 
 		 result = result +'      <li><a onclick="linkPayableInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Invoice"></i>Link Bill</a></li>';
@@ -1206,7 +1206,7 @@ function linkPayableInvoice(invoiceUUID,totalAmount){
 			result = result +'      <div class="modal-body clearfix">                                                                                       ';
 			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
 			result = result +'      <div class="candidate_wrap_table">                                                                                      ';
-			result = result +'      <table>                                                                                                                 ';
+			result = result +'      <table id="linkInvoiceVendorPaginationId">                                                                                                                 ';
 			result = result +'        <thead>                                                                                                               ';
 			result = result +'          <tr>                                                                                                                ';
 			result = result +'            <th>&nbsp;                                                                                                        ';
@@ -1273,6 +1273,7 @@ function linkPayableInvoice(invoiceUUID,totalAmount){
 		
 			$("#linkPayblePopup").empty();
 			$("#linkPayblePopup").append(result);
+			LinkInvoiceVendorPagination();
 			$('.modal.modal_invoice').fadeIn(200);
 	        $('.side_mask').fadeIn(200);
 			   
@@ -1281,6 +1282,29 @@ function linkPayableInvoice(invoiceUUID,totalAmount){
 }
 </script>
 
+
+<script>
+function LinkInvoiceVendorPagination(){  
+	// $.fn.dataTable.moment( 'DD-MM-YYYY' );
+    $('#linkInvoiceVendorPaginationId').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"aaSorting": [[3,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $("#linkInvoiceVendorPaginationId").wrap("<div class='overflow_Auto'></div>");
+}
+</script>
 
 <!-- Script for Linked Invoice pop -->
     <script>

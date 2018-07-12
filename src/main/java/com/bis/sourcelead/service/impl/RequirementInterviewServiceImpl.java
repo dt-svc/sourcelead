@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProposeTimeService;
@@ -130,6 +132,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Autowired
 	RequirementInterviewerService requirementInterviewerService; 
+	
+	@Autowired
+	private InterviewFeedbackTemplateService interviewFeedbackTemplateService;
 	
 	@Override
 	public void saveRequirementInterview(JSONObject jsonObj, User user, OrgLocations orgLocations, Org loginOrg) throws Exception  {
@@ -1194,19 +1199,19 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 
 
 	@Override
-	public void saveRequirementInterview(RequirementInterview requirementInterview) throws Exception {
-		requirementInterviewDao.storeRequirementInterview(requirementInterview);
+	public RequirementInterview saveRequirementInterview(RequirementInterview requirementInterview) throws Exception {
+		return requirementInterviewDao.storeRequirementInterview(requirementInterview);
 	}	
 	
 	
 
 	@Override
-	public List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception {
+	public List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, OrgLocations orgLocation) throws Exception {
 		logger.debug("In RequirementInterviewServiceImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method...");
-		
+		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		List<RequirementInterview> interviewslist = null;
-		interviewslist = requirementInterviewDao.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationsId);
+		interviewslist = requirementInterviewDao.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocation.getId());
+		//OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationsId);
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if (interviewslist != null && !interviewslist.isEmpty() ) {
 			for (RequirementInterview requirementInterview : interviewslist) {
@@ -1218,21 +1223,43 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				}
 				
 			    if(requirementInterview.getDateOfInterview() != null){
-			    	requirementInterview.setDateOfInterviewStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementInterview.getDateOfInterview()));
+			    	requirementInterview.setDateOfInterviewStr(commonUtil.dateStrFromOrgDateFormatter(requirementInterview.getSubmissionId().getOrgLocations().getDateFormat(),requirementInterview.getDateOfInterview()));
 			    }
 			    
 			    if(requirementInterview.getStartTime() != null){
-			    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
+			    	
+			    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());  
+					String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+					String convertedDateStr = DF_DMY.format(convertedDate);
+					 if(null == requirementInterview.getEndTime()){
+						 requirementInterview.setStartTimeStr(convertedDateStr+"("+timezone.getTimeZoneId()+")");
+					 }
+					 else{
+						 requirementInterview.setStartTimeStr(convertedDateStr);
+					 }
+			    	
+			    	 /*String hours = Integer.toString(requirementInterview.getStartTime().getHours());
 			    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
 			    	 StringBuilder startBuilder = new StringBuilder();
-			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(startBuilder.append(hours).append(":").append(minutes).toString()));
+			    	 requirementInterview.setStartTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(startBuilder.append(hours).append(":").append(minutes).toString()));*/
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
-			    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
+			    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getEndTime());  
+					String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+					String convertedDateStr = DF_DMY.format(convertedDate);  
+					requirementInterview.setEndTimeStr(convertedDateStr+"("+timezone.getTimeZoneId()+")");
+			    	
+			    	/* String hours = Integer.toString(requirementInterview.getEndTime().getHours());
 			    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
 			    	 StringBuilder endBuilder = new StringBuilder();
-			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(endBuilder.append(hours).append(":").append(minutes).toString()));
+			    	 requirementInterview.setEndTimeStr(CalendarUtil.get12FormatTimeFrom24FormatTime(endBuilder.append(hours).append(":").append(minutes).toString()));*/
 			    }
 			    
 			    String InterviewersList = "";
@@ -1250,6 +1277,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					i++;
 				}
 				requirementInterview.setInterviewersList(InterviewersList);
+				//requirementInterview.setInterviewFeedbackTemplateList(interviewFeedbackTemplateService.getInterviewerAndRatingListByInterviewId(requirementInterview.getId()));
 			}
 		}
 		return interviewslist;
@@ -1809,6 +1837,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Override
 	public RequirementInterview getinterviewBySubmissionId(Long submissionId) {
 		return requirementInterviewDao.getinterviewBySubmissionId(submissionId);
+		
+	}
+	
+	@Override
+	public RequirementInterview getLatestInterviewBySubmissionId(Long submissionId) {
+		return requirementInterviewDao.getLatestInterviewBySubmissionId(submissionId);
 		
 	}
 

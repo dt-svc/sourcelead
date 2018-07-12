@@ -2,7 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <script src="/resources/amcharts/amcharts.js"></script>
 <script src="/resources/amcharts/serial.js"></script>
 <script src="/resources/amcharts/plugins/export/export.min.js"></script>
@@ -10,6 +9,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+	
 	missingBillReportData();
 });
 </script>
@@ -77,7 +77,7 @@ $(document).ready(function(){
         <div class="clearfix dashboard-widget mt25 col-md-12">
           <div class="clearfix">
           <p class="col-md-2 mb0 margin-top0 padding_left fontSize20">
-         	 	<span class="text-muted">Total:</span><span class="ml"><strong>0</strong></span>
+         	 	<span class="text-muted">Total:</span><span class="ml"id="billAmountTotal"><strong>0.00</strong></span>
          	 </p>
           	<div class="remove_search pull-right">
                   <input placeholder="Search" type="text" id='dataTableSearch'>
@@ -99,6 +99,8 @@ $(document).ready(function(){
   
   <script>
 function missingBillReportData(){
+	
+	   $("#billAmountTotal").html("0.00"); // reset the total value when applied filters.
 	    var flag = true;
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
@@ -205,7 +207,9 @@ function missingBill(url){
 	    	  		}else{
 	    	  			 result = result + ' <td><div class="tblminwidth-50">--</div></td>';
 	    	  		}
-		             return result;
+	    	  		if(opt.totalCalAmount >0 )
+	    	  		$("#billAmountTotal").html(opt.totalCalAmount.toFixed(2));
+	    	  		 return result;
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
@@ -270,12 +274,13 @@ function missingBill(url){
             	"sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
+                	
                 		if(opt.billAmount !=null && opt.billAmount !='' && opt.billAmount != 'undefined'){
                 			 result = result + ' <td><div class="tblminwidth-75">'+opt.billAmount.toFixed(2)+'</div></td>';	
+                			
                 		}else{
                 			 result = result + ' <td><div class="tblminwidth-75">0.00</div></td>';
                 		}
-						
     	              return result;
                 }
           }],/* {
@@ -298,11 +303,11 @@ function missingBill(url){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+	     },
     } );
     $("#missingInvoicePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-	
+    
 }
 
 $(function() {

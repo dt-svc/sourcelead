@@ -45,6 +45,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -1094,48 +1095,49 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 try {
-			  	  ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
-			  	  if(projectMembers != null){
-			  		  String status = Constants.MEMBER_ACTIVE;
-					  projectMembers.setUpdatedDate(new Date());
-					  projectMembers.setUpdatedBy(user.getUserCode());
-					  
-					  HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(); 
-					  ProjectMembersHistory pmh = new  ProjectMembersHistory(); 
-					  
-					  pmh.setProjectMemberId(projectMembers);
-			  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
-			  		  //String pattern = "dd-MM-yyyy";
-		    	     // SimpleDateFormat format = new SimpleDateFormat(pattern);
-		    	      if(!isNullOrEmpty(projectsDTO.getReStartDate())){
-		    	    	  Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReStartDate());
-						  pmh.setProjectAssignedDate(startDate);
-		    	      }
-		    	      if(!isNullOrEmpty(projectsDTO.getReEndDate())){
-		    	    	  Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReEndDate());
-						  pmh.setProjectTerminationDate(endDate);
-		    	      }
-		    	      pmh.setCreatedDate(commonUtil.currentDate());
-		    	    	if(user.getUserCode() != null){
-		    	    		pmh.setCreatedBy(user.getUserCode());	
-		    	    	}
-		    	    	
-					  pmh.setUpdatedDate(commonUtil.currentDate());
-					  pmh.setUpdatedBy(user.getUserCode());
-					/*  memberHistoryList.add(pmh);
-					  projectMembers.setMemberHistoryList(memberHistoryList);*/
-					  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
-					  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
-					  
-					  projectMembers.setStatus(status);
-					  projectMembers =  projectMembersService.saveProjectMember(projectMembers);
-					  projectMembers = projectMembersService.getProjectMemberById(projectMembers.getId());
-					  //commonUtil.storeTimesheetSubmissionRecords(projectMembers.getEmployee().getUser());
-					  reAssignMailToEmployee(user,pmh,orgLocations);
-			  	   }
-				
-			    } catch (Exception e) {
-			   }
+			  	  ProjectMembers pm =	projectMembersService.getProjectMemberById(projectMemberId);
+			  	  List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersListByMasterCandidateId(pm.getMasterCandidateId().getId(), pm.getProjects().getId());
+			  	  
+			  	 int sendEmailCount = 1;
+			  	 if(pmList != null && !pmList.isEmpty()) {
+					   for(ProjectMembers projectMembers: pmList) {
+						    String status = Constants.MEMBER_ACTIVE;
+							  projectMembers.setUpdatedDate(new Date());
+							  projectMembers.setUpdatedBy(user.getUserCode());
+							  projectMembers.setStatus(status);
+							  projectMembers =  projectMembersService.saveProjectMember(projectMembers);
+							  projectMembers = projectMembersService.getProjectMemberById(projectMembers.getId());
+							  ProjectMembersHistory pmh = new  ProjectMembersHistory();  
+							  pmh.setProjectMemberId(projectMembers);
+					  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+				    	      if(!isNullOrEmpty(projectsDTO.getReStartDate())){
+				    	    	  Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReStartDate());
+								  pmh.setProjectAssignedDate(startDate);
+				    	      }
+				    	      if(!isNullOrEmpty(projectsDTO.getReEndDate())){
+				    	    	  Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReEndDate());
+								  pmh.setProjectTerminationDate(endDate);
+				    	      }
+				    	      pmh.setCreatedDate(commonUtil.currentDate());
+				    	    	if(user.getUserCode() != null){
+				    	    		pmh.setCreatedBy(user.getUserCode());	
+				    	    	}
+				    	    	
+							  pmh.setUpdatedDate(commonUtil.currentDate());
+							  pmh.setProjectTerminationDate(null);
+							  pmh.setUpdatedBy(user.getUserCode());
+							  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+							  if(sendEmailCount == 1) {
+								  reAssignMailToEmployee(user,pmh,orgLocations);
+							  }
+							  sendEmailCount = sendEmailCount+1;
+						  }
+							
+				  	 }
+			  	  
+			 }catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 			return "success";
 		}
@@ -1150,9 +1152,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			 }
 			 
 			 EmailMessage emailMessage = new EmailMessage();
-			 emailMessage.setFirstName(pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-			 emailMessage.setLastName(pmh.getProjectMemberId().getEmployee().getUser().getLastName());
-			 emailMessage.setToEmail(pmh.getProjectMemberId().getEmployee().getUser().getEmail());
+			 emailMessage.setFirstName(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+			 emailMessage.setLastName(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+			 emailMessage.setToEmail(pmh.getProjectMemberId().getProjectMemberCandidteId().getEmail());
 			 emailMessage.setFromEmail(loginUser.getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 
@@ -1164,16 +1166,16 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();    
 			 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectAssignedDate());
 			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
-			 if(null!= pmh.getProjectMemberId().getEmployee()){
-				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
-					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
-						 StringBuilder empName = new StringBuilder();
-						 globalVarsMap.put("EmployeeName", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
-					 }else{
-						 globalVarsMap.put("EmployeeName", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-						}
-				 }
-			 }
+			
+			 
+			 StringBuilder employeeName = new StringBuilder();
+		 	 if(StringUtils.isNotBlank(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName())) {
+		 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName()).append(" ").append(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+		 	 }else {
+		 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+		  		 }
+		  		 
+		 	 globalVarsMap.put("EmployeeName", employeeName.toString());
 			 
 			 
 			 if(null != pmh.getProjectMemberId().getProjects()){
@@ -1231,15 +1233,17 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 			 notificationScenario.setBody(notificationbody);
 			 
-			 User toUser = pmh.getProjectMemberId().getEmployee().getUser();
+			 if(pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser() != null) {
+	 			 User toUser = pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
+	 			 StringBuilder notificationLink = new StringBuilder();
+				 String actionLink="";
+			     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();
+			     emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getProjectMemberCandidteId().getOrgLocationId(), notificationScenario,new HashMap<String,String>());
+			  
+ 		       }
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_REASSIGN,new ArrayList<EmailAttachment>());
-			 StringBuilder notificationLink = new StringBuilder();
-			 String actionLink="";
-		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();
-		     
-			emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario,new HashMap<String,String>());
 
 		}
 
@@ -1296,23 +1300,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
          }
 		
 		@RequestMapping(value = "/getVendorsByOrgLocationId")
-		public String getVendorsByOrgLocationId(
+		public List<OrgRelationDTO> getVendorsByOrgLocationId(
 				HttpServletRequest request) throws Exception {
-		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			String resultJson = null;
-			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
-			for(OrgRelations vendors:vendorList){
-				if(vendors.getLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
-				}
-				if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
-				}
-				
-			}
-			
-			resultJson = toJSON(vendorList);
-			return resultJson;
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<OrgRelationDTO> vendorList = orgRelationsService.getAllVendorsListOrgLocationId(orgLocations.getId());
+			return vendorList;
 
 		}
 		/**

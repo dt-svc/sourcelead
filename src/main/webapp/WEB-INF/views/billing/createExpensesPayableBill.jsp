@@ -18,7 +18,6 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
 
 <script>
 $(document).ready(function(){
-	getVendors();
 	populateInlineItemsGrid();
 });
 </script>
@@ -229,9 +228,9 @@ function checkBox(){
               <tr id='divAttachmentTsRow0'>
             	<td>
               	<label class="pull-left"><strong>Attachments</strong></label>
-              	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs">
+              	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs width100percnt">
                 <span><div id="savedAttachments"></div></span></div> </div>
-	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
+	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt" >
 	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
 	                <span>
 	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation' onchange="attachFile(0);"><i class='fa fa-times mt5' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
@@ -353,7 +352,7 @@ function getProjectsList(projectName){
  	for (var i=0; i<json.data.length; i++)
    {
  	var opt = json.data[i];
- 	/* output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; */
+ 	 output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; 
  	var selected = "";
  	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
  		selected = 'selected';
@@ -783,7 +782,7 @@ function calculateTaxDiscount(){
 <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
   
   <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-  			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
+  			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt">
                 <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
                		 <span> 
                		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='attachFile(REPLACEROWID);validateContractsUploadFile(REPLACEROWID)'>
@@ -1063,7 +1062,6 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID);
 	}else{
 		getVendors();
-		getProjectsList();
 		$("#invoiceId").val("");
 		$("#paymentFrequency").val("");
 		$("#paymentFrequency").trigger("chosen:updated");

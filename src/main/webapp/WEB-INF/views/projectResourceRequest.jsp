@@ -22,9 +22,8 @@
 </script>
  
  
-    <section class="clearfix">
-      <div class="content-dashboard clearfix"> 
-      	  <div class="clearfix dashboard-widget mb col-md-12">
+      <div class="mb col-md-12 clearfix"> 
+      	  <div class=" dashboard-widget col-md-12">
       	    <h4>Associate Requests</h4>
       	    
       	    <div class="project_side_wrap_inn_tabs">
@@ -46,7 +45,6 @@
       	  </div>
       </div>
     
- </section>
  
  <jsp:include page="projectPopupDetails.jsp"></jsp:include>	 
  
@@ -250,6 +248,8 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 				    		
 			    		}else{
 			    			if(opt.resourceStatus == 'Rejected'){
+			    				result = result + '<a href="javascript:void(0)" onclick="acceptAssociate(\''+opt.requestUUID+'\',\''+requestType+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>&nbsp;|&nbsp;';
+			    				result = result + '<a href="javascript:void(0)" onclick="onholdAssociateRequest(\''+opt.requestUUID+'\',\''+opt.requestedUser+'\',\''+requestType+'\');"><i class="fa fa-clock-o text-primary" alt="On hold" title="On hold"></i></a>&nbsp;|&nbsp;';
 			    				result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
 			    				result = result + '<b class="bg-red">'+opt.resourceStatus+'</b>';
 			    				result = result+" <br><span class='rejNam' title='"+opt.approvedUser+"'>By : "+opt.approvedUser+"</span>";

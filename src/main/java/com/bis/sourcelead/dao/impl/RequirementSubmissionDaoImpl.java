@@ -126,7 +126,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 if(isClientInterview != null && "Y".equalsIgnoreCase(isClientInterview)){
 			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' ) "; 
 		 }else{
-			 subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) "; 
+			 subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) "; 
 		 }
 		 
 		 String subQuery2 = "";
@@ -157,7 +157,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 
 		 String subQuery = "";
 		 if(isClientOffer != null && "Y".equalsIgnoreCase(isClientOffer)){
-			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' ) "; 
+			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW') "; 
 		 }else{
 			if(isClientRequirement.equalsIgnoreCase(Constants.NO)){
 				 /*subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "*/
@@ -165,7 +165,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					 		+ " rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED') ";
 			}else{
 				 subQuery = " and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' "
-					 		+ "  OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED') ";
+					 		+ "  OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW') ";
 			}
 			 
 		 }
@@ -563,7 +563,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 
 		 
 		 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId "
-		 		+ " and rs.requirement.id = :requirementId "+subQuery+" and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERHIRED' ) "
+		 		+ " and rs.requirement.id = :requirementId "+subQuery+" and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERHIRED' ) "
 		 				+ " and rs.id NOT IN (select submission.sourceSubmission from RequirementSubmission submission) ";
 		 List<RequirementSubmission>  shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", loginOrgLocation.getId()).setLong( "requirementId", requirement.getId()).list();
 	     return shortListCandidatesList;

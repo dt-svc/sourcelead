@@ -1747,7 +1747,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		invoice.setInvoiceFrequency(frequency);
-		if (null != projectId) {
+		if (null != projectId && !invoice.getInvoiceCategory().equalsIgnoreCase("expenses")) {
 			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId,orgLocation.getId(), startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
@@ -1831,7 +1831,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
-		if (null != projectId) {
+		if (null != projectId && !invoice.getInvoiceCategory().equalsIgnoreCase("expenses")) {
 			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, orgLocation.getId(),startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
@@ -1930,16 +1930,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 */
 	private void populateClientDetails(OrgLocations vendorOrgLocation, Invoice invoice, OrgRelations orgRelation)
 	{
-		invoice.setResponderLocationId(vendorOrgLocation);
-		if (null != orgRelation.getPaymentTerm()
-				&& !"".equalsIgnoreCase(orgRelation.getPaymentTerm())) {
+		invoice.setResponderLocationId(vendorOrgLocation);                                                //check whether the string start with number
+		if (null != orgRelation.getPaymentTerm() && !"".equalsIgnoreCase(orgRelation.getPaymentTerm()) && orgRelation.getPaymentTerm().matches("^[0-9].*$")) {
 			invoice.setPaymentFrequency(orgRelation.getPaymentTerm());
 			invoice.setInvoiceDate(new Date());
 			Date dueDate = getDueDateByPaymentTerm(new Date(), orgRelation.getPaymentTerm());
 			invoice.setDueDate(dueDate);
 		}
-		if (null != orgRelation.getBillingAddress()
-				&& !"".equalsIgnoreCase(orgRelation.getBillingAddress())) {
+		if (null != orgRelation.getBillingAddress()	&& !"".equalsIgnoreCase(orgRelation.getBillingAddress())) {
 			invoice.setBillingAddress(orgRelation.getBillingAddress());
 		}
 	}
@@ -2646,7 +2644,6 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		if (StringUtils.isNotBlank(invoiceDTO.getExpensesId())) {
 			Expenses expenses = expensesService.getExpenseById(Long.parseLong(invoiceDTO.getExpensesId()));
 			invoice.setExpensesId(expenses);
-			;
 		}
 
 		invoice.setCurrencyCode(loginOrgCurrencyCode);

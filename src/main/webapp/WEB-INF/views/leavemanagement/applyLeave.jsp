@@ -124,7 +124,7 @@ window.onload = function() {
                 </div>
               </div>
             </div>
-              <div class="form-group">
+              <div class="form-group" id="halfDayHidingDiv" style="display: block;">
               <label class="col-md-3">To<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
                 <div class="row">
@@ -245,7 +245,7 @@ window.onload = function() {
 		
               
           </div>
-          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" oncontextmenu="return false" onkeydown="return false;" onmousedown="return false;">
             <div class="well-sm well well-custom clearfix amchartAnchor-Hide">
                  <h5>Leaves Status</h5>
                 <div id="leavestatsu" style="width: 100%; height: 150px;"></div>
@@ -464,8 +464,8 @@ window.onload = function() {
 			removeStartValid();
 			checkFromDate();
 			calcaulateDuraton();
-			validateDate();
-// 			getLeaveDetails(finalDateFormatEndDate);
+// 			validateDate();
+			getLeaveDetails(finalDateFormatEndDate);
 			}
 		});
 		
@@ -498,6 +498,9 @@ function removeEndValid(){
 function calcaulateDuraton(){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
+	if(toDate == ""){
+		toDate = $("#fromDate").val();
+	}
 	var leaveTypeUUID = $("#leaveType").val();
 	var ckbox = $('#checkbox-1');
 	if (ckbox.is(':checked')) {
@@ -505,8 +508,27 @@ function calcaulateDuraton(){
 	 }else{
 		 userId = '${SourceLeadWeb_userId}';
 	 }
+	
+	var fromHalfcheck = $('#checkbox-2');
+	var toHalfcheck = $('#checkbox-3');
+	var fromHalfDay = "";
+	var toHalfDay = "";
+	if (fromHalfcheck.is(':checked')) {
+		fromHalfDay = "Yes";
+	}
+	if (toHalfcheck.is(':checked')) {
+		toHalfDay = "Yes";
+	}
+	var fromDateFromHalfTime = $("#fromDateHalfTime").val();
+	var fromDateToHalfTime = $("#toDateHalfTime").val();  
+	var toDateFromHalfTime = $("#toDateFromHalfTime").val();
+	var toDateToHalfTime = $("#toDateToHalfTime").val();
+	
 	if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined' && leaveTypeUUID != null && leaveTypeUUID != '' && leaveTypeUUID != 'undefined'){
-		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId,  function(result) {
+		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId+
+				"&fromHalfDay="+fromHalfDay+"&toHalfDay="+toHalfDay+"&fromDateFromHalfTime="+fromDateFromHalfTime+
+				"&fromDateToHalfTime="+fromDateToHalfTime+"&toDateFromHalfTime="+toDateFromHalfTime+
+				"&toDateToHalfTime="+toDateToHalfTime,  function(result) {
 			if(result != null){
 				$("#durationDiv").show();
 				$("#durationId").html("Duration : "+result+" day(s)");
@@ -518,7 +540,7 @@ function calcaulateDuraton(){
 	}
 	
 }
- </script>
+</script>
 
 
 <script type="text/javascript">
@@ -584,7 +606,7 @@ function calcaulateDuraton(){
             	  var totalBalanceCounts = counts.totalBalanceLeaveCounts;
             	  var totalPendingCounts = counts.pendingLeaveCounts;
             	  var totalTakenCounts = counts.takenLeaves;
-        		  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
+        		  getpieChar(totalBalanceCounts.toFixed(2),totalPendingCounts,totalTakenCounts);
         		  
         		  
         		  var result = "";
@@ -592,11 +614,14 @@ function calcaulateDuraton(){
     	    	  result = result +'			<label>Balance Leaves :</label>';
     	          for (var i = 0; i < json.length; i++) { 
     	        		  var leaveType = json[i];
-    				        result = result +'	<li>';
-    				  		result = result +'			<label>'+leaveType.name+'</label>';
-    				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount.toFixed(2)+'</span>';
-    				  		result = result +'	</li>'; 
+    	        		  if(leaveType.leaveTypeBalanceLeaveCount > 0){
+    	        			  result = result +'	<li>';
+      				  		result = result +'			<label>'+leaveType.name+'</label>';
+      				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
+      				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount.toFixed(2)+'</span>';
+      				  		result = result +'	</li>'; 
+    	        		  }
+    				       
     	        	  }
    	        	  result = result +'	</ul>'; 
    	        	  $("#leaveStatusIdDiv").empty();
@@ -794,7 +819,8 @@ function applyLeave(){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
-	  	var formData = $($('#apply_leave_form')[0]).serialize();
+// 	  	var formData = $($('#apply_leave_form')[0]).serialize();
+	  	var formData = getFormData('apply_leave_form');
 		$("#leaveLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveId="+leaveId+"&currentStage="+currentStage, formData, function(result) {
 			if (result && result.response === "INVALID_DATA") {
@@ -903,9 +929,16 @@ function getLeaveDetails(finalDateFormatEndDate){
           			if(splitDuration[0] == "Full Day" && splitDuration[1] == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
+    		    		$("#toDate").attr('data-validation');
+    		    		document.getElementById("halfDayHidingDiv").style.display = 'block';
     		    	}else if(duration == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
+    		    		$("#checkbox-2").prop("checked",true);
+    		    		$("#checkbox-2").prop('disabled', true);
+    		    		checkFromHalfDay();
+    		    		document.getElementById("halfDayHidingDiv").style.display = 'none';
+    		    		$("#toDate").removeAttr('data-validation');
     		    	}else if(duration == "Full Day"){
     		    		$("#checkbox-2").removeAttr("checked");
     		    		$("#checkbox-3").removeAttr("checked");
@@ -915,6 +948,8 @@ function getLeaveDetails(finalDateFormatEndDate){
      		 		    $("#toTimeDiv").hide();
      		 		    $("#toDateFromTimeDiv").hide();
      					$("#toDateTimeDiv").hide();
+     					document.getElementById("halfDayHidingDiv").style.display = 'block';
+     					$("#toDate").attr('data-validation',"required");
     		    	} 
     		    	
     		    	if(report.reasonRequired == "Y"){
@@ -972,14 +1007,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
     		    	}
     		    	
-    		    	if(errorMessage != ""){
-//     		        	$("#ApplyLeave").attr('disabled','disabled');
-    		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
-    		        	$(".warMess").fadeIn();
-    		        	$(".comMask").fadeIn();
-    		        }else{
-    		    		$("#ApplyLeave").removeAttr('disabled');
-    		        }
+    		    	
     		    	if(skipPolicy != true){
     		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
     		 				$("#termsAndConditions").html(report.policyDescription);
@@ -999,6 +1027,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 	calcaulateDuraton();
 	setTimeout(function(){ validateDate(); }, 800);
 		
+	
 }
 
 </script>
@@ -1013,7 +1042,7 @@ function validateOverDrawLeaves(leaveTypeName){
 	
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = $("#"+typeName+"Span").text();
-	if((dayDiff > typeIdBalCount) || typeIdBalCount ==  0){
+	if(((dayDiff > typeIdBalCount) || typeIdBalCount ==  0) && typeIdBalCount != "" ){
 		errorMessage += "You Have Not Enough Leaves To Apply.";
 	}
 }
@@ -1131,18 +1160,27 @@ function validateDate(){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data !=null && data.validateType == 'SAMEDAY'){
 				errorMessage += data.errorMessage;
-				$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+				/* $("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
 // 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
 				$("#ApplyLeave").attr('disabled','disabled');
 				$(".warMess").fadeIn();
-				$(".comMask").fadeIn();
+				$(".comMask").fadeIn(); */
 			}else if(data != null && data.validateType == 'HOLIDAY'){
 				errorMessage += data.errorMessage;
-				$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
-// 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
-				$("#ApplyLeave").removeAttr('disabled');
-				$(".comMask").fadeIn();	
+// 				$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+// // 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data.errorMessage);
+// 				$("#ApplyLeave").removeAttr('disabled');
+// 				$(".comMask").fadeIn();	
 			}
+			
+			if(errorMessage != ""){
+		     	$("#ApplyLeave").attr('disabled','disabled');
+		    	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+		    	$(".warMess").fadeIn();
+		    	$(".comMask").fadeIn();
+		    }else{
+				$("#ApplyLeave").removeAttr('disabled');
+		    }
 		});
 	}
 	 
@@ -1216,6 +1254,7 @@ $("#toDateHalfTime").timepicker({
 	 'step': 15
 }).on('changeTime', function() {
     $("#fromDateHalfTime").timepicker('option', 'maxTime', $(this).val());
+    calcaulateDuraton();
 }); 
 
 $("#toDateFromHalfTime").timepicker({
@@ -1232,6 +1271,7 @@ $("#toDateToHalfTime").timepicker({
 	 'step': 15
 }).on('changeTime', function() {
     $("#toDateFromHalfTime").timepicker('option', 'maxTime', $(this).val());
+    calcaulateDuraton();
 }); 
 
 

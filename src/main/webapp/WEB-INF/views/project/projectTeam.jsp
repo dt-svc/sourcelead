@@ -194,10 +194,10 @@ function filterStatus() {
 			result = result +'<li>';
 	 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
 	 		 
-	 		if(postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){
+	 	/* 	if(postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){
 	 			  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
 		 		  result = result + '<i class="fa fa-exchange paddingRight"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;'; 
-	 		 }
+	 		 } */
 	 		
 	 	     if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){   
 	 			 result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
@@ -447,7 +447,7 @@ function filterStatus() {
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedBudget+'">'+estimatedBudget+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
 		                
-		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
+		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N" || '${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
 		                	
 		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 				                	result = result + '	<td><div class="tbldata-dotdot_80">';
@@ -507,12 +507,14 @@ function filterStatus() {
 			                     }
 		                	
 		                }else{
-		                	result = result + '<td><div class="tblminwidth-50">---</div></td>';
+		                	 result = result + '<td><div class="tblminwidth-50">';
+			                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
+			                		 result = result + '<font color="green">&nbsp;Active</font>';	 
+			                	 }else{
+			                		 result = result + '<font color="red">&nbsp;In-Active</font>';	
+			                	 }
+		                	 result = result +'</div></td>';
 		                }
-		                
-		               
-	                    	 
-		                
 		                
 		                
 		                result = result + '	 </tr>';

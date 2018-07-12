@@ -219,8 +219,13 @@ public class LeaveServiceImpl implements LeaveService{
 		}else {
 			leave.setUser(user);
 		}
-		leave.setToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getToDate()));
+		
 		LeaveType leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
+		if(leaveType.getDuration().equals("Half Day")) {
+			leaveDTO.setFromHalfDay(Constants.STATUS_YES);
+			leaveDTO.setToDate(leaveDTO.getFromDate());
+		}
+		leave.setToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getToDate()));
 		
 		if(leaveType.getCreatedBy() != null){
 			User createdUser = userService.getUserByUserCode(leaveType.getCreatedBy());
@@ -243,26 +248,41 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		leave.setLeaveType(leaveType);
 		leave.setReason(leaveDTO.getReason());
+		
 		if(StringUtils.isNotBlank(leaveDTO.getFromHalfDay())) {
 			leave.setFromHalfDay(leaveDTO.getFromHalfDay());
+		}else {
+			leave.setFromHalfDay(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getToHalfDay())) {
 			leave.setToHalfDay(leaveDTO.getToHalfDay());
+		}else {
+			leave.setToHalfDay(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getFromDateFromHalfTime())) {
 			leave.setFromDateFromHalfTime(leaveDTO.getFromDateFromHalfTime());
+		}else {
+			leave.setFromDateFromHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getFromDateToHalfTime())) {
 			leave.setFromDateToHalfTime(leaveDTO.getFromDateToHalfTime());
+		}else {
+			leave.setFromDateToHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getToDateFromHalfTime())) {
 			leave.setToDateFromHalfTime(leaveDTO.getToDateFromHalfTime());
+		}else {
+			leave.setToDateFromHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getToDateToHalfTime())) {
 			leave.setToDateToHalfTime(leaveDTO.getToDateToHalfTime());
+		}else {
+			leave.setToDateToHalfTime(null);
 		}
 		if(StringUtils.isNotBlank(leaveDTO.getNotifyToOthers())) {
 			leave.setNotifyToOthers(leaveDTO.getNotifyToOthers());
+		}else {
+			leave.setNotifyToOthers(null);
 		}
 		if(leaveDTO.getFileInfo() !=null) {
 			FileInfo fileinfo = leaveDTO.getFileInfo().get(0);
@@ -1295,26 +1315,24 @@ public class LeaveServiceImpl implements LeaveService{
 				   }
 			   }
 			   
-				for(LeaveType type : roleLeaveType) {
-					if(type.getEffectiveGender() != null && ("All".equalsIgnoreCase(type.getEffectiveGender()) || (user.getGender() != null && type.getEffectiveGender().equalsIgnoreCase(user.getGender())))) {
-						float empToatalLeaves = 0;
-						if(Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())) {
-							 empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());
-						}
-						
-						
-						float appliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations,  type, userId);
-
+			for (LeaveType type : roleLeaveType) {
+				if ("All".equalsIgnoreCase(type.getEffectiveGender()) || (user.getGender() != null
+						&& type.getEffectiveGender().equalsIgnoreCase(user.getGender()))) {
+					float empToatalLeaves = 0;
+					float appliedLeaveCount = 0;
+					if (Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())) {
+						empToatalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(), user.getId(), orgLocations.getId());
+						appliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, type, userId);
 						if (appliedLeaveCount > 0) {
 							appliedLeaveCount = empToatalLeaves - appliedLeaveCount;
 						}
 						else {
 							appliedLeaveCount = empToatalLeaves;
 						}
-						balanceLeaveCounts += appliedLeaveCount;	
 					}
-					
+					balanceLeaveCounts += appliedLeaveCount;
 				}
+			}
 		   }
 		
 		
@@ -2244,7 +2262,7 @@ public class LeaveServiceImpl implements LeaveService{
 						userList.add(userRole.getUser());
 						AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), userRole.getUser().getId(), orgLocation.getId(),Integer.parseInt(leaveType.getStatus()));
 						if(associa != null) {
-							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,Integer.parseInt(ltdto.getNumberOfLeaves()),"IMPORT",Constants.UPDATE);
+							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,Float.parseFloat(ltdto.getNumberOfLeaves()),"IMPORT",Constants.UPDATE);
 						}else {
 							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user);
 						}

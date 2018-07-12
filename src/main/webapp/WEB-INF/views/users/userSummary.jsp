@@ -115,8 +115,9 @@ $(document).ready(function(){
 			 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
 		 '</sec:authorize>';
 		 
-		 result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
-		 
+		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
+		 '</sec:authorize>';
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
 		 
@@ -2084,16 +2085,15 @@ function updateUserDesignationOtherType(){
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
 		        	$('#vendors').empty();
 		        	$('#vendors').append('<option value="">--select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
-		            		  $('#vendors').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
+		            		  $('#vendors').append('<option '+ (opt.orgRelId == vendorOrgRelationId ? "selected" : '') +' value="'+opt.orgRelId+'">'+opt.vendorName+'</option>');
 			            	}else{
-			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+			            		$('#vendors').append('<option value='+opt.orgRelId+' >'+opt.vendorName+'</option>');
 			            	}
 		            	  
 		            }
