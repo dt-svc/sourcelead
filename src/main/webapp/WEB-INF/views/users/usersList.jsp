@@ -129,11 +129,7 @@ function getUsersSearchResult(searchValue){
       
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Associates List </div>
     </section>
-    <div class="timesheet_out">
-    <div class="vendor_wrap" style="overflow-x: auto;">
-    
-    </div>
-  </div>
+
       <section class="clearfix usersHeader positionRelative  hidden">
       
       <div class="pull-left cand-advsrche onboardBtn">
@@ -305,6 +301,7 @@ function getUsersSearchResult(searchValue){
 			
       
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
+      
       <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
       <ul class="pull-right list-unstyled list-inline">

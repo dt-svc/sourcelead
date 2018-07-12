@@ -74,56 +74,34 @@ overflow-x: auto;
         
 	   <div class="timesheet_out timesheet_background">
 		
-        <div class="timesheet_head timesheetHead topfilters">
-			<div class="pull-left cand-advsrch advsrch_chosen">
-			     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetProjectFilter();" title="Refresh">
-				    <span class="fa fa-refresh"></span>
-				</button>
+		
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetProjectFilter();"></a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+      
+      	  <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
+	               <a class="newAdBtn" onClick="getClientProjectPop();" title="Add Project">+ Project</a>
+			</sec:authorize>
+			</li>
+			
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 				
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
-				</a>
-				
-	       </div>
-        	
-        	
-        	
-        	<ul>
-        	<li class="positionRelative">
-				  <div class="dynamic_search">
-		   			<input type='text' placeholder='Search' id='projectsDataTableSearch'/>
-		   			<span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="filter();"></i></span>
-				  </div>
-			  </li>
-			  
-		      	<li title="Export"><a id="export-pop" onClick="exportpop();"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-					<div id="exportPop" class="user_exp">
-						<ul class="ul_padding">
-							<li onclick="projectExport('Pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-							<li onclick="projectExport('Excel');" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-						</ul>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+	                	<sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
+		           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="projectExport('Excel');" title="Excel">Export Excel</a>            
+			          	</sec:authorize>
+						</span>
 					</div>
-				 </li>
-				 
-	             
-	             <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
-	             
-	               <li><b><a onClick="getClientProjectPop();" title="Add Project"><i class="fa fa-plus"></i>&nbsp;Add Project</b></li></a>
-						<%-- 	<a onclick="getActions();" class="action"
-								href="javascript:void(0)">Add Project <i
-								class="fa fa-caret-down"></i>
-							</a>
-							<div class="action-pop">
-								<span> 
-								  <a href="<c:url value='${appPath}/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
-								  <a href="<c:url value='${appPath}/clientProject'/>"><i class="fa fa-plus"></i>Client Project</a> 
-								 <a href="#" onclick='getClientProjectPop();'><i class="fa fa-plus"></i>Client Project</a>
-								</span>
-							</div> --%>
-						</sec:authorize></li>
-                <div class="clearfix"></div>
-            </ul>
-            <div class="clearfix"></div>
-        </div>
+				</li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='projectsDataTableSearch'/><span class="repSearchIcon" onClick="filter();"></span></li>
+        </ul>
+      </div>		
 			
 	<div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
     	<div id="projectFilterList" class="datatable_filter"></div>
@@ -1307,6 +1285,33 @@ function projectExport(type){
 	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency;
 	
 }
+</script>
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
 </script>
 
 
