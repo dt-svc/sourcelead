@@ -1462,7 +1462,8 @@ function leavepolicyDescription(){
 	}
 	
 	function carryForwardYesUsers(){
-// 		$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
+		$('#noOfdaysToCarryforward').attr('data-validation-optional', "true");
+		$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
 		$("#noOfDaysDiv").show();
 		$("#noOfdaysToCarryforward").val('');
 	}
