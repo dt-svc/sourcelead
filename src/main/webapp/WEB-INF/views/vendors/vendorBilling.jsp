@@ -1129,9 +1129,11 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,payment
 		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
 		 result = result +'      <li><a class="" href="'+fileUrl+'" title="Print" download><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</a></li>';
 		 '</sec:authorize>'
-		 
+		 if(invoiceStatus != 'DRAFT')
+	     {
 		 result = result +'      <li><a onclick="linkPayableInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Invoice"></i>Link Bill</a></li>';
-	     result = result +'    </ul>';
+	     }
+		 result = result +'    </ul>';
     	 $("#popupDiv"+invoiceUUID+"").append(result);
     	 showMenu();
 }

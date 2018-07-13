@@ -129,11 +129,7 @@ function getUsersSearchResult(searchValue){
       
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Associates List </div>
     </section>
-    <div class="timesheet_out">
-    <div class="vendor_wrap" style="overflow-x: auto;">
-    
-    </div>
-  </div>
+
       <section class="clearfix usersHeader positionRelative  hidden">
       
       <div class="pull-left cand-advsrche onboardBtn">
@@ -305,6 +301,7 @@ function getUsersSearchResult(searchValue){
 			
       
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
+      
       <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
       <ul class="pull-right list-unstyled list-inline">
@@ -347,17 +344,6 @@ function getUsersSearchResult(searchValue){
 						</span>
 					</div>
 				</li>
-				
-<%-- 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-	           <li><a href="<c:url value='${appPath}/uploadForm'/>" class="btn btn-default btn-sm repFilIcon newExpIcon" title="Import"><i class="glyphicon glyphicon-import expIcon"></i></a></li>
-	         </sec:authorize>		  
-		  
-		   <sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
-		   <li class="staPdfExl">
-		   		<i onclick="exportToPdf();" title="PDF" class="fa fa-file-pdf-o text-danger"></i>
-		   		<i onclick="exportUserData();" title="Excel" class="fa fa-file-excel-o text-primary"></i>
-		   </li>
-		    </sec:authorize> --%>
 		    
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dynamicUserDataTableSearch'/><span class="repSearchIcon" onClick="getDynamciUserList();"></span></li>
         </ul>
@@ -1395,30 +1381,25 @@ $("#dynamicUserDataTableSearch").keydown(function(e) {
 function getActions(){
 	$(".action-pop").slideToggle(200);
 	$(".newActPop").slideUp(200);
-	
-}
-
+}	
 $("html").click(function(){
-$(".action-pop").slideUp(200);
-}); 
-
+	$(".action-pop").slideUp(200);
+});
 $(".action, .action-pop").click(function(e){
  	e.stopPropagation();
-	});	
+});	
+
 
 function newActions(){
 	$(".newActPop").slideToggle(200);
 	$(".action-pop").slideUp(200);
-		
 }
-
 $("html").click(function(){
 	$(".newActPop").slideUp(200);
-	}); 
-	
+});
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
-	});
+});	
 
 
 </script>
