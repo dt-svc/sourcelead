@@ -2940,7 +2940,8 @@ public class LeaveManagementRestController {
 	}
 	
 	@RequestMapping(value = { "/calculateLeaveDuration", "/rest/calculateLeaveDuration"}, method = RequestMethod.GET)
-	public float calculateLeaveDuration(LeaveDTO leaveDTO,HttpServletRequest request) throws Exception {
+	public Response<Float> calculateLeaveDuration(LeaveDTO leaveDTO,HttpServletRequest request) throws Exception {
+		Response<Float> response = new Response<>();
 	    float noOfDays = 0f; 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		LeaveType leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
@@ -2970,6 +2971,7 @@ public class LeaveManagementRestController {
 		float days = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDaysAndWorkingHours(leave,leaveType.getNoOfDaysPerPeriod(),orgLocations.getAverageWorkingHours());
 		
 		noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocations,leaveType,leave,"Duration");
-		return noOfDays;
+		response.setObject(noOfDays);
+		return response;
 	}
 }

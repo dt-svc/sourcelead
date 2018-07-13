@@ -529,9 +529,9 @@ function calcaulateDuraton(){
 				"&fromHalfDay="+fromHalfDay+"&toHalfDay="+toHalfDay+"&fromDateFromHalfTime="+fromDateFromHalfTime+
 				"&fromDateToHalfTime="+fromDateToHalfTime+"&toDateFromHalfTime="+toDateFromHalfTime+
 				"&toDateToHalfTime="+toDateToHalfTime,  function(result) {
-			if(result != null){
+			if(result.object != null){
 				$("#durationDiv").show();
-				$("#durationId").html("Duration : "+result+" day(s)");
+				$("#durationId").html("Duration : "+result.object+" day(s)");
 			}
 		}); 
 	}else{
