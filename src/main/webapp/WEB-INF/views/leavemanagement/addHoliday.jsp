@@ -178,6 +178,40 @@ $(document).ready(function() {
                                   </div>
                                   
               <div class="form-group">
+	              <label class="col-md-3">Billable Type</label>
+	              <div class="col-md-9">
+	              	<c:if test="${!empty holidayDTO.holidayBillableType}">
+	              		<c:if test="${holidayDTO.holidayBillableType  == 'Billable'}">
+	              			<label class="paddingRight col-md-4">
+		                       	<input type="radio" value="Billable" checked name="holidayBillableType" > Billable
+	                      	</label>
+	                      	<label class="paddingLeft col-md-4">
+		                        <input type="radio" value="NonBillable" name="holidayBillableType"> Non-Billable 
+	                      	</label>
+	              		</c:if>
+	              		<c:if test="${holidayDTO.holidayBillableType  == 'NonBillable'}">
+	              			<label class="paddingRight col-md-4">
+		                       	<input type="radio" value="Billable" name="holidayBillableType" > Billable
+	                      	</label>
+	                      	<label class="paddingLeft col-md-4">
+		                        <input type="radio" value="NonBillable" checked name="holidayBillableType"> Non-Billable 
+	                      	</label>
+	              		</c:if>
+	              	</c:if>
+	              	<c:if test="${empty holidayDTO.holidayBillableType}">
+	              		<label class="paddingRight col-md-4">
+                       	<input type="radio" value="Billable"  name="holidayBillableType" > Billable
+                        </label>
+                        <label class="paddingLeft col-md-4">
+                        <input type="radio" value="NonBillable" checked name="holidayBillableType"> Non-Billable 
+                        </label>
+	              	</c:if>
+	                  
+	              </div>
+              </div>
+            
+            
+              <div class="form-group">
               <label class="col-md-3">Description</label>
               <div class="col-md-9">
                   <textarea rows="2" class="form-control" name="description" data-validation="validate_length length1-500" data-validation-optional="true" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>

@@ -8,6 +8,12 @@ public class TotalLeaveDTO {
 	
 	private String userId;
 	
+	private String leavetypeRoles;
+	
+	private String leavetypeDepartment;
+	
+	private String leavetypeEmpType;
+	
 	public String getNoOfLeaves()
 	{
 		return noOfLeaves;
@@ -37,6 +43,28 @@ public class TotalLeaveDTO {
 	{
 		this.userId = userId;
 	}
-	
-	
+
+	public String getLeavetypeRoles() {
+		return leavetypeRoles;
+	}
+
+	public String getLeavetypeDepartment() {
+		return leavetypeDepartment;
+	}
+
+	public String getLeavetypeEmpType() {
+		return leavetypeEmpType;
+	}
+
+	public void setLeavetypeRoles(String leavetypeRoles) {
+		this.leavetypeRoles = leavetypeRoles;
+	}
+
+	public void setLeavetypeDepartment(String leavetypeDepartment) {
+		this.leavetypeDepartment = leavetypeDepartment;
+	}
+
+	public void setLeavetypeEmpType(String leavetypeEmpType) {
+		this.leavetypeEmpType = leavetypeEmpType;
+	}
 }
