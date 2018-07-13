@@ -423,8 +423,10 @@ public class ProjectsDashboardRestController {
 					
 					 ProjectDetails.setOrgRelationUUID(projectClients.getOrgRelationId().getUUID());
 		 	  }
+				 Integer projectMembersCount  = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
+				 ProjectDetails.setProjectMembersCount(projectMembersCount.toString());
 		   }
-	
+		 
 		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
 		   SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_PROJECT);
 			 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),loginOrgLocations.getId());

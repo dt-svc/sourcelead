@@ -2439,7 +2439,7 @@ public class LeaveManagementRestController {
 						 leaveTypeDto.setTotalNoOfDays(empAppliedLeaveCount);
 						 leaveTypeDto.setName(type.getName());
 							leaveTypeDto.setLeaveTypeId(type.getId());
-							leaveTypeDto.setNoOfLeavesPerYear(String.valueOf(empToatalLeaves));
+							leaveTypeDto.setNoOfLeavesPerYear(String.format("%.2f", empToatalLeaves));
 							leaveTypeDto.setTotalApprovedCount(approvedCounts);
 							leaveTypeDto.setTotalRejectedCount(rejectedCounts);
 							leaveTypeDto.setTotalPendingCount(pendingCounts);
