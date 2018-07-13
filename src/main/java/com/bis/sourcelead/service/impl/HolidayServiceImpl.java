@@ -124,6 +124,7 @@ public class HolidayServiceImpl implements HolidayService{
 			}
 			
 			holiday.setStatus("1");
+			holiday.setBillableType(holidayDTO.getHolidayBillableType());
 			
 			//Holiday Relates Shifts Storing
 			List<Long> dbShifts = null;
