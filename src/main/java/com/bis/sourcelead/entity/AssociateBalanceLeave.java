@@ -45,10 +45,17 @@ private static final long serialVersionUID = 1L;
 	@Column (name = "ASSO_BAL_LEAVE_UUID")
 	private String assoBalLeaveUUID;
 	
-	
 	@Column (name = "STATUS")
 	private Integer status;
 
+	@Column (name = "LEAVETYPE_ROLES")
+	private String leavetypeRoles;
+	
+	@Column (name = "LEAVETYPE_DEPARTMENT")
+	private String leavetypeDepartment;
+	
+	@Column (name = "LEAVETYPE_EMP_TYPE")
+	private String leavetypeEmpType;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -173,7 +180,28 @@ private static final long serialVersionUID = 1L;
 	{
 		this.orgLocationId = orgLocationId;
 	}
-	
-	
-	
+
+	public String getLeavetypeRoles() {
+		return leavetypeRoles;
+	}
+
+	public String getLeavetypeDepartment() {
+		return leavetypeDepartment;
+	}
+
+	public String getLeavetypeEmpType() {
+		return leavetypeEmpType;
+	}
+
+	public void setLeavetypeRoles(String leavetypeRoles) {
+		this.leavetypeRoles = leavetypeRoles;
+	}
+
+	public void setLeavetypeDepartment(String leavetypeDepartment) {
+		this.leavetypeDepartment = leavetypeDepartment;
+	}
+
+	public void setLeavetypeEmpType(String leavetypeEmpType) {
+		this.leavetypeEmpType = leavetypeEmpType;
+	}
 }

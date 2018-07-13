@@ -52,36 +52,14 @@ position: absolute !important;
 		<!-- Project -->
 		 <div id="loading"></div>
 
+
 <div class="timesheet_out timesheet_background">
- <!-- Advanced Search -->
+
   <div class="clearfix">
-  <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
-	        <button type="button" class="btn btn-primary dropdown-toggle btn-sm pull-left mr" id="resetVendor" style="display: inline-block;" onclick="resetVendorFilter();" title="Refresh">
-			    <span class="fa fa-refresh"></span>
-			</button>
-		
-			<button type="button" class="btn btn-primary dropdown-toggle btn-sm pull-left mr" id="resetVendorContact" style="display: none;" onclick="resetVendorContactFilter();" title="Refresh">
-			    <span class="fa fa-refresh"></span>
-			</button>
-		
-            <a href="javascript:void(0)" class="btn btn-primary btn-sm pull-left" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
-            
-            <div class="filterSearchDiv pull-left ml" id="vendorFiletPopup">
-				<a href="javascript:void(0)" onclick="vendorFileterPopUp();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
-			</div>
-			
-			<div class="filterSearchDiv pull-left ml" id="vendorContactFiletPopup" style="display: none;">
-				<a href="javascript:void(0)" onclick="vendorContactFilterPopUp();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
-			</div>
-			
-          </div>
+          
+    <!-- Advanced Search -->       
           <div class="cand-advsrch-popup advancedsearch-popup">
-          
-          <h5 class="headerAdsrch">Advanced Search
-          <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
-          </h5>
-          
-          
+          <h5 class="headerAdsrch">Advanced Search <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a></h5>
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
           <div class="addInner"> 
             <div class="row">
@@ -297,65 +275,60 @@ position: absolute !important;
           </div>
 <!-- Advanced Search Ends -->
 
+<div class="vendor_wrap_shadownone minHeight_225">
 
-
-
-
-<div class="vendor_wrap vendor_wrap_shadownone minHeight_225">
-
-     
-
-	<!-- <div class="timesheet_head datatbl-filters customtimesheet-head"> -->
-	<div class="timesheet_head datatbl-filters topfilters">
-        	<ul>
-        	 <li>
-				<a class="action" onclick="getVendorActions();" href="javascript:void(0)"><i class="fa fa-user-plus"></i>&nbsp;Add<i class="fa fa-caret-down"></i></a>
-				<div class="action-pop">	
-					<span>
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetVendorFilter();"></a>
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendorContact" style="display: none;" title="Refresh" onclick="resetVendorContactFilter();"></a>
+      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+      
+            <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
 						   <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-                       			<a href="<c:url value='${appPath}/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a>	
+                       			<a href="<c:url value='${appPath}/addVendor'/>">Add Vendor</a>	
                            </sec:authorize>
 						   <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
-					         <a href="<c:url value='${appPath}/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a>
-						  </sec:authorize>
-					<div class="clearfix"></div>
+					         <a href="<c:url value='${appPath}/addVendorContact'/>">Add Contact</a>
+						  </sec:authorize>					
 					</span>
 				</div>
-				</li>
-                <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
-                 <li title="Import"><a href="<c:url value='${appPath}/uploadVendorForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-           	   </sec:authorize> 
-                 
-                 <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
-                       	 <li title="Export" id="vendorImports" >
-		                     <a  id="vendor-imports"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			                    <div class="export_pop">
-				                <ul>
-				                <li onclick="exportVendorToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF </li>
-				                <li onclick="exportVendorToExcel();"><i class="fa fa-file-excel-o"></i> &nbsp;&nbsp; Excel</li>
-				       </ul>
-				    </div>
-		            </li> 
-		          </sec:authorize>
+			</li>
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="vendorFileterPopUp();"></a></li>
+				<li id="vendorContactFiletPopup" style="display: none;"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="vendorContactFilterPopUp();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+		               		 <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
+		                 		<a href="<c:url value='${appPath}/uploadVendorForm'/>">Import</a>
+		           	   		</sec:authorize> 
+		           	   		
+	                	<sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
+							 <div id="vendorImports">
+							 	<a href="javascript:void(0)" onclick="exportVendorToPdf();" title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="exportVendorToExcel();" title="Excel">Export Excel</a>
+							 </div>                 
+			          	</sec:authorize>
 		           
-		          <sec:authorize access="hasRole('ROLE_EXPORT_VENDOR_CONTACTS')"> 
-		            <li title="Export" id="VendorContactImports" style="display:none">
-		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			                    <div class="export_pop">
-				                <ul>
-				                <li onclick="exportVendorContactToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF</li>
-				                <li onclick="exportVendorContactToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp; Excel</li>
-				       </ul>
-				    </div>
-		            </li> 
-		          </sec:authorize>
-            </ul>
-            <div class="clearfix"></div>
-             <div class='dynamic_search dynamic_search-new'>
-        		   <input type='text' placeholder='Search' id='dataTableSearch'/>
-        		   <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getVendorList();"></i></span>     
-                </div> 
-        </div>
+		         		 <sec:authorize access="hasRole('ROLE_EXPORT_VENDOR_CONTACTS')"> 
+							 <div id="VendorContactImports" style="display:none">
+							 	<a href="javascript:void(0)" onclick="exportVendorContactToPdf();" title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="exportVendorContactToExcel();" title="Excel">Export Excel</a>
+							 </div>			          
+		          		</sec:authorize>	                    
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="getVendorList();"></span></li>
+        </ul>
+      </div>		
         
     <div class="clients_wrap_table datatable_filter">
 	    <input type="hidden" name="emptyVendorcontactList" id="emptyVendorcontactList">
@@ -2613,8 +2586,6 @@ function resetVendorContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
 	getVendorContactList();
-	 $(".advancedsearch-mask").fadeIn();
-	
 }
 </script>
 <!-- clinet related Fileter popup -->
@@ -2699,5 +2670,30 @@ function resetVendorContactFilter(){
 					</div>
 				</div>
   
-  
+  <script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+</script>
   
