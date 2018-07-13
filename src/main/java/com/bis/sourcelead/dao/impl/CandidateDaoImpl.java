@@ -1995,5 +1995,40 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	}
 
+	@Override
+	@Transactional
+	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType)
+			throws Exception {
+		
+		List<CandidateDTO> candidateDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+			
+		if(!employeementType.equalsIgnoreCase("All")){
+			query ="SELECT CAND.ID AS candId,"
+					 + "CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName"
+				     +" FROM CANDIDATE CAND "
+					 +" WHERE CAND.ORG_LOCATION_ID = :orgLocationId"
+					 +" AND CAND.DESIGNATION_TYPE = '"+employeementType+"' AND CAND.STATUS = '1' AND CAND.CONSULTANT_USER_ID IS NULL"
+					 +" AND CAND.ID NOT IN (SELECT ONBOARDING.CANDIDATE_ID FROM CANDIDATE_ON_BOARDING ONBOARDING WHERE ONBOARDING.ORG_LOCATION_ID =  3 AND ONBOARDING.CANDIDATE_ID IS NOT NULL)"
+					 +" GROUP BY  CAND.ID";
+		}else {
+			query ="SELECT CAND.ID AS candId,"
+					 + "CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName"
+				     +" FROM CANDIDATE CAND "
+					 +" WHERE CAND.ORG_LOCATION_ID = :orgLocationId"
+					 +" AND CAND.STATUS = '1' AND CAND.CONSULTANT_USER_ID IS NULL"
+					 +" AND CAND.ID NOT IN (SELECT ONBOARDING.CANDIDATE_ID FROM CANDIDATE_ON_BOARDING ONBOARDING WHERE ONBOARDING.ORG_LOCATION_ID =  3 AND ONBOARDING.CANDIDATE_ID IS NOT NULL)"
+					 +" GROUP BY  CAND.ID";
+		}
+				
+		    
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
+			candidateDTOList = queryObj.list();
+			return candidateDTOList;
+	}
+
 }
 
