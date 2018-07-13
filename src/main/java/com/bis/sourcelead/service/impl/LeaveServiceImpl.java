@@ -221,8 +221,8 @@ public class LeaveServiceImpl implements LeaveService{
 		}
 		
 		LeaveType leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
-		if(leaveType.getDuration().contains("Half Day")) {
-			leaveDTO.setFromHalfDay(Constants.YES);
+		if(leaveType.getDuration().equals("Half Day")) {
+			leaveDTO.setFromHalfDay(Constants.STATUS_YES);
 			leaveDTO.setToDate(leaveDTO.getFromDate());
 		}
 		leave.setToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getToDate()));
@@ -380,6 +380,23 @@ public class LeaveServiceImpl implements LeaveService{
 			dateList.forEach(d -> {
 				AppliedLeaveDate appliedLeaveDate = new AppliedLeaveDate();
 				appliedLeaveDate.setApplyLeaveDate(d);
+				float fromHours = 0;
+				if(leave.getFromDate().equals(d)){
+					if(Constants.STATUS_YES.equalsIgnoreCase(leave.getFromHalfDay())){
+						fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+					}else{
+						fromHours = 1;
+					}
+				}else if(leave.getToDate().equals(d)){
+					if(Constants.STATUS_YES.equalsIgnoreCase(leave.getToHalfDay())){
+						fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(), leave.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+					}else{
+						fromHours = 1;
+					}
+				}else{
+					fromHours = 1;
+				}
+				appliedLeaveDate.setAppliedHours(fromHours);
 				appliedLeaveDate.setApplyMonthName(getMonthName(d).toUpperCase());
 				appliedLeaveDate.setLeave(leave);
 				appliedLeaveDate.setIsPayrollInclude(Constants.STATUS_NO);
@@ -1315,26 +1332,24 @@ public class LeaveServiceImpl implements LeaveService{
 				   }
 			   }
 			   
-				for(LeaveType type : roleLeaveType) {
-					if(type.getEffectiveGender() != null && ("All".equalsIgnoreCase(type.getEffectiveGender()) || (user.getGender() != null && type.getEffectiveGender().equalsIgnoreCase(user.getGender())))) {
-						float empToatalLeaves = 0;
-						if(Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())) {
-							 empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());
-						}
-						
-						
-						float appliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations,  type, userId);
-
+			for (LeaveType type : roleLeaveType) {
+				if ("All".equalsIgnoreCase(type.getEffectiveGender()) || (user.getGender() != null
+						&& type.getEffectiveGender().equalsIgnoreCase(user.getGender()))) {
+					float empToatalLeaves = 0;
+					float appliedLeaveCount = 0;
+					if (Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())) {
+						empToatalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(), user.getId(), orgLocations.getId());
+						appliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, type, userId);
 						if (appliedLeaveCount > 0) {
 							appliedLeaveCount = empToatalLeaves - appliedLeaveCount;
 						}
 						else {
 							appliedLeaveCount = empToatalLeaves;
 						}
-						balanceLeaveCounts += appliedLeaveCount;	
 					}
-					
+					balanceLeaveCounts += appliedLeaveCount;
 				}
+			}
 		   }
 		
 		

@@ -114,14 +114,11 @@ $(document).ready(function(){
 		 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
 			 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
 		 '</sec:authorize>';
-		 
 
 		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
-		 result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
+		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
 		 '</sec:authorize>';
 
-		  
-		 
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
 		 
@@ -130,10 +127,10 @@ $(document).ready(function(){
 		 result = result + ' <div id="tab-18" class="project_tabs_inn">';
 		 result = result + '</div>';
 		  	
-		 result = result + '<div id="tab-19" class="project_tabs_inn project_tabs_inn_table datatable_filter dataTablesFilter-relative">';
+		 result = result + '<div id="tab-19" class="project_tabs_inn project_tabs_inn_table datatable_filter dataTablesFilter-relative dataSeaNew">';
 		 result = result + '</div>';
 		 
-		 result = result + '<div id="tab-20" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
+		 result = result + '<div id="tab-20" class="project_tabs_inn project_tabs_inn_table datatable_filter dataTablesFilter-relative dataSeaNew">';
 		 result = result + '</div>';
 		 
 		 result = result + '<div id="tab-17" class="project_tabs_inn project_tabs_inn_table">';

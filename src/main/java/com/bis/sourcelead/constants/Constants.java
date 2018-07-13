@@ -946,6 +946,7 @@ public class Constants {
 	
 	public static final String CANDIDATE_ENTITY = "CD";
 	public static final String JOB_ENTITY = "JB";
+	public static final String JOB_FAIR = "JF";
 	public static final String IMMIGRATION_ENTITY = "IM";
 	public static final String PROJECT_ENTITY = "PJ";
 	public static final String EXPENSES_ENTITY = "EP";

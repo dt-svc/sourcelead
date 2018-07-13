@@ -5,10 +5,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.JobFair;
+import com.bis.sourcelead.entity.JobFairRequirements;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
@@ -48,6 +51,8 @@ public interface RequirementDao {
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception;
+	
+	public List<Requirement> getJobFairDaysListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId);
 	
 	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType) throws Exception;
 	
@@ -186,5 +191,30 @@ public interface RequirementDao {
     
     public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,Long userId,OrgLocations orgLocations) throws Exception;
 
+	public long saveJobFair(JobFair jobFair);
+
+	public JobFair getJobFair(long jobFairId);
+	
+	public JobFair getJobFairByUUID(String uuid);
+
+	public ResponseList<JobFair> getJobFairList(JobFairDTO jobFairDTO, boolean includeInactive);
+
+	public boolean changeJobFairStatus(Long jobFairId, int status);
+
+	public JobFairRequirements getJobFairRequirementsById(Long id);
+	
+	public long getJobFairRequirementsIdByJobFairIdAndRequirementId(long jobFairId, long requirementId);
+
+	public List<JobFair> getJobFairListByRequirementId(Long requirementId);
+
+	public long saveJobFairRequirements(JobFairRequirements jobFairRequirements);
+	
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat);
+
+	public List<Requirement> getRequirementsByJobFairDate(long userId, long orgLocationId, String dateFormat, String date);
+	
+	public List<Long> getJobFairRequirementsIdListByRequirementId(long requirementId);
+	
+	public void deleteJobFairRequirement(long jobFairRequirementId);
 	
 }

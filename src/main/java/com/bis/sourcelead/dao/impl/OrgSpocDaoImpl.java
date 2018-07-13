@@ -669,7 +669,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			Session session = this.sessionFactory.getCurrentSession();
 		   	 String query = ("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch spoc.clientUser left join fetch spoc.vendorUser where spoc.UUID = :UUID ");
 		      List<OrgSpoc> orgSpocs = session.createQuery(query.toString()).setString("UUID", UUID).list();
-		      OrgSpoc orgSpoc = null;
+		      OrgSpoc orgSpoc=null;
 				if(orgSpocs != null && !orgSpocs.isEmpty())
 				{
 					orgSpoc = orgSpocs.iterator().next();
