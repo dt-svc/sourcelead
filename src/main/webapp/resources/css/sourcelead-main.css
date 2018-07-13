@@ -669,7 +669,7 @@ transition: all ease-in-out 0s;
 	margin-left: 50px;
 }
 .content-area {
-background: #fff; border-radius: 5px; min-height: 250px;
+background: #f5f5f5; border-radius: 5px; min-height: 250px;
 -webkit-box-shadow: 0px 0px 3px #999; -moz-box-shadow: 0px 0px 3px #999;
 box-shadow: 0px 0px 3px #999;  padding: 0 15px; -moz-transition: all ease-in-out 0.3s;
 -ms-transition: all ease-in-out 0.3s; -webkit-transition: all ease-in-out 0.3s; transition: all ease-in-out 0.3s;
@@ -4584,6 +4584,9 @@ font-size: 13px; color: #616161;
 .quickviewTabs .nav > li > a {
     color: #909090;
 }
+.quickviewTabs .nav-tabs>li.active>a, .quickviewTabs .nav-tabs>li.active>a:focus, .quickviewTabs .nav-tabs>li.active>a:hover { 
+box-shadow: inset 0 -3px 0px 0px #0084bf;background: transparent; border: none; 
+}
 .taskwidget_inner {
     border-bottom: 1px dotted #ccc; margin-top: 10px;
 }
@@ -4635,7 +4638,7 @@ margin-bottom: 0;
     border-bottom: 1px solid #5cb85c;
 }
 .applicant_accept .nav > li > a:focus, .applicant_accept .nav > li > a:hover {
-    text-decoration: none; background-color: transparent; border: 1px solid transparent; border-bottom: 1px solid #4285f4;
+    text-decoration: none; background-color: transparent; border: 1px solid transparent; border-bottom: 1px solid #ccc;
 }
 .applicant_accept .nav-tabs > li > a {
     margin-right: 2px; line-height: 1.42857143; border-radius: 4px 4px 0 0;
@@ -4644,8 +4647,8 @@ margin-bottom: 0;
     position: relative; display: block; padding: 10px 20px 10px 5px;
 }
 .applicant_accept .nav-tabs > li.active > a, .applicant_accept .nav-tabs > li.active > a:focus, .applicant_accept .nav-tabs > li.active > a:hover {
-    color: #5cb85c; cursor: pointer; background-color: transparent; border: 1px solid transparent;
-    border-bottom-color: #5cb85c;
+color: #0084bf; cursor: pointer; background-color: transparent; border: 1px solid transparent; 
+box-shadow: inset 0 -3px 0px 0px #0084bf;
 }
 .applicant_accept .nav-tabs > li.active > a:after {
     position: absolute; border-top: 10px solid #5cb85c; border-left: 10px solid transparent;
@@ -8541,7 +8544,7 @@ ul.horizentalTabStyles li a {
 }
 .contentareaInner-styles .form-control, .contentareaInner-styles .chosen-container-single .chosen-single
 {
-	border: 1px solid #A8B7C7; border-radius: 3px; box-shadow: none; background-color:transparent;
+	border: 1px solid #A8B7C7; border-radius: 3px; box-shadow: none; /*background-color:transparent;*/
 }
 .content-wraper.contentWraper .content-header  {
 	/*border-bottom: 1px solid #A8B7C7 !important; margin-bottom: 15px; */color: #5D6388 !important;
@@ -9124,6 +9127,58 @@ border: transparent !important; box-shadow: none !important; text-align: center;
 .tablecustom-styles table tbody > tr:nth-child(2n+2) td {
 border-top: 1px solid #fff !important;
 }
+.currentActive {
+	-webkit-box-shadow: inset 0 -5px 0px -0px #0084bf;
+	-moz-box-shadow: inset 0 -5px 0px -0px #0084bf;
+	box-shadow: inset 0 -5px 0px -0px #0084bf;
+}
+.approveTabelesStyles {
+	display: table; width: 100%;
+}
+.approveTabelesStyles .col-md-4 {
+	display: table-cell; float: inherit; background-color: #f5f5f5;
+	border: 1px solid #fff;
+}
+.approveTabelesStyles h5 {
+	background-color: #0084bf; padding: 10px 15px; color: #fff; margin:0 -15px;
+}
+.approveTabelesStyles .table > tbody > tr > td, .approveTabelesStyles .table > tbody > tr > th, .approveTabelesStyles .table > tfoot > tr > td, .approveTabelesStyles .table > tfoot > tr > th, .approveTabelesStyles .table > thead > tr > td, .approveTabelesStyles .table > thead > tr > th {
+	border-width: 0 1px 0 1px; text-align: right;
+}
+.customedTabStyles .nav-tabs>li.active>a, .customedTabStyles .nav-tabs>li.active>a:focus, .customedTabStyles .nav-tabs>li.active>a:hover { 
+box-shadow: inset 0 -3px 0px 0px #0084bf;background: transparent; border: none; 
+} 
+.quickviewTabs .nav-tabs, .customedTabStyles .nav-tabs { 
+border-bottom:none; margin-bottom: 5px; 
+} 
+.customedTabStyles .nav-tabs>li>a { 
+padding: 10px; border: none; 
+}
+.customEvents-Calendar .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+ 	border: none; background: none; font-weight: normal; color: #909090;
+}
+.customEvents-Calendar .ui-state-highlight, .customEvents-Calendar .ui-widget-content .ui-state-highlight, .customEvents-Calendar .ui-widget-header .ui-state-highlight {
+	border-radius: 6px;
+}
+.customEvents-Calendar .ui-widget-header {
+	background-color: #f5f5f5 !important; border-radius: 8px; border: none !important; color: #606060;
+}
+.customEvents-Calendar .ui-widget.ui-widget-content {
+	border-radius: 10px;
+}
+.customEvents-Calendar .ui-datepicker th {
+	color: #909090; font-weight: 500; text-transform: uppercase;
+}
+.customEvents-Calendar .ui-widget-header .ui-icon {
+	background-image: url("../images/ui-icons_777777_256x240.png");
+}
+.customEvents-Calendar  .ui-icon-circle-triangle-w {
+    background-position: -97px 0px;
+}
+.customEvents-Calendar  .ui-icon-circle-triangle-e {
+    background-position: -32px 0px;
+}
+
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
