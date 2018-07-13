@@ -1475,9 +1475,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    projectsDTO.setProjectManagerName(approvers);
 	    
 		
-		Integer projectMembersCount  = projectMembersService.getAllProjectMembersCountByProjectId(projectId);
-		projectsDTO.setProjectMembersCount(projectMembersCount.toString());
-		
 		if(projects.getIsTimesheetAttachmentRequired() != null) {
 			projectsDTO.setIsTimesheetAttachmentRequired(projects.getIsTimesheetAttachmentRequired().toString());
 		}
