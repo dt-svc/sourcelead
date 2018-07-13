@@ -1544,6 +1544,7 @@ public class LeaveManagementRestController {
 		holidayDTO.setToHalfDayCheckBox(holidays.getToHalfDayCheckBox());
 		holidayDTO.setToHalfDayAmPm(holidays.getToHalfDayAmPm());
 		holidayDTO.setHolidayStatus(holidays.getHolidayStatus());
+		holidayDTO.setHolidayBillableType(holidays.getBillableType());
 		
 		List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
 		model.addObject("shiftList", shiftList);

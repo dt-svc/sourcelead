@@ -73,6 +73,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "STATUS")
 	private String status;
 	
+	@Column(name = "BILLABLE_TYPE")
+	private String billableType;
+	
 	@Column(name = "HOLIDAY_STATUS")
 	private String holidayStatus;
 	
@@ -293,4 +296,15 @@ private static final long serialVersionUID = 1L;
 	{
 		this.orgAvgHrs = orgAvgHrs;
 	}
+
+	public String getBillableType()
+	{
+		return billableType;
+	}
+
+	public void setBillableType(String billableType)
+	{
+		this.billableType = billableType;
+	}
+	
 }
