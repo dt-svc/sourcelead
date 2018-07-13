@@ -34,6 +34,24 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private String dateFormat;
 	private List<String> requirementFairDates;
 	private long jobFairRequirementId;
+	private long applicantCount;
+	private long offeredCount;
+
+	public long getApplicantCount() {
+		return applicantCount;
+	}
+
+	public void setApplicantCount(long applicantCount) {
+		this.applicantCount = applicantCount;
+	}
+
+	public long getOfferedCount() {
+		return offeredCount;
+	}
+
+	public void setOfferedCount(long offeredCount) {
+		this.offeredCount = offeredCount;
+	}
 
 	public long getJobFairRequirementId() {
 		return jobFairRequirementId;

@@ -58,6 +58,7 @@ import com.bis.sourcelead.dto.JobFairRequirementsDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -4003,7 +4004,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public ResponseList<JobFairDTO> getJobFairsList(JobFairDTO jobFairDTO, boolean includeInactive) {
-		ResponseList<JobFairDTO> jobFairDTOList = new ResponseList();
+		ResponseList<JobFairDTO> jobFairDTOList = new ResponseList<>();
 		try {
 			ResponseList<JobFair> jobFairList = requirementDao.getJobFairList(jobFairDTO, includeInactive);
 			List<JobFairDTO> dtoList  = new LinkedList<>();
@@ -4060,6 +4061,8 @@ public class RequirementServiceImpl implements RequirementService {
 			jobFairDTO.setNotifyTo(jobFair.getNotifyTo());
 			jobFairDTO.setStatus(jobFair.getStatus());
 			jobFairDTO.setDateFormat(jobFair.getDateFormat());
+			long applicantCount = 0;
+			long offeredCount = 0;
 			List<JobFairRequirementsDTO> jobFairRequirementsDTOList = new LinkedList<>();
 			String requirements = "";
 			for (JobFairRequirements jobFairRequirements : jobFair.getJobFairRequirementList()) {
@@ -4070,9 +4073,14 @@ public class RequirementServiceImpl implements RequirementService {
 				jobFairRequirementsDTO.setJobFairName(jobFairRequirements.getJobFair().getName());
 				jobFairRequirementsDTO.setRequirementId(jobFairRequirements.getRequirement().getId());
 				jobFairRequirementsDTO.setRequirementTitle(jobFairRequirements.getRequirement().getJobTitle());
+				applicantCount += jobFairRequirements.getRequirement().getTotalApplicants();
+				RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(jobFairRequirements.getRequirement().getId(), jobFair.getUser(), jobFair.getOrgLocations(), "OFFERED");
+				offeredCount += rsCount.getOffersCount();
 				jobFairRequirementsDTO.setFairDates(jobFairRequirements.getFairDates());
 				jobFairRequirementsDTOList.add(jobFairRequirementsDTO);
 			}
+			jobFairDTO.setApplicantCount(applicantCount);
+			jobFairDTO.setOfferedCount(offeredCount);
 			jobFairDTO.setJobFairRequirementList(jobFairRequirementsDTOList);
 			jobFairDTO.setRequirementJSONData(requirements);
 		} catch (Exception e) {

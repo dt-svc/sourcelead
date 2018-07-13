@@ -656,8 +656,8 @@ function statusvalidating(id){
 					</sec:authorize>
 
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-						<li title="Export" class="mrPOP" id="mypopJobFair"><i
-							class="glyphicon glyphicon-export"></i>
+						<li title="Export" class="mrPOP">
+							<i id="mypopJobFair" class="glyphicon glyphicon-export"></i>
 							<div id="exportPopJobFair">
 								<ul>
 									<li onclick="exportToPdf(2);"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
@@ -805,17 +805,17 @@ function changeStatus(requirementId, requirementStatus){
 <script>
 	$('#mypop').click(function(){
 		$("#exportPop").toggle();
-		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+		/* $(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp(); */
  	});
 	$('#mypopJobFair').click(function(){
 		$("#exportPopJobFair").toggle();
-		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+		/* $(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp(); */
  	});
 	$("html").click(function(){
 		$("#exportPop").hide(200);
-		/* $("#exportPopJobFair").hide(200); */
+		$("#exportPopJobFair").hide(200);
 	});
-	$("#exportPop, #exportPopJobFair, #mypop").click(function(e) {  
+	$("#exportPop, #exportPopJobFair, #mypopJobFair, #mypop").click(function(e) {  
 	    e.stopPropagation();
 	});
 </script>
@@ -902,7 +902,7 @@ function cancel(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
-	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop, #exportPopJobFair").slideUp(200);
+	/* $(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop, #exportPopJobFair").slideUp(200); */
 	
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);

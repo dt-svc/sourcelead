@@ -40,6 +40,8 @@ function jobFairListCheck(){
  	result = result +"		<th>StartDate</th>";
  	result = result +"		<th>End Date</th>";
  	result = result +"		<th>No.of Jobs</th>";
+ 	result = result +"		<th>Applicants</th>";
+ 	result = result +"		<th>Offered</th>";
  	result = result +"		<th>Venue</th>"; 
  	result = result +"		<th>Status</th>";
  	result = result +"		<th>Action(s)</th>";
@@ -787,6 +789,8 @@ function jpaginationForJobFairs(url){
            {"data": "startDate"},
            {"data": "endDate"},
            {"data": "requirementsList"},
+           {"data": "applicantCount"},
+           {"data": "offeredCount"},
            {"data": "venue"},
            {"data": "status"},
            {"data": "actions" }
@@ -842,6 +846,26 @@ function jpaginationForJobFairs(url){
 						result = result +"<td><div>-----</div></td>";
            	       }
 		           		return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "applicantCount",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.applicantCount+'</div></td>';
+		                return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "offeredCount",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.offeredCount+'</div></td>';
+		                return result;
 	             }
 	        },
 	        {
