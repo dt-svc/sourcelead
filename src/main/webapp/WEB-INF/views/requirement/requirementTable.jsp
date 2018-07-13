@@ -757,7 +757,24 @@ function jpagination(url,sourceleadUrl){
  
 function jpaginationForJobFairs(url){ 
 	var colIndex = 0;
-    $('#jobFairPagination').DataTable( { 
+    $('#jobFairPagination').DataTable( {
+    	dom: 'Bfrtip',
+        buttons: [
+        	{
+        		extend: 'excel', 
+        		title: 'Job Fairs', 
+        		exportOptions: {columns: [0,1,2,3,4], 
+        			modifier: {page: 'all', search: 'none'}
+        		}
+        	},
+            {
+        		extend: 'pdf',
+        		title: 'Job Fairs',
+        		exportOptions: {columns: [0,1,2,3,4],
+        			modifier: {page: 'all', search: 'none'}
+        		}
+        	}
+        ],
    		"processing": true,
        "serverSide": true,
        "ajax": $.fn.dataTable.pipeline( {
@@ -779,6 +796,7 @@ function jpaginationForJobFairs(url){
 	           "targets": colIndex++,
 	           "data": "name",
 	           "render": function ( data, type, opt, meta ) {
+	        	   $("#requirementEmptyListMessage").val(2);
 	           		var result = "";
 	       		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
 	       		    	result = result +"<td><a href='<c:url value='/app/jobFairSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
@@ -815,6 +833,7 @@ function jpaginationForJobFairs(url){
 			{
 	            "targets": colIndex++,
 	            "data": "requirementsList",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if(opt.jobFairRequirementList != null && opt.requirementsLjobFairRequirementListist != '' && opt.jobFairRequirementList != 'undefined') {
