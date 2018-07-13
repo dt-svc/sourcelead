@@ -76,6 +76,30 @@ public class DumpPublicRestCalls {
 				appliedLeaveDate.setApplyLeaveDate(d);
 				appliedLeaveDate.setApplyMonthName(getMonthName(d).toUpperCase());
 				appliedLeaveDate.setLeave(leave);
+				
+				float fromMinutes = 0;
+				java.sql.Date date = new java.sql.Date(d.getTime());
+				java.sql.Date lFromDate = new java.sql.Date(leave.getFromDate().getTime());
+				java.sql.Date lToDate = new java.sql.Date(leave.getToDate().getTime());
+				if(lFromDate.equals(date)){
+					if(Constants.STATUS_YES.equalsIgnoreCase(leave.getFromHalfDay())){
+						fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), leave.getOrgLocations().getAverageWorkingHours(), leave.getLeaveType());
+					}else{
+						fromMinutes = leave.getOrgLocations().getAverageWorkingHours() * 60;
+					}
+				}else if(lToDate.equals(date)){
+					if(Constants.STATUS_YES.equalsIgnoreCase(leave.getToHalfDay())){
+						fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(leave.getToDateFromHalfTime(), leave.getToDateToHalfTime(), leave.getOrgLocations().getAverageWorkingHours(), leave.getLeaveType());
+					}else{
+						fromMinutes = leave.getOrgLocations().getAverageWorkingHours() * 60;
+					}
+				}else{
+					fromMinutes = leave.getOrgLocations().getAverageWorkingHours() * 60;
+				}
+				appliedLeaveDate.setAppliedHours(CommonUtil.getTimeFormat(null, fromMinutes));
+				
+				
+				
 				appliedLeaveDate.setIsPayrollInclude(Constants.STATUS_NO);
 //				appliedLeaveDate.setCreatedBy(user.getId());
 				appliedLeaveDate.setCreatedDate(new Date());
