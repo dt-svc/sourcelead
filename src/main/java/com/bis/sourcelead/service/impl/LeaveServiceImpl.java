@@ -380,6 +380,25 @@ public class LeaveServiceImpl implements LeaveService{
 			dateList.forEach(d -> {
 				AppliedLeaveDate appliedLeaveDate = new AppliedLeaveDate();
 				appliedLeaveDate.setApplyLeaveDate(d);
+				float fromMinutes = 0;
+				if(leave.getFromDate().equals(d)){
+					if(Constants.STATUS_YES.equalsIgnoreCase(leave.getFromHalfDay())){
+						fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+//						fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+					}else{
+						fromMinutes = orgLocations.getAverageWorkingHours() * 60;
+					}
+				}else if(leave.getToDate().equals(d)){
+					if(Constants.STATUS_YES.equalsIgnoreCase(leave.getToHalfDay())){
+						fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(leave.getToDateFromHalfTime(), leave.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+//						fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(), leave.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+					}else{
+						fromMinutes = orgLocations.getAverageWorkingHours() * 60;
+					}
+				}else{
+					fromMinutes = orgLocations.getAverageWorkingHours() * 60;
+				}
+				appliedLeaveDate.setAppliedHours(CommonUtil.getTimeFormat(null, fromMinutes));
 				appliedLeaveDate.setApplyMonthName(getMonthName(d).toUpperCase());
 				appliedLeaveDate.setLeave(leave);
 				appliedLeaveDate.setIsPayrollInclude(Constants.STATUS_NO);
@@ -606,7 +625,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setLeaveUUID(leave.getLeaveUUID());
 				float totalLeaves = 0;
 				if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getVisibleInBalanceLeaves())) {
-					 totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId());
+					 totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId());
 				}
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
 				leaveDto.setFromHalfDay(leave.getFromHalfDay());
@@ -1317,25 +1336,25 @@ public class LeaveServiceImpl implements LeaveService{
 					   roleLeaveType.add(leaveType);
 				   }
 			   }
-			   
-			for (LeaveType type : roleLeaveType) {
-				if ("All".equalsIgnoreCase(type.getEffectiveGender()) || (user.getGender() != null
-						&& type.getEffectiveGender().equalsIgnoreCase(user.getGender()))) {
-					float empToatalLeaves = 0;
-					float appliedLeaveCount = 0;
-					if (Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())) {
-						empToatalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(), user.getId(), orgLocations.getId());
-						appliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, type, userId);
-						if (appliedLeaveCount > 0) {
-							appliedLeaveCount = empToatalLeaves - appliedLeaveCount;
-						}
-						else {
-							appliedLeaveCount = empToatalLeaves;
-						}
-					}
-					balanceLeaveCounts += appliedLeaveCount;
-				}
-			}
+			    
+			   for (LeaveType type : roleLeaveType) {
+	                if ("All".equalsIgnoreCase(type.getEffectiveGender()) || (user.getGender() != null
+	                        && type.getEffectiveGender().equalsIgnoreCase(user.getGender()))) {
+	                    float empToatalLeaves = 0;
+	                    float appliedLeaveCount = 0;
+	                    if (Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())) {
+	                        empToatalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(type.getId(), user.getId(), orgLocations.getId());
+	                        appliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, type, userId);
+	                        if (appliedLeaveCount > 0) {
+	                            appliedLeaveCount = empToatalLeaves - appliedLeaveCount;
+	                        }
+	                        else {
+	                            appliedLeaveCount = empToatalLeaves;
+	                        }
+	                    }
+	                    balanceLeaveCounts += appliedLeaveCount;
+	                }
+	            }
 		   }
 		
 		
@@ -1756,7 +1775,7 @@ public class LeaveServiceImpl implements LeaveService{
 			
 			emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(), orgLocations.getId());
 //			int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
-			float totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId());
+			float totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId());
 			float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leave.getLeaveType(),totalLeaves, emp);
 			
 			if(reportMap.containsKey(leave.getUser().getId())){
@@ -2042,7 +2061,7 @@ public class LeaveServiceImpl implements LeaveService{
         }
         Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(new Date()));
 		if (leave != null) {
-			float totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId,user.getId(),orgLocations.getId());
+			float totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leaveTypeId,user.getId(),orgLocations.getId());
 			Map<String, Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			float appliedLeaves = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 			if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
@@ -2263,7 +2282,7 @@ public class LeaveServiceImpl implements LeaveService{
 					if(userRole != null && leaveType != null) {
 						List<User> userList = new ArrayList<>();
 						userList.add(userRole.getUser());
-						AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), userRole.getUser().getId(), orgLocation.getId(),Integer.parseInt(leaveType.getStatus()));
+						AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), userRole.getUser().getId(), orgLocation.getId());
 						if(associa != null) {
 							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,Float.parseFloat(ltdto.getNumberOfLeaves()),"IMPORT",Constants.UPDATE);
 						}else {
@@ -2352,7 +2371,7 @@ public class LeaveServiceImpl implements LeaveService{
 	@Override
 	public void updateBalanceLeaves(Leave leave, User user, OrgLocations orgLocations)
 	{
-		AssociateBalanceLeave assBalLeave =  associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId(), Constants.RECORD_ACTIVE);
+		AssociateBalanceLeave assBalLeave =  associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId());
 		float balanceLeaves = Float.parseFloat(assBalLeave.getTotalLeaves()) - leave.getNumberOfDays();
 		assBalLeave.setTotalLeaves(String.valueOf(balanceLeaves));
 		associateBalanceLeaveService.saveOrUpdateAssocicateBalanceLeaves(assBalLeave);

@@ -1701,29 +1701,21 @@ $(document).ready(function () {
 			var endDate = $(this).data("end_date");
 			var stDate = new Date(startDate);
 			var enDate = new Date(endDate);
-			var finalStartDate = "";
+/* 			var finalStartDate = "";
 			var finalEndDate = "";
-			  if(dateFormat.match("yyyy-MM-dd")) {
-				  finalStartDate = startDate.split("-")[0] + "-" + startDate.split("-")[1] + "-" + startDate.split("-")[2];
-				  finalEndDate = endDate.split("-")[0] + "-" + endDate.split("-")[1] + "-" + endDate.split("-")[2];
-				  /* finalStartDate = stDate.getFullYear() + "-" + (stDate.getMonth() + 1) + "-" + stDate.getDate();
-				  finalEndDate = enDate.getFullYear() + "-" + (enDate.getMonth() + 1) + "-" + enDate.getDate(); */
-			  } if(dateFormat.match("dd-MM-yyyy")) {
-				  finalStartDate = startDate.split("-")[2] + "-" + startDate.split("-")[1] + "-" + startDate.split("-")[0];
-				  finalEndDate = endDate.split("-")[2] + "-" + endDate.split("-")[1] + "-" + endDate.split("-")[0];
-				  /* finalStartDate = stDate.getDate() + "-" + (stDate.getMonth() + 1) + "-" + stDate.getFullYear();
-				  finalEndDate = enDate.getDate() + "-" + (enDate.getMonth() + 1) + "-" + enDate.getFullYear(); */
-			  } if(dateFormat.match("MM-dd-yyyy")) {
-				  finalStartDate = startDate.split("-")[2] + "-" + startDate.split("-")[0] + "-" + startDate.split("-")[1];
-				  finalEndDate = endDate.split("-")[2] + "-" + endDate.split("-")[0] + "-" + endDate.split("-")[1];
-				  /* finalStartDate = (stDate.getMonth() + 1) + "-" + stDate.getDate() + "-" + stDate.getFullYear();
-				  finalEndDate = (enDate.getMonth() + 1) + "-" + enDate.getDate() + "-" + enDate.getFullYear(); */
-			  } if(dateFormat.match("yyyy-dd-MM")) {
-				  finalStartDate = startDate.split("-")[0] + "-" + startDate.split("-")[2] + "-" + startDate.split("-")[1];
-				  finalEndDate = endDate.split("-")[0] + "-" + endDate.split("-")[2] + "-" + endDate.split("-")[1];
-				  /* finalStartDate = stDate.getFullYear() + "-" + stDate.getDate() + "-" + (stDate.getMonth() + 1);
-				  finalEndDate = enDate.getFullYear() + "-" + enDate.getDate() + "-" + (enDate.getMonth() + 1); */
-			  }
+			if(dateFormat.match("yyyy-MM-dd")) {
+				finalStartDate = startDate.split("-")[0] + "-" + startDate.split("-")[1] + "-" + startDate.split("-")[2];
+				finalEndDate = endDate.split("-")[0] + "-" + endDate.split("-")[1] + "-" + endDate.split("-")[2];
+			} if(dateFormat.match("dd-MM-yyyy")) {
+				finalStartDate = startDate.split("-")[2] + "-" + startDate.split("-")[1] + "-" + startDate.split("-")[0];
+				finalEndDate = endDate.split("-")[2] + "-" + endDate.split("-")[1] + "-" + endDate.split("-")[0];
+			} if(dateFormat.match("MM-dd-yyyy")) {
+				finalStartDate = startDate.split("-")[2] + "-" + startDate.split("-")[0] + "-" + startDate.split("-")[1];
+				finalEndDate = endDate.split("-")[2] + "-" + endDate.split("-")[0] + "-" + endDate.split("-")[1];
+			} if(dateFormat.match("yyyy-dd-MM")) {
+				finalStartDate = startDate.split("-")[0] + "-" + startDate.split("-")[2] + "-" + startDate.split("-")[1];
+				finalEndDate = endDate.split("-")[0] + "-" + endDate.split("-")[2] + "-" + endDate.split("-")[1];
+			} */
 			$(this).removeClass('hasDatepicker').datepicker({
 				dateFormat : jsDateFormat,
 				changeMonth : true,
