@@ -639,19 +639,19 @@ public class TimesheetApprovalRestController {
 				    	 }
 				    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null){
 				    		 totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
-				    		  weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal));
-				    		  submissionTotalList.add(CommonUtil.getHoursDisplayFormat(sah.getWeekTotals().get(entry.getKey())));
+				    		  weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal,null));
+				    		  submissionTotalList.add(CommonUtil.getHoursDisplayFormat(sah.getWeekTotals().get(entry.getKey()),null));
 				    	 }else{
-				    		 submissionTotalList.add(CommonUtil.getHoursDisplayFormat(0f));
-				    		 weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal));
+				    		 submissionTotalList.add(CommonUtil.getHoursDisplayFormat(0f,null));
+				    		 weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal,null));
 				    	 }
 				    	 
 				     }
 				     ts.setWeeekTotal(weekTotalList);
 				     ts.setSubmissionTotal(submissionTotalList);
 			   	 
-				    ts.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours));
-				    ts.setEstimatedHours(CommonUtil.getHoursDisplayFormat(estimatedTotalHours));
+				    ts.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours,null));
+				    ts.setEstimatedHours(CommonUtil.getHoursDisplayFormat(estimatedTotalHours,null));
 				    ts.setSubmissionStatus(sah.getSubmissionApprovalStatus().getValue().toUpperCase());
 			  	  }
 				  if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){

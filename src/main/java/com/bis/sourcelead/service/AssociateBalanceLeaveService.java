@@ -22,9 +22,9 @@ public interface AssociateBalanceLeaveService {
 
 	boolean getAssociateBalanceByUUID(String assoBalLeaveUUID, String totalLeaves);
 	
-	AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId,Long userId,Long orgLocationId,Integer Status);
+	AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId,Long userId,Long orgLocationId);
 
-	float getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId, Long orgLocationId);
+	float getTotalLeavesCountByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId, Long orgLocationId);
 
 	int addLeaveTypeToAssociate(List<User> userList, OrgLocations orgLocation, LeaveType leaveType, User loginUser);
 

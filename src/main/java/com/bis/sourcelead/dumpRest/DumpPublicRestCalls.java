@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 
 @Component
@@ -103,7 +104,11 @@ public class DumpPublicRestCalls {
 		logger.info("Start Time"+java.time.LocalDateTime.now());
 		List<Holiday> list = holidayDao.getAllHoliday();
 		for(Holiday day : list){
-			day.setOrgAvgHrs(day.getOrgLocations().getAverageWorkingHours());
+			if(day.getOrgLocations().getAverageWorkingHours() != null) {
+				day.setOrgAvgHrs(CommonUtil.getTimeFormat(Float.valueOf(day.getOrgLocations().getAverageWorkingHours()), null));
+			}else {
+				day.setOrgAvgHrs(CommonUtil.getTimeFormat(8f, null));
+			}
 			holidayDao.storeHoliday(day);
 		}
 		logger.info("End Time"+java.time.LocalDateTime.now());
