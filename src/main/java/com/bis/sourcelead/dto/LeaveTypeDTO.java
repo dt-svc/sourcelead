@@ -32,6 +32,8 @@ public class LeaveTypeDTO {
 	//	@Required(desc = "leveEmpType", either = "[Department,Roles]")
 	private List<String> leveEmpType;
 	
+	private String departments;
+	
 	private String carryforward;
 	
 	private String noOfLeavesPerYear;
@@ -756,5 +758,10 @@ public class LeaveTypeDTO {
 	public void setExperiencedPeriod(Float experiencedPeriod) {
 		this.experiencedPeriod = experiencedPeriod;
 	}
-	
+	public String getDepartments() {
+		return departments;
+	}
+	public void setDepartments(String departments) {
+		this.departments = departments;
+	}
 }
