@@ -1104,14 +1104,14 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,payment
 		 removePopup();
 	     result = "";
 	     if(invoiceParentId == 'undefined'){
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
+	    	 result = result +'    <ul class="list-unstyled menupop"> ';
 	     }else{
 	    	 if(invoiceStatus == 'DRAFT'){
-	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	    		  result = result +'    <ul class="list-unstyled menupop"> ';
 	    	  }else if(invoiceParentId != 'null'){
-	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
+	    		  result = result +'    <ul class="list-unstyled menupop"> ';
 	    	  }else{
-	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
+	    		  result = result +'    <ul class="list-unstyled menupop"> ';
 
 	    	  }
 	     }
@@ -1119,7 +1119,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,payment
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
 		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
-			 result = result +'      <li onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 result = result +'      <li><a onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight paddingLeft" title="Send reminder"></i>Send reminder</a></li> ';
 			 '</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
@@ -1127,7 +1127,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,payment
 		 '</sec:authorize>'
 		 
 		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
-		 result = result +'      <li><a class="" href="'+fileUrl+'" title="Print" download><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</a></li>';
+		 result = result +'      <li><a class="" href="'+fileUrl+'" title="download><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</a></li>';
 		 '</sec:authorize>'
 		 if(invoiceStatus != 'DRAFT')
 	     {
