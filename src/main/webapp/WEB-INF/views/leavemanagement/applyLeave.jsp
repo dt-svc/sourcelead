@@ -213,28 +213,29 @@ window.onload = function() {
 <%--             </c:if> --%>
 
 		<div class="clearfix"></div>
-		<c:if test="${!empty leave.notifyToOthers}">
-         <div class="form-group" id="notifyToOthersDiv">
-				<div class="ml">
-							<input  type="checkbox" checked name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
-					<label>&nbsp;&nbsp;Notify to others
-						&nbsp;&nbsp;
-					</label>
+		 <sec:authorize access="hasAnyRole('LEAVE_NOTIFY_TO_OTHTERS')"> 
+			<c:if test="${!empty leave.notifyToOthers}">
+	         <div class="form-group" id="notifyToOthersDiv">
+					<div class="ml">
+								<input  type="checkbox" checked name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
+						<label>&nbsp;&nbsp;Notify to others
+							&nbsp;&nbsp;
+						</label>
+					</div>
 				</div>
-			</div>
+				</c:if>
+				
+			<c:if test="${empty leave.notifyToOthers}">
+	         <div class="form-group" id="notifyToOthersDiv">
+					<div class="ml">
+								<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
+						<label>&nbsp;&nbsp;Notify to others
+							&nbsp;&nbsp;
+						</label>
+					</div>
+				</div>
 			</c:if>
-			
-		<c:if test="${empty leave.notifyToOthers}">
-         <div class="form-group" id="notifyToOthersDiv">
-				<div class="ml">
-							<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
-					<label>&nbsp;&nbsp;Notify to others
-						&nbsp;&nbsp;
-					</label>
-				</div>
-			</div>
-		</c:if>
-			
+			</sec:authorize>
 			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
               <label class="col-md-3">&nbsp;&nbsp;</label>
               <div class="col-md-9">

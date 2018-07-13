@@ -1298,7 +1298,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				  	
 					String taskType =projectTasks.getBillableType();
 					timesheetDayEntries.setProjectTask(projectTasks);
-					String hours =CalendarUtil.getTimesheetHoursDisplayFormat(averageHours).replace(".", ":");
+					String hours =CalendarUtil.getTimesheetHoursDisplayFormat(averageHours,null).replace(".", ":");
 					SimpleDateFormat simpleDateformat = new SimpleDateFormat("E");
 			    	 String day_Of_Date = simpleDateformat.format(weekStartDate);
 					if(CalendarUtil.isDateBetweenTwoDates(actualStartDate,actualEndDate, weekStartDate) && (!day_Of_Date.equals("Sat") && !day_Of_Date.equals("Sun"))){

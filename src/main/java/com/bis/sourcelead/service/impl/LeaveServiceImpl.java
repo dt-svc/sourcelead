@@ -380,23 +380,25 @@ public class LeaveServiceImpl implements LeaveService{
 			dateList.forEach(d -> {
 				AppliedLeaveDate appliedLeaveDate = new AppliedLeaveDate();
 				appliedLeaveDate.setApplyLeaveDate(d);
-				float fromHours = 0;
+				float fromMinutes = 0;
 				if(leave.getFromDate().equals(d)){
 					if(Constants.STATUS_YES.equalsIgnoreCase(leave.getFromHalfDay())){
-						fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+						fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+//						fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
 					}else{
-						fromHours = 1;
+						fromMinutes = orgLocations.getAverageWorkingHours() * 60;
 					}
 				}else if(leave.getToDate().equals(d)){
 					if(Constants.STATUS_YES.equalsIgnoreCase(leave.getToHalfDay())){
-						fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(), leave.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+						fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(leave.getToDateFromHalfTime(), leave.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+//						fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(), leave.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
 					}else{
-						fromHours = 1;
+						fromMinutes = orgLocations.getAverageWorkingHours() * 60;
 					}
 				}else{
-					fromHours = 1;
+					fromMinutes = orgLocations.getAverageWorkingHours() * 60;
 				}
-				appliedLeaveDate.setAppliedHours(fromHours);
+				appliedLeaveDate.setAppliedHours(CommonUtil.getTimeFormat(null, fromMinutes));
 				appliedLeaveDate.setApplyMonthName(getMonthName(d).toUpperCase());
 				appliedLeaveDate.setLeave(leave);
 				appliedLeaveDate.setIsPayrollInclude(Constants.STATUS_NO);
