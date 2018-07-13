@@ -337,7 +337,7 @@ public class EMailJobScheduler {
 					HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY,ol.getId());
 					if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 						for(ProjectMembers projectMember : ProjectMembersList){
-							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(),ol.getId());
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getProjectMemberCandidteId().getConsultantUser().getId(),ol.getId());
 							if("Admin".equalsIgnoreCase(userRole.getUserType()))
 								continue;
 							    sendCronRemainderForProjectMember(projectMember,ol,userRole,Constants.WEEKLY);
@@ -367,7 +367,7 @@ public class EMailJobScheduler {
 					HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.BI_WEEKLY,ol.getId());
 					if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 						for(ProjectMembers projectMember : ProjectMembersList){
-							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getProjectMemberCandidteId().getConsultantUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 							if("Admin".equalsIgnoreCase(userRole.getUserType()))
 								continue;
 							    sendCronRemainderForProjectMember(projectMember,ol,userRole,Constants.BI_WEEKLY);
@@ -397,7 +397,7 @@ public class EMailJobScheduler {
 					HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY,ol.getId());
 					if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 						for(ProjectMembers projectMember : ProjectMembersList){
-							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getProjectMemberCandidteId().getConsultantUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 							if("Admin".equalsIgnoreCase(userRole.getUserType()))
 								continue;
 							   sendCronRemainderForProjectMember(projectMember,ol,userRole,Constants.SEMI_MONTHLY);
@@ -425,7 +425,7 @@ public class EMailJobScheduler {
 					HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.MONTHLY,ol.getId());
 					if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 						for(ProjectMembers projectMember : ProjectMembersList){
-							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getProjectMemberCandidteId().getConsultantUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
 							if("Admin".equalsIgnoreCase(userRole.getUserType()))
 								continue;
 							sendCronRemainderForProjectMember(projectMember,ol,userRole,Constants.MONTHLY);
@@ -445,6 +445,8 @@ public class EMailJobScheduler {
 			Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,orgLocations,"employeeScheduler");
 			LinkedHashMap<String,String> finalTFMap = new LinkedHashMap<>();
 			if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+				 Date cronStartDate = null;
+				 Date cronEndDate = null;
 				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 				    String key = entry.getKey();
 				    String value =entry.getValue();
@@ -462,8 +464,27 @@ public class EMailJobScheduler {
 					
 		             if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId()) && (flag)){
 				    	finalTFMap.put(key, value);
+			    	    if(cronStartDate == null){
+							cronStartDate = frequencyStartDate;
+						}
+						if(cronEndDate == null || CalendarUtil.getNextDate(cronEndDate).equals(frequencyStartDate)){
+							cronEndDate = frequencyEndDate;
+						}else{
+							String stDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),cronStartDate);
+							String eDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),cronEndDate);
+							finalTFMap.put(stDate,eDate);
+							cronStartDate = null;
+							cronEndDate = null;
+						}
 					}
 				}
+				if(cronStartDate != null && cronEndDate != null){
+				    String stDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),cronStartDate);
+					String eDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),cronEndDate);
+					finalTFMap.put(stDate,eDate);
+					cronStartDate = null;
+					cronEndDate = null;
+			    }
 			}
 			if(null != finalTFMap && !finalTFMap.isEmpty()){
 				projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),orgLocations.getId(),finalTFMap,projectMember.getProjects(),level);	
@@ -624,25 +645,29 @@ public class EMailJobScheduler {
 							count++;
 						}
 						for (ProjectMembers projectMembers : projectMembersList) {
+							if(projectMembers.getProjectMemberCandidteId() == null  || projectMembers.getProjectMemberCandidteId().getConsultantUser() == null)
+								continue;
 							timesheetFrequencyMap = timesheetFrequencyGeneratorUtil
 									.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,ol,
 											"approverScheduler");
 							if (null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()) {
 								LinkedList<String> frequency = new LinkedList<>();
 								tempHTML.append("<tr>");
-								if (projectMembers.getEmployee().getUser().getFirstName() != null
-										&& projectMembers.getEmployee().getUser().getLastName() != null) {
-									tempHTML.append("<td>" + projectMembers.getEmployee().getUser().getFirstName() + " "
-											+ projectMembers.getEmployee().getUser().getLastName() + "</td>");
+								if (projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName() != null
+										&& projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName() != null) {
+									tempHTML.append("<td>" + projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName() + " "
+											+ projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName() + "</td>");
 								} else {
 									tempHTML.append(
-											"<td>" + projectMembers.getEmployee().getUser().getFirstName() + "</td>");
+											"<td>" + projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName() + "</td>");
 								}
-
+								 Date cronStartDate = null;
+								 Date cronEndDate = null;
 								for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 									String key = entry.getKey();
 									String value = entry.getValue();
-
+									Date frequencyStartDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),
+											key.replaceAll("/", "-"));
 									Date frequencyEndDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),
 											value.replaceAll("/", "-"));
 									Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
@@ -650,16 +675,34 @@ public class EMailJobScheduler {
 									currentCal.setTime(CommonUtil.currentDate());
 
 									Boolean flag = true;
-									if (CalendarUtil.getNumberOfDays(frequencyEndDate, currentCal.getTime()) < -2
-											&& invoiceFrequency.equalsIgnoreCase(Constants.BI_WEEKLY)) {
-										flag = false;
-									}
-									if (flag) {
-										frequency.add(
-												"<b>" + key.replaceAll("/", "-") + " To " + value.replaceAll("/", "-"));
-									}
+									 if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()) <-2 && invoiceFrequency.equalsIgnoreCase(Constants.BI_WEEKLY)){
+						            	 flag = false;
+						             }
+						             
+						             if(flag && submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMembers.getMasterCandidateId().getId(),projectMembers.getProjects().getId()) && (flag)){
+						            	    if(cronStartDate == null){
+												cronStartDate = frequencyStartDate;
+											}
+											if(cronEndDate == null || CalendarUtil.getNextDate(cronEndDate).equals(frequencyStartDate)){
+												cronEndDate = frequencyEndDate;
+											}else{
+												String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
+												String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
+												frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
+												cronStartDate = null;
+												cronEndDate = null;
+											}
+									 }
+						             
 
 								}
+								if(cronStartDate != null && cronEndDate != null){
+								    String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
+									String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
+									frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
+									cronStartDate = null;
+									cronEndDate = null;
+							    }
 								if (frequency != null && !frequency.isEmpty()) {
 									tempHTML.append(
 											"<td>" + frequency.stream().collect(Collectors.joining("<br/>")) + "</td>");
@@ -668,7 +711,7 @@ public class EMailJobScheduler {
 								if (managerLevel != 1) {
 									ProjectApproverHierarchy managerProjectApproverHierarchy = projectApproverHierarchyService
 											.getApproverUsersByProjectIdLevel1(projectMembers.getProjects().getId(),
-													projectMembers.getEmployee().getUser().getId());
+													projectMembers.getProjectMemberCandidteId().getId());
 									tempHTML.append("<td>")
 											.append(managerProjectApproverHierarchy.getApproverUserId().getFullName())
 											.append("</td>");
@@ -701,8 +744,8 @@ public class EMailJobScheduler {
 	 * this is for Admin
 	 * Fires on Friday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
-	@Scheduled(cron = "0 45 23 ? * FRI")
-	//@Scheduled(cron = "0 0/2 * 1/1 * ?")
+	//@Scheduled(cron = "0 45 23 ? * FRI")
+	@Scheduled(cron = "0 0/2 * 1/1 * ?")
 	public void runJobSchedulerByFRIDay() {
 		logger.info("******************  Notification Job Scheduler WednesDay of every week of the Month started (Weekly) to Admin..! **********");
 		try {
@@ -752,10 +795,7 @@ public class EMailJobScheduler {
 	
 	@Async
 	private void adminCronRemainder(String invoiceFrequency) throws Exception {
-		List<Org> orgList = new ArrayList<>();
-		Org org1 = new Org();
-				org1.setId(2691l);
-		orgList.add(org1);
+		List<Org> orgList = orgService.getOrgs();
 		Map<String,String>  timesheetFrequencyMap = null;
 		for (Org org : orgList) {
 				StringBuilder tempHTML = new StringBuilder();
@@ -788,18 +828,14 @@ public class EMailJobScheduler {
 													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()+"</td>");
 												 }
 												 
-												// Date cronStartDate = null;
-												// Date cronEndDate = null;
+												 Date cronStartDate = null;
+												 Date cronEndDate = null;
 												 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 													    String key = entry.getKey();
 													    String value =entry.getValue();
 													    
 													    Date frequencyStartDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),key.replaceAll("/", "-"));
 														Date frequencyEndDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),value.replaceAll("/", "-"));
-														
-														//cronStartDate = frequencyStartDate;
-														//cronEndDate = frequencyEndDate;
-														
 														Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 														currentCal.setLenient(false);
 														currentCal.setTime(CommonUtil.currentDate());
@@ -809,9 +845,27 @@ public class EMailJobScheduler {
 											             }
 											             
 											             if(flag && submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMembers.getMasterCandidateId().getId(),projectMembers.getProjects().getId()) && (flag)){
-											            	 frequency.add("<b>"+key.replaceAll("/", "-")+" To "+value.replaceAll("/", "-"));
+											            	    if(cronStartDate == null){
+																	cronStartDate = frequencyStartDate;
+																}
+																if(cronEndDate == null || CalendarUtil.getNextDate(cronEndDate).equals(frequencyStartDate)){
+																	cronEndDate = frequencyEndDate;
+																}else{
+																	String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
+																	String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
+																	frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
+																	cronStartDate = null;
+																	cronEndDate = null;
+																}
 														 }
 													    
+												 }
+												 if(cronStartDate != null && cronEndDate != null){
+													    String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
+														String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
+														frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
+														cronStartDate = null;
+														cronEndDate = null;
 												 }
 											     if(frequency != null && !frequency.isEmpty()){
 												    tempHTML.append("<td style='text-align: center;'>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
