@@ -173,7 +173,7 @@ window.onload = function() {
             </div>
               
             <div class="form-group" id="durationDiv" style="display:none">
-             	<label class="col-md-12" id="durationId"></label>
+             	<label class="col-md-12" id="durationId" name="durationHrs"></label>
             </div>
               
             <div class="form-group">
