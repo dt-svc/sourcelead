@@ -1379,12 +1379,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	
 	    }
 	    StringBuilder projectApprover = new StringBuilder();
-	    ProjectClients projectClients = null;
-	    if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
-	    	  projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projects.getId(), loginOrgLocations.getOrg().getId());
-	    }else {
-	    	 projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
-	    }
+	   
 	   
 	    List<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
 	    /**
@@ -1478,25 +1473,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	i++;
 	    }
 	    projectsDTO.setProjectManagerName(approvers);
-	    
-		 if(projectClients.getOrgRelationId() != null){
-    		 
-			 if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
-				 if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getOrg().getId().longValue() == loginOrgLocations.getOrg().getId().longValue()){
-	 				   projectsDTO.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
-					}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getOrg().getId().longValue() == loginOrgLocations.getOrg().getId().longValue()){
-						projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
-					}
-			 }else {
-				 if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-	 				   projectsDTO.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
-					}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-						projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
-					}
-			 }
-			
-			projectsDTO.setOrgRelationUUID(projectClients.getOrgRelationId().getUUID());
- 	  }
 	    
 		
 		Integer projectMembersCount  = projectMembersService.getAllProjectMembersCountByProjectId(projectId);

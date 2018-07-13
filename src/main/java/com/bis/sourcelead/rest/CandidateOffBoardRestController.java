@@ -159,6 +159,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -208,6 +209,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -235,6 +237,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -292,6 +295,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -313,6 +317,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -386,6 +391,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -416,6 +422,7 @@ public class CandidateOffBoardRestController {
 			responseList.setResponse(Result.AWKWARD.name());
 			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return responseList;
 	}
@@ -456,6 +463,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -513,6 +521,7 @@ public class CandidateOffBoardRestController {
 			responseList.setResponse(Result.AWKWARD.name());
 			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return responseList;
 	}
@@ -549,6 +558,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -619,6 +629,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -671,6 +682,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -690,6 +702,7 @@ public class CandidateOffBoardRestController {
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
+				e.printStackTrace();
 		}
 		return response;
 	}
@@ -730,6 +743,7 @@ public class CandidateOffBoardRestController {
 			}
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -748,6 +762,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -773,6 +788,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -818,6 +834,7 @@ public class CandidateOffBoardRestController {
 			responseList.setResponse(Result.AWKWARD.name());
 			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return responseList;
 	}
@@ -934,6 +951,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1049,6 +1067,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1081,6 +1100,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1122,6 +1142,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1195,6 +1216,7 @@ public class CandidateOffBoardRestController {
 			responseList.setResponse(Result.AWKWARD.name());
 			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return responseList;
 	}
@@ -1231,6 +1253,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1327,6 +1350,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1380,6 +1404,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1450,6 +1475,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		
 		return response;
@@ -1468,6 +1494,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 
@@ -1488,6 +1515,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1508,6 +1536,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1532,6 +1561,7 @@ public class CandidateOffBoardRestController {
 			result.setResponse(Result.AWKWARD.name());
 			result.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1628,6 +1658,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1653,6 +1684,7 @@ public class CandidateOffBoardRestController {
 			result.setResponse(Result.AWKWARD.name());
 			result.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1686,6 +1718,7 @@ public class CandidateOffBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
