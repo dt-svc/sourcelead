@@ -67,7 +67,7 @@
 										<div class="clearfix"></div>
 									</div>
 									<div class="clearfix"></div>
-									<h1>Fair Job(s):</h1>
+									<%-- <h1>Fair Job(s):</h1>
 									<div class="clearfix" id="selectedJobsDiv">
 										<c:forEach items="${jobFair.jobFairRequirementList}" var="req">
 											<div class="require_one">
@@ -89,7 +89,7 @@
 											</div>
 										</c:forEach>
 									</div>
-									<div class="clearfix"></div>
+									<div class="clearfix"></div> --%>
 								</div>
 								<div class="clearfix"></div>
 							</div>
@@ -112,7 +112,24 @@
 		</div>
 	</div>
 	<div id="loading"></div>
+	<div class='project_inn_mask'></div>
+	<div id="fairDatesPopup" class="remove_user_pop remove_user_pop_a">
+		<div>FairDates for jobFair</div>
+		<p></p>
+		<b>
+			<input id="cancelStatusPopup" class="u_can_color" value="Close" onclick="closeFairDatesPop();" type="button">
+		</b>
+	</div>
+	<div class="emailvalues emailvaluesNew">
+	  <p><i class="fa fa-check-square-o"></i>Associates</p>
+	  <p><i class="fa fa-check-square-o"></i>Projects</p>
+	</div>
+	<div class="side_mask">
+	  <div class="proj_close" onClick="activeTab();"></div>
+	</div>
 </section>
+<jsp:include page="addApplicantFromRequirementList.jsp" />
+<jsp:include page="requirementAssignedTo.jsp"/>
 <script type="text/javascript">
 	var sourceleadURL = '${sourceleadUrl}';
 	var orgATS = '${SourceLeadWeb_ats}';
@@ -159,7 +176,7 @@
 			               	result = result +"<table id='requirementPagination' class='display mt10' cellspacing='0' width='99.9%' >"; 
 			                result = result +"<thead>"; 
 			                result = result +"  <tr>"; 
-			                /* result = result +"    <th>Actions</th>"; */
+			                result = result +"    <th>Actions</th>";
 			                result = result +"    <th>Generated ID</th>"; 
 			                result = result +"    <th>Title</th>";
 			                if(orgATS == 'Y'){
@@ -197,7 +214,7 @@
 			                for (var i = 0; i < checkSize; i++) { 
 			                	var opt = json[i]; 
 			                   	result = result +"<tr>";
-			                   	/* result = result +"<td>";
+			                   	result = result +"<td>";
 			    	            result = result + '<div class="tblminwidth-75">';
 			    	                     
 			    	         	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
@@ -224,7 +241,7 @@
 			    					} 
 			    	             '</sec:authorize>';
 			    	             result = result + '</div>';
-			    	             result = result +"</td>"; */
+			    	             result = result +"</td>";
 			    	                     
 			                   	 if(opt.generatedId!=null && opt.generatedId !='' && opt.generatedId !='undefined') {
 			                   		result = result +"<td><div class=''><span title='"+opt.generatedId+"'>"+opt.generatedId+"</span></a></div></td>";
@@ -250,7 +267,8 @@
 				    	            }
 								}
 			                    if(opt.jobFairDates!=null && opt.jobFairDates !='' && opt.jobFairDates !='undefined') {
-			                    	result = result + "<td><a href='javascript:void(0)'><span class='pull-left' title='" + opt.jobFairDates + "'>" + opt.jobFairDates + "</span></a></td>";
+			                    	/* result = result + "<td><a href='javascript:void(0)' onclick=\"showFairDatesPop('"+ opt.jobTitle + "','" + opt.jobFairDates + "');\"><span class='pull-left' title='" + opt.jobFairDates + "'>" + opt.jobFairDates + "</span></a></td>"; */
+			                    	result = result + "<td><a href='javascript:void(0)'><span class='pull-left' title='" + opt.jobFairDates + "'>" + opt.jobFairDates + "</span></td>";
 				                } else {
 				                	result = result +"<td><div>---</div></td>";
 				                }
@@ -356,5 +374,23 @@
 			    	}
 	          },
 	       }); 
+	}
+	function showFairDatesPop(jobTitle, dates) {
+		$("#fairDatesPopup div").html("FairDates for " + jobTitle);
+		$("#fairDatesPopup p").html(dates);
+		$("#fairDatesPopup").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	function closeFairDatesPop() {
+		$("#fairDatesPopup").slideUp(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
+	function getAssignedMembersDiv(reqId){
+		$("#summaryButtonsDiv").hide();
+		$("#listButtonsDiv").show();
+		$('#listSaveButton').removeAttr('onclick');
+		$('#listSaveButton').attr('onClick', 'editAssignedTeamsOrUsers('+reqId+');');
+		getAssignedMembersListForEdit(reqId);
+		
 	}
 </script>

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class JobFairDTO extends SearchDTO implements Serializable {
@@ -36,6 +37,43 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private long jobFairRequirementId;
 	private long applicantCount;
 	private long offeredCount;
+	
+	private long createdByUserId;
+	private Date createdDate;
+	private long updatedByUserId;
+	private Date updatedDate;
+
+	public long getCreatedByUserId() {
+		return createdByUserId;
+	}
+
+	public void setCreatedByUserId(long createdByUserId) {
+		this.createdByUserId = createdByUserId;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public long getUpdatedByUserId() {
+		return updatedByUserId;
+	}
+
+	public void setUpdatedByUserId(long updatedByUserId) {
+		this.updatedByUserId = updatedByUserId;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
 
 	public long getApplicantCount() {
 		return applicantCount;

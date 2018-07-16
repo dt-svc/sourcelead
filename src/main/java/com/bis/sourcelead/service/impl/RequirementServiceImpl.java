@@ -3937,7 +3937,6 @@ public class RequirementServiceImpl implements RequirementService {
 		return 0;
 	}*/
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public Response<String> saveJobFair(JobFairDTO jobFairDTO, User user, OrgLocations orgLocations) {
 		Response<String> response = new Response<>();
@@ -3945,11 +3944,15 @@ public class RequirementServiceImpl implements RequirementService {
 			JobFair jobFair = null;
 			if (jobFairDTO.getId() > 0) {
 				jobFair = requirementDao.getJobFair(jobFairDTO.getId());
+				jobFair.setUpdatedBy(user);
+				jobFair.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
 			} else {
 				jobFair = new JobFair();
 				jobFair.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
 				jobFair.setDescription("");
 				jobFair.setStatus(1);
+				jobFair.setCreatedBy(user);
+				jobFair.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
 			}
 			jobFair.setName(jobFairDTO.getName());
 			jobFair.setBudget(Double.parseDouble(jobFairDTO.getBudget()));
@@ -4048,7 +4051,14 @@ public class RequirementServiceImpl implements RequirementService {
 			jobFairDTO.setDescription(jobFair.getDescription());
 			jobFairDTO.setStartDate(sdf.format(jobFair.getStartDate()));
 			jobFairDTO.setEndDate(sdf.format(jobFair.getEndDate()));
-			
+			if(jobFair.getCreatedBy() != null) {
+				jobFairDTO.setCreatedByUserId(jobFair.getCreatedBy().getId());
+				jobFairDTO.setCreatedDate(jobFair.getCreatedDate());
+			}
+			if(jobFair.getUpdatedBy() != null) {
+				jobFairDTO.setUpdatedByUserId(jobFair.getUpdatedBy().getId());
+				jobFairDTO.setUpdatedDate(jobFair.getUpdatedDate());
+			}
 			SimpleDateFormat dateFormat = new SimpleDateFormat(jobFair.getOrgLocations().getDateFormat());
 			if(jobFair.getStartDate() != null) {
 				jobFairDTO.setStartDateStr(dateFormat.format(jobFair.getStartDate()));
