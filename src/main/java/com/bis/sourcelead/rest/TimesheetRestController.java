@@ -498,7 +498,7 @@ public class TimesheetRestController {
 					if(duration != null && !duration.isEmpty()) {
 						for(Date  holidayDate :duration) {
 							String leaveType = holiday.getHolidayName();
-							String billableType = "Billable";
+							String billableType = holiday.getBillableType();
 							String leaveTypeArr = leaveType+"##"+billableType;
 							
 							EmployeeLeaveDTO leaveDTO = new EmployeeLeaveDTO();

@@ -2529,31 +2529,33 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
   public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 
-		// to update submission history
-		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
-		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
+		if(!requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.JOINED)) {
+			// to update submission history
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
 
-		// to update Submission status
-		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
-		requirementSubmission.setUpdatedBy(user.getUserCode());
-		StringBuilder sb = new StringBuilder();
-		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-		requirementSubmission.setUpdatedDate(new Date());
-		
-		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getJoinDate()) && !"".equalsIgnoreCase(applicantRejectBackOutDTO.getJoinDate())) {
-			try {
-				Date convertedDate = orgLocationDateFormat(orgLocations.getDateFormat(), applicantRejectBackOutDTO.getJoinDate());
-				requirementSubmission.setJoinedDate(convertedDate);
-			} catch (Exception e) {
-				e.printStackTrace();
+			// to update Submission status
+			requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
+			requirementSubmission.setUpdatedBy(user.getUserCode());
+			StringBuilder sb = new StringBuilder();
+			requirementSubmission.setUpdatedUser(sb.append(user.getFullName()).toString());
+			requirementSubmission.setUpdatedDate(new Date());
+			
+			if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getJoinDate()) && !"".equalsIgnoreCase(applicantRejectBackOutDTO.getJoinDate())) {
+				try {
+					Date convertedDate = orgLocationDateFormat(orgLocations.getDateFormat(), applicantRejectBackOutDTO.getJoinDate());
+					requirementSubmission.setJoinedDate(convertedDate);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				requirementSubmission.setJoinedDate(null);
 			}
-		} else {
-			requirementSubmission.setJoinedDate(null);
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		}
-		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		return "success";
 	}
 
