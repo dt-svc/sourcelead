@@ -63,11 +63,12 @@ $(document).ready(function(){
 			&raquo; Bill List
 		</div>
 	</section>
+	
 	<div class="content-area content-new clearfix">
-		<div class="billing_dashboard">
+		<div class="billing_dashboard noPad">
 			<div class="tabbable positionRelative">
 				<div class="onboardcreateButtons">
-					<div class="pull-right select-field ml">
+					<div class="pull-right select-field mr mt">
 						<select class="form-control input-sm" id="dayWiseTypeId"
 							onchange="getPayableInvoiceList();customInvoiceList();">
 							<option value="month">Last 30 days</option>
@@ -85,7 +86,7 @@ $(document).ready(function(){
 						</div>
 					</div>
 				</div>
-				<ul class="nav nav-tabs" id="tab_bar">
+				<ul class="nav nav-tabs pad15" id="tab_bar">
 
 
 					<li class="active">
@@ -160,57 +161,42 @@ $(document).ready(function(){
 					<div id="invoiceLoading"></div>
 					<!-- Employee Details -->
 					<div class="tab-pane active" id="unbilled">
-						<div class="timesheet_out mt">
+						<div class="timesheet_out">
 							<div class="clearfix">
-								<div class="timesheet_head">
-								<div class="pull-left cand-advsrch advsrch_chosen">
-							     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetBillsFilter();" title="Refresh">
-								    <span class="fa fa-refresh"></span>
-								</button>
-								<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openBillsFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
-								</a>
-						      </div>
-						      
-									<ul>
-
-										<li title="Export" class="mrPOP" id="mypop"><i
-											class="glyphicon glyphicon-export"></i>
-											<div id="exportPop" class="ExpPop">
-												<ul>
-													<li onclick="exportToPayablePdf();"><i
-														class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-													<li onclick="exportToPayableExcel();"><i
-														class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
-												</ul>
-											</div></li>
-											
-											
-										<li>
-								<a class="action" onclick="getActions();" href="javascript:void(0)">
-									<i class="fa fa-user-plus"></i>&nbsp;Add<i class="fa fa-caret-down"></i>
-								</a>
-										<div class="action-pop">	
-										<span style="width:200px;">
-										<sec:authorize access="hasAnyRole('ROLE_ADD_BILL')">
-												<a href="javascript:void(0)" class="anchorTag"
-													title="Create Bill" onclick="createBill();"> <i
-													class="fa fa-plus paddingRight"></i>Create Bill
-												</a>
-			                             </sec:authorize>
-										<a href="javascript:void(0)" class=""
-											title="Generate Automatic Bill"
-											onclick="generateAutomaticInvoice();"> <i
-												class="fa fa-gears paddingRight"></i>Generate Automatic Bill
-										</a>
-										<div class="clearfix"></div>
-										</span>
-										</div>
-										</li>
-										
-									</ul>
-									<div class="clearfix"></div>
-
-								</div>
+							
+							
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetBillsFilter();"></a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+      
+            <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+						<sec:authorize access="hasAnyRole('ROLE_ADD_BILL')">
+							<a href="javascript:void(0)" title="Create Bill" onclick="createBill();">Create Bill </a>
+                           </sec:authorize>
+						<a href="javascript:void(0)" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();">Generate Automatic Bill</a>
+					</span>
+				</div>
+			</li>
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openBillsFilterPop();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						 	<a href="javascript:void(0)" onclick="exportToPayablePdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportToPayableExcel();" title="Excel">Export Excel</a>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='payableDataTableSearch'/><span class="repSearchIcon" onClick="getPayableInvoiceList();"></span></li>
+        </ul>
+      </div> 							
 
 
 								<div class="candidate_wrap_table datatable_filter">
@@ -635,10 +621,12 @@ function getPayableInvoiceList(){
 <script>
 function preparePayableList(url,orgLocationDate){
  	var result = "";
- 	result = result +" <div class='dynamic_search dynamic_search-new'>";
+ 	
+/*  	result = result +" <div class='dynamic_search dynamic_search-new'>";
  	result = result +" <input type='text' placeholder='Search' id='payableDataTableSearch'/>";
  	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='getPayableInvoiceList();'></i></span>";     
- 	result = result +"</div>";
+ 	result = result +"</div>"; */
+ 	
  	result = result + '<table id="payableListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result +'       <tr>                             ';
@@ -1893,13 +1881,28 @@ function resetBillsFilter(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
 }	
-	$("html").click(function(){
-		$(".action-pop").slideUp(200);
-	});
-	$(".action, .action-pop").click(function(e){
-	 	e.stopPropagation();
- 	});	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
 </script>				
 				
 <script type="text/javascript" src="https://www.wepay.com/min/js/iframe.wepay.js">

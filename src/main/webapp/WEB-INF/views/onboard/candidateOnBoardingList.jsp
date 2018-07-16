@@ -21,8 +21,8 @@
 <script> 
 	$(document).ready(function(){
 		
-		$("#onboardCount").html('${onboardCount}');
-		$("#offboardCount").html('${offboardCount}');
+		$("#onboardCount").html('(${onboardCount})');
+		$("#offboardCount").html('(${offboardCount})');
 		
 		 '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_USER\',\'ROLE_VIEW_EDIT_ON_BOARD_USER\') && !hasRole(\'ROLE_CREATE_OFF_BOARD_USER\')">'
 		       getOnboardCandidatesList();
@@ -49,43 +49,51 @@
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Onboard & Offboard</div>
  </section>
  
- <div class="content-area content-new clearfix">
-      <div class="onboardDashboard_counts">
-        <div class="tabbable positionRelative">
-          <div class="onboardcreateButtons"> 
-	          
-	           <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_USER')">
-		          <a href="<c:url value='${appPath}/candidateOnBoardCreation'/>" class="btn btn-success btn-sm mr" title="Create onboard">
-		          	<i class="fa fa-plus paddingRight"></i>Create onboard
-		          </a> 
-	          </sec:authorize>
-	          
-	          <sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_USER')">
-		          <a href="<c:url value='${appPath}/candidateOffBoardCreation'/>" class="btn btn-primary btn-sm" title="Create offboard">
-		          	<i class="fa fa-plus paddingRight"></i>Create offboard
-		          </a>
-	          </sec:authorize>
-          </div>
-          <ul class="nav nav-tabs" id="tab_bar">
+ <div class="clearfix">
+           <ul class="project-tabs-menu" id="tab_bar">
             
             <sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
-	            <li class="active" id="onboard"> <a href="#" data-toggle="tab" class="onboardCount" onclick="getOnboardCandidatesList();" title="Current onboard count">
-	              <div class="count" id="onboardCount"></div>
-	              <h4>Current onboard</h4>
-	              </a> 
+	            <li class="current" id="onboard">
+	            	<a href="#" class="onboardCount" onclick="getOnboardCandidatesList();" title="Current onboard count">
+	              		Current onboard <span class="count" id="onboardCount"></span>
+	              	</a> 
 	            </li>
             </sec:authorize>
             
             <sec:authorize access="hasAnyRole(\'ROLE_CREATE_OFF_BOARD_USER\',\'ROLE_VIEW_EDIT_OFF_BOARD_USER\')">
-	            <li id="offboard"> <a href="#documents" data-toggle="tab" class="offboardCount" onclick="getOffboardCandidatesList();" title="Current offboard count">
-	              <div class="count" id="offboardCount"></div>
-	              <h4>Current offboard</h4>
-	              </a> 
+	            <li id="offboard">
+	            	<a href="#" class="offboardCount" onclick="getOffboardCandidatesList();" title="Current offboard count">
+	              		Current offboard <span class="count" id="offboardCount"></span>
+	              	</a> 
 	            </li>
             </sec:authorize>
           </ul>
-          </div>
-          </div>
+ </div>
+ 
+ <div class="content-area content-new clearfix backWhite">
+ 
+ 
+ <div class="positionRelative reportHead clearfix">
+      <ul class="pull-right list-unstyled list-inline">
+      
+            <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+			           <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_USER')">
+				          <a href="<c:url value='${appPath}/candidateOnBoardCreation'/>" title="Create onboard">Create onboard</a> 
+			          	</sec:authorize>
+			          	<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_USER')">
+				          <a href="<c:url value='${appPath}/candidateOffBoardCreation'/>" title="Create offboard">Create offboard</a>
+			          	</sec:authorize>					
+					</span>
+				</div>
+			</li>
+		  <li id="onboardSearch"><input type="text" class="repSearchBar" placeholder='Search' id='onboardDataTableSearch'/><span class="repSearchIcon" onClick="onboardDataTableList();"></span></li>
+		  <li id="offboardSearch" style="display: none;"><input type="text" class="repSearchBar" placeholder='Search' id='offboardDataTableSearch'/><span class="repSearchIcon" onClick="offboardDataTableList();"></span></li>
+        </ul>
+      </div>
+          
         <div class="clearfix"></div>  
           
           
@@ -132,11 +140,10 @@
 	  
 	  
 	    var result = "";
-	 	result = result +" <div class='dynamic_search pull-right mr'>";
-	 	result = result +" <input type='text' placeholder='Search' id='onboardDataTableSearch'/>";
-	 	result = result +" <span class='cursorPointer faSearch' title='Search'><i class='fa fa-search' onClick='onboardDataTableList();'></i></span>";
-
-	 	result = result +"</div>";
+/* 	 	result = result +" <div class='dynamic_search pull-right mr'>";
+	 	result = result +" <input type='text' placeholder='Search' class='repSearchBar' id='onboardDataTableSearch'/>";
+	 	result = result +" <span class='repSearchIcon' onClick='onboardDataTableList();'></span>";
+	 	result = result +"</div>"; */
 	 	
 	 	result = result + '<table id="onboardListTable" class="display mt10" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
@@ -151,6 +158,10 @@
 	    result = result +"</table>";
 	    $("#onboardingCandidatesList").empty();
 	    $("#onboardingCandidatesList").append(result);
+	    $("#onboard").addClass("current");
+	    $("#offboard").removeClass("current");
+	    $("#onboardSearch").show();
+	    $("#offboardSearch").hide();
 	    
 	    onboardDataTableList();
 	  
@@ -344,10 +355,10 @@ function onboardPagination(url,sourceleadUrl){
 	  
 	  
 	    var result = "";
-	 	result = result +" <div class='dynamic_search pull-right mr'>";
+/* 	 	result = result +" <div class='dynamic_search pull-right mr'>";
 	 	result = result +" <input type='text' placeholder='Search' id='offboardDataTableSearch'/>";
 	 	result = result +" <span class='cursorPointer faSearch' title='Search'><i class='fa fa-search' onClick='offboardDataTableList();'></i></span>";
-	 	result = result +"</div>";
+	 	result = result +"</div>"; */
 	 	
 	 	result = result + '<table id="offboardListTable" class="display mt10" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
@@ -362,7 +373,10 @@ function onboardPagination(url,sourceleadUrl){
 	    result = result +"</table>";
 	    $("#offboardingCandidatesList").empty();
 	    $("#offboardingCandidatesList").append(result);
-	    
+	    $("#onboard").removeClass("current");
+	    $("#offboard").addClass("current");
+	    $("#onboardSearch").hide();
+	    $("#offboardSearch").show();	    
 	    offboardDataTableList();
  }
  </script>
@@ -650,5 +664,17 @@ $('body').on('submit', '#rejectedReason_form', function(e){
 })(jQuery);
 </script>
  
+ <script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});
+</script>
     
  <jsp:include page="../masterFooter.jsp" />
