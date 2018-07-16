@@ -656,7 +656,7 @@ function setTotals(){
 						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
 				    }
 				     
-				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && (billableType == 'Non Billable' || billableType == 'Non-Billable')) {
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && (billableType == 'Non Billable' || billableType == 'Non-Billable' || billableType == 'NonBillable')) {
 				    	 var nonBillableHours = btemp;
 				    	 var nonBillableSplit = nonBillableHours.split(':');
 				    	 var nonBillableFirst = nonBillableSplit[0];
