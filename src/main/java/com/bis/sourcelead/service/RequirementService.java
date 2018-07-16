@@ -226,5 +226,9 @@ public interface RequirementService {
 	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date);
 
 	public List<JobFairDTO> getJobFairsDTOListByRequirementId(long requirementId);
+	
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId);
+	
+	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
 
 }

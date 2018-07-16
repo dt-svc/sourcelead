@@ -4174,4 +4174,24 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementList;
 	}
 	
+	@Override
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+		try {
+			return requirementDao.getRequirementsListByJobFairId(userId, orgLocationId, jobFairId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId) {
+		try {
+			return requirementDao.getJobFairDatesByRequirementIdAndJobFairId(requirementId, jobFairId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }

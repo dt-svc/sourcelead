@@ -3075,6 +3075,52 @@ public class RequirementDaoImpl implements RequirementDao {
 		return requirementList;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+		List<Requirement> requirementList = new LinkedList<>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements where jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId and jobFair.id = :jobFairId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("userId", userId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setLong("jobFairId", jobFairId);
+			List<Long> idList = queryObj.list();
+			for (Long id : idList) {
+				JobFairRequirements jobFairRequirements = getJobFairRequirementsById(id);
+				if (jobFairRequirements != null) {
+					Requirement requirement = jobFairRequirements.getRequirement();
+					requirementList.add(requirement);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return requirementList;
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select jobFairRequirements.fairDates from JobFairRequirements jobFairRequirements where jobFairRequirements.requirement.id =:requirementId and jobFairRequirements.jobFair.id =:jobFairId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("requirementId", requirementId);
+			queryObj.setLong("jobFairId", jobFairId);
+			List<String> fairDatesList = queryObj.list();
+			if (fairDatesList != null && !fairDatesList.isEmpty()) {
+				return fairDatesList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Override
 	@Transactional
 	public List<Long> getJobFairRequirementsIdListByRequirementId(long requirementId) {
