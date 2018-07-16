@@ -89,7 +89,7 @@ public interface SubmissionApproverHierarchyService {
 	
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId,Long approverUserId, Date startDate, Date endDate, String status,String rejectedReason, OrgLocations loginOrgLocation) throws Exception;
 
-	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId);
+	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long masterCandidateId,Long projectId);
 	
 	public Boolean getPendingForApprovalTimesheetReportByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId);
 
