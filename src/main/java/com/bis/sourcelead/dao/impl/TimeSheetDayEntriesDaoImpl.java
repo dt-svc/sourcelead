@@ -273,7 +273,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 					 */
-				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :locationId)) "
+				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationId)) "
 				+ "   )" ;
 		
 		String orderQuery = "order by tde.timesheetDate ASC"; 
@@ -291,7 +291,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 					 */
-				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :locationId)) "
+				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationId)) "
 				+ "   ) " ;
 		
 		Query query1 = session.createQuery(query+" "+searchQuery.toString()+" "+orderQuery).setLong("userId", userId).setLong("locationId",locationId).setString("taskUUID", taskUUID);

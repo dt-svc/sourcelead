@@ -2943,9 +2943,9 @@ public class TimesheetRestController {
 				}
 			}
 		}
-		tsDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours));
-		tsDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(billableHours));
-		tsDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(nonBillableHours));
+		tsDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours,null));
+		tsDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(billableHours,null));
+		tsDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(nonBillableHours,null));
 		tedDTO.setWeekDaysMap(entriesMap);
 		tedDTO.setTimesheetSubmission(tsDTO);
 		return tedDTO;
@@ -4418,11 +4418,11 @@ public class TimesheetRestController {
 
 							}
 							tsDTO.setCurrentMonthBillableHours(
-									Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours)));
+									Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours,null)));
 							tsDTO.setCurrentMonthNonBillableHours(
-									Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours)));
+									Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours,null)));
 							tsDTO.setCurrentMonthTotalHours(
-									Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthTotalHours)));
+									Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthTotalHours,null)));
 
 							if (CalendarUtil.isGivenDateBetweenDateRange(actualStartDate, actualEndDate,
 									monthStartDate)) {
@@ -4877,23 +4877,23 @@ public class TimesheetRestController {
 
 		if (ts != null && StringUtils.isNotBlank(ts.getTotalHours()))
 			totalHours = Float.parseFloat(ts.getTotalHours());
-		tsDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours));
+		tsDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours,null));
 
 		if (ts != null && StringUtils.isNotBlank(ts.getBillableHours()))
 			billableHours = Float.parseFloat(ts.getBillableHours());
-		tsDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(billableHours));
+		tsDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(billableHours,null));
 
 		if (ts != null && StringUtils.isNotBlank(ts.getNonBillableHours()))
 			nonBillableHours = Float.parseFloat(ts.getNonBillableHours());
-		tsDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(nonBillableHours));
+		tsDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(nonBillableHours,null));
 		if (StringUtils.isNotEmpty(monDayTotalHours) && monDayTotalHours.equalsIgnoreCase("HH:MM")) {
 			monDayDTO.setTotalHours(monDayTotalHours);
 			monDayDTO.setBillableHours(monDayBillableHours);
 			monDayDTO.setNonBillableHours(monDayNonBillableHours);
 		} else {
-			monDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(monDayTotalHours)));
-			monDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(monDayBillableHours)));
-			monDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(monDayNonBillableHours)));
+			monDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(monDayTotalHours),null));
+			monDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(monDayBillableHours),null));
+			monDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(monDayNonBillableHours),null));
 		}
 		weekDays.add(monDayDTO);
 		if (StringUtils.isNotEmpty(tuesDayTotalHours) && tuesDayTotalHours.equalsIgnoreCase("HH:MM")) {
@@ -4901,9 +4901,9 @@ public class TimesheetRestController {
 			tuesDayDTO.setBillableHours(tuesDayBillableHours);
 			tuesDayDTO.setNonBillableHours(tuesDayNonBillableHours);
 		} else {
-			tuesDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(tuesDayTotalHours)));
-			tuesDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(tuesDayBillableHours)));
-			tuesDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(tuesDayNonBillableHours)));
+			tuesDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(tuesDayTotalHours),null));
+			tuesDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(tuesDayBillableHours),null));
+			tuesDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(tuesDayNonBillableHours),null));
 		}
 
 		weekDays.add(tuesDayDTO);
@@ -4912,9 +4912,9 @@ public class TimesheetRestController {
 			wedDayDTO.setBillableHours(wedDayBillableHours);
 			wedDayDTO.setNonBillableHours(wedDayNonBillableHours);
 		} else {
-			wedDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(wedDayTotalHours)));
-			wedDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(wedDayBillableHours)));
-			wedDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(wedDayNonBillableHours)));
+			wedDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(wedDayTotalHours),null));
+			wedDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(wedDayBillableHours),null));
+			wedDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(wedDayNonBillableHours),null));
 		}
 
 		weekDays.add(wedDayDTO);
@@ -4924,10 +4924,10 @@ public class TimesheetRestController {
 			thursDayDTO.setBillableHours(thursDayBillableHours);
 			thursDayDTO.setNonBillableHours(thursDayNonBillableHours);
 		} else {
-			thursDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(thursDayTotalHours)));
-			thursDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(thursDayBillableHours)));
+			thursDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(thursDayTotalHours),null));
+			thursDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(thursDayBillableHours),null));
 			thursDayDTO
-					.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(thursDayNonBillableHours)));
+					.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(thursDayNonBillableHours),null));
 		}
 
 		weekDays.add(thursDayDTO);
@@ -4937,9 +4937,9 @@ public class TimesheetRestController {
 			friDayDTO.setBillableHours(friDayBillableHours);
 			friDayDTO.setNonBillableHours(friDayNonBillableHours);
 		} else {
-			friDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(friDayTotalHours)));
-			friDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(friDayBillableHours)));
-			friDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(friDayNonBillableHours)));
+			friDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(friDayTotalHours),null));
+			friDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(friDayBillableHours),null));
+			friDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(friDayNonBillableHours),null));
 		}
 
 		weekDays.add(friDayDTO);
@@ -4948,9 +4948,9 @@ public class TimesheetRestController {
 			satDayDTO.setBillableHours(satDayBillableHours);
 			satDayDTO.setNonBillableHours(satDayNonBillableHours);
 		} else {
-			satDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(satDayTotalHours)));
-			satDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(satDayBillableHours)));
-			satDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(satDayNonBillableHours)));
+			satDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(satDayTotalHours),null));
+			satDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(satDayBillableHours),null));
+			satDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(satDayNonBillableHours),null));
 		}
 
 		weekDays.add(satDayDTO);
@@ -4959,9 +4959,9 @@ public class TimesheetRestController {
 			sunDayDTO.setBillableHours(sunDayBillableHours);
 			sunDayDTO.setNonBillableHours(sunDayNonBillableHours);
 		} else {
-			sunDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(sunDayTotalHours)));
-			sunDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(sunDayBillableHours)));
-			sunDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(sunDayNonBillableHours)));
+			sunDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(sunDayTotalHours),null));
+			sunDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(sunDayBillableHours),null));
+			sunDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(sunDayNonBillableHours),null));
 		}
 		weekDays.add(sunDayDTO);
 		tsDTO.setWeekDays(weekDays);

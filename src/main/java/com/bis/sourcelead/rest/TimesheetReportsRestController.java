@@ -388,9 +388,9 @@ public class TimesheetReportsRestController {
 		    	        monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
 		    	    	 
 		    	        
-		    	        reportsTimeDTO.setWeekTotalHours(CommonUtil.getHoursDisplayFormat(weekTotalHours));
-		    	        reportsTimeDTO.setWeekBillabeHours(CommonUtil.getHoursDisplayFormat(weekBillableHours));
-		    	        reportsTimeDTO.setWeekNonBillableHours(CommonUtil.getHoursDisplayFormat(weekNonBillableHours));
+		    	        reportsTimeDTO.setWeekTotalHours(CommonUtil.getHoursDisplayFormat(weekTotalHours,null));
+		    	        reportsTimeDTO.setWeekBillabeHours(CommonUtil.getHoursDisplayFormat(weekBillableHours,null));
+		    	        reportsTimeDTO.setWeekNonBillableHours(CommonUtil.getHoursDisplayFormat(weekNonBillableHours,null));
 		    	        
 		    	        String date = null;
 		    	        StringBuilder  dateBuilder = new StringBuilder();
@@ -404,9 +404,9 @@ public class TimesheetReportsRestController {
 		    	     }
 		    	 details.setReportsTimeMap(entryList);
 		       }
-		     details.setMonthTotalHours(CommonUtil.getHoursDisplayFormat(monthTotalHours));
-		     details.setMonthBillabeHours(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours));
-		     details.setMonthNonBillableHours(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours));
+		     details.setMonthTotalHours(CommonUtil.getHoursDisplayFormat(monthTotalHours,null));
+		     details.setMonthBillabeHours(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours,null));
+		     details.setMonthNonBillableHours(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours,null));
 		     	
 		     
 		     
@@ -431,14 +431,14 @@ public class TimesheetReportsRestController {
 	         details.setApprovalStatus(combinedApprStatus);
 	         details.setCombinedApprovalClass(combinedApprClass);
 	         
-	         details.setProjectToDateTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours()));
-	         details.setProjectToDateBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours()));
-	         details.setProjectToDateNonBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours()));
+	         details.setProjectToDateTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours(),null));
+	         details.setProjectToDateBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours(),null));
+	         details.setProjectToDateNonBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours(),null));
 		     
 	         
-	         details.setLastMonthTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours()));
-	         details.setLastMonthBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours()));
-	         details.setLastMonthNonBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours()));
+	         details.setLastMonthTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours(),null));
+	         details.setLastMonthBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours(),null));
+	         details.setLastMonthNonBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours(),null));
 	         
 	         
 	         detailsList.add(details);

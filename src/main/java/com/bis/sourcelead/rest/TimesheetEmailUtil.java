@@ -544,7 +544,7 @@ public class TimesheetEmailUtil {
 				 globalVarsMap.put("frequencyType",clientProjectMember.getProjects().getInvoiceFrequency());
 				 StringBuilder emailMsgBuilder = new StringBuilder();
 				 globalVarsMap.put("frequencyPeriod",emailMsgBuilder.append(weekStartDate).append(" TO ").append(weekEndDate).toString());
-				 globalVarsMap.put("totalHours",CommonUtil.getHoursDisplayFormat(totalHours));
+				 globalVarsMap.put("totalHours",CommonUtil.getHoursDisplayFormat(totalHours,null));
 				 globalVarsMap.put("reason",reason);
 				 
 				 if(clientProjectMember.getProjectMemberCandidteId() !=null && !"".equalsIgnoreCase(clientProjectMember.getProjectMemberCandidteId().getFullName())){

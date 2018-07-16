@@ -101,7 +101,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					     + " and ( "
 						 + "  (proj.id IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId)) "
 						 + "   OR "
-						 +  ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = loc.id)"
+						 +  ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = loc.id)"
 					     + ") ";
 		 projectMemberList = session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setLong("userId", userId).list(); 
 		 HashSet<ProjectMembers> projectMemberSet  = null;

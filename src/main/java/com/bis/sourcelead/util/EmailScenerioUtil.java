@@ -89,7 +89,7 @@ public class EmailScenerioUtil {
 	
 	public String buildTemplateSignature(String signature,Map<String, String> globalVarsMap,EmailScenario emailScenario) throws Exception{
 		signature = signature.replaceAll("\n", "<br/>");
-		signature = signature.replaceAll("\r", "<br/>");
+		signature = signature.replaceAll("\r", " ");
 		signature = signature.replaceAll(" ", "&nbsp;");
 		signature = emailMessageBodyConverter.convertTemplateBodyOfEmailTemplate(signature,globalVarsMap,emailScenario);
 		return signature ;
