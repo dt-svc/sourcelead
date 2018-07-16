@@ -15,7 +15,6 @@ function associateSalSummary(userId){
             	result = result + '	<ul class="list-inline list-unstyled pull-right mb0">';
             	result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\');">Update</a></li>';
             	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
-            	result = result + '		<li><a href="us-associates.html" class="btn btn-default btn-block">Edit</a></li>';
             	result = result + '		</ul>';
             	result = result + '	</div>';
             	result = result + '	<div class="clearfix"></div>';
@@ -73,6 +72,7 @@ function associateSalSummary(userId){
                 result = result + '<th>Effective Date</th>';
                 result = result + '<th>End Date</th>';
                 result = result + '<th>Amount</th>';
+                result = result + '<th>Action</th>';
                 result = result + '</tr>';
                 result = result + '</thead>';
                 result = result + '<tbody>';
@@ -80,6 +80,7 @@ function associateSalSummary(userId){
             	  
             	  var opt = json.associatePayItemDto[i];
             	  result = result + '<tr>';
+                  
                   result = result + '<td>';
                   result = result + '		<div class="tblminwidth-100 text-left">'+opt.payItemName+'</div>';
                   result = result + '</td>';
@@ -94,18 +95,33 @@ function associateSalSummary(userId){
                   result = result + '		</div>';
                   result = result + '	</td>';
                   result = result + '<td>';
-                  result = result + '			<div class="tblminwidth-50">';
+                  result = result + '			<div class="width150px" id="effectiveDateDiv'+opt.id+'">';
                   result = result + '			<div>'+opt.effectiveDate+'</div>';
                   result = result + '			</div>';
+                  
+                  result = result + '<div class="edit-input width150px" id="editEffectiveDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEffective'+opt.id+'" onclick = "editEffectiveDate(this)" value="'+opt.effectiveDate+'" class="form-control calendar"></div></td>';
+                  
                   result = result + '	</td>';
                   result = result + '	<td>';
-                  result = result + '			<div class="tblminwidth-50">';
+                  result = result + '			<div class="width150px" id="endDateDiv'+opt.id+'">';
                   result = result + '			<div>'+opt.endDate+'</div>';
                   result = result + '			</div>';
+                  
+                  result = result + '<div class="edit-input width150px" id="editEndDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEnd'+opt.id+'" onclick = "editEndDate(this)" value="'+opt.endDate+'" class="form-control calendar"></div></td>';
+                  
                   result = result + '	</td>';
                   result = result + '	<td>';
-                  result = result + '		<div class="tblminwidth-50">';
+                  result = result + '		<div class="width150px" id="payItemAmountDiv'+opt.id+'">';
                   result = result + '		<div>$ '+opt.payItemAmount+'</div>';
+                  result = result + '		</div>';
+                  
+                  result = result + '<div class="edit-input width150px" id="editpayItemAmountDiv'+opt.id+'" style="display:none;"><input type="text" id ="prePayAmount'+opt.id+'" value="'+opt.payItemAmount+'" class="form-control pull-left"></div></td>';
+                  result = result + '</td>';
+                  result = result + '	<td>';
+                  result = result + '		<div class="tblminwidth-50">';
+                  result = result + ' <a title="Edit"><i id="editDiv'+opt.id+'" class="glyphicon glyphicon-edit" onclick="editPayItem('+opt.id+')"></i><i id="saveDiv'+opt.id+'" class="fa fa-floppy-o" style="display:none;" onclick="updatePayItems('+opt.id+');"></i></a>';
+                  result = result + ' <a title="Delete"><i class="glyphicon glyphicon-trash text-danger ml" onclick="deletePayItem('+opt.id+','+userId+');"></i></a>';
+                  result = result + '		<div></div>';
                   result = result + '		</div>';
                   result = result + '</td>';
                   result = result + '</tr>';
@@ -625,4 +641,131 @@ function calaculateIncDecPer(){
     </div>
   </div>
 </div>
+
+
+
+<script>
+function editPayItem(payItemId){
+	
+	 document.getElementById("effectiveDateDiv"+payItemId).style.display="none";
+	 document.getElementById("editEffectiveDateDiv"+payItemId).style.display="block";
+	 
+	 document.getElementById("endDateDiv"+payItemId).style.display="none";
+	 document.getElementById("editEndDateDiv"+payItemId).style.display="block";
+	 
+	 document.getElementById("payItemAmountDiv"+payItemId).style.display="none";
+	 document.getElementById("editpayItemAmountDiv"+payItemId).style.display="block";
+	 
+	 document.getElementById("editDiv"+payItemId).style.display="none";
+	 document.getElementById("saveDiv"+payItemId).style.display="inline-block";
+}
+</script>
+
+<script>
+
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormatEndDate = '';
+if(locationDate.match("yyyy-MM-dd")){
+	  finalDateFormatEndDate = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	  finalDateFormatEndDate = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	  finalDateFormatEndDate = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	  finalDateFormatEndDate = 'yy-dd-mm'; 
+}
+
+function editEffectiveDate(e){
+	$("#"+e.id).datepicker({
+		  changeMonth: true,
+	      changeYear: true,
+	      dateFormat : finalDateFormatEndDate,
+	});
+}
+
+function editEndDate(e){
+	$("#"+e.id).datepicker({
+		  changeMonth: true,
+	      changeYear: true,
+	      dateFormat : finalDateFormatEndDate,
+	});
+}
+
+</script>
+
+<script>
+function updatePayItems(payItemId){
+	var effectiveDate = $("#preEffective"+payItemId).val();
+	var endDate = $("#preEnd"+payItemId).val();
+	var payAmount = $("#prePayAmount"+payItemId).val();
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/updateAssociatePayItem?"+tokenParamName+"="+tokenValue+"&id="+payItemId+"&effectiveDate="+effectiveDate+"&endDate="+endDate+"&payItemAmount="+payAmount,
+		success : function(result) {
+			if(result != null){
+				displayNormalDivs(payItemId,effectiveDate,endDate,payAmount);
+			}
+			
+		},
+	}); 
+	
+}
+
+function displayNormalDivs(payItemId,effectiveDate,endDate,payAmount){
+	 document.getElementById("editEffectiveDateDiv"+payItemId).style.display="none";
+	 document.getElementById("effectiveDateDiv"+payItemId).style.display="block";
+	 $("#effectiveDateDiv"+payItemId).empty();
+	 $("#effectiveDateDiv"+payItemId).append(effectiveDate);
+	 
+	 document.getElementById("editEndDateDiv"+payItemId).style.display="none";
+	 document.getElementById("endDateDiv"+payItemId).style.display="block";
+	 $("#endDateDiv"+payItemId).empty();
+	 $("#endDateDiv"+payItemId).append(endDate);
+	 
+	 document.getElementById("editpayItemAmountDiv"+payItemId).style.display="none";
+	 document.getElementById("payItemAmountDiv"+payItemId).style.display="block";
+	 $("#payItemAmountDiv"+payItemId).empty();
+	 $("#payItemAmountDiv"+payItemId).append(payAmount);
+	 
+	 document.getElementById("saveDiv"+payItemId).style.display="none";
+	 document.getElementById("editDiv"+payItemId).style.display="inline-block";
+} 
+</script>
+
+<div id="popUp"></div>
+
+<script>
+function deletePayItem(payItemId,userId){
+	
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Do you want to delete this PayItem?</p>";
+	result = result + ' <div id="payItemDeleteDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='proceedToDelete("+payItemId+","+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
+}
+
+function proceedToDelete(payItemId,userId){
+	
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/deleteAssociatePayItem?"+tokenParamName+"="+tokenValue+"&payItemId="+payItemId,
+		success : function(result) {
+			if(result != null){
+				$("#popUp").empty();
+	 			$(".project_inn_mask").fadeOut(200);
+	 			associateSalSummary(userId);
+			}
+			
+		},
+	}); 
+}
+</script>
+
+
 <!-- Salary History Popup -->
