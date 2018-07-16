@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -106,6 +107,9 @@ public class TimesheetApprovalRestController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private AppliedLeaveDateService appliedLeaveDateService;
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
@@ -615,7 +619,12 @@ public class TimesheetApprovalRestController {
 		    }else{
 		   	 ts.setClientName("--");
 			}
-
+		    
+		    User consultantUser = null;
+		    ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+			if(conPM != null) {
+				 consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
+			}
 			Float totalHours = 0f;
 			Float estimatedTotalHours = 0f;
 			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(loginUser.getId(),projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId(),orgLocations.getId(),actualStartDate,actualEndDate,isglobalUser);
@@ -637,19 +646,29 @@ public class TimesheetApprovalRestController {
 				    		  weekTotal = (float) ((diff+1)*8);
 				    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 				    	 }
+				    	 float leaveTotal = 0f;
+				    	 if(consultantUser != null) {
+				    		 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(consultantUser.getId(), entry.getKey(), entry.getValue());
+				    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
+				    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
+				    	     }
+				    	 
+				    	 }
+				    	 
 				    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null){
-				    		 totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
+				    		  totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
+				    		  totalHours = CommonUtil.getCombinedHours(totalHours, leaveTotal);
 				    		  weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal,null));
-				    		  submissionTotalList.add(CommonUtil.getHoursDisplayFormat(sah.getWeekTotals().get(entry.getKey()),null));
+				    		  Float submissionTotal = CommonUtil.getCombinedHours(leaveTotal, sah.getWeekTotals().get(entry.getKey()));
+				    		  submissionTotalList.add(CommonUtil.getHoursDisplayFormat(submissionTotal,null));
 				    	 }else{
-				    		 submissionTotalList.add(CommonUtil.getHoursDisplayFormat(0f,null));
+				    		 submissionTotalList.add(CommonUtil.getHoursDisplayFormat(leaveTotal,null));
 				    		 weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal,null));
 				    	 }
 				    	 
 				     }
 				     ts.setWeeekTotal(weekTotalList);
 				     ts.setSubmissionTotal(submissionTotalList);
-			   	 
 				    ts.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours,null));
 				    ts.setEstimatedHours(CommonUtil.getHoursDisplayFormat(estimatedTotalHours,null));
 				    ts.setSubmissionStatus(sah.getSubmissionApprovalStatus().getValue().toUpperCase());

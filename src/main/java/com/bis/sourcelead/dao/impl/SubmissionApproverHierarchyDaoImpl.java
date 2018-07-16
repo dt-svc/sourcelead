@@ -44,6 +44,8 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.TimesheetActivityService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -71,8 +73,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
 	@Autowired
 	private TimesheetActivityService timesheetActivityService;
-	
-	
+	@Autowired
+	private ProjectMembersService projectMembersService;
+	@Autowired
+	private AppliedLeaveDateService appliedLeaveDateService;
 	@Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -1854,9 +1858,32 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				else {
 					actualEndDate = sah.getSubmissionId().getEndDate();
 				}
+				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
+			    User consultantUser = null;
+				if(projectMember != null) {
+					 ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+					  if(conPM != null) {
+							 consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
+					  }
+			    }
 				float weekTotalHours = 0f;
 				float weekBillableTotalHours = 0f;
 				float weekNonBillableTotalHours = 0f;
+				Float leaveTotal = 0f;
+    	    	Float leaveBillableTotal = 0f;
+    	    	Float leaveNonBillableTotal = 0f;
+	    	    if(consultantUser != null) {
+	    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(consultantUser.getId(), actualStartDate, actualEndDate);
+		    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
+		    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
+		    	    	 leaveBillableTotal = leaveTotalMap.get("BILLABLE");
+		    	    	 leaveNonBillableTotal = leaveTotalMap.get("NONBILLABLE");
+		    	    	 weekTotalHours = CommonUtil.getCombinedHours(leaveTotal, weekTotalHours);
+		    	    	 weekBillableTotalHours = CommonUtil.getCombinedHours(leaveBillableTotal, weekBillableTotalHours);
+		    	    	 weekNonBillableTotalHours = CommonUtil.getCombinedHours(leaveNonBillableTotal, weekNonBillableTotalHours);
+		    	     }
+		    	     
+	    	    }
 				List<TimeSheetDayEntries> tdeList = timeSheetDayEntriesDao.getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(sah.getSubmissionId().getId(), actualStartDate, actualEndDate);
 				if (tdeList != null && !tdeList.isEmpty()) {
 					for (TimeSheetDayEntries tde : tdeList) {
