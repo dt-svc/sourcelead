@@ -623,7 +623,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		int recordsTotal=0;
 		if(countList != null && !countList.isEmpty()) {
-			recordsTotal  =  countList.iterator().next().intValue();
+			recordsTotal  =  countList.size();
 		}
 		response.setRecordsTotal(recordsTotal);
 		
