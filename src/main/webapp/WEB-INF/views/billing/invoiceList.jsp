@@ -36,6 +36,7 @@ $(document).ready(function(){
  <div class="success_pop" id="selector1" style="display: none;">
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
+  
 <section class="content-wraper">
     <section class="content-header clearfix">
     <c:if test="${!empty msg}">
@@ -48,11 +49,12 @@ $(document).ready(function(){
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoices List</div>
     </section>
+    
     <div class="content-area content-new clearfix">
-      <div class="billing_dashboard">
+      <div class="billing_dashboard noPad">
         <div class="tabbable positionRelative">
           <div class="onboardcreateButtons">
-            <div class="pull-right select-field ml">
+            <div class="pull-right select-field mr mt">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
                 <option value="month">Last 30 days</option>
                 <option value="twomonths">Last 60 Days</option>
@@ -69,7 +71,7 @@ $(document).ready(function(){
             </div>
           </div>
          
-         <ul class="nav nav-tabs" id="tab_bar">
+         <ul class="nav nav-tabs pad15" id="tab_bar">
             
                   <li class="active">
                         <h4>Unbilled</h4>
@@ -138,43 +140,43 @@ $(document).ready(function(){
             <div id="invoiceLoading"></div>
             <!-- Employee Details -->
             <div class="tab-pane active" id="unbilled">
-              <div class="timesheet_out mt">
+              <div class="timesheet_out">
                 <div class="clearfix">
-                  <div class="timesheet_head">
-                  <div class="pull-left cand-advsrch advsrch_chosen">
-				     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetInvoiceFilter();" title="Refresh">
-					    <span class="fa fa-refresh"></span>
-					</button>
-					<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openInvoiceFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
-					</a>
-			      </div>
-			    
-                    <ul>
-                    <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
-			        	<div id="exportPop" class="ExpPop">
-			              <ul>
-			                <li onclick="exportToReceivablePdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-			                <li onclick="exportToReceivableExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
-			              </ul>
-			            </div>
-			          </li>
-			          
-			          <li>
-						<a class="action" onclick="getActions();" href="javascript:void(0)"><i class="fa fa-user-plus"></i>&nbsp;Add<i class="fa fa-caret-down"></i></a>
-						<div class="action-pop">	
-							<span style="width:225px;">
-							 <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
-			                      <a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
-			                  </sec:authorize>
-			                   <a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-gears paddingRight"></i>Generate Automatic Invoice</a>
-							<div class="clearfix"></div>
-							</span>
-						</div>
-					  </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  
+                
+
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetInvoiceFilter();"></a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+      
+            <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+					 	<sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
+	                      <a href="javascript:void(0)" title="Create invoice"  onclick="createBill();">Create Invoice</a>
+	                  	</sec:authorize>
+	                   	<a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();">Generate Automatic Invoice</a>
+					</span>
+				</div>
+			</li>
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openInvoiceFilterPop();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						 	<a href="javascript:void(0)" onclick="exportToReceivablePdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportToReceivableExcel();" title="Excel">Export Excel</a>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='invoiceDataTableSearch'/><span class="repSearchIcon" onClick="getInvoiceList();"></span></li>
+        </ul>
+      </div>     
+                
                   <div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
                   </div>
@@ -494,11 +496,12 @@ function getInvoiceList(){
 <script>
 function prepareInvoiceList(url,locationdateForList){
  	var result = "";
- 	result = result +" <div class='dynamic_search dynamic_search-new'>";
+ 	
+/*  	result = result +" <div class='dynamic_search dynamic_search-new'>";
  	result = result +" <input type='text' placeholder='Search' id='invoiceDataTableSearch'/>";
  	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='getInvoiceList();'></i></span>";     
-
- 	result = result +"</div>";
+ 	result = result +"</div>"; */
+ 	
  	result = result + '<table id="invoiceListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result +'       <tr>                             ';
@@ -1753,12 +1756,28 @@ function resetInvoiceFilter(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
 }	
-	$("html").click(function(){
-		$(".action-pop").slideUp(200);
-	});
-	$(".action, .action-pop").click(function(e){
-	 	e.stopPropagation();
- 	});	
-</script>	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+</script>
+	
  <jsp:include page="../masterFooter.jsp" />	
