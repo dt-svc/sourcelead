@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.rest;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,11 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.AssociateSalaryHistoryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserGroupDTO;
+import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -906,6 +909,38 @@ public class USPayrollRestController {
 		model.addObject("userId", userId);
 		model.setViewName("users/addAssociateSummaryContribution");
 		return model;
+	}
+	
+	
+	@RequestMapping(value = "/updateAssociatePayItem",method = RequestMethod.POST)
+	public boolean updateAssociatePayItem(HttpServletRequest request,AssociatePayItemDTO associatePayItemDTO) throws Exception
+	{
+		boolean result = false;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		AssociatePayItem associatePayItem = associateSalaryService.findPayItemByPayItemId(Long.valueOf(associatePayItemDTO.getId()));
+		associatePayItem.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),associatePayItemDTO.getEffectiveDate()));
+		associatePayItem.setEndDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),associatePayItemDTO.getEndDate()));
+		associatePayItem.setPayItemAmount(new BigDecimal(associatePayItemDTO.getPayItemAmount()));
+		associatePayItem = associateSalaryService.saveUpdatedPayItem(associatePayItem);
+		
+		if(associatePayItem != null) {
+			result = true;
+		}
+		return result;
+	}
+	
+	@RequestMapping(value = "/deleteAssociatePayItem",method = RequestMethod.POST)
+	public boolean deleteAssociatePayItem(HttpServletRequest request,@RequestParam(value = "payItemId",required = false) Long payItemId) throws Exception
+	{
+		boolean result = false;
+		AssociatePayItem associatePayItem = associateSalaryService.findPayItemByPayItemId(payItemId);
+		associatePayItem.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+		associatePayItem = associateSalaryService.saveUpdatedPayItem(associatePayItem);
+		if(associatePayItem != null) {
+			result = true;
+		}
+		
+		return result;
 	}
 	
 }

@@ -232,14 +232,21 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 					associatePayItemDTO.setPayItemSchedule(pi.getPayItemSchedule());
 					if(pi.getOverRide() != null && !"".equalsIgnoreCase(pi.getOverRide())) {
 						associatePayItemDTO.setOverRide(pi.getOverRide());
+					}else {
+						associatePayItemDTO.setOverRide("--");
 					}
 					if(pi.getEffectiveDate() != null) {
 						associatePayItemDTO.setEffectiveDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pi.getEffectiveDate()));
+					}else {
+						associatePayItemDTO.setEffectiveDate("--");
 					}
 					if(pi.getEndDate() !=null) {
 						associatePayItemDTO.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pi.getEndDate()));
+					}else {
+						associatePayItemDTO.setEndDate("--");
 					}
 					associatePayItemDTO.setPayItemAmount(String.valueOf(pi.getPayItemAmount()));
+					if(pi.getStatus() == 1)
 					list.add(associatePayItemDTO);
 				});
 				
@@ -247,5 +254,15 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 			associateSalaryDTO.setAssociatePayItemDto(list);
 			
 		return associateSalaryDTO;
+	}
+
+	@Override
+	public AssociatePayItem findPayItemByPayItemId(Long payItemId) {
+		return associateSalaryDao.findPayItemByPayItemId(payItemId);
+	}
+
+	@Override
+	public AssociatePayItem saveUpdatedPayItem(AssociatePayItem associatePayItem) {
+		return associateSalaryDao.saveUpdatedPayItem(associatePayItem);
 	}
 }
