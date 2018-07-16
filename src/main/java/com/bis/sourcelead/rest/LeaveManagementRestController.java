@@ -1756,6 +1756,8 @@ public class LeaveManagementRestController {
 		ResponseList<LeaveDTO> responseList = null;
 		try {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			leaveDTO.setLoginUserRole(loginUserRole);
 			if (loginOrgLocation != null) {
 				responseList = leaveService.getEmployeeRequestedLeavesBylocationId(leaveDTO, orgLocations);
 				responseList.setResponse(Result.SUCCESS.name());
@@ -2318,8 +2320,9 @@ public class LeaveManagementRestController {
 	@ResponseBody
 	public LeaveDTO totalCountsForEmployeeLeaves(
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		return leaveService.getAllEmployeesLeavesCounts(orgLocationId, userId);
+			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception {
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		return leaveService.getAllEmployeesLeavesCounts(orgLocationId, userId, loginUserRole);
 	}
 
 	@RequestMapping(value = { "/totalCountsForSelfLeaves","/rest/totalCountsForSelfLeaves" }, method = RequestMethod.GET)
