@@ -99,9 +99,6 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
                 + " INNER JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"' "
                 + " LEFT JOIN ORG_LOCATIONS ORGLOC ON ORGLOC.ID =  PC.ORG_LOCATIONS_ID "
 				+ " WHERE "+subQuery+" AND SAH.SUBMISSION_ID =  TS.ID  " 
-				
-				//+ "  OR  (sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id) and  sah.hierarchyId.level IN(select MIN(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))"
-				
 				+ " AND SAH.ID IN (SELECT SUBSAH.ID FROM SUBMISSION_APPROVER_HIERARCHY SUBSAH WHERE "
 				+ "                  SUBSAH.SUBMISSION_ID = TS.ID "
 				+ "                  AND  "
@@ -111,6 +108,9 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "                     SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where '"+loginUser.getId()+"' IN "
 				+ "                                               ( SELECT UR.USER_ID FROM USER_ROLE UR LEFT JOIN  ROLES R  ON R.ID = UR.ROLE_ID   WHERE R.ROLE_NAME = 'ROLE_ADMIN' AND UR.USER_STATE = 'ACTIVE' AND UR.ORG_LOCATIONS_ID = PC.ORG_LOCATIONS_ID) "
 				+ "                                                    AND  PAH.LEVEL IN(select MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0') )                    "
+				+ "                              OR "
+				+ "                     (UR IS NOT NULL AND UR.REPORTING_MANAGER_ID IS NOT NULL AND  SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where '"+loginUser.getId()+"' IN(UR.REPORTING_MANAGER_ID) "
+				+ "                        AND  PAH.PROJECT_ID = PROJ.ID  AND  PAH.LEVEL IN(select MIN(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0')))              "
 				+ "                    )"
 			    + "              ) AND SAH.ID IS NOT NULL "
 				+ " AND ((TDE.BILLABLE_HOURS IS NOT NULL AND TDE.BILLABLE_HOURS != '00:00')  OR (TDE.NONBILLABLE_HOURS IS NOT NULL AND TDE.NONBILLABLE_HOURS != '00:00' )) AND TDE.TIMESHEET_DATE BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' group by TDE.ID)"
