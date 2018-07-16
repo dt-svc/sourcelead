@@ -56,7 +56,7 @@ background-color: #fcfcfc;
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
     </section>
-    <div class="timesheet_out">
+    <div class="">
       <div class="clients_side_wrap_inn no_pad">
         <div class="project_side_wrap_inn_tabs" id="new-id">
         

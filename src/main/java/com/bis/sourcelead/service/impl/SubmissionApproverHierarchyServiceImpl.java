@@ -267,8 +267,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 
 	@Override
 	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate, Date frequencyEndDate,
-			Long projectMemberId) {
-		return  submissionApproverHierarchyDao.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
+			Long masterCandidateId,Long projectId) {
+		return  submissionApproverHierarchyDao.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate,masterCandidateId,projectId);
 	}
 
 	@Override
