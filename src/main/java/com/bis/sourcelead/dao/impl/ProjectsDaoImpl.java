@@ -847,21 +847,46 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				if(StringUtils.isNotBlank(projectDTO.getIsGlobalAccess()) && projectDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
 					if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 						 projects = projectsService.getProjectById(projects.getId());
-						 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
-					}else {
-						 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
-						 if(projectClients != null && projectClients.getOrgRelationId() != null) {
-							 OrgRelations orgRel = projectClients.getOrgRelationId();
-							 OrgLocations clientOrgLocation = null;
-							 if(orgRel.getResponderLocationId().getId().equals(orglo.getId())) {
-								 clientOrgLocation = orgRel.getLocationId();
+						 if(projects.getSharedLocationId().getId().equals(orglo.getId())) {
+							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
+						 }else{
+							 if(projects.getOrgLocationsId().getId().equals(orglo.getId())) {
+								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
 							 }else {
-								 clientOrgLocation = orgRel.getResponderLocationId();
-							 } 
-							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientOrgLocation.getId());
-						 }else {
-							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgId(projects.getId(), projectDTO.getOrgId());
+								 ProjectClients clientProjectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orglo.getId());
+								 if(clientProjectClients == null) {
+									 clientProjectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
+								 }
+								 if(!clientProjectClients.getOrgRelationId().getResponderLocationId().getId().equals(orglo.getId())) {
+									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProjectClients.getOrgRelationId().getLocationId().getId());
+								 }else {
+									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProjectClients.getOrgRelationId().getResponderLocationId().getId());
+								 }
+							 }
+							 
 						 }
+						
+					}else {
+						 projects = projectsService.getProjectById(projects.getId());
+						 
+						 if(projects.getOrgLocationsId().getId().equals(orglo.getId())) {
+							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
+						 }else {
+							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
+							 if(projectClients != null && projectClients.getOrgRelationId() != null) {
+								 OrgRelations orgRel = projectClients.getOrgRelationId();
+								 OrgLocations clientOrgLocation = null;
+								 if(!orgRel.getResponderLocationId().getId().equals(orglo.getId())) {
+									 clientOrgLocation = orgRel.getLocationId();
+								 }else {
+									 clientOrgLocation = orgRel.getResponderLocationId();
+								 } 
+								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientOrgLocation.getId());
+							 }else {
+								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgId(projects.getId(), projectDTO.getOrgId());
+							 }
+						 }
+						
 						
 					}
 				}else {

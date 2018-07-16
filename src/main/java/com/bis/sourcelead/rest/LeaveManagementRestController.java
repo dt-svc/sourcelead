@@ -410,7 +410,7 @@ public class LeaveManagementRestController {
 			for (LeaveType l : roleLeaveType) {
 				float totalLeaves = 0;
 				if(Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
-					 totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(l.getId(),userId,orgLocationId);
+					 totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(l.getId(),userId,orgLocationId);
 				}
 
 //				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, loginUser);
@@ -748,7 +748,7 @@ public class LeaveManagementRestController {
 		return model;
 	}
 
-	@RequestMapping(value = "/storeRestrictedDay", method = RequestMethod.POST)
+	@RequestMapping(value = {"/storeRestrictedDay", "/rest/storeRestrictedDay"}, method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeRestrictedDay(RestrictDayDTO restrictDayDTO, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 	try {
@@ -1071,12 +1071,11 @@ public class LeaveManagementRestController {
 				if (leaveType != null) {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
-//					if(!"0".equalsIgnoreCase(leaveType.getStatus())) {
 						List<User> userList = userService.getUsersListByOrglocationId(orgLocation.getId());
 						List<User> updatedUserList = new ArrayList<>();
 						List<User> insertUserList = new ArrayList<>();
 						for(User usr : userList) {
-							AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId(),Integer.parseInt(leaveType.getStatus()));
+							AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId());
 						    if(associa != null) {
 						    	updatedUserList.add(usr);
 						    }else {
@@ -1544,6 +1543,7 @@ public class LeaveManagementRestController {
 		holidayDTO.setToHalfDayCheckBox(holidays.getToHalfDayCheckBox());
 		holidayDTO.setToHalfDayAmPm(holidays.getToHalfDayAmPm());
 		holidayDTO.setHolidayStatus(holidays.getHolidayStatus());
+		holidayDTO.setHolidayBillableType(holidays.getBillableType());
 		
 		List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
 		model.addObject("shiftList", shiftList);
@@ -1988,7 +1988,7 @@ public class LeaveManagementRestController {
 			Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(),orgLocations.getId());
 			
 //			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(), emp,orgLocations, leave.getUser());
-			float totalLeavesperYear = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId());
+			float totalLeavesperYear = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId());
 			
 			leaveDto.setApproverUsers(String.join(",", aphlist));
 			Map<String, Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),
@@ -2427,7 +2427,7 @@ public class LeaveManagementRestController {
 					List<Leave> takenLeaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),orgLocations.getId(), user.getId());
 					float empToatalLeaves = 0;	
 					if(Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())){
-						 empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());	
+						 empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());	
 					}
 
 					float empAppliedLeaveCount = 0;
@@ -2439,7 +2439,7 @@ public class LeaveManagementRestController {
 						 leaveTypeDto.setTotalNoOfDays(empAppliedLeaveCount);
 						 leaveTypeDto.setName(type.getName());
 							leaveTypeDto.setLeaveTypeId(type.getId());
-							leaveTypeDto.setNoOfLeavesPerYear(String.valueOf(empToatalLeaves));
+							leaveTypeDto.setNoOfLeavesPerYear(String.format("%.2f", empToatalLeaves));
 							leaveTypeDto.setTotalApprovedCount(approvedCounts);
 							leaveTypeDto.setTotalRejectedCount(rejectedCounts);
 							leaveTypeDto.setTotalPendingCount(pendingCounts);
@@ -2940,7 +2940,8 @@ public class LeaveManagementRestController {
 	}
 	
 	@RequestMapping(value = { "/calculateLeaveDuration", "/rest/calculateLeaveDuration"}, method = RequestMethod.GET)
-	public float calculateLeaveDuration(LeaveDTO leaveDTO,HttpServletRequest request) throws Exception {
+	public Response<Float> calculateLeaveDuration(LeaveDTO leaveDTO,HttpServletRequest request) throws Exception {
+		Response<Float> response = new Response<>();
 	    float noOfDays = 0f; 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		LeaveType leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
@@ -2970,6 +2971,7 @@ public class LeaveManagementRestController {
 		float days = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDaysAndWorkingHours(leave,leaveType.getNoOfDaysPerPeriod(),orgLocations.getAverageWorkingHours());
 		
 		noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocations,leaveType,leave,"Duration");
-		return noOfDays;
+		response.setObject(noOfDays);
+		return response;
 	}
 }

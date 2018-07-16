@@ -56,7 +56,7 @@ background-color: #fcfcfc;
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
     </section>
-    <div class="timesheet_out">
+    <div class="">
       <div class="clients_side_wrap_inn no_pad">
         <div class="project_side_wrap_inn_tabs" id="new-id">
         
@@ -880,7 +880,7 @@ function getPieChartBasedOnUser(){
       	            result = result +'   <div class="text-center">';
       	            result = result +'     <h2>';
       	            //result = result +'       <label class="small text-muted">Remaining:</label>';
-      	            result = result +'       <label class="clearfix width100percnt mt5">'+numberOfDaysCount.toFixed(2)+' / '+opt.noOfLeavesPerYear.toFixed(2)+'</label>';
+      	            result = result +'       <label class="clearfix width100percnt mt5">'+numberOfDaysCount.toFixed(2)+' / '+opt.noOfLeavesPerYear+'</label>';
       	            result = result +'     </h2>';
       	            result = result +'   </div>';
       	            result = result +' </div>';
