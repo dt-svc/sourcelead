@@ -35,10 +35,10 @@ public class HelloPayrollWorldBis {
 //	public HelloPayrollWorld() {
 //	}
 	
-	public static void main(String[] args)
+	/*public static void main(String[] args)
 	{
 		System.out.println("Hi");
-	}
+	}*/
 	
 	public STEPayrollCalculator runUSPayroll(User user, float totalHours, double amount, int payPeriod, AssociateTaxDedContriView associateTaxDTO, String STEhome, String jniHome, String empState)
 //	public void hello(String locationCode)
@@ -92,6 +92,10 @@ public class HelloPayrollWorldBis {
 			STE.setWages(locationCode, WageType.REGULAR, new Hours(totalHours), new Money(amount), zero, zero, zero);
 			STE.setCountyParameters(locationCode, false, true);
 			
+			
+			
+			
+			
 			// Calculating Employer FUTA and SUTA 
 			STE = calculateEmployerFUTASUTA(STE,locationCode,totalHours,amount,FEDERAL_LOCATION_CODE);
 			
@@ -131,11 +135,12 @@ public class HelloPayrollWorldBis {
 				STE = calculateEmployerSDI(STE,locationCode,totalHours,amount,FEDERAL_LOCATION_CODE,empState);	
 			}
 		
+			//Employer Head Taxes (EHT)
+			calculateEmployerHeadTaxes(STE,locationCode,totalHours,amount,FEDERAL_LOCATION_CODE);
 			
 			STE.calculateTaxes();
 			
-			//Employer Head Taxes (EHT)
-			calculateEmployerHeadTaxes(STE,locationCode,totalHours,amount,FEDERAL_LOCATION_CODE);
+			
 			
 //			BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal();
 //			BigDecimal netPay = BigDecimal.valueOf(amount).subtract(taxes);
@@ -156,7 +161,7 @@ public class HelloPayrollWorldBis {
 			System.out.println("");
 //			System.out.println("************************************************");
 			
-		
+			// Employer Taxes
 			System.out.println("Employer FUTA/SUTA TAXES--------------------------");
 			UnemploymentCalculation federalUC = STE.getUnemployment("00-000-0000");
 			UnemploymentCalculation stateUC = STE.getUnemployment(locationCode);
@@ -218,6 +223,15 @@ public class HelloPayrollWorldBis {
 				Money ricoSDICalc = STE.getSDIEmployerCalc("72-127-1612697", SDITaxType.PUERTO_RICO_SDI);
 				System.out.println("Puerto Rico Employer SDI: " + ricoSDICalc);
 			}
+			
+			System.out.println("Employer SUTA Surcharge Taxes--------------------------");
+			// Calculating Employer FICA
+			Money empficaCalc = STE.getEmployerFICACalc();
+			System.out.println("Employer FICA calc: " +empficaCalc);
+						
+			// Calculating Employer Medicare
+			Money empMediCalc = STE.getEmployerMedicareCalc();
+			System.out.println("Employer Medicare calc: " +empMediCalc);
 			
 			return STE;
 		} catch (Exception e) {

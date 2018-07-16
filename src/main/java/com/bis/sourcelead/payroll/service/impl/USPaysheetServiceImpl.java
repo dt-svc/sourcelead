@@ -194,6 +194,7 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 			paysheetFrequency.setCreatedDate(new Date());
 			paysheetFrequency.setUpdatedDate(new Date());
 			paysheetFrequency.setCreatedBy(loginUser.getId());
+			paysheetFrequency.setType("PAYSHEET");
 			paysheetFrequency.setUpdatedBy(loginUser.getId());
 			paysheetFrequency.setStatus(1);
 			paysheetFrequency.setPaysheet(getPaySheet(paysheetFrequency, loginUser, orgLocation, paysheetFrequencyDTO));
@@ -256,5 +257,11 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 			set.add(paysheet);
 		}
 		return set;
+	}
+
+	@Override
+	public PaysheetFrequency addPaysheetFrequency(PaysheetFrequency paySheetFreq)
+	{
+		return uSPaysheetDao.addPaysheetFrequency(paySheetFreq);
 	}
 }

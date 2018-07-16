@@ -667,13 +667,22 @@ public class USPayrollRestController {
 		}
 		
 		
-		//TODO Need to Resuse this method later Do not Remove
 		@RequestMapping(value = { "/generateUSPayroll","/rest/generateUSPayroll" }, method = RequestMethod.POST)
 		public ResponseList<USPayrollDTO> generateUSPayroll(GenerateUSPayrollDTO generateUSPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			ResponseList<USPayrollDTO> res = generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO);
-			return res;
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			List<USPayrollDTO> existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
+			ResponseList<USPayrollDTO> res = new ResponseList<>();
+			if(existedData != null) {
+				res.setData(existedData);
+				res.setRecordsFiltered(existedData.size());
+				res.setRecordsTotal(existedData.size());
+				res.setResponseMessage("success");
+				return res;
+			}else {
+				return generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO,loginUser);
+			}
 		}
 		
 		

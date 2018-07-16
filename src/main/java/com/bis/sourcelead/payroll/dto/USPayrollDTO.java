@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 public class USPayrollDTO {
 	
+	private Long empPayrollId;
+	
 	private String empId;
 	
 	private String empName;
@@ -30,6 +32,24 @@ public class USPayrollDTO {
 	
 	private BigDecimal payRate;
 	
+	private String empPayrollUUID;
+	
+	public Long getEmpPayrollId()
+	{
+		return empPayrollId;
+	}
+	public String getEmpPayrollUUID()
+	{
+		return empPayrollUUID;
+	}
+	public void setEmpPayrollId(Long empPayrollId)
+	{
+		this.empPayrollId = empPayrollId;
+	}
+	public void setEmpPayrollUUID(String empPayrollUUID)
+	{
+		this.empPayrollUUID = empPayrollUUID;
+	}
 	public String getEmpId()
 	{
 		return empId;
