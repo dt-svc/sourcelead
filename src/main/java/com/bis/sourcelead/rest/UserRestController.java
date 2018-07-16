@@ -243,13 +243,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	   }
 	
 	@RequestMapping(value = "/getActiveAssociateList", method = RequestMethod.POST)
-	public @ResponseBody String getCandidatesList(
+	public @ResponseBody List<CandidateDTO> getCandidatesList(
 		   @RequestParam(value = "employeementType", required = false) String employeementType, HttpServletRequest request) throws Exception {
-		String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<Candidate> candidateIdsList = candidateService.getAllActiveAssociatesByOrglocationId(orgLocations.getId(),employeementType);
-		resultJson = toJSON(candidateIdsList);
-		return resultJson;
+		List<CandidateDTO> candidateList = candidateService.getAllActiveCandidatesListByOrglocationId(orgLocations.getId(),employeementType);
+		return candidateList;
 	}
 	
 	@RequestMapping(value = "/getDepartmentsList", method = RequestMethod.POST)

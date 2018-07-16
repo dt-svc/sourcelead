@@ -2554,7 +2554,6 @@ $(".action, .action-pop").click(function(e){
  	e.stopPropagation();
 });	
 
-
 function newActions(){
 	$(".newActPop").slideToggle(200);
 	$(".action-pop").slideUp(200);
@@ -2565,7 +2564,6 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });	
-
 
 </script>
 

@@ -748,7 +748,7 @@ public class LeaveManagementRestController {
 		return model;
 	}
 
-	@RequestMapping(value = "/storeRestrictedDay", method = RequestMethod.POST)
+	@RequestMapping(value = {"/storeRestrictedDay", "/rest/storeRestrictedDay"}, method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeRestrictedDay(RestrictDayDTO restrictDayDTO, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 	try {
