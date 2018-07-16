@@ -79,6 +79,8 @@ margin-top: 3px;
 	</div>
 </div>	
 <div class="mask_time"></div>	
+
+
 <section class="content-header clearfix">
 	<section class="content-wraper">
 		<section class="content-header clearfix">
@@ -87,65 +89,68 @@ margin-top: 3px;
 			</div>
 			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
 		</section>
+		
+		
+		
 		<!-- Project -->
 		<div class="timesheet_out">
 			<div class="vendor_wrap">
 			
 			
-				<div class="timesheet_head">
-							
-				<ul>
-				<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES')">
-
-					<div class="pull-left mt5 mr">   		
-				     <span class="dashboard-datepkr pull-left">
-					 <input type="text" class="form-control input-sm calendar" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
-					 <p id="reportStartDate" class="ReError"></p>
-					 </span>
-					 <span class="dashboard-datepkr pull-left">
-					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
-					 <p id="reportEndDate" class="ReError"></p>
-					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList('dateSearch');" /></span>
+			
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon">
+      			<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES')">
+				    <div class="input-group pull-left">  		
+					     <span class="dashboard-datepkr pull-left mr5">
+						 <input type="text" class="form-control input-sm calendar noMr heiNew" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
+						 <p id="reportStartDate" class="noPad"></p>
+						 </span>
+						 <span class="dashboard-datepkr pull-left mr5">
+						 <input type="text"  class="calendar form-control input-sm noMr heiNew" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
+						 <p id="reportEndDate" class="noPad"></p>
+						 </span>
+					 	<span class="pull-left"><input type="button" value="Submit" class="newAdBtn" onclick="getExpensesApprovalDataList('dateSearch');" /></span>
 					</div>
-
-					<li><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+				</sec:authorize>        
+      </span>
+      <ul class="pull-right list-unstyled list-inline">
+      
+               <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES')">
+			   		<li><a href="<c:url value='${appPath}/addApprovalExpense'/>" class="newAdBtn mr5">+ Expenses</a></li>
+			   </sec:authorize>	   
+			
+				<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES')">
+					<li><i class="filtIcon"  id="appro-pop"></i>
 	                	<div class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesApprovalDataList('dateSearch');"><label >All</label></li>
 								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="getExpensesApprovalDataList('dateSearch');"><label >Sub for Approval</label></li>
 								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Approved</label></li>
 								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Rejected</label></li>
-									<li><input id="expenseReopened" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Reopened</label></li>
+								<li><input id="expenseReopened" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Reopened</label></li>
 								<!-- <li><input id="expenseReopned" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList();"><label >Re-Opened</label></li> -->
 	                        </ul>
 	                    </div>                	
-	                </li>
-                </sec:authorize>
-                <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES')">
-		   			<li><a href="<c:url value='${appPath}/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
-		   		</sec:authorize>
-				<sec:authorize access="hasAnyRole('ROLE_EXPORT_EMPLOYEE_EXPENSES')">			
-					<li title="Export" id="hideExportIfDataEmptyId"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-					    <div id="exportPop" class="user_exp">
-						   <ul class="ul_padding">
-						   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-						   <li onclick="exportToPdf('excel');" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-						   </ul>
-						</div>
-				   	</li>
-		   		</sec:authorize>
-		   		<div class="clearfix"></div>
-		   		<input type="hidden" id="temp"/>
-		   		</ul>
-					<div class="clearfix"></div>
-				</div>
+	                </li>        		
+               </sec:authorize>			
 				
-				 <div class='remove_search'>
-
-		        		<input type='text' placeholder="Search" value="" id='SearchExpensesData'/>
-
-		         </div>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						<sec:authorize access="hasAnyRole('ROLE_EXPORT_EMPLOYEE_EXPENSES')">	
+						 	<a href="javascript:void(0)" onclick="exportToPdf('pdf');" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportToPdf('excel');" title="Excel">Export Excel</a>
+						</sec:authorize>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='SearchExpensesData'/><span class="repSearchIcon" onClick=""></span></li>
+		  <input type="hidden" id="temp"/>
+        </ul>
+      </div>			
+			
 				
 				<div class="overflow_inherint">
 				<!-- <div class="timesheet_appr_table datatable_filter overflow_inherint"> -->
@@ -647,5 +652,28 @@ function expensesCancel(){
 		
 	});
 </script>
+
+<script>
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+	$(".approved_pop").hide();	
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+$("#appro-pop").click(function(){
+	$(".newActPop").hide();
+});
+
+</script>
+
+
 <%-- <jsp:include page="expensesApproverTable.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />
