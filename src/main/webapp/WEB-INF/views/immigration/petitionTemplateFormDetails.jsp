@@ -268,20 +268,12 @@
         $("#dynamicFormRow" + id).remove();
         $("#petitionTemplateFormDetails input[data-id*=uploadBtn]" + id).remove();
         rowId--;
-        checkFormNames();
     }
 </script>
 
 <script>
     $(document).ready(function () {
         $("#templateId").val(immTemplId);
-        applyChangeEvent();
-        checkFormNames();
     });
-    /* function applyChangeEvent() {
-        $("input[data-name='formName']").unbind('keyup');
-        $("input[data-name='formName']").on("keyup", function () {
-            checkFormNames();
-        });
-    } */
+ 
 </script>

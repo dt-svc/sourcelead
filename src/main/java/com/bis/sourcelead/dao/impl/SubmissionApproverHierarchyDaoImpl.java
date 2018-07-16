@@ -388,6 +388,17 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		return submissionApproverHierarchy;
 	}
 	
+	
+	@SuppressWarnings("unchecked")   
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByProjectIdAndMasterCandidateId(Long projectId, Long masterCandidateId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Query submissionApproverHierarchyListQuery = session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm left join fetch submission.projects pj left join fetch submission.masterCandidateId mc  where pj.id = :projectId and mc.id = :masterCandidateId and  sah.status = '1' group by concat(pj.id,mc.id,sah.frequencyStartDate,sah.frequencyEndDate) order by sah.hierarchyId.level desc");
+		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = submissionApproverHierarchyListQuery.setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).list();
+		return submissionApproverHierarchyList;
+	}
 	@SuppressWarnings("unchecked")   
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -439,14 +450,14 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@SuppressWarnings("unchecked")   
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId)
+	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate, Date frequencyEndDate, Long masterCandidateId,Long projectId)
 	{
 		Boolean flag = true;
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
-		Query submissionApproverHierarchyListQuery = session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm where pm.id = :projectMemberId and (sah.submissionStatus = 'SUBMITTED' OR sah.submissionStatus = 'APPROVED')  and  sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate");
-		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = submissionApproverHierarchyListQuery.setLong("projectMemberId", projectMemberId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).list();
+		Query submissionApproverHierarchyListQuery = session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm where pm.masterCandidateId.id = :masterCandidateId  and (sah.submissionStatus = 'SUBMITTED' OR sah.submissionStatus = 'APPROVED')  and  ((sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate) OR (submission.startDate = :sqlStartDate and submission.endDate = :sqlEndDate))");
+		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = submissionApproverHierarchyListQuery.setLong("masterCandidateId", masterCandidateId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).list();
 		if (null != submissionApproverHierarchyList && !submissionApproverHierarchyList.isEmpty()) {
 			flag = false;
 		}
@@ -1165,7 +1176,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * project_approver_hierarchy(hint:logged in user is admin but
 				 * not assigned to project as approver)
 				 */
-				+ "  OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :orgLocationId)"
+				+ "  OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :orgLocationId)"
 				+" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and  sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and  sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
 				+" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and  sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
 				+ "   ) "
@@ -1188,7 +1199,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * project_approver_hierarchy(hint:logged in user is admin but
 				 * not assigned to project as approver)
 				 */
-				+ "  OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :orgLocationId)"
+				+ "  OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :orgLocationId)"
 				+" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and  sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and  sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
 				+" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and  sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
 				+ "   ) "
@@ -1297,7 +1308,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * project_approver_hierarchy(hint:logged in user is admin but
 				 * not assigned to project as approver)
 				 */
-				+ "   OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and "+globalUserQuery2+") "
+				+ "   OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE'  and "+globalUserQuery2+") "
 				+" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
 				+" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
 				+ "   ) "

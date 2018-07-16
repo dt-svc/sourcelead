@@ -307,6 +307,7 @@
         $("table").colResizable(); // for resizing columns in tables.
         immigrationDataTableList();
         $("#addTask").click(function () {
+        	alert("hi");
             document.getElementById("petitionTemplateTaskDetails").reset();
             $("#assignToUserDiv").hide();
             $("#reminderdropdown").hide();

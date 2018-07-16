@@ -558,8 +558,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 									   Date endDate = CalendarUtil.getMonthEndDateByGivenDate(startDate, 0).get("ENDDATE");
 									   timesheetFrequencyList.put(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate));
 									   empMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(startDate, 1).get("STARTDATE");
-								   }
-;
+								   };
 					         }
 						    else if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Semi-Monthly")){
 

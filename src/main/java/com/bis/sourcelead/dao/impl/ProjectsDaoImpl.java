@@ -320,9 +320,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<Projects> getAllProjects() throws Exception {
 		logger.debug("In Projects getAllProjects method");
+		 List<Projects> projectsList = null;
         Session session = this.sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Projects.class);
-        List<Projects> projectsList = crit.list();
+        projectsList = session.createQuery("from Projects projects " ).list();
         return projectsList;
 	}
 	
@@ -991,7 +991,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 						 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
 						 + " (hierarchy.projectClientsId.orgLocationsId.id = :orgLocationsId and hierarchy.approverUserId.id = :userId "
 						 + " OR "
-						 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
+						 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
 					  + " ))";
 			List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).list();
 			return projectsList;
@@ -1370,7 +1370,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 					 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
 					 + " (hierarchy.projectClientsId.orgLocationsId.id = :orgLocationsId and hierarchy.approverUserId.id = :userId "
 					 + " OR "
-					 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
+					 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
 				  + " ))  "+projectTypeQuery;
 		List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", dayWiseTimesheetReoprtsDto.getLocationsId()).setLong("userId", dayWiseTimesheetReoprtsDto.getLoginUserId()).list();
 		return projectsList;
