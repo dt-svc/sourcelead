@@ -392,6 +392,17 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		return submissionApproverHierarchy;
 	}
 	
+	
+	@SuppressWarnings("unchecked")   
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByProjectIdAndMasterCandidateId(Long projectId, Long masterCandidateId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Query submissionApproverHierarchyListQuery = session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm left join fetch submission.projects pj left join fetch submission.masterCandidateId mc  where pj.id = :projectId and mc.id = :masterCandidateId and  sah.status = '1' group by concat(pj.id,mc.id,sah.frequencyStartDate,sah.frequencyEndDate) order by sah.hierarchyId.level desc");
+		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = submissionApproverHierarchyListQuery.setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).list();
+		return submissionApproverHierarchyList;
+	}
 	@SuppressWarnings("unchecked")   
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
