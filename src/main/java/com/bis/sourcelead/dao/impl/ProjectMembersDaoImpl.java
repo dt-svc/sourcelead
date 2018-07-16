@@ -437,6 +437,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String statusQuery = "";
 		String fillingOptionQuery = "";
 		String sortingOrder = "";
+		String groupBy = "";
 		String biweeklyDateFilter = "";
 		String frequencyQuery = "";
 		
@@ -463,7 +464,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		if(StringUtils.isNotEmpty(projectName) && projectName != null) {
 			searchQuery.append("and projects.projectName  like '%" + projectName + "%'");
 		}
-		sortingOrder = "order by pm.id desc";
+		groupBy = " group by concat(pm.masterCandidateId.id,pm.projects.id) ";
+		sortingOrder = " order by pm.id desc ";
 		
 		if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
 			biweeklyDateFilter = " and DATEDIFF(pm.projects.weekStartDate,:startDate)%14=0";
@@ -563,6 +565,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ userQuery
 					+biweeklyDateFilter
 					+searchQuery
+					+groupBy
 					+sortingOrder;
 		Query query = session.createQuery(queryStr.toString());
 		
@@ -577,7 +580,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				+ dateCountQuery
 				+ userCountQuery
 				+biweeklyDateFilter
-				+searchCountQuery;
+				+searchCountQuery
+				+groupBy;
 		
 		
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
@@ -1541,7 +1545,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<ProjectMembers> pmList = null;
 		 ArrayList<ProjectMembers> projectsMembersList = new ArrayList<ProjectMembers>();
-        	 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
+        	 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.masterCandidateId left join fetch pm.projectMemberCandidteId cand "
  					+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser user  "
  					+ "where pm.projectClientsId = :projectClientsId");
         	 pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).list();
@@ -1692,6 +1696,42 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				+ " pm.masterCandidateId.id = :masterCandidateId " ;
 		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("projectId",projectId).list(); 
 		return allProjectsList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<ProjectMembers> getAssignedProjectMembersGroupListByProjectClientId(List<Long> projectClientsId)
+			throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 List<ProjectMembers> pmList = null;
+		 ArrayList<ProjectMembers> projectsMembersList = new ArrayList<ProjectMembers>();
+       	 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.masterCandidateId left join fetch pm.projectMemberCandidteId cand "
+					+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser user  "
+					+ "where pm.projectClientsId.id IN (:projectClientsId) group by concat(pm.projects.id,pm.masterCandidateId.id)");
+       	 pmList = projectsMembersListQuery.setParameterList("projectClientsId", projectClientsId).list();
+	        	 projectsMembersList.addAll(pmList);
+	      
+	        return projectsMembersList;
+	
+	}
+
+
+	@Override
+	@Transactional
+	public boolean isProjectMembersExisted(Long projectId, Long masterCandidateId, Long projectClientId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc left join fetch pm.projects where  "
+				+ "pm.projects.id = :projectId and pm.masterCandidateId.id = :masterCandidateId and pc.id = :projectClientId " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("projectClientId", projectClientId).setLong("masterCandidateId", masterCandidateId).list(); 
+		boolean flag = false;
+		if(pmList != null && !pmList.isEmpty())  {
+			flag = true; 
+		}
+		return flag;
 	}
 	
 }
