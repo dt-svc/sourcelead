@@ -395,14 +395,39 @@ public class ProjectsDashboardRestController {
 			
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT','ROLE_VIEW_PROJECT')") 
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
-	 public @ResponseBody ProjectsDTO getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
+	 public @ResponseBody ProjectsDTO getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,
+			 @RequestParam(value="projectClientUUID", required=false) String projectClientUUID,HttpServletRequest request) throws Exception{ 
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		   ProjectsDTO ProjectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation,isGlobalAccess);
-		   OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
 		   
+		   if(StringUtils.isNotBlank(projectClientUUID)) {
+			   ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
+				 if(projectClients.getOrgRelationId() != null){
+		    		 
+					 if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
+						 if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getOrg().getId().longValue() == loginOrgLocations.getOrg().getId().longValue()){
+							 ProjectDetails.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+							}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getOrg().getId().longValue() == loginOrgLocations.getOrg().getId().longValue()){
+								ProjectDetails.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+							}
+					 }else {
+						 if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+							 ProjectDetails.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+							}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+								ProjectDetails.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+							}
+					 }
+					
+					 ProjectDetails.setOrgRelationUUID(projectClients.getOrgRelationId().getUUID());
+		 	  }
+				 Integer projectMembersCount  = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
+				 ProjectDetails.setProjectMembersCount(projectMembersCount.toString());
+		   }
+		 
+		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
 		   SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_PROJECT);
 			 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),loginOrgLocations.getId());
 			 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
@@ -578,6 +603,7 @@ public class ProjectsDashboardRestController {
 		  }catch (Exception e) {
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
 			}
 		 return response;
 	 }
@@ -635,6 +661,7 @@ public class ProjectsDashboardRestController {
 			  }catch (Exception e) {
 					response.setResponse(Result.AWKWARD.name());
 					response.setResponseMessage(Result.AWKWARD.getValue());
+					e.printStackTrace();
 				}
 				
 			 return response;

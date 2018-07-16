@@ -784,7 +784,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 //						+ " WHERE R.ORG_LOCATION_ID = :locationId AND SA.TAB_ID = :tabId "
 //						+ " AND (R.ID LIKE CONCAT(SA.ID,'%') OR R.ID LIKE CONCAT('%,',SA.ID,',%') OR R.ID LIKE CONCAT('%,',SA.ID)) "
 //						+"  AND U.ID IN(SELECT SO.USER_ID FROM ORGLOCATION_SIGNATORY SO WHERE SO.AUTHORIZED_TYPE LIKE '%Contracts%' AND SO.STATUS = 1 AND SO.ORGLOCATION_ID = :locationId) ";
-*/	String Query ="SELECT u.* FROM USER u,USER_ROLE ur where u.ID IN (SELECT so.USER_ID from ORGLOCATION_SIGNATORY so where so.AUTHORIZED_TYPE LIKE '%Contracts%' and so.ORGLOCATION_ID=:ORGLOCATION_ID and so.STATUS=1 )";
+*/	String Query ="SELECT * FROM USER u where u.ID IN (SELECT so.USER_ID from ORGLOCATION_SIGNATORY so where so.AUTHORIZED_TYPE LIKE '%Contracts%' and so.ORGLOCATION_ID=:ORGLOCATION_ID and so.STATUS=1 )";
 		List<User> userRoleList = session.createSQLQuery(Query).addEntity(User.class).setLong( "ORGLOCATION_ID", orgLocationsId).list();
 	     return userRoleList;
 	}

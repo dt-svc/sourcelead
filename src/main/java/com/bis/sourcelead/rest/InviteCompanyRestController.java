@@ -80,6 +80,7 @@ public class InviteCompanyRestController {
 			inviteCompanyResponse.setResponse(Result.AWKWARD.name());
 			inviteCompanyResponse.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return inviteCompanyResponse;
 	}
@@ -108,6 +109,7 @@ public class InviteCompanyRestController {
 			responseScheduleMaintenance.setResponse(Result.AWKWARD.name());
 			responseScheduleMaintenance.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return responseScheduleMaintenance;
 	}
@@ -163,6 +165,7 @@ public class InviteCompanyRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		
 		return response;

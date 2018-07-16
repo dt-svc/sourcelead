@@ -401,32 +401,49 @@ result = result  +'    <div class="billingArea"> ';
 					result = result +'  </div> ';  
 					
 					if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
-						if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="successBtn primary pull-left" title="Paid">Paid</span> </td>          ';	
-						}else if(report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
+						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+							if(report.paymentStatus == "Paid"){
+								result = result +'           <span class="text-primary primary pull-left" title="Paid" >Paid</span> </td>          ';
+							}else if(report.invoiceStatus == "DRAFT"){
+								result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
+							}else if(report.invoiceStatus == "Rejected"){
+								result = result +'           <div class="primary pull-left bg-red">Rejected</div>   ';	
+							}
+								
 						}else{
 							if(report.invoiceStatus == "Accepted"){
+                              if(report.paymentAccountDTO != null && report.paymentAccountDTO.accountType == "WEPAY")
+                                  result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="initPaymentOnline(\''+report.invoiceUUID+'\','+report.dueAmount+');" title="Pay">Pay</span> </td>';
+                              else
 								result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
-							}else{
-								if(report.invoiceStatus == "Rejected"){
-									result = result +'           <span class="text-danger successBtn primary pull-left">Rejected</span> </td>          ';	
+							}else if(report.invoiceStatus == "Linked"){
+									result = result +' <a class="successBtn primary pull-left cursorPointer" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 								}else{
 									result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
 								}
 								
-							}
 						}
 						
 					}else{
-						if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
-						}else if(report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
-						}else if(report.invoiceStatus == "SENT"){
-							result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';
-						}else if(report.invoiceStatus == "Accepted"){
-							result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
+						if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
+							if(report.paymentStatus == "Paid"){
+								result = result +'           <span class=" primary pull-left" title="Paid" >Paid</span> </td>          ';	
+							}else if(report.invoiceStatus == "DRAFT"){
+								result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
+							}else if(report.invoiceStatus == "SENT"){
+								result = result +'           <span class=" primary pull-left" title="Sent" >Sent</span> </td>          ';
+							}else if(report.invoiceStatus == "Rejected"){
+								result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';
+							}
+								
+						}else{
+							if(report.invoiceStatus == "Linked"){
+								result = result +' <a class="successBtn primary pull-left" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+							}else if(report.invoiceStatus == "Received"){
+								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+							}else{
+								result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
+							}
 						}
 						
 						
@@ -1112,9 +1129,11 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,payment
 		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
 		 result = result +'      <li><a class="" href="'+fileUrl+'" title="Print" download><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</a></li>';
 		 '</sec:authorize>'
-		 
+		 if(invoiceStatus != 'DRAFT')
+	     {
 		 result = result +'      <li><a onclick="linkPayableInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Invoice"></i>Link Bill</a></li>';
-	     result = result +'    </ul>';
+	     }
+		 result = result +'    </ul>';
     	 $("#popupDiv"+invoiceUUID+"").append(result);
     	 showMenu();
 }

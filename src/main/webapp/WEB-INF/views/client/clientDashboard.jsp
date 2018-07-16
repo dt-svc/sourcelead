@@ -65,28 +65,10 @@ z-index: 1;
 			
 			<!-- Advanced Search -->
   <div class="timesheet_out">
-  <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
-        <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr pull-left" id="resetClient" style="display: inline-block;" onclick="resetClientFilter();" title="Refresh">
-		    <span class="fa fa-refresh"></span>
-		</button>
-		
-		<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr pull-left" id="resetClientContact" style="display: none;" onclick="resetClientContactFilter();" title="Refresh">
-		    <span class="fa fa-refresh"></span>
-		</button>
-		
-            <a href="javascript:void(0)" class="btn btn-primary btn-sm pull-left" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+
+            </div>
             
-            <div class="filterSearchDiv pull-left ml" id="contactLevel">
-				<a href="javascript:void(0)" onclick="clientFileterPopUp();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
-			</div>
-			
-			<div class="filterSearchDiv pull-left ml" id="clientFiletPopup" style="display: none;">
-				<a href="javascript:void(0)" onclick="clientContactFilterPopUp();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
-			</div>
-			
-			
-            </div>
-            </div>
+            
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup advancedsearch-popup">
          <h5 class="headerAdsrch">Advanced Search 
@@ -292,60 +274,61 @@ z-index: 1;
           </form:form>
 		<!-- Advanced Search Ends -->
 		<div class="clients_wrap vendor_wrap_shadownone minHeight_225">
-<!-- 				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
- -->				<div class="timesheet_head datatbl-filters topfilters">
-					<ul>
-		                <li>
-						<a class="action" onclick="getClientActions();" href="javascript:void(0)"><i class="fa fa-user-plus"></i>&nbsp;Add<i class="fa fa-caret-down"></i></a>
-						<div class="action-pop">	
-							<span>
-								  <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-									<a href="<c:url value='${appPath}/client'/>"><i class="fa fa-plus"></i>Client</a>
-								 </sec:authorize>
-								 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-			                        <a href="<c:url value='${appPath}/addClientContact'/>"><i class="fa fa-plus"></i>Contact</a>
-			                     </sec:authorize>
-							<div class="clearfix"></div>
-							</span>
-						</div>
-						</li>
-                		 
-						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
-						 <li title="Import"><a href="<c:url value='${appPath}/uploadClientForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-						 </sec:authorize>
-						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
-						   <li id="clientImports"  title="Export">
-		                      <a  id="client-imports"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			                    <div class="export_pop">
-				                   <ul class="widScr">
-				                     <li onclick="exportClientToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-				                     <li onclick="exportClientToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Excel </li>
-				                   </ul>
-				              </div>
-		                  </li> 
-		            </sec:authorize>
-		            
-		             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
-		            <li id="ContactImports" title="Export" style="display:none">
-		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			                    <div class="export_pop">
-				                <ul class="widScr">
-				                <li onclick="exportContactToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF</li>
-				                <li onclick="exportContactToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp; Excel</li>
-				       </ul>
-				    </div>
-		            </li> 
-                    </sec:authorize>
-                              
-						<div class="clearfix"></div>
-					</ul>
-					<div class="clearfix"></div>
-					 <div class='dynamic_search dynamic_search-new'>
-        		          <input type='text' placeholder='Search' id='dataTableSearch'/>
-        		          <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getClientList();"></i></span>    
-                </div> 
-                
+				
+	<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetClient" title="Refresh" onclick="resetClientFilter();"></a>
+      		<a href="javascript:void(0)" class="refeIcon" id="resetClientContact" style="display: none;" title="Refresh" onclick="resetClientContactFilter();"></a>
+      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+                  <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+					  <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+						<a href="<c:url value='${appPath}/client'/>">Add Client</a>
+					 </sec:authorize>
+					 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+                        <a href="<c:url value='${appPath}/addClientContact'/>">Add Contact</a>
+                     </sec:authorize>					
+					</span>
 				</div>
+			</li>
+						
+			
+				<li id="contactLevel"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="clientFileterPopUp();"></a></li>
+				<li id="clientFiletPopup" style="display: none;"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="clientContactFilterPopUp();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						<sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
+							<a href="<c:url value='${appPath}/uploadClientForm'/>">Import</a>
+						 </sec:authorize>
+						
+						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
+						 <div id="clientImports">
+						 	<a href="javascript:void(0)" onclick="exportClientToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportClientToExcel();" title="Excel">Export Excel</a>
+						 </div>
+		            	</sec:authorize>
+		            
+			             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
+							 <div id="ContactImports" style="display:none">
+							 	<a href="javascript:void(0)" onclick="exportContactToPdf();" title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="exportContactToExcel();" title="Excel">Export Excel</a>
+							 </div>		             
+	                    </sec:authorize>						
+						
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="getClientList();"></span></li>
+        </ul>
+      </div>			
 				
 				<div class="clients_wrap_table datatable_scroll datatable_filter" id ="vendorListFilter">
 			      <input type="hidden" name="clientContactLength" id="clientContactLength" >
@@ -358,7 +341,6 @@ z-index: 1;
 				</div>
 				<div id="popUp"></div>
 			</div>
-		</div>
 
 
        <div class="side_mask"><div class="proj_close" onclick="refresh();"></div></div>
@@ -2473,7 +2455,6 @@ function resetClientContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
 	getClientContactList();
-	 $(".advancedsearch-mask").fadeIn();
 }
 </script>
 <!-- clinet related Fileter popup -->
@@ -2559,3 +2540,30 @@ function resetClientContactFilter(){
 				</div>
 
 <jsp:include page="../masterFooter.jsp" />	
+
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+</script>
+
