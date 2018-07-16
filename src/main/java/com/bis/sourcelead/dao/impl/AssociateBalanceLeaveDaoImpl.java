@@ -499,7 +499,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 				public void execute(java.sql.Connection connection) throws SQLException {
 					boolean initialAutocommitSetting = connection.getAutoCommit();
 					connection.setAutoCommit(false);
-					CallableStatement stmt = connection.prepareCall("{call associateBalanceLeave(?,?,?,?,?,?,?,?,?,?)}");
+					CallableStatement stmt = connection.prepareCall("{call associateBalanceLeave(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 					for(LeaveType leaveType : roleLeaveType) {
 						stmt.setLong(1, user.getId());
 						stmt.setLong(2, orgLocationId);
@@ -531,13 +531,28 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 							}
 						}
 						
-//						stmt.setString(4, leaveType.getNoOfLeaves());
 						stmt.setString(5, SourceLeadRandomCodeHelper.generateRandomUUID());
-						stmt.setInt(6, 1);
-						stmt.setLong(7, user.getId());
-						stmt.setDate(8, new java.sql.Date(new Date().getTime()));
-						stmt.setLong(9, user.getId());
-						stmt.setDate(10, new java.sql.Date(new Date().getTime()));
+						
+						if(leaveType.getLeaveTypeRolesSet() != null && !leaveType.getLeaveTypeRolesSet().isEmpty() && leaveType.getLeaveTypeRolesSet().size() > 0) {
+							stmt.setString(6, leaveType.getLeaveTypeRolesSet().stream().map(l-> String.valueOf(l.getRoleId().getId())).collect(Collectors.joining(",")));
+						}else {
+							stmt.setString(6, null);
+						}
+						if(leaveType.getDepartmentIds() != null) {
+							stmt.setString(7, leaveType.getDepartmentIds());
+						}else {
+							stmt.setString(7, null);
+						}
+						if(!leaveType.getLeaveEmpType().isEmpty()) {
+							stmt.setString(8, leaveType.getLeaveEmpType());
+						}else {
+							stmt.setString(8, null);
+						}
+						stmt.setInt(9, 1);
+						stmt.setLong(10, user.getId());
+						stmt.setDate(11, new java.sql.Date(new Date().getTime()));
+						stmt.setLong(12, user.getId());
+						stmt.setDate(13, new java.sql.Date(new Date().getTime()));
 						stmt.addBatch();
 					}
 					int[] updateCount = stmt.executeBatch();

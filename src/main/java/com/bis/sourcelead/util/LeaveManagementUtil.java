@@ -817,6 +817,25 @@ public class LeaveManagementUtil {
 	}
 
 
+	public float calculateAppliedLeaveMinutes(String fromTime, String toTime, Integer workingHours, LeaveType leaveType){
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mma");
+		DecimalFormat decimal = new DecimalFormat("#0.0000");
+		float fromMinutes = 0;
+        try {
+        	if(StringUtils.isNotBlank(fromTime) && StringUtils.isNotBlank(toTime)){
+        		Date d1 = sdf.parse(fromTime);
+                Date d2 = sdf.parse(toTime);
+                long fromElapsed = d2.getTime() - d1.getTime(); 
+                int fromHours = (int) Math.floor((fromElapsed / 3600000)/60);
+                fromMinutes = (float) Math.floor((fromElapsed - fromHours * 3600000) / 60000);
+        	}
+            
+         } catch (ParseException e) {
+              e.printStackTrace();
+         }
+		
+		return fromMinutes;
+	}
 	public float getNumberofDaysPerPeriodForLeaveType(LeaveType type, Employees emp, User loginUser) throws ParseException
 	{
 		float totalLeaves = 0;
