@@ -160,7 +160,7 @@ public class DumpPublicRestCalls {
 	
 	@RequestMapping(value = "/ws/dumpProjectMembersForProjectClients", method = RequestMethod.GET)
 	@ResponseBody
-	public String dumpProjectMembersForProjectClients() throws Exception {
+	public String dumpProjectMembersForProjectClients() {
 		
 		logger.info("Start Time"+java.time.LocalDateTime.now());
 		List<Projects> projectsList;
@@ -177,8 +177,8 @@ public class DumpPublicRestCalls {
 										for(ProjectMembers projectMembers : projectMembersList) {
 											
 											for(Long pcId : projectClientsIdsList) {
-												boolean flag = projectMembersDao.isProjectMembersExisted(projects.getId(), projectMembers.getMasterCandidateId().getId(), pcId);
-												   if(flag == false) {
+												Boolean flag = projectMembersDao.isProjectMembersExisted(projects.getId(), projectMembers.getMasterCandidateId().getId(), pcId);
+												   if(flag != null && flag == false) {
 													   ProjectMembers pm = new ProjectMembers();
 													   ProjectClients pc = projectClientDao.getProjectClientsById(pcId);
 													   Candidate candidate = candidateService.findByCandidateEmail(projectMembers.getMasterCandidateId().getEmail(), pc.getOrgLocationsId().getId());
@@ -200,8 +200,11 @@ public class DumpPublicRestCalls {
 																 candidate.setOrgRelationId(vendorPc.getOrgRelationId());
 																 candidate.setSpocId(orgSpoc);
 																 Candidate parentCandidate = candidateService.findByCandidateEmail(projectMembers.getMasterCandidateId().getEmail(), vendorPc.getOrgLocationsId().getId());
-																 candidate.setParentCandidateId(parentCandidate);
-																 candidate.setCountry(parentCandidate.getCountry());
+																 if(parentCandidate != null) {
+																	 candidate.setParentCandidateId(parentCandidate);
+																	 candidate.setCountry(parentCandidate.getCountry());
+																 }
+																 
 												    	   }
 												    	   candidate.setCandidateType("Candidate");
 												    	   candidate.setFirstName(projectMembers.getMasterCandidateId().getFirstName());
@@ -252,7 +255,8 @@ public class DumpPublicRestCalls {
 														
 														
 														List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectIdAndMasterCandidateId(projects.getId(), projectMembers.getMasterCandidateId().getId());
-													    for(SubmissionApproverHierarchy sah : sahList) {
+													   if(sahList != null && !sahList.isEmpty()) {
+														for(SubmissionApproverHierarchy sah : sahList) {
 														if(sah != null) {
 															TimesheetSubmissions timesheetSubmissions = sah.getSubmissionId();
 														    Date frequencyStartDate = sah.getFrequencyStartDate();
@@ -288,6 +292,7 @@ public class DumpPublicRestCalls {
 															timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 												     }
 												   }
+													   }
 												   }
 											}
 										}
