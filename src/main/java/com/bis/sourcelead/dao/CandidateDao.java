@@ -146,4 +146,6 @@ public interface CandidateDao {
 	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,Long requirementId,String skills,String candidateDetails) throws Exception;
 
 	List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long orgLocationId, String name);
+	
+	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType) throws Exception;
 }

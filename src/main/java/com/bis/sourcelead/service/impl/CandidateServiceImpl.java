@@ -2472,4 +2472,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getAllActiveCandidatesByLocationName(locationId, name);
 	}
 
+	@Override
+	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType)
+			throws Exception {
+		return candidateDao.getAllActiveCandidatesListByOrglocationId(orgLocationId, employeementType);
+	}
+
 }
