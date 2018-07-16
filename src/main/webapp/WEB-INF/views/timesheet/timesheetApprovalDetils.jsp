@@ -10,42 +10,37 @@
 }
 
 </style>
- <div class="timesheetNewHead">
 
 
+<div class="positionRelative reportHead clearfix">
 
-
-<div class="pull-left ml newAccBtn" id="hedderAcceptRejectButton" style="display: none"><a href="javascript:void(0)" onclick="acceptTimeSheetSubmissionBySubmissionId('approver');" title="Accept"><i class="fa fa-check" ></i></a> <a href="javascript:void(0)" onclick="rejectTimeSheetSubmissionBySubmissionId('approver');"><i class="fa fa-times"></i></a></div>
-
-<div class="remove_search">
-       		<input type="text" placeholder="Search..." value="" id="dataTableSearchExpenses">
+<div class="pull-left ml newAccBtn" id="hedderAcceptRejectButton" style="display: none">
+	<a href="javascript:void(0)" onclick="acceptTimeSheetSubmissionBySubmissionId('approver');" title="Accept"><i class="fa fa-check" ></i></a> 
+	<a href="javascript:void(0)" onclick="rejectTimeSheetSubmissionBySubmissionId('approver');"><i class="fa fa-times"></i></a>
 </div>
-	<div class="pull-left mr">
-		<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetProjectFilter();" title="Refresh">
-			<span class="fa fa-refresh"></span>
-		</button>
 
-		<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center"	title="Filters" onclick="popUpFilterTimesheet();">
-			<i class="fa fa-filter faFilter padding_right"></i>
-	     </a>
-	</div>
-	
-	<c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
-		<div class="export dropexport pull-left mr5" onclick="dropDown();" id="exportHideId">
-			<p data-toggle="tooltip" title="Export">
-				<i class="glyphicon glyphicon-export padding_left"></i>
-			</p>
-			<ul id="exporrt" style="right:auto; left:0;">
-			<li onclick="exportTimeSheetToPdfOrExcel('pdf');"title="PDF"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF</li>
-			<li onclick="exportTimeSheetToPdfOrExcel('excel');"title="Excel"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
-			</ul>
-		</div>
-	</c:if>
-	
-	 <span class="mt5 pull-left" title="TImesheet Import"><a href="<c:url value='${appPath}/uploadTimesheet'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></span>
-	
-	<div class="clearfix"></div>
-</div> 
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetProjectFilter();"></a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="popUpFilterTimesheet();"></a></li>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						<a href="<c:url value='${appPath}/uploadTimesheet'/>">Import</a>
+						<c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
+						 	<a href="javascript:void(0)" onclick="exportTimeSheetToPdfOrExcel('pdf');" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportTimeSheetToPdfOrExcel('excel');" title="Excel">Export Excel</a>	
+						</c:if>		           	   		
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearchExpenses'/><span class="repSearchIcon" onClick=""></span></li>
+        </ul>
+      </div>
+
 <div class="advancedsearch-mask" id="searchMask" onclick="" style="display: none;"></div>
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" style="display: none;" id="popUpFilterTimesheet">
 <h5 class="headerAdsrch">Filters
@@ -429,3 +424,31 @@ function searchClient() {
 }
 
 </script>
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+</script>
+
