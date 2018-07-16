@@ -442,8 +442,16 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 		List<Leave> leaveList = null;
 		ResponseList<Leave> response = new ResponseList<>();
-		String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING' )"+subQuery;
-		String countQuery = "from Leave leave where leave.orgLocations.id =:orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING')"+subQuery;
+		String query = "";
+		String countQuery = "";
+		if(leaveDTO.getIsSuperUser()){
+			query = "from Leave leave where leave.orgLocations.id =:orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING') "+subQuery;
+			countQuery = "from Leave leave where leave.orgLocations.id =:orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING') "+subQuery;
+		}else{
+			query = "from Leave leave where leave.orgLocations.id =:orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING') and leave.id IN (Select lah.leaveid.id from LeaveApproveHierarchy lah where lah.approverUserId.id =:userId) "+subQuery;
+			countQuery = "from Leave leave where leave.orgLocations.id =:orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING') and leave.id IN (Select lah.leaveid.id from LeaveApproveHierarchy lah where lah.approverUserId.id =:userId) "+subQuery;
+		}
+		
 
 		Query queryObj = session.createQuery(query);
 		if (leaveDTO != null && leaveDTO.getLength() > 0) {
@@ -451,17 +459,34 @@ public class LeaveDaoImpl implements LeaveDao{
 			queryObj.setMaxResults(leaveDTO.getLength());
 //			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		}
-		leaveList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+		if(leaveDTO.getIsSuperUser()){
+			leaveList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+		}else{
+			leaveList = queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("userId", Long.parseLong(leaveDTO.getUserId())).list();
+		}
+		
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).list();
+		List<Long> countlist = null;
+		if(leaveDTO.getIsSuperUser()){
+			countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).list();
+		}else{
+			countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setLong("userId", Long.parseLong(leaveDTO.getUserId())).list();
+		}
+		
 		if (countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (leaveDTO != null) {
-			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery)
-					.setLong("orgLocationId", orgLocation.getId()).list();
+			List<Long> filteredCountlist = null;
+			if(leaveDTO.getIsSuperUser()){
+				filteredCountlist = session.createQuery("select count(*) " + countQuery)
+						.setLong("orgLocationId", orgLocation.getId()).list();
+			}else{
+				filteredCountlist = session.createQuery("select count(*) " + countQuery)
+						.setLong("orgLocationId", orgLocation.getId()).setLong("userId", Long.parseLong(leaveDTO.getUserId())).list();
+			}
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}

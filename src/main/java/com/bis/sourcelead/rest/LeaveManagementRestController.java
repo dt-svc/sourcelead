@@ -2158,6 +2158,7 @@ public class LeaveManagementRestController {
 	public @ResponseBody ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO, HttpServletRequest req,
 			HttpServletResponse res) throws Exception {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+		boolean isSuperUser = (boolean) SourceLeadSessionManager.getSessionAttribute(req, "isSuperUser");
 		ResponseList<LeaveDTO> leaveDtoResponse = new ResponseList<>();
 		String[] tableColumns = { "empName", "noOfDays", "status" };
 		int sortColumnIndex = 0; // by default sorting using updated date
@@ -2168,7 +2169,7 @@ public class LeaveManagementRestController {
 		}
 		leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		leaveDTO.setSortOrder(sortColumnOrder);
-
+		leaveDTO.setIsSuperUser(isSuperUser);
 		ResponseList<Leave> response = leaveService.getTopLeavetakers(orgLocation, leaveDTO);
 		List<Leave> leaveList = response.getData();
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
