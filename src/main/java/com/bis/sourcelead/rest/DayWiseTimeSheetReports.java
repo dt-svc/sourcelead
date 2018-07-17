@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -27,8 +29,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DayEntryReportsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
-import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -50,35 +50,19 @@ private String sourceleadUrl;
 
 	
 @RequestMapping(value="/getProjectListBasedOnStartAndEndDate")
-public List<Projects> getProjectListBasedOnStartAndEndDate(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws JsonProcessingException {
+public List<ProjectsDTO> getProjectListBasedOnStartAndEndDate(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws JsonProcessingException {
 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	
+	String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+	String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 	dayWiseTimesheetReoprtsDto.setLocationsId(orgLocations.getId());
 	dayWiseTimesheetReoprtsDto.setLoginUserId(loginUser.getId());
-	List<Projects> projectList  = null;
-	if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("internal")) {
-		try {
-			projectList = projectService.getProjectByOrgLocationsId(orgLocations.getId());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}else if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("client")){
-		try {
-			projectList = projectService.getAllClientProjectsByOrgLocationId(orgLocations.getId());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}else {
-		try {
-			List<Projects> internalprojectList = projectService.getProjectByOrgLocationsId(orgLocations.getId());
-			List<Projects> clientprojectList  = projectService.getAllClientProjectsByOrgLocationId(orgLocations.getId());
-			projectList = new ArrayList<>();
-			projectList.addAll(clientprojectList);
-			projectList.addAll(internalprojectList);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	List<ProjectsDTO> projectList  = null;
+	try {
+		projectList = projectService.getProjectListForDaywiseReports(orgLocations.getId(), org.getId(), isGlobalUser, loginUser.getId(), dayWiseTimesheetReoprtsDto.getTypeOfProject(),userRole);
+	} catch (Exception e) {
+		e.printStackTrace();
 	}
 	 
 	return projectList;

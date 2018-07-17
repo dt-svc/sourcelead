@@ -390,7 +390,7 @@
 		              <div class="col-md-9">
 		                <div class="checkbox checkBox">
 		                  <label>
-		                    <input type="checkbox" value="Y" name="isGlobalAccess">
+		                    <input type="checkbox" value="Y" name="isGlobalAccess" id="isGlobalAccess">
 		                    Is Global Manager</label>
 		                </div>
 		                 </div>
@@ -790,7 +790,12 @@ function getEmployeementType(designationType){
 				        	$("#phoneNumber").attr("readonly", "readonly");
 		        		}else{
 		        			 $("#phoneNumber").removeAttr("readonly", "readonly");
-		        			 //$("#phoneNumber").val('');
+		        		}
+		        		
+		        		if(json.isGlobalUser != null && json.isGlobalUser != '' && json.isGlobalUser == 'Y'){
+		        			$("#isGlobalAccess").attr("disabled", "disabled");
+		        		}else{
+		        			$("#isGlobalAccess").removeAttr("disabled");
 		        		}
 		        		$("#loading").removeAttr('style');
 		        		

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -213,6 +214,10 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	private String sharedClientOrgLocId;
 	
 	private Long sharedProjectCreatedOrgLocId;
+	
+	 private BigInteger projId;
+	
+	
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -1011,5 +1016,13 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setSharedProjectCreatedOrgLocId(Long sharedProjectCreatedOrgLocId) {
 		this.sharedProjectCreatedOrgLocId = sharedProjectCreatedOrgLocId;
+	}
+
+	public BigInteger getProjId() {
+		return projId;
+	}
+
+	public void setProjId(BigInteger projId) {
+		this.projId = projId;
 	}
 }
