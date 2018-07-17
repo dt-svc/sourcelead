@@ -830,13 +830,7 @@ public class CandidateOnBoardRestController {
 				candidateOnBoardingDTO.setJobTitle(candidateOnBoarding.getOfferId().getSubmissionId().getRequirement().getJobTitle());
 				if (null != candidateOnBoarding.getManagerUserId()) {
 					StringBuilder mgName = new StringBuilder();
-					if (candidateOnBoarding.getManagerUserId().getLastName() != null) {
-						candidateOnBoardingDTO.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFirstName())
-								.append(" ").append(candidateOnBoarding.getManagerUserId().getLastName()).toString());
-					} else {
-						candidateOnBoardingDTO
-								.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFirstName()).toString());
-					}
+					candidateOnBoardingDTO.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFullName()).toString());
 				}
 				if (null != candidateOnBoarding.getId()) {
 					candidateOnBoardingDTO.setId((candidateOnBoarding.getId()).toString());

@@ -81,7 +81,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		 if(StringUtils.isEmpty(invoiceFrequency)){
 			invoiceFrequency = "Weekly";
 		 }
-		 String query = "from ProjectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch pm.projects proj left join fetch pm.employee emp  where emp IS NOT NULL and proj.invoiceFrequency = :invoiceFrequency  and can.orgLocationId.id = :orgLocationId";
+		 String query = "from ProjectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch pm.projects proj left join fetch can.consultantUser user  where user IS NOT NULL  and proj.invoiceFrequency = :invoiceFrequency  and can.orgLocationId.id = :orgLocationId";
 		 projectMemberList = session.createQuery(query).setString("invoiceFrequency", invoiceFrequency).setLong("orgLocationId", orgLocationId).list(); 
 		 HashSet<ProjectMembers> projectMemberSet  = null;
 		 if(projectMemberList != null && !projectMemberList.isEmpty()){
@@ -101,7 +101,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					     + " and ( "
 						 + "  (proj.id IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId)) "
 						 + "   OR "
-						 +  ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = loc.id)"
+						 +  ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = loc.id)"
 					     + ") ";
 		 projectMemberList = session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setLong("userId", userId).list(); 
 		 HashSet<ProjectMembers> projectMemberSet  = null;

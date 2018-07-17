@@ -43,7 +43,7 @@
 		</section>
 
 	</form:form>
-	<div class="content-area content-new clearfix">
+	<div class="content-area content-new backWhite clearfix">
 		<!-- <div class="project_wrap"> -->
 		<div class="clearfix">
 			<div class="clearfix">

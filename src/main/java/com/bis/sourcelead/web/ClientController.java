@@ -206,8 +206,10 @@ public class ClientController {
 				if(null != countries){
 				   model.addObject("loginCountryName", countries.getName());
 				}
+				if(countries!= null && countries.getName()!= null) {
 		        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 		        model.addObject("statesList", statesList);
+			}
 			}
 			
 			commonUtil.highLightMenu(Constants.Clients, request);
