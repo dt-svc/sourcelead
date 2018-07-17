@@ -17,6 +17,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.payroll.dao.GenerateUSPayrollDao;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -42,24 +43,38 @@ public class GenerateUSPayrollDaoImpl implements GenerateUSPayrollDao{
 		String dates[] = generateUSPayrollDTO.getPayPeriod().split(",");
 		Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
 		Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
-		Date checkDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), generateUSPayrollDTO.getPayrollPayDate());
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
-		java.sql.Date payDate = new java.sql.Date(checkDate.getTime());
 		Session session = this.sessionFactory.getCurrentSession();
 		PaysheetFrequency paysheetFrequency = null;
 		@SuppressWarnings("unchecked")
-		List<PaysheetFrequency> list = session.createQuery("from PaysheetFrequency pf where pf.userGroup.id =:groupId and pf.orgLocation.id = :orgLocationId and pf.frequencyStartDate = :startDate and pf.frequencyEndDate = :endDate and pf.payCheckDate = :checkDate and type = 'PAYROLL'")
+		List<PaysheetFrequency> list = session.createQuery("from PaysheetFrequency pf where pf.userGroup.id =:groupId and pf.orgLocation.id = :orgLocationId and pf.frequencyStartDate = :startDate and pf.frequencyEndDate = :endDate and pf.type = 'PAYROLL'")
 		.setLong("groupId", userGroup.getId())
 		.setLong("orgLocationId", orgLocation.getId())
 		.setDate("startDate", sqlStartDate)
-		.setDate("endDate", sqlEndDate)
-		.setDate("checkDate", payDate).list();
+		.setDate("endDate", sqlEndDate).list();
 		if (list != null && list.size() > 0) {
 			paysheetFrequency = list.get(0);
 		}
 		return paysheetFrequency;
 	}
 
+	@Override
+	@Transactional
+	public EmployeePayroll getEmployeePayrollByUUID(String payrollUUID)
+	{
+		EmployeePayroll employeePayroll = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			@SuppressWarnings("unchecked")
+			List<EmployeePayroll> list = session.createQuery("from EmployeePayroll payroll where payroll.usEmpPayrollUUID =:payrollUUID").setString("payrollUUID", payrollUUID).list();
+			if (list != null && list.size() > 0) {
+				employeePayroll = list.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return employeePayroll;
+	}
 	
 }

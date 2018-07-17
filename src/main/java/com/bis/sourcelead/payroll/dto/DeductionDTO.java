@@ -15,6 +15,8 @@ public class DeductionDTO {
 	private String description;
 	
 	private String associateDeductionUUID;
+	
+	private String dedTaxType;
 
 	public String getId()
 	{
@@ -74,6 +76,16 @@ public class DeductionDTO {
 	public void setAssociateDeductionUUID(String associateDeductionUUID)
 	{
 		this.associateDeductionUUID = associateDeductionUUID;
+	}
+
+	public String getDedTaxType()
+	{
+		return dedTaxType;
+	}
+
+	public void setDedTaxType(String dedTaxType)
+	{
+		this.dedTaxType = dedTaxType;
 	}
 	
 	

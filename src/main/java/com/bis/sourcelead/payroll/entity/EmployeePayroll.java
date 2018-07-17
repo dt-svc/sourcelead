@@ -74,6 +74,9 @@ public class EmployeePayroll {
 	@Column(name = "US_EMP_PAYROLL_UUID")
 	private String usEmpPayrollUUID;
 	
+	@Column (name="SUBMIT_FOR_APROVER_STATUS")
+	private String submitForAproverStatus;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -97,6 +100,18 @@ public class EmployeePayroll {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
 	private Set<EmployerPayrollTax> employerpayrolltax;
+	
+	
+
+	public String getSubmitForAproverStatus()
+	{
+		return submitForAproverStatus;
+	}
+
+	public void setSubmitForAproverStatus(String submitForAproverStatus)
+	{
+		this.submitForAproverStatus = submitForAproverStatus;
+	}
 
 	public static long getSerialversionuid()
 	{

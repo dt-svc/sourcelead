@@ -29,11 +29,14 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
+import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
+import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.Paysheet;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
+import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
@@ -74,6 +77,9 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 	@Autowired
 	USPaysheetDao uSPaysheetDao;
 	
+	@Autowired
+	AssociateDeductionService associateDeductionService;
+	
 	@Override
 	public ResponseList<USPaysheetDTO> generateUSPaysheet(OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO)
 	{
@@ -108,7 +114,8 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 				
 					paysheetDTO.setEmployeeName(sb.toString());
 					paysheetDTO.setProjPayRate(BigDecimal.valueOf(pm.getPayRate()));
-					paysheetDTO.setGrossPay(new BigDecimal(payrollUtil.getTotalAmount(totalHours,pm.getPayRate())));
+					double amount = payrollUtil.getTotalAmount(totalHours,pm.getPayRate());
+					
 					paysheetDTO.setHours(String.valueOf(totalHours));
 					paysheetDTO.setProjBillRate(new BigDecimal(pm.getCurrentBillRate()));
 					if(pm.getEmployee() != null) {
@@ -120,18 +127,20 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 					User user = userService.getUserbyConsultantUserId(pm.getProjectMemberCandidteId().getConsultantUser().getId());
 					paysheetDTO.setUserId(String.valueOf(user.getId()));
 					paysheetDTO.setProjectMemberId(String.valueOf(pm.getId()));
-					AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(user.getId(), orgLocation);
-				    if(associateTaxView.getTaxType() != null) {
-				    	if("posttax".equalsIgnoreCase(associateTaxView.getTaxType())) {
-							paysheetDTO.setPreDeduction(associateTaxView.getDeductionAmount());
-						}
-				    	if("pretax".equalsIgnoreCase(associateTaxView.getTaxType())) {
-				    		paysheetDTO.setPostDeduction(associateTaxView.getDeductionAmount());
-				    	}
-						
-				    }
-					
-					
+//					AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(user.getId(), orgLocation);
+				    ResponseList<DeductionDTO> res = associateDeductionService.findAllDeductionSummaryByUserId(user.getId(), orgLocation);
+					BigDecimal preTax = BigDecimal.ZERO;
+					BigDecimal postTax = BigDecimal.ZERO;
+				    if(res.getData() != null) {
+						double preDeduction = res.getData().stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
+						preTax = BigDecimal.valueOf(preDeduction);
+						paysheetDTO.setPreDeduction(preTax);
+						double postDeduction = res.getData().stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
+						postTax = BigDecimal.valueOf(postDeduction);
+						paysheetDTO.setPostDeduction(postTax);
+					}
+					BigDecimal gross = BigDecimal.valueOf(amount).subtract(preTax);
+				    paysheetDTO.setGrossPay(gross);
 //					User user = userService.getUserbyConsultantUserId(pm.getProjectMemberCandidteId().getConsultantUser().getId());
 //					int invoiceFrequency = payrollUtil.getProjectInvoiceFrequency(pm.getProjects().getInvoiceFrequency());
 ////					AssociateTaxDTO associateTaxDTO = associateTaxService.findAssociateTaxSummaryByUserId(user.getId(), orgLocation);

@@ -10,4 +10,5 @@ public interface AssociateSalaryService {
 	Response<AssociateSalaryDTO> addAssociateSal(OrgLocations orgLocation, AssociateSalaryDTO associateSalaryDTO, User loginUser);
 
 	AssociateSalaryDTO findAssociateSalaryByUserId(Long userId, OrgLocations orgLocation);
+
 }

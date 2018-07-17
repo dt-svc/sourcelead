@@ -219,11 +219,9 @@ function runUSPayroll(){
 		        	result += '</tr>';
 		        	result += '</thead>	';
 		        	result += '<tbody>';
-		        	alert("json"+json.length)
 		        	if(json != null && json.length > 0){
 		        		for (var i=0; i<json.length; i++){
 		        			var opt = json[i];
-		        			alert(opt.empId);
 		        			result += '<tr>';
 				        	result += '<td>';
 				        	result += '<div class="checkbox-new pull-left ml5">';
@@ -232,7 +230,7 @@ function runUSPayroll(){
 				        	result += '</div>';
 				        	result += '</td>';
 				        	
-				        	result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
+				        	 result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
 				        	 result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
 				        	
 				        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
@@ -257,7 +255,7 @@ function runUSPayroll(){
 				        	}
 				        	
 				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
-				        	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment();">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
+				        	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
 				        	result += '</tr>';  
 			        	}
 			        	
@@ -284,9 +282,190 @@ $('body').on('blur', '#generate_payroll_form', function() {
 </script>
 
 <script>
-	function payAdjustment(){
+	function payAdjustment(payrollUUID){
+		alert(payrollUUID);
+		  $.ajax({
+		  	type: "GET",
+		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID,                 
+		        success: function(data) {
+		            var json = data.object;
+		            $("#empAddress").text(json.employeeAddress);
+		            $("#regularHours").val(json.regularHours);
+		            $("#regularHoursAmt").val(json.regularHrsTotalAmt);
+		            $("#overTimeHours").val(json.overtimeHours);
+		            $("#overTimeHoursAmt").val(json.otHoursTotalAmt);
+		            $("#totalHours").text(json.totalHours);
+		            $("#totalEarnings").text(json.totalEarnings);
+		        	
+		            $("#federal").text(json.federal);
+		            $("#medicare").text(json.medicare);
+		            $("#fica").text(json.fica);
+		            $("#stateWithHolding").text(json.stateWithHolding);
+		            $("#aeic").text(json.aeic);
+		            $("#taxes").text(json.taxes);
+		            
+		            $("#gross").text(json.grossPay);
+		            $("#federalGross").text(json.federal);
+		            $("#ficaGross").text(json.fica);
+		            $("#totalTaxes").text(json.taxes);
+		            $("#dedTotal").text(9999);
+		            $("#netpay").text(json.netPay);
+		                   
+		            
+		                var postDed = "";
+	        			postDed = postDed + '<table width="100%" class="table table-bordered" >';
+			            postDed = postDed + '<thead>';
+			            postDed = postDed + '<tr>';
+			            postDed = postDed + '<th colspan="2">Post Tax Deduction</th>';
+			            postDed = postDed + '</tr>';
+			            postDed = postDed + '</thead>';
+			            postDed = postDed + '<tbody>';
+			            postDed = postDed + '<tr>';
+			            postDed = postDed + '<th>Description</th>';
+			            postDed = postDed + '<th>Amount</th>';
+			            postDed = postDed + ' </tr>';
+			            if(json.postDed != null && json.postDed.length){
+			            	  for (var i=0; i< json.postDed.length; i++){
+					            	var ded = json.postDed[i];
+				        			postDed = postDed + '<tr>';
+				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
+				        			postDed = postDed + ' <td><input type="text" value='+ded.amount+' class="formControl" readOnly></td>';
+				        			postDed = postDed + ' </tr>';
+					            }	
+			            }
+	                      postDed = postDed + '</tbody>';
+	                      postDed = postDed + '<tfoot>';
+	                      postDed = postDed + '<tr>';
+	                      postDed = postDed + '<th>Total</th>';
+	                      postDed = postDed + '<td><span>'+json.postDedTotal+'</span></td>';
+	                      postDed = postDed + '</tr>';
+	                      postDed = postDed + '</tfoot>';
+	                      postDed = postDed + '</table>';
+	                     $("#postdedDiv").empty(); 
+	                      $("#postdedDiv").append(postDed);
+	                     
+	                        var preDed = "";
+	                        preDed = preDed + '<table width="100%" class="table table-bordered" >';
+	                        preDed = preDed + '<thead>';
+	                        preDed = preDed + '<tr>';
+	                        preDed = preDed + '<th colspan="2">Pre Tax Deduction</th>';
+	                        preDed = preDed + '</tr>';
+	                        preDed = preDed + '</thead>';
+	                        preDed = preDed + '<tbody>';
+	                        preDed = preDed + '<tr>';
+	                        preDed = preDed + '<th>Description</th>';
+	                        preDed = preDed + '<th>Amount</th>';
+	                        preDed = preDed + ' </tr>';
+	                        if(json.preDed != null && json.preDed.length){
+				            for (var i=0; i< json.preDed.length; i++){
+				            	var preded = json.preDed[i];
+				            	preDed = preDed + '<tr>';
+				            	preDed = preDed + ' <td>'+preded.deductionType+'</td>';
+				            	preDed = preDed + ' <td><input type="text" value='+preded.amount+' class="formControl" readOnly></td>';
+				            	preDed = preDed + ' </tr>';
+				            }
+	                        }
+				            preDed = preDed + '</tbody>';
+				            preDed = preDed + '<tfoot>';
+				            preDed = preDed + '<tr>';
+				            preDed = preDed + '<th>Total</th>';
+				            preDed = preDed + '<td><span>$ '+json.preDedTotal+'</span></td>';
+				            preDed = preDed + '</tr>';
+				            preDed = preDed + '</tfoot>';
+				            preDed = preDed + '</table>';
+		                      $("#prededDiv").empty();
+		                      $("#prededDiv").append(preDed);
+		                      
+		                      
+		                  var output = "";
+		                  output = output + '<table width="100%" class="table table-bordered">';
+		                  output = output + '<thead>';
+		                  output = output + '<tr>';
+		                  output = output + '<th colspan="2">Contributions</th>';
+		                  output = output + ' </tr>';
+		                  output = output + '</thead>';
+		                  output = output + ' <tbody>';
+		                  output = output + ' <tr>';
+		                  output = output + '  <th>Description</th>';
+		                  output = output + '  <th>Current</th>';
+		                  output = output + ' </tr>';
+		                  if(json.contribution != null && json.contribution.length > 0){
+		                	  for (var i=0; i< json.contribution.length; i++){
+					            	var ot = json.contribution[i];
+					            	output = output + '<tr>';
+					            	output = output + '<td>'+ot.contributionType+'</td>';
+					            	output = output + ' <td><input type="text" value='+ot.contributionAmount+' class="formControl" readOnly></td>';
+					            	output = output + '</tr>';
+			                  }
+		                  }
+	                        output = output + ' </tbody>';
+	                        output = output + ' <tfoot>';
+	                        output = output + '   <tr>';
+	                        output = output + '  <th>Total</th>';
+	                        output = output + '  <td><span>$ '+json.contributionTotal+'</span></td>';
+	                        output = output + '  </tr>';
+	                        output = output + '  </tfoot>';
+	                        output = output + '  </table>';
+	                        $("#employerPaidBenefitDiv").empty();
+	                        $("#employerPaidBenefitDiv").append(output);
+	                        
+	                        
+	                        var payItem = "";
+	                        
+	                        payItem = payItem +'<table width="100%" class="table table-bordered">';
+	                        payItem = payItem +'<thead>';
+	                        payItem = payItem +' <tr>';
+	                        payItem = payItem +'<th colspan="4">Pay Items</th>';
+	                        payItem = payItem +'</tr>';
+	                        payItem = payItem +'  </thead>';
+	                        payItem = payItem +' <tbody>';
+	                        payItem = payItem +' <tr>';
+	                        payItem = payItem +'  <th>Item Name</th>';
+	                        payItem = payItem +'  <th>Amount</th>';
+	                        payItem = payItem +' <th>';
+	                        payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
+	                        payItem = payItem +'		<input id="blockAll" class="checkbox-custom" name="PartofaCTC" type="checkbox">';
+	                        payItem = payItem +'		<label for="blockAll" class="checkbox-custom-label"><span class="ml10">Block</span></label>';
+	                        payItem = payItem +'	</div>';
+	                        payItem = payItem +'    </th>';
+	                        payItem = payItem +'</tr>';
+	                        if(json.payItem != null && json.payItem.length > 0){
+			                	  for (var i=0; i< json.payItem.length; i++){
+						            	var pi = json.payItem[i];
+						            	payItem = payItem +' <tr>';
+						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
+						            	payItem = payItem +' <td><input type="text" class="formControl" readOnly value='+pi.payItemAmount+'></td>';
+						            	payItem = payItem +' <td>';
+						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
+						            	payItem = payItem +' <input id="cashTips" class="checkbox-custom" name="PartofaCTC" type="checkbox">';
+						            	payItem = payItem +' <label for="cashTips" class="checkbox-custom-label"></label>';
+						            	payItem = payItem +' </div>';
+						            	payItem = payItem +' </td>';
+						            	payItem = payItem +' </tr>';
+				                  }
+			                  }
+	                          
+	                          payItem = payItem +'</tbody>';
+	                          payItem = payItem +'<tfoot>';
+	                          payItem = payItem +' <tr>';
+	                          payItem = payItem +'  <th>Total</th>';
+	                          payItem = payItem +'<td><span>$ '+json.payItemTotal+'</span></td>';
+	                          payItem = payItem +' <td></td>';
+	                          payItem = payItem +' </tr>';
+	                          payItem = payItem +' </tfoot>';
+	                          payItem = payItem +' </table>';
+	                          $("#payItemDiv").empty();
+	                          $("#payItemDiv").append(payItem)
+                       
+		        },
+		    }); 
+		
+		
+		
+		
+		
 		$(".usRunpayroll").fadeIn();
-		$(".sideMask").fadeIn();
+		$(".sideMask").fadeIn(); 
 	}
 	function closeusRunpayrol(){
 		$(".usRunpayroll").fadeOut();
@@ -298,6 +477,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
 
 <div class="sideMask"></div>
 <div class="modal usRunpayroll" style="display: none;" id="usRunpayroll">
+<form:form id="generate_payroll_form" name="generate_payroll_form" method="post">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -305,29 +485,17 @@ $('body').on('blur', '#generate_payroll_form', function() {
         <h4 class="modal-title hidden">Pay Stub</h4>
         <div class="row">
           <div class="col-md-3">
-            <label class="clearfix"><strong>Name</strong></label>
-            <div class="clearfix">
-              <select class="selectpicker width100percnt" title="Select Name" data-live-search="true">
-                <option selected></option>
-                <option>Suresh Kumar</option>
-                <option>Sarath Kumar</option>
-                <option>Muralimanohar Kumar</option>
-                <option>Sarath Kumar</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-3">
             <label class="clearfix"><strong>Address</strong></label>
             <div class="clearfix">
-              <p class="mb0">Vertex Corporate, Hyderabad, Telangana 500081</p>
+              <p class="mb0" id="empAddress"></p>
             </div>
           </div>
           <div class="col-md-3">
             <label class="clearfix"><strong>Deposit Type</strong></label>
             <div class="clearfix">
-              <select class="sel" title="Select Name">
-                <option selected>Direct Deposit</option>
-                <option>By Check</option>
+              <select class="sel" title="Select Type" id="depositType" name="depositType">
+                <option value="Direct Deposit">Direct Deposit</option>
+                <option value = "By Check">By Check</option>
               </select>
             </div>
           </div>
@@ -366,20 +534,20 @@ $('body').on('blur', '#generate_payroll_form', function() {
                         </tr>
                         <tr>
                           <td>Regular</td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
+                          <td><input type="text" id="regularHours" name="regularHours" value="" class="formControl" readOnly></td>
+                          <td><input type="text" id="regularHoursAmt" name="regularHoursAmt" value="" class="formControl" readOnly></td>
                         </tr>
                         <tr>
                           <td>Overtime</td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
+                          <td><input type="text" id="overTimeHours" name="overTimeHours" value="" class="formControl" readOnly></td>
+                          <td><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt" value="" class="formControl" readOnly></td>
                         </tr>
                       </tbody>
                       <tfoot>
                         <tr>
                           <th>Total</th>
-                          <td><span>124,783.00</span></td>
-                          <td><span>124,783.00</span></td>
+                          <td><span id="totalHours" >0</span></td>
+                          <td><span id="totalEarnings">0</span></td>
                         </tr>
                       </tfoot>
                     </table>
@@ -387,93 +555,17 @@ $('body').on('blur', '#generate_payroll_form', function() {
                 </tr>
                 <tr>
                   <td colspan="2">
-                     <table width="100%" class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th colspan="4">Pay Items</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th>Item Name</th>
-                          <th>Amount</th>
-                          <th>
-							   <div class="checkbox-new ml mr pull-left">
-									<input id="blockAll" class="checkbox-custom" name="PartofaCTC" type="checkbox">
-									<label for="blockAll" class="checkbox-custom-label"><span class="ml10">Block</span></label>
-								</div>
-                          </th>
-                        </tr>
-                        <tr>
-                          <td>Cash Tips</td>
-                          <td><input type="text" class="formControl" readOnly value="200$"></td>
-                          <td>
-                          		<div class="checkbox-new ml mr pull-left">
-									<input id="cashTips" class="checkbox-custom" name="PartofaCTC" type="checkbox">
-									<label for="cashTips" class="checkbox-custom-label"></label>
-								</div>
-                          </td>
-                        </tr>
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <th>Total</th>
-                          <td><span>200$</span></td>
-                          <td></td>
-                        </tr>
-                      </tfoot>
-                    </table>
+                  <div id="payItemDiv"></div>
                     </td>
                 </tr>
                  
                  <tr>
                   <td>
-                     <table width="100%" class="table table-bordered" >
-                      <thead>
-                        <tr>
-                          <th colspan="2">Post Tax Deduction</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th>Description</th>
-                          <th>Amount</th>
-                        </tr>
-                        <tr>
-                          <td>Description1</td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
-                        </tr>
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <th>Total</th>
-                          <td><span>124,783.00</span></td>
-                        </tr>
-                      </tfoot>
-                    </table></td>
-                  <td><table width="100%" class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th colspan="2">Pre-Tax Deduction</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th>Description</th>
-                          <th>Amount</th>
-                        </tr>
-                        <tr>
-                          <td>Description</td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
-                        </tr>
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <th>Total</th>
-                          <td colspan="2"><span>124,783.00 </span></td>
-                        </tr>
-                      </tfoot>
-                    </table></td>
+                  <div id="postdedDiv"></div>
+                    </td>
+                  <td>
+                  <div id="prededDiv"></div>
+                    </td>
                 </tr>
                 <tr>
                   <td><table width="100%" class="table table-bordered">
@@ -489,59 +581,43 @@ $('body').on('blur', '#generate_payroll_form', function() {
                         </tr>
                         <tr>
                           <td>Federal with holding</td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
+                          <td><span id="federal">0</span></td>
+                         <!--  <td><input type="text" id="federal" name="federal" value="" class="formControl" readOnly></td> -->
                         </tr>
                         <tr>
                           <td>Medicare</td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
+                           <td><span id="medicare">0</span></td>
+                         <!--  <td><input type="text" id="medicare" name="medicare" value="" class="formControl" readOnly></td> -->
                         </tr>
                         <tr>
                           <td>FICA</td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
+                           <td><span id="fica">0</span></td>
+                         <!-- <td><input type="text" id="fica" name="fica" value="" class="formControl" readOnly></td> -->
                         </tr>
+                      
                         <tr>
                           <td>State Withholding</td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
+                          <td><span id="stateWithHolding">0</span></td>
+                         <!--  <td><input type="text" id="stateWithHolding" name="stateWithHolding" value="" class="formControl" readOnly></td> -->
                         </tr>
+                          <tr>
+                          <td>Advanced Earned Income Credit</td>
+                           <td><span id="aeic">0</span></td>
+                          <!-- <td><input type="text" id="aeic" name="aeic" value="124,783.00" class="formControl" readOnly></td> -->
+                        </tr>
+                        
                       </tbody>
                       <tfoot>
                         <tr>
                           <th>Total</th>
-                          <td><span>124,783.00</span></td>
+                          <td><span id="taxes">0</span></td>
                         </tr>
                       </tfoot>
-                    </table></td>
-                  <td><table width="100%" class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th colspan="2">Employer-Paid Benefits</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th>Description</th>
-                          <th>Current</th>
-                        </tr>
-                        <tr>
-                          <td>Healthcare</td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
-                        </tr>
-                        <tr>
-                          <td>Dental</td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
-                        </tr>
-                        <tr>
-                          <td>ABC LIfe Insurance</td>
-                          <td><input type="text" value="124,783.00" class="formControl" readOnly></td>
-                        </tr>
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <th>Total</th>
-                          <td><span>124,783.00</span></td>
-                        </tr>
-                      </tfoot>
-                    </table></td>
+                    </table>
+                    </td>
+                  <td>
+                  <div id="employerPaidBenefitDiv"></div>
+                    </td>
                 </tr>
                 <tr>
                   <td colspan="2"><table class="table table-bordered">
@@ -557,26 +633,26 @@ $('body').on('blur', '#generate_payroll_form', function() {
                       <tbody>
                         <tr>
                           <td>Current</td>
-                          <td>2,062.53</td>
-                          <td>2,062.53</td>
-                          <td>2,062.53</td>
-                          <td>2,062.53</td>
-                          <td>2,062.53</td>
-                          <td>2,062.53</td>
+                            <td><span id="gross">0</span></td>
+                            <td><span id="federalGross">0</span></td>
+                            <td><span id="ficaGross">0</span></td>
+                            <td><span id="totalTaxes">0</span></td>
+                            <td><span id="dedTotal">0</span></td>
+                            <td><span id="netpay">0</span></td>
                         </tr>
                         <tr>
                           <td>YTD</td>
-                          <td>2,062.53</td>
-                          <td>2,062.53</td>
-                          <td>2,062.53</td>
-                          <td>2,062.53</td>
-                          <td>2,062.53</td>
-                          <td>2,062.53</td>
+                          <td>xxxx</td>
+                          <td>xxxx</td> 
+                          <td>xxxx</td>
+                          <td>xxxx</td>
+                          <td>xxxx</td>
+                          <td>xxxx</td>
                         </tr>
                       </tbody>
                     </table></td>
                 </tr>
-                <tr>
+              <!--   <tr>
                   <td><table class="table table-bordered">
                       <tbody>
                         <tr>
@@ -614,7 +690,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
                         </tr>
                       </tbody>
                     </table></td>
-                </tr>
+                </tr> -->
               </tbody>
             </table>
           </div>
@@ -625,7 +701,31 @@ $('body').on('blur', '#generate_payroll_form', function() {
       </div>
     </div>
   </div>
+  </form:form>
 </div>
+
+
+//Net payedit Script
+	<script>
+	function editUspayslip(event){
+		var text = document.getElementById("editUspaysliptext");
+		if(text.innerHTML === "Edit") {
+			text.innerHTML = "Save"
+		}else {
+			text.innerHTML = "Edit"
+		}
+		
+	$("#tablePayslip").find(".formControl").toggleClass("activeEdit");
+		var x = document.getElementsByClassName("formControl"), i;
+		for (i=0; i<x.length; i++) {
+			if(x[i].readOnly) {
+			x[i].readOnly = false;
+			}else {
+			x[i].readOnly = true;
+			}
+		}
+	}
+</script>
 
 <!-- Net Edit popup Ends -->
  

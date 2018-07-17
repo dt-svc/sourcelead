@@ -750,7 +750,7 @@ public class USPayrollRestController {
 		 * @param orgLocation 
 		 * @return List<List<String>> 
 		 */
-	private List<String> getNumberOfWeeks(int year, int month1, OrgLocations orgLocation)
+	private List<String> getNumberOfWeeks(int year, int month, OrgLocations orgLocation)
 	{
 		List<String> payFrequency = new ArrayList<>();
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
@@ -758,7 +758,7 @@ public class USPayrollRestController {
 		List<String> dates;
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.YEAR, year);
-		for (int i = 0; i < month1; i++) {
+		for (int i = 0; i <=month; i++) {
 			c.set(Calendar.MONTH, i);
 			c.set(Calendar.DAY_OF_MONTH, 1);
 			while (c.get(Calendar.MONTH) == i) {
@@ -913,6 +913,24 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<PaysheetFrequencyDTO>  resObj = uSPaysheetService.submitPaysheet(orgLocation,paysheetFrequencyDTO,loginUser);
+		return resObj;
+	}
+	
+	/**
+	 * Get Particular Employee Payroll 
+	 * @param associateSalid
+	 * @param request
+	 * @param response
+	 * @return Response<USPayrollDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getEmployeePayroll","/rest/getEmployeePayroll" }, method = RequestMethod.GET)
+	@ResponseBody
+	public Response<USPayrollDTO> getEmployeePayroll(@RequestParam(value = "payrollUUID",required = false) String payrollUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<USPayrollDTO>  resObj = generateUSPayrollService.getEmployeePayrollByUUID(payrollUUID,orgLocation);
 		return resObj;
 	}
 	
