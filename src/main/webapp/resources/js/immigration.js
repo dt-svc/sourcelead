@@ -879,6 +879,7 @@ function editEducationDEtailsByRowId(id){
         			$('#eduName option[value="'+data.name+'"]').prop("selected", true);
         	        $('#eduName').trigger("chosen:updated");
         			$('#scoreEducationType').val(data.gradeType);
+        			 $('#scoreEducationType').trigger("chosen:updated");
         			$('#immigrationEduStartDate12').val(data.startDateStr);
         			$('#immigrationEduEndDate').val(data.endDateStr);
         			if(data.educationFileName != null){
@@ -1011,41 +1012,6 @@ function validateTemplateName() {
     }
 }
 
-/*function checkFormNames() {
-    formNames = [];
-    var focusedElement;
-    $("input[data-name='formName']").each(function () {
-        if ($(this).is(':focus')) {
-            focusedElement = $(this);
-        } else {
-            $(this).parent().find('p.jquery_form_error_message').remove();
-            if (formNames.indexOf($(this).val().trim()) < 0) {
-                formNames.push($(this).val().trim());
-            } else {
-                $(".nextBtn").addClass("disableBtn");
-                if ($(this).find('p.jquery_form_error_message').length === 0)
-                    $(this).after("<p class='jquery_form_error_message'>" + $(this).val().trim() + " is Already Existed</span>");
-                return;
-            }
-        }
-    });
-    if (focusedElement) {
-        focusedElement.parent().find('p.jquery_form_error_message').remove();
-        if (formNames.indexOf(focusedElement.val().trim()) < 0) {
-            formNames.push(focusedElement.val().trim());
-        } else {
-            $(".nextBtn").addClass("disableBtn");
-            if (focusedElement.find('p.jquery_form_error_message').length === 0)
-                focusedElement.after("<p class='jquery_form_error_message'>" + focusedElement.val().trim() + " is Already Existed</span>");
-            return;
-        }
-    }
-    if (formNames.length === $("input[data-name='formName']").length) {
-        $(".nextBtn").removeClass("disableBtn");
-        return true;
-    }
-    return false;
-}*/
 function checkTaskNames(newName, immiTaskId) {
     if (newName !== null && newName !== "") {
         $.ajax({

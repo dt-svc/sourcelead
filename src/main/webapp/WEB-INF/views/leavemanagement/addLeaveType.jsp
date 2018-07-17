@@ -263,13 +263,20 @@
 							<div class="form-group" id="departmentDiv">
 								<label class="col-md-4">Select Department</label>
 								<div class="col-md-6 dropdown-select">
-									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();"
-										id="department" field-name="Department"
+									<select class="chosen-select form-control" multiple name="department" onchange="removeErrMsg();"
+										id="department" field-name="Department" data-placeholder="Select Departmnets"
 										data-validation-optional="true">
-										<option value="">--Select Department--</option>
 										<c:forEach var="report" items="${departmentList}">
-											<option value="${report.id}"
-												${report.id  == departmentId ? 'selected' : ''}>${report.departmentName}</option>
+										    <c:set var="NUM" value="${0}" />
+											<c:forEach var="existedDepartment" items="${leaveType.departmentIds}">
+												<c:if test="${existedDepartment eq report.id}">
+													<c:set var="NUM" value="${1}" />
+													<option selected value="${report.id}">${report.departmentName}</option>
+												</c:if>
+											</c:forEach>
+											<c:if test="${NUM == 0}">
+												<option value="${report.id}">${report.departmentName}</option>
+											</c:if>
 										</c:forEach>
 									</select>
 								</div>
@@ -1455,7 +1462,8 @@ function leavepolicyDescription(){
 	}
 	
 	function carryForwardYesUsers(){
-// 		$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
+		$('#noOfdaysToCarryforward').attr('data-validation-optional', "true");
+		$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
 		$("#noOfDaysDiv").show();
 		$("#noOfdaysToCarryforward").val('');
 	}
@@ -1672,7 +1680,7 @@ function getNoOfDaysPerPeriodExperienced(){
  function validateAutoApprove(){
 	 var ckbox = $('#autoApproveChekBox');
 		if (ckbox.is(':checked')) {
-			$("#grade").attr('checked', true);
+			$("#grade").prop('checked', true);
 			getGradeList();
 		}else{
 			$("#grade").removeAttr("checked");

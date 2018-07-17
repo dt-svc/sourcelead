@@ -1835,8 +1835,7 @@ public class InvoiceRestController {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
 		Org org = orgLocation.getOrg();
 		Invoice invoice = invoiceService.saveExpenseInvoice(invoiceDTO, user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceCategory);
-		if (invoice != null && invoice.getExpensesId() != null
-				&& Constants.SENT.equalsIgnoreCase(saveType)) {
+		if (invoice != null && invoice.getExpensesId() != null) {
 			invoiceService.updateExpensesForinvoice(invoice, invoiceType);
 		}
 		if (Constants.PAYABLE.equals(invoiceType) && Constants.DRAFT.equals(saveType)) {

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import static org.mockito.Matchers.doubleThat;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,6 +17,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +28,7 @@ import java.util.regex.Pattern;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.common.util.SortedArraySet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -32,6 +37,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +53,12 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.JobFairRequirementsDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
@@ -58,6 +68,8 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.JobCustomFieldData;
+import com.bis.sourcelead.entity.JobFair;
+import com.bis.sourcelead.entity.JobFairRequirements;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -82,6 +94,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -1097,6 +1110,66 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		}
 		requirementElkUtil.saveElkRequirement(savedRequirement, requirementDTO);
+		
+		if (requirementDTO.isJobFair()) {
+			if (requirementDTO.getJobFairDates() != null && requirementDTO.getJobFairDates().length > 0) {
+				List<Long> deleteIdsList = requirementDao.getJobFairRequirementsIdListByRequirementId(savedRequirement.getId());
+				if(deleteIdsList == null) {
+					deleteIdsList = new LinkedList<>();
+				}
+				Map<Long, String> reqMap = new HashMap<>();
+				for (String dateString : requirementDTO.getJobFairDates()) {
+					reqMap.put(Long.parseLong(dateString.split(":")[0]), "");
+				}
+				for (Long id : reqMap.keySet()) {
+					String dates = "";
+					for (String dateString : requirementDTO.getJobFairDates()) {
+						if ((Long.parseLong(dateString.split(":")[0]) == id) && dateString.split(":").length > 1) {
+							dates += (dates.isEmpty() ? "" : ",") + dateString.split(":")[1];
+						}
+					}
+					reqMap.put(id, dates);
+				}
+				for (Long id : reqMap.keySet()) {
+					/*System.out.println("Map ID : " + id + " values : " + reqMap.get(id));*/
+					JobFair jobFair = requirementDao.getJobFair(id);
+					if (jobFair != null) {
+						boolean addFlag = false;
+						JobFairRequirements jobFairRequirements = null;
+						long jobFairRequirementId = requirementDao.getJobFairRequirementsIdByJobFairIdAndRequirementId(jobFair.getId(),
+								savedRequirement.getId());
+						jobFairRequirements = requirementDao.getJobFairRequirementsById(jobFairRequirementId);
+						if (jobFairRequirements == null) {
+							addFlag = true;
+							jobFairRequirements = new JobFairRequirements();
+							jobFairRequirements.setJobFair(jobFair);
+							jobFairRequirements.setRequirement(savedRequirement);
+						}
+
+						jobFairRequirements.setFairDates(reqMap.get(id));
+						if (addFlag) {
+							jobFair.getJobFairRequirementList().add(jobFairRequirements);
+							requirementDao.saveJobFair(jobFair);
+						} else {
+							requirementDao.saveJobFairRequirements(jobFairRequirements);
+						}
+						deleteIdsList.remove(jobFairRequirementId);
+					}
+				}
+				if(!deleteIdsList.isEmpty()) {
+					for(Long jobFairRequirementId : deleteIdsList) {
+						requirementDao.deleteJobFairRequirement(jobFairRequirementId);
+					}
+				}
+			}
+		} else {
+			List<Long> jobFairRequirementIdList = requirementDao.getJobFairRequirementsIdListByRequirementId(savedRequirement.getId());
+			if(jobFairRequirementIdList!= null) {
+				for(Long jobFairRequirementId : jobFairRequirementIdList) {
+					requirementDao.deleteJobFairRequirement(jobFairRequirementId);
+				}
+			}
+		}
 		return savedRequirement;
 	}
 
@@ -2755,6 +2828,26 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId,
 				userType, userId, userCode, isWalkIn, walkinDay);
 	}
+	
+	@Override
+	public List<String> getJobFairDaysListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId) {
+		List<String> datesList = new LinkedList<>();
+		try {
+			List<Requirement> requirementList = requirementDao.getJobFairDaysListByOrgLocationIDAndUserId(orgLocationId,
+					userType, userId);
+			if (requirementList != null && !requirementList.isEmpty()) {
+				for (Requirement requirement : requirementList) {
+					for(String day:requirement.getWalkInDays().split(";")) {
+						if(!datesList.contains(day))
+							datesList.add(day);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return datesList;
+	}
 
 	@Override
 	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId,
@@ -3790,4 +3883,287 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getAllRequirementsForCandidateSubmission(requirementDTO, userId, orgLocations);
 	}
 
+	/*private SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");*/
+	
+	/*@Override
+	public long addRequirementToJobFairs(List<JobFairDTO> jobFairDTOList) {
+		try {
+			for (JobFairDTO jobFairDTO : jobFairDTOList) {
+				JobFair jobFair = requirementDao.getJobFair(jobFairDTO.getId());
+
+				JobFairRequirements jobFairRequirements = null;
+				if (jobFairDTO.getJobFairRequirementId() > 0) {
+					jobFairRequirements = requirementDao.getJobFairRequirementsByJobFairIdAndRequirementId(jobFairDTO.getId(), jobFairDTO.getRequirementId());
+				} else {
+					jobFairRequirements = new JobFairRequirements();
+				}
+				jobFairRequirements.setJobFair(jobFair);
+				jobFairRequirements.setRequirement(requirementDao.getRequirementByRequirementId(jobFairDTO.getRequirementId()));
+				String fairDates = "";
+				for (String fairDate : jobFairDTO.getRequirementFairDates()) {
+					fairDates += (fairDates.isEmpty() ? "" : ",") + fairDate;
+				}
+				jobFairRequirements.setFairDates(fairDates);
+				jobFair.getJobFairRequirementList().add(jobFairRequirements);
+				return requirementDao.saveJobFair(jobFair);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}*/
+	
+/*	@Override
+	public long addRequirementToJobFair(long jobFairId, long requirementId, String jobFairDates[]) {
+		try {
+			JobFair jobFair = requirementDao.getJobFair(jobFairId);
+			Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
+			if (jobFair != null && requirement != null) {
+				JobFairRequirements jobFairRequirements = new JobFairRequirements();
+				jobFairRequirements.setJobFair(jobFair);
+				jobFairRequirements.setRequirement(requirement);
+				String fairDates = "";
+				for (String date : jobFairDates) {
+					fairDates += (fairDates.isEmpty() ? "" : ",") + date;
+				}
+				jobFairRequirements.setFairDates(fairDates);
+				jobFair.getJobFairRequirementList().add(jobFairRequirements);
+				return requirementDao.saveJobFair(jobFair);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}*/
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public Response<String> saveJobFair(JobFairDTO jobFairDTO, User user, OrgLocations orgLocations) {
+		Response<String> response = new Response<>();
+		try {
+			JobFair jobFair = null;
+			if (jobFairDTO.getId() > 0) {
+				jobFair = requirementDao.getJobFair(jobFairDTO.getId());
+			} else {
+				jobFair = new JobFair();
+				jobFair.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
+				jobFair.setDescription("");
+				jobFair.setStatus(1);
+			}
+			jobFair.setName(jobFairDTO.getName());
+			jobFair.setBudget(Double.parseDouble(jobFairDTO.getBudget()));
+			jobFair.setDescription(jobFairDTO.getDescription());
+			jobFair.setUser(user);
+			jobFair.setOrgLocations(orgLocations);
+			jobFair.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getStartDate()));
+			jobFair.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getEndDate()));
+			jobFair.setPostedFrom(jobFairDTO.getPostedFrom());
+			jobFair.setDateFormat(orgLocations.getDateFormat());
+			List<JobFairRequirements> jobFairRequirementList = new LinkedList<>();
+			JSONArray jsonArray = new JSONArray(jobFairDTO.getRequirementJSONData());
+			if (jsonArray != null && jsonArray.length() > 0) {
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject jsonObject = jsonArray.getJSONObject(i);
+					if (jsonObject != null) {
+						Long id = jsonObject.getLong("id");
+						Long requirementId = jsonObject.getLong("requirementId");
+						String fairDates = jsonObject.getString("fairDates");
+						JobFairRequirements jobFairRequirements = null;
+						if (id > 0) {
+							jobFairRequirements = requirementDao.getJobFairRequirementsById(id);
+						} else {
+							jobFairRequirements = new JobFairRequirements();
+						}
+						jobFairRequirements.setJobFair(jobFair);
+						Requirement requirement = getRequirementByRequirementId(requirementId);
+						jobFairRequirements.setRequirement(requirement);
+						jobFairRequirements.setFairDates(fairDates);
+						jobFairRequirementList.add(jobFairRequirements);
+					}
+				}
+			}
+			jobFair.setJobFairRequirementList(jobFairRequirementList);
+			jobFair.setVenue(jobFairDTO.getVenue());
+			jobFair.setNotifyTo(jobFairDTO.getNotifyTo());
+			long result = requirementDao.saveJobFair(jobFair);
+			if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+	@Override
+	public ResponseList<JobFairDTO> getJobFairsList(JobFairDTO jobFairDTO, boolean includeInactive) {
+		ResponseList<JobFairDTO> jobFairDTOList = new ResponseList();
+		try {
+			ResponseList<JobFair> jobFairList = requirementDao.getJobFairList(jobFairDTO, includeInactive);
+			List<JobFairDTO> dtoList  = new LinkedList<>();
+			if (jobFairList != null && !jobFairList.getData().isEmpty()) {
+				for (JobFair jobFair : jobFairList.getData()) {
+					dtoList.add(getJobFairDetails(jobFair));
+				}
+			}
+			jobFairDTOList.setData(dtoList);
+			jobFairDTOList.setRecordsTotal(jobFairList.getRecordsTotal());
+			jobFairDTOList.setRecordsFiltered(jobFairList.getRecordsFiltered());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jobFairDTOList;
+	}
+
+	@Override
+	public JobFairDTO getJobFairByUUID(String uuid) {
+		JobFairDTO jobFairDTO = new JobFairDTO();
+		try {
+			JobFair jobFair = requirementDao.getJobFairByUUID(uuid);
+			if (jobFair != null) {
+				jobFairDTO = getJobFairDetails(jobFair);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jobFairDTO;
+	}
+
+	private JobFairDTO getJobFairDetails(JobFair jobFair) {
+		JobFairDTO jobFairDTO = new JobFairDTO();
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(jobFair.getDateFormat());
+			
+			jobFairDTO.setId(jobFair.getId());
+			jobFairDTO.setUuid(jobFair.getUuid());
+			jobFairDTO.setName(jobFair.getName());
+			jobFairDTO.setBudget(CommonUtil.toFixed2(jobFair.getBudget()));
+			jobFairDTO.setDescription(jobFair.getDescription());
+			jobFairDTO.setStartDate(sdf.format(jobFair.getStartDate()));
+			jobFairDTO.setEndDate(sdf.format(jobFair.getEndDate()));
+			
+			SimpleDateFormat dateFormat = new SimpleDateFormat(jobFair.getOrgLocations().getDateFormat());
+			if(jobFair.getStartDate() != null) {
+				jobFairDTO.setStartDateStr(dateFormat.format(jobFair.getStartDate()));
+			}
+			if(jobFair.getEndDate() != null) {
+				jobFairDTO.setEndDateStr(dateFormat.format(jobFair.getEndDate()));
+			}
+			jobFairDTO.setPostedFrom(jobFair.getPostedFrom());
+			jobFairDTO.setVenue(jobFair.getVenue());
+			jobFairDTO.setNotifyTo(jobFair.getNotifyTo());
+			jobFairDTO.setStatus(jobFair.getStatus());
+			jobFairDTO.setDateFormat(jobFair.getDateFormat());
+			List<JobFairRequirementsDTO> jobFairRequirementsDTOList = new LinkedList<>();
+			String requirements = "";
+			for (JobFairRequirements jobFairRequirements : jobFair.getJobFairRequirementList()) {
+				requirements += (requirements.isEmpty() ? "" : ",") + jobFairRequirements.getFairDates();
+				JobFairRequirementsDTO jobFairRequirementsDTO = new JobFairRequirementsDTO();
+				jobFairRequirementsDTO.setId(jobFairRequirements.getId());
+				jobFairRequirementsDTO.setJobFairId(jobFairRequirements.getJobFair().getId());
+				jobFairRequirementsDTO.setJobFairName(jobFairRequirements.getJobFair().getName());
+				jobFairRequirementsDTO.setRequirementId(jobFairRequirements.getRequirement().getId());
+				jobFairRequirementsDTO.setRequirementTitle(jobFairRequirements.getRequirement().getJobTitle());
+				jobFairRequirementsDTO.setFairDates(jobFairRequirements.getFairDates());
+				jobFairRequirementsDTOList.add(jobFairRequirementsDTO);
+			}
+			jobFairDTO.setJobFairRequirementList(jobFairRequirementsDTOList);
+			jobFairDTO.setRequirementJSONData(requirements);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jobFairDTO;
+	}
+
+	@Override
+	public boolean changeJobFairStatus(Long jobFairId, int status) {
+		try {
+			return requirementDao.changeJobFairStatus(jobFairId, status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public List<JobFair> getJobFairsListByRequirementId(Long requirementId) {
+		List<JobFair> jobFairList = new LinkedList<>();
+		try {
+			jobFairList = requirementDao.getJobFairListByRequirementId(requirementId);
+			if(jobFairList!=null && !jobFairList.isEmpty()) {
+				for(JobFair jobFair : jobFairList) {
+					SimpleDateFormat sdf = new SimpleDateFormat(jobFair.getDateFormat());
+					jobFair.setStartDateString(sdf.format(jobFair.getStartDate()));
+					jobFair.setEndDateString(sdf.format(jobFair.getEndDate()));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jobFairList;
+	}
+	
+	
+
+	@Override
+	public List<JobFairDTO> getJobFairsDTOListByRequirementId(long requirementId) {
+		List<JobFairDTO> jobFairDTOList = new LinkedList<>();
+		try {
+			List<JobFair> jobFairList = getJobFairsListByRequirementId(requirementId);
+			if(jobFairList!=null && !jobFairList.isEmpty()) {
+				for(JobFair jobFair : jobFairList) {
+					jobFairDTOList.add(getJobFairDetails(jobFair));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jobFairDTOList;
+	}
+
+	@Override
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat) {
+		List<String> jobFairDatesList = new LinkedList<>();
+		try {
+			SimpleDateFormat dateFormatSDF = new SimpleDateFormat(dateFormat);
+			SimpleDateFormat convertToFormatSDF = new SimpleDateFormat("yyyy/MM/dd");
+			Set<String> jobFairDatesSet = new SortedArraySet<>();
+			List<String> jobFairDates = requirementDao.getJobFairDatesForCalendar(userId, orgLocationId, dateFormat);
+			if (jobFairDates != null && !jobFairDates.isEmpty()) {
+				for (String fairDate : jobFairDates) {
+					for (String date : fairDate.split(",")) {
+						if(!date.isEmpty()) {
+							String formattedDate = convertToFormatSDF.format(dateFormatSDF.parse(date));
+							jobFairDatesSet.add(date);
+							
+							if (!jobFairDatesList.contains(formattedDate))
+								jobFairDatesList.add(formattedDate);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jobFairDatesList;
+	}
+
+	@Override
+	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date) {
+		List<Requirement> requirementList = new LinkedList<>();
+		try {
+			requirementList = requirementDao.getRequirementsByJobFairDate(userId, orgLocationId, dateFormat, date);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return requirementList;
+	}
+	
 }

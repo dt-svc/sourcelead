@@ -927,39 +927,13 @@ $(document).ready(function () {
 								value="" onclick="getTemplateVal();">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Save as a Template</strong>
+					<label>&nbsp;&nbsp;<strong>Save as Template</strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>
 			</div>
 			
-			<div class="form-group">
-				<div class="ml">
-					<input type="checkbox" name="walkIn" id="isWalkIn" ${requirement.walkIn ? "checked='checked'" : ""}>
-						<label for="isWalkIn">&nbsp;&nbsp;<strong>Is Daily Drive</strong> &nbsp;&nbsp;
-						</label>
-				</div>
-				<div id="selectWalkInDiv" ${requirement.walkIn ? "" : "style='display: none;'"}>
-					<label class="col-md-3">Select Drive Day(s)</label>
-					<div class="col-md-6">
-						<select multiple class="chosen-select form-control"
-							name="walkInDays" data-placeholder="Select WalkIn Day(s)"
-							id="walkInDays" field-name="Drive Day">
-							<c:forEach items="Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday" var="day">
-								<c:set var="selected" value="false"></c:set>
-								<c:if test="${requirement.walkInDays!=null && requierment.walkInDays != ''}">
-									<c:forEach items="${requirement.walkInDays.split(',')}" var="selectedDay">
-										<c:if test="${selectedDay eq day}">
-											<c:set var="selected" value="true"></c:set>
-										</c:if>
-									</c:forEach>
-								</c:if>
-								<option value="${day}" ${selected?"selected='selected'":""}>${day}</option>	
-							</c:forEach>
-						</select>
-					</div>
-				</div>
-			</div>
+			
 
 								<c:if test="${!empty sourceleadSectionList}">
 	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
@@ -970,7 +944,117 @@ $(document).ready(function () {
 	   	</c:if>
         
       </div>
-      <div class="clearfix mt">
+
+		<div class="clearfix">
+			<div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
+				<div class="ml">
+					<input type="checkbox" name="jobFair" id="isJobFair"
+						${requirement.jobFairList != null && requirement.jobFairList.size() > 0 ? "checked='checked'" : ""}> <label
+						for="isJobFair">&nbsp;&nbsp;<strong>Job Fair</strong>
+						&nbsp;&nbsp;
+					</label>
+				</div>
+				<div id="selectJobFairDiv" ${requirement.jobFairList != null && requirement.jobFairList.size() > 0 ? "" : "style='display: none;'"}>
+					<%-- <label class="col-md-3">Select Drive Day(s)</label>
+					<div class="col-md-6">
+						<select multiple class="chosen-select form-control"
+							name="walkInDays" data-placeholder="Select WalkIn Day(s)"
+							id="walkInDays" field-name="Drive Day">
+							<c:forEach
+								items="Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday"
+								var="day">
+								<c:set var="selected" value="false"></c:set>
+								<c:if
+									test="${requirement.walkInDays!=null && requierment.walkInDays != ''}">
+									<c:forEach items="${requirement.walkInDays.split(',')}"
+										var="selectedDay">
+										<c:if test="${selectedDay eq day}">
+											<c:set var="selected" value="true"></c:set>
+										</c:if>
+									</c:forEach>
+								</c:if>
+								<option value="${day}" ${selected?"selected='selected'":""}>${day}</option>
+							</c:forEach>
+						</select>
+					</div> --%>
+					<div class="clearfix">
+						<h3>Choose Job Fair</h3>
+					</div>
+					<div class="row">
+						<div class="col-md-7">
+							<label class="col-md-3">Job Fair<span class="text-danger paddingLeft">*</span></label>
+							<div class="col-md-9 chooRadius">
+								<div class="row">
+								<div class="col-md-9">
+								<select multiple class="chosen-select form-control" name="jobFairId" id="jobFairList">
+									
+								</select>
+								</div>
+								<div class="col-md-3">
+								<div title="Clear" onclick="getJobFairList();getSavedJobFairsForRequirement();" class="fa fa-refresh btn btn-primary pull-left"></div>
+								<div title="Add" onclick="addNewJobFair();" class="fa fa-plus btn btn-default pull-right"></div>
+							</div>
+							</div>
+							</div>
+							<%-- <div class="col-md-9 chooRadius">
+                  				<div class="input-group col-md-9 pull-left">
+									<select class="chosen-select form-control select-bg" data-validation-optional="true" field-name="Client" name="jobFairId" id="selectJobFair" onchange="getJobFairDates(this);">
+					                    
+		                   		    </select>
+								</div>
+								<span class="col-md-3 noPad clearfix"><a href="<c:url value='/app/addJobFair'/>" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn" title="add new JobFair"></i></a>
+								<span class="input-group-addon cursorPointer bg-blue refreshBtn" onclick="getJobFairList();"><i class="fa fa-refresh "></i></span>
+								</span>
+							</div> --%>
+							
+							<%-- <div id="jobFairDatesDiv" class="multiJob" ${requirement.jobFairList != null && requirement.jobFairList.size() > 0 ? "" : "style='display: none;'"}> --%>
+							<div id="jobFairDatesDiv" class="multiJob">
+								<c:set var="datesCount" value="0"></c:set>
+								<c:forEach items="${requirement.jobFairList}" var="jobFairs">
+									<div class="multiJobMain" data-id="${jobFairs.id}" name="jobFairMap[0].key">
+										<!-- <i class="fa fa-times" onclick="removeJobFair($(this))"></i> -->
+										<div>${jobFairs.name}</div>										
+										<div class="multiJobTitle clearfix">
+											<h2 class="pull-left">Fair runs from ${jobFairs.startDateString} to ${jobFairs.endDateString}</h2>
+											<span class="pull-right">
+												<input class="form-control calendar jobFairCalendar calendarIcon" readonly="readonly" type="text" data-date_format="${jobFairs.dateFormat}" data-start_date="${jobFairs.startDateString}" data-end_date="${jobFairs.endDateString}" data-job_fair_id="${jobFairs.id}">
+											</span>
+										</div>
+									
+										<div class="multiJobDate clearfix">
+											<c:forEach items="${jobFairs.jobFairRequirementList}" var="jobFairRequirement">
+												<c:if test="${jobFairRequirement.requirement.id == requirement.id}">
+													<c:choose>
+														<c:when test="${jobFairRequirement.fairDates != null && jobFairRequirement.fairDates != ''}">
+															<c:forEach items="${jobFairRequirement.fairDates.split(',')}" var="fairDate">													
+																<span class="reqDate" data-value="${fairDate}">${fairDate}<i class="fa fa-times" onclick="removeJobFairDate($(this))"></i>
+																<input value="${jobFairs.id}:${fairDate}" name="jobFairDates[${datesCount}]" type="hidden">
+																<%-- <input value="${fairDate}" name="jobFairMap[0].value[0]" type="hidden"> --%>
+																</span>
+																<c:set var="datesCount" value="${datesCount + 1}"></c:set>
+															</c:forEach>
+														</c:when>
+														<c:otherwise>
+															<div class="reqDate"><input value="${jobFairs.id}" name="jobFairDates[0]" type="hidden">
+															Select optional JobFair dates(s)</div>
+														</c:otherwise>
+													</c:choose>
+												</c:if>
+											</c:forEach>
+										</div>
+									</div>
+								</c:forEach>
+							</div>
+							<!-- <div class="pull-left input_minmax">
+							    <input class="form-control valid" id="" name="" field-name="" value="" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" type="text">
+							</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
 	        <c:if test="${(SourceLeadWeb_vms == 'Y' && SourceLeadWeb_ats == 'Y') || (SourceLeadWeb_vms != 'Y')}">
 	        
@@ -991,7 +1075,7 @@ $(document).ready(function () {
 						   <div class="ml">
 							  <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 							   ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
-							   <label>&nbsp;&nbsp;<strong>Is Client Job <i class='fa fa-info-circle' title='Post the job including the related client information'></i>
+							   <label>&nbsp;&nbsp;<strong>Client Job <i class='fa fa-info-circle' title='Post the job including the related client information'></i>
 							   </strong>
 								&nbsp;&nbsp;
 							   </label>
@@ -1586,6 +1670,92 @@ $(document).ready(function () {
    <i class="fa fa-times" onclick="removeLocationRow(REPLACEROWID);"></i> 
 </div> 
 
+<script>
+	var orgLocationDateFormat = "${orgLocationDateFormat}";
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var jsDateFormat= '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  jsDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  jsDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  jsDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  jsDateFormat = 'yy-dd-mm'; 
+	  }
+	  $('#closedDate').datepicker({
+	      dateFormat: jsDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true,
+	  	  minDate: 1,
+	  	onSelect : function(selected) {
+	  		  document.getElementById("receivingApplicantsDiv").style.display="block";
+	  	}
+	  });
+	  
+	function initializeDatePicker() {
+		$('.jobFairCalendar').each(function () {
+			var datePickerDateFormat = '';
+			var dateFormat = $(this).data("date_format");
+			var startDate = $(this).data("start_date");
+			var endDate = $(this).data("end_date");
+			var stDate = new Date(startDate);
+			var enDate = new Date(endDate);
+/* 			var finalStartDate = "";
+			var finalEndDate = "";
+			if(dateFormat.match("yyyy-MM-dd")) {
+				finalStartDate = startDate.split("-")[0] + "-" + startDate.split("-")[1] + "-" + startDate.split("-")[2];
+				finalEndDate = endDate.split("-")[0] + "-" + endDate.split("-")[1] + "-" + endDate.split("-")[2];
+			} if(dateFormat.match("dd-MM-yyyy")) {
+				finalStartDate = startDate.split("-")[2] + "-" + startDate.split("-")[1] + "-" + startDate.split("-")[0];
+				finalEndDate = endDate.split("-")[2] + "-" + endDate.split("-")[1] + "-" + endDate.split("-")[0];
+			} if(dateFormat.match("MM-dd-yyyy")) {
+				finalStartDate = startDate.split("-")[2] + "-" + startDate.split("-")[0] + "-" + startDate.split("-")[1];
+				finalEndDate = endDate.split("-")[2] + "-" + endDate.split("-")[0] + "-" + endDate.split("-")[1];
+			} if(dateFormat.match("yyyy-dd-MM")) {
+				finalStartDate = startDate.split("-")[0] + "-" + startDate.split("-")[2] + "-" + startDate.split("-")[1];
+				finalEndDate = endDate.split("-")[0] + "-" + endDate.split("-")[2] + "-" + endDate.split("-")[1];
+			} */
+			$(this).removeClass('hasDatepicker').datepicker({
+				dateFormat : jsDateFormat,
+				changeMonth : true,
+				changeYear : true,
+				minDate : startDate,
+				maxDate : endDate,
+				onSelect : function(selected) {
+					var parentDiv = $(this).parents(".multiJobMain").find(".multiJobDate");
+					parentDiv.find("div").remove();
+					if(parentDiv.find("span[data-value='" + $(this).val() + "']").length === 0) {
+						var text = "<span class='reqDate' data-value='" + $(this).val() + "'>" + $(this).val() + "<i class='fa fa-times' onclick='removeJobFairDate($(this))'></i>";
+						text += "<input value=" + $(this).data("job_fair_id") + ":" + $(this).val() + " name='jobFairDates[0]' type='hidden'>";
+						text += "</span>";
+						parentDiv.append(text);
+						updateJobFairDatesIndex();
+					}
+				}
+			});
+		});
+		/* alert("DatePicker initialized"); */
+	}
+	var requirementId = "";
+	$(document).ready(function () {
+		requirementId = "${requirement.id}";
+		if(${requirement.jobFairList != null && requirement.jobFairList.size() > 0})
+			initializeDatePicker();
+		
+		getJobFairList();
+		
+		$(document).on('change', '#jobFairList', function(evt, params) {
+			if (params.selected && params.selected != undefined) {
+				addOrRemoveSelectedJobFair(params.selected, false);
+			}
+			if (params.deselected && params.deselected != undefined) {
+				addOrRemoveSelectedJobFair(params.deselected, true);
+			}
+		});
+	});
+</script>
+
 <script type="text/javascript">
 	function checkManagerAndPrimaryRecruiterSelection(ele) {
 		if($("#managerId").val() === $("#primaryRecruiterUserId").val()){
@@ -1595,15 +1765,183 @@ $(document).ready(function () {
 			$("#primaryRecruiterUserId").parent().find("p").remove();
 		}
 	}
-	$("#isWalkIn").change(function(){
+	
+	function getSavedJobFairsForRequirement() {
+		if(requirementId > 0) {
+			/* alert("getSavedJobFairsForRequirement()"); */
+			$.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/jobFairsByRequirementId?requirementId="+requirementId, 	   
+				    success: function(result) {
+				    	if(result != null && result != 'undefined' && result !='' ){
+				    		if (result.response === "SESSION_TIMEDOUT") {
+								location.replace(sourceleadUrl);
+							} else if (result.response === "AWKWARD") {
+								location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								var data = result.data;
+					    		var text = "";
+					    		for(var e in data) {
+					    			var index = 0;
+					    			text += "<div class='multiJobMain' data-id='" + data[e].id + "' name='jobFairMap[0].key'>";
+					    			text += "	<div>" + data[e].name + "</div>";										
+					    			text += "	<div class='multiJobTitle clearfix'>";
+					    			text += "		<h2 class='pull-left'>Fair runs from " + data[e].startDate + " to " + data[e].endDate + "</h2>";
+					    			text += "		<span class='pull-right'>";
+					    			/* text += "			<input class='form-control calendar jobFairCalendar calendarIcon' readonly='readonly' type='text' data-date_format='dd-MM-yyyy' data-start_date='28-07-2018' data-end_date='05-08-2018' data-job_fair_id=2>"; */
+					    			text += "			<input class='form-control calendar jobFairCalendar calendarIcon' readonly='readonly' type='text' data-date_format='" + data[e].dateFormat + "' data-start_date='" + data[e].startDateStr + "' data-end_date='" + data[e].endDateStr + "' data-job_fair_id=" + data[e].id + ">";
+					    			text += "		</span>";
+					    			text += "	</div>";
+
+					    			text += "	<div class='multiJobDate clearfix'>";
+					    			for(var e1 in data[e].jobFairRequirementList) {
+					    				if(data[e].jobFairRequirementList[e1].requirementId == requirementId) {
+					    					if(data[e].jobFairRequirementList[e1].fairDates != null && data[e].jobFairRequirementList[e1].fairDates != '') {
+					    						var fairDates = data[e].jobFairRequirementList[e1].fairDates.split(",");
+					    						for(var d in fairDates) {					    							
+						    						text += "<span class='reqDate' data-value='" + fairDates[d] + "'>" + fairDates[d] + "<i class='fa fa-times' onclick='removeJobFairDate($(this))'></i>";
+						    						text += "<input value='" + data[e].id + ":" + fairDates[d] + "' name='jobFairDates[" + (index++) + "]' type='hidden'>";
+						    						text += "</span>";	
+					    						}
+					    					} else {
+					    						text += "<div class='reqDate'><input value='" + data[e].id + "' name='jobFairDates[0]' type='hidden'>";
+					    						text += "	Select optional JobFair dates(s)</div>";
+					    					}
+					    				}
+					    			}
+					    			text += "	</div>";
+					    			text += "</div>";
+								}
+					            $("#jobFairDatesDiv").empty();
+					            $("#jobFairDatesDiv").append(text);
+					            /* $("#jobFairList").trigger("chosen:updated"); */
+					            /* $("#jobFairDatesDiv").hide(); */
+					            initializeDatePicker();
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+								showError("Operation failed, please try again");
+							}
+				    	} 
+				    }
+				});
+		}
+	}
+	
+	function getJobFairList() {
+		var selectedJobFairs = "${selectedJobFairsString}";
+		var requirementId = "${requirement.id}";
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/searchJobFairs", 	   
+			    success: function(result) {
+			    	if(result != null && result != 'undefined' && result !='' ){
+			    		if (result.response === "SESSION_TIMEDOUT") {
+							location.replace(sourceleadUrl);
+						} else if (result.response === "AWKWARD") {
+							location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							var data = result.data;
+				    		var output = "";
+				    		/* output = output + "<option value=''>--Select JobFair--</option>"; */ 
+				    		for(var e in data) {
+				    			var selected = false;
+				    			if(selectedJobFairs && selectedJobFairs != "") {
+				    				for(var i in selectedJobFairs.split(",")) {
+										if(parseInt((selectedJobFairs.split(",")[i]).split(":")[0]) === data[e].id) {
+						    				selected = true;
+										}												    					
+				    				}
+				    			}
+				        		output = output + "<option " + (selected === true ? "selected='selected'":"") + " value='" + data[e].id + "' data-date_format=" + data[e].dateFormat + " data-start_date=" + data[e].startDate + " data-end_date=" + data[e].endDate + ">" + data[e].name + "</option>";
+							}
+				            $("#jobFairList").empty();
+				            $("#jobFairList").append(output);
+				            $("#jobFairList").trigger("chosen:updated");
+				            /* $("#jobFairDatesDiv").hide(); */
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+							showError("Operation failed, please try again");
+						}
+			    	} 
+			    }
+			});
+	}
+	
+	$("#isJobFair").change(function(){
 		if($(this).is(":checked")) {
-			$("#selectWalkInDiv").show();
-			$("#walkInDays").attr("data-validation", "required");
+			/* getJobFairList(); */
+			$("#selectJobFairDiv").show();
 		} else {
-			$("#selectWalkInDiv").hide();
-			$("#walkInDays").removeAttr("data-validation");
+			$("#selectJobFairDiv").hide();
+			/* $("#jobFairList").empty(); */
+			/* $("#jobFairDatesDiv").hide(); */
 		}
 	});
+	var index = 0;
+	var datesCount = "${datesCount}";
+	
+	function updateJobFairDatesIndex() {
+		var i = 0;
+		$(".reqDate").each(function() {
+			$(this).find("input").attr("name","jobFairDates[" + (i++) + "]");
+		});
+		datesCount = i;
+	}
+	
+	function addOrRemoveSelectedJobFair(id, removedFlag) {
+		if(removedFlag) {
+			$(".multiJobMain[data-id=" + id + "]").remove();		
+		} else {
+			$("#jobFairList option").each(function () {
+				if($(this).val() === id) {					
+					var text = "<div class='multiJobMain' name='jobFairMap[0].key' data-id=" + id + ">";
+					/* text += "		<i class='fa fa-times' onclick='removeJobFair($(this))'></i>"; */
+					text += "			<div>" + $(this).text() + " </div>";	
+					text += "			<div class='multiJobTitle clearfix'>";
+					text += "				<h2 class='pull-left'>Fair runs from " + $(this).data("start_date") + " to " + $(this).data("end_date") + "</h2>";
+					text += "				<span class='pull-right'>";
+					text += "					<input class='form-control calendar jobFairCalendar calendarIcon' readonly='readonly' type='text' data-date_format='" + $(this).data("date_format") + "' data-start_date='" + $(this).data("start_date") + "' data-end_date='" + $(this).data("end_date") + "' data-job_fair_id=" + id + ">";
+					text += "				</span>";
+					text += "			</div>";
+			
+					text += "			<div class='multiJobDate clearfix'>";
+					text += "				<div class='reqDate'><input value='" + id + "' name='jobFairDates[" + (datesCount++) + "]' type='hidden'>Select optional JobFair date(s)</div>";
+					text += "			</div>";
+					text += "		</div>";
+					
+					$("#jobFairDatesDiv").append(text);
+				}
+			});
+			initializeDatePicker();
+		}
+		updateJobFairDatesIndex();
+	}
+	
+	function removeJobFairDate(ele) {
+		var parentDiv = $(ele).parents(".multiJobDate");
+		$(ele).parent().remove();
+		updateJobFairDatesIndex();
+		if(parentDiv.find("span").length > 0) {
+			/* parentDiv.find("div").remove();
+			var i = 0;
+			$(parentDiv.find("span")).each(function () {
+				$(this).find("input").attr("name","jobFairDates[" + (i++) + "]")	
+			});
+			index = i; */
+		} else {
+			parentDiv.append("<div class='reqDate'><input value='" + $(parentDiv).parents(".multiJobMain").data("id") + "' name='jobFairDates[0]' type='hidden'>Select optional JobFair dates(s)</div>");
+		}
+	}
+	
+	function updateSelectedJobRows() {
+		
+	}
+	
+	function addNewJobFair() {
+		window.open(sourceleadUrl + "/addJobFair", "_blank");
+	}
 </script>
 
 <script>
@@ -1640,29 +1978,6 @@ function getCustomDependentField(sectionId){
 				 }
 		  });
 }
-</script>
-
-<script>
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var jsDateFormat= '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  jsDateFormat = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  jsDateFormat = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  jsDateFormat = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  jsDateFormat = 'yy-dd-mm'; 
-	  }
-	  $('#closedDate').datepicker({
-	      dateFormat: jsDateFormat,
-	      changeMonth: true,
-	  	  changeYear: true,
-	  	  minDate: 1,
-	  	onSelect : function(selected) {
-	  		  document.getElementById("receivingApplicantsDiv").style.display="block";
-	  	}
-	  });
 </script>
 
 <script>

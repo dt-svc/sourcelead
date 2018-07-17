@@ -86,7 +86,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 			 countTotal[1] = 0l;
 			if(dayWiseTimesheetReoprtsDto.getStartDate() != null && dayWiseTimesheetReoprtsDto.getEndDate()!= null) {
 				Workbook createExcelworkbook = new XSSFWorkbook();
-				DateFormat DF_YMD  = new SimpleDateFormat("yyyy-MM-dd");
+				DateFormat DF_YMD  = new SimpleDateFormat(orgloc.getDateFormat());
 				SimpleDateFormat WEEK_DAY =  new SimpleDateFormat("EEEE"); 
 				String weekDayName = "";
 				String status ="";
@@ -162,59 +162,46 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				weekDayName = WEEK_DAY.format(dayEntries.getTimesheetDate());
 				if (dayEntries.getTimesheetDate() != null) {
 					writeRow.createCell(0).setCellValue(DF_YMD.format(dayEntries.getTimesheetDate()));
-							//commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getTimesheetDate()));
-					//createExcelsheet.autoSizeColumn(0);
 				}
 				if (weekDayName != null && !"".equalsIgnoreCase(weekDayName)) {
 					writeRow.createCell(1).setCellValue(weekDayName);
-					//createExcelsheet.autoSizeColumn(1);
 				}
 				if (dayEntries.getEmployeeName() != null) {
 						writeRow.createCell(2).setCellValue(dayEntries.getEmployeeName());
-						//createExcelsheet.autoSizeColumn(2);
 				}
 				
 				if (dayEntries.getEmployeeEmail() != null) {
 					writeRow.createCell(3).setCellValue(dayEntries.getEmployeeEmail());
-					//createExcelsheet.autoSizeColumn(3);
 				}
 				
 				if (dayEntries.getDepartmentName()!= null) {
 							writeRow.createCell(4).setCellValue(dayEntries.getDepartmentName());
-							//createExcelsheet.autoSizeColumn(4);
 				}else {
 						writeRow.createCell(4).setCellValue("");
 				}
 				
 				if (dayEntries.getTicketNo()!= null) {
 					writeRow.createCell(5).setCellValue(dayEntries.getTicketNo());
-					//createExcelsheet.autoSizeColumn(5);
 				}
 				
 				if (dayEntries.getProjectName() != null) {
 					writeRow.createCell(6).setCellValue(dayEntries.getProjectName());
-					//createExcelsheet.autoSizeColumn(6);
 				}
 				
 				if (dayEntries.getTask() != null) {
 					writeRow.createCell(7).setCellValue(dayEntries.getTask());
-					//createExcelsheet.autoSizeColumn(7);
 				}
 				if (dayEntries.getBillableHrs() != null) {
 					writeRow.createCell(8).setCellValue(dayEntries.getBillableHrs());
-					//createExcelsheet.autoSizeColumn(8);
 				}
 				if (dayEntries.getNonBillableHrs() != null) {
 					writeRow.createCell(9).setCellValue(dayEntries.getNonBillableHrs());
-					//createExcelsheet.autoSizeColumn(9);
 				}
 				if (dayEntries.getStatus() != null) {
 					writeRow.createCell(10).setCellValue(dayEntries.getStatus());
-					//createExcelsheet.autoSizeColumn(10);
 				}
 				if (dayEntries.getComments() != null) {
 					writeRow.createCell(11).setCellValue(dayEntries.getComments());
-					//createExcelsheet.autoSizeColumn(11);
 				}
 				if(StringUtils.isNotEmpty(dayEntries.getStatus())) {
 					if(dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
@@ -246,13 +233,10 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 							approvedDate = DF_YMD.format(dayEntries.getApprovedDate());
 					}
 				//}
-				//createExcelsheet.autoSizeColumn(12);
 				writeRow.createCell(12).setCellValue(submittedDate);
-				//createExcelsheet.autoSizeColumn(13);
 				writeRow.createCell(13).setCellValue(approvedDate);
 				if (dayEntries.getCandidateLocation() != null) {
 					writeRow.createCell(14).setCellValue(dayEntries.getCandidateLocation());
-					//createExcelsheet.autoSizeColumn(11);
 				}
 				
 			return createExcelsheet;
@@ -492,7 +476,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		}
 		*/
 		private String[] prepareDaywiseReportPdfData(String[] headers, DayWiseTimesheetReoprtsListDTO dayEntries, OrgLocations orgloc, long totalBillable, long totalNonbillable) {
-			 String dayArray[] = new String[headers.length];
+			    String dayArray[] = new String[headers.length];
 				String weekDayName;
 				SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
 				weekDayName = dayFormat.format(dayEntries.getTimesheetDate());
@@ -536,7 +520,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				}
 				
 				String status = null;
-				if(dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
+				if(StringUtils.isNotEmpty(dayEntries.getStatus()) && dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
 					status = "SUBMITTED";
 				}else {
 					status = dayEntries.getStatus();
@@ -544,31 +528,18 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				
 				String submittedDate =  null;
 				String approvedDate =  null;
-				/*Map<String,Date>dateMap = getSubmittedAndApprovedDate(dayEntries.getProjectId().longValue(),dayEntries.getMasterCandidateId().longValue(),dayEntries.getSahFrequenchStartDate(),dayEntries.getSahFrequenchEndDate(),status);
-				String submittedDate =  null;
-				String approvedDate =  null;
-				if(dateMap != null && !dateMap.isEmpty()) {
-					if(dateMap.get("SUBMITTED") != null) {
-						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("SUBMITTED"));
-					}
-					
-                    if(dateMap.get("APPROVED") != null) {
-                    	approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("APPROVED")); 
-					}
+				
+				if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
+					if(dayEntries.getSubmittedDate() != null)
+					submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+				}else if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("APPROVED")) {
+					if(dayEntries.getSubmittedDate() != null)
+					submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+					if(dayEntries.getApprovedDate() != null)
+					approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getApprovedDate()); 
 				}
-				else {*/
-					if(status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
-						if(dayEntries.getSubmittedDate() != null)
-						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
-					}else {
-						if(dayEntries.getSubmittedDate() != null)
-						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
-						if(dayEntries.getApprovedDate() != null)
-						approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getApprovedDate()); 
-					}
-				//}
-				 dayArray[12] = submittedDate;
-				 dayArray[13] = approvedDate;
+			    dayArray[12] = submittedDate;
+				dayArray[13] = approvedDate;
 				if(dayEntries.getCandidateLocation()!= null) {
 					if(dayEntries.getCandidateLocation().endsWith(","))
 					{
@@ -581,39 +552,23 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		}
 		
 		
-		private static void headerCellStyle(PdfPCell cell){
+	 private static void headerCellStyle(PdfPCell cell){
 		    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		    cell.setPaddingTop(0f);
 		    cell.setPaddingBottom(7f);
 		    cell.setBackgroundColor(new BaseColor(0,121,182));
 		    cell.setBorder(0);
 		    cell.setBorderWidthBottom(2f);
-		    }
-
-		@Override
-		public ResponseList<DayWiseTimesheetReoprtsListDTO> getDayEntriesList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgloc, User loginUser,String isGlobalUser) throws Exception {
-			Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
-			Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
-			ResponseList<DayWiseTimesheetReoprtsListDTO> timeEntryDataMap = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
-			/*List<Long> projectIds = new ArrayList<Long>();
-			if(dayWiseTimesheetReoprtsDto.getProjectMemberListId()!= null && !dayWiseTimesheetReoprtsDto.getProjectMemberListId().isEmpty() && (dayWiseTimesheetReoprtsDto.getProjectIds() == null || dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty())) {
-			for(Long projectMemberId:dayWiseTimesheetReoprtsDto.getProjectMemberListId()) {
-				 ProjectMembers projectMember = projectMemberService.getProjectMemberById(projectMemberId);
-				 if(projectMember!=null) {
-					 List<ProjectMembers> projectMemberList = projectMemberService.getProjectMembersListByOrgIdAndMasterCandidateId(orgloc.getOrg().getId(),projectMember.getMasterCandidateId().getId());
-					 projectMemberList.forEach(pm ->projectIds.add(pm.getProjects().getId()));
-					 if(projectMemberList!= null && !projectMemberList.isEmpty()) {
-						 timeEntryDataMap = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(projectIds, startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId());
-					}
-				}
-			}
-		}else if(dayWiseTimesheetReoprtsDto.getProjectIds() != null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty() && dayWiseTimesheetReoprtsDto.getProjectMemberListId()!= null && !dayWiseTimesheetReoprtsDto.getProjectMemberListId().isEmpty()){
-			 timeEntryDataMap = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId());
-			}else {*/
-				timeEntryDataMap = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId());
-			/*}*/
-		return timeEntryDataMap;
 	}
+
+	@Override
+	public ResponseList<DayWiseTimesheetReoprtsListDTO> getDayEntriesList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgloc, User loginUser,String isGlobalUser) throws Exception {
+		Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
+		Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
+		ResponseList<DayWiseTimesheetReoprtsListDTO> timeEntryDataMap = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
+			timeEntryDataMap = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId());
+	   return timeEntryDataMap;
+    }
 
 
 

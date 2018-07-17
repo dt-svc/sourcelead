@@ -447,7 +447,7 @@ function filterStatus() {
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedBudget+'">'+estimatedBudget+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
 		                
-		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
+		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N" || '${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
 		                	
 		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 				                	result = result + '	<td><div class="tbldata-dotdot_80">';
@@ -456,7 +456,7 @@ function filterStatus() {
 				                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
 				                		   
 				                		 if(opt.rateHistroyList == 'Y'){
-				                			 result = result + '<span title="Edit Employee"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+				                			 result = result + '<span title="Payrate History"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
 				                		  }  
 				                		     result = result + '<span title="Edit Employee"><i class="glyphicon glyphicon-edit" onClick="editProjectAssignedMember('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
 				                		 '</sec:authorize>';
@@ -507,12 +507,14 @@ function filterStatus() {
 			                     }
 		                	
 		                }else{
-		                	result = result + '<td><div class="tblminwidth-50">---</div></td>';
+		                	 result = result + '<td><div class="tblminwidth-50">';
+			                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
+			                		 result = result + '<font color="green">&nbsp;Active</font>';	 
+			                	 }else{
+			                		 result = result + '<font color="red">&nbsp;In-Active</font>';	
+			                	 }
+		                	 result = result +'</div></td>';
 		                }
-		                
-		               
-	                    	 
-		                
 		                
 		                
 		                result = result + '	 </tr>';

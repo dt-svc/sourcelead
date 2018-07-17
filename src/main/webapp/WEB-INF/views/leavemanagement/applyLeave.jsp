@@ -173,7 +173,7 @@ window.onload = function() {
             </div>
               
             <div class="form-group" id="durationDiv" style="display:none">
-             	<label class="col-md-12" id="durationId"></label>
+             	<label class="col-md-12" id="durationId" name="durationHrs"></label>
             </div>
               
             <div class="form-group">
@@ -213,28 +213,29 @@ window.onload = function() {
 <%--             </c:if> --%>
 
 		<div class="clearfix"></div>
-		<c:if test="${!empty leave.notifyToOthers}">
-         <div class="form-group" id="notifyToOthersDiv">
-				<div class="ml">
-							<input  type="checkbox" checked name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
-					<label>&nbsp;&nbsp;Notify to others
-						&nbsp;&nbsp;
-					</label>
+		 <sec:authorize access="hasAnyRole('LEAVE_NOTIFY_TO_OTHTERS')"> 
+			<c:if test="${!empty leave.notifyToOthers}">
+	         <div class="form-group" id="notifyToOthersDiv">
+					<div class="ml">
+								<input  type="checkbox" checked name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
+						<label>&nbsp;&nbsp;Notify to others
+							&nbsp;&nbsp;
+						</label>
+					</div>
 				</div>
-			</div>
+				</c:if>
+				
+			<c:if test="${empty leave.notifyToOthers}">
+	         <div class="form-group" id="notifyToOthersDiv">
+					<div class="ml">
+								<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
+						<label>&nbsp;&nbsp;Notify to others
+							&nbsp;&nbsp;
+						</label>
+					</div>
+				</div>
 			</c:if>
-			
-		<c:if test="${empty leave.notifyToOthers}">
-         <div class="form-group" id="notifyToOthersDiv">
-				<div class="ml">
-							<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
-					<label>&nbsp;&nbsp;Notify to others
-						&nbsp;&nbsp;
-					</label>
-				</div>
-			</div>
-		</c:if>
-			
+			</sec:authorize>
 			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
               <label class="col-md-3">&nbsp;&nbsp;</label>
               <div class="col-md-9">
@@ -508,11 +509,30 @@ function calcaulateDuraton(){
 	 }else{
 		 userId = '${SourceLeadWeb_userId}';
 	 }
+	
+	var fromHalfcheck = $('#checkbox-2');
+	var toHalfcheck = $('#checkbox-3');
+	var fromHalfDay = "";
+	var toHalfDay = "";
+	if (fromHalfcheck.is(':checked')) {
+		fromHalfDay = "Yes";
+	}
+	if (toHalfcheck.is(':checked')) {
+		toHalfDay = "Yes";
+	}
+	var fromDateFromHalfTime = $("#fromDateHalfTime").val();
+	var fromDateToHalfTime = $("#toDateHalfTime").val();  
+	var toDateFromHalfTime = $("#toDateFromHalfTime").val();
+	var toDateToHalfTime = $("#toDateToHalfTime").val();
+	
 	if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined' && leaveTypeUUID != null && leaveTypeUUID != '' && leaveTypeUUID != 'undefined'){
-		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId,  function(result) {
-			if(result != null){
+		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId+
+				"&fromHalfDay="+fromHalfDay+"&toHalfDay="+toHalfDay+"&fromDateFromHalfTime="+fromDateFromHalfTime+
+				"&fromDateToHalfTime="+fromDateToHalfTime+"&toDateFromHalfTime="+toDateFromHalfTime+
+				"&toDateToHalfTime="+toDateToHalfTime,  function(result) {
+			if(result.object != null){
 				$("#durationDiv").show();
-				$("#durationId").html("Duration : "+result+" day(s)");
+				$("#durationId").html("Duration : "+result.object+" day(s)");
 			}
 		}); 
 	}else{
@@ -521,7 +541,7 @@ function calcaulateDuraton(){
 	}
 	
 }
- </script>
+</script>
 
 
 <script type="text/javascript">
@@ -587,7 +607,7 @@ function calcaulateDuraton(){
             	  var totalBalanceCounts = counts.totalBalanceLeaveCounts;
             	  var totalPendingCounts = counts.pendingLeaveCounts;
             	  var totalTakenCounts = counts.takenLeaves;
-        		  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
+        		  getpieChar(totalBalanceCounts.toFixed(2),totalPendingCounts,totalTakenCounts);
         		  
         		  
         		  var result = "";
@@ -800,7 +820,8 @@ function applyLeave(){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
-	  	var formData = $($('#apply_leave_form')[0]).serialize();
+// 	  	var formData = $($('#apply_leave_form')[0]).serialize();
+	  	var formData = getFormData('apply_leave_form');
 		$("#leaveLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveId="+leaveId+"&currentStage="+currentStage, formData, function(result) {
 			if (result && result.response === "INVALID_DATA") {
@@ -910,6 +931,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
     		    		$("#toDate").attr('data-validation');
+    		    		document.getElementById("halfDayHidingDiv").style.display = 'block';
     		    	}else if(duration == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
@@ -1153,7 +1175,7 @@ function validateDate(){
 			}
 			
 			if(errorMessage != ""){
-//		     	$("#ApplyLeave").attr('disabled','disabled');
+		     	$("#ApplyLeave").attr('disabled','disabled');
 		    	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
 		    	$(".warMess").fadeIn();
 		    	$(".comMask").fadeIn();
@@ -1250,6 +1272,7 @@ $("#toDateToHalfTime").timepicker({
 	 'step': 15
 }).on('changeTime', function() {
     $("#toDateFromHalfTime").timepicker('option', 'maxTime', $(this).val());
+    calcaulateDuraton();
 }); 
 
 

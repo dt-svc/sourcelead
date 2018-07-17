@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.JobFairRequirementsDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
@@ -41,6 +45,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ClientCustomFieldData;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.JobCustomFieldData;
+import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -61,6 +66,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.rest.DashboardRestController;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -190,6 +196,9 @@ public class RequirementController {
 	@Autowired
 	private JobCustomFieldDataService jobCustomFieldDataService;
 	
+	@Autowired
+	private DashboardRestController dashboardRestController;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -214,7 +223,7 @@ public class RequirementController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.addObject("loginUser",loginUser);
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		model.addObject("orgLocationDateFormat", orgLocations.getDateFormat());
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
 	     model.addObject("actionId",action.getId());
 		
@@ -225,6 +234,17 @@ public class RequirementController {
 			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
 			model.addObject("requirementUUID", requirementUUID);
 			model.addObject("requirementStatus", requirement.getRequirementSubmissionStatus());
+			
+			if (requirement != null) {
+				requirement.setJobFairList(requirementService.getJobFairsListByRequirementId(requirement.getId()));
+				if (requirement.getJobFairList() != null) {
+					String selectedJobFairsString = "";
+					for (JobFair jobFair : requirement.getJobFairList()) {
+						selectedJobFairsString += (selectedJobFairsString.isEmpty() ? "" : ",") + jobFair.getId() + ":" + jobFair.getName();
+					}
+					model.addObject("selectedJobFairsString", selectedJobFairsString);
+				}
+			}
 
 			if (requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())) {
 
@@ -594,6 +614,70 @@ public class RequirementController {
 		model.addObject("usersListForAssignTeam", usersListForAssignTeam);*/
 		return model;
 
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
+	@RequestMapping(value = { "/addJobFair", "/editJobFair" })
+	public ModelAndView jobFair(HttpServletRequest request, @RequestParam(defaultValue = "") String uuid) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (loginUser != null) {
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+
+				if (!uuid.isEmpty()) {
+					JobFairDTO jobFairDTO = requirementService.getJobFairByUUID(uuid);
+					modelAndView.addObject("jobFair", jobFairDTO);
+
+					String requirementString = "";
+					for (JobFairRequirementsDTO jobFairRequirementsDTO : jobFairDTO.getJobFairRequirementList()) {
+						String req = jobFairRequirementsDTO.getRequirementId() + ":" + jobFairRequirementsDTO.getRequirementTitle();
+						if (!requirementString.contains(req)) {
+							requirementString += (requirementString.isEmpty() ? "" : ",") + req;
+						}
+					}
+					String reqString = dashboardRestController
+							.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(jobFairDTO.getPostedFrom(), request);
+					if (reqString != null) {
+						JSONArray jsonArray = new JSONArray(reqString);
+						for (int i = 0; i < jsonArray.length(); i++) {
+							JSONObject jsonObject = jsonArray.getJSONObject(i);
+							String req = jsonObject.getString("id") + ":" + jsonObject.getString("jobTitle");
+							if (!requirementString.contains(req)) {
+								requirementString += (requirementString.isEmpty() ? "" : ",") + (req);
+							}
+						}
+					}
+					/*System.out.println("Requirement String : " + requirementString);*/
+					modelAndView.addObject("requirementString", requirementString);
+				}
+			} else {
+				modelAndView.setViewName("login");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		modelAndView.setViewName("requirement/addJobFair");
+		return modelAndView;
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
+	@RequestMapping(value = "/jobFairSummary")
+	public ModelAndView jobFairSummary(HttpServletRequest request, @RequestParam(defaultValue = "") String uuid) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (loginUser != null) {
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+				modelAndView.addObject("jobFair", requirementService.getJobFairByUUID(uuid));
+			} else {
+				modelAndView.setViewName("login");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		modelAndView.setViewName("requirement/jobFairSummary");
+		return modelAndView;
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")

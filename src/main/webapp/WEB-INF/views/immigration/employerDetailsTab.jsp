@@ -171,7 +171,7 @@
 		                  </select>
 				</div>
 				<div class="col-md-4" id="startYearDiv">
-					<input type="text" max class="form-control input-sm" value="" id="startYear" name="startYear" placeholder="Enter Year"
+					<input type="text" max class="form-control input-sm" value="" maxlength="4" id="startYear" name="startYear" placeholder="Enter Year"
 						field-name="Start Year"
 						data-validation="validate_Space validate_extno validate_length length4-4"
 						data-validation-optional="true">
@@ -201,13 +201,14 @@
 		                  </select>
 				</div>
 				<div class="col-md-4" id="startYearDiv">
-					<input type="text" max class="form-control input-sm" value="" id="endYear"  name="endYear" placeholder="Enter Year"
+					<input type="text" max class="form-control input-sm" value="" maxlength="4" id="endYear"  name="endYear" placeholder="Enter Year"
 						field-name="End Year"
 						data-validation="validate_Space validate_extno validate_length length4-4"
 						data-validation-optional="true" onChange="monthIfYearRequired();">
 						
 				</div>
 				<p id="endYearValidation" class="small text-danger" style="display: none"></p>
+				
 				</div>
 			</div>	
 			<div class="col-sm-12 noPad mt clearfix" id="immigrationEmpDocDiv">
@@ -248,6 +249,9 @@
 	</form>
 	
 <script>
+
+
+
 	function employercurrentPosition() {
 		var currentposition = document.getElementById("isCurrentPosition").checked;
 		if (currentposition) {
