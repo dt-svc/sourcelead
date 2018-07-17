@@ -2266,6 +2266,13 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 
 				}
 		
+		public void dataValidationForLCA(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy,
+				User user, OrgLocations orgLocation) throws Exception {
+			
+			   System.out.println(" inside LCA Data validation block method Need to add code for validation ===================================>");
+			
+			//errorSet.put("", "");
+		}
 		
 		
 		public void dataValidationForAsscoaites(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation, String isGlobalAccess) throws Exception {

@@ -226,6 +226,9 @@
 	                 		<a href="/app/uploadImmigrationForm">Import</a>
 							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
 						</span>
+						<!-- <span>
+	                 		<a href="/app/uploadLcaForm">Import LCA</a>
+						</span> -->
 					</div>
 				</li>
 		    	</sec:authorize>

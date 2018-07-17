@@ -354,6 +354,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					dataMigrationCommonUtil.dataValidationForImmigration(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
 					break;
+				case "lcaUpload":
+					dataMigrationCommonUtil.dataValidationForLCA(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation);
+					//System.out.println(" inside validateImportedFormData lcaUpload case ==========>");
+					break;
 
 				}
 
@@ -547,6 +552,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			userImporMmapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			userImport = gson.fromJson(dataMigrationDTOJsonCopy.toString(), UsersImport.class);
 			uploadFileService.saveBulkAssociate(userImport, orgLocation, user);
+
+			break;
+		case "lcaUpload":
+			logger.debug("lcaUpload");
+			ObjectMapper lcaMapper = new ObjectMapper();
+			lcaMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			lcaMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			//userImport = gson.fromJson(dataMigrationDTOJsonCopy.toString(), lcaDTO.class);
+			System.out.println(" Need to Add code for save funtionality for LCA Imports=============>");
+			//uploadFileService.saveBulkAssociate(userImport, orgLocation, user);
 
 			break;
 		case "immigrationUpload":
