@@ -361,9 +361,16 @@
 						if(json.projectCustomFieldlabelNameAndValue != null && json.projectCustomFieldlabelNameAndValue != "" && json.projectCustomFieldlabelNameAndValue != 'undefined'){
 				              $.each(json.projectCustomFieldlabelNameAndValue, function(key, value) {
 				            	  var labelNameAndlabelData = value.split("$");
+				            	  if(labelNameAndlabelData[1] != 'null' && labelNameAndlabelData[1] != '' && labelNameAndlabelData[1] !='undefined'){
 				            	  result = result + '	<div class="project_details_cta">';
 				            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
 				            	  result = result + '	</div>';
+				            	  }
+				            	  else{
+				            		  result = result + '	<div class="project_details_cta">';
+					            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">--</span><div class="clearfix"></div>';
+					            	  result = result + '	</div>'; 
+				            	  }
 				              });
 			              }
 						
