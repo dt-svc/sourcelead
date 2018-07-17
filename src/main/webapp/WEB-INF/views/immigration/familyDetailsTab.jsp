@@ -366,6 +366,12 @@
 	
 	
 	<script>
+	
+	$(document).on('change','#placeOfBirthSpouse, #placeOfBirth', function () {
+		if (this.value.match(/[^a-zA-Z0-9 ]/g)) {
+			this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '');
+		}
+	});
 	   function resetFormData(id){
 		   $('#'+id)[0].reset() // reset the form data.
 	   }	
