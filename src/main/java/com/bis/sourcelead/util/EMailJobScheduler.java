@@ -2452,7 +2452,10 @@ public class EMailJobScheduler {
 		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
 		for(OrgLocations orgLocation : orgLocationsList){
 			List<LeaveApproveHierarchy> lahList = leaveService.getAllLeaveApproversList(orgLocation.getId());
-			for (LeaveApproveHierarchy lah : lahList) {
+			
+			Collection<LeaveApproveHierarchy> filteredLahList = lahList.stream().<Map<Long, LeaveApproveHierarchy>> collect(HashMap::new,(m,e)->m.put(e.getApproverUserId().getId(), e), Map::putAll).values();
+			
+			for (LeaveApproveHierarchy lah : filteredLahList) {
 				if(Constants.LEAVE_PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus())){
 					DateTime zoned = new DateTime(lah.getLeaveid().getCreatedDate());
 					DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
@@ -2470,7 +2473,7 @@ public class EMailJobScheduler {
 					User user = lah.getApproverUserId();
 					OrgLocations orgLocations = lah.getLeaveid().getOrgLocations();
 					
-					List<LeaveApproveHierarchy> noOfLeaveRequests = lahList.stream().filter(l->l.getApproverUserId().getId().longValue() == user.getId().longValue()).collect(Collectors.toList());
+					List<LeaveApproveHierarchy> noOfLeaveRequests = lahList.stream().filter(l->l.getApproverUserId().getId().longValue() == user.getId().longValue() && Constants.LEAVE_PENDING.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
 					
 					EmailMessage emailMessage = new EmailMessage();
 					emailMessage.setFirstName(user.getFirstName());

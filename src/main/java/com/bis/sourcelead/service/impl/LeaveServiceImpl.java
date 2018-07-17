@@ -1258,14 +1258,14 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId) {
+	public LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId,String loginUserRole) {
 		
 		int requestedCounts = 0;
 		int approvedCounts = 0;
 		int rejectedCounts = 0;
 		int cancelledCounts = 0;
 		LeaveDTO leaveDto = new LeaveDTO();
-		List<LeaveApproveHierarchy> leavesList = leaveDao.getAllEmployeesLeavesCounts(orgLocationId,userId);
+		List<LeaveApproveHierarchy> leavesList = leaveDao.getAllEmployeesLeavesCounts(orgLocationId,userId,loginUserRole);
 		for (LeaveApproveHierarchy lah : leavesList) {
 			if(Constants.PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
 				requestedCounts = requestedCounts + 1;
