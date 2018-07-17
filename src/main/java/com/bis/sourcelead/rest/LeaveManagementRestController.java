@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -1348,7 +1349,7 @@ public class LeaveManagementRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
 	@RequestMapping(value = { "/saveApplyLeave", "/rest/saveApplyLeave" }, method = RequestMethod.POST)
-	public @ResponseBody Response<String> applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
+	public @ResponseBody Response<String> applyLeave(@RequestBody LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
