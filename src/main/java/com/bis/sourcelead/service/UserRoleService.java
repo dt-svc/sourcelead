@@ -169,5 +169,7 @@ public interface UserRoleService {
 	 List<BigInteger> getAllUsersRoleList() throws Exception;
 	 
 	 List<UserDTO> getAllReportingManagersListAssignedToAssociates(Long orgLocationId) throws Exception;
+	 
+	 Boolean getIsGlobalManager(Long orgId) throws Exception;
 
 }
