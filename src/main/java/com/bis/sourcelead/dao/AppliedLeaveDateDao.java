@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
@@ -10,6 +11,8 @@ import com.bis.sourcelead.entity.Leave;
 public interface AppliedLeaveDateDao {
 	
 	public List<AppliedLeaveDate> getAppliedLeaveDateByUserId(Long userId,Date sDate,Date eDate);
+	
+	public Map<String,Float> getAppliedLeaveDateAndHolidayHoursByUserId(Long userId,Date sDate,Date eDate);
 
 	int deleteAppliedLeaveDatesByLeaveId(Long leaveId);
 

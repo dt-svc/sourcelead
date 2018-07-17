@@ -249,11 +249,7 @@ public class TimesheetRestController {
 				ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 				if(conPM != null) {
 					User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
-	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-	                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
-						avgWorkingHoursPerDay = 8; 
-					}
-	                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,avgWorkingHoursPerDay);
+	                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser);
 	                tsDTO.setEmpLeaveMap(empLeaveMap);
 				}
 				
@@ -423,7 +419,7 @@ public class TimesheetRestController {
                 if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
 					avgWorkingHoursPerDay = 8; 
 				}
-                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,avgWorkingHoursPerDay);
+                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser);
 				tedDTO.setEmpLeaveMap(empLeaveMap);
 				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
 				model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
@@ -447,7 +443,7 @@ public class TimesheetRestController {
 
 	}
 	
-	public Map<String,List<EmployeeLeaveDTO>> getEmpLeaveList(List<WeekDaysDTO> weekDays,String currentTimeSubFrequency,OrgLocations loc,User user,Integer avgHours) throws Exception {
+	public Map<String,List<EmployeeLeaveDTO>> getEmpLeaveList(List<WeekDaysDTO> weekDays,String currentTimeSubFrequency,OrgLocations loc,User user) throws Exception {
 		Map<String,List<EmployeeLeaveDTO>> empLeaveMap = new ConcurrentHashMap<>();
 		Date startDate = null;
 		Date endDate = null;
@@ -471,9 +467,9 @@ public class TimesheetRestController {
 					String leaveType = leaveDate.getLeave().getLeaveType().getName();
 					String billableType = leaveDate.getLeave().getLeaveType().getLeaveType();
 					String leaveTypeArr = leaveType+"##"+billableType;
-					
+					String avgHours =leaveDate.getAppliedHours();
 					EmployeeLeaveDTO leaveDTO = new EmployeeLeaveDTO();
-					leaveDTO.setHours(getDisplayHoursFromHours(avgHours));
+					leaveDTO.setHours(avgHours);
 					SimpleDateFormat sf = new SimpleDateFormat("E");
 					leaveDTO.setLeaveDate(commonUtil.dateStrFromOrgDateFormatter(loc.getDateFormat(),leaveDate.getApplyLeaveDate()));
 					leaveDTO.setDayOfTheDate(sf.format(leaveDate.getApplyLeaveDate()));
@@ -500,9 +496,9 @@ public class TimesheetRestController {
 							String leaveType = holiday.getHolidayName();
 							String billableType = holiday.getBillableType();
 							String leaveTypeArr = leaveType+"##"+billableType;
-							
+							String avgHours =holiday.getOrgAvgHrs();
 							EmployeeLeaveDTO leaveDTO = new EmployeeLeaveDTO();
-							leaveDTO.setHours(getDisplayHoursFromHours(avgHours));
+							leaveDTO.setHours(avgHours);
 							SimpleDateFormat sf = new SimpleDateFormat("E");
 							leaveDTO.setLeaveDate(commonUtil.dateStrFromOrgDateFormatter(loc.getDateFormat(),holidayDate));
 							leaveDTO.setDayOfTheDate(sf.format(holidayDate));
@@ -2178,7 +2174,7 @@ public class TimesheetRestController {
 					if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
 						avgWorkingHoursPerDay = 8; 
 					}
-					Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,avgWorkingHoursPerDay);
+					Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser);
 					tedDTO.setEmpLeaveMap(empLeaveMap);	
 							
 					Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
@@ -3490,11 +3486,7 @@ public class TimesheetRestController {
 				ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 				if(conPM != null) {
 					User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
-	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-	                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
-						avgWorkingHoursPerDay = 8; 
-					}
-	                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,avgWorkingHoursPerDay);
+	                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser);
 	                tsDTO.setEmpLeaveMap(empLeaveMap);
 				}
 				model.addObject("timesheetSubmissionDTO", tsDTO);
@@ -5031,11 +5023,7 @@ public class TimesheetRestController {
 			ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(pm.getId());
 			if(conPM != null) {
 				User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
-                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
-					avgWorkingHoursPerDay = 8; 
-				}
-                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,avgWorkingHoursPerDay);
+                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser);
                 tsDTO.setEmpLeaveMap(empLeaveMap);
 			 }
 			if (pm.getProjectClientsId().getOrgRelationId() != null) {
@@ -5531,11 +5519,7 @@ public class TimesheetRestController {
 			ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
 			if(conPM != null) {
 				User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
-                Integer avgWorkingHoursPerDay = loginOrgLocation.getAverageWorkingHours();
-                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
-					avgWorkingHoursPerDay = 8; 
-				}
-                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), loginOrgLocation,consultantUser,avgWorkingHoursPerDay);
+                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), loginOrgLocation,consultantUser);
                 tsDTO.setEmpLeaveMap(empLeaveMap);
 			 }
 			tedDTO.setTimesheetSubmission(tsDTO);

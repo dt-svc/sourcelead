@@ -103,6 +103,8 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String toDateToHalfTime;
 	private String durationHrs;
 	
+	private String loginUserRole;
+	
 	private List<String> otherApproverUser;
 	private String notifyToOthers;
 	
@@ -730,5 +732,13 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setSuperUser(boolean isSuperUser)
 	{
 		this.isSuperUser = isSuperUser;
+	}
+	public String getLoginUserRole()
+	{
+		return loginUserRole;
+	}
+	public void setLoginUserRole(String loginUserRole)
+	{
+		this.loginUserRole = loginUserRole;
 	}
 }

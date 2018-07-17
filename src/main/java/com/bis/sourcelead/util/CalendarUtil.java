@@ -310,17 +310,11 @@ public  class CalendarUtil {
 
 	
 	public static String getHalfTimesheetHoursDisplayFormat(Float hours2){
-		float cthHours = 0;
-		float cthHoursValue = (int) cthHours;
-		float cthMinutesValue = cthHours - cthHoursValue;
-		float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
-
 		float wthHours = hours2;
 		float wthHoursValue = (int) wthHours;
 		float wthMinutesValue = wthHours - wthHoursValue;
-		float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+		float totalMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
-		float totalMinutes = totalCthMinutes+totalWthMinutes;
 
 		float halfDayMinutes = totalMinutes/2;
 		
