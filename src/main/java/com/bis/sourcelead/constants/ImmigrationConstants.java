@@ -29,6 +29,7 @@ public class ImmigrationConstants {
 	public static final Integer STATUS_ACTIVE = 1;
 	public static final Integer STATUS_IN_ACTIVE = 0;
 	public static final String IMMIGRATION_UPLOAD ="immigrationUpload";
+	public static final String LCA_UPLOAD ="lcaUpload";
 	
 	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name","Beneficiary Last Name",
             "Beneficiary Email", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",    
@@ -42,6 +43,15 @@ public class ImmigrationConstants {
             "Attorney/Contact email*", "Receipt No.", "Location", "LCA Start Date", "LCA End Date","LCA Number", "LCA Rate Currency","LCA Rate","LCA Rate Per", "LCA Location","LCA Title","Job ID*",
             "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Title","Previous LCA Location"};
    
+   public static final String[] IMPORT_LCA_EXCEL_HEADERS = {"LCA Number","LCA Title",
+           "No. of positions", "Employee Name", "Employee Email", "Current Client Location (Address 1, City, State, Country, PIN)", "Current Prim Vendor Location (Address 1, City, State, Country, PIN)",
+           	"Current Vendor Location (Address 1, City, State, Country, PIN)", "SOC Code", "SOC Occupation Title" ,"Wage Level","Prevailing Wage Currency",
+           "Prevailing Wage Rate", "Prevailing Wage rate per", "LCA Start Date", "LCA End Date", "LCA Status","Status"};
+   
+   public static final String[] IMPORT_DOWNLOAD_LCA_EXCEL_HEADERS = {"LCA Number*","LCA Title*", "No. of positions",  "Employee Name", "Employee Email",
+            "Current Client Location* (Address 1, City, State, Country, PIN)", "Current Prim Vendor Location (Address 1, City, State, Country, PIN)",
+           	"Current Vendor Location (Address 1, City, State, Country, PIN)", "SOC Code*", "SOC Occupation Title*" ,"Wage Level*","Prevailing Wage Currency*",
+           "Prevailing Wage Rate*", "Prevailing Wage rate per*", "LCA Start Date*", "LCA End Date*", "LCA Status*","Status*"};
    
    @SuppressWarnings("serial")
    public static final Map HEADERS_NAMES_MAP = new HashMap<Integer, String>(){{
@@ -51,6 +61,13 @@ public class ImmigrationConstants {
        put(19,"passportEndDate");put(20,"visaNo");put(21,"visaType"); put(22,"visaCountry");put(23,"visaStartDate");put(24,"visaEndDate");put(25,"company");put(26,"companyContactEmail");put(27,"receiptNo");
        put(28,"benficiarylocation");put(29,"lcaStartDate");put(30,"lcaEndDate");put(31,"lcaNumber");put(32,"lcaRateCurrency");put(33,"lcaRate");put(34,"lcaRatePer");put(35,"lcaLocation");put(36,"lcaTitle");put(37,"immigrationJobId");put(38,"prevLcaStartDate");put(39,"prevLcaEndDate");
        put(40,"prevLcaNumber");put(41,"prevLcaTitle");put(42,"prevLcaLocation");
+   }};
+   
+   @SuppressWarnings("serial")
+   public static final Map LCA_HEADERS_NAMES_MAP = new HashMap<Integer, String>(){{
+       put(1,"lcaNumber");put(2,"lcaTitle");put(3,"noOfPos");put(4,"empName");put(5,"empMail");put(6,"currClientLocation");put(7,"curPrimrVenodorLocation");
+       put(8,"curVenodorLocation");put(9,"socCode");put(10,"soOOccTitle");put(11,"wageLevel");put(12,"prevailWageCurr");
+       put(13,"prevailWageRate");put(14,"prevailWageRatePer");put(15,"lcaStartDate");put(16,"lcaEndDate");put(17,"lcaStatus");put(18,"status");
    }};
    
    public static final Map HEADERS_FIELD_NAMES_MAP = new HashMap<Integer, String>(){{
@@ -67,7 +84,21 @@ public class ImmigrationConstants {
        put(26,"Attorney/Contact email Email");
        put(37,"Job ID");
    }};
-	
+   public static final Map LCA_HEADERS_FIELD_NAMES_MAP = new HashMap<Integer, String>(){{
+       put(1,"LCA Number");
+       put(2,"LCA Title");
+       put(6,"Current Client Location");
+       put(9,"SOC Code");
+       put(10,"SOC Occupation Title");
+       put(11,"Wage Level");
+       put(12,"Prevailing Wage Currency");
+       put(13,"Prevailing Wage Rate");
+       put(14,"Prevailing Wage rate per");
+       put(15,"LCA Start Date");
+       put(16,"LCA End Date");
+       put(17,"LCA Status");
+       put(18,"Status");
+   }};
 	public static List<String> IMMIGRATION_INPROGRESS_STATUS_LIST= Arrays.asList("Filled", "Reviewed & Send to attorney", "Request for modifications","Reviewed & Filed","Motion to Re-Open");
 
 	public static String IMMIGRATION_APPROVED_STATUS = "Approved";

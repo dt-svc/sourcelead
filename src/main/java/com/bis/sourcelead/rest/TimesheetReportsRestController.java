@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -75,6 +76,9 @@ public class TimesheetReportsRestController {
 	
 	@Autowired
 	private TimesheetReportService timesheetReportService;
+	
+	@Autowired
+	private AppliedLeaveDateService appliedLeaveDateService;
 	
 	@RequestMapping(value = "/timesheetReportsDiv", method = RequestMethod.POST ) 
 	public ModelAndView prapareTimesheetReports(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
@@ -302,6 +306,11 @@ public class TimesheetReportsRestController {
 		     }else{
 		    	 details.setRate("--");	 
 		     }
+		     User pmUser = null;
+		     ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+			 if(conPM != null) {
+				 pmUser = conPM.getProjectMemberCandidteId().getConsultantUser();
+			 }
 		     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate,isGlobalAccess);
 	    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
 		     float monthTotalHours            = 0f;
@@ -320,17 +329,40 @@ public class TimesheetReportsRestController {
 		    	    	if(pmhDateList == null  ||  pmhDateList.isEmpty()){
 		    	    		approvalStatus = Submission_ApprovalStatus.NOTAPPLICABLE;
 		    	    	}
+		    	    	
+		    	    	Float leaveTotal = 0f;
+		    	    	Float leaveBillableTotal = 0f;
+		    	    	Float leaveNonBillableTotal = 0f;
+			    	    if(consultantUser != null) {
+			    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(pmUser.getId(), entry.getKey(), entry.getValue());
+				    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
+				    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
+				    	    	 leaveBillableTotal = leaveTotalMap.get("BILLABLE");
+				    	    	 leaveNonBillableTotal = leaveTotalMap.get("NONBILLABLE");
+				    	     }
+				    	     
+			    	    }
+				    	 
 		    	    	Float  weekBillableHours = 0f;
 		    	    	if(sah.getWeekBillableHoursMap().get(entry.getKey()) != null){
 		    	    		weekBillableHours = sah.getWeekBillableHoursMap().get(entry.getKey());
+		    	    		if(leaveBillableTotal != null) {
+		    	    			weekBillableHours = CommonUtil.getCombinedHours(weekBillableHours, leaveBillableTotal);
+		    	    		}
 		    	    	}
 		    	    	Float  weekNonBillableHours = 0f;
 		    	    	if(sah.getWeekNonBillableHoursMap().get(entry.getKey()) != null){
 		    	    		weekNonBillableHours = sah.getWeekNonBillableHoursMap().get(entry.getKey());
+		    	    		if(leaveNonBillableTotal != null) {
+		    	    			weekNonBillableHours = CommonUtil.getCombinedHours(weekNonBillableHours, leaveNonBillableTotal);
+		    	    		}
 		    	    	}
 		    	    	Float  weekTotalHours = 0f;
 		    	    	if(sah.getWeekTotalHoursMap().get(entry.getKey()) != null){
 		    	    		 weekTotalHours = sah.getWeekTotalHoursMap().get(entry.getKey());
+		    	    		 if(leaveTotal != null) {
+		    	    			 weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, leaveTotal);
+			    	    	 }
 		    	    	}
 		    	    	
 		    	    	String approvalClass = "draft";
@@ -388,9 +420,9 @@ public class TimesheetReportsRestController {
 		    	        monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
 		    	    	 
 		    	        
-		    	        reportsTimeDTO.setWeekTotalHours(CommonUtil.getHoursDisplayFormat(weekTotalHours));
-		    	        reportsTimeDTO.setWeekBillabeHours(CommonUtil.getHoursDisplayFormat(weekBillableHours));
-		    	        reportsTimeDTO.setWeekNonBillableHours(CommonUtil.getHoursDisplayFormat(weekNonBillableHours));
+		    	        reportsTimeDTO.setWeekTotalHours(CommonUtil.getHoursDisplayFormat(weekTotalHours,null));
+		    	        reportsTimeDTO.setWeekBillabeHours(CommonUtil.getHoursDisplayFormat(weekBillableHours,null));
+		    	        reportsTimeDTO.setWeekNonBillableHours(CommonUtil.getHoursDisplayFormat(weekNonBillableHours,null));
 		    	        
 		    	        String date = null;
 		    	        StringBuilder  dateBuilder = new StringBuilder();
@@ -404,9 +436,9 @@ public class TimesheetReportsRestController {
 		    	     }
 		    	 details.setReportsTimeMap(entryList);
 		       }
-		     details.setMonthTotalHours(CommonUtil.getHoursDisplayFormat(monthTotalHours));
-		     details.setMonthBillabeHours(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours));
-		     details.setMonthNonBillableHours(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours));
+		     details.setMonthTotalHours(CommonUtil.getHoursDisplayFormat(monthTotalHours,null));
+		     details.setMonthBillabeHours(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours,null));
+		     details.setMonthNonBillableHours(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours,null));
 		     	
 		     
 		     
@@ -431,14 +463,14 @@ public class TimesheetReportsRestController {
 	         details.setApprovalStatus(combinedApprStatus);
 	         details.setCombinedApprovalClass(combinedApprClass);
 	         
-	         details.setProjectToDateTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours()));
-	         details.setProjectToDateBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours()));
-	         details.setProjectToDateNonBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours()));
+	         details.setProjectToDateTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours(),null));
+	         details.setProjectToDateBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours(),null));
+	         details.setProjectToDateNonBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours(),null));
 		     
 	         
-	         details.setLastMonthTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours()));
-	         details.setLastMonthBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours()));
-	         details.setLastMonthNonBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours()));
+	         details.setLastMonthTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours(),null));
+	         details.setLastMonthBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours(),null));
+	         details.setLastMonthNonBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours(),null));
 	         
 	         
 	         detailsList.add(details);

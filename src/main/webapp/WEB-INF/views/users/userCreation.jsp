@@ -579,17 +579,13 @@ function getEmployeementType(designationType){
 	 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
 	 var military = /^\s*([01]?\d|2[0-3]):[0-5]\d\s*$/i;
      var standard = /^\s*(0?\d|1[0-2]):[0-5]\d(\s+(AM|PM))?\s*$/i;
-	alert("military >> "+DayHours.match(military))
-	alert("standard >> "+DayHours.match(standard))
 	if(DayHours.match(military) || DayHours.match(standard)){
-		alert("1")
 		 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
 		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg"); 
 	/* 	$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
 		 document.getElementById("DayHours").setAttribute('record-exist','yes');
 		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');  */
 	}else{
-		alert("2")
 		$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
 		 document.getElementById("DayHours").setAttribute('record-exist','yes');
 		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours'); 
@@ -647,7 +643,7 @@ function getEmployeementType(designationType){
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
 		    var formData = getFormData("createUser_form");
 			$("#create_user").attr("disabled", "disabled");
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $( "#create_user" ).addClass('button').val('Processing..');
             
             $.ajax({
@@ -766,7 +762,7 @@ function getEmployeementType(designationType){
  function getUserByUserEmail() {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 if(EmailId != null && EmailId != ""){
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#loading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
@@ -972,21 +968,13 @@ function getAssociateUserDetails(){
 	 $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employeementType,
-	        success: function(data) {
-	        	var json = JSON.parse(data);
+	        success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>-- Select Associate --</option>"; 
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var opt = json[i];
-	        		var name = '';
-	        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-	        			name = opt.firstName+" "+opt.lastName;
-	        		}else{
-	        			name = opt.firstName;
-	        		}
-		        		
-	        		output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
+	        		output = output + "<option value='" +opt.candId+ "'>"+opt.candidateName+"</option>";
 				}
 	        	$("#employeementType").empty();
 		        $("#employeementType").append(output);
@@ -1027,25 +1015,17 @@ function getAssociateUserDetails(){
  function getDesignationType(){
 	 var employmentDesignationType = $("#employmentDesignationType").val();
 	 if(employmentDesignationType){
-	 $("#candidatesLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#candidatesLoading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employmentDesignationType,
-	        success: function(data) {
-	        	var json = JSON.parse(data);
+	        success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>-- Select Candidate --</option>"; 
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var opt = json[i];
-	        		var name = '';
-	        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-	        			name = opt.firstName+" "+opt.lastName;
-	        		}else{
-	        			name = opt.firstName;
-	        		}
-		        		
-	        		output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
+	        		output = output + "<option value='" +opt.candId+ "'>"+opt.candidateName+"</option>";
 				}
 	        	$("#employeementType").empty();
 		        $("#employeementType").append(output);
@@ -1346,6 +1326,7 @@ $(document).ready(function() {
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
         $(".tabsMenu_tabs_inn").not(tab).css("display", "none");
+        $("#loading").removeAttr('style');
         $(tab).fadeIn();
     });
 });

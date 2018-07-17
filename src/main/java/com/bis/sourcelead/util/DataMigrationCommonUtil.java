@@ -1298,7 +1298,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				  	
 					String taskType =projectTasks.getBillableType();
 					timesheetDayEntries.setProjectTask(projectTasks);
-					String hours =CalendarUtil.getTimesheetHoursDisplayFormat(averageHours).replace(".", ":");
+					String hours =CalendarUtil.getTimesheetHoursDisplayFormat(averageHours,null).replace(".", ":");
 					SimpleDateFormat simpleDateformat = new SimpleDateFormat("E");
 			    	 String day_Of_Date = simpleDateformat.format(weekStartDate);
 					if(CalendarUtil.isDateBetweenTwoDates(actualStartDate,actualEndDate, weekStartDate) && (!day_Of_Date.equals("Sat") && !day_Of_Date.equals("Sun"))){
@@ -2266,6 +2266,13 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 
 				}
 		
+		public void dataValidationForLCA(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy,
+				User user, OrgLocations orgLocation) throws Exception {
+			
+			   System.out.println(" inside LCA Data validation block method Need to add code for validation ===================================>");
+			
+			//errorSet.put("", "");
+		}
 		
 		
 		public void dataValidationForAsscoaites(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation, String isGlobalAccess) throws Exception {

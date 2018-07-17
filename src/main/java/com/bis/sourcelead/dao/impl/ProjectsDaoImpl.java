@@ -320,9 +320,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<Projects> getAllProjects() throws Exception {
 		logger.debug("In Projects getAllProjects method");
+		 List<Projects> projectsList = null;
         Session session = this.sessionFactory.getCurrentSession();
-        Criteria crit = session.createCriteria(Projects.class);
-        List<Projects> projectsList = crit.list();
+        projectsList = session.createQuery("from Projects projects " ).list();
         return projectsList;
 	}
 	
@@ -847,21 +847,46 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				if(StringUtils.isNotBlank(projectDTO.getIsGlobalAccess()) && projectDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
 					if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 						 projects = projectsService.getProjectById(projects.getId());
-						 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
-					}else {
-						 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
-						 if(projectClients != null && projectClients.getOrgRelationId() != null) {
-							 OrgRelations orgRel = projectClients.getOrgRelationId();
-							 OrgLocations clientOrgLocation = null;
-							 if(orgRel.getResponderLocationId().getId().equals(orglo.getId())) {
-								 clientOrgLocation = orgRel.getLocationId();
+						 if(projects.getSharedLocationId().getId().equals(orglo.getId())) {
+							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
+						 }else{
+							 if(projects.getOrgLocationsId().getId().equals(orglo.getId())) {
+								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
 							 }else {
-								 clientOrgLocation = orgRel.getResponderLocationId();
-							 } 
-							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientOrgLocation.getId());
-						 }else {
-							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgId(projects.getId(), projectDTO.getOrgId());
+								 ProjectClients clientProjectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orglo.getId());
+								 if(clientProjectClients == null) {
+									 clientProjectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
+								 }
+								 if(!clientProjectClients.getOrgRelationId().getResponderLocationId().getId().equals(orglo.getId())) {
+									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProjectClients.getOrgRelationId().getLocationId().getId());
+								 }else {
+									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProjectClients.getOrgRelationId().getResponderLocationId().getId());
+								 }
+							 }
+							 
 						 }
+						
+					}else {
+						 projects = projectsService.getProjectById(projects.getId());
+						 
+						 if(projects.getOrgLocationsId().getId().equals(orglo.getId())) {
+							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
+						 }else {
+							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
+							 if(projectClients != null && projectClients.getOrgRelationId() != null) {
+								 OrgRelations orgRel = projectClients.getOrgRelationId();
+								 OrgLocations clientOrgLocation = null;
+								 if(!orgRel.getResponderLocationId().getId().equals(orglo.getId())) {
+									 clientOrgLocation = orgRel.getLocationId();
+								 }else {
+									 clientOrgLocation = orgRel.getResponderLocationId();
+								 } 
+								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientOrgLocation.getId());
+							 }else {
+								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgId(projects.getId(), projectDTO.getOrgId());
+							 }
+						 }
+						
 						
 					}
 				}else {
@@ -966,7 +991,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 						 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
 						 + " (hierarchy.projectClientsId.orgLocationsId.id = :orgLocationsId and hierarchy.approverUserId.id = :userId "
 						 + " OR "
-						 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
+						 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
 					  + " ))";
 			List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).list();
 			return projectsList;
@@ -1345,7 +1370,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 					 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
 					 + " (hierarchy.projectClientsId.orgLocationsId.id = :orgLocationsId and hierarchy.approverUserId.id = :userId "
 					 + " OR "
-					 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
+					 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
 				  + " ))  "+projectTypeQuery;
 		List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", dayWiseTimesheetReoprtsDto.getLocationsId()).setLong("userId", dayWiseTimesheetReoprtsDto.getLoginUserId()).list();
 		return projectsList;

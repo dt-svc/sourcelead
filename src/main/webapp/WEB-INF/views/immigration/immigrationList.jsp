@@ -14,19 +14,18 @@
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
 <c:set var ="myImmigrationPage" value = "N" scope="session"/>
 <title>Insert title here</title>
-    <section class="content-wraper content-wraperNew">
+    <section class="content-wraper">
    
-    <section class="content-header clearfix addImmiHead">
+    <section class="content-header clearfix">
       <div class="pull-left"><h2>Immigration list</h2></div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Immigrations List</div>
 	<div class="clearfix"></div>
     </section>    
     
-    <div class="immigrationWrap">
+    <div class="immigrationWrap noPad">
 		<div class="immigraCountHead">
 			<ul class="clearfix">
 				<li class="clearfix" title="${!empty dashboardResult.draftsCount ? dashboardResult.draftsCount : 0}" >
-					<span><i class="fa fa-plane"></i></span>
 					<p>Draft <b>
 					
 					<c:choose>
@@ -34,100 +33,93 @@
 								<a href='javascript:getDynamicImmigrationList(null, "Draft")'>${dashboardResult.draftsCount}</a>
 							</c:when>
 							<c:otherwise>
-					           0
+					          <a href="javascript:void(0)">0</a>
 					        </c:otherwise>
 						</c:choose>
 					</b></p>
 				</li>			
 				<li class="clearfix" title="${!empty dashboardResult.reqSentCount ? dashboardResult.reqSentCount : 0}">
-					<span><i class="fa fa-plane"></i></span>
-					<p> Sent Request <b>
+					<p>Sent Request <b>
 					<c:choose>
 							<c:when test="${!empty dashboardResult.reqSentCount and dashboardResult.reqSentCount ne 0 }">
 								<a href='javascript:getDynamicImmigrationList(null, "Request to fill")'>${dashboardResult.reqSentCount}</a>
 							</c:when>
 							<c:otherwise>
-					           0
+					           <a href="javascript:void(0)">0</a>
 					        </c:otherwise>
 						</c:choose>
 					</b></p>
 				</li>
 				<li class="clearfix" title="${!empty dashboardResult.inProgressCount ? dashboardResult.inProgressCount : 0}">
-					<span><i class="fa fa-plane"></i></span>
-					<p> Inprogress <b>
+					<p>Inprogress <b>
 					<c:choose>
 							<c:when test="${!empty dashboardResult.inProgressCount  and dashboardResult.inProgressCount ne 0}">
 								<a href='javascript:getDynamicImmigrationList(null, "inProgress")'>${dashboardResult.inProgressCount}</a>
 							</c:when>
 							<c:otherwise>
-					         0
+					         <a href="javascript:void(0)">0</a>
 					        </c:otherwise>
 						</c:choose>
 					</b></p>
 				</li>
 				<li class="clearfix" title="${!empty dashboardResult.apporovedCount ? dashboardResult.apporovedCount : 0}">
-					<span><i class="fa fa-plane"></i></span>
 					<p>Approved <b>
 					<c:choose>
 							<c:when test="${!empty dashboardResult.apporovedCount and dashboardResult.apporovedCount ne 0 }">
 								<a href='javascript:getDynamicImmigrationList(null, "Approved")'>${dashboardResult.apporovedCount}</a>
 							</c:when>
 							<c:otherwise>
-					           0
+					           <a href="javascript:void(0)">0</a>
 					        </c:otherwise>
 						</c:choose>
 					</b></p>
 				</li>
 				<li class="clearfix" title="${!empty dashboardResult.rejectedCount ? dashboardResult.rejectedCount : 0}">
-					<span><i class="fa fa-plane"></i></span>
 					<p>Rejected <b>
 					<c:choose>
 							<c:when test="${!empty dashboardResult.rejectedCount and dashboardResult.rejectedCount ne 0 }">
 								<a href='javascript:getDynamicImmigrationList(null, "Rejected")'>${dashboardResult.rejectedCount}</a>
 							</c:when>
 							<c:otherwise>
-					           0
+					          <a href="javascript:void(0)">0</a>
 					        </c:otherwise>
 						</c:choose>
 						
 					</b></p>
 				</li>
 				<li class="clearfix"title="${!empty dashboardResult.rfeCount ? dashboardResult.rfeCount : 0}">
-					<span><i class="fa fa-plane"></i></span>
 					<p>RFE <b>
 					<c:choose>
 							<c:when test="${!empty dashboardResult.rfeCount and dashboardResult.rfeCount ne 0 }">
 								<a href='javascript:getDynamicImmigrationList(null, "rfe")'>${dashboardResult.rfeCount}</a>
 							</c:when>
 							<c:otherwise>
-					           0
+					           <a href="javascript:void(0)">0</a>
 					        </c:otherwise>
 						</c:choose>
 					</b></p>
 				</li>	
 				<li class="clearfix"title="${!empty dashboardResult.deniedCount ? dashboardResult.deniedCount : 0}">
-					<span><i class="fa fa-plane"></i></span>
 					<p>Denied <b>
 					<c:choose>
 							<c:when test="${!empty dashboardResult.deniedCount and dashboardResult.deniedCount ne 0 }">
 								<a href='javascript:getDynamicImmigrationList(null, "denied")'>${dashboardResult.deniedCount}</a>
 							</c:when>
 							<c:otherwise>
-					           0
+					           <a href="javascript:void(0)">0</a>
 					        </c:otherwise>
 						</c:choose>
 					</b></p>
 				</li>	
 				
 				<li class="clearfix"title="${!empty dashboardResult.othersCount ? dashboardResult.othersCount : 0}">
-					<span><i class="fa fa-plane"></i></span>
 					<p>Others <b>
 					<c:choose>
 							<c:when test="${!empty dashboardResult.othersCount and dashboardResult.othersCount ne 0 }">
 								<a href='javascript:getDynamicImmigrationList(null, "others")'>${dashboardResult.othersCount}</a>
 							</c:when>
 							<c:otherwise>
-					           0
+					           <a href="javascript:void(0)">0</a>
 					        </c:otherwise>
 						</c:choose>
 					</b></p>
@@ -137,16 +129,12 @@
    
 		<div class="immigraInnWrap">
 		
-			<div class="timesheet_head clearfix">
-			<button type="button" class="btn btn-primary dropdown-toggle btn-sm" onClick="clearFilters();" title="Refresh">
-			    <span class="fa fa-refresh"></span>
-			</button>
-			<div class="pull-left colCho">
-				<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="btn btn-sm btn-default"><i class="fa fa-table"></i></a>
-			</div>
-			
-			<div class="filterSearchDiv pull-left colCho">
-				<a href="javascript:void(0)" onclick="filterPop();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
+		
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="clearFilters();"></a>
+      		<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a>    
+      		
 <div class="colPop">
 	<div class="colPopMid coldropdown-parent">
 	<div class="clearfix">
@@ -221,39 +209,40 @@
 		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
 	</div>
 </div>				
-			</div>
-			</div>
-			  <ul class="pull-right">
-			    <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
-			    
-				  <li class="noPad">
-					  <a href="${appPath}/immigration/loadNewPetition" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="fa fa-plus paddingRight"></i> New </a>
-				  </li>
-				 <li title="Import"><a href="/app/uploadImmigrationForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-				 <li title="Export" class="mrPOP" id="mypop"><i
-							class="glyphicon glyphicon-export"></i>
-							<div id="exportPop">
-								<ul>
-									<!-- <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li> -->
-									<li onclick="exportToExcel();"><i
-										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
-								</ul>
-							</div>
+			</div>      		
+      		
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+      		<sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
+            <li><a href="${appPath}/immigration/loadNewPetition" class="action newAdBtn mr5">+ New </a></li>
+			</sec:authorize>
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
+				
+				<sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+	                 		<a href="/app/uploadImmigrationForm">Import</a>
+							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
+						</span>
+						<!-- <span>
+	                 		<a href="/app/uploadLcaForm">Import LCA</a>
+						</span> -->
+					</div>
 				</li>
-                 </sec:authorize>
-			  </ul>
-			  <div class="remove_search">
-				<input placeholder="Search"  id ="immiListSerach" type="text">
-			  </div>
-			
-			</div> 
+		    	</sec:authorize>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='immiListSerach'/><span class="repSearchIcon" onClick=""></span></li>
+        </ul>
+      </div>		
+		
 			  
 			 <div id="dynamicImmigrationListViewDiv" class="project_wrap_table datatable_filter"></div>
 			 
     </div>
+    </div>
   </section>
   <!-- Content Area -->
-</div>
 <div id="popUp"></div>
 
 <div id="immigrationFilterMask" class="advancedsearch-mask"></div>
@@ -840,7 +829,12 @@
 	function columClose(){
 		$(".colPop").hide();
 	}
-	
+	$("html").click(function(){
+		$(".colPop").hide();
+	});
+	$(".refreIcon, .colPop").click(function(e){
+	 	e.stopPropagation();
+	});		
 		
 	function columHide(){
 		hideColumns=[]; // reset the array object.
@@ -986,3 +980,29 @@
 	}
 </script>
 
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+</script>

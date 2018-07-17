@@ -28,12 +28,15 @@ function prepareBisChecksList(url){
  	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
- 	result = result +" <div class='clearfix col-md-12 mb10'>";
- 	result = result +'<a href="/app/addChecks" class="btn btn-primary btn-sm pull-left" id="generateReportId" title="Generate Report">Add Payment</a>';
- 	result = result +" <div class='remove_search'>";
- 	result = result +" <input type='text' placeholder='Search' id='checksDataTableSearch'/>";
- 	result = result +"</div>";
- 	result = result +"</div>";
+ 	 
+		result = result +" <div class='reportHead'>";
+		result = result + " <ul class='pull-right'>";
+		result = result + " <li><a href='/app/addChecks' class='newAdBtn' id='generateReportId' title='Generate Report'>+ Payment</a></li>";		
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='checksDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>";
+		result = result + "</ul>";
+		result = result + "</div>";  	
+ 	
+ 	
  	result = result + '<table id="checksListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result + '<tr>';

@@ -216,6 +216,7 @@ public class OrgSettingsRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 
 		return response;
@@ -394,6 +395,7 @@ public class OrgSettingsRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -830,6 +832,7 @@ public class OrgSettingsRestController {
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
+				e.printStackTrace();
 			}
 		}else {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());
@@ -1331,6 +1334,7 @@ public class OrgSettingsRestController {
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
+				e.printStackTrace();
 			}
 		}else {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());

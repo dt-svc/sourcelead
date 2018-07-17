@@ -136,6 +136,13 @@ public class DataMigrationCommonRestController {
 			model.addObject("headersNamesMap", ImmigrationConstants.HEADERS_NAMES_MAP);
 			model.addObject("headersFieldNamesMap", ImmigrationConstants.HEADERS_FIELD_NAMES_MAP);
 		}
+		else if(StringUtils.isNotBlank(dataMigrationCommonDTO.getUploadType()) 
+				&& dataMigrationCommonDTO.getUploadType().equalsIgnoreCase(ImmigrationConstants.LCA_UPLOAD)) {
+
+			model.addObject("columnHeaders", ImmigrationConstants.IMPORT_LCA_EXCEL_HEADERS);
+			model.addObject("headersNamesMap", ImmigrationConstants.LCA_HEADERS_NAMES_MAP);
+			model.addObject("headersFieldNamesMap", ImmigrationConstants.LCA_HEADERS_FIELD_NAMES_MAP); // user for Mandatory column labels in UI.
+		}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

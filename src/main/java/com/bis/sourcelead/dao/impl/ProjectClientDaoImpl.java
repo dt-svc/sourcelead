@@ -160,7 +160,7 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 				 + " select hierarchy.projectClientsId.id from ProjectApproverHierarchy hierarchy  where  "
 				 + "  hierarchy.approverUserId.id = :userId "
 				 + " OR "
-				 + "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pc.orgLocationsId.id))"
+				 + "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = pc.orgLocationsId.id))"
 			  + " ) group by pc.orgRelationId " );
 		projectClientsList = candidateListQuery.setLong("userId", userId).setLong("locationsId", locationsId).list();
 		return projectClientsList;
@@ -194,7 +194,7 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 				 + " select hierarchy.projectClientsId.id from ProjectApproverHierarchy hierarchy  where  "
 				 + " ("+globalUserQuery2+" and hierarchy.approverUserId.id = :userId "
 				 + " OR "
-				 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
+				 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
 				 +" OR  (pc.projectId.isReportingManagerAsApprover = 'Y')"
 				 + " ))");
 		projectClientsList = candidateListQuery.setLong("userId", userId).setLong("locationsId", locationsId).list();
@@ -241,6 +241,52 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		}
 		return pc;  
 		
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getProjectClientsIDsByProjectId(Long projectId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select pc.id from ProjectClients pc where pc.status = '1' and pc.projectId.id = :projectId"; 
+		List<Long> projectClientsIdLis =  session.createQuery(query.toString()).setLong("projectId", projectId).list();
+		return projectClientsIdLis;
+	
+	}
+
+	@Override
+	@Transactional
+	public ProjectClients getProjectClientsById(Long id) throws Exception {
+		
+		logger.debug("In Project Clients getProjectClientsById method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectClients pc left join fetch pc.projectId left join fetch pc.orgLocationsId "
+				+ "left join fetch pc.orgRelationId ol left join fetch ol.locationId left join fetch ol.responderLocationId  "
+				+ "where pc.id = :id" ;
+		List<ProjectClients> pcList =session.createQuery(query).setLong("id", id).list(); 
+		ProjectClients pc = null;
+		if(pcList != null && !pcList.isEmpty()){
+			pc = pcList.iterator().next();
+		}
+		return pc;
+	  
+		
+	
+	}
+
+	@Override
+	@Transactional
+	public ProjectClients getProjectClientsByProjectIdAndLevel(Long projectid, Integer level) throws Exception {
+		logger.debug("In Project Clients getProjectClientsById method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectClients pc left join fetch pc.projectId left join fetch pc.orgLocationsId "
+				+ "left join fetch pc.orgRelationId ol left join fetch ol.locationId left join fetch ol.responderLocationId  "
+				+ "where pc.projectId.id = :projectid and pc.level = :level" ;
+		List<ProjectClients> pcList =session.createQuery(query).setLong("projectid", projectid).setInteger("level", level).list(); 
+		ProjectClients pc = null;
+		if(pcList != null && !pcList.isEmpty()){
+			pc = pcList.iterator().next();
+		}
+		return pc;
 	}
 	
 }
