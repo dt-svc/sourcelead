@@ -155,6 +155,8 @@ public interface RequirementDao {
 	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId,String tableName);
 
 	Long getRequirementGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdCount);
+	
+	Long getJobFairGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdCount);
 
 	/*boolean checkForOldrecordsInCandidtesUsingOrgLocationid(Long orglocationId);
 
@@ -216,5 +218,9 @@ public interface RequirementDao {
 	public List<Long> getJobFairRequirementsIdListByRequirementId(long requirementId);
 	
 	public void deleteJobFairRequirement(long jobFairRequirementId);
+
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId);
+
+	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
 	
 }

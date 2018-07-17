@@ -920,7 +920,7 @@ public class RequirementController {
 		    List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 		    model.addObject("sourceleadSectionList",sections);
 		   
-			
+		    requirement.setJobFairList(requirementService.getJobFairsListByRequirementId(requirement.getId()));
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}

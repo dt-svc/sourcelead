@@ -58,6 +58,7 @@ import com.bis.sourcelead.dto.JobFairRequirementsDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -231,6 +232,38 @@ public class RequirementServiceImpl implements RequirementService {
 			companyShortCode = orgLocations.getGeneratedUserId();
 		}
 		return sb.append(companyShortCode).append(Constants.JOB_ENTITY).append(convetredRequirementsId).toString();
+	}
+	
+	@Override
+	public String getGeneratedJobFairId(OrgLocations orgLocations) {
+		String companyShortCode = null;
+		Long number = 1L;
+		String requirementId = null;
+		Integer generatedIdcount = 0;
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(orgLocations.getGeneratedUserId()).append(Constants.JOB_FAIR);
+		String generatedUsreId = sbuilder.toString();
+		for (int i = 0; i < generatedUsreId.length(); i++) {
+			char ch = generatedUsreId.charAt(i);
+			if (Character.isAlphabetic(ch)) {
+				generatedIdcount++;
+			}
+		}
+		generatedIdcount = generatedIdcount + 1;
+		Long checkNumber = requirementDao.getJobFairGeneratedIdByOrgLocationId(orgLocations.getId(), generatedIdcount);
+		if (checkNumber == null) {
+			requirementId = number.toString();
+		} else {
+			Long reqId = checkNumber + 1;
+			requirementId = reqId.toString();
+		}
+		final DecimalFormat decimalFormat = new DecimalFormat("0");
+		String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+		StringBuffer sb = new StringBuffer();
+		if (orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())) {
+			companyShortCode = orgLocations.getGeneratedUserId();
+		}
+		return sb.append(companyShortCode).append(Constants.JOB_FAIR).append(convetredRequirementsId).toString();
 	}
 
 	/**
@@ -3936,7 +3969,6 @@ public class RequirementServiceImpl implements RequirementService {
 		return 0;
 	}*/
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public Response<String> saveJobFair(JobFairDTO jobFairDTO, User user, OrgLocations orgLocations) {
 		Response<String> response = new Response<>();
@@ -3944,11 +3976,16 @@ public class RequirementServiceImpl implements RequirementService {
 			JobFair jobFair = null;
 			if (jobFairDTO.getId() > 0) {
 				jobFair = requirementDao.getJobFair(jobFairDTO.getId());
+				jobFair.setUpdatedBy(user);
+				jobFair.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
 			} else {
 				jobFair = new JobFair();
+				jobFair.setGeneratedId(getGeneratedJobFairId(orgLocations));
 				jobFair.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
 				jobFair.setDescription("");
 				jobFair.setStatus(1);
+				jobFair.setCreatedBy(user);
+				jobFair.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
 			}
 			jobFair.setName(jobFairDTO.getName());
 			jobFair.setBudget(Double.parseDouble(jobFairDTO.getBudget()));
@@ -4003,7 +4040,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public ResponseList<JobFairDTO> getJobFairsList(JobFairDTO jobFairDTO, boolean includeInactive) {
-		ResponseList<JobFairDTO> jobFairDTOList = new ResponseList();
+		ResponseList<JobFairDTO> jobFairDTOList = new ResponseList<>();
 		try {
 			ResponseList<JobFair> jobFairList = requirementDao.getJobFairList(jobFairDTO, includeInactive);
 			List<JobFairDTO> dtoList  = new LinkedList<>();
@@ -4042,12 +4079,20 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			jobFairDTO.setId(jobFair.getId());
 			jobFairDTO.setUuid(jobFair.getUuid());
+			jobFairDTO.setGeneratedId(jobFair.getGeneratedId());
 			jobFairDTO.setName(jobFair.getName());
 			jobFairDTO.setBudget(CommonUtil.toFixed2(jobFair.getBudget()));
 			jobFairDTO.setDescription(jobFair.getDescription());
 			jobFairDTO.setStartDate(sdf.format(jobFair.getStartDate()));
 			jobFairDTO.setEndDate(sdf.format(jobFair.getEndDate()));
-			
+			if(jobFair.getCreatedBy() != null) {
+				jobFairDTO.setCreatedByUserId(jobFair.getCreatedBy().getId());
+				jobFairDTO.setCreatedDate(jobFair.getCreatedDate());
+			}
+			if(jobFair.getUpdatedBy() != null) {
+				jobFairDTO.setUpdatedByUserId(jobFair.getUpdatedBy().getId());
+				jobFairDTO.setUpdatedDate(jobFair.getUpdatedDate());
+			}
 			SimpleDateFormat dateFormat = new SimpleDateFormat(jobFair.getOrgLocations().getDateFormat());
 			if(jobFair.getStartDate() != null) {
 				jobFairDTO.setStartDateStr(dateFormat.format(jobFair.getStartDate()));
@@ -4060,6 +4105,8 @@ public class RequirementServiceImpl implements RequirementService {
 			jobFairDTO.setNotifyTo(jobFair.getNotifyTo());
 			jobFairDTO.setStatus(jobFair.getStatus());
 			jobFairDTO.setDateFormat(jobFair.getDateFormat());
+			long applicantCount = 0;
+			long offeredCount = 0;
 			List<JobFairRequirementsDTO> jobFairRequirementsDTOList = new LinkedList<>();
 			String requirements = "";
 			for (JobFairRequirements jobFairRequirements : jobFair.getJobFairRequirementList()) {
@@ -4070,9 +4117,14 @@ public class RequirementServiceImpl implements RequirementService {
 				jobFairRequirementsDTO.setJobFairName(jobFairRequirements.getJobFair().getName());
 				jobFairRequirementsDTO.setRequirementId(jobFairRequirements.getRequirement().getId());
 				jobFairRequirementsDTO.setRequirementTitle(jobFairRequirements.getRequirement().getJobTitle());
+				applicantCount += jobFairRequirements.getRequirement().getTotalApplicants();
+				RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(jobFairRequirements.getRequirement().getId(), jobFair.getUser(), jobFair.getOrgLocations(), "OFFERED");
+				offeredCount += rsCount.getOffersCount();
 				jobFairRequirementsDTO.setFairDates(jobFairRequirements.getFairDates());
 				jobFairRequirementsDTOList.add(jobFairRequirementsDTO);
 			}
+			jobFairDTO.setApplicantCount(applicantCount);
+			jobFairDTO.setOfferedCount(offeredCount);
 			jobFairDTO.setJobFairRequirementList(jobFairRequirementsDTOList);
 			jobFairDTO.setRequirementJSONData(requirements);
 		} catch (Exception e) {
@@ -4164,6 +4216,26 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		
 		return requirementList;
+	}
+	
+	@Override
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+		try {
+			return requirementDao.getRequirementsListByJobFairId(userId, orgLocationId, jobFairId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId) {
+		try {
+			return requirementDao.getJobFairDatesByRequirementIdAndJobFairId(requirementId, jobFairId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }

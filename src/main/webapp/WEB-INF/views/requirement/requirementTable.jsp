@@ -35,11 +35,14 @@ function jobFairListCheck(){
 	var result = "";
 	result = result +"<table id='jobFairPagination' class='display' cellspacing='0' width='100%' >"; 
  	result = result +"<thead>"; 
- 	result = result +"	<tr>"; 
+ 	result = result +"	<tr>";
+ 	result = result +"		<th>Generated ID</th>";
  	result = result +"		<th>Title</th>";
- 	result = result +"		<th>StartDate</th>";
+ 	result = result +"		<th>Start Date</th>";
  	result = result +"		<th>End Date</th>";
  	result = result +"		<th>No.of Jobs</th>";
+ 	result = result +"		<th>Applicants</th>";
+ 	result = result +"		<th>Offered</th>";
  	result = result +"		<th>Venue</th>"; 
  	result = result +"		<th>Status</th>";
  	result = result +"		<th>Action(s)</th>";
@@ -783,16 +786,32 @@ function jpaginationForJobFairs(url){
            pages: 1
        }),
        "columns": [
+    	   {"data": "generatedId"},
            {"data": "name"},
            {"data": "startDate"},
            {"data": "endDate"},
            {"data": "requirementsList"},
+           {"data": "applicantCount"},
+           {"data": "offeredCount"},
            {"data": "venue"},
            {"data": "status"},
            {"data": "actions" }
        	],
 	       "columnDefs": [
-	        {
+    	   {
+	            "targets": colIndex++,
+	            "data": "generatedId",
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+           		   if(opt.generatedId != null && opt.generatedId != '' && opt.generatedId != 'undefined') {
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.generatedId+'</div></td>';
+           		   } else {
+						result = result +"<td><div>-----</div></td>";
+           	       }
+		           		return result;
+	             }
+	        },
+	    	{
 	           "targets": colIndex++,
 	           "data": "name",
 	           "render": function ( data, type, opt, meta ) {
@@ -842,6 +861,26 @@ function jpaginationForJobFairs(url){
 						result = result +"<td><div>-----</div></td>";
            	       }
 		           		return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "applicantCount",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.applicantCount+'</div></td>';
+		                return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "offeredCount",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.offeredCount+'</div></td>';
+		                return result;
 	             }
 	        },
 	        {

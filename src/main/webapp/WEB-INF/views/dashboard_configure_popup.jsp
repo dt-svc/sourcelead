@@ -175,6 +175,9 @@
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
+	        	} else if (response.response === "INVALID_DATA") {
+					showError(response.responseMessage);
+	        		closeConfigurePopup();
 	        	} else if (response.response === "SUCCESS") {
 	        		/* showError("Dashboard items saved"); */
 	        		$(".success_pop").show();

@@ -36,6 +36,7 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -275,6 +276,42 @@ public class RequirementRestController {
 				responseList.setData(requirementService.getJobFairRequirementsByDate(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), date));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(dayOfweek + "<>" + selectedDate);
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
+	
+	@RequestMapping(value = "/getRequirementsByJobFair")
+	public ResponseList<Requirement> getRequirementsByJobFairId(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") long jobFairId) {
+		ResponseList<Requirement> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				List<Requirement> requirementList = requirementService.getRequirementsListByJobFairId(user.getId(), loginOrgLocations.getId(), jobFairId);
+				for(Requirement requirement : requirementList) {
+					//setting jobfair date(s)
+					requirement.setJobFairDates(requirementService.getJobFairDatesByRequirementIdAndJobFairId(requirement.getId(), jobFairId));
+					//setting counts
+					RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, loginOrgLocations, "ALL");
+					requirement.setNoOfApplicants(String.valueOf(rsCount.getApplicantsCount()));
+					requirement.setNoOfShortlistedApplicants(String.valueOf(rsCount.getShortlistCount()));
+					requirement.setNoOfSubmittedApplicants(String.valueOf(rsCount.getSubmitToClientCount()));
+					requirement.setNoOfInterviewedApplicants(String.valueOf(rsCount.getInterviewCount()));
+					requirement.setNoOfOfferedApplicants(String.valueOf(rsCount.getOffersCount()));
+					requirement.setNoOfJoinedApplicants(String.valueOf(rsCount.getJoinedCount()));
+				}
+				responseList.setData(requirementList);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
 				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
 				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

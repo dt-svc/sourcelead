@@ -90,11 +90,11 @@
 						</div>
 						
 						<div class="col-md-6">
-							<label class="clearfix">Select Job<span class="text-danger">&nbsp;*</span></label>
+							<label class="clearfix">Select Job</label>
 							<div class="clearfix">
 								<div class="row">
 									<div class="col-md-12">
-										<select multiple class="chosen-select form-control" name="requirementsList" field-name="Job" data-validation="required"
+										<select multiple class="chosen-select form-control" name="requirementsList" field-name="Job" 
 											id="requirementsList" ${jobFair.id == 0 ? "disabled='disabled'" : ""}>
 											
 											<c:forEach items="${requirementString.split(',')}" var="req">
@@ -412,32 +412,6 @@
 		google.maps.event.addListener(autocomplete, 'place_changed',
 				function() {
 					place = autocomplete.getPlace();
-					/* var address = {};
-					for (var i = 0; i < place.address_components.length; i++) {
-						var addressType = place.address_components[i].types[0];
-						switch (addressType) {
-						case "route":
-							address.name = place.address_components[i].long_name;
-							break;
-						case "locality":
-							address.city = place.address_components[i].long_name;
-							break;
-						case "administrative_area_level_1":
-							address.state = place.address_components[i].long_name;
-							break;
-						case "country":
-							address.country = place.address_components[i].long_name;
-							break;
-						case "postal_code":
-							address.zipcode = place.address_components[i].long_name;
-						}
-					} */
-					/* $("#" + rowId + "country").val(address.country).change();
-					$("#" + rowId + "state").val(address.state).change();
-					$("#" + rowId + "city").val(address.city).change();
-					$("#" + rowId + "zipcode").val(address.zipcode).change();
-					$("#" + rowId + "latitude").val(place.geometry.location.lat());
-					$("#" + rowId + "longitude").val(place.geometry.location.lng()); */
 				});
 	}
 
@@ -464,6 +438,7 @@
 				}
 			}
 			if (flag) {
+				var id = $("#id").val();
 				$("#notifyTo").parent().find("p").remove();
 				/* var formData = $($('#jobFairForm')[0]).serialize(); */
 				var requirements = [];
@@ -479,7 +454,7 @@
 					});
 				});
 				var data = {
-						id: $("#id").val(),
+						id: id,
 						name : $("#fairName").val(),
 						budget : $("#budget").val(),
 						description : $("#description").val(),
@@ -497,7 +472,11 @@
 					} else if (result.response === "AWKWARD") {
 						location.href = "/errorPage";
 					} else if (result.response === "SUCCESS") {
-						location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+						$(".success_pop span").html("JobFair " + (id > 0 ? "updated":"created") + " successfully...");
+						$(".success_pop").show();
+						setTimeout(function() {
+							location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+				 		}, 500);
 					} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
