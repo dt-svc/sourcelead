@@ -139,7 +139,7 @@ public class MissingTimesheetsReoprtsRestController {
 					            	 flag = false;
 					             }
 								
-					             if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, pm.getId()) && (flag) && frequencyEndDate.before(currentCal.getTime())){
+					             if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, pm.getMasterCandidateId().getId(),pm.getProjects().getId()) && (flag) && frequencyEndDate.before(currentCal.getTime())){
 					            	String unfilledFrequency =  key.replaceAll("/", "-")+" To "+value.replaceAll("/", "-");
 					            	MissingTimesheetResultRepotDTO mtr = new MissingTimesheetResultRepotDTO();
 					            	mtr.setProjectName(pm.getProjects().getProjectName());

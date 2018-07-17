@@ -160,7 +160,7 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 				 + " select hierarchy.projectClientsId.id from ProjectApproverHierarchy hierarchy  where  "
 				 + "  hierarchy.approverUserId.id = :userId "
 				 + " OR "
-				 + "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pc.orgLocationsId.id))"
+				 + "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = pc.orgLocationsId.id))"
 			  + " ) group by pc.orgRelationId " );
 		projectClientsList = candidateListQuery.setLong("userId", userId).setLong("locationsId", locationsId).list();
 		return projectClientsList;
@@ -194,7 +194,7 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 				 + " select hierarchy.projectClientsId.id from ProjectApproverHierarchy hierarchy  where  "
 				 + " ("+globalUserQuery2+" and hierarchy.approverUserId.id = :userId "
 				 + " OR "
-				 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
+				 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
 				 +" OR  (pc.projectId.isReportingManagerAsApprover = 'Y')"
 				 + " ))");
 		projectClientsList = candidateListQuery.setLong("userId", userId).setLong("locationsId", locationsId).list();

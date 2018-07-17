@@ -36,6 +36,7 @@ $(document).ready(function(){
  <div class="success_pop" id="selector1" style="display: none;">
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
+  
 <section class="content-wraper">
     <section class="content-header clearfix">
     <c:if test="${!empty msg}">
@@ -48,11 +49,12 @@ $(document).ready(function(){
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoices List</div>
     </section>
+    
     <div class="content-area content-new clearfix">
-      <div class="billing_dashboard">
+      <div class="billing_dashboard noPad">
         <div class="tabbable positionRelative">
           <div class="onboardcreateButtons">
-            <div class="pull-right select-field ml">
+            <div class="pull-right select-field mr mt">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
                 <option value="month">Last 30 days</option>
                 <option value="twomonths">Last 60 Days</option>
@@ -69,7 +71,7 @@ $(document).ready(function(){
             </div>
           </div>
          
-         <ul class="nav nav-tabs" id="tab_bar">
+         <ul class="nav nav-tabs pad15" id="tab_bar">
             
                   <li class="active">
                         <h4>Unbilled</h4>
@@ -138,43 +140,43 @@ $(document).ready(function(){
             <div id="invoiceLoading"></div>
             <!-- Employee Details -->
             <div class="tab-pane active" id="unbilled">
-              <div class="timesheet_out mt">
+              <div class="timesheet_out">
                 <div class="clearfix">
-                  <div class="timesheet_head">
-                  <div class="pull-left cand-advsrch advsrch_chosen">
-				     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetInvoiceFilter();" title="Refresh">
-					    <span class="fa fa-refresh"></span>
-					</button>
-					<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openInvoiceFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
-					</a>
-			      </div>
-			    
-                    <ul>
-                    <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
-			        	<div id="exportPop" class="ExpPop">
-			              <ul>
-			                <li onclick="exportToReceivablePdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-			                <li onclick="exportToReceivableExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
-			              </ul>
-			            </div>
-			          </li>
-			          
-			          <li>
-						<a class="action" onclick="getActions();" href="javascript:void(0)"><i class="fa fa-user-plus"></i>&nbsp;Add<i class="fa fa-caret-down"></i></a>
-						<div class="action-pop">	
-							<span style="width:225px;">
-							 <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
-			                      <a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
-			                  </sec:authorize>
-			                   <a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-gears paddingRight"></i>Generate Automatic Invoice</a>
-							<div class="clearfix"></div>
-							</span>
-						</div>
-					  </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  
+                
+
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetInvoiceFilter();"></a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+      
+            <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+					 	<sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
+	                      <a href="javascript:void(0)" title="Create invoice"  onclick="createBill();">Create Invoice</a>
+	                  	</sec:authorize>
+	                   	<a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();">Generate Automatic Invoice</a>
+					</span>
+				</div>
+			</li>
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openInvoiceFilterPop();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						 	<a href="javascript:void(0)" onclick="exportToReceivablePdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportToReceivableExcel();" title="Excel">Export Excel</a>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='invoiceDataTableSearch'/><span class="repSearchIcon" onClick="getInvoiceList();"></span></li>
+        </ul>
+      </div>     
+                
                   <div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
                   </div>
@@ -494,11 +496,12 @@ function getInvoiceList(){
 <script>
 function prepareInvoiceList(url,locationdateForList){
  	var result = "";
- 	result = result +" <div class='dynamic_search dynamic_search-new'>";
+ 	
+/*  	result = result +" <div class='dynamic_search dynamic_search-new'>";
  	result = result +" <input type='text' placeholder='Search' id='invoiceDataTableSearch'/>";
  	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='getInvoiceList();'></i></span>";     
-
- 	result = result +"</div>";
+ 	result = result +"</div>"; */
+ 	
  	result = result + '<table id="invoiceListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result +'       <tr>                             ';
@@ -557,11 +560,11 @@ function invoicePagination(url){
             "render": function ( data, type, report, meta ) {
             	var result = "";
             	result = result +'         <td> ';
-				result = result +'     <div class="tblminwidth-90">';
-				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
+				result = result +'     <div class="tblminwidth-90" style="position: inherit;">';
+				 result = result +'  <div class="pull-right menuWidget" style="position: inherit;">';
 				 if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected" ){
-					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\',\''+report.paymentStatus+'\');" ></i>  ';
-						result = result +'  <div id="popupDiv'+report.invoiceUUID+'" class="invoicePopRg"></div>';
+					 result = result +' <i class="fa fa-ellipsis-v divPadding" onClick="showPopUp(\''+report.id+'\',\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\',\''+report.paymentStatus+'\',\''+report.dueAmount+'\');" ></i>  ';
+						result = result +'  <div id="popupDiv'+report.invoiceUUID+'" class="invoicePopRg" style="position: inherit;"></div>';
 				} 
 				result = result +'  </div> ';
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
@@ -569,31 +572,32 @@ function invoicePagination(url){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary primary pull-left" >Paid</span>   ';
 						}else if(report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice(\''+report.invoiceUUID+'\');";></i>';	
+							result = result +'           <span class="textWarning pull-left">Draft</span>';	
 						}else if(report.invoiceStatus == "Rejected"){
-							result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';	
+							result = result +'           <div class="colorRed pull-left">Rejected</div>   ';	
 						}else{
 							result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';	
+
 						}
 							
 					}else{
 						if(report.invoiceStatus == "Linked"){
 							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 						}else{
-							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
+							result = result +'           <span class="textSuccess primary pull-left">Accepted</span>';
 						}
 					}
 				}else{
 					if(report.invoiceStatus == "Accepted"){
 						if(report.paymentStatus == "Paid"){
-							result = result +'           <span class=" primary pull-left">Paid</span>   ';	
+							result = result +'           <span class="textSuccess pull-left">Paid</span>   ';	
 						}else{
-							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
+							result = result +'           <span class="textSuccess primary pull-left">Accepted</span> </td>';
 						}
 						
 					}else{
 						if(report.invoiceStatus == "Rejected"){
-							result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';	
+							result = result +'           <div class="colorRed pull-left">Rejected</div>   ';	
 						}else if(report.invoiceStatus == "Linked"){
 							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 						}else{
@@ -833,28 +837,39 @@ $('#mypop').click(function(){
 </script>
 
 <script>
-function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl,paymentStatus){
+function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl,paymentStatus,dueAmount){
 	removePopup();
 	     result = "";
 	     if(invoiceParentId == 'undefined'){
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
+	    	 result = result +'    <ul class="list-unstyled menupop"> ';
 	     }else{
 	    	  if(invoiceStatus == 'DRAFT'){
-	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	    		  result = result +'    <ul class="list-unstyled menupop"> ';
 	    	  }else if(invoiceParentId != 'null'){
-	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
+	    		  result = result +'    <ul class="list-unstyled menupop"> ';
 	    	  }else{
-	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
+	    		  result = result +'    <ul class="list-unstyled menupop"> ';
 	    	  }
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
 		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_INVOICE_REMINDER\')">';
-			 result = result +'      <a onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</a> ';
+			 result = result +' <li><a onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight paddingLeft" title="Send reminder"></i>Send reminder</a></li>';
 			'</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
+		 if(invoiceStatus == "DRAFT"){
+			 result = result +' <li><a onClick="deleteInvoice(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove Invoice"></i>Delete</a></li>';
+ 
+		 }
+		 if(invoiceStatus == "Accepted"){
+			 if(paymentStatus != "Paid"){
+				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Invoice"></i>Received</a></li>';
+
+			 }
+			 
+		 }
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
 		result = result+' <li><a class="" target="_blank" href="'+fileUrl+'" title="Print"><i class="fa fa-print paddingLeft paddingRight"></i>Print</a></li>';
 	 	'</sec:authorize>'
@@ -864,7 +879,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	     '</sec:authorize>'
 	     if(invoiceStatus != 'DRAFT')
 	     {
-	     result = result +'      <a onclick="linkInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</a>';
+	     result = result +'<li><a onclick="linkInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</a></li>';
 	     }
 	     result = result +'    </ul>';
     	 $("#popupDiv"+invoiceUUID+"").append(result);
@@ -1741,12 +1756,28 @@ function resetInvoiceFilter(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
 }	
-	$("html").click(function(){
-		$(".action-pop").slideUp(200);
-	});
-	$(".action, .action-pop").click(function(e){
-	 	e.stopPropagation();
- 	});	
-</script>	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+</script>
+	
  <jsp:include page="../masterFooter.jsp" />	
