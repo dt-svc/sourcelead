@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -1410,27 +1411,40 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    
 	    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 	    List<User> globalUserList = userService.getTabAccessGlobalOwnersByOrgIdAndTabId(loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
-		List<User> level1ApproversList = new ArrayList<>();
+		List<User> level1ApproversList = new CopyOnWriteArrayList<>();
 		if(userList != null && !userList.isEmpty()) {
 			level1ApproversList.addAll(userList);
 		}
 		if(globalUserList != null && !globalUserList.isEmpty()) {
 			level1ApproversList.addAll(globalUserList);
 		}
+		HashMap<Long,User> userMap = new HashMap<>();
 	    List<UserDTO> userDTOList = new ArrayList<>();
 	    if(level1ApproversList != null && !level1ApproversList.isEmpty()) {
 	    	for(User mrguser : level1ApproversList) {
-	    		UserDTO userDTO = new UserDTO();
-	    		userDTO.setId(mrguser.getId());
-	    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser.getId(),loginOrgLocations.getId());
-	    		if(roleType != null) {
-	    			userDTO.setUserType(roleType.getUserType());
-	    		}else {
-	    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(mrguser.getId());
-	    			userDTO.setUserType(primaryRole.getUserType());
-	    		}
-	    		userDTO.setName(mrguser.getFullName());
-	    		userDTOList.add(userDTO);
+	    		
+	    		User tempUser = userMap.get(mrguser.getId());
+				if(tempUser == null) {
+					userMap.put(mrguser.getId(),mrguser);
+					
+					UserDTO userDTO = new UserDTO();
+		    		userDTO.setId(mrguser.getId());
+		    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser.getId(),loginOrgLocations.getId());
+		    		if(roleType != null) {
+		    			userDTO.setUserType(roleType.getUserType());
+		    		}else {
+		    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(mrguser.getId());
+		    			userDTO.setUserType(primaryRole.getUserType());
+		    		}
+		    		userDTO.setName(mrguser.getFullName());
+		    		userDTOList.add(userDTO);
+		    		
+				}else {
+					level1ApproversList.remove(mrguser);
+					continue;
+				}
+				
+	    		
 	    	}
 	    }
 	    projectsDTO.setManagersList(userDTOList);
@@ -1438,28 +1452,40 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projectsDTO.getManager1() != 0){
 	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getManager1()),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 	    	  List<User> globalUserListwithoutmaneger1 = userService.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getManager1()),loginOrgLocations.getOrg().getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
-	    	  List<User> managersList = new ArrayList<>();
+	    	  List<User> managersList = new CopyOnWriteArrayList<>();
 	    	  if(userListwithoutmaneger1 != null & !userListwithoutmaneger1.isEmpty()) {
 	    		  managersList.addAll(userListwithoutmaneger1);
 	    	  }
 	    	  if(globalUserListwithoutmaneger1 != null & !globalUserListwithoutmaneger1.isEmpty()) {
 	    		  managersList.addAll(globalUserListwithoutmaneger1);
 	    	  }
+	    	  
+	    	  HashMap<Long,User> userMap2 = new HashMap<>();
 	    	  List<UserDTO> mrguserDTOList = new ArrayList<>();
 			    if(userList != null && managersList.size() > 0) {
 			    	for(User mrguser2 : managersList) {
-			    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
-			    		UserDTO userDTO = new UserDTO();
-			    		userDTO.setId(mrguser2.getId());
-			    		if(roleType != null) {
-			    			userDTO.setUserType(roleType.getUserType());
+			    		
+			    		User tempUser = userMap2.get(mrguser2.getId());
+			    		if(tempUser == null) {
+			    			userMap2.put(mrguser2.getId(),mrguser2);
+			    	   		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
+				    		UserDTO userDTO = new UserDTO();
+				    		userDTO.setId(mrguser2.getId());
+				    		if(roleType != null) {
+				    			userDTO.setUserType(roleType.getUserType());
+				    		}else {
+				    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(mrguser2.getId());
+				    			userDTO.setUserType(primaryRole.getUserType());
+				    		}
+				    		
+				    		userDTO.setName(mrguser2.getFullName());
+				    		mrguserDTOList.add(userDTO);
 			    		}else {
-			    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(mrguser2.getId());
-			    			userDTO.setUserType(primaryRole.getUserType());
+			    			mrguserDTOList.remove(mrguser2);
+							continue;
 			    		}
 			    		
-			    		userDTO.setName(mrguser2.getFullName());
-			    		mrguserDTOList.add(userDTO);
+			 
 			    	}
 			    }
 			    projectsDTO.setManagersListwithoutManager1(mrguserDTOList);
@@ -3406,6 +3432,12 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			@Override
 			public List<Projects> getAllClientProjectsByOrgLocationId(Long locationId) throws Exception {
 				return projectsDao.getAllClientProjectsByOrgLocationId(locationId);
+			}
+
+			@Override
+			public List<ProjectsDTO> getProjectListForDaywiseReports(Long orgLocationsId, Long orgId,
+					String isGlobalManager,Long userId,String type,String userRole) throws Exception {
+				return projectsDao.getProjectListForDaywiseReports(orgLocationsId, orgId, isGlobalManager,userId,type,userRole);
 			}
 
 			
