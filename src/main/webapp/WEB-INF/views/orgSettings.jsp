@@ -394,10 +394,10 @@ function cancelOrgImg(){
 						</div>
 							
 						
-						<div class="form-group mt">
+						<div class="form-group mt" id="averageWorkingHoursDiv">
 							<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
-							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
+							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required validate_int" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
 							</div>
 						</div>
 						
@@ -3432,9 +3432,14 @@ $(function(){
         var ew = $("#averageWorkingHours").val();
         $('#averageWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
         if(ew > 24){
-        	$("#averageWorkingHours").val('');
+//         	$("#averageWorkingHours").val('');
         	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+        	$('#averageWorkingHours').removeAttr('data-validation');
+        	$("#save_button").attr("disabled","true");
+        }else{
+        	$("#save_button").removeAttr("disabled","false");
         }
+        
     });
 });
 
