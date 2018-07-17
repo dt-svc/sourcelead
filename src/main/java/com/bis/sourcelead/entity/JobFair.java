@@ -31,6 +31,9 @@ public class JobFair implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
 
 	@Column(name = "UUID")
 	private String uuid;
@@ -108,6 +111,14 @@ public class JobFair implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
 	}
 
 	public String getUuid() {

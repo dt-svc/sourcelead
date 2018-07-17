@@ -1629,11 +1629,11 @@ public class RequirementListRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				String[] tableColumns = { "name", "startDate", "endDate", "noOfJobs", "", "", "", "status", "id"};
+				String[] tableColumns = {"generatedId" ,"name", "startDate", "endDate", "noOfJobs", "", "", "", "status", "id"};
 				/*jobFairDTO.setSortColumn("id");
 				jobFairDTO.setSortOrder("desc");*/
 				
-				int sortColumnIndex = 8; //by default sorting using id
+				int sortColumnIndex = 9; //by default sorting using id
 				boolean sortColumnOrder = false; //by default descending order
 				if(jobFairDTO.getOrder() != null && !jobFairDTO.getOrder().isEmpty()) {
 					sortColumnIndex = Integer.parseInt(jobFairDTO.getOrder().get(0).get("column"));

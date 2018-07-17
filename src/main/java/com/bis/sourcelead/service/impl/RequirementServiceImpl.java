@@ -233,6 +233,38 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		return sb.append(companyShortCode).append(Constants.JOB_ENTITY).append(convetredRequirementsId).toString();
 	}
+	
+	@Override
+	public String getGeneratedJobFairId(OrgLocations orgLocations) {
+		String companyShortCode = null;
+		Long number = 1L;
+		String requirementId = null;
+		Integer generatedIdcount = 0;
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(orgLocations.getGeneratedUserId()).append(Constants.JOB_FAIR);
+		String generatedUsreId = sbuilder.toString();
+		for (int i = 0; i < generatedUsreId.length(); i++) {
+			char ch = generatedUsreId.charAt(i);
+			if (Character.isAlphabetic(ch)) {
+				generatedIdcount++;
+			}
+		}
+		generatedIdcount = generatedIdcount + 1;
+		Long checkNumber = requirementDao.getJobFairGeneratedIdByOrgLocationId(orgLocations.getId(), generatedIdcount);
+		if (checkNumber == null) {
+			requirementId = number.toString();
+		} else {
+			Long reqId = checkNumber + 1;
+			requirementId = reqId.toString();
+		}
+		final DecimalFormat decimalFormat = new DecimalFormat("0");
+		String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+		StringBuffer sb = new StringBuffer();
+		if (orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())) {
+			companyShortCode = orgLocations.getGeneratedUserId();
+		}
+		return sb.append(companyShortCode).append(Constants.JOB_FAIR).append(convetredRequirementsId).toString();
+	}
 
 	/**
 	 * @author prasad k
@@ -3948,6 +3980,7 @@ public class RequirementServiceImpl implements RequirementService {
 				jobFair.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
 			} else {
 				jobFair = new JobFair();
+				jobFair.setGeneratedId(getGeneratedJobFairId(orgLocations));
 				jobFair.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
 				jobFair.setDescription("");
 				jobFair.setStatus(1);
@@ -4046,6 +4079,7 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			jobFairDTO.setId(jobFair.getId());
 			jobFairDTO.setUuid(jobFair.getUuid());
+			jobFairDTO.setGeneratedId(jobFair.getGeneratedId());
 			jobFairDTO.setName(jobFair.getName());
 			jobFairDTO.setBudget(CommonUtil.toFixed2(jobFair.getBudget()));
 			jobFairDTO.setDescription(jobFair.getDescription());

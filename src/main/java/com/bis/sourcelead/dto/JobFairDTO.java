@@ -14,6 +14,7 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 
 	private long id;
 	private String uuid;
+	private String generatedId;
 	private String name;
 	private String budget;
 	private String description;
@@ -42,6 +43,14 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private Date createdDate;
 	private long updatedByUserId;
 	private Date updatedDate;
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
 
 	public long getCreatedByUserId() {
 		return createdByUserId;

@@ -1848,6 +1848,21 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		return count;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getJobFairGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdCount) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'" + generatedIdCount + "') AS UNSIGNED)) FROM "
+				+ schema + ".JOB_FAIR WHERE ORG_LOCATION_ID = '" + orgLocationId + "'";
+		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+		Long count = 0L;
+		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+			count = (Long) maxCountList.iterator().next().longValue();
+		}
+		return count;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
