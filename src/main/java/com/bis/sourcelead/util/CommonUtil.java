@@ -1348,7 +1348,7 @@ public class CommonUtil {
 
 			float totalMinutes = totalCthMinutes+totalWthMinutes;
 
-			float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+			float actualHours = (int) (totalMinutes / 60); 
 			float actualMinutes = (totalMinutes % 60)/100;
 
 			String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
@@ -1356,20 +1356,14 @@ public class CommonUtil {
 			return Float.parseFloat(actualTimeString);
 		}
 		
-		public static String getHoursDisplayFormat(Float hours2){
-			float cthHours = 0;
-			float cthHoursValue = (int) cthHours;
-			float cthMinutesValue = cthHours - cthHoursValue;
-			float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
-
-			float wthHours = hours2;
-			float wthHoursValue = (int) wthHours;
-			float wthMinutesValue = wthHours - wthHoursValue;
-			wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
-			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
-
-			float totalMinutes = totalCthMinutes+totalWthMinutes;
-
+		public static String getHoursDisplayFormat(Float hours2,Float totalMinutes){
+			if(totalMinutes == null) {
+				float wthHours = hours2;
+				float wthHoursValue = (int) wthHours;
+				float wthMinutesValue = wthHours - wthHoursValue;
+				wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
+			    totalMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+			}
 			float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
 			float actualMinutes = (totalMinutes % 60)/100;
 			String actualTimeString = null;
@@ -1381,6 +1375,20 @@ public class CommonUtil {
 			}
 			
 			return actualTimeString;
+		}
+		
+		public static String getTimeFormat(Float hours2,Float totalMinutes) {
+			if(totalMinutes == null) {
+				float wthHours = hours2;
+				float wthHoursValue = (int) wthHours;
+				float wthMinutesValue = wthHours - wthHoursValue;
+				wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
+			    totalMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+			}
+			int hours = (int) (totalMinutes / 60); 
+			int mins = (int)(totalMinutes % 60);
+	        String finalTime = (hours < 10 ? "0" + hours : hours) + ":" + (mins < 10 ? "0" + mins : mins);
+	        return finalTime;
 		}
 
 		public void updateClientVendorElk(OrgRelations orgRelation, OrgLocations orgLocations, User user, String responderType) {
@@ -2521,31 +2529,33 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
   public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 
-		// to update submission history
-		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
-		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
+		if(!requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.JOINED)) {
+			// to update submission history
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
 
-		// to update Submission status
-		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
-		requirementSubmission.setUpdatedBy(user.getUserCode());
-		StringBuilder sb = new StringBuilder();
-		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-		requirementSubmission.setUpdatedDate(new Date());
-		
-		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getJoinDate()) && !"".equalsIgnoreCase(applicantRejectBackOutDTO.getJoinDate())) {
-			try {
-				Date convertedDate = orgLocationDateFormat(orgLocations.getDateFormat(), applicantRejectBackOutDTO.getJoinDate());
-				requirementSubmission.setJoinedDate(convertedDate);
-			} catch (Exception e) {
-				e.printStackTrace();
+			// to update Submission status
+			requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
+			requirementSubmission.setUpdatedBy(user.getUserCode());
+			StringBuilder sb = new StringBuilder();
+			requirementSubmission.setUpdatedUser(sb.append(user.getFullName()).toString());
+			requirementSubmission.setUpdatedDate(new Date());
+			
+			if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getJoinDate()) && !"".equalsIgnoreCase(applicantRejectBackOutDTO.getJoinDate())) {
+				try {
+					Date convertedDate = orgLocationDateFormat(orgLocations.getDateFormat(), applicantRejectBackOutDTO.getJoinDate());
+					requirementSubmission.setJoinedDate(convertedDate);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				requirementSubmission.setJoinedDate(null);
 			}
-		} else {
-			requirementSubmission.setJoinedDate(null);
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		}
-		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		return "success";
 	}
 

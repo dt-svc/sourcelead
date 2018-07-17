@@ -142,6 +142,7 @@ public class VendorOnboardRestController {
 			reponse.setResponse(Result.AWKWARD.name());
 			reponse.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return reponse;
 	 }
@@ -179,6 +180,7 @@ public class VendorOnboardRestController {
 				reponse.setResponse(Result.AWKWARD.name());
 				reponse.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
+				e.printStackTrace();
 			}
 		
 	 	 return reponse;
@@ -215,6 +217,7 @@ public class VendorOnboardRestController {
 			reponse.setResponse(Result.AWKWARD.name());
 			reponse.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 	 	 return reponse;
 	   }
@@ -297,6 +300,7 @@ public class VendorOnboardRestController {
 			reponse.setResponse(Result.AWKWARD.name());
 			reponse.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 			
 		
@@ -343,6 +347,7 @@ public class VendorOnboardRestController {
 				reponse.setResponse(Result.AWKWARD.name());
 				reponse.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
+				e.printStackTrace();
 			}
 		
 		return reponse;
@@ -390,6 +395,7 @@ public class VendorOnboardRestController {
 			 response.setResponse(Result.AWKWARD.name());
 			 response.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
+				e.printStackTrace();
 			}
 		return response;
 	   
@@ -474,6 +480,7 @@ public class VendorOnboardRestController {
 				 response.setResponse(Result.AWKWARD.name());
 				 response.setResponseMessage(Result.AWKWARD.getValue());
 					logger.error(ExceptionUtils.getFullStackTrace(e));
+					e.printStackTrace();
 				}
 				
 		 return response;
@@ -509,6 +516,7 @@ public class VendorOnboardRestController {
 			 response.setResponse(Result.AWKWARD.name());
 			 response.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
+				e.printStackTrace();
 			}
 		 
 		 return response;
@@ -547,6 +555,7 @@ public class VendorOnboardRestController {
 			 response.setResponse(Result.AWKWARD.name());
 			 response.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
+				e.printStackTrace();
 			}
 		return response;
 	   
@@ -583,6 +592,7 @@ public class VendorOnboardRestController {
 			 response.setResponse(Result.AWKWARD.name());
 			 response.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
+				e.printStackTrace();
 			}
 		return response;
 		

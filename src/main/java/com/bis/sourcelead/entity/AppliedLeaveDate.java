@@ -33,6 +33,9 @@ public class AppliedLeaveDate {
 	@Column(name = "APPLY_LEAVE_DATE")
 	private Date applyLeaveDate;
 	
+	@Column(name = "APPLIED_HOURS")
+	private String appliedHours;
+	
 	@Column(name = "APPLY_MONTH_NAME")
 	private String applyMonthName;
 	
@@ -167,5 +170,13 @@ public class AppliedLeaveDate {
 		this.year = year;
 	}
 
-	
+	public String getAppliedHours()
+	{
+		return appliedHours;
+	}
+
+	public void setAppliedHours(String appliedHours)
+	{
+		this.appliedHours = appliedHours;
+	}
 }
