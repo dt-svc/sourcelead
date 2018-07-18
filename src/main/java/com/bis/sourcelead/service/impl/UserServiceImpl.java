@@ -1297,14 +1297,6 @@ public class UserServiceImpl implements UserService {
 		
 		List<User> userList = null;
 		userList = userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
-		if(null != userList && !userList.isEmpty()){
-			for (User user : userList) {
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationsId);
-				if(null != userRole){
-					user.setUserType(userRole.getUserType());
-				}
-			}
-		}
 		return userList;
 	}
 	
@@ -1628,17 +1620,6 @@ public class UserServiceImpl implements UserService {
 		
 		List<User> userList = null;
 		userList = userDao.getTabAccessGlobalOwnersByOrgIdAndTabId(orgId, tabId);
-		if(null != userList && !userList.isEmpty()){
-			for (User user : userList) {
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationId);
-				if(null != userRole){
-					user.setUserType(userRole.getUserType());
-				}else {
-					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-					user.setUserType(primaryRole.getUserType());
-				}
-			}
-		}
 		return userList;
 	}
 

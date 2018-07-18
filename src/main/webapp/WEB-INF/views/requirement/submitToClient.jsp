@@ -346,6 +346,7 @@ function cancelSumitToClient(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	$(".sideMask").fadeOut(200);
+	$(".comMask").fadeOut(200);
 }
 </script>
 
