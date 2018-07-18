@@ -73,14 +73,33 @@
    <div class="immigraDetailsCta">
                 <h2>Prevailing Wage</h2>
 			  	<ul>
-				<li class="clearfix"><span>New Employment</span><p>: ${lcaDTO.wagesLevel}</p></li>
+				<li class="clearfix"><span>Wage Level</span><p>: ${lcaDTO.wagesLevel}</p></li>
 				<li class="clearfix"><span>Prevailing  Currency</span><p>: ${lcaDTO.privilingWageCurrency}</p></li>
 				<li class="clearfix"><span>Prevailing  Wage</span><p>: ${lcaDTO.prevailingWage}</p></li>
 				<li class="clearfix"><span>Prevailing  Wage Type</span><p>: ${lcaDTO.privilingWageRateType}</p></li>
 			</ul>	
    </div>
    </div>
-   
+    <div class="clearfix"></div>
+   <!-- LCA Place Of Employment Locations -->
+    <c:forEach var="loc" items="${locList}" begin="0" end="2">
+	   <div class="immigraDetailsWrap"> 
+	   <div class="immigraDetailsCta">
+	           <h2>LCA Place Of Employment Or Location : <c:set var="secCount" value="${secCount+1}" scope="page"/><c:out value="${secCount}" /></h2>
+	           
+			  	<ul>
+					<li class="clearfix"><span>Location</span><p>: ${loc.location}</p></li>
+					<li class="clearfix"><span>Address Line 1</span><p>: ${loc.addressLine1}</p></li>
+					<li class="clearfix"><span>Address Line 2</span><p>: ${loc.addressLine2}</p></li>
+					<li class="clearfix"><span>City</span><p>: ${loc.city}</p></li>
+					<li class="clearfix"><span>State</span><p>: ${loc.state}</p></li>
+					<li class="clearfix"><span>Country</span><p>: ${loc.country}</p></li>
+					<li class="clearfix"><span>ZipCode</span><p>: ${loc.zipCode}</p></li>
+				</ul>	
+				
+	   </div>
+	   </div>
+   </c:forEach>
    
    </div>
     </div>

@@ -2392,9 +2392,9 @@ public class ImmigrationRestController {
 			model.addObject("lcaId", lcaId);
 			if (lcaUuid != null && !StringUtils.isEmpty(lcaUuid)) {
 				 lcaDTO = immigrationCommonService.editLcaDetails(lcaId,orgLocations);
-				
+				// lcaDTO.getLcaPlaceOfEmploymentList();
 			}
-
+            model.addObject("locList",lcaDTO.getLcaPlaceOfEmploymentList());
 			model.addObject("lcaDTO", lcaDTO);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("/immigration/lcaView");
