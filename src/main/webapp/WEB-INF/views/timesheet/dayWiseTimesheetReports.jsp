@@ -35,7 +35,7 @@ $( document ).ready(function() {
               <div class="clearfix">
                 <select class="form-control sel" onchange="getSelectedProjectDetailsList();" id="projectType">
                   <option>Select</option>
-                  <option selected>All</option>
+                  <option value="all" selected>All</option>
                   <option value="client">Client</option>
                   <option value="internal">Internal</option>
                 </select>
@@ -245,11 +245,14 @@ function getProjectListBasedOnStartAndEndDate(){
             type: "POST",
             success: function (json) {
             	var output = "";
-            	$.each(json, function(i, item) {
-            		output = output + "<option value='" +item.id+ "'>"+item.projectName+"</option>";
-            		allProjectId.push(item.id);
-        		});
-            	output = output + "<option value='" +allProjectId+ "' name='all'></option>";
+            	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.projId+ "' name='all'>"+opt.projectName+"</option>";
+		        		
+				}
+            	
+            	
             	$("#projectList").empty();
                 $("#projectList").append(output);
                 $('#projectList').trigger("chosen:updated");
