@@ -1617,7 +1617,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			projectQuery = " and projects.id  IN (:projectIds)";
 		}
 		
-		String groupByCandidateId = "Group By can.id";
+		String groupByCandidateId = "Group By pm.masterCandidateId.id";
 		
 		
 		Session session = this.sessionFactory.getCurrentSession();
