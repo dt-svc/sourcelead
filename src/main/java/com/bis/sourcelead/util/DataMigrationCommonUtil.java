@@ -2270,6 +2270,57 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				User user, OrgLocations orgLocation) throws Exception {
 			
 			   System.out.println(" inside LCA Data validation block method Need to add code for validation ===================================>");
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaNumber"))) {
+					errorSet.put("newLcaNumber", "LCA No is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaTitle"))) {
+					errorSet.put("newLcaTitle", "LCA Title is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("noOfPos"))) {
+					errorSet.put("noOfPos", "No.of Positions is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("noOfPos"))) {
+					errorSet.put("noOfPos", "No.of Positions is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("currClientLocation"))) {
+					errorSet.put("currClientLocation", "Current Client Location is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("socCode"))) {
+					errorSet.put("socCode", "Soc Code is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("socTitle"))) {
+					errorSet.put("socTitle", "Soc Title is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("wageLevel"))) {
+					errorSet.put("wageLevel", "Wage Level is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaStartDate"))) {
+					errorSet.put("newLcaStartDate", "Start Date is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newLcaEndDate"))) {
+					errorSet.put("newLcaEndDate", "End Date is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("lcaStatus"))) {
+					errorSet.put("lcaStatus", "LCA Status is missing"); 
+					}
+			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("newStatus"))) {
+					errorSet.put("newStatus", "Status is missing"); 
+					}
+			   
+			   
+			   
 			
 			//errorSet.put("", "");
 		}

@@ -1,0 +1,484 @@
+	
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script type="text/javascript" src="/resources/js/immigration.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
+
+<title>Insert title here</title>
+    <section class="content-wraper content-wraperNew">
+   
+    <section class="content-header clearfix addImmiHead">
+      <div class="pull-left"><h2>LCA list</h2></div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigration List</a>&raquo; LCA List</div>
+	<div class="clearfix"></div>
+    </section>    
+    <div class="immigrationWrap">
+   
+		<div class="immigraInnWrap">
+		<!-- Filter For Lca -->
+			<div class="timesheet_head clearfix">
+			<ul class="pull-right">
+			  <li class="noPad">
+					  <a href="${appPath}/immigration/loadNewLCA" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="fa fa-plus paddingRight"></i> New </a>
+				  </li>
+				  </ul>
+	           <span class="pull-right mt5 mr5"><a href="javascript:void(0)" class="btn btn-default btn-sm repFilIcon" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter noPad"></i></a></span>
+		       <span class="pull-right mt5 mr5"><a href="/app/uploadLcaForm">Import LCA</a></span> 
+			</div> 
+			<div id="dynamicLCAListViewDiv" class="project_wrap_table datatable_filter"></div>
+    </div>
+    </div>
+  </section>
+  <!-- Content Area -->
+<div id="lcapopUp"></div>
+<!-- Filter popup -->
+ <!--  Popup  -->
+ <div class="advancedsearch-mask"></div>   
+ <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+		       <h5 class="headerAdsrch">Filters
+							<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
+								class="fa fa-close"></i></a>
+						</h5>
+						<div class="addInner">
+							<div class="row">
+							
+							<div class="col-md-3 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<p>Status</p>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myStatus">
+                                            <!-- <li class="checkBox positionRelative"><input  type="checkbox" name="status" value ="all" ><label>All</label></li> -->
+											<li class="checkBox positionRelative"><input  type="checkbox" name="status" value ="Active" ><label>Active</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="status" value ="InActive" ><label>In Active</label></li>
+										</ul>
+									 </div> 
+								</div>
+							<div class="col-md-3 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<p>LCA Status</p>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myLcaStatus">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Initiated" ><label>Initiated</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="In Process" ><label>In Process</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Certified" ><label>Certified</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Denied" ><label>Denied</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Withdrawn" ><label>Withdrawn</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Voided" ><label>Voided</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Invalidated" ><label>Invalidated</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Rejected" ><label>Rejected</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Expired" ><label>Expired</label></li>
+										</ul>
+									 </div> 
+								</div>
+						<!-- 	<div class="col-md-3 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<p>By Expiration duration</p>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsUL">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>All</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>7 Days</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>15 Days</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>30 Days</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>60 Days</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>90 Days</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>120 Days</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>180 Days</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>360 Days</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>360+Days</label></li>
+										</ul>
+									 </div> 
+								</div>	 -->															
+							</div>
+							</div>
+							<div class="clearfix advancedsearch-footer">
+								<div class="pull-right mr">
+									<input type="button" value="Apply" id="search_requiremet"
+										onclick="closeFilterPop();getDynamicLCAList();" class="btn btn-sm btn-success" />
+									<input type="button" value="Reset" id="clear_search"
+										onclick="resetLcaFilter();" class="btn btn-sm btn-primary" />
+								</div>
+							</div>
+		       </div>
+<!-- Footer Area --> 
+
+<script type="text/javascript">
+        var config = {
+        '.chosen-select'           : {},
+        '.chosen-select-deselect'  : {allow_single_deselect:true},
+        '.chosen-select-no-single' : {disable_search_threshold:10},
+        '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        '.chosen-select-width'     : {width:"95%"}
+        }
+        for (var selector in config) {
+        $(selector).chosen(config[selector]);
+        }
+        $('.chosen-select').each(function() {
+        var $this = $(this);
+        $this.next().css({'width': '100%'});
+        })
+    </script> 
+
+<jsp:include page="../masterFooter.jsp" />
+ 
+  <!-- data table code starts below -->
+ <script type="text/javascript">
+ 
+ var hideColumns = [];
+ var table = "";
+
+ function getDynamicLCAList() {
+	
+     var result = "";
+     result = result + '<table id="dynamicLCAListTbl">';
+     result = result + '<thead>';
+     result = result + '<tr>';
+     result = result + '<th>LCA No</th>';
+     result = result + '<th>LCA Title</th>';
+     result = result + '<th>Location</th>';
+     result = result + '<th>Prevailing Wage</th>';
+     result = result + '<th>Valid from</th>';
+     result = result + '<th>Valid To</th>';
+     result = result + '<th>LCA Status</th>';
+     result = result + '<th>Status </th>';
+     result = result + '<th>Action </th>';
+     result = result + '</tr>';
+     result = result + '</thead>';
+
+     result = result + '</table>';
+     $("#dynamicLCAListViewDiv").empty();
+     $("#dynamicLCAListViewDiv").append(result);
+     
+     
+     var status = [];
+ 	 $('input:checkbox[name=status]:checked').each(function() {
+ 		status.push($(this).val());
+     });
+ 	
+ 	 var lcaStatus = [];
+   	 $('input:checkbox[name=lcaStatus]:checked').each(function() {
+  		lcaStatus.push($(this).val());
+      });
+     var sourceleadUrl = '${sourceleadUrl}';
+     var url ="";
+     url = sourceleadUrl + "/immigration/getLcaViewList?searchValue="+searchValue+"&lcaStatus="+lcaStatus+"&mainStatus="+status; 
+     dynamicLCAListPagination(url);
+ }
+ //var count = 0;
+ function dynamicLCAListPagination(url) {
+	 var colIndex = 0;
+     table = $('#dynamicLCAListTbl').DataTable({
+         "processing": false,
+         "serverSide": true,
+         "searching": false,
+         "ajax": $.fn.dataTable.pipeline({
+             url: url,
+             method: 'POST',
+             pages: 10
+         }), 
+         "columns": [
+             {"data": "LCA No"},
+             {"data": "LCA Title"},
+             {"data": "location"},
+             {"data": "prevailingWage"},
+             {"data": "Valid from"},
+             {"data": "Valid To"},
+             {"data": "lcaStatus"},
+             {"data": "Status"}
+         ],
+         "columnDefs": [
+             {
+                 "targets": colIndex++,
+                 bSortable: true,
+                 aTargets: [ -1 ],
+                  "data": "lcaNo", 
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.lcaNo !== null && opt.lcaNo !== '' && opt.lcaNo !== 'undefined') {
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.lcaNo +"'><a href=/app/immigration/viewLca?lcaUuid="+opt.lcaUuid+">"+opt.lcaNo+"</a></div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "lcaTitle",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.lcaTitle !== null && opt.lcaTitle !== '' && opt.lcaTitle !== 'undefined') {
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.lcaTitle+"'>" + opt.lcaTitle + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "location",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.location !== null && opt.location !== '' && opt.location !== 'undefined') {
+                    	 
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.location+"'>" + opt.location + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "prevailingWage",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.prevailingWage !== null && opt.prevailingWage !== '' && opt.prevailingWage !== 'undefined') {
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.prevailingWage+"'>" + opt.prevailingWage + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "startDate",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.startDateStr !== null && opt.startDateStr !== '' && opt.startDateStr !== 'undefined') {
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.startDateStr+"'>" + opt.startDateStr + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+                     } 
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "endDate",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.endDateStr !== null && opt.endDateStr !== '' && opt.endDateStr !== 'undefined') {
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.endDateStr+"'>" + opt.endDateStr + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+                     } 
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "lcaStatus",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.lcaStatus !== null && opt.lcaStatus !== '' && opt.lcaStatus !== 'undefined') {
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.lcaStatus+"'>" + opt.lcaStatus + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "status",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if(opt.status  ==  1){
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = 'Active'>Active</div></td>";
+                     }else{
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = 'In-Active'>In-Active</div></td>";
+                     }
+                     
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "typeStandard",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     result = result + '<td><div><a href=/app/immigration/editLcaDetails?lcaUuid='+opt.lcaUuid+'><i id="edit' + opt.lcaUuid + '" class="glyphicon glyphicon-pencil" title="Edit"></i></a>';
+                     if(opt.status  ==  1){
+                     result = result + '<i id="delete'+opt.lcaUuid+'" onclick="deleteLcaListId(\''+opt.lcaUuid+'\');" class="glyphicon glyphicon-trash ml10" title="Delete"></i></div></td>';
+                     }else{
+                    	 result = result + '<i id="reActive'+opt.lcaUuid+'" onclick="reActivateLca(\''+opt.lcaUuid+'\');" class="fa fa-rotate-left ml10" title="Re Active"></i></div></td>'; 
+                     }
+                     return result;
+                 }
+             }
+         ],
+         "scrollCollapse": false,
+         "lengthMenu": [[10, 15, 20], [10, 15, 20]],
+         "aaSorting": [],
+         "bLengthChange": true,
+         "bDestroy": true,
+         "ordering": true,
+         "initComplete": function (settings, json) {
+         },
+         "oLanguage": {
+             "sSearch": "",
+             "sZeroRecords": "", "sEmptyTable": "",
+             "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+         }
+     });
+    
+     $("#dynamicLCAListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+
+     
+    $("table").colResizable(); // for resizing columns in tables.
+ }
+// reActivateLca(lcaUuid)
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		getDynamicLCAList(null);
+	   
+	});
+		
+	function columHide(){
+		hideColumns=[]; // reset the array object.
+		$(".toggle-vis").each(function() {
+			columClose();// 
+		   var chkdVal= $(this).prop('checked');
+		   var column = table.column($(this).attr('data-column'));
+			  if(chkdVal == true){
+			         column.visible(true);
+			    }
+			    else{
+			      column.visible(false);
+			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
+			  }
+	    });
+		$(".colPop").hide();
+	   
+	}
+	function checkAllColumns(obj){
+		var id = obj.id;
+		if(id =='columnsPickerCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',true);
+		}
+		else if(id =='columnsPickerUnCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',false);
+		}
+	}
+	
+</script>
+
+<script type="text/javascript">
+function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 , deactive 0.
+	 $(".project_inn_mask").remove();
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_lca_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<textarea  id='reasonForLca' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; 
+		result = result +" <b>Do you want to remove record</b>";
+		result = result + ' <div id="reasonForLcaDiv"/>';
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onClick='deleteLcaDetailsByRowId(\""+lcaUuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelLcaDelete();'></b>";
+		result = result +"	</div>";
+		$("#lcapopUp").append(result);
+		$("#remove_lca_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+</script>
+
+<script type="text/javascript">
+ function deleteLcaDetailsByRowId(lcaUuid){
+	 
+	 var reason = $("#reasonForLca").val();
+	
+     if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
+     $("#reasonForLcaDiv").empty();
+		$.ajax({
+	        url: sourceleadUrl + immiModulePath + "/deleteLcaDetailsById?lcaUuid="+lcaUuid,
+	        type: "GET",
+	        success: function (result) {
+	        	$("#remove_lca_pop").fadeOut(200);
+	    		$(".project_inn_mask").fadeOut(200);
+	    		window.location.href = sourceleadUrl + immiModulePath + "/viewLCAList";
+	        }
+		});
+     }else if (reason.length >= 251){
+     	$("#reasonForLcaDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForLcaDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason Length 1-250 characters</font>") ; 
+     }else{
+     	$("#reasonForLcaDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForLcaDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+     }
+	}
+ </script>
+ 
+ <script type="text/javascript">
+   function cancelLcaDelete(){
+		$("#remove_lca_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
+	function columPop(){
+		$(".colPop").show();
+	}
+	function columClose(){
+		$(".colPop").hide();
+	}
+</script>
+
+<script>
+   function openFilterPop(){
+		$("div.cand-advsrch-popup").toggle();
+		 $(".advancedsearch-mask").fadeIn();
+	}
+   function closeFilterPop(){
+		$("div.cand-advsrch-popup").hide();
+		$(".advancedsearch-mask").fadeOut();
+	}
+ function resetLcaFilter(){
+	$("ul#myStatus > li input:checkbox").prop("checked",false);
+	$("ul#myLcaStatus > li input:checkbox").prop("checked",false)
+  }
+</script>
+	
+<script type="text/javascript">
+function reActivateLca(candidateId){
+	var result = "";
+		var reactivate = '1';
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.post(sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,{},function(result){
+			if (result && result.response === "INVALID_DATA") {
+			    $("#update_candidate").removeAttr("disabled");
+			    $("#update_candidate").removeAttr('button').val('Save');
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.replace(sourceleadUrl+"/candidatesList");
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}			
+		});
+}
+</script>
+
+<script type="text/javascript">
+ function reActivateLca(lcaUuid){
+		$.ajax({
+	        url: sourceleadUrl + immiModulePath + "/reActivateLca?lcaUuid="+lcaUuid,
+	        type: "GET",
+	        success: function (result) {
+	    		window.location.href = sourceleadUrl + immiModulePath + "/viewLCAList";
+	        }
+		});
+	}
+ </script>
+	

@@ -43,12 +43,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
-import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
-import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
@@ -57,6 +55,8 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
+import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.Response;
@@ -78,6 +78,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -2220,5 +2221,188 @@ public class ImmigrationRestController {
 			@RequestParam(value = "id", required = false) Long id,  HttpServletRequest request) throws Exception {
 		return candidateService.getCandidateByCandidateId(id);
 	}
+	
+	/*
+	 * LCA Code Starts Here
+	 */
+     
+	@RequestMapping(value = { "/loadNewLCA" })
+	public ModelAndView loadNewLCA(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		
+		/*List<LookUpData> socDetailsList = immigrationTemplateService
+				.getLookupDataByType(ImmigrationConstants.EMPLOYMENT_TYPE);
+		
+		
+        List<Map<String, String>> socDetailsTypeList = null;
+		
+		socDetailsTypeList = immigrationCommonService.getSocCodeWithSOCOccupationTitleList(socCode, socOccupationTitle);
+		 
+		
+		model.addObject("socDetailsTypeList", socDetailsTypeList);*/
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("/immigration/newLca");
+		return model;
+	}
+	
+	@RequestMapping(value = { "/viewLCAList" })
+	public ModelAndView loadLCAList(HttpServletRequest request) {
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("/immigration/lcaList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	@RequestMapping(value = "/getLcaViewList")
+	public @ResponseBody ResponseList<LcaListViewDTO> getAllLcaList(
+			LcaListViewDTO lcaDTO,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+            HttpServletRequest request) {
+		ResponseList<LcaListViewDTO> lcaList = null;
+		logger.debug("inisde controller  getLcaList  --> ");
+		try {
+			String[] tableColumns = { "lcaNo", "lcaTitle", "location", "prevailingWage","startDate", "endDate", "lcaStatus","status"};// should be
+             
+			// entity names
+			int sortColumnIndex = -1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (lcaDTO.getOrder() != null && !lcaDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(lcaDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = lcaDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+				lcaDTO.setSortOrder(sortColumnOrder); // direction
+				// of the sorting.
+			}
+			Map<String, Long[]> filterVal = new HashMap<String, Long[]>();
+			
+			if (sortColumnIndex != -1)
+				lcaDTO.setSortColumn(tableColumns[sortColumnIndex]);
 
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			lcaList = immigrationCommonService.getLcasList(lcaDTO,lcaDTO.getMainStatus(),lcaDTO.getLcaStatus(), searchValue, orgLocations, filterVal);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.debug("after controller  getLcaList  --> ");
+		return lcaList;
+	}
+	
+	
+	@RequestMapping(value = "/saveLcaDetailsPage", method = RequestMethod.POST)
+	public ResponseList<String> saveLcaDetailsPage(LcaDTO lcaDTO,HttpServletRequest request) {
+		
+		ResponseList<String> response = new ResponseList<String>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		Lca lca = null;
+	
+		try {
+			if (user != null && Validator.validate(lcaDTO)) {
+				lca = immigrationCommonService.saveLcaDetails(lcaDTO, user, orgLocations);
+				
+				
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		
+		return response;
+	}
+	
+	@RequestMapping(value = { "/editLcaDetails" })
+	public ModelAndView editLcaDetails(
+			/*@RequestParam(value = "forward", required = false) String forward,*/
+			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
+			HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		/*if (forward.equalsIgnoreCase("newLca")) {*/
+			model.setViewName("/immigration/newLca");
+			if (!StringUtils.isEmpty(lcaUuid)) {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Long lcaId = immigrationCommonService.getLcaIdByUUID(lcaUuid);
+				LcaDTO lcaDTO = immigrationCommonService.editLcaDetails(lcaId,orgLocations);
+				model.addObject("lcaDTO", lcaDTO);
+			}
+			
+	/*	} */
+		return model;
+	}
+	
+	@RequestMapping(value = { "/deleteLcaDetailsById" })
+	public String deleteLcaDetailsById(
+			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
+			HttpServletRequest request) throws Exception {
+		Long lcaId = immigrationCommonService.getLcaIdByUUID(lcaUuid);
+		String result = immigrationCommonService.deleteLcaDetailsById(lcaId);
+		return result;
+
+	}
+	
+	@RequestMapping(value = { "/reActivateLca" })
+	public String reActivateLca(
+			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
+			HttpServletRequest request) throws Exception {
+		Long lcaId = immigrationCommonService.getLcaIdByUUID(lcaUuid);
+		String result = immigrationCommonService.reActiveLcaById(lcaId);
+		return result;
+
+	}
+	
+	@RequestMapping(value = "/getSocCodeWithSOCOccupationTitleList", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, String>> getSocCodeWithSOCOccupationTitleList(HttpServletRequest request,@RequestParam(value = "name", required = false) String name,@RequestParam(value = "socType", required = false) String socType) throws Exception {
+		List<Map<String, String>> socDetailsTypeList = null;
+		
+		socDetailsTypeList = immigrationCommonService.getSocCodeWithSOCOccupationTitleList(name,ImmigrationConstants.SOC_TYPE,socType);
+		
+		return socDetailsTypeList;
+	}
+
+	@RequestMapping(value = { "/getLookUpDataById" })
+	public @ResponseBody LookUpData getLookUpDataById(
+			@RequestParam(value = "id", required = false) Long id,  HttpServletRequest request) throws Exception {
+		return immigrationCommonService.getLookUpDataById(id);
+	}
+	
+	
+	@RequestMapping(value = { "/viewLca" })
+	public ModelAndView viewLCA(HttpServletRequest request,
+			@RequestParam(value = "lcaUuid", required = false) String lcaUuid) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		LcaDTO lcaDTO = null;
+		if (StringUtils.isNoneBlank(lcaUuid)) {
+			Long lcaId = immigrationCommonService.getLcaIdByUUID(lcaUuid);
+			model.addObject("lcaId", lcaId);
+			if (lcaUuid != null && !StringUtils.isEmpty(lcaUuid)) {
+				 lcaDTO = immigrationCommonService.editLcaDetails(lcaId,orgLocations);
+				
+			}
+
+			model.addObject("lcaDTO", lcaDTO);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("/immigration/lcaView");
+		}
+		return model;
+	}
+	
+	/*
+	 * LCA Code Ends Here
+	 */
 }
