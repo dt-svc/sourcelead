@@ -37,7 +37,7 @@
 					</div>
 				</li>
 		    
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearchExpenses'/><span class="repSearchIcon" onClick=""></span></li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearchExpenses'/><span class="repSearchIcon" onClick="dataTableSearchExp();"></span></li>
         </ul>
       </div>
 
@@ -282,6 +282,18 @@ $("#dataTableSearchExpenses").keyup(function(event) {
     	$('#dataTableSearchExpenses').val(searchData);
     }
 });
+
+function dataTableSearchExp(){
+	$('#dataTableSearchExpenses').parent().find('p.jquery_form_error_message').remove();
+	var searchData = $('#dataTableSearchExpenses').val();
+	var regex =  new RegExp(/[\\]/g);
+	if(regex.test(searchData) == false){
+		timesheetApprovalDetils('',searchData)
+	}else{
+		$("#dataTableSearchExpenses").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+	}
+	$('#dataTableSearchExpenses').val(searchData);
+}
 </script>
 
 <script>
