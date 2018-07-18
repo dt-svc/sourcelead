@@ -12,7 +12,6 @@
 
   <div id="shareEmptypopUp"></div>
   
-   
 <script>
   function noAccess(id){ 	
 	 
@@ -316,6 +315,9 @@ function candidateSideBar(candidateId){
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
+						 
+							
+						
 						  
 			             /*  result = result+'                     <div class="media-left image-parent">';
 			             result = result+'                     <div class="imageParent">'; */
@@ -462,9 +464,42 @@ function candidateSideBar(candidateId){
 			 		    /* New comments div creation Nov 8th, 2016 */
 			             
 			             
-			             
 			             result = result+'               </div>';
 			             result = result+'			</div>';
+			             
+			             result = result+' <div class="newTagsWrap">';
+							result = result+'    <h2>Tags:';
+							result = result +'		          <span id="editTagBtnSpan" class="pull-right mb"><button type="button" id="editTagBtn" name="editTagBtn" class="btn btn-primary btn-sm" onclick="editTag('+candidateId+');">Edit Tag</button></span>';
+							result = result +'		          <span id="saveTagBtnSpan" class="pull-right mb" style.display = "none";></span>';
+							
+							result = result+'</h2>';
+							
+							result = result+'    <ul class="clearfix tagsWrap">';
+							result = result + '<select multiple class="chosen-select form-control" name="tagName" id="tagName" data-placeholder="add tags" data-validation="validate_Space" data-validation-optional="true">';
+							// here get lookup data tags and manually enter skills 
+							$.each( json.tagsList, function( i, tags ) {
+							  var existed = 0;
+				                if(json.candidateTags != null && json.candidateTags != 'undefined' && json.candidateTags != '') {
+					                var res = [];
+					                res = json.candidateTags.split(",");
+					                res.forEach(function(item) {
+					                	if(tags == item){
+					                		existed = 1;
+					                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+					                	}
+					                });
+				                }
+				                if(existed == 0){
+				                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+				                }
+							});
+			                result = result + '</select>';
+							result = result+'        <div class="clearfix"></div>';
+							result = result+'    </ul>';
+							result = result+'</div>';
+							
+							
+							
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu">'; 
@@ -681,6 +716,7 @@ function deleteProfileImage(candidateId){
 	       },
      }); 
 }
+
 </script>
 
 <%-- 
@@ -2917,6 +2953,5 @@ $(".overIcon, .newActPop").click(function(e){
 });	
 
 </script>
-	
-
+ 
 <jsp:include page="../masterFooter.jsp" /> 
