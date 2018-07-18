@@ -998,7 +998,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long orgLocationId, String name) {
 		Session session = this.sessionFactory.getCurrentSession(); // below query is used for auto populate in UI.
 		String query = "SELECT LOWER(CONCAT(FIRST_NAME,' ',LAST_NAME,'(',EMAIL,')')) as label, ID as value FROM CANDIDATE WHERE STATUS ='1' AND CONSULTANT_USER_ID IS NOT NULL AND ORG_LOCATION_ID =:orgLocationId AND ( EMAIL LIKE :name  OR LOWER(CONCAT(FIRST_NAME,LAST_NAME)) LIKE :name OR LOWER(CONCAT(FIRST_NAME,' ',LAST_NAME)) LIKE :name) ORDER BY FIRST_NAME";
-		return session.createSQLQuery(query).setString("name", "%"+name+"%").setLong("orgLocationId", orgLocationId).setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+		return session.createSQLQuery(query).setString("name", name+"%").setLong("orgLocationId", orgLocationId).setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 	}
 
 	@Override
