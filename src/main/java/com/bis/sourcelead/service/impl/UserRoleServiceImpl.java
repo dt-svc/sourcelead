@@ -837,6 +837,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getGlobalUserReportingManagerByUserIdAndOrgId(Long userId, Long orgId)
 	{
 		return userRoleDao.getGlobalUserReportingManagerByUserIdAndOrgId(userId,orgId);
+	}
+	
+	@Override
+	public Boolean getIsGlobalManager(Long orgId) throws Exception {
+		return userRoleDao.getIsGlobalManager(orgId);
 	} 
     
 

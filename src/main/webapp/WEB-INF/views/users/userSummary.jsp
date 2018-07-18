@@ -1619,6 +1619,7 @@ $("#editRoleDetailsList").empty();
 			    var designationOtherType = "";
 			    var globalChecked = '';
 			    var designation = '';
+			    var disabled = '';
 			    
 			    if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
      			 	designation = json.designation;
@@ -1626,6 +1627,10 @@ $("#editRoleDetailsList").empty();
 			    
 			    if(json.isGlobal == 'Y'){
 			    	globalChecked = 'checked';
+			    }
+			    
+			    if(json.isExistedOrgGlobalUser == 'Y'){
+			    	disabled = 'disabled';
 			    }
 			    
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
@@ -1987,7 +1992,7 @@ $("#editRoleDetailsList").empty();
 					result = result + '<div class="clearfix">';
 					result = result + '<div class="checkbox checkBox">';
 					result = result + '<label>';
-					result = result + '<input type="checkbox" value="Y" '+globalChecked+' name="isGlobalAccess">';
+					result = result + '<input type="checkbox" value="Y" '+globalChecked+' '+disabled+' name="isGlobalAccess">';
 					result = result + 'Is Global Manager</label>';
 					result = result + '</div>';
 					result = result + '</div>';
