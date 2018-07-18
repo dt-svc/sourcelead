@@ -15,6 +15,9 @@ public interface InvoicePaymentService {
 	
 	InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,MultipartFile attachedfileList,Long invoiceId)throws Exception;
 	
+	InvoicePayment saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,List<Long> invoiceId)throws Exception;
+
+	
 	List<InvoicePayment>  getInvoicePaymentList(Long invoiceId)throws Exception;
 
 	InvoicePayment invoicePaymentById(Long id)throws Exception;
