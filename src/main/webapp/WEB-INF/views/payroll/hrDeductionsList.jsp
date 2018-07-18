@@ -32,7 +32,7 @@ function prepareHrDeductionsList(url){
 
  	 	result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
-		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='hrDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='hrDataTableSearch'/><span class='repSearchIcon' onClick='hrDataTableSearch();'></span></li>";
 		result = result + "</ul>";
 		result = result + "</div>"; 	 	
 	 	
@@ -218,6 +218,9 @@ function hrDeductionsPagination(url){
     		   hrDeductionsList();
     	   }
     	});
+}
+function hrDataTableSearch(){
+	hrDeductionsList();
 }
 </script>
 
