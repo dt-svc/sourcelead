@@ -1462,13 +1462,13 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	}
 	@Override
 	@Transactional
-	public Boolean getIsGlobalManager(Long orgId) throws Exception {
+	public Boolean getIsGlobalManager(Long orgId,Long userId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("isUserAdmin By UserId start");
-		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations ol left join fetch ol.org org where org.id = :orgId and userRole.isGlobal = 'Y' ")
-						   .setLong("orgId", orgId).list();
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations ol left join fetch ol.org org where org.id = :orgId and userRole.isGlobal = 'Y' and userRole.user.id = :userId ")
+						   .setLong("orgId", orgId).setLong("userId", userId).list();
 		
 		logger.debug("isUserAdmin By UserId End");
 		
