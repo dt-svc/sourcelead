@@ -498,7 +498,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		}else{
 			countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setLong("userId",Long.parseLong(leaveDTO.getUserId())).list();
 		}
-5
+
 		if (countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
