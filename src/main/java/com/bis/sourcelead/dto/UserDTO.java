@@ -85,6 +85,8 @@ public class UserDTO extends SearchDTO implements Serializable {
     private BigDecimal userApplicantsBackOutCount;
     
     private BigDecimal userApplicantsJoinedCount;
+    
+    private String isGlobalUser;
 
 
     private BigInteger userId;
@@ -607,6 +609,14 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	public void setUserApplicantsJoinedCount(BigDecimal userApplicantsJoinedCount) {
 		this.userApplicantsJoinedCount = userApplicantsJoinedCount;
+	}
+
+	public String getIsGlobalUser() {
+		return isGlobalUser;
+	}
+
+	public void setIsGlobalUser(String isGlobalUser) {
+		this.isGlobalUser = isGlobalUser;
 	}
 
 
