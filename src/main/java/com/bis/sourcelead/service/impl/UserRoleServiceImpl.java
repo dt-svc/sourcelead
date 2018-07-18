@@ -831,6 +831,12 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public List<UserDTO> getAllReportingManagersListAssignedToAssociates(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllReportingManagersListAssignedToAssociates(orgLocationId);
+	}
+
+	@Override
+	public UserRole getGlobalUserReportingManagerByUserIdAndOrgId(Long userId, Long orgId)
+	{
+		return userRoleDao.getGlobalUserReportingManagerByUserIdAndOrgId(userId,orgId);
 	} 
     
 

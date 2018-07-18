@@ -170,4 +170,6 @@ public interface UserRoleService {
 	 
 	 List<UserDTO> getAllReportingManagersListAssignedToAssociates(Long orgLocationId) throws Exception;
 
+	public UserRole getGlobalUserReportingManagerByUserIdAndOrgId(Long userId, Long orgId);
+
 }

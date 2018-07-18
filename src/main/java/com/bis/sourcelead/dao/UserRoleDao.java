@@ -149,4 +149,6 @@ public interface UserRoleDao {
 	 
 	 List<UserDTO> getAllReportingManagersListAssignedToAssociates(Long orgLocationId) throws Exception;
 
+	public UserRole getGlobalUserReportingManagerByUserIdAndOrgId(Long userId, Long orgId);
+
 }

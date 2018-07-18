@@ -2168,7 +2168,9 @@ public class LeaveManagementRestController {
 		}
 		leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		leaveDTO.setSortOrder(sortColumnOrder);
-
+		
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req, "loginUserRole");
+		leaveDTO.setLoginUserRole(loginUserRole);
 		ResponseList<Leave> response = leaveService.getTopLeavetakers(orgLocation, leaveDTO);
 		List<Leave> leaveList = response.getData();
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
@@ -2233,7 +2235,7 @@ public class LeaveManagementRestController {
 	 */
 	@RequestMapping(value = {"/validateRestrictDate", "/rest/validateRestrictDate" })
 	@ResponseBody
-	public ValidateDateDTO validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate, @RequestParam(value = "toDate", required = false) String toDate, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "leaveUUID", required = false) String leaveUUID, HttpServletRequest request) throws Exception
+	public ValidateDateDTO validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate, @RequestParam(value = "toDate", required = false) String toDate, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "leaveUUID", required = false) String leaveUUID,@RequestParam(value = "errorMessage", required = false) String errorMessage, HttpServletRequest request) throws Exception
 	{
 		String isTrue = null;
 //		StringBuilder sb = null;
@@ -2250,12 +2252,14 @@ public class LeaveManagementRestController {
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
-		
+		StringBuilder sb = new StringBuilder();
+		sb.append(errorMessage);
 		List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
 		if(leaveList != null && !leaveList.isEmpty()) {
 //			validateDateDTO = new ValidateDateDTO();
 			validateDateDTO.setValidateType("SAMEDAY");	
-			validateDateDTO.setErrorMessage(" You cannot apply two leaves on same day.!");
+			sb.append(" You cannot apply two leaves on same day.!");
+			validateDateDTO.setErrorMessage(sb.toString());
 //			sb = new StringBuilder();
 //			sb.append("you cannot apply two leaves on same day.!");
 			return validateDateDTO;
@@ -2290,7 +2294,6 @@ public class LeaveManagementRestController {
 		Collections.sort(daysList);
 		if (daysList.size() > 0) {
 //			validateDateDTO = new ValidateDateDTO();
-			StringBuilder sb = new StringBuilder();
 			sb.append(" You cannot apply for leave on restricted/holiday day ");
 			for (Date d : daysList) {
 				sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
@@ -2609,6 +2612,9 @@ public class LeaveManagementRestController {
 			
 			if(!StringUtils.isNotBlank(notifyToOthers) && selectedUserRole.getReportingManager() != null){
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(selectedUserRole.getReportingManager().getId(),orgLocations.getId());
+				if (userRole == null) {
+					userRole = userRoleService.getGlobalUserReportingManagerByUserIdAndOrgId(selectedUserRole.getReportingManager().getId(),orgLocations.getOrg().getId());
+				}
 				if (userRole != null) {
 //					String roles = userRole.getRoles().getActionId();
 //						if (roles.contains("238")) {
