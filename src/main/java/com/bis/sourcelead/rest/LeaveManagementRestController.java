@@ -1348,8 +1348,50 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
-	@RequestMapping(value = { "/saveApplyLeave", "/rest/saveApplyLeave" }, method = RequestMethod.POST)
-	public @ResponseBody Response<String> applyLeave(@RequestBody LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
+	@RequestMapping(value = { "/saveApplyLeave"}, method = RequestMethod.POST)
+	public @ResponseBody Response<String> applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+			boolean isSuperUser = false;
+			if(StringUtils.isNotBlank(leaveDTO.getUser())){
+				isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUser()),orgLocations.getId());
+			}else{
+				isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUserId()),orgLocations.getId());
+			}
+			User user = userService.getUserById(Long.parseLong(leaveDTO.getUserId()));
+			if (user != null && Validator.validate(leaveDTO)) {
+				leaveDTO.setStaticPath(staticPath);
+				leaveDTO.setIsSuperUser(isSuperUser);
+				Leave leave = leaveService.saveLeave(leaveDTO, orgLocations, user);
+				if (leave != null) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+//					boolean  isApproved = leaveService.reduceLeaveCount(orgLocations,leave.getUser(),leave.getLeaveUUID(),leave.getLeaveType().getId(),leave.getStatus(),leave.getNumberOfDays());
+					
+//					leaveService.updateBalanceLeaves(leave,leave.getUser(),orgLocations);
+					
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = { "/rest/saveApplyLeave" }, method = RequestMethod.POST)
+	public @ResponseBody Response<String> restApplyLeave(@RequestBody LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));

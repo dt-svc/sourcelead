@@ -780,7 +780,6 @@ $(function() {
 
 <script type="text/javascript">
 function applyLeave(){
-	
 	if($("#checkbox-2").is(':checked')){
 		var fromDateFromHalfTime = $("#fromDateHalfTime").val();
 		if(fromDateFromHalfTime != null && fromDateFromHalfTime != '' && fromDateFromHalfTime != 'undefined'){
@@ -1037,13 +1036,13 @@ function getLeaveDetails(finalDateFormatEndDate){
 function validateOverDrawLeaves(leaveTypeName){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
-    var convertFromDate = parseInt(fromDate);
-    var convertToDate = parseInt(toDate);
-    var dayDiff = (convertToDate - convertFromDate+1);
-	
+	var date1 = new Date(fromDate);
+	var date2 = new Date(toDate);
+	var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+	var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
 	var typeName = leaveTypeName.replace(/ /g,"_");
-	var typeIdBalCount = $("#"+typeName+"Span").text();
-	if(((dayDiff > typeIdBalCount) || typeIdBalCount ==  0) && typeIdBalCount != "" ){
+	var typeIdBalCount = parseFloat($("#"+typeName+"Span").text());
+	if(((diffDays > typeIdBalCount) || typeIdBalCount ==  0) && typeIdBalCount != "" ){
 		errorMessage += "You Have Not Enough Leaves To Apply.";
 	}
 }
