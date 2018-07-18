@@ -319,12 +319,12 @@ function onboardPagination(url,sourceleadUrl){
     	   if(e.which === 13) {
    		    $('#onboardDataTableSearch').parent().find('p.jquery_form_error_message').remove();
    	    	var searchData = $('#onboardDataTableSearch').val();
-   	    	var regex =  new RegExp(/[\\-]/g);
-   	    	if(regex.test(searchData) == false){
-   	    	 onboardDataTableList();
-   	    	}else{
-   	    		$("#onboardDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
-   	    	}
+   	    	
+   	 	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
+	    		$("#onboardDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+	    	}else{
+	   	    	 onboardDataTableList();
+	    	}
    	    	$('#onboardDataTableSearch').val(searchData);
     	   }
     	});
@@ -493,12 +493,11 @@ function offboardPagination(url,sourceleadUrl){
     	   if(e.which === 13) {
     		   $('#offboardDataTableSearch').parent().find('p.jquery_form_error_message').remove();
       	    	var searchData = $('#offboardDataTableSearch').val();
-      	    	var regex =  new RegExp(/[\\-]/g);
-      	    	if(regex.test(searchData) == false){
-      	    		offboardDataTableList();
-      	    	}else{
+      	    	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
       	    		$("#offboardDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
-      	    	}
+    	    	}else{
+      	    		offboardDataTableList();
+    	    	}
       	    	$('#offboardDataTableSearch').val(searchData);
        	   }
     	});
