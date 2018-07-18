@@ -385,6 +385,10 @@ public class UserRole implements Serializable {
 	@JsonProperty
 	private BigInteger userRoleId;
 	
+	@Transient
+	@JsonProperty
+	private String isExistedOrgGlobalUser;
+	
 	
 	public BigInteger getUserRoleId() {
 		if(id != null) {
@@ -1139,5 +1143,15 @@ public class UserRole implements Serializable {
 
 	public void setUserRoleShiftId(BigInteger userRoleShiftId) {
 		this.userRoleShiftId = userRoleShiftId;
+
 	}
+
+	public String getIsExistedOrgGlobalUser() {
+		return isExistedOrgGlobalUser;
+	}
+
+	public void setIsExistedOrgGlobalUser(String isExistedOrgGlobalUser) {
+		this.isExistedOrgGlobalUser = isExistedOrgGlobalUser;
+	}
+
 }

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -434,12 +435,19 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 
 	 @RequestMapping(value = "/getUserByUserEmail" , method = RequestMethod.POST)
 	 public @ResponseBody  UserDTO getUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
+		 	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 		 	User user = userService.findByEmail(EmailId);
 		 	UserDTO userDTO = new UserDTO();
 		 	if(user != null) {
 		 		userDTO.setFirstName(user.getFirstName());
 			 	userDTO.setLastName(user.getLastName());
 			 	userDTO.setMobilePhone(user.getMobilePhone());
+			 	Boolean flag = userRoleService.getIsGlobalManager(org.getId(),user.getId());
+			 	if(flag == true) {
+			 		userDTO.setIsGlobalUser(Constants.YES);
+			 	}else {
+			 		userDTO.setIsGlobalUser(Constants.NO);
+			 	}
 		 	}else {
 		 		Candidate candidate = candidateService.getCandidateByEmail(EmailId);
 		 		if(candidate != null) {
@@ -517,8 +525,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 					"orgLocations");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,
 					"org");
-			List<User> usersList = new ArrayList<>();
-			List<User> level2ManagersList = new ArrayList<>();
+			List<User> usersList = new CopyOnWriteArrayList<>();
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 			List<User> globalUserList = userService.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,org.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 			if(userList != null && !userList.isEmpty()) {
@@ -529,19 +536,25 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			}
 			
 			
-			if(null != usersList && !usersList.isEmpty()){
-				for (User user : usersList) {
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocations.getId());
-					if(null != userRole){
-						user.setUserType(userRole.getUserType());
-					}else {
-						UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-						user.setUserType(primaryRole.getUserType());
-					}
-					level2ManagersList.add(user);
+			HashMap<Long,User> userMap = new HashMap<>();
+			for (User user : usersList) {
+				User tempUser = userMap.get(user.getId());
+				if(tempUser == null) {
+					userMap.put(user.getId(),user);
+				}else {
+					usersList.remove(user);
+					continue;
+				}
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(userRole != null){
+					user.setUserType(userRole.getUserType());
+				}else {
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
 				}
 			}
-			return level2ManagersList;
+			
+			return usersList;
 		}
 
 		/**
@@ -1346,7 +1359,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 				@RequestParam(value = "role", required = false) Long roleId, HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
-			List<User> reportingManagersList = new ArrayList<>();
+			List<User> reportingManagersList = new CopyOnWriteArrayList<User>();
 			
 			List<User> userList = userService.getReportingManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId());
 			List<User> globalUserList = userService.getGlobalReportingManagersUsersByOrgId(roleId, org.getId());
@@ -1357,8 +1370,15 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			if(globalUserList != null && !globalUserList.isEmpty()) {
 				reportingManagersList.addAll(globalUserList);
 			}
-			
+			HashMap<Long,User> userMap = new HashMap<>();
 			for (User user : reportingManagersList) {
+				User tempUser = userMap.get(user.getId());
+				if(tempUser == null) {
+					userMap.put(user.getId(),user);
+				}else {
+					reportingManagersList.remove(user);
+					continue;
+				}
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(userRole != null){
 					user.setUserType(userRole.getUserType());

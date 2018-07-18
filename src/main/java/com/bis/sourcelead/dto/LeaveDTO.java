@@ -103,10 +103,9 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String toDateToHalfTime;
 	private String durationHrs;
 	
-	private String loginUserRole;
-	
 	private List<String> otherApproverUser;
 	private String notifyToOthers;
+	private String loginUserRole;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;

@@ -103,5 +103,7 @@ public interface ProjectsDao {
 	List<Projects> getAllClientProjectsByOrgLocationId(Long locationId) throws Exception;
 	
 	public List<Projects> getProjectsListByUserIdAndOrgLocationIdAndStatus(Long userId,Long orgLocationsId,Long orgId,Long candidateId,String userRole,String globalAccess) throws Exception;
+	
+	List<ProjectsDTO> getProjectListForDaywiseReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
 
 }

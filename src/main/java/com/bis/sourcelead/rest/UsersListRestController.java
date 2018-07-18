@@ -728,6 +728,14 @@ public class UsersListRestController {
 			userRole.setRate(employee.getRate());
 			userRole.setRatePer(employee.getRatePer());
 			userRole.setCurrentCurrency(employee.getCurrentCurrency());
+			
+			Boolean flag = userRoleService.getIsGlobalManager(org.getId(),userId);
+			if(flag == true) {
+				userRole.setIsExistedOrgGlobalUser(Constants.YES);
+			}else {
+				userRole.setIsExistedOrgGlobalUser(Constants.NO);
+			}
+			
 			if (employee.getHireDate() != null) {
 				userRole.setHireDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),employee.getHireDate()));
 			} else {
