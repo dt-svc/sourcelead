@@ -146,7 +146,7 @@ margin-top: 3px;
 					</div>
 				</li>
 		    
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='SearchExpensesData'/><span class="repSearchIcon" onClick=""></span></li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='SearchExpensesData'/><span class="repSearchIcon" onClick="searchExpensesDataIcon();"></span></li>
 		  <input type="hidden" id="temp"/>
         </ul>
       </div>			
@@ -196,8 +196,8 @@ if(dateSearch != null && dateSearch != '' && dateSearch != 'undefined' && dateSe
 	}else if((endDateFilter == null || endDateFilter == '' || endDateFilter =='undefined') && (startDateFilter == null || startDateFilter == ''|| startDateFilter !='undefined')){
 		$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
 		$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
-		/* $("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
-		$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>"); */
+		 $("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
+		$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>"); 
 	}		
 }
 

@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -1347,8 +1348,50 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
-	@RequestMapping(value = { "/saveApplyLeave", "/rest/saveApplyLeave" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/saveApplyLeave"}, method = RequestMethod.POST)
 	public @ResponseBody Response<String> applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+			boolean isSuperUser = false;
+			if(StringUtils.isNotBlank(leaveDTO.getUser())){
+				isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUser()),orgLocations.getId());
+			}else{
+				isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUserId()),orgLocations.getId());
+			}
+			User user = userService.getUserById(Long.parseLong(leaveDTO.getUserId()));
+			if (user != null && Validator.validate(leaveDTO)) {
+				leaveDTO.setStaticPath(staticPath);
+				leaveDTO.setIsSuperUser(isSuperUser);
+				Leave leave = leaveService.saveLeave(leaveDTO, orgLocations, user);
+				if (leave != null) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+//					boolean  isApproved = leaveService.reduceLeaveCount(orgLocations,leave.getUser(),leave.getLeaveUUID(),leave.getLeaveType().getId(),leave.getStatus(),leave.getNumberOfDays());
+					
+//					leaveService.updateBalanceLeaves(leave,leave.getUser(),orgLocations);
+					
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = { "/rest/saveApplyLeave" }, method = RequestMethod.POST)
+	public @ResponseBody Response<String> restApplyLeave(@RequestBody LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
@@ -1756,6 +1799,8 @@ public class LeaveManagementRestController {
 		ResponseList<LeaveDTO> responseList = null;
 		try {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			leaveDTO.setLoginUserRole(loginUserRole);
 			if (loginOrgLocation != null) {
 				responseList = leaveService.getEmployeeRequestedLeavesBylocationId(leaveDTO, orgLocations);
 				responseList.setResponse(Result.SUCCESS.name());
@@ -2158,6 +2203,7 @@ public class LeaveManagementRestController {
 	public @ResponseBody ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO, HttpServletRequest req,
 			HttpServletResponse res) throws Exception {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+		boolean isSuperUser = (boolean) SourceLeadSessionManager.getSessionAttribute(req, "isSuperUser");
 		ResponseList<LeaveDTO> leaveDtoResponse = new ResponseList<>();
 		String[] tableColumns = { "empName", "noOfDays", "status" };
 		int sortColumnIndex = 0; // by default sorting using updated date
@@ -2168,9 +2214,10 @@ public class LeaveManagementRestController {
 		}
 		leaveDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		leaveDTO.setSortOrder(sortColumnOrder);
-		
+
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req, "loginUserRole");
 		leaveDTO.setLoginUserRole(loginUserRole);
+		leaveDTO.setIsSuperUser(isSuperUser);
 		ResponseList<Leave> response = leaveService.getTopLeavetakers(orgLocation, leaveDTO);
 		List<Leave> leaveList = response.getData();
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
@@ -2320,8 +2367,9 @@ public class LeaveManagementRestController {
 	@ResponseBody
 	public LeaveDTO totalCountsForEmployeeLeaves(
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		return leaveService.getAllEmployeesLeavesCounts(orgLocationId, userId);
+			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception {
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		return leaveService.getAllEmployeesLeavesCounts(orgLocationId, userId, loginUserRole);
 	}
 
 	@RequestMapping(value = { "/totalCountsForSelfLeaves","/rest/totalCountsForSelfLeaves" }, method = RequestMethod.GET)
