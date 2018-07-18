@@ -2427,7 +2427,15 @@ function checkShareCandidates(elem) {
 		 $(".tableShare").show();
 		shareCandidates[$(elem).data("id")] = $(elem).val();
 	} else{
-		 $(".tableShare").hide();
+		 var candidateIds = new Array();
+		 for(var e in shareCandidates) {
+			 if(!e || !shareCandidates[e] || shareCandidates[e] === "")
+				   continue;
+			 candidateIds.push(shareCandidates[e]);
+		 } 
+		 if(candidateIds.length - 1 == 0){
+			 $(".tableShare").hide();
+		 }
 		$("#sharedcheckbox").removeProp('checked');
 		shareCandidates[$(elem).data("id")] = "";
 	}
