@@ -32,7 +32,7 @@ function prepareAccountDeductionsList(url){
  		
  		result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
-		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='accountDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='accountDataTableSearch'/><span class='repSearchIcon' onClick='accountDataTableSearch();'></span></li>";
 		result = result + "</ul>";
 		result = result + "</div>";  		
  		
@@ -217,6 +217,9 @@ function accountDeductionsPagination(url){
     	   accountDeductionsList();
     	   }
     	});
+}
+function accountDataTableSearch(){
+	accountDeductionsList();
 }
 </script>
 

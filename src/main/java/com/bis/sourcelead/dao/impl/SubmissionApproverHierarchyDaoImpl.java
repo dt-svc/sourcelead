@@ -1280,14 +1280,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String globalUserQuery = "";
-		String globalUserQuery2 = "";
-		
+		//String globalUserQuery2 = "";
 		if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
 		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
-		    	globalUserQuery2 = " userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+		    	//globalUserQuery2 = " userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
 		    }else {
 		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId";
-		    	globalUserQuery2 = "userRole.orgLocations.id = :orgLocationId";
+		    	//globalUserQuery2 = "userRole.orgLocations.id = :orgLocationId";
 		    }
 
 		String fillingOptionQuery = " and (sah.submissionApprovalStatus <> '"
@@ -1297,26 +1296,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				+ Constants.GUEST
 				+ "') and pc.projectId.id = sah.submissionId.projectMembers.projects.id)))";
 		String query = " Select Count (*) from  SubmissionApproverHierarchy sah  where  "+globalUserQuery+" "
-				+ fillingOptionQuery + " and " + " ( "
-				/*
-				 * logged in user as approver in project_approver_hierarchy
-				 * (Either Admins/project_managers/team leads ...etc)
-				 */
+				 + fillingOptionQuery + " and " + " ( "
 				 + "  (" + "    sah.hierarchyId.approverUserId.id = :userId  " + "     )"
-				/*+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId and " + "      ("
-				+ "        ( sah.hierarchyId.level = '2' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
-				+ "        OR (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id) ) "
-				+ "     ) " + "   ) "*/
-				/*
-				 * logged in user as admin but not in
-				 * project_approver_hierarchy(hint:logged in user is admin but
-				 * not assigned to project as approver)
-				 */
-				+ "   OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE'  and "+globalUserQuery2+") "
-				+" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
-				+" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
-				+ "   ) "
-				+ " and  sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'  GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate)order by sah.submissionId.projectMembers.projects.id ASC)";
+				 + " OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :orgLocationId ) "
+				 +" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
+				 +" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
+				 + "   ) "
+				 + " and  sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'  GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate)order by sah.submissionId.projectMembers.projects.id ASC)";
 		List<SubmissionApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("submissionStatus", submissionStatus).list();
 		Integer count = 0;
 		if (tslist != null && !tslist.isEmpty()) {
@@ -1434,7 +1420,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				+ Constants.GUEST
 				+ "') and pc.projectId.id = sah.submissionId.projectMembers.projects.id)))";
 		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pclient left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.masterCandidateId mc  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user "
-				+ " where  pclient.orgLocationsId.id = :locationsId and project.id = :projectId and mc.id = :masterCandidateId and (sah.frequencyStartDate = :startDate OR sah.frequencyEndDate = :endDate OR sah.frequencyStartDate BETWEEN :startDate and :endDate OR sah.frequencyEndDate BETWEEN :startDate and :endDate) and sah.submissionId.status = '1'"
+				+ " where   project.id = :projectId and mc.id = :masterCandidateId "
+				+ " and (sah.frequencyStartDate = :startDate OR sah.frequencyEndDate = :endDate OR sah.frequencyStartDate BETWEEN :startDate and :endDate OR sah.frequencyEndDate BETWEEN :startDate and :endDate) and sah.submissionId.status = '1'"
 				+ globalUserQuery
 				+ fillingOptionQuery + "  and ( "
 				/*
@@ -1451,7 +1438,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * not assigned to project as approver)
 				 */
 				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.status = '1' and subsah.submissionId.projectMembers.id = pm.id  and (sah.frequencyStartDate = :startDate OR sah.frequencyEndDate = :endDate OR sah.frequencyStartDate BETWEEN :startDate and :endDate OR sah.frequencyEndDate BETWEEN :startDate and :endDate)) and "
-				+ Constants.loginUserAsAdminWithMaxHeirarchyLevelForTs + ") " + "   ) ";
+				+ "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :locationsId and userRole.userState = 'ACTIVE') and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = :locationsId and pah.status != '0'))"
+				+ ")"
+				+ " ) ";
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString()).setLong("locationsId", locationsId).setLong("userId", approverUserId).setLong("masterCandidateId", projectMembers.getMasterCandidateId().getId()).setLong("projectId", projectMembers.getProjects().getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 		SubmissionApproverHierarchy submissionApproverHierarchy = null;
 		LinkedHashMap<Date, Submission_ApprovalStatus> weekApprovalStatusMap = new LinkedHashMap<>();
@@ -1604,16 +1593,16 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			submissionApproverHierarchy.setWeekTotalHoursMap(weekTotalHoursMap);
 		}
 		LinkedHashMap<String, Date> previousMonthMap = CalendarUtil.getPreviousMonthStartDateAndEndDateFromGivenStartDateForTsReports(startDate);
-		Map<String, Float> previousMonthHours = getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId, locationsId, previousMonthMap.get("STARTDATE"), previousMonthMap.get("ENDDATE"));
+		Map<String, Float> previousMonthHours = getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId, locationsId, previousMonthMap.get("STARTDATE"), previousMonthMap.get("ENDDATE"),isGlobalUser);
 		submissionApproverHierarchy.setPreviousMonthBillableHours(previousMonthHours.get("BILLABLE_HOURS"));
 		submissionApproverHierarchy.setPreviousMonthNonBillableHours(previousMonthHours.get("NONBILLABLE_HOURS"));
 		submissionApproverHierarchy.setPreviousMonthTotalHours(previousMonthHours.get("TOTAL_HOURS"));
-		Map<String, Float> projectToDateHours = getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId, locationsId, projectMembers.getProjects().getStartDate(), CommonUtil.currentDate());
+		Map<String, Float> projectToDateHours = getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId, locationsId, projectMembers.getProjects().getStartDate(), CommonUtil.currentDate(),isGlobalUser);
 		submissionApproverHierarchy.setProjectToDateBillableHours(projectToDateHours.get("BILLABLE_HOURS"));
 		submissionApproverHierarchy.setProjectToDateNonBillableHours(projectToDateHours.get("NONBILLABLE_HOURS"));
 		submissionApproverHierarchy.setProjectToDateTotalHours(projectToDateHours.get("TOTAL_HOURS"));
 		if(monthStartDate != null && monthEndDate != null) {
-			Map<String, Float> currentMonthMap = getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId, locationsId, monthStartDate, monthEndDate);
+			Map<String, Float> currentMonthMap = getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId, locationsId, monthStartDate, monthEndDate,isGlobalUser);
 			if(currentMonthMap != null && !currentMonthMap.isEmpty()) {
 				submissionApproverHierarchy.setCurrentMonthBillableHours(currentMonthMap.get("BILLABLE_HOURS"));
 				submissionApproverHierarchy.setCurrentMonthNonBillableHours(currentMonthMap.get("NONBILLABLE_HOURS"));
@@ -1749,7 +1738,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * not assigned to project as approver)
 				 */
 				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.status = '1' and subsah.hierarchyId.projectClientsId.orgLocationsId.id = :locationsId and subsah.submissionId.projects.id = project.id and  subsah.submissionId.masterCandidateId.id = mc.id and subsah.frequencyStartDate = :startDate and subsah.frequencyEndDate = :endDate) and "
-				+ Constants.loginUserAsAdminWithMaxHeirarchyLevelForTs + ") " + "   ) ";
+				+ "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id and userRole.userState = 'ACTIVE') and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = :locationsId and pah.status != '0')))) ";
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString()).setLong("userId", approverUserId).setLong("locationsId", locationsId).setLong("projectId", projectId).setLong("masterCandidateId", pmMasterCandidateId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 		Boolean isRejected = false;
 		Boolean isAPPROVED = false;
@@ -1825,7 +1814,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@SuppressWarnings("unchecked")   
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Map<String, Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(Long projectMemberId, Long locationsId, Date startDate, Date endDate) throws Exception
+	public Map<String, Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(Long projectMemberId, Long locationsId, Date startDate, Date endDate,String isGlobalUser) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = null;
@@ -1836,16 +1825,27 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		if (endDate != null) {
 			sqlEndDate = new java.sql.Date(endDate.getTime());
 		}
+		
+		String globalUserQuery = "";
+		String subQueryForMaxLevel = "";
+	    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+	    	subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = ts.id and subsah.hierarchyId.projectClientsId.orgLocationsId.id = :locationsId";
+	    	globalUserQuery = " and pclient.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)";
+	    }else {
+	    	globalUserQuery = " and pclient.orgLocationsId.id = :locationsId";
+	        subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = ts.id and subsah.hierarchyId.projectClientsId.level IN(select Max(subpc.level) from ProjectClients subpc where subpc.projectId = :projectId)";
+	    }
+	    
 		ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
 		// Getting Max Hierarchy Level for which employee is Assigned
-		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = ts.id and subsah.hierarchyId.projectClientsId.orgLocationsId.id = :locationsId";
 		String query = "from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pclient left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.projects project left join fetch ts.masterCandidateId mc left join fetch ts.projectMembers pm  left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
-				+ " where pclient.orgLocationsId.id = :locationsId and project.id = :projectId and mc.id = :masterCandidateId and (sah.submissionId.startDate = :startDate OR sah.submissionId.endDate = :endDate OR sah.submissionId.startDate BETWEEN :startDate and :endDate OR sah.submissionId.endDate BETWEEN :startDate and :endDate) and sah.submissionId.status = '1'"
+				+ " where  project.id = :projectId and mc.id = :masterCandidateId and (sah.submissionId.startDate = :startDate OR sah.submissionId.endDate = :endDate OR sah.submissionId.startDate BETWEEN :startDate and :endDate OR sah.submissionId.endDate BETWEEN :startDate and :endDate) and sah.submissionId.status = '1'"
+				+ globalUserQuery
 				/*
 				 * For getting approved timesheet hours list
 				 */
 				+ " and ( hierarchy.level IN(" + subQueryForMaxLevel
-				+ ")) and sah.submissionApprovalStatus = :approvalStatus ";
+				+ ")) and sah.submissionApprovalStatus = :approvalStatus";
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString()).setLong("projectId", projectMembers.getProjects().getId()).setLong("locationsId", locationsId).setLong("masterCandidateId", projectMembers.getMasterCandidateId().getId()).setParameter("approvalStatus", Submission_Status.APPROVED).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 		LinkedHashMap<String, Float> monthTotals = new LinkedHashMap<>();
 		float totalHours = 0f;

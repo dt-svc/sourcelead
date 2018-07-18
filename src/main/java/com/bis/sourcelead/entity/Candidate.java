@@ -529,6 +529,14 @@ public class Candidate implements Serializable {
      @Transient
 	 @JsonProperty
 	 private String candidateTags;
+     
+     @Transient
+	 @JsonProperty
+     private Set<String> tagsList;
+	 
+     @Transient
+	 @JsonProperty
+	 private Set<String> candidateTagsList;
 	 
 	public int getProfilePercentage()
 	{
@@ -1660,6 +1668,22 @@ public class Candidate implements Serializable {
 
 	public void setCandidateTags(String candidateTags) {
 		this.candidateTags = candidateTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public Set<String> getCandidateTagsList() {
+		return candidateTagsList;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public void setCandidateTagsList(Set<String> candidateTagsList) {
+		this.candidateTagsList = candidateTagsList;
 	}
 
 }

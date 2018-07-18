@@ -1398,6 +1398,26 @@ $("#editRoleDetailsList").empty();
 			    var emailId= "";
 			    var manager = "";
 			    var designationOtherType = "";
+
+			    var globalChecked = '';
+			    var designation = '';
+			    var disabled = '';
+			    
+			    if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+     			 	designation = json.designation;
+   			 	 }
+			    
+			    if(json.isGlobal == 'Y'){
+			    	globalChecked = 'checked';
+			    }
+			  
+			    if(json.isGlobal != 'Y'){
+			    	if(json.isExistedOrgGlobalUser == 'Y'){
+				    	disabled = 'disabled';
+				    }
+			    }
+			    
+			    
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					employeeId = json.employeeId;
 				}
@@ -1710,6 +1730,17 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <label>Day hours</label>';
 					result = result + ' <input type="text" value="'+dailyHours+'" id="dayHoursEdit" placeholder="HH:MM" name="DayHours"  data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">';
 					result = result + ' </div>';
+					
+					result = result + '<div class="col-md-4">';
+					result = result + ' <label>&nbsp;</label>';
+					result = result + '<div class="clearfix">';
+					result = result + '<div class="checkbox checkBox">';
+					result = result + '<label>';
+					result = result + '<input type="checkbox" value="Y" '+globalChecked+' '+disabled+' name="isGlobalAccess">';
+					result = result + 'Is Global Manager</label>';
+					result = result + '</div>';
+					result = result + '</div>';
+					result = result + '</div>';
 					
 					result = result + ' <div class="showEditfields" id="customFieldDataId"></div>';
 					

@@ -377,10 +377,20 @@
                           </div>
                      </div>
                 </div>
-                
-            <div class="col-md-5" id = "DayHoursDiv">
-                  <label class="clearfix">Day hours</label>
-                  <div class="clearfix">
+
+                <div class="form-group">
+		             <label class="col-md-3"></label>
+		              <div class="col-md-9">
+		                <div class="checkbox checkBox">
+		                  <label>
+		                    <input type="checkbox" value="Y" name="isGlobalAccess" id="isGlobalAccess">
+		                    Is Global Manager</label>
+		                </div>
+		                 </div>
+                </div>
+                <div class="form-group " id = "DayHoursDiv">
+                  <label class="col-md-3">Day hours</label>
+                  <div class="col-md-9">
                     <input type="text" class="form-control" id="DayHours" placeholder="HH:MM" value="${averageWorkingHours}" name="DayHours" data-validation="validate_Space validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">
                   </div>
                 </div>
@@ -779,7 +789,12 @@ function getEmployeementType(designationType){
 				        	$("#phoneNumber").attr("readonly", "readonly");
 		        		}else{
 		        			 $("#phoneNumber").removeAttr("readonly", "readonly");
-		        			 //$("#phoneNumber").val('');
+		        		}
+		        		
+		        		if(json.isGlobalUser != null && json.isGlobalUser != '' && json.isGlobalUser == 'Y'){
+		        			$("#isGlobalAccess").attr("disabled", "disabled");
+		        		}else{
+		        			$("#isGlobalAccess").removeAttr("disabled");
 		        		}
 		        		$("#loading").removeAttr('style');
 		        		
