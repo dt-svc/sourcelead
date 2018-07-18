@@ -5208,8 +5208,24 @@ div.inputCustom {
     cursor: pointer; color: #787878;
 }
 .menuWidget ul.menupop {
-    position: absolute; top: -20px; right: 10px; padding: 5px 10px; border: 1px solid #ededed; background: #fff;
-    box-shadow: -1px 1px 2px #333; display: none;  z-index:9px;
+	position: absolute; top: auto !important; left: 110px !important; padding:0px; border: 1px solid #ededed; background: #fff;
+    display: none; min-width: 150px; box-shadow:2px 2px 2px #bdbdbd; margin-top: -22px;
+    z-index:99 !important; border-radius: 4px;
+}
+.menuWidget ul.menupop::before {
+    content:""; right: 100%; top: 2%; border: solid transparent; content: " ";
+    height: 0; width: 0; position: absolute; pointer-events: none; border-color: rgba(194, 225, 245, 0);
+    border-right-color: #337ab7; border-width: 10px; margin-top: 0px;
+}
+.menuWidget ul.menupop .close-div.closediv-small {
+    background: none !important; border: none !important; right: 2px !important; top:2px !important; color: #909090;
+    left: auto !important
+}
+.divPadding {
+    padding: 5px 10px;
+}
+.menuWidget ul.menupop li a {
+color:#909090;    
 }
 .menuWidget ul.menupop.menupop_1
 {
@@ -5220,13 +5236,16 @@ div.inputCustom {
 	width:450px;
 }
 .menuWidget ul li{
-    cursor: pointer; color: #263238;
+    cursor: pointer; color: #263238; text-align: left; padding: 10px 5px;
 }
 .menuWidget ul li:hover{
     color: #455a64;
 }
-.menuWidget ul li{
-    border-right: 1px solid #90a4ae;
+.menuWidget ul li {
+ border-bottom: 1px dotted #ededed;
+}
+.menuWidget ul li:hover a {
+    color: #368ee0;
 }
 .menuWidget ul li:last-child{
     border-right: none;
@@ -9178,7 +9197,9 @@ padding: 10px; border: none;
 .customEvents-Calendar  .ui-icon-circle-triangle-e {
     background-position: -32px 0px;
 }
-
+.menuWidget ul li:hover a, .menuWidget ul.menupop li a:hover i {
+    color: #368ee0 !important;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
