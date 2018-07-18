@@ -1894,46 +1894,117 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 					
 					if(!projects.getOrgLocationsId().getId().equals(orgLocations.getId())){
 						
-						Candidate clientCandidate = candidateService.findByCandidateEmail(candidate.getEmail(), projects.getOrgLocationsId().getId());
-						OrgRelations orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(projects.getSharedLocationId().getId(),projects.getOrgLocationsId().getId());
-			    		if(orgRelations == null) {
-			    			orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(projects.getSharedLocationId().getId(),projects.getOrgLocationsId().getId());
+						if(StringUtils.isNotBlank(projectAssignedMembersDTO.getProjectClientUUID())) {
+			    			ProjectClients pc = projectClientService.getProjectClientsByUUID(projectAssignedMembersDTO.getProjectClientUUID());
+			    			Long orgRelationId = pc.getOrgRelationId().getId();
+			    			Long orgLocationId = orgLocations.getId();
+			    			while(orgRelationId != null){
+			    				OrgRelations orgRelations = pc.getOrgRelationId();
+			    			
+			    				OrgLocations clientOrgLocation = null;
+								if(orgRelations.getLocationId().getId().equals(orgLocationId)) {
+									clientOrgLocation = orgRelations.getResponderLocationId();
+								}else {
+									clientOrgLocation = orgRelations.getLocationId();
+								}
+								
+								Candidate clientCandidate = candidateService.findByCandidateEmail(candidate.getEmail(), clientOrgLocation.getId());
+								
+			    				OrgSpoc orgSpoc = null;
+								if(clientCandidate == null) {
+									clientCandidate = new Candidate();
+									masterCandidate.setId(candidate.getMasterCandidateId().getId());
+									clientCandidate.setMasterCandidateId(masterCandidate);
+									clientCandidate.setParentCandidateId(candidate);
+									clientCandidate.setConsultantUser(candidate.getConsultantUser());
+									clientCandidate.setOrgRelationId(orgRelations);
+									 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+									 for(OrgSpoc spoc : orgSpocList){
+										 orgSpoc =  spoc;
+									 }
+									 clientCandidate.setSpocId(orgSpoc);
+									 clientCandidate.setCandidateType("Candidate");
+									 clientCandidate.setFirstName(candidate.getFirstName());
+									 clientCandidate.setLastName(candidate.getLastName());
+									 clientCandidate.setEmail(candidate.getEmail());
+									 clientCandidate.setCountry(candidate.getCountry());
+									 clientCandidate.setOrgLocationId(clientOrgLocation);
+									 clientCandidate.setIsAssociate(Constants.NO);
+									 clientCandidate.setDesignationType("C2C");
+									
+									 clientCandidate.setStatus(1);
+									 clientCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+									 clientCandidate.setCreatedBy(user.getUserCode());
+									 clientCandidate.setCreatedDate(new Date());
+									 clientCandidate.setUpdatedDate(new Date());
+									
+									Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
+			    					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+			    					
+								}
+								
+								pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientOrgLocation.getId());
+								projectMembers = saveSharedProjectMembers(projectMembersDTO,clientCandidate,user,pc,clientOrgLocation,projects);
+								saveProjectMembersHistory(projectMembers, user, pc);
+								candidate = candidateService.findByCandidateEmail(candidate.getEmail(), clientOrgLocation.getId());
+								
+								if(pc.getOrgRelationId() != null) {
+									orgRelationId = pc.getOrgRelationId().getId();
+									orgLocationId = clientOrgLocation.getId();
+								}else {
+									orgRelationId = null;
+								}
+								
+			    			}
+			    			
+			    			
+			    		}else {
+			    			
+			    			Candidate clientCandidate = candidateService.findByCandidateEmail(candidate.getEmail(), projects.getOrgLocationsId().getId());
+							OrgRelations orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(projects.getSharedLocationId().getId(),projects.getOrgLocationsId().getId());
+				    		if(orgRelations == null) {
+				    			orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(projects.getSharedLocationId().getId(),projects.getOrgLocationsId().getId());
+				    		}
+				    		
+				    		
+							OrgSpoc orgSpoc = null;
+							if(clientCandidate == null) {
+								clientCandidate = new Candidate();
+								masterCandidate.setId(candidate.getMasterCandidateId().getId());
+								clientCandidate.setMasterCandidateId(masterCandidate);
+								clientCandidate.setParentCandidateId(candidate);
+								clientCandidate.setConsultantUser(candidate.getConsultantUser());
+								clientCandidate.setOrgRelationId(orgRelations);
+								 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+								 for(OrgSpoc spoc : orgSpocList){
+									 orgSpoc =  spoc;
+								 }
+								 clientCandidate.setSpocId(orgSpoc);
+								 clientCandidate.setCandidateType("Candidate");
+								 clientCandidate.setFirstName(candidate.getFirstName());
+								 clientCandidate.setLastName(candidate.getLastName());
+								 clientCandidate.setEmail(candidate.getEmail());
+								 clientCandidate.setCountry(candidate.getCountry());
+								 clientCandidate.setOrgLocationId(projects.getOrgLocationsId());
+								 clientCandidate.setIsAssociate(Constants.NO);
+								 clientCandidate.setDesignationType("C2C");
+								
+								 clientCandidate.setStatus(1);
+								 clientCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+								 clientCandidate.setCreatedBy(user.getUserCode());
+								 clientCandidate.setCreatedDate(new Date());
+								 clientCandidate.setUpdatedDate(new Date());
+								
+								Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
+		    					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+		    					
+							}
+							projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
+							projectMembers = saveSharedProjectMembers(projectMembersDTO,clientCandidate,user,projectClients,projects.getOrgLocationsId(),projects);
+							saveProjectMembersHistory(projectMembers, user, projectClients);
 			    		}
-						OrgSpoc orgSpoc = null;
-						if(clientCandidate == null) {
-							clientCandidate = new Candidate();
-							masterCandidate.setId(candidate.getMasterCandidateId().getId());
-							clientCandidate.setMasterCandidateId(masterCandidate);
-							clientCandidate.setParentCandidateId(candidate);
-							clientCandidate.setConsultantUser(candidate.getConsultantUser());
-							clientCandidate.setOrgRelationId(orgRelations);
-							 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
-							 for(OrgSpoc spoc : orgSpocList){
-								 orgSpoc =  spoc;
-							 }
-							 clientCandidate.setSpocId(orgSpoc);
-							 clientCandidate.setCandidateType("Candidate");
-							 clientCandidate.setFirstName(candidate.getFirstName());
-							 clientCandidate.setLastName(candidate.getLastName());
-							 clientCandidate.setEmail(candidate.getEmail());
-							 clientCandidate.setCountry(candidate.getCountry());
-							 clientCandidate.setOrgLocationId(projects.getOrgLocationsId());
-							 clientCandidate.setIsAssociate(Constants.NO);
-							 clientCandidate.setDesignationType("C2C");
-							
-							 clientCandidate.setStatus(1);
-							 clientCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-							 clientCandidate.setCreatedBy(user.getUserCode());
-							 clientCandidate.setCreatedDate(new Date());
-							 clientCandidate.setUpdatedDate(new Date());
-							
-							Candidate savedCandidate = candidateService.addCandidate(clientCandidate);
-	    					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
-	    					
-						}
-						projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
-						projectMembers = saveSharedProjectMembers(projectMembersDTO,clientCandidate,user,projectClients,projects.getOrgLocationsId(),projects);
-						saveProjectMembersHistory(projectMembers, user, projectClients);
+						
+						
 					}
 					
 					if(candidate.getParentCandidateId() != null && (candidate.getDesignationType().equalsIgnoreCase("C2C") || candidate.getDesignationType().equalsIgnoreCase("C2C-1099"))){
@@ -2039,6 +2110,12 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		projectsService.saveProject(projects);
 		
 		
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectMembersListByMasterCandidateId(Long masterCandidateId, Long projectId)
+			throws Exception {
+		return projectMembersDao.getAllProjectMembersListByMasterCandidateId(masterCandidateId, projectId);
 	}
 
 }

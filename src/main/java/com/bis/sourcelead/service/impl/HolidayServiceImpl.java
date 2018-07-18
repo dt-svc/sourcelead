@@ -66,7 +66,11 @@ public class HolidayServiceImpl implements HolidayService{
 		}
 		if(holidayDTO != null)
 		{
-			
+			if(orgLocations.getAverageWorkingHours() != null) {
+				holiday.setOrgAvgHrs(CommonUtil.getTimeFormat(Float.valueOf(orgLocations.getAverageWorkingHours()), null));
+			}else {
+				holiday.setOrgAvgHrs(CommonUtil.getTimeFormat(8f, null));
+			}
 			
 			if(StringUtils.isNotBlank(holidayDTO.getOrgLocationId()))
 			{
@@ -120,6 +124,7 @@ public class HolidayServiceImpl implements HolidayService{
 			}
 			
 			holiday.setStatus("1");
+			holiday.setBillableType(holidayDTO.getHolidayBillableType());
 			
 			//Holiday Relates Shifts Storing
 			List<Long> dbShifts = null;

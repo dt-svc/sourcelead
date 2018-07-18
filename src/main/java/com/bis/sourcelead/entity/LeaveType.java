@@ -79,6 +79,9 @@ public class LeaveType {
 	@Column(name = "COLOR_CODE")
 	private String colorCode;
 
+	@Column(name = "DEPARTMENT_IDS")
+	private String departmentIds;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
@@ -236,7 +239,7 @@ public class LeaveType {
 	
 	@Transient
 	@JsonProperty
-	private int pendingLeaveCounts;
+	private float pendingLeaveCounts;
 	
 	@Transient
 	@JsonProperty
@@ -892,12 +895,12 @@ public class LeaveType {
 		this.remainingTotalLeaveCounts = remainingTotalLeaveCounts;
 	}
 
-	public int getPendingLeaveCounts()
+	public float getPendingLeaveCounts()
 	{
 		return pendingLeaveCounts;
 	}
 
-	public void setPendingLeaveCounts(int pendingLeaveCounts)
+	public void setPendingLeaveCounts(float pendingLeaveCounts)
 	{
 		this.pendingLeaveCounts = pendingLeaveCounts;
 	}
@@ -978,4 +981,11 @@ public class LeaveType {
 		this.experiencedPerPeriod = experiencedPerPeriod;
 	}
 
+	public String getDepartmentIds() {
+		return departmentIds;
+	}
+
+	public void setDepartmentIds(String departmentIds) {
+		this.departmentIds = departmentIds;
+	}
 }

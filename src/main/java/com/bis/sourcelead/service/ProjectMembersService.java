@@ -150,4 +150,6 @@ public interface ProjectMembersService {
 	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId);
 	
 	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId, Long candidateId,String timesheetFrequency);
+	
+	List<ProjectMembers> getAllProjectMembersListByMasterCandidateId(Long masterCandidateId,Long projectId) throws Exception;
 }

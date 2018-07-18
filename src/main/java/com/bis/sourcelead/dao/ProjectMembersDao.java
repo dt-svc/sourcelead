@@ -133,4 +133,10 @@ public interface ProjectMembersDao {
 	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId);
 	
 	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId, Long candidateId,String timesheetFrequency);
+	
+	List<ProjectMembers> getAllProjectMembersListByMasterCandidateId(Long masterCandidateId,Long projectId) throws Exception;
+	
+	public List<ProjectMembers> getAssignedProjectMembersGroupListByProjectClientId(List<Long> projectClientsId) throws Exception;
+	
+	boolean isProjectMembersExisted(Long projectId,Long masterCandidateId,Long projectClientId) throws Exception;
 }

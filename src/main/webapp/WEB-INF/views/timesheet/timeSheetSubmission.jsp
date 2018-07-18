@@ -252,10 +252,7 @@
 										   <th>${weekDays.dayOfTheDate}<i>${weekDays.date}</i></th>
 										</c:forEach>
 									</tr>
-									<c:set var="entryIndex" value="0"/>
-									
 									 <c:set var="leaveIndex" value="0"/>
-						            <c:set var="entryIndex" value="0"/>
 						             <c:if test="${!empty timesheetSubmissionDTO.empLeaveMap}">
 						                <c:forEach var="empLeaveMap" items="${timesheetSubmissionDTO.empLeaveMap}" varStatus="empLeaveMapCount">
 						                      <c:set var="leaveIndex" value="${leaveIndex+1}"/>
@@ -282,13 +279,13 @@
 	                                                               </span>
 	                                                             </div>
 											                   </c:if>
-													           <c:set var="entryIndex" value="${entryIndex+1}"/>
 											              </td>
 								                      </c:forEach>
 							                       </tr>
 						                </c:forEach>
 						              </c:if>
 						            <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${fn:length(timesheetSubmissionDTO.empLeaveMap)+fn:length(entriesMap)}' />
+									<c:set var="entryIndex" value="0"/>
 									<c:forEach var="entry" items="${entriesMap}" varStatus="entryCount">
 									    <tr id="timesheetRow${leaveIndex+entryCount.index+1}">
 									      <td id="${leaveIndex+entryCount.index+1}taskTd"> <!-- rowspan="2" -->
@@ -659,7 +656,7 @@ function setTotals(){
 						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
 				    }
 				     
-				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && (billableType == 'Non Billable' || billableType == 'Non-Billable')) {
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && (billableType == 'Non Billable' || billableType == 'Non-Billable' || billableType == 'NonBillable')) {
 				    	 var nonBillableHours = btemp;
 				    	 var nonBillableSplit = nonBillableHours.split(':');
 				    	 var nonBillableFirst = nonBillableSplit[0];
@@ -1143,7 +1140,7 @@ function addTimeSheetRow(projectId,leaveIndex) {
 	 /* $('#0docFile').removeClass('error'); */
 	/*  $('#0docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); */ 
 	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){   
-		    var nonLeaveRowId = parseInt(leaveIndex*7);
+		    var nonLeaveRowId = 0;
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
 			var maxRowNum = parseInt(rowNum);
@@ -1203,8 +1200,8 @@ function addTimeSheetRow(projectId,leaveIndex) {
 			divadttTd2Str = divadttTd2Str.replace(/projectId/g, (projectId));
 			divadttTd2Str = divadttTd2Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			
-			var dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+"].date']").val();
-			var dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+"].dayOfTheDate']").val();
+			var dateValue = $("[name='timesheetSubmission.timesheetEntries[0].date']").val();
+			var dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[0].dayOfTheDate']").val();
 			divadttTd2Str = divadttTd2Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd2Str = divadttTd2Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell3.innerHTML = divadttTd2Str;
@@ -1225,8 +1222,8 @@ function addTimeSheetRow(projectId,leaveIndex) {
 			divadttTd3Str = divadttTd3Str.replace(/projectId/g, (projectId));
 			divadttTd3Str = divadttTd3Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			
-		    dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+1+"].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+1+"].dayOfTheDate']").val();
+		    dateValue = $("[name='timesheetSubmission.timesheetEntries[1].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[1].dayOfTheDate']").val();
 			divadttTd3Str = divadttTd3Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd3Str = divadttTd3Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell4.innerHTML = divadttTd3Str;
@@ -1247,8 +1244,8 @@ function addTimeSheetRow(projectId,leaveIndex) {
 			divadttTd4Str = divadttTd4Str.replace(/projectId/g, (projectId));
 			divadttTd4Str = divadttTd4Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			
-			dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+2+"].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+2+"].dayOfTheDate']").val();
+			dateValue = $("[name='timesheetSubmission.timesheetEntries[2].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[2].dayOfTheDate']").val();
 			divadttTd4Str = divadttTd4Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd4Str = divadttTd4Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell5.innerHTML = divadttTd4Str;
@@ -1268,8 +1265,8 @@ function addTimeSheetRow(projectId,leaveIndex) {
 			divadttTd5Str = divadttTd5Str.replace(/projectId/g, (projectId)); 
 			divadttTd5Str = divadttTd5Str.replace(/ENTRYINDEX/g, (entryIndex));
 			
-			dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+3+"].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+3+"].dayOfTheDate']").val();
+			dateValue = $("[name='timesheetSubmission.timesheetEntries[3].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[3].dayOfTheDate']").val();
 			divadttTd5Str = divadttTd5Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd5Str = divadttTd5Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell6.innerHTML = divadttTd5Str;
@@ -1290,8 +1287,8 @@ function addTimeSheetRow(projectId,leaveIndex) {
 			divadttTd6Str = divadttTd6Str.replace(/projectId/g, (projectId)); 
 			divadttTd6Str = divadttTd6Str.replace(/ENTRYINDEX/g, (entryIndex));
 			
-			dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+4+"].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+4+"].dayOfTheDate']").val();
+			dateValue = $("[name='timesheetSubmission.timesheetEntries[4].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[4].dayOfTheDate']").val();
 			divadttTd6Str = divadttTd6Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd6Str = divadttTd6Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell7.innerHTML = divadttTd6Str;
@@ -1312,8 +1309,8 @@ function addTimeSheetRow(projectId,leaveIndex) {
 			divadttTd7Str = divadttTd7Str.replace(/projectId/g, (projectId));
 			divadttTd7Str = divadttTd7Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			
-			dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+5+"].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+5+"].dayOfTheDate']").val();
+			dateValue = $("[name='timesheetSubmission.timesheetEntries[5].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[5].dayOfTheDate']").val();
 			divadttTd7Str = divadttTd7Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd7Str = divadttTd7Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			cell8.innerHTML = divadttTd7Str;
@@ -1333,8 +1330,8 @@ function addTimeSheetRow(projectId,leaveIndex) {
 			divadttTd8Str = divadttTd8Str.replace(/projectId/g, (projectId));
 			divadttTd8Str = divadttTd8Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			
-			dateValue = $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+6+"].date']").val();
-		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries["+nonLeaveRowId+6+"].dayOfTheDate']").val();
+			dateValue = $("[name='timesheetSubmission.timesheetEntries[6].date']").val();
+		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[6].dayOfTheDate']").val();
 			divadttTd8Str = divadttTd8Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd8Str = divadttTd8Str.replace(/DAYOFTHEDATE/g, (dayOfDate));
 			cell9.innerHTML = divadttTd8Str;

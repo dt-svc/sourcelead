@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1615,6 +1617,70 @@ public class RequirementListRestController {
 			}
 		}
 		return requirementSubmissionCounts;
+	}
+	
+	//@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
+	@RequestMapping(value = "/searchJobFairs")
+	@ResponseBody
+	public ResponseList<JobFairDTO> searchJobFairs(HttpServletRequest request,JobFairDTO jobFairDTO,
+			@RequestParam(defaultValue = "false") boolean includeInactive) throws Exception {
+		ResponseList<JobFairDTO> response = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				String[] tableColumns = {"name", "startDate", "endDate", "noOfJobs", "", "status"};
+				jobFairDTO.setSortColumn("id");
+				jobFairDTO.setSortOrder("desc");
+				
+				int sortColumnIndex = 10; //by default sorting using updated date
+				boolean sortColumnOrder = false; //by default descending order
+				if(jobFairDTO.getOrder() != null && !jobFairDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(jobFairDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = !jobFairDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
+					
+					jobFairDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					jobFairDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
+				}
+				
+				jobFairDTO.setUserId(user.getId());
+				jobFairDTO.setOrgLocationId(orgLocation.getId());
+				response = requirementService.getJobFairsList(jobFairDTO, includeInactive);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/jobFairsByRequirementId")
+	@ResponseBody
+	public ResponseList<JobFairDTO> getJobFairListByRequirementId(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") long requirementId) {
+		ResponseList<JobFairDTO> response = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				response.setData(requirementService.getJobFairsDTOListByRequirementId(requirementId));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 	}
 	
 	/**

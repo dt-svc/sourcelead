@@ -925,19 +925,8 @@ function cancel(candidateId){
 		</div>   --%> 
 		
   </section>
-  <div class="timesheet_out">
-    <div class="vendor_wrap">
-    <div class="pull-left pull-left ml mt10 mr5">
-                <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr10" onclick="resetCandidateFilter();" title="Refresh">
-				    <span class="fa fa-refresh"></span>
-				</button>
-	</div>
-     <div class="pull-left cand-advsrche">
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();getSourceleadTags();">
-			  Advanced Search&nbsp;&nbsp;
-			  <i class="fa fa-search"></i>
-			  </a> 
-			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
+  
+  		  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
 				  <!-- <div class="cand-advsrch-popup cand-advsrchPopup"> -->
 				  <div class="cand-advsrch-popup advancedsearch-popup">
 					  <h5 class="headerAdsrch">Advanced Search
@@ -1224,61 +1213,46 @@ function cancel(candidateId){
 					  </div>
 				  </div>
 			  </form:form>
-      </div>
+  
+  <div class="timesheet_out">
+    
+ <div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a>
+      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();getSourceleadTags();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
+      </span>
       
-      <div class="pull-left pull-left ml mt10 mr5">
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
-				</a>
-	   </div>
-      <div class="dropdown pull-left ml mt">
-			  <div class="dropdown-toggle" data-toggle="dropdown">
-			  <span class="fa fa-share-alt cursorPointer" title="Share" href="#" onclick="shareJob();"></span></div>
-			 
-	  </div>
-	  
-	   <div class="dropdown pull-left ml mt mr">
-			  <div class="dropdown-toggle" data-toggle="dropdown">
-			  <span class="fa fa-user-plus cursorPointer" title="Submit" href="#" onclick="submitCandidatesToJob();"></span></div>
-			 
-	  </div>
-			
-      <div class="timesheet_head customtimesheet-head topfilters topfilters2 pull-right hdrFilter timesheetHead-search">
-        <ul>
-            
-          <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
-<!--           <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-user" style="font-size:17px;"></i></b> -->
-          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-plus"></i>Add Candidate</b>
-          
-          <div id="addmorepop" class="approved_pop">
-           
-           </div>
+      <ul class="pull-right list-unstyled list-inline">
+      
+	  <li class="tableShare" style="display: none;">
+	  	<a class="shareIcon mr5" title="Share" href="javascript:void(0)" onclick="shareJob();"></a>
+	  	<a class="sendIcon mr5" title="Submit" href="javascript:void(0)" onclick="submitCandidatesToJob();"></a>
+	  </li>        
+      
+           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
+          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate" class="newAdBtn mr5" href="javascript:void(0)">+  Candidate</a></b>
+          		<div id="addmorepop" class="approved_pop"></div>
           </li>
           </sec:authorize>
-          
-          <li title="Import"><a href="uploadCandidateForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li> 
-          
-          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES','ROLE_CROWDSOURCING_CANDIDATES')">
-          <li title="Export" id="candidate-export" class="mrPOP"><i class="glyphicon glyphicon-export expIcon"></i>
-            <div class="export_pop">
-              <ul>
-                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-              </ul>
-            </div>
-          </li>
-          </sec:authorize>
-          
-          <li class="positionRelative">
-		     <div class="dynamic_search">
-   			     <input type='text' placeholder='Search' id='dataTableSearch'/>
-        		<span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="candidateList();"></i></span>
-			  </div>
-		  </li>
-		  
-          <div class="clearfix"></div>
+      
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openCandidateFilterPop();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+		                 <a href="uploadCandidateForm">Import</a>
+         				 <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES','ROLE_CROWDSOURCING_CANDIDATES')">
+          					<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
+          				</sec:authorize>		           
+						</span>
+					</div>
+				</li>
+				
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="candidateList();"></span></li>
         </ul>
-        
-      </div>
+      </div>   
+    
       <div id="emptyPopup"></div>
       <div class="candidate_wrap_table datatable_filter">
         <div id="candidateList"></div>
@@ -1321,7 +1295,6 @@ function cancel(candidateId){
 			</div>			     
     </div>
     <!-- Compnay details Ends --> 
-  </div>
 </section>
 
 <!--   Error Message   -->
@@ -1375,7 +1348,7 @@ function cancel(candidateId){
 		$(".new_side_wrap").removeClass("new_side_wrap_active");
 		$(".req_side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
-		candidateList();
+		//candidateList();
 	}
 </script>
 
@@ -2411,11 +2384,14 @@ function minMaxExperience(){
 <script>
 function toggleShareCandidates(source){
 	  var checkboxes = document.querySelectorAll('input[class="contactscheckbox"]');
-	  if($(source).is(":checked"))
+	  if($(source).is(":checked")){
 		  $('input[class="contactscheckbox"]').prop('checked', 'checked');
-	  else 
+	  	  $(".tableShare").show();
+	  }
+	  else{ 
 		  $('input[class="contactscheckbox"]').removeProp('checked');
-	  
+	      $(".tableShare").hide();
+	  }
 	  $('input[class="contactscheckbox"]').each(function(i) {
 		  if($(this).is(":checked")) {
 		      shareCandidates[$(this).data("id")] = $(this).val();
@@ -2448,8 +2424,10 @@ function checkOrUncheckParent(tableId, selectedItems, checkboxId) {
 var shareCandidates = {};
 function checkShareCandidates(elem) {
 	if($(elem).is(":checked")) {
+		 $(".tableShare").show();
 		shareCandidates[$(elem).data("id")] = $(elem).val();
 	} else{
+		 $(".tableShare").hide();
 		$("#sharedcheckbox").removeProp('checked');
 		shareCandidates[$(elem).data("id")] = "";
 	}
@@ -2914,6 +2892,31 @@ $(document).keyup(function(e) {
 	});
 </script>
 
+	
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+</script>
 	
 
 <jsp:include page="../masterFooter.jsp" /> 

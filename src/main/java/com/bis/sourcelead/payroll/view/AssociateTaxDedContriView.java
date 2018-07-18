@@ -1,7 +1,5 @@
 package com.bis.sourcelead.payroll.view;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -62,32 +60,6 @@ public class AssociateTaxDedContriView {
 	@Column (name = "LOCAL_TAX_STATE")
 	private String localTaxState;
 	
-	@Column (name = "ASSOCIATE_TAX_UUID")
-	private String associateTaxUUID;
-	
-	@Column (name = "DEDUCTION_TYPE_ID")
-	private Long deductionTypeId;
-	
-	@Column (name = "DEDUCTION_METHOD")
-	private String deductionMethod;
-	
-	@Column (name = "DEDUCTION_AMOUNT")
-	private BigDecimal deductionAmount;
-	
-	@Column (name = "ASSOCIATE_DEDUCTION_UUID")
-	private String associateDeductionUUID;
-	
-	@Column (name = "CONTRIBUTION_TYPE_ID")
-	private Long contributionTypeId;
-	
-	@Column (name = "CONTRIBUTION_METHOD")
-	private String contributionMethod;
-	
-	@Column (name = "CONTRIBUTION_AMOUNT")
-	private BigDecimal contributionAmount;
-	
-	@Column (name = "ASSOCIATE_CONTRIBUTION_UUID")
-	private String associateContributionUUID;
 	
 	@Column (name = "ACCOUNT_NUMBER")
 	private String accountNumber;
@@ -105,17 +77,10 @@ public class AssociateTaxDedContriView {
 	@Column (name = "TAX_LOCATION_ID")
 	private Long taxLocationId;
 	
-	@Column (name = "DED_LOCATION_ID")
-	private Long dedLocationId;
-	
-	@Column (name = "CONTRI_LOCATION_ID")
-	private Long contriLocationId;
 	
 	@Column (name = "BANK_LOCATION_ID")
 	private Long bankLocationId;
 	
-	@Column (name="TAX_TYPE")
-	private String taxType;
 
 	public Long getUserId()
 	{
@@ -197,50 +162,6 @@ public class AssociateTaxDedContriView {
 		return localTaxState;
 	}
 
-	public String getAssociateTaxUUID()
-	{
-		return associateTaxUUID;
-	}
-
-	public Long getDeductionTypeId()
-	{
-		return deductionTypeId;
-	}
-
-	public String getDeductionMethod()
-	{
-		return deductionMethod;
-	}
-
-	public BigDecimal getDeductionAmount()
-	{
-		return deductionAmount;
-	}
-
-	public String getAssociateDeductionUUID()
-	{
-		return associateDeductionUUID;
-	}
-
-	public Long getContributionTypeId()
-	{
-		return contributionTypeId;
-	}
-
-	public String getContributionMethod()
-	{
-		return contributionMethod;
-	}
-
-	public BigDecimal getContributionAmount()
-	{
-		return contributionAmount;
-	}
-
-	public String getAssociateContributionUUID()
-	{
-		return associateContributionUUID;
-	}
 
 	public String getAccountNumber()
 	{
@@ -344,50 +265,6 @@ public class AssociateTaxDedContriView {
 		this.localTaxState = localTaxState;
 	}
 
-	public void setAssociateTaxUUID(String associateTaxUUID)
-	{
-		this.associateTaxUUID = associateTaxUUID;
-	}
-
-	public void setDeductionTypeId(Long deductionTypeId)
-	{
-		this.deductionTypeId = deductionTypeId;
-	}
-
-	public void setDeductionMethod(String deductionMethod)
-	{
-		this.deductionMethod = deductionMethod;
-	}
-
-	public void setDeductionAmount(BigDecimal deductionAmount)
-	{
-		this.deductionAmount = deductionAmount;
-	}
-
-	public void setAssociateDeductionUUID(String associateDeductionUUID)
-	{
-		this.associateDeductionUUID = associateDeductionUUID;
-	}
-
-	public void setContributionTypeId(Long contributionTypeId)
-	{
-		this.contributionTypeId = contributionTypeId;
-	}
-
-	public void setContributionMethod(String contributionMethod)
-	{
-		this.contributionMethod = contributionMethod;
-	}
-
-	public void setContributionAmount(BigDecimal contributionAmount)
-	{
-		this.contributionAmount = contributionAmount;
-	}
-
-	public void setAssociateContributionUUID(String associateContributionUUID)
-	{
-		this.associateContributionUUID = associateContributionUUID;
-	}
 
 	public void setAccountNumber(String accountNumber)
 	{
@@ -414,15 +291,6 @@ public class AssociateTaxDedContriView {
 		return taxLocationId;
 	}
 
-	public Long getDedLocationId()
-	{
-		return dedLocationId;
-	}
-
-	public Long getContriLocationId()
-	{
-		return contriLocationId;
-	}
 
 	public Long getBankLocationId()
 	{
@@ -434,29 +302,11 @@ public class AssociateTaxDedContriView {
 		this.taxLocationId = taxLocationId;
 	}
 
-	public void setDedLocationId(Long dedLocationId)
-	{
-		this.dedLocationId = dedLocationId;
-	}
-
-	public void setContriLocationId(Long contriLocationId)
-	{
-		this.contriLocationId = contriLocationId;
-	}
 
 	public void setBankLocationId(Long bankLocationId)
 	{
 		this.bankLocationId = bankLocationId;
 	}
 
-	public String getTaxType()
-	{
-		return taxType;
-	}
-
-	public void setTaxType(String taxType)
-	{
-		this.taxType = taxType;
-	}
 	
 }

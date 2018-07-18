@@ -904,7 +904,7 @@ public class UserDaoImpl implements UserDao {
 	  String query = "";
 	  Boolean isAdmin = userRoleDao.isUserAdminByOrgLocationId(currentApproverId,orgLocationsId);
 	  if(isAdmin){
-		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.orgLocations.id = :orgLocationsId and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList) and userRole.roles.roleName = 'ROLE_ADMIN' and userRole.user.id != :currentApproverId)";
+		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.orgLocations.id = :orgLocationsId and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList) and userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.user.id != :currentApproverId)";
 	  }else{
 		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.orgLocations.id = :orgLocationsId and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList) and userRole.user.id != :currentApproverId)";
 	  }

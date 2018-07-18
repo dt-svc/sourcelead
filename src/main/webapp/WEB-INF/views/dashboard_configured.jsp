@@ -32,12 +32,7 @@
 	z-index: 999999;
 	width: 11.5%;
 }
-.pdleft{
-	padding-left:0;
-}
-.pdRight{
-	padding-right:0;
-}
+
 </style>
 <style type="text/css">
 .clients_wrap_table {
@@ -93,6 +88,7 @@ var loaded = false;
 		    	<h2>Dashboard<a href="javascript:void(0)" onclick="$('#configureDashboard').show();$('.advancedsearch-mask').fadeIn();"><i class="fa fa-cog ml"></i></a></h2>
 		  	</div>
 		</section>
+		<div class="row">
 	    <c:if test="${dashboardItems != null && dashboardItems.itemsObjectList.size() > 0}">
 			<c:forEach items="${dashboardItems.itemsObjectList}" var="itemObj">
 				<c:set var="itemName" value="${itemObj.get('name')}"></c:set>
@@ -165,7 +161,7 @@ var loaded = false;
 					    	<c:if test="${userTabs.tabName == 'Jobs'}">
 						    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 						    	 <c:if test='${itemName eq "Job Approvals" && itemChecked == true}'>
-						    	 	<div class="col-md-6 pdleft"> 
+						    	 	<div class="col-md-6 mb"> 
 							   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
 							   	 	</div>
 						    	 </c:if>
@@ -178,7 +174,7 @@ var loaded = false;
 			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 			     			<%-- <c:forEach items="${dashboardItems.itemsList}" var="item"> --%>
 			     				<c:if test='${itemName eq "Applicant Permission" && itemChecked == true}'>
-					     			<div class="col-md-6 pdRight"> 
+					     			<div class="col-md-6 mb"> 
 					     				<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 					     			</div>
 			     				</c:if>
@@ -187,7 +183,7 @@ var loaded = false;
 			     	</c:if>
 		     	</c:forEach>
 		     
-		     	<!-- <div class="clearfix"></div> -->
+		     	
 
 			<%-- <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
 		 		<div class='row'>
@@ -205,17 +201,20 @@ var loaded = false;
 			<div class="clearfix"></div>--%>
 	    	
 	    		<c:if test='${itemName eq "Events" && itemChecked == true}'>
-					<jsp:include page="dashboardEvents.jsp"></jsp:include>	   
+					<div class="clearfix"></div>
+					<jsp:include page="dashboardEvents.jsp"></jsp:include>
+					<div class="clearfix"></div>
 	    		</c:if>
 	     	
 				<sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
 		     		<c:if test='${itemName eq "Contracts" && itemChecked == true}'>
-						<jsp:include page="dashboardContracts.jsp"></jsp:include> 
+						<jsp:include page="dashboardContracts.jsp"></jsp:include>
 		     		</c:if>
 				</sec:authorize>
 	    	</c:forEach>
 	    </c:if>
 		<jsp:include page="dashboard_configure_popup.jsp"></jsp:include>
+	</div>
 	</div>
 </section>
 
