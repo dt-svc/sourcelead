@@ -33,7 +33,7 @@ function prepareWagesAndTaxList(url){
  	 
  		result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
-		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' onClick='dataTableSearch()'></span></li>";
 		result = result + "</ul>";
 		result = result + "</div>";  		
  		
@@ -275,6 +275,9 @@ function wagesTaxpagination(url){
     		   wagesAndTaxList();
     	   }
     	});
+}
+function dataTableSearch(){
+	wagesAndTaxList();
 }
 </script>
 
