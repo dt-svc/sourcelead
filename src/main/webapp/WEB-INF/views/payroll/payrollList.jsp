@@ -22,10 +22,9 @@
 			&raquo; Payroll
 		</div>
 		<div class="pull-left ml generateButtons">
-			<a href="<c:url value='${appPath}/uploadDocuments'/>" class="ml10 mt5"
-				id="uloadDocs" title="Upload Files">Upload Files</a> 
-			 <a href="<c:url value='${appPath}/usPayroll'/>" class="ml10 mt5"
-				id=generateReportId title="Generate Report">US Payroll</a> 
+			<a href="<c:url value='${appPath}/uploadDocuments'/>" class="ml10 mt5" id="uloadDocs" title="Upload Files">Upload Files</a> 
+			<a href="<c:url value='${appPath}/generatePaysheet'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Generate Paysheet</a>
+			<a href="<c:url value='${appPath}/runPayroll'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Run Payroll</a>
 		</div>
 	</section>
 	

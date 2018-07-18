@@ -634,13 +634,13 @@ public class USPayrollRestController {
 		}
 		
 		/**
-		 * Returning US Payroll Generate JSP
+		 * Returning Generate Paysheet JSP
 		 * @param request
 		 * @param response
 		 * @return ModelAndView
 		 * @throws Exception
 		 */
-		@RequestMapping(value = { "/usPayroll","/rest/usPayroll" })
+		@RequestMapping(value = { "/generatePaysheet","/rest/generatePaysheet" })
 		public ModelAndView usPayroll(HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			ModelAndView model = new ModelAndView();
@@ -651,13 +651,42 @@ public class USPayrollRestController {
 			return model;
 		}
 		
-		//TODO Need to Resuse this method later Do not Remove
+		
+		/**
+		 * Returning payroll JSP
+		 * @param request
+		 * @param response
+		 * @return ModelAndView
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/runPayroll","/rest/runPayroll" })
+		public ModelAndView payroll(HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			ModelAndView model = new ModelAndView();
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+			model.addObject("userGroupList",userGroupList);
+			model.setViewName("payroll/runPayroll");
+			return model;
+		}
+		
+		
 		@RequestMapping(value = { "/generateUSPayroll","/rest/generateUSPayroll" }, method = RequestMethod.POST)
 		public ResponseList<USPayrollDTO> generateUSPayroll(GenerateUSPayrollDTO generateUSPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			ResponseList<USPayrollDTO> res = generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO);
-			return res;
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			List<USPayrollDTO> existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
+			ResponseList<USPayrollDTO> res = new ResponseList<>();
+			if(existedData != null) {
+				res.setData(existedData);
+				res.setRecordsFiltered(existedData.size());
+				res.setRecordsTotal(existedData.size());
+				res.setResponseMessage("success");
+				return res;
+			}else {
+				return generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO,loginUser);
+			}
 		}
 		
 		
@@ -725,7 +754,7 @@ public class USPayrollRestController {
 		 * @param orgLocation 
 		 * @return List<List<String>> 
 		 */
-	private List<String> getNumberOfWeeks(int year, int month1, OrgLocations orgLocation)
+	private List<String> getNumberOfWeeks(int year, int month, OrgLocations orgLocation)
 	{
 		List<String> payFrequency = new ArrayList<>();
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
@@ -733,7 +762,7 @@ public class USPayrollRestController {
 		List<String> dates;
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.YEAR, year);
-		for (int i = 0; i < month1; i++) {
+		for (int i = 0; i <=month; i++) {
 			c.set(Calendar.MONTH, i);
 			c.set(Calendar.DAY_OF_MONTH, 1);
 			while (c.get(Calendar.MONTH) == i) {
@@ -941,6 +970,23 @@ public class USPayrollRestController {
 		}
 		
 		return result;
+	}
+	/**
+	 * Get Particular Employee Payroll 
+	 * @param associateSalid
+	 * @param request
+	 * @param response
+	 * @return Response<USPayrollDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getEmployeePayroll","/rest/getEmployeePayroll" }, method = RequestMethod.GET)
+	@ResponseBody
+	public Response<USPayrollDTO> getEmployeePayroll(@RequestParam(value = "payrollUUID",required = false) String payrollUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<USPayrollDTO>  resObj = generateUSPayrollService.getEmployeePayrollByUUID(payrollUUID,orgLocation);
+		return resObj;
 	}
 	
 }

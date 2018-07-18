@@ -15,4 +15,5 @@ public interface AssociateSalaryService {
 	AssociatePayItem findPayItemByPayItemId(Long payItemId);
 
 	AssociatePayItem saveUpdatedPayItem(AssociatePayItem associatePayItem);
+	
 }

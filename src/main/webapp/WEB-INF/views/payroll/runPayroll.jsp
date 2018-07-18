@@ -1,0 +1,735 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
+<!-- <script>
+$(document).ready(function(){
+	prepareUSPayrollList("NO_RECORDS");
+});
+</script> -->
+
+
+
+
+
+
+!-- Content Area -->
+<section class="content-wraper contentWraper">
+<section class="content-header clearfix">
+<div class="pull-left">
+<h2>Payroll</h2>
+</div>
+<div class="pull-right brud-crum">Home &raquo; Payroll</div>
+</section>
+
+
+<div class="clearfix"></div>
+<div class="timesheet_out">
+
+<div class="tablelist-wrap">
+<div class="timesheet_head minHeight">
+<form:form id="generate_payroll_form" name="generate_payroll_form" method="post">
+<div class="col-md-7 mt">
+	<div class="row">
+		<div class="col-md-3">
+			<div class="dropdown-select">
+			<select id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
+				<option value="">--Select User Group--</option>
+                    <c:forEach var="ug" items="${userGroupList}">
+					<option value="${ug.groupUUID}">${ug.groupName}</option>
+				</c:forEach>
+			</select>
+			</div>
+		</div>
+		<div class="col-md-4 paddingLeft paddingRight">
+			<div class="dropdown-select">
+			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period">
+			</select>
+			</div>
+		</div>
+		<div class="col-md-3 paddingRight">
+			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date">
+		</div>
+		<div class="col-md-2">
+			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runUSPayroll();">Run Payroll</a>
+		</div>
+	</div>						
+</div>
+<div class="clearfix"></div>
+<div class="remove_search">
+	<input placeholder="Search" type="text">
+</div>              
+</form:form>
+</div>
+
+<div class="tableScroll">
+ <div class="styleTables clearfix mt">
+ <div id="USPayrollDiv"></div>
+ <div id="testDiv"></div>
+</div> 
+</div>
+<div class="clearfix mt"></div>
+<nav class="clearfix">
+	
+<div class="col-md-2">
+			<a href="javascript:void(0)" class="btn anchorBlue">Exclude</a>
+</div>
+	<ul class="pull-right mr list-unstyled list-inline">
+		<li><a href="#" class="btn btn-primary btnSuccess">Sent for Approve</a></li>
+		<li><a href="#" class="btn btn-default ml mr">Confirm</a></li>
+		<li><a href="#" class="btn btn-default">Cancel</a></li>
+	</ul>
+<div class="clearfix"></div>
+</nav>	
+
+
+
+</div>
+
+
+</div>  
+
+
+<!-- New Code Here -->
+
+<script>
+function getGroupFrequency(){
+	var groupUUID = $("#groupId").val();
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
+	        success: function(json) {
+	        var output = "";
+			for (var i=0; i<json.length; i++)
+			{
+				var date = json[i].replace(",", " to ");
+				output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+			}
+			$("#payPeriod").empty();
+			$("#payPeriod").append(output);
+			$('#payPeriod').trigger("chosen:updated"); 
+	        },
+	    });
+}
+</script>
+<!-- New Code End Here -->
+
+<!--   Error Message   -->
+<div class="vendor_wrap_mask"></div>
+<div class="vendor_error">
+<textarea placeholder="Enter message"></textarea>
+<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
+
+<!--   Error Message   --> 
+
+
+</section>
+
+ 
+
+  
+  <script>
+  $( function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#DateofJoin').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+  } );
+</script>
+
+<script>
+	$(function() {
+		
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  // written common method in slead-common.js for date formats start
+		  var finalDateFormat = getJSDateFormat(locationDate);
+		  //end
+		  $('#payrollStartDate').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      //minDate: 0  this line for to restrict selection of previous dates
+		  });
+		  
+		  $('#payrollEndDate').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      //minDate: 0  this line for to restrict selection of previous dates
+		  });
+		  
+		  $('#payrollPayDate').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      //minDate: 0  this line for to restrict selection of previous dates
+		  });
+		
+		
+		
+	});
+</script>
+
+
+
+
+
+
+<script>
+function runUSPayroll(){
+	if ($('#generate_payroll_form').validate(false, validationSettings)){  
+		var searchValue = $("#dataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+		var groupId = $("#groupId").val();
+		var payPeriod = $("#payPeriod").val();
+		var payrollPayDate = $("#payrollPayDate").val();
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate,                 
+		        success: function(data) {
+		            var json = data.data;
+		        	var result = "";
+		        	result += '<table>';
+		        	result += '<thead>';
+		        	result += '<tr>';
+		        	result += '<th>';
+		        	result += '<div class="checkbox-new pull-left">';
+		        	result += '<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">';
+		        	result += '<label for="all" class="checkbox-custom-label"></label>';
+		        	result += '</div>';
+		        	result += '</th>';
+		        	result += '<th>Emp ID</th>';
+		        	result += '<th>Emp Name</th>';
+		        	result += '<th>Regular<br>Hours</th>';
+		        	result += '<th>Payrate</th>';
+		        	result += '<th>OT<br>Hours</th>';
+		        	result += '<th>Gross<br>Pay</th>';
+		        	result += '<th>Pretax<br>Deduction</th>';
+		        	result += '<th>Post<br>Deduction</th>';
+		        	result += '<th>Taxes</th>';
+		        	result += '<th>Net<br>Pay</th>';
+		        	result += '</tr>';
+		        	result += '</thead>	';
+		        	result += '<tbody>';
+		        	if(json != null && json.length > 0){
+		        		for (var i=0; i<json.length; i++){
+		        			var opt = json[i];
+		        			result += '<tr>';
+				        	result += '<td>';
+				        	result += '<div class="checkbox-new pull-left ml5">';
+				        	result += '<input id="emp1" class="checkbox-custom" name="paidComponent" type="checkbox">';
+				        	result += '<label for="emp1" class="checkbox-custom-label"></label>';
+				        	result += '</div>';
+				        	result += '</td>';
+				        	
+				        	 result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
+				        	 result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
+				        	
+				        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
+				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.payRate+'</div></td>';
+				        	
+				        	if(opt.overtimeHours != null && opt.overtimeHours != '' && opt.overtimeHours != 'undefined'){
+				        		result += '<td><div class="tblminwidth-50">'+opt.overtimeHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.otHoursTotalAmt.toFixed(2)+'</div></td>';
+				        	}else{
+				        		result += '<td><div class="tblminwidth-50">0.00</div><div class="tblminwidth-50 clearfix text-danger">$ 0.00</div></td>';
+				        	}
+				        	
+				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
+				        	if(opt.preTaxDeduction != null && opt.preTaxDeduction != '' && opt.preTaxDeduction != 'undefined'){
+				        		result += '</td><td><div class="tblminwidth-50 clearfix">$ '+opt.preTaxDeduction.toFixed(2)+'</div></td>';
+				        	}else{
+				        		result += '</td><td><div class="tblminwidth-50 clearfix">$ 0.000</td>';
+				        	}
+				        	if(opt.postTaxDeduction != null && opt.postTaxDeduction != '' && opt.postTaxDeduction != 'undefined'){
+				        		result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.postTaxDeduction.toFixed(2)+'</div></td>';	
+				        	}else{
+				        		result += '<td><div class="tblminwidth-50 clearfix">$ 0.00</div></td>';
+				        	}
+				        	
+				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
+				        	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
+				        	result += '</tr>';  
+			        	}
+			        	
+		        	}
+		        	result += '</tbody>';
+		        	result += '</table>';
+		        	$("#testDiv").empty();
+		        	$("#testDiv").append(result);
+		        },
+		    });
+		 
+		return true; 
+    }else{
+   return false;
+   	  } 
+	}
+	
+$('body').on('blur', '#generate_payroll_form', function() {
+	$("#generate_payroll_form").showHelpOnFocus();
+	$("#generate_payroll_form").validateOnBlur(false, validationSettings);  
+});
+
+
+</script>
+
+<script>
+	function payAdjustment(payrollUUID){
+		alert(payrollUUID);
+		  $.ajax({
+		  	type: "GET",
+		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID,                 
+		        success: function(data) {
+		            var json = data.object;
+		            $("#empAddress").text(json.employeeAddress);
+		            $("#regularHours").val(json.regularHours);
+		            $("#regularHoursAmt").val(json.regularHrsTotalAmt);
+		            $("#overTimeHours").val(json.overtimeHours);
+		            $("#overTimeHoursAmt").val(json.otHoursTotalAmt);
+		            $("#totalHours").text(json.totalHours);
+		            $("#totalEarnings").text(json.totalEarnings);
+		        	
+		            $("#federal").text(json.federal);
+		            $("#medicare").text(json.medicare);
+		            $("#fica").text(json.fica);
+		            $("#stateWithHolding").text(json.stateWithHolding);
+		            $("#aeic").text(json.aeic);
+		            $("#taxes").text(json.taxes);
+		            
+		            $("#gross").text(json.grossPay);
+		            $("#federalGross").text(json.federal);
+		            $("#ficaGross").text(json.fica);
+		            $("#totalTaxes").text(json.taxes);
+		            $("#dedTotal").text(9999);
+		            $("#netpay").text(json.netPay);
+		                   
+		            
+		                var postDed = "";
+	        			postDed = postDed + '<table width="100%" class="table table-bordered" >';
+			            postDed = postDed + '<thead>';
+			            postDed = postDed + '<tr>';
+			            postDed = postDed + '<th colspan="2">Post Tax Deduction</th>';
+			            postDed = postDed + '</tr>';
+			            postDed = postDed + '</thead>';
+			            postDed = postDed + '<tbody>';
+			            postDed = postDed + '<tr>';
+			            postDed = postDed + '<th>Description</th>';
+			            postDed = postDed + '<th>Amount</th>';
+			            postDed = postDed + ' </tr>';
+			            if(json.postDed != null && json.postDed.length){
+			            	  for (var i=0; i< json.postDed.length; i++){
+					            	var ded = json.postDed[i];
+				        			postDed = postDed + '<tr>';
+				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
+				        			postDed = postDed + ' <td><input type="text" value='+ded.amount+' class="formControl" readOnly></td>';
+				        			postDed = postDed + ' </tr>';
+					            }	
+			            }
+	                      postDed = postDed + '</tbody>';
+	                      postDed = postDed + '<tfoot>';
+	                      postDed = postDed + '<tr>';
+	                      postDed = postDed + '<th>Total</th>';
+	                      postDed = postDed + '<td><span>'+json.postDedTotal+'</span></td>';
+	                      postDed = postDed + '</tr>';
+	                      postDed = postDed + '</tfoot>';
+	                      postDed = postDed + '</table>';
+	                     $("#postdedDiv").empty(); 
+	                      $("#postdedDiv").append(postDed);
+	                     
+	                        var preDed = "";
+	                        preDed = preDed + '<table width="100%" class="table table-bordered" >';
+	                        preDed = preDed + '<thead>';
+	                        preDed = preDed + '<tr>';
+	                        preDed = preDed + '<th colspan="2">Pre Tax Deduction</th>';
+	                        preDed = preDed + '</tr>';
+	                        preDed = preDed + '</thead>';
+	                        preDed = preDed + '<tbody>';
+	                        preDed = preDed + '<tr>';
+	                        preDed = preDed + '<th>Description</th>';
+	                        preDed = preDed + '<th>Amount</th>';
+	                        preDed = preDed + ' </tr>';
+	                        if(json.preDed != null && json.preDed.length){
+				            for (var i=0; i< json.preDed.length; i++){
+				            	var preded = json.preDed[i];
+				            	preDed = preDed + '<tr>';
+				            	preDed = preDed + ' <td>'+preded.deductionType+'</td>';
+				            	preDed = preDed + ' <td><input type="text" value='+preded.amount+' class="formControl" readOnly></td>';
+				            	preDed = preDed + ' </tr>';
+				            }
+	                        }
+				            preDed = preDed + '</tbody>';
+				            preDed = preDed + '<tfoot>';
+				            preDed = preDed + '<tr>';
+				            preDed = preDed + '<th>Total</th>';
+				            preDed = preDed + '<td><span>$ '+json.preDedTotal+'</span></td>';
+				            preDed = preDed + '</tr>';
+				            preDed = preDed + '</tfoot>';
+				            preDed = preDed + '</table>';
+		                      $("#prededDiv").empty();
+		                      $("#prededDiv").append(preDed);
+		                      
+		                      
+		                  var output = "";
+		                  output = output + '<table width="100%" class="table table-bordered">';
+		                  output = output + '<thead>';
+		                  output = output + '<tr>';
+		                  output = output + '<th colspan="2">Contributions</th>';
+		                  output = output + ' </tr>';
+		                  output = output + '</thead>';
+		                  output = output + ' <tbody>';
+		                  output = output + ' <tr>';
+		                  output = output + '  <th>Description</th>';
+		                  output = output + '  <th>Current</th>';
+		                  output = output + ' </tr>';
+		                  if(json.contribution != null && json.contribution.length > 0){
+		                	  for (var i=0; i< json.contribution.length; i++){
+					            	var ot = json.contribution[i];
+					            	output = output + '<tr>';
+					            	output = output + '<td>'+ot.contributionType+'</td>';
+					            	output = output + ' <td><input type="text" value='+ot.contributionAmount+' class="formControl" readOnly></td>';
+					            	output = output + '</tr>';
+			                  }
+		                  }
+	                        output = output + ' </tbody>';
+	                        output = output + ' <tfoot>';
+	                        output = output + '   <tr>';
+	                        output = output + '  <th>Total</th>';
+	                        output = output + '  <td><span>$ '+json.contributionTotal+'</span></td>';
+	                        output = output + '  </tr>';
+	                        output = output + '  </tfoot>';
+	                        output = output + '  </table>';
+	                        $("#employerPaidBenefitDiv").empty();
+	                        $("#employerPaidBenefitDiv").append(output);
+	                        
+	                        
+	                        var payItem = "";
+	                        
+	                        payItem = payItem +'<table width="100%" class="table table-bordered">';
+	                        payItem = payItem +'<thead>';
+	                        payItem = payItem +' <tr>';
+	                        payItem = payItem +'<th colspan="4">Pay Items</th>';
+	                        payItem = payItem +'</tr>';
+	                        payItem = payItem +'  </thead>';
+	                        payItem = payItem +' <tbody>';
+	                        payItem = payItem +' <tr>';
+	                        payItem = payItem +'  <th>Item Name</th>';
+	                        payItem = payItem +'  <th>Amount</th>';
+	                        payItem = payItem +' <th>';
+	                        payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
+	                        payItem = payItem +'		<input id="blockAll" class="checkbox-custom" name="PartofaCTC" type="checkbox">';
+	                        payItem = payItem +'		<label for="blockAll" class="checkbox-custom-label"><span class="ml10">Block</span></label>';
+	                        payItem = payItem +'	</div>';
+	                        payItem = payItem +'    </th>';
+	                        payItem = payItem +'</tr>';
+	                        if(json.payItem != null && json.payItem.length > 0){
+			                	  for (var i=0; i< json.payItem.length; i++){
+						            	var pi = json.payItem[i];
+						            	payItem = payItem +' <tr>';
+						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
+						            	payItem = payItem +' <td><input type="text" class="formControl" readOnly value='+pi.payItemAmount+'></td>';
+						            	payItem = payItem +' <td>';
+						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
+						            	payItem = payItem +' <input id="cashTips" class="checkbox-custom" name="PartofaCTC" type="checkbox">';
+						            	payItem = payItem +' <label for="cashTips" class="checkbox-custom-label"></label>';
+						            	payItem = payItem +' </div>';
+						            	payItem = payItem +' </td>';
+						            	payItem = payItem +' </tr>';
+				                  }
+			                  }
+	                          
+	                          payItem = payItem +'</tbody>';
+	                          payItem = payItem +'<tfoot>';
+	                          payItem = payItem +' <tr>';
+	                          payItem = payItem +'  <th>Total</th>';
+	                          payItem = payItem +'<td><span>$ '+json.payItemTotal+'</span></td>';
+	                          payItem = payItem +' <td></td>';
+	                          payItem = payItem +' </tr>';
+	                          payItem = payItem +' </tfoot>';
+	                          payItem = payItem +' </table>';
+	                          $("#payItemDiv").empty();
+	                          $("#payItemDiv").append(payItem)
+                       
+		        },
+		    }); 
+		
+		
+		
+		
+		
+		$(".usRunpayroll").fadeIn();
+		$(".sideMask").fadeIn(); 
+	}
+	function closeusRunpayrol(){
+		$(".usRunpayroll").fadeOut();
+		$(".sideMask").fadeOut();
+	};
+</script>
+
+ <!-- Net Edit popup -->
+
+<div class="sideMask"></div>
+<div class="modal usRunpayroll" style="display: none;" id="usRunpayroll">
+<form:form id="generate_payroll_form" name="generate_payroll_form" method="post">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close hidden" data-dismiss="modal"  onclick="closeusRunpayrol();">&times;</button>
+        <h4 class="modal-title hidden">Pay Stub</h4>
+        <div class="row">
+          <div class="col-md-3">
+            <label class="clearfix"><strong>Address</strong></label>
+            <div class="clearfix">
+              <p class="mb0" id="empAddress"></p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="clearfix"><strong>Deposit Type</strong></label>
+            <div class="clearfix">
+              <select class="sel" title="Select Type" id="depositType" name="depositType">
+                <option value="Direct Deposit">Direct Deposit</option>
+                <option value = "By Check">By Check</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="col-md-2 text-center">
+            <label class="clearfix"><strong>No. Leaves</strong></label>
+            <div class="clearfix">
+              <p class="mt5 mb0">30</p>
+            </div>
+          </div>
+          <div class="col-md-1 text-center">
+            <div class="pull-right">
+              <button type="button" class="btn btn-success btnSuccess editUspayslip btn-sm" onClick="editUspayslip(event)" id="editUspaysliptext">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body" style="min-height: 150px; max-height: 425px; overflow-y: auto; padding: 5px 15px;">
+        <div class="row">
+          <div class="col-md-12 tablePayslip" id="tablePayslip">
+            <table width="100%" class="table">
+              <tbody>
+                <tr>
+                  <td colspan="2">
+                     <table width="100%" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th colspan="4">Hours &amp; Earnings</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>Description</th>
+                          <th>No. of Hours</th>
+                          <th>Earning</th>
+                        </tr>
+                        <tr>
+                          <td>Regular</td>
+                          <td><input type="text" id="regularHours" name="regularHours" value="" class="formControl" readOnly></td>
+                          <td><input type="text" id="regularHoursAmt" name="regularHoursAmt" value="" class="formControl" readOnly></td>
+                        </tr>
+                        <tr>
+                          <td>Overtime</td>
+                          <td><input type="text" id="overTimeHours" name="overTimeHours" value="" class="formControl" readOnly></td>
+                          <td><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt" value="" class="formControl" readOnly></td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <th>Total</th>
+                          <td><span id="totalHours" >0</span></td>
+                          <td><span id="totalEarnings">0</span></td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                    </td>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                  <div id="payItemDiv"></div>
+                    </td>
+                </tr>
+                 
+                 <tr>
+                  <td>
+                  <div id="postdedDiv"></div>
+                    </td>
+                  <td>
+                  <div id="prededDiv"></div>
+                    </td>
+                </tr>
+                <tr>
+                  <td><table width="100%" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th colspan="2">Taxes</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>Description</th>
+                          <th>Amount</th>
+                        </tr>
+                        <tr>
+                          <td>Federal with holding</td>
+                          <td><span id="federal">0</span></td>
+                         <!--  <td><input type="text" id="federal" name="federal" value="" class="formControl" readOnly></td> -->
+                        </tr>
+                        <tr>
+                          <td>Medicare</td>
+                           <td><span id="medicare">0</span></td>
+                         <!--  <td><input type="text" id="medicare" name="medicare" value="" class="formControl" readOnly></td> -->
+                        </tr>
+                        <tr>
+                          <td>FICA</td>
+                           <td><span id="fica">0</span></td>
+                         <!-- <td><input type="text" id="fica" name="fica" value="" class="formControl" readOnly></td> -->
+                        </tr>
+                      
+                        <tr>
+                          <td>State Withholding</td>
+                          <td><span id="stateWithHolding">0</span></td>
+                         <!--  <td><input type="text" id="stateWithHolding" name="stateWithHolding" value="" class="formControl" readOnly></td> -->
+                        </tr>
+                          <tr>
+                          <td>Advanced Earned Income Credit</td>
+                           <td><span id="aeic">0</span></td>
+                          <!-- <td><input type="text" id="aeic" name="aeic" value="124,783.00" class="formControl" readOnly></td> -->
+                        </tr>
+                        
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <th>Total</th>
+                          <td><span id="taxes">0</span></td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                    </td>
+                  <td>
+                  <div id="employerPaidBenefitDiv"></div>
+                    </td>
+                </tr>
+                <tr>
+                  <td colspan="2"><table class="table table-bordered">
+                      <thead>
+                      <th>&nbsp;</th>
+                        <th>Total Gross</th>
+                        <th>Fed Taxable Gross</th>
+                        <th>FICA Gross</th>
+                        <th>Total Taxes</th>
+                        <th>Total Deductions</th>
+                        <th>Net Pay</th>
+                          </thead>
+                      <tbody>
+                        <tr>
+                          <td>Current</td>
+                            <td><span id="gross">0</span></td>
+                            <td><span id="federalGross">0</span></td>
+                            <td><span id="ficaGross">0</span></td>
+                            <td><span id="totalTaxes">0</span></td>
+                            <td><span id="dedTotal">0</span></td>
+                            <td><span id="netpay">0</span></td>
+                        </tr>
+                        <tr>
+                          <td>YTD</td>
+                          <td>xxxx</td>
+                          <td>xxxx</td> 
+                          <td>xxxx</td>
+                          <td>xxxx</td>
+                          <td>xxxx</td>
+                          <td>xxxx</td>
+                        </tr>
+                      </tbody>
+                    </table></td>
+                </tr>
+              <!--   <tr>
+                  <td><table class="table table-bordered">
+                      <tbody>
+                        <tr>
+                          <th>Total Gross</th>
+                          <td>2,062.53</td>
+                        </tr>
+                        <tr>
+                          <th>Before-Tax Deductions</th>
+                          <td>2,062.53</td>
+                        </tr>
+                        <tr>
+                          <th>Life Insurance Premiums</th>
+                          <td>2,062.53</td>
+                        </tr>
+                        <tr>
+                          <th>Fed Taxable and FICA</th>
+                          <td>2,062.53</td>
+                        </tr>
+                      </tbody>
+                    </table></td>
+                  <td><table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th colspan="2">Net Pay Disctibution</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>Advice#1006795</th>
+                          <td>2,062.53</td>
+                        </tr>
+                        <tr>
+                          <th>Total</th>
+                          <td>2,062.53</td>
+                        </tr>
+                      </tbody>
+                    </table></td>
+                </tr> -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" onClick="closeusRunpayrol();">Close</button>
+      </div>
+    </div>
+  </div>
+  </form:form>
+</div>
+
+
+//Net payedit Script
+	<script>
+	function editUspayslip(event){
+		var text = document.getElementById("editUspaysliptext");
+		if(text.innerHTML === "Edit") {
+			text.innerHTML = "Save"
+		}else {
+			text.innerHTML = "Edit"
+		}
+		
+	$("#tablePayslip").find(".formControl").toggleClass("activeEdit");
+		var x = document.getElementsByClassName("formControl"), i;
+		for (i=0; i<x.length; i++) {
+			if(x[i].readOnly) {
+			x[i].readOnly = false;
+			}else {
+			x[i].readOnly = true;
+			}
+		}
+	}
+</script>
+
+<!-- Net Edit popup Ends -->
+ 
+ 
+
+
+<jsp:include page="../masterFooter.jsp" />

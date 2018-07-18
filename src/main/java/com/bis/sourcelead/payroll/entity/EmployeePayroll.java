@@ -1,0 +1,355 @@
+package com.bis.sourcelead.payroll.entity;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.User;
+
+@Entity
+@Table(name = "US_EMP_PAYROLL")
+public class EmployeePayroll {
+	
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID", nullable = false)
+	private Long id;
+	
+	@ManyToOne
+	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
+	private Employees employee;
+
+	@ManyToOne
+	@JoinColumn(name = "USER_ID", nullable = false)
+	private User user;
+	
+	@ManyToOne
+	@JoinColumn(name = "PAY_SHEET_FREQUENCY_ID", nullable = false)
+	private PaysheetFrequency paysheetFrequency;
+	
+	@Column(name = "EMP_PAY_RATE")
+	private BigDecimal empPayRate;
+	
+	@Column(name = "REGULAR_HOURS")
+	private String regularHours;
+	
+	@Column(name = "REHULAR_HOURS_AMOUNT")
+	private BigDecimal rehularHoursAmount;
+	
+	@Column(name = "OVER_TIME_AMOUNT")
+	private BigDecimal overTimeAmount;
+	
+	@Column (name = "OVER_TIME_HOURS")
+	private String overTimeHours;
+	
+	@Column(name = "GROSS_PAY")
+	private BigDecimal grossPay;
+	
+	@Column(name = "PRE_TAX_DEDUCTION")
+	private BigDecimal preTaxDeduction;
+	
+	@Column(name = "POST_TAX_DEDUCTION")
+	private BigDecimal postTaxDeduction;
+	
+	@Column(name = "NET_PAY")
+	private BigDecimal netPay;
+	
+	@Column(name = "PAY_PERIOD_NUM")
+	private String payPeriodNum;
+	
+	@Column(name = "US_EMP_PAYROLL_UUID")
+	private String usEmpPayrollUUID;
+	
+	@Column (name="SUBMIT_FOR_APROVER_STATUS")
+	private String submitForAproverStatus;
+	
+	@Column(name = "STATUS")
+	private Integer status;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+	
+	@Column(name = "CREATED_BY")
+	private Long createdBy;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+	
+	@Column(name = "UPDATED_BY")
+	private Long updatedBy;
+	
+	@Column(name = "TAXES")
+	private BigDecimal taxes;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
+	private Set<EmployeePayrollTax> usemployeepayroll;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
+	private Set<EmployerPayrollTax> employerpayrolltax;
+	
+	
+
+	public String getSubmitForAproverStatus()
+	{
+		return submitForAproverStatus;
+	}
+
+	public void setSubmitForAproverStatus(String submitForAproverStatus)
+	{
+		this.submitForAproverStatus = submitForAproverStatus;
+	}
+
+	public static long getSerialversionuid()
+	{
+		return serialVersionUID;
+	}
+
+	public Long getId()
+	{
+		return id;
+	}
+
+
+
+	public PaysheetFrequency getPaysheetFrequency()
+	{
+		return paysheetFrequency;
+	}
+
+	public BigDecimal getEmpPayRate()
+	{
+		return empPayRate;
+	}
+
+	public String getRegularHours()
+	{
+		return regularHours;
+	}
+
+	public BigDecimal getRehularHoursAmount()
+	{
+		return rehularHoursAmount;
+	}
+
+	public BigDecimal getOverTimeAmount()
+	{
+		return overTimeAmount;
+	}
+
+	public BigDecimal getGrossPay()
+	{
+		return grossPay;
+	}
+
+	public BigDecimal getPreTaxDeduction()
+	{
+		return preTaxDeduction;
+	}
+
+	public BigDecimal getPostTaxDeduction()
+	{
+		return postTaxDeduction;
+	}
+
+	public BigDecimal getNetPay()
+	{
+		return netPay;
+	}
+
+	public String getPayPeriodNum()
+	{
+		return payPeriodNum;
+	}
+
+	public Integer getStatus()
+	{
+		return status;
+	}
+
+	public Date getCreatedDate()
+	{
+		return createdDate;
+	}
+
+	public Long getCreatedBy()
+	{
+		return createdBy;
+	}
+
+	public Date getUpdatedDate()
+	{
+		return updatedDate;
+	}
+
+	public Set<EmployeePayrollTax> getUsemployeepayroll()
+	{
+		return usemployeepayroll;
+	}
+
+	public Set<EmployerPayrollTax> getEmployerpayrolltax()
+	{
+		return employerpayrolltax;
+	}
+
+	public void setId(Long id)
+	{
+		this.id = id;
+	}
+
+
+	public void setPaysheetFrequency(PaysheetFrequency paysheetFrequency)
+	{
+		this.paysheetFrequency = paysheetFrequency;
+	}
+
+	public void setEmpPayRate(BigDecimal empPayRate)
+	{
+		this.empPayRate = empPayRate;
+	}
+
+	public void setRegularHours(String regularHours)
+	{
+		this.regularHours = regularHours;
+	}
+
+	public void setRehularHoursAmount(BigDecimal rehularHoursAmount)
+	{
+		this.rehularHoursAmount = rehularHoursAmount;
+	}
+
+	public void setOverTimeAmount(BigDecimal overTimeAmount)
+	{
+		this.overTimeAmount = overTimeAmount;
+	}
+
+	public void setGrossPay(BigDecimal grossPay)
+	{
+		this.grossPay = grossPay;
+	}
+
+	public void setPreTaxDeduction(BigDecimal preTaxDeduction)
+	{
+		this.preTaxDeduction = preTaxDeduction;
+	}
+
+	public void setPostTaxDeduction(BigDecimal postTaxDeduction)
+	{
+		this.postTaxDeduction = postTaxDeduction;
+	}
+
+	public void setNetPay(BigDecimal netPay)
+	{
+		this.netPay = netPay;
+	}
+
+	public void setPayPeriodNum(String payPeriodNum)
+	{
+		this.payPeriodNum = payPeriodNum;
+	}
+
+	public void setStatus(Integer status)
+	{
+		this.status = status;
+	}
+
+	public void setCreatedDate(Date createdDate)
+	{
+		this.createdDate = createdDate;
+	}
+
+	public void setCreatedBy(Long createdBy)
+	{
+		this.createdBy = createdBy;
+	}
+
+	public void setUpdatedDate(Date updatedDate)
+	{
+		this.updatedDate = updatedDate;
+	}
+
+	public void setUsemployeepayroll(Set<EmployeePayrollTax> usemployeepayroll)
+	{
+		this.usemployeepayroll = usemployeepayroll;
+	}
+
+	public void setEmployerpayrolltax(Set<EmployerPayrollTax> employerpayrolltax)
+	{
+		this.employerpayrolltax = employerpayrolltax;
+	}
+
+	public String getUsEmpPayrollUUID()
+	{
+		return usEmpPayrollUUID;
+	}
+
+	public Long getUpdatedBy()
+	{
+		return updatedBy;
+	}
+
+	public void setUsEmpPayrollUUID(String usEmpPayrollUUID)
+	{
+		this.usEmpPayrollUUID = usEmpPayrollUUID;
+	}
+
+	public void setUpdatedBy(Long updatedBy)
+	{
+		this.updatedBy = updatedBy;
+	}
+
+	public BigDecimal getTaxes()
+	{
+		return taxes;
+	}
+
+	public void setTaxes(BigDecimal taxes)
+	{
+		this.taxes = taxes;
+	}
+
+	public Employees getEmployee()
+	{
+		return employee;
+	}
+
+	public User getUser()
+	{
+		return user;
+	}
+
+	public void setEmployee(Employees employee)
+	{
+		this.employee = employee;
+	}
+
+	public void setUser(User user)
+	{
+		this.user = user;
+	}
+
+	public String getOverTimeHours()
+	{
+		return overTimeHours;
+	}
+
+	public void setOverTimeHours(String overTimeHours)
+	{
+		this.overTimeHours = overTimeHours;
+	}
+	
+	
+}

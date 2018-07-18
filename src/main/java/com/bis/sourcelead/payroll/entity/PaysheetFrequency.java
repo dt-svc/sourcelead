@@ -42,6 +42,15 @@ public class PaysheetFrequency {
 	@Column(name = "FREQUENCY_END_DATE")
 	private Date frequencyEndDate;
 	
+	@Column (name = "PAY_CHECK_DATE")
+	private Date payCheckDate;
+	
+	@Column (name = "PAY_SHEET_FREQUENCY_UUID")
+	private String paySheetFrequencyUUID;
+	
+	@Column (name = "TYPE")
+	private String type;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -59,6 +68,9 @@ public class PaysheetFrequency {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "paysheetFrequency")
 	private Set<Paysheet> paysheet;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "paysheetFrequency")
+	private Set<EmployeePayroll> employeepayroll;
 
 	public static long getSerialversionuid()
 	{
@@ -179,6 +191,50 @@ public class PaysheetFrequency {
 	{
 		this.paysheet = paysheet;
 	}
+
+	public Date getPayCheckDate()
+	{
+		return payCheckDate;
+	}
+
+	public String getPaySheetFrequencyUUID()
+	{
+		return paySheetFrequencyUUID;
+	}
+
+	public Set<EmployeePayroll> getEmployeepayroll()
+	{
+		return employeepayroll;
+	}
+
+	public void setEmployeepayroll(Set<EmployeePayroll> employeepayroll)
+	{
+		this.employeepayroll = employeepayroll;
+	}
+
+	public void setPayCheckDate(Date payCheckDate)
+	{
+		this.payCheckDate = payCheckDate;
+	}
+
+	public void setPaySheetFrequencyUUID(String paySheetFrequencyUUID)
+	{
+		this.paySheetFrequencyUUID = paySheetFrequencyUUID;
+	}
+
+	public String getType()
+	{
+		return type;
+	}
+
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+
+
+
+
 	
 	
 }

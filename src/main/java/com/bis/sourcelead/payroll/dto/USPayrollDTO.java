@@ -1,8 +1,13 @@
 package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import com.bis.sourcelead.dto.AssociatePayItemDTO;
 
 public class USPayrollDTO {
+	
+	private Long empPayrollId;
 	
 	private String empId;
 	
@@ -30,6 +35,64 @@ public class USPayrollDTO {
 	
 	private BigDecimal payRate;
 	
+	private String empPayrollUUID;
+	
+	private String employeeAddress;
+	
+    private float totalHours;
+	
+	private BigDecimal totalEarnings;
+	
+    private BigDecimal federal;
+     
+    private BigDecimal medicare;
+     
+    private BigDecimal fica;
+     
+    private BigDecimal stateWithHolding;
+     
+    private BigDecimal aeic;
+    
+    private List<DeductionDTO> preDed;
+    
+    private List<DeductionDTO> postDed;
+    
+    private BigDecimal preDedTotal;
+    
+    private BigDecimal postDedTotal;
+    
+    private BigDecimal contributionTotal;
+    
+    private List<ContributionDTO> contribution;
+    
+    private List<AssociatePayItemDTO> payItem; 
+    
+    private BigDecimal payItemTotal;
+	
+	public List<ContributionDTO> getContribution()
+	{
+		return contribution;
+	}
+	public void setContribution(List<ContributionDTO> contribution)
+	{
+		this.contribution = contribution;
+	}
+	public Long getEmpPayrollId()
+	{
+		return empPayrollId;
+	}
+	public String getEmpPayrollUUID()
+	{
+		return empPayrollUUID;
+	}
+	public void setEmpPayrollId(Long empPayrollId)
+	{
+		this.empPayrollId = empPayrollId;
+	}
+	public void setEmpPayrollUUID(String empPayrollUUID)
+	{
+		this.empPayrollUUID = empPayrollUUID;
+	}
 	public String getEmpId()
 	{
 		return empId;
@@ -133,6 +196,127 @@ public class USPayrollDTO {
 	public void setPayRate(BigDecimal payRate)
 	{
 		this.payRate = payRate;
+	}
+	public float getTotalHours()
+	{
+		return totalHours;
+	}
+	public BigDecimal getTotalEarnings()
+	{
+		return totalEarnings;
+	}
+	public void setTotalHours(float totalHours)
+	{
+		this.totalHours = totalHours;
+	}
+	public void setTotalEarnings(BigDecimal totalEarnings)
+	{
+		this.totalEarnings = totalEarnings;
+	}
+	public String getEmployeeAddress()
+	{
+		return employeeAddress;
+	}
+	public void setEmployeeAddress(String employeeAddress)
+	{
+		this.employeeAddress = employeeAddress;
+	}
+
+	public BigDecimal getFederal()
+	{
+		return federal;
+	}
+	public BigDecimal getMedicare()
+	{
+		return medicare;
+	}
+	public BigDecimal getFica()
+	{
+		return fica;
+	}
+	public BigDecimal getStateWithHolding()
+	{
+		return stateWithHolding;
+	}
+	public BigDecimal getAeic()
+	{
+		return aeic;
+	}
+	public void setFederal(BigDecimal federal)
+	{
+		this.federal = federal;
+	}
+	public void setMedicare(BigDecimal medicare)
+	{
+		this.medicare = medicare;
+	}
+	public void setFica(BigDecimal fica)
+	{
+		this.fica = fica;
+	}
+	public void setStateWithHolding(BigDecimal stateWithHolding)
+	{
+		this.stateWithHolding = stateWithHolding;
+	}
+	public void setAeic(BigDecimal aeic)
+	{
+		this.aeic = aeic;
+	}
+	public List<DeductionDTO> getPreDed()
+	{
+		return preDed;
+	}
+	public List<DeductionDTO> getPostDed()
+	{
+		return postDed;
+	}
+	public void setPreDed(List<DeductionDTO> preDed)
+	{
+		this.preDed = preDed;
+	}
+	public void setPostDed(List<DeductionDTO> postDed)
+	{
+		this.postDed = postDed;
+	}
+	public BigDecimal getPreDedTotal()
+	{
+		return preDedTotal;
+	}
+	public BigDecimal getPostDedTotal()
+	{
+		return postDedTotal;
+	}
+	public void setPreDedTotal(BigDecimal preDedTotal)
+	{
+		this.preDedTotal = preDedTotal;
+	}
+	public void setPostDedTotal(BigDecimal postDedTotal)
+	{
+		this.postDedTotal = postDedTotal;
+	}
+	public BigDecimal getContributionTotal()
+	{
+		return contributionTotal;
+	}
+	public void setContributionTotal(BigDecimal contributionTotal)
+	{
+		this.contributionTotal = contributionTotal;
+	}
+	public List<AssociatePayItemDTO> getPayItem()
+	{
+		return payItem;
+	}
+	public void setPayItem(List<AssociatePayItemDTO> payItem)
+	{
+		this.payItem = payItem;
+	}
+	public BigDecimal getPayItemTotal()
+	{
+		return payItemTotal;
+	}
+	public void setPayItemTotal(BigDecimal payItemTotal)
+	{
+		this.payItemTotal = payItemTotal;
 	}
 	
 	
