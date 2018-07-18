@@ -151,4 +151,6 @@ public interface UserRoleDao {
 	 
 	 Boolean getIsGlobalManager(Long orgId) throws Exception;
 
+	public UserRole getGlobalUserReportingManagerByUserIdAndOrgId(Long userId, Long orgId);
+
 }
