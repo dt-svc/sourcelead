@@ -15,15 +15,9 @@
 $(document).ready(function(){
 	  if('${bothTimesheets}' == 'true' || '${onlyTimesheets}' == 'true'){
 		  timeSheetSubmissionStatusCount("myTimesheets");
-		 /*  timeSheetSubmissionStatusCountApproval("myTimesheets");
-		  timeSheetSubmissionStatusCountRejected("myTimesheets");
-		  timeSheetSubmissionStatusCountWaitingForApproval("myTimesheets"); */
 	  }
 	  else{
 		  timeSheetSubmissionStatusCount("employes");
-		  /* timeSheetSubmissionStatusCountApproval("employes");
-		  timeSheetSubmissionStatusCountRejected("employes");
-		  timeSheetSubmissionStatusCountWaitingForApproval("employes"); */
 	  }
 });
 </script>
@@ -86,169 +80,17 @@ $(document).ready(function(){
           </div>
         </div>
       </div>
-      <!-- Timesheets ends --> 
-      
-      
-<!-- <!-- <script>
-function timeSheetSubmissionStatusCount(employes){
-	$('#timesheetSocketsFor').val(employes);
-	timeSheetSubmissionStatusCountDraft(employes);
-	  timeSheetSubmissionStatusCountApproval(employes);
-	  timeSheetSubmissionStatusCountRejected(employes);
-	  timeSheetSubmissionStatusCountWaitingForApproval(employes);
-}
-</script> -->
-      
-      
-
-<!-- <script type="text/javascript">
-function timeSheetSubmissionStatusCountDraft(timesheetType){
-  var sourceleadUrl ='${sourceleadUrl}';
-  $("#savedTimesheetsSubmissionsCount").empty();
-  $("#draftLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
-		 $.ajax({
-		    	type: "GET",
-		        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType+"&timesheetCountType=DRAFT", 
-		        success: function(json) {
-		        	
-		        	$("#draftLoading").removeAttr("style");
-
-		        	 $("#savedTimesheetsSubmissionsCount").empty();
-	        		 $("#savedCountAnchor").empty();
-	        		 
-	        		 var  savedTimesheetsSubmissionsCount = json.savedTimesheetSubmissionCount;
-	        		 if(savedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-		        		  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-	                      $("#savedCountAnchor").html("Draft");
-	                  }else{
-	                	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-	                	 /*  $("#savedCountAnchor").html("Saved"); */
-	                      $("#savedCountAnchor").html("<a href='/app/totalTimesheetList/DRAFT'>Draft</a>"); 
-	                     
-	                 }
-		 		}
-		  });
-		 
-			 if(timesheetType == "myTimesheets"){
-				 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
-			 }else{
-				 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
-			 }
-		 
-	}
-
-</script>    
-
 <script>
-function timeSheetSubmissionStatusCountApproval(timesheetType){
+	var wsocket;  
+	var userId = '${SourceLeadWeb_user.id}';
+	var orgLocationCode = '${SourceLeadWeb_locationCode}';
+	var candiadteId = '${SourceLeadWeb_candidateId}';
+	var timesheetType;
+	
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#approvedloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
-    $.ajax({
-    	type: "GET",
-        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType+"&timesheetCountType=APPROVED", 
-        success: function(json) {
-        	$("#approvedloading").removeAttr("style");
-        	 $("#approvalTimesheetsSubmissionsCount").empty();
-    		 $("#approvedCountAnchor").empty();
-    		 
-    		 var  approvalTimesheetsSubmissionsCount =json.approvedTimesheetSubmissionCount;
-    		 if(approvalTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-        		  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-                  $("#approvedCountAnchor").html("Approved");
-            }else{
-            	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-            	/*   $("#approvedCountAnchor").html("Approved"); */
-                  $("#approvedCountAnchor").html('<a  href="/app/totalTimesheetList/APPROVED">Approved</a>'); 
-              }
-        }
-    });
-    if(timesheetType == "myTimesheets"){
-		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
-	 }else{
-		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
-	 }
-}
-</script>
-
-<script>
-function timeSheetSubmissionStatusCountRejected(timesheetType){
-	var sourceleadUrl ='${sourceleadUrl}';
-	$("#rejectLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
-    $.ajax({
-    	type: "GET",
-        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType+"&timesheetCountType=REJECTED", 
-        success: function(json) {
-        	$("#rejectLoading").removeAttr("style");
-    		 $("#rejectTimesheetsSubmissionsCount").empty();
-    		 $("#rejectedCountAnchor").empty();
-    		 var  rejectedTimesheetsSubmissionsCount = json.rejectedTimesheetSubmissionCount;
-    		 if(rejectedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-    			 $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-                 $("#rejectedCountAnchor").html("Rejected");
-            }else{
-           	     $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-                 $("#rejectedCountAnchor").html('<a  href="/app/totalTimesheetList/REJECTED">Rejected</a>'); 
-           	/*  $("#rejectedCountAnchor").html("Rejected"); */
-             }
-        }
-      });
-	    if(timesheetType == "myTimesheets"){
-			 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
-		 }else{
-			 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
-		 }
-}
-</script>
-
-
-<script>
-function timeSheetSubmissionStatusCountWaitingForApproval(timesheetType){
-	var sourceleadUrl ='${sourceleadUrl}';
-	$("#waitingLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
-    $.ajax({
-    	type: "GET",
-        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType+"&timesheetCountType=SUBMITTED", 
-        success: function(json) {
-        	$("#waitingLoading").removeAttr("style");
-    		 $("#waitingTimesheetsSubmissionsCount").empty();
-    		 
-    		 $("#waitingCountAnchor").empty();
-    		 
-    		 var  waitingTimesheetsSubmissionsCount = json.waitingForApprovalTimesheetSubmissionCount;
-    		 if(waitingTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-       		  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-                 $("#waitingCountAnchor").html("Submitted");
-             }else{
-           	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-           	  /* $("#waitingCountAnchor").html("Waiting"); */
-                  $("#waitingCountAnchor").html('<a  href="/app/totalTimesheetList/SUBMITTED">Waiting</a>'); 
-             }
-        }
-      });
-	    if(timesheetType == "myTimesheets"){
-			 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
-		 }else{
-			 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
-		 }
-}
-</script>
-
-  -->
-  
-<script>
-var wsocket;  
-var userId = '${SourceLeadWeb_user.id}';
-var orgLocationCode = '${SourceLeadWeb_locationCode}';
-var candiadteId = '${SourceLeadWeb_candidateId}';
-var timesheetType;
-
-var sourceleadUrl ='${sourceleadUrl}';
-var sourceleadWebSocketUrl = sourceleadUrl.replace("http","ws");
-var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
-
-
-
-  function timeSheetSubmissionStatusCount(type) { 
+	var sourceleadWebSocketUrl = sourceleadUrl.replace("http","ws");
+	var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
+   function timeSheetSubmissionStatusCount(type) { 
 	  $("#rejectLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
 	  $("#waitingLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
 	  $("#draftLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');

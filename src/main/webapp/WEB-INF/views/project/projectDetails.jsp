@@ -361,9 +361,16 @@
 						if(json.projectCustomFieldlabelNameAndValue != null && json.projectCustomFieldlabelNameAndValue != "" && json.projectCustomFieldlabelNameAndValue != 'undefined'){
 				              $.each(json.projectCustomFieldlabelNameAndValue, function(key, value) {
 				            	  var labelNameAndlabelData = value.split("$");
+				            	  if(labelNameAndlabelData[1] != 'null' && labelNameAndlabelData[1] != '' && labelNameAndlabelData[1] !='undefined'){
 				            	  result = result + '	<div class="project_details_cta">';
 				            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
 				            	  result = result + '	</div>';
+				            	  }
+				            	  else{
+				            		  result = result + '	<div class="project_details_cta">';
+					            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">--</span><div class="clearfix"></div>';
+					            	  result = result + '	</div>'; 
+				            	  }
 				              });
 			              }
 						
@@ -428,7 +435,7 @@ function editClientProjectDetails(projectId){
 			 }else{
 				result = result + '<div class="col-md-8 paddingRight" id="levelone-select-manager">';	
 			} 
-			result = result	+ '<select onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
+			result = result	+ '<select  onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
 			for (var j = 0; j < json.managersList.length; j++) {
 				var manager = json.managersList[j];
 				if(manager.lastName != null && manager.lastName != '' && manager.lastName != 'undefined'){
@@ -475,7 +482,7 @@ function editClientProjectDetails(projectId){
 				result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" style="display:none;" id="demo">';
 			}
 				result = result + '<label> Manager 2 </label>';
-				result = result	+ '<select id="level2Manager" name="level2Manager">';
+				result = result	+ '<select class="form-control chosen-select"  id="level2Manager" name="level2Manager">';
 				result = result    +'<option value="">-Select Manager-</option>';
 				if(json.managersListwithoutManager1 != null){
 				for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
@@ -706,7 +713,7 @@ function editClientProjectDetails(projectId){
 						 }else{
 							result = result + '<div class="col-md-8 paddingRight" id="levelone-select-manager">';	
 						} 
-						result = result	+ '<select onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
+						result = result	+ '<select class="form-control chosen-select"  onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
 						for (var j = 0; j < json.managersList.length; j++) {
 							var manager = json.managersList[j];
 							if(manager.lastName != null && manager.lastName != '' && manager.lastName != 'undefined'){
@@ -753,7 +760,7 @@ function editClientProjectDetails(projectId){
 							result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" style="display:none;" id="demo">';
 						}
 							result = result + '<label> Manager 2 </label>';
-							result = result	+ '<select id="level2Manager" name="level2Manager">';
+							result = result	+ '<select class="form-control chosen-select" id="level2Manager" name="level2Manager">';
 							result = result    +'<option value="">-Select Manager-</option>';
 							if(json.managersListwithoutManager1 != null){
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {

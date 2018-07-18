@@ -285,8 +285,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 
 	@Override
 	public Map<String, Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(Long projectMemberId,Long locationsId,
-			Date startDate, Date endDate) throws Exception {
-		return submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId,locationsId, startDate, endDate);
+			Date startDate, Date endDate,String isGlobalUser) throws Exception {
+		return submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId,locationsId, startDate, endDate,isGlobalUser);
 	}
 
 	@Override

@@ -1348,7 +1348,7 @@ public class CommonUtil {
 
 			float totalMinutes = totalCthMinutes+totalWthMinutes;
 
-			float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+			float actualHours = (int) (totalMinutes / 60); 
 			float actualMinutes = (totalMinutes % 60)/100;
 
 			String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
