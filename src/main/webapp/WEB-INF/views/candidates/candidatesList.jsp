@@ -1348,7 +1348,7 @@ function cancel(candidateId){
 		$(".new_side_wrap").removeClass("new_side_wrap_active");
 		$(".req_side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
-		//candidateList();
+		candidateList();
 	}
 </script>
 
