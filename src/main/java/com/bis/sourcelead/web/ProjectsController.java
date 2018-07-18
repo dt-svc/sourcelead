@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -62,6 +63,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -140,6 +142,9 @@ public class ProjectsController {
 	
 	@Autowired
 	private ProjectTaskCustomFieldDataService projectTaskCustomFieldDataService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	
 	 protected boolean isNullOrEmpty(String str)
@@ -274,7 +279,7 @@ public class ProjectsController {
 		public @ResponseBody List<User> getProjectLevel1Approvers(HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
-			List<User> level1ApproversList = new ArrayList<>();
+			List<User> level1ApproversList = new CopyOnWriteArrayList<>();
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 			List<User> globalUserList = userService.getTabAccessGlobalOwnersByOrgIdAndTabId(orgLocations.getId(),org.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 			if(userList != null && !userList.isEmpty()) {
@@ -283,6 +288,25 @@ public class ProjectsController {
 			if(globalUserList != null && !globalUserList.isEmpty()) {
 				level1ApproversList.addAll(globalUserList);
 			}
+			
+			HashMap<Long,User> userMap = new HashMap<>();
+			for (User user : level1ApproversList) {
+				User tempUser = userMap.get(user.getId());
+				if(tempUser == null) {
+					userMap.put(user.getId(),user);
+				}else {
+					level1ApproversList.remove(user);
+					continue;
+				}
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(userRole != null){
+					user.setUserType(userRole.getUserType());
+				}else {
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
+				}
+			}
+			
 			return level1ApproversList;
 		}
 	 

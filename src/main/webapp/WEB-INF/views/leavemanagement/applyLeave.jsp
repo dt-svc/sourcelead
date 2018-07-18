@@ -1158,7 +1158,7 @@ function validateDate(){
 		userId = '${SourceLeadWeb_userId}';
 	}
 	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
-		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId+"&errorMessage="+errorMessage, function(data) {
 			if(data !=null && data.validateType == 'SAMEDAY'){
 				errorMessage += data.errorMessage;
 				/* $("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
@@ -1173,10 +1173,12 @@ function validateDate(){
 // 				$("#ApplyLeave").removeAttr('disabled');
 // 				$(".comMask").fadeIn();	
 			}
-			
-			if(errorMessage != ""){
-		     	$("#ApplyLeave").attr('disabled','disabled');
-		    	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+			alert(data.errorMessage)
+			if(data.errorMessage != "N/A"){
+				if(data.validateType == 'SAMEDAY'){
+					$("#ApplyLeave").attr('disabled','disabled');
+				}
+		    	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+data.errorMessage+"</p> ");
 		    	$(".warMess").fadeIn();
 		    	$(".comMask").fadeIn();
 		    }else{
