@@ -184,7 +184,7 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'<td>'+opt.total+'</td>';
 	                    	 result = result +'<td>'+opt.dueAmount+'</td>';
 	                    	 result = result +'<td>'+opt.invoiceStatus+'</td>';
-	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeypress="amountInputVal(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'" name="invoiceAdjustDTO['+i+'].dueAmount" field-name ="Total Due"></td>';
+	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeyup="amountInputVal1(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'" field-name ="Total Due"></td>';
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
@@ -233,7 +233,7 @@ function addInvoice(){
 			 getInvoiceList();
 	 });
 		 }else{
-			 alert("please select at least one record");
+			 alert("please select at least one record / Amount should not Empty");
 		 }
 	 }
 }
@@ -243,19 +243,16 @@ $('body').on('blur', '#paymentForm', function() {
 });
 </script>
   <script>
-  function amountInputVal(obj){
-	  var totalVal = $("#grandTotalAmount").text();
-	  if(totalVal == ''){
-		  totalVal = 0;
-	  }
-	  var objTotal = 0;
-	  if(obj.value = ''){
-		  objTotal = 0;
-	  }else{
-		  objTotal = obj.value;
-	  }
-	  var total = totalVal += objTotal;
-	  $("#grandTotalAmount").text(total);
+  function amountInputVal1(obj){
+	  // this is for total value updation based our input
+	  var totalValue=0;
+	  $("input[id^=totalAmountRow]").each(function() {
+	       var value = $(this).val();
+	    if($.isNumeric(value)){
+	       totalValue= totalValue+parseFloat(value);
+	  	} 
+	  });
+	  $("#grandTotalAmount").text(totalValue).toFixed(2);
   }
   
 	function toggleInvoices(source) {
@@ -268,10 +265,8 @@ $('body').on('blur', '#paymentForm', function() {
 	        		$("#totalAmountRow"+checkboxes[i].id).val(checkboxes[i].value);
 	        		if($.isNumeric(checkboxes[i].value))
 	        		total += parseFloat(checkboxes[i].value);
-	        		$("#totalAmountRow"+checkboxes[i]).attr("data-validation", "true");
 	            }else{
 	            	$("#totalAmountRow"+checkboxes[i].id).val('');
-	            	$("#totalAmountRow"+checkboxes[i]).attr("data-validation-optional", "true");
 	            	total = 0;
 	            }
 	    	}
