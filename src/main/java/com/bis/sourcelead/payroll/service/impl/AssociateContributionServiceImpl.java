@@ -106,6 +106,8 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 				contributionDTO.setContributionMethod(con.getContributionMethod());
 				contributionDTO.setDescription(con.getContributionTypeId().getDescription());
 				contributionDTO.setAssociateContributionUUID(con.getAssociateContributionUuid());
+				contributionDTO.setPayrollDeductionId(String.valueOf(con.getContributionTypeId().getDeductionTypeId().getId()));
+				contributionDTO.setTaxType(con.getContributionTypeId().getDeductionTypeId().getTaxType());
 				list.add(contributionDTO);
 			});
 			res.setData(list);

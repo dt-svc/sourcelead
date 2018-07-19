@@ -15,7 +15,7 @@ public class USPayrollDTO {
 	
 	private float regularHours;	
 	
-	private String overtimeHours;
+	private double overtimeHours;
 	
 	private BigDecimal grossPay;
 	
@@ -39,7 +39,7 @@ public class USPayrollDTO {
 	
 	private String employeeAddress;
 	
-    private float totalHours;
+    private double totalHours;
 	
 	private BigDecimal totalEarnings;
 	
@@ -68,6 +68,12 @@ public class USPayrollDTO {
     private List<AssociatePayItemDTO> payItem; 
     
     private BigDecimal payItemTotal;
+    
+    private String payrollId;
+	
+	private String payrollUUID;
+	
+	private String payItemId;
 	
 	public List<ContributionDTO> getContribution()
 	{
@@ -117,11 +123,12 @@ public class USPayrollDTO {
 	{
 		this.regularHours = regularHours;
 	}
-	public String getOvertimeHours()
+
+	public double getOvertimeHours()
 	{
 		return overtimeHours;
 	}
-	public void setOvertimeHours(String overtimeHours)
+	public void setOvertimeHours(double overtimeHours)
 	{
 		this.overtimeHours = overtimeHours;
 	}
@@ -196,10 +203,6 @@ public class USPayrollDTO {
 	public void setPayRate(BigDecimal payRate)
 	{
 		this.payRate = payRate;
-	}
-	public float getTotalHours()
-	{
-		return totalHours;
 	}
 	public BigDecimal getTotalEarnings()
 	{
@@ -317,6 +320,38 @@ public class USPayrollDTO {
 	public void setPayItemTotal(BigDecimal payItemTotal)
 	{
 		this.payItemTotal = payItemTotal;
+	}
+	public double getTotalHours()
+	{
+		return totalHours;
+	}
+	public void setTotalHours(double totalHours)
+	{
+		this.totalHours = totalHours;
+	}
+	public String getPayrollId()
+	{
+		return payrollId;
+	}
+	public String getPayrollUUID()
+	{
+		return payrollUUID;
+	}
+	public void setPayrollId(String payrollId)
+	{
+		this.payrollId = payrollId;
+	}
+	public void setPayrollUUID(String payrollUUID)
+	{
+		this.payrollUUID = payrollUUID;
+	}
+	public String getPayItemId()
+	{
+		return payItemId;
+	}
+	public void setPayItemId(String payItemId)
+	{
+		this.payItemId = payItemId;
 	}
 	
 	

@@ -5,15 +5,6 @@ import java.util.Date;
 
 public class USPaysheetDTO {
 	
-	public String getVendorLastpaidDate()
-	{
-		return vendorLastpaidDate;
-	}
-
-	public void setVendorLastpaidDate(String vendorLastpaidDate)
-	{
-		this.vendorLastpaidDate = vendorLastpaidDate;
-	}
 
 	private String employeeId;       
 	
@@ -241,8 +232,15 @@ public class USPaysheetDTO {
 		this.userId = userId;
 	}
 
+	public String getVendorLastpaidDate()
+	{
+		return vendorLastpaidDate;
+	}
 
-
+	public void setVendorLastpaidDate(String vendorLastpaidDate)
+	{
+		this.vendorLastpaidDate = vendorLastpaidDate;
+	}
 	
 	
 }
