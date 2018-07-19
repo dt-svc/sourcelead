@@ -840,8 +840,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 	
 	@Override
-	public Boolean getIsGlobalManager(Long orgId) throws Exception {
-		return userRoleDao.getIsGlobalManager(orgId);
+	public Boolean getIsGlobalManager(Long orgId,Long userId) throws Exception {
+		return userRoleDao.getIsGlobalManager(orgId,userId);
 	} 
     
 
