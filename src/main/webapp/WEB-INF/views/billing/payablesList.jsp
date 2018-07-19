@@ -180,7 +180,7 @@ $(document).ready(function(){
 							<a href="javascript:void(0)" title="Create Bill" onclick="createBill();">Create Bill </a>
                            </sec:authorize>
 						<a href="javascript:void(0)" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();">Generate Automatic Bill</a>
-						 <a href="<c:url value='${appPath}/addPaymentBill'/>">Add Payment</a>
+						 <%-- <a href="<c:url value='${appPath}/addPaymentBill'/>">Add Payment</a> --%>
 					</span>
 				</div>
 			</li>

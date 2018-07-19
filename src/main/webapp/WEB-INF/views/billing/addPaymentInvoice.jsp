@@ -23,7 +23,7 @@
     	 	<div class="row">
     	 		<div class="form-group clearfix mt">
     	 			<div class="col-md-6 mb">
-    	 					<label class="col-md-3">Vendor<span class="text-danger paddingLeft">*</span></label>
+    	 					<label class="col-md-3">Client<span class="text-danger paddingLeft">*</span></label>
     	 					<div class="col-md-9">
     	 						<select class="form-control chosen-select" id="client" name="client" field-name="Client" onchange="getInvoiceList()" data-validation="required" >
 		                        <option value="">-Select Client-</option>
