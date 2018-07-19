@@ -37,7 +37,7 @@ public class PayrollCalculatorDTO {
 	
 	private String FEDERAL_LOCATION_CODE;
 	
-	
+
 	public STEPayrollCalculator getsTEPayrollCalculator()
 	{
 		return sTEPayrollCalculator;

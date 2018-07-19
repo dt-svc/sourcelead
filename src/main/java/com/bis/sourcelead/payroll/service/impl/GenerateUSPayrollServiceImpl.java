@@ -198,7 +198,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(user,totalHours,grossAmount,invoiceFrequency,associateTaxDTO,STEhome,jniHome,paySheetFreq.getPayCheckDate());
 				STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
 				String  locationCode = payrollCalculator.getWebServiceLocationCodeV2().getLocationCode();
-				BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal().add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal());
+				BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal().add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal()).add(STE.getCityCalc(locationCode).asBigDecimal());
 				employeePayroll.setTaxes(taxes);
 				System.out.println("*** Taxes :"+taxes);
 				BigDecimal totalPay = grossAmount.subtract(taxes);
@@ -314,9 +314,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		taxes.setEarnedIncCredit(STE.getEICCalc().asBigDecimal()); // Earned Inc. Credit
 		taxes.setStateWithholding(STE.getStateCalc(locationCode).asBigDecimal()); // State Withholding
 		taxes.setCountyWithholding(STE.getCountyCalc(locationCode).asBigDecimal()); // County Withholding
-		taxes.setLocationCode(locationCode); // locationCode
+		taxes.setLocationCode(locationCode +","+employeePayroll.getUser().getResidenceState()); // locationCode
 		taxes.setUsEmpPayrollTaxUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		taxes.setEarnedIncCredit(STE.getEICCalc().asBigDecimal());
+		taxes.setLocalTax(STE.getCityCalc(locationCode).asBigDecimal());
 		taxes.setStatus(1);
 		taxes.setCreatedBy(loginUser.getId());
 		taxes.setUpdatedBy(loginUser.getId());
