@@ -1780,7 +1780,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	        	target.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),source.getEndDate()));
 	        	
 	        	target.setLocationsList(Arrays.asList(source.getLocation().split("\n")));
-	        	System.out.println(" locaction list ==>"+target.getLocationsList());
 	        	target.setLocation(source.getLocation().replaceAll("\n", ""));
 	        	target.setLcaUuid(source.getLcaUuid());
 	        	if(source.getStatus() == 1) {
