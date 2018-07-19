@@ -160,7 +160,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			for (ProjectMembers pm : projMemberData) {
 			    EmployeePayroll employeePayroll = new EmployeePayroll();
 			    employeePayroll.setPaysheetFrequency(paySheetFreq);
-				Map<String, Float> hoursMap = submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(), orgLocation.getId(), actualStartDate, actualEndDate);
+				Map<String, Float> hoursMap = submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(), orgLocation.getId(), actualStartDate, actualEndDate,"");
 				float totalHours = hoursMap.get("TOTAL_HOURS");
 				employeePayroll.setRegularHours(String.valueOf(totalHours));
 				employeePayroll.setEmpPayRate(BigDecimal.valueOf(pm.getPayRate()));
