@@ -85,7 +85,8 @@ function associateContributionSummary(userId){
                 $("#tab-21").empty(); 
                 $("#tab-22").empty(); 
                 $("#tab-23").empty(); 
-                $("#tab-24").empty(); 
+                $("#tab-24").empty();
+                $("#tab-25").empty();
                 $("#tab-24").append(result); 
                 associateContributionListPagination();
           },
