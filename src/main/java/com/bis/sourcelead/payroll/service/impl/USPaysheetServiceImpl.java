@@ -98,7 +98,7 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 //					if(pm.getEmployee().getUserEmploymentType()) {
 //						
 //					}
-					Map<String, Float> hoursMap = submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(), orgLocation.getId(), actualStartDate, actualEndDate);
+					Map<String, Float> hoursMap = submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(), orgLocation.getId(), actualStartDate, actualEndDate,"");
 					USPaysheetDTO paysheetDTO = new USPaysheetDTO();
 					StringBuffer sb = new StringBuffer();
 //					float billableHours = hoursMap.get("BILLABLE_HOURS");

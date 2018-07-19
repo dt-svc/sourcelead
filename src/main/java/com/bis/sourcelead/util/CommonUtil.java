@@ -1378,7 +1378,7 @@ public class CommonUtil {
 			return Double.parseDouble(actualTimeString);
 		}
 		
-		public static String getHoursDisplayFormat(Float hours2){
+	/*	public static String getHoursDisplayFormat(Float hours2){
 			float cthHours = 0;
 			float cthHoursValue = (int) cthHours;
 			float cthMinutesValue = cthHours - cthHoursValue;
@@ -1390,7 +1390,8 @@ public class CommonUtil {
 			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
 			float totalMinutes = totalCthMinutes+totalWthMinutes;
-		}
+			return paymentSuccessReturnEmail;
+		}*/
 		public static String getHoursDisplayFormat(Float hours2,Float totalMinutes){
 			if(totalMinutes == null) {
 				float wthHours = hours2;
