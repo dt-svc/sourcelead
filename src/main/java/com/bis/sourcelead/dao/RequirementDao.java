@@ -197,6 +197,8 @@ public interface RequirementDao {
 
 	public JobFair getJobFair(long jobFairId);
 	
+	public JobFair getJobFairByName(String jobFairName);
+	
 	public JobFair getJobFairByUUID(String uuid);
 
 	public ResponseList<JobFair> getJobFairList(JobFairDTO jobFairDTO, boolean includeInactive);
@@ -222,5 +224,7 @@ public interface RequirementDao {
 	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId);
 
 	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
-	
+
+	public List<JobFair> getJobFairWithNullGeneratedIdList();
+
 }

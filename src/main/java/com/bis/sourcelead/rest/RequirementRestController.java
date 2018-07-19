@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
+import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.JobShareCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -59,6 +61,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -1460,5 +1463,12 @@ public class RequirementRestController {
 		return response;
 	}
 	
+	
+	@RequestMapping(value = "/ws/assignGeneratedIdToJobFairs", method = RequestMethod.GET)
+	public String assignGeneratedIdToJobFairs(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("---- Calling assignGenerateIdToJobFairs() -----");
+		requirementService.assignGeneratedIdToJobFairs();
+		return "Successfully added Generated Id's to JobFairs";
+	}
 	
 }

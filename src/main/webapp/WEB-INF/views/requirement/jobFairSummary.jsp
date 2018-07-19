@@ -27,7 +27,7 @@
 						</li>
 						
 					</ul>
-					<button class="btn btn-primary pull-right btn-sm" onclick="editJobFair();" type="button">Edit</button>
+					<button class="btn btn-primary pull-right btn-sm mr" onclick="editJobFair();" type="button">Edit</button>
 					<div class="clearfix"></div>
 					<div class="project_tabs">
 						<div id="detailsDiv" class="require_wrap_details">
@@ -267,8 +267,8 @@
 				    	            }
 								}
 			                    if(opt.jobFairDates!=null && opt.jobFairDates !='' && opt.jobFairDates !='undefined') {
-			                    	/* result = result + "<td><a href='javascript:void(0)' onclick=\"showFairDatesPop('"+ opt.jobTitle + "','" + opt.jobFairDates + "');\"><span class='pull-left' title='" + opt.jobFairDates + "'>" + opt.jobFairDates + "</span></a></td>"; */
-			                    	result = result + "<td><a href='javascript:void(0)'><span class='pull-left' title='" + opt.jobFairDates + "'>" + opt.jobFairDates + "</span></td>";
+			                    	result = result + "<td><a href='javascript:void(0)' onclick=\"showFairDatesPop('"+ opt.jobTitle + "','" + opt.jobFairDates + "');\"><span class='pull-left' title='" + opt.jobFairDates + "'>" + opt.jobFairDates + "</span></a></td>";
+			                    	/* result = result + "<td><a href='javascript:void(0)'><span class='pull-left' title='" + opt.jobFairDates + "'>" + opt.jobFairDates + "</span></td>"; */
 				                } else {
 				                	result = result +"<td><div>---</div></td>";
 				                }

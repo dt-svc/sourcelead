@@ -55,7 +55,7 @@
 					<div class="col-md-5">
 						<label class="clearfix">Budget / Cost</label>
 						<div class="clearfix">
-							<input type="text" class="form-control" id="budget" value="${jobFair != null ? jobFair.budget : 0}" name="budget" placeholder="Expected cost of JobFair" field-name="Budget" data-validation="required">
+							<input type="text" class="form-control" id="budget" value="${jobFair != null ? jobFair.budget : 0}" name="budget" placeholder="Expected cost of JobFair" field-name="Budget" data-validation="required validate_length length1-8">
 						</div>
 					</div>
 					
@@ -227,37 +227,6 @@
 					var selectedDate = $(this).val();
 					var text = "<span class='reqDate' data-value='" + selectedDate + "'>" + selectedDate + "<i class='fa fa-times' onclick='removeJobFairDate($(this))'></i></span>";
 					parentDiv.append(text);
-/* 					if(parentDiv.find("span").length > 0) {
-						var inserted = false;
-						parentDiv.find("span").each(function() {
-							var savedDate = $(this).data("value");
-							var formattedSavedDate = "";
-							var formattedSelectedDate = "";
-							if(dateFormat.match("yy-mm-dd")) {
-								formattedSavedDate = savedDate.split("-")[0] + "-" + savedDate.split("-")[1] + "-" + savedDate.split("-")[2];
-								formattedSelectedDate = selectedDate.split("-")[0] + "-" + selectedDate.split("-")[1] + "-" + selectedDate.split("-")[2];
-							} if(dateFormat.match("dd-mm-yy")) {
-								formattedSavedDate = savedDate.split("-")[2] + "-" + savedDate.split("-")[1] + "-" + savedDate.split("-")[0];
-								formattedSelectedDate = selectedDate.split("-")[2] + "-" + selectedDate.split("-")[1] + "-" + selectedDate.split("-")[0];
-							} if(dateFormat.match("mm-dd-yy")) {
-								formattedSavedDate = savedDate.split("-")[2] + "-" + savedDate.split("-")[0] + "-" + savedDate.split("-")[1];
-								formattedSelectedDate = selectedDate.split("-")[2] + "-" + selectedDate.split("-")[0] + "-" + selectedDate.split("-")[1];
-							} if(dateFormat.match("yy-dd-mm")) {
-								formattedSavedDate = savedDate.split("-")[0] + "-" + savedDate.split("-")[2] + "-" + savedDate.split("-")[1];
-								formattedSelectedDate = selectedDate.split("-")[0] + "-" + selectedDate.split("-")[2] + "-" + selectedDate.split("-")[1];
-							}
-							
-							if(new Date(formattedSelectedDate) > new Date(formattedSavedDate)) {
-								$(this).append(text);
-								inserted = true;
-								return;
-							}
-						});
-						if(!inserted)
-							parentDiv.append(text);
-					} else {					
-						parentDiv.append(text);
-					} */
 				}
 			}
 		});
@@ -428,6 +397,13 @@
 	function addJobFair() {
 		if ($('#jobFairForm').validate(false, validationSettings)) {
 			var flag = true;
+			if($("#budget").val() !== "") {
+				if(!jQueryFormUtils.validateFloat($("#budget").val())) {
+					flag = false;
+					$("#budget").parent().append("<p class='jquery_form_error_message'>Enter valid number</p>");
+					return;	
+				}
+			}
 			if ($("#notifyTo").val() !== "") {
 				for (var e in $("#notifyTo").val().split(",")) {
 					if (!jQueryFormUtils.validateEmail($("#notifyTo").val().split(",")[e].replace(/\s+/g, ''))) {
@@ -471,7 +447,9 @@
 						location.replace(sourceleadUrl);
 					} else if (result.response === "AWKWARD") {
 						location.href = "/errorPage";
-					} else if (result.response === "SUCCESS") {
+					} else if (result.response === "DUPLICATE_NAME") {
+						showError(result.responseMessage);
+					}  else if (result.response === "SUCCESS") {
 						$(".success_pop span").html("JobFair " + (id > 0 ? "updated":"created") + " successfully...");
 						$(".success_pop").show();
 						setTimeout(function() {

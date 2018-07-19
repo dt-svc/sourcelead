@@ -2796,6 +2796,24 @@ public class RequirementDaoImpl implements RequirementDao {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Transactional
+	@Override
+	public JobFair getJobFairByName(String jobFairName) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from JobFair jobFair where jobFair.name=:jobFairName";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("jobFairName", jobFairName);
+			List<JobFair> jobFairList = queryObj.list();
+			if (jobFairList != null && !jobFairList.isEmpty())
+				return jobFairList.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Override
 	@Transactional
 	public JobFair getJobFairByUUID(String uuid) {
@@ -2828,14 +2846,14 @@ public class RequirementDaoImpl implements RequirementDao {
 			 query1.append("and (jobFair.name like '%" + jobFairDTO.getSearchValue() + "%' ")
 				   .append("OR jobFair.venue like '%" + jobFairDTO.getSearchValue() + "%' )");
 			}
+			query1.append(" order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder());
 			
 			String query = "from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
-			query += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();
-			Query queryObj = session.createQuery(query + query1);
+			Query queryObj = session.createQuery(query + " " + query1);
 			jobFairList = queryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).setFirstResult(jobFairDTO.getStart()).setMaxResults(jobFairDTO.getLength()).list();
 			
 			String  countQuery = "select count(*) from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
-			countQuery += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();
+			/*countQuery += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();*/
 			Query countQueryObj = session.createQuery(countQuery + query1); 
 			countlist = countQueryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).list();
 			
@@ -3165,6 +3183,23 @@ public class RequirementDaoImpl implements RequirementDao {
 			e.printStackTrace();
 		}
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<JobFair> getJobFairWithNullGeneratedIdList() {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from JobFair jobFair where jobFair.generatedId = null";
+			List<JobFair> jobFairList = session.createQuery(query).list();
+			if (jobFairList != null && !jobFairList.isEmpty()) {
+				return jobFairList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static void main(String[] args) {

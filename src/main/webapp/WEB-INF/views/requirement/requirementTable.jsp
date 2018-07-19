@@ -780,6 +780,8 @@ function jpaginationForJobFairs(url){
         ],
    		"processing": true,
        "serverSide": true,
+       "searching": false,
+       "searchHighlight": true,
        "ajax": $.fn.dataTable.pipeline( {
            url: url,
            method: 'POST',
@@ -934,7 +936,7 @@ function jpaginationForJobFairs(url){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	/* "aaSorting": [[10,'desc']], */
+	    	"aaSorting": [[9,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -942,7 +944,7 @@ function jpaginationForJobFairs(url){
 	    		row.setAttribute('id',"jobFair_"+data.id);
     	    },
 	    	"initComplete": function( settings, json ) {
-	    		 $('#dataTableSearch').removeAttr('disabled');
+	    		 $('#jobFairDataTableSearch').removeAttr('disabled');
 	    	},
 	    	"oLanguage": {
 	     		"sSearch": "",
@@ -955,32 +957,25 @@ function jpaginationForJobFairs(url){
    	      });
    	   		updateFairStatusEvents();
    	   	}
-  
    });
    
   
-   $("#jobFairPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+   $("#jobFairPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
    $("input[type=search]").hide();
-  
-   $("#dataTableSearch").keyup(function(e) {
+   
+   $("#jobFairDataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
-   		 requirementList('list',sourceleadUrl);
-   		jobFairSearchHighlight();
+   		jobFairListCheck();
    	   }
    	});
-   /* updateFairStatusEvents(); */
  }
 function updateFairStatusEvents() {
 	$(".fairStatus").each(function() {
 		$(this).on('focusin', function(){
-		    /* console.log("Saving value " + $(this).val()); */
 		    $(this).data('prev_value', $(this).val());
 		}).on('change', function(){
 			var jobFairId = $(this).find("option:selected").data("id");
 		    var prev = $(this).data("prev_value");
-		    /* var current = $(this).val();
-		    console.log("Prev value " + prev);
-		    console.log("New value " + current); */
 		    showChangeJobFairStatusPopup(jobFairId, $(this).val(), prev, $(this));
 		});
 	});
@@ -1000,7 +995,7 @@ function updateFairStatusEvents() {
 	 setTimeout(function () {
  		var body = $( table.table().body() );
 	        body.unhighlight();
-	        body.highlight( $("#dataTableSearch").val() );   
+	        body.highlight( $("#jobFairDataTableSearch").val() );   
 			
 			}, 1000); 
  }

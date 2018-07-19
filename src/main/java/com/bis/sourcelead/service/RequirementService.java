@@ -172,6 +172,8 @@ public interface RequirementService {
 
     public String getRequirementId(OrgLocations orgLocations);
     
+    public String getGeneratedJobFairIdByOrgLocationId(long orgLocationsId);
+    
     public String getGeneratedJobFairId(OrgLocations orgLocations);
 
     public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId, Long relationId, String userRoleName, User user, String status);
@@ -232,5 +234,7 @@ public interface RequirementService {
 	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId);
 	
 	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
+	
+	public void assignGeneratedIdToJobFairs();
 
 }
