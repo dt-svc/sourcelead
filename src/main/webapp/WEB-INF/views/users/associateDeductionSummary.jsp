@@ -78,7 +78,8 @@ function associateDeductionSummary(userId){
                 $("#tab-20").empty();
                 $("#tab-21").empty(); 
                 $("#tab-22").empty(); 
-                $("#tab-23").empty(); 
+                $("#tab-23").empty();
+                $("#tab-25").empty();
                 $("#tab-23").append(result); 
                 associateDeductonListPagination();
                 

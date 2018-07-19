@@ -77,6 +77,22 @@ public class EmployeePayroll {
 	@Column (name="SUBMIT_FOR_APROVER_STATUS")
 	private String submitForAproverStatus;
 	
+	
+	@Column (name = "FREQUENCY")
+	private Integer frequency;
+	
+	@Column (name = "PAY_CHECK_DATE")
+	private Date payCheckDate;
+	
+	@Column (name = "DEPOSIT_TYPE")
+	private String depositType;
+	
+	@Column (name = "PRE_TAX_CONTRIBUTION")
+	private BigDecimal preTaxContribution;
+	
+	@Column (name = "POST_TAX_CONTRIBUTION")
+	private BigDecimal postTaxContribution;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -94,6 +110,8 @@ public class EmployeePayroll {
 	
 	@Column(name = "TAXES")
 	private BigDecimal taxes;
+	
+	
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
 	private Set<EmployeePayrollTax> usemployeepayroll;
@@ -349,6 +367,56 @@ public class EmployeePayroll {
 	public void setOverTimeHours(String overTimeHours)
 	{
 		this.overTimeHours = overTimeHours;
+	}
+
+	public Integer getFrequency()
+	{
+		return frequency;
+	}
+
+	public void setFrequency(Integer frequency)
+	{
+		this.frequency = frequency;
+	}
+
+	public Date getPayCheckDate()
+	{
+		return payCheckDate;
+	}
+
+	public void setPayCheckDate(Date payCheckDate)
+	{
+		this.payCheckDate = payCheckDate;
+	}
+
+	public String getDepositType()
+	{
+		return depositType;
+	}
+
+	public BigDecimal getPreTaxContribution()
+	{
+		return preTaxContribution;
+	}
+
+	public BigDecimal getPostTaxContribution()
+	{
+		return postTaxContribution;
+	}
+
+	public void setDepositType(String depositType)
+	{
+		this.depositType = depositType;
+	}
+
+	public void setPreTaxContribution(BigDecimal preTaxContribution)
+	{
+		this.preTaxContribution = preTaxContribution;
+	}
+
+	public void setPostTaxContribution(BigDecimal postTaxContribution)
+	{
+		this.postTaxContribution = postTaxContribution;
 	}
 	
 	

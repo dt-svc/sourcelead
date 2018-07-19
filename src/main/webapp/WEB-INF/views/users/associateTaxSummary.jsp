@@ -139,7 +139,8 @@ function associateTaxSummary(userId){
                 $("#candidateSideDiv").empty(); 
                 $("#tab-20").empty();
                 $("#tab-21").empty(); 
-                $("#tab-22").empty(); 
+                $("#tab-22").empty();
+                $("#tab-25").empty();
                 $("#tab-22").append(result); 
           },
             

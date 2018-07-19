@@ -388,7 +388,6 @@ $('body').on('blur', '#generate_paysheet_form', function() {
 
 <script type="text/javascript">
 	function submitPaysheet() {
-		alert("Hi");
 		 var formData = getFormData("generate_paysheet_form");
 		  	$("#paysheetLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.post(sourceleadUrl+"/submitPaysheet?"+tokenParamName+"="+tokenValue, formData, function(result) {
