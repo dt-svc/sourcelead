@@ -271,10 +271,21 @@ function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocation
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 	      
 		  $("#reasonForSpocDiv").empty();
-	  	  
+		  $("#reasonForSpocDiv").empty();
+		  var formData = new FormData();
+		     formData.append("tokenParamName", tokenValue);
+		     formData.append("spocId", spocId);
+		     formData.append("reason", reason);
+		     formData.append("userId", userId);
+		     formData.append("orgLocationId", orgLocationId);
+		     formData.append("responderType", "Vendor");
 		$.ajax({
-		   	type: "POST",
-		   	url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",   	   
+			 type : "POST",
+	          data: formData,
+	          processData: false,
+	          contentType:false, 
+	     	  url: sourceleadUrl+"/terminateSpoc",
+// 		   	url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",   	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
