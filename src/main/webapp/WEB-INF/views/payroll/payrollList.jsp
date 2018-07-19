@@ -536,7 +536,7 @@
 		var result = "";
  		result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
-		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='employeeDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='employeeDataTableSearch'/><span class='repSearchIcon' onClick='employeeDataSearch();'></span></li>";
 		result = result + "</ul>";
 		result = result + "</div>"; 
 		result = result + '<table id="employeePayrollTable" class="display" cellspacing="0" width="100%" >';
@@ -824,6 +824,10 @@
 				loadEmployeePayrollCost();
 			}
 		});
+		
+	}
+	function employeeDataSearch(){
+		loadEmployeePayrollCost();
 	}
 </script>
 

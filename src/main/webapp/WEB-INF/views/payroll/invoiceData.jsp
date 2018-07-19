@@ -31,7 +31,7 @@ function prepareInvoiceDetailsList(url){
 	 	
  		result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
-		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='invoiceDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='invoiceDataTableSearch'/><span class='repSearchIcon' onClick='invoiceDataTableSearch();'></span></li>";
 		result = result + "</ul>";
 		result = result + "</div>"; 	 	
 	 	
@@ -273,5 +273,8 @@ function invoiceDetailsPagination(url){
     		 getInvoiceDetails();
     	   }
     	});
+}
+function invoiceDataTableSearch(){
+	getInvoiceDetails();
 }
 </script>
