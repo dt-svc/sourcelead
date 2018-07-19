@@ -70,20 +70,6 @@ public class PayrollController {
 		return "payroll/uploadPayroll";
 	}
 	
-	@RequestMapping(value = "/payrollList")
-	public ModelAndView getPayrollList(HttpServletRequest request, HttpServletResponse response)
-	{
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("payroll/payrollList");
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
-		if (sessionData == null) {
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.PAYROLL);
-		request.getSession().setAttribute("sessionData", sessionData);
-		return model;
-	}
 	
 	/**
 	 * returns user mapping jsp for payroll
