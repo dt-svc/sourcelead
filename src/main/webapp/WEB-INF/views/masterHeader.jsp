@@ -720,7 +720,7 @@ function preventTabkey(e){
 							 </li> 	
 						   </sec:authorize>
 					
-					  	<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-dollar-sign" aria-hidden="true"></i>Payroll Configuration</a></li>
+					  	<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
 
 
 					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 

@@ -210,7 +210,7 @@ function calculateHourlyRateSal(){
 
 <script>
   function getPayItemList(){
-	     var associateEmpType = $("#empType").val();
+	    var associateEmpType = $("#empType").val();
 		$.get(sourceleadUrl+"/getPayItemList?"+tokenParamName+"="+tokenValue+"&associateEmpType="+associateEmpType, function(response) {
 			  if (response.response === "AWKWARD") {
 			    location.href = "/errorPage";
@@ -300,7 +300,6 @@ function calculateHourlyRateSal(){
 				result = result +'</table>';
 				result = result +'</tbody>';
 				result = result +'</table>';
-             	
 				$("#payItemDiv").empty();
 				$("#payItemDiv").append(result);
 				
