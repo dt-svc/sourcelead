@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class LcaListViewDTO extends SearchDTO implements Serializable {
 
@@ -53,6 +54,8 @@ public class LcaListViewDTO extends SearchDTO implements Serializable {
 	private String lcaUuid;
 	
 	private String mainStatus;
+	
+	private List<String> locationsList;
 
 	public long getId() {
 		return id;
@@ -232,6 +235,14 @@ public class LcaListViewDTO extends SearchDTO implements Serializable {
 
 	public void setMainStatus(String mainStatus) {
 		this.mainStatus = mainStatus;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
 	}
 	
 }

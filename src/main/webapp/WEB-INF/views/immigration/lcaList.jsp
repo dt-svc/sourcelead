@@ -249,7 +249,28 @@
                      var result = "";
                      if (opt.location !== null && opt.location !== '' && opt.location !== 'undefined') {
                     	 
-                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.location+"'>" + opt.location + "</div></td>";
+                    	/*  result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.location+"'>" + opt.location + "</div></td>"; */
+                    	
+                    	 result = result +'<td>';
+		   		        	result = result +'<div class="positionRelative">';
+			   		      
+			   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.location+'</p>';
+			   		        
+		   		    	
+			   		        result = result +'<div class="show_Empdetails showjoblist">';
+		   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+	
+		   		        	result = result +'<div class="emailvalues emailvaluesNew">';
+		   		        	
+								result = result +'<p><i class="fa fa-map-marker"></i>'+opt.location+'</p>';
+			   		        	
+		   		        	result = result +'</div>';
+		   		        	result = result +'</div>';
+		   
+
+	   		        	result = result +'</div>';
+	   		        	result = result +'</td>';
+                    	 
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
                      }

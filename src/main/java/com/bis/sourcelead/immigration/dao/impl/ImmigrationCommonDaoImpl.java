@@ -35,7 +35,6 @@ import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
@@ -65,7 +64,6 @@ import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
-import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -80,9 +78,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Autowired
 	CandidateDao candidateDao;
-
-	@Autowired
-	private ImmigrationTemplateDao immigrationTemplateDao;
 
 	@Autowired
 	private CommonUtil commonUtil;
@@ -1681,6 +1676,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
     			query1.append(" and ((lcaView.lcaNo like '%" + searchValue + "%' )");
     			query1.append(" or (lcaView.lcaTitle like '%" + searchValue + "%' )");
     			query1.append(" or (lcaView.lcaStatus like '%" + searchValue + "%' )");
+    			query1.append(" or (lcaView.location like '%" + searchValue + "%' )");
     			query1.append(" or (lcaView.prevailingWage like '%" + searchValue + "%' )");
     			query1.append(" or (lcaView.status like '%" + searchValue + "%' ))");
     		}
