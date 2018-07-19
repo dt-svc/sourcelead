@@ -51,7 +51,29 @@
         <div class="pull-left">
           <h4 class="text-muted">Pay Schedule</h4>
           <small class="text-muted">Loremipsum Loremipsum</small>
-          <div class="clearfix mt10"> <a href="restrictday.html" class="btn btn-info btn-sm mr10" title="Add">Add</a> <a href="restrictday-list.html" class="btn btn-primary btn-sm" title="View">View</a> </div>
+          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/paySchedule'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a> <a href="restrictday-list.html" class="btn btn-primary btn-sm" title="View">View</a> </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      
+       <div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-gears fa-2x text-muted"></i> </div>
+        <div class="pull-left">
+          <h4 class="text-muted">Configure</h4>
+          <small class="text-muted">Loremipsum Loremipsum</small>
+          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollApprover'/>" class="btn btn-info btn-sm mr10" title="Add">Configure</a>
+           </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      
+       <div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-gears fa-2x text-muted"></i> </div>
+        <div class="pull-left">
+          <h4 class="text-muted">Payroll Reports</h4>
+          <small class="text-muted">Loremipsum Loremipsum</small>
+          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollImports'/>" class="btn btn-info btn-sm mr10" title="Add">Configure</a>
+           </div>
         </div>
         <div class="clearfix"></div>
       </div>

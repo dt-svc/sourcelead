@@ -206,8 +206,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	@Autowired
 	AssetService assetService;
 	
-	@Autowired
-	private Org org;
+	/*@Autowired
+	private Org org;*/
 	
 	@Autowired
 	UserGroupService userGroupService;
@@ -1528,7 +1528,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			throws Exception {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
            User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	       candidateService.saveOrglocationAsssociate(addAssociateDTO, loginUser, orgLocations, org); 
+	       candidateService.saveOrglocationAsssociate(addAssociateDTO, loginUser, orgLocations, new Org()); 
          
            return "success";
 	 
