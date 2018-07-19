@@ -1018,4 +1018,66 @@ public class USPayrollRestController {
 		return null;
 	}
 	
+	
+	@RequestMapping(value = "/payrollImports")
+	public ModelAndView getPayrollImports(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("payroll/payrollImportList");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		return model;
+	}
+	
+	@RequestMapping(value = "/payrollList")
+	public ModelAndView getPayrollList(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("payroll/payrollList");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/paySchedule")
+	public ModelAndView getpayScheduleJSP(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("payroll/paySchedule");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/payrollApprover")
+	public ModelAndView getpayrollApproverJSP(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("payroll/payrollApprover");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		return model;
+	}
 }
