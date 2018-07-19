@@ -26,103 +26,24 @@
 <input type="hidden" id="lastActivityCountIdHidden" name="lastActivityCountIdHidden" value="---"/>
 <input type="hidden" id="lastActivityIpCountIdHidden" name="lastActivityIpCountIdHidden" value="---"/>
   <section class="content-wraper">
-  
     <section class="content-header clearfix">
-      <div class="pull-left"> <h2>Usage Report(s)</h2></div>
- 	 <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Usage Report(s)</div>
+      <div class="pull-left">
+        <h2>Usage Report(s)</h2>
+      </div>
+      
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports	Dashboard</a> &raquo; Usage Report(s)</div>
+
+      
+<!--       <div class="pull-right brud-crum">Home &raquo; Users Usage Report List</div> -->
     </section>
-    
-    
       <!-- Tabs html -->
-      <div class="clearfix vendor_wrap"></div>
-
-<div class="reportHead clearfix">
-	<div class="listGridWrap reqListBtn">
-          <a  title="List View" id="LView" class="btn btn-default rAct" onclick="usageReportsShowList();"><i class="fa fa-list"></i></a>
-          <a  title="Graph View" id="GView" class="btn btn-default" onclick="usageReportsGraph();"><i class="fa fa-pie-chart"></i></a>
-	</div>
-	
-    	<ul class="clearfix pull-right" id="grafId" style="display: none;">
-    		<li>
-			    <div class="dropdown-scroll">
-			    <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
-			        <select class="chosen-select form-control" multiple data-placeholder="Select Org" name="orgId" id="orgs">
-			        </select>
-			        </sec:authorize>
-			        
-			        <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')">
-			        <input type="hidden" name="orgId" id="orgs" value="${SourceLeadWeb_orgLocations.org.id}">
-			        </sec:authorize>
-			    </div>  
-			   
-			    <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
-        			<button type="button" class="btn btn-primary mt2  pull-left mr" id="reportCustomize" onclick="usageReportList('ACTIVE');">Run</button>
-        		</sec:authorize>
-    		</li>
-    		
-    		<li>
-        <div class="dropdown-select positionRelative repSelWrap clearfix">
-	        <select class="form-control repSelFiled" id="customGraphDates" style= display:none onchange="showCustomFieldsGraph();">
-	<!--           <option>Select Date</option> -->
-	          <option value="Current_Year">Current Year</option>
-	          <option value="Last_Year">Last year</option>
-	          <option value="Custom">Custom</option>
-	        </select>          
-		<div class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="reportCustomizeGraph" onclick="usageReportsGraph();">Run</button></div> 
-          
-                    <!-- Custom Date -->
-             <div class="clearfix customLeaves repCustomDate" id="custom-select" >
-              <div class="repCustomDateInn" id="custFromDate1Div">
-                <input value="" name="Date" id="custFromDate1" placeholder="From" class="form-control calendar" type="text">
-              </div>
-              
-              <div class="repCustomDateInn" id="custToDate1Div">
-                <input value="" name="Date" id="custToDate1" placeholder="To" class="form-control calendar" type="text">
-              </div>
-              <div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesGraph();"><i class="fa fa-search"></i></button></div>
-          </div>
-          <!-- Custom Date --> 
-        </div>    		
-    		</li> 
-    	</ul>
-    	
-<ul class="clearfix pull-right" id="listId">
-    		
-    		<li>
-        <div class="dropdown-select positionRelative repSelWrap clearfix">
-	        <select class="form-control repSelFiled" id="customDates" onchange="showCustomFields();">
-		          <option value="Last_7_days" selected>Last 7 days</option>
-		          <option value="Last_15_days">Last 15 days</option>
-		          <option value="1_month">1 month</option>
-		          <option value="3_months">3 months</option>
-		          <option value="Last_Year">Last year</option>
-		          <option value="Custom">Custom</option>
-	        </select>    
-		<div class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="reportCustomize" onclick="usageReportList('ACTIVE');">Run</button></div> 
-                    <!-- Custom Date -->
-             <div class="clearfix customLeaves repCustomDate" id="custom-selects" >
-              <div class="repCustomDateInn" id="custFromDateDiv">
-                 <input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar" type="text">
-              </div>
-              
-              <div class="repCustomDateInn" id="custToDateDiv">
-                 <input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar" type="text">
-              </div>
-              <div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesList();"><i class="fa fa-search"></i></button></div>
-          </div>
-          <!-- Custom Date --> 
-        </div>    		
-    		</li> 
-    		<li class=""> <input type="text" placeholder="Search" class="repSearchBar" id="dataTableSearch"/><span class="repSearchIcon" onclick=""></span></li>
-    	</ul>    	
-
-    
-    </div>
-      
-      
-<%-- <div class="clearfix">
+      <div class="clearfix"></div>
+<div class="clearfix">
       <div class="ReqRepHead clearfix mb reports-head">
-
+                  <div class="col-md-2 pull-left reqListBtn">
+          <a  title="Graph View" id="GView" class="btn btn-default" onclick="usageReportsGraph();"><i class="fa fa-pie-chart"></i></a>
+          <a  title="List View" id="LView" class="btn btn-default rAct" onclick="usageReportsShowList();"><i class="fa fa-list"></i></a>
+                  </div>
              <!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
        
         <div class="col-md-4 col-md-offset-2">
@@ -140,11 +61,11 @@
         
           <div class="col-md-2">
         
-
+        <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
+        <button type="button" class="btn btn-primary mt2  pull-left mr" id="reportCustomize" onclick="usageReportList('ACTIVE');">Customize</button>
+        </sec:authorize>
         
         </div>
-        
-        
          <div class="col-md-2 dropdown-select">
         <div class="dropdown-select positionRelative">
         <select class="form-control" id="customGraphDates" style= display:none onchange="showCustomFieldsGraph();">
@@ -153,11 +74,8 @@
           <option value="Last_Year">Last year</option>
           <option value="Custom">Custom</option>
         </select>
-        
-        <div class="col-md-2">
-        <button type="button" class="btn btn-primary" id="reportCustomizeGraph" onclick="usageReportsGraph();">Run</button>
         <!-- Top Leave Takers Custom Date -->
-        </div>
+        
     <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;" >
         <div class="pull-left">
         <div class="pull-left mr5" style="width: 140px" id="custFromDate1Div">
@@ -173,56 +91,148 @@
       </div>
 
         </div>
+     
+<!--         <div class="col-md-1"> -->
+<!--           <div class="btn-group bootstrap_dropdownMenu dropdownPadding"> -->
+<!--             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button> -->
+<!--             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button> -->
+<!--             <ul class="dropdown-menu clearfix  dropdown-menu-right"> -->
+<!--               <li role="Export" class="mt5 cursorPointer" id="mypop"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li> -->
+<!--             </ul> -->
+<!--           </div> -->
+<!--         </div> -->
                       
       </div>
-    </div> --%>
-    
-    
-                 <div class="backWhite clearfix" >
+    </div>
+                 <div class="dashboard-widget" >
                  
-
-<div id="userUsageReportsListSection" class="positionRelative">
-	<div class="reportsCount reportsCount5">
-		<ul>
-			<li title="Active" class="usageGrid" onClick="usageReportList('ACTIVE');usageactiveList();" id="activeLi">
-				<span><i class="fa fa-user"></i></span><b id="activeCount">0</b>
-			</li>
-			<li title="Total" class="colorTwo curDef" id="totalLi">
-				<span><i class="fa fa-users"></i></span><b id="totalUserCount">0</b>
-			</li>			
-			<li title="Inactive" onClick="usageReportList('INACTIVE');usageinactiveList();" id="inactiveLi">
-				<span><i class="fa fa-user-times"></i></span><b id="inActiveCount">0</b>
-			</li>
-			<li title="Not Logged In" class="colorTwo" onClick="usageReportList('NOT_LOGGEDIN');usagenotloginList();" id="notloginLi">
-				<span><i class="fa fa-lock"></i></span><b id="notLoggedInCount">0</b>
-			</li>
-			<li title="IP Details" onClick="usagemultipleipslist('MULTIPLE_IP')" id="multipleLi">
-				<span><i class="fa fa-sliders"></i></span><b id="multipleIpsCount">0</b>
-			</li>
-			<div class="clearfix"></div>
-		</ul>
-	</div>                  
-					
-	<div class="clearfix"></div>
-	<div class="clearfix mt5" id="activeList">
-	 
-	  <div class="require_wrap_table datatable_filter">
-	  	<div id="activeDiv"></div>
-	  </div>
-	  
-	  <div class="require_wrap_table overflow_inherint datatable_filter positionRelative">
-	    <div id="multipleIpsDiv"></div>
-	  </div>
-	 
- </div>
+                 <div id="userUsageReportsListSection">
+                 <div class="positionRelative">
+<div class="col-md-12 mt">
+  <ul class="list-unstyled list-inline col-md-offset-2">
+    <li class="col-md-2">
+      <div class="text-center well well-sm usageGrid" id="activeLi">
+        <div class="clearfix"><i class="fa fa-user fa-2x text-primary"></i></div>
+        <h5>Active</h5>
+        <label class="views-count usersList" onClick="usageReportList('ACTIVE');usageactiveList();" id="activeCount"></label>
+<!--       <input type="text" value='ACTIVE' id="activeCount" class="form-control"> -->
+      </div>
+    </li>
+    <li class="col-md-2">
+      <div class="text-center well well-sm" id="inactiveLi">
+        <div class="clearfix"><i class="fa fa-user-times fa-2x text-danger"></i></div>
+        <h5>Inactive</h5>
+        <label class="views-count submited2client" onClick="usageReportList('INACTIVE');usageinactiveList();" id="inActiveCount"></label>
+      </div>
+    </li>
+    <li class="col-md-2">
+      <div class="text-center well well-sm" id="notloginLi">
+        <div class="clearfix"><i class="fa fa-lock fa-2x text-warning"></i></div>
+        <h5>Not Logged In</h5>
+        <label class="views-count interview" onClick="usageReportList('NOT_LOGGEDIN');usagenotloginList();" id="notLoggedInCount"></label>
+      </div>
+    </li>
+    <li class="col-md-2">
+      <div class="text-center well well-sm" id="totalLi">
+        <div class="clearfix"><i class="fa fa-users fa-2x text-info"></i></div>
+        <h5>Total</h5>
+        <label class="view-count" id="totalUserCount"></label>
+      </div>
+    </li>
+         <li class="col-md-2">
+      <div class="text-center well well-sm" id="multipleLi">
+        <div class="clearfix"><i class="fa fa-sliders fa-2x text-success"></i></div>
+        <h5>IP Details</h5>
+        <label class="views-count offer" onClick="usagemultipleipslist('MULTIPLE_IP')" id="multipleIpsCount"></label>
+      </div>
+    </li>
+  </ul>
+</div>
+<div class="clearfix"></div>
+<div class="timesheet_out clearfix userlistGrid" id="activeList">
+  <div class="timesheet_head">
+    <p class="pull-left mt ml"><strong><b id="listNamediv">Active User List</b></strong></p>
+    <ul>
+        <!-- <li>
+    <div title="Export" class="mrPOP mt10 pull-right" id="mypop"><i class="glyphicon glyphicon-export"></i>
+                     <div id="exportPop" class="ExpPop" style="left: 0px; display: none;">
+                       <ul>
+                         <li onclick="exportUserUsageReportPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+                 <li onclick="exportUserUsageReportExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+                </ul>
+              </div>
+            </div>
+    </li> -->
+    <li>
+    <div class="col-md-12 dropdown-select">
+        <div class="dropdown-select positionRelative">
+        <select class="form-control" id="customDates" onchange="showCustomFields();">
+<!--           <option>Select Date</option> -->
+          <option value="Last_7_days" selected>Last 7 days</option>
+          <option value="Last_15_days">Last 15 days</option>
+          <option value="1_month">1 month</option>
+          <option value="3_months">3 months</option>
+          <option value="Last_Year">Last year</option>
+          <option value="Custom">Custom</option>
+        </select>
+        <!-- Top Leave Takers Custom Date -->
+    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-selects" style="display: none; width: 346px;" >
+        <div class="pull-left">
+        <div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
+        <input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
+        </div>
+        <div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
+        <input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesList();"><i class="fa fa-search"></i></button>
+        </div>
+    </div>
+<!-- Top Leave Takers Custom Date -->
+      </div>
+        </div>
+    </li>
+    </ul>
+    <div class="clearfix"></div>
+     
+  </div>
+  <div class="require_wrap_table datatable_filter">
+  <div id="activeDiv"></div>
+ 
+  </div>
+  
+  <div class="require_wrap_table overflow_inherint">
+    <div id="multipleIpsDiv"></div>
+  
+  </div>
+ 
+  </div>
  
   <div id="popUp"></div>
+ 
 
-	</div>
-                 
-    <div id="useractiveGraph" style="width: 100%; height: 300px; display:none"></div>
+ 
+ 
     
-</div>
+<!-- <div class="timesheet_out clearfix userlistGrid" id="multipleList" style="display: none">
+  <div class="timesheet_head">
+    <p class="pull-left mt ml"><strong>Multiple IPS User List</strong></p>
+    <div class="clearfix"></div>
+     
+  </div>
+   <div class="require_wrap_table datatable_filter">
+   
+   <div id="multipleIpsDiv"></div>
+   
+   </div>
+   
+   </div> -->
+   
+
+          </div>
+                 </div>
+                 
+          <div id="useractiveGraph" style="width: 100%; height: 300px; display:none"></div>
+        </div>
       <!-- Tabs html -->
       
       
@@ -233,6 +243,7 @@
  function usageReportsGraph(){
      $('#reportCustomize').removeAttr("onclick");
      $('#reportCustomize').attr("onclick", "usageReportsGraph()");
+     $("#custom-select").hide();
      $('#custFromDate1').removeAttr('data-validation');
      $('#custToDate1').attr('data-validation',"required");
      $("#customGraphDates").show();
@@ -242,8 +253,6 @@
      $("#useractiveGraph").show();
      $("#activeDiv").hide();
      $("#userUsageReportsListSection").hide();
-     $("#listId").hide();
-     $("#grafId").show();
     
      var orgLocationId = '${SourceLeadWeb_orgLocationId}';
         var fromDate = $("#custFromDate1").val();
@@ -275,8 +284,6 @@
      $("#useractiveGraph").hide();
      $("#activeDiv").show();
      $("#userUsageReportsListSection").show();
-     $("#listId").show();
-     $("#grafId").hide();
  }
  </script>
  
@@ -307,7 +314,9 @@
 function prepareUsageReportList(url, userType){
         var result = "";
          result = result +' <div class="clearfix">';
-
+         result = result +' <div class="remove_search mt">';
+         result = result +' <input type="text" placeholder="Search" id="dataTableSearch"/>';
+         result = result +'</div>';
          result = result +'</div>';
         result = result +'<table id="activePagination" class="display" cellspacing="0" width="100%" >';
         result = result +'<thead>';
@@ -611,7 +620,7 @@ function activePagination(url, userType){
          var toDate = $("#custToDate").val();
          var customDates = $("#customDates").val();
          var sourceleadUrl ='${sourceleadUrl}';
-            var searchValue = $("#dataTableSearch").val();
+            var searchValue = $("#dataaTableSearch").val();
             var orgLocationId = '${SourceLeadWeb_orgLocationId}';
            var orgId = $("#orgs").val();
         if(orgId != null && orgId != '' && orgId != 'undefined'){
@@ -627,7 +636,11 @@ function activePagination(url, userType){
         
         function prepareMultipleIpsList(url){
         var result= "";
-            result = result +' <div class="clearfix"></div>';
+            result = result +' <div class="clearfix">';
+            result = result +' <div class="remove_search mt">';
+            result = result +' <input type="text" placeholder="Search" id="dataaTableSearch"/>';
+            result = result +'</div>';
+            result = result +'</div>';
             result = result +'<table id="multipleIpsPagination" class="display" cellspacing="0" width="100%" >';
             result = result +'<thead>';
             result = result + '<tr>';
@@ -652,6 +665,8 @@ function activePagination(url, userType){
                     "processing": true,
                 "serverSide": true,
                 "searching": false,
+                "dom": 'Bfrtip',
+            	"buttons": [ 'pageLength', 'excel', 'pdf'	], 
                 "ajax": $.fn.dataTable.pipeline( {
                     url: url,
                     method: 'POST',
@@ -748,7 +763,7 @@ function activePagination(url, userType){
         	
           $("#multipleIpsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
           $("input[type=search]").hide();
-          $("#dataTableSearch").keyup(function(e) {
+          $("#dataaTableSearch").keyup(function(e) {
                  if(e.which === 13) {
                    prepareMultipleIpsList(url);
 //                      usageReportList(userType);
@@ -946,15 +961,13 @@ function showCustomFields(){
         $("#custom-selects").show();
          $('#custFromDate').attr('data-validation',"required");
          $('#custToDate').attr('data-validation',"required");
-         $("#reportCustomize").attr("disabled",true);
     }else{
         $("#custom-selects").hide();
         $('#custFromDate').removeAttr('data-validation');
         $('#custToDate').attr('data-validation',"required");
         $('#custFromDate').val("");
         $('#custToDate').val("");
-        $("#reportCustomize").attr("disabled",false);
-       // usageReportList(userType);
+        usageReportList(userType);
 //         usagemultipleipslist();
     }
     
@@ -979,7 +992,7 @@ function showCustomFields(){
             var dt = $(this).datepicker('getDate', '+1d');
             dt.setDate(dt.getDate());
             $("#custToDate").datepicker("option", "minDate", dt);
-             removeStartValid1();
+             removeStartValid();
             }
       
       });
@@ -993,14 +1006,14 @@ function showCustomFields(){
             var dt = $(this).datepicker('getDate', '+1d');
             dt.setDate(dt.getDate());
             $("#custFromDate").datepicker("option", "maxDate", dt);
-             removeEndValid1();
+             removeEndValid();
             }});
 }
 
-function removeStartValid1(){
+function removeStartValid(){
     $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
 }
-function removeEndValid1(){
+function removeEndValid(){
     $('#custToDateDiv').find('p.jquery_form_error_message').remove();
 }
 
@@ -1025,7 +1038,7 @@ function validateCustDatesList(){
                 usagemultipleipslist();
             }else{
                 usageReportList(userType);
-                //$("#custom-selects").hide();
+                $("#custom-selects").hide();
             }
         }
     }else{
@@ -1153,7 +1166,7 @@ function showIp(ipAddress){
 //      var toDate = $("#custToDate").val();
 //      var customDates = $("#customDates").val();
     var sourceleadUrl ='${sourceleadUrl}';
-       var searchValue = $("#dataTableSearch").val();
+       var searchValue = $("#dataaTableSearch").val();
        var orgLocationId = '${SourceLeadWeb_orgLocationId}';
        searchValue = searchValue ? searchValue : "";
       var orgId = $("#orgs").val();
@@ -1288,14 +1301,11 @@ function showCustomFieldsGraph(){
         $("#custom-select").show();
          $('#custFromDate1').attr('data-validation',"required");
          $('#custToDate1').attr('data-validation',"required");
-         $('#reportCustomizeGraph').attr("disabled",true);
     }else{
         $("#custom-select").hide();
         $('#custFromDate1').removeAttr('data-validation');
         $('#custToDate1').attr('data-validation',"required");
-        $('#custFromDate1').val('');
-        $('#custToDate1').val('');
-        $('#reportCustomizeGraph').attr("disabled",false);
+        usageReportsGraph();
     }
     
     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';

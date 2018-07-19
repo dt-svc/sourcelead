@@ -61,6 +61,7 @@
 	    	 		 <div class="col-md-9">
 	    	 		 	<input class="form-control" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required validate_length length2-250"  field-name="Reference No"> 
 	    	 		</div>
+	    	 		<input type="hidden" id = "paymentAmount" name = "paymentAmount" value ="total">
     	 		</div>
     	 		
     	 		<div class="col-md-6 minHeight50 mb">
@@ -140,7 +141,7 @@ $('#paymentDate').datepicker({
 	        success: function(json) {
 	        	
 	        	var result = '';
-         		result = result +'     <form id ="paymentForm" name ="paymentForm" method="post">'; 
+         		//result = result +'     <form id ="paymentForm" name ="paymentForm" method="post">'; 
          		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table addinvoiceTable">'; 
          	    result = result +'       <table id="invoiceListTable" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
          		result = result +'           <thead>';
@@ -169,7 +170,7 @@ $('#paymentDate').datepicker({
 	                    for (var i = 0; i < json.data.length; i++) { 
 	                    	 var opt = json.data[i]; 
 	                    	 result = result +'<tr>';
-	                    	 result = result +'<td><input id= "'+opt.id+'" value="'+opt.id+'" data-id = "'+opt.dueAmount+'" onclick="checkSingleInvoice(\''+opt.id+'\',\''+opt.dueAmount+'\');"  type="checkbox" name="invoices" class="myCheckbox" >';
+	                    	 result = result +'<td><input id= "'+opt.id+'" value="'+opt.dueAmount+'" onclick="checkSingleInvoice(\''+opt.id+'\',\''+opt.dueAmount+'\');"  type="checkbox" name="invoices" class="myCheckbox" >';
 	                    	 result = result +'<td>'+opt.invoiceId+'</td>';
 	                    	 var projectName = '';
 	                    	 if(opt.projectName != null && opt.projectName !='' && opt.projectName !="undefined"){
@@ -183,7 +184,7 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'<td>'+opt.total+'</td>';
 	                    	 result = result +'<td>'+opt.dueAmount+'</td>';
 	                    	 result = result +'<td>'+opt.invoiceStatus+'</td>';
-	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeypress="amountInputVal(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'" name="totalAmountRow"></td>';
+	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeypress="amountInputVal(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'" name="invoiceAdjustDTO['+i+'].dueAmount" field-name ="Total Due"></td>';
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
@@ -194,9 +195,9 @@ $('#paymentDate').datepicker({
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();" >Add</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" id="Submit_Button" onClick="addInvoice();">Add</button>';
 	                 	 result = result +'   </div>'; 
-	                 	result = result +'     </form>'; 
+	                 	//result = result +'     </form>'; 
 	                 	 $("#invoiceList").empty(); 
 	                     $("#invoiceList").append(result); 
 	                     ListPagination();  
@@ -219,17 +220,22 @@ $('#paymentDate').datepicker({
   <script type="text/javascript">
 function addInvoice(){
 	 if ($('#paymentForm').validate(false, validationSettings)) {
-		 var invoiceIds = [];
-			$('input:checkbox[name=invoices]:checked').each(function() {
-				invoiceIds.push($(this).val());
-		     });
+		 var invoiceIds= []
+		 var amount = "";
+		 $('input:checkbox[name=invoices]:checked').each(function() {
+				//invoiceIdsMap[this.id] =  $("#totalAmountRow"+this.id).val();
+				invoiceIds.push(this.id+"_"+$("#totalAmountRow"+this.id).val()); // pushing values as id_invoice amount to array.
+				amount = $("#totalAmountRow"+this.id).val();
+		     }); 
+		 if(amount !=null && amount !="" && amount !="undefined"){
 		 var formData = getFormData("paymentForm");
-		  $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds, formData, function(result) {
-			 
-		 }); 
-
+		 $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
+			 getInvoiceList();
+	 });
+		 }else{
+			 alert("please select at least one record");
+		 }
 	 }
-	
 }
 $('body').on('blur', '#paymentForm', function() {
 	$("#paymentForm").showHelpOnFocus();
@@ -262,8 +268,10 @@ $('body').on('blur', '#paymentForm', function() {
 	        		$("#totalAmountRow"+checkboxes[i].id).val(checkboxes[i].value);
 	        		if($.isNumeric(checkboxes[i].value))
 	        		total += parseFloat(checkboxes[i].value);
+	        		$("#totalAmountRow"+checkboxes[i]).attr("data-validation", "true");
 	            }else{
 	            	$("#totalAmountRow"+checkboxes[i].id).val('');
+	            	$("#totalAmountRow"+checkboxes[i]).attr("data-validation-optional", "true");
 	            	total = 0;
 	            }
 	    	}
@@ -286,15 +294,17 @@ $('body').on('blur', '#paymentForm', function() {
 		  if($("#"+id).is(':checked')){
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
+			 $("#totalAmountRow"+id).attr("data-validation", "true");
 		  }else{
 			  $("#totalAmountRow"+id).val('');
 			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
+			  $("#totalAmountRow"+id).attr("data-validation-optional", "true");
 		  }
 		  $("#grandTotalAmount").text(grandTotalAmount);
 	  }
 </script>
 <script>
-function ListPagination(){ 
+ function ListPagination(){ 
 	
 	 $("#invoiceListTable").DataTable( { 
 	    	"scrollCollapse": false,
@@ -314,6 +324,6 @@ function ListPagination(){
 	    } );
 	
 }
-
+ 
 </script>
 <jsp:include page="../masterFooter.jsp" />

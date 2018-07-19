@@ -115,7 +115,7 @@ public class InvoiceController {
 	return model;
 	}
 	
-	@RequestMapping(value = "/addPayment")
+	@RequestMapping(value = "/addPaymentInvoice")
 	public ModelAndView addPayment(HttpServletRequest request) throws Exception{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
@@ -123,6 +123,19 @@ public class InvoiceController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
 		model.addObject("clientsList", orgClientList);
+		return model;
+		
+	}
+	
+	@RequestMapping(value = "/addPaymentBill")
+	public ModelAndView addPaymentBill(HttpServletRequest request) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("billing/addPaymentBill");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		Collection<OrgRelations> vendorsList =orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId()); 
+		
+		model.addObject("vendorsList", vendorsList);
 		return model;
 		
 	}
