@@ -1356,6 +1356,41 @@ public class CommonUtil {
 			return Float.parseFloat(actualTimeString);
 		}
 		
+
+		public static double getTotalRegularOverTimeHours(double regulraHours,double overTimeHours){
+			double cthHours = regulraHours;
+			double cthHoursValue = (int) cthHours;
+			double cthMinutesValue = cthHours - cthHoursValue;
+			double totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+			double wthHours = overTimeHours;
+			double wthHoursValue = (int) wthHours;
+			double wthMinutesValue = wthHours - wthHoursValue;
+			double totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+			double totalMinutes = totalCthMinutes+totalWthMinutes;
+
+			double actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+			double actualMinutes = (totalMinutes % 60)/100;
+
+			String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
+			
+			return Double.parseDouble(actualTimeString);
+		}
+		
+		public static String getHoursDisplayFormat(Float hours2){
+			float cthHours = 0;
+			float cthHoursValue = (int) cthHours;
+			float cthMinutesValue = cthHours - cthHoursValue;
+			float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+			float wthHours = hours2;
+			float wthHoursValue = (int) wthHours;
+			float wthMinutesValue = wthHours - wthHoursValue;
+			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+			float totalMinutes = totalCthMinutes+totalWthMinutes;
+		}
 		public static String getHoursDisplayFormat(Float hours2,Float totalMinutes){
 			if(totalMinutes == null) {
 				float wthHours = hours2;
