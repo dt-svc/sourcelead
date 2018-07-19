@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletOutputStream;
@@ -38,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,6 +63,7 @@ import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.InvoiceAdjustDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.dto.Response;
@@ -112,6 +116,8 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @RestController
 @RequestMapping("/app")
@@ -612,19 +618,32 @@ public class InvoiceRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return response;
+	}//@RequestBody Map<String, String> myMap
+	@RequestMapping(value = "/saveInvoiceBulkPayment_test", method = RequestMethod.POST, consumes="application/json" )
+	public @ResponseBody Response<String> saveInvoiceBulkPayment_test( @RequestBody Map<String, String> myMap,  HttpServletRequest request ){
+		
+		System.out.println(myMap);
+		System.out.println("after map");
+		return null;
 	}
-	
-	
+ 	
 	@RequestMapping(value = "/saveInvoiceBulkPayment", method = RequestMethod.POST)
-	public @ResponseBody Response<String> saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO, @RequestParam(value = "invoiceIds", required = false) List<Long> invoiceIds, HttpServletRequest request) throws Exception
+	public @ResponseBody Response<String> saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO,  @RequestParam(value = "invoiceIds", required = false) List<String> invoiceIds, HttpServletRequest request) throws Exception
 	{
 		Response<String> response = new Response<>();
+		System.out.println(" invoiceJsonString ");
+	     System.out.println(invoiceIds);
+	     HashMap<Long, String> invoiceMap = new HashMap<Long, String>();
+	     for(String obj: invoiceIds){
+	    	 String [] arr = obj.split("_");
+	    	 invoiceMap.put(Long.parseLong(arr[0]),(arr[1]));
+	     }
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null && Validator.validate(invoicePaymentDTO)) {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				invoicePaymentDTO.setStaticPath(staticPath);
-				InvoicePayment invoicePayment = invoicePaymentService.saveInvoiceBulkPayment(invoicePaymentDTO, user, orgLocation,invoiceIds);
+				InvoicePayment invoicePayment = invoicePaymentService.saveInvoiceBulkPayment(invoicePaymentDTO, user, orgLocation,invoiceMap);
 				if (null != invoicePayment) {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
