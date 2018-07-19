@@ -248,25 +248,21 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.location !== null && opt.location !== '' && opt.location !== 'undefined') {
-                    	 
-                    	/*  result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.location+"'>" + opt.location + "</div></td>"; */
-                    	
                     	 result = result +'<td>';
 		   		        	result = result +'<div class="positionRelative">';
-			   		      
 			   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.location+'</p>';
-			   		        
-		   		    	
 			   		        result = result +'<div class="show_Empdetails showjoblist">';
 		   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
 	
 		   		        	result = result +'<div class="emailvalues emailvaluesNew">';
-		   		        	
-								result = result +'<p><i class="fa fa-map-marker"></i>'+opt.location+'</p>';
-			   		        	
+	 							for(var k=0; k<3; k++){
+	 								  if (opt.locationsList[k] !== null && opt.locationsList[k] !== '' && typeof opt.locationsList[k] !== 'undefined') {
+	 									console.log( " test " +opt.locationsList[k]);
+	 								    result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+	 								  }
+			   		    	 	}
 		   		        	result = result +'</div>';
 		   		        	result = result +'</div>';
-		   
 
 	   		        	result = result +'</div>';
 	   		        	result = result +'</td>';
