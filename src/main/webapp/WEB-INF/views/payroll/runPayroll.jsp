@@ -283,19 +283,18 @@ $('body').on('blur', '#generate_payroll_form', function() {
 
 <script>
 	function payAdjustment(payrollUUID){
-		alert(payrollUUID);
 		  $.ajax({
 		  	type: "GET",
 		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID,                 
 		        success: function(data) {
 		            var json = data.object;
 		            $("#empAddress").text(json.employeeAddress);
-		            $("#regularHours").val(json.regularHours);
-		            $("#regularHoursAmt").val(json.regularHrsTotalAmt);
-		            $("#overTimeHours").val(json.overtimeHours);
-		            $("#overTimeHoursAmt").val(json.otHoursTotalAmt);
-		            $("#totalHours").text(json.totalHours);
-		            $("#totalEarnings").text(json.totalEarnings);
+		            $("#regularHours").val(json.regularHours.toFixed(2));
+		            $("#regularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
+		            $("#overTimeHours").val(json.overtimeHours.toFixed(2));
+		            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
+		            $("#totalHours").text(json.totalHours.toFixed(2));
+		            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
 		        	
 		            $("#federal").text(json.federal);
 		            $("#medicare").text(json.medicare);
@@ -310,8 +309,10 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		            $("#totalTaxes").text(json.taxes);
 		            $("#dedTotal").text(9999);
 		            $("#netpay").text(json.netPay);
-		                   
-		            
+		            $("#payRate").val(json.payRate);
+		            $("#payrollId").val(json.payrollId);
+		            $("#payrollUUID").val(json.payrollUUID);
+		             
 		                var postDed = "";
 	        			postDed = postDed + '<table width="100%" class="table table-bordered" >';
 			            postDed = postDed + '<thead>';
@@ -329,7 +330,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
 					            	var ded = json.postDed[i];
 				        			postDed = postDed + '<tr>';
 				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
-				        			postDed = postDed + ' <td><input type="text" value='+ded.amount+' class="formControl" readOnly></td>';
+				        			postDed = postDed + ' <td><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.amount+' class="formControl" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
 			            }
@@ -361,7 +362,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
 				            	var preded = json.preDed[i];
 				            	preDed = preDed + '<tr>';
 				            	preDed = preDed + ' <td>'+preded.deductionType+'</td>';
-				            	preDed = preDed + ' <td><input type="text" value='+preded.amount+' class="formControl" readOnly></td>';
+				            	preDed = preDed + ' <td><input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.amount+' class="formControl" readOnly></td>';
 				            	preDed = preDed + ' </tr>';
 				            }
 	                        }
@@ -393,8 +394,9 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		                	  for (var i=0; i< json.contribution.length; i++){
 					            	var ot = json.contribution[i];
 					            	output = output + '<tr>';
+					            	output = output + '<input type="hidden" name="contribution['+i+'].taxtType" value='+ot.taxtType+' id="taxtType"/>';
 					            	output = output + '<td>'+ot.contributionType+'</td>';
-					            	output = output + ' <td><input type="text" value='+ot.contributionAmount+' class="formControl" readOnly></td>';
+					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmount+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
 		                  }
@@ -434,10 +436,11 @@ $('body').on('blur', '#generate_payroll_form', function() {
 						            	var pi = json.payItem[i];
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
-						            	payItem = payItem +' <td><input type="text" class="formControl" readOnly value='+pi.payItemAmount+'></td>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].id"/>';
+						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmount+'></td>';
 						            	payItem = payItem +' <td>';
 						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
-						            	payItem = payItem +' <input id="cashTips" class="checkbox-custom" name="PartofaCTC" type="checkbox">';
+						            	payItem = payItem +' <input id="cashTips" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
 						            	payItem = payItem +' <label for="cashTips" class="checkbox-custom-label"></label>';
 						            	payItem = payItem +' </div>';
 						            	payItem = payItem +' </td>';
@@ -459,11 +462,6 @@ $('body').on('blur', '#generate_payroll_form', function() {
                        
 		        },
 		    }); 
-		
-		
-		
-		
-		
 		$(".usRunpayroll").fadeIn();
 		$(".sideMask").fadeIn(); 
 	}
@@ -477,7 +475,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
 
 <div class="sideMask"></div>
 <div class="modal usRunpayroll" style="display: none;" id="usRunpayroll">
-<form:form id="generate_payroll_form" name="generate_payroll_form" method="post">
+<form:form id="payroll_adjustment_form" name="payroll_adjustment_form" method="post">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -497,6 +495,9 @@ $('body').on('blur', '#generate_payroll_form', function() {
                 <option value="Direct Deposit">Direct Deposit</option>
                 <option value = "By Check">By Check</option>
               </select>
+              <input type="hidden" id="payRate" name="payRate"/>
+               <input type="hidden" id="payrollId" name="payrollId"/>
+                <input type="hidden" id="payrollUUID" name="payrollUUID"/>
             </div>
           </div>
           
@@ -506,11 +507,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
               <p class="mt5 mb0">30</p>
             </div>
           </div>
-          <div class="col-md-1 text-center">
-            <div class="pull-right">
-              <button type="button" class="btn btn-success btnSuccess editUspayslip btn-sm" onClick="editUspayslip(event)" id="editUspaysliptext">Edit</button>
-            </div>
-          </div>
+        
         </div>
       </div>
       <div class="modal-body" style="min-height: 150px; max-height: 425px; overflow-y: auto; padding: 5px 15px;">
@@ -534,13 +531,13 @@ $('body').on('blur', '#generate_payroll_form', function() {
                         </tr>
                         <tr>
                           <td>Regular</td>
-                          <td><input type="text" id="regularHours" name="regularHours" value="" class="formControl" readOnly></td>
-                          <td><input type="text" id="regularHoursAmt" name="regularHoursAmt" value="" class="formControl" readOnly></td>
+                          <td><input type="text" id="regularHours" name="regularHours"  onblur = "editRegularHours();" class="formControl" readOnly></td>
+                          <td><input type="text" id="regularHoursAmt" name="regularHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                         <tr>
                           <td>Overtime</td>
-                          <td><input type="text" id="overTimeHours" name="overTimeHours" value="" class="formControl" readOnly></td>
-                          <td><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt" value="" class="formControl" readOnly></td>
+                          <td><input type="text" id="overTimeHours" name="overTimeHours"   onblur = "editOverTimeHours();" class="formControl" readOnly></td>
+                          <td><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                       </tbody>
                       <tfoot>
@@ -696,6 +693,11 @@ $('body').on('blur', '#generate_payroll_form', function() {
           </div>
         </div>
       </div>
+        <div class="col-md-1 text-center">
+            <div class="pull-right">
+              <button type="button" class="btn btn-success btnSuccess editUspayslip btn-sm" onClick="editUspayslip(event)" id="editUspaysliptext">Edit</button>
+            </div>
+          </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" onClick="closeusRunpayrol();">Close</button>
       </div>
@@ -713,6 +715,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
 			text.innerHTML = "Save"
 		}else {
 			text.innerHTML = "Edit"
+			savePayrollAdjustment();
 		}
 		
 	$("#tablePayslip").find(".formControl").toggleClass("activeEdit");
@@ -728,7 +731,127 @@ $('body').on('blur', '#generate_payroll_form', function() {
 </script>
 
 <!-- Net Edit popup Ends -->
+
+<script>
+function savePayrollAdjustment(){
+	alert("KKKKKKKKKKKKK");
+	  var formData = getFormData("payroll_adjustment_form");
+	 /* var formData = $($('#payroll_adjustment_form')[0]).serialize(); */
+	  	//$("#paysheetLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.post(sourceleadUrl+"/editEmployeePayroll?"+tokenParamName+"="+tokenValue, formData, function(result) {
+			if (result.response === "INVALID_DATA") {
+ 		    showError(result.responseMessage);
+ 		} else if (result.response === "AWKWARD") {
+ 		    location.href = "/errorPage";
+ 		} else if (result.response === "SUCCESS") {
+ 			$("#paysheetLoading").removeAttr("style");	
+				// location.replace(sourceleadUrl+ "/viewHoliday"); 
+ 		} else if (result.indexOf('Sign In') !== -1) {
+ 			location.replace(sourceleadUrl);
+ 		} else {
+ 		    showError("Operation failed, please try again");
+ 		}
+			/*  $("#paysheetLoading").hide(); */
+		});
+}
+</script>
  
+ 
+ <script>
+ function editRegularHours(){
+	var regularHours = $("#regularHours").val();
+	var overTimeHours = $("#overTimeHours").val();
+	var payRate = $("#payRate").val();
+	 var perMinuteRate = payRate /60;
+	 var split = regularHours.split('.');
+     var hours = split[0];
+	 var minute = split[1];
+	 var totlalAmount = 0;
+	 if(typeof minute !== "undefined"){
+		 var hourminits = hours * 60;
+		 var finalmin = parseFloat(hourminits) + parseFloat(minute);
+		 totlalAmount = (perMinuteRate * finalmin);
+	 }else{
+		 var hourminits = hours * 60;
+		 totlalAmount = (perMinuteRate * hourminits);
+	 }
+	 $("#regularHoursAmt").val(totlalAmount.toFixed(2));
+	 combineRegularOverTimeHours(regularHours,overTimeHours);
+	 var overTimeAmt = $("#overTimeHoursAmt").val();
+	 calculateTotalEarnings(totlalAmount,overTimeAmt);
+ }
+ </script>
+ 
+ <script>
+ function editOverTimeHours(){
+	  var payRate = $("#payRate").val();
+	  var overTimeHours = $("#overTimeHours").val();
+	  var regularHours = $("#regularHours").val();
+	 var perMinuteRate = payRate /60;
+	 var otSplit = overTimeHours.split('.');
+     var otHours = otSplit[0];
+	 var otMinute = otSplit[1];
+	 var totlalOtAmount = 0;
+	 if(typeof otMinute !== "undefined"){
+		 var hourminits = otHours * 60;
+		 var finalmin = parseFloat(hourminits) + parseFloat(otMinute);
+		 totlalOtAmount = (perMinuteRate * finalmin);
+	 }else{
+		 var hourminits = otHours * 60;
+		 totlalOtAmount = (perMinuteRate * hourminits);
+	 }
+	 $("#overTimeHoursAmt").val(totlalOtAmount.toFixed(2));
+	 combineRegularOverTimeHours(regularHours,overTimeHours);
+	 var regularAmt = $("#regularHoursAmt").val();
+	 calculateTotalEarnings(regularAmt,totlalOtAmount)
+ }
+ </script>
+ 
+ <script>
+ function combineRegularOverTimeHours(regularHours,overTimeHours){
+	
+	 var minute = regularHours.split(".")[0] * 60;
+     var minute1 = 0; 
+     var regMinute = regularHours.split(".")[1] ;
+     if(typeof regMinute !== "undefined"){
+    	 minute1 = regularHours.split(".")[1] ;
+     }
+     
+     var minute2 = overTimeHours.split(".")[0] * 60;
+     var minute3 = 0; 
+     var otMinute = overTimeHours.split(".")[1] ;
+     if(typeof otMinute !== "undefined"){
+    	 minute3 = overTimeHours.split(".")[1] ;
+     }
+     
+     var bsum = parseInt(minute) + parseInt(minute1)+parseInt(minute2) + parseInt(minute3);
+     
+    var t = bsum; 
+    var hours = Math.floor(t / 60); 
+    var minutes = t % 60;
+    
+    if (minutes < 10) {
+        minutes = '0' + minutes;
+    }
+    if (hours < 10) {
+        hours = '0' + hours;
+    }
+    var total;
+    if(!isNaN(hours) && !isNaN(minutes)){
+        total = hours +"."+ minutes;
+    }else{
+        total =  "00.00";
+    }
+    $("#totalHours").text(total);
+ }
+ </script>
+ 
+ <script>
+ function calculateTotalEarnings(regularHourAmt,overTimeHourAmt){
+	 var totalEarn = parseFloat(regularHourAmt) + parseFloat(overTimeHourAmt);
+	 $("#totalEarnings").text(totalEarn.toFixed(2));
+ }
+ </script>
  
 
 

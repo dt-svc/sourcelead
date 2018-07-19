@@ -41,6 +41,7 @@ import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollContributionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
@@ -58,6 +59,7 @@ import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
 import com.bis.sourcelead.payroll.service.PayItemService;
+import com.bis.sourcelead.payroll.service.PayrollAdjustmentService;
 import com.bis.sourcelead.payroll.service.PayrollContributionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
@@ -129,6 +131,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	USPaysheetService uSPaysheetService;
+	
+	@Autowired
+	PayrollAdjustmentService payrollAdjustmentService; 
 	
 	/**
 	 * find all deduction types from lookup_data table 
@@ -916,7 +921,8 @@ public class USPayrollRestController {
 		return resObj;
 	}
 	
-	/**
+	/**	 * @param response
+
 	 * Get Particular Employee Payroll 
 	 * @param associateSalid
 	 * @param request
@@ -929,9 +935,33 @@ public class USPayrollRestController {
 	public Response<USPayrollDTO> getEmployeePayroll(@RequestParam(value = "payrollUUID",required = false) String payrollUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<USPayrollDTO>  resObj = generateUSPayrollService.getEmployeePayrollByUUID(payrollUUID,orgLocation);
 		return resObj;
+	}
+	
+	/**
+	 * update pay adjustmetns in employee payroll table
+	 * 
+	 * @param payAdjustmentDTO
+	 * @param request
+	 * @param response
+	 * @return Response<PayAdjustmentDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/editEmployeePayroll","/rest/editEmployeePayroll" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<PayAdjustmentDTO> editEmployeePayroll(PayAdjustmentDTO payAdjustmentDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Response<PayAdjustmentDTO> res = generateUSPayrollService.updateEmployeePayroll(payAdjustmentDTO,orgLocation,loginUser);
+
+		}catch (Exception e) {
+		   e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 }
