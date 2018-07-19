@@ -2369,7 +2369,8 @@ public class LeaveManagementRestController {
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception {
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		return leaveService.getAllEmployeesLeavesCounts(orgLocationId, userId, loginUserRole);
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		return leaveService.getAllEmployeesLeavesCounts(orgLocationId, userId, loginUserRole,org.getId());
 	}
 
 	@RequestMapping(value = { "/totalCountsForSelfLeaves","/rest/totalCountsForSelfLeaves" }, method = RequestMethod.GET)

@@ -652,7 +652,7 @@ public class LeaveServiceImpl implements LeaveService{
 				if(leave.getUser().getId() != null){ 
 				 UserRole userrole;
 				try {
-					userrole = userRoleService.getUserDetailsByUserIdAndLocationId(leave.getUser().getId(), orgLocations.getId());
+					userrole = userRoleService.getUserDetailsByUserIdAndLocationId(leave.getUser().getId(), leave.getOrgLocations().getId());
 					leaveDto.setEmpType(userrole.getUserType());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -1258,14 +1258,14 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId,String loginUserRole) {
+	public LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId,String loginUserRole,Long orgId) {
 		
 		int requestedCounts = 0;
 		int approvedCounts = 0;
 		int rejectedCounts = 0;
 		int cancelledCounts = 0;
 		LeaveDTO leaveDto = new LeaveDTO();
-		List<LeaveApproveHierarchy> leavesList = leaveDao.getAllEmployeesLeavesCounts(orgLocationId,userId,loginUserRole);
+		List<LeaveApproveHierarchy> leavesList = leaveDao.getAllEmployeesLeavesCounts(orgLocationId,userId,loginUserRole,orgId);
 		for (LeaveApproveHierarchy lah : leavesList) {
 			if(Constants.PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus())) {
 				requestedCounts = requestedCounts + 1;
