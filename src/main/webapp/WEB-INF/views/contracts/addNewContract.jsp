@@ -285,13 +285,21 @@
               </div>
             </div>
           
+       		<c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
+       			<c:if test="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'}">
+       				<input type="hidden" value="${contract.orgRelations.id}" id="orgRelationId" name="orgRelationId"/>
+       			</c:if>
+       			<c:if test="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW'}">
+       				<input type="hidden" value="${contract.orgRelations.id}" id="clientOrgRelationId" name="clientOrgRelationId"/>
+       			</c:if>
+           	</c:if>
+          
          <div class="form-group" id="vendorDiv" style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorVendor">
               
               		<c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
                 		<input type="text" readonly class="form-control" id="venName" name="venName" value="${contract.contractOrgLocationId.orgLocationName}" data-validation="required" field-name="Contract Type">
-                		<input type="hidden" value="${orgRelationId}" id="orgRelationId" name="orgRelationId"/>
                 	</c:if>
                 	<c:if test="${empty contract.templateSubmissionStatus || contract.templateSubmissionStatus != 'PENDING'}">
                 		<div class="input-group col-md-10 pull-left errorInptgroup">
@@ -355,7 +363,6 @@
               
               		<c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
                 		<input type="text" readonly class="form-control" id="venName" name="venName" value="${contract.contractOrgLocationId.orgLocationName}" data-validation="required" field-name="Contract Type">
-                		<input type="hidden" value="${orgRelationId}" id="clientOrgRelationId" name="clientOrgRelationId"/>
                 	</c:if>
               		<c:if test="${empty contract.templateSubmissionStatus || contract.templateSubmissionStatus != 'PENDING'}">
               			<div class="input-group col-md-10 pull-left errorInptgroup">
@@ -500,14 +507,27 @@
 	   		 <!-- Radio buttons for Sequential or Parallel function -->
 	   		 <div  class="clearfix"></div>
                 <div  class="ml pull-left apprverReq" >
-                <label class="rad" id="parallel">
-                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" checked="checked" onclick="getParallelApprovers();">
-                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
-                </label>
-                <label class="rad" id="sequential">
-                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" ${'SEQUENTIAL'  == contract.ownersType ? 'checked' : ''} onclick="getSequentialApprovers();">
-                <i class="fa fa-retweet" title="Sequential"></i>
-                </label>
+                	<c:if test="${!empty contract.ownersType}">
+		                <label class="rad" id="parallel">
+		                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" ${'Parallel'  == contract.ownersType ? 'checked' : ''} onclick="getParallelApprovers();">
+		                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
+		                </label>
+		                <label class="rad" id="sequential">
+		                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" ${'Sequential'  == contract.ownersType ? 'checked' : ''} onclick="getSequentialApprovers();">
+		                <i class="fa fa-retweet" title="Sequential"></i>
+		                </label>
+                	</c:if>
+                	<c:if test="${empty contract.ownersType}">
+		                <label class="rad" id="parallel">
+		                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" checked onclick="getParallelApprovers();">
+		                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
+		                </label>
+		                <label class="rad" id="sequential">
+		                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" onclick="getSequentialApprovers();">
+		                <i class="fa fa-retweet" title="Sequential"></i>
+		                </label>
+                	</c:if>
+                
                  
                   <div id="navbar" class="glyphicon glyphicon-info-sign text-info ml"></div>
                 </div>
@@ -518,14 +538,31 @@
               <label class="col-md-4">Signing Authority<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select multiple class="chosen-select form-control" id="parallelOwner" name="parallelOwner" data-placeholder="Select signing authority" data-validation="required" field-name="Owner">
-                  <c:forEach var="user" items="${userList}">
-	                  <c:if test = "${!empty contract.ownerUserId.id}">
+                  <%-- <c:forEach var="user" items="${userList}">
+	                  <c:if test = "${!empty contract.parallelOwnerId}">
 	                 	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == contract.ownerUserId.id ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
 	                  </c:if>
 	                  <c:if test = "${empty contract.ownerUserId.id}">
 	                  	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
 	                  </c:if>
-                  </c:forEach>
+                  </c:forEach> --%>
+                  
+                  
+                  <c:forEach var="user" items="${userList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="ownerId" items="${contract.parallelOwnerId}">
+					    <c:if test="${ownerId eq user.id}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${user.id}">${user.firstName} ${user.lastName}</option>
+					    </c:if>
+					</c:forEach>
+					<c:if test="${NUM == 0}">
+						<option  value="${user.id}">${user.firstName} ${user.lastName}</option>
+					</c:if>
+                </c:forEach>
+                  
+                  
+                  
                   </select>
               </div>
           </div> 
@@ -534,7 +571,7 @@
           <div class="form-group row">
               <label class="col-md-4">Signing Authority1<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="sequentialOwner1" name="sequentialOwner1" data-placeholder="Select signing authority1" data-validation="required" onchange="refreshSigningAuthority2();" field-name="Owner">
+                  <select class="chosen-select form-control" id="sequentialOwner1" name="sequentialOwner1" data-placeholder="Select signing authority1" data-validation="required" onchange="refreshSigningAuthority2();" field-name="sequentialOwner1">
                   <option value=''>Select Signing Authority1</option>
                   <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.sequentialOwner1}">
@@ -551,7 +588,7 @@
           <div class="form-group row">
               <label class="col-md-4">Signing Authority2<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="sequentialOwner2" name="sequentialOwner2" data-placeholder="Select signing authority2" onchange="changeSaveButton();" data-validation="required" field-name="Owner">
+                  <select class="chosen-select form-control" id="sequentialOwner2" name="sequentialOwner2" data-placeholder="Select signing authority2" onchange="changeSaveButton();" data-validation="required" field-name="sequentialOwner2">
                   <option value=''>Select Signing Authority2</option>
                   <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.sequentialOwner2}">
@@ -806,8 +843,8 @@
           <div class="pull-right mt">
           <input type="hidden" name="contrId" id="contrId" value="${contract.id}"/>
 <!--           <input type="hidden" name="saveType" id="saveTypeId" value=""/> -->
-            <input type="button" value="Draft" id="draft_template" onmouseover="validateContractTitle();" onclick="saveNewContract('DRAFT'); " class="btn btn-primary ml10 pull-left">
-            <input type="button" value="Send" id="save_template" onmouseover="validateContractTitle();" onclick="validateContractTitle();saveNewContract('PENDING'); " class="btn btn-success ml10 pull-left">
+            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT'); validateContractTitle();" class="btn btn-primary ml10 pull-left">
+            <input type="button" value="Send" id="save_template" onclick="validateContractTitle();saveNewContract('PENDING'); " class="btn btn-success ml10 pull-left">
 
 <%--             <input type="button" value="Send For Approve" id="save_approver_template" onclick=" validateContractTitle(); saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}"> --%>
             <input type="button" value="Cancel" class="btn btn-default ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
@@ -874,7 +911,7 @@ function getParallelApprovers(){
 	$('#sequentialOwner2').trigger("chosen:updated");
 // 	$('#parallelOwner').trigger("chosen:updated");
 	
-	$('#parallelOwner').removeAttr('data-validation');
+	$('#parallelOwner').removeAttr('data-validation-optional');
 	$('#parallelOwner').attr('data-validation',"required");
 	$('#sequentialOwner2').removeAttr('data-validation');
 	$('#sequentialOwner2').attr('data-validation-optional',"true");
@@ -894,9 +931,9 @@ function getSequentialApprovers(){
 //	 	$('#sequentialOwner1').trigger("chosen:updated");
 //	 	$('#sequentialOwner2').trigger("chosen:updated");
 		$('#parallelOwner').trigger("chosen:updated");
-		$('#sequentialOwner1').removeAttr('data-validation');
+		$('#sequentialOwner1').removeAttr('data-validation-optional');
 		$('#sequentialOwner1').attr('data-validation',"required");
-		$('#sequentialOwner2').removeAttr('data-validation');
+		$('#sequentialOwner2').removeAttr('data-validation-optional');
 		$('#sequentialOwner2').attr('data-validation',"required");
 		$('#parallelOwner').removeAttr('data-validation');
 		$('#parallelOwner').attr('data-validation-optional',"true");

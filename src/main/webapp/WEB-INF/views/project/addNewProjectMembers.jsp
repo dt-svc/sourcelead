@@ -1212,7 +1212,7 @@ function assignMembers(){
       		$.ajax({
 					type : "POST",
 	  	    	    data : formData,
-					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
+					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId+"&projectClientUUID="+projectClientUUID, 
 					success : function(result) {
 						if (result && result.response === "INVALID_DATA") {
 							$("#associateRequestLoading").removeAttr("style");

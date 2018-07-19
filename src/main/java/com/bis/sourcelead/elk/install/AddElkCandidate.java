@@ -66,6 +66,7 @@ public class AddElkCandidate{
 					candidateIndex.setFirstName(firstLetterCapitalizedString(rs.getString("FIRST_NAME")));
 					candidateIndex.setLastName(firstLetterCapitalizedString(rs.getString("LAST_NAME")));
 					String createdBy = null ;
+					Long orgLocationId = rs.getLong("ORG_LOCATION_ID");
 					
 					if(!isNullOrEmpty(rs.getString("CREATED_BY"))){
 						createdBy = rs.getString("CREATED_BY");
@@ -96,6 +97,8 @@ public class AddElkCandidate{
 					candidateIndex.setLongitude(rs.getString("LONGITUDE"));
 					
 					candidateIndex.setGeneratedId(rs.getString("GENERATED_ID"));
+					
+					candidateIndex.setCreatedByUserCode(rs.getString("CREATED_BY"));
 					
 					if(!isNullOrEmpty(rs.getLong("MASTER_CANDIDATE_ID"))){
 						candidateIndex.setMasterCandidateId(rs.getLong("MASTER_CANDIDATE_ID"));
@@ -285,6 +288,23 @@ public class AddElkCandidate{
 								    }
 			    	           }
 							}
+							
+
+							String sql7 = "SELECT * FROM "+dbconfig.getSchema()+".SOURCELEAD_TAGS  tags where  tags.ENTITY_ID = '"+candidateId+"' and  tags.ORG_LOCATION_ID = '"+orgLocationId+"' and tags.ENTITY_TYPE = 'CANDIDATES' and tags.STATUS = '1' ";
+							Statement stmt7 = conn.createStatement();
+							ResultSet rs7 = stmt7.executeQuery(sql7);
+							if(rs7 != null){
+								StringBuilder tagsStr = new StringBuilder();
+								
+								 while(rs7.next()){
+									 tagsStr = tagsStr.append(rs7.getString("TAG_NAME")).append(","); 
+							    }
+								 String tagString = tagsStr.toString();
+								 if(tagString != null && !tagString.isEmpty()) {
+									 candidateIndex.setTags(tagString.substring(0,tagString.length()-1));
+								 }
+								 
+		    	           }
 						
 		    	    }
 		    	    candidateIndexsList.add(candidateIndex);

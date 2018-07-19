@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.AssociateSalaryDao;
+import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.payroll.dao.impl.AssociateBankDataDaoImpl;
@@ -90,5 +91,37 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			logger.error("add associate salary History failed due to : "+exception.getMessage());
 		}
 		return associateSalHis;
+	}
+
+
+	@Override
+	@Transactional
+	public AssociatePayItem findPayItemByPayItemId(Long payItemId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		AssociatePayItem associatePayItem = null;
+		try {
+			List<AssociatePayItem> associatePayItemList = session.createQuery("from AssociatePayItem associatePayItem where associatePayItem.id=:id and associatePayItem.status = 1").setLong("id", payItemId).list();
+			if (associatePayItemList != null && associatePayItemList.size() > 0) {
+				associatePayItem = associatePayItemList.get(0);
+			}
+		} catch (Exception e) {
+			logger.error("findPayItemByPayItemId failed due to :" + e.getMessage());
+		}
+		return associatePayItem;
+	}
+	
+	@Override
+	@Transactional
+	public AssociatePayItem saveUpdatedPayItem(AssociatePayItem associatePayItem)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (associatePayItem != null) {
+				session.saveOrUpdate(associatePayItem);
+			}
+		} catch (Exception exception) {
+			logger.error("add associate pay item failed due to : "+exception.getMessage());
+		}
+		return associatePayItem;
 	}
 }

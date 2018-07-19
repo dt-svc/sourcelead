@@ -14,11 +14,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -34,7 +37,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
-import org.hibernate.validator.constraints.br.CNPJ;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -70,10 +72,13 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadTags;
+import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
@@ -87,13 +92,13 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  * Handles requests for the Candidate List Service.
@@ -170,6 +175,9 @@ public class CandidateListRestController {
 
 	@Autowired
 	private CandidateCustomFieldDataService candidateCustomFieldDataService;
+	
+	@Autowired
+	SourceleadTagsService sourceleadTagsService;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -322,12 +330,26 @@ public class CandidateListRestController {
 						for (QueryBuilder QueryBuilder : QueryBuilderList) {
 							allBoolSubQueryBuilder.should(QueryBuilder);
 						}
+						DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
+						try{
+							if(keywd.contains("/")){
+								keywd = keywd.replaceAll("/", "a");
+							}
+							Date d = df.parse(keywd);
+							allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							String dateStr = commonUtil.elkDateFormatter(d);
+							allBoolSubQueryBuilder.should(QueryBuilders.termQuery("updatedDate", dateStr));
+						 }
+						 catch(Exception e){}
 						allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 					}
 				}
 			}
 			boolQueryBuilder.must(allBoolQueryBuilder);
 		}
+		
+		
+		
 		// Designation
 		List<String> designationArray = search.getDesignation();
 		if (designationArray != null && !designationArray.isEmpty()) {
@@ -514,6 +536,13 @@ public class CandidateListRestController {
 			boolQueryBuilder.must(favBoolQueryBuilder);
 		}
 		
+		
+		if(StringUtils.isNotBlank(search.getCreatedByFilter()) && search.getCreatedByFilter().equalsIgnoreCase("myCandidates")) {
+			BoolQueryBuilder createdByBuilder = QueryBuilders.boolQuery();
+			createdByBuilder.must(QueryBuilders.matchQuery("createdByUserCode", user.getUserCode()));
+			boolQueryBuilder.must(createdByBuilder);
+		}
+		
 		if(StringUtils.isNotBlank(search.getCandidateTypeFilter())) {
 			String[] candidateType = search.getCandidateTypeFilter().split(",");
 			BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -547,6 +576,22 @@ public class CandidateListRestController {
 				createdByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 			}
 			boolQueryBuilder.must(createdByBoolQueryBuilder);
+		}
+		
+		
+		if (StringUtils.isNotEmpty(search.getCreatedByCandidates())) {
+			ArrayList<String> createdByArrayCandidate = getSearchKeywordsFromChosenSelectField(search.getCreatedByCandidates());
+			if(search.getCreatedByCandidates().equalsIgnoreCase("myCandidates")) {
+				
+				if (createdByArrayCandidate != null && !createdByArrayCandidate.isEmpty()) {
+					BoolQueryBuilder createdByBoolQueryBuilder = new BoolQueryBuilder();
+					for (String keywd : createdByArrayCandidate) {
+						createdByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("updatedBy", user.getUserCode()));
+					}
+					boolQueryBuilder.must(createdByBoolQueryBuilder);
+				}
+			} 
+			
 		}
 
 		// updatedOn
@@ -638,6 +683,16 @@ public class CandidateListRestController {
 				visaBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("visaType", keywd));
 			}
 			boolQueryBuilder.must(visaBoolQueryBuilder);
+		}
+		
+		
+		List<String> candidateTagsArray = search.getCandidateTags();
+		if (candidateTagsArray != null && !candidateTagsArray.isEmpty()) {
+			BoolQueryBuilder tagBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : candidateTagsArray) {
+				tagBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("tags", keywd));
+			}
+			boolQueryBuilder.must(tagBoolQueryBuilder);
 		}
 
 		if (StringUtils.isNotEmpty(search.getIsAssociate()) && search.getIsAssociate().equalsIgnoreCase(Constants.YES)) {
@@ -731,6 +786,7 @@ public class CandidateListRestController {
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateMobilePhone", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("tags", keywd));
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
@@ -836,7 +892,19 @@ public class CandidateListRestController {
 				}
 				candidateDTO.setAllAndCandidateVisa(visa);
 				candidateDTO.setVisaType(can.getVisaType());
-
+				
+				Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+				candidateDTO.setTagsList(tagsList);
+				Set<String> candidateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.CANDIDATES.getValue(), can.getId());
+				if(candidateTagsList != null && !candidateTagsList.isEmpty()) {
+					StringBuilder candidateTagsStr = new StringBuilder();
+					for(String tags : candidateTagsList) {
+						candidateTagsStr = candidateTagsStr.append(tags).append(",");
+					}
+					candidateTagsStr.toString();
+					candidateDTO.setCandidateTags(candidateTagsStr.substring(0,candidateTagsStr.length()-1));
+				}
+				
 				if (null != can.getExpectedRateCurrencey()) {
 					candidateDTO.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
 				} else {
@@ -925,6 +993,9 @@ public class CandidateListRestController {
 				candidateDTO.setIsAssociate(can.getIsAssociate());
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
+				if(can.getConsultantUser() != null) {
+					candidateDTO.setUserId(can.getConsultantUser().getId());
+				}
 				candidateDTO.setCandidateId(String.valueOf(can.getId()));
 				SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
 				if (action != null && action.getId() != null) {
@@ -1438,10 +1509,10 @@ public class CandidateListRestController {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 				if (null != candidate) {
-					if (null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_ACTIVE)) {
-						candidate.setIsFavourite(Constants.RECORD_INACTIVE);
-					} else {
+					if (null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_INACTIVE)) {
 						candidate.setIsFavourite(Constants.RECORD_ACTIVE);
+					} else {
+						candidate.setIsFavourite(Constants.RECORD_INACTIVE);
 					}
 					candidate.setTeamId(null);
 					candidateService.saveOrUpdateCandidate(candidate);
@@ -1617,6 +1688,7 @@ public class CandidateListRestController {
 			@RequestParam(value = "candidateFilterSkills", required = false) String candidateFilterSkills,
 			@RequestParam(value = "availability", required = false) String availability,
 			@RequestParam(value = "candidateTypeFilter", required = false) String candidateTypeFilter,
+			@RequestParam(value = "createdByFilter", required = false) String createdByFilter,
 			@RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -1631,7 +1703,7 @@ public class CandidateListRestController {
 			candidatesList = candidateService.getCandidatesListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
 			candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
-					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter);
+					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
 
 		}
 
@@ -1749,6 +1821,98 @@ public class CandidateListRestController {
 		}
 		return response;
 	}
+	
+	
+	
+	@RequestMapping(value = "/saveOrUpdateTagsBycandidateId")
+	public Response<String> saveOrUpdateTagsBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(defaultValue = "0") long candidateId,
+			@RequestParam(value = "tagName", required = false) String tagName, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			User user = userService.getUserById(loginUserId);
+			if (user != null) {
+				Candidate can = candidateService.getCandidateByCandidateId(candidateId);
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+					Set<String> candidateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(orgLocations.getId(), TagEntites.CANDIDATES.getValue(), can.getId());
+					ArrayList<String> newTags = new ArrayList<>(Arrays.asList(tagName.split("\\s*,\\s*")));
+					ArrayList<String> actualNewTags = new ArrayList<>();
+					actualNewTags.addAll(newTags);
+				    Set<String> newTagsSet = new HashSet<String>(actualNewTags);
+				    newTagsSet.removeAll(candidateTagsList);
+				    candidateTagsList.removeAll(actualNewTags);
+				    can.setCandidateTags(tagName);
+				    
+				    
+				    if(newTagsSet != null && !newTagsSet.isEmpty() && newTagsSet.size() > 0) {
+				    	for(String tag : newTagsSet) {
+				    		if(StringUtils.isNotBlank(tag)) {
+				    			SourceleadTags tags = new SourceleadTags();
+					    		tags.setEntityType(TagEntites.CANDIDATES);
+					    		tags.setEntityId(can.getId());
+					    		tags.setTagName(tag);
+					    		tags.setOrgLocationId(orgLocations);
+					    		tags.setStatus(Constants.CANDIDATE_ACTIVE);
+					    		tags.setCreatedBy(user);
+					    		tags.setCreatedDate(new Date());
+					    		sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    	
+				    	String addedTags =  StringUtils.join(newTagsSet,",");
+				    	if(addedTags != null && !addedTags.isEmpty()) {
+				    		StringBuffer addedTagSummary = new StringBuffer();
+					    	addedTagSummary.append("Tag(s)").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(addedTags)
+							.append(Constants.NEW_VALUE_TAG_END);
+					    	candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_TAG_ADDED, addedTagSummary.toString(), "CANDIDATE");
+				    	}
+				    	
+				    }
+				    
+				    if(candidateTagsList != null && !candidateTagsList.isEmpty() && candidateTagsList.size() > 0) {
+				    	for(String removedTags : candidateTagsList) {
+				    		SourceleadTags tags = sourceleadTagsService.getSourceleadTagsByEntityIdAndTagNameAndOrgLocationId(orgLocations.getId(), TagEntites.CANDIDATES.getValue(), can.getId(),removedTags);
+				    		if(tags != null) {
+				    			tags.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				    			tags.setUpdatedBy(user);
+				    			tags.setUpdatedDate(new Date());
+				    			sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    	
+				    	String removedTags =  StringUtils.join(candidateTagsList,",");
+				    	StringBuffer removedTagSummary = new StringBuffer();
+				    	removedTagSummary.append("Tag(s)").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(removedTags)
+						.append(Constants.OLD_VALUE_TAG_END);
+				    	candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_TAG_REMOVED, removedTagSummary.toString(), "CANDIDATE");
+				    }
+				    
+			    candidateService.saveOrUpdateCandidateElkDocument(can);
+			    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+			    SourceLeadSessionManager.removeSessionAttribute(request, "tagsList");
+			    SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
+				    
+				response.setResponseMessage(Result.SUCCESS.getValue());
+
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
+	
+	@RequestMapping(value = "/getSourceleadTagsList")
+	public  Set<String>  getSourceleadTagsList(
+			 HttpServletRequest request) throws Exception {
+		 Set<String> tagsList =  (Set<String>) SourceLeadSessionManager.getSessionAttribute(request, "tagsList");
+		return tagsList;
+	}
+	
 
 	@RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
 	public Response<String> saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
@@ -2102,5 +2266,27 @@ public class CandidateListRestController {
 		}
 		return response;
 	}
+	
+	
+	@RequestMapping(value = "/getCandidatesListForJobBulkSubmission")
+	public @ResponseBody ResponseList<SubmissionCandidateListView> getCandidatesListForJobBulkSubmission(CandidateDTO candidateDTO,HttpServletRequest request) throws Exception {
+
+	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			String[] tableColumns = { "action", "candidateName", "email", "primarySkill", "employementType", "vendorName", "updatedDate", "location"};
+			
+			int sortColumnIndex = 1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default descending order
+			if (candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(candidateDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = candidateDTO.getOrder().get(0).get("dir");
+			}
+			candidateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			candidateDTO.setSortOrder(sortColumnOrder);
+			ResponseList<SubmissionCandidateListView> candidateDTOList = candidateService.getSubmissionCandidateListView(candidateDTO, orgLocations);
+			return candidateDTOList;
+			
+		}
+	
 
 }

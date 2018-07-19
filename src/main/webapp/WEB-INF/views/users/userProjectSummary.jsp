@@ -154,7 +154,8 @@ function prepareAssignedProjectsData(data){
     $("#candidateSideDiv").empty();
     $("#tab-18").empty(); 
     $("#tab-17").empty(); 
-    $("#tab-19").empty(); 
+    $("#tab-19").empty();
+    $("#tab-25").empty();
     $("#tab-19").append(result);  
     pagination(); 
 

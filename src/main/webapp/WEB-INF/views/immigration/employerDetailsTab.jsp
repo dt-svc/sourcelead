@@ -16,7 +16,7 @@
 						</c:choose>
 				    </c:otherwise>
 				</c:choose>	
-		  	<span><input class="immigraTabSerach" id="employersDataSearch" type="text"></span>
+		  	<span><input class="immigraTabSerach" title="Name/Designation" placeholder="Name/Designation" id="employersDataSearch" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">
@@ -26,6 +26,7 @@
 				<th>Employer</th>
 				<th>Designation</th>
 				<th>Address</th>
+				<th>Attachment</th>
 				<th>Start Date</th>
 				<th>End Date</th>
 				<c:choose>
@@ -45,16 +46,26 @@
 			  </tr>
 			<c:forEach var="empItems" items="${candidatesEmployersList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-sm">${empItems.name}</div></td>
-				<td><div class="tbldata-dotdot-sm">${!empty empItems.designation ? empItems.designation : '---' }</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty empItems.address ? empItems.address : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${empItems.name}">${empItems.name}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${empItems.designation}">${!empty empItems.designation ? empItems.designation : '---' }</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${empItems.address}">${!empty empItems.address ? empItems.address : '---'}</div></td>
+				<td>
+				<c:if test="${! empty empItems.employerFileName}">
+				<div class="tbldata-dotdot-me" title = "${empItems.employerFileName}"><span class="fileName">${empItems.employerFileName}</span>
+					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${empItems.employerFileUrl}','${empItems.employerFileName}','${empItems.employerFileContentType}');" title="View"></a>
+					<a class="glyphicon glyphicon-download-alt" download href="${empItems.employerFileUrl}" title="Download"></a></div>
+					</c:if>
+					<c:if test="${empty empItems.employerFileName}">
+					<div class="tbldata-dotdot-me">---</div>
+					</c:if>
+					</td>
 				<td><div class="">${empItems.startMonth} ${empItems.startYear}</div></td>
 				<td><div class="">${empItems.endMonth} ${empItems.endYear}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="editEmpDetailsByRowId(${empItems.id});"
 								class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-								 onclick="deleteEmpDetailsById(${empItems.id});" 
+								 onclick="deleteImmigrationRecord('deleteEmpDetails',${empItems.id});" 
 								 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 				    </c:when>
 				    <c:otherwise>
@@ -62,7 +73,7 @@
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
 						      <td><div><i id="edit" onclick="editEmpDetailsByRowId(${empItems.id});"
 										class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-										 onclick="deleteEmpDetailsById(${empItems.id});" 
+										 onclick="deleteImmigrationRecord('deleteEmpDetails',${empItems.id});" 
 										 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
@@ -103,7 +114,7 @@
 		<input type = "hidden" id="candidateEmpId"  name="candidateEmployeeId">
 		
 		<div class="popupHead">
-			<h2>Add Employee</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
+			<h2>Add Employer</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFunEmployer();"></a>
 		</div>
 		
 		<div class="popupMid clearfix overflow_inherint">
@@ -112,7 +123,7 @@
 				<div class="row">
 				<label class="col-md-4">Employer<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8">
-              		<input type="text" class="form-control" placeholder="Employer" id = "name" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name"/>
+              		<input type="text" class="form-control" placeholder="Employer" id = "name" name="name" data-validation="required validate_AlphaNumber validate_Space validate_length length2-100" field-name="Employer Name"/>
 				</div>
 				</div>
 			</div>
@@ -120,7 +131,7 @@
 				<div class="row">
 				<label class="col-md-4">Designation</label>
               	<div class="col-md-8">
-              		<input type="text" placeholder="Employer Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation"  class="form-control" />
+              		<input type="text" placeholder="Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Designation"  class="form-control" />
 				</div>
 				</div>
 			</div>				          
@@ -128,15 +139,22 @@
 				<div class="row">
 				<label class="col-md-4">Address</label>
               	<div class="col-md-8">
-              		<input type="text" placeholder="Address" id = "address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" class="form-control" />
+              	<input class="form-control positionRelative" id="address" name="address" onclick="initLocationAuto('address');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('address');"></i>
 				</div>
 				</div>
 			</div>
+			
+			 <div class="col-sm-12 noPad mt clearfix">
+		             <div class="clearfix checkbox">
+		       <label> <input type="checkbox" id="isCurrentPosition" value="Y" onClick ="employercurrentPosition();"name="isCurrentPosition"> Is Current Position</label>
+	        </div>
+		           </div>
           <div class="col-sm-12 noPad mt clearfix">
 				<div class="row">
 				<label class="col-md-4">Start Date</label>
               	<div class="col-md-4"> 
-              		<select class="newSelect"  name="startMonth" id="startMonth" onChange="monthIfYearRequired();">';
+              		<select class="newSelect"  name="startMonth" id="startMonth" onChange="monthIfYearRequired();">
 		                      <option value="">Select Month</option>
 							   <option value="1&January">January</option>
 		                      <option value="2&February">February</option>
@@ -153,18 +171,20 @@
 		                  </select>
 				</div>
 				<div class="col-md-4" id="startYearDiv">
-					<input type="text" max class="form-control input-sm" value="" id="startYear" name="startYear" placeholder="Enter Year"
+					<input type="text" max class="form-control input-sm" value="" maxlength="4" id="startYear" name="startYear" placeholder="Enter Year"
 						field-name="Start Year"
 						data-validation="validate_Space validate_extno validate_length length4-4"
 						data-validation-optional="true">
+						
 				</div>
+				<p id="startYearValidation" class="text-danger small" style="display: none"></p>
 				</div>
 			</div>				
-          <div class="col-sm-12 noPad mt clearfix">
+          <div class="col-sm-12 noPad mt clearfix" id = "endDateDivId">
 				<div class="row">
 				<label class="col-md-4">End Date</label>
               	<div class="col-md-4"> 
-              		<select class="newSelect"  name="endMonth" id="endMonth" onChange="monthIfYearRequired();">';
+              		<select class="newSelect"  name="endMonth" id="endMonth" onChange="monthIfYearRequired();">
 		                      <option value="">Select Month</option>
 							   <option value="1&January">January</option>
 		                      <option value="2&February">February</option>
@@ -181,11 +201,14 @@
 		                  </select>
 				</div>
 				<div class="col-md-4" id="startYearDiv">
-					<input type="text" max class="form-control input-sm" value="" id="endYear" name="endYear" placeholder="Enter Year"
+					<input type="text" max class="form-control input-sm" value="" maxlength="4" id="endYear"  name="endYear" placeholder="Enter Year"
 						field-name="End Year"
 						data-validation="validate_Space validate_extno validate_length length4-4"
-						data-validation-optional="true">
+						data-validation-optional="true" onChange="monthIfYearRequired();">
+						
 				</div>
+				<p id="endYearValidation" class="small text-danger" style="display: none"></p>
+				
 				</div>
 			</div>	
 			<div class="col-sm-12 noPad mt clearfix" id="immigrationEmpDocDiv">
@@ -212,20 +235,38 @@
 		
 		<div class="clearfix"></div>
 		<div class="immiPopFoot mt clearfix">
-            <input value="Save"class="" type="button" id = "save_Buton" onclick="saveEmployerDetails('save');"> 
-            <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFun();">
+            <input value="Save"class="" type="button" id="employerSave_Buton" onclick="saveEmployerDetails('save');"> 
+            <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFunEmployer();">
           </div>		
 	</div><!-- popup code end -->
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#visasTab');" class="btn btn-default btn-sm">
              <!-- 	<input type="button" value="Skip" onclick="goToSummaryTab('#residencesTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#residencesTab');" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#educationsTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 	</form>
 	
-		
+<script>
+
+
+
+	function employercurrentPosition() {
+		var currentposition = document.getElementById("isCurrentPosition").checked;
+		if (currentposition) {
+			document.getElementById("endDateDivId").style.display = 'none';
+			$('#endYear').removeAttr('data-validation');
+			$('#endMonth').removeAttr('data-validation');
+			$("#endMonth").val("");
+			$('#endYear').val("");
+			document.getElementById("endYearValidation").style.display="none";
+			endYearFlag = true;
+		} else if (document.getElementById("endDateDivId").style.display == 'none') {
+			document.getElementById("endDateDivId").style.display = 'block';
+		}
+	}
+</script>		
 <script>
 	// Add Employee PopUp
 	$("#addEmpl").click(function(){
@@ -233,12 +274,21 @@
 		$("#emploView").fadeIn(100);
 	});
 
-	function popFun() {
+	function popFunEmployer() {
 		$(".popMask").fadeOut(200);
 		$("#emploView").fadeOut(200);
 		$("#employerDetails_form")[0].reset();
 		$("#candidateEmpId").val('');
+		$('#emploView').find('p.jquery_form_error_message').remove();
+		$('#startYearDiv').find('p.jquery_form_error_message').remove();
+		$('#endDateDivId').find('p.jquery_form_error_message').remove();
+		$("#startYearValidation").find('p.jquery_form_error_message').remove();
+		$("#endYearValidation").find('p.jquery_form_error_message').remove();
+		$("#endYearValidation").empty();
+		$("#endMonth").find('p.jquery_form_error_message').remove();
+		$('#startYearValidation').removeAttr('style'); 
 	}
+	
 	$("#employersDataSearch").keyup(function (e) {
 	    if (e.which === 13) {
 	    	getCandidateEmployerList(candidateId);
@@ -286,4 +336,6 @@ function removeImmiEmpDocFile(){
 	else {
         $('#employersfilled').hide()
 	}
+  
+ 
 </script>

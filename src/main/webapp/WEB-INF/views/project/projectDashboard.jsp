@@ -74,53 +74,34 @@ overflow-x: auto;
         
 	   <div class="timesheet_out timesheet_background">
 		
-        <div class="timesheet_head timesheetHead topfilters">
-			<div class="pull-left cand-advsrch advsrch_chosen">
-			     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetProjectFilter();" title="Refresh">
-				    <span class="fa fa-refresh"></span>
-				</button>
+		
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetProjectFilter();"></a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+      
+      	  <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
+	               <a class="newAdBtn" onClick="getClientProjectPop();" title="Add Project">+ Project</a>
+			</sec:authorize>
+			</li>
+			
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 				
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
-				</a>
-				
-	       </div>
-        	
-        	
-        	
-        	<ul>
-        	<li class="positionRelative">
-				  <div class="dynamic_search">
-		   			<input type='text' placeholder='Search' id='projectsDataTableSearch'/>
-		   			<span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="filter();"></i></span>
-				  </div>
-			  </li>
-			  
-		      	<li title="Export"><a id="export-pop" onClick="exportpop();"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-					<div id="exportPop" class="user_exp">
-						<ul class="ul_padding">
-							<li onclick="projectExport('Pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-							<li onclick="projectExport('Excel');" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-						</ul>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+	                	<sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
+		           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="projectExport('Excel');" title="Excel">Export Excel</a>            
+			          	</sec:authorize>
+						</span>
 					</div>
-				 </li>
-				 
-	             
-	             <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
-							<a onclick="getActions();" class="action"
-								href="javascript:void(0)">Add Project <i
-								class="fa fa-caret-down"></i>
-							</a>
-							<div class="action-pop">
-								<span> 
-								<a href="<c:url value='${appPath}/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
-								<a href="<c:url value='${appPath}/clientProject'/>"><i class="fa fa-plus"></i>Client Project</a>
-								</span>
-							</div>
-						</sec:authorize></li>
-                <div class="clearfix"></div>
-            </ul>
-            <div class="clearfix"></div>
-        </div>
+				</li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='projectsDataTableSearch'/><span class="repSearchIcon" onClick="filter();"></span></li>
+        </ul>
+      </div>		
 			
 	<div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
     	<div id="projectFilterList" class="datatable_filter"></div>
@@ -164,7 +145,7 @@ overflow-x: auto;
 							 
 							 
 					 	<div class="col-md-12 mb">
-							<label><strong>Invoice Frequency</strong></label>
+							<label><strong>Timesheet Frequency</strong></label>
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="frequencyFilter">
 		                    	    <li class="checkBox positionRelative" ><input  name="invoiceFrequency" type="checkbox" value ="Weekly"><label for="c7">Weekly</label></li>
@@ -188,7 +169,7 @@ overflow-x: auto;
 									 <div class="clearfix filterSearch-ul">
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
 										    <c:forEach var="report" items="${add_client}">
-											     <li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${report.id}" ><label>${report.clientName}</label></li>
+											     <li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${report.orgRelId}" ><label>${report.clientName}</label></li>
 											</c:forEach>
 										</ul>
 									 </div> 
@@ -241,7 +222,70 @@ overflow-x: auto;
 		   </div>		
 	   </section>
 	   <div id="popUp"></div>
+	   
+	   
+ 	   <div class="addcandidate-popup">
+				  <div class="row">
+                <div class="col-md-offset-1 col-md-10">
+				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeClientProject()"><i class="fa fa-close"></i></a>
+                       
+                       <div class="col-md-4 mt">
+                        <div class="small-widget bgGreen">
+                            <a href="<c:url value='${appPath}/project'/>" >
+                                <div class="clearfix mb10">
+                                <i class="fa fa-bar-chart fa-4x"></i>
+                                </div>
+                                <strong class="clearfix">Internal Project</strong>
+                                </a>
+                        </div>
+					  </div>
+                       
+					  <div class="col-md-4 mt">
+                          <div class="small-widget bg-purple">
+                              <a href="<c:url value='${appPath}/clientProject'/>" >
+                                  <div class="clearfix mb10">
+                                      <i class="fa fa-bar-chart fa-4x"></i>
+                                  </div>
+                                  <strong class="clearfix">Client Project</strong>
+                                </a>
+                                
+                          </div>
+					  </div>
+					  
+					  <div class="col-md-4 mt">
+                        <div class="small-widget bg-yellow">
+                            <a href="<c:url value='${appPath}/project?projectType=sharedProject'/>" >
+                                <div class="clearfix mb10">
+                                <i class="fa fa-bar-chart fa-4x"></i>
+                                </div>
+                                <strong class="clearfix">Client Project(Managed)</strong>
+                                </a>
+                        </div>
+					  </div>
+					  
+                 </div>
+                          
+				  </div>
+			  </div>
+      <div class="pop_mask"></div>
+     
+	   
+	   
 <!--   Popup's   -->
+
+
+<script>
+function getClientProjectPop(){
+	 $('.addcandidate-popup').fadeIn(200);
+     $('.pop_mask').fadeIn(200);
+     $('#addmorepop').slideUp(200);
+}
+
+function closeClientProject(){
+    $('.addcandidate-popup').fadeOut(200);
+    $('.pop_mask').fadeOut(200);
+   }
+</script>
                
 <script>
 function resetProjectFilter(){
@@ -389,7 +433,7 @@ function filter(){
 		result = result +'	<th>Project Id</th>';
     	result = result +'    <th>Name</th>'; 
     	result = result +'     <th>Manager</th>';
-    	result = result +'     <th>Invoice Frequency</th>';
+    	result = result +'     <th>Timesheet Frequency</th>';
     	result = result +'     <th>Budget</th>';
     	result = result +'     <th>Date<br>(<small class="custom-small">'+projectListDate+'</small>)</th>';
     	result = result +'      <th>Client</th>';
@@ -495,7 +539,17 @@ function projectsPagination(url,sourceleadUrl){
             	  
             	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_CREATE_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
  		    		if(opt.projectMode != null && opt.projectMode == 'Draft'){
- 		    			result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    			if(opt.isProjectShared == 'Y'){
+ 		    				var locationId ='${SourceLeadWeb_orgLocations.id}';	
+ 		    				if(locationId == opt.sharedClientOrgLocationId){
+ 		    					result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span></div></td>';
+ 		    				}else{
+ 		    					result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectType=sharedProject&projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    				}
+ 		    			}else{
+ 		    				result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    			}
+ 		    			
  		    		}else{
  		    			result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
  		    		}
@@ -644,13 +698,13 @@ function projectsPagination(url,sourceleadUrl){
     		   
     		   $('#projectsDataTableSearch').parent().find('p.jquery_form_error_message').remove();
     	    	var searchData = $('#projectsDataTableSearch').val();
-    	    	var regex =  new RegExp(/[\\-]/g);
-    	    	if(regex.test(searchData) == false){
-    	    		 projectDataTableList();
-    	    	}else{
-    	    		$("#projectsDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
-    	    	}
-    	    	$('#projectsDataTableSearch').val(searchData);
+    	    	
+    	    	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
+       	    		$("#projectsDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+       	    	}else{
+       	    		projectDataTableList();
+       	    	}
+    	    	
     	   }
     	});
 }
@@ -1236,6 +1290,33 @@ function projectExport(type){
 	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency;
 	
 }
+</script>
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
 </script>
 
 

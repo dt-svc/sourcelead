@@ -3,9 +3,11 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateResumesDao;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -256,13 +260,46 @@ public CandidateResumes getCandidateResumesListByCandidateId(Long candidateId) {
 public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception {
 	
 	Session session = this.sessionFactory.getCurrentSession();
-	String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.candidateId  where candidateResumes.candidateId.id =:candidateId and candidateResumes.status = '1' ";  
+	String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.candidateId  where candidateResumes.candidateId.id =:candidateId and candidateResumes.status = '1' ORDER BY candidateResumes.updatedDate DESC";  
 	List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).list();
 	CandidateResumes candidateResumes = null;
 	if(candidateResumesList != null && !candidateResumesList.isEmpty()){
 		candidateResumes = candidateResumesList.iterator().next();
 	}
 	return candidateResumes;
+}
+
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public CandidateResumesDTO getCandidateResumesDTOByCandidateId(Long candidateId) throws Exception {
+	
+	List<CandidateResumesDTO> candidateResumesDTOList = null;
+	CandidateResumesDTO candidateResumesDTO = null;
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = null;
+			query ="SELECT "
+			+" CR.ID AS resumeId, "
+			+" CR.TITLE AS title, "
+			+" CR.CANDIDATE_ID AS candidateId, "
+			+" CR.ORG_LOCATION_ID AS orgLocationId, "
+			+" DATE_FORMAT(CR.CREATED_DATE ,\"%Y-%m-%d\") AS createdDate, " 
+			+" DATE_FORMAT(CR.UPDATED_DATE ,\"%Y-%m-%d\") AS updatedDate " 
+			+" FROM CANDIDATE_RESUMES CR "
+			+" WHERE "
+			+" CR.CANDIDATE_ID = :candidateId AND CR.STATUS = '1' "
+			+" ORDER BY DATE_FORMAT(CR.UPDATED_DATE ,\"%Y-%m-%d\") DESC ";
+			
+        Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("candidateId", candidateId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(CandidateResumesDTO.class));
+		candidateResumesDTOList = queryObj.list();
+		if(candidateResumesDTOList != null && !candidateResumesDTOList.isEmpty()) {
+			candidateResumesDTO = candidateResumesDTOList.get(0);
+		}
+		
+		return candidateResumesDTO;
+
 }
 
 }

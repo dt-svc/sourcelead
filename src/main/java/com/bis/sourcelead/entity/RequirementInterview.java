@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -102,6 +103,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "CUSTOM_INTERVIEW_TYPE")
 	private String customInterviewType;
 	
+	@Column(name = "INTERVIEW_SCORE")
+	private Integer interviewScore;
+	
+	@Column(name = "INTERVIEW_PHASE")
+	private String interviewPhase;
+	
+	@Column(name = "INTERVIEW_COMMENT", columnDefinition = "TEXT default NULL")
+	private String interviewComment;
+	
 	@Transient
 	private String remainderTime;
 	
@@ -116,6 +126,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Transient
 	private String interviewersList;
+	
+	@Transient
+	@JsonProperty
+	private List<InterviewFeedbackTemplate> interviewFeedbackTemplateList;
 	
 	@Transient
 	@JsonProperty
@@ -157,6 +171,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setCustomInterviewType(String customInterviewType) {
 		this.customInterviewType = customInterviewType;
+	}
+
+	public Integer getInterviewScore() {
+		return interviewScore;
+	}
+
+	public void setInterviewScore(Integer interviewScore) {
+		this.interviewScore = interviewScore;
+	}
+
+	public String getInterviewPhase() {
+		return interviewPhase;
+	}
+
+	public void setInterviewPhase(String interviewPhase) {
+		this.interviewPhase = interviewPhase;
+	}
+
+	public String getInterviewComment() {
+		return interviewComment;
+	}
+
+	public void setInterviewComment(String interviewComment) {
+		this.interviewComment = interviewComment;
 	}
 
 	public String getInterviewStatus() {
@@ -340,6 +378,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setInterviewersList(String interviewersList) {
 		this.interviewersList = interviewersList;
+	}
+
+	public List<InterviewFeedbackTemplate> getInterviewFeedbackTemplateList() {
+		return interviewFeedbackTemplateList;
+	}
+
+	public void setInterviewFeedbackTemplateList(List<InterviewFeedbackTemplate> interviewFeedbackTemplateList) {
+		this.interviewFeedbackTemplateList = interviewFeedbackTemplateList;
 	}
 
 	public String getCandidateName() {

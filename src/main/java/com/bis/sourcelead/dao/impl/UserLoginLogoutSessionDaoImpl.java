@@ -1,6 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.text.MessageFormat;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +14,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserLoginLogoutSessionDao;
-import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
-import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
-import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
+@Transactional(rollbackFor = { Exception.class })
 public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao {
 
     @Autowired
@@ -40,7 +40,6 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
 
     private static final Logger logger = LoggerFactory.getLogger(UserLoginLogoutSessionDaoImpl.class);
     @Override
-    @Transactional(rollbackFor = { Exception.class })
     public UserLoginLogoutSession storeUserLoginLogoutSession(UserLoginLogoutSession userLoginLogoutSession){
         logger.debug("Storing UserLoginLogoutSession Record");
         Session session = this.sessionFactory.getCurrentSession();
@@ -52,7 +51,6 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
     }
 
     @Override
-    @Transactional(rollbackFor = { Exception.class })
     public UserLoginLogoutSession getLastLoginRecord(Long userId) {
         Session session = this.sessionFactory.getCurrentSession();
         List<UserLoginLogoutSession> userLoginLogoutSessionList = new ArrayList<UserLoginLogoutSession>();
@@ -68,7 +66,6 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
     }
     
     @Override
-    @Transactional(rollbackFor = { Exception.class })
     public UserLoginLogoutSession getUserLoginLogoutSessionById(Long userSessionId) {
         Session session = this.sessionFactory.getCurrentSession();
         List<UserLoginLogoutSession> userLoginLogoutSessionList = new ArrayList<UserLoginLogoutSession>();
@@ -84,7 +81,6 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
     }
     
     @Override
-    @Transactional(rollbackFor = { Exception.class })
     public UserLoginLogoutSession getUserLoginLogoutSessionByActionUUID(String actionUUID) {
         Session session = this.sessionFactory.getCurrentSession();
         List<UserLoginLogoutSession> userLoginLogoutSessionList = new ArrayList<UserLoginLogoutSession>();
@@ -100,7 +96,6 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
     }
 
     @Override
-    @Transactional(rollbackFor = { Exception.class })
     public boolean validatePreviouslyAuthenticatedByUserIdAndIpAddress(String ipAddress, Long userId)
     {
         Session session = this.sessionFactory.getCurrentSession();
@@ -117,7 +112,6 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
     }
 
     @Override
-    @Transactional(rollbackFor = { Exception.class })
     public List<String> getMultipleIps(UsersUsageReportDTO usersUsageReportDTO)
     {
         Session session = this.sessionFactory.getCurrentSession();
@@ -128,18 +122,32 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
     }
 
     @Override
-    @Transactional(rollbackFor = { Exception.class })
-    public List<Long> getUsersListByIpAddress(String ipAddress,List<Long> list)
+    public UserDTO getUsersListByIpAddress(String ipAddress,List<Long> list,Long orgLocationId)
     {
         Session session = this.sessionFactory.getCurrentSession();
-        List<Long> ipList = new ArrayList<>();
-        String query = "select userLogin.userId.id from UserLoginLogoutSession userLogin where userLogin.ipaddress =:ipaddress and userLogin.userId.id IN (select userRole.user.id from UserRole userRole where  userRole.orgLocations.org.id IN (:orgList)) group by userLogin.userId.id";
-        ipList = session.createQuery(query).setString("ipaddress", ipAddress).setParameterList("orgList", list).list();
-        return ipList;
+        UserDTO udto = new UserDTO();
+        String query1 = "SELECT count(distinct uls.USERID) As count FROM user_login_logout_session uls where uls.IPADDRESS = :ipAddress and uls.USERID IN(select USER_ID from user_role ur join ORG_LOCATIONS ol on ur.ORG_LOCATIONS_ID = ol.ID and ol.ORG_ID in (:orgList)) group by uls.IPADDRESS";
+        //String query = "select userLogin.userId.id from UserLoginLogoutSession userLogin where userLogin.ipaddress =:ipaddress and userLogin.userId.id IN (select userRole.user.id from UserRole userRole INNER JOIN  userRole.orgLocations orgl where  orgl.org.id IN (:orgList)) group by userLogin.userId.id";
+         BigInteger ipCount = (BigInteger) session.createSQLQuery(query1).setString("ipAddress", ipAddress).setParameterList("orgList", list).uniqueResult();
+         udto.setTotalNoOfUsers(ipCount);
+
+         List<ActionHistory> actionHistory = new ArrayList<>();
+//         String query1 = "from ActionHistory ah left join fetch ah.userLoginLogoutSessionId uls where uls.ipaddress = :ipAddress and uls.userId.id IN(select ur.userId.id from UserRole ur left join fetch ur.orgLocations ol where ol.org.id in (:orgList))";
+         
+         
+         String query = "SELECT  IPADDRESS, COUNT(ACTION_NAME) NO_OF_ACTIONS, ORG_LOCATION_ID  "
+         		+ "FROM user_login_logout_session, action_history WHERE "
+         		+ "action_history.USER_LOGIN_LOGOUT_SESSION_ID = user_login_logout_session.ID AND IPADDRESS = :ipAddress  AND ORG_LOCATION_ID =:orgLocationId "
+         		+ "GROUP BY USER_LOGIN_LOGOUT_SESSION_ID";
+         
+         actionHistory = session.createSQLQuery(query).setString("ipAddress", ipAddress).setLong("orgLocationId", orgLocationId).list();
+         udto.setNoOfActivities(String.valueOf(actionHistory.size()));
+         
+        return udto;
     }
+    
 
     @Override
-    @Transactional(rollbackFor = { Exception.class })
     public List<UserLoginLogoutSession> getUsersByipAddress(UsersUsageReportDTO usersUsageReportDTO)
     {
         Session session = this.sessionFactory.getCurrentSession();
@@ -148,6 +156,15 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
         ipUsersList = session.createQuery(query).setString("ipaddress", usersUsageReportDTO.getIpAddress()).setParameterList("orgList", usersUsageReportDTO.getOrgId()).list();
         return ipUsersList;
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<UserLoginLogoutSession> getAll()
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		return session.createQuery("from UserLoginLogoutSession").list();
+				
+	}
     
     
 

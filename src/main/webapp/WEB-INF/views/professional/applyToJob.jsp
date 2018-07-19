@@ -234,7 +234,13 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '</span>';
 	                    	 result = result + '<span id="'+report.interviewId.id+'showStatus"></span>';
 	                    	 if(report.interviewId.interviewStatus == "Attending"){
-	                    		 result = result +' <font color="green" class="brder-int">Attending</font>';
+	                    		 if(report.interviewId.interviewPhase == "Selected"){
+	                    			 result = result +' <font color="green" class="brder-int">Selected</font>';
+	                    		 }else if(report.interviewId.interviewPhase == "Rejected"){
+	                    			 result = result +' <font color="red" class="brder-int">Rejected</font>';
+	                    		 }else{
+	                    			 result = result +' <font color="green" class="brder-int">Attending</font>';
+	                    		 }
 	                    	 }
 	                    	 if(report.interviewId.interviewStatus == "Not Attending"){
 	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';

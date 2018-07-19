@@ -823,26 +823,41 @@ function getDonutChartDetails(data){
 	        type : "POST",
 	         url: sourceleadUrl+"/ProjectTasks/geBudgetStatusReport?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
 	         success :function(data) {
-	        	 var remainingBudget  = data.budgetTotal - data.actualBudget;
-	        	 var  remainingHours  = data.estimatedHours - data.actualHours;
+	        	 var remainingBudget = 0;
+	        	 var  remainingHours = 0;
+	        	 if(data.budgetTotal > 0){
+	        		 remainingBudget  = data.budgetTotal - data.actualBudget;
+	        	 }
+	        	 if(data.estimatedHours > 0){
+	        		 remainingHours  = data.estimatedHours - data.actualHours;
+	        	 }
+	        	  
 	        	 if(data.currency != null && data.currency != "" && data.currency != "undefined"){
 	        		 currency = data.currency;
 	        	 }else{
 	        		 currency = "";
 	        	 }
-	        	 var result = ""
-	        	result = result + '          <div class="row">';
-	 			result = result + '          <div class="col-md-6">';
-	 			result = result + '              <label class="form-control-static">Remaining Budget: <span class="paddingLeft"><strong>'+currency+' '+remainingBudget+'</strong></span></label>';
-	 			result = result + '              <div id="budgetStatus" style="height: 180px; width: 100%;">';
-	 			result = result + '              </div>';
-	 			result = result + '          </div>';
-	 			result = result + '          <div class="col-md-6">';
-	 			result = result + '              <p class="form-control-static">Remaining Hours: <span class="paddingLeft"><strong>'+remainingHours+' Hours</strong></span></p>';
-	 			result = result + '              <div id="hoursStatus" style="height: 180px; width: 100%;">';
-	 			result = result + '              </div>';
-	 			result = result + '          </div>';
-	 			result = result + '      </div>';
+		        	 var result = ""
+	        		 result = result + '<div class="clearfix"></div>';
+		        	 result = result + '          <div class="row">';
+	        		 result = result + '          <div class="col-md-6">';
+	        		if(remainingBudget > 0){
+	        		result = result + '              <label class="form-control-static">Remaining Budget: <span class="paddingLeft"><strong>'+currency+' '+remainingBudget+'</strong></span></label>';
+	        		}
+	        		result = result + '              <div id="budgetStatus" style="height: 180px; width: 100%;">';
+		 			result = result + '              </div>';
+		 			result = result + '          </div>';
+	        	
+	        		result = result + '          <div class="col-md-6">';
+	        		if(remainingHours > 0){
+	        		result = result + '              <p class="form-control-static">Remaining Hours: <span class="paddingLeft"><strong>'+remainingHours+' Hours</strong></span></p>';
+	        		}
+	        		result = result + '              <div id="hoursStatus" style="height: 180px; width: 100%;">';
+		 			result = result + '              </div>';
+		 			result = result + '          </div>';
+		 			
+	        	
+	        	result = result + '      </div>';
 	 			$("#budgetStatusDivId").empty();
 	 			$("#budgetStatusDivId").append(result);
 	        	 budgetTotal(data)
@@ -1118,7 +1133,10 @@ function getTaskPercentge(data){
 			result = result + '                 <tbody>';
 			 for(var i=0; i<json.length; i++){
 				 var report = json[i];
-				 
+				 var generatedId = "";
+				 if(report.generatedId != null && report.generatedId != "" && report.generatedId != "undefied"){
+					 generatedId = report.generatedId +" -";
+				 } 
 				   result = result + '                 <tr>';
 				   if(report.taskTypes == "Epic"){
 					   result = result + '   <td><i class="fa fa-bolt text-info" title="Epic"></i></td>';
@@ -1131,7 +1149,8 @@ function getTaskPercentge(data){
 				   }else if(report.taskTypes == "General"){
 					   result = result + '                     <td><i class="fa fa-spinner text-warning" title="General Task"></i></td>';
 				   }
-					result = result + '                     <td><span title="'+report.generatedId+'" ><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+report.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'">'+report.generatedId+'</a></span></td>';
+				   
+					result = result + '                     <td><span title="'+generatedId+' '+report.taskName+'" ><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+report.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'">'+generatedId+' '+report.taskName+'</a></span></td>';
 					result = result + '                     <td>  '+report.actionTimeStr+' </td>';
 					result = result + '                     <td> '+report.percentage+'% </td>';
 					result = result + '                     <td>';

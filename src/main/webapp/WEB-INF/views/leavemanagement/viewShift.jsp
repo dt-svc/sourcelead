@@ -72,7 +72,6 @@ function populategShiftList(response){
    result = result +' <th>Time Out</th>';
    result = result +' <th>Description</th>';
    result = result +' <th>Updated By</th>';
-   result = result +' <th>Status</th>';
    result = result +' <th>Action</th>';
    result = result +' </tr>';
    result = result +' </thead>';
@@ -102,18 +101,12 @@ function populategShiftList(response){
         	   result = result +    '<div class="pull-left tbldata-dotdot">--</div>';
            }
            result = result +'  </td>';
-           result = result +'  <td>';  
-           if(report.status == 1){
-        	   result = result + '<div class="pull-left tbldata-dotdot" title="Active">Active</div>';
-           }else{
-        	   result = result + '<div class="pull-left tbldata-dotdot" title="InActive">InActive</div>';
-           }
-           result = result +'  </td>';
            result = result +'  <td>';
            result = result +'     <div class="tblminwidth-50">'    
            if(report.status == 1){
-           result = result +'          <span title="Edit" class="paddingRight" onclick="editShift(\''+report.shiftUUID+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></span>';       
-           result = result +'          <span title="Delete" class="paddingLeft"><i onclick= "deleteShift(\''+report.shiftUUID+'\');" class="fa fa-trash text-danger cursorPointer"></i></span>';         
+           result = result +'          <span title="Edit" class="paddingRight" onclick="editShift(\''+report.shiftUUID+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></span>';   
+           if(report.defaultStatus != "Y")
+               result = result +'          <span title="Delete" class="paddingLeft"><i onclick= "deleteShift(\''+report.shiftUUID+'\');" class="fa fa-trash text-danger cursorPointer"></i></span>';         
            }else{
         	   result = result +'          <span class="paddingRight" >NA</span>'; 
            }

@@ -11,8 +11,9 @@
 <div id="loadingId"></div>
 <table id='example'>                     
 	<thead>                                                                                
-		<tr>                                                                                   
-			<th>Employee</th>                                                                      
+		<tr>        
+			<th>Employee</th>  
+			<th>Expense Id</th>                                                                    
 			<th>Emp Type</th>                                                                
 			<th>Project</th>                                                                       
 			<th>Purpose</th> 
@@ -99,6 +100,18 @@ $("#SearchExpensesData").keyup(function(event) {
     	$('#SearchExpensesData').val(searchData);
     }
 });
+
+function searchExpensesDataIcon(){
+	$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
+	var searchData = $('#SearchExpensesData').val();
+	var regex =  new RegExp(/[\\]/g);
+	if(regex.test(searchData) == false){
+		getExpensesApprovalDataList();
+	}else{
+		$("#SearchExpensesData").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+	}
+	$('#SearchExpensesData').val(searchData);
+}
 </script>
 
 <script>

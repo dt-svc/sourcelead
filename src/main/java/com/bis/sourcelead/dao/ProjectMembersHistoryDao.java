@@ -35,4 +35,6 @@ public interface ProjectMembersHistoryDao {
 	
 	ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(Long projectMemberId,Long orgLocationId) throws Exception;
 	
+	public ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgId(Long projectMemberId,Long orgId) throws Exception;
+	
 }

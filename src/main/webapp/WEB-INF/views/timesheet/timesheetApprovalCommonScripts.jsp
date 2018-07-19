@@ -11,34 +11,26 @@ $(document).ready(function() {
 </script>
 <div class="time_appr_side_wrap">
 	<div class="time_appr_side_wrap_inn">
-		<form id="timesheet_form" name="timesheet_form">
-			<input type="hidden" id="projectMemberId" name="projectMemberId"
-				value="${timesheetEntryDetailsDTO.projectMemberId}" /> <input
-				type="hidden" id="projectId" name="projectId"
-				value="${timesheetEntryDetailsDTO.projectId}" /> <input
-				type="hidden" id="masterCandidateId" name="masterCandidateId"
-				value="${timesheetEntryDetailsDTO.masterCandidateId}" /> <input
-				type="hidden" id="currentTimeFrequency" name="currentTimeFrequency"
-				value="${timesheetEntryDetailsDTO.currentTimeFrequency}" /> <input
-				type="hidden" id="timesheetFor" name="timesheetFor" value="approver" />
-			<input type="hidden" name="totalHours" id="totalHours">
-			<div id="timesheetDivByFrequency">
-				<jsp:include page="timeSheetSubmission.jsp"></jsp:include>
-			</div>
-		</form>
-
+	 	 <form id="timesheet_form" name="timesheet_form"> 
+		 	<input type="hidden" id="projectMemberId" name="projectMemberId" value="${timesheetEntryDetailsDTO.projectMemberId}"/>
+	        <input type="hidden" id="projectId" name="projectId" value="${timesheetEntryDetailsDTO.projectId}"/>
+	        <input type="hidden" id="masterCandidateId" name="masterCandidateId" value="${timesheetEntryDetailsDTO.masterCandidateId}"/>
+	        <input type="hidden" id="currentTimeFrequency" name="currentTimeFrequency" value="${timesheetEntryDetailsDTO.currentTimeFrequency}"/>
+            <input type="hidden" id="timesheetFor" name="timesheetFor" value="approver"/>
+            <input type="hidden" name="totalHours" id="totalHours" >
+            <div id="timesheetDivByFrequency">
+	 	        <jsp:include page="timeSheetSubmission.jsp"></jsp:include>
+	 	    </div>
+	 	  </form>
+	 	
 	</div>
-</div>
-
-
+</div>	
 <div id="loadTime"></div>
+<div id="loadTime1"></div>
 <div id='rejectedPopup'></div>
 <div id='reOpenPopup'></div>
 <div id='reOpenRejectedPopup'></div>
-<div class="side_mask">
-	<div class="proj_close"
-		onclick="timesheetApprovalTableRowByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectMemberId}','approverClose');"></div>
-</div>
+<div class="side_mask"><div class="proj_close" onclick="timesheetApprovalTableRowByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectMemberId}','approverClose');"></div></div>	
 <div class="mask_time"></div>
 <script>
 $(document).on("mouseover", ".glyphicon-comment", function() { 
@@ -49,7 +41,7 @@ $(document).on("mouseleave", ".glyphicon-comment", function() {
 var localId = $(this).attr('id');
 $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 });	
-</script>
+</script> 
 <script>
 function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom){
 	if(requestFrom == "notifyLink"){
@@ -89,6 +81,7 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 				     $("body").css('overflow-y', 'hidden');
 				     $("html").trigger('click');
 		    	  	 $("#tab-1").show();
+				     setTotals();
 			    	 $(".project-tabs-menu a").click(function(event) {
 			    	        event.preventDefault();
 			    	        $(this).parent().addClass("current");
@@ -97,7 +90,7 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 			    	        $(".project_tabs_inn").not(tab).css("display", "none");
 			    	        $(tab).fadeIn();
 			    	  });
-			    	 setTotals();
+			    	
 				     maskme();
 		      }
 	    });
@@ -138,6 +131,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
     $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
     var rejectedReason = '';
     var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+    $('#hedderAcceptRejectButton').hide();
      $.ajax({
     type: "POST",
     url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
@@ -171,8 +165,13 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 </script>
 
 <script>
-function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
-	 var msg = $("#reject"+projectMemberId+"message").val(); 
+function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from,reason){
+	 var msg = ''; 
+	if(reason != null && reason != 'undefined' && reason != ''){
+		 msg = reason;
+	 }else {
+		 msg = $("#reject"+projectMemberId+"message").val();
+	 }
 	 var tableFor = $("#tableFor").val();
 	 var encodeMsg = msg;
 	 if(encodeMsg !== ""){
@@ -187,6 +186,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 		 }
 		 $("#row"+projectMemberId).empty();
 		 $("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
+		 $('#hedderAcceptRejectButton').hide();
 	     $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 	    $.ajax({
 	    type: "POST",
@@ -249,7 +249,8 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		}
 	}
 	var data = submissionIDs.toString().split(',');
-	for(var i=0; i<=data.length;i++){
+	if(data.length > 0){
+	for(var i=0; i<=data.length-1;i++){
 		var data2 = data[i].toString().split('!');
 		var projectMemberId = data2[0];
 		var startDate = data2[1];
@@ -291,12 +292,12 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		  });  
 		
 	}
+ }
 }
 </script>
 
 <script>
 function rejectTimeSheetSubmissionBySubmissionId(tableFor){
-	
 	$("#rejectReasonDiv").empty();
     $("#rejectmessage").val(''); 
     var result = "";
@@ -304,11 +305,13 @@ function rejectTimeSheetSubmissionBySubmissionId(tableFor){
 	result = result +'<textarea placeholder="Enter comment here" id="rejectmessage"></textarea>';
 	result = result +'<div id="rejectReasonDiv"/>';
 	result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberIdDashboard(\''+tableFor+'\');" >Submit</a><a class="close_color" href="#" onClick="closepopUpRejectReason();">Cancel</a>';
+	
 	result = result +'</div>';
 	result = result +'</div>';
 	$("#rejectedPopup").append(result);
     $(".mask_time").fadeIn(200); 
 	$("#rejectpanel").show();
+	
 	
 }
 
@@ -320,7 +323,8 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 		}
 	}
 	var dataOne = submissionIDs.toString().split(',');
-	for(var i=0; i<=dataOne.length;i++){
+	if(dataOne.length > 0){
+	for(var i=0; i<=dataOne.length-1;i++){
 		var dataTwo = dataOne[i].split('!');
 		var projectMemberId = dataTwo[0];
 		var startDate = dataTwo[1];
@@ -378,6 +382,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 			}
 		}
 	}
+  }
 }
 </script>
 <script>
@@ -387,4 +392,3 @@ function closepopUpRejectReason(){
 	$(".mask_time").fadeOut(200);
 }
 </script>
-

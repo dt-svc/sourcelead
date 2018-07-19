@@ -25,6 +25,7 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	private String filterSpecJobs;
 	private String filterProjectId;
 	
+	
 	public String getStatus() {
 		return status;
 	}

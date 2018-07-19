@@ -58,7 +58,9 @@ public class AddElkRequirement {
 		Connection conn = null ;
 		Statement stmt = null;
 		try {
+
 			String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID;";
+
 			DataSource dataSource = comboPooledDataSource();
 			 conn = dataSource.getConnection();
 			 stmt = conn.createStatement();
@@ -117,6 +119,7 @@ public class AddElkRequirement {
 				requirementIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
 				requirementIndex.setIsTemplate(rs.getString("IS_Template"));
 				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
+				requirementIndex.setPrimaryRecruiterUserId(rs.getString("PRIMARY_RECRUITER_USER_ID"));
 				requirementIndex.setGeneratedId(rs.getString("GENERATED_ID"));
 				requirementIndex.setReleasedBy(rs.getString("RELEASED_BY"));
 				if(null != rs.getString("MEDICAL_CLEARENCE") && !"".equalsIgnoreCase(rs.getString("MEDICAL_CLEARENCE"))){

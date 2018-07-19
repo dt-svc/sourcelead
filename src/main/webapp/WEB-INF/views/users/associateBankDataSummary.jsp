@@ -52,6 +52,7 @@ function associateBankData(userId){
                 $("#candidateSideDiv").empty(); 
                 $("#tab-20").empty();
                 $("#tab-21").empty(); 
+                $("#tab-25").empty();
                 $("#tab-21").append(result); 
           },
             

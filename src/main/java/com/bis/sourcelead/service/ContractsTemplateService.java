@@ -95,4 +95,5 @@ public interface ContractsTemplateService {
 
 	Contracts updateContractSigner(ContractsDTO contractsDTO, OrgLocations loginOrgLocation, User loginUser) throws NumberFormatException, Exception;
 	
+	Integer deleteContractOwnerHierarchyListByContractId(Long Id);
 }

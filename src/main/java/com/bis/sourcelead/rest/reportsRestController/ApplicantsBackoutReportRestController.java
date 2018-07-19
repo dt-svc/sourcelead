@@ -103,11 +103,11 @@ public class ApplicantsBackoutReportRestController {
 			    	    searchDates[1] = toDate;
 					}
 				}
-				Map<String, Integer> ApplicantsBackoutCount = null;
-				ApplicantsBackoutDTO applicantsBackoutDTO = new ApplicantsBackoutDTO();;
+				//Map<String, Integer> ApplicantsBackoutCount = null;
+				ApplicantsBackoutDTO applicantsBackoutDTO = null;
 				if ( jobIdList != null && !jobIdList.isEmpty()) {
-					ApplicantsBackoutCount =  applicantsBackoutReportService.getApplicantBackoutReport(jobIdList, searchDates);
-					for (Entry<String, Integer> entry : ApplicantsBackoutCount.entrySet()){
+					 applicantsBackoutDTO = applicantsBackoutReportService.getBackoutApplicantCount(jobIdList, searchDates,orgLocation);
+					/*for (Entry<String, Integer> entry : ApplicantsBackoutCount.entrySet()){
 						if(entry.getKey().equalsIgnoreCase("Better Offer")) {
 							applicantsBackoutDTO.setBetterOffer(entry.getValue());
 						}
@@ -126,7 +126,7 @@ public class ApplicantsBackoutReportRestController {
 						if(entry.getKey().equalsIgnoreCase("other")) {
 							applicantsBackoutDTO.setOther(entry.getValue());
 						}
-					}
+					}*/
 				}
 
 				if (applicantsBackoutDTO != null) {
@@ -206,12 +206,15 @@ public class ApplicantsBackoutReportRestController {
 
 				for (Long jobId : jobIdList) {
 					if(jobId!=null){
-						Requirement requirement = requirementService.getRequirementByRequirementId(jobId);
+						Requirement requirement = requirementService.getRequirementByRequirementIdAndSearchValue(jobId,jobFilterDTO.getSearchValue());
 						List<Long> jobids = new ArrayList<>();
 						jobids.add(jobId);
 						applicantsBackoutDTO =  applicantsBackoutReportService.getBackoutApplicantCount(jobids, searchDates,orgLocation);
+						if(requirement != null){
 						applicantsBackoutDTO.setJobName(requirement.getJobTitle());
+						applicantsBackoutDTO.setGeneratedId(requirement.getGeneratedId());
 						applicantsBackoutList.add(applicantsBackoutDTO);
+						}
 					}
 
 				}

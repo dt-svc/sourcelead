@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -697,7 +698,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 				UsersUsageReportDTO usageDto = new UsersUsageReportDTO();
 				usageDto.setUserRoleId(userRole.getId());
 				usageDto.setLocationId(userRole.getOrgLocations().getId());
-				
+				usageDto.setUserId(userRole.getUser().getId());
 				if(StringUtils.isNotBlank(user.getLastName())){
 					usageDto.setUserName(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				}else{
@@ -714,12 +715,12 @@ public class UserRoleServiceImpl implements UserRoleService{
 				usageDto.setEnrolledOrgs(userRoleList);
 				usageDto.setCreatedOn(commonUtil.dateStrFromDate(user.getCreatedDate()));
 				
-				UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
-				usageDto.setNoOfActivities(actionHistory.getNoOfActivities());
+//				UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
+//				usageDto.setNoOfActivities(actionHistory.getNoOfActivities());
 				
-				if(StringUtils.isNotBlank(actionHistory.getLastActivity())){
-				usageDto.setLastActivity(actionHistory.getLastActivity());
-				}
+//				if(StringUtils.isNotBlank(actionHistory.getLastActivity())){
+					usageDto.setLastActivity("---");
+//				}
 				
 				List<ActionHistory>  actionHis = actionHistoryService.getAllMultipleIpsByUserId(user.getId());
 				usageDto.setMultipleIps(actionHis.size());
@@ -805,6 +806,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		
 		return user;
 	}
+	
     @Override
 	public List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllProjectManagersAssignedToProjects(orgLocationId);
@@ -823,11 +825,49 @@ public class UserRoleServiceImpl implements UserRoleService{
 		List<AssociateDepartmentView> associateDepartmentViewList = userRoleDao.getUserRolesByDepartmentId(departmentId,orgLocationId,userIdView);
 		return associateDepartmentViewList;
 	}
+
+	@Override
+	public List<UserRole> getUserAccountsListByUserId(List<Long> userId) throws Exception {
+		return userRoleDao.getUserAccountsListByUserId(userId);
+	}
+
+	
+	@Override
+	public List<Long> getAllAssignedUsersIdsByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersIdsByResourceManagerId(resourceManagerId, orgLocationId);
+	}
+
+	@Override
+	public List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersByResourceManagerId(resourceManagerId, orgLocationId);
+	}
+
+	@Override
+	public List<BigInteger> getAllUsersRoleList() throws Exception {
+		return userRoleDao.getAllUsersRoleList();
+	}
+
+	@Override
+	public List<UserDTO> getAllReportingManagersListAssignedToAssociates(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllReportingManagersListAssignedToAssociates(orgLocationId);
+	}
+
+	@Override
+	public UserRole getGlobalUserReportingManagerByUserIdAndOrgId(Long userId, Long orgId)
+	{
+		return userRoleDao.getGlobalUserReportingManagerByUserIdAndOrgId(userId,orgId);
+	}
+	
+	@Override
+	public Boolean getIsGlobalManager(Long orgId,Long userId) throws Exception {
+		return userRoleDao.getIsGlobalManager(orgId,userId);
+	} 
     
 	@Override
 	public List<UserRole> getUserListByUserIdList(List<Long> userIdList,Long orgLocationId)
 	{
 		return userRoleDao.getUserListByUserIdList(userIdList,orgLocationId);
 	}
+
 
 }

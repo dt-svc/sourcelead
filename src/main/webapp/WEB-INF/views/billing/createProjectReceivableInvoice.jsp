@@ -201,9 +201,9 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               <tr id='divAttachmentTsRow0'>
             	<td>
               	<label><strong>Attachments</strong></label>
-              	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs">
+              	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs width100percnt">
                 <span><div id="savedAttachments"></div></span></div> </div>
-	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
+	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt" >
 	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
 	                <span>
 	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation' onchange="attachFile(0);"><i class='fa fa-times' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
@@ -244,13 +244,13 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               </div>
                  <div class="form-group">
                 <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>
-                <div class="col-md-5 text-right" ><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli"></div>
+                <div class="col-md-5 text-right" ><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readonly></div>
               </div>              
             
              <div id="lineItemAddRows"></div>
                 <div class="form-group mt">
                 <label class="col-md-7 text-right"><strong>Total</strong></label>
-                    <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli"></span></div>
+                    <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></span></div>
               </div>
               
              <!--  Added Rajashekar -->
@@ -1278,7 +1278,7 @@ function calculateTaxDiscount(){
 <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
   
   <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-  			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
+  			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt">
                 <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
                		 <span> 
                		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='attachFile(REPLACEROWID);validateContractsUploadFile(REPLACEROWID)'>

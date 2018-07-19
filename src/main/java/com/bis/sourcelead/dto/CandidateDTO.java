@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
@@ -80,6 +82,8 @@ public class CandidateDTO extends SearchDTO{
 	private String experienceMonths;
 
 	private String noticePeriod;
+	
+	private String vendor;
 
 	private String designation;
 
@@ -225,9 +229,23 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String vendorSpocId;
 	
+	private Long requirementId;
+	
+	private String docFile;
+	
 	private List<CustomFormFieldDTO> customFormData;
 	
 	 private Map<String,String> candidateCustomFieldData;
+	 
+	 private Long userId;
+	 
+	 private BigInteger candId;
+	 
+	 private Set<String> tagsList;
+	 
+	 private Set<String> candidateTagsList;
+	 
+	 private String candidateTags;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -1063,6 +1081,7 @@ public class CandidateDTO extends SearchDTO{
 		this.teams = teams;
 	}
 
+
 	public String getMaritalStatus() {
 		return maritalStatus;
 	}
@@ -1095,8 +1114,70 @@ public class CandidateDTO extends SearchDTO{
 		this.dateofBirth = dateofBirth;
 	}
 
-	
-	
-	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public BigInteger getCandId() {
+		return candId;
+	}
+
+	public void setCandId(BigInteger candId) {
+		this.candId = candId;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
+	}
+
+	public Long getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(Long requirementId) {
+		this.requirementId = requirementId;
+	}
+
+	public String getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(String docFile) {
+		this.docFile = docFile;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public Set<String> getCandidateTagsList() {
+		return candidateTagsList;
+	}
+
+	public void setCandidateTagsList(Set<String> candidateTagsList) {
+		this.candidateTagsList = candidateTagsList;
+	}
+
+	public String getCandidateTags() {
+		return candidateTags;
+	}
+
+	public void setCandidateTags(String candidateTags) {
+		this.candidateTags = candidateTags;
+	}
+
 	
 }

@@ -25,13 +25,7 @@ import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
 
-public  class CalendarUtil {
-	public static void main(String[] args){
-		
-		System.out.println(getCombinedHours(70.20 ,20.40));
-		
-	}
-	
+public  class CalendarUtil {	
 	public static double getCombinedHours(double hours1,double hours2){
 		double cthHours = hours1;
 		double cthHoursValue = (int) cthHours;
@@ -53,6 +47,14 @@ public  class CalendarUtil {
 		
 		return Double.parseDouble(actualTimeString);
 	}
+
+	/*public static void main(String[] args){
+		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+		currentCal.setLenient(false);
+		currentCal.setTime(new Date());
+		System.out.println(currentCal.getTime());
+		System.out.println(new Date());
+	}*/
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -307,19 +309,13 @@ public  class CalendarUtil {
 	    return converted_date;
 	}
 	
-	public static String getTimesheetHoursDisplayFormat(Float hours2){
-		float cthHours = 0;
-		float cthHoursValue = (int) cthHours;
-		float cthMinutesValue = cthHours - cthHoursValue;
-		float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
-
-		float wthHours = hours2;
-		float wthHoursValue = (int) wthHours;
-		float wthMinutesValue = wthHours - wthHoursValue;
-		float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
-
-		float totalMinutes = totalCthMinutes+totalWthMinutes;
-
+	public static String getTimesheetHoursDisplayFormat(Float hours2,Float totalMinutes){
+		if(totalMinutes == null) {
+			float wthHours = hours2;
+			float wthHoursValue = (int) wthHours;
+			float wthMinutesValue = wthHours - wthHoursValue;
+		    totalMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+		}
 		float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
 		float actualMinutes = (totalMinutes % 60)/100;
 		
@@ -331,23 +327,16 @@ public  class CalendarUtil {
 		else{
 			actualTimeString = decimalFormat.format(actualHours+actualMinutes);
 		}
-		
 		return actualTimeString;
 	}
 
 	
 	public static String getHalfTimesheetHoursDisplayFormat(Float hours2){
-		float cthHours = 0;
-		float cthHoursValue = (int) cthHours;
-		float cthMinutesValue = cthHours - cthHoursValue;
-		float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
-
 		float wthHours = hours2;
 		float wthHoursValue = (int) wthHours;
 		float wthMinutesValue = wthHours - wthHoursValue;
-		float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+		float totalMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
-		float totalMinutes = totalCthMinutes+totalWthMinutes;
 
 		float halfDayMinutes = totalMinutes/2;
 		
@@ -704,8 +693,6 @@ public  class CalendarUtil {
 			date = parseFormat.parse(twentyHourFormatTime);
 			twelveHourFormatTime =displayFormat.format(date);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return twelveHourFormatTime;
 	}

@@ -13,10 +13,12 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.ContractOwnerHierarchy;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
@@ -137,7 +139,39 @@ public class Html2PdfUtil {
 	            		}
 	                    matchPattern.appendReplacement(sb, location.toString());    
 	                }else if(matchPattern.group().equalsIgnoreCase("[Client Contact]") || matchPattern.group().equalsIgnoreCase("[Vendor Contact]")){
-	                    matchPattern.appendReplacement(sb, contracts.getContactUser().getFirstName());
+	                    if(contracts.getParentContractId() != null){
+	                    	for(ContractOwnerHierarchy coh : contracts.getParentContractId().getOwnerHierarchyList()){
+	                    		if(Constants.PARALLEL.equalsIgnoreCase(coh.getHierarchyType().getValue())){
+	                    			StringBuilder ownersb = new StringBuilder();
+	                    			if(StringUtils.isNotBlank(coh.getOwnerUserId().getLastName())){
+	                    				ownersb.append(coh.getOwnerUserId().getFirstName()).append(" ").append(coh.getOwnerUserId().getLastName());
+	                    			}else{
+	                    				ownersb.append(coh.getOwnerUserId().getFirstName());
+	                    			}
+	                    			matchPattern.appendReplacement(sb, ownersb.toString());
+	                    			break;
+	                    		}else if(Constants.SEQUENTIAL.equalsIgnoreCase(coh.getHierarchyType().getValue())){
+	                    			if(coh.getLevel() == 2){
+	                    				StringBuilder ownersb = new StringBuilder();
+		                    			if(StringUtils.isNotBlank(coh.getOwnerUserId().getLastName())){
+		                    				ownersb.append(coh.getOwnerUserId().getFirstName()).append(" ").append(coh.getOwnerUserId().getLastName());
+		                    			}else{
+		                    				ownersb.append(coh.getOwnerUserId().getFirstName());
+		                    			}
+		                    			matchPattern.appendReplacement(sb, ownersb.toString());
+		                    			break;
+	                    			}
+	                    		}
+	                    	}
+	                    }
+	                	
+	                	
+	                	//matchPattern.appendReplacement(sb, contracts.getContactUser().getFirstName());
+	                    
+	                    
+	                    
+	                    
+	                    
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Location]")){
 	                	StringBuffer location = new StringBuffer();
 	                	if(null != contracts.getOrgLocationId().getCountry()&& !"".equalsIgnoreCase(contracts.getOrgLocationId().getCountry())){

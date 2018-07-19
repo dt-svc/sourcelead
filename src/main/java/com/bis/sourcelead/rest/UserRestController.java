@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -44,8 +44,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -57,7 +59,6 @@ import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssociateDepartmentView;
 import com.bis.sourcelead.entity.Candidate;
@@ -84,6 +85,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -96,6 +98,7 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -202,10 +205,20 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 
 	@Autowired
 	AssetService assetService;
+	
+	@Autowired
 	private Org org;
 	
 	@Autowired
 	UserGroupService userGroupService;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	RegistrationService registrationService;
+	
+	
 	/**
 	 * To get All Approvers
 	 * @param request
@@ -241,13 +254,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	   }
 	
 	@RequestMapping(value = "/getActiveAssociateList", method = RequestMethod.POST)
-	public @ResponseBody String getCandidatesList(
+	public @ResponseBody List<CandidateDTO> getCandidatesList(
 		   @RequestParam(value = "employeementType", required = false) String employeementType, HttpServletRequest request) throws Exception {
-		String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		List<Candidate> candidateIdsList = candidateService.getAllActiveAssociatesByOrglocationId(orgLocations.getId(),employeementType);
-		resultJson = toJSON(candidateIdsList);
-		return resultJson;
+		List<CandidateDTO> candidateList = candidateService.getAllActiveCandidatesListByOrglocationId(orgLocations.getId(),employeementType);
+		return candidateList;
 	}
 	
 	@RequestMapping(value = "/getDepartmentsList", method = RequestMethod.POST)
@@ -424,12 +435,19 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 
 	 @RequestMapping(value = "/getUserByUserEmail" , method = RequestMethod.POST)
 	 public @ResponseBody  UserDTO getUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
+		 	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 		 	User user = userService.findByEmail(EmailId);
 		 	UserDTO userDTO = new UserDTO();
 		 	if(user != null) {
 		 		userDTO.setFirstName(user.getFirstName());
 			 	userDTO.setLastName(user.getLastName());
 			 	userDTO.setMobilePhone(user.getMobilePhone());
+			 	Boolean flag = userRoleService.getIsGlobalManager(org.getId(),user.getId());
+			 	if(flag == true) {
+			 		userDTO.setIsGlobalUser(Constants.YES);
+			 	}else {
+			 		userDTO.setIsGlobalUser(Constants.NO);
+			 	}
 		 	}else {
 		 		Candidate candidate = candidateService.getCandidateByEmail(EmailId);
 		 		if(candidate != null) {
@@ -505,17 +523,37 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 				HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
-			List<User> usersList = new ArrayList<>();
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,
+					"org");
+			List<User> usersList = new CopyOnWriteArrayList<>();
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
-			if(null != userList && !userList.isEmpty()){
-				for (User user : userList) {
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocations.getId());
-					if(null != userRole){
-						user.setUserType(userRole.getUserType());
-					}
-					usersList.add(user);
+			List<User> globalUserList = userService.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,org.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			if(userList != null && !userList.isEmpty()) {
+				usersList.addAll(userList);
+			}
+			if(globalUserList != null && !globalUserList.isEmpty()) {
+				usersList.addAll(globalUserList);
+			}
+			
+			
+			HashMap<Long,User> userMap = new HashMap<>();
+			for (User user : usersList) {
+				User tempUser = userMap.get(user.getId());
+				if(tempUser == null) {
+					userMap.put(user.getId(),user);
+				}else {
+					usersList.remove(user);
+					continue;
+				}
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(userRole != null){
+					user.setUserType(userRole.getUserType());
+				}else {
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
 				}
 			}
+			
 			return usersList;
 		}
 
@@ -571,6 +609,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		    //generate random password
 		    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		    boolean isUserActive = false;
+		    
+		    
 	 		if(user != null){
 	 			isUserActive = userRoleService.isUserActive(user.getId());
 	 			if(isUserActive == false){
@@ -583,6 +623,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 			userService.sendEmailFromSourcelead(user,loginUser,password,orgLocationId,orgId);
 	 			}else{
 	 				userService.sendEmail(user,loginUser,password,orgLocations.getId());
+	 			}
+	 			if(Constants.NO.equalsIgnoreCase(user.getIsVerified())){
+	 				registrationService.sendActivationEmail(user,orgLocations);	
 	 			}
 	 			/*
 				 * Update USER DB data as ElasticSearch Documents
@@ -724,7 +767,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 				   try {
 					   ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
 					   List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersByMasterCandidateId(pm.getMasterCandidateId().getId(), projectId);
-				  	 // ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+					   Projects projects = projectsService.getProjectById(projectId);
 				  	 if(pmList != null && !pmList.isEmpty()) {
 					   for(ProjectMembers projectMembers: pmList) {
 					  		  String status = Constants.MEMBER_IN_ACTIVE;
@@ -744,17 +787,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 									  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
 									  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
 									  if(sendEmailCount == 1){
-										  commonUtil.terminatedMailToEmployee(user,pmh,orgLocations);
+										  commonUtil.terminatedMailToEmployee(user,pmh,projects.getOrgLocationsId());
 									  }
 									  
-									  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
-										   /*List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
-										      for(ProjectApproverHierarchy pah : mangerList){
-										    	  if(user.getId() != pah.getApproverUserId().getId()){
-										    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
-										    	  }
-										      }*/
-										  commonUtil.employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+									  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(projects.getOrgLocationsId().getId())){
+										  commonUtil.employeeTerminationMailToProjectManager(user,pmh,projects.getOrgLocationsId());
 									  }else{
 										  commonUtil.employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
 									  }
@@ -762,30 +799,14 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 									  sendEmailCount = sendEmailCount+1;
 								  }
 							  }
-							  
-							  
-							  
-							 /* ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
-							  if(pmh != null){
-								  pmh.setProjectTerminationDate(new Date());
-								  pmh.setUpdatedDate(new Date());
-								  pmh.setUpdatedBy(user.getUserCode());
-								  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
-								  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
-							  }
-							  
-							  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
-						      updatedCount = 1;*/
+							
 						      
-						   if(null != projectId){
-								Projects projects = projectsService.getProjectById(projectId);
 								if(null != projects){
 									Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
 									ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembersList);
 									//Elastic Search Document Saving
 									sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
 								}
-						   }
 				  	  }
 				  	 }
 				    } catch (Exception e) {
@@ -1095,48 +1116,49 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 try {
-			  	  ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
-			  	  if(projectMembers != null){
-			  		  String status = Constants.MEMBER_ACTIVE;
-					  projectMembers.setUpdatedDate(new Date());
-					  projectMembers.setUpdatedBy(user.getUserCode());
-					  
-					  HashSet<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(); 
-					  ProjectMembersHistory pmh = new  ProjectMembersHistory(); 
-					  
-					  pmh.setProjectMemberId(projectMembers);
-			  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
-			  		  //String pattern = "dd-MM-yyyy";
-		    	     // SimpleDateFormat format = new SimpleDateFormat(pattern);
-		    	      if(!isNullOrEmpty(projectsDTO.getReStartDate())){
-		    	    	  Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReStartDate());
-						  pmh.setProjectAssignedDate(startDate);
-		    	      }
-		    	      if(!isNullOrEmpty(projectsDTO.getReEndDate())){
-		    	    	  Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReEndDate());
-						  pmh.setProjectTerminationDate(endDate);
-		    	      }
-		    	      pmh.setCreatedDate(commonUtil.currentDate());
-		    	    	if(user.getUserCode() != null){
-		    	    		pmh.setCreatedBy(user.getUserCode());	
-		    	    	}
-		    	    	
-					  pmh.setUpdatedDate(commonUtil.currentDate());
-					  pmh.setUpdatedBy(user.getUserCode());
-					/*  memberHistoryList.add(pmh);
-					  projectMembers.setMemberHistoryList(memberHistoryList);*/
-					  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
-					  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
-					  
-					  projectMembers.setStatus(status);
-					  projectMembers =  projectMembersService.saveProjectMember(projectMembers);
-					  projectMembers = projectMembersService.getProjectMemberById(projectMembers.getId());
-					  //commonUtil.storeTimesheetSubmissionRecords(projectMembers.getEmployee().getUser());
-					  reAssignMailToEmployee(user,pmh,orgLocations);
-			  	   }
-				
-			    } catch (Exception e) {
-			   }
+			  	  ProjectMembers pm =	projectMembersService.getProjectMemberById(projectMemberId);
+			  	  List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersListByMasterCandidateId(pm.getMasterCandidateId().getId(), pm.getProjects().getId());
+			  	  
+			  	 int sendEmailCount = 1;
+			  	 if(pmList != null && !pmList.isEmpty()) {
+					   for(ProjectMembers projectMembers: pmList) {
+						    String status = Constants.MEMBER_ACTIVE;
+							  projectMembers.setUpdatedDate(new Date());
+							  projectMembers.setUpdatedBy(user.getUserCode());
+							  projectMembers.setStatus(status);
+							  projectMembers =  projectMembersService.saveProjectMember(projectMembers);
+							  projectMembers = projectMembersService.getProjectMemberById(projectMembers.getId());
+							  ProjectMembersHistory pmh = new  ProjectMembersHistory();  
+							  pmh.setProjectMemberId(projectMembers);
+					  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+				    	      if(!isNullOrEmpty(projectsDTO.getReStartDate())){
+				    	    	  Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReStartDate());
+								  pmh.setProjectAssignedDate(startDate);
+				    	      }
+				    	      if(!isNullOrEmpty(projectsDTO.getReEndDate())){
+				    	    	  Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReEndDate());
+								  pmh.setProjectTerminationDate(endDate);
+				    	      }
+				    	      pmh.setCreatedDate(commonUtil.currentDate());
+				    	    	if(user.getUserCode() != null){
+				    	    		pmh.setCreatedBy(user.getUserCode());	
+				    	    	}
+				    	    	
+							  pmh.setUpdatedDate(commonUtil.currentDate());
+							  pmh.setProjectTerminationDate(null);
+							  pmh.setUpdatedBy(user.getUserCode());
+							  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+							  if(sendEmailCount == 1) {
+								  reAssignMailToEmployee(user,pmh,orgLocations);
+							  }
+							  sendEmailCount = sendEmailCount+1;
+						  }
+							
+				  	 }
+			  	  
+			 }catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 			return "success";
 		}
@@ -1151,9 +1173,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			 }
 			 
 			 EmailMessage emailMessage = new EmailMessage();
-			 emailMessage.setFirstName(pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-			 emailMessage.setLastName(pmh.getProjectMemberId().getEmployee().getUser().getLastName());
-			 emailMessage.setToEmail(pmh.getProjectMemberId().getEmployee().getUser().getEmail());
+			 emailMessage.setFirstName(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+			 emailMessage.setLastName(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+			 emailMessage.setToEmail(pmh.getProjectMemberId().getProjectMemberCandidteId().getEmail());
 			 emailMessage.setFromEmail(loginUser.getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 
@@ -1165,16 +1187,16 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();    
 			 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectAssignedDate());
 			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
-			 if(null!= pmh.getProjectMemberId().getEmployee()){
-				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
-					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
-						 StringBuilder empName = new StringBuilder();
-						 globalVarsMap.put("EmployeeName", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
-					 }else{
-						 globalVarsMap.put("EmployeeName", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-						}
-				 }
-			 }
+			
+			 
+			 StringBuilder employeeName = new StringBuilder();
+		 	 if(StringUtils.isNotBlank(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName())) {
+		 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName()).append(" ").append(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+		 	 }else {
+		 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+		  		 }
+		  		 
+		 	 globalVarsMap.put("EmployeeName", employeeName.toString());
 			 
 			 
 			 if(null != pmh.getProjectMemberId().getProjects()){
@@ -1232,15 +1254,17 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 			 notificationScenario.setBody(notificationbody);
 			 
-			 User toUser = pmh.getProjectMemberId().getEmployee().getUser();
+			 if(pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser() != null) {
+	 			 User toUser = pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
+	 			 StringBuilder notificationLink = new StringBuilder();
+				 String actionLink="";
+			     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();
+			     emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getProjectMemberCandidteId().getOrgLocationId(), notificationScenario,new HashMap<String,String>());
+			  
+ 		       }
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_REASSIGN,new ArrayList<EmailAttachment>());
-			 StringBuilder notificationLink = new StringBuilder();
-			 String actionLink="";
-		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();
-		     
-			emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario,new HashMap<String,String>());
 
 		}
 
@@ -1297,23 +1321,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
          }
 		
 		@RequestMapping(value = "/getVendorsByOrgLocationId")
-		public String getVendorsByOrgLocationId(
+		public List<OrgRelationDTO> getVendorsByOrgLocationId(
 				HttpServletRequest request) throws Exception {
-		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			String resultJson = null;
-			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
-			for(OrgRelations vendors:vendorList){
-				if(vendors.getLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
-				}
-				if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
-				}
-				
-			}
-			
-			resultJson = toJSON(vendorList);
-			return resultJson;
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<OrgRelationDTO> vendorList = orgRelationsService.getAllVendorsListOrgLocationId(orgLocations.getId());
+			return vendorList;
 
 		}
 		/**
@@ -1339,6 +1351,68 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			resultJson = toJSON(userList);
 			return resultJson;
 		}
+		
+		
+		
+		@RequestMapping(value = "/getAssociateReportingManager", method = RequestMethod.POST)
+		public @ResponseBody List<User> getAssociateReportingManager(
+				@RequestParam(value = "role", required = false) Long roleId, HttpServletRequest request) throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+			List<User> reportingManagersList = new CopyOnWriteArrayList<User>();
+			
+			List<User> userList = userService.getReportingManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId());
+			List<User> globalUserList = userService.getGlobalReportingManagersUsersByOrgId(roleId, org.getId());
+			if(userList != null && !userList.isEmpty()) {
+				reportingManagersList.addAll(userList);
+			}
+			
+			if(globalUserList != null && !globalUserList.isEmpty()) {
+				reportingManagersList.addAll(globalUserList);
+			}
+			HashMap<Long,User> userMap = new HashMap<>();
+			for (User user : reportingManagersList) {
+				User tempUser = userMap.get(user.getId());
+				if(tempUser == null) {
+					userMap.put(user.getId(),user);
+				}else {
+					reportingManagersList.remove(user);
+					continue;
+				}
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(userRole != null){
+					user.setUserType(userRole.getUserType());
+				}else {
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
+				}
+			}
+			return reportingManagersList;
+		}
+		
+		
+		@RequestMapping(value = "/getAssociateResourceManager", method = RequestMethod.POST)
+		public @ResponseBody List<UserDTO> getAssociateResourceManager(
+				 HttpServletRequest request) throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+			List<UserDTO> resourceManagersDTOList = new ArrayList<>();
+			
+			List<User> userList = userService.getResourceManagersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
+			
+			for (User user : userList) {
+				UserDTO userDTO = new UserDTO();
+				userDTO.setFullName(user.getFullName());
+				userDTO.setId(user.getId());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				userDTO.setUserType(userRole.getUserType());
+				resourceManagersDTOList.add(userDTO);
+				
+			}
+			return resourceManagersDTOList;
+		}
+		
+		
 		
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
@@ -1515,6 +1589,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		  return userGroupDto;
 	 }
 	 
+
 	 @RequestMapping(value = "/deleteUserGroupByUUID" , method = RequestMethod.GET)
 	 public Response<UserGroupDTO> deleteUserGroupByUUID(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1522,5 +1597,219 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		  Response<UserGroupDTO> userGroupDto =  userGroupService.deleteUserGroupByUUID(userGroupDTO.getGroupUUID(),loginUser);
 		  return userGroupDto;
 	 }
+
+	 @RequestMapping(value = "/getLinkedUserDetailsByUserName" , method = RequestMethod.POST)
+	 public String getLinkedUserDetailsByUserName(UserDTO userDTO, HttpServletRequest request)
+			throws Exception {
+           User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	       String result = "";
+           if(userDTO.getLinkedUserName().equalsIgnoreCase(loginUser.getUserName())) {
+        	   result = "invalid";
+           }else {
+        	   User user = userService.findByUserName(userDTO.getLinkedUserName());
+        	   if(user != null) {
+        		   if(user.getLinkUserId() == null) {
+        			   result = "success";  
+        		   }else {
+        			   result = "linked";  
+        		   }
+        		  
+        	   }else {
+        		   result = "Not Registered";  
+        	   }
+           }
+           return result;
 	 
+	 }
+	 
+	 @RequestMapping(value = "/validateLinkedUserPasswordByUserName" , method = RequestMethod.POST)
+	 public String validateLinkedUserPasswordByUserName(UserDTO userDTO, HttpServletRequest request)
+			throws Exception {
+	       String result = "";
+         
+	       if(StringUtils.isNotBlank(userDTO.getLinkedUserName()) && StringUtils.isNotBlank(userDTO.getLinkedUserPwd())) {
+	    	   User user = userService.findByUserName(userDTO.getLinkedUserName());
+	    	   
+	    	   if (sourceleadPasswordEncoder.matches(userDTO.getLinkedUserPwd(), user.getPassword())) {
+	    		   result =  "valid";
+				} else {
+					result =  "invalid";
+				}
+	       }
+	       
+           return result;
+	 
+	 }
+	 
+	
+	 
+	 @RequestMapping(value = "/linkUser" , method = RequestMethod.POST)
+	 public Response<String> linkUser(UserDTO userDTO, HttpServletRequest request) throws Exception{
+	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 Response<String> response = new Response<>();
+		try {
+			if(user != null) {
+				
+				 if(StringUtils.isNotBlank(userDTO.getLinkedUserName()) && StringUtils.isNotBlank(userDTO.getLinkedUserPwd())) {
+					User linkedUser =  userService.findByUserName(userDTO.getLinkedUserName());
+					linkedUser.setLinkUserId(user);
+					userService.addUser(linkedUser);
+					
+				    List<Long> accountUserList = new ArrayList<>();
+					List<Long> userIdsList = userService.getUserIdsListByLinkedUserId(user.getId());
+					if(userIdsList != null && !userIdsList.isEmpty()) {
+						for(Long userId : userIdsList) {
+							List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+							accountUserList.addAll(linkedUserIdsList);
+						}
+					}
+					userIdsList.addAll(accountUserList);
+					userIdsList.add(user.getId());
+					if(user.getLinkUserId() != null) {
+						userIdsList.add(user.getLinkUserId().getId());
+					}
+					
+					List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
+					
+					response.setResponse(Result.SUCCESS.name());
+				    response.setResponseMessage(Result.SUCCESS.getValue());
+					
+				 }else {
+					    response.setObject("DataMissing");
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+				 }
+				
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		
+		return response;
+	 
+	 }
+	 
+	 
+	 
+	 
+	 
+	 @RequestMapping(value = "/removeLinkedUser" , method = RequestMethod.POST)
+	 public Response<String> removeLinkedUser(@RequestParam(value="userCode", required=true) String userCode, HttpServletRequest request) throws Exception{
+	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 Response<String> response = new Response<>();
+		try {
+			if(user != null) {
+				
+				 if(StringUtils.isNotBlank(userCode)) {
+					User linkedUser =  userService.getUserByUserCode(userCode);
+					linkedUser.setLinkUserId(null);
+					userService.addUser(linkedUser);
+				
+				    List<Long> accountUserList = new ArrayList<>();
+					List<Long> userIdsList = userService.getUserIdsListByLinkedUserId(user.getId());
+					if(userIdsList != null && !userIdsList.isEmpty()) {
+						for(Long userId : userIdsList) {
+							List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+							accountUserList.addAll(linkedUserIdsList);
+						}
+					}
+					userIdsList.addAll(accountUserList);
+					userIdsList.add(user.getId());
+					if(user.getLinkUserId() != null) {
+						userIdsList.add(user.getLinkUserId().getId());
+					}
+					
+					List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
+					
+					response.setResponse(Result.SUCCESS.name());
+				    response.setResponseMessage(Result.SUCCESS.getValue());
+				    
+				 }else {
+					    response.setObject("DataMissing");
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+				 }
+				
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		
+		return response;
+	 
+	 }
+	 
+	 
+	 
+	 /**
+	  * Save Associate Balance Leaves 
+	  * @param associateBalanceLeaveDTO
+	  * @param request
+	  * @return Response<AssociateBalanceLeaveDTO>
+	  * @throws Exception
+	  */
+	 
+	 @RequestMapping(value = "/addAssociateLeave" , method = RequestMethod.POST)
+	 public Response<AssociateBalanceLeaveDTO> addAssociateLeave(AssociateBalanceLeaveDTO associateBalanceLeaveDTO, HttpServletRequest request)throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+           User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+           Response<AssociateBalanceLeaveDTO> resObj = associateBalanceLeaveService.addAssociateLeave(associateBalanceLeaveDTO, loginUser, orgLocations); 
+           return resObj;
+	 
+	 }
+	 
+	/**
+	 * Get Assciate Balance Leaves By user Id
+	 * 
+	 * @param userId
+	 * @param request
+	 * @return ResponseList<AssociateBalanceLeaveDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getAssociateBalanceLeavesByUserId", method = RequestMethod.GET)
+	public ResponseList<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ResponseList<AssociateBalanceLeaveDTO> response = new ResponseList();
+		try {
+			List<AssociateBalanceLeaveDTO> list = associateBalanceLeaveService.getAssociateBalanceLeavesByUserId(userId,orgLocations,loginUser);
+			response.setData(list);
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return response;
+	}
+
+	
+	
+	/**
+	 * To Update Balance Leaves By user Id
+	 * 
+	 * @param userId
+	 * @param request
+	 * @return ResponseList<AssociateBalanceLeaveDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/editAssBalLeave", method = RequestMethod.PUT)
+	public boolean editAssBalLeave(@RequestParam(value = "assoBalLeaveUUID", required = false) String assoBalLeaveUUID, 
+								   @RequestParam(value = "totalLeaves", required = false) String totalLeaves,HttpServletRequest request) throws Exception
+	{
+		boolean isUpdated = associateBalanceLeaveService.getAssociateBalanceByUUID(assoBalLeaveUUID,totalLeaves);
+		return isUpdated;
+	}
 }

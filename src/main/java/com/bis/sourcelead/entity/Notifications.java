@@ -81,7 +81,7 @@ public class Notifications implements Serializable{
 	private String userNotificationStatus;
 	
 	@Column(name="UUID")
-	private String UUID;
+	private String uuId;
 	
 	@Column(name = "PARAMETER_LIST", columnDefinition = "TEXT default NULL")
 	private String parameterList;
@@ -113,26 +113,32 @@ public class Notifications implements Serializable{
 	private String notificationFirstName;
 	
 	@Transient
+	@JsonProperty
 	private String notificationLastName;
 	
 	@Transient
+	@JsonProperty
 	private String notificationImage;
 	
 	@Transient
+	@JsonProperty
 	private String spocInvitationStatus;
 	
 	@Transient
+	@JsonProperty
 	private String orgRelationUUID;
 	
 	@Transient
+	@JsonProperty
 	private String responderType;
 	
 	
 	@Transient
-	
+	@JsonProperty
 	private String notificationUserType;
 	
 	@Transient
+	@JsonProperty
 	private String notificationFormId;
 	
 	
@@ -272,15 +278,15 @@ public class Notifications implements Serializable{
 	public void setUserNotificationStatus(String userNotificationStatus) {
 		this.userNotificationStatus = userNotificationStatus;
 	}
-
-	public String getUUID() {
-		return UUID;
-	}
-
-	public void setUUID(String uUID) {
-		UUID = uUID;
-	}
 	
+	public String getUuId() {
+		return uuId;
+	}
+
+	public void setUuId(String uuId) {
+		this.uuId = uuId;
+	}
+
 	public String getSpocUUID() {
 		return spocUUID;
 	}

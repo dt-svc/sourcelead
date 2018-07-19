@@ -53,16 +53,16 @@
         <div class="addImmiFoot">
             <a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('formDetails')" class="pull-left">Back</a>
             <a href="javascript:void(0)" onclick="immigration.savePetitionTemplateDetailsValues()" class="nextBtn">Save Template</a>
-            <a href="javascript:void(0)">Reset</a>
             <div class="clearfix"></div>
         </div>   
     </div>
 </section>
 <!--   Popup Code  -->
 <div class="popMask"></div>
+<div id="deletetemplate"></div>
 <div class="popUpOut popUpOutBig" id="taskViewPopup">
     <div class="popupHead">
-        <h2>Add Task</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+        <h2>Add Task</h2><a href="javascript:void(0)" onclick="immigration.removeFormValidationErrors('petitionTemplateTaskDetails')" class="fa fa-close popCan"></a>
     </div>
     <form id="petitionTemplateTaskDetails" name="petitionTemplateTaskDetails">
         <input type="hidden" name="templateId" id="immiTempId"/>
@@ -70,28 +70,28 @@
         <div class="popupMid popupMidOver clearfix mt">
             <div class="row clearfix">
                 <div class="col-md-6 noPad">
-                    <div class="col-md-12 mb10">
+                    <div class="col-md-12 mb10" id = "taskNameDiv">
                         <label>Subject<span class="text-danger">*</span></label>
-                        <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" field-name= "Subject" data-validation = "required validate_Space validate_length length2-500">
+                        <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" field-name= "Subject" data-validation = "required validate_Space validate_length length2-100">
                     </div>
                     <div class="col-md-12 mb10">
                         <label>Priority</label>
                         <select class="form-control input-sm valid" id="priority1" name="priority">
-                            <option selected="" disabled="">-- Select Priority --</option>
-                            <option>High</option>
-                            <option>Low</option>
-                            <option>Medium</option>
+                            <option value="" selected>-- Select Priority --</option>
+                            <option value="High">High</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
                         </select>
                     </div>
                     <div class="col-md-12 mb10">
                         <label>Repeat</label>
                         <select class="form-control input-sm valid" id="taskRepeat" name="taskRepeat">
-                            <option selected="" disabled="">-- Select Repeat --</option>
-                            <option>Never</option>
-                            <option>Daily</option>
-                            <option>Weekly</option>
-                            <option>Monthly</option>
-                            <option>Yearly</option>
+                            <option value="" selected>-- Select Repeat --</option>
+                            <option value="Never">Never</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
                         </select>
                     </div>
 
@@ -140,7 +140,7 @@
                                         <div class="select-field">
                                             <select id="dueAfterMonths" name="dueAfterMonths" field-name= "Months" class="form-control input-sm" data-validation = "required">
                                                 <option selected="" value="">--Select Month--</option>
-                                                <c:forEach begin="1" end="12" var="m">
+                                                <c:forEach begin="0" end="12" var="m">
                                                     <option>${m}</option>
                                                 </c:forEach>
                                             </select>
@@ -173,7 +173,7 @@
     </form>
     <div class="immiPopFoot">
         <input value="Add" onclick ="immigration.savePetitionTemplateTaskDetails()" class="" id="addTaskBtn" type="button">
-        <input value="Cancel" class="popCan" type="button">
+        <input value="Cancel" onclick="immigration.removeFormValidationErrors('petitionTemplateTaskDetails')" class="popCan" type="button">
     </div>		
 </div>	
 
@@ -218,7 +218,7 @@
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.taskName != null && opt.taskName != '' && opt.taskName != 'undefined') {
-                            result = result + '<td name="subject" data-name="subject">' + opt.taskName + '</td>';
+                            result = result + '<td name="subject"  data-name="subject"><div class="tbldata-dotdot-me" title = "'+opt.taskName+'">' + opt.taskName + '</div></td>';
                             result = result + '<input type="hidden" id="startDate' + opt.id + '" value="' + opt.taskName + '"/>';
                         } else {
                             result = result + '<td>---</td>';
@@ -229,6 +229,7 @@
                 {
                     "targets": colIndex++,
                     /* "data": "assignedTo", */
+                    "sortable": false,
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.assignedTo != null && opt.assignedTo != '' && opt.assignedTo != 'undefined') {
@@ -267,6 +268,7 @@
                 {
                     "targets": colIndex++,
                     /* "data": "id", */
+                    "sortable": false,
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.id != null && opt.id != '' && opt.id != 'undefined') {
@@ -312,6 +314,7 @@
             $('#taskReminderSelect').trigger("chosen:updated");
             $(".popMask").fadeIn(200);
             $("#taskViewPopup").fadeIn(100);
+            immiTaskId = "";
         });
         $(".popCan").click(function () {
             $(".popMask").fadeOut(200);
@@ -319,7 +322,7 @@
         });
 //        $("#taskName").unbind("blur");
         $("#taskName").on("keyup", function () {
-            checkTaskNames($(this).val().trim());
+            checkTaskNames($(this).val().trim(),immiTaskId);
         });
     });
 </script>
@@ -365,6 +368,7 @@
         });
     });
 
+	var immiTaskId;
     function editImmiTaskList(id) {
         $.ajax({
             type: "GET",
@@ -411,17 +415,44 @@
                 $("#templateId").val(data.id);
             }
         });
+        immiTaskId = id;
     }
 
-    function deleteImmiTaskList(id) {
+
+	function deleteImmiTaskList(id){
+    	$(".project_inn_mask").remove();
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_template_popup' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <b>Do you want to remove record permanently?</b>";
+		result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationTask("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTemplateDelete();'></b>";
+		result = result +"	</div>";
+		$("#deletetemplate").append(result);
+		$("#remove_template_popup").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+   
+		}
+    
+    function deleteImmigrationTask(id) {
         $.ajax({
             type: "GET",
             url: sourceleadUrl + immiModulePath + "/deleteImmigrationTaskList?${_csrf.parameterName}=${_csrf.token}&id=" + id,
             success: function (json) {
+            	showTemplateMsg("Successfully Task Deleted");
                 immigrationDataTableList();
+                cancelTemplateDelete();
             }
         });
     }
+    
+    function cancelTemplateDelete(){
+		$("#remove_template_popup").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+		$("#deletetemplate").empty();
+	}
+    
+    
 </script>
 <script>
     function getAssignToUsersList(id) {

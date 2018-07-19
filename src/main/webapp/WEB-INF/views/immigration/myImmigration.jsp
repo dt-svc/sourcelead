@@ -12,27 +12,25 @@
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
-<c:set var ="myImmigrationPage" value = "Y" scope="session"/>
+<%-- <c:set var ="myImmigrationPage" value = "Y" scope="session"/> --%>
 <title>Insert title here</title>
-    <section class="content-wraper content-wraperNew">
+    <section class="content-wraper">
    
-    <section class="content-header clearfix addImmiHead">
+    <section class="content-header clearfix">
       <div class="pull-left"><h2>Immigration list</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Immigrations List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Immigrations List</div>
 	<div class="clearfix"></div>
     </section>    
     
-    <div class="immigrationWrap">
+    <div class="immigrationWrap noPad">
 		<div class="immigraInnWrap">
-			<div class="timesheet_head clearfix">
-			
-			<div class="pull-left colCho mb5">
-				<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="btn btn-sm btn-default"><i class="fa fa-table"></i></a>
-			</div>
-			
-			<div class="filterSearchDiv pull-left colCho">
-				
-<div class="colPop">
+		
+		
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon">
+      		<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a>    
+      		
+ <div class="colPop">
 	<div class="colPopMid coldropdown-parent">
 	<div class="clearfix">
 		<div class="row">
@@ -107,19 +105,21 @@
 		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
 	</div>
 </div>				
-			</div>
-			</div>
-
-			
-			
-			</div> 
+			</div>     		
+      		
+      </span>
+      <ul class="pull-right list-unstyled list-inline">
+      		<li class="unVisable"><input type="text" class="repSearchBar" placeholder='Search' id='immiListSerach'/><span class="repSearchIcon" onClick=""></span></li>
+      </ul>
+      </div>		
 			
 			 <div id="dynamicImmigrationListViewDiv" class="project_wrap_table datatable_filter"></div>
 			 
     </div>
+  </div>
   </section>
   <!-- Content Area -->
-</div>
+
 <div id="popUp"></div>
 
 
@@ -361,7 +361,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.generatedId !== null && opt.generatedId !== '' && opt.generatedId !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.generatedId+"</a></div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/app/immigration/viewImmigration?immigrationUUID="+opt.immigrationUUID+"&candidateUUID="+opt.candidateUUID+"&immiTemplateUUID="+opt.immiTemplateUUID+"&myImmigrationPage=Y>"+opt.generatedId+"</a></div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }
@@ -509,7 +509,12 @@
 	function columClose(){
 		$(".colPop").hide();
 	}
-	
+	$("html").click(function(){
+		$(".colPop").hide();
+	});
+	$(".refreIcon, .colPop").click(function(e){
+	 	e.stopPropagation();
+	});	
 		
 	function columHide(){
 		columClose();
