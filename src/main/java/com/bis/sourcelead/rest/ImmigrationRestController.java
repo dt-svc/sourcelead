@@ -2323,23 +2323,19 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value = { "/editLcaDetails" })
 	public ModelAndView editLcaDetails(
-			/*@RequestParam(value = "forward", required = false) String forward,*/
 			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
 			HttpServletRequest request) throws Exception {
 		
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		
-		/*if (forward.equalsIgnoreCase("newLca")) {*/
-			model.setViewName("/immigration/newLca");
-			if (!StringUtils.isEmpty(lcaUuid)) {
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Long lcaId = immigrationCommonService.getLcaIdByUUID(lcaUuid);
-				LcaDTO lcaDTO = immigrationCommonService.editLcaDetails(lcaId,orgLocations);
-				model.addObject("lcaDTO", lcaDTO);
-			}
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+				model.setViewName("/immigration/newLca");
+				if (!StringUtils.isEmpty(lcaUuid)) {
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long lcaId = immigrationCommonService.getLcaIdByUUID(lcaUuid);
+					LcaDTO lcaDTO = immigrationCommonService.editLcaDetails(lcaId,orgLocations);
+					model.addObject("lcaDTO", lcaDTO);
+				}
 			
-	/*	} */
 		return model;
 	}
 	
@@ -2392,8 +2388,11 @@ public class ImmigrationRestController {
 			model.addObject("lcaId", lcaId);
 			if (lcaUuid != null && !StringUtils.isEmpty(lcaUuid)) {
 				 lcaDTO = immigrationCommonService.editLcaDetails(lcaId,orgLocations);
-				// lcaDTO.getLcaPlaceOfEmploymentList();
 			}
+            
+            if(lcaDTO.getLcaDocumentList() != null && !lcaDTO.getLcaDocumentList().isEmpty()) {
+            model.addObject("docList",lcaDTO.getLcaDocumentList());
+            }
             model.addObject("locList",lcaDTO.getLcaPlaceOfEmploymentList());
 			model.addObject("lcaDTO", lcaDTO);
 			model.addObject("sourceleadUrl", sourceleadUrl);

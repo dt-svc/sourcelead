@@ -11,27 +11,42 @@
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 
 <title>Insert title here</title>
-    <section class="content-wraper content-wraperNew">
+    <section class="content-wraper">
    
-    <section class="content-header clearfix addImmiHead">
+    <section class="content-header clearfix">
       <div class="pull-left"><h2>LCA list</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigration List</a>&raquo; LCA List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigration List</a> &raquo; LCA List</div>
 	<div class="clearfix"></div>
     </section>    
-    <div class="immigrationWrap">
+    <div class="immigrationWrap noPad">
    
 		<div class="immigraInnWrap">
 		<!-- Filter For Lca -->
-			<div class="timesheet_head clearfix">
-			<ul class="pull-right">
-			  <li class="noPad">
-					  <a href="${appPath}/immigration/loadNewLCA" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="fa fa-plus paddingRight"></i> New </a>
-				  </li>
-				  </ul>
-	           <span class="pull-right mt5 mr5"><a href="javascript:void(0)" class="btn btn-default btn-sm repFilIcon" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter noPad"></i></a></span>
-		       <span class="pull-right mt5 mr5"><a href="/app/uploadLcaForm">Import LCA</a></span> 
-			</div> 
-			<div id="dynamicLCAListViewDiv" class="project_wrap_table datatable_filter"></div>
+		
+		
+		
+<div class="positionRelative reportHead clearfix">
+      <ul class="pull-right list-unstyled list-inline">
+      
+			<li><a href="${appPath}/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
+			
+			<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+							<a href="/app/uploadLcaForm">Import LCA</a>
+							<a href="javascript:void(0)" onclick=";" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick=";" title="Excel">Export Excel</a>
+						</span>
+					</div>
+				</li>
+		    
+		   <span><input class="immigraTabSerach" id ="lcaSearch" placeholder="Search" type="text"></span>
+        </ul>
+      </div>
+		
+	<div id="dynamicLCAListViewDiv" class="project_wrap_table datatable_filter"></div>
     </div>
     </div>
   </section>
@@ -168,6 +183,10 @@
   		lcaStatus.push($(this).val());
       });
      var sourceleadUrl = '${sourceleadUrl}';
+     
+     var searchValue = $("#lcaSearch").val();
+     searchValue = searchValue ? searchValue : "";
+     
      var url ="";
      url = sourceleadUrl + "/immigration/getLcaViewList?searchValue="+searchValue+"&lcaStatus="+lcaStatus+"&mainStatus="+status; 
      dynamicLCAListPagination(url);
@@ -334,7 +353,15 @@
      });
     
      $("#dynamicLCAListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
-
+      
+     $("#lcaSearch").keyup(function (e) {
+         if (e.which === 13) {
+        	 getDynamicLCAList( $("#myLcaStatus").val(),"");
+             for (var i=0; i<hideColumns.length; i++) {
+        		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
+        		}
+         }
+     });
      
     $("table").colResizable(); // for resizing columns in tables.
  }
@@ -482,3 +509,17 @@ function reActivateLca(candidateId){
 	}
  </script>
 	
+<script>
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+</script>

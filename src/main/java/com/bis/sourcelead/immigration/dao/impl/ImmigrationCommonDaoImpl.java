@@ -35,6 +35,7 @@ import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
@@ -1635,19 +1636,18 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public LcaDocumentHistory getLcaDocumentHistoryDetailsById(Long id) {
+	public LcaDocumentHistory getLcaDocumentHistoryDetailsById(Long docId,Long lcaId) {
 		
-		logger.debug("getLcaDocumentHistoryDetailsById id ---> " + id);
-		LcaDocumentHistory lcaDocumentHistoryObj = null;
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			lcaDocumentHistoryObj = (LcaDocumentHistory) session.get(LcaDocumentHistory.class, id);
-		} catch (HibernateException e) {
-			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
-			e.printStackTrace();
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LcaDocumentHistory  ldh left join fetch ldh.lcaId  where ldh.id = :docId and ldh.lcaId.id = :lcaId";
+		List<LcaDocumentHistory> docList = session.createQuery(query.toString()).setLong("docId", docId).setLong("lcaId", lcaId).list();
+		LcaDocumentHistory docs = null;
+		if (docList != null && docList.size() > 0) {
+			docs = (LcaDocumentHistory) docList.iterator().next();
 		}
-		logger.debug("got the record id -->" + id);
-		return lcaDocumentHistoryObj;
+		return docs;
+		
 		
 	}
 
@@ -1666,7 +1666,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
             String subQuery2 = ""; 
             
             StringBuilder query1 = new StringBuilder("");
-           /* if (searchValue.contains("-") || searchValue.contains("/")) {
+            if (searchValue.contains("-") || searchValue.contains("/")) {
     			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat())
     					.toFormatter();
     			LocalDate parsedDate = LocalDate.parse(searchValue, orgFormat);
@@ -1681,16 +1681,15 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
     			query1.append(" and ((lcaView.lcaNo like '%" + searchValue + "%' )");
     			query1.append(" or (lcaView.lcaTitle like '%" + searchValue + "%' )");
     			query1.append(" or (lcaView.lcaStatus like '%" + searchValue + "%' )");
+    			query1.append(" or (lcaView.prevailingWage like '%" + searchValue + "%' )");
     			query1.append(" or (lcaView.status like '%" + searchValue + "%' ))");
-    		}*/
+    		}
             
             String sortingQry = "";
     		if (StringUtils.isNotBlank(lcaListViewDTO.getSortColumn())) {
     			String sortColumnName = lcaListViewDTO.getSortColumn();
     			sortingQry = " order by lcaView." + sortColumnName + " " + lcaListViewDTO.getSortOrder();
-    		} /*else {
-    			sortingQry = " order by lcaView.updatedDate desc ";
-    		}*/
+    		} 
     		
 			if(status != null && !status.isEmpty()){
 				String[] statusFilter = status.split(",");
@@ -1844,22 +1843,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		
 	}
 	
-	/*@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<Map<String, BigInteger>> getAllActiveCandidatesByName(String name, Long orgLocationId) {
-	Session session = this.sessionFactory.getCurrentSession(); // below query is used for auto populate in UI.
-	String query = "SELECT LOWER(CONCAT(FIRST_NAME,' ',LAST_NAME,'(',EMAIL,')')) as label, ID as value FROM CANDIDATE WHERE STATUS ='1' AND ORG_LOCATION_ID =:orgLocationId AND ( LOWER(CONCAT(FIRST_NAME,LAST_NAME)) LIKE :name OR LOWER(CONCAT(FIRST_NAME,' ',LAST_NAME)) LIKE :name) ORDER BY FIRST_NAME"; 
-
-	List<String> firstNameList = new ArrayList<String>();
-	//firstNameList=session.createSQLQuery(query).setString("firstName", name+"%").setMaxResults(2).list();
-	// firstNameList=
-	return session.createSQLQuery(query).setString("name", name+"%").setLong("orgLocationId", orgLocationId).setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
-	}*/
-
-	 
-
-	
-	//String query = "SELECT LOWER(CONCAT(FIRST_NAME,' ',LAST_NAME,'(',EMAIL,')')) as label, ID as value FROM CANDIDATE WHERE STATUS ='1' AND ORG_LOCATION_ID =:orgLocationId AND ( LOWER(CONCAT(FIRST_NAME,LAST_NAME)) LIKE :name OR LOWER(CONCAT(FIRST_NAME,' ',LAST_NAME)) LIKE :name) ORDER BY FIRST_NAME"; 
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

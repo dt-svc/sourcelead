@@ -81,11 +81,11 @@
    </div>
    </div>
     <div class="clearfix"></div>
-   <!-- LCA Place Of Employment Locations -->
-    <c:forEach var="loc" items="${locList}" begin="0" end="2">
+   <!-- LCA Place Of Employment Locations  View-->
+    <c:forEach var="loc" items="${locList}">
 	   <div class="immigraDetailsWrap"> 
 	   <div class="immigraDetailsCta">
-	           <h2>LCA Place Of Employment Or Location : <c:set var="secCount" value="${secCount+1}" scope="page"/><c:out value="${secCount}" /></h2>
+	           <h2>LCA Place Of Employment (OR) Location : <c:set var="secCount" value="${secCount+1}" scope="page"/><c:out value="${secCount}" /></h2>
 	           
 			  	<ul>
 					<li class="clearfix"><span>Location</span><p>: ${loc.location}</p></li>
@@ -100,7 +100,22 @@
 	   </div>
 	   </div>
    </c:forEach>
-   
+   <!-- LCA Documents View -->
+   <c:forEach var="doc" items="${docList}">
+	   <div class="immigraDetailsWrap"> 
+	   <div class="immigraDetailsCta">
+	           <h2>LCA Document : <c:set var="docCount" value="${docCount+1}" scope="page"/><c:out value="${docCount}" /></h2>
+	           
+			  	<ul>
+					<li class="clearfix"><span>Document Title</span><p>: ${doc.documentTitle}</p></li>
+					<li class="clearfix"><span>File Name</span><p>: ${doc.fileName}</p></li>
+					<li class="clearfix"><span>Comment</span><p>: ${doc.description}</p></li>
+				</ul>	
+				
+	   </div>
+	   </div>
+   </c:forEach>
+  
    </div>
     </div>
     

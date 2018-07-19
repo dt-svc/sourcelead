@@ -436,7 +436,7 @@
         	</div>
         	
         	</div>
-        	
+        	  <div class="clearfix"></div>
         	 <div id ="appendDynamicAttachmentDiv" ><!-- Attachment dynamic div start -->
           
              </div> <!--  Attachment dynamic div end -->
@@ -685,8 +685,9 @@ $('#endDate').datepicker({
    }
 	
  //  var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
-  var rowId =1;
+  
    function appendDynamicPlaceofEmploymentDiv(){
+	   var rowId =1;
 	   console.log("rowId value is --->"+rowId);
 	   $("#dynamicPlaceofEmploymentDiv").append(prepareDynamicPlaceofEmploymentDiv(rowId++,"")); 
    }
@@ -708,7 +709,6 @@ $('#endDate').datepicker({
 		  	var plsOfEmpmntArr = [];
 		  	 var th = $(this);
 		  	<c:forEach var='plsOfEmpmnt' items="${lcaDTO.lcaPlaceOfEmploymentList}">
-		  		/* if("${edu.isCurrResidence}" != 'Y'){ */
 			  		plsOfEmpmntArr.push("${plsOfEmpmnt.plsempmntId == 'undefined' ? '':plsOfEmpmnt.plsempmntId}");
 			  		plsOfEmpmntArr.push("${plsOfEmpmnt.location}");
 			  		plsOfEmpmntArr.push("${plsOfEmpmnt.addressLine1}");
@@ -717,10 +717,10 @@ $('#endDate').datepicker({
 			  		plsOfEmpmntArr.push("${plsOfEmpmnt.state}");
 			  		plsOfEmpmntArr.push("${plsOfEmpmnt.country}");
 			  		plsOfEmpmntArr.push("${plsOfEmpmnt.zipCode}");
+			  		$("#dynamicPlaceofEmploymentDiv").empty();
 				  	$("#dynamicPlaceofEmploymentDiv").append(prepareDynamicPlaceofEmploymentDiv(count,plsOfEmpmntArr));
 				  	plsOfEmpmntArr = [];
 			  		count++;
-		  		/* } */
 		  	</c:forEach>
 		  }
  });
@@ -753,16 +753,16 @@ $('button').click(function (event) {
        var prepareAttachmentdiv ='';
        prepareAttachmentdiv =prepareAttachmentdiv+ "<div id ='dynamicAttachmentDiv"+rowId+"'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   <div class='clearfix'></div>";
-   //    prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='hidden' name='lcaDocumentList["+rowId+"].docId' value='"${lcaDTO.lcaDocumentList[rowId].docId}"'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   <div class='col-xs-12 col-sm-12 col-md-12 mb'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   <h5 class='col-xs-8 col-sm-8 col-md-8'>Attachment<span class='text-danger paddingLeft'>*</span></h5> ";
        prepareAttachmentdiv =prepareAttachmentdiv+ "    <div class='col-xs-4 col-sm-4 col-md-4'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "    <div class='pull-right'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   <button type='button' class='btn btn-default pull-right' onclick='removeDynamicAttachmentDiv("+rowId+","+(typeof attachmentVal[0]==="undefined"?"":attachmentVal[0])+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove</button>";
+       prepareAttachmentdiv =prepareAttachmentdiv+ "   <input type='hidden' name='lcaDocumentList["+rowId+"].id' value='"+(typeof attachmentVal[0]==="undefined"?"":attachmentVal[0])+"'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   <div class='clearfix'></div>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   </div>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   </div>";
-       prepareAttachmentdiv =prepareAttachmentdiv+ "   </div><input type='hidden' name='lcaDocumentList["+rowId+"].id' value='"+(typeof attachmentVal[0]==="undefined"?"":attachmentVal[0])+"'>";
+       prepareAttachmentdiv =prepareAttachmentdiv+ "   </div>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-4 mb'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Title</label>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-12'>";
@@ -792,7 +792,7 @@ $('button').click(function (event) {
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-4 mb'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Comment</label>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-12'>";
-	   prepareAttachmentdiv =prepareAttachmentdiv+ " <textarea class='form-control' name='lcaDocumentList["+rowId+"].description' id='description' value='"+(typeof attachmentVal[3]==="undefined"?"":attachmentVal[3])+"' placeholder='Comment' rows='2'>";
+	   prepareAttachmentdiv =prepareAttachmentdiv+ " <textarea class='form-control' name='lcaDocumentList["+rowId+"].description' id='description"+rowId+"' value='"+(typeof attachmentVal[3]==="undefined"?"":attachmentVal[3])+"' placeholder='Comment' rows='2'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</textarea>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
@@ -807,7 +807,7 @@ $('button').click(function (event) {
     var rowId =1;
     function appendDynamicAttachmentDiv(){
  	   console.log("rowId value is --->"+rowId);
- 	   $("#dynamicAttachmentDiv").append(prepareDynamicAttachmentDiv(rowId++,"")); 
+ 	   $("#appendDynamicAttachmentDiv").append(prepareDynamicAttachmentDiv(rowId++,"")); 
     }
     //var deletedResicenceListIds = new Array();
     var removedAttachmentIds = [];
@@ -817,11 +817,12 @@ $('button').click(function (event) {
  	   $("#dynamicAttachmentDiv"+id).remove();
  	   rowId--;// decrement rowid when deleted in UI.
     } 
+   
 </script>
 
  <script type="text/javascript">
 	  $( document ).ready(function() {
-		  var sizeOfAttachment = "${fn:length(lcaDTO.lcaDocumentList)}";		 
+		  var sizeOfAttachment = "${fn:length(lcaDTO.lcaDocumentList)}";	
 		  if(sizeOfAttachment > 0){
 		  	var count = 1;
 		  	var attachmentArr = [];
@@ -829,7 +830,9 @@ $('button').click(function (event) {
 			  		attachmentArr.push("${lcaAttachment.docId == 'undefined' ? '':lcaAttachment.docId}");
 		  		
 			  		attachmentArr.push("${lcaAttachment.documentTitle}");
+			  		attachmentArr.push("${lcaAttachment.fileName}");
 			  		attachmentArr.push("${lcaAttachment.description}");
+			  		$("#appendDynamicAttachmentDiv").empty();
 				  	$("#appendDynamicAttachmentDiv").append(prepareDynamicAttachmentDiv(count,attachmentArr));
 				  	attachmentArr = [];
 			  		count++;

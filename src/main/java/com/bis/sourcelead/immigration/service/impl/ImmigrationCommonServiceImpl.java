@@ -2044,7 +2044,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	private List<LcaPlaceOfEployment> saveLcaPlaceOfEploymentList(LcaDTO lcaDTO, Lca lca ,User user, OrgLocations orgLocations) {
 		
-		List<LcaPlaceOfEployment> lcaPlaceOfEploymentList = new ArrayList<LcaPlaceOfEployment>(); // add residences to immigration
+		List<LcaPlaceOfEployment> lcaPlaceOfEploymentList = new ArrayList<LcaPlaceOfEployment>(); // add LcaPlaceOfEployment to LCA
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		if (lcaDTO.getLcaPlaceOfEmploymentList() != null) {
 			
@@ -2106,7 +2106,7 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		for (LcaDocumentHistoryDTO lcaDocumentDTO : lcaDocumentDtoList) {
 			
 		if (StringUtils.isNotBlank(lcaDocumentDTO.getDocId())) {
-			lcaDocumentHistoryEntity = immigrationCommonDao.getLcaDocumentHistoryDetailsById(Long.parseLong(lcaDocumentDTO.getDocId()));
+			lcaDocumentHistoryEntity = immigrationCommonDao.getLcaDocumentHistoryDetailsById(Long.parseLong(lcaDocumentDTO.getDocId()),lca.getId());
 			
 		}else {
 			lcaDocumentHistoryEntity = new LcaDocumentHistory();
@@ -2131,7 +2131,7 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		if (lcaDocumentDTO.getFileInfo() != null) {
 		FileInfo fileInfo = lcaDocumentDTO.getFileInfo().get(0);
 		
-			 if (fileInfo != null && fileInfo.getFileURL() != null) {
+			 if (fileInfo != null) {
 	
 					lcaDocumentHistoryEntity.setFileName(fileInfo.getFileName());
 					lcaDocumentHistoryEntity.setFileUrl(fileInfo.getFileURL());
@@ -2153,72 +2153,12 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		lcaDocumentHistoryEntity.setUpdatedBy(user);
 		lcaDocumentList.add(lcaDocumentHistoryEntity);
 		}
+		
 		}
       return lcaDocumentList;
 	}
 
-	/*private void copyLcaDocumentHistoryToDocumentHistory(Lca lcaObj, LcaDTO lcaDTO, User user,
-			OrgLocations orgLocations) {
-		
-		List<LcaDocumentHistory> lcaDocumentList = immigrationCommonDao
-				.getLcaDocumentHistoryListById(lcaObj.getId());
-		
-		LcaDocumentHistory  lcaDocumentHistory = null;
-		for (LcaDocumentHistory lcsDocs : lcaDocumentList) {
-			
-			lcaDocumentHistory = new LcaDocumentHistory();
-			lcaDocumentHistory.setLcaId(lcaObj);
-			lcaDocumentHistory.setFileUrl(lcsDocs.getFileUrl());
-			lcaDocumentHistory.setFileContentType(lcsDocs.getFileContentType());
-			lcaDocumentHistory.setFileName(lcsDocs.getFileName());
-			lcaDocumentHistory.setDescription(lcsDocs.getDescription());
-			lcaDocumentHistory.setStatus(Constants.RECORD_ACTIVE);
-			lcaDocumentHistory.setCreatedBy(user);
-			lcaDocumentHistory.setUpdatedBy(user);
-			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-			lcaDocumentHistory.setUpdatedDate(currentDate);
-			lcaDocumentHistory.setCreatedDate(currentDate);
-			try {
-				immigrationCommonDao.saveLcaDocumentHistory(lcaDocumentHistory);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}*/
-
-	/*private void copyLcaPlaceOfEploymentToPlaceOfEployment(Lca lcaObj, LcaDTO lcaDTO, User user,
-			OrgLocations orgLocations) {
-		
-		List<LcaPlaceOfEployment> lcaPlaceOfEploymentList = immigrationCommonDao
-				.getLcaPlaceOfEploymentListById(lcaObj.getId());
-		
-		LcaPlaceOfEployment  lcaPlaceOfEployment = null;
-		for(LcaPlaceOfEployment lcaPlaceOfEmployment : lcaPlaceOfEploymentList) {
-			
-			lcaPlaceOfEployment = new LcaPlaceOfEployment();
-			lcaPlaceOfEployment.setLcaId(lcaObj);
-			lcaPlaceOfEployment.setAddressLine1(lcaDTO.getAddressLine1());
-			lcaPlaceOfEployment.setAddressLine2(lcaDTO.getAddressLine2());
-			lcaPlaceOfEployment.setCountry(lcaDTO.getCountry());
-			lcaPlaceOfEployment.setState(lcaDTO.getState());
-			lcaPlaceOfEployment.setCity(lcaDTO.getCity());
-			lcaPlaceOfEployment.setZipCode(lcaDTO.getZipCode());
-			lcaPlaceOfEployment.setStatus(Constants.RECORD_ACTIVE);
-			lcaPlaceOfEployment.setCreatedBy(user);
-			lcaPlaceOfEployment.setUpdatedBy(user);
-			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-			lcaPlaceOfEployment.setUpdatedDate(currentDate);
-			lcaPlaceOfEployment.setCreatedDate(currentDate);
-			try {
-				immigrationCommonDao.saveLcaPlaceOfEployment(lcaPlaceOfEployment);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-	}*/
+	
 
 	private void copyLcaVisaClarificationsToVisaClarifications(Lca lcaObj,LcaDTO lcaDTO, User user, OrgLocations orgLocations) {
 		

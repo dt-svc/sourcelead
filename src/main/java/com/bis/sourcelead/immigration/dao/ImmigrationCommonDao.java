@@ -174,7 +174,7 @@ public interface ImmigrationCommonDao {
 	
 	LcaPlaceOfEployment getLcaPlaceOfEploymentDetailsById(Long id);
 	
-	LcaDocumentHistory getLcaDocumentHistoryDetailsById(Long id);
+	LcaDocumentHistory getLcaDocumentHistoryDetailsById(Long id,Long lcaId);
 	
 	ResponseList<LcaListViewDTO> getLcaList(LcaListViewDTO lcaListViewDTO, String status,String lcaStatus,String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal)throws Exception;
 	
