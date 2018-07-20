@@ -148,8 +148,8 @@ $('#paymentDate').datepicker({
 	        	
 	        	var result = '';
          		result = result +'     <form id ="paymentForm" name ="paymentForm" method="post">'; 
-         		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table addinvoiceTable">'; 
-         	    result = result +'       <table id="invoiceListTable" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+         		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table">'; 
+         	    result = result +'       <table id="invoiceListTable" class="clearfix" cellspacing="0" width="100%" >';
          		result = result +'           <thead>';
          		result = result +'           <tr>';
          		result = result +'           <th><input type="checkbox" id="checkAllRecords" onclick="toggleInvoices(this);"></th>';
@@ -190,7 +190,7 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'<td>'+opt.total+'</td>';
 	                    	 result = result +'<td>'+opt.dueAmount+'</td>';
 	                    	 result = result +'<td>'+opt.invoiceStatus+'</td>';
-	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeypress="amountInputVal(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'"></td>';
+	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeyup="amountInputVal2(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'"></td>';
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
@@ -244,7 +244,7 @@ $('body').on('blur', '#paymentForm', function() {
 });
 </script>
   <script>
-  function amountInputVal(obj){
+  function amountInputVal2(obj){
 	  // this is for total value updation based our input
 	  var totalValue=0.00;
 	  $("input[id^=totalAmountRow]").each(function() {
@@ -254,8 +254,11 @@ $('body').on('blur', '#paymentForm', function() {
 	  	} 
 	  });
 	  $("#grandTotalAmount").text(totalValue.toFixed(2));
+	// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+	  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(totalValue.toFixed(2));
   }
-  
+  </script>
+   <script>
 	function toggleInvoices(source) {
 	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
 	    var total = 0.00;
@@ -272,15 +275,19 @@ $('body').on('blur', '#paymentForm', function() {
 	            }
 	    	}
 	        $("#grandTotalAmount").text(total.toFixed(2));
+	     // For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+			  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(total.toFixed(2));
 	    }
-	    
+	
 	$('input:checkbox:not(#checkAllRecords)').click(function() {
 	    if(!this.checked) {
 	        $('#checkAllRecords').removeAttr('checked');
 	    }
 	});
 	}
+	</script>
 	
+	<script>
 	function checkSingleInvoice(id, amount){
 		var totalAmount = $("#grandTotalAmount").text();
 		if(totalAmount == ''){
@@ -295,13 +302,17 @@ $('body').on('blur', '#paymentForm', function() {
 			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
 		  }
 		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
+		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+		  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
 	  }
-</script>
+	</script>
+	
 <script>
 function ListPagination(){ 
 	
 	 $("#invoiceListTable").DataTable( { 
-	    	"scrollCollapse": false,
+		 	"scrollY":"350px",	
+		 	"scrollCollapse": false,
 	    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
 	    	"bLengthChange": false,
 	    	"bDestroy": true,

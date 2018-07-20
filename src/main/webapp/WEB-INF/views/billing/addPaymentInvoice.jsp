@@ -5,8 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-
-
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
@@ -100,6 +98,7 @@
     	 		
     	 		<div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
+	                  <div id="demoval"></div>
     	 		</div>
     	 		<!--  Table html -->
     	 		</div>
@@ -151,8 +150,8 @@ $('#paymentDate').datepicker({
 	        	
 	        	var result = '';
          		//result = result +'     <form id ="paymentForm" name ="paymentForm" method="post">'; 
-         		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table addinvoiceTable">'; 
-         	    result = result +'       <table id="invoiceListTable" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+         		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table">'; 
+         	    result = result +'       <table id="invoiceListTable" class="clearfix" cellspacing="0" width="100%" >';
          		result = result +'           <thead>';
          		result = result +'           <tr>';
          		result = result +'           <th><input type="checkbox" id="checkAllRecords" onclick="toggleInvoices(this);"></th>';
@@ -166,12 +165,6 @@ $('#paymentDate').datepicker({
          		result = result +'         <th>Payment</th>                ';
          		result = result +'           </tr>';
          		result = result +'           </thead>';
-         		result = result +'           <tfoot>';
-         		result = result +'           <tr>';
-     			result = result +'           <td colspan="8"><div class="pull-right">Total</div></td>';
-     			result = result +'           <td colspan="1"><span id="grandTotalAmount"></span></td>';
-         		result = result +'           </tr>';
-         		result = result +'           </tfoot>';
                 result = result +"<tbody>"; 
                 
 	        	if(json.data != null && json.data != 'undefined' && json.data != "" && json.data != '[]'){
@@ -197,6 +190,12 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
+	              		result = result +'           <tfoot>';
+	             		result = result +'           <tr>';
+	         			result = result +'           <td colspan="8"><div class="pull-right">Total</div></td>';
+	         			result = result +'           <td colspan="1"><div id="grandTotalAmount"></div></td>';
+	             		result = result +'           </tr>';
+	             		result = result +'           </tfoot>';
 	                     result = result +"</table>"; 
 	                     result = result +'     </div>'; 
 	                 	 result = result +'     <div class="clearfix">';
@@ -262,8 +261,11 @@ $('body').on('blur', '#paymentForm', function() {
 	  	} 
 	  });
 	  $("#grandTotalAmount").text(totalValue.toFixed(2));
+	// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+	  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(totalValue.toFixed(2));
   }
-  
+  </script>
+   <script>
 	function toggleInvoices(source) {
 	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
 	    var total = 0.00;
@@ -280,15 +282,19 @@ $('body').on('blur', '#paymentForm', function() {
 	            }
 	    	}
 	        $("#grandTotalAmount").text(total.toFixed(2));
+	     // For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+			  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(total.toFixed(2));
 	    }
-	    
+
 	$('input:checkbox:not(#checkAllRecords)').click(function() {
 	    if(!this.checked) {
 	        $('#checkAllRecords').removeAttr('checked');
 	    }
 	});
-	}
+	} 
+	</script>
 	
+	<script>
 	function checkSingleInvoice(id, amount){
 		var totalAmount = $("#grandTotalAmount").text();
 		if(totalAmount == ''){
@@ -298,20 +304,22 @@ $('body').on('blur', '#paymentForm', function() {
 		  if($("#"+id).is(':checked')){
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
-			 $("#totalAmountRow"+id).attr("data-validation", "true");
 		  }else{
 			  $("#totalAmountRow"+id).val('');
 			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
-			  $("#totalAmountRow"+id).attr("data-validation-optional", "true");
 		  }
 		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
+		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+		  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
 	  }
-</script>
+	</script>
 <script>
  function ListPagination(){ 
 	
-	 $("#invoiceListTable").DataTable( { 
-	    	"scrollCollapse": false,
+	 $("#invoiceListTable").DataTable( {
+		    "scrollY":"350px",
+	        "scrollCollapse": true,
+	        "paging":         false,
 	    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
 	    	"bLengthChange": false,
 	    	"bDestroy": true,
@@ -320,14 +328,13 @@ $('body').on('blur', '#paymentForm', function() {
 	    	"aoColumnDefs": [{
 		           'bSortable': false,
 		           'aTargets': 0
-				}],
+				}], 
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": ""
 	     	}
-	    } );
+	    });
 	
 }
- 
 </script>
 <jsp:include page="../masterFooter.jsp" />
