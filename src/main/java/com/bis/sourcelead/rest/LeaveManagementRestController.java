@@ -2411,7 +2411,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
-	@RequestMapping(value = "/withdrawLeave")
+	@RequestMapping(value = {"/withdrawLeave", "/rest/withdrawLeave"})
 	@ResponseBody
 	public Response<String> withdrawLeave(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
@@ -2874,8 +2874,7 @@ public class LeaveManagementRestController {
 			model.setViewName("leavemanagement/applyLeave");
 			return model;
 	}
-
-
+	
 	@RequestMapping(value = "/checkBalance")
 	public void checkBalance(HttpServletRequest request,HttpServletResponse response) throws Exception {
 //		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();

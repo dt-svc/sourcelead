@@ -1075,6 +1075,8 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setCancelReason(leave.getDeleteReason());;
 			}
 			leaveDto.setReason(leave.getReason());
+			leaveDto.setFileUrl(leave.getFileUrl());
+			leaveDto.setFileName(leave.getFileName());
 			leaveDto.setStatus(leave.getStatus());
 			Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date());
 			if(currentDate.before(leave.getFromDate()) || currentDate.equals(leave.getFromDate())) {
@@ -2376,5 +2378,4 @@ public class LeaveServiceImpl implements LeaveService{
 		assBalLeave.setTotalLeaves(String.valueOf(balanceLeaves));
 		associateBalanceLeaveService.saveOrUpdateAssocicateBalanceLeaves(assBalLeave);
 	}
-
 }

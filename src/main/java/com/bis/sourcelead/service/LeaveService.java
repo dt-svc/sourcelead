@@ -103,5 +103,4 @@ public interface LeaveService {
 
 	void updateBalanceLeaves(Leave leave, User user, OrgLocations orgLocations);
 	
-	
 }
