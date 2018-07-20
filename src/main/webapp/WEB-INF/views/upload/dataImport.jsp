@@ -71,7 +71,9 @@
 			<c:if test="${uploadType eq 'immigrationUpload'}">
 			<jsp:include page="dataImportImmigrationFormFields.jsp"/>
 			</c:if>
-			
+			<c:if test="${uploadType eq 'lcaUpload'}">
+			<jsp:include page="dataImportLcaFormFields.jsp"/>
+			</c:if>
 				<input type="hidden"  readonly id="exportFilePath" name="exportFilePath" value="${exportFilePath}">
 				<input type="hidden"  readonly id="uploadType" name="uploadType" value="${uploadType}">
 				<input type="hidden"  readonly id="headerPosition" name="headerPosition" value="${headerPosition}">
