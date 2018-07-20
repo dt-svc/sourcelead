@@ -16,7 +16,8 @@ public enum Result {
     INVALID_EMAIL("Invalid Email ID"),
     UNAUTHORIZED("You are not allowed to access this service"),
 	DATA_NOT_FOUND("Data not found"),
-    UNABLE_SET_PAYMENT_ACCOUNT("Payment account is created, but unable create WePay account.");
+    UNABLE_SET_PAYMENT_ACCOUNT("Payment account is created, but unable create WePay account."),
+	DUPLICATE_NAME("Name already exists");
 
     private String value;
 

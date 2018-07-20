@@ -31,6 +31,9 @@ public class JobFair implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
 
 	@Column(name = "UUID")
 	private String uuid;
@@ -77,6 +80,22 @@ public class JobFair implements Serializable {
 
 	@OneToMany(mappedBy = "jobFair", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<JobFairRequirements> jobFairRequirementList;
+	
+	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CREATED_BY", referencedColumnName = "ID")
+	private User createdBy;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+	
+	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "UPDATED_BY", referencedColumnName = "ID")
+	private User updatedBy;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
 
 	@JsonBackReference
 	@Transient
@@ -92,6 +111,14 @@ public class JobFair implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
 	}
 
 	public String getUuid() {
@@ -220,6 +247,38 @@ public class JobFair implements Serializable {
 
 	public void setEndDateString(String endDateString) {
 		this.endDateString = endDateString;
+	}
+
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public User getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(User updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
 }
