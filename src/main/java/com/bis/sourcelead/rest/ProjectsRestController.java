@@ -671,6 +671,9 @@ public class ProjectsRestController {
 	    		  projectMebersDTO.setProjectEndDate(dateFormat.format(pmh.getProjectTerminationDate()));
 	    	  }
 	    	
+	    	  if(projectMebers.getProjects().getEndDate() != null) {
+		    	  projectMebersDTO.setMemberEndDate(dateFormat.format(projectMebers.getProjects().getEndDate()));
+	    	  }
 	    	  
 	    	  projectMebersDTO.setEstHours(projectMebers.getEstimatedHours());
 	    	  projectMebersDTO.setEstBudget(projectMebers.getEstimatedBudget());
