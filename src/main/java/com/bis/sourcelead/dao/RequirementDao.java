@@ -123,6 +123,9 @@ public interface RequirementDao {
 	
 	List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays) throws Exception;
 
+	public List<Requirement> getRequirementListByPostedDateAndSelectedClients(Long orgLocationId, Long userId,
+			int numberOfDays, String selectedClients);
+	
 	public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId,
 			Date startDateUTC, Date endDateUTC);
 

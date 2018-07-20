@@ -2470,6 +2470,31 @@ public class RequirementListRestController {
 			
 		}
 	
-	
+	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
+	@RequestMapping(value = "/getRequirementListByPostedDateAndSelectedClients")
+	public String getRequirementListByPostedDateAndSelectedClients(
+			@RequestParam(value = "postedDateRange", required = false) String postedDateRange,
+			@RequestParam(defaultValue = "") String selectedClients, HttpServletRequest request) throws Exception {
+		String resultJson = null;
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user!=null) {			
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+						"orgLocations");
+				String clients = "";
+				if (selectedClients != null && !selectedClients.isEmpty()) {
+					for (String client : selectedClients.split(",")) {
+						clients += (clients.isEmpty() ? "" : ",") + "'" + client + "'";
+					}
+				}
+				List<Requirement> requirementList = requirementService.getRequirementListByPostedDateAndSelectedClients(
+						loginOrgLocation.getId(), user.getId(), postedDateRange, clients);
+				resultJson = commonUtil.toJSON(requirementList);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resultJson;
+	}
 	
 }

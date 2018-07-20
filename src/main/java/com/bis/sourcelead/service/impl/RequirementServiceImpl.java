@@ -3609,6 +3609,39 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(orgLocationId, userType,
 				userId, userCode, numberOfDays);
 	}
+	
+	@Override
+	public List<Requirement> getRequirementListByPostedDateAndSelectedClients(Long orgLocationId, Long userId,
+			String postedDateRange, String selectedClients) {
+		int numberOfDays = 0;
+		switch (postedDateRange) {
+		case "today":
+			numberOfDays = 1;
+			break;
+		case "yesterday":
+			numberOfDays = 2;
+			break;
+		case "week":
+			numberOfDays = 7;
+			break;
+		case "twoweeks":
+			numberOfDays = 2 * 7;
+			break;
+		case "month":
+			numberOfDays = 30;
+			break;
+		case "twomonths":
+			numberOfDays = 2 * 30;
+			break;
+		case "all":
+			numberOfDays = -1;
+			break;
+		default:
+			numberOfDays = 1;
+		}
+		return requirementDao.getRequirementListByPostedDateAndSelectedClients(orgLocationId, userId, numberOfDays,
+				selectedClients);
+	}
 
 	@Override
 	public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId,
@@ -3994,6 +4027,7 @@ public class RequirementServiceImpl implements RequirementService {
 				response.setResponseMessage(Result.DUPLICATE_NAME.getValue());
 				return response;
 			} else {
+				
 				if (jobFairDTO.getId() > 0) {
 					jobFair = requirementDao.getJobFair(jobFairDTO.getId());
 					jobFair.setUpdatedBy(user);
@@ -4007,15 +4041,19 @@ public class RequirementServiceImpl implements RequirementService {
 					jobFair.setCreatedBy(user);
 					jobFair.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
 				}
+				
+				List<Long> deleteIdsList = new LinkedList<>();
+				for (JobFairRequirements jobFairRequirements : jobFair.getJobFairRequirementList()) {
+					deleteIdsList.add(jobFairRequirements.getId());
+				}
+				
 				jobFair.setName(jobFairDTO.getName());
 				jobFair.setBudget(Double.parseDouble(jobFairDTO.getBudget()));
 				jobFair.setDescription(jobFairDTO.getDescription());
 				jobFair.setUser(user);
 				jobFair.setOrgLocations(orgLocations);
-				jobFair.setStartDate(
-						commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getStartDate()));
-				jobFair.setEndDate(
-						commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getEndDate()));
+				jobFair.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getStartDate()));
+				jobFair.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getEndDate()));
 				jobFair.setPostedFrom(jobFairDTO.getPostedFrom());
 				jobFair.setDateFormat(orgLocations.getDateFormat());
 				List<JobFairRequirements> jobFairRequirementList = new LinkedList<>();
@@ -4038,12 +4076,21 @@ public class RequirementServiceImpl implements RequirementService {
 							jobFairRequirements.setRequirement(requirement);
 							jobFairRequirements.setFairDates(fairDates);
 							jobFairRequirementList.add(jobFairRequirements);
+							
+							deleteIdsList.remove(jobFairRequirements.getId());
 						}
 					}
 				}
 				jobFair.setJobFairRequirementList(jobFairRequirementList);
 				jobFair.setVenue(jobFairDTO.getVenue());
 				jobFair.setNotifyTo(jobFairDTO.getNotifyTo());
+				
+				if(!deleteIdsList.isEmpty()) {
+					for(Long jobFairRequirementId : deleteIdsList) {
+						requirementDao.deleteJobFairRequirement(jobFairRequirementId);
+					}
+				}
+				
 				long result = requirementDao.saveJobFair(jobFair);
 				if (result > 0) {
 					response.setResponse(Result.SUCCESS.name());

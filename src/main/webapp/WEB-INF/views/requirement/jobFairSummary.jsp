@@ -8,8 +8,7 @@
 			<h2>Job Fair Summary</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/app/dashboard/3">Home</a> »<a
-				href="/app/jobs?viewTab=jobFair">Jobs Fairs</a>»Job Fair Details
+			<a href="/app/dashboard/3">Home</a> »<a href="/app/jobs?viewTab=jobFair">Job Fairs</a>»Job Fair Details
 		</div>
 	</section>
 	<div class="timesheet_out">

@@ -160,6 +160,8 @@ public interface RequirementService {
 
     public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays) throws Exception;
 
+    public List<Requirement> getRequirementListByPostedDateAndSelectedClients(Long orgLocationId, Long userId, String postedDateRange, String selectedClients);
+    
     public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId, Date startDateUTC, Date endDateUTC) throws Exception;
 
     public List<Requirement> getAllReleasedJobsBasedOnUserIdAndLocationId(User user, OrgLocations orgLocations) throws Exception;

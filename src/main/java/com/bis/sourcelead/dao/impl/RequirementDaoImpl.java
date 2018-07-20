@@ -1559,6 +1559,88 @@ public class RequirementDaoImpl implements RequirementDao {
 		return query.list();
 
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getRequirementListByPostedDateAndSelectedClients(Long orgLocationId, Long userId,
+			int numberOfDays, String selectedClients) {
+		try {
+
+			Calendar c = Calendar.getInstance();
+			c.set(Calendar.HOUR_OF_DAY, 0);
+			c.set(Calendar.MINUTE, 0);
+			c.set(Calendar.SECOND, 0);
+			Date todayDate = c.getTime();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			/*
+			 * String startTimeTS = Constants.TZ_DF.format(todayDate); String
+			 * startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
+			 * Date startUTCDate = dateFormat.parse(startDateString);
+			 */
+
+			// @Mahaveer Manoj commented above code for testing jobFairs, uncomment this in
+			// commit
+			Date startUTCDate = todayDate;
+
+			int hrs = numberOfDays * 24;
+
+			Date nHrsUTCDate = null;
+			if (hrs > 0) {
+				nHrsUTCDate = DateUtils.addHours(startUTCDate, -hrs);
+			}
+
+			Session session = this.sessionFactory.getCurrentSession();
+			// User user = userDao.getUserById(userId);
+
+			Map<String, Object> params = new HashMap<String, Object>();
+
+			String from = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId ";
+			String subQuery = "";
+			String dateBetween = "";
+			if (hrs > 0) {
+				dateBetween = "DATE(requirement.createdDate) >=:nHrsUTCDate and DATE(requirement.createdDate) <= :startUTCDate and ";
+			}
+
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
+
+			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId", userId);
+
+			if (subQuery1 != "" || subQuery2 != "") {
+				subQuery = "where " + dateBetween + " requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1
+						+ ") or (" + subQuery2 + ")) ";
+			}
+
+			if (selectedClients != null && !selectedClients.isEmpty()) {
+				subQuery += (subQuery.contains("where") ? " and " : " where ")
+						+ "(requirement.clientId.locationId.org.orgName in (" + selectedClients
+						+ ") or requirement.clientId.responderLocationId.org.orgName in (" + selectedClients + "))";
+			}
+
+			params.put("orgLocationId", orgLocationId);
+			params.put("startUTCDate", startUTCDate);
+			if (hrs > 0) {
+				params.put("nHrsUTCDate", nHrsUTCDate);
+			}
+
+			String whereCondition = subQuery;
+			Query query = session.createQuery(from + " " + whereCondition + " ORDER BY requirement.id DESC");
+			for (String str : query.getNamedParameters()) {
+				if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")) {
+					query.setLong(str, (long) params.get(str));
+				} else {
+					query.setParameter(str, params.get(str));
+				}
+
+			}
+			return query.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
