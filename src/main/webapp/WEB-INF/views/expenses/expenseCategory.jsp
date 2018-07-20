@@ -63,9 +63,8 @@ function addExpenseCategory(categoryId) {
 	result = result  +'          <form role="form"  id="expenseCategory_form" name="expenseCategory_form" method="post" > ';
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
-	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10" id="nameIdDiv">'  ;
-	result = result  +'                    <div class="col-md-12 mt">' ;
+	result = result  +'                    <div class="col-md-12 mt" id="testDiv">' ;
 	/* result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
 	
 						       <c:forEach var="expCat" items="${lookUpExpCatList}">
@@ -602,7 +601,7 @@ function reActiveExpenseCategory(categoryId){
 									result = result  +'</div>'; */
 									
 									result = result  +'<div class="clearfix mb10" id="nameIdDiv">'  ;
-									result = result  +'<div class="col-md-12 mt">' ;
+									result = result  +'<div class="col-md-12 mt" id="testDiv">' ;
 								    
 								    result = result  +'<input type="text" name="expensesName" field-name="expensesName" value="'+expensesName+'" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required"  onchange="validateExpenseCategoryType();"  class="form-control">';
 								    
@@ -795,7 +794,7 @@ function reActiveExpenseCategory(categoryId){
 						
 		        		if(result.object == "true"){
 			        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-							   $("#nameIdDiv").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+							   $("#testDiv").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
 							  $("#save_button").attr('disabled','disabled');
 			        	}
 			        	else{
