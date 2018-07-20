@@ -232,10 +232,10 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 	@Override
 	public InvoicePayment saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,Map<Long,String> invoiceIdsMap) throws Exception {
 
-		
-		InvoicePayment invoicePayment = new InvoicePayment();
 		 List<Invoice> list = invoiceDao.getInvoiceListByIdsAndLocationId(new ArrayList(invoiceIdsMap.keySet()),orgLocation.getId());
+		 InvoicePayment invoicePayment = null;
 		 for(Invoice invoice : list){
+			invoicePayment = new InvoicePayment();
 		/*String pattern = "dd-MM-yyyy";
 		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 			 System.out.println(" inovice id : "+invoice.getId());
@@ -300,7 +300,6 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 				invoicePayment.setFileContentType(file.getContentType());
 				invoicePayment.setFileName(file.getFileName());
 				invoicePayment.setFileURL(file.getFileURL());
-				FileUploadUtil.moveFile(invoicePaymentDTO.getStaticPath(), file, "incoiceDocuments");
 			}
 		}
 		
@@ -315,6 +314,12 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		invoicePayment.setCreatedBy(user.getUserCode());
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
 		invoicePaymentDao.saveInvoicePayment(invoicePayment);
+		 }
+		 // this for moving file to folder after setting values (same information set to selected invoices)
+		 if(invoicePaymentDTO.getFileInfo() != null && invoicePaymentDTO.getFileInfo().size() > 0){
+			 for(FileInfo file : invoicePaymentDTO.getFileInfo()){
+				 FileUploadUtil.moveFile(invoicePaymentDTO.getStaticPath(), file, "incoiceDocuments");	 
+			 }
 		 }
 		return invoicePayment;
 	}
