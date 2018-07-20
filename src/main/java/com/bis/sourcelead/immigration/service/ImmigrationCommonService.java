@@ -1,5 +1,6 @@
 package com.bis.sourcelead.immigration.service;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
+import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -25,6 +28,8 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
+import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -140,5 +145,23 @@ public interface ImmigrationCommonService {
 	Long getTemplateDetailsByNameAndOrgLoacationId(String name, OrgLocations orgLocations);
 
 	List<Immigration> getImmigrationsByOrgId(Long id);
+	
+    ResponseList<LcaListViewDTO> getLcasList(LcaListViewDTO lcaListViewDTO, String status,String lcaStatus, String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal) throws Exception;
+    
+    //Lca method declaration
+    
+    public List<Map<String, String>> getSocCodeWithSOCOccupationTitleList(String name,String category,String socType);
+    
+    Lca saveLcaDetails(LcaDTO lcaDTO, User user, OrgLocations orgLocations) throws Exception;
+    
+    LcaDTO editLcaDetails(Long lcaId,OrgLocations orgLocations);
+    
+    Long getLcaIdByUUID(String lcaUUID);
+    
+    String deleteLcaDetailsById(Long lcaId);
+    
+    String reActiveLcaById(Long lcaId);
+    
+    LookUpData getLookUpDataById(Long id);
 	
 }

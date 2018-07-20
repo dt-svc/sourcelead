@@ -29,7 +29,7 @@
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="${appPath}/immigration/viewLcaList">LCA List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="/app/immigration/viewLCAList">LCA List</a>
 			&raquo; Import LCA
 		</div>
 	</section>
