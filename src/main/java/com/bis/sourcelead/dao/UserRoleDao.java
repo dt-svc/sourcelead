@@ -149,7 +149,7 @@ public interface UserRoleDao {
 	 
 	 List<UserDTO> getAllReportingManagersListAssignedToAssociates(Long orgLocationId) throws Exception;
 	 
-	 Boolean getIsGlobalManager(Long orgId) throws Exception;
+	 Boolean getIsGlobalManager(Long orgId,Long userId) throws Exception;
 
 	public UserRole getGlobalUserReportingManagerByUserIdAndOrgId(Long userId, Long orgId);
 

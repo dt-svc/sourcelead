@@ -1628,10 +1628,13 @@ $("#editRoleDetailsList").empty();
 			    if(json.isGlobal == 'Y'){
 			    	globalChecked = 'checked';
 			    }
-			    
-			    if(json.isExistedOrgGlobalUser == 'Y'){
-			    	disabled = 'disabled';
+			  
+			    if(json.isGlobal != 'Y'){
+			    	if(json.isExistedOrgGlobalUser == 'Y'){
+				    	disabled = 'disabled';
+				    }
 			    }
+			    
 			    
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					employeeId = json.employeeId;

@@ -432,7 +432,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		 		userDTO.setFirstName(user.getFirstName());
 			 	userDTO.setLastName(user.getLastName());
 			 	userDTO.setMobilePhone(user.getMobilePhone());
-			 	Boolean flag = userRoleService.getIsGlobalManager(org.getId());
+			 	Boolean flag = userRoleService.getIsGlobalManager(org.getId(),user.getId());
 			 	if(flag == true) {
 			 		userDTO.setIsGlobalUser(Constants.YES);
 			 	}else {

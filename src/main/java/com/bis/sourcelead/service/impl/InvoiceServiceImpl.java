@@ -1747,7 +1747,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		invoice.setInvoiceFrequency(frequency);
-		if (null != projectId && !invoice.getInvoiceCategory().equalsIgnoreCase("expenses")) {
+		if (null != projectId && invoice.getInvoiceCategory() == null) {
 			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId,orgLocation.getId(), startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
@@ -2833,6 +2833,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	@Override
 	public List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId,Long orgLocationId, String invoiceStatus, Date startDate, Date endDate) throws Exception {
 		return invoiceDao.getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(projectId,orgLocationId, invoiceStatus, startDate, endDate);
+	}
+	@Override
+	public ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(OrgLocations orgLocations, Long orgRelationId)
+			throws Exception {
+		return invoiceDao.invoiceListByOrgLocationIdAndRelationId(orgLocations,orgRelationId);
 	}
 	
 }
