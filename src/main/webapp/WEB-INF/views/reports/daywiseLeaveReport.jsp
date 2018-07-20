@@ -27,15 +27,16 @@ $(document).ready(function(){
           <div class="pull-left mt5"> <a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openPop();"><i class="fa fa-filter faFilter padding_right"></i> </a> </div>
           <div class="pull-left ml mt5">
             <div class="pull-left mr5 width150px">
-              <input value="" name="fromDate" id="fromDate" placeholder="Date" class="form-control calendar input-sm hasDatepicker" type="text">
+              <input value="" name="fromDate" id="fromDate" placeholder="Date" class="form-control calendar input-sm margin-top0" type="text">
             <p id="fromDateDiv" class="ReError"></p>
             </div>
             <button type="button" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-search" onclick="searchThroughDates();"></i></button>
           </div>
           <div class="remove_search pull-right">
           <input type="text" placeholder="Search" id="daywiseReportDataTableSearch">
-        <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getDaywiseLeaveReportList();"></i></span>  
-            <input type="text" placeholder="Search"/>
+           <span class="cursorPointer" title="Search"><i onclick="getDaywiseLeaveReportList();"></i></span>    
+<!--         <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getDaywiseLeaveReportList();"></i></span>   -->
+<!--             <input type="text" placeholder="Search"/> -->
           </div>
         </div>
         
@@ -43,7 +44,7 @@ $(document).ready(function(){
 	           <div id="daywiseLeaveReportsList"></div>
           </div>
         
-        <div class="require_wrap_table tableFirstSecond clearfix">
+       <!--  <div class="require_wrap_table tableFirstSecond clearfix">
           <table>
             <thead>
               <tr>
@@ -73,7 +74,7 @@ $(document).ready(function(){
               </tr>
             </tbody>
           </table>
-        </div>
+        </div> -->
         <nav>
           <ul id="paging" class="pagination">
             <li><a href="#">Previous</a></li>
@@ -94,9 +95,9 @@ $(document).ready(function(){
 <script>
 function getDaywiseLeaveReportList(){
 	var fromDate = $("#fromDate").val();
-	var searchValue = $("#employeeDataTableSearch").val();
+	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate;
+	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate;
 	prepareAllDaywiseLeaveReportList(url);
 }
 </script>	
@@ -142,105 +143,91 @@ function daywiseLeaveReportsListPagination(url){
           pages: 10
         }),
         "columns": [
-        	{ "data": "employeeID" },
             { "data": "name" },
-            { "data": "email"},
-            { "data": "mobilePhone"},
             { "data": "employmentType"},
-            { "data": "fromDate"},
-            { "data": "toDate"},
-            { "data": "designation"},
-            { "data": "actions"}
+            { "data": "leaveTypeName"},
+            { "data": "type"},
+            { "data": "duration"},
+            { "data": "leavePeriod"},
+            { "data": "reason"},
+            { "data": "approver"},
+            { "data": "status"}
         ],
 		 "columnDefs": [ {
 		    	  	"targets": colIndex++,
-		    	  	"data": "employeeID",
+		    	  	"data": "name",
 		    	  	"render": function(data, type, user, meta) {
-		    	  		var result = '';
-		    	  		 if(user.employeeId !=null && user.employeeId !='' && user.employeeId !='undefined'){
-								result = result + ' <td><div class="tbldata-dotdot-100" title = "'+user.employeeId+'">'+user.employeeId+'</div></td>';
-							}else{
-								result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
+			        	  var result = '';
+				          if(user.name !=null && user.name !='' && user.name !='undefined'){
+								 result = result + user.name;
+				          }else{
+								result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 							}
-			             return result;
-		    	  	}
+				              return result;
+				          		
+				          }
+		    	  	
 		      },{
-		    	  "targets": colIndex++,
-		          "data": "name",
-		          "render": function ( data, type, user, meta ) {
-		        	  var result = '';
-		          if(user.userName !=null && user.userName !='' && user.userName !='undefined'){
-						 result = result +" <a href='<c:url value='/app/userSummary/"+user.userCode+"'/>'' title = '"+user.userName+"' class='UserTextLeft'>"+user.userName+"</a>";
-		          }else{
-						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
-					}
-		              return result;
-		          		
-		          }
-		          },{
 		        "targets": colIndex++,
-		        "data": "email",
+		        "data": "employmentType",
 		        "render": function ( data, type, user, meta ) {
 		        	  var result = '';
-		        	  if(user.email !=null && user.email !='' && user.email !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-vsm" title = "'+user.email+'">'+user.email+'</div></td>';
-						}else{
-							result = result + ' <td><div class="tbldata-dotdot-vsm">--</div></td>';
+		        	  if(user.employmentType !=null && user.employmentType !='' && user.employmentType !='undefined'){
+							 result = result +" <a href='<c:url value='/app/userSummary/"+user.employmentType+"'/>'' title = '"+user.employmentType+"' class='UserTextLeft'>"+user.employmentType+"</a>";
+			          }else{
+							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
 		        	 return result;
 		        }
 		      }, {
 		          "targets": colIndex++,
-		          "data": "mobilePhone",
+		          "data": "leaveTypeName",
 		          "render": function ( data, type, user, meta ) {
 		        	  var result = '';
-		        	  if(user.mobilePhone !=null && user.mobilePhone !='' && user.mobilePhone !='undefined'){
-							result = result + ' <td><div class="tblminwidth-100" title = "'+user.mobilePhone+'">'+user.mobilePhone+'</div></td>';
-						}else{
-							result = result + ' <td><div class="tblminwidth-100">--</div></td>';
+		        	  if(user.leaveTypeName !=null && user.leaveTypeName !='' && user.leaveTypeName !='undefined'){
+							 result = result +" <a href='<c:url value='/app/userSummary/"+user.leaveTypeName+"'/>'' title = '"+user.leaveTypeName+"' class='UserTextLeft'>"+user.leaveTypeName+"</a>";
+			          }else{
+							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
-
 		        	  return result;
 		          }
 		        }, {
 		            "targets": colIndex++,
-		            "data": "employmentType",
+		            "data": "type",
 		            "sortable": false,
 		            "render": function ( data, type, user, meta ) {
 		            	var result = '';
- 		            	if(user.employmentType !=null && user.employmentType !='' && user.employmentType !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot" title = "'+user.employmentType+'">'+user.employmentType+'</div></td>';
-						}else{
+		            	 if(user.leaveTypeBillable !=null && user.leaveTypeBillable !='' && user.leaveTypeBillable !='undefined'){
+							 result = result +" <a href='<c:url value='/app/userSummary/"+user.leaveTypeBillable+"'/>'' title = '"+user.leaveTypeBillable+"' class='UserTextLeft'>"+user.leaveTypeBillable+"</a>";
+			          }else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
- 
 			              return result;
 		            }
 		      },
 		      {
 		          "targets": colIndex++,
-		          "data": "fromDate",
+		          "data": "duration",
 		          "sortable": false,
 		          "render": function ( data, type, user, meta ) {
 		          	var result = '';
-		          	if(user.dateofJoin !=null && user.dateofJoin !='' && user.dateofJoin !='undefined'){
-						result = result + ' <td><div class="tblminwidth-100" title = "'+user.dateofJoin+'">'+user.dateofJoin+'</div></td>';
-					}else{
-						result = result + ' <td><div class="tblminwidth-100">--</div></td>';
+		          	if(user.duration !=null && user.duration !='' && user.duration !='undefined'){
+						 result = result +" <a href='<c:url value='/app/userSummary/"+user.duration+"'/>'' title = '"+user.duration+"' class='UserTextLeft'>"+user.duration+"</a>";
+		          }else{
+						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 					}
-
 			              return result;
 		          }
 		    },
 		    {
 		        "targets": colIndex++,
-		        "data": "toDate",
+		        "data": "leavePeriod",
 		        "sortable": false,
 		        "render": function ( data, type, user, meta ) {
 		        	var result = '';
-		        	 if(user.dateOfTermination !=null && user.dateOfTermination !='' && user.dateOfTermination !='undefined'){
-						result = result + ' <td><div class="tbldata-dotdot" title = "'+user.dateOfTermination+'">'+user.dateOfTermination+'</div></td>';
-					}else{
+		        	if(user.fromDateStr !=null && user.fromDateStr !='' && user.fromDateStr !='undefined'){
+						 result = result +" <a href='<c:url value='/app/userSummary/"+user.fromDateStr+"'/>'' title = '"+user.fromDateStr+"' class='UserTextLeft'>"+user.fromDateStr+'To'+user.toDateStr+"</a>";
+		          }else{
 						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 					}
 		              return result;
@@ -248,34 +235,41 @@ function daywiseLeaveReportsListPagination(url){
 		    },
 		    {
 			          "targets": colIndex++,
-			          "data": "designation",
+			          "data": "reason",
 			          "sortable": false,
 			          "render": function ( data, type, user, meta ) {
 			          	var result = '';
-			         	if(user.designation !=null && user.designation !='' && user.designation !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot" title = "'+user.designation+'">'+user.designation+'</div></td>';
-						}else{
+			          	if(user.reason !=null && user.reason !='' && user.reason !='undefined'){
+							 result = result +" <a href='<c:url value='/app/userSummary/"+user.reason+"'/>'' title = '"+user.reason+"' class='UserTextLeft'>"+user.reason+"</a>";
+			          }else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
-						} 
+						}
 				        return result;
 			          }
-			},{
+			}, {
+		          "targets": colIndex++,
+		          "data": "approver",
+		          "sortable": false,
+		          "render": function ( data, type, user, meta ) {
+		          	var result = '';
+		          	if(user.approver !=null && user.approver !='' && user.approver !='undefined'){
+						 result = result +" <a href='<c:url value='/app/userSummary/"+user.approver+"'/>'' title = '"+user.approver+"' class='UserTextLeft'>"+user.approver+"</a>";
+		          }else{
+						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+					}
+			        return result;
+		          }
+		},{
 			          "targets": colIndex++,
-			          "data": "actions",
+			          "data": "status",
 			          "sortable": false,
 			          "render": function ( data, type, user, meta ) {
 			          	var result = '';
-					       result = result + '      <td><div class="tblminwidth-75 text-center">             ';
-				           result = result + '      <div class="positionRelative actionList-vdse-div">';
-				           result = result + '        <ul class="list-unstyled list-inline clearfix actionList-vdse">';
-				           result = result + '          <li><a href="javascript:void(0)" title="Print" class="fa fa-print" onClick="printEVR();commonview('+user.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Download" class="fa fa-download" onClick="downloadEVR();commonview('+user.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR();commonview('+user.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="View" class="fa fa-eye" onClick="viewEVR();commonview('+user.employeeId+')"></a></li>';
-				           result = result + '        </ul>';
-				           result = result + '      </div>';
-				           result = result + '    </div>';
-				           result = result + '    </td>';
+			          	if(user.status !=null && user.status !='' && user.status !='undefined'){
+							 result = result +" <a href='<c:url value='/app/userSummary/"+user.status+"'/>'' title = '"+user.status+"' class='UserTextLeft'>"+user.status+"</a>";
+			          }else{
+							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+						}
 				        return result;
 			          }
 		  }],
@@ -291,13 +285,13 @@ function daywiseLeaveReportsListPagination(url){
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     },
     } );
-    $("#dynamicEmployeeListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#dynamicDaywiseLeaveReportsListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
 }
 
-$("#employeeDataTableSearch").keydown(function(e) {
+$("#daywiseReportDataTableSearch").keydown(function(e) {
 	   if(e.which === 13) {
-		   getAllEmployeesList();
+		   getDaywiseLeaveReportList();
 	   }
 	});
 </script>
@@ -314,6 +308,68 @@ function viewCompleteTemplate(temp){
 }
 </script> 
 
+
+<script>
+ $( function() {
+   /*  $("#fromDate").datepicker(
+		{changeMonth: true});
+	 $("#toDate").datepicker(
+	 {changeMonth: true}); */
+	 
+	 
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	 var finalDateFormatEndDate = '';
+	 if(locationDate.match("yyyy-MM-dd")){
+	     finalDateFormatEndDate = 'yy-mm-dd';
+	 }if(locationDate.match("dd-MM-yyyy")){
+	     finalDateFormatEndDate = 'dd-mm-yy'; 
+	 }if(locationDate.match("MM-dd-yyyy")){
+	     finalDateFormatEndDate = 'mm-dd-yy'; 
+	 }if(locationDate.match("yyyy-dd-MM")){
+	     finalDateFormatEndDate = 'yy-dd-mm'; 
+	 }
+	 
+	 $( "#fromDate" ).datepicker({
+	     dateFormat : finalDateFormatEndDate,
+	      changeMonth: true,
+	      changeYear: true,
+// 	      minDate: new Date() ,
+	      onSelect : function(selected) {
+	      var dt = $(this).datepicker('getDate', '+1d');
+	      dt.setDate(dt.getDate());
+	      $("#toDate").datepicker("option", "minDate", dt);
+	       removeStartValid();
+	      } 
+
+	});
+	 
+	 
+  });
+ 
+</script> 
+<script>
+	function searchThroughDates(){
+		alert("222##");
+		var fromDate = $("#fromDate").val();
+		
+		$('#fromDateDiv').empty();
+		
+		if(fromDate == null || fromDate == '' || fromDate == 'undefined'){
+			$("#fromDateDiv").append("Start Date is Required") ; 
+		}
+		
+		if(fromDate != null && fromDate != '' && fromDate != 'undefined'){
+			getDaywiseLeaveReportList(fromDate)
+		}
+	}
+	
+	
+	function removeStartValid(){
+		$('#fromDateDiv').empty();
+	}
+	
+
+</script>
 
 <script type="text/javascript">
 			var config = {

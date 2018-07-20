@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,11 +10,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.bouncycastle.asn1.x509.RoleSyntax;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,11 +29,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.elk.install.ApproverHierarchyToRequirement;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.LeaveReportView;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MonthlyLeaves;
@@ -41,6 +43,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.HolidayService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
@@ -77,6 +80,8 @@ public class LeaveDaoImpl implements LeaveDao{
 	
 	@Autowired
 	HolidayService holidayService;
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Override
 	@Transactional
@@ -928,5 +933,68 @@ public class LeaveDaoImpl implements LeaveDao{
 					+ e.getLocalizedMessage());
 		}
 		return isDeleted;
+	}
+
+
+	@Override
+	@Transactional
+	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(Long orgId, Long orgLocationId, String fromDate,String searchValue) throws Exception
+	{
+		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+		Date date = null;
+		if (StringUtils.isNotBlank(fromDate)) {
+			date = df.parse(fromDate);
+		}
+		else {
+			date = new Date();
+		}
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
+		String query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and leaveReport.fromDate = '"+sqlStartDate+"' and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
+//		List<LeaveReportView> list = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).list();
+		
+ StringBuilder query1 = new StringBuilder("");
+ java.sql.Date sqlDate = null;
+	     if(StringUtils.isNotBlank(searchValue)) {
+	    	 Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			   Matcher matcher = pattern.matcher(searchValue);
+			    if(matcher.matches() == true) {
+							if(searchValue.contains("/")||(searchValue.contains("-"))) {
+								String replacedValue = searchValue.replaceAll("/", "-");
+								    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+									SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+							        java.util.Date utilDate = format.parse(replacedValue);
+							        sqlDate = new java.sql.Date(utilDate.getTime());
+							}
+			    }
+			    
+			    query1.append(" and (leaveReport.name like '%" + searchValue + "%' ")
+				.append("OR leaveReport.employmentType like '%" + searchValue + "%' ")
+				.append("OR leaveReport.leaveTypeName like '%" + searchValue + "%' ")
+				.append("OR leaveReport.leaveTypeBillable like '%" + searchValue + "%' ")
+				.append("OR leaveReport.duration like '%" + searchValue + "%' ")
+				.append("OR leaveReport.fromDate like '%" + searchValue + "%'")
+				.append("OR leaveReport.toDate like '%" + searchValue + "%' ")
+			    .append("OR leaveReport.reason like '%" + searchValue + "%' ")
+			    .append("OR leaveReport.approver like '%" + searchValue + "%' ")
+			    .append("OR leaveReport.status like '%" + searchValue + "%') ");
+			   /* if(sqlDate != null) {
+			    	query1.append("OR leaveReport.fromDate like '%" + sqlDate + "%' ");
+			    	query1.append("OR userRole.user.id IN(select employee.user.id from Employees employee where employee.hireDate like '%" + sqlDate + "%')");
+			    }*/
+	    	 
+	     }
+	     
+	     	List<LeaveReportView> leaveReportList = null;
+			ResponseList<LeaveReportView> response = new ResponseList<>();
+			List<Long> countlist = null;
+	     
+	     Query queryObj = session.createQuery(query + query1.toString());
+			
+	     leaveReportList = queryObj.setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).list();
+				 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).list();
+			
+				 response.setData(leaveReportList);
+		return response;
 	}
 }

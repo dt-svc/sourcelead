@@ -40,8 +40,8 @@ $(document).ready(function(){
               </li>
               <li>
               <div class="dynamic_search" style="top:-10px;">
-        		          <input type="text" placeholder="Search" id="employeeDataTableSearch">
         		          <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getAllEmployeesList();"></i></span>    
+        		          <input type="text" placeholder="Search" id="employeeDataTableSearch">
                 </div>
               </li>
               <div class="clearfix"></div>

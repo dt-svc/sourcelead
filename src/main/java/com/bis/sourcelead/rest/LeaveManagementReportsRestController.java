@@ -1,9 +1,7 @@
 package com.bis.sourcelead.rest;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,11 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.LeaveReportView;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -42,6 +40,8 @@ public class LeaveManagementReportsRestController {
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	@Autowired
+	LeaveService leaveService;
 	
 	@RequestMapping(value = "/daywiseLeaveReport")
 	public ModelAndView approvedLeavesJsp(HttpServletRequest request,
@@ -61,32 +61,21 @@ public class LeaveManagementReportsRestController {
 		return model;
 	}
 	
+	 
 	
-	
-	/*@RequestMapping(value = "/getDaywiseLeaveReportList", method = RequestMethod.GET)
-	public @ResponseBody  ResponseList<UserDTO> getDaywiseLeaveReportList(@RequestParam(value="fromDate", required=false) String fromDate,HttpServletRequest request, HttpServletResponse response) throws Exception
+	@RequestMapping(value = "/getDaywiseLeaveReportList", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<LeaveReportView> getDaywiseLeaveReportList(@RequestParam(value="fromDate", required=false) String fromDate,@RequestParam(value="searchValue", required=false) String searchValue,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<UserDTO> userDtoList =  new ArrayList<>();
-		ResponseList<UserDTO> employeeResponseList =  new ResponseList<>();
-		Date[] searchDates = null;
-		if(StringUtils.isNotBlank(fromDate)) {
-			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), fromDate);
-    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), userDTO.getToDate());
-    	    Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-    	    DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    	    DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-    	    DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-    	    String customStartTimeStr = TZ_DF_CSD.format(fromDate);
-    	    String customEndTimeStr = TZ_DF_CED.format(toDate);
-    	    String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-    	    String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-    	    fromDate = TZ_DF_TS.parse(startDateString);
-    	    toDate = TZ_DF_TS.parse(endDateString);
-    	    searchDates = new Date[2];
-    	    searchDates[0] = fromDate;
-    	    searchDates[1] = toDate;
-		}
-		return employeeResponseList;
-}*/
+//		ResponseList<LeaveReportView> leaveReportsList =  new ResponseList<>();
+		ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(orgLocation.getOrg().getId(),orgLocation.getId(),fromDate,searchValue);
+		leaveReportsList.getData().stream().forEach(u -> {
+    		   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getFromDate()));
+    		   u.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getToDate()));
+    	   });
+//    	   leaveReportsList.setData(leaveList);
+		
+		return leaveReportsList;
+}
 }
