@@ -143,7 +143,7 @@ $('#paymentDate').datepicker({
 	  var orgRelationId = $("#vendor").val();
 	   $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getInvoiceListForPayment?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+	        url: sourceleadUrl+"/getInvoiceListForPayment?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&invoiceType=payables",
 	        success: function(json) {
 	        	
 	        	var result = '';
@@ -246,19 +246,19 @@ $('body').on('blur', '#paymentForm', function() {
   <script>
   function amountInputVal(obj){
 	  // this is for total value updation based our input
-	  var totalValue=0;
+	  var totalValue=0.00;
 	  $("input[id^=totalAmountRow]").each(function() {
 	       var value = $(this).val();
 	    if($.isNumeric(value)){
 	       totalValue= totalValue+parseFloat(value);
 	  	} 
 	  });
-	  $("#grandTotalAmount").text(totalValue).toFixed(2);
+	  $("#grandTotalAmount").text(totalValue.toFixed(2));
   }
   
 	function toggleInvoices(source) {
 	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-	    var total = 0;
+	    var total = 0.00;
 	    for (var i = 0; i < checkboxes.length; i++) {
 	        if (checkboxes[i] != source){
 	            checkboxes[i].checked = source.checked;
@@ -268,10 +268,10 @@ $('body').on('blur', '#paymentForm', function() {
 	        		total += parseFloat(checkboxes[i].value);
 	            }else{
 	            	$("#totalAmountRow"+checkboxes[i].id).val('');
-	            	total = 0;
+	            	total = 0.00;
 	            }
 	    	}
-	        $("#grandTotalAmount").text(total);
+	        $("#grandTotalAmount").text(total.toFixed(2));
 	    }
 	    
 	$('input:checkbox:not(#checkAllRecords)').click(function() {
@@ -284,9 +284,9 @@ $('body').on('blur', '#paymentForm', function() {
 	function checkSingleInvoice(id, amount){
 		var totalAmount = $("#grandTotalAmount").text();
 		if(totalAmount == ''){
-			totalAmount = 0;
+			totalAmount = 0.00;
 		}
-		var grandTotalAmount = 0;
+		var grandTotalAmount = 0.00;
 		  if($("#"+id).is(':checked')){
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
@@ -294,7 +294,7 @@ $('body').on('blur', '#paymentForm', function() {
 			  $("#totalAmountRow"+id).val('');
 			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
 		  }
-		  $("#grandTotalAmount").text(grandTotalAmount);
+		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
 	  }
 </script>
 <script>
