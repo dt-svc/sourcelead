@@ -624,33 +624,47 @@ public class RequirementController {
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (loginUser != null) {
 				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
-
+				JobFairDTO jobFairDTO = new JobFairDTO();
+				jobFairDTO.setPostedFrom("week");
+				String requirementString = "";
 				if (!uuid.isEmpty()) {
-					JobFairDTO jobFairDTO = requirementService.getJobFairByUUID(uuid);
+					jobFairDTO = requirementService.getJobFairByUUID(uuid);
 					modelAndView.addObject("jobFair", jobFairDTO);
 
-					String requirementString = "";
 					for (JobFairRequirementsDTO jobFairRequirementsDTO : jobFairDTO.getJobFairRequirementList()) {
 						String req = jobFairRequirementsDTO.getRequirementId() + ":" + jobFairRequirementsDTO.getRequirementTitle();
 						if (!requirementString.contains(req)) {
 							requirementString += (requirementString.isEmpty() ? "" : ",") + req;
 						}
 					}
-					String reqString = dashboardRestController
-							.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(jobFairDTO.getPostedFrom(), request);
-					if (reqString != null) {
-						JSONArray jsonArray = new JSONArray(reqString);
-						for (int i = 0; i < jsonArray.length(); i++) {
-							JSONObject jsonObject = jsonArray.getJSONObject(i);
-							String req = jsonObject.getString("id") + ":" + jsonObject.getString("jobTitle");
-							if (!requirementString.contains(req)) {
-								requirementString += (requirementString.isEmpty() ? "" : ",") + (req);
-							}
+				}
+				
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+//				String reqString = dashboardRestController
+//						.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(jobFairDTO.getPostedFrom(), request);
+				List<Requirement> requirementList = requirementService.getRequirementListByPostedDateAndSelectedClients(orgLocations.getId(), loginUser.getId(), "week", "");
+				String reqString = commonUtil.toJSON(requirementList);
+				if (reqString != null) {
+					JSONArray jsonArray = new JSONArray(reqString);
+					for (int i = 0; i < jsonArray.length(); i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						String req = jsonObject.getString("id") + ":" + jsonObject.getString("jobTitle");
+						if (!requirementString.contains(req)) {
+							requirementString += (requirementString.isEmpty() ? "" : ",") + (req);
 						}
 					}
-					/*System.out.println("Requirement String : " + requirementString);*/
-					modelAndView.addObject("requirementString", requirementString);
 				}
+				/*System.out.println("Requirement String : " + requirementString);*/
+				modelAndView.addObject("requirementString", requirementString);
+				
+				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+				for(OrgRelations ocl :orgClientList){
+					ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+				 }
+				modelAndView.addObject("add_clientList", orgClientList);
+				modelAndView.addObject("loginOrgLocId", orgLocations.getId());
 			} else {
 				modelAndView.setViewName("login");
 			}
@@ -920,7 +934,7 @@ public class RequirementController {
 		    List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 		    model.addObject("sourceleadSectionList",sections);
 		   
-			
+		    requirement.setJobFairList(requirementService.getJobFairsListByRequirementId(requirement.getId()));
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
