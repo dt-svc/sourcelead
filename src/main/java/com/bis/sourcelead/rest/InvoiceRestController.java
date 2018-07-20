@@ -645,7 +645,7 @@ public class InvoiceRestController {
 		ResponseList<BillingDTO> responseList = new ResponseList<>();
 		List<BillingDTO> billingDtoList = new ArrayList<>();
 		if(StringUtils.isNotBlank(invoiceDTO.getOrgRelationId())){
-		ResponseList<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationIdAndRelationId(loginOrgLocation,Long.parseLong(invoiceDTO.getOrgRelationId()));
+		ResponseList<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationIdAndRelationId(invoiceDTO,loginOrgLocation,Long.parseLong(invoiceDTO.getOrgRelationId()));
 		List<Invoice> invoiceFilterList = invoiceList.getData();
 		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		Integer draftCount = 0;
