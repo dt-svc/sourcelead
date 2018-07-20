@@ -84,6 +84,7 @@ public class InvoiceDTO extends SearchDTO {
     private String vendorName;
     private String locationdateForList;
     private String orgLocationId;
+    private String orgRelationId;
     private String paymentAccount;
     private String invoiceUUID;
     private String count;
@@ -509,6 +510,14 @@ public class InvoiceDTO extends SearchDTO {
 
 	public void setCount(String count) {
 		this.count = count;
+	}
+
+	public String getOrgRelationId() {
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId) {
+		this.orgRelationId = orgRelationId;
 	}
 	
 }

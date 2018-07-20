@@ -729,7 +729,7 @@ public class UsersListRestController {
 			userRole.setRatePer(employee.getRatePer());
 			userRole.setCurrentCurrency(employee.getCurrentCurrency());
 			
-			Boolean flag = userRoleService.getIsGlobalManager(org.getId());
+			Boolean flag = userRoleService.getIsGlobalManager(org.getId(),userId);
 			if(flag == true) {
 				userRole.setIsExistedOrgGlobalUser(Constants.YES);
 			}else {

@@ -1421,7 +1421,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			projectTypesubQuery = " AND PC.ORG_RELATION_ID IS NOT NULL ";
 		}
 		
-		/*if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){*/
+		
 			userRoleQuery = " AND ((PROJ.ID IN (SELECT PAH.PROJECT_ID FROM PROJECT_APPROVER_HIERARCHY PAH WHERE PAH.APPROVER_USER_ID = :userId AND PAH.STATUS = '1'))"
 					 +" OR "
 					 +" (CAND.CONSULTANT_USER_ID IS NOT NULL"
@@ -1429,7 +1429,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 					 +" OR"
 					 + "(:userId IN (SELECT UR.USER_ID FROM USER_ROLE UR LEFT JOIN  ROLES R  ON R.ID = UR.ROLE_ID   WHERE R.ROLE_NAME = 'ROLE_ADMIN' AND UR.USER_STATE = 'ACTIVE' AND UR.ORG_LOCATIONS_ID = :orgLocationsId)) "
 					 +" ) ";
-		/*}*/
+	
 		
 		 query ="SELECT "
 				 +" PROJ.ID AS projId, "

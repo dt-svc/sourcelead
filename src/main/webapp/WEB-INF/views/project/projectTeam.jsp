@@ -999,7 +999,6 @@ function loadProjectMembersDetails(data,candidateName){
 				changeMonth: true,
 				changeYear: true, 
 				minDate:projectStartDate,
-				 
 		        onClose : function(selected) {
 		        	var dt = $(this).datepicker('getDate', '+1d');
 					$("#projectStartDate").datepicker("option", "minDate", dt);
@@ -1009,18 +1008,38 @@ function loadProjectMembersDetails(data,candidateName){
 			});
 	  }
 	  
-		$("#projectEndDate").datepicker({
-			dateFormat : finalDateFormatAssignEmpUpdate,
-			changeMonth: true,
-			changeYear: true, 
-			minDate: projectStartDate,
-	        onClose : function(selected) {
-	        	 var dt = $(this).datepicker('getDate', '-1d');
-					$("#projectEndDate").datepicker("option", "maxDate", dt);
-					removeEndDateValidation();
-					getEstimatedHours();
-			}
-		});
+	  if(data.memberEndDate != null && data.memberEndDate != "" && data.memberEndDate != "undefined"){
+		  $("#projectEndDate").datepicker({
+				dateFormat : finalDateFormatAssignEmpUpdate,
+				changeMonth: true,
+				changeYear: true, 
+				maxDate:data.memberEndDate,
+				minDate: projectStartDate,
+		        onClose : function(selected) {
+// 		        	 var dt = $(this).datepicker('getDate', '-1d');
+// 						$("#projectEndDate").datepicker("option", "maxDate", dt);
+						removeEndDateValidation();
+						getEstimatedHours();
+				}
+			});
+	  }else{
+			  $("#projectEndDate").datepicker({
+					dateFormat : finalDateFormatAssignEmpUpdate,
+					changeMonth: true,
+					changeYear: true, 
+					minDate: projectStartDate,
+			        onClose : function(selected) {
+//	 		        	if(projectEndDate != null && projectEndDate != "" && projectEndDate != "undefined"){
+//	 		        		var dt = $(this).datepicker('getDate', '-1d');
+//	 	 						$("#projectEndDate").datepicker("option", "maxDate", dt);
+//	 		        	}
+						removeEndDateValidation();
+						getEstimatedHours();
+					}
+				});
+		
+	  } 
+		
 		
 		$("#billRateEstimatedDate").datepicker({
 			dateFormat : finalDateFormatAssignEmpUpdate,
