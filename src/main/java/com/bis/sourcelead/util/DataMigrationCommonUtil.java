@@ -600,9 +600,9 @@ public class DataMigrationCommonUtil {
 					}
 				}
 				
-				if(dataMigrationDTOJsonCopy.getString("designation").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designation"))) {
+				/*if(dataMigrationDTOJsonCopy.getString("designation").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designation"))) {
 					errorSet.put("designation", "Designation Type field is missing");
-				}
+				}*/
 				
 				
 				Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"

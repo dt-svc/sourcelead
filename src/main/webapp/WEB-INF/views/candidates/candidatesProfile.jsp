@@ -854,52 +854,7 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 							//result = result +'		    <li><a data-toggle="tab" href="#milestone">Milestone View</a></li>                                                                        ';
 							result = result +'		  </ul>                                                                                                                                       ';
 							result = result +'		  <div class="tab-content">                                                                                                                   ';
-							
-							
-							
-							result = result +'		    <div id="tags" class="tab-pane fade in active">                                                                                         ';
-							result = result +'		      <div class="skills-summary positionRelative">                                                                                                            ';
-							result = result +'		        <div class="design-view tagsresult">                                                                                                             ';
-							result = result +'		<div class="clearfix">';
-							result = result +'		          <h2 class="education  pull-left">Tags:</h2>';
-							result = result +'		          <span id="editTagBtnSpan" class="pull-right mt10 mb"><button type="button" id="editTagBtn" name="editTagBtn" class="btn btn-primary btn-sm" onclick="editTag('+candidateId+');">Edit Tag</button></span>';
-							result = result +'		          <span id="saveTagBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
-							result = result +'<div class="clearfix">';
-							result = result + '<select multiple class="chosen-select form-control" name="tagName" id="tagName" data-validation="validate_Space" data-validation-optional="true">';
-							// here get lookup data tags and manually enter skills 
-							$.each( json.tagsList, function( i, tags ) {
-							  var existed = 0;
-				                if(json.candidateTags != null && json.candidateTags != 'undefined' && json.candidateTags != '') {
-					                var res = [];
-					                res = json.candidateTags.split(",");
-					                res.forEach(function(item) {
-					                	if(tags == item){
-					                		existed = 1;
-					                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
-					                	}
-					                });
-				                }
-				                if(existed == 0){
-				                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
-				                }
-							});
-			                result = result + '</select>';
-							result = result +'</div>';
-							result = result +'</div>';
-							result = result +'		</div>';
-							result = result + '<div class="clearfix"></div> ';
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
+							 
 							result = result +'		    <div id="skills" class="tab-pane fade in active">                                                                                         ';
 							result = result +'		      <div class="skills-summary positionRelative">                                                                                                            ';
 							result = result +'		        <div class="design-view skillsresult">                                                                                                             ';
@@ -1202,6 +1157,7 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 <script>
 
 function editTag(candidateId){
+	$('.tagsWrap').addClass("tagsWrapBor");
 	$("#tagName").prop('disabled', false).trigger("chosen:updated");
 	$("#editTagBtn").remove();
 	$("#editTagBtnSpan").hide();
@@ -1229,6 +1185,7 @@ function saveTag(candidateId){
 	$("#editTagBtnSpan").empty();
 	$("#editTagBtnSpan").append(result);
 	$("#editTagBtnSpan").show();
+	$('.tagsWrap').removeClass("tagsWrapBor");
 	tagCountAfter = tagCountBefore = 0;
 	
 }
