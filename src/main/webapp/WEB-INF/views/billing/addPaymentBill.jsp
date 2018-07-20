@@ -15,7 +15,7 @@
      <div class="pull-left">
      <h2>Add Payment</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Invoice List</a> &raquo;  Add Payment </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payablesList'/>">Bill List</a> &raquo;  Add Payment </div>
     
     </section>
     <form id= "paymentForm" name="paymentForm" method="post">
@@ -23,10 +23,10 @@
     	 	<div class="row">
     	 		<div class="form-group clearfix mt">
     	 			<div class="col-md-6 mb">
-    	 					<label class="col-md-3">Client<span class="text-danger paddingLeft">*</span></label>
+    	 					<label class="col-md-3">Vendor<span class="text-danger paddingLeft">*</span></label>
     	 					<div class="col-md-9">
-    	 						<select class="form-control chosen-select" id="client" name="client" field-name="Client" onchange="getInvoiceList()" data-validation="required" >
-		                        <option value="">-Select Client-</option>
+    	 						<select class="form-control chosen-select" id="vendor" name="vendor" field-name="Vendor" onchange="getPaybleList()" data-validation="required" >
+		                        <option value="">-Select Vendor-</option>
 		                        <c:forEach var="vendors" items="${vendorsList}">
 									<option value="${vendors.id}">${vendors.locationId.org.orgName}</option>
 								</c:forEach>
@@ -81,23 +81,17 @@
 					</div>
 				</div>
 				
-    	 		<div class="col-md-6 minHeight50 mb">
-					<label class="col-md-3">Attachment</label>
-						<div class="col-md-9 zindex positionRelative">
-								<div class="input-group col-md-12" id="uploadFileGroup"
-									style="margin: 0 auto">
-									<label class="input-group-btn"> <span
-										class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
-											File <input type="file" style="display: none;" id="uploadBtn"
-											class="upload"> </span>
-									</label> <input type="text" class="form-control" readonly
-										id="uploadFile" name="docFile" placeholder="Upload Resume ..."
-										field-name="Upload Resume" data-validation="validatedoc "
-										data-validation-optional="true">
-									<div class="clearUpload"></div>
-								</div>
-						</div>
+ 	 		<div class="col-md-6 minHeight50 mb">
+		<label class="col-md-3">Attachment</label>
+			<div class="col-md-9 zindex positionRelative">
+				<div class="input-group col-md-12" id="uploadFileGroup"	style="margin: 0 auto"> 
+				<label class="input-group-btn"> <span class="btn btn-primary" onchange="getFleInformation();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
+				</label> 
+				<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document" field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true">
+					<div class="clearUpload"></div>
 				</div>
+			</div>
+		</div>
     	 		</div>
     	 		<div class="clearfix"></div>
     	 		
@@ -113,12 +107,25 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	getInvoiceList();
+	getPaybleList();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	$("#currencyType").val(currencyCode);
 	
 });
 </script>
+
+<script type="text/javascript">
+    function getFleInformation() {
+    	fileUpload("uploadBtn", "incoiceDocuments", "paymentForm");	
+	}
+	
+
+/* upload file script */
+document.getElementById("uploadBtn").onchange = function () {
+    $('#uploadFile').val($("#uploadBtn").val().replace(/C:\\fakepath\\/i, '')); 
+};
+</script>
+
 <script type="text/javascript">
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 // written common method in slead-common.js for date formats start
@@ -132,8 +139,8 @@ $('#paymentDate').datepicker({
 });
 </script>
 <script>
-  function getInvoiceList(){
-	  var orgRelationId = $("#client").val();
+  function getPaybleList(){
+	  var orgRelationId = $("#vendor").val();
 	   $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getInvoiceListForPayment?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
@@ -183,7 +190,7 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'<td>'+opt.total+'</td>';
 	                    	 result = result +'<td>'+opt.dueAmount+'</td>';
 	                    	 result = result +'<td>'+opt.invoiceStatus+'</td>';
-	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeypress="amountInputVal(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'" name="totalAmountRow"></td>';
+	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeypress="amountInputVal(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'"></td>';
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
@@ -238,18 +245,15 @@ $('body').on('blur', '#paymentForm', function() {
 </script>
   <script>
   function amountInputVal(obj){
-	  var totalVal = $("#grandTotalAmount").text();
-	  if(totalVal == ''){
-		  totalVal = 0;
-	  }
-	  var objTotal = 0;
-	  if(obj.value = ''){
-		  objTotal = 0;
-	  }else{
-		  objTotal = obj.value;
-	  }
-	  var total = totalVal += objTotal;
-	  $("#grandTotalAmount").text(total);
+	  // this is for total value updation based our input
+	  var totalValue=0;
+	  $("input[id^=totalAmountRow]").each(function() {
+	       var value = $(this).val();
+	    if($.isNumeric(value)){
+	       totalValue= totalValue+parseFloat(value);
+	  	} 
+	  });
+	  $("#grandTotalAmount").text(totalValue).toFixed(2);
   }
   
 	function toggleInvoices(source) {
