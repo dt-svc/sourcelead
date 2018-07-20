@@ -67,7 +67,7 @@
     	 				<label class="col-md-3 paddingRight">Amount Received<span class="text-danger paddingLeft">*</span></label>
 	    	 			<div class="clearfix">
 	    	 			<div class="col-md-6">
-	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" data-validation="required validate_length length2-250" field-name ="Amount Received">
+	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" onkeyup="validateNumber(this);" data-validation="required validate_length length2-250" field-name ="Amount Received">
 	    	 			</div>
 	    	 			<div class="col-md-3">
 	    	 				<input type="text" class="form-control" id="currencyType" name = "currencyType" readonly="readonly">
@@ -190,7 +190,7 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'<td>'+opt.total+'</td>';
 	                    	 result = result +'<td>'+opt.dueAmount+'</td>';
 	                    	 result = result +'<td>'+opt.invoiceStatus+'</td>';
-	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeyup="amountInputVal2(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'"></td>';
+	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeyup="amountInputVal2(this);validateNumber(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'"></td>';
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
@@ -224,26 +224,41 @@ $('#paymentDate').datepicker({
   
   </script>
   <script type="text/javascript">
-function addInvoice(){
-	 if ($('#paymentForm').validate(false, validationSettings)) {
-		 var invoiceIdsMap = new Object();
-		 $('input:checkbox[name=invoices]:checked').each(function() {
-				invoiceIdsMap[this.id] = $("#totalAmountRow"+this.id).val();
-		     });
-		 var formData = getFormData("paymentForm");
-		  $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+JSON.stringify(invoiceIdsMap), formData, function(result) {
-			 
-		 }); 
-		  invoiceIdsMap = {};
-	 }
-	
-}
-$('body').on('blur', '#paymentForm', function() {
-	$("#paymentForm").showHelpOnFocus();
-	$("#paymentForm").validateOnBlur(false, validationSettings);
-});
+  function addInvoice(){
+		 if ($('#paymentForm').validate(false, validationSettings)) {
+			 var grandDueTotal = $("#grandTotalAmount").text();
+			 var grandTotalReceived = $("#totalAmount").val();
+			 if(grandDueTotal == grandTotalReceived){
+			 var invoiceIds= []
+			 var amount = "";
+			 $('input:checkbox[name=invoices]:checked').each(function() {
+					//invoiceIdsMap[this.id] =  $("#totalAmountRow"+this.id).val();
+					invoiceIds.push(this.id+"_"+$("#totalAmountRow"+this.id).val()); // pushing values as id_invoice amount to array.
+					amount = $("#totalAmountRow"+this.id).val();
+			     }); 
+			 if(amount !=null && amount !="" && amount !="undefined"){
+			 var formData = getFormData("paymentForm");
+			 $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
+				 getInvoiceList();
+		 });
+			 }else{
+				 alert("please select at least one record / Amount should not Empty");
+			 }
+		 }else{
+			 alert("Amount Received and Due Total should be same");
+		 }
+		}
+	}
+	$('body').on('blur', '#paymentForm', function() {
+		$("#paymentForm").showHelpOnFocus();
+		$("#paymentForm").validateOnBlur(false, validationSettings);
+	});
 </script>
   <script>
+  function validateNumber(object){ 
+	   object.value = object.value.replace(/[^0-9\.]/g,'');
+	}
+  
   function amountInputVal2(obj){
 	  // this is for total value updation based our input
 	  var totalValue=0.00;

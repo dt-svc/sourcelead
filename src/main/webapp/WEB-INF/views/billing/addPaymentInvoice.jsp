@@ -66,7 +66,7 @@
     	 				<label class="col-md-3 paddingRight">Amount Received<span class="text-danger paddingLeft">*</span></label>
 	    	 			<div class="clearfix">
 	    	 			<div class="col-md-6">
-	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" data-validation="required validate_length length2-250" field-name ="Amount Received">
+	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" onkeyup="validateNumber(this);" data-validation="required validate_length length2-250" field-name ="Amount Received">
 	    	 			</div>
 	    	 			<div class="col-md-3">
 	    	 				<input type="text" class="form-control" id="currencyType" name = "currencyType" readonly="readonly">
@@ -186,7 +186,7 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'<td>'+opt.total+'</td>';
 	                    	 result = result +'<td>'+opt.dueAmount+'</td>';
 	                    	 result = result +'<td>'+opt.invoiceStatus+'</td>';
-	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeyup="amountInputVal1(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'" field-name ="Total Due"></td>';
+	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeyup="amountInputVal1(this);validateNumber(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'" field-name ="Total Due"></td>';
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
@@ -226,8 +226,16 @@ $('#paymentDate').datepicker({
   
   </script>
   <script type="text/javascript">
+  
+   function validateNumber(object){ 
+	   object.value = object.value.replace(/[^0-9\.]/g,'');
+	}
+  
 function addInvoice(){
 	 if ($('#paymentForm').validate(false, validationSettings)) {
+		 var grandDueTotal = $("#grandTotalAmount").text();
+		 var grandTotalReceived = $("#totalAmount").val();
+		 if(grandDueTotal == grandTotalReceived){
 		 var invoiceIds= []
 		 var amount = "";
 		 $('input:checkbox[name=invoices]:checked').each(function() {
@@ -242,6 +250,9 @@ function addInvoice(){
 	 });
 		 }else{
 			 alert("please select at least one record / Amount should not Empty");
+		 }
+		}else{
+			 alert("Amount Received and Due Total should be same");
 		 }
 	 }
 }
