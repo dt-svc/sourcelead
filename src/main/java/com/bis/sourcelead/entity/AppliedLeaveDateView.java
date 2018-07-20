@@ -65,6 +65,9 @@ public class AppliedLeaveDateView {
 	
 	@Column(name = "TO_DATE_TO_TIME")
 	private String toDateToHalfTime;
+	
+	@Column(name = "ORG_ID")
+	private Long orgId;
 
 	public Long getUserId()
 	{
@@ -244,5 +247,15 @@ public class AppliedLeaveDateView {
 	public void setToDate(Date toDate)
 	{
 		this.toDate = toDate;
+	}
+
+	public Long getOrgId()
+	{
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId)
+	{
+		this.orgId = orgId;
 	}
 }

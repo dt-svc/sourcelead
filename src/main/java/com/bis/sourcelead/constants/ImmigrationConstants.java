@@ -31,6 +31,8 @@ public class ImmigrationConstants {
 	public static final String IMMIGRATION_UPLOAD ="immigrationUpload";
 	public static final String LCA_UPLOAD ="lcaUpload";
 	
+	public static final String SOC_TYPE = "SocDetails";
+	
 	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name","Beneficiary Last Name",
             "Beneficiary Email", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",    
             "Marital status", "Petition Type", "Template", "Date of arrival", "Open on", "Status","Passport No","Passport Country","Passport Start Date","Passport End Date","Visa No.","Visa Type", "Visa Country","Visa Start Date", "Visa End Date","Company",
@@ -65,9 +67,9 @@ public class ImmigrationConstants {
    
    @SuppressWarnings("serial")
    public static final Map LCA_HEADERS_NAMES_MAP = new HashMap<Integer, String>(){{
-       put(1,"lcaNumber");put(2,"lcaTitle");put(3,"noOfPos");put(4,"empName");put(5,"empMail");put(6,"currClientLocation");put(7,"curPrimrVenodorLocation");
-       put(8,"curVenodorLocation");put(9,"socCode");put(10,"soOOccTitle");put(11,"wageLevel");put(12,"prevailWageCurr");
-       put(13,"prevailWageRate");put(14,"prevailWageRatePer");put(15,"lcaStartDate");put(16,"lcaEndDate");put(17,"lcaStatus");put(18,"status");
+       put(1,"newLcaNumber");put(2,"newLcaTitle");put(3,"noOfPos");put(4,"empName");put(5,"empMail");put(6,"currClientLocation");put(7,"curPrimrVenodorLocation");
+       put(8,"curVenodorLocation");put(9,"socCode");put(10,"socTitle");put(11,"wageLevel");put(12,"prevailWageCurr");
+       put(13,"prevailWageRate");put(14,"prevailWageRatePer");put(15,"newLcaStartDate");put(16,"newLcaEndDate");put(17,"lcaStatus");put(18,"newStatus");
    }};
    
    public static final Map HEADERS_FIELD_NAMES_MAP = new HashMap<Integer, String>(){{

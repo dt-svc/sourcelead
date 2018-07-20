@@ -214,6 +214,7 @@
       </span>
       
       <ul class="pull-right list-unstyled list-inline">
+       <a href="${appPath}/immigration/viewLCAList" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="paddingRight"></i> LCA List</a>
       		<sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
             <li><a href="${appPath}/immigration/loadNewPetition" class="action newAdBtn mr5">+ New </a></li>
 			</sec:authorize>

@@ -37,4 +37,6 @@ public interface LookUpDataDao {
 
 	public LookUpData getLookUpDataByIdAndCategory(String visaType, long id);
 
+	LookUpData getLookUpDataById(long id);
+
 }
