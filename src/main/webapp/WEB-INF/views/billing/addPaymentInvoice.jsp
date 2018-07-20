@@ -82,23 +82,17 @@
 					</div>
 				</div>
 				
-    	 		<div class="col-md-6 minHeight50 mb">
-					<label class="col-md-3">Attachment</label>
-						<div class="col-md-9 zindex positionRelative">
-								<div class="input-group col-md-12" id="uploadFileGroup"
-									style="margin: 0 auto">
-									<label class="input-group-btn"> <span
-										class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
-											File <input type="file" style="display: none;" id="uploadBtn"
-											class="upload"> </span>
-									</label> <input type="text" class="form-control" readonly
-										id="uploadFile" name="docFile" placeholder="Upload Resume ..."
-										field-name="Upload Resume" data-validation="validatedoc "
-										data-validation-optional="true">
-									<div class="clearUpload"></div>
-								</div>
-						</div>
-				</div>
+ 	 		<div class="col-md-6 minHeight50 mb">
+		<label class="col-md-3">Attachment</label>
+			<div class="col-md-9 zindex positionRelative">
+					<div class="input-group col-md-12" id="uploadFileGroup"	style="margin: 0 auto">
+						<label class="input-group-btn"> <span class="btn btn-primary" onchange="getFleInformation();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn"	class="upload"> </span>
+						</label> 
+					<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File" field-name="Upload File" data-validation="validatedoc" data-validation-optional="true">
+						<div class="clearUpload"></div>
+					</div>
+			</div>
+			</div>
     	 		</div>
     	 		<div class="clearfix"></div>
     	 		
@@ -119,7 +113,22 @@ $(document).ready(function() {
 	$("#currencyType").val(currencyCode);
 	
 });
+
+
 </script>
+
+<script type="text/javascript">
+    function getFleInformation() {
+    	fileUpload("uploadBtn", "incoiceDocuments", "paymentForm");	
+	}
+	
+
+/* upload file script */
+document.getElementById("uploadBtn").onchange = function () {
+    $('#uploadFile').val($("#uploadBtn").val().replace(/C:\\fakepath\\/i, '')); 
+};
+</script>
+
 <script type="text/javascript">
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 // written common method in slead-common.js for date formats start
