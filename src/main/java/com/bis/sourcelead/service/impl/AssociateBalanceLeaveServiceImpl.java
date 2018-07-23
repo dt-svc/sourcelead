@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
+import com.bis.sourcelead.dto.LeaveTypeEditDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TotalLeaveDTO;
@@ -573,6 +575,132 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	@Override
 	public int addAssociateLeaveType(User user, Long orgLocationId,Employees employee, UserRole userRole) {
 		return associateBalanceLeaveDao.addAssociateLeaveType(user, orgLocationId,employee,userRole);
+	}
+
+	@Override
+	public int updateLeaveTypeAssociateBalances(List<User> updatedUserList, LeaveType leaveType, LeaveTypeDTO leaveTypeDTO)
+	{
+		float previousNoOfDays = 0;
+		float currentNofDays = 0;
+		float previousFresherNoOfDays = 0;
+		float currentFresherNofDays = 0;
+		float previousExpNoOfDays = 0;
+		float currentExpNofDays = 0;
+		int status = 0;
+		if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
+			if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+				currentNofDays = leaveType.getNoOfDaysPerPeriod();
+				previousNoOfDays = leaveTypeDTO.getPreviousNoOfDaysPerPeriod();
+			}else{
+				 previousFresherNoOfDays = leaveTypeDTO.getPreviousFresherPeriod();
+				 currentFresherNofDays = leaveType.getNewJoinPerPeriod();
+				
+				 previousExpNoOfDays = leaveTypeDTO.getPreviousExpPeriodDays();
+				 currentExpNofDays = leaveType.getExperiencedPerPeriod();
+			}
+		}else {
+			if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+				currentNofDays   = leaveType.getNoOfDays();
+				previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
+			}else{
+				 previousFresherNoOfDays = leaveTypeDTO.getPreviousNewJoinee();
+				 currentFresherNofDays = leaveType.getNewJoinee();
+				
+				 previousExpNoOfDays = leaveTypeDTO.getPreviousExpApplicableDays();
+				 currentExpNofDays = leaveType.getExperiencedApplicableDays();
+			}
+		
+			float diffLeaves = 0;
+			float diffFresherLeaves = 0;
+			float diffExpLeaves = 0;
+			String actionType = "";
+			String actionFresherType = "";
+			String actionExpType = "";
+			// All
+			if(previousNoOfDays < currentNofDays) {
+				diffLeaves = currentNofDays - previousNoOfDays;
+				actionType = "ADD";
+			}if(previousNoOfDays > currentNofDays) {
+				 diffLeaves = previousNoOfDays - currentNofDays;
+				 actionType = "SUB";
+			}if(previousNoOfDays == currentNofDays) {
+				 actionType = "NONE";
+			}
+			//Fresher calculation
+			if(previousFresherNoOfDays < currentFresherNofDays) {
+				diffFresherLeaves = currentFresherNofDays - previousFresherNoOfDays;
+				actionFresherType = "ADD";
+			}if(previousFresherNoOfDays > currentFresherNofDays) {
+				diffFresherLeaves = currentFresherNofDays - previousFresherNoOfDays;
+				 actionFresherType = "SUB";
+			}if(previousFresherNoOfDays == currentFresherNofDays) {
+				actionFresherType = "NONE";
+			}
+			// Experience Calculation 
+			if(previousExpNoOfDays < currentExpNofDays) {
+				diffExpLeaves = currentExpNofDays - previousExpNoOfDays;
+				actionExpType = "ADD";
+			}if(previousExpNoOfDays > currentExpNofDays) {
+				diffExpLeaves = currentExpNofDays - previousExpNoOfDays;
+				 actionExpType = "SUB";
+			}if(previousExpNoOfDays == currentExpNofDays) {
+				actionExpType = "NONE";
+			}
+			
+			
+			List<LeaveTypeEditDTO> list = new ArrayList<>();
+			for(User user : updatedUserList){
+				LeaveTypeEditDTO dto = new LeaveTypeEditDTO();
+				dto.setStatus(Integer.parseInt(leaveType.getStatus()));
+				AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), leaveType.getOrgLocations().getId());
+				float assoBalLeaves = Float.parseFloat(associateBalanceLeave.getTotalLeaves());
+				float allowedLeaves = 0;
+				String userType = "";
+				Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), leaveType.getOrgLocations().getId());
+				try {
+					userType = leaveManagementUtil.test(leaveType, emp, user);
+					if(!"All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+						if("EXP".equalsIgnoreCase(userType)){
+							allowedLeaves = assoBalLeaves + diffExpLeaves;
+						}else if("FRESHER".equalsIgnoreCase(userType)){
+							allowedLeaves = assoBalLeaves + diffFresherLeaves;
+						}
+					}else{
+						allowedLeaves = assoBalLeaves + diffLeaves;
+					}
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				 
+				dto.setTotalLeaves(allowedLeaves);
+				dto.setLocationId(leaveType.getOrgLocations().getId());
+				dto.setUserId(user.getId());
+				dto.setLeaveTypeId(leaveType.getId());
+				if(leaveType.getLeaveTypeRolesSet() != null && !leaveType.getLeaveTypeRolesSet().isEmpty() && leaveType.getLeaveTypeRolesSet().size() > 0) {
+					String s = leaveType.getLeaveTypeRolesSet().stream().map(r->r.getRoleId().getId().toString()).collect(Collectors.joining(","));
+//					stmt.setString(6, s);
+					dto.setLeavetypeRoles(s);
+				}else {
+					dto.setLeavetypeRoles(null);
+				}
+				
+				if(leaveType.getDepartmentIds() != null) {
+//					stmt.setString(7, leaveType.getDepartmentIds());
+					dto.setLeavetypeDepartment(leaveType.getDepartmentIds());
+				}else {
+					dto.setLeavetypeDepartment(null);
+				}
+				if(!leaveType.getLeaveEmpType().isEmpty()) {
+//					stmt.setString(8, leaveType.getLeaveEmpType());
+					dto.setLeavetypeEmpType(leaveType.getLeaveEmpType());
+				}else {
+					dto.setLeavetypeEmpType(null);
+				}
+				list.add(dto);
+			}
+			status = associateBalanceLeaveDao.updateLeaveTypeAssociateBalances(list);
+			}
+		return status;
 	}
 	
 }
