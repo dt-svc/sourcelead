@@ -472,18 +472,16 @@ function statusvalidating(id){
 						<li><a href="<c:url value='${appPath}/addJobFair'/>" class="newAdBtn">+ Job Fair</a></li>
 					</sec:authorize>					
 									
-				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-					<div class="newActPop">
-						<span>
-							<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-							 	<a href="javascript:void(0)" onclick="exportToPdf(2);" title="PDF">Export PDF</a>
-								<a href="javascript:void(0)" onclick="exportToExcel(2);" title="Excel">Export Excel</a>					
-							</sec:authorize>
-		           
-						</span>
-					</div>
-				</li>
+					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
+						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+							<div class="newActPop">
+								<span>
+									 	<a href="javascript:void(0)" onclick="exportToPdf(2);" title="PDF">Export PDF</a>
+										<a href="javascript:void(0)" onclick="exportToExcel(2);" title="Excel">Export Excel</a>					
+								</span>
+							</div>
+						</li>
+					</sec:authorize>
 				
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='jobFairDataTableSearch'/><span class="repSearchIcon" onClick="jobFairListCheck();"></span></li>
         </ul>
@@ -514,7 +512,7 @@ function filterPop(){
 	$(".sideMask").fadeIn();
 };
 function closeFilter(){
-	$("#requirementFilterPopup").toggle();
+	$("#requirementFilterPopup").hide();
 	$(".sideMask").fadeOut();
 
 }

@@ -160,6 +160,8 @@ public interface RequirementService {
 
     public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays) throws Exception;
 
+    public List<Requirement> getRequirementListByPostedDateAndSelectedClients(Long orgLocationId, Long userId, String postedDateRange, String selectedClients);
+    
     public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId, Date startDateUTC, Date endDateUTC) throws Exception;
 
     public List<Requirement> getAllReleasedJobsBasedOnUserIdAndLocationId(User user, OrgLocations orgLocations) throws Exception;
@@ -171,6 +173,10 @@ public interface RequirementService {
     public List<Requirement> getAllClosedRequirementsByStartDateAndEndDate(Date startDateUTC, Date endDateUTC) throws Exception;
 
     public String getRequirementId(OrgLocations orgLocations);
+    
+    public String getGeneratedJobFairIdByOrgLocationId(long orgLocationsId);
+    
+    public String getGeneratedJobFairId(OrgLocations orgLocations);
 
     public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId, Long relationId, String userRoleName, User user, String status);
 
@@ -226,5 +232,11 @@ public interface RequirementService {
 	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date);
 
 	public List<JobFairDTO> getJobFairsDTOListByRequirementId(long requirementId);
+	
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId);
+	
+	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
+	
+	public void assignGeneratedIdToJobFairs();
 
 }
