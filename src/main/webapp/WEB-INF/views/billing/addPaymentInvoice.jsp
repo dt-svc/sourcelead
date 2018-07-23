@@ -98,7 +98,6 @@
     	 		
     	 		<div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
-	                  <div id="demoval"></div>
     	 		</div>
     	 		<!--  Table html -->
     	 		</div>
