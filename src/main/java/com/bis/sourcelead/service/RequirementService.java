@@ -238,5 +238,7 @@ public interface RequirementService {
 	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
 	
 	public void assignGeneratedIdToJobFairs();
+	
+	public ResponseList<RequirementDTO> getJobListOfRecruiter(RequirementDTO requirementDTO, Long recruiterUserId,Date[] searchDates,List<Long> teamsList) throws Exception;
 
 }
