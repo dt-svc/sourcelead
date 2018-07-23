@@ -164,4 +164,5 @@ public interface ImmigrationCommonService {
     
     LookUpData getLookUpDataById(Long id);
 	
+    Sheet getLCAExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, OrgLocations orgLocations);
 }

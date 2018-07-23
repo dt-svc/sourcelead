@@ -5,6 +5,7 @@ package com.bis.sourcelead.immigration.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -74,6 +75,7 @@ import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LcaDocumentHistory;
+import com.bis.sourcelead.entity.LcaListExportView;
 import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.LcaVisaClarifications;
 import com.bis.sourcelead.entity.LookUpData;
@@ -90,6 +92,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.ExcelHelperUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -2130,22 +2133,20 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		lcaDocumentDTO.setStaticPath(staticPath);
 		if (lcaDocumentDTO.getFileInfo() != null) {
 		FileInfo fileInfo = lcaDocumentDTO.getFileInfo().get(0);
-		
-			 if (fileInfo != null) {
-	
-					lcaDocumentHistoryEntity.setFileName(fileInfo.getFileName());
-					lcaDocumentHistoryEntity.setFileUrl(fileInfo.getFileURL());
-					lcaDocumentHistoryEntity.setFileContentType(fileInfo.getContentType());
-	
-	             try {
-	
-	                 FileUploadUtil.moveFile(lcaDocumentDTO.getStaticPath(), fileInfo, "LCADocuments");
-	             } catch (java.io.IOException e) {
-	                 // TODO Auto-generated catch block
-	                 e.printStackTrace();
-	             }
-	
-	         }
+		if(fileInfo.getFileName() != null) {
+			if (fileInfo != null) {
+				lcaDocumentHistoryEntity.setFileName(fileInfo.getFileName());
+				lcaDocumentHistoryEntity.setFileUrl(fileInfo.getFileURL());
+				lcaDocumentHistoryEntity.setFileContentType(fileInfo.getContentType());
+             try {
+                 FileUploadUtil.moveFile(lcaDocumentDTO.getStaticPath(), fileInfo, "LCADocuments");
+             } catch (java.io.IOException e) {
+                 // TODO Auto-generated catch block
+                 e.printStackTrace();
+             }
+         }
+		}
+			 
 		}
 		lcaDocumentHistoryEntity.setStatus(Constants.RECORD_ACTIVE);
 		lcaDocumentHistoryEntity.setUpdatedDate(currentDate);
@@ -2428,6 +2429,87 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	@Override
 	public LookUpData getLookUpDataById(Long id) {
 		return immigrationCommonDao.getLookUpDataById(id);
+	}
+	
+	
+	@Override
+	public Sheet getLCAExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, OrgLocations orgLocations) {
+		Row writeRow = null;
+		
+		createExcelsheet = getLCAExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+       List<LcaListExportView> immigrationListExportView = immigrationCommonDao.getLcaListExportDetails(orgLocations);
+		int column=0;
+        for(LcaListExportView exportView : immigrationListExportView){
+       	 writeRow = createExcelsheet.createRow(column+1);
+       	 try {
+			createExcelsheet = createLcaListXlsSheet(createExcelsheet,writeRow,exportView,orgLocations);
+		} catch (IllegalArgumentException e) {
+			logger.error("IllegalArgumentException occured while genearting LCA Excel sheet.");
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			logger.error("IllegalAccessException occured while genearting LCA Excel sheet.");
+			e.printStackTrace();
+		}
+       	 column++;  
+        }
+		return createExcelsheet;
+	}
+	
+	private Sheet createLcaListXlsSheet(Sheet createExcelsheet, Row writeRow,
+			LcaListExportView lcaExportView, OrgLocations orgLocations) throws IllegalArgumentException, IllegalAccessException {
+		Class mainClass= LcaListExportView.class;
+		int cellIndex=0;
+		for(String fieldName : ImmigrationConstants.LCA_EXCEL_REFLECTION_FILEDS_LIST) {
+			if(fieldName.equalsIgnoreCase("empName")|| fieldName.equalsIgnoreCase("empEmail")) {
+				cellIndex++;
+				continue;
+			}
+			// above if condition should be removed once columns are update in view in the databse.
+			try {
+				Field field = mainClass.getDeclaredField(fieldName);
+				
+				     field.setAccessible(true);
+				     if(fieldName.equalsIgnoreCase("location")) {
+				    
+				    	 String addrArr[]= ((String)field.get(lcaExportView)).split("\n");
+				    	 for(int i=0; i<addrArr.length; i++) {
+				    		 
+				    		 if(i==3) break;
+				    		 ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), addrArr[i], null); 
+				    		 
+				    		 cellIndex++;
+				    	 }
+				    	 cellIndex = 7;// setting default value for next column index. It does not depend on address list. 
+				     }else if(fieldName.contains("Date")) {
+				    	 
+				    	 
+				    	String dateString = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaExportView.getStartDate());
+				    	 ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), dateString, null);
+				    	
+				     }
+				     else {
+				             ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), field.get(lcaExportView), null);
+				     }
+				
+			} catch (NoSuchFieldException | SecurityException e) {
+				logger.error(" NoSuchFieldException | SecurityException  while genearting LCA Excel sheet.");
+				e.printStackTrace();
+			}
+			cellIndex++;
+		}
+		
+		return createExcelsheet;
+	}
+	private Sheet getLCAExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+		
+		CellStyle style = createExcelworkbook.createCellStyle();
+		style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		Font font = createExcelworkbook.createFont();
+		font.setColor(IndexedColors.BLACK.getIndex());
+		style.setFont(font);
+		String headers [] = ImmigrationConstants.LCA_LIST_EXCEL_HEADERS;
+		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 	}
 	
 	/*
