@@ -184,12 +184,6 @@ public class TimesheetRestController {
 	private String staticPath;
 
 	@Autowired
-	private LeaveTypeService leaveTypeService;
-
-	@Autowired
-	private HolidayService holidayService;
-
-	@Autowired
 	private TimesheetEmailUtil timesheetEmailUtil;
 
 	@Autowired
@@ -561,17 +555,6 @@ public class TimesheetRestController {
 		return empLeaveMap;
 	}
 	
-	private String getDisplayHoursFromHours(Integer hours) {
-		String output = "";
-		if(hours != null) {
-			if(hours.toString().length() == 2) {
-				output = hours+":00";
-			}else if(hours.toString().length() == 1) {
-				output = "0"+hours+":00";
-			}
-		}
-		return output;
-	}
 	private EmployeeTimesheetEntryDetailsDTO getEmployeeTimesheetEntryDetails(TimesheetExpenseEntryDetailsUtilDTO eedDTO,
 			HttpServletRequest request) throws Exception {
 		EmployeeTimesheetEntryDetailsDTO employeeTimesheetEntryDetailsDTO = new EmployeeTimesheetEntryDetailsDTO();
