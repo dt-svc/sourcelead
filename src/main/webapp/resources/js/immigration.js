@@ -111,6 +111,10 @@ function Immigration() {
             };
         if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
             var formData = getFormData("PetitionTemplateDocDetails");
+            var returnType = CheckDuplicateDocsByCategory();
+            if(returnType == false){
+            	return false;
+            }
             formData.immigrationDocDeletedListIds = deletedDocListIds.join();
             $.ajax({
                 url: sourceleadUrl + immiModulePath + "/savePetitionTemplateDocDetails",
@@ -1640,3 +1644,64 @@ function monthIfYearRequired(){
 	}
 
 }
+
+function CheckDuplicateDocsByCategory(){
+	var petitionArr = [];
+	var attorneyArr = [];
+	var benefArr = [];
+	var returnVal = true;
+	$("select[id^=documentCategory]").each(	function() {
+
+				var dropRowId = this.id.slice(-1);
+				var docCat = $(this).val();
+
+				docId = $('#candidateEducation' + dropRowId).val();
+				docName = $('#candidateEducation' + dropRowId + ' :selected').text()
+
+				if (docCat == 'PetitionerCategory') {
+					if (petitionArr.indexOf(docId) == -1) {
+						petitionArr.push(docId)
+					} else {
+						showPopupMessage(" duplicate " + docName+ " document found for the petitioner");
+						returnVal = false;
+						return false;
+					}
+				} else if (docCat == 'Document Type') {
+					if (benefArr.indexOf(docId) == -1) {
+						benefArr.push(docId)
+					} else {
+						showPopupMessage(" duplicate " + docName+ " document found for the Beneficiary");
+						returnVal = false;
+						return false;
+					}
+				} else if (docCat == 'AttorneyCategory') {
+					if (attorneyArr.indexOf(docId) == -1) {
+						attorneyArr.push(docId)
+					} else {
+						showPopupMessage(" duplicate " + docName+ " document found for the Attorney");
+						returnVal = false;
+						return false;
+					}
+				}
+			});
+	return returnVal;
+	}
+
+	function showPopupMessage(message){ // only stauts updated with reason. active 1 , deactive 0.
+		 $(".project_inn_mask").remove();
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a padEv'>";
+			result = result +" <b>"+message+"</b>";
+			result = result + ' <div id="reasonForTemplateDiv"/>';
+			result = result +"		<b href='javascript:void(0)'><button id='confirm-id' class='btn btn-primary btn-block mt' type='button' value='Ok' onclick='hidePopupMessage();'>OK</button></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#remove_immigration_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		}
+	
+	function hidePopupMessage(){
+		$("#remove_immigration_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
