@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LcaDocumentHistory;
+import com.bis.sourcelead.entity.LcaListExportView;
 import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.LcaVisaClarifications;
 import com.bis.sourcelead.entity.LookUpData;
@@ -191,5 +192,7 @@ public interface ImmigrationCommonDao {
 	String reActiveLcaById(Long lcaId);
 	
 	LookUpData getLookUpDataById(Long id);
+
+	List<LcaListExportView> getLcaListExportDetails(OrgLocations orgLocations);
 
 }

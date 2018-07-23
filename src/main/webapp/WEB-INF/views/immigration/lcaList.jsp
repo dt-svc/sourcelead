@@ -36,8 +36,8 @@
 					<div class="newActPop">
 						<span>
 							<a href="/app/uploadLcaForm">Import LCA</a>
-							<a href="javascript:void(0)" onclick=";" title="PDF">Export PDF</a>
-							<a href="javascript:void(0)" onclick=";" title="Excel">Export Excel</a>
+							<!-- <a href="javascript:void(0)" onclick=";" title="PDF">Export PDF</a> -->
+							<a href="javascript:void(0)" onclick="exportToLCAExcel();" title="Excel">Export Excel</a>
 						</span>
 					</div>
 				</li>
@@ -541,5 +541,19 @@ $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });	
 
+// LCA Export Excel
+
+function exportToLCAExcel(){
+	if (!table.data().count() ) {
+	    alert( 'Empty table' );
+	}else{
+		window.location.href = sourceleadUrl+"/immigration/getLcaListExport?exportType=excel";
+	}
+}
+
+$('#mypop').click(function(){
+	$("#exportPop").toggle();
+	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+}); 
 
 </script>
