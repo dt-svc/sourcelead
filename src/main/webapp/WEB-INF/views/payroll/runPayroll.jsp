@@ -3,11 +3,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<!-- <script>
+ <script>
 $(document).ready(function(){
-	prepareUSPayrollList("NO_RECORDS");
+	$("#submitButtonDiv").hide();
 });
-</script> -->
+</script> 
 
 
 
@@ -72,14 +72,14 @@ $(document).ready(function(){
 <div class="clearfix mt"></div>
 <nav class="clearfix">
 	
-<div class="col-md-2">
-			<a href="javascript:void(0)" class="btn anchorBlue">Exclude</a>
-</div>
+<!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
+	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
-		<li><a href="#" class="btn btn-primary btnSuccess">Sent for Approve</a></li>
-		<li><a href="#" class="btn btn-default ml mr">Confirm</a></li>
-		<li><a href="#" class="btn btn-default">Cancel</a></li>
+		<li><a href="#" class="btn btn-primary btnSuccess" onClick="sendApproverFun();">Send for Approve</a></li>
+		<!-- <li><a href="#" class="btn btn-default ml mr">Confirm</a></li> -->
+		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
+	</div>
 <div class="clearfix"></div>
 </nav>	
 
@@ -88,8 +88,52 @@ $(document).ready(function(){
 </div>
 
 
-</div>  
+</div>
 
+
+<!--  send approver popup -->
+<div class="comMask"></div>
+<!-- Modal -->
+  <div class="modal sendApprover" id="sendApprover" style="display:none;">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" onclick="closeApproverFun();">&times;</button>
+          <h4 class="modal-title">Approver</h4>
+        </div>
+        <div class="modal-body">
+        	<div class="form-group clearfix mb0">
+            
+          <lable class="col-md-3">Select Approver</lable>
+          <div class="col-md-9">
+          <select class="form-control chosen-select" multiple data-placeholder="Select Approvers" id="approver" name="approver" field-name="Approver" data-validation="required">
+          <!-- 	<option>Approver1</option>
+            <option>Approver2</option> -->
+          </select>
+          </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Send</button>
+          <button type="button" class="btn btn-default ml" onClick="closeApproverFun();">Cancel</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+<!--  send approver popup -->
+
+<script>
+function sendApproverFun() {
+	getApprovers();
+	$(".sendApprover, .comMask").fadeIn();
+}
+
+function closeApproverFun() {
+	$(".sendApprover, .comMask").fadeOut();
+}
+</script>
 
 <!-- New Code Here -->
 
@@ -200,12 +244,12 @@ function runUSPayroll(){
 		        	result += '<table>';
 		        	result += '<thead>';
 		        	result += '<tr>';
-		        	result += '<th>';
+		        /* 	result += '<th>';
 		        	result += '<div class="checkbox-new pull-left">';
 		        	result += '<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">';
 		        	result += '<label for="all" class="checkbox-custom-label"></label>';
 		        	result += '</div>';
-		        	result += '</th>';
+		        	result += '</th>'; */
 		        	result += '<th>Emp ID</th>';
 		        	result += '<th>Emp Name</th>';
 		        	result += '<th>Regular<br>Hours</th>';
@@ -223,12 +267,12 @@ function runUSPayroll(){
 		        		for (var i=0; i<json.length; i++){
 		        			var opt = json[i];
 		        			result += '<tr>';
-				        	result += '<td>';
+				        	/* result += '<td>';
 				        	result += '<div class="checkbox-new pull-left ml5">';
 				        	result += '<input id="emp1" class="checkbox-custom" name="paidComponent" type="checkbox">';
 				        	result += '<label for="emp1" class="checkbox-custom-label"></label>';
 				        	result += '</div>';
-				        	result += '</td>';
+				        	result += '</td>'; */
 				        	
 				        	 result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
 				        	 result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
@@ -264,6 +308,7 @@ function runUSPayroll(){
 		        	result += '</table>';
 		        	$("#testDiv").empty();
 		        	$("#testDiv").append(result);
+		        	$("#submitButtonDiv").show();
 		        },
 		    });
 		 
@@ -853,6 +898,26 @@ function savePayrollAdjustment(){
  }
  </script>
  
-
+<script>
+function getApprovers(){
+	$.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/getConfigurePayrollApprover?"+tokenParamName+"="+tokenValue                 , 
+        success: function(data) {
+         var output = "";
+         var json = data.data;
+		 for (var i=0; i<json.length; i++)
+		{
+			var opt = json[i];
+			output = output + "<option value='" +opt.userId+ "'>"+opt.approverName+"  ("+opt.roleName+")</option>";
+		} 
+		$("#approver").empty();
+		$("#approver").append(output);
+		$('#approver').trigger("chosen:updated");
+		
+        },
+    });
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
