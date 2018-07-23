@@ -798,6 +798,8 @@ function payablePagination(url){
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
 								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 								'</sec:authorize>';
+							}else{
+								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 							}
 							
 						}
@@ -993,6 +995,10 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Bill"></i>Pay</a></li>';
 
 			 }
+			 
+		 }
+		 if(invoiceStatus == "SENT"){
+				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Bill"></i>Pay</a></li>';
 			 
 		 }
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
