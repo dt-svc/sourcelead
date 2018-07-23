@@ -381,8 +381,8 @@ function orgSubscriptionList(){
 	               	     result = result +'<th>Subscription Type</th>';
 	               	     result = result +'<th>User Subscription</th>';
 	               		 result = result +'<th>Invoice Amount</th>';
-	               		 result = result +'<th>From Date</th>';
-	               		 result = result +'<th>To Date</th>';
+	               		 result = result +'<th>From Date<br>(<small class="custom-small">DD-MM-YYYY</small>)</th>';
+	               		 result = result +'<th>To Date<br>(<small class="custom-small">DD-MM-YYYY</small>)</th>';
 	               		 result = result +'<th>Storage</th>';
 	               		 result = result +'<th>Modules</th>';
 		                 result = result +"</tr>"; 

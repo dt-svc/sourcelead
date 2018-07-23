@@ -780,7 +780,6 @@ $(function() {
 
 <script type="text/javascript">
 function applyLeave(){
-	
 	if($("#checkbox-2").is(':checked')){
 		var fromDateFromHalfTime = $("#fromDateHalfTime").val();
 		if(fromDateFromHalfTime != null && fromDateFromHalfTime != '' && fromDateFromHalfTime != 'undefined'){
@@ -1037,13 +1036,13 @@ function getLeaveDetails(finalDateFormatEndDate){
 function validateOverDrawLeaves(leaveTypeName){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
-    var convertFromDate = parseInt(fromDate);
-    var convertToDate = parseInt(toDate);
-    var dayDiff = (convertToDate - convertFromDate+1);
-	
+	var date1 = new Date(fromDate);
+	var date2 = new Date(toDate);
+	var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+	var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
 	var typeName = leaveTypeName.replace(/ /g,"_");
-	var typeIdBalCount = $("#"+typeName+"Span").text();
-	if(((dayDiff > typeIdBalCount) || typeIdBalCount ==  0) && typeIdBalCount != "" ){
+	var typeIdBalCount = parseFloat($("#"+typeName+"Span").text());
+	if(((diffDays > typeIdBalCount) || typeIdBalCount ==  0) && typeIdBalCount != "" ){
 		errorMessage += "You Have Not Enough Leaves To Apply.";
 	}
 }
@@ -1158,7 +1157,7 @@ function validateDate(){
 		userId = '${SourceLeadWeb_userId}';
 	}
 	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
-		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId+"&errorMessage="+errorMessage, function(data) {
 			if(data !=null && data.validateType == 'SAMEDAY'){
 				errorMessage += data.errorMessage;
 				/* $("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
@@ -1173,10 +1172,11 @@ function validateDate(){
 // 				$("#ApplyLeave").removeAttr('disabled');
 // 				$(".comMask").fadeIn();	
 			}
-			
-			if(errorMessage != ""){
-		     	$("#ApplyLeave").attr('disabled','disabled');
-		    	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+			if(data.errorMessage != "N/A"){
+				if(data.validateType == 'SAMEDAY'){
+					$("#ApplyLeave").attr('disabled','disabled');
+				}
+		    	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+data.errorMessage+"</p> ");
 		    	$(".warMess").fadeIn();
 		    	$(".comMask").fadeIn();
 		    }else{

@@ -364,7 +364,7 @@ function requirementListPagination(url,sourceleadUrl){
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
-	            	  result = result +"<td><div class='tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+	            	  result = result +"<td><div class='tbldata-dotdot_140'><span  title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
 	            	  return result;
 	              }
 		     },{
