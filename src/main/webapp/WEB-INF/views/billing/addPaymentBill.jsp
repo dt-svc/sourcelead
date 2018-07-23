@@ -239,7 +239,7 @@ $('#paymentDate').datepicker({
 			 if(amount !=null && amount !="" && amount !="undefined"){
 			 var formData = getFormData("paymentForm");
 			 $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
-				 getInvoiceList();
+				 location.reload();
 		 });
 			 }else{
 				 alert("please select at least one record / Amount should not Empty");
