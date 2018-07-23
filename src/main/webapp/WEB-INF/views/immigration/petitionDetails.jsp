@@ -294,11 +294,14 @@
 								<label class="col-md-4"><span class="pull-left">Associate (Beneficiary)</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorney">
-								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
+								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup uiwidgetCustom">
 									<input type="text" class="form-control" name="candidateNameEmail" field-name="Associate" data-validation="required"
 										id="candidateNameEmail" placeholder="Select Beneficiary" value="${immigrationDTO.candidateNameEmail}"/>
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
+							<span class="col-md-2 noPad clearfix">
+							<a href=">" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							</span>	
 							</div>
 							</div>
 					</c:if>	
@@ -312,7 +315,8 @@
 									<input class="form-control" type="text" readonly name="candidateNameEmail" id="candidateNameEmail" value="${immigrationDTO.candidateNameEmail}"/>
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 						
-						</div>			
+						</div>	
+							
 					  </div>
 					</c:if>
 					<c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
@@ -325,9 +329,14 @@
 										id="candidateNameEmail" placeholder="Select Beneficiary"/>
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
+							<span class="col-md-2 noPad clearfix">
+							<a href="<c:url value="" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							</span>
 							</div>
 							</div>
+							
 					</c:if>
+					
 					</c:if>	
                                                                                                                                              
          <div class="form-group">
@@ -756,6 +765,12 @@
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				});
+			
+			$(document).on('change','#zipcode', function () {
+				if (this.value.match(/[^a-zA-Z0-9 ]/g)) {
+					this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '');
+				}
+			});
 </script>
 
    

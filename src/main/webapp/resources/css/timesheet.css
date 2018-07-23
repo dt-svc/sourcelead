@@ -6,12 +6,11 @@ body {
     outline:none;
     }    
 a { cursor:pointer;}
- 
 .timesheet_out {
     width:auto; padding:0px 0px 0px 0px; position:relative; top: inherit !important; background-color: #fff !important;
     }
 .timesheet_wrap {
-    background-color:#f5f5f5; padding:0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.3); border-radius:3px; min-height:300px;
+    background-color:#fff; padding:0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.3); border-radius:3px; min-height:300px;
     }
 .timesheet_head { 
     height:auto; position: relative;
@@ -62,10 +61,10 @@ a { cursor:pointer;}
     position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none;
     }
 .export_pipline ul {
- width:100px !important;
+ 	width:100px !important;
  }
  .export_pipline ul li:first-child{
- padding:3px 10px !important;
+ 	padding:3px 10px !important;
  }
 .export_pop, .export_pipline {
     width:100px; right:12px;
@@ -88,12 +87,8 @@ a { cursor:pointer;}
     }
 .approved_pop ul li label, .export_pop ul li label  {
     margin:0px; position:relative; top:-1px; left:5px; font-weight:500; float:left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 120px;
-    }  
-          
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 120px;
+    }      
 .approved_pop ul li b {
     position:absolute; background-color:#3081cb; padding:1px 3px; border-radius:3px; margin:0px 0px 0px 7px; right:10px;
     font-size:10px; font-weight:600; color:#FFF; line-height:13px; top:5px; text-shadow:0px 1px 1px rgba(0,0,0,0.5);
@@ -105,8 +100,7 @@ a { cursor:pointer;}
 .export_pop ul li i.fa-file-word-o{ color:#454545;}       
 .export_pop ul li:hover, .approved_pop ul li:hover {
     background-color:#efefef;
-    }      
-              
+    }            
 .timesheet_table {
     width:100%; font-size:14px; font-weight:400; max-height:430px; overflow-y:auto;
     }
@@ -159,12 +153,10 @@ a { cursor:pointer;}
 .timesheet_table table tr td b.proj_withdraw { background-color:#8c1fde; cursor:pointer;}
 .timesheet_table table tr td b a {
 	color: #fff !important;
-}
-       
+}     
 .pname {
     border-top:1px solid #ededed; padding:0px 5px !important;
-    }
-          
+    }      
 .timesheet_table table table tr td:first-child {
     width:13%; border:none; padding:6px 5px; border-top:1px solid #dadada;
     }
@@ -196,8 +188,7 @@ a { cursor:pointer;}
 .inline_field::-moz-placeholder { color: #333; }
 .inline_field:-ms-input-placeholder { color: #333; }
 .inline_field:placeholder { color: #333; }
-input.inline_field::-moz-placeholder { color: #333; }-->*/
-       
+input.inline_field::-moz-placeholder { color: #333; }-->*/ 
 .logPop p.jquery_form_error_message {
     font-size: 12px; color:red;
 }                 
@@ -227,7 +218,6 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 /*.timesheet_table table table div:hover .timesheet_comm {
     visibility:visible;
     }*/
-          
 .timesheet_bot {
     padding:15px 15px 15px 5px; border-top: 1px solid #f1f1f1;
     }
@@ -321,8 +311,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .timesheet_table_res {
     display:none;
     }
-#accordion {
-    }
+#accordion {}
 #accordion h2 {
     cursor:pointer; margin:0px 0px; padding:11px 15px; background-color:#375d81; color:#e6e6e6; text-shadow:0px 1px 0px rgba(0,0,0,0.2);
     font-size:14px; font-weight:500; border-bottom:1px solid #23496d;
@@ -331,8 +320,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 #accordion h2.res-active {
     background-image:url(../images/accor-arrow.png);
     }
-.time_cont_res {
-    }
+.time_cont_res {}
 .time_cont_res table {
     width:100%; font-size:14px; font-weight:500; color:#333;
     }
@@ -384,10 +372,10 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
           
     /*    Timesheet approval Css    */
 .timesheet_appr_wrap {
-    background-color: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+    background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
     }
 .timesheet_status_wrap {
-    background-color: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+    background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
     }  
 .timesheet_appr_wrap .timesheet_head {
     padding: 2px 0px; height:auto; 
@@ -420,15 +408,15 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .timesheet_appr_table table {
     width:100%; font-size:14px; font-weight:400; border:none; border-top:none;
     }
-.timesheet_appr_table table tr:nth-child(even) {background: #eef1fc;}
+.timesheet_appr_table table tr:nth-child(even) {background: #f6f6f6;}
 .timesheet_appr_table table tr:nth-child(odd) {background: #fff;}          
 .timesheet_appr_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:40px;
-    border-right:1px solid #4576a4;
+    background-color:#6C7686 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:40px;
+    border-right:1px solid #989898; font-size: 13px;
     }
 .timesheet_appr_table table tr th:last-child { text-align:center; border-left:none; }  
 .timesheet_appr_table table tr td {
-    color:#333; padding:7px 8px; border-left:1px solid #eae6e6; height:35px; font-weight:500; text-align:center;
+    color:#333; padding:7px 8px; border-left:1px solid #eae6e6; height:42px; font-weight:500; text-align:center; 
     }
 .timesheet_appr_table table tr td:last-child {
     width:120px; padding:7px 5px;
@@ -554,8 +542,8 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     border-top:3px solid #368ee0;
     }  
 .time_newhead_pop ul:after {
-    bottom: 100%; left: 15%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; border-color: rgba(136, 183, 213, 0);
-    border-bottom-color: #368ee0; border-width: 12px; margin-left: -15px;
+    bottom: 100%; left: 15%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-bottom-color: #368ee0; border-width: 12px; margin-left: -15px;
     }
 .time_newhead_pop_inn {
     max-height:360px; overflow:auto;
@@ -579,7 +567,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     /*    Project Css    */
        
 .project_wrap {
-    background-color: #f5f5f5; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+    background-color: #fff; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
     }
 .project_wrap .timesheet_head ul li {
     float:left; margin: 5px 0px 5px 5px;
@@ -612,12 +600,12 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_wrap_table table tr:nth-child(even) {background: #fff;}
 .project_wrap_table table tr:nth-child(odd) {background: #eef1fc;}         
 .project_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:40px;
-    border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
+    background-color:#6C7686 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:40px;
+    border-right:1px solid #989898 !important; -moz-border-right:1px solid #989898; font-size: 13px;
     }
 .project_wrap_table table tr th:last-child { text-align:center;}   
 .project_wrap_table table tr td {
-    color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:35px; font-weight:400;
+    color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:42px; font-weight:400;
     }
 .project_wrap_table table tr td:last-child {
     width:100px; padding:0px 10px; text-align:center;
@@ -683,15 +671,15 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     background-color:#ff4b4b;
     }  
 .proj_close {
-    width:60px; height:60px; background-color:#fff; box-shadow:0px 0px 3px rgba(0,0,0,0.4); left:-100px; top:40px; position:absolute; text-align:center;
-    cursor:pointer; border-radius:50%; background-image:url(../images/cancel.png); background-repeat:no-repeat; background-position:center;
-    background-size:20px;
+    width:60px; height:60px; background-color:#fff; box-shadow:0px 0px 3px rgba(0,0,0,0.4); left:-100px; top:40px; position:absolute;
+	text-align:center; cursor:pointer; border-radius:50%; background-image:url(../images/cancel.png); background-repeat:no-repeat;
+	background-position:center; background-size:20px;
     }      
 .project_side_wrap_inn h1 {
     margin:0px 0px; font-size:18px; font-weight:500; padding:15px;
     }  
 .project-tabs-menu, .canreq-tabs-menu { 
-	margin:0px 0px 5px 0px; padding:0px 0px 0px 10px; position:relative; top:0px; 
+	margin:0px; padding:0px 0px; position:relative; top:0px; 
 	} 
 .project-tabs-menu li, .canreq-tabs-menu li { 
 	float:left; list-style-type:none; 
@@ -700,7 +688,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 	position:relative; z-index:5; box-shadow: inset 0 -3px 0px 0px #0084bf; border: transparent; 
 	}     
 .project-tabs-menu li a, .canreq-tabs-menu li a {
-    padding:7px 15px; text-decoration:none; font-size:15px; color:#666; display:block;
+    padding:6px 15px 8px; text-decoration:none; font-size:15px; color:#666; display:block;
     }
 .project-tabs-menu .current a, .canreq-tabs-menu .current a {
     color:#1d6cb5;
@@ -776,8 +764,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     font-size:13px; color:#666; display:inline-block; padding:0px 0px 0px 10px;
     }
 .project_details textarea {
-    font-size:13px; font-weight:500; color:#454545; width:75%; resize:none; border:none;
-    margin:5px 0px 0px 0px; height:140px; padding:5px;
+    font-size:13px; font-weight:500; color:#454545; width:75%; resize:none; border:none; margin:5px 0px 0px 0px; height:140px; padding:5px;
     }
 .project_details textarea:focus {
     box-shadow:0px 0px 1px rgba(0,0,0,0.5);
@@ -813,7 +800,6 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_details_cta span b.proj_option { background-color:#3186d6;}
 .project_details_cta span b.proj_deactivate { background-color:#d94747;}
 .project_details_cta span b.proj_process { background-color:#d98f47;}      
-          
 .project_detfield {
     width:100%; padding:1px 5px; font-size:13px; border:none; overflow: hidden; background-color:transparent;
     font-weight:500; color:#454545;
@@ -841,13 +827,10 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 }  
 .project_tabs nav ul {
     float:right; margin:0px 0px; padding:8px 10px;
-}
-       
+}    
 .project_wrap nav ul {
     padding:10px; margin:0px; float:right;
-}
-       
-       
+}      
 ::-webkit-scrollbar {
     width: 8px; height: 8px; border-radius:2px;
 }
@@ -860,8 +843,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 ::-webkit-scrollbar-thumb {
     background: #368ee0;
 }
-          
-       
+     
     /*    Clients Css    */
        
 .clients_wrap {
@@ -925,17 +907,14 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .clients_wrap_table table tr:hover .client_show i {
     visibility:visible; opacity:1;
     }
-
-
 .clients_side_wrap, .submission_side_wrap {
-width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
-transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
-z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
+	width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
+	transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
+	z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
 }
 .clients_side_wrap.clients_side_wrap_active, .submission_side_wrap.submission_side_wrap_active {
-right:0px;
+	right:0px;
 }
-
 .clients_side_wrap_inn {
     position:relative; padding:10px;
     }
@@ -950,7 +929,7 @@ right:0px;
     }
 .clients_side_wrap select {
     appearance:none; -webkit-appearance:none; border:none; padding:3px 20px 3px 0px; width:auto;
-background:url("../images/arrow-d-g.png") no-repeat right center; background-size:10px;
+	background:url("../images/arrow-d-g.png") no-repeat right center; background-size:10px;
     }
 .clients_side_wrap .project_tabs_inn_table table tr th:last-child {
     text-align:center;
@@ -979,9 +958,6 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .clients_wrap nav ul {
     padding:10px 10px; margin:0px; float:right;
 }
-       
-          
-        /*    Clients Css    */
        
         /*    User summary css    */
        
@@ -1048,8 +1024,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 }
 .user_change_img:hover a {
     bottom:0px;
-}
-       
+} 
 .user_details_cta .project_details_cta {
     width:100%; float:none;
 }  
@@ -1081,14 +1056,11 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     appearance: none; -webkit-appearance: none; border: none; padding: 3px 30px 3px 10px; box-shadow: 0px 0px 1px rgba(0,0,0,0.5);
     width: 120px; background: url("../images/arrow-d-g.png") no-repeat 90% center; background-size: 10px;
 }
-.user_role select:focus {box-shadow: 0px 0px 2px rgba(54,142,224,1);}
-       
-       
+.user_role select:focus {box-shadow: 0px 0px 2px rgba(54,142,224,1);}   
 .timesheet_status_wrap .approved_pop { right:23px;}
        
         /*    User summary css    */
-       
-       
+            
 .user_summ_wrap_table {
     width:100%; max-height:440px; overflow-y:auto;
 }
@@ -1123,17 +1095,12 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }  
 .user_summ_wrap_table:focus {
     font-size:13px; overflow: hidden; background-color:#fff; box-shadow:0px 0px 1px rgba(0,0,0,0.5);
-    }
-          
+    }       
 .user_summ_wrap nav ul {padding:10px 10px; margin:0px; float:right;}
-.user_summ_wrap .project_tabs_inn_table { max-height:none; border:none; overflow:hidden;}  
-       
-       
+.user_summ_wrap .project_tabs_inn_table { max-height:none; border:none; overflow:hidden;}       
 .useredit { text-align:right; padding-bottom:10px;}
 .useredit a { font-size:13px; font-weight:500; color:#454545; padding:2px; margin:0px 0px 0px 15px;}
-.useredit a i { padding:0px 6px 0px 0px;}
-       
-       
+.useredit a i { padding:0px 6px 0px 0px;}      
 .user_summary_edit {
     position:absolute; width:100%; height:100%; background-color:#FFF; box-sizing:border-box; left:40px; top:0px;
     padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3); z-index: 1000;
@@ -1192,17 +1159,14 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 }
 .remove_user_pop textarea {
     width:92%; margin:3px 4% 4%; padding:5px 10px; height:100px;
-}
-       
+}   
 .user_summary_edit_cta input.us-btn {
     width:49%; background-color:#375d81; margin-top:10px; font-size:14px; font-weight:500; color:#fff; box-shadow:0px 0px 0px #000;
     }
 .user_summary_edit_cta input.us-btn:focus {
     box-shadow:0px 0px 0px #000;
 }  
-.user_summary_edit_cta input.us-btn.us-btn_a {background-color:#ff4b4b;}
-       
-       
+.user_summary_edit_cta input.us-btn.us-btn_a {background-color:#ff4b4b;}      
 .time_pop {
     position:absolute !important; bottom:35px; left:0px; display:none; margin:0px auto; width:310px; right:0px;
     z-index:800; top:80px; text-align:right; max-height:90px;
@@ -1271,8 +1235,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 }
 .timesheet_appr_table ul.table_details li + li + li {
     padding:15px 0px;
-}
-       
+}    
 .success_pop {
     position:fixed; text-align:left; margin:0px auto; left:0px; right:0px; top:54px; display:none;
     background-color:#34c244; z-index:10000; padding:3px 15px; width:400px; border-radius:4px; font-size:15px; font-weight:500;
@@ -1294,8 +1257,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 }  
 .remove_pop span {
     position:relative; top:-6px;
-}
-          
+}        
 .table_nodata {
     width:100%; background-color:#FFF; padding:30px 0px; text-align:center; border-top:1px solid #dedede;
     }
@@ -1311,16 +1273,15 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .table_nodata_inn span b {
     display:block; font-size:15px; font-weight:500; padding:10px 0px 0px 0px;
     }
-.downicon { display:inline-block !important; width:70%; float:left; clear:both;}                           
-       
+.downicon { display:inline-block !important; width:70%; float:left; clear:both;}                              
        
 /********************* Back To Top *******************/
        
 .backtotop {
-    width:30px; position:fixed; bottom:90px; right:10px; cursor:pointer; display: none; outline:none !important; z-index:30; text-align:center;
+    width:30px; position:fixed; bottom:90px; right:10px; cursor:pointer; display: none; outline:none !important; z-index:30;
+	text-align:center;
 }
 .backtotop img { width:100%;}
-       
 .user_badg {
     background-color:#FFF; padding:8px 0px 0px 0px;
     }
@@ -1329,8 +1290,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .user_badg p strong {
     float:right; margin-top:2px;
-    }
-          
+    }     
 .app_error_mes {
     width:300px; background-color:#FFF; border-radius:3px; position:fixed !important; z-index:1000; margin: 0px auto; left: 0px;
 	right: 0px;
@@ -1340,15 +1300,12 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .app_error_mes.app_error_mes_active {
     display: block; opacity: 1;
-    }          
-              
+    }                    
 .side_mask {
     position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.6); top:0px; left:0px; z-index:9999; display:none;
     background-image:"../images/cancel.png"; background-repeat:no-repeat; background-position:10% 40px;
-    }      
-          
+    }            
 .modal-backdrop { z-index:10400;}
- 
 .modal { z-index:105000;}
        
     /*    Vendors Css    */
@@ -1382,8 +1339,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .project_tabs_inn_table.vendor_wrap_inn_table tr th {
     text-align: center;
-    }
-       
+    }   
 .vendorfild {
     border:none; border-bottom:1px solid #bdbdbd; background-color: transparent; padding:3px 5px; width:55px;
     transition:0.3s all ease-in-out; -webkit-transition:0.3s all ease-in-out; -moz-transition:0.3s all ease-in-out;
@@ -1452,8 +1408,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .vendor_wrap_inn_table table tr td div .fa-pencil {
     display:inline-block; color:#368ee0; padding:0px 10px 0px 0px; font-size:16px;
-    }  
-          
+    }      
 .side_mask .proj_close {
     width:60px; height:60px; background-color:#fff; box-shadow:0px 0px 3px rgba(0,0,0,0.4); text-align:center; position:relative;
     cursor:pointer; border-radius:50%; background-image:url(../images/cancel.png); background-repeat:no-repeat; background-position:center;
@@ -1472,11 +1427,12 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .candidate_wrap_table table tr:nth-child(even) {background: #fff;}
 .candidate_wrap_table table tr:nth-child(odd) {background: #eef1fc;}           
 .candidate_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 12px; height:40px;
-    border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
+    background-color:#6C7686 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 12px; height:40px;
+    border-right:1px solid #989898 !important; -moz-border-right:1px solid #989898; font-size: 13px;
     }  
 .candidate_wrap_table table tr td {
-    color:#333; padding:0px 10px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px;
+    color:#333; padding:0px 10px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6;
+	font-weight:400; height:42px;
     }  
 .candidate_wrap_table table tr td div {
     position:relative;
@@ -1499,11 +1455,9 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .candidate_wrap_table tr:hover .proj_show i {
     visibility:visible; opacity:1;
     }          
-          
-          
+    
 /*    Requirement Css    */
-          
-          
+    
 .require_wrap_table {
     width:100%; overflow-y:auto;
     }
@@ -1514,11 +1468,13 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .require_wrap_table table tr:nth-child(even) {background: #fff;}
 .require_wrap_table table tr:nth-child(odd) {background: #eef1fc;}         
 .require_wrap_table table tr th {
-    background-color:#6C7686 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 9px !important; height:40px; border-right:1px solid #989898 !important; -moz-border-right:1px solid #4576a4;
+    background-color:#6C7686 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 9px !important; height:40px;
+	border-right:1px solid #989898 !important; -moz-border-right:1px solid #4576a4;
 	vertical-align: inherit !important; font-size: 13px;
     }  
 .require_wrap_table table tr td {
-    color:#333; padding:0px 10px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:42px; min-height: 35px;
+    color:#333; padding:0px 10px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400;
+	height:42px; min-height: 35px; line-height: normal !important;
     }  
 .require_wrap_table table tr td div {
     /*position:relative;*/
@@ -1726,12 +1682,6 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     padding: 0px 5px 0px 0px; display: inline-block; color: #368ee0;
     }
 .clients_wrap_table table tr td div a .fa-edit { padding:0px;}         
-          
-              
-          
-
-       
-       
        
     /*   pagination styles   */
           
@@ -1777,9 +1727,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }
 .dataTables_wrapper .dataTables_paginate {
     color: #333 !important; padding: 8px 15px 8px 0px !important;
-    }  
-          
-          
+    }      
 .clients_wrap_table .fa-check, .vendor_wrap_inn_table .fa-check  {
     font-size:16px; padding:2px 2px; cursor:pointer; margin:0px 3px; color:#30c453;
     }
@@ -2224,8 +2172,8 @@ margin-bottom:15px !important;
     border:none;
     }      
 .timesheet_tableNew table tr th {
-    background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center;
-    width:10%; padding:4px 5px; border-left: 1px solid #447eb4; font-size: 12px; height: 38px;
+    background-color:#6C7686  !important; font-weight:400; color:#FFF; text-align:center;
+    width:10%; padding:4px 5px; border-left: 1px solid #989898; font-size: 12px; height: 38px;
     }
 .timesheet_tableNew table tr th:first-child {
     width:17%; border-left: none;
@@ -2234,7 +2182,7 @@ margin-bottom:15px !important;
     display:block; font-style:normal; font-size:12px; line-height:14px;
     }
 .timesheet_tableNew table tr td {
-    width:10%; border-left: 1px solid #f2f2f2; padding:5px 5px; border-bottom: 1px solid #f2f2f2; height: 38px;
+    width:10%; border-left: 1px solid #f2f2f2; padding:5px 5px; border-bottom: 1px solid #f2f2f2; height: 42px;
     }
  
 .timesheet_tableNew table tr td b {
@@ -2293,7 +2241,7 @@ margin-bottom:15px !important;
 	font-size: 14px; display: inline-block; font-weight: 400; color: #e63535; padding: 0px 0px 0px 5px; position: relative; top: 1px;
 }
 .commentFile table {
-	width: 100%; border: 1px solid #ededed; background-color: #fff;
+	width: 100%; border: 1px solid #ededed; background-color: #f2f2f2;
 }
 .commentFile table .btn {
 	padding: 6px 18px;
@@ -6452,32 +6400,38 @@ position: absolute;
 /*  Immigration CSS */
 
 .immigrationWrap {
-	padding: 16px;
+	padding: 16px; background-color: #fff;
 }
 .immigraCountHead {
 	background-color: #fff;
 }
 .immigraCountHead ul {
-	padding: 0px; margin: 0px 0px;
+	padding: 0px 0px; margin: 0px 0px 2px 0px; overflow: auto; width: 100%; white-space: nowrap; border-bottom: 1px solid #ededed;
 }
 .immigraCountHead ul li {
-	list-style-type: none; float: left; width: 160px; background-color: #fff; margin: 0px 14px 14px 0px; border-radius: 2px;
-	box-shadow: 0px 0px 2px rgba(0,0,0,0.1); border-top: 4px solid #b6b6b6; padding: 8px 0px;
+	list-style-type: none; width: 134px; background-color: #fff; margin: 0px 0px 0px 0px; display: inline-block;
+	border-top: 2px solid #b6b6b6; padding: 7px 15px; border-right: 1px solid #ededed;
 }
 .immigraCountHead ul li:first-child + li {
-	border-top: 4px solid #67aff2;
+	border-top: 2px solid #67aff2;
 }
 .immigraCountHead ul li:first-child + li + li {
-	border-top: 4px solid #ffaf79;
+	border-top: 2px solid #ffaf79;
 }
 .immigraCountHead ul li:first-child + li + li + li {
-	border-top: 4px solid #74d874;
+	border-top: 2px solid #74d874;
 }
 .immigraCountHead ul li:first-child + li + li + li + li {
-	border-top: 4px solid #ff8686;;
+	border-top: 2px solid #ff8686;
 }
 .immigraCountHead ul li:first-child + li + li + li + li + li{
-	border-top: 4px solid #dcd740;;
+	border-top: 2px solid #ccc746;
+}
+.immigraCountHead ul li:first-child + li + li + li + li + li + li{
+	border-top: 2px solid #e00e16;
+}
+.immigraCountHead ul li:first-child + li + li + li + li + li + li + li{
+	border-top: 2px solid #5de8cc;
 }
 .immigraCountHead ul li span {
 	float: left; display: block; width: 50px; text-align: center;
@@ -6486,26 +6440,34 @@ position: absolute;
 	font-size: 22px; color: #787878; display: inline-block; padding: 10px 0px 0px 0px;
 }
 .immigraCountHead ul li p {
-	float: left; display: block; width: 100px; margin: 0px 0px; padding: 0px 0px; font-size: 14px; font-weight: 400;
-	color: #666;
+	float: left; display: block; margin: 0px 0px; padding: 0px 0px 0px 0px; font-size: 13px; font-weight: 400; color: #666;
 }
 .immigraCountHead ul li p b {
-	display: block; font-size: 18px; font-weight: 500; padding: 2px 0px 0px 0px; color: #666;
+	display: block; font-size: 18px; font-weight: 500; padding: 5px 0px 0px 0px; color: #666;
 }
-.immigraCountHead ul li:first-child + li p b {
+.immigraCountHead ul li a {
+	color: #666;
+}
+.immigraCountHead ul li:first-child + li a {
 	color: #408dd5;
 }
-.immigraCountHead ul li:first-child + li + li p b {
+.immigraCountHead ul li:first-child + li + li a {
 	color: #e08243;
 }
-.immigraCountHead ul li:first-child + li + li + li p b {
+.immigraCountHead ul li:first-child + li + li + li a {
 	color: #59a459;
 }
-.immigraCountHead ul li:first-child + li + li + li + li p b {
+.immigraCountHead ul li:first-child + li + li + li + li a {
 	color: #e96060;
 }
-.immigraCountHead ul li:first-child + li + li + li + li + li p b {
-	color: #dcd740;
+.immigraCountHead ul li:first-child + li + li + li + li + li a {
+	color: #a29e22;
+}
+.immigraCountHead ul li:first-child + li + li + li + li + li + li a {
+	color: #e00e16;
+}
+.immigraCountHead ul li:first-child + li + li + li + li + li + li + li a {
+	color: #2fb59a;
 }
 .immigraInnWrap {
 }
@@ -8236,6 +8198,38 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 	background-color:#34c244;
 }
 
+.newTagsWrap {
+	margin: 0px 0px 10px 0px; padding: 10px; border: 1px solid #d4d4d1; background-color: #fff;
+}
+.newTagsWrap h2 {
+	padding: 2px 0px 8px 0px; margin: 0px 0px; font-size: 15px; font-weight: 500; color: #333;
+}
+.newTagsWrap ul {
+	padding: 0px 0px; margin: 0px 0px;
+}
+.newTagsWrap ul li {
+	list-style-type: none; float: left; padding: 0px 10px 0px 0px; position: relative;
+}
+.tagsWrap {}
+.tagsWrap .chosen-choices {
+	border:none !important; padding: 0px 0px !important; box-shadow: 0px 0px 0px rgba(0,0,0,0);
+}
+.tagsWrap .search-choice {
+	height: 28px; margin: 0px 6px 6px 0px !important; padding: 6px 25px 5px 7px !important;
+	border: 1px solid #c1c0c0 !important; background: #fff;
+}
+.tagsWrap .search-choice-close {
+	top: 7px !important; background: url(../images/chosen-sprite2.png) -42px 1px no-repeat !important;
+}
+.tagsWrap .search-field input[type=text] {
+	height: 28px !important; border: 1px solid #ccc !important; width: 100px !important; border-radius: 2px;
+	padding: 5px 10px !important;
+}
+.tagsWrap .search-field input:focus {
+	height: 28px !important; border: 1px solid #ccc !important; width: 200px !important; border-radius: 2px;
+	padding: 5px 10px !important;
+}
+
 
 /*  New Css File  */
 
@@ -8403,17 +8397,20 @@ max-width: 100% !important;
 	/*   Reports   */
 	
 .reportHead {
-	background-color: #fff;
-}	
+	background-color: #fff; border-bottom: 1px solid #e2e2e2;
+}
+.reportHead.reportHeadDataTab {
+	padding: 0px 240px 0px 0px;
+}
 .reportHead ul {
-	margin: 0px 0px; padding: 8px 0px;
+	margin: 0px 0px; padding: 10px 0px;
 }
 .reportHead ul li {
-	list-style-type: none; float: left; margin: 0px 12px 0px 0px; position: relative; padding: 0px 0px;
+	list-style-type: none; float: left; margin: 0px 12px 0px 0px; position: relative; padding: 0px 0px; height: 32px;
 }
 .repSearchBar {
-	width: 220px; height: 32px; border: 1px solid #e2e2e2; background-color: #fff !important; border-radius: 4px;
-	padding: 0px 40px 0px 10px; font-size: 12px; color: #303345;
+	width: 220px !important; height: 32px; border: 1px solid #e2e2e2 !important; background-color: #fff !important; border-radius: 4px;
+	padding: 0px 40px 0px 10px !important; font-size: 12px; color: #303345; 
 	box-sizing: border-box; margin: 0px 0px; font-family: roboto, arial;
 }
 .repSearchIcon {
@@ -8599,11 +8596,10 @@ max-width: 100% !important;
 }
 /*  Job fares  */
 .multiJob {
-    background-color: #f9f9f9; padding: 6px 10px 10px;
+    background-color: #f9f9f9; padding: 6px 10px 10px; margin: 8px 0px;
 }
 .multiJob_detail {
-    margin: 10px;
-    width: 48%;
+    margin: 10px; width: 48%;
 }
 .multiJobMain {
     margin: 18px 0px;
@@ -8632,6 +8628,10 @@ max-width: 100% !important;
 .events .eventCalendar {
     float: left; width: auto; padding: 2px 10px 0 10px; color: #607d8b;
 }
+.close_multi_job {
+    position: absolute; right: 2px; top: 2px; width: 18px; height: 18px; border-radius: 50%; font-size: 12px; color: #FF9393;
+    text-align: center; line-height: 14px; cursor: pointer;
+}
 
 #jobFairCalendar .ui-widget.ui-widget-content, #scheduleCalendar .ui-widget.ui-widget-content   {
     border: 1px solid #dedfe4; box-shadow: none; width: 100%; border-radius: 0;
@@ -8658,8 +8658,7 @@ max-width: 100% !important;
 }
 
 .dashboard_fair_table {
-    width: 100%;
-    padding: 10px;
+    width: 100%; padding: 10px;
 }
 .dashboard_fair_table p {
     padding: 2px 0px;
@@ -8670,7 +8669,6 @@ max-width: 100% !important;
 .hide_filters {
     opacity: 0;
 }
-
 .newExpIcon {
 	padding: 5px 7px !important; font-size: 13px;
 }
@@ -8702,18 +8700,31 @@ max-width: 100% !important;
 .reportHead .action-pop a:hover {
 	background-color: #f1f1f1;
 }
-
 .filtIcon {
 	width: 34px; height: 32px; display: block; background: url("../images/filter.svg"); background-repeat: no-repeat;
 	background-position: center; background-size: 34px; cursor: pointer;
 }
 .refeIcon {
 	width: 40px; float:left; height: 32px; display: block; background: url(../images/refresh.svg); background-repeat: no-repeat;
-    background-position: center; background-size: 24px; cursor: pointer; background-color: #e6f3f0; border-radius: 3px; margin: 0px 12px 0px 0px;
+    background-position: center; background-size: 24px; cursor: pointer; background-color: #e6f3f0;
+	border-radius: 3px; margin: 0px 12px 0px 0px;
+}
+.columIcon {
+	width: 40px; float:left; height: 32px; display: block; background: url(../images/column.svg); background-repeat: no-repeat;
+    background-position: center; background-size: 20px; cursor: pointer; background-color: #f5f5f5;
+	border-radius: 3px; margin: 0px 12px 0px 0px;
 }
 .overIcon {
 	width: 34px; height: 32px; display: block; background: url("../images/overflow.svg"); background-repeat: no-repeat;
 	background-position: center; background-size: 34px; cursor: pointer;
+}
+.shareIcon {
+	width: 34px; height: 32px; display: inline-block; background: url("../images/share.svg"); background-repeat: no-repeat;
+	background-position: center; background-size: 20px; cursor: pointer;
+}
+.sendIcon {
+	width: 34px; height: 32px; display: inline-block; background: url("../images/paper-plane.svg"); background-repeat: no-repeat;
+	background-position: center; background-size: 22px; cursor: pointer;
 }
 .newActPop {
 	position: absolute;  top: 36px; right: -10px;  z-index: 100; display: none;
@@ -8736,7 +8747,6 @@ max-width: 100% !important;
 #jobFairPagination_wrapper .buttons-excel, #jobFairPagination_wrapper .buttons-pdf {
     display: none;
 }
-
 .dataSeaNew, .dataSeaTop {}
 .dataSeaNew .dataTables_filter {
     margin-top: 10px; margin-bottom: 3px;
@@ -8762,12 +8772,21 @@ max-width: 100% !important;
 .content-wraper {
 	background-color: #eaeaea;
 }
-
-
-
-
-
-
+.heiNew {
+	height: 32px !important;
+}
+.refreIcon .jquery_form_error_message {
+	padding: 2px 0px !important;
+}
+.pad15 {
+	padding: 5px 15px 15px 15px;
+}
+.count {
+	display: inline-block; padding: 0px 0px 0px 2px;
+}
+.invoiCount .count {
+    display: block !important;
+}
 
 
 

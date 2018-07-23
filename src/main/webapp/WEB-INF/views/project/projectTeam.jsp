@@ -456,7 +456,7 @@ function filterStatus() {
 				                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
 				                		   
 				                		 if(opt.rateHistroyList == 'Y'){
-				                			 result = result + '<span title="Edit Employee"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+				                			 result = result + '<span title="Payrate History"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
 				                		  }  
 				                		     result = result + '<span title="Edit Employee"><i class="glyphicon glyphicon-edit" onClick="editProjectAssignedMember('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
 				                		 '</sec:authorize>';
@@ -999,7 +999,6 @@ function loadProjectMembersDetails(data,candidateName){
 				changeMonth: true,
 				changeYear: true, 
 				minDate:projectStartDate,
-				 
 		        onClose : function(selected) {
 		        	var dt = $(this).datepicker('getDate', '+1d');
 					$("#projectStartDate").datepicker("option", "minDate", dt);
@@ -1009,18 +1008,38 @@ function loadProjectMembersDetails(data,candidateName){
 			});
 	  }
 	  
-		$("#projectEndDate").datepicker({
-			dateFormat : finalDateFormatAssignEmpUpdate,
-			changeMonth: true,
-			changeYear: true, 
-			minDate: projectStartDate,
-	        onClose : function(selected) {
-	        	 var dt = $(this).datepicker('getDate', '-1d');
-					$("#projectEndDate").datepicker("option", "maxDate", dt);
-					removeEndDateValidation();
-					getEstimatedHours();
-			}
-		});
+	  if(data.memberEndDate != null && data.memberEndDate != "" && data.memberEndDate != "undefined"){
+		  $("#projectEndDate").datepicker({
+				dateFormat : finalDateFormatAssignEmpUpdate,
+				changeMonth: true,
+				changeYear: true, 
+				maxDate:data.memberEndDate,
+				minDate: projectStartDate,
+		        onClose : function(selected) {
+// 		        	 var dt = $(this).datepicker('getDate', '-1d');
+// 						$("#projectEndDate").datepicker("option", "maxDate", dt);
+						removeEndDateValidation();
+						getEstimatedHours();
+				}
+			});
+	  }else{
+			  $("#projectEndDate").datepicker({
+					dateFormat : finalDateFormatAssignEmpUpdate,
+					changeMonth: true,
+					changeYear: true, 
+					minDate: projectStartDate,
+			        onClose : function(selected) {
+//	 		        	if(projectEndDate != null && projectEndDate != "" && projectEndDate != "undefined"){
+//	 		        		var dt = $(this).datepicker('getDate', '-1d');
+//	 	 						$("#projectEndDate").datepicker("option", "maxDate", dt);
+//	 		        	}
+						removeEndDateValidation();
+						getEstimatedHours();
+					}
+				});
+		
+	  } 
+		
 		
 		$("#billRateEstimatedDate").datepicker({
 			dateFormat : finalDateFormatAssignEmpUpdate,

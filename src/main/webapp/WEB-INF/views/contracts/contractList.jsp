@@ -148,7 +148,7 @@ padding: 2px 300px 2px 0px;
 <li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList('main');">Rejected (${contractsCount.totalRejectedCount})</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
 <div class="conBtn">
-  <span onclick="addContracts();"><i class="fa fa-plus mr10"></i>Add Contracts</span>
+  <span onclick="addContracts();">+ Contracts</span>
 <%--   <ul>  
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
 	  <li><a href="<c:url value="/addNewContract" />"><i class="fa fa-caret-right"></i>New Contract</a></li>

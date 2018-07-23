@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class JobFairDTO extends SearchDTO implements Serializable {
@@ -13,6 +14,7 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 
 	private long id;
 	private String uuid;
+	private String generatedId;
 	private String name;
 	private String budget;
 	private String description;
@@ -34,6 +36,69 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private String dateFormat;
 	private List<String> requirementFairDates;
 	private long jobFairRequirementId;
+	private long applicantCount;
+	private long offeredCount;
+	
+	private long createdByUserId;
+	private Date createdDate;
+	private long updatedByUserId;
+	private Date updatedDate;
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
+
+	public long getCreatedByUserId() {
+		return createdByUserId;
+	}
+
+	public void setCreatedByUserId(long createdByUserId) {
+		this.createdByUserId = createdByUserId;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public long getUpdatedByUserId() {
+		return updatedByUserId;
+	}
+
+	public void setUpdatedByUserId(long updatedByUserId) {
+		this.updatedByUserId = updatedByUserId;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public long getApplicantCount() {
+		return applicantCount;
+	}
+
+	public void setApplicantCount(long applicantCount) {
+		this.applicantCount = applicantCount;
+	}
+
+	public long getOfferedCount() {
+		return offeredCount;
+	}
+
+	public void setOfferedCount(long offeredCount) {
+		this.offeredCount = offeredCount;
+	}
 
 	public long getJobFairRequirementId() {
 		return jobFairRequirementId;

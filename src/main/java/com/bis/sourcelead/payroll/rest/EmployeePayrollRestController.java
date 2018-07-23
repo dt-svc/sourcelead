@@ -351,10 +351,11 @@ public class EmployeePayrollRestController {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		
-		List<UserPayroll> payrollReportList = employerPayrollCostService.runPayrollCycle(orgLocation,user,jsonObj);
+		List<UserPayroll> payrollReportList = employerPayrollCostService.runPayrollCycle(orgLocation,user,isGlobalAccess,jsonObj);
 		Collections.sort(payrollReportList, new Comparator<Object>() {  
             @Override  
             public int compare(Object obj1, Object obj2) {  

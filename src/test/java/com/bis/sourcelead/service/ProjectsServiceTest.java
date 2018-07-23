@@ -284,7 +284,7 @@ public class ProjectsServiceTest {
 				            	 flag = false;
 				             }*/
 							
-						    if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getId()) && (flag)){
+						    if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId()) && (flag)){
 						    	finalTFMap.put(key, value);
 							}
 						}

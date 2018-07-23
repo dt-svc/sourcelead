@@ -103,7 +103,7 @@ height: 100%;
 }
 .main-header {
 /*max-height: 100px;  z-index: 1030; background: #368ee0; box-shadow: 1px 1px 3px #00105a; position: fixed; width: 100%;*/
-background-size: 15%; background-image: url(../images/sl-tp.png); background-repeat: repeat-x; min-height: 52px;
+background-size: 15%; min-height: 52px;
 background-position: 30px; background-color: #368ee0; z-index: 9999; position: fixed; max-height: 100px; width: 100%; 
 }
 .main-header span.logo {
@@ -439,7 +439,7 @@ position: relative; display: block; padding: 0 15px !important; transition: all 
 .side-bar {
 background-color: #375d81; left: 0; min-height: 100%; max-height: 100%; position: fixed; top: 50px; width: 190px; z-index: 810;
 padding-top: 0px; overflow-x:hidden; overflow-y:auto; /*transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
--webkit-transition: 0.3s ease-in-out;*/ padding-bottom: 125px; 
+-webkit-transition: 0.3s ease-in-out; padding-bottom: 125px; */
 }
 /* hide time sheet */
 .timesheet-menu, .backoffice-menu, .associates-menu, .billing-menu {
@@ -509,7 +509,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover, ul.associates-menu 
  width: 50px; overflow: inherit;
 }
 .side-bar-inner {
- width: 190px;
+ width: 190px; padding-bottom: 125px;
 }
 .side-bar .user-panel {
 background: url(../images/userpanel-bg.jpg) no-repeat 0 0; width: 230px; height: 80px; padding: 10px 15px; color: #fff;
@@ -1300,7 +1300,7 @@ padding: 10px; margin: 0; margin-bottom: 15px; font-size: 18px; color: #ff8f00;
 	padding-left: 35px;
 }
 .side-bar .side-nav ul li .fa-fw {
-float: right; position: relative; top: 10px; right: 10px;
+float: right; position: relative; top: 10px; right: 20px;
 }
 .side-nav ul li ul li a::before {
 	content: '\f22d'; font-family: fontawesome; padding-right: 5px; color: #f0ad4e;
@@ -5208,8 +5208,24 @@ div.inputCustom {
     cursor: pointer; color: #787878;
 }
 .menuWidget ul.menupop {
-    position: absolute; top: -20px; right: 10px; padding: 5px 10px; border: 1px solid #ededed; background: #fff;
-    box-shadow: -1px 1px 2px #333; display: none;  z-index:9px;
+	position: absolute; top: auto !important; left: 110px !important; padding:0px; border: 1px solid #ededed; background: #fff;
+    display: none; min-width: 150px; box-shadow:2px 2px 2px #bdbdbd; margin-top: -22px;
+    z-index:99 !important; border-radius: 4px;
+}
+.menuWidget ul.menupop::before {
+    content:""; right: 100%; top: 2%; border: solid transparent; content: " ";
+    height: 0; width: 0; position: absolute; pointer-events: none; border-color: rgba(194, 225, 245, 0);
+    border-right-color: #337ab7; border-width: 10px; margin-top: 0px;
+}
+.menuWidget ul.menupop .close-div.closediv-small {
+    background: none !important; border: none !important; right: 2px !important; top:2px !important; color: #909090;
+    left: auto !important
+}
+.divPadding {
+    padding: 5px 10px;
+}
+.menuWidget ul.menupop li a {
+color:#909090;    
 }
 .menuWidget ul.menupop.menupop_1
 {
@@ -5220,13 +5236,16 @@ div.inputCustom {
 	width:450px;
 }
 .menuWidget ul li{
-    cursor: pointer; color: #263238;
+    cursor: pointer; color: #263238; text-align: left; padding: 10px 5px;
 }
 .menuWidget ul li:hover{
     color: #455a64;
 }
-.menuWidget ul li{
-    border-right: 1px solid #90a4ae;
+.menuWidget ul li {
+ border-bottom: 1px dotted #ededed;
+}
+.menuWidget ul li:hover a {
+    color: #368ee0;
 }
 .menuWidget ul li:last-child{
     border-right: none;
@@ -9178,7 +9197,15 @@ padding: 10px; border: none;
 .customEvents-Calendar  .ui-icon-circle-triangle-e {
     background-position: -32px 0px;
 }
-
+.menuWidget ul li:hover a, .menuWidget ul.menupop li a:hover i {
+    color: #368ee0 !important;
+}
+.nestedTable table thead {
+	background: #6C7686; color: #fff;
+}
+.nestedTable table tr td, .nestedTable table tr th {
+	text-align:center; vertical-align: middle;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

@@ -114,10 +114,11 @@ $(document).ready(function(){
 		 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
 			 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
 		 '</sec:authorize>';
-		 
+
 		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
 		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
 		 '</sec:authorize>';
+
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
 		 
@@ -1618,6 +1619,7 @@ $("#editRoleDetailsList").empty();
 			    var designationOtherType = "";
 			    var globalChecked = '';
 			    var designation = '';
+			    var disabled = '';
 			    
 			    if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
      			 	designation = json.designation;
@@ -1626,6 +1628,13 @@ $("#editRoleDetailsList").empty();
 			    if(json.isGlobal == 'Y'){
 			    	globalChecked = 'checked';
 			    }
+			  
+			    if(json.isGlobal != 'Y'){
+			    	if(json.isExistedOrgGlobalUser == 'Y'){
+				    	disabled = 'disabled';
+				    }
+			    }
+			    
 			    
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					employeeId = json.employeeId;
@@ -1986,7 +1995,7 @@ $("#editRoleDetailsList").empty();
 					result = result + '<div class="clearfix">';
 					result = result + '<div class="checkbox checkBox">';
 					result = result + '<label>';
-					result = result + '<input type="checkbox" value="Y" '+globalChecked+' name="isGlobalAccess">';
+					result = result + '<input type="checkbox" value="Y" '+globalChecked+' '+disabled+' name="isGlobalAccess">';
 					result = result + 'Is Global Manager</label>';
 					result = result + '</div>';
 					result = result + '</div>';

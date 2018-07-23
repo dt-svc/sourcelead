@@ -303,7 +303,7 @@
 				 $("#scoreEducationType").val('');
 			 }
 		}
-		$(document).on('change','#specialization', function () {
+		$(document).on('change','#specialization, #institute', function () {
 			if (this.value.match(/[^a-zA-Z0-9 ]/g)) {
 				this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '');
 			}

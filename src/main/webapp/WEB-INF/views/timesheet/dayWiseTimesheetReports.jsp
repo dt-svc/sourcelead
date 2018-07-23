@@ -35,7 +35,7 @@ $( document ).ready(function() {
               <div class="clearfix">
                 <select class="form-control sel" onchange="getSelectedProjectDetailsList();" id="projectType">
                   <option>Select</option>
-                  <option selected>All</option>
+                  <option value="all" selected>All</option>
                   <option value="client">Client</option>
                   <option value="internal">Internal</option>
                 </select>
@@ -74,7 +74,6 @@ $( document ).ready(function() {
               <label class="clearfix">Emp Type</label>
               <div class="clearfix">
                 <select class="form-control chosen-select" id="designationType" name="employmentType" data-placeholder="Select Emp Type" multiple field-name="Employment type" onchange="getProjectMemberFromProjectId();">
-	                 <option >--Select Employment type--</option>
 	                 <option value="C2C">C2C</option>
 	                 <option value="C2C-1099">C2C-1099</option>
 	                 <option value="W-2">W-2</option>
@@ -89,23 +88,13 @@ $( document ).ready(function() {
              <div class="col-md-5">
               <label class="clearfix">By Associate</label>
               <div class="clearfix">
-                <select class="form-control chosen-select" id="projectMemberList" field-name="Associate" name="projectMemberListId" data-placeholder="Select Associate" multiple></select>
+                <select class="form-control chosen-select" id="projectMemberList" field-name="Associate" name="projectMemberListId" data-placeholder="Select Associate" multiple onclick="test();"></select>
               </div>
               <div>
               
               </div>
             </div>
-             <!-- <div class="col-md-5">
-              <label class="clearfix">Export to</label>
-              <div class="clearfix">
-                <select class="form-contro sel" id="exportType">
-                  <option value="pdf">PDF</option>
-                  <option value="excel">Excel</option>
-                </select>
-              </div>
-            </div> -->
         <div class="clearfix"></div>
-												
       </div>
 </div>
 </div>
@@ -131,14 +120,13 @@ $( document ).ready(function() {
 	 <jsp:include page="dayEntriesReportList.jsp"></jsp:include> 
 </div>
 
-
 <script>
 function validateDayEntriesReport(){
 	var projectIds  = $('#projectList').val();
 	var projectMemberList = $('#projectMemberList').val();
 	var templateType = "";
 	
-	if((projectIds == null || projectIds =='' || projectIds=='undefined')){
+	if((projectIds == null || projectIds =='' || projectIds=='undefined') && (projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined')){
 		projectIds = $("#projectList option[name='all']").val();
 		$('#projectList').val(projectIds);
 	}
@@ -201,7 +189,7 @@ function datePickeerTest(){
 				changeYear: true, 
 				onSelect : function(selected) {
 					var dt = $(this).datepicker('getDate', '+1d');
-					dt.setDate(dt.getDate() + 1);
+					dt.setDate(dt.getDate());
 					$("#toDate").datepicker("option", "minDate", dt);
 				}
 			});
@@ -211,7 +199,7 @@ function datePickeerTest(){
 				changeYear: true, 
 				onSelect : function(selected) {
 					var dt = $(this).datepicker('getDate', '-1d');
-					dt.setDate(dt.getDate() - 1);
+					dt.setDate(dt.getDate());
 					$("#fromDate").datepicker("option", "maxDate", dt);
 				}
 			});
@@ -246,11 +234,14 @@ function getProjectListBasedOnStartAndEndDate(){
             type: "POST",
             success: function (json) {
             	var output = "";
-            	$.each(json, function(i, item) {
-            		output = output + "<option value='" +item.id+ "'>"+item.projectName+"</option>";
-            		allProjectId.push(item.id);
-        		});
-            	output = output + "<option value='" +allProjectId+ "' name='all'></option>";
+            	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.projId+ "' name='all'>"+opt.projectName+"</option>";
+		        		
+				}
+            	
+            	
             	$("#projectList").empty();
                 $("#projectList").append(output);
                 $('#projectList').trigger("chosen:updated");
@@ -283,7 +274,6 @@ function getProjectMemberFromProjectId(){
         type: "POST",
         success: function (result) {
         	var output = "";
-        	output = output + "<option>--select Associate--</option>";
         	if(result != null && result !='' && result !='undefined'){
         		$.each(result, function(i, item) {
             		output = output + "<option value='" +item.masterCandidateId.id+ "'>"+item.candidateName+"</option>";
@@ -330,12 +320,12 @@ function getAllUserListBasedOnOrgLocationId(){
         url: sourceleadUrl + "/getAllUserListBasedOnOrgLocationId",
         type: "POST",
         success: function (obj) {
-        	var output = "";
-        	output = output + "<option>--select Associate--</option>";
+        	 var output = "";
+        	 /*output = output + "<option>--select Associate--</option>"; */
         	if(obj != null && obj !='' && obj !='undefined'){
         		$.each(obj, function(i, item) {
         			if(item.candidateName != null && item.candidateName !='' && item.candidateName !='undefined'){
-        				output = output + "<option value='" +item.id+ "'>"+item.candidateName+"</option>";
+        				output = output + "<option value='" +item.masterCandidateId.id+ "'>"+item.candidateName+"</option>";
         			}
             		
         		});
@@ -360,14 +350,14 @@ var validationSettings = {
 
 <script>
 function clearDate(requestFrom){
-	if(requestFrom == 'form'){
+	if(requestFrom == 'from'){
 		$('#fromDate').val('');
+		$('#toDate').val('');
 	}else if(requestFrom == 'to'){
 		$('#toDate').val('');
 	}
 }
 </script>
-
 <jsp:include page="../masterFooter.jsp" />
  
       

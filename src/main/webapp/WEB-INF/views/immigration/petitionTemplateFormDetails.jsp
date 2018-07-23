@@ -127,9 +127,9 @@
                                             <div class="col-md-2 paddingRight">
 											<select class="form-control" name="immigrationFormList[${rows.count-1}].formCategory" onchange="validationFormName($(this),${rows.count-1})" id="formCategory${rows.count-1}" title='Form Category' field-name="Select Form Category" data-validation="required">
 													<option value="" selected>--Select Form Type--</option>
-													<option value="PetitionerCategory" >Petitioner</option>
-												    <option value="Document Type" >Beneficiary</option>
-													<option value="AttorneyCategory" >Attorney</option>
+													<option ${item.formCategory == "PetitionerCategory" ? 'selected': ''} value="PetitionerCategory">Petitioner</option>
+							        				<option ${item.formCategory == "Document Type" ? 'selected': ''} value="Document Type">Beneficiary</option>
+							        				<option ${item.formCategory == "AttorneyCategory" ? 'selected': ''} value="AttorneyCategory">Attorney</option>
 											</select>
 											</div>
                                             <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name" placeholder="Form name" data-name="formName"/></div>
@@ -268,20 +268,12 @@
         $("#dynamicFormRow" + id).remove();
         $("#petitionTemplateFormDetails input[data-id*=uploadBtn]" + id).remove();
         rowId--;
-        checkFormNames();
     }
 </script>
 
 <script>
     $(document).ready(function () {
         $("#templateId").val(immTemplId);
-        applyChangeEvent();
-        checkFormNames();
     });
-    /* function applyChangeEvent() {
-        $("input[data-name='formName']").unbind('keyup');
-        $("input[data-name='formName']").on("keyup", function () {
-            checkFormNames();
-        });
-    } */
+ 
 </script>

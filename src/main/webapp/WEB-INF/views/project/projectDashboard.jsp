@@ -527,7 +527,7 @@ function projectsPagination(url,sourceleadUrl){
 	    	  		  if(opt.projectSequeneNumber !=null && opt.projectSequeneNumber !='' && opt.projectSequeneNumber !='undefined'){
 			        		    	result = result + '<td data-title="Id"><div class="tblminwidth-75">'+opt.projectSequeneNumber+'</div></td>';
 			        		    }else{
-			        		    	result = result + '<td data-title="Id"><div class="tblminwidth-75">---</div></td>';
+			        		    	result = result + '<td data-title="Id"><div class="tblminwidth-75">--</div></td>';
 			        		    }
 		             return result;
 	    	  	}
@@ -638,7 +638,7 @@ function projectsPagination(url,sourceleadUrl){
 	            	    	result = result + '<td><div class="tblminwidth-75"><span title="'+opt.client+'">'+opt.client+'</span></div></td>';
 	            	    	'</sec:authorize>';
    		    		     }else{
-   		    		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+   		    		    	result = result + '<td><div class="tblminwidth-75">--</div></td>';
 	   		    		}
 	            		return result;
 	              }
@@ -698,13 +698,13 @@ function projectsPagination(url,sourceleadUrl){
     		   
     		   $('#projectsDataTableSearch').parent().find('p.jquery_form_error_message').remove();
     	    	var searchData = $('#projectsDataTableSearch').val();
-    	    	var regex =  new RegExp(/[\\-]/g);
-    	    	if(regex.test(searchData) == false){
-    	    		 projectDataTableList();
-    	    	}else{
-    	    		$("#projectsDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
-    	    	}
-    	    	$('#projectsDataTableSearch').val(searchData);
+    	    	
+    	    	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
+       	    		$("#projectsDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+       	    	}else{
+       	    		projectDataTableList();
+       	    	}
+    	    	
     	   }
     	});
 }
