@@ -1824,19 +1824,19 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Map<String, String>> getSocCodeWithSOCOccupationTitleList(String name,String category,String socType) {
+	public List<Map<String, String>> getSocCodeWithSOCOccupationTitleList(String name,String socType) {
 		
 		Session session = this.sessionFactory.getCurrentSession(); // below query is used for auto populate in UI.
 		String query = null;
 		if(StringUtils.isNotEmpty(socType) && socType.equalsIgnoreCase("socTitle")){
 			
-			query = "SELECT DESCRIPTION as label, CONVERT(ID, CHAR) as value from lookup_data where description like :name and category = :category"; 
-			return session.createSQLQuery(query).setString("name", name+"%").setString("category", category).setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+			query = "SELECT SOC_TITLE as label, CONVERT(ID, CHAR) as value from oes_soc_occs where SOC_TITLE like :name"; 
+			return session.createSQLQuery(query).setString("name", name+"%").setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 			
 		   
 		}else {
-			 query = "SELECT NAME as label, CONVERT(ID, CHAR) as value from lookup_data where name like :name and category = :category"; 
-			    return session.createSQLQuery(query).setString("name", name+"%").setString("category", category).setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+			 query = "SELECT SOC_CODE as label, CONVERT(ID, CHAR) as value from oes_soc_occs where SOC_CODE like :name"; 
+			    return session.createSQLQuery(query).setString("name", name+"%").setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 		}
 		
 	}
@@ -1889,17 +1889,17 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public LookUpData getLookUpDataById(Long id) {
+	public String getOesSocCodeById(Long id, String socType) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from LookUpData ldata where ldata.id =:id ";
-				
-		List ldataList = session.createQuery(query).setLong("id", id).list();
-		LookUpData lookUpData = null;
-		if(ldataList != null && !ldataList.isEmpty())
-		{
-			lookUpData = (LookUpData) ldataList.iterator().next();
+		
+		String query = null;
+		if(StringUtils.isNotEmpty(socType) && socType.equalsIgnoreCase("socTitle")){
+			query = "SELECT SOC_TITLE from oes_soc_occs where id = :id"; 
+			return (String) session.createSQLQuery(query).setLong("id", id).uniqueResult();
+		}else {
+			query = "SELECT SOC_CODE from oes_soc_occs where id = :id"; 
+			return (String) session.createSQLQuery(query).setLong("id", id).uniqueResult();
 		}
-		return lookUpData;
 	}
 
 }
