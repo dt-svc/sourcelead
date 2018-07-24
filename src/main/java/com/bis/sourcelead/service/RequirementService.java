@@ -240,5 +240,7 @@ public interface RequirementService {
 	public void assignGeneratedIdToJobFairs();
 	
 	public ResponseList<RequirementDTO> getJobListOfRecruiter(RequirementDTO requirementDTO, Long recruiterUserId,Date[] searchDates,List<Long> teamsList) throws Exception;
+	
+	Boolean forceDeleteForSelectedJobs(String[] uuids) throws Exception;
 
 }
