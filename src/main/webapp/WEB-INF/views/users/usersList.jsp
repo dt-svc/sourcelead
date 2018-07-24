@@ -353,9 +353,6 @@ function getUsersSearchResult(searchValue){
         </ul>
       </div>
       
-      
-      
-      
               <div id="dynamicUserListViewDiv" class="filter_position positionRelative"></div> 
           </div>  
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
