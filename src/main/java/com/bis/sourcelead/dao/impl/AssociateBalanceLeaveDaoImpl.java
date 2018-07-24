@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
+import com.bis.sourcelead.dto.LeaveTypeEditDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
@@ -211,45 +213,65 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						}else {
 							stmt.setLong(1, status);
 						}
-						if(!"NONE".equalsIgnoreCase(actionType)) {
-							AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
-							float assoBalLeaves = Float.parseFloat(associateBalanceLeave.getTotalLeaves());
-							float additionLeaves = 0;
-							if("ADD".equalsIgnoreCase(actionType)) {
-								 additionLeaves = assoBalLeaves + diffLeaves;
-							}if("SUB".equalsIgnoreCase(actionType)) {
-								additionLeaves = assoBalLeaves - diffLeaves;
-							}if("IMPORT".equalsIgnoreCase(actionType)) {
-								additionLeaves = diffLeaves;
-							}
-							stmt.setString(2, String.valueOf(additionLeaves));
-						}else {
-							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-									stmt.setString(2, String.valueOf(leaveType.getNoOfDaysPerPeriod()));
-								}else {
-									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
-									 try {
-										float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
-										stmt.setString(2, String.valueOf(days));
-									} catch (ParseException e) {
-										e.printStackTrace();
-									}
+						AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
+						float assoBalLeaves = Float.parseFloat(associateBalanceLeave.getTotalLeaves());
+						Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+						float days = 0;
+								try{
+//								days =	leaveManagementUtil.test(leaveType, emp, user);
+								}catch (Exception e) {
+									e.printStackTrace();
 								}
-							}else {
 								
-								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-									stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
-								}else {
-									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
-									 try {
-										float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
-										stmt.setString(2, String.valueOf(days));
-									} catch (ParseException e) {
-										e.printStackTrace();
-									}
+						if(!"NONE".equalsIgnoreCase(actionType)) {
+							float additionLeaves = 0;
+							if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+								if("ADD".equalsIgnoreCase(actionType)) {
+									 additionLeaves = assoBalLeaves + diffLeaves;
+								}if("SUB".equalsIgnoreCase(actionType)) {
+									additionLeaves = assoBalLeaves - diffLeaves;
+								}if("IMPORT".equalsIgnoreCase(actionType)) {
+									additionLeaves = diffLeaves;
+								}
+								
+							}else{
+								if("ADD".equalsIgnoreCase(leaveType.getActionExpType())) {
+									 additionLeaves = assoBalLeaves + days;
+								}if("SUB".equalsIgnoreCase(leaveType.getActionExpType())) {
+									additionLeaves = assoBalLeaves - days;
+								}if("IMPORT".equalsIgnoreCase(leaveType.getActionExpType())) {
+									additionLeaves = days;
+								}
+								
+								if("ADD".equalsIgnoreCase(leaveType.getActionFresherType())) {
+									 additionLeaves = assoBalLeaves + days;
+								}if("SUB".equalsIgnoreCase(leaveType.getActionFresherType())) {
+									additionLeaves = assoBalLeaves - days;
+								}if("IMPORT".equalsIgnoreCase(leaveType.getActionFresherType())) {
+									additionLeaves = days;
 								}
 							}
+							stmt.setString(2, String.valueOf(additionLeaves));	
+						}else {
+							stmt.setString(2, String.valueOf(assoBalLeaves+days));
+//							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
+//								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+//									stmt.setString(2, String.valueOf(assoBalLeaves+days));
+//								}else {
+////									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+////										float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+//										stmt.setString(2, String.valueOf(assoBalLeaves+days));
+//								}
+//							}else {
+//								
+//								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+//									stmt.setString(2, String.valueOf(assoBalLeaves+days));
+//								}else {
+////									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+////										float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+//										stmt.setString(2, String.valueOf(days));
+//								}
+//							}
 						}
 						stmt.setLong(3, orgLocationId);
 						stmt.setLong(4, user.getId());
@@ -567,4 +589,41 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 		}
 	  }return 0;
 	}
+
+
+	@Override
+	@Transactional
+	public int updateLeaveTypeAssociateBalances(List<LeaveTypeEditDTO> list)
+	{
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.doWork(new Work() {
+				@Override
+				public void execute(java.sql.Connection connection) throws SQLException {
+					boolean initialAutocommitSetting = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+					CallableStatement stmt = connection.prepareCall("{call deleteAssociateBalLeave(?,?,?,?,?,?,?,?)}");
+					for (LeaveTypeEditDTO dto : list) {
+						stmt.setLong(1, dto.getStatus());
+						stmt.setString(2, String.valueOf(dto.getTotalLeaves()));	
+						stmt.setLong(3,  dto.getLocationId());
+						stmt.setLong(4,  dto.getUserId());
+						stmt.setLong(5,  dto.getLeaveTypeId());
+						stmt.setString(6, dto.getLeavetypeRoles());
+						stmt.setString(7, dto.getLeavetypeDepartment());
+						stmt.setString(8, dto.getLeavetypeEmpType());
+						stmt.addBatch();
+					}
+					int[] updateCount = stmt.executeBatch();
+					connection.commit();
+					connection.setAutoCommit(initialAutocommitSetting);
+				}
+			});
+			return 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
 }

@@ -23,7 +23,7 @@ top:0;
         </section>
          
         
-		<div class="project_tabs_inn_table vendor_wrap_inn_table mt overflow_Auto">
+		<div class="project_tabs_inn_table vendor_wrap_inn_table overflow_Auto">
 		
 		<table id='example' class='display' cellspacing='0' width='100%' >
                    <thead> 

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
@@ -45,5 +46,7 @@ public interface AssociateBalanceLeaveService {
 	int updateAssociateDateOfJoinBalanceLeaveType(Long orgLocationId, User user, int status, String methodType);
 	
 	int addAssociateLeaveType(User loginUser, Long orgLocationId, Employees employee, UserRole userRole);
+
+	int updateLeaveTypeAssociateBalances(List<User> updatedUserList, LeaveType leaveType, LeaveTypeDTO leaveTypeDTO);
 	
 }
