@@ -2835,9 +2835,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		return invoiceDao.getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(projectId,orgLocationId, invoiceStatus, startDate, endDate);
 	}
 	@Override
-	public ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(OrgLocations orgLocations, Long orgRelationId)
+	public ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(InvoiceDTO invoiceDTO,OrgLocations orgLocations, Long orgRelationId)
 			throws Exception {
-		return invoiceDao.invoiceListByOrgLocationIdAndRelationId(orgLocations,orgRelationId);
+		return invoiceDao.invoiceListByOrgLocationIdAndRelationId(invoiceDTO,orgLocations,orgRelationId);
 	}
 	
 }

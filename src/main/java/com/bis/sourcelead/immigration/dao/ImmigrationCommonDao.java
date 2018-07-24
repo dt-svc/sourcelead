@@ -179,8 +179,6 @@ public interface ImmigrationCommonDao {
 	
 	ResponseList<LcaListViewDTO> getLcaList(LcaListViewDTO lcaListViewDTO, String status,String lcaStatus,String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal)throws Exception;
 	
-	public List<Map<String, String>> getSocCodeWithSOCOccupationTitleList(String name,String category, String socType);
-	
 	Long getLcaIdByUUID(String lcaUUID);
 	
 	String deleteLcaDetailsById(Long lcaId);
@@ -191,7 +189,9 @@ public interface ImmigrationCommonDao {
 	
 	String reActiveLcaById(Long lcaId);
 	
-	LookUpData getLookUpDataById(Long id);
+	List<Map<String, String>> getSocCodeWithSOCOccupationTitleList(String name, String socType);
+
+	String getOesSocCodeById(Long id, String socType);
 
 	List<LcaListExportView> getLcaListExportDetails(OrgLocations orgLocations);
 

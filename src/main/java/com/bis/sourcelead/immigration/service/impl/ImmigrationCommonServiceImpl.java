@@ -2418,7 +2418,7 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 
 	@Override
 	public List<Map<String, String>> getSocCodeWithSOCOccupationTitleList(String name,String category,String socType) {
-		return immigrationCommonDao.getSocCodeWithSOCOccupationTitleList(name,category,socType);
+		return immigrationCommonDao.getSocCodeWithSOCOccupationTitleList(name,socType);
 	}
 
 	@Override
@@ -2427,8 +2427,8 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	}
 
 	@Override
-	public LookUpData getLookUpDataById(Long id) {
-		return immigrationCommonDao.getLookUpDataById(id);
+	public String getOesSocCodeById(Long id, String socType) {
+		return immigrationCommonDao.getOesSocCodeById(id, socType);
 	}
 	
 	

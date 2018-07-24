@@ -937,12 +937,16 @@ $('button').click(function (event) {
 	 	$("#socCode").val(ui.item.label);
 	 	$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+immiModulePath+"/getLookUpDataById?id="+ui.item.value, 
+	        url: sourceleadUrl+immiModulePath+"/getOesSocCodeById", 
+	        data : {
+			 	id : ui.item.value,
+			 	socType:"socTitle"
+			 	},		
 	        success: function(socObj) {
 	        	
-	        	$("#socOccupationTitle").val(socObj.description);
+	        	$("#socOccupationTitle").val(socObj);
 	        }
-	 });
+	 }); 
 	 	return false;
 	 },
 	 focus: function(event, ui){
@@ -950,10 +954,7 @@ $('button').click(function (event) {
 	    }
 	 });
 </script> 
- 
- 
- <script type="text/javascript">
-
+  <script type="text/javascript">
  $("#socOccupationTitle").autocomplete({ 
 	 minLength: 2, 
 	 source : function(request, response) {
@@ -972,20 +973,26 @@ $('button').click(function (event) {
 	 },
 	 select: function( event, ui ) {
 	 	$("#socOccupationTitle").val(ui.item.label);
-	 	$.ajax({
+	   $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+immiModulePath+"/getLookUpDataById?id="+ui.item.value, 
+	        url: sourceleadUrl+immiModulePath+"/getOesSocCodeById",
+	        data : {
+			 	id : ui.item.value,
+			 	socType:"socCode"
+			 	},
 	        success: function(socObj) {
 	        	
-	        	$("#socCode").val(socObj.name);
+	        	$("#socCode").val(socObj);
 	        }
-	 });
+	 }); 
 	 	return false;
 	 },
 	 focus: function(event, ui){
 	          return false;
 	    }
-	 });
+ });
 </script> 
+ 
+
  
  

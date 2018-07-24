@@ -2369,10 +2369,10 @@ public class ImmigrationRestController {
 		return socDetailsTypeList;
 	}
 
-	@RequestMapping(value = { "/getLookUpDataById" })
-	public @ResponseBody LookUpData getLookUpDataById(
-			@RequestParam(value = "id", required = false) Long id,  HttpServletRequest request) throws Exception {
-		return immigrationCommonService.getLookUpDataById(id);
+	@RequestMapping(value = { "/getOesSocCodeById" })
+	public String getOesSocCodeById(
+			@RequestParam(value = "id", required = false) Long id, @RequestParam(value = "socType", required = false) String socType, HttpServletRequest request) throws Exception {
+		return immigrationCommonService.getOesSocCodeById(id, socType);
 	}
 	
 	

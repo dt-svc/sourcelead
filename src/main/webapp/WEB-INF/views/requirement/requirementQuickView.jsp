@@ -60,6 +60,20 @@
 									
 									
 									<li><i class="fa fa-cab" title="Travel allowance"></i><span title="${!empty requirement.travelAllowance ? requirement.travelAllowance : ''}">${!empty requirement.travelAllowance ? requirement.travelAllowance : ''}</span></li>
+									<li><i class="fa fa-users pull-left mt5" title="Job Fair(s)"></i>
+										<ul class="list-unstyled joblocations-public col-md-10">
+											<c:choose>
+												<c:when test="${requirement.jobFairList.size() > 0}">
+													<c:forEach var ="jobFairs" items="${requirement.jobFairList}">
+													 	<li title="${jobFairs.name}">${jobFairs.name}</li>
+													</c:forEach>												
+												</c:when>
+												<c:otherwise>
+													---
+												</c:otherwise>
+											</c:choose>
+										</ul>
+									</li>
 								</ul>
 							</div>
 							<div class="col-md-7">

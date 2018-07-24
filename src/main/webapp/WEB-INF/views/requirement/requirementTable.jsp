@@ -35,11 +35,14 @@ function jobFairListCheck(){
 	var result = "";
 	result = result +"<table id='jobFairPagination' class='display' cellspacing='0' width='100%' >"; 
  	result = result +"<thead>"; 
- 	result = result +"	<tr>"; 
+ 	result = result +"	<tr>";
+ 	result = result +"		<th>Generated ID</th>";
  	result = result +"		<th>Title</th>";
- 	result = result +"		<th>StartDate</th>";
+ 	result = result +"		<th>Start Date</th>";
  	result = result +"		<th>End Date</th>";
  	result = result +"		<th>No.of Jobs</th>";
+ 	result = result +"		<th>Applicants</th>";
+ 	result = result +"		<th>Offered</th>";
  	result = result +"		<th>Venue</th>"; 
  	result = result +"		<th>Status</th>";
  	result = result +"		<th>Action(s)</th>";
@@ -777,22 +780,40 @@ function jpaginationForJobFairs(url){
         ],
    		"processing": true,
        "serverSide": true,
+       "searching": false,
+       "searchHighlight": true,
        "ajax": $.fn.dataTable.pipeline( {
            url: url,
            method: 'POST',
            pages: 1
        }),
        "columns": [
+    	   {"data": "generatedId"},
            {"data": "name"},
            {"data": "startDate"},
            {"data": "endDate"},
            {"data": "requirementsList"},
+           {"data": "applicantCount"},
+           {"data": "offeredCount"},
            {"data": "venue"},
            {"data": "status"},
            {"data": "actions" }
        	],
 	       "columnDefs": [
-	        {
+    	   {
+	            "targets": colIndex++,
+	            "data": "generatedId",
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+           		   if(opt.generatedId != null && opt.generatedId != '' && opt.generatedId != 'undefined') {
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.generatedId+'</div></td>';
+           		   } else {
+						result = result +"<td><div>-----</div></td>";
+           	       }
+		           		return result;
+	             }
+	        },
+	    	{
 	           "targets": colIndex++,
 	           "data": "name",
 	           "render": function ( data, type, opt, meta ) {
@@ -846,6 +867,26 @@ function jpaginationForJobFairs(url){
 	        },
 	        {
 	            "targets": colIndex++,
+	            "data": "applicantCount",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.applicantCount+'</div></td>';
+		                return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "offeredCount",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.offeredCount+'</div></td>';
+		                return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
 	            "data": "venue",
 	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
@@ -895,7 +936,7 @@ function jpaginationForJobFairs(url){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	/* "aaSorting": [[10,'desc']], */
+	    	"aaSorting": [[9,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -903,7 +944,7 @@ function jpaginationForJobFairs(url){
 	    		row.setAttribute('id',"jobFair_"+data.id);
     	    },
 	    	"initComplete": function( settings, json ) {
-	    		 $('#dataTableSearch').removeAttr('disabled');
+	    		 $('#jobFairDataTableSearch').removeAttr('disabled');
 	    	},
 	    	"oLanguage": {
 	     		"sSearch": "",
@@ -916,32 +957,25 @@ function jpaginationForJobFairs(url){
    	      });
    	   		updateFairStatusEvents();
    	   	}
-  
    });
    
   
-   $("#jobFairPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+   $("#jobFairPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
    $("input[type=search]").hide();
-  
-   $("#dataTableSearch").keyup(function(e) {
+   
+   $("#jobFairDataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
-   		 requirementList('list',sourceleadUrl);
-   		jobFairSearchHighlight();
+   		jobFairListCheck();
    	   }
    	});
-   /* updateFairStatusEvents(); */
  }
 function updateFairStatusEvents() {
 	$(".fairStatus").each(function() {
 		$(this).on('focusin', function(){
-		    /* console.log("Saving value " + $(this).val()); */
 		    $(this).data('prev_value', $(this).val());
 		}).on('change', function(){
 			var jobFairId = $(this).find("option:selected").data("id");
 		    var prev = $(this).data("prev_value");
-		    /* var current = $(this).val();
-		    console.log("Prev value " + prev);
-		    console.log("New value " + current); */
 		    showChangeJobFairStatusPopup(jobFairId, $(this).val(), prev, $(this));
 		});
 	});
@@ -961,7 +995,7 @@ function updateFairStatusEvents() {
 	 setTimeout(function () {
  		var body = $( table.table().body() );
 	        body.unhighlight();
-	        body.highlight( $("#dataTableSearch").val() );   
+	        body.highlight( $("#jobFairDataTableSearch").val() );   
 			
 			}, 1000); 
  }
