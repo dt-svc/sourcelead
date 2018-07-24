@@ -86,7 +86,7 @@ background-color: #fcfcfc;
 						        					
 						        					
 						        					<div class="col-md-12">
-						        					<div class="uploadTempalte">
+						        					<div class="uploadTempalte" id="validation">
 						        					<input type="file" class="margin-top0" id="leaveInputFileId" name="file" data-validation="required validate_importFile" field-name="File">
 						        					</div>
 						        					</div>
@@ -1578,6 +1578,7 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
 <script>
 function resetUpload(){
 	$("#leaveInputFileId").val("");
+	$("#validation").find('p.jquery_form_error_message').remove();
 }
 </script>
 
