@@ -2479,13 +2479,20 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 				    		 
 				    		 cellIndex++;
 				    	 }
-				    	 cellIndex = 7;// setting default value for next column index. It does not depend on address list. 
+				    	 cellIndex = 7;// setting default value for next column index. It does not depend on address or location list. 
 				     }else if(fieldName.contains("Date")) {
 				    	 
 				    	 
 				    	String dateString = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaExportView.getStartDate());
 				    	 ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), dateString, null);
 				    	
+				     }else if(fieldName.equalsIgnoreCase("status")) {
+				    	 Integer status = lcaExportView.getStatus();
+				    	 if(status == 1) {
+				    	     ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), ImmigrationConstants.LCA_STATUS_ACTIVE, null);
+				    	 }else {
+				    		 ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), ImmigrationConstants.LCA_STATUS_IN_ACTIVE, null);
+				    	 }
 				     }
 				     else {
 				             ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), field.get(lcaExportView), null);
