@@ -361,7 +361,7 @@ function usersListPagination(url,sourceleadUrl){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.userRequirementsCount !=null && opt.userRequirementsCount !='' && opt.userRequirementsCount !='undefined'){
-            		  result = result +"<td><div class='small'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div></td>";
+            		  result = result +"<td> <a href='<c:url value='${appPath}/recruiterJobsReport?userCode="+opt.userCode+"'/>'><div class='small'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div> </a> </td>";
             	  }else{
          	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
           	      }

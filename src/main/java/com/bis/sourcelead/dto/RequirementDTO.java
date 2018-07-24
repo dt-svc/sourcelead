@@ -148,6 +148,14 @@ public class RequirementDTO extends CommonDTO {
 	
 	private String noOfApplicants;
 	
+	private String noOfShortlistApplicants;
+	
+	private String noOfRejectedApplicants;
+	
+	private String noOfJoinedApplicants;
+	
+	private String noOfBackoutApplicants;
+	
 
 	private String projectClientID;
 	
@@ -195,6 +203,8 @@ public class RequirementDTO extends CommonDTO {
 	
 	private Map<Long, String[]> jobFairMap;
 	
+	private String orgTeams;
+	
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
@@ -215,6 +225,14 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setJobFairMap(Map<Long, String[]> jobFairMap) {
 		this.jobFairMap = jobFairMap;
+	}
+
+	public String getOrgTeams() {
+		return orgTeams;
+	}
+
+	public void setOrgTeams(String orgTeams) {
+		this.orgTeams = orgTeams;
 	}
 
 	public String getNoOfOfferedApplicants() {
@@ -1317,6 +1335,38 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setNoOfApplicants(String noOfApplicants) {
 		this.noOfApplicants = noOfApplicants;
+	}
+
+	public String getNoOfShortlistApplicants() {
+		return noOfShortlistApplicants;
+	}
+
+	public void setNoOfShortlistApplicants(String noOfShortlistApplicants) {
+		this.noOfShortlistApplicants = noOfShortlistApplicants;
+	}
+
+	public String getNoOfRejectedApplicants() {
+		return noOfRejectedApplicants;
+	}
+
+	public void setNoOfRejectedApplicants(String noOfRejectedApplicants) {
+		this.noOfRejectedApplicants = noOfRejectedApplicants;
+	}
+
+	public String getNoOfJoinedApplicants() {
+		return noOfJoinedApplicants;
+	}
+
+	public void setNoOfJoinedApplicants(String noOfJoinedApplicants) {
+		this.noOfJoinedApplicants = noOfJoinedApplicants;
+	}
+
+	public String getNoOfBackoutApplicants() {
+		return noOfBackoutApplicants;
+	}
+
+	public void setNoOfBackoutApplicants(String noOfBackoutApplicants) {
+		this.noOfBackoutApplicants = noOfBackoutApplicants;
 	}
 
 	public String getUrl()
