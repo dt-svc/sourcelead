@@ -479,6 +479,7 @@
 						<div class="form-group" id="newJoineeDiv">
 							<label class="col-md-4">No.of Days for Fresher<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-3">
+								<input type="hidden" name="previousNewJoinee" id="previousNewJoinee" value="${!empty leaveType.newJoinee ? leaveType.newJoinee : 0}"/>
 								<input type="text" id="newJoinee" name="newJoinee" placeholder="Enter no.of Days" field-name="ApplicableDays" onblur="getNoOfDaysPerPeriodFresher();" class="form-control" value="${leaveType.newJoinee}">
 							</div>
 						</div>
@@ -486,6 +487,7 @@
 						<div class="form-group" id="newJoineeDiv2">
 							<label class="col-md-4">No.of Days for Fresher Period</label>
 							<div class="col-md-3">
+								<input type="hidden" name="previousFresherPeriod" id="previousFresherPeriod" value="${!empty leaveType.newJoinPerPeriod ? leaveType.newJoinPerPeriod : 0}"/>
 								<input type="text" id="fresherPeriod" name="fresherPeriod" placeholder="Enter Per Day"  class="form-control" value="${leaveType.newJoinPerPeriod}" readonly>
 							</div>
 						</div>
@@ -505,13 +507,15 @@
 									</select>
 								</div>
 								<div class="col-md-4 padding_left" id="experiencedApplicableDaysDiv">
-								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" placeholder="No. of Days for exp" onblur="getNoOfDaysPerPeriodExperienced();" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
+									<input type="hidden" name="previousExpApplicableDays" id="previousExpApplicableDays" value="${!empty leaveType.experiencedApplicableDays ? leaveType.experiencedApplicableDays : 0}"/>
+									<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" placeholder="No. of Days for exp" onblur="getNoOfDaysPerPeriodExperienced();" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
 								</div>
 							</div>
 						</div>
 						<div class="clearfix mt mb"></div>
 						<label class="col-md-4">No.of Days for Experienced Period</label>
 						<div class="col-md-3">
+						<input type="hidden" name="previousExpPeriodDays" id="previousExpPeriodDays" value="${!empty leaveType.experiencedPerPeriod ? leaveType.experiencedPerPeriod : 0}"/>
 						<input type="text" class="form-control" id="experiencedPeriod" name="experiencedPeriod" placeholder="Experience" field-name="Duration" value="${leaveType.experiencedPerPeriod}" readonly>
 						</div>
 						</div>
