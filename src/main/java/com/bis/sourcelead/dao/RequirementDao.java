@@ -123,6 +123,9 @@ public interface RequirementDao {
 	
 	List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays) throws Exception;
 
+	public List<Requirement> getRequirementListByPostedDateAndSelectedClients(Long orgLocationId, Long userId,
+			int numberOfDays, String selectedClients);
+	
 	public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId,
 			Date startDateUTC, Date endDateUTC);
 
@@ -155,6 +158,8 @@ public interface RequirementDao {
 	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId,String tableName);
 
 	Long getRequirementGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdCount);
+	
+	Long getJobFairGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdCount);
 
 	/*boolean checkForOldrecordsInCandidtesUsingOrgLocationid(Long orglocationId);
 
@@ -195,6 +200,8 @@ public interface RequirementDao {
 
 	public JobFair getJobFair(long jobFairId);
 	
+	public JobFair getJobFairByName(String jobFairName);
+	
 	public JobFair getJobFairByUUID(String uuid);
 
 	public ResponseList<JobFair> getJobFairList(JobFairDTO jobFairDTO, boolean includeInactive);
@@ -216,5 +223,11 @@ public interface RequirementDao {
 	public List<Long> getJobFairRequirementsIdListByRequirementId(long requirementId);
 	
 	public void deleteJobFairRequirement(long jobFairRequirementId);
-	
+
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId);
+
+	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
+
+	public List<JobFair> getJobFairWithNullGeneratedIdList();
+
 }

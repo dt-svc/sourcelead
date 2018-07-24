@@ -162,7 +162,8 @@ public interface ImmigrationCommonService {
     
     String reActiveLcaById(Long lcaId);
     
-    LookUpData getLookUpDataById(Long id);
+	String getOesSocCodeById(Long id, String socType);
+
 	
     Sheet getLCAExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, OrgLocations orgLocations);
 }

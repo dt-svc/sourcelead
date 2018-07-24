@@ -67,7 +67,7 @@
     	 				<label class="col-md-3 paddingRight">Amount Received<span class="text-danger paddingLeft">*</span></label>
 	    	 			<div class="clearfix">
 	    	 			<div class="col-md-6">
-	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" data-validation="required validate_length length2-250" field-name ="Amount Received">
+	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" onkeyup="validateNumber(this);" data-validation="required validate_length length2-250" field-name ="Amount Received">
 	    	 			</div>
 	    	 			<div class="col-md-3">
 	    	 				<input type="text" class="form-control" id="currencyType" name = "currencyType" readonly="readonly">
@@ -143,13 +143,13 @@ $('#paymentDate').datepicker({
 	  var orgRelationId = $("#vendor").val();
 	   $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getInvoiceListForPayment?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+	        url: sourceleadUrl+"/getInvoiceListForPayment?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&invoiceType=payables",
 	        success: function(json) {
 	        	
 	        	var result = '';
          		result = result +'     <form id ="paymentForm" name ="paymentForm" method="post">'; 
-         		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table addinvoiceTable">'; 
-         	    result = result +'       <table id="invoiceListTable" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+         		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table">'; 
+         	    result = result +'       <table id="invoiceListTable" class="clearfix" cellspacing="0" width="100%" >';
          		result = result +'           <thead>';
          		result = result +'           <tr>';
          		result = result +'           <th><input type="checkbox" id="checkAllRecords" onclick="toggleInvoices(this);"></th>';
@@ -190,7 +190,7 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'<td>'+opt.total+'</td>';
 	                    	 result = result +'<td>'+opt.dueAmount+'</td>';
 	                    	 result = result +'<td>'+opt.invoiceStatus+'</td>';
-	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeypress="amountInputVal(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'"></td>';
+	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeyup="amountInputVal2(this);validateNumber(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'"></td>';
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
@@ -224,41 +224,59 @@ $('#paymentDate').datepicker({
   
   </script>
   <script type="text/javascript">
-function addInvoice(){
-	 if ($('#paymentForm').validate(false, validationSettings)) {
-		 var invoiceIdsMap = new Object();
-		 $('input:checkbox[name=invoices]:checked').each(function() {
-				invoiceIdsMap[this.id] = $("#totalAmountRow"+this.id).val();
-		     });
-		 var formData = getFormData("paymentForm");
-		  $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+JSON.stringify(invoiceIdsMap), formData, function(result) {
-			 
-		 }); 
-		  invoiceIdsMap = {};
-	 }
-	
-}
-$('body').on('blur', '#paymentForm', function() {
-	$("#paymentForm").showHelpOnFocus();
-	$("#paymentForm").validateOnBlur(false, validationSettings);
-});
+  function addInvoice(){
+		 if ($('#paymentForm').validate(false, validationSettings)) {
+			 var grandDueTotal = $("#grandTotalAmount").text();
+			 var grandTotalReceived = $("#totalAmount").val();
+			 if(grandDueTotal == grandTotalReceived){
+			 var invoiceIds= []
+			 var amount = "";
+			 $('input:checkbox[name=invoices]:checked').each(function() {
+					//invoiceIdsMap[this.id] =  $("#totalAmountRow"+this.id).val();
+					invoiceIds.push(this.id+"_"+$("#totalAmountRow"+this.id).val()); // pushing values as id_invoice amount to array.
+					amount = $("#totalAmountRow"+this.id).val();
+			     }); 
+			 if(amount !=null && amount !="" && amount !="undefined"){
+			 var formData = getFormData("paymentForm");
+			 $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
+				 getInvoiceList();
+		 });
+			 }else{
+				 alert("please select at least one record / Amount should not Empty");
+			 }
+		 }else{
+			 alert("Amount Received and Due Total should be same");
+		 }
+		}
+	}
+	$('body').on('blur', '#paymentForm', function() {
+		$("#paymentForm").showHelpOnFocus();
+		$("#paymentForm").validateOnBlur(false, validationSettings);
+	});
 </script>
   <script>
-  function amountInputVal(obj){
+  function validateNumber(object){ 
+	   object.value = object.value.replace(/[^0-9\.]/g,'');
+	}
+  
+  function amountInputVal2(obj){
 	  // this is for total value updation based our input
-	  var totalValue=0;
+	  var totalValue=0.00;
 	  $("input[id^=totalAmountRow]").each(function() {
 	       var value = $(this).val();
 	    if($.isNumeric(value)){
 	       totalValue= totalValue+parseFloat(value);
 	  	} 
 	  });
-	  $("#grandTotalAmount").text(totalValue).toFixed(2);
+	  $("#grandTotalAmount").text(totalValue.toFixed(2));
+	// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+	  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(totalValue.toFixed(2));
   }
-  
+  </script>
+   <script>
 	function toggleInvoices(source) {
 	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-	    var total = 0;
+	    var total = 0.00;
 	    for (var i = 0; i < checkboxes.length; i++) {
 	        if (checkboxes[i] != source){
 	            checkboxes[i].checked = source.checked;
@@ -268,25 +286,29 @@ $('body').on('blur', '#paymentForm', function() {
 	        		total += parseFloat(checkboxes[i].value);
 	            }else{
 	            	$("#totalAmountRow"+checkboxes[i].id).val('');
-	            	total = 0;
+	            	total = 0.00;
 	            }
 	    	}
-	        $("#grandTotalAmount").text(total);
+	        $("#grandTotalAmount").text(total.toFixed(2));
+	     // For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+			  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(total.toFixed(2));
 	    }
-	    
+	
 	$('input:checkbox:not(#checkAllRecords)').click(function() {
 	    if(!this.checked) {
 	        $('#checkAllRecords').removeAttr('checked');
 	    }
 	});
 	}
+	</script>
 	
+	<script>
 	function checkSingleInvoice(id, amount){
 		var totalAmount = $("#grandTotalAmount").text();
 		if(totalAmount == ''){
-			totalAmount = 0;
+			totalAmount = 0.00;
 		}
-		var grandTotalAmount = 0;
+		var grandTotalAmount = 0.00;
 		  if($("#"+id).is(':checked')){
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
@@ -294,14 +316,18 @@ $('body').on('blur', '#paymentForm', function() {
 			  $("#totalAmountRow"+id).val('');
 			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
 		  }
-		  $("#grandTotalAmount").text(grandTotalAmount);
+		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
+		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+		  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
 	  }
-</script>
+	</script>
+	
 <script>
 function ListPagination(){ 
 	
 	 $("#invoiceListTable").DataTable( { 
-	    	"scrollCollapse": false,
+		 	"scrollY":"350px",	
+		 	"scrollCollapse": false,
 	    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
 	    	"bLengthChange": false,
 	    	"bDestroy": true,
