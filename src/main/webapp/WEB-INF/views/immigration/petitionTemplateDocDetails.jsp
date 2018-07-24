@@ -2,6 +2,7 @@
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <c:set var = "docsLst" scope = "page" value = '<%= session.getAttribute("templateDocList") %>'/>
 <c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index  rowindex starts from 0-->
+<div id="popUp"></div>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
