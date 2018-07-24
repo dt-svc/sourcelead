@@ -50,39 +50,8 @@ $(document).ready(function() {
 <div class="reportHead reportHeadDataTab clearfix">
       <ul class="pull-right list-unstyled list-inline">
       
-		<li>
-			<a href="javascript:void(0)" class="action newAdBtn addcon-pop" title="" onclick="flushDepartment();">+ Department</a>
-			
-			
-			<form:form id="department_form" name="department_form" method="post">
-				<div class="popupWrap" id="departmentCloseDiv">
-				<div class="popupHead">Add Department <i class="closePop pull-right popClose" onclick="flushRole();"></i></div>
-				
-                    <div class="popupContent">
-                      <div class="clearfix mb">
-                        <div class="" id="departmentNameDiv">
-                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Name" onkeyup="validDepartmentname();">
-                        </div>
-                      </div>
-                      <div class="clearfix mb">
-                        <div class="">
-                          <textarea rows="2" placeholder="Description" class="form-control" name="departmentDesc" id="departmentDesc" data-validation="validate_length length2-250"
-									data-validation-optional="true"></textarea>
-                        </div>
-                      </div>
-                    </div>
-                    
-					<div class="popupFoot text-right">
-						<input type="button" value="Cancel" class="slBtn md popClose">
-						<button type="button" class="slBtn md colorBtn" onclick="saveDepartment();">Add</button>
-					</div>                    
-                    
-                      <div class="clearfix mr">
-                       
-                      </div>                    
-				</div>
-            </form:form>
-            
+			<li>
+				<a href="javascript:void(0)" class="action newAdBtn addcon-pop" title="" onclick="flushDepartment();">+ Department</a>
             </li>      
 	       
             <li id="filter2ApprovePop"><a href="javascript:void(0)" class="filtIcon" title="Filters"></a>
@@ -106,6 +75,33 @@ $(document).ready(function() {
       </div>
     </div>
 		<div id="popUp"></div>
+		<div class="mask"></div>
+			<form:form id="department_form" name="department_form" method="post">
+				<div class="popupWrap" id="departmentCloseDiv">
+				<div class="popupHead">Add Department <i class="closePop pull-right popClose" onclick="flushRole();"></i></div>
+				
+                    <div class="popupContent">
+                      <div class="clearfix mb">
+                        <div class="" id="departmentNameDiv">
+                        	<label class="noPad">Department Name <b class="valStar">*</b></label>
+                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Name" onkeyup="validDepartmentname();">
+                        </div>
+                      </div>
+                      <div class="clearfix mb">
+                        <div class="">
+                        <label class="noPad">Description</label>
+                          <textarea rows="2" placeholder="Description" class="form-control" name="departmentDesc" id="departmentDesc" data-validation="validate_length length2-250"
+									data-validation-optional="true"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    
+					<div class="popupFoot text-right">
+						<button type="button" class="slBtn md colorBtn" onclick="saveDepartment();">Add</button>
+						<input type="button" value="Cancel" class="slBtn md popClose">
+					</div>                    
+				</div>
+            </form:form>		
 
   </section>
   <!-- Content Area Ends-->
@@ -301,47 +297,50 @@ function editDepartment(departmentId){
 			 }else{
 				 description = "";
 			 }
-			 
-				result = result + '	<div class="settPop departmentPop">';
+				result = result + '	<div class="settPop popupWrap popupWrapFixed">';
+				
 				result = result + '<form id="editDepartment_form" name="editDepartment_form">';
 				if(json.status == 1){
-					result = result + '	<h3>Edit Department<i class="fa fa-times" onclick="editCancel();"></i></h3>  ';
+					result = result + '	<div class="popupHead">Edit Department <i class="closePop popClose" onclick="editCancel()"></i></div>  ';
 				}else{
-					result = result + '	<h3>Add Department <i class="fa fa-times" onclick="editCancel();"></i></h3>  ';
+					result = result + '	<div class="popupHead">Add Department <i class="closePop popClose" onclick="editCancel()"></i></div>';
 				}
-				result = result + '	<div class="settPopInn"> ';
-				result = result + '		<div class="form-group col-md-12"> ';
-				result = result + '		  <label class="col-md-4" for="Project Id">Department Name <span class="text-danger">*</span></label> ';
-				result = result + '		  <div class="col-md-8" id="eidtdepartmentNameDIV"> ';
-				result = result + '			<input type="text" class="form-control input-sm" id="eidtdepartmentName" name="departmentName"  value="'+json.departmentName+'" data-validation="required validate_length length2-100" field-name="Department Name" onkeyup="validateDepartmentname('+departmentId+');"> ';
+				
+				result = result + '	<div class="popupContent"> ';
+				result = result + '		<div class="mb"> ';
+				result = result + '		  <label for="Project Id">Department Name <b class="valStar">*</b></label> ';
+				result = result + '		  <div class="" id="eidtdepartmentNameDIV"> ';
+				result = result + '			<input type="text" class="form-control" id="eidtdepartmentName" name="departmentName"  value="'+json.departmentName+'" data-validation="required validate_length length2-100" field-name="Department Name" onkeyup="validateDepartmentname('+departmentId+');"> ';
 				result = result + '		   </div>';
 				result = result + '		</div>  ';
-				result = result + '		<div class="form-group col-md-12">  ';
-				result = result + '		  <label class="col-md-4" for="Project Id">Department description</label> ';
-				result = result + '		  <div class="col-md-8 taskdesp">   ';
+				result = result + '		<div class="mb"> ';
+				result = result + '		  <label for="Project Id">Description</label> ';
+				result = result + '		  <div class="taskdesp">   ';
 				result = result + '			<textarea class="form-control" name="departmentDesc"  value="'+description+'" colspan="5">'+description+'</textarea>';
 				result = result + '			<span class="hidden">Enter Project Id</span> </div>  ';
 				result = result + '		</div>   ';
-				result = result + '		<div class="col-md-12 mt5 clearfix"> ';
-				result = result + '		<div class="pull-right">  ';
+				result = result + '		<div class="clearfix"></div>';
+				result = result + '		</div>';
+				
+				
+				result = result + '	<div class="popupFoot text-right">';
 				if(json.status == 1){
-					result = result + '		  <input type="button" value="Save" class="btn btn-primary" onclick="saveEditDepartment('+departmentId+');">';	
+					result = result + '		  <input type="button" value="Save" class="slBtn md colorBtn" onclick="saveEditDepartment('+departmentId+');">';	
 				}else{
-					result = result + '		  <input type="button" value="Add" class="btn btn-primary" onclick="updateDepartment('+departmentId+');">';
+					result = result + '		  <input type="button" value="Add" class="slBtn md colorBtn" onclick="updateDepartment('+departmentId+');">';
 				}
 				
-				result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="editCancel();">';
+				result = result + '		  <input type="button" value="Cancel" class="slBtn md popClose" onclick="editCancel();">';
 				result = result + '		</div>';
-				result = result + '		</div>';
-				result = result + '		<div class="clearfix"></div>   ';
-				result = result + '	</div>  ';
+				
+				
 				result = result + '</form>';
 				result = result + '	</div>';
 			    $("#editDepartmentId").empty();
 			    $("#editDepartmentId").append(result);
 			    
-				$(".settPop").slideDown(200);
-				$(".vendor_wrap_mask").fadeIn(200); 
+				$(".settPop").fadeIn(100);
+				$(".mask").show(); 
 		},
 	});
 	
@@ -350,8 +349,8 @@ function editDepartment(departmentId){
 </script>
 <script>
 function editCancel(){
-	$(".settPop").slideUp(200);
-	$(".vendor_wrap_mask").fadeOut(200);
+	$(".settPop").fadeOut(200);
+	$(".mask").hide();
 }
 </script>
 

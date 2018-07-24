@@ -180,13 +180,13 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+ '<div class="col-md-6" id="teamNameDiv">';
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
 	        	outPut = outPut+ '<input type = "hidden" name="tabType" value="editTeamForm"/>';
-	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
+	        	outPut = outPut+ '<label>Team Name <b class="valStar">*</b> </label>';
 	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  onblur="validateTeamName();">';
 	        	outPut = outPut+ '                </div>';
 	        	
 	        	
 	        	outPut = outPut+ '                <div class="col-md-5">';
-	        	outPut = outPut+ '                <label>Team Lead<b class="text-danger">*</b> </label>';
+	        	outPut = outPut+ '                <label>Team Lead <b class="valStar">*</b> </label>';
 	        	outPut = outPut + '<select   class="form-control" name="editOwnerUserId" value="'+json.teamOwnerName+'" id="editOwnerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead">';
 	            outPut = outPut + '</select>';
 	        	outPut = outPut+ '                </div>';
@@ -319,14 +319,14 @@ function addTeam(){
 	/* outPut = outPut + '<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">'; */
 	outPut = outPut+ '<input type = "hidden" name="tabType" value="teamForm"/>';
 	outPut = outPut+ '<div class="">';
-	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
+	outPut = outPut+ '<label>Team Name <b class="valStar">*</b></label>';
 	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">';
 	outPut = outPut+ '</div>';
 	outPut = outPut+ '</div>';
 	
 	outPut = outPut+ '              <div class="clearfix mb">';
 	outPut = outPut+ '                <div class="">';
-	outPut = outPut+ '                <label>Team Lead<b class="text-danger">*</b> </label>';
+	outPut = outPut+ '                <label>Team Lead <b class="valStar">*</b></label>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '                <div class="">';
 	outPut = outPut + '<select class="form-control" name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">';
@@ -336,7 +336,7 @@ function addTeam(){
 	
 	outPut = outPut+ '              <div class="clearfix mb">';
 	outPut = outPut+ '                <div class="">';
-	outPut = outPut+ '                <label>Team Member<b class="text-danger">*</b> </label>';
+	outPut = outPut+ '                <label>Team Member <b class="valStar">*</b></label>';
 	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" data-placeholder="Select Team Members" data-validation="required validate_Space" field-name="Team Member">';
     outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
@@ -345,8 +345,8 @@ function addTeam(){
 	outPut = outPut+ '            </div>';
 	
 	outPut = outPut+ ' <div class="popupFoot text-right">';
+	outPut = outPut+ ' <button type="button" id="add_team" class="slBtn md colorBtn" onclick="storeTeam();">Add</button>';	
 	outPut = outPut+ ' <input type="button" value="Cancel" class="slBtn md popClose" onclick="closeTeamPopup();">';
-	outPut = outPut+ ' <button type="button" id="add_team" class="slBtn md colorBtn" onclick="storeTeam();">Add</button>';
 	outPut = outPut+ ' </div>';
 	
 /* 	outPut = outPut+ '              <div class="clearfix mr">';
@@ -722,6 +722,10 @@ function storeTeam(){
 	      				} else {
 	      					showError("Operation failed, please try again");
 	      				}
+						
+						
+						
+
 					},
 				});
 			return true; 
