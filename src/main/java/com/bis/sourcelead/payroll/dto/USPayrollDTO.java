@@ -75,6 +75,16 @@ public class USPayrollDTO {
 	
 	private String payItemId;
 	
+	private String isExcept;
+	
+	public String getIsExcept()
+	{
+		return isExcept;
+	}
+	public void setIsExcept(String isExcept)
+	{
+		this.isExcept = isExcept;
+	}
 	public List<ContributionDTO> getContribution()
 	{
 		return contribution;

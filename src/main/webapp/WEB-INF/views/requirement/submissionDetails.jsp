@@ -1350,9 +1350,19 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 	 {
 		 reason = '';
 	 }
+	 var formData = new FormData();
+     formData.append("tokenParamName", tokenValue);
+     formData.append("submissionId", submissionId);
+     formData.append("offerStatus", offerStatus);
+     formData.append("reason", reason);
+     formData.append("OfferId", offerId);
 	 $.ajax({  
-         type : "POST",
-         url: sourceleadUrl+"/acceptingOffer?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason+"&OfferId="+offerId,        
+		  type : "POST",
+          data: formData,
+          processData: false,
+          contentType:false, 
+     	  url: sourceleadUrl+"/acceptingOffer",
+         //url: sourceleadUrl+"/acceptingOffer?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason+"&OfferId="+offerId,        
          success :function(data) {
 
         	 $("#rejectOfferAlert").empty();
