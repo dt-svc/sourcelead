@@ -94,67 +94,65 @@ function getTicketCustomDates(){
 		    <div class="content-area content-new clearfix">
 		      <div class="clearfix form-horizontal">
 		
-						<div class="project_wrap">
+			<div class="project_wrap">
 						
+			 <div class="positionRelative reportHead clearfix">
+			      <ul class="pull-right list-unstyled list-inline">
+					<li>
+						<div class="col-md-12 dropdown-select tblminwidth-175 paddingLeft paddingRight">
+				        <div class="dropdown-select positionRelative">
+				        <select class="form-control" name="dateSelection" id="dateSelection" onchange="getTicketCustomDates();">
+				            <option value=''>Select Date</option>
+				            <option value='Last_7_days' >Last 7 days</option>
+				            <option value='Last_15_days'>Last 15 days</option>
+				            <option value='1_month' selected>1 month</option>
+				            <option value='3_months'>3 months</option>
+				            <option value='YTD' >YTD</option>
+				            <option value='Last_Year'>Last Year</option>
+				            <option value="custom">Custom</option>
+				          </select>
+				    <!-- Top Leave Takers Custom Date -->
+				          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
+				            <div class="pull-left">
+				              <div class="pull-left mr5" style="width: 140px" id="errMsgFrm">
+				                <input type="text" class="form-control calendar margin-top0" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
+				                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
+				              </div>
+				              
+				              <div class="pull-left mr5" style="width: 140px" id="errMsgTo">
+				                <input type="text" class="form-control calendar margin-top0" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
+				                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
+				              </div>
+				              <button type="button" class="btn btn-primary btn-sm" onclick="getSourceleadTicketList();"><i class="fa fa-search"></i></button>
+				            </div>
+				          </div>
+				      </div>
+				      </div>
+					</li>  
+											
+					<li>
+						<a href="<c:url value='${appPath}/addSourceleadTicket'/>"  title="Add Issue" class="action newAdBtn mr5">+ Issue</a>
+					</li>	
 						
-						        
-			                 <div class="timesheet_head minHeight40">
-								<ul>
-								<li>
-									<div class="col-md-12 dropdown-select tblminwidth-175 paddingLeft paddingRight">
-						        <div class="dropdown-select positionRelative">
-						        <select class="form-control" name="dateSelection" id="dateSelection" onchange="getTicketCustomDates();">
-						            <option value=''>Select Date</option>
-						            <option value='Last_7_days' >Last 7 days</option>
-						            <option value='Last_15_days'>Last 15 days</option>
-						            <option value='1_month' selected>1 month</option>
-						            <option value='3_months'>3 months</option>
-						            <option value='YTD' >YTD</option>
-						            <option value='Last_Year'>Last Year</option>
-						            <option value="custom">Custom</option>
-						          </select>
-						    <!-- Top Leave Takers Custom Date -->
-						          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
-						            <div class="pull-left">
-						              <div class="pull-left mr5" style="width: 140px" id="errMsgFrm">
-						                <input type="text" class="form-control calendar margin-top0" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
-						                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
-						              </div>
-						              
-						              <div class="pull-left mr5" style="width: 140px" id="errMsgTo">
-						                <input type="text" class="form-control calendar margin-top0" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
-						                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
-						              </div>
-						              <button type="button" class="btn btn-primary btn-sm" onclick="getSourceleadTicketList();"><i class="fa fa-search"></i></button>
-						            </div>
-						          </div>
-						      </div>
-						
-						        </div>
-								</li>
-								<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
-								<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Company</span><i class="glyphicon glyphicon-play"  ></i>|
-				                	<div id="filter1ApprovedPop" class="approved_pop">
-				                    	<ul>
-				                    	  <c:forEach var="orgList" items="${orgLocationsList}">  
-				                        	<li><input  id="companyName${orgList.id}" name="selectCompanyById" value ="${orgList.id}"  onclick="getSourceleadTicketList();"  type="checkbox"><label for="companyName${orgList.id}">${orgList.orgLocationName}</label></li>
-										  </c:forEach>
-				                        </ul>
-				                    </div>                	
-				                </li>
-				                </c:if>
-								
-								<li> <a href="<c:url value='${appPath}/addSourceleadTicket'/>"  title="Add Issue"><i class="fa fa-plus paddingRight"></i>Add Issue</a> </li>
-								<div class="clearfix"></div>
-								</ul>
-								<div class="clearfix"></div>
-								<div class="remove_search">
-								<input placeholder="Search" type="text" id="ticketDataTableSearch">
-								</div>
-			                 </div>
-				                 <div class="project_wrap_table datatable_filter backgroundWhite">
-				                     <div id="sourceleadTicketListDivId"></div>
-				                </div>    
+					<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
+					<li id="filter1ApprovePop"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a>
+			              	<div id="filter1ApprovedPop" class="approved_pop">
+			                  	<ul>
+			                  	  <c:forEach var="orgList" items="${orgLocationsList}">  
+			                      	<li><input  id="companyName${orgList.id}" name="selectCompanyById" value ="${orgList.id}"  onclick="getSourceleadTicketList();"  type="checkbox"><label for="companyName${orgList.id}">${orgList.orgLocationName}</label></li>
+							  </c:forEach>
+			                      </ul>
+			                  </div>                	
+			           </li>
+			           </c:if> 		
+					    
+					  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='ticketDataTableSearch'/><span class="repSearchIcon" onClick=""></span></li>
+			        </ul>
+			      </div>						
+                
+                 <div class="project_wrap_table datatable_filter backgroundWhite">
+                     <div id="sourceleadTicketListDivId"></div>
+                </div>    
 				</div>     
 		      
 		    </div>
@@ -492,4 +490,18 @@ $('body').on('blur', '#sourceleadTicketComment_form', function() {
 	$("#sourceleadTicketComment_form").validateOnBlur(false, validationSettings);
 });
 </script>
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+</script>
+
  <jsp:include page="masterFooter.jsp" />	

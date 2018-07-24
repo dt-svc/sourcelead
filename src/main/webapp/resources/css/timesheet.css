@@ -719,7 +719,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     width:100%; font-size:14px; font-weight:400; border:none;
     }
 .project_tabs_inn_table table tr:nth-child(even) {background: #fff;}
-.project_tabs_inn_table table tr:nth-child(odd) {background: #eef1fc;}         
+.project_tabs_inn_table table tr:nth-child(odd) {background: #f9f9f9;}         
 .project_tabs_inn_table table tr th {
     background-color:#6C7686 !important; font-weight:500; color:#FFF; padding:0px 10px; height:40px;
     border-right:1px solid #989898; font-size:13px; text-align:center; vertical-align: middle;
@@ -2664,9 +2664,9 @@ padding-right:10px;
 .settPop .form-group label {
     text-transform: capitalize; font-size: 13px; font-weight: 500; color: #545454; margin-bottom: 1px;
 }
-.settPop .form-control {
+/* .settPop .form-control {
     height:30px;
-}
+} */
 .settPop .btn {
     padding: 4px 12px;
 }
@@ -4352,7 +4352,7 @@ float: none !important; padding: 2px 5px; color: #333;
  
 .notification-table {}
 .notification-table tr th {
-    text-align: center; border-right: 1px solid #4576a4 !important;
+    text-align: center; border-right: 1px solid #989898 !important;
 }
 .notification-table tr td {
     text-align: center; border-left: 1px solid #eae6e6 !important;
@@ -8127,19 +8127,29 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 	position: absolute; width: 550px; margin: 0px auto; left: 0px; right: 0px; top: 10%; background-color: #fff;
 	z-index: 10005; display: none;
 }
+.popupWrap .chosen-choices {
+	margin: 0px 0px !important;
+}
+.popupWrap.popupWrapFixed {
+	position: fixed;
+}
 .popupWrap.popBig {
 	width: 1000px; 
 }
 .popupHead {
-	background-color: #D8D8D8; height: 47px; line-height: 47px; font-size: 15px; font-weight: 600; color: #405063;
+	background-color: #E6E6E6; height: 47px; line-height: 47px; font-size: 15px; font-weight: 500; color: #353535;
 	padding: 0px 10px 0px 15px;
 }
 .closePop {
-	width: 30px; height: 30px; display: block; background: url("../images/svg/arrows.svg"); background-repeat: no-repeat;
-	background-position: -19px -55px; background-size: 249px; cursor: pointer; margin: 10px 0px 0px 0px;
+	width: 30px; height: 30px; display: block; background: url("../images/cross-out.svg"); background-repeat: no-repeat;
+	background-position: center; background-size: 20px; cursor: pointer; margin: 10px 0px 0px 0px; opacity: 0.7;
+	float: right;
 	}
-.popupMid {
+.popupContent {
 	padding: 25px 40px 25px 35px;
+}
+.popupContent label {
+	display: block; font-size: 12px; color: #666;
 }
 .popupFoot {
 	height: 60px; border-top: 1px solid #ededed; padding: 14px 10px 0px 0px;
@@ -8155,10 +8165,10 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 	color: #6C7686; background-color: #f5f5f5;
 }
 .slBtn.colorBtn {
-	background-color: #3EC9A7; border: 1px solid #3EC9A7; color: #fff;
+	background-color: #2997DD; border: 1px solid #3781C0; color: #fff;
 }
 .slBtn.colorBtn:hover {
-	background-color: #2DAB8C;; border: 1px solid #2DAB8C; color: #fff;
+	background-color: #3781C0; border: 1px solid #3781C0; color: #fff;
 }
 .minHeightcol5 .col-md-6 {
 	min-height: 75px;	
@@ -8212,7 +8222,7 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 }
 .tagsWrap {}
 .tagsWrap .chosen-choices {
-	border:none !important; padding: 0px 0px !important; box-shadow: 0px 0px 0px rgba(0,0,0,0);
+	border:none !important; padding: 0px 0px !important; box-shadow: 0px 0px 0px rgba(0,0,0,0); background-image: none !important;
 }
 .tagsWrap .search-choice {
 	height: 28px; margin: 0px 6px 6px 0px !important; padding: 6px 25px 5px 7px !important;
@@ -8403,7 +8413,7 @@ max-width: 100% !important;
 	padding: 0px 240px 0px 0px;
 }
 .reportHead ul {
-	margin: 0px 0px; padding: 10px 0px;
+	margin: 0px 0px; padding: 8px 0px;
 }
 .reportHead ul li {
 	list-style-type: none; float: left; margin: 0px 12px 0px 0px; position: relative; padding: 0px 0px; height: 32px;
@@ -8679,7 +8689,7 @@ max-width: 100% !important;
 	padding: 8px 0px 0px 12px;
 }
 .newAdBtn {
-	height: 32px; color: #fff !important; background-color: #368ee0; display: block; line-height: 32px; padding: 0px 10px !important;
+	height: 32px; color: #fff !important; background-color: #368ee0; display: block; line-height: 31px; padding: 0px 10px !important;
     border-radius: 3px; border: 1px solid #2b7ecc; font-weight: 400 !important; font-size: 14px !important;
 }
 .newAdBtn i {
@@ -8786,6 +8796,9 @@ max-width: 100% !important;
 }
 .invoiCount .count {
     display: block !important;
+}
+.notificatons {
+	padding: 0px !important;
 }
 
 

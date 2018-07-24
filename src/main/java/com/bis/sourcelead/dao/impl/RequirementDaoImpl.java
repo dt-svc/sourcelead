@@ -3283,6 +3283,109 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		return null;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<RequirementDTO> getJobListOfRecruiter(RequirementDTO requirementDTO, Long recruiterUserId,Date[] searchDates,List<Long> teamsList) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Requirement> requirementList = null;
+
+		Query queryObj = null;
+		Integer filterCount = 0;
+		StringBuilder query1 = new StringBuilder("");
+		StringBuilder subQueryTeam = new StringBuilder("");
+		ResponseList<RequirementDTO> response = new ResponseList<>();
+		List<RequirementDTO> requirementDTOList = new ArrayList<>();
+		List<Long> countlist = null;
+		
+		/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String fromDate = sdf.format(searchDates[0]);
+		String toDate = sdf.format(searchDates[1]);*/
+
+		if (requirementDTO.getSearchValue() != null && !"".equalsIgnoreCase(requirementDTO.getSearchValue())) {
+			query1.append(" requirement.generatedId like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.jobTitle like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.location like '%" + requirementDTO.getSearchValue() + "%' ");
+		}
+		if(teamsList.size()>0 && !teamsList.isEmpty()){
+			subQueryTeam.append(" and requirement.id IN (SELECT rato.requirementId.id FROM  RequirementAssignTo rato WHERE rato.teamId.id IN (:teamsList) and rato.status='1')");
+		}
+			String query = "from Requirement requirement  where (requirement.orgLocationId.id =:orglocationId and (requirement.createdDate BETWEEN :fromDate AND :toDate) "+subQueryTeam.toString()+") and (requirement.requirementSubmissionStatus = 'OPEN' or requirement.requirementSubmissionStatus = 'NEW') and ( requirement.releaseJobToAllUsers='Y' or requirement.managerUserId.id =:recruiterUserId or :recruiterUserId IN (select ra.assignUserId.id from RequirementAssignTo ra where ra.requirementId=requirement))";
+			if (query1.toString() != null && !query1.toString().isEmpty()) {
+				queryObj = session.createQuery(query + "and " + "(" + query1.toString() + ")");
+			} else {
+				queryObj = session.createQuery(query + query1.toString());
+			}
+
+			queryObj.setFirstResult(requirementDTO.getStart());
+			queryObj.setMaxResults(requirementDTO.getLength());
+
+			queryObj.setLong("orglocationId", requirementDTO.getOrgLocationId()).setLong("recruiterUserId", recruiterUserId).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]);
+			if (subQueryTeam.toString() != null && !subQueryTeam.toString().isEmpty()) {
+				queryObj.setParameterList("teamsList", teamsList);
+			}
+			requirementList = queryObj.list();
+
+			if (subQueryTeam.toString() != null && !subQueryTeam.toString().isEmpty()) {
+				countlist = session.createQuery("select count(*) " + query).setLong("orglocationId", requirementDTO.getOrgLocationId()).setLong("recruiterUserId", recruiterUserId).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).setParameterList("teamsList", teamsList).list();
+			}else {
+				countlist = session.createQuery("select count(*) " + query).setLong("orglocationId", requirementDTO.getOrgLocationId()).setLong("recruiterUserId", recruiterUserId).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+			}
+			if (query1.toString() != null && !query1.toString().isEmpty()) {
+				filterCount = requirementList.size();
+			}
+
+		int totalCount = 0;
+		if (requirementDTO != null) {
+			if (countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		}
+		response.setRecordsTotal(totalCount);
+		if (query1.toString() != null && !query1.toString().isEmpty()) {
+			response.setRecordsFiltered(filterCount);
+		} else {
+			response.setRecordsFiltered(totalCount);
+		}
+
+		for (Requirement req : requirementList) {
+			RequirementDTO reqDTO = new RequirementDTO();
+			List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList = requirementLocationsService
+					.getRequirementLocationsListByRequirementId(req.getId());
+			if (locationsList != null && !locationsList.isEmpty()) {
+				for (RequirementLocations location : locationsList) {
+					requirementLocationsList.add(location.getLocation());
+				}
+			}
+			reqDTO.setId(req.getId());
+			reqDTO.setRequirementId(req.getId().toString());
+			reqDTO.setJobId(req.getJobId());
+			reqDTO.setGeneratedId(req.getGeneratedId());
+			reqDTO.setJobTitle(req.getJobTitle());
+			reqDTO.setJobType(req.getJobType());
+			reqDTO.setRate(req.getRate());
+			reqDTO.setLocationsList(requirementLocationsList);
+			reqDTO.setPriority(req.getPriority());
+			/*if (StringUtils.isNotBlank(dateFormat)) {
+				reqDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(dateFormat, req.getCreatedDate()));
+			} else {
+				reqDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter("dd-MM-yyyy", req.getCreatedDate()));
+			}*/
+			if(req.getClientId() != null){
+				if(req.getClientId().getResponderType().equalsIgnoreCase("Client")){
+					reqDTO.setClient(req.getClientId().getResponderLocationId().getOrgLocationName());
+				}
+				if(req.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+					reqDTO.setClient(req.getClientId().getLocationId().getOrgLocationName());
+				}
+			}
+			requirementDTOList.add(reqDTO);
+		}
+		response.setData(requirementDTOList);
+		return response;
+	}
 
 	public static void main(String[] args) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
