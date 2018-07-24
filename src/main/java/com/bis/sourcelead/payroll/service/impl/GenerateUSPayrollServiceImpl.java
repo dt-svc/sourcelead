@@ -34,6 +34,7 @@ import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
+import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.AssociateTax;
@@ -113,12 +114,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	
 	 
 	@Override
-	public ResponseList<USPayrollDTO> generateUSPayroll(OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO,User loginUser) throws Exception
+	public PaysheetFrequencyDTO generateUSPayroll(OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO,User loginUser) throws Exception
 	{
 		String dates[] = generateUSPayrollDTO.getPayPeriod().split(",");
 		Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
 		Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
-		ResponseList<USPayrollDTO> usPayrollDTOResponse = new ResponseList<>();
+		PaysheetFrequencyDTO paysheetFrequencyDTO = null;
 		ResponseList<ProjectMembers> response = projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(orgLocation.getId(), actualStartDate, actualEndDate, 1, 10);
 		if (response != null && response.getData() != null && !response.getData().isEmpty()) {
 			
@@ -143,14 +144,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			paySheetFreq.setEmployeepayroll(payrollList);
 			PaysheetFrequency savedPaysheetFrequency = uSPaysheetService.addPaysheetFrequency(paySheetFreq);
 			if(savedPaysheetFrequency != null) {
-			List<USPayrollDTO> list = getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
-			usPayrollDTOResponse.setData(list);
-			usPayrollDTOResponse.setRecordsFiltered(list.size());
-			usPayrollDTOResponse.setRecordsTotal(list.size());
-			usPayrollDTOResponse.setResponseMessage("success");
+			 paysheetFrequencyDTO = getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
 			}
 		}
-		return usPayrollDTOResponse;
+		return paysheetFrequencyDTO;
 	}
 
 	private Set<EmployeePayroll> calculatePayroll(PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<ProjectMembers> projMemberData, Date actualStartDate, Date actualEndDate)
@@ -367,9 +364,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	}
 
 	@Override
-	public List<USPayrollDTO> getPayrollData(GenerateUSPayrollDTO generateUSPayrollDTO, OrgLocations orgLocation, User loginUser)
+	public PaysheetFrequencyDTO getPayrollData(GenerateUSPayrollDTO generateUSPayrollDTO, OrgLocations orgLocation, User loginUser)
 	{
 		PaysheetFrequency paysheetFrequency = generateUSPayrollDao.getPayrollData(generateUSPayrollDTO, orgLocation, loginUser);
+		PaysheetFrequencyDTO paysheetFrequencyDTO = new PaysheetFrequencyDTO();
+		paysheetFrequencyDTO.setId(String.valueOf(paysheetFrequency.getUserGroup().getId()));
+		paysheetFrequencyDTO.setPayrollFrequencyUUID(paysheetFrequency.getPaySheetFrequencyUUID());
 		List<USPayrollDTO> list = null;
 		try {
 			if (paysheetFrequency != null && paysheetFrequency.getEmployeepayroll() != null) {
@@ -404,10 +404,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					list.add(payrollDTO);
 				}
 			}
+			paysheetFrequencyDTO.setPayrollDTO(list);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return list;
+		return paysheetFrequencyDTO;
 	}
 
 	@Override

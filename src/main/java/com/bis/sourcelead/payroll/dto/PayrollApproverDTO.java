@@ -17,6 +17,13 @@ public class PayrollApproverDTO {
 	private String approverName;
 	
 	private String roleName;
+	
+	private String payrollFrequencyUUID;
+	
+	private String payrollFrequencyId;
+	
+	private List<USPayrollDTO> uspayroll;
+	
 
 	public String getConfAprrover()
 	{
@@ -86,6 +93,37 @@ public class PayrollApproverDTO {
 	public void setRoleName(String roleName)
 	{
 		this.roleName = roleName;
+	}
+
+
+	public String getPayrollFrequencyUUID()
+	{
+		return payrollFrequencyUUID;
+	}
+
+	public String getPayrollFrequencyId()
+	{
+		return payrollFrequencyId;
+	}
+
+	public void setPayrollFrequencyUUID(String payrollFrequencyUUID)
+	{
+		this.payrollFrequencyUUID = payrollFrequencyUUID;
+	}
+
+	public void setPayrollFrequencyId(String payrollFrequencyId)
+	{
+		this.payrollFrequencyId = payrollFrequencyId;
+	}
+
+	public List<USPayrollDTO> getUspayroll()
+	{
+		return uspayroll;
+	}
+
+	public void setUspayroll(List<USPayrollDTO> uspayroll)
+	{
+		this.uspayroll = uspayroll;
 	}
 	
 	

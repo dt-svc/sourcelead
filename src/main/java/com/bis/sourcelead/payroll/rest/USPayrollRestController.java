@@ -686,18 +686,14 @@ public class USPayrollRestController {
 		
 		
 		@RequestMapping(value = { "/generateUSPayroll","/rest/generateUSPayroll" }, method = RequestMethod.POST)
-		public ResponseList<USPayrollDTO> generateUSPayroll(GenerateUSPayrollDTO generateUSPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+		public PaysheetFrequencyDTO generateUSPayroll(GenerateUSPayrollDTO generateUSPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			List<USPayrollDTO> existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
+			PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
 			ResponseList<USPayrollDTO> res = new ResponseList<>();
-			if(existedData != null) {
-				res.setData(existedData);
-				res.setRecordsFiltered(existedData.size());
-				res.setRecordsTotal(existedData.size());
-				res.setResponseMessage("success");
-				return res;
+			if(existedData.getPayrollDTO() != null) {
+				return existedData;
 			}else {
 				return generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO,loginUser);
 			}
@@ -1147,14 +1143,24 @@ public class USPayrollRestController {
 	 * @return ResponseList<PayrollApproverDTO>
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/getConfigurePayrollApprover",
-			"/rest/getConfigurePayrollApprover" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getConfigurePayrollApprover","/rest/getConfigurePayrollApprover" }, method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseList<PayrollApproverDTO> getConfigurePayrollApprover(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ResponseList<PayrollApproverDTO> resObj = configurePayrollApproverService.getConfigurePayrollApprover(orgLocation);
 		return resObj;
+	}
+	
+	
+	
+	@RequestMapping(value = { "/sendPayrollForApprover","/rest/sendPayrollForApprover" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<PayrollApproverDTO> sendPayrollForApprover(PayrollApproverDTO payrollApproverDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		System.out.println(payrollApproverDTO);
+		return null;
 	}
 	
 }
