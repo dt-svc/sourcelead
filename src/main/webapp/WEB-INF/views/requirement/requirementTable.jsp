@@ -1050,12 +1050,11 @@ function selectDeleteJob(event) {
 	$(event).toggleClass("trashIcon trashActive");
 	var x = $(event).attr('id');
 	reqUUIDArr.push(x);
-	if($(event).attr('class') == "fa fa-trash "){
+	if($(event).attr('class') == "fa fa-trash"){
 		reqUUIDArr = jQuery.grep(reqUUIDArr, function(value) {
 			  return value != x;
 			});
 	}
-
 	if (reqUUIDArr != "") {
 	 $("#forceDeleteBtn").show();	
 	}else {
