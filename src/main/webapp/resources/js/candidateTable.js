@@ -253,7 +253,7 @@ function cpagination(url){
               		if(full.generatedId != null && full.generatedId != '' && full.generatedId != "undefined"){
   	            	  		result = result +"<div><span title='"+full.generatedId+"'>"+full.generatedId+"</span></div>";
   	              	}else{
-  	            	  		result = result +"<div>----</div>";
+  	            	  		result = result +"<div>--</div>";
   	             	}
   	              return result;
               }
@@ -289,7 +289,7 @@ function cpagination(url){
               		if(full.primarySkill != null && full.primarySkill != '' && full.primarySkill != "undefined"){
   	            	  		result = result +"<div><span title='"+full.primarySkill+"'>"+full.primarySkill+"</span></div>";
   	              	}else{
-  	            	  		result = result +"<div>----</div>";
+  	            	  		result = result +"<div>--</div>";
   	             	}
   	              return result;
               }
@@ -306,7 +306,7 @@ function cpagination(url){
    	             		result = result +"<div>"+opt.designationType+"</div>"; 
    	             	 }
    	             	 }else{
-   	             		 result = result +"<div>----</div>"; 
+   	             		 result = result +"<div>--</div>"; 
    	             	 }
     	              return result;
                 }
@@ -325,7 +325,7 @@ function cpagination(url){
 	    	  		if(full.mobilePhone != null && full.mobilePhone != 'undefined' && full.mobilePhone != ""){
 	         		       mobilePhone = full.mobilePhone;
 		            	}else{
-		            		mobilePhone = "----";
+		            		mobilePhone = "--";
 		            	}
 	    	  		return "<div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div>";
 	    	  	}
@@ -343,7 +343,7 @@ function cpagination(url){
 			            			 location = opt.city+", "+location;
 				            	}
 		            		}else{
-		            			location = "------";
+		            			location = "--";
 		            		}
       	              return "<div><span title='"+location+"'>"+location+"</span></div>";
                   }
@@ -356,7 +356,7 @@ function cpagination(url){
                   		if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
                   			result = "<div>"+opt.candidateUpdateDateToString+"</div>"; 
 			            	}else{
-			            		result = "<div>---</div>";
+			            		result = "<div>--</div>";
 			            	}
       	              return result;
                   }
@@ -369,7 +369,7 @@ function cpagination(url){
                     		if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
                     			return "<div><span title='"+opt.createdBy+"'>"+opt.createdBy+"</span></div>";
   			            	}else{
-  			            		result = "<div>---</div>";
+  			            		result = "<div>--</div>";
   			            	}
         	              return result;
                     }

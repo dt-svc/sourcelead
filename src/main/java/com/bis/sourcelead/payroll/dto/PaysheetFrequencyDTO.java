@@ -8,6 +8,8 @@ import com.bis.sourcelead.dto.SearchDTO;
 
 public class PaysheetFrequencyDTO  extends SearchDTO{
 	
+	private String id;
+	
 	private String groupId;
 	
 	private String payPeriod;
@@ -22,6 +24,10 @@ public class PaysheetFrequencyDTO  extends SearchDTO{
 	private BigDecimal total;
 	private String paySheetFrequencyuuid;
 	
+
+	private List<USPayrollDTO> payrollDTO;
+	
+	private String payrollFrequencyUUID;
 	
 	public String getGroupId()
 	{
@@ -55,6 +61,7 @@ public class PaysheetFrequencyDTO  extends SearchDTO{
 	{
 		this.uSPaysheetDTO = uSPaysheetDTO;
 	}
+
 	public String getPayFrequency() {
 		return payFrequency;
 	}
@@ -85,4 +92,30 @@ public class PaysheetFrequencyDTO  extends SearchDTO{
 	public void setPaySheetFrequencyuuid(String paySheetFrequencyuuid) {
 		this.paySheetFrequencyuuid = paySheetFrequencyuuid;
 	}
+
+	public String getPayrollFrequencyUUID()
+	{
+		return payrollFrequencyUUID;
+	}
+	public void setPayrollFrequencyUUID(String payrollFrequencyUUID)
+	{
+		this.payrollFrequencyUUID = payrollFrequencyUUID;
+	}
+	public List<USPayrollDTO> getPayrollDTO()
+	{
+		return payrollDTO;
+	}
+	public void setPayrollDTO(List<USPayrollDTO> payrollDTO)
+	{
+		this.payrollDTO = payrollDTO;
+	}
+	public String getId()
+	{
+		return id;
+	}
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+	
 }

@@ -264,6 +264,17 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			return null;
 		}
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Invoice> getInvoiceListByIdsAndLocationId(List<Long> invoiceIds, Long locationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Invoice invoice  where invoice.id IN (:invoiceIds) and invoice.orgLocation.id = :locationId";
+		List<Invoice> invoiceList = session.createQuery(query).setParameter("locationId", locationId).setParameterList("invoiceIds", invoiceIds).list();
+		
+		return invoiceList;
+	}
 
 
 	@Override
@@ -560,5 +571,19 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		String query = "from Invoice invoice  where invoice.projectID.id = :projectId and invoice.invoiceStatus =:invoiceStatus and invoice.orgLocation.id = :orgLocationId and date(invoice.createdDate) BETWEEN :startDate and :endDate";
 		List<Invoice> viewInvoiceList = session.createQuery(query.toString()).setString("invoiceStatus", invoiceStatus).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 		return viewInvoiceList;
+	}
+
+
+	@Override
+	@Transactional
+	public ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(OrgLocations orgLocations, Long orgRelationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		ResponseList<Invoice> response = new ResponseList<>();
+		String query ="from Invoice invoice  left join fetch  invoice.orgRelationID left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
+ 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.orgRelationID.id = :orgRelationId and invoice.status = '1' and (invoice.invoiceStatus = 'SENT' or invoice.invoiceStatus = 'ACCEPTED') and (invoice.paymentStatus = 'Unpaid' or invoice.paymentStatus = 'Partial Paid')";
+		List<Invoice> invoiceList = session.createQuery(query).setParameter("orgRelationId", orgRelationId).setParameter("orgLocationId", orgLocations.getId()).list();
+		response.setData(invoiceList);
+		return response;
 	}
 }

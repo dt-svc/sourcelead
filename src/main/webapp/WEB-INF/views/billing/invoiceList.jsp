@@ -159,6 +159,7 @@ $(document).ready(function(){
 	                      <a href="javascript:void(0)" title="Create invoice"  onclick="createBill();">Create Invoice</a>
 	                  	</sec:authorize>
 	                   	<a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();">Generate Automatic Invoice</a>
+	                   	 <%-- <a href="<c:url value='${appPath}/addPaymentInvoice'/>">Add Payment</a> --%>
 					</span>
 				</div>
 			</li>

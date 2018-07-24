@@ -216,7 +216,6 @@ $(document).ready(function(){
  
  <script type="text/javascript">
  function createGrade() {
-	 
 	   if ($('#addgrade_form').validate(false, validationSettings)){ 
 		
 		    var formData = getFormData("addgrade_form");
