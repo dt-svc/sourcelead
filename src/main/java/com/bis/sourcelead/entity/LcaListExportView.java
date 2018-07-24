@@ -43,7 +43,7 @@ public class LcaListExportView implements Serializable {
 	private String lcaStatus;
 	
 	@Column(name = "STATUS")
-	private Integer status;
+	private String status;
 	
 	@Column(name = "SOC_CODE")
 	private String socCode;
@@ -113,16 +113,15 @@ public class LcaListExportView implements Serializable {
 	public void setLcaStatus(String lcaStatus) {
 		this.lcaStatus = lcaStatus;
 	}
-
-	public Integer getStatus() {
+	
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(Integer status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
-	
 	public String getSocCode() {
 		return socCode;
 	}
