@@ -1559,6 +1559,88 @@ public class RequirementDaoImpl implements RequirementDao {
 		return query.list();
 
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getRequirementListByPostedDateAndSelectedClients(Long orgLocationId, Long userId,
+			int numberOfDays, String selectedClients) {
+		try {
+
+			Calendar c = Calendar.getInstance();
+			c.set(Calendar.HOUR_OF_DAY, 0);
+			c.set(Calendar.MINUTE, 0);
+			c.set(Calendar.SECOND, 0);
+			Date todayDate = c.getTime();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			/*
+			 * String startTimeTS = Constants.TZ_DF.format(todayDate); String
+			 * startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
+			 * Date startUTCDate = dateFormat.parse(startDateString);
+			 */
+
+			// @Mahaveer Manoj commented above code for testing jobFairs, uncomment this in
+			// commit
+			Date startUTCDate = todayDate;
+
+			int hrs = numberOfDays * 24;
+
+			Date nHrsUTCDate = null;
+			if (hrs > 0) {
+				nHrsUTCDate = DateUtils.addHours(startUTCDate, -hrs);
+			}
+
+			Session session = this.sessionFactory.getCurrentSession();
+			// User user = userDao.getUserById(userId);
+
+			Map<String, Object> params = new HashMap<String, Object>();
+
+			String from = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId ";
+			String subQuery = "";
+			String dateBetween = "";
+			if (hrs > 0) {
+				dateBetween = "DATE(requirement.createdDate) >=:nHrsUTCDate and DATE(requirement.createdDate) <= :startUTCDate and ";
+			}
+
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
+
+			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId", userId);
+
+			if (subQuery1 != "" || subQuery2 != "") {
+				subQuery = "where " + dateBetween + " requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1
+						+ ") or (" + subQuery2 + ")) ";
+			}
+
+			if (selectedClients != null && !selectedClients.isEmpty()) {
+				subQuery += (subQuery.contains("where") ? " and " : " where ")
+						+ "(requirement.clientId.locationId.org.orgName in (" + selectedClients
+						+ ") or requirement.clientId.responderLocationId.org.orgName in (" + selectedClients + "))";
+			}
+
+			params.put("orgLocationId", orgLocationId);
+			params.put("startUTCDate", startUTCDate);
+			if (hrs > 0) {
+				params.put("nHrsUTCDate", nHrsUTCDate);
+			}
+
+			String whereCondition = subQuery;
+			Query query = session.createQuery(from + " " + whereCondition + " ORDER BY requirement.id DESC");
+			for (String str : query.getNamedParameters()) {
+				if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")) {
+					query.setLong(str, (long) params.get(str));
+				} else {
+					query.setParameter(str, params.get(str));
+				}
+
+			}
+			return query.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -1841,6 +1923,21 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'" + generatedIdCount + "') AS UNSIGNED)) FROM "
 				+ schema + ".REQUIREMENT WHERE ORG_LOCATION_ID = '" + orgLocationId + "'";
+		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+		Long count = 0L;
+		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+			count = (Long) maxCountList.iterator().next().longValue();
+		}
+		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getJobFairGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdCount) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'" + generatedIdCount + "') AS UNSIGNED)) FROM "
+				+ schema + ".JOB_FAIR WHERE ORG_LOCATION_ID = '" + orgLocationId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
@@ -2781,6 +2878,24 @@ public class RequirementDaoImpl implements RequirementDao {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Transactional
+	@Override
+	public JobFair getJobFairByName(String jobFairName) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from JobFair jobFair where jobFair.name=:jobFairName";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("jobFairName", jobFairName);
+			List<JobFair> jobFairList = queryObj.list();
+			if (jobFairList != null && !jobFairList.isEmpty())
+				return jobFairList.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Override
 	@Transactional
 	public JobFair getJobFairByUUID(String uuid) {
@@ -2813,14 +2928,14 @@ public class RequirementDaoImpl implements RequirementDao {
 			 query1.append("and (jobFair.name like '%" + jobFairDTO.getSearchValue() + "%' ")
 				   .append("OR jobFair.venue like '%" + jobFairDTO.getSearchValue() + "%' )");
 			}
+			query1.append(" order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder());
 			
 			String query = "from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
-			query += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();
-			Query queryObj = session.createQuery(query + query1);
+			Query queryObj = session.createQuery(query + " " + query1);
 			jobFairList = queryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).setFirstResult(jobFairDTO.getStart()).setMaxResults(jobFairDTO.getLength()).list();
 			
 			String  countQuery = "select count(*) from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
-			countQuery += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();
+			/*countQuery += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();*/
 			Query countQueryObj = session.createQuery(countQuery + query1); 
 			countlist = countQueryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).list();
 			
@@ -3075,6 +3190,52 @@ public class RequirementDaoImpl implements RequirementDao {
 		return requirementList;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+		List<Requirement> requirementList = new LinkedList<>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements where jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId and jobFair.id = :jobFairId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("userId", userId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setLong("jobFairId", jobFairId);
+			List<Long> idList = queryObj.list();
+			for (Long id : idList) {
+				JobFairRequirements jobFairRequirements = getJobFairRequirementsById(id);
+				if (jobFairRequirements != null) {
+					Requirement requirement = jobFairRequirements.getRequirement();
+					requirementList.add(requirement);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return requirementList;
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select jobFairRequirements.fairDates from JobFairRequirements jobFairRequirements where jobFairRequirements.requirement.id =:requirementId and jobFairRequirements.jobFair.id =:jobFairId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("requirementId", requirementId);
+			queryObj.setLong("jobFairId", jobFairId);
+			List<String> fairDatesList = queryObj.list();
+			if (fairDatesList != null && !fairDatesList.isEmpty()) {
+				return fairDatesList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Override
 	@Transactional
 	public List<Long> getJobFairRequirementsIdListByRequirementId(long requirementId) {
@@ -3104,6 +3265,23 @@ public class RequirementDaoImpl implements RequirementDao {
 			e.printStackTrace();
 		}
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<JobFair> getJobFairWithNullGeneratedIdList() {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from JobFair jobFair where jobFair.generatedId = null";
+			List<JobFair> jobFairList = session.createQuery(query).list();
+			if (jobFairList != null && !jobFairList.isEmpty()) {
+				return jobFairList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static void main(String[] args) {

@@ -15,7 +15,7 @@
      <div class="pull-left">
      <h2>Add Payment</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Invoice List</a> &raquo;  Add Payment </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payablesList'/>">Bill List</a> &raquo;  Add Payment </div>
     
     </section>
     <form id= "paymentForm" name="paymentForm" method="post">
@@ -23,10 +23,10 @@
     	 	<div class="row">
     	 		<div class="form-group clearfix mt">
     	 			<div class="col-md-6 mb">
-    	 					<label class="col-md-3">Client<span class="text-danger paddingLeft">*</span></label>
+    	 					<label class="col-md-3">Vendor<span class="text-danger paddingLeft">*</span></label>
     	 					<div class="col-md-9">
-    	 						<select class="form-control chosen-select" id="client" name="client" field-name="Client" onchange="getInvoiceList()" data-validation="required" >
-		                        <option value="">-Select Client-</option>
+    	 						<select class="form-control chosen-select" id="vendor" name="vendor" field-name="Vendor" onchange="getPaybleList()" data-validation="required" >
+		                        <option value="">-Select Vendor-</option>
 		                        <c:forEach var="vendors" items="${vendorsList}">
 									<option value="${vendors.id}">${vendors.locationId.org.orgName}</option>
 								</c:forEach>
@@ -67,7 +67,7 @@
     	 				<label class="col-md-3 paddingRight">Amount Received<span class="text-danger paddingLeft">*</span></label>
 	    	 			<div class="clearfix">
 	    	 			<div class="col-md-6">
-	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" data-validation="required validate_length length2-250" field-name ="Amount Received">
+	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" onkeyup="validateNumber(this);" data-validation="required validate_length length2-250" field-name ="Amount Received">
 	    	 			</div>
 	    	 			<div class="col-md-3">
 	    	 				<input type="text" class="form-control" id="currencyType" name = "currencyType" readonly="readonly">
@@ -81,23 +81,17 @@
 					</div>
 				</div>
 				
-    	 		<div class="col-md-6 minHeight50 mb">
-					<label class="col-md-3">Attachment</label>
-						<div class="col-md-9 zindex positionRelative">
-								<div class="input-group col-md-12" id="uploadFileGroup"
-									style="margin: 0 auto">
-									<label class="input-group-btn"> <span
-										class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
-											File <input type="file" style="display: none;" id="uploadBtn"
-											class="upload"> </span>
-									</label> <input type="text" class="form-control" readonly
-										id="uploadFile" name="docFile" placeholder="Upload Resume ..."
-										field-name="Upload Resume" data-validation="validatedoc "
-										data-validation-optional="true">
-									<div class="clearUpload"></div>
-								</div>
-						</div>
+ 	 		<div class="col-md-6 minHeight50 mb">
+		<label class="col-md-3">Attachment</label>
+			<div class="col-md-9 zindex positionRelative">
+				<div class="input-group col-md-12" id="uploadFileGroup"	style="margin: 0 auto"> 
+				<label class="input-group-btn"> <span class="btn btn-primary" onchange="getFleInformation();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
+				</label> 
+				<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document" field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true">
+					<div class="clearUpload"></div>
 				</div>
+			</div>
+		</div>
     	 		</div>
     	 		<div class="clearfix"></div>
     	 		
@@ -113,12 +107,25 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	getInvoiceList();
+	getPaybleList();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	$("#currencyType").val(currencyCode);
 	
 });
 </script>
+
+<script type="text/javascript">
+    function getFleInformation() {
+    	fileUpload("uploadBtn", "incoiceDocuments", "paymentForm");	
+	}
+	
+
+/* upload file script */
+document.getElementById("uploadBtn").onchange = function () {
+    $('#uploadFile').val($("#uploadBtn").val().replace(/C:\\fakepath\\/i, '')); 
+};
+</script>
+
 <script type="text/javascript">
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 // written common method in slead-common.js for date formats start
@@ -132,17 +139,17 @@ $('#paymentDate').datepicker({
 });
 </script>
 <script>
-  function getInvoiceList(){
-	  var orgRelationId = $("#client").val();
+  function getPaybleList(){
+	  var orgRelationId = $("#vendor").val();
 	   $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getInvoiceListForPayment?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+	        url: sourceleadUrl+"/getInvoiceListForPayment?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&invoiceType=payables",
 	        success: function(json) {
 	        	
 	        	var result = '';
-         		result = result +'     <form id ="paymentForm" name ="paymentForm" method="post">'; 
-         		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table addinvoiceTable">'; 
-         	    result = result +'       <table id="invoiceListTable" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+         		//result = result +'     <form id ="paymentForm" name ="paymentForm" method="post">'; 
+         		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table">'; 
+         	    result = result +'       <table id="invoiceListTable" class="clearfix" cellspacing="0" width="100%" >';
          		result = result +'           <thead>';
          		result = result +'           <tr>';
          		result = result +'           <th><input type="checkbox" id="checkAllRecords" onclick="toggleInvoices(this);"></th>';
@@ -183,7 +190,7 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'<td>'+opt.total+'</td>';
 	                    	 result = result +'<td>'+opt.dueAmount+'</td>';
 	                    	 result = result +'<td>'+opt.invoiceStatus+'</td>';
-	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeypress="amountInputVal(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'" name="totalAmountRow"></td>';
+	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeyup="amountInputVal2(this);validateNumber(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'"></td>';
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
@@ -196,7 +203,7 @@ $('#paymentDate').datepicker({
 	                 	 result = result +'   <div class="modal-footer">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();" >Add</button>';
 	                 	 result = result +'   </div>'; 
-	                 	result = result +'     </form>'; 
+	                 	//result = result +'     </form>'; 
 	                 	 $("#invoiceList").empty(); 
 	                     $("#invoiceList").append(result); 
 	                     ListPagination();  
@@ -217,44 +224,59 @@ $('#paymentDate').datepicker({
   
   </script>
   <script type="text/javascript">
-function addInvoice(){
-	 if ($('#paymentForm').validate(false, validationSettings)) {
-		 var invoiceIdsMap = new Object();
-		 $('input:checkbox[name=invoices]:checked').each(function() {
-				invoiceIdsMap[this.id] = $("#totalAmountRow"+this.id).val();
-		     });
-		 var formData = getFormData("paymentForm");
-		  $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+JSON.stringify(invoiceIdsMap), formData, function(result) {
-			 
-		 }); 
-		  invoiceIdsMap = {};
-	 }
-	
-}
-$('body').on('blur', '#paymentForm', function() {
-	$("#paymentForm").showHelpOnFocus();
-	$("#paymentForm").validateOnBlur(false, validationSettings);
-});
+  function addInvoice(){
+		 if ($('#paymentForm').validate(false, validationSettings)) {
+			 var grandDueTotal = $("#grandTotalAmount").text();
+			 var grandTotalReceived = $("#totalAmount").val();
+			 if(grandDueTotal == grandTotalReceived){
+			 var invoiceIds= []
+			 var amount = "";
+			 $('input:checkbox[name=invoices]:checked').each(function() {
+					//invoiceIdsMap[this.id] =  $("#totalAmountRow"+this.id).val();
+					invoiceIds.push(this.id+"_"+$("#totalAmountRow"+this.id).val()); // pushing values as id_invoice amount to array.
+					amount = $("#totalAmountRow"+this.id).val();
+			     }); 
+			 if(amount !=null && amount !="" && amount !="undefined"){
+			 var formData = getFormData("paymentForm");
+			 $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
+				 location.reload();
+		 });
+			 }else{
+				 alert("please select at least one record / Amount should not Empty");
+			 }
+		 }else{
+			 alert("Amount Received and Due Total should be same");
+		 }
+		}
+	}
+	$('body').on('blur', '#paymentForm', function() {
+		$("#paymentForm").showHelpOnFocus();
+		$("#paymentForm").validateOnBlur(false, validationSettings);
+	});
 </script>
   <script>
-  function amountInputVal(obj){
-	  var totalVal = $("#grandTotalAmount").text();
-	  if(totalVal == ''){
-		  totalVal = 0;
-	  }
-	  var objTotal = 0;
-	  if(obj.value = ''){
-		  objTotal = 0;
-	  }else{
-		  objTotal = obj.value;
-	  }
-	  var total = totalVal += objTotal;
-	  $("#grandTotalAmount").text(total);
-  }
+  function validateNumber(object){ 
+	   object.value = object.value.replace(/[^0-9\.]/g,'');
+	}
   
+  function amountInputVal2(obj){
+	  // this is for total value updation based our input
+	  var totalValue=0.00;
+	  $("input[id^=totalAmountRow]").each(function() {
+	       var value = $(this).val();
+	    if($.isNumeric(value)){
+	       totalValue= totalValue+parseFloat(value);
+	  	} 
+	  });
+	  $("#grandTotalAmount").text(totalValue.toFixed(2));
+	// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+	  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(totalValue.toFixed(2));
+  }
+  </script>
+   <script>
 	function toggleInvoices(source) {
 	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-	    var total = 0;
+	    var total = 0.00;
 	    for (var i = 0; i < checkboxes.length; i++) {
 	        if (checkboxes[i] != source){
 	            checkboxes[i].checked = source.checked;
@@ -264,25 +286,29 @@ $('body').on('blur', '#paymentForm', function() {
 	        		total += parseFloat(checkboxes[i].value);
 	            }else{
 	            	$("#totalAmountRow"+checkboxes[i].id).val('');
-	            	total = 0;
+	            	total = 0.00;
 	            }
 	    	}
-	        $("#grandTotalAmount").text(total);
+	        $("#grandTotalAmount").text(total.toFixed(2));
+	     // For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+			  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(total.toFixed(2));
 	    }
-	    
+	
 	$('input:checkbox:not(#checkAllRecords)').click(function() {
 	    if(!this.checked) {
 	        $('#checkAllRecords').removeAttr('checked');
 	    }
 	});
 	}
+	</script>
 	
+	<script>
 	function checkSingleInvoice(id, amount){
 		var totalAmount = $("#grandTotalAmount").text();
 		if(totalAmount == ''){
-			totalAmount = 0;
+			totalAmount = 0.00;
 		}
-		var grandTotalAmount = 0;
+		var grandTotalAmount = 0.00;
 		  if($("#"+id).is(':checked')){
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
@@ -290,14 +316,19 @@ $('body').on('blur', '#paymentForm', function() {
 			  $("#totalAmountRow"+id).val('');
 			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
 		  }
-		  $("#grandTotalAmount").text(grandTotalAmount);
+		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
+		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
+		  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
 	  }
-</script>
+	</script>
+	
 <script>
 function ListPagination(){ 
 	
 	 $("#invoiceListTable").DataTable( { 
-	    	"scrollCollapse": false,
+		 	"scrollY":"350px",	
+		 	"scrollCollapse": false,
+		 	"paging": false,
 	    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
 	    	"bLengthChange": false,
 	    	"bDestroy": true,

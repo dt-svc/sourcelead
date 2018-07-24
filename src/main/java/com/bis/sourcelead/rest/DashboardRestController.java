@@ -16,6 +16,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -1693,7 +1694,17 @@ public class DashboardRestController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-//				JSONArray jsonArray = new JSONArray(dashboardItemsDTO.getItems());
+				JSONArray jsonArray = new JSONArray(dashboardItemsDTO.getJsonData());
+				if(jsonArray!=null) {
+					for(int i=0;i<jsonArray.length();i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						if (!jsonObject.has("name") || !jsonObject.has("checked") || !jsonObject.has("order") || !jsonObject.has("size")) {
+							response.setResponse(Result.INVALID_DATA.name());
+							response.setResponseMessage(Result.INVALID_DATA.getValue());
+							return response;
+						}
+					}
+				}
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				response = userService.saveDashboardItems(dashboardItemsDTO, user, orgLocations);
 			} else {
@@ -1702,6 +1713,8 @@ public class DashboardRestController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return response;
 	}

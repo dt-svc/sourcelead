@@ -2369,7 +2369,8 @@ public class LeaveManagementRestController {
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception {
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		return leaveService.getAllEmployeesLeavesCounts(orgLocationId, userId, loginUserRole);
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		return leaveService.getAllEmployeesLeavesCounts(orgLocationId, userId, loginUserRole,org.getId());
 	}
 
 	@RequestMapping(value = { "/totalCountsForSelfLeaves","/rest/totalCountsForSelfLeaves" }, method = RequestMethod.GET)
@@ -2410,7 +2411,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
-	@RequestMapping(value = "/withdrawLeave")
+	@RequestMapping(value = {"/withdrawLeave", "/rest/withdrawLeave"})
 	@ResponseBody
 	public Response<String> withdrawLeave(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
@@ -2873,8 +2874,7 @@ public class LeaveManagementRestController {
 			model.setViewName("leavemanagement/applyLeave");
 			return model;
 	}
-
-
+	
 	@RequestMapping(value = "/checkBalance")
 	public void checkBalance(HttpServletRequest request,HttpServletResponse response) throws Exception {
 //		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
