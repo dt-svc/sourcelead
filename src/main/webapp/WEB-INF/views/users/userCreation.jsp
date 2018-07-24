@@ -703,7 +703,6 @@ function getEmployeementType(designationType){
 						$("#loading").removeAttr('style');
 					} 
 					else if(loginCurrencyCode != 'USD') {
-						alert(1)
 						$("#associateId").val(result.object.userId);
 						var associateLeaveType = document.getElementById("associateLeaveType");
 						document.getElementById("associateLeaveType").removeAttribute("class"); 
@@ -713,7 +712,6 @@ function getEmployeementType(designationType){
 						getAllLeaveType();
 						/* location.replace(sourceleadUrl+"/usersList"); */
 					}else{
-						alert(2)
 					$("#associateId").val(result.object.userId);
 						$("#empType").val(result.object.designationType);
 						var associateSalary = document.getElementById("associateSalary");
