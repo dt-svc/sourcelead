@@ -98,7 +98,6 @@
     	 		
     	 		<div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
-	                  <div id="demoval"></div>
     	 		</div>
     	 		<!--  Table html -->
     	 		</div>
@@ -246,7 +245,7 @@ function addInvoice(){
 		 if(amount !=null && amount !="" && amount !="undefined"){
 		 var formData = getFormData("paymentForm");
 		 $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
-			 getInvoiceList();
+			 location.reload();
 	 });
 		 }else{
 			 alert("please select at least one record / Amount should not Empty");
