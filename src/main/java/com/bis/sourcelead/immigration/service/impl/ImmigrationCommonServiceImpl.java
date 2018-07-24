@@ -2486,14 +2486,14 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 				    	String dateString = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaExportView.getStartDate());
 				    	 ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), dateString, null);
 				    	
-				     }else if(fieldName.equalsIgnoreCase("status")) {
+				     }/*else if(fieldName.equalsIgnoreCase("status")) {
 				    	 Integer status = lcaExportView.getStatus();
 				    	 if(status == 1) {
 				    	     ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), ImmigrationConstants.LCA_STATUS_ACTIVE, null);
 				    	 }else {
 				    		 ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), ImmigrationConstants.LCA_STATUS_IN_ACTIVE, null);
 				    	 }
-				     }
+				     }*/
 				     else {
 				             ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), field.get(lcaExportView), null);
 				     }
