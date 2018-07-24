@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -71,21 +72,27 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	
 	
-	
 	@RequestMapping(value = "/recruiterJobsReport")
-	public ModelAndView recruiterJobsReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public ModelAndView recruiterJobsReport(@RequestParam(value="userCode", required=false)String recruiterUserCode, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+		 
+		 User recruiterUser = userService.getUserByUserCode(recruiterUserCode);
+		 
+		 
 		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
 		 ModelAndView model = new ModelAndView();
 		 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-		 List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+		 List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(recruiterUser.getId(), orgLocations.getId());
 		 model.addObject("teamsList", teamsList);
 		 model.addObject("userList", userList);
+		 
+		 model.addObject("recruiterUser", recruiterUser);
 		 model.addObject("requirementTabAccess", requirementTabAccess);
 		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.setViewName("reports/recruitersReports");
+		 model.setViewName("reports/recruiterJobsReport");
 		 return model;
     }
 	
