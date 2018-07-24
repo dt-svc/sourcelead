@@ -90,6 +90,8 @@ width: 75px; padding: 0 !important;
 </script>
 
 <script>
+	var allDates = {};
+	var interviewDates = {};
 	function getInterviewsDates() {
 		var sourceleadUrl = '${sourceleadUrl}';
 		var dates = {}
@@ -109,6 +111,7 @@ width: 75px; padding: 0 !important;
 							dates[new Date(data[i]).getTime()] = 'visible';
 						}
 					}
+					interviewDates = dates;
 					eventCalendar(dates);
 				} else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
@@ -119,6 +122,7 @@ width: 75px; padding: 0 !important;
 		});
 	}
 
+	var jobFairDates = {};
 	function getJobFairDates() {
 		var sourceleadUrl = '${sourceleadUrl}';
 		var dates = {}
@@ -138,6 +142,7 @@ width: 75px; padding: 0 !important;
 							dates[new Date(data[i]).getTime()] = 'visible';
 						}
 					}
+					jobFairDates = dates;
 					getJobFairCalendar(dates);
 				} else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
@@ -146,6 +151,11 @@ width: 75px; padding: 0 !important;
 				}
 			}
 		});
+	}
+	function test() {
+		for(var e in jobFairDates) {
+			alert(jobFairDates[e]);
+		}
 	}
 </script>
 

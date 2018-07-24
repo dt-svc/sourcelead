@@ -3,6 +3,8 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
+import com.bis.sourcelead.dto.LeaveTypeEditDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
@@ -35,4 +37,7 @@ public interface AssociateBalanceLeaveDao {
 	int updateAssociateDateOfJoinBalanceLeaveType(Long orgLocationId, User user, int status, String methodType);
 
 	int addAssociateLeaveType(User loginUser, Long orgLocationId, Employees employee, UserRole userRole);
+
+	int updateLeaveTypeAssociateBalances(List<LeaveTypeEditDTO> list);
+
 }
