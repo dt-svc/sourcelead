@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LcaDocumentHistory;
+import com.bis.sourcelead.entity.LcaListExportView;
 import com.bis.sourcelead.entity.LcaListView;
 import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.LcaVisaClarifications;
@@ -1900,6 +1901,16 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			query = "SELECT SOC_CODE from oes_soc_occs where id = :id"; 
 			return (String) session.createSQLQuery(query).setLong("id", id).uniqueResult();
 		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<LcaListExportView> getLcaListExportDetails(OrgLocations orgLocations) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String listQuery = "from LcaListExportView lcaExportView  where  lcaExportView.orgLocationId=:orgLocationId";
+		List<LcaListExportView> listExportViews = session.createQuery(listQuery).setParameter("orgLocationId", orgLocations.getId()).list();
+		System.out.println(listExportViews.size());
+		return listExportViews;
 	}
 
 }

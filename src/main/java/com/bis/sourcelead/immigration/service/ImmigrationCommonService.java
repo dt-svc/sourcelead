@@ -165,4 +165,5 @@ public interface ImmigrationCommonService {
 	String getOesSocCodeById(Long id, String socType);
 
 	
+    Sheet getLCAExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, OrgLocations orgLocations);
 }

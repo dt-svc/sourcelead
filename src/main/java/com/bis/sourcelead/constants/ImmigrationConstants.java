@@ -28,6 +28,10 @@ public class ImmigrationConstants {
 	public static final String SEND_REQUEST = "sendRequest";
 	public static final Integer STATUS_ACTIVE = 1;
 	public static final Integer STATUS_IN_ACTIVE = 0;
+	
+	public static final String LCA_STATUS_ACTIVE = "Active";
+	public static final String LCA_STATUS_IN_ACTIVE = "In-Active";
+	
 	public static final String IMMIGRATION_UPLOAD ="immigrationUpload";
 	public static final String LCA_UPLOAD ="lcaUpload";
 	
@@ -71,6 +75,9 @@ public class ImmigrationConstants {
        put(8,"curVenodorLocation");put(9,"socCode");put(10,"socTitle");put(11,"wageLevel");put(12,"prevailWageCurr");
        put(13,"prevailWageRate");put(14,"prevailWageRatePer");put(15,"newLcaStartDate");put(16,"newLcaEndDate");put(17,"lcaStatus");put(18,"newStatus");
    }};
+   
+   public static final String[] LCA_LIST_EXCEL_HEADERS = { "LCA Number", "LCA Title", "Number Of Positions", "Employee Name", "Employee Email", "Current Client Location", "Current Primary Venodor Location", "Current Venodor Location", "Soc Code",
+			"SOC Title", "Wage Level", "Prevail Wage Currency", "Prevail Wage Rate", "Prevail Wage Rate Per", "LCA Start Date", "LCA End Date", "LCA Status", "Status"};
    
    public static final Map HEADERS_FIELD_NAMES_MAP = new HashMap<Integer, String>(){{
        put(1,"Beneficiary First Name");
@@ -125,4 +132,6 @@ public class ImmigrationConstants {
 	
 	public static List<String> MARRAIAGE_STATUS_LIST = Arrays.asList("Single","Married","","Divorced","Separated");
 	
+	public static List<String> LCA_EXCEL_REFLECTION_FILEDS_LIST = Arrays.asList("lcaNo","lcaTitle", "noOfPositions","empName","empEmail","location","socCode","socOccupationTitle","wagesLevel","privilingWageCurrency","prevailingWage",
+			                                                                    "privilingWageRateType","startDate","endDate","lcaStatus","status");
 }

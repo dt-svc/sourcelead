@@ -2401,6 +2401,52 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
+	@RequestMapping(value = { "/getLcaListExport" })
+	public void getLCAListExport(@RequestParam(value = "exportType", required = false) String exportType,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		File file = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
+		StringBuilder excelSB = new StringBuilder();
+		Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("LCA List")
+				.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date())).toString());
+		
+		if (!"pdf".equalsIgnoreCase(exportType)) {
+			createExcelsheet = immigrationCommonService.getLCAExcelFile(createExcelsheet, createExcelworkbook,
+					orgLocations);
+			StringBuilder templateSB = new StringBuilder();
+			file = File.createTempFile(
+					templateSB.append(orgLocations.getOrgLocationName() + "_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date())).toString(), ".xls");
+			file.setReadable(true);
+
+			FileOutputStream fos = new FileOutputStream(file);
+			try {
+				createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition",
+				fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+	}
+	
 	/*
 	 * LCA Code Ends Here
 	 */

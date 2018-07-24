@@ -643,6 +643,9 @@ public class Constants {
 			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
 			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
 
+	
+	
+	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee ID" , "First Name*","Last Name", "Email id*", "Phone Number", "Extension Number",
 			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User(Y/N)","Is Global Manage(Y/N)"};
 
