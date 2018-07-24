@@ -75,7 +75,7 @@ $(document).ready(function(){
             </tbody>
           </table>
         </div> -->
-        <nav>
+<!--         <nav>
           <ul id="paging" class="pagination">
             <li><a href="#">Previous</a></li>
             <li><a href="#">2</a></li>
@@ -86,7 +86,7 @@ $(document).ready(function(){
             <li data-page="last"><a href="#">Next</a></li>
           </ul>
           <div class="clearfix"></div>
-        </nav>
+        </nav> -->
       </div>
     </div>
   </section>
@@ -173,7 +173,7 @@ function daywiseLeaveReportsListPagination(url){
 		        "render": function ( data, type, user, meta ) {
 		        	  var result = '';
 		        	  if(user.employmentType !=null && user.employmentType !='' && user.employmentType !='undefined'){
-							 result = result +" <a href='<c:url value='/app/userSummary/"+user.employmentType+"'/>'' title = '"+user.employmentType+"' class='UserTextLeft'>"+user.employmentType+"</a>";
+							 result = result + user.employmentType;
 			          }else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
@@ -185,7 +185,7 @@ function daywiseLeaveReportsListPagination(url){
 		          "render": function ( data, type, user, meta ) {
 		        	  var result = '';
 		        	  if(user.leaveTypeName !=null && user.leaveTypeName !='' && user.leaveTypeName !='undefined'){
-							 result = result +" <a href='<c:url value='/app/userSummary/"+user.leaveTypeName+"'/>'' title = '"+user.leaveTypeName+"' class='UserTextLeft'>"+user.leaveTypeName+"</a>";
+							 result = result + user.leaveTypeName;
 			          }else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
@@ -198,7 +198,7 @@ function daywiseLeaveReportsListPagination(url){
 		            "render": function ( data, type, user, meta ) {
 		            	var result = '';
 		            	 if(user.leaveTypeBillable !=null && user.leaveTypeBillable !='' && user.leaveTypeBillable !='undefined'){
-							 result = result +" <a href='<c:url value='/app/userSummary/"+user.leaveTypeBillable+"'/>'' title = '"+user.leaveTypeBillable+"' class='UserTextLeft'>"+user.leaveTypeBillable+"</a>";
+							 result = result + user.leaveTypeBillable;
 			          }else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
@@ -212,7 +212,7 @@ function daywiseLeaveReportsListPagination(url){
 		          "render": function ( data, type, user, meta ) {
 		          	var result = '';
 		          	if(user.duration !=null && user.duration !='' && user.duration !='undefined'){
-						 result = result +" <a href='<c:url value='/app/userSummary/"+user.duration+"'/>'' title = '"+user.duration+"' class='UserTextLeft'>"+user.duration+"</a>";
+						 result = result + user.duration;
 		          }else{
 						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 					}
@@ -226,7 +226,7 @@ function daywiseLeaveReportsListPagination(url){
 		        "render": function ( data, type, user, meta ) {
 		        	var result = '';
 		        	if(user.fromDateStr !=null && user.fromDateStr !='' && user.fromDateStr !='undefined'){
-						 result = result +" <a href='<c:url value='/app/userSummary/"+user.fromDateStr+"'/>'' title = '"+user.fromDateStr+"' class='UserTextLeft'>"+user.fromDateStr+'To'+user.toDateStr+"</a>";
+						 result = result + user.fromDateStr+'To'+user.toDateStr;
 		          }else{
 						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 					}
@@ -240,7 +240,7 @@ function daywiseLeaveReportsListPagination(url){
 			          "render": function ( data, type, user, meta ) {
 			          	var result = '';
 			          	if(user.reason !=null && user.reason !='' && user.reason !='undefined'){
-							 result = result +" <a href='<c:url value='/app/userSummary/"+user.reason+"'/>'' title = '"+user.reason+"' class='UserTextLeft'>"+user.reason+"</a>";
+							 result = result + user.reason;
 			          }else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
@@ -253,7 +253,7 @@ function daywiseLeaveReportsListPagination(url){
 		          "render": function ( data, type, user, meta ) {
 		          	var result = '';
 		          	if(user.approver !=null && user.approver !='' && user.approver !='undefined'){
-						 result = result +" <a href='<c:url value='/app/userSummary/"+user.approver+"'/>'' title = '"+user.approver+"' class='UserTextLeft'>"+user.approver+"</a>";
+						 result = result + user.approver;
 		          }else{
 						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 					}
@@ -266,7 +266,7 @@ function daywiseLeaveReportsListPagination(url){
 			          "render": function ( data, type, user, meta ) {
 			          	var result = '';
 			          	if(user.status !=null && user.status !='' && user.status !='undefined'){
-							 result = result +" <a href='<c:url value='/app/userSummary/"+user.status+"'/>'' title = '"+user.status+"' class='UserTextLeft'>"+user.status+"</a>";
+							 result = result + user.status;
 			          }else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}

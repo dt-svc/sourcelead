@@ -940,20 +940,22 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Transactional
 	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(Long orgId, Long orgLocationId, String fromDate,String searchValue) throws Exception
 	{
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+		  OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+			SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
 		Date date = null;
 		if (StringUtils.isNotBlank(fromDate)) {
-			date = df.parse(fromDate);
+			date = format.parse(fromDate);
 		}
 		else {
-			date = new Date();
+			date = commonUtil.getOrgLocationCurrentDate(orgLoc.getDateFormat(), new Date());
 		}
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-		String query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and leaveReport.fromDate = '"+sqlStartDate+"' and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
+		String query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (:fromDate BETWEEN leaveReport.fromDate AND leaveReport.toDate) or (leaveReport.fromDate = :fromDate and leaveReport.toDate = :fromDate) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
 //		List<LeaveReportView> list = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).list();
 		
- StringBuilder query1 = new StringBuilder("");
+ StringBuilder query1 = new StringBuilder();
  java.sql.Date sqlDate = null;
 	     if(StringUtils.isNotBlank(searchValue)) {
 	    	 Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
@@ -961,10 +963,11 @@ public class LeaveDaoImpl implements LeaveDao{
 			    if(matcher.matches() == true) {
 							if(searchValue.contains("/")||(searchValue.contains("-"))) {
 								String replacedValue = searchValue.replaceAll("/", "-");
-								    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
-									SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
-							        java.util.Date utilDate = format.parse(replacedValue);
-							        sqlDate = new java.sql.Date(utilDate.getTime());
+//								    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+//									SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+							        Date date1 = format.parse(replacedValue);
+//							        date = commonUtil.getOrgLocationCurrentDate(orgLoc.getDateFormat(), date);
+							        sqlDate = new java.sql.Date(date1.getTime());
 							}
 			    }
 			    
@@ -972,16 +975,12 @@ public class LeaveDaoImpl implements LeaveDao{
 				.append("OR leaveReport.employmentType like '%" + searchValue + "%' ")
 				.append("OR leaveReport.leaveTypeName like '%" + searchValue + "%' ")
 				.append("OR leaveReport.leaveTypeBillable like '%" + searchValue + "%' ")
-				.append("OR leaveReport.duration like '%" + searchValue + "%' ")
-				.append("OR leaveReport.fromDate like '%" + searchValue + "%'")
-				.append("OR leaveReport.toDate like '%" + searchValue + "%' ")
 			    .append("OR leaveReport.reason like '%" + searchValue + "%' ")
 			    .append("OR leaveReport.approver like '%" + searchValue + "%' ")
 			    .append("OR leaveReport.status like '%" + searchValue + "%') ");
-			   /* if(sqlDate != null) {
-			    	query1.append("OR leaveReport.fromDate like '%" + sqlDate + "%' ");
-			    	query1.append("OR userRole.user.id IN(select employee.user.id from Employees employee where employee.hireDate like '%" + sqlDate + "%')");
-			    }*/
+			    if(sqlDate != null) {
+			    	query1.append("OR (leaveReport.fromDate <="+sqlDate+" and leaveReport.toDate >="+sqlDate+") ");
+			    }
 	    	 
 	     }
 	     
@@ -990,10 +989,35 @@ public class LeaveDaoImpl implements LeaveDao{
 			List<Long> countlist = null;
 	     
 	     Query queryObj = session.createQuery(query + query1.toString());
-			
-	     leaveReportList = queryObj.setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).list();
-				 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).list();
-			
+	     if(sqlDate != null) {
+	     leaveReportList = queryObj.setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate",sqlDate).list();
+				 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate",sqlDate).list();
+	     }else{
+	    	   leaveReportList = queryObj.setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate",sqlStartDate).list();
+				 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate",sqlStartDate).list();
+	   
+	     }
+				 int count = 0;
+					int filteredCount = 0;
+
+					if(countlist != null && !countlist.isEmpty()) {
+						count = countlist.iterator().next().intValue();
+					}
+					response.setRecordsTotal(count);
+					if (leaveReportList != null) {
+						List<Long> filteredCountlist = null;
+						if(sqlDate != null) {
+							filteredCountlist  = session.createQuery("select count(*) " + query + query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", sqlDate).list();
+						}else {
+							filteredCountlist  = session.createQuery("select count(*) " + query + query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate",sqlStartDate).list();
+						}
+						if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
+							filteredCount = filteredCountlist.iterator().next().intValue();
+						}
+						response.setRecordsFiltered(filteredCount);
+					} 
+
+				 
 				 response.setData(leaveReportList);
 		return response;
 	}
