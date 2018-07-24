@@ -57,10 +57,12 @@ import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
@@ -1086,6 +1088,37 @@ public class USPayrollRestController {
 		return model;
 	}
 	
+
+	@RequestMapping(value = { "/getPaySheetFrequencyData","/rest/getPaySheetFrequencyData" })
+	@ResponseBody
+	public ResponseList<PaysheetFrequencyDTO> getPaySheetFrequencyList(PaysheetFrequencyDTO paysheetFrequencyDTO,@RequestParam(value = "paySheetFrequencyUUID",required = false) String searchValue,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return uSPaysheetService.getPaySheetFrequencyListByOrgLocationId(orgLocation,paysheetFrequencyDTO);
+	}
+	
+	@RequestMapping(value = "/viewPaySheetFrequencyData")
+	public ModelAndView viewPaySheetFrequencyData(@RequestParam(value = "paySheetFrequencyUUID",required = false) String paySheetFrequencyUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("paySheetFrequencyUUID", paySheetFrequencyUUID);
+		model.setViewName("payroll/paySheetFrequencySummary");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		return model;
+	}
+	
+	@RequestMapping(value = "/getPaySheetFrequencySummary")
+	public List<USPayrollDTO> getPaySheetFrequencySummary(@RequestParam(value = "uuid",required = true) String paySheetFrequencyUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		return uSPaysheetService.getPaySheetFrequencySummary(paySheetFrequencyUUID);
+	}
+
 //	
 	
 	/**
@@ -1162,5 +1195,4 @@ public class USPayrollRestController {
 		System.out.println(payrollApproverDTO);
 		return null;
 	}
-	
 }

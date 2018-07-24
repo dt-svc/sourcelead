@@ -527,7 +527,7 @@ function projectsPagination(url,sourceleadUrl){
 	    	  		  if(opt.projectSequeneNumber !=null && opt.projectSequeneNumber !='' && opt.projectSequeneNumber !='undefined'){
 			        		    	result = result + '<td data-title="Id"><div class="tblminwidth-75">'+opt.projectSequeneNumber+'</div></td>';
 			        		    }else{
-			        		    	result = result + '<td data-title="Id"><div class="tblminwidth-75">---</div></td>';
+			        		    	result = result + '<td data-title="Id"><div class="tblminwidth-75">--</div></td>';
 			        		    }
 		             return result;
 	    	  	}
@@ -638,7 +638,7 @@ function projectsPagination(url,sourceleadUrl){
 	            	    	result = result + '<td><div class="tblminwidth-75"><span title="'+opt.client+'">'+opt.client+'</span></div></td>';
 	            	    	'</sec:authorize>';
    		    		     }else{
-   		    		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+   		    		    	result = result + '<td><div class="tblminwidth-75">--</div></td>';
 	   		    		}
 	            		return result;
 	              }

@@ -426,7 +426,7 @@ public class LeaveManagementRestController {
 				for (Leave leave : totalleavesTaken) {
 					double fromHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(),leave.getFromDateToHalfTime(),orgLocations.getAverageWorkingHours(),l);
 					double toHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(),leave.getToDateToHalfTime(),orgLocations.getAverageWorkingHours(),l);
-					double appliedLeaveCount = fromHalf + toHalf;
+					double appliedLeaveCount = leave.getNumberOfDays() - (fromHalf + toHalf);
 
 					if (Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
 						// totalLeaves = totalLeaves -

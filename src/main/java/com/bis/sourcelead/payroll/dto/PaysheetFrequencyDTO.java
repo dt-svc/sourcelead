@@ -1,8 +1,12 @@
 package com.bis.sourcelead.payroll.dto;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
-public class PaysheetFrequencyDTO {
+import com.bis.sourcelead.dto.SearchDTO;
+
+public class PaysheetFrequencyDTO  extends SearchDTO{
 	
 	private String id;
 	
@@ -14,6 +18,13 @@ public class PaysheetFrequencyDTO {
 	
 	private List<USPaysheetDTO> uSPaysheetDTO;
 	
+	private String payFrequency;
+	private String payDate;
+	private String paySheetFrequencyType;
+	private BigDecimal total;
+	private String paySheetFrequencyuuid;
+	
+
 	private List<USPayrollDTO> payrollDTO;
 	
 	private String payrollFrequencyUUID;
@@ -50,6 +61,38 @@ public class PaysheetFrequencyDTO {
 	{
 		this.uSPaysheetDTO = uSPaysheetDTO;
 	}
+
+	public String getPayFrequency() {
+		return payFrequency;
+	}
+	public void setPayFrequency(String payFrequency) {
+		this.payFrequency = payFrequency;
+	}
+	public String getPayDate() {
+		return payDate;
+	}
+	public void setPayDate(String payDate) {
+		this.payDate = payDate;
+	}
+	public String getPaySheetFrequencyType() {
+		return paySheetFrequencyType;
+	}
+	public void setPaySheetFrequencyType(String paySheetFrequencyType) {
+		this.paySheetFrequencyType = paySheetFrequencyType;
+	}
+	public BigDecimal getTotal() {
+		return total;
+	}
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
+	public String getPaySheetFrequencyuuid() {
+		return paySheetFrequencyuuid;
+	}
+	public void setPaySheetFrequencyuuid(String paySheetFrequencyuuid) {
+		this.paySheetFrequencyuuid = paySheetFrequencyuuid;
+	}
+
 	public String getPayrollFrequencyUUID()
 	{
 		return payrollFrequencyUUID;
@@ -74,7 +117,5 @@ public class PaysheetFrequencyDTO {
 	{
 		this.id = id;
 	}
-	
-	
 	
 }

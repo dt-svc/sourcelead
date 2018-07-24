@@ -338,9 +338,21 @@ function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 	      
 		  $("#reasonForSpocDiv").empty();
+		  var formData = new FormData();
+		     formData.append("tokenParamName", tokenValue);
+		     formData.append("spocId", spocId);
+		     formData.append("reason", reason);
+		     formData.append("userId", userId);
+		     formData.append("orgLocationId", orgLocationId);
+		     formData.append("responderType", "Client");
+		     
 		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
+			 type : "POST",
+          data: formData,
+          processData: false,
+          contentType:false, 
+     	  url: sourceleadUrl+"/terminateSpoc",
+// 		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
