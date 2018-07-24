@@ -110,18 +110,21 @@ public class LeaveDaoImpl implements LeaveDao{
 			StringBuilder searchQuery = new StringBuilder("");
 			StringBuilder leavesearchQuery = new StringBuilder("");
 			String query ="";
+			String countQuery ="";
 			if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
-			query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave "
-					      + " left join fetch leave.leaveType  leaveType"
-					      + " left join fetch leave.user user"
-					      + " where leave.orgLocations.id = :orgLocationId and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
+				query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave "
+						      + " left join fetch leave.leaveType  leaveType"
+						      + " left join fetch leave.user user"
+						      + " where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
+				countQuery ="from Leave leave where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			}else {
 				query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave "
 					      + " left join fetch leave.leaveType  leaveType"
 					      + " left join fetch leave.user user"
-					      + " where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
+					      + " where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and laph.approverUserId.id= :userId and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
+				countQuery ="from Leave leave where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and laph.approverUserId.id= :userId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			}
-			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
+			
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
 				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
@@ -159,22 +162,22 @@ public class LeaveDaoImpl implements LeaveDao{
 				queryObj.setFirstResult(leaveDTO.getStart());
 				queryObj.setMaxResults(leaveDTO.getLength());
 				if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
-				    queryObj.setLong("orgLocationId", orgLocations.getId()).list();
+				    queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).list();
 				}else {
-					queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).list();
+					queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).list();
 				}
 			}
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
+//			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
 			
 			if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
 				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
 			}
 			response.setRecordsTotal(count);
 			if (leaveDTO != null) {
-				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
+//				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
 				if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
 					filteredCount = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
 				}
@@ -186,18 +189,21 @@ public class LeaveDaoImpl implements LeaveDao{
 			StringBuilder searchQuery = new StringBuilder("");
 			StringBuilder leavesearchQuery = new StringBuilder("");
 			String query = "";
+			String countQuery ="";
 			if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
 			query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave "
 					+ "left join fetch leave.leaveType leaveType "
 					+ "left join fetch leave.user user "
-					+ " where leave.orgLocations.id = :orgLocationId";
+					+ " where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId)";
+			countQuery ="from Leave leave where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			}else {
 				query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave "
 						+ "left join fetch leave.leaveType leaveType "
 						+ "left join fetch leave.user user "
-						+ " where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId";
+						+ " where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and laph.approverUserId.id= :userId";
+				countQuery ="from Leave leave where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			}
-			String countQuery ="from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
+			
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
 				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
@@ -236,23 +242,23 @@ public class LeaveDaoImpl implements LeaveDao{
 				queryObj.setFirstResult(leaveDTO.getStart());
 				queryObj.setMaxResults(leaveDTO.getLength());
 				if("ROLE_ADMIN".equalsIgnoreCase(leaveDTO.getLoginUserRole())) {
-				  queryObj.setLong("orgLocationId", orgLocations.getId()).setCacheable(false).list();
+				  queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setCacheable(false).list();
 				}else {
-			      queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).setCacheable(false).list();
+			      queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("orgId", orgLocations.getOrg().getId()).setLong("userId", usrId).setCacheable(false).list();
 				}
 			}
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
-			if(countlist != null && !countlist.isEmpty()) {
-				count = countlist.size();
+//			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
+			if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
 			}
 			response.setRecordsTotal(count);
 			if (leaveDTO != null) {
-				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
-				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
-					filteredCount = filteredCountlist.size();
+//				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
+				if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
+					filteredCount = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
 				}
 				response.setRecordsFiltered(filteredCount);
 			} 
@@ -532,7 +538,7 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public List<LeaveApproveHierarchy> getAllEmployeesLeavesCounts(Long orgLocationId,Long userId,String loginUserRole) {
+	public List<LeaveApproveHierarchy> getAllEmployeesLeavesCounts(Long orgLocationId,Long userId,String loginUserRole,Long orgId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "";
 		List<LeaveApproveHierarchy> leavesList = null;
@@ -540,8 +546,8 @@ public class LeaveDaoImpl implements LeaveDao{
 			query = "from LeaveApproveHierarchy lah left join fetch lah.leaveid leave left join fetch lah.approverUserId where leave.orgLocations.id = :orgLocationId";
 			leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		}else {
-			query = "from LeaveApproveHierarchy lah left join fetch lah.leaveid leave left join fetch lah.approverUserId where lah.approverUserId.id =:userId and leave.orgLocations.id = :orgLocationId";
-			leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+			query = "from LeaveApproveHierarchy lah left join fetch lah.leaveid leave left join fetch lah.approverUserId where lah.approverUserId.id =:userId and (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId)";
+			leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("orgId", orgId).list();
 		}
 		return leavesList;
 	}

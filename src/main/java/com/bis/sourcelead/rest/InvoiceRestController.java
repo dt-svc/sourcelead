@@ -1,69 +1,52 @@
 package com.bis.sourcelead.rest;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.bis.sourcelead.dto.PaymentAccountDTO;
-import com.bis.sourcelead.entity.PaymentAccount;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.BillingDTO;
-import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
-import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.FileInfo;
-import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.Response;
-import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -98,6 +81,7 @@ import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.InvoiceTaxService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -108,10 +92,8 @@ import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 @RequestMapping("/app")
@@ -613,18 +595,24 @@ public class InvoiceRestController {
 		}
 		return response;
 	}
-	
-	
+ 	
 	@RequestMapping(value = "/saveInvoiceBulkPayment", method = RequestMethod.POST)
-	public @ResponseBody Response<String> saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO, @RequestParam(value = "invoiceIds", required = false) List<Long> invoiceIds, HttpServletRequest request) throws Exception
+	public @ResponseBody Response<String> saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO,  @RequestParam(value = "invoiceIds", required = false) List<String> invoiceIds, HttpServletRequest request) throws Exception
 	{
 		Response<String> response = new Response<>();
+		System.out.println(" invoiceJsonString ");
+	     System.out.println(invoiceIds);
+	     HashMap<Long, String> invoiceMap = new HashMap<Long, String>();
+	     for(String obj: invoiceIds){
+	    	 String [] arr = obj.split("_");
+	    	 invoiceMap.put(Long.parseLong(arr[0]),(arr[1]));
+	     }
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null && Validator.validate(invoicePaymentDTO)) {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				invoicePaymentDTO.setStaticPath(staticPath);
-				InvoicePayment invoicePayment = invoicePaymentService.saveInvoiceBulkPayment(invoicePaymentDTO, user, orgLocation,invoiceIds);
+				InvoicePayment invoicePayment = invoicePaymentService.saveInvoiceBulkPayment(invoicePaymentDTO, user, orgLocation,invoiceMap);
 				if (null != invoicePayment) {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
@@ -657,7 +645,7 @@ public class InvoiceRestController {
 		ResponseList<BillingDTO> responseList = new ResponseList<>();
 		List<BillingDTO> billingDtoList = new ArrayList<>();
 		if(StringUtils.isNotBlank(invoiceDTO.getOrgRelationId())){
-		ResponseList<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationIdAndRelationId(loginOrgLocation,Long.parseLong(invoiceDTO.getOrgRelationId()));
+		ResponseList<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationIdAndRelationId(invoiceDTO,loginOrgLocation,Long.parseLong(invoiceDTO.getOrgRelationId()));
 		List<Invoice> invoiceFilterList = invoiceList.getData();
 		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		Integer draftCount = 0;

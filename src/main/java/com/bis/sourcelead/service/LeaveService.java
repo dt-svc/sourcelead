@@ -43,7 +43,7 @@ public interface LeaveService {
 	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
 
 
-	LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId, String loginUserRole);
+	LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId, String loginUserRole, Long orgId);
 
 	LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId) throws Exception;
 
@@ -104,6 +104,5 @@ public interface LeaveService {
 	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(Long orgId, Long orgLocationId, String fromDate,String searchValue)throws Exception;
 
 	void updateBalanceLeaves(Leave leave, User user, OrgLocations orgLocations);
-	
 	
 }

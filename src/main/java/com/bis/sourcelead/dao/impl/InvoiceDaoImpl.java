@@ -576,12 +576,20 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 	@Override
 	@Transactional
-	public ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(OrgLocations orgLocations, Long orgRelationId)
+	public ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(InvoiceDTO invoiceDTO,OrgLocations orgLocations, Long orgRelationId)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = "";
+		if(invoiceDTO.getInvoiceType().equalsIgnoreCase("payables")){
+			subQuery = " and invoice.invoiceType = 'Payables'";
+		}else{
+			subQuery = " and invoice.invoiceType = 'Receivable'";
+		}
+		
 		ResponseList<Invoice> response = new ResponseList<>();
 		String query ="from Invoice invoice  left join fetch  invoice.orgRelationID left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
- 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.orgRelationID.id = :orgRelationId and invoice.status = '1' and (invoice.invoiceStatus = 'SENT' or invoice.invoiceStatus = 'ACCEPTED') and (invoice.paymentStatus = 'Unpaid' or invoice.paymentStatus = 'Partial Paid')";
+ 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.orgRelationID.id = :orgRelationId and invoice.status = '1' "+subQuery+" and (invoice.invoiceStatus = 'SENT' or invoice.invoiceStatus = 'ACCEPTED') and (invoice.paymentStatus = 'Unpaid' or invoice.paymentStatus = 'Partial Paid' or invoice.paymentStatus = 'Overdue') and invoice.dueAmount !=00.00";
 		List<Invoice> invoiceList = session.createQuery(query).setParameter("orgRelationId", orgRelationId).setParameter("orgLocationId", orgLocations.getId()).list();
 		response.setData(invoiceList);
 		return response;
