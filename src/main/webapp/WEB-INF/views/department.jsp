@@ -40,56 +40,64 @@ $(document).ready(function() {
       <div class="pull-left">
         <h2>Department List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="${appPath}/orgRolesList">Roles List</a> &raquo;  Department List </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a>&raquo;<a href="${appPath}/orgRolesList"> Roles List </a> &raquo;  Department List </div>
     </section>
 
 
 <div class="timesheet_out">
       <div class="vendor_wrap">
         
-        <div class="timesheet_head timesheet_header minHeight pull-right">
-          <ul class="pull-right">
-            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
-                	<div id="filter2ApprovedPop" class="approved_pop dropdownPop">
-                    	<ul>
-                        	<li><input id="c5" type="radio" name="departmentStatus" value ="1" checked onclick="getDepartmentList();"  ><label for="c5">Active</label></li>
-							<li><input id="c6" type="radio" name="departmentStatus" value ="0"  onclick="getDepartmentList();" ><label for="c6" title="Remove Departments">Remove Departments</label></li>
-                        </ul>
-                    </div>                	
-                </li>
-                
-            <li class="addcon-pop mt"><a href="javascript:void(0)" title="" onclick="flushDepartment();"><i class="fa fa-plus"></i>Add Department</a>
-            
-            
-
+<div class="reportHead reportHeadDataTab clearfix">
+      <ul class="pull-right list-unstyled list-inline">
+      
+		<li>
+			<a href="javascript:void(0)" class="action newAdBtn addcon-pop" title="" onclick="flushDepartment();">+ Department</a>
+			
+			
 			<form:form id="department_form" name="department_form" method="post">
-				<div class="collapse-div-adduser col-md-4 depPW" id="departmentCloseDiv"> <i class="fa fa-close close-div"></i>
-                    <div class="form-horizontal clearfix">
-                      <div class="clearfix mb10">
-                        <div class="col-md-12" id="departmentNameDiv">
+				<div class="popupWrap" id="departmentCloseDiv">
+				<div class="popupHead">Add Department <i class="closePop pull-right popClose" onclick="flushRole();"></i></div>
+				
+                    <div class="popupContent">
+                      <div class="clearfix mb">
+                        <div class="" id="departmentNameDiv">
                           <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Name" onkeyup="validDepartmentname();">
                         </div>
                       </div>
-                      <div class="clearfix mb10">
-                        <div class="col-md-12">
+                      <div class="clearfix mb">
+                        <div class="">
                           <textarea rows="2" placeholder="Description" class="form-control" name="departmentDesc" id="departmentDesc" data-validation="validate_length length2-250"
 									data-validation-optional="true"></textarea>
                         </div>
                       </div>
-                      <div class="clearfix mr">
-                        <button type="button" class="btn btn-sm btn-primary pull-right" onclick="saveDepartment();">Add</button>
-                      </div>
                     </div>
+                    
+					<div class="popupFoot text-right">
+						<input type="button" value="Cancel" class="slBtn md popClose">
+						<button type="button" class="slBtn md colorBtn" onclick="saveDepartment();">Add</button>
+					</div>                    
+                    
+                      <div class="clearfix mr">
+                       
+                      </div>                    
 				</div>
             </form:form>
             
-            </li>
-            <div class="clearfix"></div>
-          </ul>
-           
-        </div>
+            </li>      
+	       
+            <li id="filter2ApprovePop"><a href="javascript:void(0)" class="filtIcon" title="Filters"></a>
+               	<div id="filter2ApprovedPop" class="approved_pop">
+                   	<ul>
+                       	<li><input id="c5" type="radio" name="departmentStatus" value ="1" checked onclick="getDepartmentList();"  ><label for="c5">Active</label></li>
+						<li><input id="c6" type="radio" name="departmentStatus" value ="0"  onclick="getDepartmentList();" ><label for="c6" title="Remove Departments">Remove Departments</label></li>
+                    </ul>
+                </div>                	
+            </li>	       
+        </ul>
+      </div>        
+        
         <div class="candidate_wrap_table">
-          <div id="departmentresultId" class="datatable_filter"></div>
+          <div id="departmentresultId" class="datatable_filter dataSeaTop"></div>
         </div>
         
         <div class="vendor_wrap_mask"></div>
@@ -188,20 +196,13 @@ function departmentPagination(){
   
  <script>
 	  $(".addcon-pop").click(function(){
-			 $(".collapse-div-adduser").toggleClass("show-div");
-			 $(".collapse-div").removeClass("show-div");
-			 $('#filter2ApprovedPop').hide();
+			 $("#departmentCloseDiv").fadeIn(100);
+			 $(".mask").show();
 		 });
-		 $(".close-div").click(function(){
-			 $(this).parent().removeClass("show-div");
+		 $(".popClose").click(function(){
+			 $("#departmentCloseDiv").fadeOut(100);
+			 $(".mask").hide();
 			 });
-		 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
-			 e.stopPropagation();
-		 });
-		 $('html').click(function(){
-		    $(".collapse-div-adduser").removeClass("show-div");
-			$(".collapse-div").removeClass("show-div");
-		   });	
   </script>
 
 <script>

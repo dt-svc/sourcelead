@@ -722,10 +722,6 @@ function storeTeam(){
 	      				} else {
 	      					showError("Operation failed, please try again");
 	      				}
-						
-						
-						
-
 					},
 				});
 			return true; 
