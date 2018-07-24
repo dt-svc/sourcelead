@@ -28,7 +28,7 @@
     	 						<select class="form-control chosen-select" id="vendor" name="vendor" field-name="Vendor" onchange="getPaybleList()" data-validation="required" >
 		                        <option value="">-Select Vendor-</option>
 		                        <c:forEach var="vendors" items="${vendorsList}">
-									<option value="${vendors.id}">${vendors.locationId.org.orgName}</option>
+									<option value="${vendors.id}">${vendors.orgName}</option>
 								</c:forEach>
 			              </select>
     	 				</div>
