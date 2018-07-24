@@ -4,6 +4,8 @@ import java.util.List;
 
 public class PaysheetFrequencyDTO {
 	
+	private String id;
+	
 	private String groupId;
 	
 	private String payPeriod;
@@ -12,6 +14,9 @@ public class PaysheetFrequencyDTO {
 	
 	private List<USPaysheetDTO> uSPaysheetDTO;
 	
+	private List<USPayrollDTO> payrollDTO;
+	
+	private String payrollFrequencyUUID;
 	
 	public String getGroupId()
 	{
@@ -44,6 +49,30 @@ public class PaysheetFrequencyDTO {
 	public void setuSPaysheetDTO(List<USPaysheetDTO> uSPaysheetDTO)
 	{
 		this.uSPaysheetDTO = uSPaysheetDTO;
+	}
+	public String getPayrollFrequencyUUID()
+	{
+		return payrollFrequencyUUID;
+	}
+	public void setPayrollFrequencyUUID(String payrollFrequencyUUID)
+	{
+		this.payrollFrequencyUUID = payrollFrequencyUUID;
+	}
+	public List<USPayrollDTO> getPayrollDTO()
+	{
+		return payrollDTO;
+	}
+	public void setPayrollDTO(List<USPayrollDTO> payrollDTO)
+	{
+		this.payrollDTO = payrollDTO;
+	}
+	public String getId()
+	{
+		return id;
+	}
+	public void setId(String id)
+	{
+		this.id = id;
 	}
 	
 	
