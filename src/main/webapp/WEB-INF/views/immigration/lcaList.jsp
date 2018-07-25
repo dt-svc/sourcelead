@@ -29,6 +29,21 @@
       <ul class="pull-right list-unstyled list-inline">
       
 			<li><a href="${appPath}/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
+			<li>
+			 <select id="daysFilter" onchange="getDynamicLCAList()" style="padding: 3px 5px;">
+                   
+                    <option value="All" selected >All</option>
+                    <option value="7">7 Days</option>
+                    <option value="15">15 Days</option>
+                    <option value="30">30 Days</option>
+                    <option value="60">60 Days</option>
+                    <option value="90">90 Days</option>
+                    <option value="120">120 Days</option>
+                    <option value="180">180 Days</option>
+                    <option value="360">360 Days</option>
+                    
+                </select>
+			</li>
 			
 			<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 				
@@ -68,11 +83,11 @@
 										<p>Status</p>
 									</div>
 									 <div class="clearfix filterSearch-ul">
-										<ul class="list-unstyled positionRelative filterSearch mt5" id="myStatus">
-                                            <!-- <li class="checkBox positionRelative"><input  type="checkbox" name="status" value ="all" ><label>All</label></li> -->
-											<li class="checkBox positionRelative"><input  type="checkbox" name="status" value ="Active" ><label>Active</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="status" value ="InActive" ><label>In Active</label></li>
-										</ul>
+											<ul class="list-unstyled positionRelative filterSearch mt5" id="myStatus">
+	                                            <!-- <li class="checkBox positionRelative"><input  type="checkbox" name="status" value ="all" ><label>All</label></li> -->
+												<li class="checkBox positionRelative"><input  type="checkbox" name="status" value ="Active" ><label>Active</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="status" value ="InActive" ><label>In Active</label></li>
+											</ul>
 									 </div> 
 								</div>
 							<div class="col-md-3 mb positionRelative">
@@ -80,38 +95,38 @@
 										<p>LCA Status</p>
 									</div>
 									 <div class="clearfix filterSearch-ul">
-										<ul class="list-unstyled positionRelative filterSearch mt5" id="myLcaStatus">
-											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Initiated" ><label>Initiated</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="In Process" ><label>In Process</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Certified" ><label>Certified</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Denied" ><label>Denied</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Withdrawn" ><label>Withdrawn</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Voided" ><label>Voided</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Invalidated" ><label>Invalidated</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Rejected" ><label>Rejected</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Expired" ><label>Expired</label></li>
-										</ul>
+											<ul class="list-unstyled positionRelative filterSearch mt5" id="myLcaStatus">
+												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Initiated" ><label>Initiated</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="In Process" ><label>In Process</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Certified" ><label>Certified</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Denied" ><label>Denied</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Withdrawn" ><label>Withdrawn</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Voided" ><label>Voided</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Invalidated" ><label>Invalidated</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Rejected" ><label>Rejected</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="lcaStatus" value ="Expired" ><label>Expired</label></li>
+											</ul>
 									 </div> 
 								</div>
-						<!-- 	<div class="col-md-3 mb positionRelative">
+						<!-- <div class="col-md-3 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<p>By Expiration duration</p>
 									</div>
 									 <div class="clearfix filterSearch-ul">
-										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsUL">
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>All</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>7 Days</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>15 Days</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>30 Days</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>60 Days</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>90 Days</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>120 Days</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>180 Days</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>360 Days</label></li>
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="one" ><label>360+Days</label></li>
-										</ul>
+											<ul class="list-unstyled positionRelative filterSearch mt5" id="lcaEndDate">
+												<li class="checkBox positionRelative"><input  type="checkbox" name="endDate" value ="All" ><label>All</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="endDate" value ="7 Days" ><label>7 Days</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="endDate" value ="15 Days" ><label>15 Days</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="endDate" value ="30 Days" ><label>30 Days</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="endDate" value ="60 Days" ><label>60 Days</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="endDate" value ="90 Days" ><label>90 Days</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="endDate" value ="120 Days" ><label>120 Days</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="endDate" value ="180 Days" ><label>180 Days</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="endDate" value ="360 Days" ><label>360 Days</label></li>
+												<li class="checkBox positionRelative"><input  type="checkbox" name="endDate" value ="360+Days" ><label>360+Days</label></li>
+											</ul>
 									 </div> 
-								</div>	 -->															
+								</div>			 -->												
 							</div>
 							</div>
 							<div class="clearfix advancedsearch-footer">
@@ -123,6 +138,8 @@
 								</div>
 							</div>
 		       </div>
+		       
+		       
 <!-- Footer Area --> 
 
 <script type="text/javascript">
@@ -149,6 +166,12 @@
  
  var hideColumns = [];
  var table = "";
+ 
+ $(document).ready(function () {
+     $("#statusFilter a").on('click', function (e) {
+         getDynamicLCAList();
+     });
+ });
 
  function getDynamicLCAList() {
 	
@@ -187,8 +210,11 @@
      var searchValue = $("#lcaSearch").val();
      searchValue = searchValue ? searchValue : "";
      
+     var filterByDays = $("#daysFilter").val();
+     filterByDays = filterByDays ? filterByDays : "";
+     
      var url ="";
-     url = sourceleadUrl + "/immigration/getLcaViewList?searchValue="+searchValue+"&lcaStatus="+lcaStatus+"&mainStatus="+status; 
+     url = sourceleadUrl + "/immigration/getLcaViewList?searchValue="+searchValue+"&lcaStatus="+lcaStatus+"&mainStatus="+status+"&filterByDays="+filterByDays; 
      dynamicLCAListPagination(url);
  }
  //var count = 0;

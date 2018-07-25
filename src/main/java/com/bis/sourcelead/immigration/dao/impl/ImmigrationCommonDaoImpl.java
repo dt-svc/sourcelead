@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -1650,7 +1651,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<LcaListViewDTO> getLcaList(LcaListViewDTO lcaListViewDTO,String status,String lcaStatus, String searchValue,
-			OrgLocations orgLocations, Map<String, Long[]> filterVal) throws Exception {
+			OrgLocations orgLocations, Map<String, Long[]> filterVal,String filterByDays) throws Exception {
 		
 		
 		    Session session = this.sessionFactory.getCurrentSession();
@@ -1660,6 +1661,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	        ResponseList<LcaListViewDTO> responseList = new ResponseList<>();
             String subQuery1 ="";
             String subQuery2 = ""; 
+            String subQuery3 = ""; 
             
             StringBuilder query1 = new StringBuilder("");
             if (searchValue.contains("-") || searchValue.contains("/")) {
@@ -1747,14 +1749,38 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				
 				subQuery2 = "and (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
 			}
-	        
-			String query = "from LcaListView lcaView  where  lcaView.orgLocationId =:orgLocationId  "+query1+" "+sortingQry+"  "+subQuery1+"  "+subQuery2+"";
 			
-			String listQueryCount = "select count(*) from LcaListView lcaView  where  lcaView.orgLocationId =:orgLocationId";
+			Date daysFilter = null;
+			boolean isDateFileterFound= false;
+			if(StringUtils.isNotBlank(filterByDays) && !filterByDays.equalsIgnoreCase("All")) {
+			
+			isDateFileterFound = true;
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, Integer.parseInt(filterByDays));
+			daysFilter = cal.getTime();
+			subQuery3 = "and lcaView.endDate <=:daysFilter"; 
+			
+			}
+			
+			String query = "from LcaListView lcaView  where  lcaView.orgLocationId =:orgLocationId  "+query1+" "+sortingQry+"  "+subQuery1+"  "+subQuery2+"  "+subQuery3+"";
+			
+			String listQueryCount = "select count(*) from LcaListView lcaView  where  lcaView.orgLocationId =:orgLocationId "+query1+" "+sortingQry+"  "+subQuery1+"  "+subQuery2+"  "+subQuery3+"";;
+			
 			Query hqlQuery1 = session.createQuery(listQueryCount);
 			hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId());
 			
-	        Query hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId());
+			// Filter By Date
+			if(isDateFileterFound) {
+				hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId()).setDate("daysFilter", daysFilter);
+			}
+			
+			Query hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId());
+			
+			// Filter By Date
+			if(isDateFileterFound) {
+				hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setDate("daysFilter", daysFilter);
+			}
+			
 	        lcaViewList = hqlQuery.list();
 	        
 	        countlist = hqlQuery1.setFirstResult(lcaListViewDTO.getStart())
@@ -1793,7 +1819,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	        }
 	        responseList.setData(tempalteDTOList);
 	        return responseList;
-	        
 		
 	}
 

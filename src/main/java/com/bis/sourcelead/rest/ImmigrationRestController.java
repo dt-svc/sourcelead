@@ -2259,6 +2259,7 @@ public class ImmigrationRestController {
 	public @ResponseBody ResponseList<LcaListViewDTO> getAllLcaList(
 			LcaListViewDTO lcaDTO,
 			@RequestParam(value = "searchValue", required = false) String searchValue,
+			@RequestParam(value = "filterByDays", required = false) String filterByDays,
             HttpServletRequest request) {
 		ResponseList<LcaListViewDTO> lcaList = null;
 		logger.debug("inisde controller  getLcaList  --> ");
@@ -2280,7 +2281,7 @@ public class ImmigrationRestController {
 				lcaDTO.setSortColumn(tableColumns[sortColumnIndex]);
 
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			lcaList = immigrationCommonService.getLcasList(lcaDTO,lcaDTO.getMainStatus(),lcaDTO.getLcaStatus(), searchValue, orgLocations, filterVal);
+			lcaList = immigrationCommonService.getLcasList(lcaDTO,lcaDTO.getMainStatus(),lcaDTO.getLcaStatus(), searchValue, orgLocations, filterVal,filterByDays);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
