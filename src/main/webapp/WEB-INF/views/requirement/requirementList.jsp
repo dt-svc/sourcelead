@@ -409,7 +409,9 @@ function statusvalidating(id){
       		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="clearList();"></a>
       		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
       </span>
-      
+      <span class="pull-left refreIcon">
+      		<button type="button" class="btn btn-danger ml pull-left btn-sm" onclick="jobForceDelete();" id="forceDeleteBtn" style="display:none">Delete</button>
+      </span>
       <ul class="pull-right list-unstyled list-inline">
       
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">

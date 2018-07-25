@@ -231,5 +231,7 @@ public interface RequirementDao {
 	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
 
 	public List<JobFair> getJobFairWithNullGeneratedIdList();
+	
+	Boolean forceDeleteForSelectedJobs(String[] uuids);
 
 }

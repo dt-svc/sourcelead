@@ -36,6 +36,7 @@ import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.JobBoard;
 import com.bis.sourcelead.entity.JobBoardData;
@@ -107,8 +108,11 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Autowired
 	UserRoleDao userRoleDao;
         
-        @Autowired
-        private JobBoardConfigurationDAO jobBoardConfigurationDAO;
+    @Autowired
+    private JobBoardConfigurationDAO jobBoardConfigurationDAO;
+        
+    @Autowired
+    SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
         
         @Value("${static.path}")
 	private String staticPath;
@@ -3390,6 +3394,51 @@ public class RequirementDaoImpl implements RequirementDao {
 	public static void main(String[] args) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		System.out.println(sdf.format(new Date(1519216393485L)));
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Boolean forceDeleteForSelectedJobs(String[] uuids) {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 
+		 if(uuids.length > 0) {
+				for(String uuid : uuids) {
+					Requirement req;
+					try {
+						req = this.getRequirementByRequirementUUID(uuid);
+					
+						/*String query = "DELETE rah rl rcs rat r FROM Requirement r JOIN RequirementApproverHierarchy rah ON r.id = rah.requirementId.id "
+								+ "JOIN RequirementLocations rl ON r.id = rl.requirementId.id JOIN RecommendedCustomizeScore rcs ON r.id = rcs.reqirementId.id "
+								+ "JOIN RequirementAssignTo rat ON r.id = rat.requirementId.id WHERE r.requirementUUID =:uuid";*/
+						List<String> queryList = new ArrayList<String>();
+						
+						/*queryList.add("DELETE FROM REQUIREMENT_LOCATIONS INNER JOIN REQUIREMENT ON REQUIREMENT_LOCATIONS.REQUIREMENT_ID = REQUIREMENT.ID WHERE REQUIREMENT.REQUIREMENT_UUID =:uuid");*/
+						
+						queryList.add("DELETE FROM RequirementLocations rl WHERE rl.requirementId.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM RequirementApproverHierarchy rah WHERE rah.requirementId.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM RecommendedCustomizeScore rcs WHERE rcs.reqirementId.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM RequirementAssignTo rat WHERE rat.requirementId.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM JobCustomFieldData jcfd WHERE jcfd.requirement.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM Requirement r  WHERE r.id = "+req.getId()+ " ");
+						
+						for(String query : queryList) {
+							session.createQuery(query).executeUpdate();
+						}
+						sourceleadELKBaseIndexer.deleteElkDocument(null, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE, req.getId().toString());
+						flag = true;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		return flag;
 	}
 
 }

@@ -59,11 +59,13 @@ padding-right: 254px; padding-top: 10px;
 					<div id="loading"></div> 
                          <div class="clearfix mb">
                            <div class="" id="roleDiv">
+                           		<label class="noPad" for="Role Name">Role Name <b class="valStar">*</b></label>
                              <input type="text" data-validation="required" field-name="Role Name" onblur="validateRoleName();" name="roleName" id="roleName" class="form-control"  placeholder="Role Name">
                            </div>
                          </div>
                          <div class="clearfix mb">
                            <div class="" id="levelDiv">
+                           		<label class="noPad" for="Role Name">Level <b class="valStar">*</b></label>
                              <select class="form-control chosen-select" data-validation="required" field-name="Level" id="level" name="level">
                              	 <option value="">-Select Level-</option>
 		                         <c:forEach var="option" items="${hierarchyList}">
@@ -74,8 +76,8 @@ padding-right: 254px; padding-top: 10px;
                          </div>					
 					</div>
 					<div class="popupFoot text-right">
+						<button type="submit" id="add_role" class="slBtn md colorBtn">Add</button>					
 						<input type="button" value="Cancel" class="slBtn md popClose">
-						<button type="submit" id="add_role" class="slBtn md colorBtn">Add</button>
 					</div>
 					</form:form>
 				</div>
@@ -398,12 +400,12 @@ function getRoleDeatils(displayName,roleHierarchyId,roleId){
 	
 	result = result + '	<div class="popupContent"> ';
 	result = result + '		<div class="clearfix">  ';
-	result = result + '		<div class="errorInptgroup" id="editRoleDiv">  ';
-	result = result + '		  <label class="noPad" for="Role Name">Role Name :</label> ';
+	result = result + '		<div class="" id="editRoleDiv">  ';
+	result = result + '		  <label class="noPad" for="Role Name">Role Name <b class="valStar">*</b></label> ';
 	result = result + '			<input type="text" class="form-control" onblur="validateEditRoleName();" name="displayName" value="'+displayName+'" id="displayName" field-name="Role Name" data-validation="required  validate_length length1-100">';
 	result = result + '		</div> ';
 
-	result = result + '		  <label class="mt" for="Project Id">Level</label> ';
+	result = result + '		  <label class="mt" for="Project Id">Level <b class="valStar">*</b></label> ';
 	result = result + '		  <div class=" taskdesp">   ';
 	result = result + '   <select class="form-control chosen-select" name="hierarchyId" id="hierarchyId" field-name="Level" data-validation="required">';
  	result = result + '     <option value="">--Level--</option>';
@@ -417,8 +419,8 @@ function getRoleDeatils(displayName,roleHierarchyId,roleId){
 	result = result + '	</div>  ';
 	
 	result = result + '	<div class="popupFoot text-right">';
+	result = result + '	<input type="submit" value="Save" id="update_role"  onclick="updateRole();" class="slBtn md colorBtn" >';	
 	result = result + '	<input type="button" value="Cancel" class="slBtn md popClose" onclick="cancelUpdate();">';
-	result = result + '	<input type="submit" value="Save" id="update_role"  onclick="updateRole();" class="slBtn md colorBtn" >';
 	result = result + '	</div>';
 	result = result + '</form>';
 	result = result + '	</div>';
