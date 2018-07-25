@@ -146,7 +146,7 @@ public interface ImmigrationCommonService {
 
 	List<Immigration> getImmigrationsByOrgId(Long id);
 	
-    ResponseList<LcaListViewDTO> getLcasList(LcaListViewDTO lcaListViewDTO, String status,String lcaStatus, String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal) throws Exception;
+    ResponseList<LcaListViewDTO> getLcasList(LcaListViewDTO lcaListViewDTO, String status,String lcaStatus, String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal,String filterByDays) throws Exception;
     
     //Lca method declaration
     

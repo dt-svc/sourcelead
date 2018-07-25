@@ -2271,8 +2271,8 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 
    @Override
 	public ResponseList<LcaListViewDTO> getLcasList(LcaListViewDTO lcaListViewDTO,String status,String lcaStatus, String searchValue,
-			OrgLocations orgLocations, Map<String, Long[]> filterVal) throws Exception {
-		return immigrationCommonDao.getLcaList(lcaListViewDTO,status, lcaStatus,searchValue, orgLocations, filterVal);
+			OrgLocations orgLocations, Map<String, Long[]> filterVal,String filterByDays) throws Exception {
+		return immigrationCommonDao.getLcaList(lcaListViewDTO,status, lcaStatus,searchValue, orgLocations, filterVal,filterByDays);
 	}
 
 	@Override
