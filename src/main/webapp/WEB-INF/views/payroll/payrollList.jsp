@@ -55,9 +55,9 @@ $(document).ready(function(){
 		result = result + '<tr>';
 		result = result + '<th>Pay Group</th>';
 		result = result + '<th>Pay Date</th>';
-		result = result + '<th>Type</th>';
 		result = result + '<th>Pay Period</th>';
 		result = result + '<th>Total</th>';
+		result = result + '<th>Status</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 		result = result + "</table>";
@@ -87,12 +87,12 @@ $(document).ready(function(){
 							}, {
 								"data" : "payDate"
 							}, {
-								"data" : "type"
-							}, {
 								"data" : "payPeriod"
 							}, {
 								"data" : "total"
-							} ],
+							}, {
+								"data" : "status"
+							}],
 							
 							
 							 "columnDefs" : [
@@ -102,7 +102,7 @@ $(document).ready(function(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payFrequency != null && opt.payFrequency != '' && opt.payFrequency !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'" title="'+opt.payFrequency+'">'+opt.payFrequency+'</a></div>';
+						                		  result = result +'<div class="tblminwidth-100"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'" title="'+opt.payFrequency+'">'+opt.payFrequency+'</a></div>';
 											}else{
 						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
@@ -121,19 +121,6 @@ $(document).ready(function(){
 						              		}
 											return result;
 
-										}
-									},
-									{
-										"targets" : colIndex++,
-										"data" : "type",
-										"render" : function(data, type, opt,meta) {
-											var result = "";
-											if(opt.paySheetFrequencyType != null && opt.paySheetFrequencyType != '' && opt.paySheetFrequencyType !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100">'+opt.paySheetFrequencyType+'</div>';
-						              		}else{
-						              		  result = result +'<div class="tblminwidth-100">--</div>';
-						              		}
-											return result;
 										}
 									},
 									{
@@ -158,6 +145,19 @@ $(document).ready(function(){
 						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.total.toFixed(2)+'</div>';
 						              		}else{
 						              		  result = result +'<div class="tbldata-dotdot-vsm">--</div>';
+						              		}
+											return result;
+										}
+										
+									},{
+										"targets" : colIndex++,
+										"data" : "status",
+										"render" : function(data, type, opt,meta) {
+											var result = "";
+											if(opt.approverStatus != null && opt.approverStatus != '' && opt.approverStatus !='undefined'){
+						                		  result = result +'<div class="tblminwidth-100">'+opt.approverStatus+'</div>';
+						              		}else{
+						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
 											return result;
 										}
