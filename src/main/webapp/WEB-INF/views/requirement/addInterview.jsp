@@ -78,6 +78,7 @@ function addInterview(requirementId){
 	result = result + '</tbody>';
 	result = result + '</table>';
 	
+	
 	result = result + '<div class="schedule_widget clearfix mb eventAlert" style="display:none;" id="availbleDiv">        								        ';
 	result = result + '    <div class="row">                                                                            ';
 	result = result + '      <div class="col-xs-12 col-md-12 event_calendar">                                           ';
