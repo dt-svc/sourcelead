@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SourceleadTaxFormDTO implements Serializable {
 
 	/**
@@ -18,7 +20,14 @@ public class SourceleadTaxFormDTO implements Serializable {
 	private String financialYear;
 	private int totalFormsCount;
 	private String uuid;
+	
+	@JsonProperty
 	private List<SourceleadTaxITDeclarationDTO> sourceleadTaxSectionList;
+	
+	private String uuid1;
+	@JsonProperty
+	private List<SourceleadTaxChallanDTO> sourceleadTaxChallanSectionList;
+	
 
 	public long getId() {
 		return id;
@@ -79,4 +88,13 @@ public class SourceleadTaxFormDTO implements Serializable {
 	public void setSourceleadTaxSectionList(List<SourceleadTaxITDeclarationDTO> sourceleadTaxSectionList) {
 		this.sourceleadTaxSectionList = sourceleadTaxSectionList;
 	}
+
+	public List<SourceleadTaxChallanDTO> getSourceleadTaxChallanSectionList() {
+		return sourceleadTaxChallanSectionList;
+	}
+
+	public void setSourceleadTaxChallanSectionList(List<SourceleadTaxChallanDTO> sourceleadTaxChallanSectionList) {
+		this.sourceleadTaxChallanSectionList = sourceleadTaxChallanSectionList;
+	}
+	
 }

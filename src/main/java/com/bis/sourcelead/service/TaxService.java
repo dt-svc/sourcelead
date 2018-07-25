@@ -87,5 +87,7 @@ public interface TaxService {
 	long addItChallanSection(SourceleadTaxChallanDTO sourceleadTaxSectionDTO);
 
 	public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormFieldDTO optionData, long addChallanSectionItemId);
+
+	 public SourceleadTaxChallanItemDTO getChallanItemDetails(Long itemRowId);
 	
 }

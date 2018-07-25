@@ -17,7 +17,8 @@ public class SourceleadTaxChallanDTO  implements Serializable{
 	private String uuid;
 	private boolean active;
 	private long challanId;
-	private List<SourceleadTaxITDeclarationItemDTO> sourceleadTaxChallanSectionItemList;
+	private long taxFormId;
+	private List<SourceleadTaxChallanItemDTO> sourceleadTaxChallanSectionItemList;
 	public long getId() {
 		return id;
 	}
@@ -54,15 +55,23 @@ public class SourceleadTaxChallanDTO  implements Serializable{
 	public void setChallanId(long challanId) {
 		this.challanId = challanId;
 	}
-	public List<SourceleadTaxITDeclarationItemDTO> getSourceleadTaxChallanSectionItemList() {
+	public List<SourceleadTaxChallanItemDTO> getSourceleadTaxChallanSectionItemList() {
 		return sourceleadTaxChallanSectionItemList;
 	}
 	public void setSourceleadTaxChallanSectionItemList(
-			List<SourceleadTaxITDeclarationItemDTO> sourceleadTaxChallanSectionItemList) {
+			List<SourceleadTaxChallanItemDTO> sourceleadTaxChallanSectionItemList) {
 		this.sourceleadTaxChallanSectionItemList = sourceleadTaxChallanSectionItemList;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+	public void getSourceleadTaxChallanSectionItemList(List<SourceleadTaxChallanItemDTO> challanSectionItemDTOList) {
+	}
+	public long getTaxFormId() {
+		return taxFormId;
+	}
+	public void setTaxFormId(long taxFormId) {
+		this.taxFormId = taxFormId;
 	}
 	
 	

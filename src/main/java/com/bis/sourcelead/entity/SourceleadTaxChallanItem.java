@@ -2,13 +2,21 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 
@@ -27,6 +35,11 @@ public class SourceleadTaxChallanItem implements Serializable {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SOURCELEAD_TAX_CHALLAN_ID", nullable = false)
+	private SourceleadTaxChallan sourceleadtaxchallan;
+	
 	@Column(name = "FIELD_TYPE")
 	private String fieldType;
 	
@@ -38,7 +51,7 @@ public class SourceleadTaxChallanItem implements Serializable {
 	
 	
 	@Column(name = "IS_FIELD_REQUIRED")
-	private boolean isFieldRequired;
+	private Boolean isFieldRequired;
 	
 	@Column(name = "PLACEHOLDER")
 	private String placeHolder;
@@ -67,14 +80,44 @@ public class SourceleadTaxChallanItem implements Serializable {
 	@Column(name = "DATAVALIDATION_RANGE")
 	private String dataValidationRange;
 	
-	@Column(name = "STATUS")
-	private boolean status;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
+
+	@Column(name = "ACTIVE")
+	private Boolean active;
+
+	@OneToMany(mappedBy = "sourceleadTaxChallanItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<SourceleadTaxChallanItemSubFormField> sourceleadTaxChallanItemSubFormFieldList;
+	
+	public List<SourceleadTaxChallanItemSubFormField> getSourceleadTaxChallanItemSubFormFieldList() {
+		return sourceleadTaxChallanItemSubFormFieldList;
+	}
+
+	public void setSourceleadTaxChallanItemSubFormFieldList(
+			List<SourceleadTaxChallanItemSubFormField> sourceleadTaxChallanItemSubFormFieldList) {
+		this.sourceleadTaxChallanItemSubFormFieldList = sourceleadTaxChallanItemSubFormFieldList;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public SourceleadTaxChallan getSourceleadtaxchallan() {
+		return sourceleadtaxchallan;
+	}
+
+	public void setSourceleadtaxchallan(SourceleadTaxChallan sourceleadtaxchallan) {
+		this.sourceleadtaxchallan = sourceleadtaxchallan;
+	}
+
 
 	public Long getId() {
 		return id;
@@ -100,13 +143,12 @@ public class SourceleadTaxChallanItem implements Serializable {
 		this.labelName = labelName;
 	}
 
-
-
-	public boolean isFieldRequired() {
+	
+	public Boolean getIsFieldRequired() {
 		return isFieldRequired;
 	}
 
-	public void setFieldRequired(boolean isFieldRequired) {
+	public void setIsFieldRequired(Boolean isFieldRequired) {
 		this.isFieldRequired = isFieldRequired;
 	}
 
@@ -186,14 +228,6 @@ public class SourceleadTaxChallanItem implements Serializable {
 
 
 
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -221,6 +255,15 @@ public class SourceleadTaxChallanItem implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
-	
+
+	public void setSourceleadtaxchallan(Long challanSectionId) {
+		
+	}
+
+
+	public void setTaxsectionid(SourceleadTaxChallan taxChallanSection) {
+		
+	}
+
+
 }

@@ -96,4 +96,10 @@ public interface TaxDao {
 
 	public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormField sourceleadTaxChallanItem);
 
+	public SourceleadTaxChallan getTaxChallanSection(long taxSectionId);
+
+	public SourceleadTaxChallanItem getChallanItemDetails(Long itemRowId);
+
+	public SourceleadTaxChallanItem getITChallanSectionItem(Long id);
+
 }

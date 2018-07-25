@@ -29,14 +29,14 @@ public class SourceleadTaxChallanItemSubFormField implements Serializable {
 	@Column(name = "LABEL_NAME")
 	private String labelName;
 
-	@Column(name = "FIELD_NAME")
+/*	@Column(name = "FIELD_NAME")
 	private String fieldName;
 
 	@Column(name = "FIELD_DESC", columnDefinition = "TEXT default NULL")
 	private String fieldDesc;
 
 	@Column(name = "ACTIVE")
-	private boolean active;
+	private boolean active;*/
 
 	public Long getId() {
 		return id;
@@ -60,31 +60,6 @@ public class SourceleadTaxChallanItemSubFormField implements Serializable {
 
 	public void setLabelName(String labelName) {
 		this.labelName = labelName;
-	}
-
-	public String getFieldName() {
-		return fieldName;
-	}
-
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
-
-	public String getFieldDesc() {
-		return fieldDesc;
-	}
-
-	public void setFieldDesc(String fieldDesc) {
-		this.fieldDesc = fieldDesc;
-	}
-
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
 	}
 
 	public static long getSerialversionuid() {

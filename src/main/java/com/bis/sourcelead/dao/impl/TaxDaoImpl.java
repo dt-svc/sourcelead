@@ -301,6 +301,17 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
+	public SourceleadTaxChallan getTaxChallanSection(long taxSectionId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(SourceleadTaxChallan.class, taxSectionId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
 	@Transactional
 	public long addITDeclarationSection(SourceleadTaxITDeclaration taxSection) {
 		try {
@@ -586,5 +597,31 @@ public class TaxDaoImpl implements TaxDao {
 				}
 				return 0;
 			}
+			
+			
+			@Override
+			public SourceleadTaxChallanItem getChallanItemDetails(Long itemRowId) {
+				SourceleadTaxChallanItem ChallanItemDetails = null;
+				try {
+					Session session = this.sessionFactory.getCurrentSession();
+					ChallanItemDetails = (SourceleadTaxChallanItem) session.get(SourceleadTaxChallanItem.class, itemRowId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return ChallanItemDetails;
+			}
 
+			@Override
+			public SourceleadTaxChallanItem getITChallanSectionItem(Long id) {
+				try {
+					Session session = this.sessionFactory.getCurrentSession();
+					SourceleadTaxChallanItem sourceleadTaxChallanItem = (SourceleadTaxChallanItem) session.get(SourceleadTaxChallanItem.class, id);
+					return sourceleadTaxChallanItem;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return null;
+			}
+
+			
 }

@@ -61,6 +61,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Service
 public class TaxServiceImpl implements TaxService {
@@ -545,7 +546,45 @@ public class TaxServiceImpl implements TaxService {
 							}
 						}
 					}
+					
+					List<SourceleadTaxChallanDTO> challanSectionDTOList = new LinkedList<>();
+					List<SourceleadTaxChallan> challanSectipnList = sourceleadTaxForm.getSourceleadTaxChallanSectionList();
+						for(SourceleadTaxChallan challanSection : challanSectipnList){
+							if(includeInactive ||(!includeInactive && challanSection.isActive())) {
+								SourceleadTaxChallanDTO challanSectionDTO = new SourceleadTaxChallanDTO();
+								challanSectionDTO.setActive(challanSection.isActive());
+								challanSectionDTO.setChallanId(challanSection.getId());
+								challanSectionDTO.setDescription(challanSection.getDescription());
+								challanSectionDTO.setName(challanSection.getName());
+								challanSectionDTO.setId(challanSection.getId());
+								List<SourceleadTaxChallanItemDTO> challanSectionItemDTOList = new LinkedList<>();
+								List<SourceleadTaxChallanItem> challanSectionItemList = challanSection.getSourceleadTaxChallanItemList();
+									for(SourceleadTaxChallanItem challanSectionItem :challanSectionItemList ){
+										if(includeInactive ||(!includeInactive && challanSectionItem.getActive())) {
+										SourceleadTaxChallanItemDTO challanSectionItemDTO = new SourceleadTaxChallanItemDTO();
+										challanSectionItemDTO.setCreatedDate(challanSectionItem.getCreatedDate());
+										challanSectionItemDTO.setDataValidationRange(challanSectionItem.getDataValidationRange());
+										challanSectionItemDTO.setDataValidationType(challanSectionItem.getDataValidationType());
+										challanSectionItemDTO.setDiscription(challanSectionItem.getDiscription());
+										challanSectionItemDTO.setFieldType(challanSectionItem.getFieldType());
+										challanSectionItemDTO.setId(challanSectionItem.getId());
+										challanSectionItemDTO.setLabelName(challanSectionItem.getLabelName());
+										challanSectionItemDTO.setMaxDate(challanSectionItem.getMaxDate());
+										challanSectionItemDTO.setMinDate(challanSectionItem.getMinDate());
+										challanSectionItemDTO.setMaxLength(challanSectionItem.getMaxLength());
+										challanSectionItemDTO.setMinLength(challanSectionItem.getMinLength());
+										challanSectionItemDTO.setMinLength(challanSectionItem.getMinLength());
+										challanSectionItemDTO.setPlaceHolder(challanSectionItem.getPlaceHolder());
+										challanSectionItemDTO.setUpdatedDate(challanSectionItem.getUpdatedDate());
+										challanSectionItemDTOList.add(challanSectionItemDTO);
+										}
+									}
+									challanSectionDTO.setSourceleadTaxChallanSectionItemList(challanSectionItemDTOList);
+									challanSectionDTOList.add(challanSectionDTO);
+							}
+						}
 					sourceleadTaxFormDTO.setSourceleadTaxSectionList(taxSectionDTOList);
+					sourceleadTaxFormDTO.setSourceleadTaxChallanSectionList(challanSectionDTOList);
 				}
 			}
 		} catch (Exception e) {
@@ -926,7 +965,7 @@ public class TaxServiceImpl implements TaxService {
 			try {
 				SourceleadTaxChallanItem sectionItem = null;
 				if (sectionItemDTO.getId() != null && sectionItemDTO.getId() > 0) {
-					//sectionItem = taxDao.getTaxSectionItem(sectionItemDTO.getId());
+					sectionItem = taxDao.getITChallanSectionItem(sectionItemDTO.getId());
 				} else {
 					sectionItem = new SourceleadTaxChallanItem();
 				}
@@ -939,16 +978,13 @@ public class TaxServiceImpl implements TaxService {
 					sectionItem.setId(sectionItemDTO.getId());
 					sectionItem.setLabelName(sectionItemDTO.getLabelName());
 					sectionItem.setMaxDate(sectionItemDTO.getMaxDate());
-					sectionItem.setMaxLength(sectionItemDTO.getMaxLength());
 					sectionItem.setMaxNumber(sectionItemDTO.getMaxNumber());
 					sectionItem.setMinDate(sectionItemDTO.getMinDate());
 					sectionItem.setMinNumber(sectionItemDTO.getMinNumber());
 					sectionItem.setMinLength(sectionItemDTO.getMinLength());
 					sectionItem.setPlaceHolder(sectionItemDTO.getPlaceHolder());
 					sectionItem.setUpdatedDate(sectionItemDTO.getUpdatedDate());
-					sectionItem.setStatus(true);
-					sectionItem.setFieldRequired(false);
-					//sectionItem.setSourceleadTaxITDeclaration(taxDao.getTaxSection(sectionItemDTO.getTaxSectionId()));
+					sectionItem.setSourceleadtaxchallan(taxDao.getTaxChallanSection(sectionItemDTO.getTaxChallanId()));
 					return taxDao.addITChallanSectionItem(sectionItem);
 				} else
 					return -1;
@@ -975,10 +1011,7 @@ public class TaxServiceImpl implements TaxService {
 					section.setName(sourceleadTaxSectionDTO.getName());
 					section.setActive(true);
 					section.setId(sourceleadTaxSectionDTO.getId());
-					section.setUuid(sourceleadTaxSectionDTO.getUuid());
-					
-					
-					//section.setSourceleadTaxForm(taxDao.getTaxFormType(sectionDTO.getTaxFormId()));
+					section.setSourceleadTaxForm(taxDao.getTaxFormType(sourceleadTaxSectionDTO.getTaxFormId()));
 					return taxDao.addItChallanSection(section);
 				} else
 					return -1;
@@ -991,20 +1024,57 @@ public class TaxServiceImpl implements TaxService {
 		@Override
 		public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormFieldDTO optionData,long addChallanSectionItemId) {
 			SourceleadTaxChallanItemSubFormField challanSubField = new SourceleadTaxChallanItemSubFormField();
-			if(optionData.getActive()!=null){
-				challanSubField.setActive(optionData.getActive());
-			}
-			challanSubField.setFieldDesc(optionData.getFieldDesc());
-			challanSubField.setFieldName(optionData.getFieldName());
 			challanSubField.setId(optionData.getId());
 			challanSubField.setLabelName(optionData.getLabelName());
-			challanSubField.setSourceleadTaxChallanItem(optionData.getSourceleadTaxChallanItemId());
-			SourceleadTaxChallanItem sourceleadTaxChallanItem = taxDao.getSourceleadTaxChallanItemById(addChallanSectionItemId);
-			if(sourceleadTaxChallanItem != null){
-				challanSubField.setSourceleadTaxChallanItem(sourceleadTaxChallanItem);
-			}
-			
+			challanSubField.setSourceleadTaxChallanItem(taxDao.getSourceleadTaxChallanItemById(addChallanSectionItemId));
 			return taxDao.addSourceleadTaxChallanItemSubFormField(challanSubField);
-			// TODO Auto-generated method stub
 		}
+		
+		
+
+		@Override
+		public SourceleadTaxChallanItemDTO getChallanItemDetails(Long itemRowId) {
+			try {
+				SourceleadTaxChallanItem challanItem = taxDao.getChallanItemDetails(itemRowId);
+				if (challanItem != null) {
+					SourceleadTaxChallanItemDTO challanSectionItemDTO = new SourceleadTaxChallanItemDTO();
+					challanSectionItemDTO.setCreatedDate(challanItem.getCreatedDate());
+					challanSectionItemDTO.setDataValidationRange(challanItem.getDataValidationRange());
+					challanSectionItemDTO.setDataValidationType(challanItem.getDataValidationType());
+					challanSectionItemDTO.setDiscription(challanItem.getDiscription());
+					challanSectionItemDTO.setFieldRequired(challanItem.getIsFieldRequired());
+					challanSectionItemDTO.setFieldType(challanItem.getFieldType());
+					challanSectionItemDTO.setId(challanItem.getId());
+					challanSectionItemDTO.setLabelName(challanItem.getLabelName());
+					challanSectionItemDTO.setMaxDate(challanItem.getMaxDate());
+					challanSectionItemDTO.setMaxLength(challanItem.getMaxLength());
+					challanSectionItemDTO.setMaxNumber(challanItem.getMaxNumber());
+					challanSectionItemDTO.setUpdatedDate(challanItem.getUpdatedDate());
+					challanSectionItemDTO.setStatus(challanItem.getActive());
+					challanSectionItemDTO.setTaxChallanId(challanItem.getSourceleadtaxchallan().getId());
+					List<SourceleadTaxChallanItemSubFormFieldDTO> subFormFieldDTOList = new LinkedList<>();
+					for(SourceleadTaxChallanItemSubFormField subFormField: challanItem.getSourceleadTaxChallanItemSubFormFieldList()){
+						SourceleadTaxChallanItemSubFormFieldDTO subFormFieldDTO  = new SourceleadTaxChallanItemSubFormFieldDTO();
+						subFormFieldDTO.setId(subFormField.getId());
+						subFormFieldDTO.setLabelName(subFormField.getLabelName());
+						subFormFieldDTO.setSourceleadTaxChallanItemId(subFormField.getSourceleadTaxChallanItem().getId());
+						subFormFieldDTOList.add(subFormFieldDTO);
+					}
+					challanSectionItemDTO.setOptionData(subFormFieldDTOList);
+					return challanSectionItemDTO;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return getChallanItemDetails((long) 0);
+		}
+		
+		
+		
+		
+		
 }
+
+
+
+

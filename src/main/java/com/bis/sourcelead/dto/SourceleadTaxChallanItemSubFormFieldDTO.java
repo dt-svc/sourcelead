@@ -8,7 +8,7 @@ public class SourceleadTaxChallanItemSubFormFieldDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private SourceleadTaxChallanItem sourceleadTaxChallanItemId;
+	private long sourceleadTaxChallanItemId;
 	private String labelName;
 	private String fieldName;
 	private String fieldDesc;
@@ -19,10 +19,10 @@ public class SourceleadTaxChallanItemSubFormFieldDTO implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public SourceleadTaxChallanItem getSourceleadTaxChallanItemId() {
+	public long getSourceleadTaxChallanItemId() {
 		return sourceleadTaxChallanItemId;
 	}
-	public void setSourceleadTaxChallanItemId(SourceleadTaxChallanItem sourceleadTaxChallanItemId) {
+	public void setSourceleadTaxChallanItemId(long sourceleadTaxChallanItemId) {
 		this.sourceleadTaxChallanItemId = sourceleadTaxChallanItemId;
 	}
 	public String getLabelName() {

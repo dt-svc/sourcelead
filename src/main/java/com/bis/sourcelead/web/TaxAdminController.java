@@ -520,10 +520,11 @@ public class TaxAdminController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				long addChallanSectionItemId = taxService.addITChallanSectionItem(sectionItemDTO);
-				for(SourceleadTaxChallanItemSubFormFieldDTO optionData:sectionItemDTO.getOptionData()){
-					taxService.addSourceleadTaxChallanItemSubFormField(optionData,addChallanSectionItemId);
+				if(sectionItemDTO.getOptionData() != null){
+					for(SourceleadTaxChallanItemSubFormFieldDTO optionData:sectionItemDTO.getOptionData()){
+						taxService.addSourceleadTaxChallanItemSubFormField(optionData,addChallanSectionItemId);
+					}
 				}
-							
 				
 				if (addChallanSectionItemId > 0) {
 					response.setResponse(Result.SUCCESS.name());
@@ -541,6 +542,7 @@ public class TaxAdminController {
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
 		} catch (Exception e) {
+			e.printStackTrace();;
 			logger.error(e.getMessage());
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
@@ -581,5 +583,17 @@ public class TaxAdminController {
 	}
 
 	
+	@RequestMapping(value = "/form/editChallanItem", method =  RequestMethod.POST)
+	public ModelAndView getChallanItemDetails(HttpServletRequest request ,SourceleadTaxChallanItemDTO sourceleadTaxChallanItemDTO,@RequestParam(value="itemRowId") Long itemRowId ) throws Exception{
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			SourceleadTaxChallanItemDTO ChallanItemDTO = taxService.getChallanItemDetails(itemRowId);
+			modelAndView.addObject("form", ChallanItemDTO);
+			modelAndView.setViewName("tax/org/it_Challan_CustomForm");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
 	
 }

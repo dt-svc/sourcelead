@@ -796,7 +796,6 @@ function addITChallanSection() {
 
 
 function callAddITChallanSectionRestService(formData, type) {
-	alert("inside");
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
 		type : "POST",
@@ -830,10 +829,9 @@ function callAddITChallanSectionRestService(formData, type) {
 
 
 function addITChallanSectionItem() {
-	alert("i am inside c data");
 	/*if($('#itChallanSectionItemForm').validate(false, validationSettings)) {*/
 		$("#addITChallanSectionItemBtn").attr("disabled","disabled");
-		var formData = getFormData("itChallanSectionItemForm");
+		var formData = getFormData("AddItChallanSectionItemForm");
 		callAddITChallanSectionItemRestService(formData, 2)
 		return true;
 	/*} else {
@@ -841,9 +839,13 @@ function addITChallanSectionItem() {
 	}*/
 }
 
+function editChallanSectionItems(){
+	var formData = getFormData("editItChallanSectionItemForm");
+	callAddITChallanSectionItemRestService(formData, 2);
+}
 
 function callAddITChallanSectionItemRestService(formData, type) {
-	alert("inside");
+	document.getElement
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
 		type : "POST",
@@ -890,5 +892,28 @@ function flushPopupData(){
 	$('#fieldtype').trigger('chosen:updated');
 	getSelectedFieldDetails();
 	
+	
+}
+function modalClose() {
+	$(".comMask, .section, .addSectionChallanItemPopup").fadeOut();
+}
+
+function addChallaItem(sectionId, sectionName){
+	$(".addSectionChallanItemPopup").data("sectionId", sectionId);
+	$(".addSectionChallanItemPopup").find("h4").html(sectionName);
+	$("#taxSectionId").val(sectionId);
+	$(".comMask, .addSectionChallanItemPopup").fadeIn();
+}
+
+function editItemDetails(itemRowId){
+//	alert(itemRowId);
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/form/editChallanItem?&itemRowId="+itemRowId,
+		success : function(data) {
+			$("#itChallanCustomPopup").empty();
+			$("#itChallanCustomPopup").append(data);
+		}
+	})
 	
 }

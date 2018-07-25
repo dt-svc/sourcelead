@@ -1,13 +1,21 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 
@@ -34,6 +42,30 @@ public class SourceleadTaxChallan implements Serializable {
 	@Column(name = "ACTIVE")
 	private boolean active;
 	
+	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SOURCELEAD_TAX_FORM_ID", nullable = false)
+	private SourceleadTaxForm sourceleadTaxForm;
+	
+	@OneToMany(mappedBy = "sourceleadtaxchallan", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<SourceleadTaxChallanItem> SourceleadTaxChallanItemList;
+	
+	
+	public List<SourceleadTaxChallanItem> getSourceleadTaxChallanItemList() {
+		return SourceleadTaxChallanItemList;
+	}
+
+	public void setSourceleadTaxChallanItemList(List<SourceleadTaxChallanItem> sourceleadTaxChallanItemList) {
+		SourceleadTaxChallanItemList = sourceleadTaxChallanItemList;
+	}
+
+	public SourceleadTaxForm getSourceleadTaxForm() {
+		return sourceleadTaxForm;
+	}
+
+	public void setSourceleadTaxForm(SourceleadTaxForm sourceleadTaxForm) {
+		this.sourceleadTaxForm = sourceleadTaxForm;
+	}
 
 	public long getId() {
 		return id;
