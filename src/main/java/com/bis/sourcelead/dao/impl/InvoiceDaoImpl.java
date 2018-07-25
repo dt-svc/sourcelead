@@ -239,10 +239,6 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			String query = "from Contracts contract left join fetch contract.requirementSubmission submission left join fetch submission.requirement where contract.orgLocationId.id = :orgLocationId and "
 					+ "contract.orgRelations.id = :orgRelationId and contract.candidate.id = :candidateId and contract.contractType = :contractType and contract.templateSubmissionStatus = 'FINALIZED'";
 		     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setString("contractType", contractType).list();
-		  if(null != contractsList){
-			  return contractsList;
-		  }
-		  return contractsList;
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
