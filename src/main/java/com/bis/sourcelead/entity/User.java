@@ -147,6 +147,24 @@ public class User implements Serializable{
 	@Column(name = "RECRUITER_REGISTER_COUNTRY")
 	private String recruiterRegisterCountry;
 	
+	// Immigration columns Start
+	@Column(name = "MIDDLE_NAME")
+	private String middelName ;
+		
+	@Column(name = "DATE_OF_BIRTH")
+	private Date dateOfBirth;
+		
+	@Column(name = "GENDER")
+	private String gender;
+	
+	@Column(name = "MARITAL_STATUS")
+	private String maritalStatus;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LINK_USER_ID")
+	@JsonProperty
+    private User linkUserId;
+	
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -216,6 +234,7 @@ public class User implements Serializable{
 	private String role;
 	
 	@Transient
+	@JsonProperty
 	private String assignedTeamId;
 	
 	@Transient
@@ -273,6 +292,12 @@ public class User implements Serializable{
 	
 	@Transient
 	private String isMailSent;
+	
+	@Transient
+	private String associateUserCode;
+	
+	@Transient
+	private Long userId;
 	
 
 	public Status getPreviousUserState() {
@@ -495,14 +520,14 @@ public class User implements Serializable{
 		if(StringUtils.isNotEmpty(fullName))
 			return fullName;
 		else{
-			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)){
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isEmpty(middelName)){
 				fullName = firstName;
-			}
-			else if(StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
-				fullName = lastName;
-			}
-			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
-				fullName = firstName+" "+lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isEmpty(middelName)){
+				fullName = firstName +" "+lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName +" "+middelName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName+" "+middelName+" "+lastName;
 			}
 			return fullName;
 		}
@@ -839,6 +864,62 @@ public class User implements Serializable{
 
 	public void setVendorContactName(String vendorContactName) {
 		this.vendorContactName = vendorContactName;
+	}
+
+	public String getMiddelName() {
+		return middelName;
+	}
+
+	public void setMiddelName(String middelName) {
+		this.middelName = middelName;
+	}
+
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public User getLinkUserId() {
+		return linkUserId;
+	}
+
+	public void setLinkUserId(User linkUserId) {
+		this.linkUserId = linkUserId;
+	}
+
+	public String getAssociateUserCode() {
+		return associateUserCode;
+	}
+
+	public void setAssociateUserCode(String associateUserCode) {
+		this.associateUserCode = associateUserCode;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	

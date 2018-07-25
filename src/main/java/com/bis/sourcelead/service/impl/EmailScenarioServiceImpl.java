@@ -55,9 +55,9 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioServic
 	}
 
 	@Override
-	public List<EmailScenario> getEmailScenarioList(String templateType) throws Exception {
+	public List<EmailScenario> getEmailScenarioList(String templateType,List<Long> tabIds, List<String> specification) throws Exception {
 		
-		return emailScenarioDao.getEmailScenarioList(templateType);
+		return emailScenarioDao.getEmailScenarioList(templateType,tabIds,specification);
 	}
 
 	@Override

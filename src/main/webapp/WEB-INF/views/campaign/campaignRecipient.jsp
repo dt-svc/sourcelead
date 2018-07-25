@@ -1007,7 +1007,7 @@ function getContactsList(){
   		result = result +'<table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		result = result +' <th><input type="checkbox" id="checkAllContacts" onclick="toggleMyContacts(this);"></th>';
+		result = result +' <th><input type="checkbox" name="checkAllContacts" onclick="toggleMyContacts(this);"></th>';
 		result = result +'<th>Contact Name</th>';
 		result = result +'<th>Email</th>';
 		result = result +'<th>Source</th>';
@@ -1149,25 +1149,6 @@ function checkContactUsers(ele) {
 
 </script>
 
-
-<script>
-/*function toggleMyContacts(source) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i] != source)
-            checkboxes[i].checked = source.checked;
-            checkContactUsers(checkboxes[i])
-        
-    }
-$('input:checkbox:not(#checkAllContacts)').click(function() {
-    if(!this.checked) {
-        $('#checkAllContacts').removeAttr('checked');
-    }
-});
-}*/
-</script>
-
-
 <script>
 function toggleVendors(source) {
 var checkboxes = document.querySelectorAll('input[class="myVendorCheckbox"]');
@@ -1255,11 +1236,16 @@ $('input[class="myClientContactsCheckbox"]').each(function(i) {
 function toggleMyContacts(source) {
 
 if($(source).is(":checked"))
-	  $('input[class="myCheckbox"]').prop('checked', 'checked');
+{
+	$('input[name="checkAllContacts"]').attr('checked', 'checked');
+	 $("#multiplemail").modal('hide');
+	 $('#groupPopUpId').parent().find('p.jquery_form_error_message').remove();
+}
 else 
-	  $('input[class="myCheckbox"]').removeProp('checked');
-
-$('input[class="myCheckbox"]').each(function(i) {
+{  $('input[name="checkAllContacts"]').removeAttr('checked');
+$("#groupPopUpId").after("<p class='jquery_form_error_message'><span>Select Atleast One Vendor Contact</span>");
+}
+$('input[name="checkAllContacts"]').each(function(i) {
 	  if($(this).is(":checked")) {
 		  contactUsers[$(this).data("id")] = $(this).val();
 	  } else {
@@ -1284,6 +1270,19 @@ function getContactEmails(){
 		 }
 	  }
 	 
+	 var elist=$("#recipientEmail").chosen().find("option:selected" ).text();
+	 if(elist == '' && orgRelationIds.length == 0)
+	 {
+		 $('#vendorsListDiv').find('p.jquery_form_error_message').remove();
+		  $("#vendorbtnId").attr("disabled", "disabled");
+		  $("#vendorListType").after( "<p class='jquery_form_error_message'>Select atleast one vendor</p>");
+	 }
+	 else
+	  {
+	 var recipientsEmails = '';
+	 if($("#recipientEmail").val() != null){
+		  recipientsEmails = $("#recipientEmail").val();
+	 }
 	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -1306,6 +1305,7 @@ function getContactEmails(){
           
      }); 
 	 
+}
 }
 </script>
 
@@ -1384,13 +1384,6 @@ function getAllEmailContacts(){
 	  }
 	}
 	
-	if($("input[name='checkAllContacts']:checked").length == 0){
-    	$("#groupPopUpId").after("<p class='jquery_form_error_message'><span>Select Atleast One Client Contact</span>");
-	}else{
-		$("#multiplemail").modal('hide');
-		$('#groupPopUpId').parent().find('p.jquery_form_error_message').remove();
-	}	
-	
 	    $("#recipientEmail").append(internalOutput);
 		$("#recipientEmail").trigger("chosen:updated");
 		
@@ -1429,7 +1422,6 @@ function getClientEmails(){
 	 if($("#recipientEmail").val() != null){
 		  recipientsEmails = $("#recipientEmail").val();
 	 }
-	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
          type : "POST",

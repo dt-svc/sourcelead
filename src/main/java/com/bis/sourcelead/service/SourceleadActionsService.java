@@ -35,4 +35,6 @@ public interface SourceleadActionsService {
 	List<SourceleadActions> getAllSourceleadGuestOrgActionsForEnroll() throws Exception;
 	
 	List<SourceleadActions> getAllSourceleadActionsByIdsList(List<Long> actionIdList) throws Exception;
+	
+	List<Long> getAllSourceleadActionsIdsByTabsList(List<Long> tabsList) throws Exception;
 }

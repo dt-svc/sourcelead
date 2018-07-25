@@ -1,8 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
@@ -32,7 +36,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
-import com.ibm.icu.math.BigDecimal;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @Service
 public class InvoicePaymentServiceImpl implements InvoicePaymentService {
@@ -221,6 +226,122 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		invoicePayment.setCreatedBy(user.getUserCode());
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
 		return invoicePaymentDao.saveInvoicePayment(invoicePayment);
+	}
+	
+	
+	@Override
+	public InvoicePayment saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,Map<Long,String> invoiceIdsMap) throws Exception {
+
+		 List<Invoice> list = invoiceDao.getInvoiceListByIdsAndLocationId(new ArrayList(invoiceIdsMap.keySet()),orgLocation.getId());
+		 InvoicePayment invoicePayment = null;
+		 for(Invoice invoice : list){
+			invoicePayment = new InvoicePayment();
+		/*String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
+			 System.out.println(" inovice id : "+invoice.getId());
+            System.out.println(" amount value "+invoiceIdsMap.get(invoice.getId()));
+            
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentDate())) {
+			Date paymentDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),invoicePaymentDTO.getPaymentDate());
+			invoicePayment.setPaymentDate(paymentDate);
+		}
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentMethod())) {
+			invoicePayment.setPaymentMethod(invoicePaymentDTO.getPaymentMethod());
+		}
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getReferenceNumber())) {
+			invoicePayment.setPaymentReferenceNumber(invoicePaymentDTO.getReferenceNumber());
+
+		}
+		BigDecimal remainAmount =  null;
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentAmount())) {
+				if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
+					if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+					invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
+					invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
+					invoice.setDueAmount("00.00");
+					}else{
+						String due = invoice.getDueAmount();
+						BigDecimal dueDecimal = (new BigDecimal(due));
+						String received = invoiceIdsMap.get(invoice.getId());
+						BigDecimal receivedDecimal = (new BigDecimal(received));
+						remainAmount = dueDecimal.subtract(receivedDecimal);
+						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+						invoice.setDueAmount(remainAmount.toString());
+					}
+				}
+		
+			if (Constants.INVOICE_SENT.equalsIgnoreCase(invoice.getInvoiceStatus())) {
+				invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
+			}
+			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
+
+			Invoice parentInvoice = null;
+			if (null != childInvoice) {
+				if (null != childInvoice.getId()) {
+					parentInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(childInvoice.getId());
+					if (parentInvoice == null) {
+						parentInvoice = invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+					}
+					
+					// float totalAmount = 0;
+					// float customAmount = 0;
+						if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
+							if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+							invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
+							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
+							parentInvoice.setDueAmount("00.00");
+							}else{
+								String due = invoice.getDueAmount();
+								BigDecimal dueDecimal = (new BigDecimal(due));
+								String received = invoiceIdsMap.get(invoice.getId());
+								BigDecimal receivedDecimal = (new BigDecimal(received));
+								remainAmount = dueDecimal.subtract(receivedDecimal);
+								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+								invoice.setDueAmount(remainAmount.toString());
+							}
+						}
+					
+					if (Constants.INVOICE_RECEIVED.equalsIgnoreCase(parentInvoice.getInvoiceStatus())) {
+						parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
+					}
+					invoiceDao.saveInvoce(parentInvoice);
+				}
+
+			}
+		}
+
+		invoicePayment.setCurrencyCode(invoice.getCurrencyCode());
+		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentMemo())) {
+			invoicePayment.setPaymentComment(invoicePaymentDTO.getPaymentMemo());
+		}
+		
+		if(invoicePaymentDTO.getFileInfo() != null && invoicePaymentDTO.getFileInfo().size() > 0){
+			for(FileInfo file : invoicePaymentDTO.getFileInfo()){
+				invoicePayment.setFileContentType(file.getContentType());
+				invoicePayment.setFileName(file.getFileName());
+				invoicePayment.setFileURL(file.getFileURL());
+			}
+		}
+		
+		invoicePayment.setOrgLocation(orgLocation);
+		if (invoice.getParentInvoiceId() != null) {
+			invoicePayment.setInvoiceId(invoice.getParentInvoiceId());
+		} else {
+			invoicePayment.setInvoiceId(invoice);
+		}
+
+		invoicePayment.setStatus(Constants.RECORD_ACTIVE.toString());
+		invoicePayment.setCreatedBy(user.getUserCode());
+		invoicePayment.setCreatedDate(commonUtil.currentDate());
+		invoicePaymentDao.saveInvoicePayment(invoicePayment);
+		 }
+		 // this for moving file to folder after setting values (same information set to selected invoices)
+		 if(invoicePaymentDTO.getFileInfo() != null && invoicePaymentDTO.getFileInfo().size() > 0){
+			 for(FileInfo file : invoicePaymentDTO.getFileInfo()){
+				 FileUploadUtil.moveFile(invoicePaymentDTO.getStaticPath(), file, "incoiceDocuments");	 
+			 }
+		 }
+		return invoicePayment;
 	}
 
 	@Override

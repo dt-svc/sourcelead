@@ -1504,6 +1504,7 @@ public class CrowdSourcingRequirementsRestController {
 		public @ResponseBody Response<String> storeCandidate(CandidateDTO candidateDTO,
 				@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 			
+
 		 Response<String> response = new Response<>(); 
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 if (user != null) {
@@ -1531,6 +1532,7 @@ public class CrowdSourcingRequirementsRestController {
 				}
 				return response; 
 		 }
+
 	 
 		@RequestMapping(value = "/getRefercontactList", method = RequestMethod.GET)
 		public  ResponseList<ReferContactsDTO> getRefercontactList(ReferContactsDTO referContactsDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {

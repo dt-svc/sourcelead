@@ -8,10 +8,10 @@ $(document).ready(function(){
 	requirementSubmissionsCount("today");
 });
 </script>
-<div class="col-md-6">
-        <div class="dashboard-widget dashboard-widget-icons">
-          <h4 class="clearfix"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs &nbsp;&nbsp;</a> </h4>
-          <div class="clearfix dashboard-data mt">
+<div class="col-md-6 mb">
+        <div class="dashboardWidget-new">
+          <h4 class="clearfix"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs</a></h4>
+          <div class="clearfix dashboard-data">
             <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');">Current</a></li>
               <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');">Previous</a></li>
@@ -20,37 +20,41 @@ $(document).ready(function(){
             <div class="tab-content clearfix">
                 <div class="db-widget-sm row">
                 <div class="col-xs-12 col-sm-3">
-                    <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-black-tie" aria-hidden="true"></i> </span>
+                    <div class="clearfix">
+                     <!-- <span class="info-box-icon bg-green"> <i class="fa fa-black-tie" aria-hidden="true"></i> </span> -->
                       <div class="info-box-content text-center" style='cursor:pointer' title="Applicants" id="appDiv">
                         <p class="info-box-number"><span id="applicantsCount" onclick="loadRequirementApplicants();"></span></p>
-                        <p class="info-box-text">Applicants</p>
+                        <p class="info-box-text mb0 text-muted mt2">Applicants</p>
                       </div>
                       <div id ="applicantsCountLoading"></div>
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
-                    <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i> </span>
-                      <div class="info-box-content text-center" style='cursor:pointer' title="Submission" id="subDiv">
+                    <div class="clearfix">
+                     <!-- <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i></span> -->
+                      <div class="info-box-content text-center" style='cursor:pointer' title="Submissions" id="subDiv">
                         <p class="info-box-number"><span id="submissionsCount" onclick="loadRequirementSubmissions();">${submissionsCount}</span></p>
-                        <p class="info-box-text">Submissions</p>
+                        <p class="info-box-text mb0 text-muted mt2">Submissions</p>
                       </div>
                       <div id ="submissionsCountLoading"></div>
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
-                    <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-graduation-cap" aria-hidden="true"></i> </span>
+                    <div class="clearfix">
+                    <!-- <span class="info-box-icon bg-blue"> <i class="fa fa-graduation-cap" aria-hidden="true"></i></span> -->
                       <div class="info-box-content text-center" style='cursor:pointer' title="Interviews" id="intDiv">
                         <p class="info-box-number"><span id="interviewsCount" onclick="loadRequirementInterviews();"></span></p>
-                        <p class="info-box-text">Interviews</p>
+                        <p class="info-box-text mb0 text-muted mt2">Interviews</p>
                       </div>
                       <div id ="interviewsCountLoading"></div>
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
-                    <div class="info-box"> <span class="info-box-icon bg-orange" > <i class="fa fa-tags" aria-hidden="true"></i> </span>
+                    <div class="clearfix">
+                    <!-- <span class="info-box-icon bg-orange" > <i class="fa fa-tags" aria-hidden="true"></i></span> -->
                       <div class="info-box-content text-center" style='cursor:pointer' title="Offers" id="offDiv">
                         <p class="info-box-number"><span id="offersCount" onclick="loadRequirementOffers();"></span></p>
-                        <p class="info-box-text">Offers</p>
+                        <p class="info-box-text mb0 text-muted mt2">Offers</p>
                       </div>
                       <div id ="offersCountLoading"></div>
                     </div>

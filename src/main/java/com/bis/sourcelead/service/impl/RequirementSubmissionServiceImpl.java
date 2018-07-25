@@ -1,12 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,7 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -53,9 +50,12 @@ import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
+import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -566,6 +566,19 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			
 		 }
 		 
+		
+		 if(jsonObj.has("candidateResumeRequired") && !isNullOrEmpty(jsonObj.getString("candidateResumeRequired")) && jsonObj.getString("candidateResumeRequired").equalsIgnoreCase(Constants.YES)){
+			 CandidateResumesDTO resumeDTO = candidateResumesDao.getCandidateResumesDTOByCandidateId(candidate.getId());
+			 if(resumeDTO != null) {
+				 CandidateResumes resume = new CandidateResumes();
+				 resume.setId(resumeDTO.getResumeId().longValue());
+				 requirementSubmission.setCandidateResumes(resume);
+				 insertResumeIdInELK(candidate);
+			 }
+			
+		 }
+		 
+		 
 		 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
 			 candidateResumes = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(jsonObj.getString("candidateResume")));
 			 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));
@@ -637,7 +650,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 /* the functionality of this block is to verify the submitted candidate is in the Cooling-Off Period or not
 		 if the applicant is in cooling-off period, the candidate should be in rejected state(set previous state to Submission) at client side  [Venkat Kesav] START Code snippet*/
-		 RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = null;
+		 /*RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = null;
 			 String reqCoolingOffPeriod = requirement.getReqCoolingOffPeriod();
 			 String [] coolingOffArr = reqCoolingOffPeriod.split(" ");
 			 String reqCoolingOffPeriodDays;
@@ -662,7 +675,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				     break;
 				 default:
 					 reqCoolingOffPeriodDays = "0";
-			 }
+			 }*/
 			 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
                  if(jsonObj.getString("needApplicantPermit").equals("Y")){
                      requirementSubmission.setNeedApplicantPermit("Y");
@@ -671,7 +684,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
              }else{
                  requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
              }
-			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
+			 /*requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
 					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
@@ -684,7 +697,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 requirementSubmission.setRejectedCategoryType("Other");
 					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
 				 }
-			 }
+			 }*/
 			 /*END Code snippet*/
 		 
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1523,7 +1536,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
-	public Integer getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user,
+	public RequirementSubmissionsCountDTO getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user,
 			OrgLocations loginOrgLocation, String submissionStatus) throws Exception{
 		return requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirementId,user,loginOrgLocation,submissionStatus);
 	}
@@ -2098,30 +2111,31 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 for(int j=0; j<array.length(); j++){
    			JSONObject jsonObj = new JSONObject();
    			jsonObj =  array.getJSONObject(j);
-   			if(jsonObj.getString("name").equalsIgnoreCase("CurrentCTC")){
-   			 jsonObj.put("value", "-----");
+   			if(jsonObj.has("name")){
+	   			if(jsonObj.getString("name").equalsIgnoreCase("CurrentCTC")){
+	   			 jsonObj.put("value", "-----");
+	   			}
+	   			else if(jsonObj.getString("name").equalsIgnoreCase("ExpectedCTC")){
+	   				if(clientShortlistsRate != null && clientShortlistsRate.length>i && !isNullOrEmpty(clientShortlistsRate[i])){
+	   					String clientRate = clientShortlistsRate[i];
+	   					String submissionPer = "";
+	   					if(submissionratePer.length > 0 && !isNullOrEmpty(submissionratePer[i])){
+	   		  			 submissionPer = submissionratePer[i]; 
+	   		  		 }
+	   	   				if(!isNullOrEmpty(clientRate)){
+	   	   				    StringBuilder rateBuilder = new StringBuilder();
+	   	   				    rateBuilder = rateBuilder.append(templateFields.getExpectedRateType()).append(" ").append(clientRate).append(" / ").append(submissionPer);
+	   	   					jsonObj.put("value", rateBuilder.toString());
+	   	   				}else{
+	   	   					jsonObj.put("value", "");
+	   	   				}
+	   				}
+	  				
+	  			 }
+	   			else{
+	   			   jsonObj.put("value", jsonObj.getString("value"));
+	   			}
    			}
-   			else if(jsonObj.getString("name").equalsIgnoreCase("ExpectedCTC")){
-   				if(clientShortlistsRate != null && clientShortlistsRate.length>i && !isNullOrEmpty(clientShortlistsRate[i])){
-   					String clientRate = clientShortlistsRate[i];
-   					String submissionPer = "";
-   					if(submissionratePer.length > 0 && !isNullOrEmpty(submissionratePer[i])){
-   		  			 submissionPer = submissionratePer[i]; 
-   		  		 }
-   	   				if(!isNullOrEmpty(clientRate)){
-   	   				    StringBuilder rateBuilder = new StringBuilder();
-   	   				    rateBuilder = rateBuilder.append(templateFields.getExpectedRateType()).append(" ").append(clientRate).append(" / ").append(submissionPer);
-   	   					jsonObj.put("value", rateBuilder.toString());
-   	   				}else{
-   	   					jsonObj.put("value", "");
-   	   				}
-   				}
-  				
-  			 }
-   			else{
-   			   jsonObj.put("value", jsonObj.getString("value"));
-   			}
-   			
    			jsonArray.put(jsonObj);
    				 
    		 }
@@ -2811,7 +2825,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = sourceleadUrl;
 		 
-		String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
@@ -3279,7 +3293,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 		 
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg,loginOrgLocation);
@@ -4871,9 +4885,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO) throws Exception
+	public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation) throws Exception
 	{
-		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO);
+		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation);
 	}
 	
 	@Override
@@ -4885,10 +4899,43 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 requirementSubmission = requirementSubmissionDao.getRequirementSubmissionById(Long.valueOf(jsonObj.getString("submissionId")));
 			 CandidateResumes candidateResumes = new CandidateResumes();
 			 if(requirementSubmission != null){
-				 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
-					 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));
+				
+				 if((jsonObj.has("fileInfo[0].fileName") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileName"))) && (jsonObj.has("fileInfo[0].fileURL") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileURL"))) && (jsonObj.has("fileInfo[0].contentType") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].contentType")))){
+					 FileInfo fileInfo = new FileInfo();
+					 fileInfo.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
+					 fileInfo.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+					 fileInfo.setContentType(jsonObj.get("fileInfo[0].contentType").toString());
+					 candidateResumes = new CandidateResumes();
+	 				 candidateResumes.setCandidateId(requirementSubmission.getCandidate());
+					 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
+					 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
+					 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
+					 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+	 				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
+	 				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	 				 candidateResumes.setCreatedDate(new Date());
+	 				 if(user !=null){
+					 candidateResumes.setCreatedBy(user.getUserCode());
+	 				 }
+	 				 else{
+	 					 candidateResumes.setCreatedBy(null);
+	 
+	 				 }
+					 candidateResumes.setUpdatedDate(new Date());
+					 candidateResumes.setOrgLocationId(orgLocations);
+					 FileUploadUtil.moveFile(staticPath, fileInfo, "addApplicants");
+					 candidateResumesDao.storeCandidateResumes(candidateResumes);
+					 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, null);
 					 requirementSubmission.setCandidateResumes(candidateResumes);
+					 //insert the currentResumeId in ELK				 
+					 insertResumeIdInELK(requirementSubmission.getCandidate());
+				 }else {
+					 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
+						 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));
+						 requirementSubmission.setCandidateResumes(candidateResumes);
+					 }
 				 }
+			 
 				 
 				 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))){
 					 if(jsonObj.getString("notifyToApplicant").equals("Y")){
@@ -5042,5 +5089,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public RequirementSubmission getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(
 			Long requirementId, Long candidateId) throws Exception {
 		return requirementSubmissionDao.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementId, candidateId);
+	}
+
+	@Override
+	public boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId, Long requirementId)
+			throws Exception {
+		return requirementSubmissionDao.getRequirementSubmissionByCandidateIdAndJobId(candidateId, requirementId);
 	}
 }

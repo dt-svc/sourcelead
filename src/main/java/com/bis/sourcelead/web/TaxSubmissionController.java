@@ -216,8 +216,8 @@ public class TaxSubmissionController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				itDeclarationSubmissionDTO.setStatus(1);
-//				response = taxService.submitITDeclaration(itDeclarationSubmissionDTO, user);
-				response.setObject(1L);
+				response = taxService.submitITDeclaration(itDeclarationSubmissionDTO, user);
+//				response.setObject(1L);
 				response.setResponse(Result.SUCCESS.name());
 				if (response.getResponse().equals(Result.SUCCESS.name())) {
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");

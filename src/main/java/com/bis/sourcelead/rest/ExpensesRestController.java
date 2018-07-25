@@ -72,6 +72,8 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
+import gherkin.lexer.Is;
+
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
 @RequestMapping("/app")
@@ -196,16 +198,10 @@ public class ExpensesRestController {
     			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(expenses.getOrgRelationId()));
     			expenses.setOrgRelationUUID(orgRelations.getUUID());
     		}*/
-            expensesDTOList.add(ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses,new ExpensesDTO()));
-            for(ExpensesDTO expDate:expensesDTOList) {
-        		if(expenses.getStartDate() != null){
-        			expDate.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));	
-        		}
-        		
-        		if(expenses.getEndDate() != null){
-        			expDate.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));	
-        		}
-            }
+            ExpensesDTO expDate =  ExpensesDTOConverter.getExpensesDTOFromExpenses(orgLoc,expenses,new ExpensesDTO());
+            expDate.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));
+            expDate.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));	
+            expensesDTOList.add(expDate);
         }
         response.setData(expensesDTOList);
         response.setRecordsFiltered(expensesList.getRecordsFiltered());
@@ -227,20 +223,28 @@ public class ExpensesRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		User loginUser = userService.getUserById(eedDTO.getUserId());
 		if(StringUtils.isNotEmpty(eedDTO.getExpenseFrom()) && eedDTO.getExpenseFrom().equalsIgnoreCase("approver")){
-			List<ProjectClients> projectClientsList = projectClientService.getAllProjectClientsByApproverUserAndOrgLocationId(loginUser.getId(),orgLocations.getId());
+			List<ProjectClients> projectClientsList = projectClientService.getAllProjectClientsByApproverUserAndOrgLocationId(loginUser.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser());
 			ArrayList<ProjectsDTO> projectsList = new ArrayList<>();
 			for(ProjectClients pc : projectClientsList){
 				Projects projects = pc.getProjectId();
 				if(projects.getOrgLocationsId()== null)
 				continue;
-				List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projects.getId(),orgLocations.getId());
-				//Long expenseCategoryLocationId = null;
-				/*if(projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
-					expenseCategoryLocationId = projects.getOrgLocationsId().getId();
+				List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projects.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser());
+				Long orgLocationId = null;
+				if(StringUtils.isNotEmpty(eedDTO.getExpenseId())){
+					OrgLocations expLoc = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getExpenseLocationCode());
+					if(expLoc != null) {
+						orgLocationId = expLoc.getId();
+					}
 				}else {
-					expenseCategoryLocationId = orgLocations.getId();
-				}*/
-				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(projects.getOrgLocationsId().getId(), Constants.MEMBER_ACTIVE);
+					if(projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
+						orgLocationId = projects.getOrgLocationsId().getId();
+					}else {
+						orgLocationId = orgLocations.getId();
+					}
+				}
+				
+				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, Constants.MEMBER_ACTIVE,eedDTO.getIsGlobalUser());
 				ProjectsDTO projectDTO =ProjectDTOConverter.getProjectsDTOFromProjects(projects);
 				if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
 					ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
@@ -253,7 +257,8 @@ public class ExpensesRestController {
 					projectDTO.setExpenseId(eedDTO.getExpenseId());
 				}
 				else{
-					String expenseId = addExpensesService.getExpenseId(pc.getProjectId().getOrgLocationsId());
+					//String expenseId = addExpensesService.getExpenseId(pc.getProjectId().getOrgLocationsId().getId());/*OLD CODE*/
+					String expenseId = addExpensesService.getExpenseId(orgLocations);
 					projectDTO.setExpenseId(expenseId);
 				}
 				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
@@ -284,7 +289,7 @@ public class ExpensesRestController {
 			    }
 				projectsList.add(projectDTO);
 			}
-			expenseEntryDetailsDTO.setProjectsList(projectsList);
+ 			expenseEntryDetailsDTO.setProjectsList(projectsList);
 		}
 		else{
 			Candidate candidate = candidateService.getCandidateByConsultantUserId(eedDTO.getUserId(), orgLocations.getId());
@@ -301,7 +306,20 @@ public class ExpensesRestController {
 							pmDTO.setProjectEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pm.getProjects().getEndDate()));
 						}
 					}
-					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(pm.getProjects().getOrgLocationsId().getId(), "1");
+					Long orgLocationId = null;
+					if(StringUtils.isNotEmpty(eedDTO.getExpenseId())){
+						OrgLocations expLoc = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getExpenseLocationCode());
+						if(expLoc != null) {
+							orgLocationId = expLoc.getId();
+						}
+					}else {
+						if(pm.getProjects().getOrgLocationsId() != null && pm.getProjects().getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(pm.getProjects().getOrgLocationsId().getOrg().getOrgType()) && !pm.getProjects().getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
+							orgLocationId = pm.getProjects().getOrgLocationsId().getId();
+						}else {
+							orgLocationId = orgLocations.getId();
+						}
+					}
+					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, "1",eedDTO.getIsGlobalUser());
 					if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
 						ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
 						for (ExpensesCategory ec : expensesCategoryList) {
@@ -314,7 +332,8 @@ public class ExpensesRestController {
 						pmDTO.setExpenseId(eedDTO.getExpenseId());
 					}
 					else{
-						String expenseId = addExpensesService.getExpenseId(pm.getProjects().getOrgLocationsId());
+						//String expenseId = addExpensesService.getExpenseId(pm.getProjects().getOrgLocationsId());
+						String expenseId = addExpensesService.getExpenseId(orgLocations);
 						pmDTO.setExpenseId(expenseId);
 					}
 					 if(pm.getProjectClientsId() != null &&  pm.getProjectClientsId().getOrgRelationId() != null){
@@ -598,14 +617,11 @@ public class ExpensesRestController {
 		ExpensesDTO expensesDTO = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(elDTO.getExpenseLocationCode());
 		if(orgLocations != null) {
-			Expenses expen = expensesService.getExpenseByExpenseUniqueId(elDTO.getExpenseId(),orgLocations.getId());
-			 Expenses expenses= null;
-			 if(expen !=null){
-				 expenses = expensesService.getExpenseByExpenseUniqueId(expen.getExpenseId(), orgLocations.getId());
-			 }
+			 Expenses expenses=  expensesService.getExpenseByExpenseUniqueId(elDTO.getExpenseId(), orgLocations.getId(),elDTO.getIsGlobalAccess());
 			//loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLocations.getDateFormat());
 			if (expenses != null) {
-				expensesDTO = ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses, expensesDTO);
+				 OrgLocations loginLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
+				expensesDTO = ExpensesDTOConverter.getExpensesDTOFromExpenses(loginLoc,expenses, expensesDTO);
 				expensesDTO.setMasterCandidateId(expenses.getProjectMembers().getMasterCandidateId().getId());
 				ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
 				Submission_Status submissionStatus = eah.getExpenseStatus();
@@ -671,13 +687,13 @@ public class ExpensesRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Expenses ExpenseDetails = expensesService.getExpenseById(Long.parseLong(Expid));
-		
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		if (ExpenseDetails != null) {
 			if (type.equalsIgnoreCase("PDF")) {
-				file = expensesService.exportMyExpensesToPdf(ExpenseDetails, orgLoc, loginUser, ApproverType);
+				file = expensesService.exportMyExpensesToPdf(ExpenseDetails, orgLoc, loginUser, ApproverType,isGlobalAccess);
 			}
 			else {
-				file = expensesService.exportMyExpensesToExcel(ExpenseDetails, orgLoc, loginUser, ApproverType);
+				file = expensesService.exportMyExpensesToExcel(ExpenseDetails, orgLoc, loginUser, ApproverType,isGlobalAccess);
 			}
 		}
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
@@ -708,6 +724,7 @@ public class ExpensesRestController {
 		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		ResponseList<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser, expenseStatus, startDate, endDate,null,0,0);
 		if (expensesList != null) {
 			for (Expenses ex : expensesList.getData()) {
@@ -722,10 +739,10 @@ public class ExpensesRestController {
 				}
 			}
 			if (type.equalsIgnoreCase("PDF")) {
-				file = expensesService.exportAllMyExpensesToPdf(expensesList.getData(), orgLoc, loginUser);
+				file = expensesService.exportAllMyExpensesToPdf(expensesList.getData(), orgLoc, loginUser,isGlobalAccess);
 			}
 			else {
-				file = expensesService.exportAllMyExpensesToExcel(expensesList.getData(), orgLoc);
+				file = expensesService.exportAllMyExpensesToExcel(expensesList.getData(), orgLoc,isGlobalAccess);
 			}
 		}
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
@@ -756,9 +773,10 @@ public class ExpensesRestController {
 		ResponseList<Expenses> responceExpenses = new ResponseList<>();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		List<Expenses> expensesList = expensesService.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(candidate.getMasterCandidateId().getId(), expenseStatus);
 		for (Expenses ex : expensesList) {
-			ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(ex.getMasterCandidateId().getId(),ex.getProjects().getId(),orgLoc.getId());
+			ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(ex.getMasterCandidateId().getId(),ex.getProjects().getId(),orgLoc.getId(),isGlobalAccess);
 			if(pm != null) {
 				if (null != ex.getProjectMembers()) {
 					ex.setProjectName(pm.getProjects().getProjectName());

@@ -23,7 +23,7 @@
 							"ajax" : $.fn.dataTable.pipeline({
 								url : url,
 								method : 'POST',
-								pages : 2
+								pages : 1
 							}),
 							"columns" : [ {
 								"data" : "name"
@@ -465,7 +465,14 @@
 															+ '<select id="rejectApplicantSelectspocState'
 															+ opt.id
 															+ '" onChange="rejectApplicant(' + opt.id + ',' + requirementId + ',\'' + submissionType + '\')";>';
-													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option><option value='Reject'>Reject</option>";
+													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
+													/* if (opt.submissionStatus == 'INTERVIEW'){
+														result = result + "<option value='SelectedOnInterview'>Selected on Interview</option>";
+													} */
+													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED'){
+														result = result + "<option value='Joined'>Joined</option>";
+													}
+													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERACCEPTED'
 															|| opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
 														result = result
@@ -491,6 +498,9 @@
 							"bLengthChange" : true,
 							"bDestroy" : true,
 							"ordering" : true,
+							"createdRow": function ( row, data, index ) {
+					    		row.setAttribute('id',"job_"+data.id);
+				    	    },
 							"oLanguage" : {
 								"sSearch" : "",
 								"sZeroRecords" : "",

@@ -131,7 +131,7 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 						Float.parseFloat(letterHead.getPaddingRight()), Float.parseFloat(letterHead.getPaddingTop()),
 						Float.parseFloat(letterHead.getPaddingBottom()));
 			} else if ("A6".equalsIgnoreCase(letterHead.getTemplateType())) {
-				pageSize = new Rectangle(PageSize.LETTER);
+				pageSize = new Rectangle(PageSize.A6);
 				pageSize.setBackgroundColor(WebColors.getRGBColor(letterHead.getTemplateBgColor()));
 				document = new Document(pageSize, Float.parseFloat(letterHead.getPaddingLeft()),
 						Float.parseFloat(letterHead.getPaddingRight()), Float.parseFloat(letterHead.getPaddingTop()),
@@ -274,6 +274,15 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 	    	cell.addElement(img1);
 		    return cell;
 	}
-	
+
+	@Override
+	public Boolean validateLetterHeadName(String letterHeadName, OrgLocations orgLocation) {
+		return letterHeadDao.validateLetterHeadName(letterHeadName,orgLocation);
+	}
+
+	@Override
+	public LetterHead validateNameInEdit(String letterHeadName, Long letterHeadId, Long orgLocationId) {
+		return letterHeadDao.validateNameInEdit(letterHeadName,letterHeadId,orgLocationId);
+	}
 
 }

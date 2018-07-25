@@ -18,7 +18,7 @@
 		if(window.candidateStatusGlobal == '0'){
 			result = result	+ '    <div class="project_tabs_inn_head addUser-org overflow_inherint mt25">  ';
 		}else{
-			result = result	+ '    <div class="project_tabs_inn_head addUser-org overflow_inherint mt10">  ';
+			result = result	+ '    <div class="project_tabs_inn_head addUser-org overflow_inherint dataSeaTop noPad">  ';
 		}
 		result  = result + '<div class="success_pop" id="selector3" style="display: none;">';
 	    result  = result + '<i class="fa fa-check-circle"></i><span id="empMsgDiv"></span>';
@@ -35,7 +35,12 @@
 				'</sec:authorize>';
 			}else{
 				'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_EMPLOYER\')">';
-				result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';
+			//	result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer vann</a> </span> ';
+				   result = result+'<div class="reportHead reportHeadDataTab clearfix">';
+				   result = result+'<ul class="pull-right list-unstyled list-inline">';
+				   result = result+'<li><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="newAdBtn" >+ Employer</a></li>';
+				   result = result+'</ul>';
+				   result = result+'</div>	';					
 				'</sec:authorize>';
 			}
 			
@@ -106,7 +111,7 @@ function closeCertificatePopup(){
 			var EMdata = endMonth.split('&');
 			var eMonthNumber = EMdata[0];
 			
-			 if( (startMonth > endMonth) && (startYear == endYear) ){
+			 if( (parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear == endYear) ){
 					 
 				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
 		
@@ -855,7 +860,7 @@ function removeEmployer(candidateemployerId, candidateId){
 			var EMdata = endMonth.split('&');
 			var eMonthNumber = EMdata[0];
 			
-			 if( (startMonth > endMonth) && (startYear == endYear) ){
+			 if( (parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear == endYear) ){
 					 
 				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
 		
@@ -1011,12 +1016,12 @@ function monthIfYearRequired(){
 	
 	if((startYear != '' && startYear != null && startYear != 'undefined' )&&(endYear != '' && endYear != null && endYear != 'undefined')){
 	
-	 if((sMonthNumber> eMonthNumber) && (startYear==endYear) ){
+	 if((parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear==endYear) ){
 		$("#err").empty();
 		 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
 			 
 		}
-	 if(sMonthNumber< eMonthNumber)
+	 if(parseInt(sMonthNumber) < parseInt(eMonthNumber))
 		 {
 		 $('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
 		 }

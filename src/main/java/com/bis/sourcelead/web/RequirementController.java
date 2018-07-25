@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +36,16 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.JobFairRequirementsDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ClientCustomFieldData;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.JobCustomFieldData;
+import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -60,6 +66,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.rest.DashboardRestController;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -189,6 +196,9 @@ public class RequirementController {
 	@Autowired
 	private JobCustomFieldDataService jobCustomFieldDataService;
 	
+	@Autowired
+	private DashboardRestController dashboardRestController;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -211,8 +221,9 @@ public class RequirementController {
 		
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		model.addObject("loginUser",loginUser);
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		model.addObject("orgLocationDateFormat", orgLocations.getDateFormat());
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
 	     model.addObject("actionId",action.getId());
 		
@@ -223,6 +234,17 @@ public class RequirementController {
 			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
 			model.addObject("requirementUUID", requirementUUID);
 			model.addObject("requirementStatus", requirement.getRequirementSubmissionStatus());
+			
+			if (requirement != null) {
+				requirement.setJobFairList(requirementService.getJobFairsListByRequirementId(requirement.getId()));
+				if (requirement.getJobFairList() != null) {
+					String selectedJobFairsString = "";
+					for (JobFair jobFair : requirement.getJobFairList()) {
+						selectedJobFairsString += (selectedJobFairsString.isEmpty() ? "" : ",") + jobFair.getId() + ":" + jobFair.getName();
+					}
+					model.addObject("selectedJobFairsString", selectedJobFairsString);
+				}
+			}
 
 			if (requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())) {
 
@@ -275,7 +297,12 @@ public class RequirementController {
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirement.getId());
 			if(null != requirement.getClientId()){
-				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId(),"Client");
+				long managerUserId = 0;
+				if (requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId() == loginUser.getId())
+					managerUserId = requirement.getManagerUserId().getId();
+				else
+					managerUserId = loginUser.getId();
+				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), managerUserId, orgLocations.getId(),"Client");
 				/*commented by Prasad salina, here no need to iterate list, because in service impl we already itarated the list.
 				 * if(null != clientContactList){
 					for(OrgSpoc orgSpoc : clientContactList){
@@ -589,6 +616,84 @@ public class RequirementController {
 
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
+	@RequestMapping(value = { "/addJobFair", "/editJobFair" })
+	public ModelAndView jobFair(HttpServletRequest request, @RequestParam(defaultValue = "") String uuid) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (loginUser != null) {
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+				JobFairDTO jobFairDTO = new JobFairDTO();
+				jobFairDTO.setPostedFrom("week");
+				String requirementString = "";
+				if (!uuid.isEmpty()) {
+					jobFairDTO = requirementService.getJobFairByUUID(uuid);
+					modelAndView.addObject("jobFair", jobFairDTO);
+
+					for (JobFairRequirementsDTO jobFairRequirementsDTO : jobFairDTO.getJobFairRequirementList()) {
+						String req = jobFairRequirementsDTO.getRequirementId() + ":" + jobFairRequirementsDTO.getRequirementTitle();
+						if (!requirementString.contains(req)) {
+							requirementString += (requirementString.isEmpty() ? "" : ",") + req;
+						}
+					}
+				}
+				
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+//				String reqString = dashboardRestController
+//						.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(jobFairDTO.getPostedFrom(), request);
+				List<Requirement> requirementList = requirementService.getRequirementListByPostedDateAndSelectedClients(orgLocations.getId(), loginUser.getId(), "week", "");
+				String reqString = commonUtil.toJSON(requirementList);
+				if (reqString != null) {
+					JSONArray jsonArray = new JSONArray(reqString);
+					for (int i = 0; i < jsonArray.length(); i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						String req = jsonObject.getString("id") + ":" + jsonObject.getString("jobTitle");
+						if (!requirementString.contains(req)) {
+							requirementString += (requirementString.isEmpty() ? "" : ",") + (req);
+						}
+					}
+				}
+				/*System.out.println("Requirement String : " + requirementString);*/
+				modelAndView.addObject("requirementString", requirementString);
+				
+				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+				for(OrgRelations ocl :orgClientList){
+					ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+				 }
+				modelAndView.addObject("add_clientList", orgClientList);
+				modelAndView.addObject("loginOrgLocId", orgLocations.getId());
+			} else {
+				modelAndView.setViewName("login");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		modelAndView.setViewName("requirement/addJobFair");
+		return modelAndView;
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
+	@RequestMapping(value = "/jobFairSummary")
+	public ModelAndView jobFairSummary(HttpServletRequest request, @RequestParam(defaultValue = "") String uuid) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (loginUser != null) {
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+				modelAndView.addObject("jobFair", requirementService.getJobFairByUUID(uuid));
+			} else {
+				modelAndView.setViewName("login");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		modelAndView.setViewName("requirement/jobFairSummary");
+		return modelAndView;
+	}
+	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
@@ -596,18 +701,16 @@ public class RequirementController {
 			@RequestParam(value="submissionId", required=false) String submissionId,@RequestParam(value="candidateKeyword", required=false)String candidateKeyword,@RequestParam(value="submissionStatus", required=false)String submissionStatus) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
 		ModelAndView model = new ModelAndView();
-		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.Requirement);
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		//Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = null;
 		if(isAdmin){
 			requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
@@ -616,22 +719,9 @@ public class RequirementController {
 		}
 		
 		if(null != requirement) {
-			//Projects project = projectsService.getProjectById(requirement.getProjectID().getId());
 			if(requirement.getProjectClientID() !=null && requirement.getProjectClientID().getProjectId() !=null && requirement.getProjectClientID().getProjectId().getProjectName() != null){
 			requirement.setProjectName(requirement.getProjectClientID().getProjectId().getProjectName());
 			}
-			/*Set<RequirementAssignTo> requirementAssignToList = requirement.getRequirementAssignTo();
-			for (RequirementAssignTo assing : requirementAssignToList) {
-				RequirementAssignTo ra = new RequirementAssignTo();
-				StringBuilder assignUserSB = new StringBuilder();
-				if (assing.getAssignUserId().getLastName() != null) {
-					ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).append(" ").append(assing.getAssignUserId().getLastName()).toString());
-				}
-				else {
-					ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).toString());
-				}
-				requirementAssignToList.add(ra);
-			}*/
 			if(requirement.getCreatedDate()!=null){
 				requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
 			}
@@ -686,7 +776,11 @@ public class RequirementController {
 						}
 					}
 				}
-			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
+			Boolean isManager = false;
+			if(requirement.getManagerUserId()!= null && requirement.getManagerUserId().getId().equals(loginUser.getId())) {
+				isManager = true;
+				//requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
+			}
 			Boolean isLoginUserAsApprover = false;
 			RequirementApproverHierarchy requirementApproverHierarchy = null;
 			if(isAdmin || isManager){
@@ -700,9 +794,10 @@ public class RequirementController {
 			}
 			requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 			
-			if (requirement.getCreatedBy().getId().equals(loginUser.getId())) {
+			if (requirement.getCreatedBy().getId().equals(loginUser.getId())
+					|| (requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId().equals(loginUser.getId()))) {
 				requirement.setIsLoginUserAsInitiator("true");
-			}else {
+			} else {
 				requirement.setIsLoginUserAsInitiator("false");
 			}
 	
@@ -729,7 +824,7 @@ public class RequirementController {
 				List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
 				model.addObject("locationsList",locationsList);
 				
-				model.addObject("timezone",timezone.getTimeZoneId());
+				model.addObject("timezone",orgLocations.getTimezone().getTimeZoneId());
 				
 				Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
 				model.addObject("isTeamMember",isTeamMember);
@@ -807,8 +902,9 @@ public class RequirementController {
 					model.addObject("submissionStatus", submissionStatus);
 				}
 				
-				
-				
+			    
+			    List<OrgRelationDTO> orgVendorsList = orgRelationsService.getAllVendorsListOrgLocationId(orgLocations.getId());
+			    model.addObject("add_VendorList", orgVendorsList);
 				
 			}
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
@@ -838,36 +934,7 @@ public class RequirementController {
 		    List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 		    model.addObject("sourceleadSectionList",sections);
 		   
-			/*if(action != null && action.getId()!= null){
-				 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
-				 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
-				 if(sections != null && !sections.isEmpty()) {
-					 for(SourceleadSectionDTO sec:sections) {
-						 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
-							 CustomFormFieldDTO custom = new CustomFormFieldDTO();
-							 custom.setCustomFormFieldId(customFields.getId());
-							 formFieldId.add(custom);
-						 }
-					 }
-					 if(formFieldId != null && !formFieldId.isEmpty() && orgLocations != null) {
-						OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocations.getId());
-					 Map<Long, String[]> jobData = jobCustomFieldDataService.getJobCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,requirement.getId());
-					 Map<String,String> dataMap = new HashMap<>();
-					 if(jobData!= null && !jobData.isEmpty()) {
-						 for(Entry<Long, String[]> jobCustomData:jobData.entrySet()) {
-							 String labelName = jobCustomData.getValue()[0];
-							 String labelData = jobCustomData.getValue()[1];
-							 String labelId = jobCustomData.getValue()[2];
-							 Long id = jobCustomData.getKey();
-							 StringBuilder keyValue =  new StringBuilder();
-							 keyValue.append(labelName).append("$").append(labelData);
-							 dataMap.put(id.toString(), keyValue.toString());
-							 model.addObject("dataMapListJobs", dataMap);
-						 	}
-					 	}
-					 }
-				 }
-				}*/
+		    requirement.setJobFairList(requirementService.getJobFairsListByRequirementId(requirement.getId()));
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}

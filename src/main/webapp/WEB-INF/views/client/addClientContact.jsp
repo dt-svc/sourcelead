@@ -64,6 +64,11 @@ function getOrgName(){
 		document.getElementById("firstName").value="";
 		document.getElementById("lastName").value="";
 		document.getElementById("phoneNumber").value="";
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
+		 
 		
 	});
 </script>
@@ -279,11 +284,19 @@ function getOrgDetails()
 	                </select>
 	              </div>
 	            </div>
+	            
+	            <div class="clearfix mb"></div>
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               <c:if test="${sectionOrder.index == 1}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	            
 	            <div class="form-group">
                 <label class="col-md-3">&nbsp;</label>
                   <div class="col-md-9 checkBox">
                       <label><input type="checkbox" value="Y"
-							name="isMailSent" checked="checked">Send Invitation</label>
+							name="isMailSent">Send Invitation</label>
                   </div>
                 </div>
                 
@@ -786,4 +799,15 @@ function refreshClientList(){
 		 });
 }
 </script>
-
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>

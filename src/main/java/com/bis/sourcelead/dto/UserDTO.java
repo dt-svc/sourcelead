@@ -1,7 +1,13 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+
+import java.math.BigDecimal;
+
+import java.math.BigInteger;
 import java.util.List;
+
+import javax.persistence.Transient;
 
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.UserRole;
@@ -42,6 +48,7 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String fromDate;
 	private String toDate;
 	private String isPrimaryAdmin;
+	private String isSuperAdmin;
 	private String role;
 	private String subscribedOrgLocationRoles;
 	private String userloggedInStatus;
@@ -52,7 +59,37 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String employmentType;
 	
 	private String userCode;
+	
+	private String linkedUserName;
+	
+	private String linkedUserPwd;
 
+	private BigInteger totalNoOfUsers;
+	
+    private BigDecimal userRequirementsCount;
+	
+    private BigDecimal userApplicantsCount;
+	
+    private BigDecimal userCandidatesCount;
+	
+    private BigDecimal userShortlistedApplicantsCount;
+	
+    private BigDecimal userSubmittedApplicantsCount;
+	
+    private BigDecimal userInterviewedApplicantsCount;
+	
+    private BigDecimal userOfferedApplicantsCount;
+	
+    private BigDecimal userRejectedApplicantsCount;
+	
+    private BigDecimal userApplicantsBackOutCount;
+    
+    private BigDecimal userApplicantsJoinedCount;
+    
+    private String isGlobalUser;
+
+
+    private BigInteger userId;
 
 	
 	public String getUnSubscribeTabIds()
@@ -447,7 +484,140 @@ public class UserDTO extends SearchDTO implements Serializable {
 	public void setUserCode(String userCode) {
 		this.userCode = userCode;
 	}
+
+	public String getLinkedUserName() {
+		return linkedUserName;
+	}
+
+	public void setLinkedUserName(String linkedUserName) {
+		this.linkedUserName = linkedUserName;
+	}
+
+	public String getLinkedUserPwd() {
+		return linkedUserPwd;
+	}
+
+	public void setLinkedUserPwd(String linkedUserPwd) {
+		this.linkedUserPwd = linkedUserPwd;
+	}
+
+
+	public BigInteger getTotalNoOfUsers()
+	{
+		return totalNoOfUsers;
+	}
+
+	public void setTotalNoOfUsers(BigInteger totalNoOfUsers)
+	{
+		this.totalNoOfUsers = totalNoOfUsers;
+	}
+
+	public BigDecimal getUserRequirementsCount() {
+		return userRequirementsCount;
+	}
+
+	public void setUserRequirementsCount(BigDecimal userRequirementsCount) {
+		this.userRequirementsCount = userRequirementsCount;
+	}
+
 	
-	
+
+	public BigDecimal getUserApplicantsCount() {
+		return userApplicantsCount;
+	}
+
+	public void setUserApplicantsCount(BigDecimal userApplicantsCount) {
+		this.userApplicantsCount = userApplicantsCount;
+	}
+
+	public BigDecimal getUserCandidatesCount() {
+		return userCandidatesCount;
+	}
+
+	public void setUserCandidatesCount(BigDecimal userCandidatesCount) {
+		this.userCandidatesCount = userCandidatesCount;
+	}
+
+	public BigDecimal getUserShortlistedApplicantsCount() {
+		return userShortlistedApplicantsCount;
+	}
+
+	public void setUserShortlistedApplicantsCount(BigDecimal userShortlistedApplicantsCount) {
+		this.userShortlistedApplicantsCount = userShortlistedApplicantsCount;
+	}
+
+	public BigDecimal getUserSubmittedApplicantsCount() {
+		return userSubmittedApplicantsCount;
+	}
+
+	public void setUserSubmittedApplicantsCount(BigDecimal userSubmittedApplicantsCount) {
+		this.userSubmittedApplicantsCount = userSubmittedApplicantsCount;
+	}
+
+	public BigDecimal getUserInterviewedApplicantsCount() {
+		return userInterviewedApplicantsCount;
+	}
+
+	public void setUserInterviewedApplicantsCount(BigDecimal userInterviewedApplicantsCount) {
+		this.userInterviewedApplicantsCount = userInterviewedApplicantsCount;
+	}
+
+	public BigDecimal getUserOfferedApplicantsCount() {
+		return userOfferedApplicantsCount;
+	}
+
+	public void setUserOfferedApplicantsCount(BigDecimal userOfferedApplicantsCount) {
+		this.userOfferedApplicantsCount = userOfferedApplicantsCount;
+	}
+
+	public BigDecimal getUserRejectedApplicantsCount() {
+		return userRejectedApplicantsCount;
+	}
+
+	public void setUserRejectedApplicantsCount(BigDecimal userRejectedApplicantsCount) {
+		this.userRejectedApplicantsCount = userRejectedApplicantsCount;
+	}
+
+	public BigDecimal getUserApplicantsBackOutCount() {
+		return userApplicantsBackOutCount;
+	}
+
+	public void setUserApplicantsBackOutCount(BigDecimal userApplicantsBackOutCount) {
+		this.userApplicantsBackOutCount = userApplicantsBackOutCount;
+	}
+
+
+	public String getIsSuperAdmin() {
+		return isSuperAdmin;
+	}
+
+	public void setIsSuperAdmin(String isSuperAdmin) {
+		this.isSuperAdmin = isSuperAdmin;
+	}
+
+	public BigInteger getUserId() {
+		return userId;
+	}
+
+	public void setUserId(BigInteger userId) {
+		this.userId = userId;
+	}
+
+	public BigDecimal getUserApplicantsJoinedCount() {
+		return userApplicantsJoinedCount;
+	}
+
+	public void setUserApplicantsJoinedCount(BigDecimal userApplicantsJoinedCount) {
+		this.userApplicantsJoinedCount = userApplicantsJoinedCount;
+	}
+
+	public String getIsGlobalUser() {
+		return isGlobalUser;
+	}
+
+	public void setIsGlobalUser(String isGlobalUser) {
+		this.isGlobalUser = isGlobalUser;
+	}
+
 
 }

@@ -58,8 +58,12 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 		 });
 	 
 	 
+ 	 
  	  var candTypeRadio = $('input[name=candidateType]');
  	  var candidateType = candTypeRadio.filter(':checked').val();
+ 	  
+ 	 var createdByRadio = $('input[name=createdByFilter]');
+	  var createdByFilter = createdByRadio.filter(':checked').val();
 	  
 	 	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
 		  
@@ -98,11 +102,11 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		var formData = new FormData(form); 
 	  		var searchValue = $("#dataTableSearch").val();
 	  		searchValue = searchValue ? searchValue : "";
-	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter;
+	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
 	  		prepareCandidateList(url);
 	  		// advanced search pop up close 
-	  		closePop();
+//	  		closePop();
 			return true;
 		 }else{ 
 				return false;
@@ -249,7 +253,7 @@ function cpagination(url){
               		if(full.generatedId != null && full.generatedId != '' && full.generatedId != "undefined"){
   	            	  		result = result +"<div><span title='"+full.generatedId+"'>"+full.generatedId+"</span></div>";
   	              	}else{
-  	            	  		result = result +"<div>----</div>";
+  	            	  		result = result +"<div>--</div>";
   	             	}
   	              return result;
               }
@@ -259,16 +263,22 @@ function cpagination(url){
             "render": function ( data, type, full, meta ) {
             		var result = "";
             		var lastName = "";
+            		var middleName = "";
             		if(full.lastName != null && full.lastName != "" && full.lastName != 'undefined'){
 	            		lastName = full.lastName;
 	            	}else{
 	            		lastName = "";
 	            	}
+            		if(full.middleName != null && full.middleName != "" && full.middleName != 'undefined'){
+	            		middleName = full.middleName;
+	            	}else{
+	            		middleName = "";
+	            	}
             		if(name1Flag)
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+");'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+");'><span title='"+full.firstName+" "+middleName+"  "+lastName+"'>"+full.firstName+" "+middleName+"  "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              
 	              if(name2Flag)
-	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span></div></td>";
+	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+full.firstName+" "+middleName+" "+lastName+"'>"+full.firstName+" "+middleName+" "+lastName+"</span></div></td>";
 	              return result;
             }
           }, {
@@ -279,7 +289,7 @@ function cpagination(url){
               		if(full.primarySkill != null && full.primarySkill != '' && full.primarySkill != "undefined"){
   	            	  		result = result +"<div><span title='"+full.primarySkill+"'>"+full.primarySkill+"</span></div>";
   	              	}else{
-  	            	  		result = result +"<div>----</div>";
+  	            	  		result = result +"<div>--</div>";
   	             	}
   	              return result;
               }
@@ -296,7 +306,7 @@ function cpagination(url){
    	             		result = result +"<div>"+opt.designationType+"</div>"; 
    	             	 }
    	             	 }else{
-   	             		 result = result +"<div>----</div>"; 
+   	             		 result = result +"<div>--</div>"; 
    	             	 }
     	              return result;
                 }
@@ -315,7 +325,7 @@ function cpagination(url){
 	    	  		if(full.mobilePhone != null && full.mobilePhone != 'undefined' && full.mobilePhone != ""){
 	         		       mobilePhone = full.mobilePhone;
 		            	}else{
-		            		mobilePhone = "----";
+		            		mobilePhone = "--";
 		            	}
 	    	  		return "<div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div>";
 	    	  	}
@@ -333,7 +343,7 @@ function cpagination(url){
 			            			 location = opt.city+", "+location;
 				            	}
 		            		}else{
-		            			location = "------";
+		            			location = "--";
 		            		}
       	              return "<div><span title='"+location+"'>"+location+"</span></div>";
                   }
@@ -346,7 +356,7 @@ function cpagination(url){
                   		if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
                   			result = "<div>"+opt.candidateUpdateDateToString+"</div>"; 
 			            	}else{
-			            		result = "<div>---</div>";
+			            		result = "<div>--</div>";
 			            	}
       	              return result;
                   }
@@ -357,9 +367,9 @@ function cpagination(url){
                     "render": function ( data, type, opt, meta ) {
                     		var result = "";
                     		if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
-                    			result = "<div>"+opt.createdBy+"</div>"; 
+                    			return "<div><span title='"+opt.createdBy+"'>"+opt.createdBy+"</span></div>";
   			            	}else{
-  			            		result = "<div>---</div>";
+  			            		result = "<div>--</div>";
   			            	}
         	              return result;
                     }

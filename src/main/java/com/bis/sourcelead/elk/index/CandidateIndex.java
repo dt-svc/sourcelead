@@ -95,6 +95,8 @@ public class CandidateIndex implements Serializable {
 	private String createdDate;
 
 	private String createdBy;
+	
+	private String createdByUserCode;
 
 	private String updatedDate;
 
@@ -193,6 +195,16 @@ public class CandidateIndex implements Serializable {
 	private String action;
 	
 	private String resumeName;
+	
+	private String middleName;
+	
+	private String gender;
+	
+	private String maritalStatus;
+	
+	private String dateofBirth;
+	
+	private String tags;
 	
 	
 	public String getSearchType() {
@@ -966,6 +978,56 @@ public class CandidateIndex implements Serializable {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public String getDateofBirth() {
+		return dateofBirth;
+	}
+
+	public void setDateofBirth(String dateofBirth) {
+		this.dateofBirth = dateofBirth;
+	}
+	
+	public String getCreatedByUserCode() {
+		return createdByUserCode;
+	}
+
+	public void setCreatedByUserCode(String createdByUserCode) {
+		this.createdByUserCode = createdByUserCode;
+
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 	
 }

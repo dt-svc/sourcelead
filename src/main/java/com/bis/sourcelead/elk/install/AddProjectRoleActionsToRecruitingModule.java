@@ -21,7 +21,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddProjectRoleActionsToRecruitingModule {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is adding project role actions for ATS and VMS	
@@ -37,7 +38,7 @@ public void dumpProjectRoleActions() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.ORG_LOCATIONS";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -46,7 +47,7 @@ public void dumpProjectRoleActions() throws IOException, SQLException {
 				 
 				 Long  orgLocId = rs1.getLong("ID");
 				 
-				 String query = "SELECT * from sourcelead.ORG_LOCATIONS where ID = '"+orgLocId+"' ";
+				 String query = "SELECT * from "+dbconfig.getSchema()+".ORG_LOCATIONS where ID = '"+orgLocId+"' ";
 				 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); 
 				 ResultSet rs2 = pstmt.executeQuery();
 				
@@ -63,7 +64,7 @@ public void dumpProjectRoleActions() throws IOException, SQLException {
 						
 						String projectActionIds = "90,91,92,93,94,95,96,99,100,101,132";
 						
-						String query1 = "SELECT * from sourcelead.ROLES where ORG_LOCATION_ID = ? and ROLE_NAME = ? ";
+						String query1 = "SELECT * from "+dbconfig.getSchema()+".ROLES where ORG_LOCATION_ID = ? and ROLE_NAME = ? ";
 				    	java.sql.PreparedStatement pstmt2 = conn.prepareStatement(query1); 
 				    	pstmt2.setLong(1, orgLocId);
 				    	pstmt2.setString(2, "ROLE_ADMIN");
@@ -73,7 +74,7 @@ public void dumpProjectRoleActions() throws IOException, SQLException {
 				    		Long  roleId = rs3.getLong("ID");
 				    		String actionIds = rs3.getString("ACTION_ID");
 				    		actionIds = actionIds+","+projectActionIds;
-				    		String query2 = " update sourcelead.ROLES set ACTION_ID = ? where ID = ? ";
+				    		String query2 = " update "+dbconfig.getSchema()+".ROLES set ACTION_ID = ? where ID = ? ";
 				    		java.sql.PreparedStatement pstmt3 = conn.prepareStatement(query2); 
 				    		pstmt3.setString(1, actionIds);
 				    		pstmt3.setLong(2, roleId);
@@ -82,7 +83,7 @@ public void dumpProjectRoleActions() throws IOException, SQLException {
 				    	
 				    	
 				    	
-				    	String query3 = "SELECT * from sourcelead.ROLES where ORG_LOCATION_ID = ? and ROLE_NAME = ? ";
+				    	String query3 = "SELECT * from "+dbconfig.getSchema()+".ROLES where ORG_LOCATION_ID = ? and ROLE_NAME = ? ";
 				    	java.sql.PreparedStatement pstmt4 = conn.prepareStatement(query3); 
 				    	pstmt4.setLong(1, orgLocId);
 				    	pstmt4.setString(2, "ROLE_MANAGER");
@@ -92,7 +93,7 @@ public void dumpProjectRoleActions() throws IOException, SQLException {
 				    		Long  roleId = rs4.getLong("ID");
 				    		String actionIds = rs4.getString("ACTION_ID");
 				    		actionIds = actionIds+","+projectActionIds;
-				    		String query4 = " update sourcelead.ROLES set ACTION_ID = ? where ID = ? ";
+				    		String query4 = " update "+dbconfig.getSchema()+".ROLES set ACTION_ID = ? where ID = ? ";
 				    		java.sql.PreparedStatement pstmt5 = conn.prepareStatement(query4); 
 				    		pstmt5.setString(1, actionIds);
 				    		pstmt5.setLong(2, roleId);
@@ -123,10 +124,6 @@ public void dumpProjectRoleActions() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

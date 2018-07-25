@@ -247,51 +247,9 @@ $(document).ready(function(){
   getNotificationsByuserId();
 });
 </script>
-
-
-<script>
-function getNotificationsByuserId(){
-	var userId = '${SourceLeadWeb_user.id}';
-	var  orgCode ='${SourceLeadWeb_orgCode}';
-	var locationCode = '${SourceLeadWeb_locationCode}';
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	$.get(sourceleadUrl+"/getNotificationsByuserId?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode+"&orgCode="+orgCode+"&orgLocationId="+orgLocationId, function(json) {
-		var data = json.data
-		var result = "";
-		result = result + '<div class="header-widget alert-area">';
-		result = result + '<ul class="list-unstyled">';
-		if(data !=null && data !='' && data !='undefined'){
-			for(var i=0;i<data.length;i++){
-				var opt = data[i];
-				result = result + ' <li>';
-				result = result + '<div class="clearfix msg">';
-				result = result + '<div class="msg-img"> <span>';
-				if(opt.userType !=null && opt.userType !='' && opt.userType !='undefined' && opt.fileUrl !=null && opt.fileUrl !='' && opt.fileUrl !='undefined'){
-				result = result + ' <img class="img-circle" title='+opt.firstName+' alt='+opt.userType+' onerror="predefineProfileImage(this);" src='+opt.fileUrl+'>';
-				}
-				result = result + ' </span> </div>';
-				result = result + '<div class="msg-content">';
-				result = result + ' <a href="<c:url value="/app/notificationsList"/>"><p>'+opt.body+'</p>';
-				/* result = result + ' <c:out value='+userId+' />'; */
-				result = result + ' <span>'+opt.calDays+'</span></a> ';
-				result = result + '</div>';
-				result = result + ' </div>';
-				result = result + ' </li>';
-			} 
-			
-		}else{
-			result = result + '<div class="clearfix msg_blank">All Caught UP!!! </div>'
-		}
-          result = result + '</ul>';
-         result = result + '<div class="headerwidget-footer"> <a href="<c:url value="/app/notificationsList"/>">View All</a> </div>';
-          result = result + ' </div>';
-		
-		$("#ndiv").empty();
-      $("#ndiv").append(result);
-		
-	});
-}
-</script>
+<!-- notification related include jsp -->
+<jsp:include page="headerNotificationList.jsp"></jsp:include>
+ 
 
 <!-- <script>
 $(window).load(function() {
@@ -459,7 +417,7 @@ function preventTabkey(e){
   </i>
     </a> </span>
     <nav class="header-nav navbar">
-    <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
+    <a class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
       <div class="search-area searchArea_mrgn">
            <form:form name ="search_form" id="search_form">
@@ -527,11 +485,28 @@ function preventTabkey(e){
               <a href="<c:url value='${appPath}/userProfile'/>"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"></a> </div>
               <div class="user-media-body">
                 <p><span>${SourceLeadWeb_userName}</span></p>
-                <p>${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</p>
+                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+                 	<p>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Job Seeker'}</p>
+                 </c:if>
+                 
+                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+                 	<p>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Freelance Recruiter'}</p>
+                 </c:if>
+                 
+                 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+                    <p>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : SourceLeadWeb_displayName}</p>
+                 </c:if>
               </div>
             </div>
             <ul class="list-unstyled">
+              <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
               <li><a href="<c:url value='${appPath}/professionalProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
+              </c:if>
+              
+              <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+              <li><a href="<c:url value='${appPath}/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
+              </c:if>
+              
               <li><a href="javascript:logoutFormSubmit()"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log Out</a></li>
             </ul>
           </div>
@@ -552,9 +527,9 @@ function preventTabkey(e){
 	          </li>
             </c:if> --%>
             
-             <li class="reportsH">
+            <!--  <li class="reportsH">
 					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
-	        </li>
+	        </li> -->
             <li class="reportsH">
 					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList?status=connected'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 	        </li>
@@ -563,11 +538,11 @@ function preventTabkey(e){
 					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
 	        </li>
             
-            <sec:authorize access="hasAnyRole('ROLE_DASHBOARD_REPORTS','ROLE_ENROLL_ORG')"> 
+            <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
 	            <li class="reportsH">
 					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>
-             </sec:authorize> 
+             </c:if>
             
             <%-- <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
 	            <li class="reportsH">
@@ -592,26 +567,24 @@ function preventTabkey(e){
 					              <c:if test="${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null}">
 					              		<a class="sopcSwith">
 					              </c:if>
-					              <c:if test="${links.orgLocations.id != SourceLeadWeb_orgLocationId}">
-					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}');" class="sopcSwith">
-					              </c:if>
+					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith">
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null ? 'active-comp' : ''}">
+						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_user.id == links.user.id ? 'active-comp' : ''}">
 						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 						                     </div>
 						                   </div>
 						                   <div class="pull-left">
 						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
 						                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;${!empty links.designation ? links.designation : links.roles.displayName}</p>
 						                   </div>
 						                </div>
 					                </a>
 				              </c:if>
 				              
 				              <c:if test="${links.roles.displayName == 'Professional'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith">
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'active-comp' : ''}">
@@ -620,14 +593,14 @@ function preventTabkey(e){
 						                   </div>
 						                   <div class="pull-left">
 						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;Job Seeker</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;${!empty links.designation ? links.designation : 'Job Seeker'}</p>
 						                   </div>
 						                </div>
 					                </a>
 				              </c:if>
 				              
 				              <c:if test="${links.roles.displayName == 'Independent Recruiter'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith">
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'active-comp' : ''}">
@@ -636,7 +609,7 @@ function preventTabkey(e){
 						                   </div>
 						                   <div class="pull-left">
 						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;Freelance Recruiter</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;${!empty links.designation ? links.designation : 'Freelance Recruiter'}</p>
 						                   </div>
 						                </div>
 					                </a>
@@ -669,41 +642,15 @@ function preventTabkey(e){
          
           <%-- <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> --%>
           <li id="alert"> 
-          <a href="#" title="Alerts" id="alert" onmouseover="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
+          <a href="#" title="Alerts" id="alert" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
            <div id="ndiv"></div>
-            <%-- <div class="header-widget alert-area">
-              <ul class="list-unstyled">
-              <c:if test="${empty SourceLeadWeb_notificationList}">
-              	<div class="clearfix msg_blank">
-                     All Caught UP!!! 
-                  </div>
-              	</c:if>
-               <c:if test="${!empty SourceLeadWeb_notificationList}">
-                <c:forEach var="report" items="${SourceLeadWeb_notificationList}" end="4">
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span>
-                    <img class="img-circle" title="${report.notificationFrom.firstName} ${report.notificationFrom.lastName}" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);" src="${report.notificationFrom.fileUrl}">
-                    </span> </div>
-                    <div class="msg-content">
-                     <a href="#"><p>${report.body}</p>
-                     <c:out value="${userId}" />
-                      <span>${report.calDays}</span></a> 
-                   </div>
-                  </div>
-                </li>
-                </c:forEach>
-                </c:if>
-              </ul>
-              <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>">View All</a> </div>
-            </div> --%>
           </li>
 <%--           </c:if> --%>
 
 
-          <li class="reportsH">
+          <%-- <li class="reportsH">
 					<a title="Account Settings" href="<c:url value='${sourceleadUrl}/userProfile'/>"><i class="fa fa-user-circle"></i></a>
-	      </li>
+	      </li>  --%>
           
           <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
            <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
@@ -718,7 +665,7 @@ function preventTabkey(e){
 	                     </sec:authorize>
 	                     
 	                     <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-	                        <li><a href="<c:url value="/app/orgLicenseSubscriptionList" />"><i class="fa fa-location-arrow" aria-hidden="true"></i>License Upgrade</a></li>
+	                        <li><a href="<c:url value="/app/orgLicenseSubscriptionList" />"><i class="fa fa-rocket" aria-hidden="true"></i>License Upgrade</a></li>
 	                     </c:if>
 	                     
 	                     <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
@@ -753,9 +700,11 @@ function preventTabkey(e){
 						  <li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
 						  
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
-						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
+						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-calendar" aria-hidden="true"></i>Leave Configuration</a></li>
 						  </sec:authorize>
-						  
+						  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+                                                    <li><a href="<c:url value="/app/job-boards" />"><i class="fa fa-briefcase" aria-hidden="true"></i>Job Board Configuration</a></li>
+                                                 </sec:authorize>
 					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 					  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
 					  	</sec:authorize>
@@ -777,6 +726,9 @@ function preventTabkey(e){
                        <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value='${sourceleadUrl}/emailTemplates'/>" ><i class="fa fa-key" aria-hidden="true"></i>Email Templates</a></li>
                        </sec:authorize>
+                        <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+					       <li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i>Invite Company</a></li>
+	                   </c:if>
 	              </ul>
 	            </div>
 	          </li>
@@ -837,8 +789,8 @@ function preventTabkey(e){
   
  <script type="text/javascript">
  var hasLocationAccess = "";
- function checkAuth(locationId,roleId,orgSecurity){
-	 checkLocationAccess(locationId,roleId,orgSecurity);
+ function checkAuth(locationId,roleId,orgSecurity,userId){
+	checkLocationAccess(locationId,roleId,orgSecurity,userId);
 	 
  }
  function otpClose(){
@@ -866,19 +818,19 @@ function preventTabkey(e){
 	}); 
  }
  
- function checkLocationAccess(locationId,roleId,orgSecurity){
+ function checkLocationAccess(locationId,roleId,orgSecurity,userId){
 	 $.ajax({
 	      type : "GET",
 	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
 	       success :function(result) {
 	    	   if(result == true){
 	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
-	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);   
 	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
 	    				 $(".authenticationMask").fadeIn();
 	    				 getUserDetailsbyroleId(roleId);
 	    			 }else{
-	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);    
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);    
 	    			 }
 	    		 }else{
 	    			 $(".location-alert").fadeIn();
@@ -925,24 +877,7 @@ function preventTabkey(e){
 	  $('#spockLinksList').hide();
   });
   </script>
-  
-  <script>
-function notificationStatusAsRead(){   
-	var sourceleadUrl = '${sourceleadUrl}';
-	var  orgCode ='${SourceLeadWeb_orgCode}';
-	 var locationCode = '${SourceLeadWeb_locationCode}';
-	 $.ajax({
-	      type: "POST",
-	  	  url: sourceleadUrl+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode+"&locationCode="+locationCode,
-	  			  success :function(data) {
-	  				 //$("span.label-warning").text(0);
-      			 }							     
-	}); 
-	 /* $("#alert").click(function(){
-         $("span.label-warning").text(0);
-	 }); */
-}
-</script>
+
 
   <!-- Header Area --> 
   
@@ -950,6 +885,7 @@ function notificationStatusAsRead(){
   <!-- Task related code Start -->
   
   <!-- Add Task Div -->
+	  <sec:authorize access="hasRole('ROLE_TASK_MANAGEMENT')"> 
 		 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 		 <div class="addTask"> <span class="icon-addTask" title="Add Task"> <i class="fa fa-gears"></i> </span>
 		    <div class="clearfix col-xs-12 col-md-12 addTask-widget">
@@ -1093,9 +1029,10 @@ function notificationStatusAsRead(){
 		  </c:if>
 
 <div class="addtAsk_popmask"></div>
-
+</sec:authorize>
 
 <!--  Theme Switcher div -->
+  <sec:authorize access="hasRole('ROLE_COLOUR_THEME')"> 
   <div class="theme-color">
       <span class="icon-theme theme-styels" title="click here">
           <figure class="rotate">
@@ -1111,13 +1048,16 @@ function notificationStatusAsRead(){
       <li class="hidden"><a href="#" class="" id="btn6"><span class="hdr-grey"></span><span class="sidenav-red"></span></a></li>
     </ul>
   </div>
+  </sec:authorize>
 <!--  Theme Swithcer div ends  -->
 
 <!--  Support div -->
+ <sec:authorize access="hasRole('ROLE_SUPPORT')"> 
   <div id="mySidenav" class="sidenav">
 	<a href="/app/sourceleadTicketList" title="Report Issue"><span class="fa fa-ticket"></span></a>
 <!--   <a href="add-ticket.html">Support</a> -->
 </div>
+</sec:authorize>
 <!--  Support div ends  -->
 
 
@@ -1974,72 +1914,6 @@ $('body').on('blur', '#inviteCompany_form', function() {
 <div id='campaignRecipient' class='popUpReci'></div> 
 <%-- </c:if> --%>
 
-
- 
-<!-- 
-<script>
-// This example displays an address form, using the autocomplete feature
-// of the Google Places API to help users fill in the information.
-function initLocationAuto(id) {
-// 	geolocate();
-    initialize(id);
-}
-/* $("#autocomplete").on('focus', function () {
-    
-});
- */
-var placeSearch, autocomplete;
-var componentForm = {
-    locality: 'long_name',
-    administrative_area_level_1: 'long_name',
-    country: 'long_name',
-    postal_code: 'short_name'
-};
-
-function initialize(id) {
-	   autocomplete = new google.maps.places.Autocomplete((document.getElementById('autocomplete')), {
-			        types: ['geocode']
-			    });
-	   
-    /* autocomplete = new google.maps.places.Autocomplete((document.getElementById(id)), {
-    	types: ['(cities)']
-    }); */
-    google.maps.event.addListener(autocomplete, 'place_changed', function () {
-        fillInAddress();
-    });
-}
-function fillInAddress() {
-    var place = autocomplete.getPlace();
-	document.getElementById("latitude").value = place.geometry.location.lat();
-    document.getElementById("longitude").value = place.geometry.location.lng();
-	
-    for (var component in componentForm) {
-        document.getElementById(component).value = '';
-        document.getElementById(component).disabled = false;
-    }
-
-    for (var i = 0; i < place.address_components.length; i++) {
-        var addressType = place.address_components[i].types[0];
-        if (componentForm[addressType]) {
-            var val = place.address_components[i][componentForm[addressType]];
-            document.getElementById(addressType).value = val;
-        }
-    }
-}
-function geolocate() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
-            document.getElementById("latitude").value = latitude;
-            document.getElementById("longitude").value = longitude;
-            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
-        });
-    }
-}
-</script> -->
-
 <script>
 function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type,addressId) {
     initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId);
@@ -2168,4 +2042,16 @@ function verifyEmail2() {
 	}
 }
 
+</script>
+
+<!--  Esc Key function  -->
+
+<script>
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    if (evt.keyCode == 27) {
+        $(".mask").hide();
+        $(".popupWrap").fadeOut(100);
+    }
+};
 </script>

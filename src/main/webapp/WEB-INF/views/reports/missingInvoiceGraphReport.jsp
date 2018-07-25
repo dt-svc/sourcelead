@@ -18,9 +18,9 @@ $(document).ready(function(){
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Missing Invoice</h2>
+        <h2>Missing Invoice(s)</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Missing Invoice</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Missing Invoice(s)</div>
     </section>
     <!-- hiring Process  -->
     <div class="clearfix">
@@ -70,9 +70,9 @@ $(document).ready(function(){
 
         </div>
         <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingInvoiceDataGraph();" id="customizeButton">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingInvoiceDataGraph();" id="customizeButton">Run</button>
 		</div>
-		<div class="col-md-1">
+		<!-- <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button>
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
@@ -80,7 +80,7 @@ $(document).ready(function(){
               <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
             </ul>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -301,7 +301,7 @@ AmCharts.makeChart("last_years",
 		{
 			"id": "missingInvoices",
 			"size": 15,
-			"text": "Missing last_years"
+			"text": "Missing Invoice"
 		}
 	],
 	"dataProvider": chartData

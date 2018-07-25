@@ -251,7 +251,7 @@ function errRemoveClientContact(){
 
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
-		<input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="lineItems[REPLACEROWID].totalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
+		<input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" data-validation = "required" field-name = "Hours" id="REPLACEROWIDtotalHours" name="lineItems[REPLACEROWID].totalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
 			<input type="hidden" id="REPLACEROWIDhiddenHours" name="REPLACEROWIDhiddenHours">
 <!-- 			<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date &amp; Manager is Mandatory"></i> -->
 			<u id="REPLACEROWIDerrMsg" style="display: none;"><i class=" text-info fa fa-info-circle" >Avg Hours</i></u>
@@ -335,14 +335,14 @@ function errRemoveClientContact(){
          result = result +'  <label class="pull-left mb10"><strong>Attachments</strong></label>';
          
          result = result +' <div id="timesheetDocumentsId">';
-         result = result +' <div class="timesheet_week_comm invoiceDocs">';
+         result = result +' <div class="timesheet_week_comm invoiceDocs width100percnt">';
          result = result +' <span>';
          result = result +' <div id="savedAttachments"></div>';
          result = result +' </span>';
          result = result +' </div>';
          result = result +' </div>';
          
-         result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add" >';
+         result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add width100percnt" >';
          result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
          result = result +'  <input type="file"  id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
@@ -1575,7 +1575,7 @@ function calculateDiscount(){
 <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
 
 <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-	<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
+	<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt">
 		<div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup">
 			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
 				id='REPLACEROWIDinvoicedocFile'
@@ -1632,7 +1632,7 @@ function calculateDiscount(){
 		<div class="tblminwidth-50">
 			<input type="text" class="form-control input-sm" value=""
 				placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType'
-				id='REPLACEROWIDtaxType' data-validation="required" field-name="Tax Type"> <input type="hidden"
+				id='REPLACEROWIDtaxType' data-validation="required validate_length length2-100" field-name="Tax Type"> <input type="hidden"
 				name="invoiceTax[REPLACEROWID].invoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 			<!-- 	<input type= "hidden" id="REPLACEROWIDsubmissionInvoiceId" name = "invoiceTax[REPLACEROWID].submissionInvoiceId"> -->
 		</div>
@@ -1718,7 +1718,7 @@ function calculateDiscount(){
 		var taxTotal = $("#"+rowId+"taxTotal").val(); 
 		var first=parseFloat(grandTotal);
         var second=parseFloat(taxTotal);
-        total = (first-second);
+        total = Math.round(first-second);
         $("#grandTotal").val(total);
         $("#conversionFrom").val(total);
        //=======================================
@@ -1840,9 +1840,9 @@ function getSowRate(id){
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
         success: function(json) {
-        	 if(json.data != null && json.data != ''){
+        	 if(json.object != null && json.object != ''){
 //         		var json = JSON.parse(data);
-	        	 $ ('#'+id+'rate').val(json.billingAmount);
+	        	 $ ('#'+id+'rate').val(json.object.billingAmount);
 	        	 totalHoursCalculateAmount(id);
         	} 
         },

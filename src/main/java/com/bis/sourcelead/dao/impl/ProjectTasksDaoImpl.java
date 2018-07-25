@@ -57,6 +57,9 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	private String statusDelete;
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
+	
+	@Value("${jdbc.schema}")
+	private String schema;
 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectTasksDaoImpl.class);
 
@@ -138,7 +141,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getAllTasksByProjectId(Long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt where pt.projectId.id = :projectId " ;
+		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status = '1' " ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()) 
 			    .list(); 
 		return projectTasksList;  
@@ -152,12 +155,12 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		if(avilableProjectTaskIds != null  && !avilableProjectTaskIds.isEmpty()){
-			String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.id NOT IN (:avilableProjectTaskIds) ";
+			String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status = '1' and pt.id NOT IN (:avilableProjectTaskIds) ";
 			List<ProjectTasks> projectTasksList = session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setParameterList("avilableProjectTaskIds", avilableProjectTaskIds).list();
 			return projectTasksList;
 			
 		}else{
-			String query = "from ProjectTasks pt where pt.projectId.id = :projectId";
+			String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status = '1'";
 			List<ProjectTasks> projectTasksList = session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).list();
 			return projectTasksList;
 			
@@ -286,7 +289,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getRequirementGeneratedIdByOrgLocationId(Long orgLocationId,Integer generatedIdCount) {
 	Session session = this.sessionFactory.getCurrentSession();
-	String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM sourcelead.requirement WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
+	String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM "+schema+".requirement WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
 	List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 	Long count = 0L;
 	if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
@@ -300,7 +303,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId, Integer generatedIdCount) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT count(*) FROM SOURCELEAD.PROJECT_TASKS WHERE PROJECT_ID = '"+ projectId + "'";
+		String query = "SELECT count(*) FROM "+schema+".PROJECT_TASKS WHERE PROJECT_ID = '"+ projectId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
@@ -408,7 +411,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		 query1.append("and (pt.taskName like '%" + projectTasksDTO.getSearchValue() + "%' ")
 		       .append("OR (pt.generatedId like '%" + projectTasksDTO.getSearchValue() + "%' )")
 		       .append("OR (concat(pt.generatedId,pt.taskName) like '%" + projectTasksDTO.getSearchValue().replace("-", "").replaceAll("[\\s]+", "").trim() + "%' )")
-		       .append("OR (pt.priority IS NOT NULL and pt.priority.name like '%" + projectTasksDTO.getSearchValue() + "%' )")
+		       .append("OR (pt.priority IS NOT NULL and pt.priority.id IN(Select ld.id from LookUpData ld where ld.name like '%" + projectTasksDTO.getSearchValue() + "%' ))")
 			   .append("OR pt.taskType.name = '%" + projectTasksDTO.getSearchValue() + "%' ")
 			   .append("OR pt.taskStatus.name like '%" + projectTasksDTO.getSearchValue() + "%' )");
 					
@@ -443,18 +446,16 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		
 		 Query query = session.createQuery(queryStr+subQueryStr+query1+sortingQry);
+		 Query countQuery = session.createQuery(queryStrForCount+subQueryStr+query1+sortingQry);
 		 List<ProjectTasks> projectTasksList = null;
 		 if(StringUtils.isNotEmpty(projectTasksDTO.getTeams())) {
 			 projectTasksList =query.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
-		 
-			 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
 			 countlist = countQuery.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).list();
-			 
+			 filterCount = countlist.iterator().next().intValue();
 		 }else {
 			 projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
-			 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
 			 countlist = countQuery.setLong("projectId", projectId).list();
-			 
+			 filterCount = countlist.iterator().next().intValue();
 		 }
 		 
 		

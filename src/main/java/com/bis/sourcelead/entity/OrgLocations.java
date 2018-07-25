@@ -228,6 +228,21 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name = "REGISTRATION_STATUS")
 	private String registrationStatus;
+
+	@Column(name = "IS_LAW_FIRM")
+	private String isLawFirm;
+	
+	@Column(name = "IS_ACCOUNTING_FIRM")
+	private String isAccountingFirm;
+
+	@Column(name = "WORKING_DAYS_PER_WEEK")
+	private Integer workingDaysPerWeek;
+	
+	@Column(name = "WEEK_OFF_DAYS")
+	private String weekOffDays;
+	
+	@Column(name = "IS_TIMESHEET_AVG_HOURS_REQUIRED")
+    private String isTimesheetAvgHoursRequired;
     
     @Transient
     private String orgName;
@@ -963,4 +978,48 @@ public class OrgLocations implements Serializable{
 	public void setRegistrationStatus(String registrationStatus) {
 		this.registrationStatus = registrationStatus;
 	}
+
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+	
+	
+
+	public Integer getWorkingDaysPerWeek() {
+		return workingDaysPerWeek;
+	}
+
+	public void setWorkingDaysPerWeek(Integer workingDaysPerWeek) {
+		this.workingDaysPerWeek = workingDaysPerWeek;
+	}
+
+	public String getWeekOffDays() {
+		return weekOffDays;
+	}
+
+	public void setWeekOffDays(String weekOffDays) {
+		this.weekOffDays = weekOffDays;
+	}
+
+	public String getIsTimesheetAvgHoursRequired() {
+		return isTimesheetAvgHoursRequired;
+	}
+
+	public void setIsTimesheetAvgHoursRequired(String isTimesheetAvgHoursRequired) {
+		this.isTimesheetAvgHoursRequired = isTimesheetAvgHoursRequired;
+	}
+
 }

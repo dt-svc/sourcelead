@@ -5,9 +5,10 @@
 <section class="container-area-white">
 <div class="container">
 
-    
+<div class="row">
+<div class="col-sm-12 col-md-9">
    
-   	<div class="row mt">
+<div class="row mt">
 	<div class="contact-styles col-md-4">
     	<h2>USA</h2>
         <p class="mt address">
@@ -27,7 +28,7 @@
 </section> 
 </div>
  <div class="clearfix"></div>
-	<div class="row mt">
+<div class="row mt">
 	<div class=" col-md-4 contact-styles">
     	<h2 class="mt mb">India</h2>
         <p class="address">
@@ -45,6 +46,21 @@
 		
 	</section>
     </div>
+  </div>
+  
+  <div class="col-sm- 12 col-md-3">
+  <h5>Reach Us</h5>
+  	<script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/shell.js"></script>
+<script>
+hbspt.forms.create({
+portalId: "4585276",
+formId: "d08eb60a-51e4-4718-9b3b-5b1f68864d68"
+});
+</script>
+  </div>
+</div>    
+    
+    
 
     </div>  
 </section>

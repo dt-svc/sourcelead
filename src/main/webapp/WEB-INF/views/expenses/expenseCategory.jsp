@@ -63,9 +63,8 @@ function addExpenseCategory(categoryId) {
 	result = result  +'          <form role="form"  id="expenseCategory_form" name="expenseCategory_form" method="post" > ';
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
-	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10" id="nameIdDiv">'  ;
-	result = result  +'                    <div class="col-md-12 mt">' ;
+	result = result  +'                    <div class="col-md-12 mt" id="testDiv">' ;
 	/* result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
 	
 						       <c:forEach var="expCat" items="${lookUpExpCatList}">
@@ -89,9 +88,6 @@ function addExpenseCategory(categoryId) {
 	result = result  +' </div>';
 	result = result  +'</div>';
 	
-	
-	
-	
 	result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  >';
 	result = result  +'<div class="row flat">';
 	result = result  +' <div class="form-group col-md-12 paddingRight positionRelative iconHolder" >';
@@ -111,7 +107,7 @@ function addExpenseCategory(categoryId) {
 	
 	result = result  +' </div>';
 	result = result  +' </div>';
-	
+	result = result  +'<div class="col-md-12">Attachment Required <input type="checkbox" value="" onClick="checkCheckBox();" name="isAttachmetRequired" id="isAttachmetRequired"></div>';	
 	result = result  +' <div class="clearfix"></div>';	
 	
 	result = result  +'<div class="clearfix mb10">';
@@ -211,6 +207,7 @@ function expenseCategoryList(){
                    result = result +"    <th>Category Name</th>";
                    result = result +"    <th>Amount</th>";
                    result = result +"    <th>Type</th>";
+                   result = result +"    <th>Attachemt Required</th>";
                    result = result +"    <th>Descrption</th>"; 
                    result = result +"    <th>Status</th>"; 
                    result = result +"    <th>Actions</th>";
@@ -240,6 +237,17 @@ function expenseCategoryList(){
                   	    }else{
                   	     result = result +"<td><div><span>---</span></div></td>";
                   	    }
+                  	    
+                  	  if(opt.isAttachemtRequired != null && opt.isAttachemtRequired !='' && opt.isAttachemtRequired !='undefined'){
+                  		  if(opt.isAttachemtRequired == 'Y'){
+                  			result = result +"<td><div><span>YES</span></div></td>";	  
+                  		  }
+                  		  if(opt.isAttachemtRequired == 'N'){
+                  			result = result +"<td><div><span>NO</span></div></td>";	  
+                  		  }
+                   	    }else{
+                   	     result = result +"<td><div><span>---</span></div></td>";
+                   	    }
                   	    
                   	    if(opt.description != null && opt.description !='' && opt.description !='undefined'){
                   		 result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>"; 
@@ -593,7 +601,7 @@ function reActiveExpenseCategory(categoryId){
 									result = result  +'</div>'; */
 									
 									result = result  +'<div class="clearfix mb10" id="nameIdDiv">'  ;
-									result = result  +'<div class="col-md-12 mt">' ;
+									result = result  +'<div class="col-md-12 mt" id="testDiv">' ;
 								    
 								    result = result  +'<input type="text" name="expensesName" field-name="expensesName" value="'+expensesName+'" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required"  onchange="validateExpenseCategoryType();"  class="form-control">';
 								    
@@ -658,6 +666,8 @@ function reActiveExpenseCategory(categoryId){
 										}
 									result = result  +' </div>';
 									result = result  +' </div>';
+									
+									result = result  +'<div class="col-md-12">Attachment Required <input type="checkbox" value="'+json.isAttachemtRequired +'"  '+(json.isAttachemtRequired == "Y" ? "checked" : '')+' onClick="checkCheckBox();" name="isAttachmetRequired" id="isAttachmetRequired"></div>';
 									
 									result = result  +' <div class="clearfix"></div>';	
 									
@@ -726,11 +736,11 @@ function reActiveExpenseCategory(categoryId){
 				dateFormat : 'yyyy/mm/dd'
 			};
 		
-		if ($('#expenseCategory_form').validate(false,
-				validationSettings)) {
+		if ($('#expenseCategory_form').validate(false,validationSettings)) {
 
-			var frm = $('#expenseCategory_form').serializeFormJSON();
-
+			//var frm = $('#expenseCategory_form').serializeFormJSON();
+			
+			var frm = getFormData("expenseCategory_form");
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			//It will escape all the special characters
@@ -784,7 +794,7 @@ function reActiveExpenseCategory(categoryId){
 						
 		        		if(result.object == "true"){
 			        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-							   $("#nameIdDiv").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+							   $("#testDiv").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
 							  $("#save_button").attr('disabled','disabled');
 			        	}
 			        	else{
@@ -802,5 +812,17 @@ function reActiveExpenseCategory(categoryId){
 		    });
  }
  </script> 
+ 
+ <script>
+ function checkCheckBox(){
+	 $('input[name$="isAttachmetRequired"]').each(function(){
+	     if(this.checked){
+	         $('#isAttachmetRequired').val('Y');
+	     } else {
+	         $('#isAttachmetRequired').val('N');
+	     }
+	});
+ }
+ </script>
  
 <jsp:include page="../masterFooter.jsp" />

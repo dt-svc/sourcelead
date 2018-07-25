@@ -40,13 +40,17 @@ margin-top: -50px;
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/clientDashboard'/>"> Clients List</a>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/clientDashboard'/>"> Clients List</a>
 			&raquo; Add Client</div>
 	</section>
 	
 	<div class="content-area content-new clearfix">
 	<div id="loading"></div> 
 	<form:form id="client_form" name="client_form" method="post">
+	<input type = "hidden" id="isLawFirm" title="Is law firm" name="isLawFirm"  type="checkbox" value = "N">
+	
+	<input type = "hidden" id="isAccountingFirm" title="Is law firm" name="isAccountingFirm"  type="checkbox" value = "N">
+	
 	<input type="hidden" id="actionId" value="${actionId}">
       <div class="clearfix form-horizontal inner-content">
         <div class="row">
@@ -61,7 +65,7 @@ margin-top: -50px;
 			</div>
             
 			<div class="form-group " id="companyWebsiteDiv">
-				<label class="col-md-3">Website</label>
+				<label class="col-md-3">Web Url</label>
 				<div class="col-md-9">
 				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Client Website"  onblur="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
 				</div>
@@ -191,7 +195,7 @@ margin-top: -50px;
               </div>
               
               <div class="clearfix width100Percnt">
-              <label class="col-md-3">Payment Term</label>
+              <label class="col-md-3">Payment Frequency /Tenure</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="PaymentTermId" name="paymentTerms">
                   <option value="">Select Payment Term</option>
@@ -309,8 +313,7 @@ margin-top: -50px;
             <div class="form-group">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
-                 <label> <input type="checkbox" value="Y"
-							name="isMailSent" checked="checked"> Send Invitation
+                 <label> <input type="checkbox" value="Y" name="isMailSent"> Send Invitation
 				</label>
               </div>
             </div>

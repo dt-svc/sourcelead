@@ -111,7 +111,9 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 				signatory.setUserRoleId(userRole);
 				signatory.setUserId(userRole.getUser());
 				signatory.setAuthorizedType(String.join(",", orglocationSignatoryDTO.getAuthorizedType()));
+				if(orglocationSignatoryDTO.getAuthorizedAmount()!="") {
 				signatory.setAuthorizedAmount(Long.parseLong(orglocationSignatoryDTO.getAuthorizedAmount()));
+				}
 			}
 			
 			signatory.setOrgLocationId(orgLocations);
@@ -131,8 +133,10 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 			
 		}
 		
+		
 		return result;
 	}
+	
 
 	@Override
 	public OrglocationSignatory getOrglocationSignatoryByOrglocationId(Long orgLocationId) throws Exception {
@@ -163,7 +167,7 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 			if(sign.getAuthorizedAmount() != null)
 				signDto.setAuthorizedAmount(sign.getAuthorizedAmount().toString());
 			signDto.setUuid(sign.getUuid());
-			signDto.setStatus(sign.getStatus());
+			signDto.setStatus(sign.getStatus().toString());
 			list.add(signDto);
 		}
 		

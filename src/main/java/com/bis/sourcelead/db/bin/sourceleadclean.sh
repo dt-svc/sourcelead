@@ -1,4 +1,4 @@
-export SCRIPTLOCATION="/home/$1/Sourcelead_Db_Scripts"="-DpropertyLocation=file:/home/$1/properties/app.properties"
-export SCRIPTLOCATION="/home/$1/Sourcelead_Db_Scripts"
-export SCRIPTLIBLOCATION="/home/$1/Sourcelead_Db_Scripts/lib/*"
+export PROPERTYLOCATION="-DpropertyLocation=file:/home/properties/app.properties"
+export SCRIPTLOCATION="/home/Sourcelead_Db_Scripts"
+export SCRIPTLIBLOCATION="/home/Sourcelead_Db_Scripts/lib/*"
 java  $PROPERTYLOCATION -classpath $SCRIPTLOCATION:$SCRIPTLIBLOCATION com.bis.sourcelead.db.SourceleadCleanInitDatabase

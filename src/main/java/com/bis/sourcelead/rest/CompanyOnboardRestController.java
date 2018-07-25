@@ -125,6 +125,7 @@ public class CompanyOnboardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -223,6 +224,7 @@ public class CompanyOnboardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 	
 		return response;
@@ -277,6 +279,7 @@ public class CompanyOnboardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 	
 		return response;
@@ -341,6 +344,7 @@ public class CompanyOnboardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 	
 		return response;
@@ -424,6 +428,7 @@ public class CompanyOnboardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 		
@@ -454,6 +459,7 @@ public class CompanyOnboardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 		
@@ -489,6 +495,7 @@ public class CompanyOnboardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -541,6 +548,7 @@ public class CompanyOnboardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -571,6 +579,7 @@ public class CompanyOnboardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -607,6 +616,7 @@ public class CompanyOnboardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -638,6 +648,7 @@ public class CompanyOnboardRestController {
 		OrglocationSignatory signatory = orglocationSignatoryService.getOrglocationSignatoryByUUID(orglocationSignatoryDTO.getUuid());
 		OrglocationSignatoryDTO signDto = new OrglocationSignatoryDTO();
 		signDto.setUuid(signatory.getUuid());
+		signDto.setFirstName(signatory.getUserId().getFullName());
 		signDto.setAssociateId(signatory.getUserId().getId());
 		if(StringUtils.isNotBlank(signatory.getAuthorizedType())){
 			signDto.setAuthorizedType(Arrays.asList(signatory.getAuthorizedType().split("\\s*,\\s*")));

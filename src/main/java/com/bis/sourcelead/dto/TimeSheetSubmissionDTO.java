@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.TimesheetActivities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -24,6 +25,8 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	private List<TimesheetEntriesDTO> timesheetEntries;
 	
 	private Map<String,List<TimesheetEntriesDTO>> entriesMap;
+	
+	private Map<String,List<EmployeeLeaveDTO>> empLeaveMap;
 	
 	private List<Long> removedDocumentIds;
 	
@@ -102,6 +105,8 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	private String locationCode;
 	
 	String timesheetFor;
+	
+	private List<TimesheetActivities> activityList;
 	
 	public Long getId() {
 		return id;
@@ -454,6 +459,21 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	public void setLocationCode(String locationCode) {
 		this.locationCode = locationCode;
 	}
-	
-	
+
+	public List<TimesheetActivities> getActivityList() {
+		return activityList;
+	}
+
+	public void setActivityList(List<TimesheetActivities> activityList) {
+		this.activityList = activityList;
+	}
+
+	public Map<String, List<EmployeeLeaveDTO>> getEmpLeaveMap() {
+		return empLeaveMap;
+	}
+
+	public void setEmpLeaveMap(Map<String, List<EmployeeLeaveDTO>> empLeaveMap) {
+		this.empLeaveMap = empLeaveMap;
+	}
+
 }

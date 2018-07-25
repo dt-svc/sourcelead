@@ -40,33 +40,7 @@
 <section class="welcoBg">
 		<section class="welcoInn">
 		  <div class="welcoHead">
-		  <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-			<div class="offOrg">
-	             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-		              <div id="spockLinksList" style="display: none;">
-		              <ul class="list-unstyled">
-		              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-			              <li>
-				              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-					                     </div>
-					                   </div>
-					                   <div class="pull-left mt5">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-					                   </div>
-					                </div>
-				                </a>
-			              </li>
-		              </c:forEach>
-		              </ul>
-		            </div>
-		            </div>
-	          </c:if>
+		  <jsp:include page="../userManageAccounts.jsp" />
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
 					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
@@ -301,17 +275,3 @@ function getOffboardCheckList(offboardingId){
 
 
 
-<script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>
-
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
-
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>

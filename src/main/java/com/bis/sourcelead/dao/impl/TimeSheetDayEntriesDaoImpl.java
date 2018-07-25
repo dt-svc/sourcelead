@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -26,7 +25,6 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimeSheetDayEntriesHistory;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -126,6 +124,40 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		return timesheetEntriesList;
 	}
 	
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(Long projectId, Date timesheetDate,Long projectMemberId) throws Exception {
+		java.sql.Date sqlTimesheetDate = null;
+		if(timesheetDate != null){
+			sqlTimesheetDate = new java.sql.Date(timesheetDate.getTime());
+		}
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt left join fetch pt.projectId proj left join fetch tde.timesheetSubmissions sub left join fetch sub.projectMembers proMember  where proj.id =:projectId and tde.timesheetDate=:timesheetDate and proMember.id=:projectMemberId and tde.status = '1' ";
+		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setLong("projectId", projectId).setParameter("timesheetDate", sqlTimesheetDate).setLong("projectMemberId", projectMemberId).list();	
+		return timesheetEntriesList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(Long projectId, Date startDate,Date endDate,Long projectMemberId) throws Exception {
+		java.sql.Date sqlTimesheetStartDate = null;
+		java.sql.Date sqlTimesheetEndDate = null;
+		if(startDate != null){
+			sqlTimesheetStartDate = new java.sql.Date(startDate.getTime());
+		}
+		if(endDate != null){
+			sqlTimesheetEndDate = new java.sql.Date(endDate.getTime());
+		}
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt left join fetch pt.projectId proj left join fetch tde.timesheetSubmissions sub left join fetch sub.projectMembers proMember  where proj.id =:projectId and proMember.id=:projectMemberId and tde.status = '1' and tde.timesheetDate between :sqlTimesheetStartDate AND :sqlTimesheetEndDate ORDER BY tde.timesheetDate";
+		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setLong("projectId", projectId).setParameter("sqlTimesheetStartDate", sqlTimesheetStartDate).setParameter("sqlTimesheetEndDate", sqlTimesheetEndDate).setLong("projectMemberId", projectMemberId).list();	
+		return timesheetEntriesList;
+	}
+	
 	private TimeSheetDayEntriesHistory  getHistoryRecordFromTimeSheetDayEntries(TimeSheetDayEntries timeSheetDayEntries){
 		TimeSheetDayEntriesHistory timeSheetDayEntriesHistory = null;
 		if(timeSheetDayEntries != null){
@@ -143,6 +175,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 			timeSheetDayEntriesHistory.setCreatedDate(timeSheetDayEntries.getCreatedDate());
 			timeSheetDayEntriesHistory.setUpdatedBy(timeSheetDayEntries.getUpdatedBy());
 			timeSheetDayEntriesHistory.setUpdatedDate(timeSheetDayEntries.getUpdatedDate());
+			timeSheetDayEntriesHistory.setTimesheetActivityId(timeSheetDayEntries.getTimesheetActivityId());
 		}
 		return timeSheetDayEntriesHistory;
 	}
@@ -240,7 +273,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 					 */
-				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :locationId)) "
+				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationId)) "
 				+ "   )" ;
 		
 		String orderQuery = "order by tde.timesheetDate ASC"; 
@@ -258,7 +291,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 					 */
-				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :locationId)) "
+				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationId)) "
 				+ "   ) " ;
 		
 		Query query1 = session.createQuery(query+" "+searchQuery.toString()+" "+orderQuery).setLong("userId", userId).setLong("locationId",locationId).setString("taskUUID", taskUUID);
@@ -325,6 +358,19 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 			return null;
 		}
 		
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllTimeSheetDayEntryIdsBySubmissionIdAndEntryDate(Long submissionId,Date entryDate) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlEntryDate = null;
+		if(entryDate != null){
+			sqlEntryDate = new java.sql.Date(entryDate.getTime());
+		}
+		String query = "Select tde.Id from TimeSheetDayEntries tde  where tde.timesheetDate = :entryDate and tde.timesheetSubmissions.Id =:submissionId and tde.status = '1'";
+		List<Long> timesheetEntriesList = session.createQuery(query).setLong("submissionId", submissionId).setParameter("entryDate", sqlEntryDate).list();	
+		return timesheetEntriesList;
 	}
 
 	

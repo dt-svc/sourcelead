@@ -22,20 +22,20 @@
 </script>
  
  
-    <section class="clearfix">
-      <div class="content-dashboard clearfix"> 
-      	  <div class="clearfix dashboard-widget mb col-md-12">
+      <div class="mb col-md-12 clearfix"> 
+      	  <div class=" dashboard-widget col-md-12">
       	    <h4>Associate Requests</h4>
       	    
       	    <div class="project_side_wrap_inn_tabs">
       	    <div id="resourceRequestsDivLoading"></div>
-			    <ul class="project-tabs-menu">
-			        <li class="current" id="waiting"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Waiting For Approval')">Waiting (<span id="waitingCount"></span>)</a></li>
-			        <li id="requestApproved"><a data-toggle="tab" href="javascript:void(0)"  onclick="resourceRequestList('Approved')">Approved (<span id="approvedCount"></span>)</a></li>
-			        <li id="requestRejected"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Rejected')">Rejected (<span id="rejectedCount"></span>)</a></li>
-			        <li id="requestOnhold"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('On hold')">On hold (<span id="onholdCount"></span>)</a></li>
+			    <ul class="project-tabs-menu tabnewStyles">
+			        <li class="current" id="waiting"><a href="javascript:void(0)" onclick="resourceRequestList('Waiting For Approval')">Waiting (<span id="waitingCount"></span>)</a></li>
+			        <li id="requestApproved"><a href="javascript:void(0)"  onclick="resourceRequestList('Approved')">Approved (<span id="approvedCount"></span>)</a></li>
+			        <li id="requestRejected"><a href="javascript:void(0)" onclick="resourceRequestList('Rejected')">Rejected (<span id="rejectedCount"></span>)</a></li>
+			        <li id="requestOnhold"><a href="javascript:void(0)" onclick="resourceRequestList('On hold')">On hold (<span id="onholdCount"></span>)</a></li>
 			        <div class="clearfix"></div>
 			    </ul>
+			    <div class="clearfix mb10"></div>
 			    <div id="resourceRequestList"></div>
 			    <div class="vendor_wrap_mask"></div>
    				<div id="requestedAssociatesDivLoading"></div>
@@ -45,12 +45,12 @@
       	  </div>
       </div>
     
- </section>
+ 
+ <jsp:include page="projectPopupDetails.jsp"></jsp:include>	 
  
  <script>
  function getProjectResourceReqestsListCount(){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 alert
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getProjectResourceRequestsCounts?${_csrf.parameterName}=${_csrf.token}", 
@@ -147,7 +147,6 @@ function requestAssociatesDataTableList(requestType){
 }
 </script>
 
-
 <script>
 function resourceRequestPagination(url,requestType,sourceleadUrl){
 	var colIndex = 0;
@@ -184,7 +183,13 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 	    	  	"data": "projectName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
-	    	  		  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
+	    	  		  if(opt.projectClientUUID != null && opt.projectClientUUID != '' && opt.projectClientUUID != 'undefined'){
+	    	  			result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
+	    	  		  }else{
+	    	  			result = result + '<td><div  class="tbldata-dotdot-sm"><a href="javascript:void(0)" onclick="#">'+opt.projectName+'</a></div></td>';
+	    	  			/* result = result + '<td><div  class="tbldata-dotdot-sm"><a href="javascript:void(0)" onclick="openProjectDetailsPopup(\''+opt.projectUUID+'\','+opt.requestedOrgLocationId+');">'+opt.projectName+'</a></div></td>'; */
+	    	  		  }
+	    	  		  
 		             return result;
 	    	  	}
 	      },{
@@ -243,6 +248,8 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 				    		
 			    		}else{
 			    			if(opt.resourceStatus == 'Rejected'){
+			    				result = result + '<a href="javascript:void(0)" onclick="acceptAssociate(\''+opt.requestUUID+'\',\''+requestType+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>&nbsp;|&nbsp;';
+			    				result = result + '<a href="javascript:void(0)" onclick="onholdAssociateRequest(\''+opt.requestUUID+'\',\''+opt.requestedUser+'\',\''+requestType+'\');"><i class="fa fa-clock-o text-primary" alt="On hold" title="On hold"></i></a>&nbsp;|&nbsp;';
 			    				result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
 			    				result = result + '<b class="bg-red">'+opt.resourceStatus+'</b>';
 			    				result = result+" <br><span class='rejNam' title='"+opt.approvedUser+"'>By : "+opt.approvedUser+"</span>";

@@ -2,7 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <script src="/resources/amcharts/amcharts.js"></script>
 <script src="/resources/amcharts/serial.js"></script>
 <script src="/resources/amcharts/plugins/export/export.min.js"></script>
@@ -10,6 +9,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+	
 	missingBillReportData();
 });
 </script>
@@ -18,9 +18,9 @@ $(document).ready(function(){
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Missing Bills List</h2>
+        <h2>Missing Bill(s)</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Report(s) Dashboard</a> &raquo; Missing Billing Lists </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Missing Bill(s)</div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
@@ -30,7 +30,7 @@ $(document).ready(function(){
         <a href='${appPath}/missingBillReport' title="List View" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
         </div>
         <div class="col-md-4">
-          <select class="chosen-select form-control" multiple data-placeholder="Select Client" id="orgIds" name="orgIds">
+          <select class="chosen-select form-control" multiple data-placeholder="Select Vendor" id="orgIds" name="orgIds">
             <c:if test="${not empty vendorList}">
                <c:forEach items="${vendorList}" var="vendor">
    						<option value='${vendor.id }'>${vendor.orgName}</option>
@@ -69,15 +69,7 @@ $(document).ready(function(){
          <div class="col-md-2">
         <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingBillReportData();">Run</button>
 		</div>
-        <div class="col-md-1">
-          <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button>
-            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
-            <ul class="dropdown-menu clearfix  dropdown-menu-right">
-              <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            </ul>
-          </div>
-        </div>
+   
       </div>
       <!-- Best recruiters  -->
       <div class="content-dashboard clearfix"> 
@@ -85,10 +77,10 @@ $(document).ready(function(){
         <div class="clearfix dashboard-widget mt25 col-md-12">
           <div class="clearfix">
           <p class="col-md-2 mb0 margin-top0 padding_left fontSize20">
-         	 	<span class="text-muted">Total:</span><span class="ml"><strong>0</strong></span>
+         	 	<span class="text-muted">Total:</span><span class="ml"id="billAmountTotal"><strong>0.00</strong></span>
          	 </p>
           	<div class="remove_search pull-right">
-                  <input placeholder="Search" type="text">
+                  <input placeholder="Search" type="text" id='dataTableSearch'>
                 </div>
           </div>
           
@@ -107,6 +99,8 @@ $(document).ready(function(){
   
   <script>
 function missingBillReportData(){
+	
+	   $("#billAmountTotal").html("0.00"); // reset the total value when applied filters.
 	    var flag = true;
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
@@ -168,7 +162,7 @@ function prepareMissingBillData(url){
 		result = result + '<th>Project Frequency</th>';
 		result = result + '<th>Date</th>';
 		result = result + '<th>Total Amount</th>';
-		result = result + '<th>Action</th>';
+// 		result = result + '<th>Action</th>';
 		result = result + '</tr>';
         result = result +"</thead>";
         result = result +"<tbody>"; 
@@ -200,7 +194,7 @@ function missingBill(url){
             { "data": "frequencyDate"},
             { "data": "date"},
             { "data": "totalAmount" },
-            { "data": "action"}
+//             { "data": "action"}
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -209,11 +203,13 @@ function missingBill(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.invoiceReferId != null && opt.invoiceReferId != '' && opt.invoiceReferId != 'undefined'){
-	    	  			 result = result + ' <td><div class="tblminwidth-75">'+opt.invoiceReferId+'</div></td>';
+	    	  			 result = result + ' <td><div class="tblminwidth-50">'+opt.invoiceReferId+'</div></td>';
 	    	  		}else{
-	    	  			 result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+	    	  			 result = result + ' <td><div class="tblminwidth-50">--</div></td>';
 	    	  		}
-		             return result;
+	    	  		if(opt.totalCalAmount >0 )
+	    	  		$("#billAmountTotal").html(opt.totalCalAmount.toFixed(2));
+	    	  		 return result;
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
@@ -221,7 +217,7 @@ function missingBill(url){
           	  "sortable": false, 
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-						 result = result + ' <td><div class="tblminwidth-75">'+opt.candidateName+'</div></td>'; 
+						 result = result + ' <td><div class="tbldata-dotdot-vsm inlineBlock">'+opt.candidateName+'</div></td>'; 
 	              return result;
               		
               }
@@ -231,7 +227,7 @@ function missingBill(url){
           	  "sortable": false, 
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-						 result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>'; 
+						 result = result + ' <td><div class="tbldata-dotdot-vsm inlineBlock">'+opt.orgName+'</div></td>'; 
 	              return result;
               		
               }
@@ -241,7 +237,7 @@ function missingBill(url){
         	"sortable": false,
             "render": function ( data, type, opt, meta ) {
             	  var result = "";
-					 result = result + ' <td><div class="tblminwidth-75">'+opt.projectName+'</div></td>'; 
+					 result = result + ' <td><div class="tbldata-dotdot-vsm inlineBlock">'+opt.projectName+'</div></td>'; 
                  return result;
             }
           }, {
@@ -265,9 +261,9 @@ function missingBill(url){
                 "render": function ( data, type, opt, meta ) {
               	  var result = "";
               	  if(opt.billDate !=null && opt.billDate != '' && opt.billDate != 'undefined'){
-              		  result = result + ' <td><div class="tblminwidth-75">'+opt.billDate+'</div></td>'; 
+              		  result = result + ' <td><div class="tblminwidth-50">'+opt.billDate+'</div></td>'; 
               	  }else{
-              		  result = result + ' <td><div class="tblminwidth-75">--</div></td>'; 
+              		  result = result + ' <td><div class="tblminwidth-50">--</div></td>'; 
               	  }
   					
                    return result;
@@ -278,15 +274,16 @@ function missingBill(url){
             	"sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
+                	
                 		if(opt.billAmount !=null && opt.billAmount !='' && opt.billAmount != 'undefined'){
-                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.billAmount.toFixed(2)+'</div></td>';	
+                			 result = result + ' <td><div class="tblminwidth-75">'+opt.billAmount.toFixed(2)+'</div></td>';	
+                			
                 		}else{
-                			 result = result + ' <td><div class="tbldata-dotdot-sm"">0.00</div></td>';
+                			 result = result + ' <td><div class="tblminwidth-75">0.00</div></td>';
                 		}
-						
     	              return result;
                 }
-          },{
+          }],/* {
 	    	  	"targets": colIndex++,
 	    	  	"data": "action",
 	    		"sortable": false,
@@ -295,7 +292,7 @@ function missingBill(url){
 					 result = result + '<td><div class="tblminwidth-50">Action</div></td>';
   	              return result;
 	    	  	}
-	    	  } ],
+	    	  } ], */
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[0,'desc']],
@@ -306,18 +303,30 @@ function missingBill(url){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+	     },
     } );
     $("#missingInvoicePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   missingBillReportData();
-    	   }
-    	});
     
-	
 }
+
+$(function() {
+    $("#dataTableSearch").keyup(function(e) {
+    	if(e.which === 13) {
+//  		   $('#dataTableSearch').parent().find('p.jquery_form_error_message').remove();
+	    	var searchData = $('#dataTableSearch').val();
+// 	    	var regex =  new RegExp(/[\\-]/g);
+// 	    	if(regex.test(searchData) == false){
+  		        missingBillReportData();
+	    	/* }else{
+	    		$("#dataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+	    	}
+	    	$('#dataTableSearch').val(searchData); */
+ 	   }
+    	});
+});
+
+
 </script>
 
 
