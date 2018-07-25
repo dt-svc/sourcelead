@@ -1131,12 +1131,16 @@ public class USPayrollRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/viewPaySheetFrequencyData")
-	public ModelAndView viewPaySheetFrequencyData(@RequestParam(value = "paySheetFrequencyUUID",required = false) String paySheetFrequencyUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ModelAndView viewPaySheetFrequencyData(@RequestParam(value = "paySheetFrequencyUUID",required = true) String paySheetFrequencyUUID,@RequestParam(value = "approverStatus",required = true) String approverStatus,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("paySheetFrequencyUUID", paySheetFrequencyUUID);
-		model.setViewName("payroll/payrollSummary");
+		if(approverStatus.equalsIgnoreCase(Constants.SENT)) {
+			model.setViewName("payroll/confirmPayroll");
+		}else {
+			model.setViewName("payroll/payrollSummary");
+		}
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
 			sessionData = new SessionMaintainanceData();

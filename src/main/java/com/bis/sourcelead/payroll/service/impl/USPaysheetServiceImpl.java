@@ -288,6 +288,7 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 			pfd.setPayFrequency(pay.getUserGroup().getPayFrequency());
 			pfd.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPayCheckDate()));
 			pfd.setPaySheetFrequencyType(pay.getType());
+			pfd.setApproverStatus(pay.getApproverStatus());
 			
 			StringBuilder sbDate = new StringBuilder();
 			pfd.setPayPeriod(sbDate.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyStartDate())).append(" / ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyEndDate())).toString());
