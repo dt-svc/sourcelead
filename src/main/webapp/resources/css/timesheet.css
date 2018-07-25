@@ -4911,8 +4911,8 @@ float: none !important;
     padding: 15px; background-color: #FFF; border-radius: 4px;
 }
 .landTempCta {
-    width: 33%; float: left; margin:0px 0px 15px 0px !important; border-radius: 4px; padding:15px 20px;
-    border: 1px solid #ededed; min-height: 115px;
+	width: 33.333%; float: left; margin: 0px -1px -1px 0px !important; padding: 15px 20px;
+	border: 1px solid #ededed; min-height: 120px;    
 }
 .landTempCta h2 {
     padding: 0px 0px 8px 0px; margin: 0px 0px; font-size: 16px;
@@ -4930,8 +4930,10 @@ float: none !important;
 }
 .minHe {
     min-height: 74px;
-
 }
+ .landTemp .btn {
+ 	padding: 3px 10px;
+ }
 .timesheet_week_comm strong input.deleAp {
    width:6%; text-align:center; font-size:20px; color:red; border:none; text-indent:0px; background-color:transparent;
    padding:0px 0px 0px 0px; margin:0px 0px 0px 5px;  background-image:url(../images/delete.png);
@@ -8803,5 +8805,133 @@ max-width: 100% !important;
 .valStar {
 	display: inline-block; color: #dd2b2b;
 }
+.view-level {
+	padding: 15px;
+}
+.view-level ul {
+	width: 50%;
+}
+.view-level ul li {
+	padding: 10px 15px; border-top: 2px solid #fff; background-color: #f5f5f5;
+}
+.view-level ul li:FIRST-CHILD {
+	border-top: none;
+}
+.view-level .inner {
+	padding: 0px 0px; margin: 10px 0px 0px 35px; border: none !important; width: auto;
+	border-left: 1px dotted #ccc !important;
+}
+.view-level .inner li {
+	list-style-type: none; border: none !important; padding: 10px 15px 10px 2px !important;
+}
+.view-level .inner li::before {
+    content: '....'; padding-right: 10px; color: #909090; position: relative; top: -3px;
+    }
+.hierachy-role li .fa-edit {
+	margin: 0px !important;
+}
+.sellevel {
+	border: none !important; font-weight: 500 !important;
+}
 
 
+
+
+
+/*  New Timeline CSS   */
+.appliWrap {
+	background: #fff;
+}
+.timelineOut {
+	padding: 20px 40px;
+}
+.timelineOut .innSeaFld {
+	height: 34px; background-color: #fff;
+}
+.timelineWrap {
+}
+.headActions {
+	float: right;
+}
+.headActions ul {
+	padding: 0px 0px; margin: 0px 0px;
+}
+.headActions ul li {
+	list-style-type: none; float: left; padding: 0px 0px 0px 12px; position: relative;
+}
+.headActions ul li a {
+	display: block;
+}
+.timelineWrap ul {
+	padding: 15px 0px 0px 40px; margin: 0px 0px 60px 38px; min-height: 300px; border-left: 1px solid #dedede;
+	position: relative;
+}
+.timelineWrap ul li {
+	list-style: none; position: relative; background-color: #f8f8f8; border: 1px solid #EEEEEE; padding: 10px 15px;
+	margin: 0px 0px 20px;
+}
+.timelineWrap ul li:after, .timelineWrap ul li:before {
+	right: 100%; top: 25px; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+}
+.timelineWrap ul li:after {
+	border-color: rgba(136, 183, 213, 0); border-right-color: #f8f8f8; border-width: 8px; margin-top: -8px;
+}
+.timelineWrap ul li:before {
+	border-color: rgba(194, 225, 245, 0); border-right-color: #EEEEEE; border-width: 9px; margin-top: -9px;
+}
+.timeLeft {
+	position: absolute; left: -70px; top: 12px; color: #0084bf; font-size: 12px; font-weight: 600;
+	padding: 5px 0px; background-color: #fff;
+}
+.timeLiDate {
+	position: absolute; background-color: #6C7686; height: 23px; font-size: 15px; color: #fff; line-height: 22px;
+	left: -35px; top: -25px; padding: 0px 15px; border-radius: 13px;
+}
+.timeLiHead {
+	width: 85%; padding: 0px 0px 0px 18px;
+}
+.timeLiHead h2 {
+	padding: 0px 0px; margin: 0px 0px; color: #1C2637; font-size: 14px; font-weight: 600;
+}
+.timeLiHead p {
+	padding: 2px 0px 0px; margin: 0px 0px; font-size: 13px; color: #1C2637; width: 100%; overflow: hidden; text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.timeLibtn {
+	padding: 3px 0px 0px 0px;
+}
+.timelineInn {
+	border-top: 1px solid #eeeeee; margin: 10px 0px 0px 0px; padding: 15px 35px 0px; display: none;
+}
+.mesText {
+	border-bottom: 1px solid #eeeeee; 
+}
+.mesText p {
+	font-size: 13px; line-height: 17px; color: #1C2637; padding: 0px 0px 16px 0px; margin: 0px 0px;
+}
+.mesText p span {
+	display: block;
+}
+.attaWrap {
+	padding: 15px 0px;
+}
+.attaWrap h2 {
+	font-size: 12px; font-weight: 600; color: #1C2637; margin: 0px 0px; padding: 0px 0px 5px 0px;
+}
+.attaWrap span {
+	width: 132px; height: 95px; padding: 0px 5px 5px 0px;
+}
+.attaWrap span img {
+	width: auto; max-height: 93px; border: 1px solid #eeeeee;
+}
+.btnWrap {
+	border-top: 1px solid #eeee; padding: 10px 0px;
+}
+.attaIcon {
+	width: 30px; height: 30px; display: block; background: url("../images/attach.svg"); background-repeat: no-repeat;
+	background-position: center; background-size: 22px; opacity: 0.8; cursor: pointer;
+}
+.arrDn {
+	width: 30px; height: 30px; display: block; background: url("../images/arr-D.svg"); background-repeat: no-repeat;
+	background-position: center; background-size: 20px; opacity: 0.8; cursor: pointer;
+}
