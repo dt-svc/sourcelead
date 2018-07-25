@@ -4043,8 +4043,10 @@ public class RequirementServiceImpl implements RequirementService {
 				}
 				
 				List<Long> deleteIdsList = new LinkedList<>();
-				for (JobFairRequirements jobFairRequirements : jobFair.getJobFairRequirementList()) {
-					deleteIdsList.add(jobFairRequirements.getId());
+				if (jobFair.getJobFairRequirementList() != null) {
+				    for (JobFairRequirements jobFairRequirements : jobFair.getJobFairRequirementList()) {
+				        deleteIdsList.add(jobFairRequirements.getId());
+				    }
 				}
 				
 				jobFair.setName(jobFairDTO.getName());
