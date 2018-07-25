@@ -252,12 +252,22 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 			invoicePayment.setPaymentReferenceNumber(invoicePaymentDTO.getReferenceNumber());
 
 		}
-
+		BigDecimal remainAmount =  null;
 		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentAmount())) {
 				if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
+					if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
 					invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 					invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 					invoice.setDueAmount("00.00");
+					}else{
+						String due = invoice.getDueAmount();
+						BigDecimal dueDecimal = (new BigDecimal(due));
+						String received = invoiceIdsMap.get(invoice.getId());
+						BigDecimal receivedDecimal = (new BigDecimal(received));
+						remainAmount = dueDecimal.subtract(receivedDecimal);
+						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+						invoice.setDueAmount(remainAmount.toString());
+					}
 				}
 		
 			if (Constants.INVOICE_SENT.equalsIgnoreCase(invoice.getInvoiceStatus())) {
@@ -276,9 +286,19 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					// float totalAmount = 0;
 					// float customAmount = 0;
 						if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
+							if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
 							invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 							parentInvoice.setDueAmount("00.00");
+							}else{
+								String due = invoice.getDueAmount();
+								BigDecimal dueDecimal = (new BigDecimal(due));
+								String received = invoiceIdsMap.get(invoice.getId());
+								BigDecimal receivedDecimal = (new BigDecimal(received));
+								remainAmount = dueDecimal.subtract(receivedDecimal);
+								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+								invoice.setDueAmount(remainAmount.toString());
+							}
 						}
 					
 					if (Constants.INVOICE_RECEIVED.equalsIgnoreCase(parentInvoice.getInvoiceStatus())) {

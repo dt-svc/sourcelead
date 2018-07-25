@@ -3799,6 +3799,11 @@ public class RequirementServiceImpl implements RequirementService {
 			Long orglocationId, Long userId, String dateFormat) throws Exception {
 		return requirementDao.getAllRequirementsForJobCampaing(requirementDTO, orglocationId, userId, dateFormat);
 	}
+	
+	@Override
+	public ResponseList<RequirementDTO> getJobListOfRecruiter(RequirementDTO requirementDTO, Long recruiterUserId,Date[] searchDates,List<Long> teamsList) throws Exception {
+		return requirementDao.getJobListOfRecruiter(requirementDTO, recruiterUserId, searchDates, teamsList);
+	}
 
 	@Override
 	public List<RequirementDTO> getAllCampaignRequirementsByIdsList(List<Long> requirementIds) throws Exception {
@@ -4325,6 +4330,13 @@ public class RequirementServiceImpl implements RequirementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public Boolean forceDeleteForSelectedJobs(String[] uuids) throws Exception
+	{
+		Boolean flag = requirementDao.forceDeleteForSelectedJobs(uuids);
+		return flag;
 	}
 	
 }

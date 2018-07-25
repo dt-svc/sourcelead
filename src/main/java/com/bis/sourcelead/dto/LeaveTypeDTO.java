@@ -178,6 +178,14 @@ public class LeaveTypeDTO {
 
 	private Float experiencedPeriod;
 	
+	private float previousNewJoinee;
+	
+	private float previousFresherPeriod;
+	
+	private float previousExpApplicableDays;
+	
+	private float previousExpPeriodDays;
+	
 	public String getName()
 	{
 		return name;
@@ -763,5 +771,37 @@ public class LeaveTypeDTO {
 	}
 	public void setDepartments(String departments) {
 		this.departments = departments;
+	}
+	public float getPreviousNewJoinee()
+	{
+		return previousNewJoinee;
+	}
+	public void setPreviousNewJoinee(float previousNewJoinee)
+	{
+		this.previousNewJoinee = previousNewJoinee;
+	}
+	public float getPreviousFresherPeriod()
+	{
+		return previousFresherPeriod;
+	}
+	public void setPreviousFresherPeriod(float previousFresherPeriod)
+	{
+		this.previousFresherPeriod = previousFresherPeriod;
+	}
+	public float getPreviousExpApplicableDays()
+	{
+		return previousExpApplicableDays;
+	}
+	public void setPreviousExpApplicableDays(float previousExpApplicableDays)
+	{
+		this.previousExpApplicableDays = previousExpApplicableDays;
+	}
+	public float getPreviousExpPeriodDays()
+	{
+		return previousExpPeriodDays;
+	}
+	public void setPreviousExpPeriodDays(float previousExpPeriodDays)
+	{
+		this.previousExpPeriodDays = previousExpPeriodDays;
 	}
 }

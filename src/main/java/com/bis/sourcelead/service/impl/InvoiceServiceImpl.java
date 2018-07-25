@@ -1665,7 +1665,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			if (null != projectMember.getTotalHours()) {
 				invoiceLineItems.setTotalHours(projectMember.getTotalHours());
 			}
-			if (null != rate && null != projectMember.getTotalHours()) {
+			if (null != rate && null != projectMember.getTotalHours() && projectMember.getTotalHours().contains(":")) {
 				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType,invoiceLineItems);
 				invoiceLineItems.setAmount(String.valueOf(totalAmount));
 				subTotal = subTotal + totalAmount;

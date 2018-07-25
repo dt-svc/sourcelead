@@ -28,7 +28,7 @@
     	 						<select class="form-control chosen-select" id="vendor" name="vendor" field-name="Vendor" onchange="getPaybleList()" data-validation="required" >
 		                        <option value="">-Select Vendor-</option>
 		                        <c:forEach var="vendors" items="${vendorsList}">
-									<option value="${vendors.id}">${vendors.locationId.org.orgName}</option>
+									<option value="${vendors.id}">${vendors.orgName}</option>
 								</c:forEach>
 			              </select>
     	 				</div>
@@ -147,7 +147,7 @@ $('#paymentDate').datepicker({
 	        success: function(json) {
 	        	
 	        	var result = '';
-         		result = result +'     <form id ="paymentForm" name ="paymentForm" method="post">'; 
+         		//result = result +'     <form id ="paymentForm" name ="paymentForm" method="post">'; 
          		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table">'; 
          	    result = result +'       <table id="invoiceListTable" class="clearfix" cellspacing="0" width="100%" >';
          		result = result +'           <thead>';
@@ -203,7 +203,7 @@ $('#paymentDate').datepicker({
 	                 	 result = result +'   <div class="modal-footer">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();" >Add</button>';
 	                 	 result = result +'   </div>'; 
-	                 	result = result +'     </form>'; 
+	                 	//result = result +'     </form>'; 
 	                 	 $("#invoiceList").empty(); 
 	                     $("#invoiceList").append(result); 
 	                     ListPagination();  
@@ -239,7 +239,7 @@ $('#paymentDate').datepicker({
 			 if(amount !=null && amount !="" && amount !="undefined"){
 			 var formData = getFormData("paymentForm");
 			 $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
-				 getInvoiceList();
+				 location.reload();
 		 });
 			 }else{
 				 alert("please select at least one record / Amount should not Empty");
@@ -328,6 +328,7 @@ function ListPagination(){
 	 $("#invoiceListTable").DataTable( { 
 		 	"scrollY":"350px",	
 		 	"scrollCollapse": false,
+		 	"paging": false,
 	    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
 	    	"bLengthChange": false,
 	    	"bDestroy": true,

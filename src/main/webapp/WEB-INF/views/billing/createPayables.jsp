@@ -2104,9 +2104,9 @@ function getSowRate(id){
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
         success: function(json) {
-        	 if(json.data != null && json.data != ''){
+        	 if(json.object != null && json.object != ''){
 //         		var json = JSON.parse(data);
-	        	 $ ('#'+id+'rate').val(json.billingAmount);
+	        	 $ ('#'+id+'rate').val(json.object.billingAmount);
 	        	 totalHoursCalculateAmount(id);
         	} 
         },
