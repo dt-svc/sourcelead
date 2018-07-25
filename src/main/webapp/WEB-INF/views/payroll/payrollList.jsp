@@ -11,8 +11,8 @@ $(document).ready(function(){
 
 
 <!-- Content Area -->
-  <section class="content-wraper contentWraper">
-    <section class="content-header clearfix">
+  <section class="content-wraper">
+    <section class="content-header clearfix ">
       <div class="pull-left">
         <h2>Payroll List</h2>
       </div>
@@ -20,7 +20,7 @@ $(document).ready(function(){
     </section>
     
 				<div class="col-md-2 col-md-offset-7">
-         			<a href="<c:url value='${appPath}/runPayroll'/>" class="btn btn-success btnSuccess btn-sm anchorWhite pull-right mt10">Run Payroll</a>
+         			<a href="<c:url value='${appPath}/runPayroll'/>" class="btn btn-success btnSuccess btn-sm anchorWhite pull-right mt10">Initiate Payroll</a>
          	</div>
     
     	<div class='reportHead'>
@@ -28,7 +28,7 @@ $(document).ready(function(){
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
 		</ul>
 		</div>
-	<div class="candidate_wrap_table datatable_filter">
+	<div class="candidate_wrap_table datatable_filter backgroundWhite">
                 <div id="payrollFrequencyDiv"></div>
     </div>
     <div class="clearfix"></div>
@@ -102,9 +102,9 @@ $(document).ready(function(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payFrequency != null && opt.payFrequency != '' && opt.payFrequency !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'" title="'+opt.payFrequency+'">'+opt.payFrequency+'</a></div>';
+						                		  result = result +'<div class="tblminwidth-100"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'" title="'+opt.payFrequency+'">'+opt.payFrequency+'</a></div>';
 											}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">--</div>';
+						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
 											return result;
 										}
@@ -115,9 +115,9 @@ $(document).ready(function(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payDate != null && opt.payDate != '' && opt.payDate !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.payDate+'</div>';
+						                		  result = result +'<div class="tblminwidth-100">'+opt.payDate+'</div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">--</div>';
+						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
 											return result;
 
@@ -129,9 +129,9 @@ $(document).ready(function(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.paySheetFrequencyType != null && opt.paySheetFrequencyType != '' && opt.paySheetFrequencyType !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.paySheetFrequencyType+'</div>';
+						                		  result = result +'<div class="tblminwidth-100">'+opt.paySheetFrequencyType+'</div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">--</div>';
+						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
 											return result;
 										}
@@ -142,9 +142,9 @@ $(document).ready(function(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payPeriod != null && opt.payPeriod != '' && opt.payPeriod !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.payPeriod+'</div>';
+						                		  result = result +'<div class="tblminwidth-100">'+opt.payPeriod+'</div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">--</div>';
+						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
 											return result;
 										}

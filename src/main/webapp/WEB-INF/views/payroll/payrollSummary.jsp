@@ -11,7 +11,7 @@ $(document).ready(function(){
 
 
 <!-- Content Area -->
-  <section class="content-wraper contentWraper">
+  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Payroll List Summary</h2>
@@ -20,7 +20,8 @@ $(document).ready(function(){
     </section>
     
     <div class="clearfix"></div>
-    <div class="candidate_wrap_table datatable_filter">
+    <div class="candidate_wrap_table datatable_filter backgroundWhite">
+    <div class="positionRelative timesheet_head minHeight clearfix"></div>
     	<div id="paySummaryDiv"></div>
     </div>
     <div class="clearfix"></div>
@@ -246,17 +247,74 @@ function getPaySheetFrequencySummary(){
    				{
 		    	var report = data[i];
 		    	result = result +'<tr>																													';	
-	            result = result +'  <td><div class="tbldata-dotdot-vsm">'+report.empName+'</div></td>                                                      ';
-	            result = result +'  <td><div class="tblminwidth-50">'+report.payRate+'</div></td>                                                                  ';
-	            result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.regularHours+'</div><div class="tblminwidth-50 clearfix">800$</div></td>            ';
-	            result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.overtimeHours+'</div><div class="tblminwidth-50 clearfix">300$</div></td>            ';
-	            result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.grossPay+'</div></td>                                                            ';
-	            result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.preTaxDeduction+'</div></td>                                                            ';
-	            result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.postTaxDeduction+'</div></td>                                                             ';
-	            result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.taxes+'</div></td>                                                            ';
-	            result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.netPay+'</div></td> ';
-	            result = result +'  <td><div class="tblminwidth-50 clearfix">--</div></td>                                                            ';
-	            result = result +'  <td><div class="tblminwidth-50 clearfix">--</div></td>                                                         ';
+	            if(report.empName != null && report.empName != '' && report.empName != 'undefined'){
+	            	result = result +'  <td><div class="tbldata-dotdot-vsm">'+report.empName+'</div></td>                                                      ';
+	            }else{
+	            	result = result +'  <td><div class="tbldata-dotdot-vsm">--</div></td>                                                      ';
+	            }
+	            
+	            if(report.payRate != null && report.payRate != '' && report.payRate != 'undefined'){
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.payRate.toFixed(2)+'</div></td>                                                      ';
+	            }else{
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">--</div></td>                                                      ';
+	            }
+	            
+	            if(report.regularHours != null && report.regularHours != '' && report.regularHours != 'undefined'){
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.regularHours+'</div>                                                      ';
+	            }else{
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">--</div>                                                      ';
+	            }
+	            
+	            if(report.regularHrsTotalAmt != null && report.regularHrsTotalAmt != '' && report.regularHrsTotalAmt != 'undefined'){
+	            	result = result +'<div class="tblminwidth-50 clearfix">$'+report.regularHrsTotalAmt.toFixed(2)+'</div></td>            ';
+	            }else{
+	            	result = result +'<div class="tblminwidth-50 clearfix">$0.0</div></td>            ';
+	            }
+	            
+	            if(report.overtimeHours != null && report.overtimeHours != '' && report.overtimeHours != 'undefined'){
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.overtimeHours+'</div>';
+	            }else{
+	            	result = result +'	<td><div class="tblminwidth-50 clearfix">--</div>            ';
+	            }
+	            
+	            if(report.otHoursTotalAmt != null && report.otHoursTotalAmt != '' && report.otHoursTotalAmt != 'undefined'){
+	            	result = result +' <div class="tblminwidth-50 clearfix">$'+report.otHoursTotalAmt.toFixed(2)+'</div></td>            ';
+	            }else{
+	            	result = result +' <div class="tblminwidth-50 clearfix">$0.0</div></td>            ';
+	            }
+	            
+	            if(report.grossPay != null && report.grossPay != '' && report.grossPay != 'undefined'){
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.grossPay.toFixed(2)+'</div></td>                                                      ';
+	            }else{
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                      ';
+	            }
+	            
+	            if(report.preTaxDeduction != null && report.preTaxDeduction != '' && report.preTaxDeduction != 'undefined'){
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.preTaxDeduction.toFixed(2)+'</div></td>                                                      ';
+	            }else{
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                      ';
+	            }
+	            
+	            if(report.postTaxDeduction != null && report.postTaxDeduction != '' && report.postTaxDeduction != 'undefined'){
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.postTaxDeduction.toFixed(2)+'</div></td>                                                      ';
+	            }else{
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                      ';
+	            }
+	            
+	            if(report.taxes != null && report.taxes != '' && report.taxes != 'undefined'){
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.taxes.toFixed(2)+'</div></td>                                                      ';
+	            }else{
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                      ';
+	            }
+	            
+	            if(report.netPay != null && report.netPay != '' && report.netPay != 'undefined'){
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.netPay.toFixed(2)+'</div></td>                                                      ';
+	            }else{
+	            	result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                      ';
+	            }
+	            
+	            result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                            ';
+	            result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                         ';
 	            result = result +'  <td>                                                                                                                ';
 				result = result +'	  <div class="tblminwidth-30 text-center">                                                                          ';
 				result = result +'	  	<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye" onclick="payAdjustment(\''+report.empPayrollUUID+'\');"></i></a>                                  ';
