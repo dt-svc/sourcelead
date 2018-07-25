@@ -1050,6 +1050,19 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveDto.setApproverUsers(String.join(",", aphlist));
 			leaveDto.setFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()));
 			leaveDto.setToDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
+			
+			leaveDto.setDuration(leave.getLeaveType().getDuration());
+			if(StringUtils.isNotBlank(leave.getFromHalfDay())){
+				leaveDto.setFromHalfDay(leave.getFromHalfDay());
+				leaveDto.setFromDateFromHalfTime(leave.getFromDateFromHalfTime());
+				leaveDto.setFromDateToHalfTime(leave.getFromDateToHalfTime());
+			}
+			if(StringUtils.isNotBlank(leave.getToHalfDay())){
+				leaveDto.setToHalfDay(leave.getToHalfDay());
+				leaveDto.setToDateFromHalfTime(leave.getToDateFromHalfTime());
+				leaveDto.setToDateToHalfTime(leave.getToDateToHalfTime());
+			}
+			
 			leaveDto.setCreatedDate(ConversionUtil.getDateAsString(leave.getCreatedDate()));
 			if(leave.getUpdatedDate() != null)
 			leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
@@ -1072,7 +1085,7 @@ public class LeaveServiceImpl implements LeaveService{
 				}
 			}
 			if(StringUtils.isNotBlank(leave.getDeleteReason())) {
-				leaveDto.setCancelReason(leave.getDeleteReason());;
+				leaveDto.setCancelReason(leave.getDeleteReason());
 			}
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setFileUrl(leave.getFileUrl());

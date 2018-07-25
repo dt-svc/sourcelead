@@ -26,7 +26,7 @@
     	 						<select class="form-control chosen-select" id="client" name="client" field-name="Client" onchange="getInvoiceList()" data-validation="required" >
 		                        <option value="">-Select Client-</option>
 		                        <c:forEach var="clients" items="${clientsList}">
-									<option value="${clients.id}">${clients.responderLocationId.org.orgName}</option>
+									<option value="${clients.id}">${clients.orgName}</option>
 								</c:forEach>
 			              </select>
     	 				</div>

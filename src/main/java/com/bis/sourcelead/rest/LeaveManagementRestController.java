@@ -1087,17 +1087,45 @@ public class LeaveManagementRestController {
 							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
 						}
 						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
-							float previousNoOfDays = 0;;
+							float previousNoOfDays = 0;
 							float currentNofDays = 0;
+							
+							float previousFresherNoOfDays = 0;
+							float currentFresherNofDays = 0;
+							
+							float previousExpNoOfDays = 0;
+							float currentExpNofDays = 0;
+							
 							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-								currentNofDays = leaveType.getNoOfDaysPerPeriod();
-								previousNoOfDays = leaveTypeDTO.getPreviousNoOfDaysPerPeriod();
+								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+									currentNofDays = leaveType.getNoOfDaysPerPeriod();
+									previousNoOfDays = leaveTypeDTO.getPreviousNoOfDaysPerPeriod();
+								}else{
+									 previousFresherNoOfDays = leaveTypeDTO.getPreviousFresherPeriod();
+									 currentFresherNofDays = leaveType.getNewJoinPerPeriod();
+									
+									 previousExpNoOfDays = leaveTypeDTO.getPreviousExpPeriodDays();
+									 currentExpNofDays = leaveType.getExperiencedPerPeriod();
+								}
 							}else {
-								currentNofDays   = leaveType.getNoOfDays();
-								previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
+								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+									currentNofDays   = leaveType.getNoOfDays();
+									previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
+								}else{
+									 previousFresherNoOfDays = leaveTypeDTO.getPreviousNewJoinee();
+									 currentFresherNofDays = leaveType.getNewJoinee();
+									
+									 previousExpNoOfDays = leaveTypeDTO.getPreviousExpApplicableDays();
+									 currentExpNofDays = leaveType.getExperiencedApplicableDays();
+								}
 							}
+							
 							float diffLeaves = 0;
+							float diffFresherLeaves = 0;
+							float diffExpLeaves = 0;
 							String actionType = "";
+							String actionFresherType = "";
+							String actionExpType = "";
 							if(previousNoOfDays < currentNofDays) {
 								diffLeaves = currentNofDays - previousNoOfDays;
 								actionType = "ADD";
@@ -1107,7 +1135,32 @@ public class LeaveManagementRestController {
 							}if(previousNoOfDays == currentNofDays) {
 								 actionType = "NONE";
 							}
-							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(updatedUserList, orgLocation.getId(), leaveType, Integer.parseInt(leaveType.getStatus()),diffLeaves,actionType,Constants.UPDATE);
+							//Fresher calculation
+							if(previousFresherNoOfDays < currentFresherNofDays) {
+								diffFresherLeaves = currentFresherNofDays - previousFresherNoOfDays;
+								actionFresherType = "ADD";
+							}if(previousFresherNoOfDays > currentFresherNofDays) {
+								diffFresherLeaves = currentFresherNofDays - previousFresherNoOfDays;
+								 actionFresherType = "SUB";
+							}if(previousFresherNoOfDays == currentFresherNofDays) {
+								actionFresherType = "NONE";
+							}
+							// Experience Calculation 
+							if(previousExpNoOfDays < currentExpNofDays) {
+								diffExpLeaves = currentExpNofDays - previousExpNoOfDays;
+								actionExpType = "ADD";
+							}if(previousExpNoOfDays > currentExpNofDays) {
+								diffExpLeaves = currentExpNofDays - previousExpNoOfDays;
+								 actionExpType = "SUB";
+							}if(previousExpNoOfDays == currentExpNofDays) {
+								actionExpType = "NONE";
+							}
+							leaveType.setActionFresherType(actionFresherType);
+							leaveType.setActionExpType(actionExpType);
+							leaveType.setDiffFresherLeaves(diffFresherLeaves);
+							leaveType.setDiffExpLeaves(diffExpLeaves);
+//							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(updatedUserList, orgLocation.getId(), leaveType, Integer.parseInt(leaveType.getStatus()),diffLeaves,actionType,Constants.UPDATE);
+							associateBalanceLeaveService.updateLeaveTypeAssociateBalances(updatedUserList, leaveType, leaveTypeDTO);
 						}	
 //					}
 				}
