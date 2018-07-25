@@ -22,7 +22,16 @@ $(document).ready(function(){
 </div>
 <div class="pull-right brud-crum">Home &raquo; Payroll</div>
 </section>
+		<div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
 
+<div class="tabsMenu clearfix">
+   		<ul class="list-unstyled">
+		   <li class="current"><a href="us-runpayroll-list.html">Review Payroll</a></li>
+		   <li><a href="us-approvepayroll.html">Approve Payroll</a></li>
+	   </ul>
+   </div>
 
 <div class="clearfix"></div>
 <div class="timesheet_out">
@@ -78,8 +87,8 @@ $(document).ready(function(){
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
 	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
-		<li><a href="#" class="btn btn-primary btnSuccess" onClick="sendPayrollForApprover();">Send for Approve</a></li>
-		<!-- <li><a href="#" class="btn btn-default ml mr">Confirm</a></li> -->
+		<li><a href="#" class="btn btn-primary btnSuccess" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
+		<li><a href="#" class="btn btn-default ml mr">Confirm</a></li>
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
 	</div>
@@ -276,7 +285,7 @@ function runUSPayroll(){
 		        			result += '<tr>';
 				        	 result += '<td>';
 				        	result += '<div class="checkbox-new pull-left ml5">';
-				        	result += '<input id="'+i+'emp1" class="checkbox-custom" name="uspayroll['+i+'].isExcept" type="checkbox">';
+				        	result += '<input id="'+i+'emp1" value="YES" class="checkbox-custom" name="uspayroll['+i+'].isExcept" type="checkbox">';
 				        	result += '<label for="'+i+'emp1" class="checkbox-custom-label"></label>';
 				        	result += '</div>';
 				        	result += '</td>'; 
@@ -927,16 +936,14 @@ function getApprovers(){
 <script type="text/javascript">
 function sendPayrollForApprover(){
       var formData = $($('#submit_for_approver')[0]).serialize();
-    var approver = $("#approver").val();
     if(approver != null && approver != '' && approver != 'undefined'){
-      $.post(sourceleadUrl+"/sendPayrollForApprover?"+tokenParamName+"="+tokenValue+"&approver="+approver, formData, function(result) {
+      $.post(sourceleadUrl+"/sendPayrollForApprover?"+tokenParamName+"="+tokenValue, formData, function(result) {
         if (result && result.response === "INVALID_DATA") {
               showError(result.responseMessage);
           } else if (result.response === "AWKWARD") {
               location.href = "/errorPage";
           } else if (result.response === "SUCCESS") {
-            $("#approverLoading").removeAttr('style');
-             location.replace(sourceleadUrl+ "//payrollApprover");
+        	  $("#msgDiv").html("Submited Successfully");
           } else if (result.indexOf('Sign In') !== -1) {
             location.replace(sourceleadUrl);
           } else {
@@ -946,6 +953,14 @@ function sendPayrollForApprover(){
     }
     
 }
+</script>
+
+<script>
+function msgFadein() {
+	$("#selector1").fadeIn(200);
+    $('#selector1').delay(2000).fadeOut('slow');
+}
+
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
