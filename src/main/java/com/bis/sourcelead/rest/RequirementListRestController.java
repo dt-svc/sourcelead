@@ -1629,19 +1629,18 @@ public class RequirementListRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				String[] tableColumns = {"name", "startDate", "endDate", "noOfJobs", "", "status"};
-				jobFairDTO.setSortColumn("id");
-				jobFairDTO.setSortOrder("desc");
+				String[] tableColumns = {"generatedId" ,"name", "startDate", "endDate", "noOfJobs", "", "", "", "status", "id"};
+				/*jobFairDTO.setSortColumn("id");
+				jobFairDTO.setSortOrder("desc");*/
 				
-				int sortColumnIndex = 10; //by default sorting using updated date
+				int sortColumnIndex = 9; //by default sorting using id
 				boolean sortColumnOrder = false; //by default descending order
 				if(jobFairDTO.getOrder() != null && !jobFairDTO.getOrder().isEmpty()) {
 					sortColumnIndex = Integer.parseInt(jobFairDTO.getOrder().get(0).get("column"));
-					sortColumnOrder = !jobFairDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
-					
-					jobFairDTO.setSortColumn(tableColumns[sortColumnIndex]);
-					jobFairDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
+					sortColumnOrder = !jobFairDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");					
 				}
+				jobFairDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				jobFairDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
 				
 				jobFairDTO.setUserId(user.getId());
 				jobFairDTO.setOrgLocationId(orgLocation.getId());
@@ -2471,6 +2470,59 @@ public class RequirementListRestController {
 			
 		}
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
+	@RequestMapping(value = "/getRequirementListByPostedDateAndSelectedClients")
+	public String getRequirementListByPostedDateAndSelectedClients(
+			@RequestParam(value = "postedDateRange", required = false) String postedDateRange,
+			@RequestParam(defaultValue = "") String selectedClients, HttpServletRequest request) throws Exception {
+		String resultJson = null;
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user!=null) {			
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+						"orgLocations");
+				String clients = "";
+				if (selectedClients != null && !selectedClients.isEmpty()) {
+					for (String client : selectedClients.split(",")) {
+						clients += (clients.isEmpty() ? "" : ",") + "'" + client + "'";
+					}
+				}
+				List<Requirement> requirementList = requirementService.getRequirementListByPostedDateAndSelectedClients(
+						loginOrgLocation.getId(), user.getId(), postedDateRange, clients);
+				resultJson = commonUtil.toJSON(requirementList);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resultJson;
+	}
 	
+	
+	@RequestMapping(value = "/forceDeleteForSelectedJobs", method = RequestMethod.POST)
+	public Response<String> forceDeleteForSelectedJobs(RequirementDTO requirementDTO, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response = new Response<>();
+		try {
+			if (user != null) {
+				if(requirementDTO.getReqUUIDArr().length > 0) {
+					 Boolean flag =  requirementService.forceDeleteForSelectedJobs(requirementDTO.getReqUUIDArr());
+
+					 response.setResponse(Result.SUCCESS.name());
+					 response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
 	
 }

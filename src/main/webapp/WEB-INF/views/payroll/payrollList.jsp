@@ -16,10 +16,10 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Payroll List</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Payroll List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll List</div>
     </section>
     
-				<div class="col-md-2">
+				<div class="col-md-2 col-md-offset-7">
          			<a href="<c:url value='${appPath}/runPayroll'/>" class="btn btn-success btnSuccess btn-sm anchorWhite pull-right mt10">Run Payroll</a>
          	</div>
     
@@ -28,97 +28,10 @@ $(document).ready(function(){
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
 		</ul>
 		</div>
-	<div class="datatable_filter">
+	<div class="candidate_wrap_table datatable_filter">
                 <div id="payrollFrequencyDiv"></div>
     </div>
     <div class="clearfix"></div>
-    <%-- <div class="timesheet_out">
-      <div class="tablelist-wrap">
-        <div class="timesheet_head minHeight">
-          <div class="col-md-7 mt">
-            <div class="row">
-              <div class="col-md-3">
-                <div class="dropdown-select">
-                  <select>
-                    <option selected>Pay Period</option>
-                    <option>Group-1</option>
-                    <option>Group-2</option>
-                    <option>Group-3</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-md-3 paddingRight">
-                <input name="" class="form-control calendar" placeholder="Pay Day" type="text" id="payDay">
-              </div>
-            </div>
-          </div>
-				<div class="col-md-2">
-         			<a href="<c:url value='${appPath}/runPayroll'/>" class="btn btn-success btnSuccess btn-sm anchorWhite pull-right mt10">Run Payroll</a>
-         	</div>
-         
-          <div class="clearfix"></div>
-          <div class="remove_search">
-            <input placeholder="Search" type="text">
-          </div>
-        </div>
-          <div class="styleTables clearfix mt">
-            <table>
-              <thead>
-                <tr>
-                  <th>Pay Group</th>
-                  <th>Pay Date</th>
-                  <th>Type</th>
-                  <th>Pay Period</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div class="tbldata-dotdot-vsm"><a href="payrolllist-summary-us.html">Weekly</a></div></td>
-                  <td><div class="tblminwidth-150">01/02/2018</div></td>
-                  <td><div class="tblminwidth-150 clearfix">Regular</div></td>
-                  <td>
-					  <span class="tblminwidth-100 mr">
-							25/12/2017                 	
-					  </span>
-					  <span class="tblminwidth-100">
-							25/02/2018                 	
-					  </span>
-                  </td>
-                  <td><div class="tblminwidth-150 clearfix">40,000 $</div></td>
-                </tr>
-                 <tr>
-                  <td><div class="tbldata-dotdot-vsm"><a href="payrolllist-summary-us.html">Monthly</a></div></td>
-                  <td><div class="tblminwidth-150">01/02/2018</div></td>
-                  <td><div class="tblminwidth-150 clearfix">Regular</div></td>
-                  <td>
-					  <span class="tblminwidth-100 mr">
-							25/12/2017                 	
-					  </span>
-					  <span class="tblminwidth-100">
-							25/02/2018                 	
-					  </span>
-                  </td>
-                  <td><div class="tblminwidth-150 clearfix">60,000 $</div></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        <div class="clearfix"></div>
-        <nav>
-          <ul id="paging" class="pagination pull-right mr">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-pagse="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav>
-      </div>
-    </div> --%>
   </section>
   <!-- Content Area Ends--> 
   

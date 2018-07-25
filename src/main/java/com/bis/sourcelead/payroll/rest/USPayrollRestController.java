@@ -1103,7 +1103,7 @@ public class USPayrollRestController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("paySheetFrequencyUUID", paySheetFrequencyUUID);
-		model.setViewName("payroll/paySheetFrequencySummary");
+		model.setViewName("payroll/payrollSummary");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
 			sessionData = new SessionMaintainanceData();
