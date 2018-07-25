@@ -411,7 +411,7 @@ public class LeaveManagementRestController {
 			for (LeaveType l : roleLeaveType) {
 				float totalLeaves = 0;
 				if(Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
-					 totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(l.getId(),userId,orgLocationId);
+					 totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(l.getId(),userId,orgLocations.getId(),orgLocations.getOrg().getId());
 				}
 
 //				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, loginUser);
@@ -1076,7 +1076,7 @@ public class LeaveManagementRestController {
 						List<User> updatedUserList = new ArrayList<>();
 						List<User> insertUserList = new ArrayList<>();
 						for(User usr : userList) {
-							AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId());
+							AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId(),orgLocation.getOrg().getId());
 						    if(associa != null) {
 						    	updatedUserList.add(usr);
 						    }else {
@@ -2086,7 +2086,7 @@ public class LeaveManagementRestController {
 			Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(),orgLocations.getId());
 			
 //			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(), emp,orgLocations, leave.getUser());
-			float totalLeavesperYear = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId());
+			float totalLeavesperYear = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId(),orgLocations.getOrg().getId());
 			
 			leaveDto.setApproverUsers(String.join(",", aphlist));
 			Map<String, Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),
@@ -2532,7 +2532,7 @@ public class LeaveManagementRestController {
 					List<Leave> takenLeaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),orgLocations.getId(), user.getId());
 					float empToatalLeaves = 0;	
 					if(Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())){
-						 empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());	
+						 empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId(),orgLocations.getOrg().getId());	
 					}
 
 					float empAppliedLeaveCount = 0;
