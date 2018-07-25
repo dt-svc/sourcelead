@@ -6,8 +6,7 @@
 		<div class="pull-left">
 			<h2>IT Declaration list</h2>
 		</div>
-		<div class="pull-right brud-crum">Home &raquo; IT Declaration
-			list</div>
+		<div class="pull-right brud-crum">Home &raquo; IT Declaration list</div>
 	</section>
 
 	<!-- Timesheet -->

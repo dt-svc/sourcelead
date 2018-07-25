@@ -51,7 +51,7 @@ public interface TaxService {
 
 	List<SourceleadTaxFormDTO> getTaxFormTypeList(boolean includeAll);
 
-	List<SourceleadTaxFormDTO> getTaxFormTypeListForSubmission(int year);
+	List<SourceleadTaxFormDTO> getTaxFormTypeListForSubmission(String financialYear);
 
 	long addITDeclarationSection(SourceleadTaxITDeclarationDTO sectionDTO);
 
@@ -73,7 +73,7 @@ public interface TaxService {
 
 	Response<Long> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO, User loggedInUser);
 
-	List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid, int year);
+	List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid, String financialYear);
 
 	SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID);
 

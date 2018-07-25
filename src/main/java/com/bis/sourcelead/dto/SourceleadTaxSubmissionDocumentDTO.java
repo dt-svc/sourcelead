@@ -12,7 +12,7 @@ public class SourceleadTaxSubmissionDocumentDTO implements Serializable {
 	private long id;
 	private String name;
 	private long taxITSubmissionId;
-
+	private boolean updateFile;
 	private List<SourceleadTaxSubmissionDocumentAttachmentDTO> attachmentList;
 
 	public long getId() {
@@ -37,6 +37,14 @@ public class SourceleadTaxSubmissionDocumentDTO implements Serializable {
 
 	public void setTaxITSubmissionId(long taxITSubmissionId) {
 		this.taxITSubmissionId = taxITSubmissionId;
+	}
+
+	public boolean isUpdateFile() {
+		return updateFile;
+	}
+
+	public void setUpdateFile(boolean updateFile) {
+		this.updateFile = updateFile;
 	}
 
 	public List<SourceleadTaxSubmissionDocumentAttachmentDTO> getAttachmentList() {

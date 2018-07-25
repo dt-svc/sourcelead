@@ -60,7 +60,7 @@ public class TaxAdminController {
 	@Autowired
 	UserRoleService userRoleService;
 
-	private void setYears(ModelAndView modelAndView, String selectedYear) {
+	public static void setYears(ModelAndView modelAndView, String selectedYear) {
 		Map<String, Boolean> yearList = new LinkedHashMap<>();
 		Calendar c = Calendar.getInstance();
 		c.roll(Calendar.YEAR, -2);

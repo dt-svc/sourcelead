@@ -25,7 +25,7 @@
 </c:if>
 <div class="col-md-12">
 	<div class="clearfix"></div>
-	<c:forEach items="${form.itDeclarationSectionList}" var="section">
+	<c:forEach items="${form.sourceleadTaxSectionList}" var="section">
 		<table class="table table-itdeclaration table-bordered">
 			<thead>
 				<tr>

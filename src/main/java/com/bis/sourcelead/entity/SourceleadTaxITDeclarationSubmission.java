@@ -43,6 +43,9 @@ public class SourceleadTaxITDeclarationSubmission implements Serializable {
 
 	@Column(name = "STATUS")
 	private int status;
+	
+	@Column(name = "SUBMISSION_ITEMS")
+	private String submissionItems;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -104,6 +107,14 @@ public class SourceleadTaxITDeclarationSubmission implements Serializable {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public String getSubmissionItems() {
+		return submissionItems;
+	}
+
+	public void setSubmissionItems(String submissionItems) {
+		this.submissionItems = submissionItems;
 	}
 
 	public Date getCreatedDate() {

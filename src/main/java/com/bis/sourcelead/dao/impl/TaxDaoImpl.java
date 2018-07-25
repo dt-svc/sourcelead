@@ -454,13 +454,13 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
-	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, int year) {
+	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, String financialYear) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from SourceleadTaxITDeclarationSubmission it where it.sourceleadTaxForm.uuid=:uuid and it.financialYear=:year";
+			String query = "from SourceleadTaxITDeclarationSubmission it where it.sourceleadTaxForm.uuid=:uuid and it.financialYear=:financialYear";
 			Query queryObj = session.createQuery(query);
 			queryObj.setString("uuid", uuid);
-			queryObj.setString("year", year + "");
+			queryObj.setString("financialYear", financialYear);
 			return queryObj.list();
 		} catch (Exception e) {
 			e.printStackTrace();

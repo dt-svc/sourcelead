@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 
 	/**
@@ -25,6 +28,7 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 	private String createdBy;
 	private Date updatedDate;
 	private String updatedBy;
+	private List<JSONObject> submissionItems;
 
 	private List<SourceleadTaxITDeclarationSubmissionItemDTO> submissionItemList;
 
@@ -134,6 +138,14 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+	
+	public List<JSONObject> getSubmissionItems() {
+		return submissionItems;
+	}
+	
+	public void setSubmissionItems(List<JSONObject> submissionItems) {
+		this.submissionItems = submissionItems;
 	}
 
 	public List<SourceleadTaxITDeclarationSubmissionItemDTO> getSubmissionItemList() {

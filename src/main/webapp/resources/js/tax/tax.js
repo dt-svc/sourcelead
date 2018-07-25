@@ -586,8 +586,8 @@ function Tax() {
 						result += "</div>";
 						result += "</td>";
 						var sectionNames = "";
-						for(var i=0; i < formList[e].itDeclarationSectionList.length; i++){
-							sectionNames += formList[e].itDeclarationSectionList[i].name + (i < (formList[e].itDeclarationSectionList.length - 1) ? ",<br>" : "");
+						for(var i=0; i < formList[e].sourceleadTaxSectionList.length; i++){
+							sectionNames += formList[e].sourceleadTaxSectionList[i].name + (i < (formList[e].sourceleadTaxSectionList.length - 1) ? ",<br>" : "");
 						}
 						result += "<td><div>" + (sectionNames === "" ? "--------" : sectionNames) + "</div></td>";
 						result += "<td>";

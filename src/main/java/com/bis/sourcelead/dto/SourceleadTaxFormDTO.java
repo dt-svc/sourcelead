@@ -18,7 +18,7 @@ public class SourceleadTaxFormDTO implements Serializable {
 	private String financialYear;
 	private int totalFormsCount;
 	private String uuid;
-	private List<SourceleadTaxITDeclarationDTO> itDeclarationSectionList;
+	private List<SourceleadTaxITDeclarationDTO> sourceleadTaxSectionList;
 
 	public long getId() {
 		return id;
@@ -72,11 +72,11 @@ public class SourceleadTaxFormDTO implements Serializable {
 		this.uuid = uuid;
 	}
 
-	public List<SourceleadTaxITDeclarationDTO> getItDeclarationSectionList() {
-		return itDeclarationSectionList;
+	public List<SourceleadTaxITDeclarationDTO> getSourceleadTaxSectionList() {
+		return sourceleadTaxSectionList;
 	}
 
-	public void setItDeclarationSectionList(List<SourceleadTaxITDeclarationDTO> sourceleadTaxSectionList) {
-		this.itDeclarationSectionList = sourceleadTaxSectionList;
+	public void setSourceleadTaxSectionList(List<SourceleadTaxITDeclarationDTO> sourceleadTaxSectionList) {
+		this.sourceleadTaxSectionList = sourceleadTaxSectionList;
 	}
 }

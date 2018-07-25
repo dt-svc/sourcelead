@@ -8,22 +8,23 @@ public class SourceleadTaxITDeclarationSubmissionItemDTO implements Serializable
 	 * @author Mahaveer Manoj
 	 */
 	private static final long serialVersionUID = 1L;
-	private long id;
+	// private long id;
 	private String name;
 	private double maxLimit;
 	private double amount;
 	private String description;
 	private long taxSectionId;
+	private String taxSectionName;
 
-	private long sourceleadTaxITDeclarationSubmissionId;
+	// private long sourceleadTaxITDeclarationSubmissionId;
 
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
+	// public long getId() {
+	// return id;
+	// }
+	//
+	// public void setId(long id) {
+	// this.id = id;
+	// }
 
 	public String getName() {
 		return name;
@@ -57,13 +58,15 @@ public class SourceleadTaxITDeclarationSubmissionItemDTO implements Serializable
 		this.description = description;
 	}
 
-	public long getSourceleadTaxITDeclarationSubmissionId() {
-		return sourceleadTaxITDeclarationSubmissionId;
-	}
-
-	public void setSourceleadTaxITDeclarationSubmissionId(long sourceleadTaxITDeclarationSubmissionId) {
-		this.sourceleadTaxITDeclarationSubmissionId = sourceleadTaxITDeclarationSubmissionId;
-	}
+	// public long getSourceleadTaxITDeclarationSubmissionId() {
+	// return sourceleadTaxITDeclarationSubmissionId;
+	// }
+	//
+	// public void setSourceleadTaxITDeclarationSubmissionId(long
+	// sourceleadTaxITDeclarationSubmissionId) {
+	// this.sourceleadTaxITDeclarationSubmissionId =
+	// sourceleadTaxITDeclarationSubmissionId;
+	// }
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -75,6 +78,14 @@ public class SourceleadTaxITDeclarationSubmissionItemDTO implements Serializable
 
 	public void setTaxSectionId(long taxSectionId) {
 		this.taxSectionId = taxSectionId;
+	}
+
+	public String getTaxSectionName() {
+		return taxSectionName;
+	}
+
+	public void setTaxSectionName(String taxSectionName) {
+		this.taxSectionName = taxSectionName;
 	}
 
 }

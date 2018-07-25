@@ -2,12 +2,17 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.map.HashedMap;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +58,9 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 @Service
 public class TaxServiceImpl implements TaxService {
@@ -404,7 +412,7 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public List<SourceleadTaxFormDTO> getTaxFormTypeListForSubmission(int year) {
+	public List<SourceleadTaxFormDTO> getTaxFormTypeListForSubmission(String financialYear) {
 		List<SourceleadTaxFormDTO> sourceleadTaxFormList = new LinkedList<>();
 		try {
 			List<SourceleadTaxForm> stList = taxDao.getTaxFormTypeList(false);
@@ -415,8 +423,9 @@ public class TaxServiceImpl implements TaxService {
 					sourceleadTaxFormDTO.setName(sourceleadTaxForm.getName());
 					sourceleadTaxFormDTO.setUuid(sourceleadTaxForm.getUuid());
 					sourceleadTaxFormDTO.setActive(sourceleadTaxForm.isActive());
-					sourceleadTaxFormDTO.setFinancialYear(year + "");
-					int count = taxDao.getITDeclarationFormsCountByYear(year, sourceleadTaxForm.getName().replaceAll(" ", ""));
+					sourceleadTaxFormDTO.setFinancialYear(financialYear);
+//					int count = taxDao.getITDeclarationFormsCountByYear(year, sourceleadTaxForm.getName().replaceAll(" ", ""));
+					int count = 1;
 					sourceleadTaxFormDTO.setTotalFormsCount(count);
 					if (count > 0)
 						sourceleadTaxFormList.add(sourceleadTaxFormDTO);
@@ -536,7 +545,7 @@ public class TaxServiceImpl implements TaxService {
 							}
 						}
 					}
-					sourceleadTaxFormDTO.setItDeclarationSectionList(taxSectionDTOList);
+					sourceleadTaxFormDTO.setSourceleadTaxSectionList(taxSectionDTOList);
 				}
 			}
 		} catch (Exception e) {
@@ -651,22 +660,58 @@ public class TaxServiceImpl implements TaxService {
 			itDeclarationSubmission.setUser(userService.getUserById(itDeclarationSubmissionDTO.getUserId()));
 			itDeclarationSubmission.setStatus(itDeclarationSubmissionDTO.getStatus());
 			itDeclarationSubmission.setSourceleadTaxForm(taxDao.getTaxFormType(itDeclarationSubmissionDTO.getTaxFormId()));
-			List<SourceleadTaxITDeclarationSubmissionItem> submissionItemList = new LinkedList<>();
+//			Gson gson = new Gson();
+//			String json = gson.toJson(itDeclarationSubmissionDTO.getSubmissionItemList());
+//			itDeclarationSubmission.setSubmissionItems(json);
+			
+			Map<Long,String> taxSectionMapList = new HashMap<>();
+//			Set<Long> taxSectionIdList = new HashSet<>();
 			for (SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO : itDeclarationSubmissionDTO.getSubmissionItemList()) {
-				SourceleadTaxITDeclarationSubmissionItem submissionItem;
-				if (submissionItemDTO.getId() > 0)
-					submissionItem = taxDao.getITDeclarationSubmissionItem(submissionItemDTO.getId());
-				else
-					submissionItem = new SourceleadTaxITDeclarationSubmissionItem();
-				submissionItem.setName(submissionItemDTO.getName());
-				submissionItem.setMaxLimit(submissionItemDTO.getMaxLimit());
-				submissionItem.setAmount(submissionItemDTO.getAmount());
-				submissionItem.setDescription(submissionItemDTO.getDescription());
-				submissionItem.setSourceleadTaxITDeclarationSubmission(itDeclarationSubmission);
-				submissionItem.setSourceleadTaxITDeclaration(taxDao.getTaxSection(submissionItemDTO.getTaxSectionId()));
-				submissionItemList.add(submissionItem);
+//				taxSectionIdList.add(submissionItemDTO.getTaxSectionId());
+				taxSectionMapList.put(submissionItemDTO.getTaxSectionId(), submissionItemDTO.getTaxSectionName());
 			}
-			itDeclarationSubmission.setSubmissionItemList(submissionItemList);
+			
+			JSONArray jsonArray = new JSONArray();
+			for (Long taxSectionId : taxSectionMapList.keySet()) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("taxSectionId", taxSectionId);
+				jsonObject.put("taxSectionName", taxSectionMapList.get(taxSectionId));
+				JSONArray itemArray = new JSONArray();
+				for (SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO : itDeclarationSubmissionDTO.getSubmissionItemList()) {
+					if (submissionItemDTO.getTaxSectionId() == taxSectionId) {
+						JSONObject itemObject = new JSONObject();
+						itemObject.put("name", submissionItemDTO.getName());
+						itemObject.put("maxLimit", submissionItemDTO.getMaxLimit());
+						itemObject.put("amount", submissionItemDTO.getAmount());
+						itemObject.put("description", submissionItemDTO.getDescription());
+						itemArray.put(itemObject);
+//						ObjectMapper objectMapper = new ObjectMapper();
+//						itemArray.put(objectMapper.writeValueAsString(submissionItemDTO));
+					}
+				}
+				jsonObject.put("items", itemArray);
+				jsonArray.put(jsonObject);
+			}
+//			System.out.println("JSON Array : " + jsonArray);
+			itDeclarationSubmission.setSubmissionItems(jsonArray.toString());
+			
+//			List<SourceleadTaxITDeclarationSubmissionItem> submissionItemList = new LinkedList<>();
+//			for (SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO : itDeclarationSubmissionDTO.getSubmissionItemList()) {
+//				SourceleadTaxITDeclarationSubmissionItem submissionItem;
+//				if (submissionItemDTO.getId() > 0)
+//					submissionItem = taxDao.getITDeclarationSubmissionItem(submissionItemDTO.getId());
+//				else
+//					submissionItem = new SourceleadTaxITDeclarationSubmissionItem();
+//				submissionItem.setName(submissionItemDTO.getName());
+//				submissionItem.setMaxLimit(submissionItemDTO.getMaxLimit());
+//				submissionItem.setAmount(submissionItemDTO.getAmount());
+//				submissionItem.setDescription(submissionItemDTO.getDescription());
+//				submissionItem.setSourceleadTaxITDeclarationSubmission(itDeclarationSubmission);
+//				submissionItem.setSourceleadTaxITDeclaration(taxDao.getTaxSection(submissionItemDTO.getTaxSectionId()));
+//				submissionItemList.add(submissionItem);
+//			}
+//			itDeclarationSubmission.setSubmissionItemList(submissionItemList);
+			
 			long result = taxDao.submitITDeclaration(itDeclarationSubmission);
 			if (result > 0) {
 				response.setResponse(Result.SUCCESS.name());
@@ -686,10 +731,10 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid, int year) {
+	public List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid, String financialYear) {
 		List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionList = new LinkedList<>();
 		try {
-			List<SourceleadTaxITDeclarationSubmission> itList = taxDao.getITDeclarationSubmissionList(uuid, year);
+			List<SourceleadTaxITDeclarationSubmission> itList = taxDao.getITDeclarationSubmissionList(uuid, financialYear);
 			if (itList != null && !itList.isEmpty()) {
 				for (SourceleadTaxITDeclarationSubmission itSubmission : itList) {
 					SourceleadTaxITDeclarationSubmissionDTO itSubmissionDTO = new SourceleadTaxITDeclarationSubmissionDTO();
@@ -725,40 +770,74 @@ public class TaxServiceImpl implements TaxService {
 					itDeclarationSubmissionDTO.setUserId(itDeclarationSubmission.getUser().getId());
 					itDeclarationSubmissionDTO.setUserName(itDeclarationSubmission.getUser().getFullName());
 				}
+				JSONArray jsonArray = new JSONArray(itDeclarationSubmission.getSubmissionItems());
+				List<JSONObject> submissionItems = new LinkedList<>();
+				if (jsonArray != null) {
+					for (int i = 0; i < jsonArray.length(); i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						submissionItems.add(jsonObject);
+					}
+				}
+				itDeclarationSubmissionDTO.setSubmissionItems(submissionItems);
+//				for (int i = 0; i < jsonArray.length(); i++) {
+//					JSONObject jsonObject = jsonArray.getJSONObject(i);
+//					
+//				}
+				
+//				List<SourceleadTaxITDeclarationSubmissionSectionDTO> submittedSectionList = new LinkedList<>();
+//				List<SourceleadTaxITDeclarationSubmissionItemDTO> submissionItemList = new LinkedList<>();
+//				JSONArray itDeclarationSubmissionItemArray = new JSONArray(itDeclarationSubmission.getSubmissionItemList());
+//				if (itDeclarationSubmissionItemArray != null) {
+//					for (int i = 0; i < itDeclarationSubmissionItemArray.length(); i++) {
+//						JSONObject itDeclarationSubmissionItemObject = itDeclarationSubmissionItemArray.getJSONObject(i);
+//						SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO = new SourceleadTaxITDeclarationSubmissionItemDTO();
+//						submissionItemDTO.setId(itDeclarationSubmissionItemObject.getLong("id"));
+//						submissionItemDTO.setName(itDeclarationSubmissionItemObject.getString("name"));
+//						submissionItemDTO.setAmount(itDeclarationSubmissionItemObject.getDouble("amount"));
+//						submissionItemDTO.setMaxLimit(itDeclarationSubmissionItemObject.getDouble("maxLimit"));
+//						submissionItemDTO.setDescription(itDeclarationSubmissionItemObject.getString("description"));
+//						submissionItemDTO.setTaxSectionId(itDeclarationSubmissionItemObject.getLong("taxSectionId"));
+//						submissionItemDTO.setSourceleadTaxITDeclarationSubmissionId(itDeclarationSubmissionItemObject.getLong("sourceleadTaxITDeclarationSubmissionId"));
+//						submissionItemList.add(submissionItemDTO);
+//					}
+//				}
+//				itDeclarationSubmissionDTO.setSubmittedSectionList(submittedSectionList);
+				
+				
 
 				Set<SourceleadTaxITDeclaration> sectionList = new LinkedHashSet<>();
 				for (SourceleadTaxITDeclarationSubmissionItem submissionItem : itDeclarationSubmission.getSubmissionItemList()) {
 					sectionList.add(submissionItem.getSourceleadTaxITDeclaration());
 				}
 
-				List<SourceleadTaxITDeclarationSubmissionSectionDTO> submittedSectionList = new LinkedList<>();
-
-				for (SourceleadTaxITDeclaration section : sectionList) {
-					SourceleadTaxITDeclarationSubmissionSectionDTO submittedSectionDTO = new SourceleadTaxITDeclarationSubmissionSectionDTO();
-					submittedSectionDTO.setId(section.getId());
-					submittedSectionDTO.setName(section.getName());
-					submittedSectionDTO.setDescription(section.getDescription());
-					submittedSectionDTO.setActive(section.isActive());
-					List<SourceleadTaxITDeclarationSubmissionItemDTO> submissionItemList = new LinkedList<>();
-
-					for (SourceleadTaxITDeclarationSubmissionItem submissionItem : itDeclarationSubmission.getSubmissionItemList()) {
-						if (submissionItem.getSourceleadTaxITDeclaration().getId() == section.getId()) {
-							SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO = new SourceleadTaxITDeclarationSubmissionItemDTO();
-							submissionItemDTO.setId(submissionItem.getId());
-							submissionItemDTO.setName(submissionItem.getName());
-							submissionItemDTO.setAmount(submissionItem.getAmount());
-							submissionItemDTO.setMaxLimit(submissionItem.getMaxLimit());
-							submissionItemDTO.setDescription(submissionItem.getDescription());
-							submissionItemDTO.setTaxSectionId(submissionItem.getSourceleadTaxITDeclaration().getId());
-							submissionItemDTO.setSourceleadTaxITDeclarationSubmissionId(
-									submissionItem.getSourceleadTaxITDeclarationSubmission().getId());
-							submissionItemList.add(submissionItemDTO);
-						}
-					}
-					submittedSectionDTO.setSubmissionItemList(submissionItemList);
-					submittedSectionList.add(submittedSectionDTO);
-				}
-				itDeclarationSubmissionDTO.setSubmittedSectionList(submittedSectionList);
+//				List<SourceleadTaxITDeclarationSubmissionSectionDTO> submittedSectionList = new LinkedList<>();
+//
+//				for (SourceleadTaxITDeclaration section : sectionList) {
+//					SourceleadTaxITDeclarationSubmissionSectionDTO submittedSectionDTO = new SourceleadTaxITDeclarationSubmissionSectionDTO();
+//					submittedSectionDTO.setId(section.getId());
+//					submittedSectionDTO.setName(section.getName());
+//					submittedSectionDTO.setDescription(section.getDescription());
+//					submittedSectionDTO.setActive(section.isActive());
+//					List<SourceleadTaxITDeclarationSubmissionItemDTO> submissionItemList = new LinkedList<>();
+//
+//					for (SourceleadTaxITDeclarationSubmissionItem submissionItem : itDeclarationSubmission.getSubmissionItemList()) {
+//						if (submissionItem.getSourceleadTaxITDeclaration().getId() == section.getId()) {
+//							SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO = new SourceleadTaxITDeclarationSubmissionItemDTO();
+//							submissionItemDTO.setId(submissionItem.getId());
+//							submissionItemDTO.setName(submissionItem.getName());
+//							submissionItemDTO.setAmount(submissionItem.getAmount());
+//							submissionItemDTO.setMaxLimit(submissionItem.getMaxLimit());
+//							submissionItemDTO.setDescription(submissionItem.getDescription());
+//							submissionItemDTO.setTaxSectionId(submissionItem.getSourceleadTaxITDeclaration().getId());
+//							submissionItemDTO.setSourceleadTaxITDeclarationSubmissionId(
+//									submissionItem.getSourceleadTaxITDeclarationSubmission().getId());
+//							submissionItemList.add(submissionItemDTO);
+//						}
+//					}
+//					submittedSectionDTO.setSubmissionItemList(submissionItemList);
+//					submittedSectionList.add(submittedSectionDTO);
+//				}
+//				itDeclarationSubmissionDTO.setSubmittedSectionList(submittedSectionList);
 
 				return itDeclarationSubmissionDTO;
 			}
@@ -775,36 +854,37 @@ public class TaxServiceImpl implements TaxService {
 			String path = staticPath + System.getProperty("file.separator") + orgId + System.getProperty("file.separator") + orgLocationId
 					+ System.getProperty("file.separator") + "temp";
 			for (SourceleadTaxSubmissionDocumentDTO submissionDocumentDTO : documentList) {
-
-				SourceleadTaxSubmissionDocument taxSubmissionDocument;
-				if (submissionDocumentDTO.getId() > 0)
-					taxSubmissionDocument = new SourceleadTaxSubmissionDocument();
-				else {
-					taxSubmissionDocument = new SourceleadTaxSubmissionDocument();
-				}
-				taxSubmissionDocument.setName(submissionDocumentDTO.getName());
-				taxSubmissionDocument.setSourceleadTaxITDeclarationSubmission(taxDao.getITDeclarationSubmission(submissionId));
-
-				List<SourceleadTaxSubmissionDocumentAttachment> attachmentList = new LinkedList<>();
-				for (SourceleadTaxSubmissionDocumentAttachmentDTO attachmentDTO : submissionDocumentDTO.getAttachmentList()) {
-					File file = new File(path, attachmentDTO.getAttachment());
-					SourceleadTaxSubmissionDocumentAttachment attachment;
-					if (attachmentDTO.getId() > 0)
-						attachment = new SourceleadTaxSubmissionDocumentAttachment();
+				if(submissionDocumentDTO.isUpdateFile()) {
+					SourceleadTaxSubmissionDocument taxSubmissionDocument;
+					if (submissionDocumentDTO.getId() > 0)
+						taxSubmissionDocument = new SourceleadTaxSubmissionDocument();
 					else {
-						attachment = new SourceleadTaxSubmissionDocumentAttachment();
-						attachment.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
+						taxSubmissionDocument = new SourceleadTaxSubmissionDocument();
 					}
-					attachment.setAttachment(attachmentDTO.getAttachment());
-					attachment.setSourceleadTaxSubmissionDocument(taxSubmissionDocument);
-					attachment.setActive(true);
-					attachmentList.add(attachment);
-					// boolean flag = taxDao.saveDocumentAttachment(attachment);
-					// if (flag)
-					FileUploadUtil.moveFile(staticPath, orgId, orgLocationId, "taxDocuments", file);
+					taxSubmissionDocument.setName(submissionDocumentDTO.getName());
+					taxSubmissionDocument.setSourceleadTaxITDeclarationSubmission(taxDao.getITDeclarationSubmission(submissionId));
+	
+					List<SourceleadTaxSubmissionDocumentAttachment> attachmentList = new LinkedList<>();
+					for (SourceleadTaxSubmissionDocumentAttachmentDTO attachmentDTO : submissionDocumentDTO.getAttachmentList()) {
+						File file = new File(path, attachmentDTO.getAttachment());
+						SourceleadTaxSubmissionDocumentAttachment attachment;
+						if (attachmentDTO.getId() > 0)
+							attachment = new SourceleadTaxSubmissionDocumentAttachment();
+						else {
+							attachment = new SourceleadTaxSubmissionDocumentAttachment();
+							attachment.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
+						}
+						attachment.setAttachment(attachmentDTO.getAttachment());
+						attachment.setSourceleadTaxSubmissionDocument(taxSubmissionDocument);
+						attachment.setActive(true);
+						attachmentList.add(attachment);
+						// boolean flag = taxDao.saveDocumentAttachment(attachment);
+						// if (flag)
+						FileUploadUtil.moveFile(staticPath, orgId, orgLocationId, "taxDocuments", file);
+					}
+					taxSubmissionDocument.setAttachmentList(attachmentList);
+					taxDao.saveDocument(taxSubmissionDocument);
 				}
-				taxSubmissionDocument.setAttachmentList(attachmentList);
-				taxDao.saveDocument(taxSubmissionDocument);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

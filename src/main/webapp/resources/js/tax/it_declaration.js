@@ -70,14 +70,17 @@ function fileUploadEvent(ele) {
 		contentType : false,
 		success : function(data) {
 			if (data && data.length > 0) {
+				var parentDiv = $(ele).parents("tr");
+				var attachmentDiv = $(parentDiv).find("div[class='attachments']");
+				$(attachmentDiv).empty();
 				var filesText = "";
 				for(var e in data) {
 					filesText += "<div data-index=" + e + ">";
-					filesText += "<i onclick='$(this).parent().remove();' class='text-danger fa fa-remove cursorPointer'></i>";
+					filesText += "<i onclick='removeAttachment();' class='text-danger fa fa-remove cursorPointer'></i>";
 					filesText += data[e].fileName + "</div>";
 					var fileURL = data[e].fileURL.substring(data[e].fileURL.lastIndexOf("/") + 1 , data[e].fileURL.length);
-					var div = $(ele).parents("tr").find("div[class='attachments']");
-					$(div).append("<input name='documentList[" + $(div).data('index') + "].attachmentList[" + e + "].attachment' data-name='documentFileNames' type='hidden' value='" + fileURL + "'>");
+					$(parentDiv).find("input[data-name='updateFile']").val(true);
+					$(attachmentDiv).append("<input name='documentList[" + $(attachmentDiv).data('index') + "].attachmentList[" + e + "].attachment' data-name='documentFileNames' type='hidden' value='" + fileURL + "'>");
 				}
 				
 				var docName = $(ele).parents("tr").find("input[data-name='documentName']").val();
@@ -109,10 +112,12 @@ function enableDisableRefresh(ele) {
 		$(ele).parents("tr").find(".fa-refresh").addClass("disableBtn");
 }
 function addDocumentRow() {
+	/*++uploadCount;*/
 	var row = "<tr><td>";
 	row += "<div style='display: none;' class='attachments' data-index=" + uploadCount + "></div>";
 	row += "<input type='hidden' name='documentList[" + uploadCount + "].name' data-name='documentName' />";
-	row += "<input type='hidden' name='documentList[" + uploadCount + "].fileNames' data-name='documentFileNames' />";
+	row += "<input type='hidden' name='documentList[" + uploadCount + "].updateFile' data-name='updateFile' value='false'/>";
+	/*row += "<input type='hidden' name='documentList[" + uploadCount + "].fileNames' data-name='documentFileNames' />";*/
 	row += "<input data-name='docName' type='text' class='form-control input-sm' placeholder='Enter Document Name' field-name='Document Name' data-validation='required' onchange='enableDisableRefresh(this);applyKeyToDocument(this);' onkeyup='enableDisableRefresh(this);applyKeyToDocument(this);'>";
 	row +="</td>";
 	row += "<td>";
@@ -120,8 +125,7 @@ function addDocumentRow() {
 	row += "<div class='input-group'>";
 	row += "<label class='input-group-btn'>";
 	row += "<span class='btn btn-primary'>Browse File ";
-	row += "<input data-name='docFiles' style='visibility: hidden; height: 0; width: 10px; overflow: hidden' multiple='multiple' id='uploadBtn"
-			+ (++uploadCount)
+	row += "<input data-name='docFiles' style='visibility: hidden; height: 0; width: 10px; overflow: hidden' multiple='multiple' id='uploadBtn" + (uploadCount)
 			+ "' class='upload' type='file' onchange='fileUploadEvent(this)'>";
 	row += "</span>";
 	row += "</label>";
@@ -137,6 +141,7 @@ function addDocumentRow() {
 	row += "</div>";
 	row += "</td></tr>";
 	$("#documentsTable").append(row);
+	uploadCount++;
 }
 
 function removeDocumentRow(ele) {
@@ -153,4 +158,14 @@ function refreshDocumentRow(ele) {
 	$(ele).parents("tr").find("p").remove();
 	$(ele).parents("tr").find(".uploadedFiles").html("");
 	$(ele).parents("tr").find(".fa-refresh").addClass("disableBtn");
+}
+
+function removeAttachment() {
+	var parentDiv = $(this).parents("div[class='uploadedFiles']");
+	$(this).parent().remove();
+	var attachmentsCount = $(parentDiv).find("i").length;
+	if(attachmentsCount)
+	$(parentDiv).find("i").each(function(){
+		
+	});
 }
