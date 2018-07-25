@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.entity.SourceleadTaxChallanItemSubFormField;
+
 public class SourceleadTaxChallanItemDTO implements Serializable {
 
 	/**
@@ -16,7 +18,7 @@ public class SourceleadTaxChallanItemDTO implements Serializable {
 	private String fieldType;
 	private String labelName;
 	private String discription;
-	private boolean isFieldRequired;
+	private boolean fieldRequired;
 	private String placeHolder;
 	private int minLength;
 	private int maxLength;
@@ -29,8 +31,16 @@ public class SourceleadTaxChallanItemDTO implements Serializable {
 	private boolean status;
 	private Date createdDate;
 	private Date updatedDate;
-	private Long taxSectionId;
-	private List< SourceleadTaxChallanItemSubFormFieldDTO > optionData;
+	private Long taxChallanId;
+	private String helpText;
+	private List<SourceleadTaxChallanItemSubFormFieldDTO> optionData;
+	
+	public String getHelpText() {
+		return helpText;
+	}
+	public void setHelpText(String helpText) {
+		this.helpText = helpText;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -56,10 +66,10 @@ public class SourceleadTaxChallanItemDTO implements Serializable {
 		this.discription = discription;
 	}
 	public boolean isFieldRequired() {
-		return isFieldRequired;
+		return fieldRequired;
 	}
 	public void setFieldRequired(boolean isFieldRequired) {
-		this.isFieldRequired = isFieldRequired;
+		this.fieldRequired = isFieldRequired;
 	}
 	public String getPlaceHolder() {
 		return placeHolder;
@@ -139,14 +149,14 @@ public class SourceleadTaxChallanItemDTO implements Serializable {
 	public List<SourceleadTaxChallanItemSubFormFieldDTO> getOptionData() {
 		return optionData;
 	}
-	public void setOptionData(List<SourceleadTaxChallanItemSubFormFieldDTO> optionData) {
-		this.optionData = optionData;
+	public void setOptionData(List<SourceleadTaxChallanItemSubFormFieldDTO> list) {
+		this.optionData = list;
 	}
-	public Long getTaxSectionId() {
-		return taxSectionId;
+	public Long getTaxChallanId() {
+		return taxChallanId;
 	}
-	public void setTaxSectionId(Long taxSectionId) {
-		this.taxSectionId = taxSectionId;
+	public void setTaxChallanId(Long taxSectionId) {
+		this.taxChallanId = taxSectionId;
 	}
 	
 	

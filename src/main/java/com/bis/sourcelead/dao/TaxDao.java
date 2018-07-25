@@ -79,4 +79,8 @@ public interface TaxDao {
 
 	public SourceleadTaxChallan getTaxChallanSection(long taxSectionId);
 
+	public SourceleadTaxChallanItem getChallanItemDetails(Long itemRowId);
+
+	public SourceleadTaxChallanItem getITChallanSectionItem(Long id);
+
 }

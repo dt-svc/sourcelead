@@ -799,7 +799,6 @@ function addITChallanSection() {
 
 
 function callAddITChallanSectionRestService(formData, type) {
-	alert("inside");
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
 		type : "POST",
@@ -844,16 +843,9 @@ function addITChallanSectionItem() {
 }
 
 function editChallanSectionItems(){
-	if($('#itChallanSectionItemForm').validate(false, validationSettings)) {
-	var formData = getFormData("AddItChallanSectionItemForm");
-	callAddITChallanSectionItemRestService(formData, 2)
-	return true;
-} else {
-	return false;
+	var formData = getFormData("editItChallanSectionItemForm");
+	callAddITChallanSectionItemRestService(formData, 2);
 }
-}
-
-
 
 function callAddITChallanSectionItemRestService(formData, type) {
 	document.getElement
@@ -916,4 +908,15 @@ function addChallaItem(sectionId, sectionName){
 	$(".comMask, .addSectionChallanItemPopup").fadeIn();
 }
 
-
+function editItemDetails(itemRowId){
+//	alert(itemRowId);
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/form/editChallanItem?&itemRowId="+itemRowId,
+		success : function(data) {
+			$("#itChallanCustomPopup").empty();
+			$("#itChallanCustomPopup").append(data);
+		}
+	})
+	
+}

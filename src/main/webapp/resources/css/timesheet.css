@@ -6743,7 +6743,7 @@ position: absolute;
 	opacity: 0; visibility: hidden;
 }
 .cusFielPopup {
-	position: fixed; width: 650px; background-color: #fff; top: 8%; margin: 0px auto; display: none; z-index: 1000000;
+	position: fixed; width: 650px; background-color: #fff; top: 8%; margin: 0px auto; z-index: 1000000;
 	left: 0px; right: 0px; padding: 25px 30px 25px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 	max-height: 90%; overflow-y: auto;
 }

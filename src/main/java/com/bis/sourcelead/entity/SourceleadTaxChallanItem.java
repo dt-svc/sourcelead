@@ -2,7 +2,9 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -87,8 +90,18 @@ public class SourceleadTaxChallanItem implements Serializable {
 	@Column(name = "ACTIVE")
 	private Boolean active;
 
+	@OneToMany(mappedBy = "sourceleadTaxChallanItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<SourceleadTaxChallanItemSubFormField> sourceleadTaxChallanItemSubFormFieldList;
 	
-	
+	public List<SourceleadTaxChallanItemSubFormField> getSourceleadTaxChallanItemSubFormFieldList() {
+		return sourceleadTaxChallanItemSubFormFieldList;
+	}
+
+	public void setSourceleadTaxChallanItemSubFormFieldList(
+			List<SourceleadTaxChallanItemSubFormField> sourceleadTaxChallanItemSubFormFieldList) {
+		this.sourceleadTaxChallanItemSubFormFieldList = sourceleadTaxChallanItemSubFormFieldList;
+	}
+
 	public Boolean getActive() {
 		return active;
 	}

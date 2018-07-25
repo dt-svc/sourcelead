@@ -1,6 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript" src="/resources/js/tax/it_declaration.js"></script>
-<jsp:include page="../tax/org/it_Challan_CustomForm.jsp"></jsp:include>
+<%-- <jsp:include page="../tax/org/it_Challan_CustomForm.jsp"></jsp:include> --%>
+<div id="itChallanCustomPopup"></div>
 <div>
 	<div class="tablelist-wrap">
 
@@ -66,7 +67,7 @@
 									<ul class="list-unstyled list-inline mt5 text-center">
 										<li><a title="Delete Row"
 											class="fa fa-trash text-danger deleteRow"></a></li>
-										<li><a title="EditItem" class="fa fa fa-floppy-o text-primary"  id="itChallanSectionItemForm" onclick="$('.popMask').show(); $('.cusFielPopup').show();" =></a></li>
+										<li><a title="EditItem" class="fa fa fa-floppy-o text-primary"  id="itChallanSectionItemForm" onclick="editItemDetails(${sectionItems.id});" =></a></li>
 									</ul>
 								</td>
 							</tr>

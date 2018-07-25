@@ -583,5 +583,17 @@ public class TaxAdminController {
 	}
 
 	
+	@RequestMapping(value = "/form/editChallanItem", method =  RequestMethod.POST)
+	public ModelAndView getChallanItemDetails(HttpServletRequest request ,SourceleadTaxChallanItemDTO sourceleadTaxChallanItemDTO,@RequestParam(value="itemRowId") Long itemRowId ) throws Exception{
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			SourceleadTaxChallanItemDTO ChallanItemDTO = taxService.getChallanItemDetails(itemRowId);
+			modelAndView.addObject("form", ChallanItemDTO);
+			modelAndView.setViewName("tax/org/it_Challan_CustomForm");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
 	
 }
