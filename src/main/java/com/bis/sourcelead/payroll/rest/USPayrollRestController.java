@@ -73,6 +73,7 @@ import com.bis.sourcelead.payroll.service.PayItemService;
 import com.bis.sourcelead.payroll.service.PayrollAdjustmentService;
 import com.bis.sourcelead.payroll.service.PayrollContributionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
+import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.service.AssociateSalaryHistoryService;
@@ -149,6 +150,10 @@ public class USPayrollRestController {
 	
 	@Autowired
 	ConfigurePayrollApproverService configurePayrollApproverService;
+	
+	
+	@Autowired
+	PaysheetFrequencyService paysheetFrequencyService;
 	
 	/**
 	 * find all deduction types from lookup_data table 
@@ -1229,10 +1234,10 @@ public class USPayrollRestController {
 	
 	@RequestMapping(value = { "/sendPayrollForApprover","/rest/sendPayrollForApprover" }, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<PayrollApproverDTO> sendPayrollForApprover(PayrollApproverDTO payrollApproverDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public Response<PayrollApproverDTO> sendPayrollForApprover(PayrollApproverDTO payrollApproverDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		System.out.println(payrollApproverDTO);
-		return null;
+		Response<PayrollApproverDTO> res = paysheetFrequencyService.sendPayrollForApprover(payrollApproverDTO,orgLocation);
+		return res;
 	}
 }

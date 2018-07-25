@@ -170,6 +170,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			    EmployeePayroll employeePayroll = new EmployeePayroll();
 			    employeePayroll.setPaysheetFrequency(paySheetFreq);
 			    TotalHoursDTO totalHoursDto = userGroupDao.getTotalHoursByUserId(userId,actualStartDate,actualEndDate);
+			    AssociateTaxDedContriView associateTaxDTO = associateTaxService.findUserTaxDeatails(userId, orgLocation);
 //				Map<String, Float> hoursMap = submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(), orgLocation.getId(), actualStartDate, actualEndDate,"");
 				float totalHours = 0;
 				if(totalHoursDto !=null && StringUtils.isNotBlank(totalHoursDto.getTotalHours())) {
@@ -179,6 +180,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				double payRate = 0;
 				if(totalHoursDto !=null) {
 					payRate = totalHoursDto.getPayRate();
+				}else {
+					payRate = associateTaxDTO.getHourlyRate().doubleValue();
 				}
 				employeePayroll.setEmpPayRate(BigDecimal.valueOf(payRate));
 				double amount = getTotalAmount(totalHours,payRate);
@@ -187,7 +190,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				int invoiceFrequency = getProjectInvoiceFrequency(userGroup.getPayFrequency());
 				employeePayroll.setFrequency(invoiceFrequency);
 				employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
-				AssociateTaxDedContriView associateTaxDTO = associateTaxService.findUserTaxDeatails(user.getId(), orgLocation);
+				
 				employeePayroll.setRehularHoursAmount(BigDecimal.valueOf(amount));
 				ResponseList<DeductionDTO> res = associateDeductionService.findAllDeductionSummaryByUserId(user.getId(), orgLocation);
 				ResponseList<ContributionDTO> contributionRes = associateContributionService.findAllContributionSummaryByUserId(user.getId(), orgLocation);
