@@ -29,8 +29,8 @@
       <ul class="pull-right list-unstyled list-inline">
       
 			<li><a href="${appPath}/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
-			<li>
-			 <select id="daysFilter" onchange="getDynamicLCAList()" style="padding: 3px 5px;">
+			<li><span>Expires :</span>
+			    <select id="daysFilter" onchange="getDynamicLCAList()" style="padding: 3px 5px;">
                    
                     <option value="All" selected >All</option>
                     <option value="7">7 Days</option>
