@@ -43,7 +43,7 @@ public class SymmetryPayrollCalculator {
 	@Value("${symmetry.jniHome}")
 	private String jniHome;
 	
-	public PayrollCalculatorDTO runUSPayroll(User user, float totalHours, BigDecimal grossAamount, int invoiceFrequency, AssociateTaxDedContriView associateTaxDTO, String STEhome1, String jniHome1, Date checkDate)
+	public PayrollCalculatorDTO runUSPayroll(User user, float totalHours, BigDecimal grossAamount, int invoiceFrequency, AssociateTaxDedContriView associateTaxDTO,Date checkDate)
 	{
 		PayrollCalculatorDTO payrollCalculatorDTO = new PayrollCalculatorDTO();
 //		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";

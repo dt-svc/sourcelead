@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.internal.resources.Project;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.GenerateUSPayrollDao;
 import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
@@ -131,20 +133,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		UserGroup userGroup = userGroupDao.findUserGroupById(generateUSPayrollDTO.getGroupId());
 		List<String> usrs = Arrays.asList(userGroup.getUserId().split(","));
 		List<Long> usersList = usrs.stream().map(Long::valueOf).collect(Collectors.toList());
-		
-//		for(Long userId : usersList) {
-//			
-//		}
-		
-//		System.out.println(totalHoursDto.getTotalHours());
-//		System.out.println(intList);
-		
-		
 //		ResponseList<ProjectMembers> response = projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(orgLocation.getId(), actualStartDate, actualEndDate, 1, 10);
 		if (usersList != null && usersList.size() >0) {
-			
 			PaysheetFrequency paySheetFreq = new PaysheetFrequency();
-//			UserGroup userGroup = userGroupDao.findUserGroupById(generateUSPayrollDTO.getGroupId());
 			paySheetFreq.setUserGroup(userGroup);
 			paySheetFreq.setOrgLocation(orgLocation);
 			String[] payPeriod = generateUSPayrollDTO.getPayPeriod().split(",");
@@ -159,6 +150,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			paySheetFreq.setUpdatedBy(loginUser.getId());
 			paySheetFreq.setStatus(1);
 			paySheetFreq.setType(PayrollConstant.PAYROLL);
+			paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			Set<EmployeePayroll> payrollList = calculatePayroll(paySheetFreq, loginUser, orgLocation,usersList,actualStartDate, actualEndDate,userGroup);
 			paySheetFreq.setEmployeepayroll(payrollList);
@@ -220,7 +212,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				}
 				BigDecimal grossAmount = BigDecimal.valueOf(amount).subtract(preTax).add(preContriSum);
 				employeePayroll.setGrossPay(grossAmount);
-				PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(user,totalHours,grossAmount,invoiceFrequency,associateTaxDTO,STEhome,jniHome,paySheetFreq.getPayCheckDate());
+				PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(user,totalHours,grossAmount,invoiceFrequency,associateTaxDTO,paySheetFreq.getPayCheckDate());
 				STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
 				String  locationCode = payrollCalculator.getWebServiceLocationCodeV2().getLocationCode();
 				BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal().add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal()).add(STE.getCityCalc(locationCode).asBigDecimal());
@@ -536,7 +528,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	@Override
 	public Response<PayAdjustmentDTO> updateEmployeePayroll(PayAdjustmentDTO payAdjustmentDTO, OrgLocations orgLocation, User loginUser)
 	{
-		
+		Response<PayAdjustmentDTO> res = new Response<>();
 		try {
 			float totalHours = Float.parseFloat(payAdjustmentDTO.getRegularHours()) + Float.parseFloat(payAdjustmentDTO.getOverTimeHours());
 			double amount = Double.parseDouble(payAdjustmentDTO.getRegularHoursAmt()) + Double.parseDouble(payAdjustmentDTO.getOverTimeHoursAmt());
@@ -567,15 +559,13 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payroll.setPreTaxDeduction(BigDecimal.valueOf(preTax));
 			payroll.setGrossPay(grossAmount);
 			AssociateTaxDedContriView associateTaxDTO = associateTaxService.findUserTaxDeatails(payroll.getUser().getId(), orgLocation);
-			PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(payroll.getUser(), totalHours, grossAmount, payroll.getFrequency(), associateTaxDTO, "", "", payroll.getPayCheckDate());
+			PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(payroll.getUser(), totalHours, grossAmount, payroll.getFrequency(), associateTaxDTO,payroll.getPayCheckDate());
 			STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
 			String  locationCode = payrollCalculator.getWebServiceLocationCodeV2().getLocationCode();
 			BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal().add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal());
 			payroll.setTaxes(taxes);
-			System.out.println("***updated  Taxes :"+taxes);
 			BigDecimal totalPay = grossAmount.subtract(taxes);
 			BigDecimal netPay = totalPay.subtract(BigDecimal.valueOf(postTax)).add(BigDecimal.valueOf(postTaxContriSum));
-			System.out.println("***updated Net Pay :"+netPay);
 			payroll.setNetPay(netPay);
 			Set<EmployeePayrollTax> payrollTaxSet = getPayrollTaxes(payroll,orgLocation,payrollCalculator,loginUser);
 			payroll.setUsemployeepayroll(payrollTaxSet);
@@ -584,10 +574,15 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payroll.setUpdatedBy(loginUser.getId());
 			payroll.setUpdatedDate(new Date());
 			EmployeePayroll updatedPayroll = payrollAdjustmentService.updateEmployeePayroll(payroll);
-			
-			System.out.println(payroll);
+			if (updatedPayroll != null) {
+				res.setResponse(Result.SUCCESS.name());
+				res.setResponseMessage(Result.SUCCESS.getValue());
+				res.setObject(payAdjustmentDTO);
+			}
 		}catch (Exception e) {
-			e.printStackTrace();
+			res.setResponse(Result.AWKWARD.name());
+			res.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 	
 		

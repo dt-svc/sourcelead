@@ -693,7 +693,6 @@ public class USPayrollRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
-			ResponseList<USPayrollDTO> res = new ResponseList<>();
 			if(existedData.getPayrollDTO() != null && existedData.getPayrollDTO().size() >0) {
 				return existedData;
 			}else {
@@ -1013,19 +1012,18 @@ public class USPayrollRestController {
 	@ResponseBody
 	public Response<PayAdjustmentDTO> editEmployeePayroll(PayAdjustmentDTO payAdjustmentDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		try {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			Response<PayAdjustmentDTO> res = generateUSPayrollService.updateEmployeePayroll(payAdjustmentDTO,orgLocation,loginUser);
-
-		}catch (Exception e) {
-		   e.printStackTrace();
-		}
-		
-		return null;
+			return  generateUSPayrollService.updateEmployeePayroll(payAdjustmentDTO,orgLocation,loginUser);
 	}
 	
-	
+	/**
+	 * Imports History payroll Data
+	 * 
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/payrollImports")
 	public ModelAndView getPayrollImports(HttpServletRequest request, HttpServletResponse response)
 	{
@@ -1041,6 +1039,13 @@ public class USPayrollRestController {
 		return model;
 	}
 	
+	/**
+	 * Return payroll list jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/payrollList")
 	public ModelAndView getPayrollList(HttpServletRequest request, HttpServletResponse response)
 	{
@@ -1056,7 +1061,12 @@ public class USPayrollRestController {
 		return model;
 	}
 	
-	
+	/**
+	 * Return pay schedule jsp
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/paySchedule")
 	public ModelAndView getpayScheduleJSP(HttpServletRequest request, HttpServletResponse response)
 	{
@@ -1072,7 +1082,13 @@ public class USPayrollRestController {
 		return model;
 	}
 	
-	
+	/**
+	 * return payroll approver jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/payrollApprover")
 	public ModelAndView getpayrollApproverJSP(HttpServletRequest request, HttpServletResponse response)
 	{
@@ -1088,15 +1104,32 @@ public class USPayrollRestController {
 		return model;
 	}
 	
-
-	@RequestMapping(value = { "/getPaySheetFrequencyData","/rest/getPaySheetFrequencyData" })
+	/**
+	 * Get Pay sheet frequency data
+	 * 
+	 * @param paysheetFrequencyDTO
+	 * @param searchValue
+	 * @param request
+	 * @param response
+	 * @return ResponseList<PaysheetFrequencyDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getPaySheetFrequencyData", "/rest/getPaySheetFrequencyData" })
 	@ResponseBody
-	public ResponseList<PaysheetFrequencyDTO> getPaySheetFrequencyList(PaysheetFrequencyDTO paysheetFrequencyDTO,@RequestParam(value = "paySheetFrequencyUUID",required = false) String searchValue,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ResponseList<PaysheetFrequencyDTO> getPaySheetFrequencyList(PaysheetFrequencyDTO paysheetFrequencyDTO, @RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return uSPaysheetService.getPaySheetFrequencyListByOrgLocationId(orgLocation,paysheetFrequencyDTO);
+		return uSPaysheetService.getPaySheetFrequencyListByOrgLocationId(orgLocation, paysheetFrequencyDTO);
 	}
 	
+	/**
+	 * 
+	 * @param paySheetFrequencyUUID
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/viewPaySheetFrequencyData")
 	public ModelAndView viewPaySheetFrequencyData(@RequestParam(value = "paySheetFrequencyUUID",required = false) String paySheetFrequencyUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
@@ -1113,13 +1146,20 @@ public class USPayrollRestController {
 		return model;
 	}
 	
+	/**
+	 * Gett Pay Sheet Frequency Summary
+	 * @param paySheetFrequencyUUID
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/getPaySheetFrequencySummary")
 	public List<USPayrollDTO> getPaySheetFrequencySummary(@RequestParam(value = "uuid",required = true) String paySheetFrequencyUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		return uSPaysheetService.getPaySheetFrequencySummary(paySheetFrequencyUUID);
 	}
 
-//	
 	
 	/**
 	 * Get All Users as a approvers by location Id
