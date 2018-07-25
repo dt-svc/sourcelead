@@ -29,18 +29,18 @@
       <ul class="pull-right list-unstyled list-inline">
       
 			<li><a href="${appPath}/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
-			<li><span>Expires :</span>
+			<li>
 			    <select id="daysFilter" onchange="getDynamicLCAList()" style="padding: 3px 5px;">
                    
                     <option value="All" selected >All</option>
-                    <option value="7">7 Days</option>
-                    <option value="15">15 Days</option>
-                    <option value="30">30 Days</option>
-                    <option value="60">60 Days</option>
-                    <option value="90">90 Days</option>
-                    <option value="120">120 Days</option>
-                    <option value="180">180 Days</option>
-                    <option value="360">360 Days</option>
+                    <option value="7">Expires In 7 Days</option>
+                    <option value="15">Expires In 15 Days</option>
+                    <option value="30">Expires In 30 Days</option>
+                    <option value="60">Expires In 60 Days</option>
+                    <option value="90">Expires In 90 Days</option>
+                    <option value="120">Expires In 120 Days</option>
+                    <option value="180">Expires In 180 Days</option>
+                    <option value="360">Expires In 360 Days</option>
                     
                 </select>
 			</li>
