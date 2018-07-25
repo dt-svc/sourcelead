@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,7 @@ import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalary;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
@@ -34,7 +36,9 @@ import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
+import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.AssociateTax;
@@ -55,6 +59,7 @@ import com.bis.sourcelead.payroll.symmetry.SymmetryPaypal;
 import com.bis.sourcelead.payroll.symmetry.SymmetryPayrollCalculator;
 import com.bis.sourcelead.payroll.view.AssociateTaxDedContriView;
 import com.bis.sourcelead.service.AssociateSalaryService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -111,6 +116,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	@Autowired
 	PayrollAdjustmentService payrollAdjustmentService;
 	
+	@Autowired
+	EmployeesService employeesService;
 	
 	 
 	@Override
@@ -120,11 +127,24 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
 		Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
 		PaysheetFrequencyDTO paysheetFrequencyDTO = null;
-		ResponseList<ProjectMembers> response = projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(orgLocation.getId(), actualStartDate, actualEndDate, 1, 10);
-		if (response != null && response.getData() != null && !response.getData().isEmpty()) {
+		
+		UserGroup userGroup = userGroupDao.findUserGroupById(generateUSPayrollDTO.getGroupId());
+		List<String> usrs = Arrays.asList(userGroup.getUserId().split(","));
+		List<Long> usersList = usrs.stream().map(Long::valueOf).collect(Collectors.toList());
+		
+//		for(Long userId : usersList) {
+//			
+//		}
+		
+//		System.out.println(totalHoursDto.getTotalHours());
+//		System.out.println(intList);
+		
+		
+//		ResponseList<ProjectMembers> response = projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(orgLocation.getId(), actualStartDate, actualEndDate, 1, 10);
+		if (usersList != null && usersList.size() >0) {
 			
 			PaysheetFrequency paySheetFreq = new PaysheetFrequency();
-			UserGroup userGroup = userGroupDao.findUserGroupById(generateUSPayrollDTO.getGroupId());
+//			UserGroup userGroup = userGroupDao.findUserGroupById(generateUSPayrollDTO.getGroupId());
 			paySheetFreq.setUserGroup(userGroup);
 			paySheetFreq.setOrgLocation(orgLocation);
 			String[] payPeriod = generateUSPayrollDTO.getPayPeriod().split(",");
@@ -138,9 +158,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			paySheetFreq.setCreatedBy(loginUser.getId());
 			paySheetFreq.setUpdatedBy(loginUser.getId());
 			paySheetFreq.setStatus(1);
-			paySheetFreq.setType("PAYROLL");
+			paySheetFreq.setType(PayrollConstant.PAYROLL);
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			Set<EmployeePayroll> payrollList = calculatePayroll(paySheetFreq, loginUser, orgLocation,response.getData(),actualStartDate, actualEndDate);
+			Set<EmployeePayroll> payrollList = calculatePayroll(paySheetFreq, loginUser, orgLocation,usersList,actualStartDate, actualEndDate,userGroup);
 			paySheetFreq.setEmployeepayroll(payrollList);
 			PaysheetFrequency savedPaysheetFrequency = uSPaysheetService.addPaysheetFrequency(paySheetFreq);
 			if(savedPaysheetFrequency != null) {
@@ -150,21 +170,29 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		return paysheetFrequencyDTO;
 	}
 
-	private Set<EmployeePayroll> calculatePayroll(PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<ProjectMembers> projMemberData, Date actualStartDate, Date actualEndDate)
+	private Set<EmployeePayroll> calculatePayroll(PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<Long> userList, Date actualStartDate, Date actualEndDate, UserGroup userGroup)
 	{
 		Set<EmployeePayroll> set = new HashSet<>();
 		try {
-			for (ProjectMembers pm : projMemberData) {
+			for (Long userId : userList) {
 			    EmployeePayroll employeePayroll = new EmployeePayroll();
 			    employeePayroll.setPaysheetFrequency(paySheetFreq);
-				Map<String, Float> hoursMap = submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(), orgLocation.getId(), actualStartDate, actualEndDate,"");
-				float totalHours = hoursMap.get("TOTAL_HOURS");
+			    TotalHoursDTO totalHoursDto = userGroupDao.getTotalHoursByUserId(userId,actualStartDate,actualEndDate);
+//				Map<String, Float> hoursMap = submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(), orgLocation.getId(), actualStartDate, actualEndDate,"");
+				float totalHours = 0;
+				if(totalHoursDto !=null && StringUtils.isNotBlank(totalHoursDto.getTotalHours())) {
+					totalHours = Float.parseFloat(totalHoursDto.getTotalHours());
+				}
 				employeePayroll.setRegularHours(String.valueOf(totalHours));
-				employeePayroll.setEmpPayRate(BigDecimal.valueOf(pm.getPayRate()));
-				double amount = getTotalAmount(totalHours,pm.getPayRate());
-				User user = userService.getUserbyConsultantUserId(pm.getProjectMemberCandidteId().getConsultantUser().getId());
+				double payRate = 0;
+				if(totalHoursDto !=null) {
+					payRate = totalHoursDto.getPayRate();
+				}
+				employeePayroll.setEmpPayRate(BigDecimal.valueOf(payRate));
+				double amount = getTotalAmount(totalHours,payRate);
+				User user = userService.getUserById(userId);
 				employeePayroll.setUser(user);
-				int invoiceFrequency = getProjectInvoiceFrequency(pm.getProjects().getInvoiceFrequency());
+				int invoiceFrequency = getProjectInvoiceFrequency(userGroup.getPayFrequency());
 				employeePayroll.setFrequency(invoiceFrequency);
 				employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
 				AssociateTaxDedContriView associateTaxDTO = associateTaxService.findUserTaxDeatails(user.getId(), orgLocation);
@@ -202,8 +230,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				BigDecimal netPay = totalPay.subtract(postTax).add(postContriSum);
 				System.out.println("*** Net Pay :"+netPay);
 				employeePayroll.setNetPay(netPay);
-				if (pm.getEmployee() != null) {
-					employeePayroll.setEmployee(pm.getEmployee());
+				Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(userId,orgLocation.getId());
+				if (employee != null) {
+					employeePayroll.setEmployee(employee);
 				}
 				Set<EmployeePayrollTax> payrollTaxSet = getPayrollTaxes(employeePayroll,orgLocation,payrollCalculator,loginUser);
 				employeePayroll.setUsemployeepayroll(payrollTaxSet);
@@ -215,7 +244,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				employeePayroll.setUpdatedBy(loginUser.getId());
 				employeePayroll.setCreatedDate(new Date());
 				employeePayroll.setUpdatedDate(new Date());
-				employeePayroll.setSubmitForAproverStatus("DRAFT");
+				employeePayroll.setSubmitForAproverStatus(PayrollConstant.DRAFT);
 				
 				set.add(employeePayroll);
 			}
@@ -331,7 +360,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 
 	private int getProjectInvoiceFrequency(String invoiceFrequency)
 	{
-		// Weekly Bi-Weekly Monthly
+		// Weekly Bi-Weekly Monthly Annually
 		int payPeriod = 0;
 		if ("Weekly".equalsIgnoreCase(invoiceFrequency)) {
 			payPeriod = 52;
@@ -344,7 +373,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		}
 		return payPeriod;
 	}
-
+	
 	/***
 	 * calculating total amount by multipltying hours with rate
 	 * @param totalHours
@@ -368,11 +397,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	{
 		PaysheetFrequency paysheetFrequency = generateUSPayrollDao.getPayrollData(generateUSPayrollDTO, orgLocation, loginUser);
 		PaysheetFrequencyDTO paysheetFrequencyDTO = new PaysheetFrequencyDTO();
-		paysheetFrequencyDTO.setId(String.valueOf(paysheetFrequency.getUserGroup().getId()));
-		paysheetFrequencyDTO.setPayrollFrequencyUUID(paysheetFrequency.getPaySheetFrequencyUUID());
 		List<USPayrollDTO> list = null;
 		try {
 			if (paysheetFrequency != null && paysheetFrequency.getEmployeepayroll() != null) {
+				paysheetFrequencyDTO.setPayrollFrequencyUUID(paysheetFrequency.getPaySheetFrequencyUUID());
 				list = new ArrayList<>();
 				for(EmployeePayroll pay : paysheetFrequency.getEmployeepayroll()) {
 					USPayrollDTO payrollDTO = new USPayrollDTO();
@@ -401,7 +429,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
 					}
 					payrollDTO.setOvertimeHours(overTimeHours);
-					list.add(payrollDTO);
+					if(PayrollConstant.DRAFT.equalsIgnoreCase(pay.getSubmitForAproverStatus())) {
+						list.add(payrollDTO);	
+					}
+					
 				}
 			}
 			paysheetFrequencyDTO.setPayrollDTO(list);

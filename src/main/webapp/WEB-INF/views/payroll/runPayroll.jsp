@@ -281,9 +281,7 @@ function runUSPayroll(){
 				        	result += '</td>'; 
 				        	result += '<input type="hidden" value='+opt.empPayrollId+' id="'+i+'empPayrollId" name="uspayroll['+i+'].empPayrollId" />';
 				        	result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
-				        	/* result += ' <td><div class="tbldata-dotdot"><input type="text" class="form-control noboderInput" id="'+i+'empId" name="uspayroll['+i+'].empId" value="'+opt.empId+'" readonly></div></td>'; */
 				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
-				        	
 				        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
 				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.payRate+'</div></td>';
 				        	
@@ -929,27 +927,28 @@ function getApprovers(){
 
 
 
+
 <script type="text/javascript">
 function sendPayrollForApprover(){
-	  	var formData = $($('#submit_for_approver')[0]).serialize();
-		var approver = $("#approver").val();
-		if(approver != null && approver != '' && approver != 'undefined'){
-			$.post(sourceleadUrl+"/sendPayrollForApprover?"+tokenParamName+"="+tokenValue+"&approver="+approver, formData, function(result) {
-				if (result && result.response === "INVALID_DATA") {
-	    		    showError(result.responseMessage);
-	    		} else if (result.response === "AWKWARD") {
-	    		    location.href = "/errorPage";
-	    		} else if (result.response === "SUCCESS") {
-	    			$("#approverLoading").removeAttr('style');
-	    			 location.replace(sourceleadUrl+ "//payrollApprover");
-	    		} else if (result.indexOf('Sign In') !== -1) {
-	    			location.replace(sourceleadUrl);
-	    		} else {
-	    		    showError("Operation failed, please try again");
-	    		}
-			}); 	
-		}
-		
+      var formData = $($('#submit_for_approver')[0]).serialize();
+    var approver = $("#approver").val();
+    if(approver != null && approver != '' && approver != 'undefined'){
+      $.post(sourceleadUrl+"/sendPayrollForApprover?"+tokenParamName+"="+tokenValue+"&approver="+approver, formData, function(result) {
+        if (result && result.response === "INVALID_DATA") {
+              showError(result.responseMessage);
+          } else if (result.response === "AWKWARD") {
+              location.href = "/errorPage";
+          } else if (result.response === "SUCCESS") {
+            $("#approverLoading").removeAttr('style');
+             location.replace(sourceleadUrl+ "//payrollApprover");
+          } else if (result.indexOf('Sign In') !== -1) {
+            location.replace(sourceleadUrl);
+          } else {
+              showError("Operation failed, please try again");
+          }
+      });   
+    }
+    
 }
 </script>
 

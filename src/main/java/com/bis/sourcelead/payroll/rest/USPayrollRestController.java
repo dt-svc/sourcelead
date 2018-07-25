@@ -694,7 +694,7 @@ public class USPayrollRestController {
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
 			ResponseList<USPayrollDTO> res = new ResponseList<>();
-			if(existedData.getPayrollDTO() != null) {
+			if(existedData.getPayrollDTO() != null && existedData.getPayrollDTO().size() >0) {
 				return existedData;
 			}else {
 				return generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO,loginUser);
