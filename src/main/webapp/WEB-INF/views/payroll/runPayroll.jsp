@@ -78,7 +78,7 @@ $(document).ready(function(){
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
 	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
-		<li><a href="#" class="btn btn-primary btnSuccess" onClick="sendApproverFun();">Send for Approve</a></li>
+		<li><a href="#" class="btn btn-primary btnSuccess" onClick="sendPayrollForApprover();">Send for Approve</a></li>
 		<!-- <li><a href="#" class="btn btn-default ml mr">Confirm</a></li> -->
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
@@ -128,7 +128,7 @@ $(document).ready(function(){
   </div>
 <!--  send approver popup -->
 
-<script>
+<!-- <script>
 function sendApproverFun() {
 	getApprovers();
 	$(".sendApprover, .comMask").fadeIn();
@@ -137,7 +137,7 @@ function sendApproverFun() {
 function closeApproverFun() {
 	$(".sendApprover, .comMask").fadeOut();
 }
-</script>
+</script> -->
 
 <!-- New Code Here -->
 
@@ -248,12 +248,13 @@ function runUSPayroll(){
 		        	result += '<table>';
 		        	result += '<thead>';
 		        	result += '<tr>';
-		         	result += '<th>';
+		         	/* result += '<th>';
 		        	result += '<div class="checkbox-new pull-left">';
 		        	result += '<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">';
 		        	result += '<label for="all" class="checkbox-custom-label"></label>';
 		        	result += '</div>';
-		        	result += '</th>'; 
+		        	result += '</th>'; */ 
+		        	result += '<th>Exclude</th>';
 		        	result += '<th>Emp ID</th>';
 		        	result += '<th>Emp Name</th>';
 		        	result += '<th>Regular<br>Hours</th>';
@@ -542,7 +543,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
             <label class="clearfix"><strong>Deposit Type</strong></label>
             <div class="clearfix">
               <select class="sel" title="Select Type" id="depositType" name="depositType">
-                <option value="Direct Deposit">Direct Deposit</option>
+                <option selected value="Direct Deposit">Direct Deposit</option>
                 <option value = "By Check">By Check</option>
               </select>
               <input type="hidden" id="payRate" name="payRate"/>
@@ -627,30 +628,25 @@ $('body').on('blur', '#generate_payroll_form', function() {
                           <th>Amount</th>
                         </tr>
                         <tr>
-                          <td>Federal with holding</td>
+                          <td>Federal Withholding</td>
                           <td><span id="federal">0</span></td>
-                         <!--  <td><input type="text" id="federal" name="federal" value="" class="formControl" readOnly></td> -->
                         </tr>
                         <tr>
                           <td>Medicare</td>
                            <td><span id="medicare">0</span></td>
-                         <!--  <td><input type="text" id="medicare" name="medicare" value="" class="formControl" readOnly></td> -->
                         </tr>
                         <tr>
                           <td>FICA</td>
                            <td><span id="fica">0</span></td>
-                         <!-- <td><input type="text" id="fica" name="fica" value="" class="formControl" readOnly></td> -->
                         </tr>
                       
                         <tr>
                           <td>State Withholding</td>
                           <td><span id="stateWithHolding">0</span></td>
-                         <!--  <td><input type="text" id="stateWithHolding" name="stateWithHolding" value="" class="formControl" readOnly></td> -->
                         </tr>
                           <tr>
                           <td>Advanced Earned Income Credit</td>
                            <td><span id="aeic">0</span></td>
-                          <!-- <td><input type="text" id="aeic" name="aeic" value="124,783.00" class="formControl" readOnly></td> -->
                         </tr>
                         
                       </tbody>
@@ -784,7 +780,6 @@ $('body').on('blur', '#generate_payroll_form', function() {
 
 <script>
 function savePayrollAdjustment(){
-	alert("KKKKKKKKKKKKK");
 	  var formData = getFormData("payroll_adjustment_form");
 	 /* var formData = $($('#payroll_adjustment_form')[0]).serialize(); */
 	  	//$("#paysheetLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -795,6 +790,7 @@ function savePayrollAdjustment(){
  		    location.href = "/errorPage";
  		} else if (result.response === "SUCCESS") {
  			$("#paysheetLoading").removeAttr("style");	
+ 			runUSPayroll();
 				// location.replace(sourceleadUrl+ "/viewHoliday"); 
  		} else if (result.indexOf('Sign In') !== -1) {
  			location.replace(sourceleadUrl);
@@ -903,7 +899,7 @@ function savePayrollAdjustment(){
  }
  </script>
  
-<script>
+<!-- <script>
 function getApprovers(){
 	$.ajax({
     	type: "GET",
@@ -923,7 +919,7 @@ function getApprovers(){
         },
     });
 }
-</script>
+</script> -->
 
 
 
