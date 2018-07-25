@@ -16,7 +16,7 @@ top:0px !important;
 color:#fff;
 }
 .notification-table table thead{
-background:#375d81;
+background:#6C7686 ;
 color:#fff;
 }
 .icAcc {
@@ -58,49 +58,25 @@ window.onload = function () {
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal">
-        <div class="row">
 		<!-- Notifications -->
-			<div class="col-md-3 hidden">
-          <div class="mail-box">
-            <div class="mail-box-header">
-              <h3>Folders</h3>
-            </div>
-            <div>
-              <ul class="nav nav-pills nav-stacked">
-                <li class="active"><a href="mailbox.html"><i class="fa fa-inbox"></i> Inbox
-                  <span class="label label-primary pull-right">12</span></a></li>
-                <li><a href="#"><i class="fa fa-envelope-o"></i> Sent</a></li>
-                <li><a href="#"><i class="fa fa-file-text-o"></i> Drafts</a></li>
-                <li><a href="#"><i class="fa fa-filter"></i> Junk <span class="label label-warning pull-right">65</span></a>
-                </li>
-                <li><a href="#"><i class="fa fa-trash-o"></i> Trash</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+
 			<!-- mail side-bar ends -->
-			<div class="col-md-12 col-lg-12">
 			<div class="notificatons">
-			<!-- /.box-tools -->
 			<div class="mailbox-controls clearfix pull-left table-top">
 			<div class="pull-left">
 				 <div class="notifica-checkbox noti-checkbox">
-				<a href="#">
+					<a href="#">
 					<label>
 						  <input type="checkbox" name="list" id = "selectall"/>
 						  <span></span>
 						</label>
-				</a>
+					</a>
 				<a href="#" onclick="deleleteAll();"><i id="navbar1" class="fa"></i></a>
 				</div>
                 </div>
               </div>
-              <div class="clearfix"></div>
 			<div class="notification-table datatable_filter notification-table"  id="notificationListDiv">
-                
               </div>
-			</div>
-			</div>
 			</div>
 		   </div>
 		</div>
@@ -117,10 +93,19 @@ function dynamicNotificationtLists(){
 }
 function prepareDynamicNotificationtLists(url){
 	var result = "";
-    result = result	+ '<div class="dynamic_search dynamic_search-new">';
+	
+	result = result	+ '<div class="positionRelative reportHead clearfix">';
+	result = result	+ '<ul class="pull-right list-unstyled list-inline">';
+	result = result	+ '<li class=""><input type="text" class="repSearchBar" placeholder="Search" id="notificationDataTableSearch"/><span class="repSearchIcon" onClick="projectTaskList();"></span></li>';
+	result = result	+ '</ul>';
+	result = result	+ '</div>';
+	
+/*     result = result	+ '<div class="dynamic_search dynamic_search-new">';
     result = result +" <input type='text' placeholder='Search' id='notificationDataTableSearch'/>";
- 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='projectTaskList();'></i></span>";     
-	result = result	+ '</div><div class="clearfix">';
+ 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='projectTaskList();'></i></span></div>";    */
+ 	
+ 	
+	result = result	+ '<div class="clearfix">';
 	result = result + '<table id="notificationTaskPagination" class="display table table-borderd table-hover table-striped" cellspacing="0" width="100%">';
 	result = result +'<thead>';
 	result = result +'<tr>';

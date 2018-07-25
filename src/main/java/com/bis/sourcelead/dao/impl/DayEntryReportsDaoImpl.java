@@ -33,7 +33,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		Integer filterCount = 0;
 		ResponseList<DayWiseTimesheetReoprtsListDTO> response = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
 		Session session = sessionFactory.getCurrentSession();
-		if(projectId!= null && !projectId.isEmpty()) {
+		if((projectId!= null && !projectId.isEmpty()) || (projectMemberIds != null && !projectMemberIds.isEmpty())) {
 		java.sql.Date startDateSql = new java.sql.Date(startDate.getTime());
 		java.sql.Date endDateSql = new java.sql.Date(endDate.getTime());
 		//StringBuilder searchQuery = new StringBuilder("");
@@ -50,10 +50,13 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		
 		
 		String subQuery = "";
-		for(Long pId : projectId) {
-			subQuery = subQuery+"PROJ.ID = '"+pId+"' OR ";
+		if(projectId != null && !projectId.isEmpty()) {
+			for(Long pId : projectId) {
+				subQuery = subQuery+"PROJ.ID = '"+pId+"' OR ";
+			}
+			subQuery = "("+subQuery.substring(0,subQuery.length()-3)+")";
 		}
-		subQuery = "("+subQuery.substring(0,subQuery.length()-3)+")";
+		
 		
 		String pmSubQuery = "";
 		if(projectMemberIds != null && !projectMemberIds.isEmpty()) {
@@ -63,8 +66,10 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			pmSubQuery = "("+pmSubQuery.substring(0,pmSubQuery.length()-3)+")";
 		}
 		
-		if(StringUtils.isNotEmpty(pmSubQuery)) {
+		if(StringUtils.isNotEmpty(subQuery) && StringUtils.isNotEmpty(pmSubQuery)) {
 			subQuery = subQuery+" AND "+pmSubQuery;
+		}else if(StringUtils.isEmpty(subQuery) && StringUtils.isNotEmpty(pmSubQuery)) {
+			subQuery = pmSubQuery;
 		}
 		String query = "SELECT Q1.*  "
 				+"FROM ( "

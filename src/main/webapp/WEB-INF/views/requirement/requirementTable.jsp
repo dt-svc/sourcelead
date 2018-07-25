@@ -35,11 +35,14 @@ function jobFairListCheck(){
 	var result = "";
 	result = result +"<table id='jobFairPagination' class='display' cellspacing='0' width='100%' >"; 
  	result = result +"<thead>"; 
- 	result = result +"	<tr>"; 
+ 	result = result +"	<tr>";
+ 	result = result +"		<th>Generated ID</th>";
  	result = result +"		<th>Title</th>";
- 	result = result +"		<th>StartDate</th>";
+ 	result = result +"		<th>Start Date</th>";
  	result = result +"		<th>End Date</th>";
  	result = result +"		<th>No.of Jobs</th>";
+ 	result = result +"		<th>Applicants</th>";
+ 	result = result +"		<th>Offered</th>";
  	result = result +"		<th>Venue</th>"; 
  	result = result +"		<th>Status</th>";
  	result = result +"		<th>Action(s)</th>";
@@ -290,46 +293,70 @@ function jpagination(url,sourceleadUrl){
 		         "sortable": false,
 		         "data": "requirementUUID",
 		         "render": function ( data, type, opt, meta ) {
-		         		   var result = "";
-		         		  result = result +" <td><div class=' widthIcon widthIcon-three'>";
-		         		  
-		      	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-		      		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-		      		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        
-		      		        }
-		      	        '</sec:authorize>';
-		      	        
-		      	      	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
-	         				result = result +'<div class="text-center"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv('+opt.id+');"><i class="fa fa-address-book '+(opt.assignedMembersCount == 0 ? "anchorBlack" : "")+' "></i></a></div>';
-	         		 	'</sec:authorize>';
-		      	        
-		      	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-		      					if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-		      						   var userRoleName = '${SourceLeadWeb_loginUserRole}'; 
-		      						   var userId = '${SourceLeadWeb_user.id}';
-		      						   var contains = false;
-		      						   if(opt.requirementReleasedUserIds != null && opt.requirementReleasedUserIds != '' && opt.requirementReleasedUserIds != 'undefined'){
-		      							   for(var k = 0;k< opt.requirementReleasedUserIds.length ; k++){
-		      								  if(userId == opt.requirementReleasedUserIds[k]){
-		      									  var contains = true;
-		      								  }
-		      							   }
-		      						   }
-		      						   if((opt.isRequirementReleased != null && opt.isRequirementReleased != '' && opt.isRequirementReleased != 'undefined'  && opt.isRequirementReleased == 'Y') 
-		      								   && (contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN')){
-		      				    		 	result = result +"<div><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
-		      			
-		      						   	 }else{	
-		      								result = result +"<div><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>"; 
-		      						   	 }
-		      			       }
-		      				   else{
-		      			          result = result +"<div>--</div>";
-		      				   } 
-		                   '</sec:authorize>';    
-		      		       result = result +"</div></td>";
-			              return result;
-		          }
+	         		   var result = "";
+	         		   var trashActive = "";
+	         		  result = result +" <td><div class=' widthIcon widthIcon-four'>";
+	         		
+	         		 '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_REQUIREMENT\',\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
+	         		 if((opt.isRequirementReleased != 'Y' && !opt.totalApplicants > 0) && ('${SourceLeadWeb_loginUserRole}' ==  'ROLE_ADMIN' || '${SourceLeadWeb_loginUserRole}' == 'ROLE_SOURCELEAD_ADMIN')){
+	         			if(jQuery.inArray(opt.requirementUUID, reqUUIDArr) !== -1){
+	         				trashActive = "trashActive";
+	         			}
+	         		 		result = result +'<div class="text-center"><a href="javascript:void(0)" title="Select for Delete Job" class="add-applicant anchorBlack"><i class="fa fa-trash '+trashActive+'" id="'+opt.requirementUUID+'" onclick="selectDeleteJob(this);" ></i></a></div>';
+	         		 }else{
+	         				result = result +'<div class="text-center"><i class="fa fa-trash permissionDenied"></i></div>';
+	         		 }
+	         		'</sec:authorize>';
+	         		
+	         		
+	         		  '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+	      		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+	      		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        
+	      		        }else{
+	      		        	result = result +'<div class="text-center"><i class="fa fa-user-plus permissionDenied"></i></div>';
+	      		        }
+	      	        '</sec:authorize>';
+		      	      '<sec:authorize access="!hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+		      	    		result = result +'<div class="text-center"><i class="fa fa-user-plus permissionDenied"></i></div>';
+	      	        '</sec:authorize>';
+	      	        
+	      	      	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
+       				result = result +'<div class="text-center"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv('+opt.id+');"><i class="fa fa-address-book '+(opt.assignedMembersCount == 0 ? "anchorBlack" : "")+' "></i></a></div>';
+       		 	'</sec:authorize>';
+       		 	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
+       				result = result +'<div class="text-center"><i class="fa fa-address-book permissionDenied"></i></div>';
+       		 	'</sec:authorize>';
+	      	        
+	      	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+	      					if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+	      						   var userRoleName = '${SourceLeadWeb_loginUserRole}'; 
+	      						   var userId = '${SourceLeadWeb_user.id}';
+	      						   var contains = false;
+	      						   if(opt.requirementReleasedUserIds != null && opt.requirementReleasedUserIds != '' && opt.requirementReleasedUserIds != 'undefined'){
+	      							   for(var k = 0;k< opt.requirementReleasedUserIds.length ; k++){
+	      								  if(userId == opt.requirementReleasedUserIds[k]){
+	      									  var contains = true;
+	      								  }
+	      							   }
+	      						   }
+	      						   if((opt.isRequirementReleased != null && opt.isRequirementReleased != '' && opt.isRequirementReleased != 'undefined'  && opt.isRequirementReleased == 'Y') 
+	      								   && (contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN')){
+	      				    		 	result = result +"<div><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
+	      			
+	      						   	 }else{	
+	      								result = result +"<div><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>"; 
+	      						   	 }
+	      			       }
+	      				   else{
+	      					 result = result +'<div><i class="fa fa-bullhorn permissionDenied"></i></div>';
+	      				   } 
+	                   '</sec:authorize>'; 
+	                   '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+	                   		result = result +'<div><i class="fa fa-bullhorn permissionDenied"></i></div>';
+	                   '</sec:authorize>';
+	      		       result = result +"</div></td>";
+		              return result;
+	          }
 		 },{
 	   	  	"targets": colIndex++,
 		  	"data": "generatedId",
@@ -777,22 +804,40 @@ function jpaginationForJobFairs(url){
         ],
    		"processing": true,
        "serverSide": true,
+       "searching": false,
+       "searchHighlight": true,
        "ajax": $.fn.dataTable.pipeline( {
            url: url,
            method: 'POST',
            pages: 1
        }),
        "columns": [
+    	   {"data": "generatedId"},
            {"data": "name"},
            {"data": "startDate"},
            {"data": "endDate"},
            {"data": "requirementsList"},
+           {"data": "applicantCount"},
+           {"data": "offeredCount"},
            {"data": "venue"},
            {"data": "status"},
            {"data": "actions" }
        	],
 	       "columnDefs": [
-	        {
+    	   {
+	            "targets": colIndex++,
+	            "data": "generatedId",
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+           		   if(opt.generatedId != null && opt.generatedId != '' && opt.generatedId != 'undefined') {
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.generatedId+'</div></td>';
+           		   } else {
+						result = result +"<td><div>-----</div></td>";
+           	       }
+		           		return result;
+	             }
+	        },
+	    	{
 	           "targets": colIndex++,
 	           "data": "name",
 	           "render": function ( data, type, opt, meta ) {
@@ -846,6 +891,26 @@ function jpaginationForJobFairs(url){
 	        },
 	        {
 	            "targets": colIndex++,
+	            "data": "applicantCount",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.applicantCount+'</div></td>';
+		                return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "offeredCount",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.offeredCount+'</div></td>';
+		                return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
 	            "data": "venue",
 	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
@@ -895,7 +960,7 @@ function jpaginationForJobFairs(url){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	/* "aaSorting": [[10,'desc']], */
+	    	"aaSorting": [[9,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -903,7 +968,7 @@ function jpaginationForJobFairs(url){
 	    		row.setAttribute('id',"jobFair_"+data.id);
     	    },
 	    	"initComplete": function( settings, json ) {
-	    		 $('#dataTableSearch').removeAttr('disabled');
+	    		 $('#jobFairDataTableSearch').removeAttr('disabled');
 	    	},
 	    	"oLanguage": {
 	     		"sSearch": "",
@@ -916,32 +981,25 @@ function jpaginationForJobFairs(url){
    	      });
    	   		updateFairStatusEvents();
    	   	}
-  
    });
    
   
-   $("#jobFairPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+   $("#jobFairPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
    $("input[type=search]").hide();
-  
-   $("#dataTableSearch").keyup(function(e) {
+   
+   $("#jobFairDataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
-   		 requirementList('list',sourceleadUrl);
-   		jobFairSearchHighlight();
+   		jobFairListCheck();
    	   }
    	});
-   /* updateFairStatusEvents(); */
  }
 function updateFairStatusEvents() {
 	$(".fairStatus").each(function() {
 		$(this).on('focusin', function(){
-		    /* console.log("Saving value " + $(this).val()); */
 		    $(this).data('prev_value', $(this).val());
 		}).on('change', function(){
 			var jobFairId = $(this).find("option:selected").data("id");
 		    var prev = $(this).data("prev_value");
-		    /* var current = $(this).val();
-		    console.log("Prev value " + prev);
-		    console.log("New value " + current); */
 		    showChangeJobFairStatusPopup(jobFairId, $(this).val(), prev, $(this));
 		});
 	});
@@ -961,7 +1019,7 @@ function updateFairStatusEvents() {
 	 setTimeout(function () {
  		var body = $( table.table().body() );
 	        body.unhighlight();
-	        body.highlight( $("#dataTableSearch").val() );   
+	        body.highlight( $("#jobFairDataTableSearch").val() );   
 			
 			}, 1000); 
  }
@@ -986,3 +1044,67 @@ function getAssignedMembersDiv(reqId){
 	
 }
 </script>
+<script>
+var reqUUIDArr = new Array();
+function selectDeleteJob(event) {
+	$(event).toggleClass("trashIcon trashActive");
+	var x = $(event).attr('id');
+	reqUUIDArr.push(x);
+	if($(event).attr('class') == "fa fa-trash"){
+		reqUUIDArr = jQuery.grep(reqUUIDArr, function(value) {
+			  return value != x;
+			});
+	}
+	if (reqUUIDArr != "") {
+	 $("#forceDeleteBtn").show();	
+	}else {
+		$("#forceDeleteBtn").hide();
+	}
+}
+
+function confirmForceDeleteBtn(){
+	$("#requirementList").empty();
+	$("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$.ajax({
+		type: "POST",
+	    url: sourceleadUrl+"/forceDeleteForSelectedJobs?"+tokenParamName+"="+tokenValue+"&reqUUIDArr="+reqUUIDArr, 
+	    success: function(result) {
+	    	if(result.object === 'MissingData'){
+	  			showError("Invalid data");
+	  		}else{
+	  			if (result.response === "SESSION_TIMEDOUT") {
+	  				location.replace(sourceleadUrl);
+                } else if (result.response === "AWKWARD") {
+                    location.href = "/errorPage";
+                } else if (result.response === "SUCCESS") {
+                	location.reload();
+                } else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+                    showError("Operation failed, please try again");
+                }
+	  		}
+	    },
+	});
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+
+function jobForceDelete(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are sure to want to Delete?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirmForceDeleteBtn' type='button' value='Ok' onClick='confirmForceDeleteBtn();'><input class='u_can_color' type='button'  value='Cancel' onClick='closeJobDeleteConformation();'></b>";
+	result = result +"	</div>";
+	$("#deleteJobPopUpDiv").empty();
+	$("#deleteJobPopUpDiv").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function closeJobDeleteConformation(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+<div id="deleteJobPopUpDiv"></div>

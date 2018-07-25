@@ -2115,6 +2115,7 @@ public class UserDaoImpl implements UserDao {
 				try {
 					UserDTO userDTO = new UserDTO();
 					userDTO.setFullName(user.getFullName());
+					userDTO.setUserCode(user.getUserCode());
 					userListMap.put(user.getUserCode(), userDTO);
 					associatesListMap.put(BigInteger.valueOf(user.getId()), userDTO);
 					userCodeList.add(user.getUserCode());
