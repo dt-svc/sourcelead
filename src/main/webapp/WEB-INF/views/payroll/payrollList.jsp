@@ -55,7 +55,6 @@ $(document).ready(function(){
 		result = result + '<tr>';
 		result = result + '<th>Pay Group</th>';
 		result = result + '<th>Pay Date</th>';
-		result = result + '<th>Type</th>';
 		result = result + '<th>Pay Period</th>';
 		result = result + '<th>Total</th>';
 		result = result + '</tr>';
@@ -86,8 +85,6 @@ $(document).ready(function(){
 								"data" : "payGroup"
 							}, {
 								"data" : "payDate"
-							}, {
-								"data" : "type"
 							}, {
 								"data" : "payPeriod"
 							}, {
@@ -121,19 +118,6 @@ $(document).ready(function(){
 						              		}
 											return result;
 
-										}
-									},
-									{
-										"targets" : colIndex++,
-										"data" : "type",
-										"render" : function(data, type, opt,meta) {
-											var result = "";
-											if(opt.paySheetFrequencyType != null && opt.paySheetFrequencyType != '' && opt.paySheetFrequencyType !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100">'+opt.paySheetFrequencyType+'</div>';
-						              		}else{
-						              		  result = result +'<div class="tblminwidth-100">--</div>';
-						              		}
-											return result;
 										}
 									},
 									{
