@@ -377,7 +377,20 @@
 		             <li class="${sessionData.nav == 'Leave Management' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management"><span><i class="fa fa-calendar"></i></span><i class="subMenu">Leave Management</i></a></li>
 		          	</c:if>	
           </c:forEach>
-            
+          
+          			
+	            	<li class="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables' ? 'side-nav-active' : ''}">
+						<a href="#" class="billingLi" title="Finance">
+							<span><i class="fa fa-money"></i></span>
+							<i class="subMenu">Payroll</i> <i class="fa fa-fw fa-caret-down"></i>
+						</a>
+                        <ul class="collapses" style="display: none">
+                        	<li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/itDeclaration'/>" title="Invoices">IT Declaration</a></li>
+						</ul>
+					</li>
+	         
+	         <li class=""><a href="<c:url value='${appPath}/forms/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Payroll</i></a></li>        
+             <li class="${sessionData.nav == 'Taxes' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/stateTax/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Taxes</i></a></li>
           	
 <%--            	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
 			

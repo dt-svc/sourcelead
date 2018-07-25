@@ -8659,6 +8659,7 @@ table.tableNetpay thead > tr >  th {
 .tablePayslip table tr th, .tablePayslip table tr td {
 	padding: 5px 10px;
 }
+
 .medaiAssociates {
 	padding: 5px 0; width: 250px; float: left;
 }
@@ -8937,6 +8938,17 @@ ul.jobsboard-list > li:hover {
 .tableScroll {
 	min-height: 100px; max-height: 400px; overflow-y: auto;
 }
+.blankForm {
+	border: 1px solid #ededed; min-height: 200px; margin: 15px; text-align: center; font-size: 20px;
+}
+.table-itdeclaration.table-challan tr td:nth-child(1) {
+	width: 450px;
+}
+.table-itdeclaration.table-challan tr td:nth-child(2) {
+	width: 500px;
+}
+ 
+/* forms edit element styles */
 .trashIcon {
 	color:#ededed;
 }

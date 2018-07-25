@@ -2450,7 +2450,6 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 	  
   }
   
-  
   public String getConfiguredFromEmail(Long orgLocationId,EmailScenario  emailScenario) throws Exception{
 	  
 	     String fromEmail = null;
@@ -2528,7 +2527,6 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
   
   public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-
 		if(!requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.JOINED)) {
 			// to update submission history
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
