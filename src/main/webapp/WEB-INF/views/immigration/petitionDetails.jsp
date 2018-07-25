@@ -775,7 +775,7 @@
 
    
     <script type="text/javascript">
-   
+    //var isValidBeneficiary=false;
     function prepareDynamicResidenceDiv(rowId,residenceVal){
     	var prepareResidencediv ='';
 	   prepareResidencediv =prepareResidencediv+ "<div id ='dynamicResidenceDiv"+rowId+"'>";
@@ -867,6 +867,40 @@
    	</script>
 	
 <script>
+/* $("input[id='candidateNameEmail']").focusin(function(){
+   isValidBeneficiary = false;
+});
+ */
+$("input[id='candidateNameEmail']").focusout(function(){
+	 var seletedVal= $("#candidateNameEmail").attr("selecedVal")
+  if(typeof seletedVal =='undefined') {
+	  resetBeneficiaryDetails();
+  }else if (typeof seletedVal !='undefined' && $("#candidateNameEmail").attr("selecedVal")!=$("#candidateNameEmail").val().trim()){
+	  resetBeneficiaryDetails();
+  }
+});
+
+function resetBeneficiaryDetails(){
+	$("#candidateNameEmail").val("");
+	$("#firstName").val("");
+	$("#lastName").val("");
+	$("#middleName").val("");
+	$("#email").val("");
+	$("#mobile").val("");
+	$("#alternateMobile").val("");
+	$('input[name="gender"]').prop('checked', false); 
+	$('input[name="maritalStatus"]').prop('checked', false); // reset the value 
+	$("#country").val("");
+	$("#state").val("");
+	$("#city").val("");
+	$("#address").val("");
+	$("#zipcode").val("");
+	$("#location").val("");
+	$("#experienceYears").val("");
+	$("#experienceMonths").val("");
+	$("#birthDate").val("");
+	
+}
 	 $("#candidateNameEmail").autocomplete({ 
 			minLength: 2, 
 			source : function(request, response) {
@@ -886,6 +920,7 @@
 			select: function( event, ui ) {
 				$("#candidateNameEmail").val(ui.item.label);
 				$("#candidateId").val(ui.item.value);
+				$("#candidateNameEmail").attr("selecedVal", ui.item.label); //this value will be compared when refoces on input.
 				 $.ajax({
 				    	type: "GET",
 				        url: sourceleadUrl+immiModulePath+"/getCandidateById?id="+ui.item.value, 
