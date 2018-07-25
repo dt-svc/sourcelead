@@ -22,17 +22,6 @@ $(function(){
 });
 </script>
 
-<style>
-.datatable_filter {
-position: relative !important; top:0 !important;
-}
-
-.datatable_filter input {
-position: relative !important; top:0 !important;
-}
-</style>
-
-
 <script type="text/javascript">
 	function emailTemplateList() {
 		var tabIds = [];
@@ -70,9 +59,9 @@ position: relative !important; top:0 !important;
 	                result = result + '<td><div title="'+opt.scenarioName+'">'+opt.scenarioName+'</div></td>';
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.entityType+'"><span class="mid-span">'+opt.entityType+'</span></div></td>'; 
 	                
-	                result = result + '<td><div>';
-	                    result = result + '<a class="fa fa-eye text-blue ml" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"></a>';
-	                    result = result + '&nbsp;<a href="'+sourceleadUrl+'/editEmailTemplate?templateUUID='+opt.emailUUID+'" title="Edit"><i class="fa fa-edit"></i></a>';
+	                result = result + '<td><div class="tblicons">';
+	                    result = result + '<a class="mr10" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"><i class="fa fa-eye text-primery"></i></a>';
+	                    result = result + '<a href="'+sourceleadUrl+'/editEmailTemplate?templateUUID='+opt.emailUUID+'" title="Edit"><i class="fa fa-pencil"></i></a>';
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				}  
@@ -112,31 +101,22 @@ function templatepagination(){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
-    <div class="pull-left" id="emailtemplate" style="display:block">
-      <h2>Email Templates</h2>
-    </div>
-    <div class="pull-left" id="emailSummary" style="display:none">
-            <h2>Email Template Summary</h2>
-          </div>
-    <div class="pull-right brud-crum"  id="emailTemplates" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates</a>&raquo; Email Templates</div>
-    <div class="pull-right brud-crum" id="emailSumm" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates</a>&raquo; <a href="<c:url value='${appPath}/emailTemplates'/>" class="paddingLeft">Email TemplatesList</a> &raquo; emailTemplateSummary </div>
-   
-      
-	    
-	    					
-	     
+    <div class="pull-left" id="emailtemplate" style="display:block"><h2>Email Templates</h2> </div>
+    <div class="pull-left" id="emailSummary" style="display:none"><h2>Email Template Summary</h2></div>
+    <div class="pull-right brud-crum"  id="emailTemplates" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates </a>&raquo; Email Templates</div>
+    <div class="pull-right brud-crum" id="emailSumm" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home </a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates </a>&raquo; <a href="<c:url value='${appPath}/emailTemplates'/>" class="paddingLeft">Email TemplatesList</a> &raquo; emailTemplateSummary </div>
   </section>
   	
-  <div class="clients_wrap vendor_wrap_shadownone minHeight_225">
-  <div class="clearfix"></div>
-  <div class="datatbl-filters minHeight40 clearfix">
-   <div class="pull-left cand-advsrch advsrch_chosen" id="filterPops" style="display:block">
-		<!-- <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onClick="resetFilter();" title="Refresh">
-			    <span class="fa fa-refresh"></span>
-			</button> -->
-			<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
-				</a>
-	</div>
+  	
+  	
+  <div class="vendor_wrap clearfix">
+  
+	 <div class="reportHead reportHeadDataTab clearfix">
+	    <ul class="pull-right list-unstyled list-inline">
+	    	<li id="filterPops"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
+		</ul>
+	</div>	  
+	
   <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small">
 				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
@@ -187,22 +167,16 @@ function templatepagination(){
 								onclick="resetFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
-							  </div>
-	
+		</div>
+		
+    <div class="clearfix project_tabs_inn_table">
+	    <div id="emailTemplateList" class="datatable_filter datatable_filter-cutom dataSeaTop"></div>
+     </div>
+     
   </div>
-  
-    <div class="clearfix project_tabs_inn_table project_tabs_inn_table_a">
-	    				<div id="emailTemplateList" class="datatable_filter datatable_filter-cutom"></div>
-	       
-       </div>
-  </div>
-  
-	    
 </section>
 
 </body>
-
-
 </html>
 
 <div class="advancedsearch-mask"></div>
