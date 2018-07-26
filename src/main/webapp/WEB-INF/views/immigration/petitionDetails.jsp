@@ -871,6 +871,9 @@
    isValidBeneficiary = false;
 });
  */
+ var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+ var finalDateFormatOrg = getOrgDateFormat(locationDate);
+ 
 $("input[id='candidateNameEmail']").focusout(function(){
 	 var seletedVal= $("#candidateNameEmail").attr("selecedVal")
   if(typeof seletedVal =='undefined') {
@@ -955,7 +958,7 @@ function resetBeneficiaryDetails(){
 				    		
 				    		// setting the date for the date of birth field.
 				    		if(candidateObj.dateOfBirth != null && typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
-				    			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
+				    			var dateOfBirth =  moment(candidateObj.dateOfBirth).format(finalDateFormatOrg);
 				    		   $("#birthDate").val(dateOfBirth);
 				    		}
 				        }
