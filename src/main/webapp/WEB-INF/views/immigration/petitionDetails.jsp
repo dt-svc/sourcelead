@@ -927,7 +927,7 @@ function resetBeneficiaryDetails(){
 				        success: function(candidateObj) {
 				        	$("#firstName").val(candidateObj.firstName);
 				    		$("#lastName").val(candidateObj.lastName);
-				    		$("#middleName").val(candidateObj.middleName);
+				    		$("#middleName").val(candidateObj.middelName);
 				    		$("#email").val(candidateObj.email);
 				    		$("#mobile").val(candidateObj.mobilePhone);
 				    		$("#alternateMobile").val(candidateObj.alternateMobilePhone);
@@ -948,7 +948,7 @@ function resetBeneficiaryDetails(){
 				    		$("#state").val(candidateObj.state);
 				    		$("#city").val(candidateObj.city);
 				    		$("#address").val(candidateObj.address);
-				    		$("#zipcode").val(candidateObj.zipcode);
+				    		$("#zipcode").val(candidateObj.zipCode);
 				    		$("#location").val(candidateObj.location);
 				    		$("#experienceYears").val(candidateObj.experienceYears);
 				    		$("#experienceMonths").val(candidateObj.experienceMonths);
