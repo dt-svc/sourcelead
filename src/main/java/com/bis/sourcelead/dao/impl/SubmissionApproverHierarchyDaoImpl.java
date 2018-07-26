@@ -1972,9 +1972,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					if (projectMemberId != 0) {
 						finalSahList.add(finalSah);
 						count = 0;
+						projectMemberId = sah.getSubmissionId().getProjectMembers().getId();
 					}
 					finalSah = sah;
-					projectMemberId = sah.getSubmissionId().getProjectMembers().getId();
+					//projectMemberId = sah.getSubmissionId().getProjectMembers().getId(); moved to if condition
 					float weekTotalHours = 0f;
 					float weekBillableTotalHours = 0f;
 					float weekNonBillableTotalHours = 0f;
@@ -2098,15 +2099,15 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		List<SubmissionApproverHierarchy> sahList = session.createQuery(query.toString()).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).setLong("projectMemberId", sah.getSubmissionId().getProjectMembers().getId()).list();
 		if (null != sahList && !sahList.isEmpty()) {
 			for (SubmissionApproverHierarchy subSah : sahList) {
-				if (Constants.PAYABLE.equalsIgnoreCase(invoiceType)) {
+				if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+					subSah.setInvoiceStatus(status);
+					subSah.setInvoiceId(invoice);
+					subSah.setInvoiceDate(invoice.getInvoiceDate());	
+				}
+				else {
 					subSah.setBillingStatus(status);
 					subSah.setBillId(invoice);
 					subSah.setBillDate(invoice.getInvoiceDate());
-				}
-				else {
-					subSah.setInvoiceStatus(status);
-					subSah.setInvoiceId(invoice);
-					subSah.setInvoiceDate(invoice.getInvoiceDate());
 				}
 			}
 			saveAllSubmissionApproverHierarchy(sahList);

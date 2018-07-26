@@ -23,9 +23,9 @@ public interface AssociateBalanceLeaveService {
 
 	boolean getAssociateBalanceByUUID(String assoBalLeaveUUID, String totalLeaves);
 	
-	AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId,Long userId,Long orgLocationId);
+	AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId,Long userId,Long orgLocationId, Long orgId);
 
-	float getTotalLeavesCountByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId, Long orgLocationId);
+	float getTotalLeavesCountByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId, Long orgLocationId, Long orgId);
 
 	int addLeaveTypeToAssociate(List<User> userList, OrgLocations orgLocation, LeaveType leaveType, User loginUser);
 
@@ -39,7 +39,7 @@ public interface AssociateBalanceLeaveService {
 
 	int calculateAndUpdateAssociateBalanceLeaves(OrgLocations orgLocation, LeaveType leaveType, Date startDate, Date endDate) throws Exception;
 	
-	List<AppliedLeaveDateView> getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDaet);
+	List<AppliedLeaveDateView> getExcludeHolidayLeaveCountList(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDaet);
 
 	int updateAssociateBalanceLeaves(User updatedUser, OrgLocations orgLocations, Employees employees, UserRole userRole);
 	
@@ -48,5 +48,7 @@ public interface AssociateBalanceLeaveService {
 	int addAssociateLeaveType(User loginUser, Long orgLocationId, Employees employee, UserRole userRole);
 
 	int updateLeaveTypeAssociateBalances(List<User> updatedUserList, LeaveType leaveType, LeaveTypeDTO leaveTypeDTO);
+	
+	double getExcludeHolidayLeaveCount(List<AppliedLeaveDateView> appliedLeaves, OrgLocations orgLocations, AssociateBalanceLeaveView l, Date startDate, Date endDaet, LeaveType leaveType);
 	
 }
