@@ -28,8 +28,8 @@ $(document).ready(function(){
 
 <div class="tabsMenu clearfix">
    		<ul class="list-unstyled">
-		   <li class="current"><a href="us-runpayroll-list.html">Review Payroll</a></li>
-		   <li><a href="us-approvepayroll.html">Approve Payroll</a></li>
+		   <li class="current"><a href="#">Review Payroll</a></li>
+		   <li><a href="<c:url value='${appPath}/approvePayroll'/>" >Approve Payroll</a></li>
 	   </ul>
    </div>
 
@@ -943,6 +943,7 @@ function sendPayrollForApprover(){
           } else if (result.response === "AWKWARD") {
               location.href = "/errorPage";
           } else if (result.response === "SUCCESS") {
+        	  location.replace(sourceleadUrl+ "/payrollList"); 
         	  $("#msgDiv").html("Submited Successfully");
           } else if (result.indexOf('Sign In') !== -1) {
             location.replace(sourceleadUrl);
