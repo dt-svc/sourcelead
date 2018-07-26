@@ -69,7 +69,8 @@ $(function () {
 
     $("#addAccountBtn").click(function () {
         $("#jobBoardId").removeProp('disabled');
-        $(".sideMask, .adduser-popup").fadeIn();
+        $(".mask").show();
+        $(".adduser-popup").fadeIn(100);
         $("#jobBoardId").val('');
         $("#accountIdHidden").val('0');
         $("#accountAccessHidden").val('false');
@@ -102,7 +103,8 @@ $(function () {
                 } else if (data.response === "SUCCESS") {
                     $("#msgDiv").html("Job board account " + (parseFloat($("#accountIdHidden").val()) > 0 ? "updated" : "created"));
                     msgFadein();
-                    $(".sideMask, .adduser-popup").fadeOut();
+                    $(".mask").hide();
+                    $(".adduser-popup").fadeOut(100);
                     $("#jobBoardFilter").val('0');
                     $("#jobBoardFilterSearch").val('');
                     filterJobBoardAccounts(0, "");
@@ -134,7 +136,8 @@ $(function () {
             } else if (data.response === "SUCCESS") {
                 $("#msgDiv").html("Job board account access updated");
                 msgFadein();
-                $(".sideMask, .accountAssign-popup").fadeOut();
+                $(".mask").hide();
+                $(".accountAssign-popup").fadeOut(100);
                 $("#jobBoardFilter").val('0');
                 $("#jobBoardFilterSearch").val('');
                 filterJobBoardAccounts(0, "");
@@ -174,10 +177,12 @@ function filterJobBoardAccounts(id, search) {
                 result = result + '<td>';
                 result = result + '<div class="tblminwidth-75">' + (report.accessToAll ? "All" : report.assignCount !== "0 / 0" ? report.assignCount : "None") + '</div>';
                 result = result + '</td>';
+                
                 result = result + '<td>';
-                result = result + '<div class="tblminwidth-50">' + (report.access ? "" : "<a href='javascript:void(0)' onclick='assignMembersToJBAccount(" + report.id + ")'>Assign</a>") + '</div>';
-                result = result + '<div class="tblminwidth-50"><a href="javascript:void(0)" onclick="editJobBoardAccount(' + report.id + ')">Edit</a></div>';
+                result = result + '<div class="tblicons"><span>' + (report.access ? "" : "<a href='javascript:void(0)' onclick='assignMembersToJBAccount(" + report.id + ")' class='mr10'> Assign</a>") + '</span>';
+                result = result + '<span><a href="javascript:void(0)" onclick="editJobBoardAccount(' + report.id + ')"> Edit</a></span></div>';
                 result = result + '</td>';
+                
                 result = result + '<td>';
                 result = result + '<div class="tblminwidth-50"><div class="toggle-button"><label class="switch" style="top: 5px;"><input onclick="enableOrDisableJBAccount(' + report.id + ')" type="checkbox" ' + (report.active ? 'checked' : '') + '/> <div class="slider round"></div> </label> </div></div>';
                 result = result + '</td>';
@@ -203,8 +208,8 @@ function filterJobBoardAccounts(id, search) {
 }
 
 function closeUserPop() {
-    $(".comMask, .accountAssign-popup").fadeOut();
-    $(".sideMask, .adduser-popup").fadeOut();
+    $(".mask").hide();
+    $(".accountAssign-popup, .adduser-popup").fadeOut(100);
 }
 
 function enableOrDisableJBAccount(id) {
@@ -246,7 +251,8 @@ function editJobBoardAccount(id) {
     } else {
         $("#jobBoardId").val(record.jobBoardId);
         $("#jobBoardId").prop('disabled', 'disabled');
-        $(".sideMask, .adduser-popup").fadeIn();
+        $(".mask").show();
+        $(".adduser-popup").fadeIn(100);
         $("#accountActiveHidden").val(record.active);
         $("#accountAccessHidden").val(record.accessToAll);
         showOrHideJobBoardFormFields(record.jobBoardId, record);
@@ -318,7 +324,8 @@ function assignMembersToJBAccount(id) {
         } else
             $("input#none[name=applicableFor]").prop('checked', 'checked');
         $("#orgJobBoardAccountId").val(id);
-        $(".sideMask, .accountAssign-popup").fadeIn();
+        $(".mask").show();
+        $(".accountAssign-popup").fadeIn(100);
     }
 }
 
