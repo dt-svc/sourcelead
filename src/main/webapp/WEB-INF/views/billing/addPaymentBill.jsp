@@ -104,6 +104,9 @@
     	 		</div>
     	 		</form>
     </section>
+    
+     <div id="validateErrorMsgDivId"></div>
+ 
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -112,6 +115,45 @@ $(document).ready(function() {
 	$("#currencyType").val(currencyCode);
 	
 });
+</script>
+
+<script type="text/javascript">
+function showAmountWarningPopup(){ // multiWarnMsg populated when validated form and docs required upload docs info.
+	$("#validateErrorMsgDivId").val('');
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a modal-body'>";
+	result = result + " <b class='mt mb'>Amount Received and Due Total should be same</b>";
+	   result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result	+ "		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='closePop()'></b>";
+		result = result + "	</div>";
+		$("#validateErrorMsgDivId").append(result);
+		$("#remove_immigration_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
+function showCheckBoxDivPopup(){ 
+	$("#validateErrorMsgDivId").val('');
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a modal-body'>";
+	result = result + " <b class='mt mb'>Please select at least one record / Due Amount should not Empty</b>";
+	   result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result	+ "		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='closePop()'></b>";
+		result = result + "	</div>";
+		$("#validateErrorMsgDivId").append(result);
+		$("#remove_immigration_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+
+	function closePop() {
+		$("#remove_immigration_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+		$(".project_inn_mask").remove();
+		$("#remove_immigration_pop").remove();
+	}
 </script>
 
 <script type="text/javascript">
@@ -242,10 +284,12 @@ $('#paymentDate').datepicker({
 				 location.reload();
 		 });
 			 }else{
-				 alert("please select at least one record / Amount should not Empty");
+				 //alert("please select at least one record / Amount should not Empty");
+				 showCheckBoxDivPopup();
 			 }
 		 }else{
-			 alert("Amount Received and Due Total should be same");
+			 //alert("Amount Received and Due Total should be same");
+			 showAmountWarningPopup();
 		 }
 		}
 	}
