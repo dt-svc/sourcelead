@@ -1,8 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
@@ -32,7 +36,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
-import com.ibm.icu.math.BigDecimal;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @Service
 public class InvoicePaymentServiceImpl implements InvoicePaymentService {
@@ -225,15 +230,17 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 	
 	
 	@Override
-	public InvoicePayment saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,
-			List<Long> invoiceIds) throws Exception {
+	public InvoicePayment saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,Map<Long,String> invoiceIdsMap) throws Exception {
 
-		InvoicePayment invoicePayment = new InvoicePayment();
-		 List<Invoice> list = invoiceDao.getInvoiceListByIdsAndLocationId(invoiceIds,orgLocation.getId());
+		 List<Invoice> list = invoiceDao.getInvoiceListByIdsAndLocationId(new ArrayList(invoiceIdsMap.keySet()),orgLocation.getId());
+		 InvoicePayment invoicePayment = null;
 		 for(Invoice invoice : list){
+			invoicePayment = new InvoicePayment();
 		/*String pattern = "dd-MM-yyyy";
 		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
-
+			 System.out.println(" inovice id : "+invoice.getId());
+            System.out.println(" amount value "+invoiceIdsMap.get(invoice.getId()));
+            
 		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentDate())) {
 			Date paymentDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),invoicePaymentDTO.getPaymentDate());
 			invoicePayment.setPaymentDate(paymentDate);
@@ -245,34 +252,24 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 			invoicePayment.setPaymentReferenceNumber(invoicePaymentDTO.getReferenceNumber());
 
 		}
-
+		BigDecimal remainAmount =  null;
 		if (StringUtils.isNotBlank(invoicePaymentDTO.getPaymentAmount())) {
-			if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("total")) {
 				if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
-					invoicePayment.setPaymentAmount(invoicePaymentDTO.getTotalAmount());
+					if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+					invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 					invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 					invoice.setDueAmount("00.00");
-				}
-			}
-			if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("custom")) {
-				if (StringUtils.isNotBlank(invoicePaymentDTO.getCustomeAmount())) {
-					invoicePayment.setPaymentAmount(invoicePaymentDTO.getCustomeAmount());
-					BigDecimal totalAmount = new BigDecimal(Double.parseDouble(invoicePaymentDTO.getTotalAmount()));
-					BigDecimal customAmount = new BigDecimal(Double.parseDouble(invoicePaymentDTO.getCustomeAmount()));
-					BigDecimal dueAmount = totalAmount.subtract(customAmount);
-					// -1, 0, or 1 as this BigDecimal is numerically less than, equal to, or greater than val.
-					int res = customAmount.compareTo(totalAmount);
-					if (totalAmount.equals(customAmount) || res == 1) {
-						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-					} else if(commonUtil.currentDate().after(invoice.getDueDate())) {
-						invoice.setPaymentStatus(Constants.OVER_DUE);
 					}else{
+						String due = invoice.getDueAmount();
+						BigDecimal dueDecimal = (new BigDecimal(due));
+						String received = invoiceIdsMap.get(invoice.getId());
+						BigDecimal receivedDecimal = (new BigDecimal(received));
+						remainAmount = dueDecimal.subtract(receivedDecimal);
 						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+						invoice.setDueAmount(remainAmount.toString());
 					}
-					invoice.setDueAmount(String.valueOf(dueAmount.setScale(2, BigDecimal.ROUND_HALF_EVEN)));
-
 				}
-			}
+		
 			if (Constants.INVOICE_SENT.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 				invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 			}
@@ -285,63 +282,25 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					if (parentInvoice == null) {
 						parentInvoice = invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
 					}
-					String paidCurrencyCode = invoice.getCurrencyCode();
-					String receiverCurrencyCode = parentInvoice.getCurrencyCode();
-					String paidAmount = invoicePayment.getPaymentAmount();
+					
 					// float totalAmount = 0;
 					// float customAmount = 0;
-					BigDecimal receivedAmount = null;
-					if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("total")) {
 						if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
-							invoicePayment.setPaymentAmount(invoicePaymentDTO.getTotalAmount());
+							if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+							invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 							parentInvoice.setDueAmount("00.00");
-						}
-					}
-					if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("custom")) {
-						if (StringUtils.isNotBlank(invoicePaymentDTO.getCustomeAmount())) {
-							invoicePayment.setPaymentAmount(invoicePaymentDTO.getCustomeAmount());
-							if (!paidCurrencyCode.equalsIgnoreCase(receiverCurrencyCode)) {
-								float conAmount = conversionUtil.convert(paidCurrencyCode, receiverCurrencyCode,Float.parseFloat(paidAmount));
-								BigDecimal paidConversionAmount = new BigDecimal(conAmount);
-								BigDecimal receiverTotalAmount = new BigDecimal(Float.parseFloat(parentInvoice.getDueAmount()));
-								receivedAmount = receiverTotalAmount.subtract(paidConversionAmount);
-//								BigDecimal totalAmount = new BigDecimal(
-//										Double.parseDouble(invoicePaymentDTO.getTotalAmount()));
-//								BigDecimal customAmount = new BigDecimal(
-//										Double.parseDouble(invoicePaymentDTO.getCustomeAmount()));
-								int res = paidConversionAmount.compareTo(receiverTotalAmount);
-								if ((receiverTotalAmount.equals(paidConversionAmount)) || res == 1) {
-									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-								}else if(commonUtil.currentDate().after(invoice.getDueDate())) {
-									invoice.setPaymentStatus(Constants.OVER_DUE);
-								}else{
-									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
-								}
-							} else {
-								BigDecimal totalAmount = new BigDecimal(
-										Double.parseDouble(invoicePaymentDTO.getTotalAmount()));
-								BigDecimal customAmount = new BigDecimal(
-										Double.parseDouble(invoicePaymentDTO.getCustomeAmount()));
-								receivedAmount = totalAmount.subtract(customAmount);
-								int res = customAmount.compareTo(totalAmount);
-								if ((totalAmount.equals(customAmount)) || res == 1) {
-									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-								}else if(commonUtil.currentDate().after(invoice.getDueDate())) {
-									invoice.setPaymentStatus(Constants.OVER_DUE);
-								}else {
-									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
-								}
-							}
-
-							if (receivedAmount != null) {
-								parentInvoice.setDueAmount(
-										String.valueOf(receivedAmount.setScale(2, BigDecimal.ROUND_HALF_EVEN)));
-							} else {
-								parentInvoice.setDueAmount("0.0");
+							}else{
+								String due = invoice.getDueAmount();
+								BigDecimal dueDecimal = (new BigDecimal(due));
+								String received = invoiceIdsMap.get(invoice.getId());
+								BigDecimal receivedDecimal = (new BigDecimal(received));
+								remainAmount = dueDecimal.subtract(receivedDecimal);
+								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+								invoice.setDueAmount(remainAmount.toString());
 							}
 						}
-					}
+					
 					if (Constants.INVOICE_RECEIVED.equalsIgnoreCase(parentInvoice.getInvoiceStatus())) {
 						parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 					}
@@ -361,16 +320,9 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 				invoicePayment.setFileContentType(file.getContentType());
 				invoicePayment.setFileName(file.getFileName());
 				invoicePayment.setFileURL(file.getFileURL());
-				FileUploadUtil.moveFile(invoicePaymentDTO.getStaticPath(), file, "incoiceDocuments");
 			}
 		}
 		
-		/*if (null != multiFile) {
-			invoicePayment.setFileContentType(multiFile.getContentType());
-			invoicePayment.setFileName(multiFile.getOriginalFilename());
-			invoicePayment.setDocFile(multiFile.getBytes());
-
-		}*/
 		invoicePayment.setOrgLocation(orgLocation);
 		if (invoice.getParentInvoiceId() != null) {
 			invoicePayment.setInvoiceId(invoice.getParentInvoiceId());
@@ -382,6 +334,12 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		invoicePayment.setCreatedBy(user.getUserCode());
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
 		invoicePaymentDao.saveInvoicePayment(invoicePayment);
+		 }
+		 // this for moving file to folder after setting values (same information set to selected invoices)
+		 if(invoicePaymentDTO.getFileInfo() != null && invoicePaymentDTO.getFileInfo().size() > 0){
+			 for(FileInfo file : invoicePaymentDTO.getFileInfo()){
+				 FileUploadUtil.moveFile(invoicePaymentDTO.getStaticPath(), file, "incoiceDocuments");	 
+			 }
 		 }
 		return invoicePayment;
 	}

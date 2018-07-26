@@ -86,7 +86,7 @@ $(document).ready(function(){
 						</div>
 					</div>
 				</div>
-				<ul class="nav nav-tabs pad15" id="tab_bar">
+				<ul class="nav nav-tabs pad15 invoiCount" id="tab_bar">
 
 
 					<li class="active">
@@ -96,7 +96,7 @@ $(document).ready(function(){
 								<strong>${SourceLeadWeb_currencyCode}</strong>
 							</div>
 							<div class="pull-right ml10">
-								<div class="count" id="unbilledAmoumt"></div>
+								<div class="count" id="unbilledAmoumt">0.0</div>
 								<h5>Draft Bills<span class="paddingLeft" id="draftInvoiceCount">0.0</span></h5>
 							</div>
 					</a>
@@ -108,7 +108,7 @@ $(document).ready(function(){
 								<strong>${SourceLeadWeb_currencyCode}</strong>
 							</div>
 							<div class="pull-right ml10">
-								<div class="count" id="dueAfterInvoiceAmount"></div>
+								<div class="count" id="dueAfterInvoiceAmount">0.0</div>
 								<h5>
 									Overdue Bills<span class="paddingLeft" id="dueAfterInvoiceCount">0.0</span>
 								</h5>
@@ -123,7 +123,7 @@ $(document).ready(function(){
 								<strong> ${SourceLeadWeb_currencyCode}</strong>
 							</div>
 							<div class="pull-right ml10">
-								<div class="count" id="dueBeforeInvoiceAmount"></div>
+								<div class="count" id="dueBeforeInvoiceAmount">0.0</div>
 								<h5>
 									Open Bills<span class="paddingLeft" id="dueBeforeInvoiceCount">0.0</span>
 								</h5>
@@ -137,7 +137,7 @@ $(document).ready(function(){
 								<strong> ${SourceLeadWeb_currencyCode}</strong>
 							</div>
 							<div class="pull-right ml10">
-								<div class="count" id="paidInvoiceAmount"></div>
+								<div class="count" id="paidInvoiceAmount">0.0</div>
 								<h5>
 									Paid Bills<span class="paddingLeft" id="paidInvoiceCount">0.0</span>
 								</h5>
@@ -180,6 +180,7 @@ $(document).ready(function(){
 							<a href="javascript:void(0)" title="Create Bill" onclick="createBill();">Create Bill </a>
                            </sec:authorize>
 						<a href="javascript:void(0)" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();">Generate Automatic Bill</a>
+						 <a href="<c:url value='${appPath}/addPaymentBill'/>">Add Payment</a>
 					</span>
 				</div>
 			</li>
@@ -797,6 +798,8 @@ function payablePagination(url){
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
 								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 								'</sec:authorize>';
+							}else{
+								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 							}
 							
 						}
@@ -992,6 +995,10 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Bill"></i>Pay</a></li>';
 
 			 }
+			 
+		 }
+		 if(invoiceStatus == "SENT"){
+				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Bill"></i>Pay</a></li>';
 			 
 		 }
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';

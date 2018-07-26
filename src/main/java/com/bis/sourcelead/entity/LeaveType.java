@@ -264,7 +264,19 @@ public class LeaveType {
 	@Transient
 	@JsonProperty
 	private String userGender;
-
+	
+	@Transient
+	float diffFresherLeaves;
+	
+	@Transient
+	float diffExpLeaves;
+	
+	@Transient
+	String actionFresherType;
+	
+	@Transient
+	String actionExpType;
+	
 	public Long getId()
 	{
 		return id;
@@ -987,5 +999,45 @@ public class LeaveType {
 
 	public void setDepartmentIds(String departmentIds) {
 		this.departmentIds = departmentIds;
+	}
+
+	public float getDiffFresherLeaves()
+	{
+		return diffFresherLeaves;
+	}
+
+	public void setDiffFresherLeaves(float diffFresherLeaves)
+	{
+		this.diffFresherLeaves = diffFresherLeaves;
+	}
+
+	public float getDiffExpLeaves()
+	{
+		return diffExpLeaves;
+	}
+
+	public void setDiffExpLeaves(float diffExpLeaves)
+	{
+		this.diffExpLeaves = diffExpLeaves;
+	}
+
+	public String getActionFresherType()
+	{
+		return actionFresherType;
+	}
+
+	public void setActionFresherType(String actionFresherType)
+	{
+		this.actionFresherType = actionFresherType;
+	}
+
+	public String getActionExpType()
+	{
+		return actionExpType;
+	}
+
+	public void setActionExpType(String actionExpType)
+	{
+		this.actionExpType = actionExpType;
 	}
 }

@@ -411,7 +411,7 @@ public class LeaveManagementRestController {
 			for (LeaveType l : roleLeaveType) {
 				float totalLeaves = 0;
 				if(Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
-					 totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(l.getId(),userId,orgLocationId);
+					 totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(l.getId(),userId,orgLocations.getId(),orgLocations.getOrg().getId());
 				}
 
 //				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, loginUser);
@@ -426,7 +426,7 @@ public class LeaveManagementRestController {
 				for (Leave leave : totalleavesTaken) {
 					double fromHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(),leave.getFromDateToHalfTime(),orgLocations.getAverageWorkingHours(),l);
 					double toHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(),leave.getToDateToHalfTime(),orgLocations.getAverageWorkingHours(),l);
-					double appliedLeaveCount = fromHalf + toHalf;
+					double appliedLeaveCount = leave.getNumberOfDays() - (fromHalf + toHalf);
 
 					if (Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
 						// totalLeaves = totalLeaves -
@@ -1076,7 +1076,7 @@ public class LeaveManagementRestController {
 						List<User> updatedUserList = new ArrayList<>();
 						List<User> insertUserList = new ArrayList<>();
 						for(User usr : userList) {
-							AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId());
+							AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId(),orgLocation.getOrg().getId());
 						    if(associa != null) {
 						    	updatedUserList.add(usr);
 						    }else {
@@ -1087,17 +1087,45 @@ public class LeaveManagementRestController {
 							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
 						}
 						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
-							float previousNoOfDays = 0;;
+							float previousNoOfDays = 0;
 							float currentNofDays = 0;
+							
+							float previousFresherNoOfDays = 0;
+							float currentFresherNofDays = 0;
+							
+							float previousExpNoOfDays = 0;
+							float currentExpNofDays = 0;
+							
 							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-								currentNofDays = leaveType.getNoOfDaysPerPeriod();
-								previousNoOfDays = leaveTypeDTO.getPreviousNoOfDaysPerPeriod();
+								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+									currentNofDays = leaveType.getNoOfDaysPerPeriod();
+									previousNoOfDays = leaveTypeDTO.getPreviousNoOfDaysPerPeriod();
+								}else{
+									 previousFresherNoOfDays = leaveTypeDTO.getPreviousFresherPeriod();
+									 currentFresherNofDays = leaveType.getNewJoinPerPeriod();
+									
+									 previousExpNoOfDays = leaveTypeDTO.getPreviousExpPeriodDays();
+									 currentExpNofDays = leaveType.getExperiencedPerPeriod();
+								}
 							}else {
-								currentNofDays   = leaveType.getNoOfDays();
-								previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
+								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+									currentNofDays   = leaveType.getNoOfDays();
+									previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
+								}else{
+									 previousFresherNoOfDays = leaveTypeDTO.getPreviousNewJoinee();
+									 currentFresherNofDays = leaveType.getNewJoinee();
+									
+									 previousExpNoOfDays = leaveTypeDTO.getPreviousExpApplicableDays();
+									 currentExpNofDays = leaveType.getExperiencedApplicableDays();
+								}
 							}
+							
 							float diffLeaves = 0;
+							float diffFresherLeaves = 0;
+							float diffExpLeaves = 0;
 							String actionType = "";
+							String actionFresherType = "";
+							String actionExpType = "";
 							if(previousNoOfDays < currentNofDays) {
 								diffLeaves = currentNofDays - previousNoOfDays;
 								actionType = "ADD";
@@ -1107,7 +1135,32 @@ public class LeaveManagementRestController {
 							}if(previousNoOfDays == currentNofDays) {
 								 actionType = "NONE";
 							}
-							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(updatedUserList, orgLocation.getId(), leaveType, Integer.parseInt(leaveType.getStatus()),diffLeaves,actionType,Constants.UPDATE);
+							//Fresher calculation
+							if(previousFresherNoOfDays < currentFresherNofDays) {
+								diffFresherLeaves = currentFresherNofDays - previousFresherNoOfDays;
+								actionFresherType = "ADD";
+							}if(previousFresherNoOfDays > currentFresherNofDays) {
+								diffFresherLeaves = currentFresherNofDays - previousFresherNoOfDays;
+								 actionFresherType = "SUB";
+							}if(previousFresherNoOfDays == currentFresherNofDays) {
+								actionFresherType = "NONE";
+							}
+							// Experience Calculation 
+							if(previousExpNoOfDays < currentExpNofDays) {
+								diffExpLeaves = currentExpNofDays - previousExpNoOfDays;
+								actionExpType = "ADD";
+							}if(previousExpNoOfDays > currentExpNofDays) {
+								diffExpLeaves = currentExpNofDays - previousExpNoOfDays;
+								 actionExpType = "SUB";
+							}if(previousExpNoOfDays == currentExpNofDays) {
+								actionExpType = "NONE";
+							}
+							leaveType.setActionFresherType(actionFresherType);
+							leaveType.setActionExpType(actionExpType);
+							leaveType.setDiffFresherLeaves(diffFresherLeaves);
+							leaveType.setDiffExpLeaves(diffExpLeaves);
+//							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(updatedUserList, orgLocation.getId(), leaveType, Integer.parseInt(leaveType.getStatus()),diffLeaves,actionType,Constants.UPDATE);
+							associateBalanceLeaveService.updateLeaveTypeAssociateBalances(updatedUserList, leaveType, leaveTypeDTO);
 						}	
 //					}
 				}
@@ -2033,7 +2086,7 @@ public class LeaveManagementRestController {
 			Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(),orgLocations.getId());
 			
 //			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(), emp,orgLocations, leave.getUser());
-			float totalLeavesperYear = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId());
+			float totalLeavesperYear = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId(),orgLocations.getOrg().getId());
 			
 			leaveDto.setApproverUsers(String.join(",", aphlist));
 			Map<String, Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),
@@ -2369,7 +2422,8 @@ public class LeaveManagementRestController {
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception {
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		return leaveService.getAllEmployeesLeavesCounts(orgLocationId, userId, loginUserRole);
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		return leaveService.getAllEmployeesLeavesCounts(orgLocationId, userId, loginUserRole,org.getId());
 	}
 
 	@RequestMapping(value = { "/totalCountsForSelfLeaves","/rest/totalCountsForSelfLeaves" }, method = RequestMethod.GET)
@@ -2410,7 +2464,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
-	@RequestMapping(value = "/withdrawLeave")
+	@RequestMapping(value = {"/withdrawLeave", "/rest/withdrawLeave"})
 	@ResponseBody
 	public Response<String> withdrawLeave(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
@@ -2478,7 +2532,7 @@ public class LeaveManagementRestController {
 					List<Leave> takenLeaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),orgLocations.getId(), user.getId());
 					float empToatalLeaves = 0;	
 					if(Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())){
-						 empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());	
+						 empToatalLeaves  = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId(),orgLocations.getOrg().getId());	
 					}
 
 					float empAppliedLeaveCount = 0;
@@ -2873,8 +2927,7 @@ public class LeaveManagementRestController {
 			model.setViewName("leavemanagement/applyLeave");
 			return model;
 	}
-
-
+	
 	@RequestMapping(value = "/checkBalance")
 	public void checkBalance(HttpServletRequest request,HttpServletResponse response) throws Exception {
 //		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();

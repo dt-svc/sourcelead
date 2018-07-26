@@ -360,14 +360,14 @@ background-color: #fcfcfc;
                    <h4 class="heading col-md-4">Top leave Takers</h4>
                     <div class="timesheet_head clearfix col-md-8">
                     <ul class="list-unstyled noPad pull-left">
-                    	<li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
+                    	<!-- <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
 					        	<div id="exportPop" class="ExpPop">
 					              <ul>
 					                <li onclick="leavePdfExport();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
 					                <li onclick="leaveExcelExport();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
 					              </ul>
 					            </div>
-					          </li>  
+					          </li>   -->
                     </ul>
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">

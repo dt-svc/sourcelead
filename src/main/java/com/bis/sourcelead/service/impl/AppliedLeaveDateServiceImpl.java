@@ -42,9 +42,9 @@ public class AppliedLeaveDateServiceImpl implements AppliedLeaveDateService{
 	}
 
 	@Override
-	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate, Long userId, String leaveStatus)
+	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate, Long userId, String leaveStatus,Long orgId)
 	{
-		return appliedLeaveDateDao.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(orgLocationId,leaveTypeId,sDate,eDate,userId,leaveStatus);
+		return appliedLeaveDateDao.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(orgLocationId,leaveTypeId,sDate,eDate,userId,leaveStatus,orgId);
 	}
 
 	@Override

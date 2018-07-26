@@ -36,6 +36,7 @@ import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.JobBoard;
 import com.bis.sourcelead.entity.JobBoardData;
@@ -107,8 +108,11 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Autowired
 	UserRoleDao userRoleDao;
         
-        @Autowired
-        private JobBoardConfigurationDAO jobBoardConfigurationDAO;
+    @Autowired
+    private JobBoardConfigurationDAO jobBoardConfigurationDAO;
+        
+    @Autowired
+    SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
         
         @Value("${static.path}")
 	private String staticPath;
@@ -1559,6 +1563,88 @@ public class RequirementDaoImpl implements RequirementDao {
 		return query.list();
 
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getRequirementListByPostedDateAndSelectedClients(Long orgLocationId, Long userId,
+			int numberOfDays, String selectedClients) {
+		try {
+
+			Calendar c = Calendar.getInstance();
+			c.set(Calendar.HOUR_OF_DAY, 0);
+			c.set(Calendar.MINUTE, 0);
+			c.set(Calendar.SECOND, 0);
+			Date todayDate = c.getTime();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			/*
+			 * String startTimeTS = Constants.TZ_DF.format(todayDate); String
+			 * startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
+			 * Date startUTCDate = dateFormat.parse(startDateString);
+			 */
+
+			// @Mahaveer Manoj commented above code for testing jobFairs, uncomment this in
+			// commit
+			Date startUTCDate = todayDate;
+
+			int hrs = numberOfDays * 24;
+
+			Date nHrsUTCDate = null;
+			if (hrs > 0) {
+				nHrsUTCDate = DateUtils.addHours(startUTCDate, -hrs);
+			}
+
+			Session session = this.sessionFactory.getCurrentSession();
+			// User user = userDao.getUserById(userId);
+
+			Map<String, Object> params = new HashMap<String, Object>();
+
+			String from = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId ";
+			String subQuery = "";
+			String dateBetween = "";
+			if (hrs > 0) {
+				dateBetween = "DATE(requirement.createdDate) >=:nHrsUTCDate and DATE(requirement.createdDate) <= :startUTCDate and ";
+			}
+
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
+
+			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId", userId);
+
+			if (subQuery1 != "" || subQuery2 != "") {
+				subQuery = "where " + dateBetween + " requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1
+						+ ") or (" + subQuery2 + ")) ";
+			}
+
+			if (selectedClients != null && !selectedClients.isEmpty()) {
+				subQuery += (subQuery.contains("where") ? " and " : " where ")
+						+ "(requirement.clientId.locationId.org.orgName in (" + selectedClients
+						+ ") or requirement.clientId.responderLocationId.org.orgName in (" + selectedClients + "))";
+			}
+
+			params.put("orgLocationId", orgLocationId);
+			params.put("startUTCDate", startUTCDate);
+			if (hrs > 0) {
+				params.put("nHrsUTCDate", nHrsUTCDate);
+			}
+
+			String whereCondition = subQuery;
+			Query query = session.createQuery(from + " " + whereCondition + " ORDER BY requirement.id DESC");
+			for (String str : query.getNamedParameters()) {
+				if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")) {
+					query.setLong(str, (long) params.get(str));
+				} else {
+					query.setParameter(str, params.get(str));
+				}
+
+			}
+			return query.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -1841,6 +1927,21 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'" + generatedIdCount + "') AS UNSIGNED)) FROM "
 				+ schema + ".REQUIREMENT WHERE ORG_LOCATION_ID = '" + orgLocationId + "'";
+		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+		Long count = 0L;
+		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+			count = (Long) maxCountList.iterator().next().longValue();
+		}
+		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getJobFairGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdCount) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'" + generatedIdCount + "') AS UNSIGNED)) FROM "
+				+ schema + ".JOB_FAIR WHERE ORG_LOCATION_ID = '" + orgLocationId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
@@ -2781,6 +2882,24 @@ public class RequirementDaoImpl implements RequirementDao {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Transactional
+	@Override
+	public JobFair getJobFairByName(String jobFairName) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from JobFair jobFair where jobFair.name=:jobFairName";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("jobFairName", jobFairName);
+			List<JobFair> jobFairList = queryObj.list();
+			if (jobFairList != null && !jobFairList.isEmpty())
+				return jobFairList.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Override
 	@Transactional
 	public JobFair getJobFairByUUID(String uuid) {
@@ -2813,14 +2932,14 @@ public class RequirementDaoImpl implements RequirementDao {
 			 query1.append("and (jobFair.name like '%" + jobFairDTO.getSearchValue() + "%' ")
 				   .append("OR jobFair.venue like '%" + jobFairDTO.getSearchValue() + "%' )");
 			}
+			query1.append(" order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder());
 			
 			String query = "from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
-			query += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();
-			Query queryObj = session.createQuery(query + query1);
+			Query queryObj = session.createQuery(query + " " + query1);
 			jobFairList = queryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).setFirstResult(jobFairDTO.getStart()).setMaxResults(jobFairDTO.getLength()).list();
 			
 			String  countQuery = "select count(*) from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
-			countQuery += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();
+			/*countQuery += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();*/
 			Query countQueryObj = session.createQuery(countQuery + query1); 
 			countlist = countQueryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).list();
 			
@@ -3075,6 +3194,52 @@ public class RequirementDaoImpl implements RequirementDao {
 		return requirementList;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+		List<Requirement> requirementList = new LinkedList<>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements where jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId and jobFair.id = :jobFairId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("userId", userId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setLong("jobFairId", jobFairId);
+			List<Long> idList = queryObj.list();
+			for (Long id : idList) {
+				JobFairRequirements jobFairRequirements = getJobFairRequirementsById(id);
+				if (jobFairRequirements != null) {
+					Requirement requirement = jobFairRequirements.getRequirement();
+					requirementList.add(requirement);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return requirementList;
+	}
+
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select jobFairRequirements.fairDates from JobFairRequirements jobFairRequirements where jobFairRequirements.requirement.id =:requirementId and jobFairRequirements.jobFair.id =:jobFairId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("requirementId", requirementId);
+			queryObj.setLong("jobFairId", jobFairId);
+			List<String> fairDatesList = queryObj.list();
+			if (fairDatesList != null && !fairDatesList.isEmpty()) {
+				return fairDatesList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Override
 	@Transactional
 	public List<Long> getJobFairRequirementsIdListByRequirementId(long requirementId) {
@@ -3106,9 +3271,174 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<JobFair> getJobFairWithNullGeneratedIdList() {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from JobFair jobFair where jobFair.generatedId = null";
+			List<JobFair> jobFairList = session.createQuery(query).list();
+			if (jobFairList != null && !jobFairList.isEmpty()) {
+				return jobFairList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<RequirementDTO> getJobListOfRecruiter(RequirementDTO requirementDTO, Long recruiterUserId,Date[] searchDates,List<Long> teamsList) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Requirement> requirementList = null;
+
+		Query queryObj = null;
+		Integer filterCount = 0;
+		StringBuilder query1 = new StringBuilder("");
+		StringBuilder subQueryTeam = new StringBuilder("");
+		ResponseList<RequirementDTO> response = new ResponseList<>();
+		List<RequirementDTO> requirementDTOList = new ArrayList<>();
+		List<Long> countlist = null;
+		
+		/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String fromDate = sdf.format(searchDates[0]);
+		String toDate = sdf.format(searchDates[1]);*/
+
+		if (requirementDTO.getSearchValue() != null && !"".equalsIgnoreCase(requirementDTO.getSearchValue())) {
+			query1.append(" requirement.generatedId like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.jobTitle like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.location like '%" + requirementDTO.getSearchValue() + "%' ");
+		}
+		if(teamsList.size()>0 && !teamsList.isEmpty()){
+			subQueryTeam.append(" and requirement.id IN (SELECT rato.requirementId.id FROM  RequirementAssignTo rato WHERE rato.teamId.id IN (:teamsList) and rato.status='1')");
+		}
+			String query = "from Requirement requirement  where (requirement.orgLocationId.id =:orglocationId and (requirement.createdDate BETWEEN :fromDate AND :toDate) "+subQueryTeam.toString()+") and (requirement.requirementSubmissionStatus = 'OPEN' or requirement.requirementSubmissionStatus = 'NEW') and ( requirement.releaseJobToAllUsers='Y' or requirement.managerUserId.id =:recruiterUserId or :recruiterUserId IN (select ra.assignUserId.id from RequirementAssignTo ra where ra.requirementId=requirement))";
+			if (query1.toString() != null && !query1.toString().isEmpty()) {
+				queryObj = session.createQuery(query + "and " + "(" + query1.toString() + ")");
+			} else {
+				queryObj = session.createQuery(query + query1.toString());
+			}
+
+			queryObj.setFirstResult(requirementDTO.getStart());
+			queryObj.setMaxResults(requirementDTO.getLength());
+
+			queryObj.setLong("orglocationId", requirementDTO.getOrgLocationId()).setLong("recruiterUserId", recruiterUserId).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]);
+			if (subQueryTeam.toString() != null && !subQueryTeam.toString().isEmpty()) {
+				queryObj.setParameterList("teamsList", teamsList);
+			}
+			requirementList = queryObj.list();
+
+			if (subQueryTeam.toString() != null && !subQueryTeam.toString().isEmpty()) {
+				countlist = session.createQuery("select count(*) " + query).setLong("orglocationId", requirementDTO.getOrgLocationId()).setLong("recruiterUserId", recruiterUserId).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).setParameterList("teamsList", teamsList).list();
+			}else {
+				countlist = session.createQuery("select count(*) " + query).setLong("orglocationId", requirementDTO.getOrgLocationId()).setLong("recruiterUserId", recruiterUserId).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+			}
+			if (query1.toString() != null && !query1.toString().isEmpty()) {
+				filterCount = requirementList.size();
+			}
+
+		int totalCount = 0;
+		if (requirementDTO != null) {
+			if (countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		}
+		response.setRecordsTotal(totalCount);
+		if (query1.toString() != null && !query1.toString().isEmpty()) {
+			response.setRecordsFiltered(filterCount);
+		} else {
+			response.setRecordsFiltered(totalCount);
+		}
+
+		for (Requirement req : requirementList) {
+			RequirementDTO reqDTO = new RequirementDTO();
+			List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList = requirementLocationsService
+					.getRequirementLocationsListByRequirementId(req.getId());
+			if (locationsList != null && !locationsList.isEmpty()) {
+				for (RequirementLocations location : locationsList) {
+					requirementLocationsList.add(location.getLocation());
+				}
+			}
+			reqDTO.setId(req.getId());
+			reqDTO.setRequirementId(req.getId().toString());
+			reqDTO.setJobId(req.getJobId());
+			reqDTO.setGeneratedId(req.getGeneratedId());
+			reqDTO.setJobTitle(req.getJobTitle());
+			reqDTO.setJobType(req.getJobType());
+			reqDTO.setRate(req.getRate());
+			reqDTO.setLocationsList(requirementLocationsList);
+			reqDTO.setPriority(req.getPriority());
+			/*if (StringUtils.isNotBlank(dateFormat)) {
+				reqDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(dateFormat, req.getCreatedDate()));
+			} else {
+				reqDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter("dd-MM-yyyy", req.getCreatedDate()));
+			}*/
+			if(req.getClientId() != null){
+				if(req.getClientId().getResponderType().equalsIgnoreCase("Client")){
+					reqDTO.setClient(req.getClientId().getResponderLocationId().getOrgLocationName());
+				}
+				if(req.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+					reqDTO.setClient(req.getClientId().getLocationId().getOrgLocationName());
+				}
+			}
+			requirementDTOList.add(reqDTO);
+		}
+		response.setData(requirementDTOList);
+		return response;
+	}
+
 	public static void main(String[] args) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		System.out.println(sdf.format(new Date(1519216393485L)));
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Boolean forceDeleteForSelectedJobs(String[] uuids) {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 
+		 if(uuids.length > 0) {
+				for(String uuid : uuids) {
+					Requirement req;
+					try {
+						req = this.getRequirementByRequirementUUID(uuid);
+					
+						/*String query = "DELETE rah rl rcs rat r FROM Requirement r JOIN RequirementApproverHierarchy rah ON r.id = rah.requirementId.id "
+								+ "JOIN RequirementLocations rl ON r.id = rl.requirementId.id JOIN RecommendedCustomizeScore rcs ON r.id = rcs.reqirementId.id "
+								+ "JOIN RequirementAssignTo rat ON r.id = rat.requirementId.id WHERE r.requirementUUID =:uuid";*/
+						List<String> queryList = new ArrayList<String>();
+						
+						/*queryList.add("DELETE FROM REQUIREMENT_LOCATIONS INNER JOIN REQUIREMENT ON REQUIREMENT_LOCATIONS.REQUIREMENT_ID = REQUIREMENT.ID WHERE REQUIREMENT.REQUIREMENT_UUID =:uuid");*/
+						
+						queryList.add("DELETE FROM RequirementLocations rl WHERE rl.requirementId.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM RequirementApproverHierarchy rah WHERE rah.requirementId.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM RecommendedCustomizeScore rcs WHERE rcs.reqirementId.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM RequirementAssignTo rat WHERE rat.requirementId.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM JobCustomFieldData jcfd WHERE jcfd.requirement.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM Requirement r  WHERE r.id = "+req.getId()+ " ");
+						
+						for(String query : queryList) {
+							session.createQuery(query).executeUpdate();
+						}
+						sourceleadELKBaseIndexer.deleteElkDocument(null, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE, req.getId().toString());
+						flag = true;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		return flag;
 	}
 
 }
