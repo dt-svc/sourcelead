@@ -1142,8 +1142,8 @@ public class USPayrollRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("paySheetFrequencyUUID", paySheetFrequencyUUID);
 		if(approverStatus.equalsIgnoreCase(Constants.SENT)) {
-			model.setViewName("payroll/confirmPayroll");
-		}else {
+			model.setViewName("payroll/reviewPayroll");
+		}else if(approverStatus.equalsIgnoreCase(Constants.APPROVED)){
 			model.setViewName("payroll/payrollSummary");
 		}
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");

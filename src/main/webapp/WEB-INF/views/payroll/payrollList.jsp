@@ -175,8 +175,7 @@ $(document).ready(function(){
 								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
-		$("#payFrequency").wrap(
-				"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+		$("#payFrequency").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
 		$("#dataTableSearch").keyup(function(e) {
 			if (e.which === 13) {
