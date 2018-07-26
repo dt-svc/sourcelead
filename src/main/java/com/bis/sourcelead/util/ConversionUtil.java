@@ -13,6 +13,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -21,6 +22,8 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +48,8 @@ public class ConversionUtil {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
 	
-    private static final String API_PROVDIER = "http://api.fixer.io/";
+    //private static final String API_PROVDIER = "http://api.fixer.io/";  this is deprecated from March 6th 2018, 
+    private static final String API_PROVDIER = "http://free.currencyconverterapi.com/api/v5/convert?"; // new Api url added.
 	
 	/**
 	 * converting rate into per hour
@@ -83,16 +87,52 @@ public class ConversionUtil {
 	public  float convert(String fromCurrencyCode, String toCurrencyCode, float amount)
 	{
 		
-		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty())
-				&& (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
+		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty()) && (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
 			
-			CurrencyConversionResponse response = getResponse(API_PROVDIER + "/latest?base="
-					+ fromCurrencyCode);
+			// old code commented
+			/*CurrencyConversionResponse response = getResponse(API_PROVDIER + "/latest?base="+ fromCurrencyCode);
 			if (response != null) {
 				
 				String rate = response.getRates().get(toCurrencyCode);
 				float conversionRate = Float.valueOf((rate != null) ? rate : "0.0");
-				return conversionRate * amount;
+				return conversionRate * bigDecimal.floatValue();
+			}
+		}
+		return 0;*/
+			String strUrl =API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
+			URL url;
+			try {
+				url = new URL(strUrl);
+				StringBuffer sb = new StringBuffer();
+				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				InputStream stream = connection.getInputStream();
+				int data = stream.read();
+				while (data != -1) {
+					
+					sb.append((char) data);
+					data = stream.read();
+				}
+				stream.close();
+				//response = gson.fromJson(sb.toString(), CurrencyConversionResponse.class);
+				try {
+
+					JSONObject json=new JSONObject(sb.toString());
+					
+					  Iterator<String> keys = json.keys();
+					  String str_Name=keys.next(); 
+					  String value = json.optString(str_Name);
+					  json=new JSONObject(value);
+					  double convertedValue= json.getDouble("val");
+				    
+					  return (float) convertedValue;
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		return 0;
@@ -102,16 +142,53 @@ public class ConversionUtil {
 	public  float convert(String fromCurrencyCode, String toCurrencyCode, BigDecimal bigDecimal)
 	{
 		
-		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty())
-				&& (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
+		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty())	&& (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
 			
-			CurrencyConversionResponse response = getResponse(API_PROVDIER + "/latest?base="
-					+ fromCurrencyCode);
+			// old code commented
+			/*CurrencyConversionResponse response = getResponse(API_PROVDIER + "/latest?base="+ fromCurrencyCode);
 			if (response != null) {
 				
 				String rate = response.getRates().get(toCurrencyCode);
 				float conversionRate = Float.valueOf((rate != null) ? rate : "0.0");
 				return conversionRate * bigDecimal.floatValue();
+			}
+		}
+		return 0;*/
+			
+			String strUrl =API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
+			URL url;
+			try {
+				url = new URL(strUrl);
+				StringBuffer sb = new StringBuffer();
+				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				InputStream stream = connection.getInputStream();
+				int data = stream.read();
+				while (data != -1) {
+					
+					sb.append((char) data);
+					data = stream.read();
+				}
+				stream.close();
+				//response = gson.fromJson(sb.toString(), CurrencyConversionResponse.class);
+				try {
+
+					JSONObject json=new JSONObject(sb.toString());
+					
+					  Iterator<String> keys = json.keys();
+					  String str_Name=keys.next(); 
+					  String value = json.optString(str_Name);
+					  json=new JSONObject(value);
+					  double convertedValue= json.getDouble("val");
+				    
+					  return (float) convertedValue;
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		return 0;
@@ -121,16 +198,42 @@ public class ConversionUtil {
 	public  Double currencyConvert(String fromCurrencyCode, String toCurrencyCode, double amount)
 	{
 		
-		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty())
-				&& (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
+		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty()) && (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
 			
-			CurrencyConversionResponse response = getResponse(API_PROVDIER + "/latest?base="
-					+ fromCurrencyCode);
-			if (response != null) {
+			String strUrl =API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
+			URL url;
+			try {
+				url = new URL(strUrl);
+				StringBuffer sb = new StringBuffer();
+				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				InputStream stream = connection.getInputStream();
+				int data = stream.read();
+				while (data != -1) {
+					
+					sb.append((char) data);
+					data = stream.read();
+				}
+				stream.close();
+				//response = gson.fromJson(sb.toString(), CurrencyConversionResponse.class);
+				try {
+
+					JSONObject json=new JSONObject(sb.toString());
+					
+					  Iterator<String> keys = json.keys();
+					  String str_Name=keys.next(); 
+					  String value = json.optString(str_Name);
+					  json=new JSONObject(value);
+					  double convertedValue= json.getDouble("val");
+				    
+					  return (double) convertedValue;
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 				
-				String rate = response.getRates().get(toCurrencyCode);
-				double conversionRate = Double.valueOf((rate != null) ? rate : "0.0");
-				return conversionRate * amount;
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		return 0d;
