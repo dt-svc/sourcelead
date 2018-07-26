@@ -45,7 +45,8 @@ public class ConversionUtil {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
 	
-    private static final String API_PROVDIER = "http://api.fixer.io/";
+    //private static final String API_PROVDIER = "http://api.fixer.io/";  this is deprecated from March 6th 2018, 
+    private static final String API_PROVDIER = "http://data.fixer.io/api"; // new Api url added.
 	
 	/**
 	 * converting rate into per hour
