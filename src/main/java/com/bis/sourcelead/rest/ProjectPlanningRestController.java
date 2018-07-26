@@ -398,10 +398,26 @@ public class ProjectPlanningRestController {
 	  
 	  
 	  @RequestMapping(value = "/getResourceRequestApproversList", method = RequestMethod.GET)
-		public @ResponseBody List<User>  getResourceRequestApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		public @ResponseBody List<UserDTO>  getResourceRequestApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
 		    
 	      List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
-		  return approversList;
+	      List<UserDTO> approversDTOList = new ArrayList<>();
+	      for(User user : approversList) {
+	    	  UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocationId);
+	    	  if(userRole != null) {
+	    		  UserDTO userDTO = new UserDTO();
+	    		  userDTO.setFirstName(user.getFirstName());
+    			  userDTO.setLastName(user.getLastName());
+    			  userDTO.setId(user.getId());
+	    		  if(userRole.getDesignation() != null && !userRole.getDesignation().isEmpty()) {
+	    			  userDTO.setUserType(userRole.getDesignation());
+	    		  }else {
+	    			  userDTO.setUserType(userRole.getUserType());
+	    		  }
+	    		  approversDTOList.add(userDTO);
+	    	  }
+	      }
+		  return approversDTOList;
 	    }
 	  
 	     
