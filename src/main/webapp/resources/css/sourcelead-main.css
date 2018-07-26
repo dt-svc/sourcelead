@@ -933,6 +933,14 @@ border: 1px solid #d8d8d8; padding: 10px; box-sizing: border-box; background-col
 .level-second.level-second-active {
 	display: block;
 }
+
+.expenselevel-second {
+	transition: all ease-in-out 0.5s; display: none;
+}
+.expenselevel-second.expenselevel-second-active {
+	display: block;
+}
+
 /* notificaton styles */
 .bell {
 	color: #EEE;
