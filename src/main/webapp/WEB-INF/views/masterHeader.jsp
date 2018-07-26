@@ -2050,8 +2050,8 @@ function verifyEmail2() {
 document.onkeydown = function(evt) {
     evt = evt || window.event;
     if (evt.keyCode == 27) {
-        $(".mask").hide();
-        $(".popupWrap").fadeOut(100);
+        $(".mask, .advancedsearch-mask").hide();
+        $(".popupWrap, div.cand-advsrch-popup").fadeOut(100);
     }
 };
 </script>
