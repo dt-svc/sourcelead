@@ -199,7 +199,7 @@ public class LeaveServiceImpl implements LeaveService{
 	public Leave saveLeave(LeaveDTO leaveDTO,OrgLocations orgLocations, User user) throws Exception {
 		
 		Leave leave = null;
-		if(leaveDTO.getLeaveId() != null) {
+		if(leaveDTO.getLeaveId() != null && leaveDTO.getLeaveId() > 0) {
 			int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(leaveDTO.getLeaveId());
 			leave = leaveDao.getLeaveById(leaveDTO.getLeaveId());
 			leave.setUpdatedBy(user.getUserCode());
