@@ -10,45 +10,34 @@
 
 
 <section class="content-wraper">
-    <div id="onboardingLoading"></div>
-    <section class="content-header clearfix">
-     <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector"  style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
-			</div>
-	     </c:if>
-          <div class="pull-left">
-      <!-- <h2>Submission Templates</h2> -->
-      <h2 class="pull-left">Onboard Templates</h2>
-				<div class=" pull-left reportsH">
-			
-			<div class="RePop openTemplates">
-				
-			</div>
-		</div>
-    </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Onboard Templates List</div>
- <div class="clearfix"></div>
-    </section>
+<div id="onboardingLoading"></div>
     
-    <div class="timesheet_out">
-			<div class="project_wrap">
-			<div class="timesheet_head">
-			<ul>
-			 <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
-			 	<li><a href="<c:url value='${appPath}/addNewOnboardTemplate'/>"><i class="fa fa-plus"></i>Add Template</a></li>
-		 	 </sec:authorize>
-			</ul>
-			     
-            </div>
-			
-			    <div class="clients_wrap_table datatable_scroll">
-				    <div id="onboardingTemplatesList" class="datatable_filter"></div>
-				</div>	   
-					
-			</div>
-	   </div>	
-        
+   <section class="content-header clearfix">
+    <c:if test="${!empty msg}">
+        <div class="success_pop" id="selector"  style="display: block;">
+	         <i class="fa fa-check-circle"></i><span>${msg}</span>
+		</div>
+     </c:if>
+         <div class="pull-left"><h2 class="pull-left">Onboard Templates</h2></div>
+         <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Onboard Templates List</div>
+		<div class="clearfix"></div>
+   </section>
+    
+<div class="project_wrap">
+	 <div class="reportHead reportHeadDataTab clearfix">
+	    <ul class="pull-right list-unstyled list-inline">
+		 <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
+		 	<li><a href="<c:url value='${appPath}/addNewOnboardTemplate'/>" class="newAdBtn">+ Template</a></li>
+	 	 </sec:authorize>			
+		</ul>
+	</div>	
+
+    <div class="clients_wrap_table datatable_scroll">
+	    <div id="onboardingTemplatesList" class="datatable_filter dataSeaTop"></div>
+	</div>	
+	   
+</div>
+	
 </section>
     
 <script> 
@@ -100,7 +89,7 @@ function onboardingTemplatesList(){
 	                   		 result = result +"<td><div><span>"+opt.createdUser+"</span></div></td>";
 	                   		 result = result +"<td><div><span>"+opt.templateStatus+"</span></div></td>";
 	                   		 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE\')">'
-			                    	 result = result +"<td><div class=''><a href='"+sourceleadUrl+"/viewOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>View</a></div></td>"; 
+			                    	 result = result +"<td><div class='tblicons'><a href='"+sourceleadUrl+"/viewOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"' title='View' class='mr10'><i class='fa fa-eye'></i></a></div></td>"; 
 			                     '</sec:authorize>';
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
