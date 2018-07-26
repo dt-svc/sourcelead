@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	getDaywiseLeaveReportList();
+	getBalanceLeaveReportList();
 });
 </script>
 
@@ -25,11 +25,8 @@ $(document).ready(function(){
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" onclick="resetCandidateFilter();" title="Refresh"> <span class="fa fa-refresh"></span> </button>
           </div>
           <div class="pull-left mt5"> <a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openPop();"><i class="fa fa-filter faFilter padding_right"></i> </a> </div>
-          <div class="remove_search pull-right">
-            <input type="text" placeholder="Search"/>
-          </div>
         </div>
-        <div class="require_wrap_table tableFirstSecond clearfix">
+  <!--       <div class="require_wrap_table tableFirstSecond clearfix">
           <table>
             <thead>
               <tr>
@@ -50,35 +47,130 @@ $(document).ready(function(){
               </tr>
             </tbody>
           </table>
-        </div>
-        <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav>
+        </div> -->
+          <div class="clients_wrap_table datatable_filter">
+    <div id="balanceLeaveReportsList"></div>
+  </div>
       </div>
     </div>
   </section>
 
 
 <script>
-function getDaywiseLeaveReportList(){
+function getBalanceLeaveReportList(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#employeeDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate;
-	prepareAllDaywiseLeaveReportList(url);
+	//var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate;
+	var url = sourceleadUrl+"/getLeaveBalanceReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue;
+	prepareBalanceLeaveReportList(url);
+	
 }
 </script>	
 
 <script>
+function prepareBalanceLeaveReportList(url){
+$("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.get(url,
+						function(response) {
+							if (response.response === "AWKWARD") {
+								location.href = "/errorPage";
+							} else if (response.response === "SUCCESS") {
+								var result = "";
+								result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+								result = result + '<table id="dynamicBalanceLeaveReportsListView" class="display" cellspacing="0" width="100%" >';
+								result = result + '<thead>';
+								result = result + '<tr>';
+								result = result + '<th>Employee Name</th>';
+							 	result = result + '<th>Emp Type</th>';
+							 	for (i = 0; i < response.data.length; i++) {
+									var report = response.data[i];
+								if(report.leaveTypeNames !=null && report.leaveTypeNames !='' && report.leaveTypeNames !='undefined')
+								result = result + '<th>'+report.leaveTypeNames+'</th>';
+							 	}
+								result = result + '<th>Total Balance Leaves</th>';
+								result = result + '</tr>';
+								result = result + '</thead>';
+								result = result + '<tbody>';
+								 for (i =0; i < response.data.length; i++) {
+									var report = response.data[i];
+									result = result + '<tr>';
+									 if(report.empName !=null && report.empName !='' && report.empName !='undefined'){
+										result = result + ' <td><div class="tbldata-dotdot-100" title = "'+report.empName+'">'+report.empName+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
+									} 
+									 if(report.empType !=null && report.empType !='' && report.empType !='undefined'){
+											result = result + ' <td><div class="tbldata-dotdot-vsm" title = "'+report.empType+'">'+report.empType+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tbldata-dotdot-vsm">--</div></td>';
+										}
+									 var k="";
+									 var v="";
+								for (var a in report.map)
+									{
+									k=report.map[a];
+									v=a;
+									}
+//  									 for (i = 0; i < report.leaveTypeNames.length; i++)
+//  										 {
+//  										 if(report.leaveTypeNames ==v)
+										result = result + '    <td>';
+											result = result + '<div class="tbldata-dotdot-100">'+k+'</div>';
+										result = result + '    </td>'; 
+//  										 }
+// 								 }
+										result = result + '    <td>';
+											result = result + '<div class="tbldata-dotdot-100">'+v+'</div>';
+										result = result + '    </td>'; 
+									result = result + '    </tr>';
+								} 
+										result = result + '  </tbody>                                                                                                        ';
+										result = result + '</table> ';
+							
+							$("#balanceLeaveReportsList").empty();
+							$("#balanceLeaveReportsList").append(result);
+							$("#balanceLeavesTableSearch").removeAttr('style');
+							listTypePagination();
+							$(".proj_show").click(
+									function() {
+										$(".new_side_wrap").addClass(
+												"new_side_wrap_active");
+										$(".side_mask").fadeIn(200);
+										$("body").css('overflow-y',
+												'hidden');
+									});
+
+						}else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+							showError("Operation failed, please try again");
+						}
+       });
+}
+					
+</script>
+<script>
+	function listTypePagination() {
+		$('#dynamicBalanceLeaveReportsListView').DataTable({
+			"scrollCollapse" : false,
+			"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
+			"bLengthChange" : true,
+			"bDestroy" : true,
+			"ordering" : true,
+			"mark" : true,
+			"oLanguage" : {
+				"sSearch" : "",
+				"sZeroRecords" : "",
+				"sEmptyTable" : ""
+			}
+		});
+		$("#dynamicBalanceLeaveReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
+
+	}
+</script>
+
+<!-- <script>
 function prepareAllDaywiseLeaveReportList(url){
 	 	var result = "";
 		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
@@ -119,23 +211,20 @@ function daywiseLeaveReportsListPagination(url){
           pages: 10
         }),
         "columns": [
-        	{ "data": "employeeID" },
-            { "data": "name" },
-            { "data": "email"},
-            { "data": "mobilePhone"},
-            { "data": "employmentType"},
-            { "data": "fromDate"},
-            { "data": "toDate"},
-            { "data": "designation"},
-            { "data": "actions"}
+        	{ "data": "empName" },
+            { "data": "employmentType" },
+            { "data": "leaveTypeNames"},
+            { "data": "vacationLeave"},
+            { "data": "totalBalanceLeaves"}
+            
         ],
 		 "columnDefs": [ {
 		    	  	"targets": colIndex++,
-		    	  	"data": "employeeID",
-		    	  	"render": function(data, type, user, meta) {
+		    	  	"data": "empName",
+		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = '';
-		    	  		 if(user.employeeId !=null && user.employeeId !='' && user.employeeId !='undefined'){
-								result = result + ' <td><div class="tbldata-dotdot-100" title = "'+user.employeeId+'">'+user.employeeId+'</div></td>';
+		    	  		 if(report.empName !=null && report.empName !='' && report.empName !='undefined'){
+								result = result + ' <td><div class="tbldata-dotdot-100" title = "'+report.empName+'">'+report.empName+'</div></td>';
 							}else{
 								result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
 							}
@@ -144,10 +233,10 @@ function daywiseLeaveReportsListPagination(url){
 		      },{
 		    	  "targets": colIndex++,
 		          "data": "name",
-		          "render": function ( data, type, user, meta ) {
+		          "render": function ( data, type, report, meta ) {
 		        	  var result = '';
-		          if(user.userName !=null && user.userName !='' && user.userName !='undefined'){
-						 result = result +" <a href='<c:url value='/app/userSummary/"+user.userCode+"'/>'' title = '"+user.userName+"' class='UserTextLeft'>"+user.userName+"</a>";
+		          if(report.employmentType !=null && report.employmentType !='' && report.employmentType !='undefined'){
+						 result = result +" <a href='<c:url value='/app/reportSummary/"+report.employmentType+"'/>'' title = '"+report.employmentType+"' class='reportTextLeft'>"+report.employmentType+"</a>";
 		          }else{
 						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 					}
@@ -156,11 +245,11 @@ function daywiseLeaveReportsListPagination(url){
 		          }
 		          },{
 		        "targets": colIndex++,
-		        "data": "email",
-		        "render": function ( data, type, user, meta ) {
+		        "data": "leaveTypeNames",
+		        "render": function ( data, type, report, meta ) {
 		        	  var result = '';
-		        	  if(user.email !=null && user.email !='' && user.email !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-vsm" title = "'+user.email+'">'+user.email+'</div></td>';
+		        	  if(report.leaveTypeNames !=null && report.leaveTypeNames !='' && report.leaveTypeNames !='undefined'){
+							result = result + ' <td><div class="tbldata-dotdot-vsm" title = "'+report.leaveTypeNames+'">'+report.leaveTypeNames+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot-vsm">--</div></td>';
 						}
@@ -169,10 +258,10 @@ function daywiseLeaveReportsListPagination(url){
 		      }, {
 		          "targets": colIndex++,
 		          "data": "mobilePhone",
-		          "render": function ( data, type, user, meta ) {
+		          "render": function ( data, type, report, meta ) {
 		        	  var result = '';
-		        	  if(user.mobilePhone !=null && user.mobilePhone !='' && user.mobilePhone !='undefined'){
-							result = result + ' <td><div class="tblminwidth-100" title = "'+user.mobilePhone+'">'+user.mobilePhone+'</div></td>';
+		        	  if(report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
+							result = result + ' <td><div class="tblminwidth-100" title = "'+report.mobilePhone+'">'+report.mobilePhone+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tblminwidth-100">--</div></td>';
 						}
@@ -183,10 +272,10 @@ function daywiseLeaveReportsListPagination(url){
 		            "targets": colIndex++,
 		            "data": "employmentType",
 		            "sortable": false,
-		            "render": function ( data, type, user, meta ) {
+		            "render": function ( data, type, report, meta ) {
 		            	var result = '';
- 		            	if(user.employmentType !=null && user.employmentType !='' && user.employmentType !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot" title = "'+user.employmentType+'">'+user.employmentType+'</div></td>';
+ 		            	if(report.employmentType !=null && report.employmentType !='' && report.employmentType !='undefined'){
+							result = result + ' <td><div class="tbldata-dotdot" title = "'+report.employmentType+'">'+report.employmentType+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
@@ -198,10 +287,10 @@ function daywiseLeaveReportsListPagination(url){
 		          "targets": colIndex++,
 		          "data": "fromDate",
 		          "sortable": false,
-		          "render": function ( data, type, user, meta ) {
+		          "render": function ( data, type, report, meta ) {
 		          	var result = '';
-		          	if(user.dateofJoin !=null && user.dateofJoin !='' && user.dateofJoin !='undefined'){
-						result = result + ' <td><div class="tblminwidth-100" title = "'+user.dateofJoin+'">'+user.dateofJoin+'</div></td>';
+		          	if(report.dateofJoin !=null && report.dateofJoin !='' && report.dateofJoin !='undefined'){
+						result = result + ' <td><div class="tblminwidth-100" title = "'+report.dateofJoin+'">'+report.dateofJoin+'</div></td>';
 					}else{
 						result = result + ' <td><div class="tblminwidth-100">--</div></td>';
 					}
@@ -213,10 +302,10 @@ function daywiseLeaveReportsListPagination(url){
 		        "targets": colIndex++,
 		        "data": "toDate",
 		        "sortable": false,
-		        "render": function ( data, type, user, meta ) {
+		        "render": function ( data, type, report, meta ) {
 		        	var result = '';
-		        	 if(user.dateOfTermination !=null && user.dateOfTermination !='' && user.dateOfTermination !='undefined'){
-						result = result + ' <td><div class="tbldata-dotdot" title = "'+user.dateOfTermination+'">'+user.dateOfTermination+'</div></td>';
+		        	 if(report.dateOfTermination !=null && report.dateOfTermination !='' && report.dateOfTermination !='undefined'){
+						result = result + ' <td><div class="tbldata-dotdot" title = "'+report.dateOfTermination+'">'+report.dateOfTermination+'</div></td>';
 					}else{
 						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 					}
@@ -227,10 +316,10 @@ function daywiseLeaveReportsListPagination(url){
 			          "targets": colIndex++,
 			          "data": "designation",
 			          "sortable": false,
-			          "render": function ( data, type, user, meta ) {
+			          "render": function ( data, type, report, meta ) {
 			          	var result = '';
-			         	if(user.designation !=null && user.designation !='' && user.designation !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot" title = "'+user.designation+'">'+user.designation+'</div></td>';
+			         	if(report.designation !=null && report.designation !='' && report.designation !='undefined'){
+							result = result + ' <td><div class="tbldata-dotdot" title = "'+report.designation+'">'+report.designation+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						} 
@@ -240,15 +329,15 @@ function daywiseLeaveReportsListPagination(url){
 			          "targets": colIndex++,
 			          "data": "actions",
 			          "sortable": false,
-			          "render": function ( data, type, user, meta ) {
+			          "render": function ( data, type, report, meta ) {
 			          	var result = '';
 					       result = result + '      <td><div class="tblminwidth-75 text-center">             ';
 				           result = result + '      <div class="positionRelative actionList-vdse-div">';
 				           result = result + '        <ul class="list-unstyled list-inline clearfix actionList-vdse">';
-				           result = result + '          <li><a href="javascript:void(0)" title="Print" class="fa fa-print" onClick="printEVR();commonview('+user.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Download" class="fa fa-download" onClick="downloadEVR();commonview('+user.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR();commonview('+user.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="View" class="fa fa-eye" onClick="viewEVR();commonview('+user.employeeId+')"></a></li>';
+				           result = result + '          <li><a href="javascript:void(0)" title="Print" class="fa fa-print" onClick="printEVR();commonview('+report.employeeId+');"></a></li>';
+				           result = result + '          <li><a href="javascript:void(0)" title="Download" class="fa fa-download" onClick="downloadEVR();commonview('+report.employeeId+');"></a></li>';
+				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR();commonview('+report.employeeId+');"></a></li>';
+				           result = result + '          <li><a href="javascript:void(0)" title="View" class="fa fa-eye" onClick="viewEVR();commonview('+report.employeeId+')"></a></li>';
 				           result = result + '        </ul>';
 				           result = result + '      </div>';
 				           result = result + '    </div>';
@@ -278,13 +367,13 @@ $("#employeeDataTableSearch").keydown(function(e) {
 	   }
 	});
 </script>
-
-
+ -->
+ 
 <script>
 function viewCompleteTemplate(temp){
 	var templateUUID = $("#empTemplateId").val();
 	var toAddress = $("#toAddress").val();
-	var employeeId = $("#hiddenUserId").val();
+	var employeeId = $("#hiddenreportId").val();
 	var winPrint = window.open(sourceleadUrl+'/previewCompleteTemplateByTemplateUUID?&templateUUID='+templateUUID+'&toAddress='+toAddress+'&employeeId='+employeeId,'_newtab');
 	if(temp == 'print')
 		winPrint.print();

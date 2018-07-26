@@ -35,6 +35,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -2220,6 +2221,20 @@ public class UserDaoImpl implements UserDao {
 		}
 		return -1;
 	}
-	
+	@Override
+	@Transactional
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId) throws Exception{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LeaveBalanceReportDTO> userNameAndType = new ArrayList<LeaveBalanceReportDTO>();
+		String query ="select CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,ur.USER_TYPE AS empType,u.ID AS userId from USER u,USER_ROLE ur where u.ID=ur.USER_ID and ur.ORG_LOCATIONS_ID =:orgLocationId ";
+		//Query queryString = (Query) session.createSQLQuery(query).setLong("orgLocationId",orgLocationId).setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class)).list();
+		Query queryString = session.createSQLQuery(query);
+		queryString.setParameter("orgLocationId", orgLocationId);
+		queryString.setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class));
+		userNameAndType = queryString.list();
+		
+		return userNameAndType;
+		
+	}
 
 }

@@ -12,6 +12,7 @@ import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.LeaveReportView;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MonthlyLeaves;
@@ -83,5 +84,9 @@ public interface LeaveDao {
 	List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate);
 
 	int deleteApproversByLeaveId(Long leaveId);
+	
+	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(Long orgId, Long orgLocationId, String fromDate,String searchValue) throws Exception;
+	
+	List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId);
 
 }

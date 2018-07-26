@@ -12,6 +12,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -243,6 +244,7 @@ public interface UserService  {
 
 	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 
+	 List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId) throws Exception;
 }	
 		
 	

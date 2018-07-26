@@ -997,4 +997,15 @@ public class LeaveDaoImpl implements LeaveDao{
 				 response.setData(leaveReportList);
 		return response;
 	}
+	
+	@Override
+	@Transactional
+	public List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId){
+		Session session = this.sessionFactory.getCurrentSession();
+		List<String> leaveTypeNames = null;
+		String query = "select lt.NAME from LEAVE_TYPE lt where lt.STATUS =1 and lt.ORGLOCATION_ID =:orgLocationId and lt.VISIBLE_IN_BALANCE_LEAVES='Y'";
+		leaveTypeNames = session.createSQLQuery(query).setLong("orgLocationId",orgLocationId).list(); 
+		return leaveTypeNames;
+		
+	}
 }

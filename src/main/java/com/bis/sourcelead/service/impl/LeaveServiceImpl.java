@@ -53,6 +53,7 @@ import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.LeaveBalanceReportDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
@@ -2372,6 +2373,11 @@ public class LeaveServiceImpl implements LeaveService{
 	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(Long orgId, Long orgLocationId, String fromDate,String searchValue)throws Exception
 	{
 		return leaveDao.getLeaveReportsOrglocationIdAndFromToDate(orgId,orgLocationId,fromDate,searchValue);
+	}
+
+	@Override
+	public List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId) {
+		return leaveDao.getLeaveTypeNamesByOrgLocationId(orgLocationId);
 	}
 
 }
