@@ -35,7 +35,7 @@ function getDayWiseReports(){
 
 </script>
 
-
+<div id="reportsResultDiv">
  
  <section class="content-wraper">
     <section class="content-header clearfix">
@@ -46,7 +46,6 @@ function getDayWiseReports(){
     </section>
     
     <div class="clearfix vendor_wrap">
-    
     <div class="reportHead">
     	<ul class="clearfix pull-right">
     		<li>
@@ -127,7 +126,7 @@ function getDayWiseReports(){
 							</div>
 		       </div>
  
- 
+ </div>
  <script type="text/javascript"> 
  
  function resetFilter() {
@@ -361,7 +360,7 @@ function usersListPagination(url,sourceleadUrl){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.userRequirementsCount !=null && opt.userRequirementsCount !='' && opt.userRequirementsCount !='undefined'){
-            		  result = result +"<td> <a href='<c:url value='${appPath}/recruiterJobsReport?userCode="+opt.userCode+"'/>'><div class='small'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div> </a> </td>";
+            		  result = result +"<td> <a onclick='getRecruiterJobs(\""+opt.userCode+"\")'><div class='small'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div> </a> </td>";
             	  }else{
          	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
           	      }
@@ -527,20 +526,46 @@ function usersListPagination(url,sourceleadUrl){
 </script>
 
 <script>
-function reportpagination(){ 
-    $('#reportPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
+function getRecruiterJobs(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterJobsReport?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		jobsList();
+        }
+   	});
 }
-</script> 
-
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
