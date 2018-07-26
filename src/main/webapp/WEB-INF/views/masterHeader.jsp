@@ -2043,3 +2043,15 @@ function verifyEmail2() {
 }
 
 </script>
+
+<!--  Esc Key function  -->
+
+<script>
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    if (evt.keyCode == 27) {
+        $(".mask, .advancedsearch-mask").hide();
+        $(".popupWrap, div.cand-advsrch-popup").fadeOut(100);
+    }
+};
+</script>

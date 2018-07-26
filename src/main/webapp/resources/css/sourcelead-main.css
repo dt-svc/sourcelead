@@ -4,7 +4,7 @@
 	margin: 0; padding: 0;
 }
 body {
-	font-size: 14px; color: #333; min-height: 100%; background-color: #e0e0e0 !important;
+	font-size: 14px; color: #333; min-height: 100%; background-color: #eaeaea !important;
     font-style: normal !important; font-family:'Roboto', sans-serif  !important;
 }
 a:hover, a:active, a:focus {
@@ -661,7 +661,7 @@ line-height: 35px; border-bottom: 1px solid #325475; transition: all 0.5s ease-i
 
 /* content Area Styels */
 .content-wraper {
-background: #e0e0e0; min-height: 620px; margin-left: 190px; padding: 0 20px 30px; padding-top: 53px;
+background: #eaeaea; min-height: 620px; margin-left: 190px; padding: 0 20px 30px; padding-top: 53px;
 -moz-transition: all ease-in-out 0s; -ms-transition: all ease-in-out 0s; -webkit-transition: all ease-in-out 0s;
 transition: all ease-in-out 0s;
 }
@@ -689,7 +689,7 @@ position: relative;
 	color: #656565;
 }
 .content-wraper .content-header h2 {
-	margin: 0; font-size: 18px; word-break:break-all; color: #454545; font-weight: 500;
+	margin: 0; font-size: 17px; word-break:break-all; color: #454545; font-weight: 500;
 }
 .action-btns ul {
  margin: 5px 10px;
@@ -1132,7 +1132,7 @@ padding: 10px 15px; border-bottom: 1px solid #f4f4f4; position: relative;
 	left: 5px;
 }
 .notificatons .notifica-checkbox a {
-	padding-right: 15px; position: relative; top: 5px; color: #a94442;
+	padding-right: 15px; position: relative; top: 15px; color: #a94442;
 }
 .notificatons .notifica-checkbox a .fa {
 	font-size: 15px; position: relative; top: -1px;
@@ -9174,7 +9174,10 @@ border-bottom:none; margin-bottom: 5px;
 padding: 10px; border: none; 
 }
 .customEvents-Calendar .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
- 	border: none; background: none; font-weight: normal; color: #909090;
+ 	border: none !important; background: none !important; font-weight: normal !important; color: #909090 !important;
+}
+.customEvents-Calendar .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    background: #F4511E !important; border: 1px solid #F4511E !important; color: #fff !important; font-size: 14px !important;
 }
 .customEvents-Calendar .ui-state-highlight, .customEvents-Calendar .ui-widget-content .ui-state-highlight, .customEvents-Calendar .ui-widget-header .ui-state-highlight {
 	border-radius: 6px;
@@ -9206,6 +9209,7 @@ padding: 10px; border: none;
 .nestedTable table tr td, .nestedTable table tr th {
 	text-align:center; vertical-align: middle;
 }
+
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

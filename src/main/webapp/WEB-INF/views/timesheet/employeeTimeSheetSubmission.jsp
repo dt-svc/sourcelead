@@ -1359,7 +1359,7 @@ function addTimeSheetRow() {
         }
         
         function setTicketNumber(entryIndex,taskNumberId){
-        	if($("#" + taskNumberId).val() != null && $("#" + taskNumberId).val() != "" && $("#" + taskNumberId).val() !="undefined"){
+        	if($("#" + taskNumberId).val() != null && $("#" + taskNumberId).val() !="undefined"){
         		   var end = parseInt(entryIndex)+7;
 	          	  for (i = entryIndex; i < end; i++) {
 	          		   $("[name='timesheetSubmission.timesheetEntries["+i+"].ticketNumber']").val($("#"+taskNumberId).val());

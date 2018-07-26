@@ -1539,7 +1539,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  						invoice.setProjectID(project);
   	  						invoice.setDiscountType(Constants.PERCENTAGE);
   	  						invoice.setIsAutomaticGenerateInvoice(Constants.YES);
-  	  						float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(invoice.getTotal()));
+  	  						float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.valueOf(invoice.getTotal()));
   	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1);
   	  		  		      	float roundAmount = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
@@ -1665,7 +1665,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			if (null != projectMember.getTotalHours()) {
 				invoiceLineItems.setTotalHours(projectMember.getTotalHours());
 			}
-			if (null != rate && null != projectMember.getTotalHours()) {
+			if (null != rate && null != projectMember.getTotalHours() && projectMember.getTotalHours().contains(":")) {
 				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType,invoiceLineItems);
 				invoiceLineItems.setAmount(String.valueOf(totalAmount));
 				subTotal = subTotal + totalAmount;
@@ -1747,7 +1747,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		invoice.setInvoiceFrequency(frequency);
-		if (null != projectId && invoice.getInvoiceCategory() == null) {
+		if (null != projectId) {
 			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId,orgLocation.getId(), startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
@@ -1831,7 +1831,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
-		if (null != projectId && invoice.getInvoiceCategory() == null) {
+		if (null != projectId ) {
 			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, orgLocation.getId(),startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {

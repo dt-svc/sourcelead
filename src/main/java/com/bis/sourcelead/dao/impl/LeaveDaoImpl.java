@@ -29,6 +29,7 @@ import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
+import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.LeaveManagementUtil;
 
 
 @Repository
@@ -81,6 +83,9 @@ public class LeaveDaoImpl implements LeaveDao{
 	HolidayService holidayService;
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	LeaveManagementUtil leaveManagementUtil;
 	
 	@Override
 	@Transactional
@@ -413,8 +418,8 @@ public class LeaveDaoImpl implements LeaveDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from AppliedLeaveDateView aleave where aleave.userId = :userId and aleave.leaveTypeId = :leaveTypeId and (( aleave.applyLeaveDate >= :startDate AND aleave.applyLeaveDate <= :endDate)) and (aleave.leaveStatus = 'APPROVED' or aleave.leaveStatus = 'PENDING')";
 		List<AppliedLeaveDateView> thisMonthLeaves = session.createQuery(query).setLong("leaveTypeId", leaveType.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("userId", userId).list();
-		thisMonthLeaves = getExcludeHolidayLeaveCount(thisMonthLeaves, orgLocations,dates,leaveType);
-		return thisMonthLeaves.size();
+		float leaves = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(thisMonthLeaves, orgLocations,new AssociateBalanceLeaveView(),dates[0],dates[1],leaveType);
+		return leaves;
 	}
 
 

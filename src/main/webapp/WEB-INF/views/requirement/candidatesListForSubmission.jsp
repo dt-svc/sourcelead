@@ -5,7 +5,7 @@
 <script src="/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 <style>
-.refresh-icon {
+.refresh-icon.refreshIcon {
  top: 16px !important;
 }
 .mt2 {
@@ -113,7 +113,7 @@
 								<div class="clearfix">
 								<div class="col-md-14">
 							      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
-								  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+								  <i class="fa fa-refresh btn btn-primary refresh-icon refreshIcon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
 								 </div>
 								</div>
 							</div>
