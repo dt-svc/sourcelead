@@ -2372,9 +2372,9 @@ public class LeaveServiceImpl implements LeaveService{
 
 
 	@Override
-	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(Long orgId, Long orgLocationId, String fromDate,String searchValue)throws Exception
+	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(LeaveReportView  leaveReportView,Long orgId, Long orgLocationId, String fromDate,String searchValue,List<Long> userRoleList,List<Long> departmentsList)throws Exception
 	{
-		return leaveDao.getLeaveReportsOrglocationIdAndFromToDate(orgId,orgLocationId,fromDate,searchValue);
+		return leaveDao.getLeaveReportsOrglocationIdAndFromToDate(leaveReportView,orgId,orgLocationId,fromDate,searchValue,userRoleList,departmentsList);
 	}
 
 }

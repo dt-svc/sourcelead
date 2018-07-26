@@ -24,7 +24,7 @@ $(document).ready(function(){
           <div class="pull-left ml mt5 mr">
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" onclick="resetCandidateFilter();" title="Refresh"> <span class="fa fa-refresh"></span> </button>
           </div>
-          <div class="pull-left mt5"> <a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openPop();"><i class="fa fa-filter faFilter padding_right"></i> </a> </div>
+          <div class="pull-left mt5"> <a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="filterPop();"><i class="fa fa-filter faFilter padding_right"></i> </a> </div>
           <div class="pull-left ml mt5">
             <div class="pull-left mr5 width150px">
               <input value="" name="fromDate" id="fromDate" placeholder="Date" class="form-control calendar input-sm margin-top0" type="text">
@@ -94,10 +94,30 @@ $(document).ready(function(){
 
 <script>
 function getDaywiseLeaveReportList(){
+	var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	var employmentType = [];
+	$('input:checkbox[name=employmentType]:checked').each(function() 
+		    {
+		employmentType.push($(this).val());
+     });
+	var leaveTypeNames = [];
+	$('input:checkbox[name=leaveTypeNames]:checked').each(function() 
+		    {
+		leaveTypeNames.push($(this).val());
+     });
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate;
+	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames;
 	prepareAllDaywiseLeaveReportList(url);
 }
 </script>	
@@ -110,11 +130,14 @@ function prepareAllDaywiseLeaveReportList(url){
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '<th>Employee Name</th>';
+		result = result + '<th>Department</th>';
 		result = result + '<th>Emp Type</th>';
+		result = result + '<th>Role</th>';
 		result = result + '<th>Leave Type</th>';
 		result = result + '<th>Type</th>';
 		result = result + '<th>Duration</th>';
-		result = result + '<th>Leave Period</th>';
+		result = result + '<th>From Date</th>';
+		result = result + '<th>To Date</th>';
 		result = result + '<th>Reason</th>';
 		result = result + '<th>Approver</th>';
 		result = result + '<th>Status</th>';
@@ -144,11 +167,14 @@ function daywiseLeaveReportsListPagination(url){
         }),
         "columns": [
             { "data": "name" },
+            { "data": "userDeptName" },
             { "data": "employmentType"},
+            { "data": "userRoleName"},
             { "data": "leaveTypeName"},
             { "data": "type"},
             { "data": "duration"},
-            { "data": "leavePeriod"},
+            { "data": "fromDate"},
+            { "data": "toDate"},
             { "data": "reason"},
             { "data": "approver"},
             { "data": "status"}
@@ -158,118 +184,185 @@ function daywiseLeaveReportsListPagination(url){
 		    	  	"data": "name",
 		    	  	"render": function(data, type, user, meta) {
 			        	  var result = '';
+			        	  result = result + ' <td>';
 				          if(user.name !=null && user.name !='' && user.name !='undefined'){
-								 result = result + user.name;
+								 result = result +'<div class="tbldata-dotdot" title="'+user.name+'">'+user.name+'</div>';
 				          }else{
-								result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+								result = result + ' <div class="tbldata-dotdot">--</div>';
 							}
+				          result = result + ' </td>';
 				              return result;
 				          		
 				          }
 		    	  	
-		      },{
+		      },
+		      {
+			        "targets": colIndex++,
+			        "data": "userDeptName",
+			        "render": function ( data, type, user, meta ) {
+			        	  var result = '';
+			        	  result = result + ' <td>';
+			        	  if(user.userDeptName !=null && user.userDeptName !='' && user.userDeptName !='undefined'){
+								 result = result + '<div class="tblminwidth-75">'+user.userDeptName+'</div>';
+				          }else{
+								result = result + ' <div class="tblminwidth-75">--</div>';
+							}
+			        	  result = result + ' </td>';
+			        	 return result;
+			        }
+			      },
+			      {
 		        "targets": colIndex++,
 		        "data": "employmentType",
 		        "render": function ( data, type, user, meta ) {
 		        	  var result = '';
+		        	  result = result + ' <td>';
 		        	  if(user.employmentType !=null && user.employmentType !='' && user.employmentType !='undefined'){
-							 result = result + user.employmentType;
+							 result = result + '<div class="tblminwidth-75">'+user.employmentType+'</div>';
 			          }else{
-							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+							result = result + ' <div class="tblminwidth-75">--</div>';
 						}
+		        	  result = result + ' </td>';
 		        	 return result;
 		        }
-		      }, {
+		      },
+		      {
+			        "targets": colIndex++,
+			        "data": "userRoleName",
+			        "render": function ( data, type, user, meta ) {
+			        	  var result = '';
+			        	  result = result + ' <td>';
+			        	  if(user.userRoleName !=null && user.userRoleName !='' && user.userRoleName !='undefined'){
+								 result = result + '<div class="tblminwidth-75">'+user.userRoleName+'</div>';
+				          }else{
+								result = result + ' <div class="tblminwidth-75">--</div>';
+							}
+			        	  result = result + ' </td>';
+			        	 return result;
+			        }
+			      },
+		      
+		      {
 		          "targets": colIndex++,
 		          "data": "leaveTypeName",
 		          "render": function ( data, type, user, meta ) {
 		        	  var result = '';
+		        	  result = result + ' <td>';
 		        	  if(user.leaveTypeName !=null && user.leaveTypeName !='' && user.leaveTypeName !='undefined'){
-							 result = result + user.leaveTypeName;
+							 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.leaveTypeName+'">'+user.leaveTypeName+'</div>';
 			          }else{
-							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+							result = result + ' <div class="tbldata-dotdot-vsm">--</div>';
 						}
+		        	  result = result + ' </td>';
 		        	  return result;
 		          }
 		        }, {
 		            "targets": colIndex++,
 		            "data": "type",
-		            "sortable": false,
+		            "sortable": true,
 		            "render": function ( data, type, user, meta ) {
 		            	var result = '';
+		            	result = result + ' <td>';
 		            	 if(user.leaveTypeBillable !=null && user.leaveTypeBillable !='' && user.leaveTypeBillable !='undefined'){
-							 result = result + user.leaveTypeBillable;
+							 result = result + '<div class="tblminwidth-75">'+user.leaveTypeBillable+'</div>';
 			          }else{
-							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+							result = result + '<div class="tblminwidth-75">--</div>';
 						}
+		            	 result = result + ' </td>';
 			              return result;
 		            }
 		      },
 		      {
 		          "targets": colIndex++,
 		          "data": "duration",
-		          "sortable": false,
+		          "sortable": true,
 		          "render": function ( data, type, user, meta ) {
 		          	var result = '';
+		          	result = result + ' <td>';
 		          	if(user.duration !=null && user.duration !='' && user.duration !='undefined'){
-						 result = result + user.duration;
+						 result = result + '<div class="tblminwidth-75">'+user.duration+'</div>';
 		          }else{
-						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+						result = result + '<div class="tblminwidth-75">--</div>';
 					}
+		          	 result = result + ' </td>';
 			              return result;
 		          }
 		    },
 		    {
 		        "targets": colIndex++,
-		        "data": "leavePeriod",
-		        "sortable": false,
+		        "data": "fromDate",
+		        "sortable": true,
 		        "render": function ( data, type, user, meta ) {
 		        	var result = '';
+		        	result = result + ' <td>';
 		        	if(user.fromDateStr !=null && user.fromDateStr !='' && user.fromDateStr !='undefined'){
-						 result = result + user.fromDateStr+'To'+user.toDateStr;
+						 result = result + '<div class="tblminwidth-75">'+user.fromDateStr+'</div>';
 		          }else{
-						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+						result = result + '<div class="tblminwidth-75">--</div>';
 					}
+		        	 result = result + ' </td>';
+		              return result;
+		        }
+		    },
+		    {
+		        "targets": colIndex++,
+		        "data": "toDate",
+		        "sortable": true,
+		        "render": function ( data, type, user, meta ) {
+		        	var result = '';
+		        	result = result + ' <td>';
+		        	if(user.toDateStr !=null && user.toDateStr !='' && user.toDateStr !='undefined'){
+						 result = result + '<div class="tblminwidth-75">'+user.toDateStr+'</div>';
+		          }else{
+						result = result + ' <div class="tblminwidth-75">--</div>';
+					}
+		        	 result = result + ' </td>';
 		              return result;
 		        }
 		    },
 		    {
 			          "targets": colIndex++,
 			          "data": "reason",
-			          "sortable": false,
+			          "sortable": true,
 			          "render": function ( data, type, user, meta ) {
 			          	var result = '';
+			          	result = result + ' <td>';
 			          	if(user.reason !=null && user.reason !='' && user.reason !='undefined'){
-							 result = result + user.reason;
+							 result = result + '<div class="tbldata-dotdot-big" title="'+user.reason+'">'+user.reason+'</div>';
 			          }else{
-							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+							result = result + ' <div class="tbldata-dotdot-big">--</div>';
 						}
+			          	result = result + ' </td>';
 				        return result;
 			          }
 			}, {
 		          "targets": colIndex++,
 		          "data": "approver",
-		          "sortable": false,
+		          "sortable": true,
 		          "render": function ( data, type, user, meta ) {
 		          	var result = '';
+		          	result = result + ' <td>';
 		          	if(user.approver !=null && user.approver !='' && user.approver !='undefined'){
-						 result = result + user.approver;
+						 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.approver+'">'+user.approver+'</div>';
 		          }else{
-						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+						result = result + '<div class="tbldata-dotdot-vsm">--</div>';
 					}
-			        return result;
+		          	result = result + ' </td>';
+		          	return result;
 		          }
 		},{
 			          "targets": colIndex++,
 			          "data": "status",
-			          "sortable": false,
+			          "sortable": true,
 			          "render": function ( data, type, user, meta ) {
 			          	var result = '';
+			        	result = result + ' <td>';
 			          	if(user.status !=null && user.status !='' && user.status !='undefined'){
-							 result = result + user.status;
+							 result = result + '<div class="tblminwidth-50">'+user.status+'</div>';
 			          }else{
-							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+							result = result + '<div class="tblminwidth-50">--</div>';
 						}
+			          	result = result + ' </td>';
 				        return result;
 			          }
 		  }],
@@ -296,7 +389,97 @@ $("#daywiseReportDataTableSearch").keydown(function(e) {
 	});
 </script>
 
+<script>
+function filterPop(){
+	$("#dayWiseFilterId").toggle();
+	$(".advancedsearch-mask").fadeIn();
+};
+function closeAssetFilterPop(){
+	$("#dayWiseFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
 
+}
+</script>
+
+ <div class="advancedsearch-mask"></div>
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="dayWiseFilterId">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeAssetFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="col-md-3">
+						<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a roles">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
+									<c:forEach var="roles" items="${rolesList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="userRole" value ="${roles.id}" ><label>${roles.displayName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						
+						<c:if test="${departmentListSize > 0}">
+						<div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myDepartmentInput" onkeyup="myDepartmentFunction()" placeholder="Departments" title="Type in a departments">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myDepartmentUL">
+									<c:forEach var="dep" items="${departmentList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgDepartments" value ="${dep.id}"><label>${dep.departmentName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+					   	 <div class="col-md-3 mb">
+								<label><strong>Employment Type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="employmentTypeFilter">
+			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C"><label>&nbsp;C2C</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C-1099" ><label>&nbsp;C2C-1099</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="W-2" ><label>&nbsp;W-2</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H"><label>&nbsp;C2H</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H-1099"><label>&nbsp;C2H-1099</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Offshore C2C"><label>&nbsp;Offshore C2C</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Part Time"><label>&nbsp;Part Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Full Time"><label>&nbsp;Full Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Other"><label>&nbsp;Others</label></li>
+			                        </ul>
+								 </div>
+							 </div> 
+					 	<c:if test="${!empty leaveTypeNamesList}">
+						<div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="leaveTypeInput" onkeyup="leaveTypeFunction()" placeholder="LeaveType" title="Leave Type">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myDepartmentUL">
+									<c:forEach var="dep" items="${leaveTypeNamesList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="leaveTypeNames" value ="${dep.id}"><label>${dep.name}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if> 
+					   
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeAssetFilterPop();getDaywiseLeaveReportList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetAssetFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
 <script>
 function viewCompleteTemplate(temp){
 	var templateUUID = $("#empTemplateId").val();

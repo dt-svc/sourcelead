@@ -101,7 +101,7 @@ public interface LeaveService {
 
 	List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate);
 
-	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(Long orgId, Long orgLocationId, String fromDate,String searchValue)throws Exception;
+	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(LeaveReportView  leaveReportView,Long orgId, Long orgLocationId, String fromDate,String searchValue,List<Long> userRoleList,List<Long> departmentsList)throws Exception;
 
 	void updateBalanceLeaves(Leave leave, User user, OrgLocations orgLocations);
 	

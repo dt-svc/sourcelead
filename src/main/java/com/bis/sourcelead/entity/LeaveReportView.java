@@ -1,6 +1,8 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,6 +46,22 @@ public class LeaveReportView {
 	private String duration;
 	@Column(name = "EMP_TYPE", columnDefinition = "TEXT default NULL")
 	private String employmentType;
+	
+	@Column(name = "USER_DEPT_NAME", columnDefinition = "TEXT default NULL")
+	private String userDeptName;
+	
+	@Column(name = "USER_ROLE_NAME")
+	private String userRoleName;
+	
+	@Column(name = "ROLE_ID", nullable = false)
+	private Long roleId;
+	
+	@Transient
+	private List<Map<String, String>> order;
+	@Transient
+	private String sortColumn;
+	@Transient
+	private String sortOrder;
 	
 	@Transient
 	@JsonProperty
@@ -223,4 +241,66 @@ public class LeaveReportView {
 	{
 		this.toDateStr = toDateStr;
 	}
+
+	public List<Map<String, String>> getOrder()
+	{
+		return order;
+	}
+
+	public void setOrder(List<Map<String, String>> order)
+	{
+		this.order = order;
+	}
+
+	public String getSortColumn()
+	{
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn)
+	{
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortOrder()
+	{
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder)
+	{
+		this.sortOrder = sortOrder;
+	}
+
+	public String getUserDeptName()
+	{
+		return userDeptName;
+	}
+
+	public void setUserDeptName(String userDeptName)
+	{
+		this.userDeptName = userDeptName;
+	}
+
+	public String getUserRoleName()
+	{
+		return userRoleName;
+	}
+
+	public void setUserRoleName(String userRoleName)
+	{
+		this.userRoleName = userRoleName;
+	}
+
+	public Long getRoleId()
+	{
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId)
+	{
+		this.roleId = roleId;
+	}
+	
+	
 }
