@@ -6,8 +6,6 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,17 +21,19 @@ import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
-import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmissionItem;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocument;
+import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocumentAttachment;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
-import com.bis.sourcelead.entity.UserCustomFieldData;
 
 @Repository
 @Transactional
 public class TaxDaoImpl implements TaxDao {
-	private static final Logger logger = LoggerFactory.getLogger(TaxDaoImpl.class);
+
+	// private static final Logger logger =
+	// LoggerFactory.getLogger(TaxDaoImpl.class);
+
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -118,6 +118,7 @@ public class TaxDaoImpl implements TaxDao {
 		return 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	public StateTax getStateTax(String statetaxuuid) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -134,6 +135,7 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public CentralTax getCentralTax(String centraltaxuuid) {
 		try {
@@ -273,6 +275,7 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public SourceleadTaxForm getTaxFormType(String uuid) {
 		try {
@@ -401,7 +404,8 @@ public class TaxDaoImpl implements TaxDao {
 	public long changeITDeclarationSectionItemStatus(long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			SourceleadTaxITDeclarationItem sourceleadTaxSectionItem = session.get(SourceleadTaxITDeclarationItem.class, id);
+			SourceleadTaxITDeclarationItem sourceleadTaxSectionItem = session.get(SourceleadTaxITDeclarationItem.class,
+					id);
 			if (sourceleadTaxSectionItem != null) {
 				sourceleadTaxSectionItem.setActive(!sourceleadTaxSectionItem.isActive());
 				return sourceleadTaxSectionItem.getId();
@@ -449,12 +453,12 @@ public class TaxDaoImpl implements TaxDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public int getITDeclarationFormsCountByYear(int year, String tableName) {
+	public int getITDeclarationFormsCountByYear(String financialYear, String tableName) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from SourceleadTax" + tableName + "Submission it where it.financialYear=:year";
+			String query = "from SourceleadTax" + tableName + "Submission it where it.financialYear=:financialYear";
 			Query queryObj = session.createQuery(query);
-			queryObj.setString("year", year + "");
+			queryObj.setString("financialYear", financialYear + "");
 			List<Object> submissionList = queryObj.list();
 			if (submissionList != null && !submissionList.isEmpty())
 				return submissionList.size();
@@ -464,8 +468,10 @@ public class TaxDaoImpl implements TaxDao {
 		return 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, String financialYear) {
+	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid,
+			String financialYear) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from SourceleadTaxITDeclarationSubmission it where it.sourceleadTaxForm.uuid=:uuid and it.financialYear=:financialYear";
@@ -479,6 +485,7 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(String taxFormUUID, String formUUID) {
 		try {
@@ -508,11 +515,27 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
+	/*
+	 * @Override public SourceleadTaxITDeclarationSubmissionItem
+	 * getITDeclarationSubmissionItem(long id) { try { Session session =
+	 * this.sessionFactory.getCurrentSession(); return
+	 * session.get(SourceleadTaxITDeclarationSubmissionItem.class, id); } catch
+	 * (Exception e) { e.printStackTrace(); } return null; }
+	 */
+
+	@SuppressWarnings("unchecked")
 	@Override
-	public SourceleadTaxITDeclarationSubmissionItem getITDeclarationSubmissionItem(long id) {
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(long userId, String financialYear) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			return session.get(SourceleadTaxITDeclarationSubmissionItem.class, id);
+			String query = "from SourceleadTaxITDeclarationSubmission itDeclarationSubmission where itDeclarationSubmission.user.id=:userId and itDeclarationSubmission.financialYear=:financialYear";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("userId", userId);
+			queryObj.setString("financialYear", financialYear);
+			List<SourceleadTaxITDeclarationSubmission> itDeclarationSubmissionList = queryObj.list();
+			if (itDeclarationSubmissionList != null && !itDeclarationSubmissionList.isEmpty()) {
+				return itDeclarationSubmissionList.get(0);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -546,82 +569,101 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
-		@Override
-		public long addITChallanSectionItem(SourceleadTaxChallanItem sectionItem) {
-			try {
-				Session session = this.sessionFactory.getCurrentSession();
-				session.saveOrUpdate(sectionItem);
-				return sectionItem.getId();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return 0;
+	@Override
+	public SourceleadTaxSubmissionDocument getSourceleadTaxSubmissionDocumentById(long submissionDocumentId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(SourceleadTaxSubmissionDocument.class, submissionDocumentId);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return null;
+	}
 
-		
+	@Override
+	public void removeTaxSubmissionDocumentAttachment(SourceleadTaxSubmissionDocumentAttachment attachment) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(attachment);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-			@Override
-			@Transactional
-			public long addItChallanSection(SourceleadTaxChallan section) {
-				try {
-					Session session = this.sessionFactory.getCurrentSession();
-					session.saveOrUpdate(section);
-					return section.getId();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return 0;
-			}
+	@Override
+	public long addITChallanSectionItem(SourceleadTaxChallanItem sectionItem) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(sectionItem);
+			return sectionItem.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
 
-			@Override
-			@Transactional
-			public SourceleadTaxChallanItem getSourceleadTaxChallanItemById(long addChallanSectionItemId) {
-				SourceleadTaxChallanItem sourceleadTaxChallanItem = null;
-				try {
-					Session session = this.sessionFactory.getCurrentSession();
-					sourceleadTaxChallanItem = (SourceleadTaxChallanItem) session.get(SourceleadTaxChallanItem.class, addChallanSectionItemId);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return sourceleadTaxChallanItem;
-			}
+	@Override
+	@Transactional
+	public long addItChallanSection(SourceleadTaxChallan section) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(section);
+			return section.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
 
-			@Override
-			public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormField challanSubField) {
-				try {
-					Session session = this.sessionFactory.getCurrentSession();
-					session.saveOrUpdate(challanSubField);
-					return challanSubField.getId();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return 0;
-			}
-			
-			
-			@Override
-			public SourceleadTaxChallanItem getChallanItemDetails(Long itemRowId) {
-				SourceleadTaxChallanItem ChallanItemDetails = null;
-				try {
-					Session session = this.sessionFactory.getCurrentSession();
-					ChallanItemDetails = (SourceleadTaxChallanItem) session.get(SourceleadTaxChallanItem.class, itemRowId);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return ChallanItemDetails;
-			}
+	@Override
+	@Transactional
+	public SourceleadTaxChallanItem getSourceleadTaxChallanItemById(long addChallanSectionItemId) {
+		SourceleadTaxChallanItem sourceleadTaxChallanItem = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			sourceleadTaxChallanItem = (SourceleadTaxChallanItem) session.get(SourceleadTaxChallanItem.class,
+					addChallanSectionItemId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sourceleadTaxChallanItem;
+	}
 
-			@Override
-			public SourceleadTaxChallanItem getITChallanSectionItem(Long id) {
-				try {
-					Session session = this.sessionFactory.getCurrentSession();
-					SourceleadTaxChallanItem sourceleadTaxChallanItem = (SourceleadTaxChallanItem) session.get(SourceleadTaxChallanItem.class, id);
-					return sourceleadTaxChallanItem;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return null;
-			}
+	@Override
+	public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormField challanSubField) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(challanSubField);
+			return challanSubField.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
 
-			
+	@Override
+	public SourceleadTaxChallanItem getChallanItemDetails(Long itemRowId) {
+		SourceleadTaxChallanItem ChallanItemDetails = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			ChallanItemDetails = (SourceleadTaxChallanItem) session.get(SourceleadTaxChallanItem.class, itemRowId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ChallanItemDetails;
+	}
+
+	@Override
+	public SourceleadTaxChallanItem getITChallanSectionItem(Long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			SourceleadTaxChallanItem sourceleadTaxChallanItem = (SourceleadTaxChallanItem) session
+					.get(SourceleadTaxChallanItem.class, id);
+			return sourceleadTaxChallanItem;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

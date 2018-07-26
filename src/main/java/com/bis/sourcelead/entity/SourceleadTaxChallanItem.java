@@ -18,9 +18,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-
-
-
 @Entity
 @Table(name = "SOURCELEAD_TAX_CHALLAN_ITEM", catalog = "sourcelead")
 public class SourceleadTaxChallanItem implements Serializable {
@@ -32,58 +29,56 @@ public class SourceleadTaxChallanItem implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+	@Column(name = "ID", nullable = false)
 	private Long id;
-	
+
 	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SOURCELEAD_TAX_CHALLAN_ID", nullable = false)
 	private SourceleadTaxChallan sourceleadtaxchallan;
-	
+
 	@Column(name = "FIELD_TYPE")
 	private String fieldType;
-	
+
 	@Column(name = "LABEL_NAME")
 	private String labelName;
-	
+
 	@Column(name = "DISCRIPTION")
 	private String discription;
-	
-	
+
 	@Column(name = "IS_FIELD_REQUIRED")
 	private Boolean isFieldRequired;
-	
+
 	@Column(name = "PLACEHOLDER")
 	private String placeHolder;
-	
+
 	@Column(name = "MIN_LENGTH")
 	private int minLength;
-	
+
 	@Column(name = "MAX_LENGTH")
 	private int maxLength;
-	
+
 	@Column(name = "MIN_DATE")
 	private Date minDate;
-	
+
 	@Column(name = "MAX_DATE")
 	private Date maxDate;
-	
+
 	@Column(name = "MIN_NUMBER")
 	private int minNumber;
-	
+
 	@Column(name = "MAX_NUMBER")
 	private int maxNumber;
-	
+
 	@Column(name = "DATAVALIDATION_TYPE")
 	private String dataValidationType;
-	
+
 	@Column(name = "DATAVALIDATION_RANGE")
 	private String dataValidationRange;
-	
-	
+
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
-	
+
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 
@@ -92,7 +87,7 @@ public class SourceleadTaxChallanItem implements Serializable {
 
 	@OneToMany(mappedBy = "sourceleadTaxChallanItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<SourceleadTaxChallanItemSubFormField> sourceleadTaxChallanItemSubFormFieldList;
-	
+
 	public List<SourceleadTaxChallanItemSubFormField> getSourceleadTaxChallanItemSubFormFieldList() {
 		return sourceleadTaxChallanItemSubFormFieldList;
 	}
@@ -102,12 +97,12 @@ public class SourceleadTaxChallanItem implements Serializable {
 		this.sourceleadTaxChallanItemSubFormFieldList = sourceleadTaxChallanItemSubFormFieldList;
 	}
 
-	public Boolean getActive() {
-		return active;
+	public Long getId() {
+		return id;
 	}
 
-	public void setActive(Boolean active) {
-		this.active = active;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public SourceleadTaxChallan getSourceleadtaxchallan() {
@@ -116,15 +111,6 @@ public class SourceleadTaxChallanItem implements Serializable {
 
 	public void setSourceleadtaxchallan(SourceleadTaxChallan sourceleadtaxchallan) {
 		this.sourceleadtaxchallan = sourceleadtaxchallan;
-	}
-
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getFieldType() {
@@ -143,7 +129,14 @@ public class SourceleadTaxChallanItem implements Serializable {
 		this.labelName = labelName;
 	}
 
-	
+	public String getDiscription() {
+		return discription;
+	}
+
+	public void setDiscription(String discription) {
+		this.discription = discription;
+	}
+
 	public Boolean getIsFieldRequired() {
 		return isFieldRequired;
 	}
@@ -175,8 +168,6 @@ public class SourceleadTaxChallanItem implements Serializable {
 	public void setMaxLength(int maxLength) {
 		this.maxLength = maxLength;
 	}
-
-	
 
 	public Date getMinDate() {
 		return minDate;
@@ -226,8 +217,6 @@ public class SourceleadTaxChallanItem implements Serializable {
 		this.dataValidationRange = dataValidationRange;
 	}
 
-
-
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -244,26 +233,12 @@ public class SourceleadTaxChallanItem implements Serializable {
 		this.updatedDate = updatedDate;
 	}
 
-	public String getDiscription() {
-		return discription;
+	public Boolean getActive() {
+		return active;
 	}
 
-	public void setDiscription(String discription) {
-		this.discription = discription;
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public void setSourceleadtaxchallan(Long challanSectionId) {
-		
-	}
-
-
-	public void setTaxsectionid(SourceleadTaxChallan taxChallanSection) {
-		
-	}
-
 
 }

@@ -16,7 +16,7 @@
 		<div class="tablelist-wrap">
 			<div class="timesheetHead minHeight40 mt minHeight40">
 				<div class="col-md-2 dropdown-select mt10 mb10">
-					<select class="form-control" id="stateTaxYearList">
+					<select class="form-control" id="yearList">
 						<c:forEach items="${yearList}" var="year">
 							<option ${year.value==true?"selected=selected":""}
 								value="${year.key}">${year.key}</option>
@@ -53,7 +53,7 @@
 							<tr>
 								<td><div class="tblminwidth proj_show">
 										<span>${form.name}</span> <i class="fa fa-binoculars"
-											onclick="location.href='list?uuid=${form.uuid}&year=${selectedYear}'"></i>
+											onclick="location.href='list?uuid=${form.uuid}&financialYear=${selectedYear}'"></i>
 									</div></td>
 								<td><div class="tbldata-dotdot-verybig">${form.financialYear}</div></td>
 								<td><div class="tbldata-dotdot-verybig">${form.totalFormsCount}</div></td>
@@ -77,7 +77,7 @@
 	</div>
 </section>
 <script type="text/javascript">
-	$("#stateTaxYearList").change(function() {
-		location.href = 'list?year='+$(this).val();
+	$("#yearList").change(function() {
+		location.href = 'list?financialYear='+$(this).val();
 	});
 </script>

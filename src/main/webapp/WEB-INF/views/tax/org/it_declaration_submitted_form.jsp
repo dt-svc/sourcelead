@@ -153,61 +153,101 @@
 								</tr>
 							</thead>
 							<tbody id="documentsTable">
-								<c:set value="0" var="documentCount"></c:set>
-								<c:forEach items="${documents}" var="document">
-									<tr>
-										<td>
-											<div style="display: none;" class="attachments" data-index="0">
-												<c:set value="0" var="attachmentCount"></c:set>
-												<c:forEach items="${document.attachmentList}" var="attachment">
-													<input name="documentList[${documentCount}].attachmentList[${attachmentCount}].attachment" data-name="documentFileNames" value="${attachment.attachment}" type="hidden">
-													<c:set value="${attachmentCount + 1}" var="attachmentCount"></c:set>
-												</c:forEach>
-											</div>
-											<input name="documentList[${documentCount}].name" data-name="documentName" type="hidden">
-											<input name="documentList[${documentCount}].updateFile" data-name="updateFile" type="hidden" value="false"/>
-											<%-- <input name="documentList[${documentCount}].fileNames" data-name="documentFileNames" type="hidden"> --%>
-											<input value="${document.name}" data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
-												data-validation='required' onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
-										</td>
-										<td>
-											<div class="clearfix attchments">
-												<div class="input-group">
-													<label class="input-group-btn">
-														<span class="btn btn-primary">Browse File <input style="visibility: hidden; height: 0; width: 10px; overflow: hidden"
+								<c:choose>
+									<c:when test="${documents.size() > 0}">
+										<c:set value="0" var="documentCount"></c:set>
+										<c:forEach items="${documents}" var="document">
+											<tr data-index="${documentCount}">
+												<td>
+													<div style="display: none;" class="attachments" data-index="${documentCount}">
+														<c:set value="0" var="attachmentCount"></c:set>
+														<c:forEach items="${document.attachmentList}" var="attachment">
+															<input name="documentList[${documentCount}].attachmentList[${attachmentCount}].attachment" data-name="documentFileNames" value="${attachment.attachment}" type="hidden">
+															<c:set value="${attachmentCount + 1}" var="attachmentCount"></c:set>
+														</c:forEach>
+													</div>
+													<input name="documentList[${documentCount}].id" data-name="documentId" type="hidden" value="${document.id}">
+													<input name="documentList[${documentCount}].name" data-name="documentName" type="hidden" value="${document.name}">
+													<input name="documentList[${documentCount}].updateFile" data-name="updateFile" type="hidden" value="false"/>
+													<%-- <input name="documentList[${documentCount}].fileNames" data-name="documentFileNames" type="hidden"> --%>
+													<input value="${document.name}" data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
+														data-validation='required' onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
+												</td>
+												<td>
+													<div class="clearfix attchments">
+														<div class="input-group">
+															<label class="input-group-btn">
+																<span class="btn btn-primary">Browse File <input style="visibility: hidden; height: 0; width: 10px; overflow: hidden"
+																		multiple="multiple" id="uploadBtn${documentCount}" class="upload"
+																		onchange="fileUploadEvent(this)" type="file" data-index="${documentCount}">
+																</span>
+															</label>
+															<input class="form-control" readonly="readonly"
+																field-name='Document File' data-validation='required'
+																id="uploadFile1" placeholder="Select File(s)" type="text" value="${document.attachmentList.size()} files selected">
+														</div>
+													</div>
+													<div class="uploadedFiles">
+														<c:set value="0" var="attachmentCount"></c:set>
+														<c:forEach items="${document.attachmentList}" var="attachment">
+															<div data-index="${attachmentCount}"><i onclick="removeAttachment(this);" class="text-danger fa fa-remove cursorPointer"></i>${attachment.attachment}</div>
+															<c:set value="${attachmentCount + 1}" var="attachmentCount"></c:set>
+														</c:forEach>
+													</div>
+												</td>
+												<td>
+													<div class="tblminwidth-75 text-center">
+														<c:choose>
+															<c:when test="${documentCount == 0}">
+																<i class="fa fa-plus mr cursorPointer" onclick="addDocumentRow()"></i>
+															</c:when>
+															<c:otherwise>
+																<i class="fa fa-trash text-danger mr cursorPointer" onclick="removeDocumentRow(this)"></i>
+															</c:otherwise>
+														</c:choose>
+																<i class="fa fa-refresh cursorPointer disableBtn" onclick="refreshDocumentRow(this)"></i>
+													</div>
+												</td>
+											</tr>
+											<c:set value="${documentCount + 1}" var="documentCount"></c:set>
+										</c:forEach>
+									</c:when>
+									<c:otherwise>
+										<tr data-index="0">
+											<td>
+												<div style="display: none;" class="attachments" data-index="0"></div>
+												<input name="documentList[0].name" data-name="documentName" type="hidden">
+												<input name="documentList[0].updateFile" data-name="updateFile" type="hidden" value="false"/>
+												<input data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
+													data-validation='required' onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
+											</td>
+											<td>
+												<div class="clearfix attchments">
+													<div class="input-group">
+														<label class="input-group-btn"> <span
+															class="btn btn-primary">Browse File <input
+																style="visibility: hidden; height: 0; width: 10px; overflow: hidden"
 																multiple="multiple" id="uploadBtn0" class="upload"
-																onchange="fileUploadEvent(this)" type="file">
+																onchange="fileUploadEvent(this)" type="file" data-index="0">
 														</span>
-													</label>
-													<input class="form-control" readonly="readonly"
-														field-name='Document File' data-validation='required'
-														id="uploadFile1" placeholder="Select File(s)" type="text" value="${document.attachmentList.size()} files selected">
+														</label> <input class="form-control" readonly="readonly"
+															field-name='Document File' data-validation='required'
+															id="uploadFile1" placeholder="Select File(s)" type="text">
+													</div>
 												</div>
-											</div>
-											<div class="uploadedFiles">
-												<c:set value="0" var="attachmentCount"></c:set>
-												<c:forEach items="${document.attachmentList}" var="attachment">
-													<div data-index="${attachmentCount}"><i onclick="removeAttachment();" class="text-danger fa fa-remove cursorPointer"></i>${attachment.attachment}</div>
-													<c:set value="${attachmentCount + 1}" var="attachmentCount"></c:set>
-												</c:forEach>
-											</div>
-										</td>
-										<td>
-											<div class="tblminwidth-75 text-center">
-												<c:choose>
-													<c:when test="${documentCount == 0}">
-														<i class="fa fa-plus mr cursorPointer" onclick="addDocumentRow()"></i>
-													</c:when>
-													<c:otherwise>
-														<i class="fa fa-trash text-danger mr cursorPointer" onclick="removeDocumentRow(this)"></i>
-													</c:otherwise>
-												</c:choose>
-														<i class="fa fa-refresh cursorPointer disableBtn" onclick="refreshDocumentRow(this)"></i>
-											</div>
-										</td>
-									</tr>
-									<c:set value="${documentCount + 1}" var="documentCount"></c:set>
-								</c:forEach>
+												<div class="uploadedFiles"></div>
+											</td>
+											<td>
+												<div class="tblminwidth-75 text-center">
+													<i class="fa fa-plus mr cursorPointer"
+														onclick="addDocumentRow()"></i> <i
+														class="fa fa-refresh cursorPointer disableBtn"
+														onclick="refreshDocumentRow(this)"></i>
+												</div>
+											</td>
+										</tr>
+									</c:otherwise>
+								</c:choose>
 							</tbody>
 						</table>
 					</div>
@@ -229,3 +269,6 @@
 	</form>
 	<!-- Content Area Ends-->
 </section>
+<script type="text/javascript">
+	uploadCount = ${documents.size()};
+</script>

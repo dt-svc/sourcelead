@@ -1,10 +1,8 @@
 package com.bis.sourcelead.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.bis.sourcelead.dto.CentralTaxDTO;
-
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
 import com.bis.sourcelead.dto.SourceleadTaxChallanItemDTO;
@@ -13,16 +11,11 @@ import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
-import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionItemDTO;
 import com.bis.sourcelead.dto.SourceleadTaxSubmissionDocumentDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
-
-import com.bis.sourcelead.entity.OrgLocations;
-
 import com.bis.sourcelead.dto.helper.Paginator;
-
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProfessionalTax;
-import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
@@ -71,14 +64,15 @@ public interface TaxService {
 
 	Tds getTDSById(long id);
 
-	Response<Long> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO, User loggedInUser);
+	Response<Long> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO,
+			User loggedInUser);
 
 	List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid, String financialYear);
 
 	SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID);
 
-	void saveUploadedDocuments(List<SourceleadTaxSubmissionDocumentDTO> documentList, String staticPath, Long orgId, Long orgLocationId,
-			long submissionId);
+	void saveUploadedDocuments(List<SourceleadTaxSubmissionDocumentDTO> documentList, String staticPath, Long orgId,
+			Long orgLocationId, long submissionId);
 
 	List<SourceleadTaxSubmissionDocumentDTO> getUploadedDocumentsBySubmissionId(long submissionId);
 
@@ -86,8 +80,9 @@ public interface TaxService {
 
 	long addItChallanSection(SourceleadTaxChallanDTO sourceleadTaxSectionDTO);
 
-	public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormFieldDTO optionData, long addChallanSectionItemId);
+	public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormFieldDTO optionData,
+			long addChallanSectionItemId);
 
-	 public SourceleadTaxChallanItemDTO getChallanItemDetails(Long itemRowId);
-	
+	public SourceleadTaxChallanItemDTO getChallanItemDetails(Long itemRowId);
+
 }

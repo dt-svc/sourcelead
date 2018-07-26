@@ -121,11 +121,11 @@
 								</tr>
 							</thead>
 							<tbody id="documentsTable">
-								<tr>
+								<tr data-index="0">
 									<td>
 										<div style="display: none;" class="attachments" data-index="0"></div>
 										<input name="documentList[0].name" data-name="documentName" type="hidden">
-										<input name="documentList[0].fileNames" data-name="documentFileNames" type="hidden">
+										<input name="documentList[0].updateFile" data-name="updateFile" type="hidden" value="false"/>
 										<input data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
 											data-validation='required' onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
 									</td>
@@ -135,8 +135,8 @@
 												<label class="input-group-btn"> <span
 													class="btn btn-primary">Browse File <input
 														style="visibility: hidden; height: 0; width: 10px; overflow: hidden"
-														multiple="multiple" id="uploadBtn1" class="upload"
-														onchange="fileUploadEvent(this)" type="file">
+														multiple="multiple" id="uploadBtn0" class="upload"
+														onchange="fileUploadEvent(this)" type="file" data-index="0">
 												</span>
 												</label> <input class="form-control" readonly="readonly"
 													field-name='Document File' data-validation='required'

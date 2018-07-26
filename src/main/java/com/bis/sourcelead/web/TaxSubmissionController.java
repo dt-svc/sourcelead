@@ -1,9 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.util.Calendar;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -48,44 +46,60 @@ public class TaxSubmissionController {
 
 	// forms tab org/user
 
-	private void setYears(ModelAndView modelAndView, int selectedYear) {
-		Map<String, Boolean> yearList = new LinkedHashMap<>();
-		Calendar c = Calendar.getInstance();
-		c.roll(Calendar.YEAR, -2);
-		for (int i = 0; i < 4; i++) {
-			Calendar c1 = Calendar.getInstance();
-			boolean isCurrent = selectedYear > 0 ? selectedYear == c.get(Calendar.YEAR) : c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
-			yearList.put(c.get(Calendar.YEAR) + "", isCurrent);
-			c.roll(Calendar.YEAR, 1);
-		}
-		modelAndView.addObject("yearList", yearList);
-	}
+//	private void setYears(ModelAndView modelAndView, int selectedYear) {
+//		Map<String, Boolean> yearList = new LinkedHashMap<>();
+//		Calendar c = Calendar.getInstance();
+//		c.roll(Calendar.YEAR, -2);
+//		for (int i = 0; i < 4; i++) {
+//			Calendar c1 = Calendar.getInstance();
+//			boolean isCurrent = selectedYear > 0 ? selectedYear == c.get(Calendar.YEAR)
+//					: c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
+//			yearList.put(c.get(Calendar.YEAR) + "", isCurrent);
+//			c.roll(Calendar.YEAR, 1);
+//		}
+//		modelAndView.addObject("yearList", yearList);
+//	}
 
 	@RequestMapping(value = "/forms/list")
-	public ModelAndView getForms(HttpServletRequest request, @RequestParam(defaultValue = "0") int year,
+	public ModelAndView getForms(HttpServletRequest request, @RequestParam(defaultValue = "") String financialYear,
 			@RequestParam(defaultValue = "") String uuid) {
 		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("errorPage");
 		try {
-			String financialYear = "";
-			Calendar c = Calendar.getInstance();
-			if (year > 0) {
-				c.set(Calendar.YEAR, year);
-				c.roll(Calendar.YEAR, true);
-				financialYear = year + "-" + c.get(Calendar.YEAR);
-			} else {
-				Calendar c1 = Calendar.getInstance();
-				c1.set(Calendar.YEAR, c.get(Calendar.YEAR));
-				c1.roll(Calendar.YEAR, true);
-				financialYear = c.get(Calendar.YEAR) + "-" + c1.get(Calendar.YEAR);
-			}
-			
+			// String financialYear = "";
+			// Calendar c = Calendar.getInstance();
+			// if (year > 0) {
+			// c.set(Calendar.YEAR, year);
+			// c.roll(Calendar.YEAR, true);
+			// financialYear = year + "-" + c.get(Calendar.YEAR);
+			// } else {
+			// Calendar c1 = Calendar.getInstance();
+			// c1.set(Calendar.YEAR, c.get(Calendar.YEAR));
+			// c1.roll(Calendar.YEAR, true);
+			// financialYear = c.get(Calendar.YEAR) + "-" + c1.get(Calendar.YEAR);
+			// }
+
 			if (!uuid.isEmpty()) {
 				modelAndView.addObject("uuid", uuid);
-				modelAndView.addObject("formList", taxService.getITDeclarationSubmissionList(uuid, financialYear));
-				modelAndView.setViewName("tax/org/form_list_by_formType");
+				SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, false, false);
+				if (sourceleadTaxFormDTO != null) {
+					modelAndView.addObject("taxForm", sourceleadTaxFormDTO);
+					modelAndView.addObject("formList", taxService.getITDeclarationSubmissionList(uuid, financialYear));
+					modelAndView.setViewName("tax/org/form_list_by_formType");
+				}
 			} else {
-				setYears(modelAndView, year);
-				modelAndView.addObject("formList", taxService.getTaxFormTypeListForSubmission(financialYear));
+				// setYears(modelAndView, year);
+				TaxAdminController.setYears(modelAndView, null);
+				String year = "";
+				if (financialYear.isEmpty()) {
+					Calendar c = Calendar.getInstance();
+					Calendar c1 = Calendar.getInstance();
+					c1.set(Calendar.YEAR, c.get(Calendar.YEAR));
+					c1.roll(Calendar.YEAR, true);
+					year = c.get(Calendar.YEAR) + "-" + c1.get(Calendar.YEAR);
+
+				}
+				modelAndView.addObject("formList", taxService.getTaxFormTypeListForSubmission(year));
 				modelAndView.setViewName("tax/org/forms_list");
 			}
 		} catch (Exception e) {
@@ -117,41 +131,6 @@ public class TaxSubmissionController {
 		return "";
 	}
 
-
-//	@RequestMapping(value = { "/forms/getForm", "/forms/editForm", "/forms/viewForm" })
-//	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam String uuid,
-//			@RequestParam(defaultValue = "") String formUUID) {
-//		ModelAndView modelAndView = new ModelAndView();
-//		try {
-//			SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
-//			if (sourceleadTaxFormDTO != null) {
-//				setYears(modelAndView, 0);
-//				if (!formUUID.isEmpty()) {
-//					boolean isEditable = request.getRequestURL().toString().contains("editForm");
-//					modelAndView.addObject("isEditable", isEditable);
-//					modelAndView.addObject("uuid", uuid);
-//					SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO = taxService.getITDeclarationSubmission(uuid,
-//							formUUID);
-//					modelAndView.addObject("form", itDeclarationSubmissionDTO);
-//					modelAndView.addObject("documents", taxService.getUploadedDocumentsBySubmissionId(itDeclarationSubmissionDTO.getId()));
-//					modelAndView.setViewName("tax/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
-//				} else {
-//					// modelAndView.addObject("activeFormTabUUID", uuid);
-//					// setYears(modelAndView, 0);
-//					modelAndView.addObject("form", sourceleadTaxFormDTO);
-//					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-//					List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
-//					modelAndView.addObject("userRoleList", userRoleList);
-//					modelAndView.setViewName("tax/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
-//				}
-//			} else
-//				modelAndView.setViewName("errorPage");
-//		} catch (Exception e) {
-//			logger.error(e.getMessage());
-//		}
-//		return modelAndView;
-//	}
-	
 	@RequestMapping(value = { "/forms/getForm", "/forms/editForm", "/forms/viewForm" })
 	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam String uuid,
 			@RequestParam(defaultValue = "") String formUUID) {
@@ -159,25 +138,29 @@ public class TaxSubmissionController {
 		try {
 			SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
 			if (sourceleadTaxFormDTO != null) {
-//				setYears(modelAndView, 0);
+				// setYears(modelAndView, 0);
 				TaxAdminController.setYears(modelAndView, null);
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+						"orgLocations");
 				List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
 				modelAndView.addObject("userRoleList", userRoleList);
 				if (!formUUID.isEmpty()) {
 					boolean isEditable = request.getRequestURL().toString().contains("editForm");
 					modelAndView.addObject("isEditable", isEditable);
 					modelAndView.addObject("uuid", uuid);
-					SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO = taxService.getITDeclarationSubmission(uuid,
-							formUUID);
+					SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO = taxService
+							.getITDeclarationSubmission(uuid, formUUID);
 					modelAndView.addObject("form", itDeclarationSubmissionDTO);
-					modelAndView.addObject("documents", taxService.getUploadedDocumentsBySubmissionId(itDeclarationSubmissionDTO.getId()));
-					modelAndView.setViewName("tax/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_submitted_form");
+					modelAndView.addObject("documents",
+							taxService.getUploadedDocumentsBySubmissionId(itDeclarationSubmissionDTO.getId()));
+					modelAndView.setViewName("tax/org/"
+							+ sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_submitted_form");
 				} else {
 					// modelAndView.addObject("activeFormTabUUID", uuid);
 					// setYears(modelAndView, 0);
 					modelAndView.addObject("form", sourceleadTaxFormDTO);
-					modelAndView.setViewName("tax/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+					modelAndView.setViewName(
+							"tax/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
 				}
 			} else
 				modelAndView.setViewName("errorPage");
@@ -186,21 +169,24 @@ public class TaxSubmissionController {
 		}
 		return modelAndView;
 	}
-	
+
 	@RequestMapping(value = "/itDeclaration/getForm")
 	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam String uuid) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
+			// User user = (User) SourceLeadSessionManager.getSessionAttribute(request,
+			// "user");
 			SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
 			modelAndView.addObject("form", sourceleadTaxFormDTO);
 			modelAndView.addObject("formList", taxService.getTaxFormTypeList(false));
 			modelAndView.addObject("activeFormTabUUID", uuid);
 			TaxAdminController.setYears(modelAndView, null);
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
 			modelAndView.addObject("userRoleList", userRoleList);
-			modelAndView.setViewName("tax/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+			modelAndView.setViewName(
+					"tax/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -217,15 +203,17 @@ public class TaxSubmissionController {
 			if (user != null) {
 				itDeclarationSubmissionDTO.setStatus(1);
 				response = taxService.submitITDeclaration(itDeclarationSubmissionDTO, user);
-//				response.setObject(1L);
-				response.setResponse(Result.SUCCESS.name());
+				// response.setObject(1L);
+//				response.setResponse(Result.SUCCESS.name());
 				if (response.getResponse().equals(Result.SUCCESS.name())) {
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+							"orgLocations");
 
-					if (itDeclarationSubmissionDTO.getDocumentList() != null && !itDeclarationSubmissionDTO.getDocumentList().isEmpty()) {
-						taxService.saveUploadedDocuments(itDeclarationSubmissionDTO.getDocumentList(), staticPath, org.getId(),
-								loginOrgLocation.getId(), response.getObject());
+					if (itDeclarationSubmissionDTO.getDocumentList() != null
+							&& !itDeclarationSubmissionDTO.getDocumentList().isEmpty()) {
+						taxService.saveUploadedDocuments(itDeclarationSubmissionDTO.getDocumentList(), staticPath,
+								org.getId(), loginOrgLocation.getId(), response.getObject());
 					}
 				}
 			} else {

@@ -2,10 +2,8 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
-import com.bis.sourcelead.entity.CentralTax;
-import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
-
+import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxChallan;
 import com.bis.sourcelead.entity.SourceleadTaxChallanItem;
@@ -14,8 +12,8 @@ import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
-import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmissionItem;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocument;
+import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocumentAttachment;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -74,25 +72,32 @@ public interface TaxDao {
 
 	public long submitITDeclaration(SourceleadTaxITDeclarationSubmission itDeclarationSubmission);
 
-	public int getITDeclarationFormsCountByYear(int year, String tableName);
+	public int getITDeclarationFormsCountByYear(String financialYear, String tableName);
 
 	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, String financialYear);
 
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(String taxFormUUID, String formUUID);
 
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(long id);
+	
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(long userId, String financialYear);
 
-	public SourceleadTaxITDeclarationSubmissionItem getITDeclarationSubmissionItem(long id);
+	// public SourceleadTaxITDeclarationSubmissionItem
+	// getITDeclarationSubmissionItem(long id);
 
 	public boolean saveDocument(SourceleadTaxSubmissionDocument taxSubmissionDocument);
 
 	public List<SourceleadTaxSubmissionDocument> getUploadedDocumentsBySubmissionId(long submissionId);
+	
+	public SourceleadTaxSubmissionDocument getSourceleadTaxSubmissionDocumentById(long submissionDocumentId);
 
-   public long addITChallanSectionItem(SourceleadTaxChallanItem sectionItem);
+	public void removeTaxSubmissionDocumentAttachment(SourceleadTaxSubmissionDocumentAttachment attachment);
 
-   public long addItChallanSection(SourceleadTaxChallan section);
+	public long addITChallanSectionItem(SourceleadTaxChallanItem sectionItem);
 
-    public SourceleadTaxChallanItem getSourceleadTaxChallanItemById(long addChallanSectionItemId);
+	public long addItChallanSection(SourceleadTaxChallan section);
+
+	public SourceleadTaxChallanItem getSourceleadTaxChallanItemById(long addChallanSectionItemId);
 
 	public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormField sourceleadTaxChallanItem);
 
@@ -101,5 +106,6 @@ public interface TaxDao {
 	public SourceleadTaxChallanItem getChallanItemDetails(Long itemRowId);
 
 	public SourceleadTaxChallanItem getITChallanSectionItem(Long id);
+
 
 }

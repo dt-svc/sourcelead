@@ -33,7 +33,7 @@ $(document).ready(function() {
 				        			location.href = sourceleadUrl + "/forms/list";					 			
 						 		},100);
 			        		}
-			        	} else if (response.response === "INVALID_DATA") {
+			        	} else if (response.response === "INVALID_DATA" || response.response === "DUPLICATE_TAX_RECORD") {
 			        		showError(response.responseMessage);
 			        	} else if (response.indexOf('Sign In') !== -1) {
 			        		location.replace(sourceleadUrl);
@@ -70,22 +70,23 @@ function fileUploadEvent(ele) {
 		contentType : false,
 		success : function(data) {
 			if (data && data.length > 0) {
-				var parentDiv = $(ele).parents("tr");
+				var parentDiv = $(ele).parents("tr[data-index='" + $(ele).data("index") + "']");
 				var attachmentDiv = $(parentDiv).find("div[class='attachments']");
 				$(attachmentDiv).empty();
 				var filesText = "";
 				for(var e in data) {
 					filesText += "<div data-index=" + e + ">";
-					filesText += "<i onclick='removeAttachment();' class='text-danger fa fa-remove cursorPointer'></i>";
+					filesText += "<i onclick='removeAttachment(this);' class='text-danger fa fa-remove cursorPointer'></i>";
 					filesText += data[e].fileName + "</div>";
 					var fileURL = data[e].fileURL.substring(data[e].fileURL.lastIndexOf("/") + 1 , data[e].fileURL.length);
 					$(parentDiv).find("input[data-name='updateFile']").val(true);
 					$(attachmentDiv).append("<input name='documentList[" + $(attachmentDiv).data('index') + "].attachmentList[" + e + "].attachment' data-name='documentFileNames' type='hidden' value='" + fileURL + "'>");
 				}
 				
-				var docName = $(ele).parents("tr").find("input[data-name='documentName']").val();
+//				var docName = $(ele).parents("tr").find("input[data-name='documentName']").val();
 				
-				$(ele).parents("tr").find(".uploadedFiles").html(filesText);
+				var uploadedFilesDiv = $(parentDiv).find(".uploadedFiles");
+				uploadedFilesDiv.html(filesText);
 				enableDisableRefresh(ele);
 			}
 		},
@@ -113,7 +114,7 @@ function enableDisableRefresh(ele) {
 }
 function addDocumentRow() {
 	/*++uploadCount;*/
-	var row = "<tr><td>";
+	var row = "<tr data-index=" + uploadCount + "><td>";
 	row += "<div style='display: none;' class='attachments' data-index=" + uploadCount + "></div>";
 	row += "<input type='hidden' name='documentList[" + uploadCount + "].name' data-name='documentName' />";
 	row += "<input type='hidden' name='documentList[" + uploadCount + "].updateFile' data-name='updateFile' value='false'/>";
@@ -126,7 +127,7 @@ function addDocumentRow() {
 	row += "<label class='input-group-btn'>";
 	row += "<span class='btn btn-primary'>Browse File ";
 	row += "<input data-name='docFiles' style='visibility: hidden; height: 0; width: 10px; overflow: hidden' multiple='multiple' id='uploadBtn" + (uploadCount)
-			+ "' class='upload' type='file' onchange='fileUploadEvent(this)'>";
+			+ "' class='upload' type='file' onchange='fileUploadEvent(this)' data-index=" + uploadCount + ">";
 	row += "</span>";
 	row += "</label>";
 	row += "<input class='form-control' readonly='readonly' id='uploadFile' placeholder='Select File(s)' type='text' field-name='Document File' data-validation='required'>";
@@ -160,12 +161,17 @@ function refreshDocumentRow(ele) {
 	$(ele).parents("tr").find(".fa-refresh").addClass("disableBtn");
 }
 
-function removeAttachment() {
-	var parentDiv = $(this).parents("div[class='uploadedFiles']");
+function removeAttachment(ele) {
+	/*var parentDiv = $(this).parents("div[class='uploadedFiles']");
 	$(this).parent().remove();
 	var attachmentsCount = $(parentDiv).find("i").length;
 	if(attachmentsCount)
 	$(parentDiv).find("i").each(function(){
 		
+	});*/
+	var parentDiv = $(ele).parent().parent();
+	$(ele).parent().remove();
+	$(parentDiv).find("i").each(function(){
+			
 	});
 }

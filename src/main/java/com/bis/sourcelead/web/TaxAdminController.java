@@ -35,7 +35,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TaxService;
@@ -66,7 +65,8 @@ public class TaxAdminController {
 		c.roll(Calendar.YEAR, -2);
 		for (int i = 0; i < 4; i++) {
 			Calendar c1 = Calendar.getInstance();
-			boolean isCurrent = selectedYear != null ? Integer.parseInt(selectedYear.split("-")[0]) == c.get(Calendar.YEAR)
+			boolean isCurrent = selectedYear != null
+					? Integer.parseInt(selectedYear.split("-")[0]) == c.get(Calendar.YEAR)
 					: c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
 
 			String fromYear = c.get(Calendar.YEAR) + "";
@@ -98,7 +98,8 @@ public class TaxAdminController {
 	}
 
 	@RequestMapping(value = "/stateTax/create")
-	public ModelAndView addStateTaxPage(HttpServletRequest request, @RequestParam(defaultValue = "0") String statetaxuuid) {
+	public ModelAndView addStateTaxPage(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") String statetaxuuid) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			StateTaxDTO stateTaxDTO = new StateTaxDTO();
@@ -167,7 +168,8 @@ public class TaxAdminController {
 	}
 
 	@RequestMapping(value = "/stateTax/taxSummary")
-	public ModelAndView stateTaxSummary(HttpServletRequest request, @RequestParam(defaultValue = "0") String statetaxuuid) {
+	public ModelAndView stateTaxSummary(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") String statetaxuuid) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			StateTaxDTO stateTaxDTO = taxService.getStateTax(statetaxuuid);
@@ -180,7 +182,8 @@ public class TaxAdminController {
 	}
 
 	@RequestMapping(value = "/centralTax/taxSummary")
-	public ModelAndView centralTaxSummary(HttpServletRequest request, @RequestParam(defaultValue = "0") String centraltaxuuid) {
+	public ModelAndView centralTaxSummary(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") String centraltaxuuid) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			CentralTaxDTO centralTaxDTO = taxService.getCentralTax(centraltaxuuid);
@@ -194,7 +197,8 @@ public class TaxAdminController {
 
 	@RequestMapping(value = "/getCentralTaxes", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<CentralTaxDTO> getCentralTaxes(HttpServletRequest request, @RequestParam(defaultValue = "") String yearFrequency) {
+	public ResponseList<CentralTaxDTO> getCentralTaxes(HttpServletRequest request,
+			@RequestParam(defaultValue = "") String yearFrequency) {
 		ResponseList<CentralTaxDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -217,7 +221,8 @@ public class TaxAdminController {
 
 	@RequestMapping(value = "/stateTax/changeStatus")
 	@ResponseBody
-	public Response<String> changeStateTaxStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long taxId) {
+	public Response<String> changeStateTaxStatus(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") long taxId) {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -237,8 +242,9 @@ public class TaxAdminController {
 
 	@RequestMapping(value = "/getStateTaxes", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<StateTaxDTO> getStateTaxes(HttpServletRequest request, @RequestParam(defaultValue = "") String yearFrequency,
-			@RequestParam(defaultValue = "0") long stateId, Paginator paginator) {
+	public ResponseList<StateTaxDTO> getStateTaxes(HttpServletRequest request,
+			@RequestParam(defaultValue = "") String yearFrequency, @RequestParam(defaultValue = "0") long stateId,
+			Paginator paginator) {
 		ResponseList<StateTaxDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -283,7 +289,8 @@ public class TaxAdminController {
 	public Response<Long> saveCentralTax(CentralTaxDTO centralTaxDTO, HttpServletRequest request) {
 
 		Response<Long> response = new Response<>();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			if (user != null && orgLocations != null) {
@@ -310,7 +317,8 @@ public class TaxAdminController {
 
 	@RequestMapping(value = "/centralTax/changeStatus")
 	@ResponseBody
-	public Response<String> changeCentralTaxStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long taxId) {
+	public Response<String> changeCentralTaxStatus(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") long taxId) {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -397,7 +405,8 @@ public class TaxAdminController {
 			modelAndView.addObject("isEditable", isEditable);
 			modelAndView.addObject("form", sourceleadTaxFormDTO);
 			modelAndView.addObject("activeTaxTab", "forms");
-			modelAndView.setViewName("tax/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+			modelAndView
+					.setViewName("tax/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -406,7 +415,8 @@ public class TaxAdminController {
 
 	@RequestMapping(value = "/form/addITDeclarationSection", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Long> addItDeclarationSection(HttpServletRequest request, SourceleadTaxITDeclarationDTO sourceleadTaxSectionDTO) {
+	public Response<Long> addItDeclarationSection(HttpServletRequest request,
+			SourceleadTaxITDeclarationDTO sourceleadTaxSectionDTO) {
 		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -438,7 +448,8 @@ public class TaxAdminController {
 
 	@RequestMapping(value = "/form/addITDeclarationSectionItem", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Long> addItDeclarationSectionItem(HttpServletRequest request, SourceleadTaxITDeclarationItemDTO sectionItemDTO) {
+	public Response<Long> addItDeclarationSectionItem(HttpServletRequest request,
+			SourceleadTaxITDeclarationItemDTO sectionItemDTO) {
 		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -489,8 +500,8 @@ public class TaxAdminController {
 
 	@RequestMapping(value = "/form/itDeclaration/changeStatus")
 	@ResponseBody
-	public Response<String> changeITDeclarationStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long id,
-			@RequestParam(defaultValue = "0") long type) {
+	public Response<String> changeITDeclarationStatus(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") long id, @RequestParam(defaultValue = "0") long type) {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -514,18 +525,19 @@ public class TaxAdminController {
 
 	@RequestMapping(value = "/form/addITChallanSectionItem", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Long> addITChallanSectionItem(HttpServletRequest request, SourceleadTaxChallanItemDTO sectionItemDTO) {
+	public Response<Long> addITChallanSectionItem(HttpServletRequest request,
+			SourceleadTaxChallanItemDTO sectionItemDTO) {
 		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				long addChallanSectionItemId = taxService.addITChallanSectionItem(sectionItemDTO);
-				if(sectionItemDTO.getOptionData() != null){
-					for(SourceleadTaxChallanItemSubFormFieldDTO optionData:sectionItemDTO.getOptionData()){
-						taxService.addSourceleadTaxChallanItemSubFormField(optionData,addChallanSectionItemId);
+				if (sectionItemDTO.getOptionData() != null) {
+					for (SourceleadTaxChallanItemSubFormFieldDTO optionData : sectionItemDTO.getOptionData()) {
+						taxService.addSourceleadTaxChallanItemSubFormField(optionData, addChallanSectionItemId);
 					}
 				}
-				
+
 				if (addChallanSectionItemId > 0) {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
@@ -542,7 +554,8 @@ public class TaxAdminController {
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();;
+			e.printStackTrace();
+			;
 			logger.error(e.getMessage());
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
@@ -552,7 +565,8 @@ public class TaxAdminController {
 
 	@RequestMapping(value = "/form/addITChallanSection", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Long> addItChallanSection(HttpServletRequest request, SourceleadTaxChallanDTO sourceleadTaxSectionDTO) {
+	public Response<Long> addItChallanSection(HttpServletRequest request,
+			SourceleadTaxChallanDTO sourceleadTaxSectionDTO) {
 		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -582,9 +596,10 @@ public class TaxAdminController {
 		return response;
 	}
 
-	
-	@RequestMapping(value = "/form/editChallanItem", method =  RequestMethod.POST)
-	public ModelAndView getChallanItemDetails(HttpServletRequest request ,SourceleadTaxChallanItemDTO sourceleadTaxChallanItemDTO,@RequestParam(value="itemRowId") Long itemRowId ) throws Exception{
+	@RequestMapping(value = "/form/editChallanItem", method = RequestMethod.POST)
+	public ModelAndView getChallanItemDetails(HttpServletRequest request,
+			SourceleadTaxChallanItemDTO sourceleadTaxChallanItemDTO, @RequestParam(value = "itemRowId") Long itemRowId)
+			throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			SourceleadTaxChallanItemDTO ChallanItemDTO = taxService.getChallanItemDetails(itemRowId);
@@ -595,5 +610,5 @@ public class TaxAdminController {
 		}
 		return modelAndView;
 	}
-	
+
 }

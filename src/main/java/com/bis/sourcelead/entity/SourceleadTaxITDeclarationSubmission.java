@@ -2,9 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -43,7 +40,7 @@ public class SourceleadTaxITDeclarationSubmission implements Serializable {
 
 	@Column(name = "STATUS")
 	private int status;
-	
+
 	@Column(name = "SUBMISSION_ITEMS")
 	private String submissionItems;
 
@@ -65,9 +62,12 @@ public class SourceleadTaxITDeclarationSubmission implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SOURCELEAD_TAX_FORM_ID", nullable = false)
 	private SourceleadTaxForm sourceleadTaxForm;
-
-	@OneToMany(mappedBy = "sourceleadTaxITDeclarationSubmission", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<SourceleadTaxITDeclarationSubmissionItem> submissionItemList;
+	
+	/*
+	 * @OneToMany(mappedBy = "sourceleadTaxITDeclarationSubmission", fetch =
+	 * FetchType.LAZY, cascade = CascadeType.ALL) private
+	 * List<SourceleadTaxITDeclarationSubmissionItem> submissionItemList;
+	 */
 
 	public long getId() {
 		return id;
@@ -151,14 +151,6 @@ public class SourceleadTaxITDeclarationSubmission implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
-	}
-
-	public List<SourceleadTaxITDeclarationSubmissionItem> getSubmissionItemList() {
-		return submissionItemList;
-	}
-
-	public void setSubmissionItemList(List<SourceleadTaxITDeclarationSubmissionItem> submissionItemList) {
-		this.submissionItemList = submissionItemList;
 	}
 
 	public SourceleadTaxForm getSourceleadTaxForm() {
