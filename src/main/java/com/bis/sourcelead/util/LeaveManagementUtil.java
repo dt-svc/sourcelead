@@ -800,7 +800,9 @@ public class LeaveManagementUtil {
                 	double oneHrMin = oneHr / 60;
                 	actualAppliedLeave = oneHrMin * fromMinutes;
                 }else if(Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())){
-                	
+                	double oneHr = leaveType.getNoOfDaysPerPeriod() / workingHours;
+                	double oneHrMin = oneHr / 60;
+                	actualAppliedLeave = oneHrMin * fromMinutes;
                 }else if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
                 	
                 }else if(Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod())){
