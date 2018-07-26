@@ -6,7 +6,7 @@ function campaignSender(ele,senderId, fromType) {
 			$(".popMask").fadeIn(200);
 			$("#campaignSender").fadeIn(100);
 			$("#campaignSender").html(data);
-			$("#campaignSender").parent().append("<div class='project_inn_mask' style='display:block;'></div>");
+			$("#campaignSender").parent().append("<div class='mask' style='display:block;'></div>");
 			// save sender details
 			 $("#saveCampaignSender").click(function () {
 				 if ($('#capn_add_sender').validate(false, validationSettings)) {
@@ -29,7 +29,7 @@ function campaignSender(ele,senderId, fromType) {
 					  			
 								 location.replace(sourceleadUrl+ "/campaignSendersList");
 								 $("#popUp").empty();
-					  			 $(".project_inn_mask").fadeOut(200);
+					  			 $(".mask").fadeOut(200);
 								 campainSenderAlertMsgFadein();	
 					             	
 							}else if(data == '403Body'){
@@ -73,9 +73,9 @@ $('body').on('blur', '#capn_add_sender', function() {
 });
 
 function senderClose() {
-	$(".popMask").fadeOut(200);
+	$(".mask").fadeOut(200);
 	$("#campaignSender").fadeOut(100);
-	$(".project_inn_mask").remove();
+	$(".mask").remove();
 };
 
 
@@ -170,19 +170,19 @@ function validateReplyMail(toWhom,id){
 
 function maxAlertSenderPopUp(){
 	var result = "";
-	result = result +"	<div class='project_inn_mask zInPop'></div>";
+	result = result +"	<div class='mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='zInPop remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You have reached maximum number of sender List</p>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelMaxAlert();' style='width:100%;'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").fadeIn(200);
 }
 
 
 function cancelMaxAlert(){
 	$("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
+	 $(".mask").fadeOut(200);
 }
 
