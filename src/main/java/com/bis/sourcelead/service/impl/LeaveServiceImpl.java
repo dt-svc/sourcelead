@@ -1094,6 +1094,7 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 			leaveDto.setReason(leave.getReason());
 			leaveDto.setFileUrl(leave.getFileUrl());
+			leaveDto.setFileContentType(leave.getFileContentType());
 			leaveDto.setFileName(leave.getFileName());
 			leaveDto.setStatus(leave.getStatus());
 			Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date());
