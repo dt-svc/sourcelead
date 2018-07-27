@@ -9636,6 +9636,17 @@ z-index: -800;
 .menuWidget ul.menupop.menupop_3 {
     width:310px;
 	}
-.level-second { transition: all ease-in-out 0.5s; display: none; }
-.level-second.level-second-active { display: block; }
+	
+	
+	
+	
+	
+	
+	
+.level-second {
+transition: all ease-in-out 0.5s; display: none;
+}
+.level-second.level-second-active {
+display: block;
+}
 
