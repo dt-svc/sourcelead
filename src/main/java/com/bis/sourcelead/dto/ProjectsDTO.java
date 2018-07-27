@@ -224,6 +224,9 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
     private String isProjectForTimeSheets;
 	
 	private String isProjectForExpenses;
+	
+	@Required(desc="projectForValue")
+	private String projectForValue;
 	  
 	
 	
@@ -1065,5 +1068,13 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setIsProjectForExpenses(String isProjectForExpenses) {
 		this.isProjectForExpenses = isProjectForExpenses;
+	}
+
+	public String getProjectForValue() {
+		return projectForValue;
+	}
+
+	public void setProjectForValue(String projectForValue) {
+		this.projectForValue = projectForValue;
 	}
 }

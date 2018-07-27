@@ -478,6 +478,19 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	projects.setEndDate(endDate);
     	}
     	
+    	if(!isNullOrEmpty(projectsDTO.getProjectForValue())) {
+    		if(projectsDTO.getProjectForValue().equalsIgnoreCase("Timesheets")) {
+    			projects.setIsProjectForTimeSheets(Constants.YES);
+    			projects.setIsProjectForExpenses(Constants.NO);
+    		}else if(projectsDTO.getProjectForValue().equalsIgnoreCase("Expenses")) {
+    			projects.setIsProjectForExpenses(Constants.YES);
+    			projects.setIsProjectForTimeSheets(Constants.NO);
+    		}else {
+    			projects.setIsProjectForTimeSheets(Constants.YES);
+    			projects.setIsProjectForExpenses(Constants.YES);
+    		}
+    	}
+    	
     	
 		if(!isNullOrEmpty(projectsDTO.getInvoiceFrequency())){
 			projects.setInvoiceFrequency(projectsDTO.getInvoiceFrequency());

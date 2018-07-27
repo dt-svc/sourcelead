@@ -208,12 +208,13 @@ function validateShortCode(){
 						
 					<div class="form-group">
 						<label class="col-md-3">Project For<span class="text-danger">&nbsp;*</span></label>
-						<div class="col-md-9" id= "errorGenderMsg">
-						<label class="paddingRight"><input type="radio"  value="TimesheetsAndExpences"  name="projectFor" checked="checked" onblur="projectForCheckValidation(this)"><span class="mr5"></span>TimeSheets & Expenses</label>
-						<label class="paddingLeft paddingRight"><input type="radio"  value="Timehseets" name="projectFor" onblur="projectForCheckValidation(this)"><span class="mr5"></span>TimeSheets</label>
-						<label class="paddingRight"><input type="radio"  value="Expenses" name="projectFor" onblur="projectForCheckValidation(this)"><span class="mr5"></span>Expenses</label>
-						<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For" data-validation="required"/> 		
+						<div class="col-md-9">
+							<label class="paddingLeft paddingRight"><input type="radio" id="timesheets" value="Timesheets" name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets</label>
+							<label class="paddingRight"><input type="radio" id="expenses"  value="Expenses" name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Expenses</label>
+							<label class="paddingRight"><input type="radio" id="timesheetsandexpenses"  value="TimesheetsAndExpences"  name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets & Expenses</label>
+							<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For" data-validation="required"/> 		
 						</div>
+						
 					</div>
 						
 						<c:if test="${!empty projectType && projectType == 'sharedProject' }">
@@ -594,16 +595,7 @@ function validateShortCode(){
 
 <script type="text/javascript">
 	function projectForCheckValidation(id){
-		 var projectForList = [];
- 		 $("input[name='projectFor']:checked").each( function (i) {
- 			projectForList[i] = $(this).val();
- 		});
- 		 
-		if (projectForList.length > 0) { 
 		document.getElementById("projectForValue").value = id.value;
-		}else{
-			$('#projectForValue').val(''); 
-		}
 	} 
 </script>
 
@@ -862,9 +854,20 @@ function getProjectDetails(){
 	        		 $("input[name=projectShortCode]").attr("readonly","readonly");
 	        		 $('#projectShortCode').removeAttr('onblur');
 	        	 }
-	        	
-	        	
-	        	 $("#notifyBudgetAt").val(json.notifyBudgetAt);
+	        	 
+	        	 if(json.isProjectForTimeSheets == 'Y' && json.isProjectForExpenses == 'Y'){
+	        		 document.getElementById("timesheetsandexpenses").checked = true;
+	        		 $("#projectForValue").val('TimesheetsAndExpences');
+	        	 }else  if(json.isProjectForTimeSheets == 'Y' && json.isProjectForExpenses == 'N'){
+	        		 document.getElementById("timesheets").checked = true;
+	        		 $("#projectForValue").val('Timesheets');
+	        	 }else  if(json.isProjectForTimeSheets == 'N' && json.isProjectForExpenses == 'Y'){
+	        		 document.getElementById("expenses").checked = true;
+	        		 $("#projectForValue").val('Expences');
+	        	 }
+	        	 
+	        	 
+        	   $("#notifyBudgetAt").val(json.notifyBudgetAt);
 	        	 
 	           var projectStatus = '';
 	           if(json.projectStatus == 'NOTSTARTED'){
