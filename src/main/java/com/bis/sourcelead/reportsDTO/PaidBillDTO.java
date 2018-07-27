@@ -18,6 +18,7 @@ public class PaidBillDTO extends SearchDTO {
 	private int numberOfAssociates;
 	private int numberOfprojects;
 	private double totalAmount;
+	private double totalCalAmount;
 	private long orgRelationId;
 	private String orgId;
 	private String filterType;
@@ -172,6 +173,14 @@ public class PaidBillDTO extends SearchDTO {
 
 	public void setTotalAmountMap(Map<Long, Double> totalAmountMap) {
 		this.totalAmountMap = totalAmountMap;
+	}
+
+	public double getTotalCalAmount() {
+		return totalCalAmount;
+	}
+
+	public void setTotalCalAmount(double totalCalAmount) {
+		this.totalCalAmount = totalCalAmount;
 	}
 	
 }

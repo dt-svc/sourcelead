@@ -871,6 +871,9 @@
    isValidBeneficiary = false;
 });
  */
+ var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+ var finalDateFormatOrg = getOrgDateFormat(locationDate);
+ 
 $("input[id='candidateNameEmail']").focusout(function(){
 	 var seletedVal= $("#candidateNameEmail").attr("selecedVal")
   if(typeof seletedVal =='undefined') {
@@ -927,7 +930,7 @@ function resetBeneficiaryDetails(){
 				        success: function(candidateObj) {
 				        	$("#firstName").val(candidateObj.firstName);
 				    		$("#lastName").val(candidateObj.lastName);
-				    		$("#middleName").val(candidateObj.middleName);
+				    		$("#middleName").val(candidateObj.middelName);
 				    		$("#email").val(candidateObj.email);
 				    		$("#mobile").val(candidateObj.mobilePhone);
 				    		$("#alternateMobile").val(candidateObj.alternateMobilePhone);
@@ -948,14 +951,14 @@ function resetBeneficiaryDetails(){
 				    		$("#state").val(candidateObj.state);
 				    		$("#city").val(candidateObj.city);
 				    		$("#address").val(candidateObj.address);
-				    		$("#zipcode").val(candidateObj.zipcode);
+				    		$("#zipcode").val(candidateObj.zipCode);
 				    		$("#location").val(candidateObj.location);
 				    		$("#experienceYears").val(candidateObj.experienceYears);
 				    		$("#experienceMonths").val(candidateObj.experienceMonths);
 				    		
 				    		// setting the date for the date of birth field.
 				    		if(candidateObj.dateOfBirth != null && typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
-				    			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
+				    			var dateOfBirth =  moment(candidateObj.dateOfBirth).format(finalDateFormatOrg);
 				    		   $("#birthDate").val(dateOfBirth);
 				    		}
 				        }

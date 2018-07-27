@@ -650,6 +650,11 @@ public class FinanceServiceImpl implements FinanceService{
 			res.setData(paidBillList);
 			res.setRecordsFiltered(paidBillList.size());
 			res.setRecordsTotal(paidBillList.size());
+			paidBillList = res.getData();
+			if(paidBillList.size()>0){
+				PaidBillDTO  paidBill = paidBillList.get(0);	
+				paidBill.setTotalCalAmount(totalAmount);
+			}
 		}
 		return res;
 	}

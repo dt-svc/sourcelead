@@ -842,7 +842,7 @@ public class Constants {
 	public static final String DOCUMENT_READ_ACCESS = "0";
 	public static final String DOCUMENT_WRITE_ACCESS = "1";
 	
-	public static final String PAYABLES = "payables";
+	public static final String PAYABLES = "Payables";
 	public static final String RECEIVABLE ="Receivable";
 	public static final String DRAFT = "DRAFT";
 	public static final String CLIENT_SOW = "clientSow";
