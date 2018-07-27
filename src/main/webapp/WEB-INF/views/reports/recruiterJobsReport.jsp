@@ -1,6 +1,3 @@
-<jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
-
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -25,17 +22,14 @@
 	 };
 </script>
 
- <script>
+ <!-- <script>
 function getDayWiseReports(){
-	var timePeriod = $('#reportTypeId').val(); 
+	var timePeriod = $('#reportTypeIdJobs').val(); 
 	if(timePeriod != "custom"){
 		jobsList(timePeriod);
 	}
 }
-
-</script>
-
-
+</script> -->
  
  <section class="content-wraper">
     <section class="content-header clearfix">
@@ -52,26 +46,26 @@ function getDayWiseReports(){
     	<input hidden  value="${recruiterUser.id}" id="recruiterUserId" name="">
     		<li>
         <div class="dropdown-select positionRelative repSelWrap clearfix">
-        	<select class="form-control repSelFiled" id="reportTypeId" onChange="flushCustom(); custDates();">
-			  <option value="Last_7_days">Last 7 days</option>
-			  <option value="Last_15_days">Last 15 days</option>
-			  <option value="1_month">Last 1 month</option>
-			  <option value="3_months">Last 3 months</option>
-			  <option value="YTD">YTD</option>
-	          <option value="Last_Year">Last Year</option>
-			  <option value="custom">Custom</option> 
+        	<select class="form-control repSelFiled" id="reportTypeIdJobs" onChange="flushCustomJobs(); custDatesJobs();">
+			  <option ${timePeriod == 'Last_7_days' ? 'selected' : ''} value="Last_7_days">Last 7 days</option>
+			  <option ${timePeriod == 'Last_15_days' ? 'selected' : ''} value="Last_15_days">Last 15 days</option>
+			  <option ${timePeriod == '1_month' ? 'selected' : ''} value="1_month">Last 1 month</option>
+			  <option ${timePeriod == '3_months' ? 'selected' : ''} value="3_months">Last 3 months</option>
+			  <option ${timePeriod == 'YTD' ? 'selected' : ''} value="YTD">YTD</option>
+	          <option ${timePeriod == 'Last_Year' ? 'selected' : ''} value="Last_Year">Last Year</option>
+			  <option ${timePeriod == 'custom' ? 'selected' : ''} value="custom">Custom</option> 
 			</select>
-		<div id="runButtonDiv" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="jobsDataTableList();">Run</button></div> 
+		<div id="runButtonDivJobs" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="jobsDataTableList();">Run</button></div> 
           
-          <div class="clearfix customLeaves repCustomDate" id="customSearch">
+          <div class="clearfix customLeaves repCustomDate" id="customSearchJobs">
               <div class="repCustomDateInn">
-                <input type="text" class="form-control calendar" value="" id="ReportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date *">
-				  <p id="reportsStartDate"></p>
+                <input type="text" class="form-control calendar" value="${customStartDate}" id="ReportStartDateJobs" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date *">
+				  <p id="reportsStartDateJobs"></p>
               </div>
               
               <div class="repCustomDateInn">
-               <input type="text"  class="form-control calendar" value="" id="ReportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date *">
-				 <p id="reportsEndDate"></p>
+               <input type="text"  class="form-control calendar" value="${customEndDate}" id="ReportEndDateJobs" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date *">
+				 <p id="reportsEndDateJobs"></p>
               </div>
               
               <div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" onclick="jobsDataTableList();"><i class="fa fa-search"></i></button></div>
@@ -79,8 +73,8 @@ function getDayWiseReports(){
           
         </div>    		
     		</li>
-    		<li><a href="javascript:void(0)" class="btn btn-default btn-sm repFilIcon" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter"></i></a></li>
-    		<li class="positionRelative"><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/><span class="repSearchIcon" onClick="jobsDataTableList();"></span></li>
+    		<li><a href="javascript:void(0)" class="btn btn-default btn-sm repFilIcon" title="Filters" onclick="openFilterPopJobs();"><i class="fa fa-filter faFilter"></i></a></li>
+    		<li class="positionRelative"><input type="text" class="repSearchBar" placeholder='Search' id='jobsDataTableSearch'/><span class="repSearchIcon" onClick="jobsDataTableList();"></span></li>
     	</ul>
     </div>
     
@@ -95,7 +89,7 @@ function getDayWiseReports(){
  <div class="advancedsearch-mask"></div>   
  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
 		       <h5 class="headerAdsrch">Filters
-							<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
+							<a href="javascript:void(0)" class="close-div" onClick="closeFilterPopJobs()"><i
 								class="fa fa-close"></i></a>
 						</h5>
 						<div class="addInner">
@@ -103,13 +97,20 @@ function getDayWiseReports(){
 							
 							<div class="col-md-3 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
-										<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Type in a teams">
+										<input type="text" id="myTeamsInputJobs" onkeyup="myTeamsFunctionJobs()" placeholder="Teams" title="Type in a teams">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 									</div>
 									 <div class="clearfix filterSearch-ul">
-										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsUL">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsULJobs">
+											<c:set var="teamsIds" value="${fn:split(orgTeams, ',')}" />
+											<c:set var="checked" value="" />
 											<c:forEach var="team" items="${teamsList}">
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="${team.id}" ><label>${team.name}</label></li>
+												<c:forEach var="teamArr" items="${teamsIds}">
+													<c:if test="${teamArr eq team.id}">
+													    <c:set var="checked" value="checked" />
+													</c:if>
+												</c:forEach>
+											<li class="checkBox positionRelative"><input  type="checkbox" ${checked} name="orgTeams" value ="${team.id}" ><label>${team.name}</label></li>
 											</c:forEach>
 										</ul>
 									 </div> 
@@ -119,9 +120,9 @@ function getDayWiseReports(){
 							<div class="clearfix advancedsearch-footer">
 								<div class="pull-right mr">
 									<input type="button" value="Apply" id="search_requiremet"
-										onclick="closeFilterPop();jobsList();" class="btn btn-sm btn-success" />
+										onclick="closeFilterPopJobs();jobsList();" class="btn btn-sm btn-success" />
 									<input type="button" value="Reset" id="clear_search"
-										onclick="resetFilter();" class="btn btn-sm btn-primary" />
+										onclick="resetFilterJobs();" class="btn btn-sm btn-primary" />
 								</div>
 							</div>
 		       </div>
@@ -129,15 +130,15 @@ function getDayWiseReports(){
  
  <script type="text/javascript"> 
  
- function resetFilter() {
-	 $("ul#myTeamsUL > li input:checkbox").prop("checked",false);
+ function resetFilterJobs() {
+	 $("ul#myTeamsULJobs > li input:checkbox").prop("checked",false);
 }
  
- function myTeamsFunction() {
+ function myTeamsFunctionJobs() {
 	    var input, filter, ul, li, a, i;
-	    input = document.getElementById("myTeamsInput");
+	    input = document.getElementById("myTeamsInputJobs");
 	    filter = input.value.toUpperCase();
-	    ul = document.getElementById("myTeamsUL");
+	    ul = document.getElementById("myTeamsULJobs");
 	    li = ul.getElementsByTagName("li");
 	    for (i = 0; i < li.length; i++) {
 	        a = li[i].getElementsByTagName("label")[0];
@@ -149,24 +150,24 @@ function getDayWiseReports(){
 	        }
 	    }
 	}
- function openFilterPop(){
+ function openFilterPopJobs(){
 		$("div.cand-advsrch-popup").toggle();
 		 $(".advancedsearch-mask").fadeIn();
 	}
- function closeFilterPop(){
+ function closeFilterPopJobs(){
 		$("div.cand-advsrch-popup").hide();
 		$(".advancedsearch-mask").fadeOut();
 	}
-	function addValidClass(){
-		 var StartDate = document.getElementById("ReportStartDate").value;
+	function addValidClassJobs(){
+		 var StartDate = document.getElementById("ReportStartDateJobs").value;
 		 if(StartDate){
-			 document.getElementById("reportsStartDate").style.display="block";
+			 document.getElementById("reportsStartDateJobs").style.display="block";
 		 }
 		 
-		 var EndDate = document.getElementById("ReportEndDate").value;
+		 var EndDate = document.getElementById("ReportEndDateJobs").value;
 		
 		 if(EndDate){
-			 document.getElementById("reportsEndDate").style.display="block";
+			 document.getElementById("reportsEndDateJobs").style.display="block";
 		 }
 }
 </script>
@@ -176,22 +177,18 @@ function getDayWiseReports(){
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatRepo = getJSDateFormat(locationDate);
 		  
-		$('#ReportStartDate').datepicker({
+		$('#ReportStartDateJobs').datepicker({
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatRepo,
 			onSelect : function(selected) {
-				/* var dt = new Date(selected);
-				//var dt = toDate("#ReportStartDate");
-				dt.setDate(dt.getDate() + 1);
-				$("#ReportEndDate").datepicker("option", "minDate", dt); */
-				$("#ReportEndDate").datepicker("option", "minDate", selected);
-				addValidClass();
+				$("#ReportEndDateJobs").datepicker("option", "minDate", selected);
+				addValidClassJobs();
 			}
 		
 		});
 		
-		$('#ReportEndDate').datepicker({
+		$('#ReportEndDateJobs').datepicker({
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatRepo,
@@ -200,12 +197,8 @@ function getDayWiseReports(){
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				/* //var dt = toDate("#ReportEndDate");
-				dt.setDate(dt.getDate() - 1);
-				$("#ReportStartDate").datepicker("option", "maxDate", dt);
-				 $( "#ReportStartDate" ).datepicker({  maxDate: new Date() }); */
-				 $("#ReportStartDate").datepicker("option", "maxDate", selected);
-				addValidClass();
+				 $("#ReportStartDateJobs").datepicker("option", "maxDate", selected);
+				addValidClassJobs();
 			}
 		});
 		
@@ -213,34 +206,34 @@ function getDayWiseReports(){
 </script>	
  
 <script>
-function custDates(){
-	var reportType = $("#reportTypeId").val();
+function custDatesJobs(){
+	var reportType = $("#reportTypeIdJobs").val();
 	if(reportType=="custom"){
-		 document.getElementById("customSearch").style.display="block";
-		 document.getElementById("runButtonDiv").style.display="none";
+		 document.getElementById("customSearchJobs").style.display="block";
+		 document.getElementById("runButtonDivJobs").style.display="none";
 	}
 	if(reportType != "custom"){
-	    document.getElementById("customSearch").style.display="none";
-	    document.getElementById("reportsStartDate").style.display="none";
-		document.getElementById("reportsEndDate").style.display="none";
-		document.getElementById("runButtonDiv").style.display="block";
+	    document.getElementById("customSearchJobs").style.display="none";
+	    document.getElementById("reportsStartDateJobs").style.display="none";
+		document.getElementById("reportsEndDateJobs").style.display="none";
+		document.getElementById("runButtonDivJobs").style.display="block";
 	}
 }
 </script>
 
 <script type="text/javascript">
-	function flushCustom() {
-		$('#ReportStartDate').val('');
-		$('#ReportEndDate').val('');
-		$.datepicker._clearDate('#ReportStartDate');
-		$.datepicker._clearDate('#ReportEndDate'); 
+	function flushCustomJobs() {
+		$('#ReportStartDateJobs').val('');
+		$('#ReportEndDateJobs').val('');
+		$.datepicker._clearDate('#ReportStartDateJobs');
+		$.datepicker._clearDate('#ReportEndDateJobs'); 
 	}
 </script>
 
 
 <script>
  function jobsList(){
-	    var timePeriod = $('#reportTypeId').val();
+	    var timePeriod = $('#reportTypeIdJobs').val();
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    var result = "";
 	 	
@@ -274,29 +267,29 @@ function custDates(){
 function jobsDataTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var recruiterUserId = $('#recruiterUserId').val();
-	 var searchValue = $("#usersDataTableSearch").val();
-	 var timePeriod = $('#reportTypeId').val();
+	 var searchValue = $("#jobsDataTableSearch").val();
+	 var timePeriod = $('#reportTypeIdJobs').val();
 	 var flag = true;
 	 var startDate = '';
 	 var endDate = '';
 	 if(timePeriod == 'custom'){
-		  startDate = $("#ReportStartDate").val();
-		  endDate = $("#ReportEndDate").val();
+		  startDate = $("#ReportStartDateJobs").val();
+		  endDate = $("#ReportEndDateJobs").val();
 		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
 			  if(startDate == null || startDate == ''){
-				  document.getElementById("reportsStartDate").style.display="block";
-				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+				  document.getElementById("reportsStartDateJobs").style.display="block";
+				  $("#reportsStartDateJobs").empty().append("Start Date is Required") ; 
 			  }
 			  
 			  if(endDate == null || endDate == ''){
-				  document.getElementById("reportsEndDate").style.display="block";
-				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+				  document.getElementById("reportsEndDateJobs").style.display="block";
+				  $("#reportsEndDateJobs").empty().append("End Date is Required") ; 
 			  }
 			  flag = false;
 		  }
 	 }else{
-		 document.getElementById("reportsStartDate").style.display="none";
-		 document.getElementById("reportsEndDate").style.display="none";
+		 document.getElementById("reportsStartDateJobs").style.display="none";
+		 document.getElementById("reportsEndDateJobs").style.display="none";
 	 }
 	 var orgTeams = [];
 		$('input:checkbox[name=orgTeams]:checked').each(function() 
@@ -514,37 +507,20 @@ function jobsListPagination(url,sourceleadUrl){
     } );
     $("#usersListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#usersDataTableSearch").keyup(function(e) {
+    $("#jobsDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
-   		    $('#usersDataTableSearch').parent().find('p.jquery_form_error_message').remove();
-   	    	var searchData = $('#usersDataTableSearch').val();
+   		    $('#jobsDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+   	    	var searchData = $('#jobsDataTableSearch').val();
    	    	var regex =  new RegExp(/[\\-]/g);
    	    	if(regex.test(searchData) == false){
    	    		jobsDataTableList();
    	    	}else{
-   	    		$("#usersDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	    		$("#jobsDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
    	    	}
-   	    	$('#usersDataTableSearch').val(searchData);
+   	    	$('#jobsDataTableSearch').val(searchData);
     	   }
     	});
 }
 </script>
 
-<script>
-function reportpagination(){ 
-    $('#reportPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
-}
-</script> 
 
-
-<jsp:include page="../masterFooter.jsp" />

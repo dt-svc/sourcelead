@@ -73,7 +73,13 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	
 	@RequestMapping(value = "/recruiterJobsReport")
-	public ModelAndView recruiterJobsReport(@RequestParam(value="userCode", required=false)String recruiterUserCode, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ModelAndView recruiterJobsReport(@RequestParam(value="userCode", required=false)String recruiterUserCode, 
+			@RequestParam(value="searchValue", required=false)String searchValue,
+			@RequestParam(value="timePeriod", required=false)String timePeriod,
+			@RequestParam(value="customStartDate", required=false)String customStartDate,
+			@RequestParam(value="customEndDate", required=false)String customEndDate,
+			@RequestParam(value="orgTeams", required=false)String orgTeams,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
@@ -88,8 +94,14 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(recruiterUser.getId(), orgLocations.getId());
 		 model.addObject("teamsList", teamsList);
 		 model.addObject("userList", userList);
-		 
 		 model.addObject("recruiterUser", recruiterUser);
+		 
+		 model.addObject("searchValue", searchValue);
+		 model.addObject("timePeriod", timePeriod);
+		 model.addObject("customStartDate", customStartDate);
+		 model.addObject("customEndDate", customEndDate);
+		 model.addObject("orgTeams", orgTeams);
+		 
 		 model.addObject("requirementTabAccess", requirementTabAccess);
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.setViewName("reports/recruiterJobsReport");
