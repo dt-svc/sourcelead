@@ -166,4 +166,8 @@ public interface ImmigrationCommonService {
 
 	
     Sheet getLCAExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, OrgLocations orgLocations);
+    
+    public Lca getLcaDetailsByLcaNoAndId(String lcaNo, Long lcaId) throws Exception;
+    
+    public Boolean validateLcaNumber(String lcaNo, Long orgLocationId) throws Exception;
 }
