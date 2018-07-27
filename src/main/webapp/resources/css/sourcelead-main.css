@@ -8916,6 +8916,9 @@ content: ""; height: 0; margin-left: 32px; position: absolute; top:-8px; width: 
 .multidropdown-caret .multiselect-container li a{
 	padding-left: 0;
 }
+ul.jobsboard-list {
+	padding: 15px 15px 5px 15px;
+}
 ul.jobsboard-list > li {
 	border: 1px solid #ededed; border-radius: 5px; padding: 10px; margin-bottom: 15px;
 }
