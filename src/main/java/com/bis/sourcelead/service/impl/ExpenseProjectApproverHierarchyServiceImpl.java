@@ -16,9 +16,14 @@ public class ExpenseProjectApproverHierarchyServiceImpl implements ExpenseProjec
 	private  ExpenseProjectApproverHierarchyDao  expenseProjectApproverHierarchyDao;
 
 	@Override
+	public List<ExpenseProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,
+			Long orgLocationId) throws Exception {
+		return expenseProjectApproverHierarchyDao.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectId, orgLocationId);
+	}
+	
+	@Override
 	public List<ExpenseProjectApproverHierarchy> getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(
 			long projectMemberMasterCandidateId, long projectId) throws Exception {
-		// TODO Auto-generated method stub
 		return expenseProjectApproverHierarchyDao.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMemberMasterCandidateId, projectId);
 	}
 

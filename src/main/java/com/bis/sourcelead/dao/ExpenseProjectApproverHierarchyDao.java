@@ -1,10 +1,15 @@
 package com.bis.sourcelead.dao;
 import java.util.List;
 import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 
 
 
 public interface ExpenseProjectApproverHierarchyDao {
+	
+	public ExpenseProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId, Long projectClientId) throws Exception;
+	
+	public List<ExpenseProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,Long orgLocationId) throws Exception;
 	
 	public void deleteProjectExpenseProjectApproverHierarchy(ExpenseProjectApproverHierarchy expenseProjectApproverHierarchy) throws Exception;
 	
