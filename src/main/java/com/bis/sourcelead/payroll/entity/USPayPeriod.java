@@ -36,7 +36,22 @@ public class USPayPeriod {
 	
 	@Column (name="PAY_PERIOD_NUM")
 	private Integer payPeriodNum;
+	
+	
+	@Column (name="APPROVER_STATUS")
+	private String approverStatus;
+	
 	  
+	public String getApproverStatus()
+	{
+		return approverStatus;
+	}
+
+	public void setApproverStatus(String approverStatus)
+	{
+		this.approverStatus = approverStatus;
+	}
+
 	@Column(name = "STATUS")
 	private Integer status;
 	

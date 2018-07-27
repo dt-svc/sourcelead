@@ -5,10 +5,22 @@
 
  <script>
 $(document).ready(function(){
+	$("#approveDiv").hide();
 	$("#submitButtonDiv").hide();
 });
 </script> 
 
+<script>
+function reviewPayrollDiv(){
+	$("#reviewPayrollDiv").show();
+	$("#approveDiv").hide();
+}
+
+function approvePayroll(){
+	$("#reviewPayrollDiv").hide();
+	$("#approveDiv").show();
+}
+</script>
 
 
 
@@ -28,13 +40,14 @@ $(document).ready(function(){
 
 <div class="tabsMenu clearfix">
    		<ul class="list-unstyled">
-		   <li class="current"><a href="#">Review Payroll</a></li>
-		   <li><a href="<c:url value='${appPath}/approvePayroll'/>" >Approve Payroll</a></li>
+		   <li class="current"><a onclick="reviewPayrollDiv();">Review Payroll</a></li>
+		    <li class="current"><a onclick="approvePayroll();">Approve Payroll</a></li>
+		  <%--  <li><a href="<c:url value='${appPath}/approvePayroll'/>" >Approve Payroll</a></li> --%>
 	   </ul>
    </div>
 
 <div class="clearfix"></div>
-<div class="timesheet_out">
+<div class="timesheet_out" id="reviewPayrollDiv">
 
 <div class="tablelist-wrap">
 <div class="timesheet_head minHeight">
@@ -88,7 +101,7 @@ $(document).ready(function(){
 	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
 		<li><a href="#" class="btn btn-primary btnSuccess" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
-		<li><a href="#" class="btn btn-default ml mr">Confirm</a></li>
+		<li><a href="#" class="btn btn-default ml mr" onclick="confirmPayroll();">Confirm</a></li>
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
 	</div>
@@ -180,6 +193,9 @@ function getGroupFrequency(){
 
 <!--   Error Message   --> 
 
+
+
+<jsp:include page="usPayrollApprove.jsp" />
 
 </section>
 
@@ -936,7 +952,6 @@ function getApprovers(){
 <script type="text/javascript">
 function sendPayrollForApprover(){
       var formData = $($('#submit_for_approver')[0]).serialize();
-    if(approver != null && approver != '' && approver != 'undefined'){
       $.post(sourceleadUrl+"/sendPayrollForApprover?"+tokenParamName+"="+tokenValue, formData, function(result) {
         if (result && result.response === "INVALID_DATA") {
               showError(result.responseMessage);
@@ -951,8 +966,19 @@ function sendPayrollForApprover(){
               showError("Operation failed, please try again");
           }
       });   
-    }
     
+}
+</script>
+
+
+<script>
+function confirmPayroll(){
+	alert("Hi");
+	$("#reviewPayrollDiv").hide();
+	$("#approveDiv").show();
+	
+	 var formData = $($('#submit_for_approver')[0]).serialize();
+	 calculateTotalPay(formData);
 }
 </script>
 
