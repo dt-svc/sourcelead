@@ -29,55 +29,56 @@ z-index: 1040 !important;
 	
 		<div class="popupHead">
 		<c:if test="${empty campaignList.id}">
-			<h2>Add Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<span>Add Recipient</span><a onclick="recipientClose();" href="javascript:void(0)" class="closePop pull-right popClose"></a>
 		</c:if>
 		
 		<c:if test="${!empty campaignList.id}">
-			<h2>Edit Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<span>Edit Recipient</span><a onclick="recipientClose();" href="javascript:void(0)" class="closePop pull-right popClose"></a>
 		</c:if>
 		</div>
 		
-		<div class="popupMid popupMidPad clearfix">
+		<div class="popupContent">
 
-          <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-3 padding_left">Choose Campaign<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-9 padding_right clearfix">
+          <div class="clearfix mb">
+				<label class="noPad">Choose Campaign <b class="valStar">*</b></label>
+				
+              	<div class="clearfix">
               		
               		<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN') and hasRole('ROLE_JOB_CAMPAIGN')">
               		<div class="col-md-6 padding_left">
-              			<input type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList(this);"  name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
+              			<input class="pull-left" type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList(this);"  name="campaignType"><label class="col-md-10 padRadio" for="hotlistRadio">Hot List Campaign</label>
               		</div>
               		<div class="col-md-6">
-              			<input type="radio" id="jobRadio" value="jobCampaign" onclick="clearRecipantsList(this);"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>
+              			<input class="pull-left" type="radio" id="jobRadio" value="jobCampaign" onclick="clearRecipantsList(this);"  name="campaignType"><label class="col-md-10 padRadio" for="jobRadio">Job Campaign</label>
               		</div>   
               		</sec:authorize>  
               		
               		<sec:authorize access="!hasRole('ROLE_HOTLIST_CAMPAIGN') and hasRole('ROLE_JOB_CAMPAIGN')">
               		<div class="col-md-6 padding_left">
-              			<input type="radio" id="jobRadio" value="jobCampaign" checked="checked" onclick="clearRecipantsList(this);"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>
+              			<input class="pull-left" type="radio" id="jobRadio" value="jobCampaign" checked="checked" onclick="clearRecipantsList(this);"  name="campaignType"><label class="col-md-10 padRadio" for="jobRadio">Job Campaign</label>
               		</div>
               		</sec:authorize>
               		
               		<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN') and !hasRole('ROLE_JOB_CAMPAIGN')">
               		<div class="col-md-6 padding_left">
-              			<input type="radio" id="hotlistRadio" value="hotlistCampaign" checked="checked" onclick="clearRecipantsList(this);"  name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
+              			<input class="pull-left" type="radio" id="hotlistRadio" value="hotlistCampaign" checked="checked" onclick="clearRecipantsList(this);"  name="campaignType"><label class="col-md-10 padRadio" for="hotlistRadio">Hot List Campaign</label>
               		</div>
               		</sec:authorize>    
               		         		
 				</div>
 			</div>
 			
-          <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-3 padding_left">List Name<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-9 padding_right" id="cpnListNameDiv">
+          <div class="clearfix mb">
+				<label class="noPad">List Name <b class="valStar">*</b></label>
+              	<div class="clearfix" id="cpnListNameDiv">
                 	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value="${campaignList.listName}"  onblur="validateCampaignListName();" data-validation="required validate_length length1-100" field-name="List Name">
 				    <input type="hidden" value="${campaignList.id}" name="contactListId" id="contactListId" >
 				</div>
 			</div>			
 			
-          <div class="col-sm-12 noPad mt clearfix">
-              <label class="col-md-3 padding_left">Recipient(Email)<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="recipientEmailDiv">
+          <div class="clearfix mb">
+              <label class="noPad">Recipient(Email) <b class="valStar">*</b></label>
+              <div class="col-md-10 noPad" id="recipientEmailDiv">
                 <select multiple class="chosen-select form-control" id="recipientEmail" name="recipientEmail" data-validation="required validate_length length1-250" field-name="Recipient Email">
                <c:if test="${not empty recipientList}"></c:if>
                <c:forEach items="${recipientList}" var="recipient">
@@ -86,7 +87,7 @@ z-index: 1040 !important;
                 </select>
                 
               </div>
-              	<div class="col-md-1 noPad">
+              	<div class="col-md-2">
 					<a href="javascript:void(0)"  data-target="#multiplemail" onclick="selectRadio();" data-toggle="modal" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
 					<div role="dialog" id="multiplemail" class="modal fade">
               <div class="modal-dialog modal-lg">
@@ -136,12 +137,11 @@ z-index: 1040 !important;
 			</div>	
 		
 		</div>
-		
-		<div class="popupFoot">
-		<p id="errorMessage" class=""></p>
-            <input value="Save" class="btn btn-primary" type="button" id="addList">
-             <input value="Reset" class="btn btn-primary" type="button" id="resetForm">
-            <input value="Cancel" class="btn btn-default ml popCan" type="button" onclick="recipientClose();">
+		<div class="popupFoot text-right">
+		<p id="errorMessage" class="noPad noMar"></p>
+            <input value="Save" class="slBtn md colorBtn" type="button" id="addList">
+             <input value="Reset" class="slBtn md" type="button" id="resetForm">
+            <input value="Cancel" class="slBtn md popClose" type="button" onclick="recipientClose();">
           </div>		
 		</form:form>
 		

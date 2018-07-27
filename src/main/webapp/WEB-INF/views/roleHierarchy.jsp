@@ -26,7 +26,6 @@
     
     
     <!-- Modal -->
-  <div class="mask"></div>
   <div class="popupWrap" id="popAddLevel" role="dialog">
       <div id="hierarchyLoading"></div> 
         <form:form id="addnew_hierarchy"  name="addnew_hierarchy" method="post"> 
