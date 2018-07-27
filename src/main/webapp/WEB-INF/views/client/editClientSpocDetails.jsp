@@ -170,6 +170,8 @@
 						var selected5 = '';
 						var spocMobilePhone = "";
 						var spocExtensionNumber="";
+						var invoiceEmailStatus;
+						var apEmailStatus;
 						if(json.spocMobilePhone != null && json.spocMobilePhone != '' && json.spocMobilePhone != 'undefined'){
 							spocMobilePhone = json.spocMobilePhone;
 						}else{
@@ -204,7 +206,10 @@
 						if(json.spocStatus == 'Contracted'){
 							selected5 = 'selected';
 						} 
-						
+						/*For checkboxes Edit mode start */
+						invoiceEmailStatus = (json.invoiceEmailStatus =='Y' ? true : false);
+						apEmailStatus = (json.apEmailStatus =='Y' ? true :false);
+						/*For checkboxes Edit mode end */
 						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 						if("${sectionOrder.index == 1}"){
 							var sectionId = '${section.id}';
@@ -326,6 +331,19 @@
 						result = result  +'	  </select>';
 					    result = result  +'	 </div>';
 					    result = result  +'	 </div>'; 
+					    
+					    
+					    result = result +' <div class="col-md-9">';
+			            result = result +' <div class="checkbox checkBox">';
+			            result = result +' <label> <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Invoice Email</label>';
+			            result = result +' </div>';
+			            result = result +' </div>';
+			            
+			            result = result +' <div class="col-md-9">';
+			            result = result +' <div class="checkbox checkBox">';
+			            result = result +' <label> <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AP Email</label>';
+			            result = result +' </div>';
+			            result = result +' </div>';
 						
                         result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth errorInptgroup"  id="customFieldDataId"></div>';
 
@@ -339,6 +357,14 @@
 						$(".user_summary_edit").slideToggle(100);
 						$("#editVendorContactDetailsDiv").empty();
 				        $("#editVendorContactDetailsDiv").append(result);
+				        
+				        /*For checkboxes Edit mode start */
+				        $("#invoiceOrBillSent").attr('checked', invoiceEmailStatus);
+				        $("#invoiceOrBillSent").val(invoiceEmailStatus?'Y':'N');
+				        
+				        $("#apOrArSent").attr('checked', apEmailStatus);
+				        $("#apOrArSent").val(apEmailStatus?'Y':'N');
+				        /*For checkboxes Edit mode end */
 				        
 				        var config = {
 								  '.chosen-select'           : {},
@@ -362,6 +388,26 @@
 </script>
 
 <script type="text/javascript">
+
+function allowApEmailSent(){
+	var checked = document.getElementById("apOrArSent").checked
+	if(checked == true){
+		$("#apOrArSent").val("Y");
+	}else{
+		$("#apOrArSent").val("N");
+	}
+}
+
+
+function allowInvoiceEmailSent(){
+	var checked = document.getElementById("invoiceOrBillSent").checked
+	if(checked == true){
+		$("#invoiceOrBillSent").val("Y");
+	}else{
+		$("#invoiceOrBillSent").val("N");
+	}
+}
+
  function validateClientEmail(spocId) {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();

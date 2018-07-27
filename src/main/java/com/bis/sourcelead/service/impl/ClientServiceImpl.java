@@ -1598,6 +1598,16 @@ public class ClientServiceImpl implements ClientService {
 
 			if (null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)) {
 				User user = orgSpoc.getClientUser();
+				if(StringUtils.isNotBlank(clientDTO.getInvoiceOrBillSent())){
+					orgSpoc.setInvoiceEmailStatus(clientDTO.getInvoiceOrBillSent());
+					}else{
+					orgSpoc.setInvoiceEmailStatus(Constants.NO);	
+					}
+					if(StringUtils.isNotBlank(clientDTO.getApOrArSent())){
+					orgSpoc.setApEmailStatus(clientDTO.getApOrArSent());
+					}else{
+					orgSpoc.setApEmailStatus(Constants.NO);
+					}
 				for(String owners : clientDTO.getOwner()){
 					orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 					User spocUser = new User();
@@ -1615,6 +1625,16 @@ public class ClientServiceImpl implements ClientService {
 				}
 			} else if (null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)) {
 				User user = orgSpoc.getVendorUser();
+				if(StringUtils.isNotBlank(clientDTO.getInvoiceOrBillSent())){
+					orgSpoc.setBillingEmailStatus(clientDTO.getInvoiceOrBillSent());
+					}else{
+					orgSpoc.setBillingEmailStatus(Constants.NO);	
+					}
+					if(StringUtils.isNotBlank(clientDTO.getApOrArSent())){
+					orgSpoc.setArEmailStatus(clientDTO.getApOrArSent());
+					}else{
+					orgSpoc.setArEmailStatus(Constants.NO);
+					}
 				for(String owners : clientDTO.getOwner()){
 					orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());
 					User spocUser = new User();
