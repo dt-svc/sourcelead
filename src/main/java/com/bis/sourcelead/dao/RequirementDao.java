@@ -200,8 +200,6 @@ public interface RequirementDao {
 
 	public long saveJobFair(JobFair jobFair);
 
-    Boolean forceDeleteForSelectedJobs(String[] uuids);
-
 	public JobFair getJobFair(long jobFairId);
 	
 	public JobFair getJobFairByName(String jobFairName);
