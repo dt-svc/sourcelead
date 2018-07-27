@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 
+import java.text.MessageFormat;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpenseProjectApproverHierarchyDao;
 import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class ExpenseProjectApproverHierarchyDaoImpl implements ExpenseProjectApproverHierarchyDao{
@@ -59,6 +61,24 @@ public class ExpenseProjectApproverHierarchyDaoImpl implements ExpenseProjectApp
 	        List<ExpenseProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setLong("masterCandidateId", projectMemberMasterCandidateId).list();
 	        return projectHirachyList;
 		
+	}
+
+	@Override
+	@Transactional
+	public ExpenseProjectApproverHierarchy saveProjectExpenseProjectApproverHierarchy(
+			ExpenseProjectApproverHierarchy expenseProjectApproverHierarchy) throws Exception {
+		logger.debug("In Projects Save method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			if(expenseProjectApproverHierarchy != null){
+				session.saveOrUpdate(expenseProjectApproverHierarchy);
+			}
+		}catch(Exception exception){
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"EXPENSE_PROJECT_APPROVER_HIERARCHY"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+		return expenseProjectApproverHierarchy;
 	}
 	
 }

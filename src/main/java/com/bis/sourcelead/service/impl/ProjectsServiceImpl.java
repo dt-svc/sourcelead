@@ -95,6 +95,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.LeaveTypeService;
@@ -264,6 +265,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Autowired
 	EmailScenarioConfigurationService emailScenarioconService;
 	
+	
+	@Autowired
+	public ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
 	 
 /*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
@@ -2996,6 +3000,14 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					projectApproverHierarchy.setStatus("1");
 					projectApproverHierarchyService.saveProjectApproverHierarchy(projectApproverHierarchy);
 					
+					ExpenseProjectApproverHierarchy projectExpenseApproverHierarchy = new ExpenseProjectApproverHierarchy();
+					projectExpenseApproverHierarchy.setProjectId(projects);
+					projectExpenseApproverHierarchy.setProjectClientsId(projectClients);
+					projectExpenseApproverHierarchy.setApproverUserId(orgSpoc.getClientUser());
+					projectExpenseApproverHierarchy.setLevel(1);
+					projectExpenseApproverHierarchy.setStatus("1");
+					expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(projectExpenseApproverHierarchy);
+					
 					ProjectBudget projectBudget = projectBudgetService.getProjectBudgetsByProjectId(projects.getId());
 					if(projectBudget != null) {
 						projectBudget.setApproverUserId(orgSpoc.getClientUser());
@@ -3112,7 +3124,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 									for(Expenses expense : expList){
 										ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expense.getId());
 										ExpensesApproverHierarchy eaHierarchy = new ExpensesApproverHierarchy();
-										eaHierarchy.setHierarchyId(projectApproverHierarchy);
+										eaHierarchy.setHierarchyId(projectExpenseApproverHierarchy);
 										eaHierarchy.setExpenseId(expense);
 										eaHierarchy.setExpenseStatus(eah.getExpenseStatus());
 										eaHierarchy.setExpenseApprovalStatus(eah.getExpenseApprovalStatus());

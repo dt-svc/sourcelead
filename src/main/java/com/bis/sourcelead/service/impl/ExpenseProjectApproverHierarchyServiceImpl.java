@@ -21,6 +21,12 @@ public class ExpenseProjectApproverHierarchyServiceImpl implements ExpenseProjec
 		// TODO Auto-generated method stub
 		return expenseProjectApproverHierarchyDao.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMemberMasterCandidateId, projectId);
 	}
+
+	@Override
+	public ExpenseProjectApproverHierarchy saveProjectExpenseProjectApproverHierarchy(
+			ExpenseProjectApproverHierarchy expenseProjectApproverHierarchy) throws Exception {
+		return expenseProjectApproverHierarchyDao.saveProjectExpenseProjectApproverHierarchy(expenseProjectApproverHierarchy);
+	}
 	
 	
 }
