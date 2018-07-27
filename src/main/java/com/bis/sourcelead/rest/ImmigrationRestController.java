@@ -2465,6 +2465,23 @@ public class ImmigrationRestController {
 		return flag;
 	}
 	
+	@RequestMapping(value = { "/validateLcaTitle" })
+	public Boolean validateLcaTitle(
+			@RequestParam(value = "lcaTitle", required = false) String lcaTitle,@RequestParam(value = "lcaId", required = false) Long lcaId,
+			HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Lca lca = null;
+		if (null != lcaId) {
+			lca = immigrationCommonService.getLcaDetailsByLcaTitleAndId(lcaTitle, lcaId);
+		}
+		Boolean flag = false;
+		if (lca == null) {
+			flag = immigrationCommonService.validateLcaTitle(lcaTitle, orgLocations.getId());
+		}
+		return flag;
+	}
+	
 	/*
 	 * LCA Code Ends Here
 	 */

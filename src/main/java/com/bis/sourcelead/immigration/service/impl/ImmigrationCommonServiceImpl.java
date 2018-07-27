@@ -2528,6 +2528,16 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	public Boolean validateLcaNumber(String lcaNo, Long orgLocationId) throws Exception {
 		return immigrationCommonDao.validateLcaNumber(lcaNo, orgLocationId);
 	}
+
+	@Override
+	public Lca getLcaDetailsByLcaTitleAndId(String lcaTitle, Long lcaId) throws Exception {
+		return immigrationCommonDao.getLcaDetailsByLcaTitleAndId(lcaTitle, lcaId);
+	}
+
+	@Override
+	public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception {
+		return immigrationCommonDao.validateLcaTitle(lcaTitle, orgLocationId);
+	}
 	
 	/*
 	 * LCA Code Ends Here
