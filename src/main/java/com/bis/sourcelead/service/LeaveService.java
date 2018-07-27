@@ -3,15 +3,24 @@ package com.bis.sourcelead.service;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AppliedLeaveDate;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.MonthlyLeaves;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -29,18 +38,18 @@ public interface LeaveService {
 
 	List<LeaveReportsDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status, String department, String leaveDate) throws Exception;
 	
-	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(Long leaveTypeId, Long orgLocationId, Long userId);
+	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeUUID, Long orgLocationId, Long userId);
 
 	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
 
 
-	LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId);
+	LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId, String loginUserRole, Long orgId);
 
 	LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId) throws Exception;
 
 	List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO)throws Exception;
 
-	void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser) throws Exception;
+	void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser,Leave savedLeave) throws Exception;
 	
 	void LeaveCancelEmailToUser(User loginUser, LeaveManagementHistory leaveManagementHistory,String reason) throws Exception;
 
@@ -77,4 +86,21 @@ public interface LeaveService {
 	List<Leave> getAllLeave();
 
 	List<Leave> getLeaveByUserIdOrglocationIdandStatus(User consultantUser, Long orglocationId, String approved);
+
+	Response<LeaveDTO> saveBulkApprovedLeaves(MultipartFile multipartFile, OrgLocations orgLocation, User user, Org org);
+
+	boolean reduceLeaveCount(OrgLocations orgLocations, User user, String leaveUUID, Long leaveTypeId, String status, int numberOfDays) throws Exception;
+
+	List<LeaveApproveHierarchy> getAllLeaveApproversList(Long locationId);
+
+	File getLeaveTypeImportTemplate(Long orgLocationId);
+
+	LeaveTypeDTO saveBulkLeaveTypes(MultipartFile multipartFile, OrgLocations orgLocation, User user, Org org);
+
+	Map<String, Float> getNumberOfCurrentMonthLeavesTakenByUser(Long userId, Long leaveTypeId);
+
+	List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate);
+
+	void updateBalanceLeaves(Leave leave, User user, OrgLocations orgLocations);
+	
 }

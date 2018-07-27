@@ -23,7 +23,7 @@
 							"ajax" : $.fn.dataTable.pipeline({
 								url : url,
 								method : 'POST',
-								pages : 2
+								pages : 1
 							}),
 							"columns" : [ {
 								"data" : "name"
@@ -428,12 +428,13 @@
 															+ ',\''
 															+ submissionType
 															+ '\')";>';
-													result = result
-															+ "<option value='Status'>"
-															+ opt.submissionStatus
-															+ "</option><option value='Reject'>Reject</option>";
-													if (opt.submissionStatus == 'OFFERACCEPTED'
-															|| opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
+													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
+													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED'){
+														result = result + "<option value='Joined'>Joined</option>";
+													}
+													result = result + "<option value='Reject'>Reject</option>";
+													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
+														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
 														result = result
 																+ '<option value="backout">BackOut</option>';
 													}

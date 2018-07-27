@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -67,6 +69,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.text.SimpleDateFormat;
 
 @RestController
 @RequestMapping("/app")
@@ -151,6 +154,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -179,6 +183,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -199,6 +204,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -239,6 +245,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -269,6 +276,7 @@ public class CandidateOnBoardRestController {
 			responseList.setResponse(Result.AWKWARD.name());
 			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return responseList;
 	}
@@ -299,6 +307,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -371,6 +380,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -402,6 +412,7 @@ public class CandidateOnBoardRestController {
 			responseList.setResponse(Result.AWKWARD.name());
 			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return responseList;
 	} 
@@ -490,6 +501,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
  		return response;
 	}
@@ -549,6 +561,7 @@ public class CandidateOnBoardRestController {
 			responseList.setResponse(Result.AWKWARD.name());
 			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return responseList;
 	}
@@ -587,6 +600,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -625,6 +639,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -658,6 +673,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -687,6 +703,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -704,6 +721,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 
@@ -722,6 +740,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -740,6 +759,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -769,6 +789,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -809,13 +830,7 @@ public class CandidateOnBoardRestController {
 				candidateOnBoardingDTO.setJobTitle(candidateOnBoarding.getOfferId().getSubmissionId().getRequirement().getJobTitle());
 				if (null != candidateOnBoarding.getManagerUserId()) {
 					StringBuilder mgName = new StringBuilder();
-					if (candidateOnBoarding.getManagerUserId().getLastName() != null) {
-						candidateOnBoardingDTO.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFirstName())
-								.append(" ").append(candidateOnBoarding.getManagerUserId().getLastName()).toString());
-					} else {
-						candidateOnBoardingDTO
-								.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFirstName()).toString());
-					}
+					candidateOnBoardingDTO.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFullName()).toString());
 				}
 				if (null != candidateOnBoarding.getId()) {
 					candidateOnBoardingDTO.setId((candidateOnBoarding.getId()).toString());
@@ -938,6 +953,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1181,6 +1197,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1298,6 +1315,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1446,6 +1464,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1538,6 +1557,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1561,6 +1581,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 
@@ -1609,6 +1630,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1631,6 +1653,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1657,6 +1680,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1685,6 +1709,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1785,6 +1810,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1834,6 +1860,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1893,6 +1920,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1920,6 +1948,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -1948,6 +1977,7 @@ public class CandidateOnBoardRestController {
 			result.setResponse(Result.AWKWARD.name());
 			result.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1972,6 +2002,7 @@ public class CandidateOnBoardRestController {
 			result.setResponse(Result.AWKWARD.name());
 			result.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -2018,6 +2049,7 @@ public class CandidateOnBoardRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -2027,16 +2059,31 @@ public class CandidateOnBoardRestController {
 			@RequestParam(value = "onboardCandidateUUID", required = false) String onboardCandidateUUID, HttpServletRequest request)
 			throws Exception {
 		Response<String> response = new Response<>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onboardCandidateUUID);
 			candidateOnBoarding.setCandidateOnBoardStatus("Accepted");
 			candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
+			
+			/*
+			 * This block for change submission status to Join
+			 * @Author: VenkatKesav
+			 * Begin
+			*/
+			ApplicantRejectBackOutDTO applicantRejectBackOutDTO = new ApplicantRejectBackOutDTO();
+			applicantRejectBackOutDTO.setJoinDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+			commonUtil.saveJoinStatusInSubmission(applicantRejectBackOutDTO, candidateOnBoarding.getOfferId().getSubmissionId().getId(), orgLocations, user);
+			/*
+			 * End
+			*/
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -2074,6 +2121,7 @@ public class CandidateOnBoardRestController {
 			result.setResponse(Result.AWKWARD.name());
 			result.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		}
 		return result;
 	}

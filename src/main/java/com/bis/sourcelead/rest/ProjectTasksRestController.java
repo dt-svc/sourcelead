@@ -458,27 +458,29 @@ public class ProjectTasksRestController {
 
 		for (ProjectTaskActivity activity : taskActivityList) {
 			Timezone timezone = timeZoneService
-					.getTimezone(activity.getProjecId().getOrgLocationsId().getTimezone().getId());
-			activity.setCreatedStr(
-					CalendarUtil.getDateStrForGivenTimeZone(timezone.getTimeZoneId(), activity.getCreatedDate(),
-							activity.getProjectTaskId().getProjectId().getOrgLocationsId().getDateFormat()));
+					.getTimezone(activity.getProjectTaskId().getProjectId().getOrgLocationsId().getTimezone().getId());
+			activity.setCreatedStr(commonUtil.dateStrFromOrgDateFormatter(
+					activity.getProjectTaskId().getProjectId().getOrgLocationsId().getDateFormat(),
+					activity.getCreatedDate()));
 			if (activity.getCreatedDate() != null) {
-				String startTimeUTC = CalendarUtil.getDateTimeStrForGivenTimeZone(timezone.getTimeZoneId(),
-						activity.getCreatedDate(), activity.getProjecId().getOrgLocationsId().getDateFormat());
-				Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTimeUTC);
-				String convertedDateStr = new SimpleDateFormat("hh:mm a").format(date);
+				DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(activity.getCreatedDate());
+				String startTimeUTC = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, timezone.getTimeZoneId(),
+						currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);
 				activity.setActivityTimezoneStr(convertedDateStr);
 			}
-			long diff = commonUtil.currentDate().getTime()
-					- CalendarUtil.getDateTimeForGivenTimeZone(timezone.getTimeZoneId(), activity.getCreatedDate(),
-							activity.getProjecId().getOrgLocationsId().getDateFormat()).getTime();
+
+			long diff = commonUtil.currentDate().getTime() - activity.getCreatedDate().getTime();
 			long diffSeconds = diff / 1000 % 60;
 			long diffMinutes = diff / (60 * 1000) % 60;
 			long diffHours = diff / (60 * 60 * 1000) % 24;
 			long diffDays = diff / (24 * 60 * 60 * 1000);
 			StringBuilder timeBuilder = new StringBuilder();
 			if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
-				activity.setActionTimeStr(timeBuilder.append(diffSeconds).append(" seconds ago").toString());
+				activity.setActionTimeStr(timeBuilder.append(diffSeconds).append("seconds ago").toString());
 			} else if (diffDays == 0 && diffHours == 0) {
 				activity.setActionTimeStr(timeBuilder.append(diffMinutes).append(" minutes ago").toString());
 			} else if (diffDays == 0) {
@@ -492,6 +494,7 @@ public class ProjectTasksRestController {
 				String commonDateFormat = standardFormat.format(activity.getCreatedDate());
 				activity.setActionTimeStr(commonDateFormat.toString());
 			}
+			 
 		}
 		return taskActivityList;
 	}
@@ -1304,8 +1307,7 @@ public class ProjectTasksRestController {
 			length = timeSheetDayEntriesDto.getPageSize();
 		}
 
-		ResponseList<TimeSheetDayEntries> timeEntryDayList = timeSheetDayEntriesService
-				.getTimesheetDayEntriesByTaskUUIDAndUserId(taskUUID, user.getId(), loginOrgLocation.getId(), start,
+		ResponseList<TimeSheetDayEntries> timeEntryDayList = timeSheetDayEntriesService.getTimesheetDayEntriesByTaskUUIDAndUserId(taskUUID, user.getId(), loginOrgLocation.getId(), start,
 						length, timeSheetDayEntriesDto.getSearchValue());
 		for (TimeSheetDayEntries timeDayEntries : timeEntryDayList.getData()) {
 			TimeSheetDayEntriesDTOList timeSheetDayEntriesDtoList = new TimeSheetDayEntriesDTOList();
@@ -1327,6 +1329,7 @@ public class ProjectTasksRestController {
 			timeSheetDayEntriesDtoList.setHours(timeDayEntries.getTotalHours());
 			timeSheetDayEntriesDtoList.setComments(timeDayEntries.getComments());
 			timeSheetDayEntriesDtoList.setProjectMemberId(timeDayEntries.getTimesheetSubmissions().getProjectMembers().getId());
+			timeSheetDayEntriesDtoList.setTimesheetEntryId(timeDayEntries.getId());
 			timeSheetDayEntriesDtoListData.add(timeSheetDayEntriesDtoList);
 		}
 
@@ -1540,5 +1543,16 @@ public class ProjectTasksRestController {
 		}
 		return totalHours;
 	}
+
+	@RequestMapping(value = "/deleteProjectTaskTimesheetDayEntry", method = RequestMethod.POST)
+	public Integer deleteProjectTaskTimesheetDayEntry
+	          (@RequestParam(value = "timesheetEntryId", required = false) String timesheetEntryId, HttpServletRequest request) throws NumberFormatException, Exception{
+			  TimeSheetDayEntries timesheetDayEntries = timeSheetDayEntriesService.getTimesheetDayEntriesById(Long.parseLong(timesheetEntryId));
+			  timesheetDayEntries.setStatus(0);
+			  timesheetDayEntries = timeSheetDayEntriesService.saveTimesheetDayEntries(timesheetDayEntries);
+			  return timesheetDayEntries.getStatus();
+		
+	}
+	
 
 }

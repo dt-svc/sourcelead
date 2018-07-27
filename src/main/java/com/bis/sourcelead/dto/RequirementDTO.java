@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -147,6 +148,14 @@ public class RequirementDTO extends CommonDTO {
 	
 	private String noOfApplicants;
 	
+	private String noOfShortlistApplicants;
+	
+	private String noOfRejectedApplicants;
+	
+	private String noOfJoinedApplicants;
+	
+	private String noOfBackoutApplicants;
+	
 
 	private String projectClientID;
 	
@@ -181,14 +190,69 @@ public class RequirementDTO extends CommonDTO {
 	private List<RequirementLocationsDTO> savedLocationInfo;
 
 	private List<String> locationsList;
+	
+	private boolean walkIn;
+	
+	private String walkInDays;
+	
+	private boolean jobFair;
+	
+	private long jobFairId;
+	
+	private String[] jobFairDates;
+	
+	private Map<Long, String[]> jobFairMap;
+	
+	private String orgTeams;
+	
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
 	 * private List<AssinedTo> assinedTeamInfo;
 	 */
 
+	public Map<Long, String[]> getJobFairMap() {
+		return jobFairMap;
+	}
+
+	public boolean isJobFair() {
+		return jobFair;
+	}
+
+	public void setJobFair(boolean jobFair) {
+		this.jobFair = jobFair;
+	}
+
+	public void setJobFairMap(Map<Long, String[]> jobFairMap) {
+		this.jobFairMap = jobFairMap;
+	}
+
+	public String getOrgTeams() {
+		return orgTeams;
+	}
+
+	public void setOrgTeams(String orgTeams) {
+		this.orgTeams = orgTeams;
+	}
+
 	public String getNoOfOfferedApplicants() {
 		return noOfOfferedApplicants;
+	}
+
+	public boolean isWalkIn() {
+		return walkIn;
+	}
+
+	public void setWalkIn(boolean isDriveJob) {
+		this.walkIn = isDriveJob;
+	}
+
+	public String getWalkInDays() {
+		return walkInDays;
+	}
+
+	public void setWalkInDays(String driveDays) {
+		this.walkInDays = driveDays;
 	}
 
 	public void setNoOfOfferedApplicants(String noOfOfferedApplicants) {
@@ -330,6 +394,8 @@ public class RequirementDTO extends CommonDTO {
 	private String reqLevel2ApproverStatus;
 
 	private String managerUserId;
+	
+	private long primaryRecruiterUserId;
 
 	private String client;
 
@@ -342,6 +408,11 @@ public class RequirementDTO extends CommonDTO {
 	private String releasedBy;
 
 	private String currentRateCurrency;
+	
+	private BigInteger reqId;
+	
+	private BigInteger requirementCreatedUserId;
+	
 
 	public String getRequirementStatus() {
 		return requirementStatus;
@@ -1276,6 +1347,38 @@ public class RequirementDTO extends CommonDTO {
 		this.noOfApplicants = noOfApplicants;
 	}
 
+	public String getNoOfShortlistApplicants() {
+		return noOfShortlistApplicants;
+	}
+
+	public void setNoOfShortlistApplicants(String noOfShortlistApplicants) {
+		this.noOfShortlistApplicants = noOfShortlistApplicants;
+	}
+
+	public String getNoOfRejectedApplicants() {
+		return noOfRejectedApplicants;
+	}
+
+	public void setNoOfRejectedApplicants(String noOfRejectedApplicants) {
+		this.noOfRejectedApplicants = noOfRejectedApplicants;
+	}
+
+	public String getNoOfJoinedApplicants() {
+		return noOfJoinedApplicants;
+	}
+
+	public void setNoOfJoinedApplicants(String noOfJoinedApplicants) {
+		this.noOfJoinedApplicants = noOfJoinedApplicants;
+	}
+
+	public String getNoOfBackoutApplicants() {
+		return noOfBackoutApplicants;
+	}
+
+	public void setNoOfBackoutApplicants(String noOfBackoutApplicants) {
+		this.noOfBackoutApplicants = noOfBackoutApplicants;
+	}
+
 	public String getUrl()
 	{
 		return url;
@@ -1356,4 +1459,46 @@ public class RequirementDTO extends CommonDTO {
 	public void setLocationsList(List<String> locationsList) {
 		this.locationsList = locationsList;
 	}
+
+	public long getPrimaryRecruiterUserId() {
+		return primaryRecruiterUserId;
+	}
+
+	public void setPrimaryRecruiterUserId(long primaryRecruiterUserId) {
+		this.primaryRecruiterUserId = primaryRecruiterUserId;
+	}
+	
+	public BigInteger getReqId() {
+		return reqId;
+	}
+
+	public void setReqId(BigInteger reqId) {
+		this.reqId = reqId;
+	}
+
+	public BigInteger getRequirementCreatedUserId() {
+		return requirementCreatedUserId;
+	}
+
+	public void setRequirementCreatedUserId(BigInteger requirementCreatedUserId) {
+		this.requirementCreatedUserId = requirementCreatedUserId;
+	}
+
+	public long getJobFairId() {
+		return jobFairId;
+	}
+
+	public void setJobFairId(long jobFairId) {
+		this.jobFairId = jobFairId;
+	}
+
+	public String[] getJobFairDates() {
+		return jobFairDates;
+	}
+
+	public void setJobFairDates(String[] jobFairDates) {
+		this.jobFairDates = jobFairDates;
+	}
+	
+	
 }

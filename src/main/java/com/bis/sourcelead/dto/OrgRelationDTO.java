@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -90,7 +91,21 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	private String  stringDate;
 	
+	private String isLawFirm;
+	
+	private String isAccountingFirm;
+	
 	private String noOfNonReleasedContacts;
+	
+	private BigInteger clientLocationId;
+	
+	private BigInteger vendorLocationId;
+	
+	private String clientName;
+	
+	private BigInteger orgRelId;
+	
+	private String vendorName;
 
 	public Long getId() {
 		return id;
@@ -425,6 +440,62 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	public void setNoOfNonReleasedContacts(String noOfNonReleasedContacts) {
 		this.noOfNonReleasedContacts = noOfNonReleasedContacts;
+	}
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+
+	public BigInteger getClientLocationId() {
+		return clientLocationId;
+	}
+
+	public void setClientLocationId(BigInteger clientLocationId) {
+		this.clientLocationId = clientLocationId;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	public BigInteger getOrgRelId() {
+		return orgRelId;
+	}
+
+	public void setOrgRelId(BigInteger orgRelId) {
+		this.orgRelId = orgRelId;
+	}
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	public BigInteger getVendorLocationId() {
+		return vendorLocationId;
+	}
+
+	public void setVendorLocationId(BigInteger vendorLocationId) {
+		this.vendorLocationId = vendorLocationId;
 	}
 
 }

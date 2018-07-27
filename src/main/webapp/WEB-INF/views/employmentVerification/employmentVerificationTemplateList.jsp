@@ -17,28 +17,22 @@ $(document).ready(function(){
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo;  Employment Verfication List</div>
     </section>
-    <div class="content-area content-new clearfix">
-      <div class="clearfix form-horizontal">
 
 <div class="project_wrap">
-                 <div class="timesheet_head minHeight40">
-					<ul>
-					<li> <a href="<c:url value="/app/addEmploymentVerificationTemplate"/>" title="Add Template"> <i class="fa fa-plus paddingRight"></i>Add</a> </li>
-					<div class="clearfix"></div>
-					</ul>
-					<div class="clearfix"></div>
-                 </div>
+             
+	 <div class="reportHead clearfix">
+	    <ul class="pull-right list-unstyled list-inline">
+         	<li><a href="<c:url value="/app/addEmploymentVerificationTemplate"/>" title="Add Template" class="newAdBtn mr5">Add</a></li>
+         	<li><input type="text" class="repSearchBar" placeholder='Search' id='employmentTemplateTableSearch'/><span class="repSearchIcon" onClick=""></span></li>
+		</ul>
+	</div>	
 	
 	<div class="candidate_wrap_table datatable_filter">
-	                  <div id="templateList"></div>
-                  </div>
+		<div id="templateList"></div>
+	</div>
 	
 </div>     
       
-      <!-- Content Area Ends--> 
-    </div>
-</div>
- 
   </section>
   
   
@@ -56,11 +50,13 @@ function prepareEmploymentVerificationTemplateList(url){
 	 $("#templateList").removeAttr("style");
  	 $("#templateList").empty();
  	 var result = "";
- 	result = result +" <div class='clearfix'>";
+ 	 
+/*  	result = result +" <div class='clearfix'>";
  	result = result +" <div class='remove_search'>";
  	result = result +" <input type='text' placeholder='Search' id='employmentTemplateTableSearch'/>";
  	result = result +"</div>";
- 	result = result +"</div>";
+ 	result = result +"</div>"; */
+ 	
  	result = result +"<table id='employmentTemplatePagination' class='display' cellspacing='0' width='100%' >"; 
     result = result + '	<thead>';
 	result = result + '   <tr>';

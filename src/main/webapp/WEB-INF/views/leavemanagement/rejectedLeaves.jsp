@@ -34,6 +34,7 @@ $(document).ready(function(){
                 <div class="pull-left select-fild">
                         <select onchange="redirectlocation(this.value);">
                         <option value="/pendingLeaves">Pending Leaves</option>
+                        <option value="/withdrawLeaves">Withdraw Leaves</option>
                         <option value="/approvedLeaves">Approved Leaves</option>
                         <option value="/rejectedLeaves" selected>Rejected Leaves</option>
                         <option value="/cancelLeaves">Cancelled Leaves</option>
@@ -79,6 +80,7 @@ function getRejectedLeavesList(){
 				result = result + '<th>Reason</th>';
 				result = result + '<th>Rejected By</th>';
 				result = result + '<th>Status</th>';
+				result = result + '<th>Action</th>';
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
@@ -121,6 +123,9 @@ function getRejectedLeavesList(){
 			        		 result = result +' <b class="proj_closed">'+opt.status+'</b> ';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
+			        		 result = result + ' <td>';
+			        		 result = result + '   <a title="Reapply" class="tbldata-dotdot-100" href="'+sourceleadUrl+'/reApplyLeaveByUUID?leaveUUID='+opt.leaveUUID+'&currentStage=REJECTED">Reapply</a>';
+			        		 result = result + '</td>';
 			        		 result = result + '  </tr>';
 						}
 				}
@@ -180,8 +185,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
 			 result = result +'<div class="col-md-8">';
-			 if(data.leaveType != null && data.leaveType !='' && data.leaveType !='undefined'){
-				 result = result +'<span>'+data.leaveType+'</span>';
+			 if(data.leaveName != null && data.leaveName !='' && data.leaveName !='undefined'){
+				 result = result +'<span>'+data.leaveName+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -207,7 +212,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 	            }
              result = result +' </div>';
              result = result +' </div>';
-             result = result +'<div class="col-md-12 mb">';
+            /*  result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">'; 
              if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
@@ -216,7 +221,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 	            	result = result +' <span>--</span>';
 	            }
              result = result +'</div>';
-             result = result +'</div>';
+             result = result +'</div>'; */
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Applied on:</b></label>';
              result = result +'<div class="col-md-8">';

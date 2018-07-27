@@ -111,6 +111,7 @@ public class FinanceServiceImpl implements FinanceService{
 		try {
 			if (sahList != null) {
 				int count = 0;
+				double totalAmount = 0;
 				if(!"invoice".equalsIgnoreCase(missingInvoiceDto.getInvoiceType())) {
 					for (SubmissionApproverHierarchy sah : sahList.getData()) {
 						MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
@@ -158,6 +159,7 @@ public class FinanceServiceImpl implements FinanceService{
 								missingInvoice.setBillAmount(amount);
 								missingInvoiceDTOList.add(missingInvoice);
 								count++;
+								totalAmount = totalAmount+amount;
 							}
 						}
 						
@@ -174,7 +176,7 @@ public class FinanceServiceImpl implements FinanceService{
 							}else {
 								name.append(candidate.getFirstName());
 							}
-							
+							missingInvoice.setCandidateName(name.toString());
 							if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 								missingInvoice.setOrgName(orgRelations.getLocationId().getOrgLocationName());
 							}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
@@ -216,6 +218,7 @@ public class FinanceServiceImpl implements FinanceService{
 							missingInvoice.setInvoiceAmount(amount);
 							missingInvoiceDTOList.add(missingInvoice);
 							count++;
+							totalAmount = totalAmount+amount;
 						}
 					}
 
@@ -226,12 +229,16 @@ public class FinanceServiceImpl implements FinanceService{
 				response.setRecordsTotal(count);
 				response.setStatusCode("200");
 				
-				
+				missingInvoiceDTOList = response.getData();
+				if(missingInvoiceDTOList.size()>0){
+					MissingInvoiceDTO  firstDto = missingInvoiceDTOList.get(0);	
+					firstDto.setTotalCalAmount(totalAmount);
+				}
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+	
 		return response;
 	}
 	
@@ -643,6 +650,11 @@ public class FinanceServiceImpl implements FinanceService{
 			res.setData(paidBillList);
 			res.setRecordsFiltered(paidBillList.size());
 			res.setRecordsTotal(paidBillList.size());
+			paidBillList = res.getData();
+			if(paidBillList.size()>0){
+				PaidBillDTO  paidBill = paidBillList.get(0);	
+				paidBill.setTotalCalAmount(totalAmount);
+			}
 		}
 		return res;
 	}

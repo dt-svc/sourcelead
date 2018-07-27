@@ -97,6 +97,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Transient
 	@JsonProperty
+    private String updatedDateStr;
+	
+	@Transient
+	@JsonProperty
     private String clientName;
 	
 	@Transient
@@ -280,6 +284,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setDateOfJoiningStr(String dateOfJoiningStr) {
 		this.dateOfJoiningStr = dateOfJoiningStr;
+	}
+
+	public String getUpdatedDateStr() {
+		return updatedDateStr;
+	}
+
+	public void setUpdatedDateStr(String updatedDateStr) {
+		this.updatedDateStr = updatedDateStr;
 	}
 
 	public String getOfferStatus() {

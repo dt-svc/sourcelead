@@ -476,7 +476,7 @@ function addContactsGroup(){
 	result = result +'<div class="clearfix"></div >';
 	result = result + '<div class="form-group">';
 	result = result + '<div class="pull-right">';
-	result = result +'<input type="button" value="Save" onClick="contactgrp()" class="btn btn-primary ml10">';
+	result = result +'<input type="button" value="Save" id="add_contactgroup" onClick="contactgrp()" class="btn btn-primary ml10">';
 	result = result +'<input type="button" value="Cancel" onClick="maskFade()"  class="btn btn-default ml">';
 	 result = result + '</div >';
 	 result = result + '</div >';
@@ -1047,7 +1047,7 @@ function editContactsGroup(groupId,groupName){
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '<div class="form-group">';
 	        	outPut = outPut+ '<div class="pull-right">';
-	        	outPut = outPut +'<input type="button" value="Save" onClick="contactgrp()" class="btn btn-primary ml10">';
+	        	outPut = outPut +'<input type="button" value="Save" id="add_contactgroup" onClick="contactgrp()" class="btn btn-primary ml10">';
 	        	outPut = outPut +'<input type="button" value="Cancel" onClick="maskFade()"  class="btn btn-default ml">';
 				outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</div>';

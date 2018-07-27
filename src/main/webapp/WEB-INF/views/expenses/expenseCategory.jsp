@@ -17,31 +17,26 @@
         </section>
         
 		<!-- Timesheet -->
-<div class="success_pop" id="selector10" style="display: none;">
-<i class="fa fa-check-circle"></i><span id="expMsgDiv"></span>
-</div>
-<div class="timesheet_out">
+<div class="success_pop" id="selector10" style="display: none;"><i class="fa fa-check-circle"></i><span id="expMsgDiv"></span></div>
 
 <div class="project_wrap">
-	<div class="timesheet_head candidateHead">
-	  <ul class="mt10">
-	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE')">
-	  	<li><a href="javascript:void(0)" class="addcon-pop" onclick="addExpenseCategory();"> <i class="glyphicon glyphicon-plus"></i>Add Category</a></li>
-	  </sec:authorize>
-	  </ul>
-	<div class="clearfix"></div>
-	</div>
+	 <div class="reportHead reportHeadDataTab clearfix">
+	    <ul class="pull-right list-unstyled list-inline">
+			  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE')">
+			  	<li><a href="javascript:void(0)" class="newAdBtn" onclick="addExpenseCategory();">+ Category</a></li>
+			  </sec:authorize>         
+		</ul>
+	</div>	 
 
-	 <div class="clients_wrap_table datatable_scroll mt10">
-		 <div id="popUpDiv" class="edit-details col-md-4"> </div>
-		 <div id="expenseCategoryList" class="datatable_filter"></div>
+	 <div class="clients_wrap_table datatable_scroll">
+	 	<div id="popUpDiv" class="popupWrap"> </div>
+		<div id="expenseCategoryList" class="datatable_filter dataSeaTop"></div>
 	 </div>	  
-		
+
     </div>  
-	</div>
   
 </section>
-      <!-- Content Area Ends--> 
+
 <script>
 $(document).ready(function(){
 	if('${AWKWARD}' == "true"){
@@ -61,48 +56,39 @@ function addExpenseCategory(categoryId) {
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="expenseCategory_form" name="expenseCategory_form" method="post" > ';
-	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
-	result = result  +'                <div class="form-horizontal clearfix"> ';
-	result = result  +'   ';
-	result = result  +'                  <div class="clearfix mb10" id="nameIdDiv">'  ;
-	result = result  +'                    <div class="col-md-12 mt">' ;
-	/* result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
+	result = result  +'   <div class="popupHead">Add Expenses Category <i class="closePop pull-right popClose" onclick="closePopup();"></i></div> ';
 	
+	result = result  +'                  <div class="popupContent" id="nameIdDiv">'  ;
+	result = result  +'                    <div class="mb" id="testDiv">' ;
+	
+	/* result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
 						       <c:forEach var="expCat" items="${lookUpExpCatList}">
     result = result  +'	            <option value="" disabled selected></option>';										 
 	result = result + ' 			<option value="${expCat.name}">${expCat.name}</option>';
 	                	       </c:forEach>  
     result = result + '		</select>'; */
-    
+    result = result  +'<label class="noPad">Category Name <b class="valStar">*</b></label>';
     result = result  +'<input type="text" name="expensesName" field-name="Expensesname" placeholder="Expense Category" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required"  onkeyup ="validateExpenseCategoryType();" class="form-control">';
-    
 	result = result  +'</div>';
-	result = result  +'</div>';
-	result = result  +'';
-	result = result  +'<div class="clearfix mb10" id="errTax">';
-	result = result  +'<div class="col-md-5" >';
-	result = result  +'<div class="btn-group btn_Block pull-left">';
 	
+	result = result  +'<div class="clearfix mb" id="errTax">';
+	 result = result  +'<label class="noPad">Type</label>';
+	result = result  +'<div class="col-md-3 noPad" >';
+	result = result  +'<div class="btn-group btn_Block pull-left">';
 	result = result  +' <button type="button" class="btn btn-sm btn-primary" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
 	result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
 	result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value=""/>';
 	result = result  +' </div>';
 	result = result  +'</div>';
 	
-	
-	
-	
-	result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  >';
-	result = result  +'<div class="row flat">';
-	result = result  +' <div class="form-group col-md-12 paddingRight positionRelative iconHolder" >';
+	result = result  +'<div class="col-md-9 noPad" id="taxFlatReward" style="display: none" >';
+	result = result  +' <div class="positionRelative iconHolder" >';
 	result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" placeholder="Flat">';
 	result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
 	result = result  +' </div>';
 	result = result  +' </div>';
-	result = result  +' </div>';
 	
-	
-	result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward" style="display: none">';
+	result = result  +'<div class="col-md-9 noPad" id="taxPercentageReward">';
 	result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
 	result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage" value="" id="taxPercentageRewardValue" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" onblur="getTaxPercentageValue()" placeholder="Percentage">';
 	result = result  +' <i class="fa fa-percent"></i>'; 
@@ -110,32 +96,32 @@ function addExpenseCategory(categoryId) {
 	result = result  +' </div>';
 	
 	result = result  +' </div>';
-	result = result  +' </div>';
 	
-	result = result  +' <div class="clearfix"></div>';	
+	result = result  +'<div class="clearfix mb">Attachment Required <input type="checkbox" value="" onClick="checkCheckBox();" name="isAttachmetRequired" id="isAttachmetRequired"></div>';	
 	
-	result = result  +'<div class="clearfix mb10">';
-	result = result  +'<div class="col-md-12 mt">';
+	result = result  +'<div class="clearfix mb">';
+	result = result  +'<label class="noPad">Description</label>';
 	result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_length length1-500" data-validation-optional="true"></textarea>';
 	result = result  +' </div>';
+	
 	result = result  +' </div>';
-	result = result  +'';
-	result = result  +'<div class="clearfix mr">';
-    result = result +'<input type="button" value="Add" name="btnAddExpCat" id="save_button" class="btn btn-sm btn-primary pull-right" onclick="storeExpensesCategory();"/>'; 
+	
+	result = result  +'<div class="popupFoot text-right">';
+    result = result +'<input type="button" value="Add" name="btnAddExpCat" id="save_button" class="slBtn md colorBtn" onclick="storeExpensesCategory();"/>'; 
+    result = result +' <input type="button" value="Cancel" class="slBtn md popClose" onclick="closePopup();">'; 
 	result = result  +' </div> ';
-	result = result  +' </div> ';
+	
 	
 	result = result  +' </form>';
 	$("#popUpDiv").empty();
 	$("#popUpDiv").append(result);
 	
-	$(".edit-details").toggleClass("edit-details-active");
-	 $(".close-div").click(function(){ 
-		 $(this).parent("div.edit-details").removeClass("edit-details-active");
-		 });
-	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-		 e.stopPropagation();
-	 });
+	$("#popUpDiv").fadeIn(100);
+	$(".mask").show();
+	$(".popClose").click(function(){ 
+		 $("#popUpDiv").fadeOut(100);
+		 $(".mask").hide();
+	});
 	 
 	 <%-- Expense Category Autocomplete Scripts Starts Here --%>
 	 var config = {
@@ -185,7 +171,8 @@ function addExpenseCategory(categoryId) {
 
 <script>
 function closePopup(){
-	 $("#popUpDiv").removeClass("edit-details-active");
+	 $("#popUpDiv").fadeOut(100);
+	 $(".mask").hide();
 }
 </script>
 
@@ -211,6 +198,7 @@ function expenseCategoryList(){
                    result = result +"    <th>Category Name</th>";
                    result = result +"    <th>Amount</th>";
                    result = result +"    <th>Type</th>";
+                   result = result +"    <th>Attachemt Required</th>";
                    result = result +"    <th>Descrption</th>"; 
                    result = result +"    <th>Status</th>"; 
                    result = result +"    <th>Actions</th>";
@@ -241,6 +229,17 @@ function expenseCategoryList(){
                   	     result = result +"<td><div><span>---</span></div></td>";
                   	    }
                   	    
+                  	  if(opt.isAttachemtRequired != null && opt.isAttachemtRequired !='' && opt.isAttachemtRequired !='undefined'){
+                  		  if(opt.isAttachemtRequired == 'Y'){
+                  			result = result +"<td><div><span>YES</span></div></td>";	  
+                  		  }
+                  		  if(opt.isAttachemtRequired == 'N'){
+                  			result = result +"<td><div><span>NO</span></div></td>";	  
+                  		  }
+                   	    }else{
+                   	     result = result +"<td><div><span>---</span></div></td>";
+                   	    }
+                  	    
                   	    if(opt.description != null && opt.description !='' && opt.description !='undefined'){
                   		 result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>"; 
                   	    }else{
@@ -252,9 +251,9 @@ function expenseCategoryList(){
                   		 }else{
                   			 result = result +"<td><div><span>Active</span></div></td>"; 
                   		 }
-		                    result = result+' <td><div class="tblicons tblminwidth-75">';
+		                    result = result+' <td><div class="tblicons">';
 		                    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EXPENSE_TYPE\')">'
-		                    result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onclick ="editExpenseCategory('+opt.id+');" title="Edit"></a>';
+		                    result = result+'<a class="mr10" href="javascript:void(0)" onclick ="editExpenseCategory('+opt.id+');" title="Edit"><i class="fa fa-pencil"></i></a>';
 		                    '</sec:authorize>';
 		                    if(opt.status == '0'){
 		                    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EXPENSE_TYPE\')">'
@@ -262,7 +261,7 @@ function expenseCategoryList(){
 		                    	'</sec:authorize>';
 		                    }else{
 		                    	'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_EXPENSE_TYPE\')">'
-		                    	result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteExpenseCategory('+opt.id+');" title="Remove"></i></div></td>';
+		                    	result = result+'<a href="javascript:void(0)" class="fa fa-trash" onclick="deleteExpenseCategory('+opt.id+');" title="Remove"></a></div></td>';
 		                    	'</sec:authorize>';
 		                    }
 		                    
@@ -573,8 +572,9 @@ function reActiveExpenseCategory(categoryId){
 									var result = "";
 									result = result  +'<!-- Popup Div -->';
 									result = result  +'          <form role="form"  id="expenseCategory_form" name="expenseCategory_form" method="post" > ';
-									result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
-									result = result  +'                <div class="form-horizontal clearfix"> ';
+									result = result  +'   <div class="popupHead">Edit Expenses Category <i class="closePop pull-right popClose" onclick="closePopup();"></i></div> ';
+									
+									result = result  +'                <div class="popupContent clearfix"> ';
 									result = result + '<input type="hidden" class="form-control input-sm" name="categoryId"  value="'+categoryId+'">';
 									result = result  +'   ';
 									/* result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
@@ -592,19 +592,18 @@ function reActiveExpenseCategory(categoryId){
 								    
 									result = result  +'</div>'; */
 									
-									result = result  +'<div class="clearfix mb10" id="nameIdDiv">'  ;
-									result = result  +'<div class="col-md-12 mt">' ;
-								    
+									result = result  +'<div class="mb" id="nameIdDiv">'  ;
+									result = result  +'<div id="testDiv">' ;
+									result = result  +'<label class="noPad">Category Name <b class="valStar">*</b></label>';
 								    result = result  +'<input type="text" name="expensesName" field-name="expensesName" value="'+expensesName+'" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required"  onchange="validateExpenseCategoryType();"  class="form-control">';
-								    
 									result = result  +'</div>';
 									result = result  +'</div>';
 									
-									result = result  +'';
-									result = result  +'<div class="clearfix mb10" id="errTax">';
-									result = result  +'<div class="col-md-5" >';
+									result = result  +'<div class="clearfix mb" id="errTax">';
+									
+									result = result  +'<label class="noPad">Type</label>';
+									result = result  +'<div class="col-md-3 noPad" >';
 									result = result  +'<div class="btn-group btn_Block pull-left">';
-									
 									if(amountType == "Flat"){
 									result = result  +' <button type="button" class="btn btn-sm btn-primary active" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
 									
@@ -617,60 +616,55 @@ function reActiveExpenseCategory(categoryId){
 										result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
 										result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value="Percentage"/>';
 										}
-									
 									result = result  +' </div>';
 									result = result  +'</div>';
 									
 									if(amountType == "Percentage" && allowedAmount != null){
-									result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward">';
+									result = result  +'<div class="col-md-9 noPad" id="taxPercentageReward">';
 									result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
 									result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="'+json.allowedAmount+'" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  onblur="getTaxPercentageValue()" placeholder="Percentage">';
 									result = result  +' <i class="fa fa-percent"></i>'; 
 									result = result  +' </div>';
 									result = result  +' </div>';
 									
-									result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">';
-									result = result  +'<div class="row flat">';
-									result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
+									result = result  +'<div class="col-md-9 noPad" id="taxFlatReward"  style="display: none">';
+									result = result  +' <div class="positionRelative iconHolder" >';
 									result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" name="taxFlatReward" placeholder="Flat">';
 									result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
-									result = result  +' </div>';
 									result = result  +' </div>';
 									result = result  +' </div>';
 									}
 									
 									if(amountType == "Flat" && allowedAmount != null){
-										result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward" style="display: none">';
+										result = result  +'<div class="col-md-9 noPad" id="taxPercentageReward" style="display: none">';
 										result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
 										result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  onblur="getTaxPercentageValue()" placeholder="Percentage">';
 										result = result  +' <i class="fa fa-percent"></i>'; 
 										result = result  +' </div>';
 										result = result  +' </div>';
 										
-										result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  ">';
-										result = result  +'<div class="row flat">';
-										result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
+										result = result  +'<div class="col-md-9 noPad" id="taxFlatReward">';
+										result = result  +' <div class="positionRelative iconHolder" >';
 										result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="'+json.allowedAmount+'" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" name="taxFlatReward" placeholder="Flat">';
 										result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
 										result = result  +' </div>';
 										result = result  +' </div>';
-										result = result  +' </div>';
 										}
 									result = result  +' </div>';
-									result = result  +' </div>';
 									
-									result = result  +' <div class="clearfix"></div>';	
+									result = result  +'<div class="clearfix mb">Attachment Required <input type="checkbox" value="'+json.isAttachemtRequired +'"  '+(json.isAttachemtRequired == "Y" ? "checked" : '')+' onClick="checkCheckBox();" name="isAttachmetRequired" id="isAttachmetRequired"></div>';
 									
-									result = result  +'<div class="clearfix mb10">';
-									result = result  +'<div class="col-md-12 mt">';
+									result = result  +'<div class="clearfix mb">';
+									result = result  +'<label class="noPad">Description</label>';
 									result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_length length1-500" data-validation-optional="true">'+description+'</textarea>';
 									result = result  +' </div>';
+									
 									result = result  +' </div>';
-									result = result  +'';
-									result = result  +'<div class="clearfix mr">';
+									
+									result = result  +'<div class="popupFoot text-right">';
 									result = result	+ '<input type="hidden"  value="'+categoryId+'" id="categoryId" >';
-								    result  = result + '<button type="button"  id="save_button"  onClick ="updateExpenseCategory('+categoryId+');" class="btn btn-sm btn-primary pull-right">Update</button>';
-									result = result  +' </div> ';
+								    result  = result + '<button type="button"  id="save_button"  onClick ="updateExpenseCategory('+categoryId+');" class="slBtn md colorBtn">Update</button>';
+								    result = result +' <input type="button" value="Cancel" class="slBtn md popClose" onclick="closePopup();">'; 								    
 									result = result  +' </div> ';
 									
 									result = result  +' </form>';
@@ -678,13 +672,12 @@ function reActiveExpenseCategory(categoryId){
 			$("#popUpDiv").empty();
 			$("#popUpDiv").append(result);
 			
-			$(".edit-details").toggleClass("edit-details-active");
-			 $(".close-div").click(function(){ 
-				 $(this).parent("div.edit-details").removeClass("edit-details-active");
-				 });
-			 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-				 e.stopPropagation();
-			 });
+			$("#popUpDiv").fadeIn(100);
+			$(".mask").show();
+			$(".popClose").click(function(){ 
+				 $("#popUpDiv").fadeOut(100);
+				 $(".mask").hide();
+			});
 			
 			 <%-- Expense Category Autocomplete Scripts Starts Here --%>
 			 var config = {
@@ -726,11 +719,11 @@ function reActiveExpenseCategory(categoryId){
 				dateFormat : 'yyyy/mm/dd'
 			};
 		
-		if ($('#expenseCategory_form').validate(false,
-				validationSettings)) {
+		if ($('#expenseCategory_form').validate(false,validationSettings)) {
 
-			var frm = $('#expenseCategory_form').serializeFormJSON();
-
+			//var frm = $('#expenseCategory_form').serializeFormJSON();
+			
+			var frm = getFormData("expenseCategory_form");
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			//It will escape all the special characters
@@ -784,7 +777,7 @@ function reActiveExpenseCategory(categoryId){
 						
 		        		if(result.object == "true"){
 			        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-							   $("#nameIdDiv").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+							   $("#testDiv").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
 							  $("#save_button").attr('disabled','disabled');
 			        	}
 			        	else{
@@ -802,5 +795,17 @@ function reActiveExpenseCategory(categoryId){
 		    });
  }
  </script> 
+ 
+ <script>
+ function checkCheckBox(){
+	 $('input[name$="isAttachmetRequired"]').each(function(){
+	     if(this.checked){
+	         $('#isAttachmetRequired').val('Y');
+	     } else {
+	         $('#isAttachmetRequired').val('N');
+	     }
+	});
+ }
+ </script>
  
 <jsp:include page="../masterFooter.jsp" />

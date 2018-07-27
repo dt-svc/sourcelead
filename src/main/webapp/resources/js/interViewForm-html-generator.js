@@ -229,6 +229,8 @@ function generateInterviewFeedbackForm(sourceleadUrl,templateId) {
             	 
             	 var datavalidation = '';	
             	 var novalidation = '';
+            	 var onBlurEvent = '';
+            	 var placeHolder = '';
             	 
         		 if(required == 1){
         			 
@@ -255,14 +257,14 @@ function generateInterviewFeedbackForm(sourceleadUrl,templateId) {
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 }
                 
-
+            	 
                  switch (fieldType) {
 
                      case 'text':
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation+' '+onBlurEvent+' '+placeHolder+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':

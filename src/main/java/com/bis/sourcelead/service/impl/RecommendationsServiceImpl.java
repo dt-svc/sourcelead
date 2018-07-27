@@ -832,7 +832,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				    float totalKeyWordPer = 0;
 					if(null != candidateIndex.getSummary() && !"".equalsIgnoreCase(candidateIndex.getSummary()) && "undefined" != candidateIndex.getSummary() && null != numOfKeyWords){
 						for(int i=0;i<numOfKeyWords.length;i++){
-							if(candidateIndex.getSummary().contains(numOfKeyWords[i])){
+							if(candidateIndex.getSummary().equalsIgnoreCase(numOfKeyWords[i])){
 								totalKeyWordPer = totalKeyWordPer + percentPerkeyword;	
 							}
 						}
@@ -947,13 +947,17 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	private float getSkillPercentage(Set<String> set, float percentPerSkill, int matchedSkillCount, String reqSkills) {
 		if(set != null && set.size() >0){
 			for(String skill : set){
-					if(reqSkills.contains(skill)){
+			String[] reSkills = reqSkills.split(",");
+				for(String reskill:reSkills) {
+					String reqSkl = reskill.trim();
+					if(reqSkl.equalsIgnoreCase(skill.trim())){
 						matchedSkillCount++;
 					}
+				}
+					
 			}
 		}
 		return matchedSkillCount*percentPerSkill;
-		
 	}
 
 	/**
@@ -973,7 +977,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	       if(visaType !=null){
 	    	   if(set != null && set.size() >0){
 	   			for(String visa : set){
-	   					if(visaType.contains(visa)){
+	   					if(visaType.equalsIgnoreCase(visa)){
 	   						return visaPer = visaScore;
 	   					}
 	   			}
@@ -996,12 +1000,13 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	
 	private float getEducationPercentage(Set<String> set, float educationPercentage, int matchedSkillCount, String education, String recommendedEduScore) {
 		float eduPer = 0; 
+
 		if(StringUtils.isNoneBlank(recommendedEduScore)) {
 			float eduScore = Float.parseFloat(recommendedEduScore);
 			if(education !=null){
 					if(set != null && set.size() >0){
 						for(String edu : set){
-								if(education.contains(edu)){
+								if(education.equalsIgnoreCase(edu)){
 									return eduPer = eduScore;
 								}
 							}

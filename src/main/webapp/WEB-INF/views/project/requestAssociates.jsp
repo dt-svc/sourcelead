@@ -48,7 +48,7 @@
 									<div class="form-icon">
 										<input type="text" class="form-control pull-left"
 											name="requestId" id="requestId" data-validation="required validate_Space validate_length length1-15 validate_int"
-											field-name="Project Id"> <i
+											field-name="Request Id"> <i
 											class="fa fa-refresh btn btn-default formic1"
 											title="Request Id" onclick='$("#requestId").val("");'></i>
 										<div class="clearfix"></div>
@@ -59,7 +59,7 @@
 							<input type="hidden" name="savedPlanningRequestUUID"
 								id="savedPlanningRequestUUID">
 
-							<div class="form-group">
+							<!-- <div class="form-group">
 								<label class="col-md-3">Approver <span
 									class="text-danger paddingLeft">*</span><i class='fa fa-info-circle' title='The person who will approve there source request'></i></label>
 								<div class="col-md-9">
@@ -68,7 +68,7 @@
 										field-name="Approver">
 									</select>
 								</div>
-							</div>
+							</div> -->
 
 							<div class="form-group">
 								<label class="col-md-3">Description <span
@@ -216,8 +216,7 @@
 	<select id="REPLACEROWIDconsultingType"
 		name="associateResources[REPLACEROWID].consultingType" data-validation="required"
 		field-name="Consulting">
-		<option value="">--Select--</option>
-		<option value="Offsite">Off Site</option>
+		<option value="Offsite" selected>Off Site</option>
 		<option value="Onsite">On Site</option>
 		<option value="Onsite">Near Shore</option>
 		<option value="Onsite">Off Shore</option>
@@ -596,7 +595,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 				var startDateText = "";
 				var cell3 = row.insertCell(3);
 				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input" value="'+opt.startDateStr+'"  name="'+maxRowNum+'requestStartDate" >';
+				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input" value="'+opt.startDateStr+'"  name="associateResources['+maxRowNum+'].requestStartDate">';
 				startDateText = startDateText+'</div>';
 				cell3.innerHTML = startDateText;
 				
@@ -604,7 +603,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 				var endDateText = "";
 				var cell4 = row.insertCell(4);
 				endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input" value="'+opt.endDateStr+'"  name="'+maxRowNum+'requestEndDate" >';
+				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input" value="'+opt.endDateStr+'"   name="associateResources['+maxRowNum+'].requestEndDate" >';
 				endDateText = endDateText+'</div>';
 				cell4.innerHTML = endDateText;
 				
@@ -1168,9 +1167,19 @@ function candidatesPagination(sourceleadUrl,url){
     $("#associatesListPagination").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
     $("input[type=search]").hide();
     $("#candidateDataTableSearch").keyup(function(e) {
+    	   
     	   if(e.which === 13) {
-    		   candidatesDataTableList();
-    	   }
+      		    $('#candidateDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+      	    	var searchData = $('#candidateDataTableSearch').val();
+      	    	var regex =  new RegExp(/[\\-]/g);
+      	    	if(regex.test(searchData) == false){
+      	    		candidatesDataTableList();
+      	    	}else{
+      	    		$("#candidateDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+      	    	}
+      	    	$('#candidateDataTableSearch').val(searchData);
+       	   }
+    	   
     	});
 }
 

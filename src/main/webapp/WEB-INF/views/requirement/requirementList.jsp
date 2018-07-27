@@ -51,81 +51,9 @@ $(document).ready(function() {
 });
 </script>
 
-<!-- <script>
-$(document).ready(function() {
-	getcites('apiLocation','city','recommendation');
-	 $("#filter1ApprovePop").click(function(){
-			$("#filter1ApprovedPop").slideToggle(200);
-			$(".export_pop, .action-pop, #exportPop, #filter2ApprovedPop").slideUp(200);
-		});
-	    $("html").click(function() {
-	        $("#filter1ApprovedPop").slideUp(200);
-	    });
-	    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
-	        e.stopPropagation();
-	    });	
-	    
-    $("#filter2ApprovePop").click(function(){
-		$("#filter2ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop, #filter5ApprovedPop").slideUp(200);
-	});
-    $("html").click(function() {
-        $("#filter2ApprovedPop").slideUp(200);
-    });
-    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
-        e.stopPropagation();
-    });	
-    
-    $("#filter3ApprovePop").click(function(){
-		$("#filter3ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter2ApprovedPop, #filter4ApprovedPop, #filter5ApprovedPop").slideUp(200);
-	});
-    $("html").click(function() {
-        $("#filter3ApprovedPop").slideUp(200);
-    });
-    $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
-        e.stopPropagation();
-    });
-    
-    $("#filter5ApprovePop").click(function(){
-		$("#filter5ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter2ApprovedPop, #filter4ApprovedPop, #filter3ApprovedPop").slideUp(200);
-	});
-    $("html").click(function() {
-        $("#filter5ApprovedPop").slideUp(200);
-    });
-    $("#filter5ApprovedPop, #filter5ApprovePop").click(function(e) {  
-        e.stopPropagation();
-    });
-    
-    $("#filter4ApprovePop").click(function(){
-		$("#filter4ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter2ApprovedPop, #filter3ApprovedPop, #filter5ApprovedPop ").slideUp(200);
-	});
-    $("html").click(function() {
-        $("#filter4ApprovedPop").slideUp(200);
-    });
-    $("#filter4ApprovedPop, #filter4ApprovePop").click(function(e) {  
-        e.stopPropagation();
-    });	
-}); 
-
-</script> -->
-
 
 <style>
-/*.tbldata-dotdot span{
-max-width:220px;
-} */
-/* .side-bar { */
-/* z-index: 8; */
-/* } */
-/* .main-header { */
-/* z-index: 99; */
-/* } */
-/* .advancedsearch-mask { */
-/* z-index: 99; */
-/* } */
+
 .clsDatePicker {
 	z-index: 100000 !important;
 }
@@ -162,8 +90,14 @@ top: 18px;height: 32px; line-height: 18px;
 }
 </style>
 <script>
- window.onload = function() { 
- 	requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch",'${sourceleadUrl}');
+ window.onload = function() {
+	 var viewTab = "${viewTab}";
+		if(viewTab === 'jobFair') {
+			/* alert("viewTab : " + viewTab); */
+			jobFairListCheck();
+		} else {
+ 			requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch",'${sourceleadUrl}');
+		}
 };
 </script>
 
@@ -172,6 +106,19 @@ function statusvalidating(id){
 	changeStatusAuthorisation(id);
 }
 </script>
+
+<div class='project_inn_mask'></div>
+
+<div id='changeStatusPopup' class='remove_user_pop remove_user_pop_a'>
+	<p>Are are sure you want to delete the JobFair?</p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b>
+		<input id='confirmId' type='button' value='Ok' onclick='changeJobFairStatus()' class="pull-left">
+		<input id="cancelStatusPopup" class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup()'>
+	</b>
+</div>
+
+
 <jsp:include page="requirementTable.jsp" />
 <jsp:include page="requirementAssignedTo.jsp"/>
 <!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
@@ -180,440 +127,370 @@ function statusvalidating(id){
 <div id="popUp"></div>
 <section class="content-wraper">
 	<section class="content-header clearfix">
+		<div class="pull-left">
+        	<h2>Jobs 
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+						<a href="<c:url value='${appPath}/professionalRequirements'/>" class="jobHeadBtn">Crowdsourcing Jobs</a>
+					</sec:authorize>        	
+        	</h2>
+      	</div>
 		<c:if test="${!empty msg}">
 			<div class="success_pop" id="selector2" style="display: block;">
 				<div class="pull-left"><i class="fa fa-check-circle"></i></div>
 				<div class="pull-left" style="width:325px; padding:10px 0;"><span>${msg}</span></div>
 			</div>
 		</c:if>
-		<div class="pull-left">
+		
+		<%-- <div class="pull-left">
 			<h2 class="pull-left paddingRight">Jobs List</h2>
 			<span class="paddingLeft pull-left">|<a class="paddingLeft"
 				href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing
 					Jobs</a></span>
-		</div>
+		</div> --%>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo; Job List
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job List
 		</div>
 	</section>
 	<div class="clearfix">
-		<div class="pull-left cand-advsrch advsrch_chosen">
-			<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr pull-left" onClick="clearList();" title="Refresh">
-			    <span class="fa fa-refresh"></span>
-			</button>
-			
-			<a href="javascript:void(0)" class="btn btn-primary btn-sm mr pull-left"
-				title="Advanced Search"
-				onClick="openPop();"> Advanced
-				Search&nbsp;&nbsp; <i class="fa fa-search"></i>
-			</a>
-			
-			<div class="filterSearchDiv pull-left">
-				<a href="javascript:void(0)" onClick="filterPop();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
-			</div>
-			
-			<button type="button" class="btn btn-danger ml pull-left btn-sm" onclick="jobForceDelete();" id="forceDeleteBtn" style="display:none">Delete</button>
-			
-			</div>
-			<form:form id="requirement_form" name="requirement_form"
-				enctype='multipart/form-data'>
-				<div class="cand-advsrch-popup advancedsearch-popup reqadvsrch candAdvsrch ">
-				<h5 class="headerAdsrch">Advanced Search
-					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
-						class="fa fa-close"></i></a>
-				</h5>
-				<div class="addInner">
-					<div class="row">
-						<div class="clearfix">
-							<div class="col-md-4">
-								<label>Generated ID</label>
-								<div class="clearfix">
-									<select class="chosen-select form-control input-sm" multiple
-										data-placeholder="Generated ID" id="generatedId" name="generatedId">
-									</select>
-								</div>
-							</div>
-							
-							<div class="col-md-4">
-								<label>Title</label>
-								<div class="clearfix">
-									<select class="chosen-select form-control input-sm" multiple
-										data-placeholder="Job Title" id="requirementTitle"
-										name="requirementTitle">
-									</select>
-								</div>
-							</div>
-							
-							<div class="col-md-4">
-								<label>Job Id</label>
-								<div class="clearfix">
-									<select class="chosen-select form-control input-sm" multiple
-										data-placeholder="Job Id" id="jobId" name="jobId">
-									</select>
-								</div>
-							</div>
-
-						</div>
-						<div class="clearfix">
-
-							<div class="col-md-4">
-								<label>Job status </label>
-								<div class="clearfix">
-									<select id="requirementStatu" name="requirementStatus"
-										class="chosen-select" data-placeholder="Job status " multiple>
-										<option>NEW</option>
-										<option>DRAFT</option>
-										<option>SUBMITTED</option>
-										<option>OPEN</option>
-										<option>CANCEL</option>
-										<option>ONHOLD</option>
-										<option>FILLEDCLOSED</option>
-										<option>UNFILLEDCLOSED</option>
-										<option>REJECTED</option>
-									</select>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<label>Posted On</label>
-								<div class="clearfix">
-									<select class="chosen-select" id="updatedOn" name="updatedOn"
-										data-placeholder="Posted On">
-										<option>All</option>
-										<option>1 Day Ago</option>
-										<option>3 Days Ago</option>
-										<option>1 Week Ago</option>
-										<option>2 Weeks Ago</option>
-										<option>1 Month Ago</option>
-										<option>3 Months Ago</option>
-									</select>
-								</div>
-							</div>
-
-							<div class="col-md-4">
-								<label>Client</label>
-								<div class="clearfix">
-									<select class="chosen-select" id="client" name="client"
-										data-placeholder="Select Client" multiple>
-										<c:forEach var="report" items="${add_clientList}">
-											<c:if test="${report.locationId.id == loginOrgLocId}">
-												<option
-													value="${report.responderLocationId.org.orgName}"
-													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
-											</c:if>
-											<c:if
-												test="${report.responderLocationId.id == loginOrgLocId}">
-												<option
-													value="${report.locationId.org.orgName}"
-													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
-											</c:if>
-										</c:forEach>
-									</select>
-								</div>
-							</div>
-						</div>
-						<%-- <div class="clearfix">
-							<div class="col-md-4">
-								<label>Country</label>
-								<div class="clearfix adv-srh-chosen">
-									<select class="chosen-select" name="country" id="country" field-name="Country">
-										<option value="">---select Country---</option>
-										<c:forEach var="cntry" items="${countryList}">
-											<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
-										</c:forEach>
-									</select>
-								</div>
-							</div>
-
-							<div class="col-md-4">
-								<label>State</label>
-								<div class="clearfix adv-srh-chosen">
-									<select class="chosen-select" name="state" id="state"
-										field-name="State">
-										<option value="">---select state---</option>
-										<c:forEach var="state" items="${statesList}">
-											<option value="${state.stateName}">${state.stateName}</option>
-										</c:forEach>
-									</select>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<label>City</label>
-								<div class="clearfix adv-srh-chosen">
-									<select class="chosen-select" name="city" id="city"
-										field-name="City">
-										<option value="">---select city---</option>
-									</select>
-								</div>
-							</div>
-						</div> --%>
-						<div class="clearfix">
-							<div class="col-md-4 hidden">
-								<label>Client</label>
-								<div class="clearfix">
-									<select class="chosen-select" id="client" name="client"
-										data-placeholder="Client" multiple>
-										<c:forEach var="report" items="${add_clientList}">
-											<c:if test="${report.locationId.id == loginOrgLocId}">
-												<option
-													value="${report.id},${report.responderLocationId.org.orgName}"
-													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
-											</c:if>
-											<c:if
-												test="${report.responderLocationId.id == loginOrgLocId}">
-												<option
-													value="${report.id},${report.responderLocationId.org.orgName}"
-													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
-											</c:if>
-										</c:forEach>
-									</select>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<label>Notice Period</label>
-							<div class="clearfix">
-								<select multiple class="chosen-select form-control"
-									id="noticePeriod" name="noticePeriod"
-									data-validation-optional="true"
-									data-placeholder="Select Notice Period">
-									<option
-										${requirement.noticeperiodList  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
-									<option
-										${requirement.noticeperiodList  == '15-Days' ? 'selected' : ''}>15-Days</option>
-									<option
-										${requirement.noticeperiodList  == '1-Month' ? 'selected' : ''}>1-Month</option>
-									<option
-										${requirement.noticeperiodList  == '2-Month' ? 'selected' : ''}>2-Month</option>
-									<option
-										${requirement.noticeperiodList  == '3-Month' ? 'selected' : ''}>3-Month</option>
-								</select>
-							</div>
-						</div>
-							
-						<div class="col-md-4">
-							<label>Skills</label>
-							<div class="clearfix">
-								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="requirementSkills" name="requirementSkills">
-								<c:forEach var="skill" items="${skillList}">
-								<option value="${skill.name}">${skill.name}</option>
-								</c:forEach>
-								</select>
-							 </div>
-						</div>
-						
-						
-						<div class="col-md-4">
-							<label>Immigration Status</label>
-							<div class="clearfix">
-				                <select multiple class="chosen-select form-control" name="visaType" id="visaType" data-placeholder="Select Visa" data-validation-optional="true">
-								<c:forEach var="visaList" items="${visaList}">
-								<option value="${visaList}">${visaList}</option>
-								</c:forEach>
-								</select>
-							 </div>
-						</div>
-						
-						<div class="clearfix">
-						
-						<%-- <div class="col-md-4">
-								<label>Country</label>
-								<div class="clearfix adv-srh-chosen">
-									<select class="chosen-select" name="country" id="country" field-name="Country">
-										<option value="">---select Country---</option>
-										<c:forEach var="cntry" items="${countryList}">
-											<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
-										</c:forEach>
-									</select>
-								</div>
-							</div> --%>
-							
-						   <div class="col-md-4">
-								<label>Choose City</label>
-								<div class="clearfix">
-								<div class="col-md-14">
-							      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
-								  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
-								 </div>
-								</div>
-							</div>
-							
-							<div class="col-md-8">
-								<label>Selected Cities</label>
-								<div class="clearfix">
-								   <select class="chosen-select form-control input-sm" multiple
-										data-placeholder="sletected cites" id="city" name="city">
-									</select>
-								</div>
-							</div>
-						</div>
-					</div>
-					</div>
-					<div class="clearfix advancedsearch-footer">
-						<div class="pull-right mr">
-							<input type="button" value="Search" id="search_requiremet"
-								onclick="requirementListCheck('','','advanceSearch','${sourceleadUrl}');" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search"
-								onclick="clearSearch();" class="btn btn-sm btn-primary" />
-						</div>
-					</div>
-				</div>
-			</form:form>
+	<ul class="project-tabs-menu projecttabs-custom clearfix">
+         <li class="current" id="jobsTab"><a href="javascript:void(0)" onclick="requirementListCheck('','','','${sourceleadUrl}');">Jobs</a></li>
+         <li id="jobFairTab"><a href="javascript:void(0)"  onclick="jobFairListCheck();">Job Fair</a></li>
+         <div class="clearfix"></div>
+     </ul>
 	</div>
-	<div class="timesheet_out">
-		<div class="vendor_wrap">
-			<div class="timesheet_head timesheetHead_filters topfilters">
-				<ul class="padding_right">
-					<sec:authorize
-						access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
+
+<form:form id="requirement_form" name="requirement_form" enctype='multipart/form-data'>
+<div class="cand-advsrch-popup advancedsearch-popup reqadvsrch candAdvsrch ">
+<h5 class="headerAdsrch">Advanced Search
+	<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+		class="fa fa-close"></i></a>
+</h5>
+<div class="addInner">
+	<div class="row">
+		<div class="clearfix">
+			<div class="col-md-4">
+				<label>Generated ID</label>
+				<div class="clearfix">
+					<select class="chosen-select form-control input-sm" multiple
+						data-placeholder="Generated ID" id="generatedId" name="generatedId">
+					</select>
+				</div>
+			</div>
+			
+			<div class="col-md-4">
+				<label>Title</label>
+				<div class="clearfix">
+					<select class="chosen-select form-control input-sm" multiple
+						data-placeholder="Job Title" id="requirementTitle"
+						name="requirementTitle">
+					</select>
+				</div>
+			</div>
+			
+			<div class="col-md-4">
+				<label>Job Id</label>
+				<div class="clearfix">
+					<select class="chosen-select form-control input-sm" multiple
+						data-placeholder="Job Id" id="jobId" name="jobId">
+					</select>
+				</div>
+			</div>
+
+		</div>
+		<div class="clearfix">
+
+			<div class="col-md-4">
+				<label>Job status </label>
+				<div class="clearfix">
+					<select id="requirementStatu" name="requirementStatus"
+						class="chosen-select" data-placeholder="Job status " multiple>
+						<option>NEW</option>
+						<option>DRAFT</option>
+						<option>SUBMITTED</option>
+						<option>OPEN</option>
+						<option>CANCEL</option>
+						<option>ONHOLD</option>
+						<option>FILLEDCLOSED</option>
+						<option>UNFILLEDCLOSED</option>
+						<option>REJECTED</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<label>Posted On</label>
+				<div class="clearfix">
+					<select class="chosen-select" id="updatedOn" name="updatedOn"
+						data-placeholder="Posted On">
+						<option>All</option>
+						<option>1 Day Ago</option>
+						<option>3 Days Ago</option>
+						<option>1 Week Ago</option>
+						<option>2 Weeks Ago</option>
+						<option>1 Month Ago</option>
+						<option>3 Months Ago</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<label>Client</label>
+				<div class="clearfix">
+					<select class="chosen-select" id="client" name="client"
+						data-placeholder="Select Client" multiple>
+						<c:forEach var="report" items="${add_clientList}">
+							<c:if test="${report.locationId.id == loginOrgLocId}">
+								<option
+									value="${report.responderLocationId.org.orgName}"
+									${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
+							</c:if>
+							<c:if
+								test="${report.responderLocationId.id == loginOrgLocId}">
+								<option
+									value="${report.locationId.org.orgName}"
+									${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+							</c:if>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+		</div>
+		<%-- <div class="clearfix">
+			<div class="col-md-4">
+				<label>Country</label>
+				<div class="clearfix adv-srh-chosen">
+					<select class="chosen-select" name="country" id="country" field-name="Country">
+						<option value="">---select Country---</option>
+						<c:forEach var="cntry" items="${countryList}">
+							<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<label>State</label>
+				<div class="clearfix adv-srh-chosen">
+					<select class="chosen-select" name="state" id="state"
+						field-name="State">
+						<option value="">---select state---</option>
+						<c:forEach var="state" items="${statesList}">
+							<option value="${state.stateName}">${state.stateName}</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<label>City</label>
+				<div class="clearfix adv-srh-chosen">
+					<select class="chosen-select" name="city" id="city"
+						field-name="City">
+						<option value="">---select city---</option>
+					</select>
+				</div>
+			</div>
+		</div> --%>
+		<div class="clearfix">
+			<div class="col-md-4 hidden">
+				<label>Client</label>
+				<div class="clearfix">
+					<select class="chosen-select" id="client" name="client"
+						data-placeholder="Client" multiple>
+						<c:forEach var="report" items="${add_clientList}">
+							<c:if test="${report.locationId.id == loginOrgLocId}">
+								<option
+									value="${report.id},${report.responderLocationId.org.orgName}"
+									${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
+							</c:if>
+							<c:if
+								test="${report.responderLocationId.id == loginOrgLocId}">
+								<option
+									value="${report.id},${report.responderLocationId.org.orgName}"
+									${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+							</c:if>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<label>Notice Period</label>
+			<div class="clearfix">
+				<select multiple class="chosen-select form-control"
+					id="noticePeriod" name="noticePeriod"
+					data-validation-optional="true"
+					data-placeholder="Select Notice Period">
+					<option
+						${requirement.noticeperiodList  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
+					<option
+						${requirement.noticeperiodList  == '15-Days' ? 'selected' : ''}>15-Days</option>
+					<option
+						${requirement.noticeperiodList  == '1-Month' ? 'selected' : ''}>1-Month</option>
+					<option
+						${requirement.noticeperiodList  == '2-Month' ? 'selected' : ''}>2-Month</option>
+					<option
+						${requirement.noticeperiodList  == '3-Month' ? 'selected' : ''}>3-Month</option>
+				</select>
+			</div>
+		</div>
+			
+		<div class="col-md-4">
+			<label>Skills</label>
+			<div class="clearfix">
+				<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="requirementSkills" name="requirementSkills">
+				<c:forEach var="skill" items="${skillList}">
+				<option value="${skill.name}">${skill.name}</option>
+				</c:forEach>
+				</select>
+			 </div>
+		</div>
+		
+		
+		<div class="col-md-4">
+			<label>Immigration Status</label>
+			<div class="clearfix">
+                <select multiple class="chosen-select form-control" name="visaType" id="visaType" data-placeholder="Select Visa" data-validation-optional="true">
+				<c:forEach var="visaList" items="${visaList}">
+				<option value="${visaList}">${visaList}</option>
+				</c:forEach>
+				</select>
+			 </div>
+		</div>
+		
+		<div class="clearfix">
+		
+		<%-- <div class="col-md-4">
+				<label>Country</label>
+				<div class="clearfix adv-srh-chosen">
+					<select class="chosen-select" name="country" id="country" field-name="Country">
+						<option value="">---select Country---</option>
+						<c:forEach var="cntry" items="${countryList}">
+							<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div> --%>
+			
+		   <div class="col-md-4">
+				<label>Choose City</label>
+				<div class="clearfix">
+				<div class="col-md-14">
+			      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
+				  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+				 </div>
+				</div>
+			</div>
+			
+			<div class="col-md-8">
+				<label>Selected Cities</label>
+				<div class="clearfix">
+				   <select class="chosen-select form-control input-sm" multiple
+						data-placeholder="sletected cites" id="city" name="city">
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<div class="clearfix advancedsearch-footer">
+		<div class="pull-right mr">
+			<input type="button" value="Search" id="search_requiremet"
+				onclick="requirementListCheck('','','advanceSearch','${sourceleadUrl}');" class="btn btn-sm btn-success" />
+			<input type="button" value="Reset" id="clear_search"
+				onclick="clearSearch();" class="btn btn-sm btn-primary" />
+		</div>
+	</div>
+</div>
+</form:form>
+
+<div class="timesheet_out" id="jobsTabContent">
+		
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="filtersDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="clearList();"></a>
+      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
+      </span>
+      <span class="pull-left refreIcon">
+      		<button type="button" class="btn btn-danger ml pull-left btn-sm" onclick="jobForceDelete();" id="forceDeleteBtn" style="display:none">Delete</button>
+      </span>
+      <ul class="pull-right list-unstyled list-inline">
+      
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
 							<div id="filter1ApprovedPop" class="approved_pop">
 								<ul>
 									<c:forEach var="report" items="${add_clientList}">
 										<c:if test="${report.locationId.id == loginOrgLocId}">
-											<li><input id="clientName${report.id}"
-												name="clientNameById" value="${report.id}"
-												onclick="requirementList('list','${sourceleadUrl}');" type="checkbox"><label
+											<li><input id="clientName${report.id}" name="clientNameById" value="${report.id}" onclick="requirementList('list','${sourceleadUrl}');" type="checkbox"><label
 												title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</label></li>
 											<%-- 			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option> --%>
 										</c:if>
 										<c:if test="${report.responderLocationId.id == loginOrgLocId}">
-											<li><input id="clientName${report.id}"
-												name="clientNameById" value="${report.id}"
-												onclick="requirementList('list','${sourceleadUrl}');" type="checkbox"><label
+											<li><input id="clientName${report.id}" name="clientNameById" value="${report.id}" onclick="requirementList('list','${sourceleadUrl}');" type="checkbox"><label
 												title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</label></li>
 											<%-- 			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option> --%>
 										</c:if>
 									</c:forEach>
 								</ul>
 						 </div>
-						 
-						 <%--  <li><b id="filter5ApprovePop"><i class="fa fa-filter"></i><span>Assign To</span><i
-								class="glyphicon glyphicon-play"></i></b>
-							<div id="filter5ApprovedPop" class="approved_pop">
-								<ul id="assignTo">
-									<li><input id="r1" type="radio" name="requirementAssignTo" value="Alljobs" onclick="requirementList('list','${sourceleadUrl}');"><label for="r1">All Jobs </label></li>
-									<li><input id="r2" type="radio" name="requirementAssignTo" value="Myjobs" onclick="requirementList('list','${sourceleadUrl}');"><label for="r2">My Jobs </label></li>
-								</ul>
-							</div></li>
-						 
-						 <li><b id="filter3ApprovePop"><i class="fa fa-filter"></i><span>Priority</span><i
-								class="glyphicon glyphicon-play"></i></b>
-							<div id="filter3ApprovedPop" class="approved_pop">
-								<ul id="priority">
-								    <li class="dropdown-header text-center row"><div class="text-primary col-xs-6"  onclick="selectAllPriority();">Select All</div><div class="text-danger col-xs-6"  onclick="clearAllPriority();">Clear All</div></li>
-									<li><input id="c1" type="checkbox" name="requirementPriority" value="Medium" onclick="requirementList('list','${sourceleadUrl}');"><label for="c1">Medium </label></li>
-									<li><input id="c2" type="checkbox" name="requirementPriority" value="Low" onclick="requirementList('list','${sourceleadUrl}');"><label for="c2">Low </label></li>
-									<li><input id="c3" type="checkbox" name="requirementPriority" value="Urgent" onclick="requirementList('list','${sourceleadUrl}');"><label for="c3">Urgent </label></li>
-									<li><input id="c4" type="checkbox" name="requirementPriority" value="High" onclick="requirementList('list','${sourceleadUrl}');"><label for="c4">High </label></li>
-								</ul>
-							</div></li>
-							
-							<li><b id="filter4ApprovePop"><i class="fa fa-filter"></i><span>Job Type</span><i
-								class="glyphicon glyphicon-play"></i></b>
-							<div id="filter4ApprovedPop" class="approved_pop">
-								<ul id="jobType">
-								<li class="dropdown-header text-center row"><div class="text-primary col-xs-6" onclick="selectAllJobType();">Select All</div><div class="text-danger col-xs-6" onclick="clearAlljobType();">Clear All</div></li>
-									<li><input id="c11" type="checkbox" name="requirementType" value="C2C" onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">C2C </label></li>
-									<li><input id="c12" type="checkbox" name="requirementType" value="W-2" onclick="requirementList('list','${sourceleadUrl}');"><label for="c12">W-2 </label></li>
-									<li><input id="c13" type="checkbox" name="requirementType" value="C2H" onclick="requirementList('list','${sourceleadUrl}');"><label for="c13">C2H </label></li>
-									<li><input id="c14" type="checkbox" name="requirementType" value="Contract" onclick="requirementList('list','${sourceleadUrl}');"><label for="c14">Contract </label></li>
-									<li><input id="c15" type="checkbox" name="requirementType" value="Part Time" onclick="requirementList('list','${sourceleadUrl}');"><label for="c15">Part Time </label></li>
-									<li><input id="c16" type="checkbox" name="requirementType" value="Full Time" onclick="requirementList('list','${sourceleadUrl}');"><label for="c16">Full Time </label></li>
-									<li><input id="c17" type="checkbox" name="requirementType" value="Other" onclick="requirementList('list','${sourceleadUrl}');"><label for="c17">Other </label></li>
-								</ul>
-							</div></li> 
-							 --%>
-						<!-- for status counts add this function to below.. onClick ="requirementListIndividualStatusCounts();" -->
-						<%-- <li><b id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i
-								class="glyphicon glyphicon-play"></i></b>
-							<div id="filter2ApprovedPop" class="approved_pop">
-								<ul id="status">
-								 <li class="dropdown-header text-center row"><div class="text-primary col-xs-6" onclick="selectAllStatus();">Select All</div><div class="text-danger col-xs-6" onclick="clearAllStatus();">Clear All</div></li>
-									<li><input id="c6" type="checkbox"
-										name="requirementStatus" value="NEW"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c6">New<span
-											id="newRequirementCount"></span></label></li>
-									<li><input id="c7" name="requirementStatus"
-										type="checkbox" value="DRAFT" onclick="requirementList('list','${sourceleadUrl}');"><label
-										for="c7">Draft<span id="draftRequirementCount"></span></label></li>
-									<li><input id="c8" type="checkbox"
-										name="requirementStatus" type="checkbox" value="SUBMITTED"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c8">Submitted
-											<span id="submittedRequirementCount"></span>
-									</label></li>
-									<li><input id="c9" type="checkbox"
-										name="requirementStatus" type="checkbox" value="OPEN"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c9">Open
-											<span id="openRequirementCount"></span>
-									</label></li>
-									<li><input id="c10" type="checkbox"
-										name="requirementStatus" type="checkbox" value="ONHOLD"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c10">On
-											Hold <span id="onHoldRequirementCount"></span>
-									</label></li>
-									<li><input id="c11" type="checkbox"
-										name="requirementStatus" type="checkbox" value="CANCEL"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">Cancel
-											<span id="cancelRequirementCount"></span>
-									</label></li>
-									<li><input id="c12" type="checkbox"
-										name="requirementStatus" type="checkbox" value="FILLEDCLOSED"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c12">Filled
-											Closed<span id="filledClosedRequirementCount"></span>
-									</label></li>
-									<li><input id="c13" type="checkbox"
-										name="requirementStatus" type="checkbox"
-										value="UNFILLEDCLOSED" onclick="requirementList('list','${sourceleadUrl}');"><label
-										for="c13">UnFilled Closed<span
-											id="unFilledClosedRequirementCount"></span></label></li>
-									<li><input id="c14" type="checkbox"
-										name="requirementStatus" type="checkbox" value="REJECTED"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c14">Rejected<span
-											id="rejectedRequirementCount"></span></label></li>
-									<li><input id="c15" type="checkbox"
-										name="requirementStatus" type="checkbox" value="CLOSED"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c15">Closed<span
-											id="closedRequirementCount"></span></label></li>
-								</ul>
-							</div></li> --%>
-					</sec:authorize>
-
+					</sec:authorize>  
+					
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<li><a href="<c:url value='${appPath}/requirement'/>"><i
-								class="fa fa-plus"></i>Add Job</a></li>
-					</sec:authorize>
-					<%-- Team Creation and Team List Moved To Role Configuration --%>
-					<%-- <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
-						<li><a href="<c:url value='${appPath}/team'/>"><i
-								class="fa fa-plus"></i>Team</a></li>
-					</sec:authorize> --%>
-					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<li title="Import"><a href="<c:url value='${appPath}/uploadJobs'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-					</sec:authorize>
+						<li><a href="<c:url value='${appPath}/requirement'/>" class="newAdBtn">+ Job</a></li>
+					</sec:authorize>	
+									
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
+				
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+							<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+								<a href="<c:url value='${appPath}/uploadJobs'/>">Import</a>
+							</sec:authorize>		           	   		
+							<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
+							 	<a href="javascript:void(0)" onclick="exportToPdf(1);" title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="exportToExcel(1);" title="Excel">Export Excel</a>					
+							</sec:authorize>
+		           
+						</span>
+					</div>
+				</li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="requirementListCheck('','','','${sourceleadUrl}');"></span></li>
+        </ul>
+      </div>		
+		
+<div class="require_wrap_table datatable_filter">
+	<div id="requirementList"></div>
+</div>
 
+</div>
+	
+	<div class="timesheet_out" id="jobFairTabContent" style="display: none;">
+		<div class="vendor_wrap">
+<div class="positionRelative reportHead clearfix">
+      
+      <ul class="pull-right list-unstyled list-inline">
+					
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+						<li><a href="<c:url value='${appPath}/addJobFair'/>" class="newAdBtn">+ Job Fair</a></li>
+					</sec:authorize>					
+									
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-						<li title="Export" class="mrPOP" id="mypop"><i
-							class="glyphicon glyphicon-export"></i>
-							<div id="exportPop">
-								<ul>
-									<li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-									<li onclick="exportToExcel();"><i
-										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
-								</ul>
-							</div></li>
+						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+							<div class="newActPop">
+								<span>
+									 	<a href="javascript:void(0)" onclick="exportToPdf(2);" title="PDF">Export PDF</a>
+										<a href="javascript:void(0)" onclick="exportToExcel(2);" title="Excel">Export Excel</a>					
+								</span>
+							</div>
+						</li>
 					</sec:authorize>
-					<li>
-					<div class='dynamic_search'>
-		        		<input type='text' placeholder='Search' id='dataTableSearch'/>
-	   			<span class="cursorPointer padding_right" title="Search"><i class="fa fa-search padding_right" onClick="requirementListCheck('','','','${sourceleadUrl}');"></i></span>
-		        </div>
-					</li>
-					<div class="clearfix"></div>
-				</ul>
-				 <div class="clearfix"></div>
-			</div>
+				
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='jobFairDataTableSearch'/><span class="repSearchIcon" onClick="jobFairListCheck();"></span></li>
+        </ul>
+      </div>	
+      	
 			<div class="require_wrap_table datatable_filter">
-				<div id="requirementList"></div>
+				<div id="jobFairList"></div>
 			</div>
 		</div>
 	</div>
@@ -637,7 +514,7 @@ function filterPop(){
 	$(".sideMask").fadeIn();
 };
 function closeFilter(){
-	$("#requirementFilterPopup").toggle();
+	$("#requirementFilterPopup").hide();
 	$(".sideMask").fadeOut();
 
 }
@@ -742,77 +619,88 @@ function changeStatus(requirementId, requirementStatus){
 	};
 </script>
 <script>
-$('#mypop').click(function(){
+	$('#mypop').click(function(){
 		$("#exportPop").toggle();
 		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
- });
- $("html").click(function(){
-	$("#exportPop").hide(200);
- });
- $("#exportPop, #mypop").click(function(e) {  
-     e.stopPropagation();
- });
+ 	});
+	$('#mypopJobFair').click(function(){
+		$("#exportPopJobFair").toggle();
+		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+ 	});
+	$("html").click(function(){
+		$("#exportPop").hide(200);
+		/* $("#exportPopJobFair").hide(200); */
+	});
+	$("#exportPop, #exportPopJobFair, #mypop").click(function(e) {  
+	    e.stopPropagation();
+	});
 </script>
 <script>
-function exportToPdf(){
-	var req = $("#noReq").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-	  var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() 
-	    {
+function exportToPdf(type) {
+	if(type === 1) {
+		var req = $("#noReq").val();
+	 	var sourceleadUrl ='${sourceleadUrl}';
+	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
+	  	var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() {
 			status.push($(this).val());
 	    });
-	 var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() 
-	    {
+	 	var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage > 0){
-		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
-		}else{
-			 var result = "";
-				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Jobs List is Empty</p>";
-				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-				result = result +"	</div>";
-				$("#popUp").append(result);
-				$("#empty_requirement_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200);
+		if(requirementEmptyMessage > 0) {
+			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
+		} else {
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Jobs List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_requirement_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
 		}
+	} else {
+		/* alert("Export JobFair to PDF"); */
+		$(".buttons-pdf").click();
+	}
 }
 </script>
 <script>
-function exportToExcel(){
-	var req = $("#noReq").val();
-	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	  var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() 
-	    {
+function exportToExcel(type) {
+	if(type === 1) {
+		var req = $("#noReq").val();
+		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
+		var sourceleadUrl ='${sourceleadUrl}';
+	  	var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() {
 			status.push($(this).val());
 	    });
-	 var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() 
-	    {
+	 	var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage > 0){
+		if(requirementEmptyMessage > 0) {
 			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=xls";	
-		}else{
-			 var result = "";
-				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Jobs List is Empty</p>";
-				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-				result = result +"	</div>";
-				$("#popUp").append(result);
-				$("#empty_requirement_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200);
+		} else {
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Jobs List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_requirement_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
 		}
+	} else {
+		/* alert("Export JobFair to Excel"); */
+		$(".buttons-excel").click();
+	}
 }
 </script>
 <script type="text/javascript">
@@ -830,7 +718,7 @@ function cancel(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
-	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop").slideUp(200);
+	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop, #exportPopJobFair").slideUp(200);
 	
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);
@@ -1013,6 +901,7 @@ function refreshGoogleApiCity(cityId){
  	<ul id="assignTo" class="list-unstyled">
 		<li class="radioIput positionRelative"><input id="r1" type="radio" name="requirementAssignTo" value="Alljobs" ><label for="r1">All Jobs </label></li>
 		<li class="radioIput positionRelative"><input id="r2" type="radio" name="requirementAssignTo" value="Myjobs" ><label for="r2">My Jobs </label></li>
+		<!-- <li class="radioIput positionRelative"><input id="r3" type="radio" name="requirementAssignTo" value="CrowdsourcingJobs" ><label for="r3">Crowdsourcing Jobs</label></li> -->
 	</ul>
 	</div>
  </div>
@@ -1225,6 +1114,82 @@ function resetJobFilter(){
 	
 	requirementList('list','${sourceleadUrl}');
 }
+</script>
+<script type="text/javascript">
+	var ele = "";
+	function showChangeJobFairStatusPopup(jobFairId, status, oldValue, element) {
+		ele = element;
+		var statusText = "";
+		if(status === "0") {
+			statusText = "Are you sure to make the JobFair status to 'CLOSE' ?";
+		} else if(status === "1") {
+			statusText = "Are you sure to make the JobFair status to 'OPEN' ?";
+		} else {
+			statusText = "Are you sure to delete the JobFair ?";
+		}
+		$("#changeStatusPopup p").html(statusText);
+		$("#confirmId").data("job_fair_id", jobFairId);
+		$("#confirmId").data("status",status);
+		$("#cancelStatusPopup").data("old_value", oldValue);
+		$("#changeStatusPopup").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
+	function closeChangeStatusPopup() {
+		var oldValue = $("#cancelStatusPopup").data("old_value");
+		$(ele).val(oldValue);
+		$("#changeStatusPopup").slideUp(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
+	
+	function changeJobFairStatus() {
+		var jobFairId = $("#confirmId").data("job_fair_id");
+		var status = $("#confirmId").data("status");
+		var data = {
+				jobFairId: jobFairId,
+				status : status
+		};
+		$.post(sourceleadUrl + "/changeJobFairStatus?", data, function(result) {
+			if (result.response === "SESSION_TIMEDOUT") {
+				location.replace(sourceleadUrl);
+			} else if (result.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+		});
+	}
+</script>
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

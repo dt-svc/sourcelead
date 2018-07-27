@@ -23,7 +23,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class ProjectsGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
 
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
 	public void addProjectGeneratedId() throws IOException, SQLException {
 		Connection conn = null ;
@@ -46,14 +47,14 @@ public class ProjectsGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
 				 
 				 
 				 for(Long projectsOrgLocIds :bisOrgId){
-					 String organisationShortCode = "SELECT * FROM sourcelead.ORG_LOCATIONS orglocations where orglocations.id = "+projectsOrgLocIds+" ";
+					 String organisationShortCode = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orglocations where orglocations.id = "+projectsOrgLocIds+" ";
 					 
 					 ResultSet rSetorgShortCode = stmt3.executeQuery(organisationShortCode);
 					 while(rSetorgShortCode.next()){
 						 String  orgShortCode = rSetorgShortCode.getString("GENERATED_USER_ID");
 						 System.out.println("orgShortCode :"+orgShortCode);
 						 if(orgShortCode != null && orgShortCode != ""){
-							 String queryOrg = "SELECT * FROM sourcelead.PROJECTS projects where projects.ORG_LOCATIONS_ID= "+projectsOrgLocIds+"";
+							 String queryOrg = "SELECT * FROM "+dbconfig.getSchema()+".PROJECTS projects where projects.ORG_LOCATIONS_ID= "+projectsOrgLocIds+"";
 							 ResultSet rs2 = stmt2.executeQuery(queryOrg);
 							 Long projectsGeneratedId = 0L;
 							 while(rs2.next()){
@@ -65,7 +66,7 @@ public class ProjectsGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
 							        StringBuffer sb = new StringBuffer();
 							        finalProjectsGeneratedId = sb.append(orgShortCode.toUpperCase()).append(Constants.PROJECT_ENTITY).append(ConvetredProjectId).toString();
 						    
-									 String query = "update sourcelead.PROJECTS set GENERATED_ID = ? where ID = ? ";
+									 String query = "update "+dbconfig.getSchema()+".PROJECTS set GENERATED_ID = ? where ID = ? ";
 									 pstmt = conn.prepareStatement(query); // create a statement
 								     pstmt.setString(1,finalProjectsGeneratedId);
 								     pstmt.setLong(2, projectId);
@@ -86,10 +87,6 @@ public class ProjectsGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
 	 * @return DataSource
 	 */ 
 	private DataSource comboPooledDataSource() {
-			@SuppressWarnings("resource")
-			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 			this.comboPooledDataSource = new ComboPooledDataSource();
 			try {
 				comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

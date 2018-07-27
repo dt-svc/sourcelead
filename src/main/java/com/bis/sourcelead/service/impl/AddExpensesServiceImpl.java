@@ -117,7 +117,8 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 		Long reqId = checkNumber+1;
 		expId = reqId.toString();
 		}
-		final DecimalFormat decimalFormat = new DecimalFormat("0");                
+		//final DecimalFormat decimalFormat = new DecimalFormat("0"); /*OLD CODE*/  
+		final DecimalFormat decimalFormat = new DecimalFormat("000000");                
         String convetredExpId = decimalFormat.format(Long.parseLong(expId));
         StringBuffer sb = new StringBuffer();
         if(orgLoc.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLoc.getGeneratedUserId())){
@@ -183,6 +184,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	if(null == expenses.getId()){
 		expenses.setCreatedDate(CommonUtil.currentDate());
 	}
+	
 	expenses.setUpdatedDate(CommonUtil.currentDate());
 	if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		expenses.setExpenseStatus(Submission_Status.SUBMITTED);
@@ -273,12 +275,15 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	
 	expenses.setMasterCandidateId(projMembers.getMasterCandidateId());
 	expenses.setProjects(projMembers.getProjects());
-	if(null != expenses.getProjects() && expenses.getProjects().getOrgLocationsId() != null){
+	if(null != expenses.getProjects() && expenses.getProjects().getOrgLocationsId() != null && expenses.getProjects().getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(expenses.getProjects().getOrgLocationsId().getOrg().getOrgType())
+			&& !expenses.getProjects().getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)){
 		expenses.setOrgLocationId(expenses.getProjects().getOrgLocationsId());
 	}
 	else{
 		expenses.setOrgLocationId(orgLoc);
 	}
+	
+	expenses.setExpensesLocationId(orgLoc.getId());
 	
 	 expenses = addExpensesDao.storeAddExpensesData(expenses);
 	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){

@@ -9,8 +9,7 @@ window.onload = function () {
 	getRolesList();
  };
 </script>
-
-
+ 
 <style type="text/css">
 .dataTables_wrapper .dataTables_filter input {
 background-color: #f5f5f5;
@@ -25,72 +24,82 @@ padding-right: 254px; padding-top: 10px;
           <div class="pull-left">
             <h2>Roles List</h2>
           </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Roles List </div>
         </section>
 
         
-	   <div class="timesheet_out">
 			<div class="project_wrap">
 			
-			<div class="project_tabs_inn_head">
-			  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-			  	 <div class="role_header">
-			  	 <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
-						<a href="<c:url value='${appPath}/team'/>"><i
-								class="fa fa-plus"></i>Team</a>
-					</sec:authorize>
-			  	 <a href="<c:url value='${appPath}/addDepartment'/>"><i class="fa fa-plus"></i>Department</a>
-			     <a href="<c:url value='${appPath}/roleHierarchy'/>"><i class="fa fa-plus"></i>Hierarchy</a>
-                 <a href="javascript:void(0)" class="addcon-pop"><i class="glyphicon glyphicon-plus"></i>Add Role</a>
-                 </div>
-              </sec:authorize>
-              
-				<!-- Popup Div -->
-                    <div class="collapse-div-adduser addrole col-md-4"> <i class="fa fa-close close-div" onclick="flushRole();"></i>
-                          <div class="form-horizontal clearfix">
-                          <div id="loading"></div> 
-                        <form:form id="addRole_form"  name="addRole_form" method="post">                             
-                            <div class="clearfix mb10">
-                              <div class="col-md-12" id="roleDiv">
-                                <input type="text" data-validation="required" field-name="Role Name" onblur="validateRoleName();" name="roleName" id="roleName" class="form-control input-sm"  placeholder="Role Name">
-                              </div>
-                            </div>
-                            <div class="clearfix mb10">
-                              <div class="col-md-12" id="levelDiv">
-                                <select class="form-control chosen-select" data-validation="required" field-name="Level" id="level" name="level">
-                                	 <option value="">-Select Level-</option>
-			                         <c:forEach var="option" items="${hierarchyList}">
-										<option value="${option.id}">${option.hierarchyName}</option>
-									 </c:forEach>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="clearfix mr">
-                              <button type="submit" id="add_role" class="btn btn-sm btn-primary pull-right">Add</button>
-                            </div>
-                          </form:form>  
-                            
-                          </div>
-                        </div>
-				<!-- Popup Div -->              
-              
-              </div>
 			
-			    <div class="project_wrap_table datatable_filter">
-			    				<table id="rolesList" class="display" cellspacing="0" width="100%">
-								</table>
-				</div>	   
+ <div class="reportHead reportHeadDataTab  clearfix">
+      <ul class="pull-right list-unstyled list-inline">
+			<li>
+				<a class="action newAdBtn" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+					  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+					  	 <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
+								<a href="<c:url value='${appPath}/team'/>">Add Team</a>
+							</sec:authorize>
+					  	 <a href="<c:url value='${appPath}/addDepartment'/>">Add Department</a>
+					     <a href="<c:url value='${appPath}/roleHierarchy'/>">Add Hierarchy</a>
+					     <a href="<c:url value='${appPath}/addGrade'/>">Add Grade</a>
+		                 <a href="javascript:void(0)" class="addcon-pop">Add Role</a>
+		              </sec:authorize>					
+					</span>
+				</div>
+			</li>
+        </ul>
+				<!-- Popup Div -->
+				<div class="popupWrap" id="addRolePop">
+					<div class="popupHead">Add Role <i class="closePop pull-right popClose" onclick="flushRole();"></i></div>
+					<form:form id="addRole_form"  name="addRole_form" method="post"> 
+					<div class="popupContent">
+					<div id="loading"></div> 
+                         <div class="clearfix mb">
+                           <div class="" id="roleDiv">
+                           		<label class="noPad" for="Role Name">Role Name <b class="valStar">*</b></label>
+                             <input type="text" data-validation="required" field-name="Role Name" onblur="validateRoleName();" name="roleName" id="roleName" class="form-control"  placeholder="Role Name">
+                           </div>
+                         </div>
+                         <div class="clearfix mb">
+                           <div class="" id="levelDiv">
+                           		<label class="noPad" for="Role Name">Level <b class="valStar">*</b></label>
+                             <select class="form-control chosen-select" data-validation="required" field-name="Level" id="level" name="level">
+                             	 <option value="">-Select Level-</option>
+		                         <c:forEach var="option" items="${hierarchyList}">
+									<option value="${option.id}">${option.hierarchyName}</option>
+								 </c:forEach>
+                             </select>
+                           </div>
+                         </div>					
+					</div>
+					<div class="popupFoot text-right">
+						<button type="submit" id="add_role" class="slBtn md colorBtn">Add</button>					
+						<input type="button" value="Cancel" class="slBtn md popClose">
+					</div>
+					</form:form>
+				</div>
+                        
+				<!-- Popup Div -->          
+        
+      </div>			
+		     
+	    <div class="project_wrap_table datatable_filter dataSeaTop">
+	    	<table id="rolesList" class="display" cellspacing="0" width="100%"></table>
+		</div>	   
 					
-			</div>
-	   </div>	
 	   <div class="vendor_wrap_mask"></div>
-	   <div id="updateRoleDiv"></div>	
+	   <div id="updateRoleDiv"></div>			     
+		     
+		 </div>
+		 
+  
  </section>
  
  
  
  <jsp:include page="masterFooter.jsp" />	
- 
- 
  
  <script type="text/javascript">
 function validateRoleName(){
@@ -250,7 +259,8 @@ var validationSettings = {
 	          	    		}
 	                    		else if(data != 'INVALID_DATA' && data != 'AWKWARD'){
 	                    			$("#loading").removeAttr('style');
-	                    		   location.replace(sourceleadUrl+ "/roleActions/"+data+"");  
+	                    		   location.replace(sourceleadUrl+ "/roleActions/"+data+""); 
+	                    		   $(".popClose").click();
 	    			        	    }
 	                    		else if (data.indexOf('Sign In') !== -1) {
 	                    			location.replace(sourceleadUrl);
@@ -357,7 +367,7 @@ function getRolesList(){
    		    		result = result +'<td>';
    		    		result = result +'<div>';
    		    		result = result +'<label class="label label-success">';
-   		    		result = result +'<a class="anchorWhite" href="<c:url value="/app/roleActions/'+report.id+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
+   		    		result = result +'<a class="anchorWhite" href="<c:url value="/app/roleActions/'+report.uuid+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
    		    		result = result +'</label>';
    		    		result = result +'</div>';
    		    		result = result +'</td>';
@@ -381,22 +391,21 @@ function getRolesList(){
 function getRoleDeatils(displayName,roleHierarchyId,roleId){
 	
 	var result = "";
-	result = result + '	<div class="settPop">';
+	result = result + '	<div class="popupWrap settPop">';
 	result = result + '	<div id="updateLoading"></div>';
 	result = result + '<form id="updateRole_form" name="updateRole_form" method="post">';
 	result = result + '<input type="hidden" name="roleId" value="'+roleId+'"  id="roleId">';
-	result = result + '	<h3>Edit Role<i class="fa fa-times" onclick="cancelUpdate();"></i></h3>  ';
-	result = result + '	<div class="settPopInn"> ';
+	result = result + '<div class="popupHead">Edit Role <i class="closePop popClose" onclick="cancelUpdate()"></i></div>';
 	
+	result = result + '	<div class="popupContent"> ';
 	result = result + '		<div class="clearfix">  ';
-	result = result + '		<div class="col-md-12 errorInptgroup" id="editRoleDiv">  ';
-	result = result + '		  <label class="col-md-2 noPad" for="Role Name">Role Name :</label> ';
-	result = result + '			<input type="text" class="form-control col-md-8 paddingRight" onblur="validateEditRoleName();" name="displayName" value="'+displayName+'" id="displayName" field-name="Role Name" data-validation="required  validate_length length1-100">';
-	result = result + '		</div>  ';
+	result = result + '		<div class="" id="editRoleDiv">  ';
+	result = result + '		  <label class="noPad" for="Role Name">Role Name <b class="valStar">*</b></label> ';
+	result = result + '			<input type="text" class="form-control" onblur="validateEditRoleName();" name="displayName" value="'+displayName+'" id="displayName" field-name="Role Name" data-validation="required  validate_length length1-100">';
+	result = result + '		</div> ';
 
-	result = result + '		  <label class="col-md-12 mt" for="Project Id">Level</label> ';
-	result = result + '		  <div class="col-md-12 taskdesp">   ';
-	
+	result = result + '		  <label class="mt" for="Project Id">Level <b class="valStar">*</b></label> ';
+	result = result + '		  <div class=" taskdesp">   ';
 	result = result + '   <select class="form-control chosen-select" name="hierarchyId" id="hierarchyId" field-name="Level" data-validation="required">';
  	result = result + '     <option value="">--Level--</option>';
  	result = result +'		<c:forEach var="hierarchy" items="${hierarchyList}">';
@@ -406,14 +415,12 @@ function getRoleDeatils(displayName,roleHierarchyId,roleId){
 	
 	result = result + '			<span class="hidden"></span> </div>  ';
 	result = result + '		</div>';
-	result = result + '		<div class="col-md-12 mt5 clearfix"> ';
-	result = result + '		<div class="pull-right">  ';
-	result = result + '		  <input type="submit" value="Save" id="update_role"  onclick="updateRole();" class="btn btn-primary" >';
-	result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="cancelUpdate();">';
-	result = result + '		</div>';
-	result = result + '		</div>';
-	result = result + '		<div class="clearfix"></div>   ';
 	result = result + '	</div>  ';
+	
+	result = result + '	<div class="popupFoot text-right">';
+	result = result + '	<input type="submit" value="Save" id="update_role"  onclick="updateRole();" class="slBtn md colorBtn" >';	
+	result = result + '	<input type="button" value="Cancel" class="slBtn md popClose" onclick="cancelUpdate();">';
+	result = result + '	</div>';
 	result = result + '</form>';
 	result = result + '	</div>';
     $("#updateRoleDiv").empty();
@@ -433,15 +440,15 @@ function getRoleDeatils(displayName,roleHierarchyId,roleId){
   $("#hierarchyId").chosen();
   $("#hierarchyId").trigger("chosen:updated");
   
-  $(".settPop").slideDown(200);
-	$(".vendor_wrap_mask").fadeIn(200);
+  $(".settPop").fadeIn(100);
+	$(".mask").show();
 }
 </script>
 
 <script>
 function cancelUpdate(){
-	$(".settPop").slideUp(200);
-	$(".vendor_wrap_mask").fadeOut(200);
+	$(".settPop").fadeOut(100);
+	$(".mask").hide();
 }
 </script>
 
@@ -468,13 +475,22 @@ function cancelUpdate(){
  		
 <script>
 $(".addcon-pop").click(function(){
-	 $(".collapse-div-adduser").toggleClass("show-div");
-	 $(".collapse-div").removeClass("show-div");
+	 $(".mask").show();
+	 $("#addRolePop").fadeIn(100);
  });
- $(".close-div").click(function(){
-	 $(this).parent().removeClass("show-div");
+ $(".popClose").click(function(){
+	 $(".mask").hide();
+	 $("#addRolePop").fadeOut(100);
 	 });
- $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
-	 e.stopPropagation();
- });
+ 
+ function getActions(){
+		$(".action-pop").slideToggle(200);
+		$(".newActPop").slideUp(200);
+	}	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+	});	
 </script>

@@ -365,10 +365,9 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	    
 	    $("#candidateSkills").chosen().change(function(event) {
 	    	var allSkills = $(event.target).val();
-	   
 	    	$.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+		        url: sourceleadUrl+"/app/ws/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";

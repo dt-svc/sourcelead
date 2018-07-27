@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,6 +58,7 @@ import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
@@ -167,8 +169,12 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 	
 	@Autowired
 	OrgLicenseSubscriptionHistoryDao orgLicenseSubscriptionHistoryDao;
+	
 	@Value("${static.path}")
     private String staticPath;
+	
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -219,8 +225,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			if(orgLocations.getUser() != null) {
 				 user =  orgLocations.getUser();
 				UserRole userRole = userRoleDao.getLoginUserPrimaryRole(user.getId());
-				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 if(userRole == null || (null != userRole && userRole.getUserState().equals(Status.NOT_LOGGEDIN))) {
+					 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 					 user.setPassword(sourceleadPasswordEncoder.encode(password));
 				 }
 				 
@@ -258,10 +264,11 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 		    saveOrgRoleHierarchy(orgLocations,user);
 			saveOrgBasedRoles(orgLicenseSubscription.getOrg(),orgLocations,user,orgLicenseSubscriptionDTO.getRegisteredModules());
 			
-			
+			Shift shift = commonUtil.saveDefaultGenaeralShift(orgLocations, user, Constants.GENERAL_SHIFT);
 			//For saving the User Role (At registration user will have Admin Role)
 			UserRole userRole = getUserRoleDetails(user,orgLocations);
 			try {
+				userRole.setShift(shift);
 				userRoleDao.addUserRole(userRole);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -540,9 +547,12 @@ private Candidate getCandidateDetails(User user, OrgLocations orgLocations,Maste
 				
 				List<Long> roleActonsList = new ArrayList<Long>();
 				if(null != roles.getActionId()){
-					for (String s : roles.getActionId().split(",")){
+					/*for (String s : roles.getActionId().split(",")){
 						 roleActonsList.add(Long.parseLong(s));
-					 }
+					 }*/
+					for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+		    			 roleActonsList.add(Long.parseLong(s));
+		        	 }
 				}
 				
 				
@@ -630,7 +640,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		 
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("Info@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -783,9 +793,12 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 					
 					List<Long> roleActonsList = new ArrayList<Long>();
 					if(null != roles.getActionId()){
-						for (String s : roles.getActionId().split(",")){
+						/*for (String s : roles.getActionId().split(",")){
 							 roleActonsList.add(Long.parseLong(s));
-						 }
+						 }*/
+						for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+			    			 roleActonsList.add(Long.parseLong(s));
+			        	 }
 					}
 					
 					roleActonsList.retainAll(sourceLeadActionsIdsList);

@@ -9,7 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
@@ -98,7 +100,7 @@ public interface RequirementSubmissionService {
 	 * @return
 	 * To get piplenine counts
 	 */
-	Integer getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String submissionStatus)  throws Exception;
+	RequirementSubmissionsCountDTO getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String submissionStatus)  throws Exception;
 	
 	Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation)throws Exception;
 	
@@ -277,10 +279,12 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(Long sourceSubmissionId, Long vendorLocationId) throws Exception;
 	
-	ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO)throws Exception;
+	ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation)throws Exception;
 	
 	List<RequirementSubmission> getSubmmisionsForIsClientJob(List<Long> submissionIds) throws Exception;
 	
 	RequirementSubmission getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
+	
+	boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId,Long requirementId) throws Exception;
 
 }

@@ -22,31 +22,32 @@ $(function(){
 });
 </script>
 
-<style>
-.datatable_filter {
-position: relative !important; top:0 !important;
-}
-
-.datatable_filter input {
-position: relative !important; top:0 !important;
-}
-</style>
-
-
 <script type="text/javascript">
 	function emailTemplateList() {
+		var tabIds = [];
+		$('input:checkbox[name=userTabIds]:checked').each(function() 
+	    {
+			tabIds.push($(this).val());
+	    });
+		
+		var specification = [];
+		$('input:checkbox[name=userSpec]:checked').each(function() 
+	    {
+			specification.push($(this).val());
+	    });
+		
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "GET",
-	    	url : sourceleadUrl+"/getEmailTemplatesList?"+tokenParamName+"="+tokenValue+"", 
+	    	url : sourceleadUrl+"/getEmailTemplatesList?"+tokenParamName+"="+tokenValue+"&tabIds="+tabIds+"&specification="+specification, 
 	        success: function(json) {
 				var result = "";
 				result = result +"<table id='templatePagination' class='display' cellspacing='0' width='100%' >"; 
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
 	        	result = result + '<th>Template Name</th>';
-	            result = result + '<th>Entity Type</th>';
-	            result = result + '<th style="width:100px;">Action</th>';
+	             result = result + '<th>Entity Type</th>'; 
+	            result = result + '<th>Action</th>';
 	        	result = result +'</tr>';
 	        	result = result +'</thead>';
 	        	result = result +'<tbody>';
@@ -55,17 +56,19 @@ position: relative !important; top:0 !important;
 				  {	 
 	        		var opt = json[i];
 	        		result = result + '<tr>';
-	                result = result + '<td><div><span class="mid-span" title="'+opt.scenarioName+'">'+opt.scenarioName+'</span></a></div></td>';
-	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.entityType+'"><span class="mid-span">'+opt.entityType+'</span></div></td>';
-	                result = result + '<td><div>';
-	                    result = result + '<a class="fa fa-eye text-blue ml" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"></a>';
-	                    result = result + '&nbsp;<a href="'+sourceleadUrl+'/editEmailTemplate?templateUUID='+opt.emailUUID+'" title="Edit"><i class="fa fa-edit"></i></a>';
+	                result = result + '<td><div title="'+opt.scenarioName+'">'+opt.scenarioName+'</div></td>';
+	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.entityType+'"><span class="mid-span">'+opt.entityType+'</span></div></td>'; 
+	                
+	                result = result + '<td><div class="tblicons">';
+	                    result = result + '<a class="mr10" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"><i class="fa fa-eye text-primery"></i></a>';
+	                    result = result + '<a href="'+sourceleadUrl+'/editEmailTemplate?templateUUID='+opt.emailUUID+'" title="Edit"><i class="fa fa-pencil"></i></a>';
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				}  
 	        		
 	        	result = result +'</tbody>';
 	        	result = result +"</table>";
+	        	 $("#emailTemplateList").empty(); 
     	       $("#emailTemplateList").append(result); 
     	       templatepagination();
     	  
@@ -98,34 +101,85 @@ function templatepagination(){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
-    <div class="pull-left" id="emailtemplate" style="display:block">
-      <h2>Email Templates</h2>
-    </div>
-    <div class="pull-left" id="emailSummary" style="display:none">
-            <h2>Email Template Summary</h2>
-          </div>
-    <div class="pull-right brud-crum"  id="emailTemplates" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates</a>&raquo; Email Templates</div>
-    <div class="pull-right brud-crum" id="emailSumm" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates</a>&raquo; <a href="<c:url value='${appPath}/emailTemplates'/>" class="paddingLeft">Email TemplatesList</a> &raquo; emailTemplateSummary </div>
-         
+    <div class="pull-left" id="emailtemplate" style="display:block"><h2>Email Templates</h2> </div>
+    <div class="pull-left" id="emailSummary" style="display:none"><h2>Email Template Summary</h2></div>
+    <div class="pull-right brud-crum"  id="emailTemplates" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates </a>&raquo; Email Templates</div>
+    <div class="pull-right brud-crum" id="emailSumm" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home </a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates </a>&raquo; <a href="<c:url value='${appPath}/emailTemplates'/>" class="paddingLeft">Email TemplatesList</a> &raquo; emailTemplateSummary </div>
   </section>
   	
-  <div class="timesheet_out">
-  <div class="clearfix"></div>
-    <div class="project_wrap">
-	       <div class="project_wrap_table datatable_filter mt">
-	    				<div id="emailTemplateList" class="datatable_filter datatable_filter-cutom"></div>
-				</div>	
-	       
-       </div>
+  	
+  	
+  <div class="vendor_wrap clearfix">
+  
+	 <div class="reportHead reportHeadDataTab clearfix">
+	    <ul class="pull-right list-unstyled list-inline">
+	    	<li id="filterPops"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
+		</ul>
+	</div>	  
+	
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small">
+				<h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+							
+						<div class="col-md-4">
+						<div class="clearfix mb">
+							<label><strong>Entity</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="entityFilter">
+		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="associates" value ="2"  ><label>&nbsp;Associates</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="clients" value ="7"  ><label>&nbsp;Clients</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="jobs" value ="8" ><label>&nbsp;Jobs</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="vendors" value ="9"  ><label>&nbsp;Vendors</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="candidates" value ="10"  ><label>&nbsp;Candidates</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="projects" value ="3" ><label>&nbsp;Projects</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="myTimeSheets" value ="5"  ><label>&nbsp;My TimeSheets</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="timeSheetApproval" value ="6"  ><label>&nbsp;TimeSheet Approval</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="campaigns" value ="30" ><label>&nbsp;Campaigns</label></li>
+		               				
+		                        </ul>
+							 </div>
+							 </div> 
+							 </div>
+							 
+							 <c:if test="${SourceLeadWeb_org.id == '1'}">
+							 <div class="col-md-4 mb">
+							<label><strong>Specification</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="specificFilter">
+		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="userSpec" id="sourceleadSpecific" value ="sourcelead"  ><label>&nbsp;Sourcelead</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userSpec" id="OrgSpecific" value ="org"  ><label>&nbsp;Org</label></li>
+		                        </ul>
+							 </div>
+							 </div> 
+							 </c:if>
+							 
+							  </div>
+							 </div> 
+							 <div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet"
+								onclick="closePop();emailTemplateList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+		</div>
+		
+    <div class="clearfix project_tabs_inn_table">
+	    <div id="emailTemplateList" class="datatable_filter datatable_filter-cutom dataSeaTop"></div>
+     </div>
+     
   </div>
 </section>
 
 </body>
-
-
 </html>
 
-
+<div class="advancedsearch-mask"></div>
 <script type="text/javascript">
 function viewEmailTemplate(id,uniqueScenarioName){
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -208,6 +262,7 @@ function viewEmailTemplate(id,uniqueScenarioName){
 			$("#emailTemplateList").append(result); 
 			 document.getElementById("emailtemplate").style.display="none";
 			 document.getElementById("emailSummary").style.display="block";
+			  document.getElementById("filterPops").style.display="none";
 			 document.getElementById("emailTemplates").style.display="none";
 			 document.getElementById("emailSumm").style.display="block";
 			
@@ -216,6 +271,34 @@ function viewEmailTemplate(id,uniqueScenarioName){
 		
 }
 
+</script>
+
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
+		}
+		
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		}
+		
+		
+	</script>
+	
+	<script>
+function resetFilter(){
+	$("ul#entityFilter > li input:checkbox").prop("checked",false);
+	$("ul#specificFilter > li input:checkbox").prop("checked",false);
+	
+	//emailTemplateList();
+}
 </script>
 
 

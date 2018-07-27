@@ -12,24 +12,17 @@
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Pay Roll</h2>
+			<h2>Pay Roll
+				<a href="<c:url value='${appPath}/uploadDocuments'/>" class="jobHeadBtn" id="uloadDocs" title="Upload Files">Upload Files</a>
+			</h2>
 		</div>
-
-		<div class="success_pop" id="selector1" style="display: none;">
-			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
-		</div>
-
+		<div class="success_pop" id="selector1" style="display: none;"><i class="fa fa-check-circle"></i><span id="msgDiv"></span></div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo; Payroll
-		</div>
-		<div class="pull-left ml generateButtons">
-			<a href="<c:url value='${appPath}/uploadDocuments'/>" class="ml10 mt5"
-				id="uloadDocs" title="Upload Files">Upload Files</a> 
-				<%-- <a href="<c:url value='/payrollReport'/>" class="ml10 mt5"
-				id=generateReportId title="Generate Report">Generate Report</a> --%>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Payroll
 		</div>
 	</section>
+	
+	
 	<%-- <a href="<c:url value='/addChecks'/>" class="ml10 mt5"
 		id=generateReportId title="Generate Report">Add Checks</a> --%>
 	<form:form id="payroll_list_form" name="payroll_list_form"
@@ -50,22 +43,21 @@
 		</section>
 
 	</form:form>
-	<div class="content-area content-new clearfix">
+	<div class="content-area content-new backWhite clearfix">
 		<!-- <div class="project_wrap"> -->
 		<div class="clearfix">
 			<div class="clearfix">
+
+
 
 				<div class="timesheet_head clearfix">
 
 					<div class="clearfix">
 
-						<a href="<c:url value='${appPath}/userMapping'/>"
-							class="btn btn-primary btn-sm ml10 mt5 hidden"
-							title="User Mapping" onClick="userMaping();">User Mapping </a>
+						<a href="<c:url value='${appPath}/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5 hidden" title="User Mapping" onClick="userMaping();">User Mapping </a>
 
 						<!--  Runpayroll div -->
-						<form:form id="run_payroll_cycle" name="run_payroll_cycle"
-							method="post">
+						<form:form id="run_payroll_cycle" name="run_payroll_cycle" method="post">
 							<div class="clearfix mt" id="addPayrollDiv">
 								<div class="clearfix">
 									<div id="payrollCycleDiv" class="col-md-7">
@@ -80,23 +72,26 @@
 										</span>
 									
 									<div class="form-group">
-										<button type="button" class="btn btn-primary btn-block"
-											id="runPayrollCycle" onclick="runPayrollCycles();">Run
-											Payroll</button>
+										<button type="button" class="btn btn-primary btn-block" id="runPayrollCycle" onclick="runPayrollCycles();">Run Payroll</button>
 									</div>
 									</div>
 									</div>
+									
 									<div id="payScale" class="col-md-3 mt5 paddingLeft" style="display: none;">
-										<span class="label label-info runpayRoll-txt"
-											id="payCycleName"></span>
+										<span class="label label-info runpayRoll-txt" id="payCycleName"></span>
 									</div>
 								</div>
 
 							</div>
 						</form:form>
 						<!--  Runpayroll div -->
+						
 					</div>
 				</div>
+				
+				
+				
+				
 				<!-- End -->
 
 			</div>
@@ -106,7 +101,7 @@
 		</div>
 
 		<div
-			class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
+			class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
 			<div id="loading"></div>
 			<div id="employerCostDiv" class="datatable_filter"></div>
 			<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
@@ -539,14 +534,12 @@
 		$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 		$('#payrollCycle').val('').trigger("chosen:updated");
 		var result = "";
-		result = result +" <div class='modal-header'>";
-		result = result + " <div class='remove_search'>";
-		result = result
-				+ " <input type='text' placeholder='Search' id='employeeDataTableSearch'/>";
-		result = result + "</div>";
-		result = result + "</div>";
-		result = result
-				+ '<table id="employeePayrollTable" class="display" cellspacing="0" width="100%" >';
+ 		result = result +" <div class='reportHead'>";
+		result = result + " <ul class='pull-right'>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='employeeDataTableSearch'/><span class='repSearchIcon' onClick='employeeDataSearch();'></span></li>";
+		result = result + "</ul>";
+		result = result + "</div>"; 
+		result = result + '<table id="employeePayrollTable" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '<th>From Date</th>';
@@ -831,6 +824,10 @@
 				loadEmployeePayrollCost();
 			}
 		});
+		
+	}
+	function employeeDataSearch(){
+		loadEmployeePayrollCost();
 	}
 </script>
 

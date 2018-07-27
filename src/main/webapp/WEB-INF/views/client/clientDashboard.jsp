@@ -56,19 +56,19 @@ z-index: 1;
 				</span>
 				</h2>
 			</div>
-
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/clientDashboard'/>">Client List</a></div>
-		</section>
+                  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a> Clients List </div>
+    
+	 	</section>
 
 		<!-- Project -->
 		
 			
 			<!-- Advanced Search -->
   <div class="timesheet_out">
-  <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
-            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+
             </div>
-            </div>
+            
+            
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup advancedsearch-popup">
          <h5 class="headerAdsrch">Advanced Search 
@@ -274,85 +274,61 @@ z-index: 1;
           </form:form>
 		<!-- Advanced Search Ends -->
 		<div class="clients_wrap vendor_wrap_shadownone minHeight_225">
-<!-- 				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
- -->				<div class="timesheet_head datatbl-filters topfilters">
-					<ul>
-	               
-		                <li  id="filter3ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="clientSatatus"></i>|
-	                	<div id="filter3ApprovedPop" class="approved_pop">
-	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getClientContactList();"  ><label>Active</label></li>
-								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getClientContactList();"><label>In-Active</label></li>
-	                        </ul>
-	                      </div>                	
-	                  </li>
-	                  <li  id="filter4ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="clientInvitation"></i>|
-	                	<div id="filter4ApprovedPop" class="approved_pop">
-	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="clientInvitationStatus"  value ="Sent"      onclick="getClientContactList();"  ><label>Resend</label></li>
-								<li><input id="c6" type="checkbox"  name="clientInvitationStatus"  value ="New"   onclick="getClientContactList();"><label>Send</label></li>
-								<li><input id="c7" type="checkbox"  name="clientInvitationStatus"  value ="Accepted"         onclick="getClientContactList();"><label>Accepted</label></li>
-								<li><input id="c8" type="checkbox"  name="clientInvitationStatus"  value ="Rejected" onclick="getClientContactList();"><label for="c8">Rejected</label></li>
-	                        </ul>
-	                      </div>                	
-	                  </li>
-	                  
-		                  <li id="contactLevel" >
-		                  <div id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
-		                	<div id="filter2ApprovedPop" class="approved_pop">
-		                    	<ul>
-									<!-- <li><input id="c5"  type="checkbox" name="clinetLevel" value ="All" onclick="getClientDetails();"  ><label for="c5">All</label></li> -->
-									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getClientList();"><label>Tier-1</label></li>
-									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"  onclick="getClientList();"><label>Tier-2</label></li>
-									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"  onclick="getClientList();"><label>Tier-3</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-4"  onclick="getClientList();"><label>Tier-4</label></li>
-		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Tier-5"  onclick="getClientList();"><label>Tier-5</label></li>
-		                        </ul>
-		                    </div>                	
-		                </li>
-                		<sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-                        <li><a href="<c:url value='${appPath}/addClientContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
-                        </sec:authorize>
-                        <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-							<li><a href="<c:url value='${appPath}/client'/>"><i class="fa fa-plus"></i>Client</a></li>
-						</sec:authorize>
-						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
-						 <li title="Import"><a href="<c:url value='${appPath}/uploadClientForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+				
+	<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetClient" title="Refresh" onclick="resetClientFilter();"></a>
+      		<a href="javascript:void(0)" class="refeIcon" id="resetClientContact" style="display: none;" title="Refresh" onclick="resetClientContactFilter();"></a>
+      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+                  <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+					  <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+						<a href="<c:url value='${appPath}/client'/>">Add Client</a>
+					 </sec:authorize>
+					 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+                        <a href="<c:url value='${appPath}/addClientContact'/>">Add Contact</a>
+                     </sec:authorize>					
+					</span>
+				</div>
+			</li>
+						
+			
+				<li id="contactLevel"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="clientFileterPopUp();"></a></li>
+				<li id="clientFiletPopup" style="display: none;"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="clientContactFilterPopUp();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						<sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
+							<a href="<c:url value='${appPath}/uploadClientForm'/>">Import</a>
 						 </sec:authorize>
 						
 						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
-						   <li id="clientImports"  title="Export">
-		                      <a  id="client-imports"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			                    <div class="export_pop">
-				                   <ul class="widScr">
-				                     <li onclick="exportClientToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-				                     <li onclick="exportClientToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Excel </li>
-				                   </ul>
-				              </div>
-		                  </li> 
-		            </sec:authorize>
+						 <div id="clientImports">
+						 	<a href="javascript:void(0)" onclick="exportClientToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportClientToExcel();" title="Excel">Export Excel</a>
+						 </div>
+		            	</sec:authorize>
 		            
-		             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
-		            <li id="ContactImports" title="Export" style="display:none">
-		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			                    <div class="export_pop">
-				                <ul class="widScr">
-				                <li onclick="exportContactToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF</li>
-				                <li onclick="exportContactToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp; Excel</li>
-				       </ul>
-				    </div>
-		            </li> 
-                    </sec:authorize>
-                              
-						<div class="clearfix"></div>
-					</ul>
-					<div class="clearfix"></div>
-					 <div class='dynamic_search dynamic_search-new'>
-        		          <input type='text' placeholder='Search' id='dataTableSearch'/>
-        		          <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getClientList();"></i></span>    
-                </div> 
-                
-				</div>
+			             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
+							 <div id="ContactImports" style="display:none">
+							 	<a href="javascript:void(0)" onclick="exportContactToPdf();" title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="exportContactToExcel();" title="Excel">Export Excel</a>
+							 </div>		             
+	                    </sec:authorize>						
+						
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="getClientList();"></span></li>
+        </ul>
+      </div>			
 				
 				<div class="clients_wrap_table datatable_scroll datatable_filter" id ="vendorListFilter">
 			      <input type="hidden" name="clientContactLength" id="clientContactLength" >
@@ -365,7 +341,6 @@ z-index: 1;
 				</div>
 				<div id="popUp"></div>
 			</div>
-		</div>
 
 
        <div class="side_mask"><div class="proj_close" onclick="refresh();"></div></div>
@@ -782,10 +757,7 @@ function clearSearch(){
 			 document.getElementById("vendorListAdvanced").style.display="none";
 			 document.getElementById("enableClientContactAdvancedSearch").style.display="block";
 			 document.getElementById("enableClientAdvancedSearch").style.display="none";
-			 
-			 
 		}else if(selectedList == "listbyVendor" ){
-			
 			 document.getElementById("vendorListAdvanced").style.display="block";
 			 document.getElementById("vendorContactListAdvanced").style.display="none";
 			 document.getElementById("enableClientAdvancedSearch").style.display="block";
@@ -1573,7 +1545,7 @@ function updateSpocStatus(spocId){
 		
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
 		result = result
-				+ '<li class="current"><a href="#tab-1"  id="spocDetailsId" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
+				+ '<li class="current"><a href="#tab-1"  id="spocDetailsId" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+','+orgRelationId+','+spocLocationId+');">Details</a></li>';
 		'</sec:authorize>';
 		
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_DOCUMENT\')">';
@@ -1601,7 +1573,7 @@ function updateSpocStatus(spocId){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
-		clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
+		clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId);
 	}
 </script>
 
@@ -1622,24 +1594,20 @@ function listChange(sel){
 // 		 document.getElementById("vendorContactList_wrapper").style.display="none";
 		 document.getElementById("contactLevel").style.display="block";
 // 		 document.getElementById("clientsList").style.display="none";
-		 document.getElementById("clientSatatus").style.display="none";
-		 document.getElementById("clientInvitation").style.display="none";
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENTS\')">'; 
 		 document.getElementById("clientImports").style.display="block";
 		 '</sec:authorize> ';
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
 		 document.getElementById("ContactImports").style.display="none";
 		'</sec:authorize> ';	 
-// 		 document.getElementById("vendorContactList_paginate").style.display="none";
-// 		 document.getElementById("vendorContactList_info").style.display="none";
-// 		 document.getElementById("vendorContactList_filter").style.display="none";
-// 		 document.getElementById("filter1ApprovePop").style.display="none";
-		 document.getElementById("filter3ApprovePop").style.display="none";
-		 document.getElementById("filter4ApprovePop").style.display="none";
-		/*  getClientDetails(); */
-		 /* getClientDetailsELK(); */
 		 document.getElementById("advanceSearchDiv").style.display="block";
 		 $("#dataTableSearch").val("");
+		 document.getElementById("resetClient").style.display="inline-block";
+		 document.getElementById("resetClientContact").style.display="none";
+		 
+		 document.getElementById("clientFiletPopup").style.display="none";
+
+		 
 		 getClientList();
 	 }
 	 if(sel.value=="listbyContact"){
@@ -1650,8 +1618,6 @@ function listChange(sel){
 // 		 document.getElementById("vendorContactList_wrapper").style.display="block";
 		 document.getElementById("contactLevel").style.display="none";
 // 		 document.getElementById("clientsList").style.display="block";
-		 document.getElementById("clientSatatus").style.display="block";
-		 document.getElementById("clientInvitation").style.display="block";
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENTS\')">'; 
 		 document.getElementById("clientImports").style.display="none";
 		 '</sec:authorize> ';
@@ -1659,12 +1625,14 @@ function listChange(sel){
 		 document.getElementById("ContactImports").style.display="block";
 		'</sec:authorize> ';	 
 // 		document.getElementById("filter1ApprovePop").style.display="block";
-		 document.getElementById("filter3ApprovePop").style.display="block";
-		 document.getElementById("filter4ApprovePop").style.display="block";
 		 document.getElementById("advanceSearchDiv").style.display="block";
 		/*  getVendorContactLists(); */
 // 		 getVendorContactListsELK();
 		$("#dataTableSearch").val("");
+		 document.getElementById("resetClient").style.display="none";
+		 document.getElementById("resetClientContact").style.display="inline-block";
+		 document.getElementById("clientFiletPopup").style.display="inline-block";
+
 		loadClientContactDataTable("${clientSearchResult}");
 	 }
 	 
@@ -1891,29 +1859,6 @@ function getEndDatePickerById(projectId,localFieldName){
 	    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
 	        e.stopPropagation();
 	    });	
-	    
-	    $("#filter3ApprovePop").click(function(){
-			$("#filter3ApprovedPop").slideToggle(200);
-			$("#filter1ApprovedPop, .export_pop, #filter4ApprovedPop").slideUp(200);
-		});
-	    $("html").click(function() {
-	        $("#filter3ApprovedPop").slideUp(200);
-	    });
-	    $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
-	        e.stopPropagation();
-	    });	
-	    
-	    $("#filter4ApprovePop").click(function(){
-			$("#filter4ApprovedPop").slideToggle(200);
-			$("#filter1ApprovedPop, .export_pop, #filter3ApprovedPop").slideUp(200);
-		});
-	    $("html").click(function() {
-	        $("#filter4ApprovedPop").slideUp(200);
-	    });
-	    $("#filter4ApprovedPop, #filter4ApprovePop").click(function(e) {  
-	        e.stopPropagation();
-	    });	
-	    
 	});
 	// project side bar
 	$(document).ready(function() {
@@ -2470,4 +2415,155 @@ function flushCheckBoxVal(){
 	
 }
  </script>
+ 
+ <script>
+function getClientActions(){
+	$(".action-pop").slideToggle(200);
+}	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+</script>
+<script>
+//Client
+function closeClientFilterPop(){
+	$("#clientFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function clientFileterPopUp(){
+	 $("#clientFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+function resetClientFilter(){
+	$("ul#tierFilter > li input:checkbox").prop("checked",false);
+	getClientList();
+}
+
+//Client Contact
+function closeClientContactFilterPop(){
+	$("#clientContactFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function clientContactFilterPopUp(){
+	 $("#clientContactFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+function resetClientContactFilter(){
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
+	getClientContactList();
+}
+</script>
+<!-- clinet related Fileter popup -->
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="clientFilterId" style="display:none;">
+				<h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closeClientFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Tier</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="tierFilter">
+									<li class="checkBox positionRelative" ><input class="mb0" id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"><label>Tier-1</label></li>
+									<li class="checkBox positionRelative" ><input class="mb0" id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"><label>Tier-2</label></li>
+									<li class="checkBox positionRelative" ><input class="mb0" id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"><label>Tier-3</label></li>
+		               				<li class="checkBox positionRelative" ><input class="mb0" id="c8"  type="checkbox" name="clinetLevel" value ="Tier-4"><label>Tier-4</label></li>
+		               				<li class="checkBox positionRelative" ><input class="mb0" id="c9"  type="checkbox" name="clinetLevel" value ="Tier-5"><label>Tier-5</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+					  </div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientFilterPop();getClientList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetClientFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+
+
+
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="clientContactFilterId" style="display:none;">
+				<h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closeClientContactFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+									   <li class="checkBox positionRelative"><input id="c5" type="checkbox" class="mb0" name="clientStatus"  value ="Active"><label>Active</label></li>
+								       <li class="checkBox positionRelative"><input id="c6" type="checkbox" class="mb0" name="clientStatus"  value ="In-Active"><label>In-Active</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						
+						<div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Invitation</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="invitationFilter">
+										<li class="checkBox positionRelative"><input id="c5" type="checkbox"  name="clientInvitationStatus" class="mb0" value ="Sent"><label>Resend</label></li>
+										<li class="checkBox positionRelative"><input id="c6" type="checkbox"  name="clientInvitationStatus" class="mb0" value ="New"><label>Send</label></li>
+										<li class="checkBox positionRelative"><input id="c7" type="checkbox"  name="clientInvitationStatus" class="mb0" value ="Accepted"><label>Accepted</label></li>
+										<li class="checkBox positionRelative"><input id="c8" type="checkbox"  name="clientInvitationStatus" class="mb0" value ="Rejected"><label for="c8">Rejected</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+					  </div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientContactFilterPop();getClientContactList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetClientContactFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+
 <jsp:include page="../masterFooter.jsp" />	
+
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+</script>
+

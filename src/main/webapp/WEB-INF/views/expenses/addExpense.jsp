@@ -66,7 +66,7 @@ $(document).ready(function(){
 	             <div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-	                   <c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'}">
+	                   <c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED' and submissionStatus ne 'REOPENED'}">
 						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
@@ -76,7 +76,7 @@ $(document).ready(function(){
 							</c:forEach>
 						</select>
 						</c:if>
-						<c:if test="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED'}">
+						<c:if test="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED' or submissionStatus eq 'REOPENED'}">
 						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required" disabled="disabled">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
@@ -118,13 +118,12 @@ $(document).ready(function(){
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
 						    <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
-						      <span class="input-group-addon" onClick="clearStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						
 						  </div>
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
 						  <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
-						      <span class="input-group-addon" onClick="clearEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 						  </div> 
 						  </div>
 						  		  
@@ -209,7 +208,7 @@ $(document).ready(function(){
 							
 															
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-						<select class="chosen-select form-control" id="categoryType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${(2*(entryCount.count))-1});">
+						<select class="chosen-select form-control" id="categoryType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${(2*(entryCount.count))-1});getExpenseAttachmentStatus(${(2*(entryCount.count))-1});">
 						<option value="">Select Category Type</option>
 						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
 						   <c:if test="${pm.projectId == expenses.projectId}">
@@ -313,7 +312,14 @@ $(document).ready(function(){
 <div class="form-footer clearfix mt">
 		   <div class="col-lg-12">
 			<div class="pull-right">
-			<input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
+			<c:choose>
+			<c:when test="${submissionStatus == 'REOPENED'}">
+			 <!-- <input type="button" hidden="hidden" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');"> -->
+			</c:when>
+			<c:otherwise>
+			 <input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
+			</c:otherwise>
+			</c:choose>
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
 			<c:if test ="${!empty expenses.expenseAutoId}">
 			  <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
@@ -631,14 +637,5 @@ function clearProjectEndDate(){
 		};	
 </script>
  -->
- 
- <script>
-function clearStartDate(){
-	$("#startDate").val("");
-	};
-	
-function clearEndDate(){
-	$("#endDate").val("");
-	};
-</script>
+
 <jsp:include page="../masterFooter.jsp" />

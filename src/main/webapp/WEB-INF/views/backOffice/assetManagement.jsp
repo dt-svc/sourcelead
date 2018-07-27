@@ -31,41 +31,47 @@ $(document).ready(function(){
 </script>
 <section class="content-wraper">
 <section class="content-header clearfix">
-  <div class="pull-left">
-    <h2>Asset Management</h2>
-  </div>
+  <div class="pull-left"><h2>Asset Management</h2></div>
   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Asset Management</div>
 </section>
+
 <div class="timesheet_out">
-  <div class="vendor_wrap">
-    <div class="timesheet_head">
-    <div class="pull-left cand-advsrch advsrch_chosen">
-	     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetAssetFilter();" title="Refresh">
-		    <span class="fa fa-refresh"></span>
-		</button>
-		
-		<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openAssetFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
-		</a>
-    </div>
+  
+ <div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetAssetFilter();"></a>
+      </span>
       
-      <ul>
-        <li>
-        <sec:authorize access="hasRole('ROLE_ADD_ASSET')"> 
-        <a href="javascript:void(0)" class="addcon-pop"  onClick="addAssetManagementPopup();"><i class="fa fa-plus"></i>Add Asset</a> 
-        </sec:authorize>
-          
-         <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-         <!-- Add Asset Popup -->
-        </li>
-        <sec:authorize access="hasRole('ROLE_ADD_ASSET_CATEGORY')"> 
-        <li>
-        <a href="<c:url value='${appPath}/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
-        </li>
-        </sec:authorize>
-        
-        <div class="clearfix"></div>
-      </ul>
-      </div>
+      <ul class="pull-right list-unstyled list-inline">
+      
+            <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+					        <sec:authorize access="hasRole('ROLE_ADD_ASSET')"> 
+					        	<a href="javascript:void(0)"  onClick="addAssetManagementPopup();">Add Asset</a> 
+					        </sec:authorize>
+					        <sec:authorize access="hasRole('ROLE_ADD_ASSET_CATEGORY')"> 
+					        	<a href="<c:url value='${appPath}/assetCategory'/>" class="">Categories List</a>
+					        </sec:authorize>						  
+					</span>
+				</div>
+			</li>
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openAssetFilterPop();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+		           	   		<a href="<c:url value='${appPath}/uploadassetManagement'/>">Import</a>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='assetDataTableSearch'/><span class="repSearchIcon" onClick="getDynamicAssetList();"></span></li>
+        </ul>
+      </div> 
+  
+      
       <div class="clearfix"></div>
       
     <!-- list Table -->
@@ -76,7 +82,6 @@ $(document).ready(function(){
     </div>
     
     <!-- list Table -->
-  </div>
   <div class="side_mask">
     <div class="proj_close"></div>
   </div>
@@ -238,7 +243,7 @@ function openAssetFilterPop(){
 }
 
 </script>
-<div class="advancedsearch-mask"></div>
+     <div class="advancedsearch-mask"></div>
           <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="assetFilterId">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeAssetFilterPop()"><i
@@ -276,7 +281,7 @@ function openAssetFilterPop(){
 					   
 					   <div class="col-md-4 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
-								<input type="text" id="myShiftInput" onkeyup="myShiftFunction()" placeholder="Shift" title="Type in a clients">
+								<input type="text" id="myShiftInput" onkeyup="myShiftFunction()" placeholder="Availability" title="Type in a clients">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
 							 <div class="clearfix filterSearch-ul">
@@ -304,6 +309,7 @@ function resetAssetFilter(){
 	$("ul#workStatusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myCategoryUL > li input:checkbox").prop("checked",false);
 	$("ul#myShiftUL > li input:checkbox").prop("checked",false);
+	$("#assetDataTableSearch").val('');
 	getDynamicAssetList();
 	
 }
@@ -369,9 +375,7 @@ function getDynamicAssetList(){
 }
 function prepareDynamicAssetList(url){
 	var result = "";
-    result = result	+ '<div class="remove_search">';
-    result = result +" <input type='text' placeholder='Search' id='assetDataTableSearch'/>";
-	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
+    result = result	+ '<div class="">';
 	result = result	+ '<div id="tasksLoadingImg"></div>';
 	result = result + '<table id="assetPagination" class="display" cellspacing="0" width="100%">';
 	result = result + '<thead>';
@@ -991,6 +995,34 @@ function uploadFileAttachment(){
 	fileUpload("fileAttachment", "assetDocuments", "addAsset_form","attachmentUpload");
 	$('#dbUploadFileAttachment').val($('#fileAttachment').val().replace(/C:\\fakepath\\/i, ''))
 }
+
+</script>
+
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
 
 </script>
 

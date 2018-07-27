@@ -15,7 +15,10 @@ public enum Result {
     DUPLICATE_PHONE("Record already existed with given phone number"),
     INVALID_EMAIL("Invalid Email ID"),
     UNAUTHORIZED("You are not allowed to access this service"),
-    UNABLE_SET_PAYMENT_ACCOUNT("Payment account is created, but unable create WePay account.");
+	DATA_NOT_FOUND("Data not found"),
+    UNABLE_SET_PAYMENT_ACCOUNT("Payment account is created, but unable create WePay account."),
+	DUPLICATE_NAME("Name already exists"),
+	DUPLICATE_TAX_RECORD("Tax Record already exists for the selected user");
 
     private String value;
 

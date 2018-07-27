@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.enums.Status;
 
 public class DataMigrationDTO extends CommonDTO {
 
@@ -41,6 +43,8 @@ public class DataMigrationDTO extends CommonDTO {
 	private String rate;
 
 	private String maxRate;
+	
+	private String inviteEmail;
 	
 	private String currencyCode;
 
@@ -235,6 +239,187 @@ public class DataMigrationDTO extends CommonDTO {
 	
 	private String projectClientUUID;
 	
+	// immigration import fields starts here date 17 May 2018. Srinivas Sabbu.
+	
+private String beneficiaryFirstName;
+    
+    private String beneficiaryLastName;
+    
+    private String beneficiaryEmail;
+    
+    private String experience;
+    
+    private String ssn;
+    
+    private String i94Number;
+    
+    private String i20Number;
+    
+    private String eadNumber;
+    
+    private String dateOfBirth;
+    
+    private String maritalStatus;
+    
+    private String petitionType;
+    
+    private String template;
+    
+    private String dateOfArrival;
+    
+    private String openOn;
+    
+    private String status; // Status field in excel as immigration status.
+    
+    private String visaNo;
+    
+    private String visaStartDate;
+    
+    private String visaEndDate;
+    
+    private String passportNo;
+    
+    private String passportStartDate;
+    
+    private String passportEndDate;
+    
+    private String visaCountry;
+    
+    private String passportCountry;
+    
+    private String company;
+    
+    private String visaType; // name field in excel
+    
+    private String companyContactEmail; // AttorneyContactemail field in excel.
+    
+    private String receiptNo;
+    
+    private String benficiarylocation; // location field in excel
+    
+    private String lcaStartDate;
+    
+    private String lcaEndDate;
+    
+    private String lcaNumber;
+    
+    private String lcaRateCurrency;
+    
+    private String lcaRatePer;
+    
+    private String lcaRate;
+    
+    private String lcaLocation;
+    
+    private String lcaTitle;
+    
+    private String immigrationJobId;
+    
+    private String prevLcaStartDate;
+    
+    private String prevLcaEndDate;
+    
+    private String prevLcaNumber;
+    
+    private String prevLcaTitle;
+    
+    private String prevLcaLocation;
+	
+// immigration fields ends here.	
+    
+    
+    
+ // Candidate import fields 
+    private String firstName;
+    
+    private String lastName;
+    
+    private String email;
+    
+    private String mobilePhone;
+    
+    private String alternateMobilePhone;
+    
+    private String address;
+    
+    private String zipcode;
+    
+    private String designation;
+    
+    private String designationType;
+    
+    private String experienceYears;
+    
+    private String vendor;
+    
+    private String vendorcontact;
+    
+    private String currentRate;
+    
+    private String expectedRate;
+    
+    private String candidateEmployers;
+    
+    private String candidateEducation;
+    
+    private String candidateSkills;
+    
+    private String summary;
+    
+    private String primarySkill;
+ // Candidate import fields ends
+    
+	
+    
+    //Associate import fields
+                                     
+    private String emailId;			 
+                                     
+    private String phoneNumber;	 
+                                     
+    private String extensionNumber;  
+                                     
+    private String ratePer;			 
+
+    private String dateofJoin;		 
+
+    private String role;			 
+
+    private String invoiceFrequency; 
+
+    private String dayHours; 
+
+    private String dateString;
+
+    private Status isMailChecked;
+
+    private String reason;
+
+    private String vendorContact;
+
+    private String employmentType;
+
+    private String grade;
+
+    private String genderValue;
+    
+    private String shift;
+    
+    private String currentCurrency;
+    
+    private String shiftId;
+    
+    private String department;
+    
+    private String roleType;
+    
+    private String reportingManager;
+    
+    private String isMailSent;
+    
+    private String isGlobalAccess;
+    
+    
 	public String getEmployeeId() {
 		return employeeId;
 	}
@@ -1254,4 +1439,690 @@ public class DataMigrationDTO extends CommonDTO {
 	public void setProjectClientUUID(String projectClientUUID) {
 		this.projectClientUUID = projectClientUUID;
 	}
+
+	public String getBeneficiaryFirstName() {
+		return beneficiaryFirstName;
+	}
+
+	public void setBeneficiaryFirstName(String beneficiaryFirstName) {
+		this.beneficiaryFirstName = beneficiaryFirstName;
+	}
+
+	public String getBeneficiaryLastName() {
+		return beneficiaryLastName;
+	}
+
+	public void setBeneficiaryLastName(String beneficiaryLastName) {
+		this.beneficiaryLastName = beneficiaryLastName;
+	}
+
+	public String getBeneficiaryEmail() {
+		return beneficiaryEmail;
+	}
+
+	public void setBeneficiaryEmail(String beneficiaryEmail) {
+		this.beneficiaryEmail = beneficiaryEmail;
+	}
+
+	public String getExperience() {
+		return experience;
+	}
+
+	public void setExperience(String experience) {
+		this.experience = experience;
+	}
+
+	public String getSsn() {
+		return ssn;
+	}
+
+	public void setSsn(String ssn) {
+		this.ssn = ssn;
+	}
+
+	public String getI94Number() {
+		return i94Number;
+	}
+
+	public void setI94Number(String i94Number) {
+		this.i94Number = i94Number;
+	}
+
+	public String getI20Number() {
+		return i20Number;
+	}
+
+	public void setI20Number(String i20Number) {
+		this.i20Number = i20Number;
+	}
+
+	public String getEadNumber() {
+		return eadNumber;
+	}
+
+	public void setEadNumber(String eadNumber) {
+		this.eadNumber = eadNumber;
+	}
+
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public String getPetitionType() {
+		return petitionType;
+	}
+
+	public void setPetitionType(String petitionType) {
+		this.petitionType = petitionType;
+	}
+
+	public String getTemplate() {
+		return template;
+	}
+
+	public void setTemplate(String template) {
+		this.template = template;
+	}
+
+	public String getDateOfArrival() {
+		return dateOfArrival;
+	}
+
+	public void setDateOfArrival(String dateOfArrival) {
+		this.dateOfArrival = dateOfArrival;
+	}
+
+	public String getOpenOn() {
+		return openOn;
+	}
+
+	public void setOpenOn(String openOn) {
+		this.openOn = openOn;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getVisaNo() {
+		return visaNo;
+	}
+
+	public void setVisaNo(String visaNo) {
+		this.visaNo = visaNo;
+	}
+
+	public String getVisaStartDate() {
+		return visaStartDate;
+	}
+
+	public void setVisaStartDate(String visaStartDate) {
+		this.visaStartDate = visaStartDate;
+	}
+
+	public String getVisaEndDate() {
+		return visaEndDate;
+	}
+
+	public void setVisaEndDate(String visaEndDate) {
+		this.visaEndDate = visaEndDate;
+	}
+
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public String getCompanyContactEmail() {
+		return companyContactEmail;
+	}
+
+	public void setCompanyContactEmail(String companyContactEmail) {
+		this.companyContactEmail = companyContactEmail;
+	}
+
+	public String getReceiptNo() {
+		return receiptNo;
+	}
+
+	public void setReceiptNo(String receiptNo) {
+		this.receiptNo = receiptNo;
+	}
+
+	public String getBenficiarylocation() {
+		return benficiarylocation;
+	}
+
+	public void setBenficiarylocation(String benficiarylocation) {
+		this.benficiarylocation = benficiarylocation;
+	}
+
+	public String getPassportNo() {
+		return passportNo;
+	}
+
+	public void setPassportNo(String passportNo) {
+		this.passportNo = passportNo;
+	}
+
+	public String getPassportStartDate() {
+		return passportStartDate;
+	}
+
+	public void setPassportStartDate(String passportStartDate) {
+		this.passportStartDate = passportStartDate;
+	}
+
+	public String getPassportEndDate() {
+		return passportEndDate;
+	}
+
+	public void setPassportEndDate(String passportEndDate) {
+		this.passportEndDate = passportEndDate;
+	}
+
+	public String getVisaCountry() {
+		return visaCountry;
+	}
+
+	public void setVisaCountry(String visaCountry) {
+		this.visaCountry = visaCountry;
+	}
+
+	public String getPassportCountry() {
+		return passportCountry;
+	}
+
+	public void setPassportCountry(String passportCountry) {
+		this.passportCountry = passportCountry;
+	}
+
+	
+
+	public String getVisaType() {
+		return visaType;
+	}
+
+	public void setVisaType(String visaType) {
+		this.visaType = visaType;
+	}
+
+	public String getLcaStartDate() {
+		return lcaStartDate;
+	}
+
+	public void setLcaStartDate(String lcaStartDate) {
+		this.lcaStartDate = lcaStartDate;
+	}
+
+	public String getLcaEndDate() {
+		return lcaEndDate;
+	}
+
+	public void setLcaEndDate(String lcaEndDate) {
+		this.lcaEndDate = lcaEndDate;
+	}
+
+	public String getLcaNumber() {
+		return lcaNumber;
+	}
+
+	public void setLcaNumber(String lcaNumber) {
+		this.lcaNumber = lcaNumber;
+	}
+
+	public String getLcaRateCurrency() {
+		return lcaRateCurrency;
+	}
+
+	public void setLcaRateCurrency(String lcaRateCurrency) {
+		this.lcaRateCurrency = lcaRateCurrency;
+	}
+
+	public String getLcaRatePer() {
+		return lcaRatePer;
+	}
+
+	public void setLcaRatePer(String lcaRatePer) {
+		this.lcaRatePer = lcaRatePer;
+	}
+
+	public String getLcaRate() {
+		return lcaRate;
+	}
+
+	public void setLcaRate(String lcaRate) {
+		this.lcaRate = lcaRate;
+	}
+
+	public String getLcaLocation() {
+		return lcaLocation;
+	}
+
+	public void setLcaLocation(String lcaLocation) {
+		this.lcaLocation = lcaLocation;
+	}
+
+	public String getLcaTitle() {
+		return lcaTitle;
+	}
+
+	public void setLcaTitle(String lcaTitle) {
+		this.lcaTitle = lcaTitle;
+	}
+
+	public String getImmigrationJobId() {
+		return immigrationJobId;
+	}
+
+	public void setImmigrationJobId(String immigrationJobId) {
+		this.immigrationJobId = immigrationJobId;
+	}
+
+	public String getPrevLcaStartDate() {
+		return prevLcaStartDate;
+	}
+
+	public void setPrevLcaStartDate(String prevLcaStartDate) {
+		this.prevLcaStartDate = prevLcaStartDate;
+	}
+
+	public String getPrevLcaEndDate() {
+		return prevLcaEndDate;
+	}
+
+	public void setPrevLcaEndDate(String prevLcaEndDate) {
+		this.prevLcaEndDate = prevLcaEndDate;
+	}
+
+	public String getPrevLcaNumber() {
+		return prevLcaNumber;
+	}
+
+	public void setPrevLcaNumber(String prevLcaNumber) {
+		this.prevLcaNumber = prevLcaNumber;
+	}
+
+	public String getPrevLcaTitle() {
+		return prevLcaTitle;
+	}
+
+	public void setPrevLcaTitle(String prevLcaTitle) {
+		this.prevLcaTitle = prevLcaTitle;
+	}
+
+	public String getPrevLcaLocation() {
+		return prevLcaLocation;
+	}
+
+	public void setPrevLcaLocation(String prevLcaLocation) {
+		this.prevLcaLocation = prevLcaLocation;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+
+	public String getAlternateMobilePhone() {
+		return alternateMobilePhone;
+	}
+
+	public void setAlternateMobilePhone(String alternateMobilePhone) {
+		this.alternateMobilePhone = alternateMobilePhone;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getZipcode() {
+		return zipcode;
+	}
+
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+
+	public String getDesignationType() {
+		return designationType;
+	}
+
+	public void setDesignationType(String designationType) {
+		this.designationType = designationType;
+	}
+
+	public String getExperienceYears() {
+		return experienceYears;
+	}
+
+	public void setExperienceYears(String experienceYears) {
+		this.experienceYears = experienceYears;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
+	}
+
+	public String getVendorcontact() {
+		return vendorcontact;
+	}
+
+	public void setVendorcontact(String vendorcontact) {
+		this.vendorcontact = vendorcontact;
+	}
+
+	public String getCurrentRate() {
+		return currentRate;
+	}
+
+	public void setCurrentRate(String currentRate) {
+		this.currentRate = currentRate;
+	}
+
+	public String getExpectedRate() {
+		return expectedRate;
+	}
+
+	public void setExpectedRate(String expectedRate) {
+		this.expectedRate = expectedRate;
+	}
+
+	public String getCandidateEmployers() {
+		return candidateEmployers;
+	}
+
+	public void setCandidateEmployers(String candidateEmployers) {
+		this.candidateEmployers = candidateEmployers;
+	}
+
+	public String getCandidateEducation() {
+		return candidateEducation;
+	}
+
+	public void setCandidateEducation(String candidateEducation) {
+		this.candidateEducation = candidateEducation;
+	}
+
+	public String getCandidateSkills() {
+		return candidateSkills;
+	}
+
+	public void setCandidateSkills(String candidateSkills) {
+		this.candidateSkills = candidateSkills;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getPrimarySkill() {
+		return primarySkill;
+	}
+
+	public void setPrimarySkill(String primarySkill) {
+		this.primarySkill = primarySkill;
+	}
+
+
+	public String getEmailId() {
+		return emailId;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public String getExtensionNumber() {
+		return extensionNumber;
+	}
+
+	public String getRatePer() {
+		return ratePer;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public String getInvoiceFrequency() {
+		return invoiceFrequency;
+	}
+
+
+	public String getDateString() {
+		return dateString;
+	}
+
+	public Status getIsMailChecked() {
+		return isMailChecked;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public String getVendorContact() {
+		return vendorContact;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public String getShift() {
+		return shift;
+	}
+
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber) {
+		this.extensionNumber = extensionNumber;
+	}
+
+	public void setRatePer(String ratePer) {
+		this.ratePer = ratePer;
+	}
+
+	public String getDateofJoin() {
+		return dateofJoin;
+	}
+
+	public void setDateofJoin(String dateofJoin) {
+		this.dateofJoin = dateofJoin;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency) {
+		this.invoiceFrequency = invoiceFrequency;
+	}
+
+	public void setDateString(String dateString) {
+		this.dateString = dateString;
+	}
+
+	public void setIsMailChecked(Status isMailChecked) {
+		this.isMailChecked = isMailChecked;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public void setVendorContact(String vendorContact) {
+		this.vendorContact = vendorContact;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	public void setShift(String shift) {
+		this.shift = shift;
+	}
+
+	public String getGenderValue() {
+		return genderValue;
+	}
+
+	public void setGenderValue(String genderValue) {
+		this.genderValue = genderValue;
+	}
+
+	public String getCurrentCurrency() {
+		return currentCurrency;
+	}
+
+	public String getShiftId() {
+		return shiftId;
+	}
+
+	public void setCurrentCurrency(String currentCurrency) {
+		this.currentCurrency = currentCurrency;
+	}
+
+	public void setShiftId(String shiftId) {
+		this.shiftId = shiftId;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public String getRoleType() {
+		return roleType;
+	}
+
+	public String getReportingManager() {
+		return reportingManager;
+	}
+
+	public String getIsMailSent() {
+		return isMailSent;
+	}
+
+	public String getIsGlobalAccess() {
+		return isGlobalAccess;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public void setRoleType(String roleType) {
+		this.roleType = roleType;
+	}
+
+	public void setReportingManager(String reportingManager) {
+		this.reportingManager = reportingManager;
+	}
+
+	public void setIsMailSent(String isMailSent) {
+		this.isMailSent = isMailSent;
+	}
+
+	public void setIsGlobalAccess(String isGlobalAccess) {
+		this.isGlobalAccess = isGlobalAccess;
+	}
+
+	public String getDayHours() {
+		return dayHours;
+	}
+
+	public void setDayHours(String dayHours) {
+		this.dayHours = dayHours;
+	}
+
+	public String getInviteEmail() {
+		return inviteEmail;
+	}
+
+	public void setInviteEmail(String inviteEmail) {
+		this.inviteEmail = inviteEmail;
+	}
+
 }

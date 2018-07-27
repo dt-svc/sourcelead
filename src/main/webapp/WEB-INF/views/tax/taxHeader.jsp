@@ -1,0 +1,48 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script type="text/javascript">
+	var viewPage = "${viewPage}";
+</script>
+<div id="loading"></div>
+<div class="success_pop">
+  <i class="fa fa-check-circle"></i><span>Operation executed successfully...</span>
+</div>
+<section class="content-header clearfix">
+	<div class="pull-left" >
+		<h2> ${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'State Tax' : 'Central Tax'}</h2>
+	</div>
+	<div class="pull-right brud-crum">Home &raquo; ${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'State Tax' : 'Central Tax'}</div>
+</section>
+
+<div class="tabsMenu">
+	<ul class="list-unstyled">
+		<li class="${activeTaxTab == 'state' ? 'current' : ''}"><a
+			href="${appPath}/stateTax/list" class="${activeTaxTab == 'state' ? 'active' : ''}">State</a></li>
+		<li class="${activeTaxTab == 'central' || activeTaxTab == 'createCentralTax' ? 'current' : ''}"><a
+			href="${appPath}/centralTax/list" class="${activeTaxTab == 'central' ? 'active' : ''}">Central</a></li>
+		<li class="${activeTaxTab == 'forms' ? 'current' : ''}"><a
+			href="${appPath}/form/list" class="${activeTaxTab == 'forms' ? 'active' : ''}">Forms</a></li>	
+	</ul>
+</div>
+
+<div class="clearfix"></div>
+<div class='project_inn_mask'></div>
+<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>
+	<p>You are choosing to delete the Tax</p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b>
+	<c:choose>
+		<c:when test="${activeTaxTab == 'forms'}">
+			<c:if test="${viewPage == 'tax/addForm'}">
+				<input id='confirmId' type='button' value='Ok' onclick='tax.changeFormSectionStatus()'>
+			</c:if>
+			<c:if test="${viewPage == 'tax/form_list'}">
+				<input id='confirmId' type='button' value='Ok' onclick='tax.changeFormStatus()'>
+			</c:if>
+		</c:when>
+		<c:otherwise>
+			<input id='confirmId' type='button' value='Ok' onclick='tax.changeTaxStatus()'>
+		</c:otherwise>
+	</c:choose>
+		<input class='u_can_color' type='button' value='Cancel' onClick='tax.closeChangeStatusPopup()'>
+	</b>
+</div>

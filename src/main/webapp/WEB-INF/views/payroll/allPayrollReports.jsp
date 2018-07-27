@@ -10,26 +10,26 @@ $(document).ready(function(){
 </script>
 
  <section class="content-wraper" id="themeroller">
- <div class="success_pop" id="selector1" style="display: none;">
- 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
-       </div>
-    <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Balance Report</h2>
-      </div>
-		<%-- <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Pending Leaves</div> --%>
-    </section>
+ <div class="success_pop" id="selector1" style="display: none;"><i class="fa fa-check-circle"></i><span id="msgDiv"></span></div>
+<section class="content-header clearfix">
+    <div class="pull-left"><h2>All Associates ROI</h2></div>
+	<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/associateReportsList'/>">Associate Reports</a> &raquo; All Associates ROI</div> 
+</section>
     
 <div class="content-area content-new clearfix">
 
-<div class="timesheet_out">
-  <div class="timesheet_head clearfix seaHeight">
-  		<div class='remove_search'><input type='text' placeholder='Search' id='dataTableSearch'/></div> 
-  </div>
-    <div class="clients_wrap_table datatable_filter">
-    		<div
-			class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
-			<!-- <div id="loading"></div> -->
+<div class="vendor_wrap">
+
+<div class="reportHead">
+    	<ul class="clearfix pull-right">
+    		<li><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearchPayRollId'/>
+    			<span class="repSearchIcon" onclick=""></span>
+    		</li>
+    	</ul>
+    </div> 
+     
+    <div class="clients_wrap_table datatable_filter backWhite">
+    		<div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
 			<div id="balanceListDiv" class="datatable_filter"></div>
 		</div>
     </div>
@@ -44,7 +44,7 @@ $(document).ready(function(){
 <script>
 function getAllPayrollBalanceReports(){
 	        var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	  		var searchValue = $("#dataTableSearch").val();
+	  		var searchValue = $("#dataTableSearchPayRollId").val();
 	  		searchValue = searchValue ? searchValue : "";
 	  		var url = sourceleadUrl+"/getAllPayrollBalanceReport?orgLocationId="+orgLocationId+"&searchValue="+searchValue;
 	  		prepareClientList(url);
@@ -209,9 +209,9 @@ function getAllPayrollBalanceReports(){
 	    } );
 	    $("#clientListPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
-	    $("#dataTableSearch").keyup(function(e) {
+	    $("#dataTableSearchPayRollId").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		   getClientList();
+	    		   getAllPayrollBalanceReports();
 	    	   }
 	    	});
 }

@@ -31,7 +31,8 @@
 						  <c:if test="${submissionStatus == 'NEW'}">
 						       <b class='proj_new pull-right'>${submissionStatus}</b>
 						  </c:if>
-						  <c:if test="${submissionStatus == 'DRAFT'}">
+						 
+						  <c:if test="${submissionStatus == 'DRAFT' || submissionStatus == 'REOPENED'}">
 						       <b class='proj_draft pull-right' >${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'SUBMITTED'}">
@@ -48,7 +49,7 @@
 						  </c:if>
 						</div>
 					
-					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
+					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
 					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
@@ -169,7 +170,7 @@
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
 			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.dateOccurred}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.categoryName}</div></td>
-			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
+			       <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amountRoundOff}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>

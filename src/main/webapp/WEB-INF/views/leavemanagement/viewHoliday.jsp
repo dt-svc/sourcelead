@@ -29,6 +29,18 @@
           <li>
               <a href="<c:url value='${appPath}/addHoliday'/>" title="Add Holiday"><i class="fa fa-plus paddingRight"></i>Add Holiday</a>
           </li>
+          
+	      <li id="filterShiftTypePop"><i class="fa fa-filter"></i><span>Shift</span><i class="glyphicon glyphicon-play"></i>
+		           	<div class="statusFiler-1 approved_pop">
+						<ul class="list-unstyled">
+							<c:forEach var="shift" items="${shiftList}">
+									<li><input  type="checkbox" name="shift" value ="${shift.id}" onclick="getHolidaysList()"><label>${shift.shiftName}</label></li>
+							</c:forEach>
+						</ul>
+					</div>	                	
+				</li>
+				
+          
         <div class="clearfix"></div>
       </ul>
     </div>
@@ -47,9 +59,14 @@
 <script>
 
 function getHolidaysList(){
+	var shiftIds = [];
+	$('input:checkbox[name=shift]:checked').each(function() 
+		    {
+		shiftIds.push($(this).val());
+     });
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 // 	var userId = '${SourceLeadWeb_userId}';
-	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId, function(response) {
+	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&shiftIds="+shiftIds, function(response) {
 		 if (response.response === "AWKWARD") {
 		    location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
@@ -140,6 +157,16 @@ function viewHolidaysTablePagination(){
     });
     $("#viewHolidaysTableId").wrap("<div class='overflow_Auto width100percnt'></div>")
 }
+</script>
+<script>
+	$("#filterShiftTypePop").click(function(){
+		$(".statusFiler-1").toggle();
+	});
+	 
+    $("#filterShiftTypePop").click(function(e) {
+        e.stopPropagation();
+    });	
+
 </script>
 	
 <jsp:include page="../masterFooter.jsp" />

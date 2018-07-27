@@ -11,7 +11,7 @@ public interface ExpensesCategoryService {
 
 	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndCategoryId(Long orgLocationId);
 	
-	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status);
+	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status,String isGlobalUser);
 	
 	/**
 	 * @param jsonObject
@@ -27,4 +27,6 @@ public interface ExpensesCategoryService {
 	public ExpensesCategory removeExpensesCategoryByCategoryId(Long expCategoryId) throws Exception;
 	
 	public Boolean validateExpensesCategoryType(Long orgLocationId, String categoryName) throws Exception;
+
+	public String getExpenseAttachmentStatusByCategoryId(Long categoryId);
 }
