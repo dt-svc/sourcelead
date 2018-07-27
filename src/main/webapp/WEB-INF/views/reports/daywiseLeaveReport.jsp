@@ -8,7 +8,7 @@ $(document).ready(function(){
 	getDaywiseLeaveReportList();
 });
 </script>
-
+<input type="hidden" id="noReports" name="noReports"/>
 
 <!-- Content Area -->
   <section class="content-wraper">
@@ -20,73 +20,69 @@ $(document).ready(function(){
     </section>
      <div class="timesheet_out">
       <div class="vendor_wrap">
-        <div class="timesheet_head table_head">
-          <div class="pull-left ml mt5 mr">
-            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" onclick="resetCandidateFilter();" title="Refresh"> <span class="fa fa-refresh"></span> </button>
-          </div>
-          <div class="pull-left mt5"> <a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="filterPop();"><i class="fa fa-filter faFilter padding_right"></i> </a> </div>
-          <div class="pull-left ml mt5">
+        <div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+         
+      <ul class="pull-right list-unstyled list-inline">
+        <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
+		   <li>
+		   <div class="pull-left mr">
             <div class="pull-left mr5 width150px">
-              <input value="" name="fromDate" id="fromDate" placeholder="Date" class="form-control calendar input-sm margin-top0" type="text">
+              <input value="${fromDate}" name="fromDate" id="fromDate" placeholder="Date" class="form-control calendar margin-top0" type="text">
             <p id="fromDateDiv" class="ReError"></p>
             </div>
-            <button type="button" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-search" onclick="searchThroughDates();"></i></button>
+            <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-search" onclick="searchThroughDates();"></i></button>
           </div>
-          <div class="remove_search pull-right">
-          <input type="text" placeholder="Search" id="daywiseReportDataTableSearch">
-           <span class="cursorPointer" title="Search"><i onclick="getDaywiseLeaveReportList();"></i></span>    
-<!--         <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getDaywiseLeaveReportList();"></i></span>   -->
-<!--             <input type="text" placeholder="Search"/> -->
-          </div>
-        </div>
+		   </li>
+		   
+		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
+	                    
+                  <c:if test="${orgLocationsCount > 1}">
+		                    <li>
+								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+								<div class="action-pop">
+									<span> 
+									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
+									</span>
+								</div>
+							</li>
+				</c:if>
+				
+				<c:if test="${orgLocationsCount == 1}">
+				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
+				</c:if>		
+	           
+						
+	       </sec:authorize>
+			
+			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')"> 
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
+			</sec:authorize>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+							<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+						</sec:authorize>	
+						<sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
+							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
+						</sec:authorize>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='daywiseReportDataTableSearch'/><span class="repSearchIcon" onClick="getDaywiseLeaveReportList();"></span></li>
+        </ul>
+      </div>
+        
+        
         
           <div class="candidate_wrap_table datatable_filter">
 	           <div id="daywiseLeaveReportsList"></div>
           </div>
-        
-       <!--  <div class="require_wrap_table tableFirstSecond clearfix">
-          <table>
-            <thead>
-              <tr>
-                <th>Employee Name</th>
-                <th>Emp Type</th>
-                <th>Leave Type</th>
-                <th>Type</th>
-                <th>Duration</th>
-                <th>Leave Period</th>
-                <th>Reason</th>
-                <th>Approver</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><div class="tbldata-dotdot-vsm"> Employee1 </div></td>
-                <td><div class="tblminwidth-50">Fulltime</div></td>
-                <td><div class="tblminwidth-50">Sick Leave</div></td>
-                <td><div class="tblminwidth-50">Billable</div></td>
-                <td><div class="tblminwidth-50">Full Day</div></td>
-                <td><div class="tblminwidth-50">01/01/2008</div>
-                  <div class="tblminwidth-50">01/03/2008</div></td>
-                <td><div class="tbldata-dotdot"> Reason for Dailywise report </div></td>
-                <td><div class="tbldata-dotdot-sm"> Johnsmith </div></td>
-                <td><div class="tblminwidth-50">Approved</div></td>
-              </tr>
-            </tbody>
-          </table>
-        </div> -->
-<!--         <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav> -->
       </div>
     </div>
   </section>
@@ -388,6 +384,70 @@ $("#daywiseReportDataTableSearch").keydown(function(e) {
 	   }
 	});
 </script>
+<script>
+function myRolesFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myRolesInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myRolesUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+function myDepartmentFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myDepartmentInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myDepartmentUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+function leaveTypeFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("leaveTypeInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myLeaveTypeUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closePop();
+	  }
+	});
+</script>
+<script>
+function resetFilter(){
+	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
+	$("ul#myLeaveTypeUL > li input:checkbox").prop("checked",false);
+	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
+	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
+	$("#daywiseReportDataTableSearch").val('');
+	getDaywiseLeaveReportList();}
+</script>
 
 <script>
 function filterPop(){
@@ -461,7 +521,7 @@ function closeAssetFilterPop(){
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
 							 <div class="clearfix filterSearch-ul">
-								<ul class="list-unstyled positionRelative filterSearch mt5" id="myDepartmentUL">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myLeaveTypeUL">
 									<c:forEach var="dep" items="${leaveTypeNamesList}">
 									<li class="checkBox positionRelative"><input  type="checkbox" name="leaveTypeNames" value ="${dep.id}"><label>${dep.name}</label></li>
 									</c:forEach>
@@ -476,7 +536,7 @@ function closeAssetFilterPop(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="closeAssetFilterPop();getDaywiseLeaveReportList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetAssetFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>
@@ -494,10 +554,6 @@ function viewCompleteTemplate(temp){
 
 <script>
  $( function() {
-   /*  $("#fromDate").datepicker(
-		{changeMonth: true});
-	 $("#toDate").datepicker(
-	 {changeMonth: true}); */
 	 
 	 
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -532,7 +588,6 @@ function viewCompleteTemplate(temp){
 </script> 
 <script>
 	function searchThroughDates(){
-		alert("222##");
 		var fromDate = $("#fromDate").val();
 		
 		$('#fromDateDiv').empty();
@@ -553,7 +608,18 @@ function viewCompleteTemplate(temp){
 	
 
 </script>
-
+<script>
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+</script>
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -570,5 +636,60 @@ function viewCompleteTemplate(temp){
 				$this.next().css({'width': '100%'});
 			})
 </script>
+<script>
+function exportUserData(){
+	var ReportsListEmpty = $("#noReports").val();
+	var exportType = "xls";
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	
+	
+	var fromDate = $("#fromDate").val();
+	var searchValue = $("#daywiseReportDataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	if(ReportsListEmpty != 'noReports'){
+		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
+	}else{
+		 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>DailyWise Leave Report List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	}
+	
 
+}
+</script> 
+<script>
+function exportToPdf(){
+	var ReportsListEmpty = $("#noReports").val();
+	var exportType = "pdf";
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+    
+	
+	var fromDate = $("#fromDate").val();
+	var searchValue = $("#daywiseReportDataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	if(ReportsListEmpty != 'noReports'){
+		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
+	}else{
+		 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Users List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	}
+	
+}
+</script>
+}
 <jsp:include page="../masterFooter.jsp" />

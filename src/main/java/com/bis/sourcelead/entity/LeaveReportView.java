@@ -56,6 +56,15 @@ public class LeaveReportView {
 	@Column(name = "ROLE_ID", nullable = false)
 	private Long roleId;
 	
+	@Column(name = "DEPARTMENT_ID", nullable = false)
+	private Long deptId;
+	
+	@Column(name = "CREATED_DATE")
+	private Date appliedOn;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date approvedOn;
+	
 	@Transient
 	private List<Map<String, String>> order;
 	@Transient
@@ -70,6 +79,14 @@ public class LeaveReportView {
 	@Transient
 	@JsonProperty
 	private String toDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String appliedOnDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String approvedOnDateStr;
 	
 	public Long getId()
 	{
@@ -300,6 +317,56 @@ public class LeaveReportView {
 	public void setRoleId(Long roleId)
 	{
 		this.roleId = roleId;
+	}
+
+	public Long getDeptId()
+	{
+		return deptId;
+	}
+
+	public void setDeptId(Long deptId)
+	{
+		this.deptId = deptId;
+	}
+
+	public Date getAppliedOn()
+	{
+		return appliedOn;
+	}
+
+	public void setAppliedOn(Date appliedOn)
+	{
+		this.appliedOn = appliedOn;
+	}
+
+	public Date getApprovedOn()
+	{
+		return approvedOn;
+	}
+
+	public void setApprovedOn(Date approvedOn)
+	{
+		this.approvedOn = approvedOn;
+	}
+
+	public String getAppliedOnDateStr()
+	{
+		return appliedOnDateStr;
+	}
+
+	public void setAppliedOnDateStr(String appliedOnDateStr)
+	{
+		this.appliedOnDateStr = appliedOnDateStr;
+	}
+
+	public String getApprovedOnDateStr()
+	{
+		return approvedOnDateStr;
+	}
+
+	public void setApprovedOnDateStr(String approvedOnDateStr)
+	{
+		this.approvedOnDateStr = approvedOnDateStr;
 	}
 	
 	

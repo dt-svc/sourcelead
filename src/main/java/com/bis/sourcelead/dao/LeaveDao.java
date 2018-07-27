@@ -85,7 +85,7 @@ public interface LeaveDao {
 
 	int deleteApproversByLeaveId(Long leaveId);
 
-	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(LeaveReportView  leaveReportView,Long orgId, Long orgLocationId, String fromDate,String searchValue,List<Long> userRoleList,List<Long> departmentsList)throws Exception;
+	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(LeaveReportView  leaveReportView,Long orgId, Long orgLocationId, String fromDate,String searchValue,List<Long> userRoleList,List<Long> departmentsList,List<String> employmentTypeList,List<Long> leaveTypeNamesList)throws Exception;
 
 
 }

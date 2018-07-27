@@ -948,13 +948,12 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(LeaveReportView leaveReportView,Long orgId, Long orgLocationId, String fromDate,String searchValue,List<Long> userRoleList,List<Long> departmentsList) throws Exception
+	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(LeaveReportView leaveReportView, Long orgId, Long orgLocationId, String fromDate, String searchValue, List<Long> userRoleList, List<Long> departmentsList, List<String> employmentTypeList, List<Long> leaveTypeNamesList) throws Exception
 	{
-//		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-		  OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
-			SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+		OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+		SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
 		Date date = null;
-		 java.sql.Date sqlDate = null;
+		java.sql.Date sqlDate = null;
 		if (StringUtils.isNotBlank(fromDate)) {
 			date = format.parse(fromDate);
 		}
@@ -963,81 +962,101 @@ public class LeaveDaoImpl implements LeaveDao{
 			sqlDate = new java.sql.Date(date.getTime());
 		}
 		Session session = this.sessionFactory.getCurrentSession();
-		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
+		sqlDate = new java.sql.Date(date.getTime());
 		String query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and ((:fromDate BETWEEN leaveReport.fromDate AND leaveReport.toDate) or (leaveReport.fromDate = :fromDate and leaveReport.toDate = :fromDate)) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
-		
- StringBuilder query1 = new StringBuilder();
-
-	     if(StringUtils.isNotBlank(searchValue)) {
-	    	 Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
-			   Matcher matcher = pattern.matcher(searchValue);
-			    if(matcher.matches() == true) {
-							if(searchValue.contains("/")||(searchValue.contains("-"))) {
-								String replacedValue = searchValue.replaceAll("/", "-");
-							        Date date1 = format.parse(replacedValue);
-							        sqlDate = new java.sql.Date(date1.getTime());
-							}
-			    }
-			    
-			    query1.append(" and (leaveReport.name like '%" + searchValue + "%' ")
-				.append("OR leaveReport.employmentType like '%" + searchValue + "%' ")
-				.append("OR leaveReport.leaveTypeName like '%" + searchValue + "%' ")
-				.append("OR leaveReport.leaveTypeBillable like '%" + searchValue + "%' ")
-			    .append("OR leaveReport.reason like '%" + searchValue + "%' ")
-			    .append("OR leaveReport.approver like '%" + searchValue + "%' ")
-			    .append("OR leaveReport.status like '%" + searchValue + "%') ");
-			    if(sqlDate != null) {
-			    	query1.append("OR (leaveReport.fromDate <="+sqlDate+" and leaveReport.toDate >="+sqlDate+") ");
-			    }
-	    	 
-	     }
-	     
-	     	List<LeaveReportView> leaveReportList = null;
-			ResponseList<LeaveReportView> response = new ResponseList<>();
-			List<Long> countlist = null;
-			//usertList shorting order
-			String sortingQry = "";
-			if(StringUtils.isNotBlank(leaveReportView.getSortColumn())) {
-				sortingQry = " order by leaveReport."+ leaveReportView.getSortColumn() +" "+leaveReportView.getSortOrder();
+		StringBuilder query1 = new StringBuilder();
+		if (StringUtils.isNotBlank(searchValue)) {
+			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			Matcher matcher = pattern.matcher(searchValue);
+			if (matcher.matches() == true) {
+				if (searchValue.contains("/") || (searchValue.contains("-"))) {
+					String replacedValue = searchValue.replaceAll("/", "-");
+					Date date1 = format.parse(replacedValue);
+					sqlDate = new java.sql.Date(date1.getTime());
+				}
 			}
-			
-			String subQuery = "";
-			if(!userRoleList.isEmpty()){
-				subQuery = " and leaveReport.roleId  IN (:userRoleList)";
+			query1.append(" and (leaveReport.name like '%" + searchValue
+					+ "%' ").append("OR leaveReport.employmentType like '%" + searchValue
+							+ "%' ").append("OR leaveReport.leaveTypeName like '%" + searchValue
+									+ "%' ").append("OR leaveReport.leaveTypeBillable like '%"
+											+ searchValue
+											+ "%' ").append("OR leaveReport.reason like '%"
+													+ searchValue
+													+ "%' ").append("OR leaveReport.approver like '%"
+															+ searchValue
+															+ "%' ").append("OR leaveReport.status like '%"
+																	+ searchValue + "%') ");
+			if (sqlDate != null) {
+				query1.append("OR (leaveReport.fromDate <=" + sqlDate + " and leaveReport.toDate >="
+						+ sqlDate + ") ");
 			}
-			
-	     Query queryObj = session.createQuery(query + query1.toString()+" "+subQuery+" "+sortingQry);
-	     if(userRoleList.isEmpty()) {
-	             leaveReportList = queryObj.setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate",sqlDate).list();
-				 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate",sqlDate).list();
-	     }else{
-
-	    	 leaveReportList = queryObj.setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate",sqlStartDate).setParameterList("userRoleList", userRoleList).list();
-				 countlist = session.createQuery("select count(*) " + query+subQuery).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate",sqlStartDate).setParameterList("userRoleList", userRoleList).list();
-	   
-	     }
-				 int count = 0;
-					int filteredCount = 0;
-
-					if(countlist != null && !countlist.isEmpty()) {
-						count = countlist.iterator().next().intValue();
-					}
-					response.setRecordsTotal(count);
-					if (leaveReportList != null) {
-						List<Long> filteredCountlist = null;
-						if(userRoleList.isEmpty()) {
-							filteredCountlist  = session.createQuery("select count(*) " + query + query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", sqlDate).list();
-						}else {
-							filteredCountlist  = session.createQuery("select count(*) " + query + query1.toString()+subQuery).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate",sqlStartDate).setParameterList("userRoleList", userRoleList).list();
-						}
-						if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
-							filteredCount = filteredCountlist.iterator().next().intValue();
-						}
-						response.setRecordsFiltered(filteredCount);
-					} 
-
-				 
-				 response.setData(leaveReportList);
+		}
+		List<LeaveReportView> leaveReportList = null;
+		ResponseList<LeaveReportView> response = new ResponseList<>();
+		List<Long> countlist = null;
+		String sortingQry = "";
+		if (StringUtils.isNotBlank(leaveReportView.getSortColumn())) {
+			sortingQry = " order by leaveReport." + leaveReportView.getSortColumn() + " "
+					+ leaveReportView.getSortOrder();
+		}
+		Query queryString = null;
+		Query countQueryString;
+		String userRoleSubQuery = "";
+		String deptSubQuery = "";
+		String employmentTypeSubQuery = "";
+		String leaveTypeSubQuery = "";
+		if (!userRoleList.isEmpty()) {
+			userRoleSubQuery = " and leaveReport.roleId  IN (:userRoleList)";
+		}
+		if (!departmentsList.isEmpty()) {
+			deptSubQuery = " and leaveReport.deptId  IN (:departmentsList)";
+		}
+		if (!employmentTypeList.isEmpty()) {
+			employmentTypeSubQuery = " and leaveReport.employmentType  IN (:employmentTypeList)";
+		}
+		if (!leaveTypeNamesList.isEmpty()) {
+			leaveTypeSubQuery = " and leaveReport.leaveTypeId  IN (:leaveTypeNamesList)";
+		}
+		queryString = session.createQuery(query + query1.toString() + " " + userRoleSubQuery + " "
+				+ deptSubQuery + " " + employmentTypeSubQuery + " " + leaveTypeSubQuery + " "
+				+ sortingQry);
+		if (!userRoleList.isEmpty()) {
+			queryString.setParameterList("userRoleList", userRoleList);
+		}
+		if (!departmentsList.isEmpty()) {
+			queryString.setParameterList("departmentsList", departmentsList);
+		}
+		if (!employmentTypeList.isEmpty()) {
+			queryString.setParameterList("employmentTypeList", employmentTypeList);
+		}
+		if (!leaveTypeNamesList.isEmpty()) {
+			queryString.setParameterList("leaveTypeNamesList", leaveTypeNamesList);
+		}
+		queryString.setLong("orgLocationId", orgLocationId);
+		queryString.setLong("orgId", orgId);
+		queryString.setDate("fromDate", sqlDate);
+		leaveReportList = queryString.list();
+		countQueryString = session.createQuery(("select count(*) " + query));
+		countQueryString.setParameter("orgLocationId", orgLocationId);
+		countQueryString.setParameter("orgId", orgId);
+		countQueryString.setParameter("fromDate", sqlDate);
+		countlist = countQueryString.list();
+		int count = 0;
+		int filteredCount = 0;
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (leaveReportList != null) {
+			List<Long> filteredCountlist = null;
+			filteredCountlist = session.createQuery("select count(*) " + query
+					+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", sqlDate).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		}
+		response.setData(leaveReportList);
 		return response;
 	}
 }
