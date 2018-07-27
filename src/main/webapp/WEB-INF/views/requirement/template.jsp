@@ -17,34 +17,26 @@
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-    <div class="pull-left">
-      <h2>Job Templates</h2>
-    </div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Job Templates</div>
-    
+    <div class="pull-left"><h2>Job Templates</h2></div>
+	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Job Templates</div>
   </section>
-  <div class="timesheet_out overflow_Auto">
-    <div class="vendor_wrap">
-      <div class="timesheet_head">
-        <ul>
+  
+  <div class="overflow_Auto vendor_wrap">
+    <div class="clearfix">
+    
+	 <div class="reportHead reportHeadDataTab clearfix">
+	    <ul class="pull-right list-unstyled list-inline">
           <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE')">
-          	<li> <a href="<c:url value='${appPath}/addTemplate'/>"><i class="fa fa-plus"></i>Add Job Template</a></li>
-         </sec:authorize>
-         
-          <div class="clearfix"></div>
-        </ul>
-        <div class="clearfix"></div>
-      </div>
+          	<li> <a href="<c:url value='${appPath}/addTemplate'/>" class="newAdBtn">+ Job Template</a></li>
+         </sec:authorize>	    
+		</ul>
+	</div>	    
       
-      <!-- list requirement -->
-      <div class="require_wrap_table overflow_inherint">
-     
-          <div id="requirementTemplateList" class="datatable_filter"></div>
+      <div class="project_tabs_inn_table">
+          <div id="requirementTemplateList" class="datatable_filter dataSeaTop"></div>
       </div>
     </div>
    
-   
-    <!-- Project --> 
   </div>
 </section>
 

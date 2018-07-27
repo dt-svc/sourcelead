@@ -18,28 +18,23 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Letterhead List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a>&raquo; Letterhead List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates </a>&raquo; Letterhead List</div>
     </section>
-    <div class="content-area content-new clearfix">
-      <div class="clearfix form-horizontal">
+    
 
 <div class="project_wrap">
-                 <div class="timesheet_head minHeight40">
-					<ul>
-					<li> <a href="<c:url value="/app/letterHead"/>" title="Create Letterhead" ><i class="fa fa-plus paddingRight"></i>Add</a> </li>
-					<div class="clearfix"></div>
-					</ul>
-					<div class="clearfix"></div>
-                 </div>
-                 
-                 
-                 <div class="candidate_wrap_table datatable_filter">
-	                  <div id="letterHeadList"></div>
-                  </div>
-                  
-</div>     
+
+	 <div class="reportHead clearfix">
+	    <ul class="pull-right list-unstyled list-inline">
+         	<li><a href="<c:url value="/app/letterHead"/>" title="Create Letterhead" class="newAdBtn mr5">+ Letterhead</a> </li>
+         	<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='letterHeadTableSearch'/><span class="repSearchIcon" onClick=""></span></li>
+		</ul>
+	</div>	
+
+     <div class="candidate_wrap_table datatable_filter">
+       <div id="letterHeadList"></div>
+      </div>
       
-    </div>
 </div>
  
   </section>
@@ -61,11 +56,13 @@ function prepareLetterHeadList(url){
 	 $("#letterHeadList").removeAttr("style");
  	 $("#letterHeadList").empty();
  	 var result = "";
- 	result = result +" <div class='clearfix'>";
+ 	 
+/*  	result = result +" <div class='clearfix'>";
  	result = result +" <div class='remove_search'>";
  	result = result +" <input type='text' placeholder='Search' id='letterHeadTableSearch'/>";
  	result = result +"</div>";
- 	result = result +"</div>";
+ 	result = result +"</div>"; */
+ 	
  	result = result +"<table id='letterHeadPagination' class='display' cellspacing='0' width='100%' >"; 
     result = result + '	<thead>';
 	result = result + '   <tr>';
