@@ -85,7 +85,7 @@ public class TaxSubmissionController {
 				if (sourceleadTaxFormDTO != null) {
 					modelAndView.addObject("taxForm", sourceleadTaxFormDTO);
 					modelAndView.addObject("formList", taxService.getITDeclarationSubmissionList(uuid, financialYear));
-					modelAndView.setViewName("tax/org/form_list_by_formType");
+					modelAndView.setViewName("payroll_india/org/form_list_by_formType");
 				}
 			} else {
 				// setYears(modelAndView, year);
@@ -100,7 +100,7 @@ public class TaxSubmissionController {
 
 				}
 				modelAndView.addObject("formList", taxService.getTaxFormTypeListForSubmission(year));
-				modelAndView.setViewName("tax/org/forms_list");
+				modelAndView.setViewName("payroll_india/org/forms_list");
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -113,7 +113,7 @@ public class TaxSubmissionController {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			modelAndView.addObject("formList", taxService.getTaxFormTypeList(false));
-			modelAndView.setViewName("tax/org/addForm");
+			modelAndView.setViewName("payroll_india/org/addForm");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -153,14 +153,14 @@ public class TaxSubmissionController {
 					modelAndView.addObject("form", itDeclarationSubmissionDTO);
 					modelAndView.addObject("documents",
 							taxService.getUploadedDocumentsBySubmissionId(itDeclarationSubmissionDTO.getId()));
-					modelAndView.setViewName("tax/org/"
+					modelAndView.setViewName("payroll_india/org/"
 							+ sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_submitted_form");
 				} else {
 					// modelAndView.addObject("activeFormTabUUID", uuid);
 					// setYears(modelAndView, 0);
 					modelAndView.addObject("form", sourceleadTaxFormDTO);
 					modelAndView.setViewName(
-							"tax/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+							"payroll_india/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
 				}
 			} else
 				modelAndView.setViewName("errorPage");
@@ -186,7 +186,7 @@ public class TaxSubmissionController {
 			List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
 			modelAndView.addObject("userRoleList", userRoleList);
 			modelAndView.setViewName(
-					"tax/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+					"payroll_india/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

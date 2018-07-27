@@ -10,7 +10,7 @@
 <script type="text/javascript" src='/resources/js/tax/tax.js'></script>
 <section class="content-wraper contentWraper">
 
-	<jsp:include page="../tax/taxHeader.jsp"></jsp:include>
+	<jsp:include page="../payroll_india/taxHeader.jsp"></jsp:include>
 	<div class="timesheet_out">
 		<div class="tablelist-wrap">
 			<form action="" id="addStateTaxForm" method="post">
