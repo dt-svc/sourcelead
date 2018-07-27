@@ -91,7 +91,7 @@ public class TaxAdminController {
 			setYears(modelAndView, null);
 			setStates(modelAndView);
 			modelAndView.addObject("activeTaxTab", "state");
-			modelAndView.setViewName("tax/stateTax");
+			modelAndView.setViewName("payroll_india/stateTax");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -112,7 +112,7 @@ public class TaxAdminController {
 			setStates(modelAndView);
 
 			modelAndView.addObject("activeTaxTab", "state");
-			modelAndView.setViewName("tax/addStateTax");
+			modelAndView.setViewName("payroll_india/addStateTax");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -135,7 +135,7 @@ public class TaxAdminController {
 			modelAndView.addObject("activeTaxTab", "central");
 			// Map<String, Boolean> yearList = caliculateYearList();
 			// modelAndView.addObject("yearList", yearList);
-			modelAndView.setViewName("tax/addCentralTax");
+			modelAndView.setViewName("payroll_india/addCentralTax");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -175,7 +175,7 @@ public class TaxAdminController {
 		try {
 			StateTaxDTO stateTaxDTO = taxService.getStateTax(statetaxuuid);
 			modelAndView.addObject("stateTax", stateTaxDTO);
-			modelAndView.setViewName("tax/stateTaxSummary");
+			modelAndView.setViewName("payroll_india/stateTaxSummary");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -189,7 +189,7 @@ public class TaxAdminController {
 		try {
 			CentralTaxDTO centralTaxDTO = taxService.getCentralTax(centraltaxuuid);
 			modelAndView.addObject("centralTax", centralTaxDTO);
-			modelAndView.setViewName("tax/centralTaxSummary");
+			modelAndView.setViewName("payroll_india/centralTaxSummary");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -278,7 +278,7 @@ public class TaxAdminController {
 			// yearList = caliculateYearList();
 			// modelAndView.addObject("yearList", yearList);
 			modelAndView.addObject("activeTaxTab", "central");
-			modelAndView.setViewName("tax/centralTax");
+			modelAndView.setViewName("payroll_india/centralTax");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -345,7 +345,7 @@ public class TaxAdminController {
 		try {
 			setYears(modelAndView, null);
 			modelAndView.addObject("activeTaxTab", "forms");
-			modelAndView.setViewName("tax/form_list");
+			modelAndView.setViewName("payroll_india/form_list");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -390,7 +390,7 @@ public class TaxAdminController {
 			}
 			modelAndView.addObject("formTypes", taxService.getTaxFormTypeList(false));
 			modelAndView.addObject("activeTaxTab", "forms");
-			modelAndView.setViewName("tax/addForm");
+			modelAndView.setViewName("payroll_india/addForm");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -407,7 +407,7 @@ public class TaxAdminController {
 			modelAndView.addObject("form", sourceleadTaxFormDTO);
 			modelAndView.addObject("activeTaxTab", "forms");
 			modelAndView
-					.setViewName("tax/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+					.setViewName("payroll_india/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -605,7 +605,7 @@ public class TaxAdminController {
 		try {
 			SourceleadTaxChallanItemDTO ChallanItemDTO = taxService.getChallanItemDetails(itemRowId);
 			modelAndView.addObject("form", ChallanItemDTO);
-			modelAndView.setViewName("tax/org/it_Challan_CustomForm");
+			modelAndView.setViewName("payroll_india/org/it_Challan_CustomForm");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

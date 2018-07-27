@@ -114,9 +114,9 @@ public class RequirementDaoImpl implements RequirementDao {
     @Autowired
     SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
         
-        @Value("${static.path}")
+    @Value("${static.path}")
 	private String staticPath;
-
+	
 	@Value("${SourceLead.100}")
 	private String notFound;
 

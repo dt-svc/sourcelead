@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -525,8 +526,7 @@ public class TaxServiceImpl implements TaxService {
 											taxSectionItemDTO.setId(taxSectionItem.getId());
 											taxSectionItemDTO.setName(taxSectionItem.getName());
 											taxSectionItemDTO.setDescription(taxSectionItem.getDescription());
-											taxSectionItemDTO
-													.setMaxLimit(CommonUtil.toFixed2(taxSectionItem.getMaxLimit()));
+											taxSectionItemDTO.setMaxLimit(taxSectionItem.getMaxLimit() + "");
 											taxSectionItemDTO.setActive(taxSectionItem.isActive());
 											if (taxSectionItem.getSourceleadTaxITDeclaration() != null) {
 												taxSectionItemDTO.setTaxSectionId(
@@ -616,7 +616,7 @@ public class TaxServiceImpl implements TaxService {
 			if (sectionItem != null) {
 				sectionItem.setName(sectionItemDTO.getName());
 				sectionItem.setDescription(sectionItemDTO.getDescription());
-				sectionItem.setMaxLimit(Double.parseDouble(sectionItemDTO.getMaxLimit()));
+				sectionItem.setMaxLimit(new BigDecimal(sectionItemDTO.getMaxLimit()));
 				sectionItem.setActive(true);
 				sectionItem.setSourceleadTaxITDeclaration(taxDao.getTaxSection(sectionItemDTO.getTaxSectionId()));
 				return taxDao.addITDeclarationSectionItem(sectionItem);

@@ -76,6 +76,9 @@ public class SourceleadTaxChallanItem implements Serializable {
 	@Column(name = "DATAVALIDATION_RANGE")
 	private String dataValidationRange;
 
+	@Column(name = "MAX_LIMIT")
+	private double maxLimit;
+
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
@@ -239,6 +242,15 @@ public class SourceleadTaxChallanItem implements Serializable {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+
+	public double getMaxLimit() {
+		return maxLimit;
+	}
+
+	public void setMaxLimit(double maxLimit) {
+		this.maxLimit = maxLimit;
 	}
 
 

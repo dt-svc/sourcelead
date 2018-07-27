@@ -316,6 +316,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			
 			saveOrgLocationDefaultProject(orgLocations, user);
 			commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
+			commonUtil.storeDefaultPayheadsWithOrgLocation(user, orgLocations);
 			
 			userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 			sendActivationEmail(user);

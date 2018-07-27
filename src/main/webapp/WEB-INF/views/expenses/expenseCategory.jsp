@@ -29,7 +29,6 @@
 	</div>	 
 
 	 <div class="clients_wrap_table datatable_scroll">
-	 	<div class="mask"></div>
 	 	<div id="popUpDiv" class="popupWrap"> </div>
 		<div id="expenseCategoryList" class="datatable_filter dataSeaTop"></div>
 	 </div>	  
@@ -644,7 +643,7 @@ function reActiveExpenseCategory(categoryId){
 										result = result  +' </div>';
 										result = result  +' </div>';
 										
-										result = result  +'<div class="col-md-9 noPad" id="taxFlatReward"  ">';
+										result = result  +'<div class="col-md-9 noPad" id="taxFlatReward">';
 										result = result  +' <div class="positionRelative iconHolder" >';
 										result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="'+json.allowedAmount+'" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" name="taxFlatReward" placeholder="Flat">';
 										result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
