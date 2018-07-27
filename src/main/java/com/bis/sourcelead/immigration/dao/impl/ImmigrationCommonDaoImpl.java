@@ -1967,4 +1967,31 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return flag;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Lca getLcaDetailsByLcaTitleAndId(String lcaTitle, Long lcaId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Lca lca where lca.lcaTitle = :lcaTitle and lca.id=:lcaId and lca.status = 1";
+		List<Lca> lcaNumbersList =  session.createQuery(query) .setString("lcaTitle", lcaTitle).setLong("lcaId", lcaId).list();
+		Lca lca = null;
+		if(lcaNumbersList != null && !lcaNumbersList.isEmpty())
+		{
+			lca = (Lca) lcaNumbersList.iterator().next();
+		}
+		return lca;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Lca lca where lca.lcaTitle = :lcaTitle and lca.orgLocationId=:orgLocationId";
+		List<Lca> lcaNumbersList = session.createQuery(query).setString("lcaTitle", lcaTitle).setLong("orgLocationId", orgLocationId).list();
+		if (lcaNumbersList != null && lcaNumbersList.size() > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
 }

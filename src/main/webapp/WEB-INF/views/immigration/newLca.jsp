@@ -41,11 +41,11 @@
 								data-validation="required validate_AlphaNumber validate_length length1-20" onkeyup="validateLcaNumber();">
           	</div>
           </div>
-           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
+           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaTitleDiv">
             <label class="col-md-4">LCA Title<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
                 <input type="text" name="lcaTitle" id="lcaTitle" class="form-control" value="${lcaDTO.lcaTitle}" placeholder="LCA Title" field-name="LCA Title"
-								data-validation="required validate_AlphaNumber validate_length length1-250">
+								data-validation="required validate_AlphaNumber validate_length length1-250" onkeyup="validateLcaTitle();">
           	</div>
           </div>
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
@@ -476,12 +476,13 @@
         };
        
        var isTotalValid= totalCountChek();
-       
-       if(!isTotalValid){
-       	showLCAWarningPopup("Total Count value is not matched with No.of Positions !!!");
-       	return false;
-       }
-
+        var newEmploymentCount = document.getElementById("newEmploymentCount").value;
+       if(newEmploymentCount != null && newEmploymentCount != '' && newEmploymentCount !='undefined'){ 
+	       if(!isTotalValid){
+	       	showLCAWarningPopup("Total Count value is not matched with No.of Positions !!!");
+	       	return false;
+	       }
+        } 
 	    if ($('#lcaDetailsForm').validate(false, validationSettings)) {
 		var formData = getFormData("lcaDetailsForm");
 		 $.ajax({
@@ -1032,6 +1033,7 @@ $('button').click(function (event) {
 <script type="text/javascript">
 
  function totalCountChek(){
+	 
         var totalCount =	$.isNumeric($('#noOfPositions').val()) ? parseInt($('#noOfPositions').val()):parseInt(0);
    		var newEmpCount =	$.isNumeric($('#newEmploymentCount').val()) ? $('#newEmploymentCount').val():0;
 		var conEmpCount =	$.isNumeric($('#concurrentEmploymentCount').val()) ? $('#concurrentEmploymentCount').val():0;
@@ -1042,11 +1044,12 @@ $('button').click(function (event) {
 
 		var allCounts = parseInt(newEmpCount)+parseInt(conEmpCount)+parseInt(extCount)+parseInt(chngEmpCount)+parseInt(chngPreEmpCount)+parseInt(amendMntCount);
 		
-		if(allCounts == totalCount){
-		    return true;
-		} else {
-			 return false;
-		}  
+			if(allCounts == totalCount){
+				
+			    return true;
+			} else {
+				 return false;
+			}  
 			
  };
 </script>
@@ -1076,7 +1079,35 @@ function validateLcaNumber() {
 		        }
 		       
 		    });
-}
+};
+</script>
+
+<script type="text/javascript">
+function validateLcaTitle() {
+	  var lcaTitle = document.getElementById("lcaTitle").value;
+	  var lcaId = $("#lcaId").val();
+	  $('#errLcaTitleDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl + immiModulePath + "/validateLcaTitle?"+tokenParamName+"="+tokenValue+"&lcaTitle="+lcaTitle+"&lcaId="+lcaId, 
+		        success: function(data) {
+		        	
+		        	if(data == true){
+		        		
+		        		  $('#errLcaTitleDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#lcaTitle").after("<p class='jquery_form_error_message'>"+lcaTitle+" is Already Existed</span>");
+						  $("#saveLca").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#lcaTitle').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errLcaTitleDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#saveLca").removeAttr("disabled");
+		        	}
+		        	
+		        }
+		       
+		    });
+};
 </script>
  
  

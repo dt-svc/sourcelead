@@ -198,5 +198,9 @@ public interface ImmigrationCommonDao {
 	 public Lca getLcaDetailsByLcaNoAndId(String lcaNo,Long orgLocationId) throws Exception;
 	 
 	 public Boolean validateLcaNumber(String lcaNo, Long orgLocationId) throws Exception;
+	 
+	 public Lca getLcaDetailsByLcaTitleAndId(String lcaTitle, Long lcaId) throws Exception;
+	    
+	 public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception;
 
 }
