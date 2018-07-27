@@ -227,6 +227,33 @@
 							result = result + '	<span title="'+json.manager1Name+'">'+json.manager1Name+'</span><div class="clearfix"></div>';
 							result = result + '	</div>';
 						}
+						
+
+						if (json.manager2Name != null && json.manager2Name != "" && json.manager2Name != "undefined") {
+							result = result	+ '<div class="project_details_cta">';
+							result = result	+ '	<strong>Manager 2:</strong><span>';
+							result = result + '	<span title="'+json.manager2Name+'">'+json.manager2Name+'</span><div class="clearfix"></div>';
+							result = result	+ '</span><div class="clearfix"></div>';
+							result = result + '	</div>';
+						}
+						
+						
+						if(json.expenseApprover1Name != null && json.expenseApprover1Name != "" && json.expenseApprover1Name !="undefined"){
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Expense Approver 1:</strong><span>';
+							result = result + '	<span title="'+json.expenseApprover1Name+'">'+json.expenseApprover1Name+'</span><div class="clearfix"></div>';
+							result = result + '	</div>';
+						}
+						
+
+						if (json.expenseApprover2Name != null && json.expenseApprover2Name != "" && json.expenseApprover2Name != "undefined") {
+							result = result	+ '<div class="project_details_cta">';
+							result = result	+ '	<strong>Expense Approver 2:</strong><span>';
+							result = result + '	<span title="'+json.expenseApprover2Name+'">'+json.expenseApprover2Name+'</span><div class="clearfix"></div>';
+							result = result	+ '</span><div class="clearfix"></div>';
+							result = result + '	</div>';
+						}
+						
 
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Timesheet Frequency:</strong><span>';
@@ -236,13 +263,6 @@
 						
 						
 						
-						if (json.manager2Name != null && json.manager2Name != "" && json.manager2Name != "undefined") {
-							result = result	+ '<div class="project_details_cta">';
-							result = result	+ '	<strong>Manager 2:</strong><span>';
-							result = result + '	<span title="'+json.manager2Name+'">'+json.manager2Name+'</span><div class="clearfix"></div>';
-							result = result	+ '</span><div class="clearfix"></div>';
-							result = result + '	</div>';
-						}
 						
 						
 						result = result + '<div class="project_details_cta">';

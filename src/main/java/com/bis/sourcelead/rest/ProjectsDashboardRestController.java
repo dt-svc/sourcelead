@@ -445,6 +445,28 @@ public class ProjectsDashboardRestController {
 		 	  }
 				 Integer projectMembersCount  = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
 				 ProjectDetails.setProjectMembersCount(projectMembersCount.toString());
+				 
+				 Set<ExpenseProjectApproverHierarchy> expenseApproversList = projectClients.getExpenseProjectApproverHierarchyList();
+				 if(expenseApproversList != null && expenseApproversList.size() > 0) {
+					 StringBuilder projectApprover = new StringBuilder();
+					 	for(ExpenseProjectApproverHierarchy expenseApproverHierarchy : expenseApproversList){
+					    	if(expenseApproverHierarchy.getLevel() != null && expenseApproverHierarchy.getLevel() == 1 && (expenseApproverHierarchy.getStatus() == null || expenseApproverHierarchy.getStatus().equalsIgnoreCase("1"))){
+					    		ProjectDetails.setExpenseApprover1(expenseApproverHierarchy.getApproverUserId().getId().intValue());
+					    		ProjectDetails.setExpenseApprover1Name(expenseApproverHierarchy.getApproverUserId().getFullName());
+					    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(expenseApproverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
+					    		if(null != userRole){
+					    			ProjectDetails.setExpenseApproverLevel1UserType(userRole.getUserType());
+					    		}
+					    		ProjectDetails.setExpenseApproverLevel1(projectApprover.append(expenseApproverHierarchy.getApproverUserId().getFirstName()).append(" ").append(expenseApproverHierarchy.getApproverUserId().getLastName()).toString());
+					    	}
+					    	if(expenseApproverHierarchy.getLevel() != null && expenseApproverHierarchy.getLevel() == 2 && (expenseApproverHierarchy.getStatus() == null || expenseApproverHierarchy.getStatus().equalsIgnoreCase("1"))){
+					    		ProjectDetails.setExpenseApprover2(expenseApproverHierarchy.getApproverUserId().getId().intValue());
+					    		ProjectDetails.setExpenseApprover2Name(expenseApproverHierarchy.getApproverUserId().getFullName());
+					    		ProjectDetails.setExpenseApproverLevel2(projectApprover.append(expenseApproverHierarchy.getApproverUserId().getFirstName()).append(" ").append(expenseApproverHierarchy.getApproverUserId().getLastName()).toString());
+					    	}
+					    	
+					    }
+				    }
 		   }
 		 
 		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();

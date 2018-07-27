@@ -227,6 +227,21 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	@Required(desc="projectForValue")
 	private String projectForValue;
+	
+	
+	private int expenseApprover1;
+	
+	private int expenseApprover2;
+	
+	private String expenseApprover1Name;
+	
+	private String expenseApprover2Name;
+	
+	private String expenseApproverLevel1UserType;
+	
+	private String expenseApproverLevel1;
+	
+	private String expenseApproverLevel2;
 	  
 	
 	
@@ -1076,5 +1091,61 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setProjectForValue(String projectForValue) {
 		this.projectForValue = projectForValue;
+	}
+
+	public int getExpenseApprover1() {
+		return expenseApprover1;
+	}
+
+	public void setExpenseApprover1(int expenseApprover1) {
+		this.expenseApprover1 = expenseApprover1;
+	}
+
+	public int getExpenseApprover2() {
+		return expenseApprover2;
+	}
+
+	public void setExpenseApprover2(int expenseApprover2) {
+		this.expenseApprover2 = expenseApprover2;
+	}
+
+	public String getExpenseApprover1Name() {
+		return expenseApprover1Name;
+	}
+
+	public void setExpenseApprover1Name(String expenseApprover1Name) {
+		this.expenseApprover1Name = expenseApprover1Name;
+	}
+
+	public String getExpenseApprover2Name() {
+		return expenseApprover2Name;
+	}
+
+	public void setExpenseApprover2Name(String expenseApprover2Name) {
+		this.expenseApprover2Name = expenseApprover2Name;
+	}
+
+	public String getExpenseApproverLevel1UserType() {
+		return expenseApproverLevel1UserType;
+	}
+
+	public void setExpenseApproverLevel1UserType(String expenseApproverLevel1UserType) {
+		this.expenseApproverLevel1UserType = expenseApproverLevel1UserType;
+	}
+
+	public String getExpenseApproverLevel1() {
+		return expenseApproverLevel1;
+	}
+
+	public void setExpenseApproverLevel1(String expenseApproverLevel1) {
+		this.expenseApproverLevel1 = expenseApproverLevel1;
+	}
+
+	public String getExpenseApproverLevel2() {
+		return expenseApproverLevel2;
+	}
+
+	public void setExpenseApproverLevel2(String expenseApproverLevel2) {
+		this.expenseApproverLevel2 = expenseApproverLevel2;
 	}
 }
