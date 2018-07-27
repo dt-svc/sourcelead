@@ -243,6 +243,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String expenseApproverLevel2;
 	  
+	private Collection<UserDTO> expensesApproversListwithoutApprover1;
 	
 	
 	
@@ -1147,5 +1148,13 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setExpenseApproverLevel2(String expenseApproverLevel2) {
 		this.expenseApproverLevel2 = expenseApproverLevel2;
+	}
+
+	public Collection<UserDTO> getExpensesApproversListwithoutApprover1() {
+		return expensesApproversListwithoutApprover1;
+	}
+
+	public void setExpensesApproversListwithoutApprover1(Collection<UserDTO> expensesApproversListwithoutApprover1) {
+		this.expensesApproversListwithoutApprover1 = expensesApproversListwithoutApprover1;
 	}
 }
