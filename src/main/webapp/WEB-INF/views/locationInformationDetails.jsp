@@ -3,10 +3,10 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <div id="informationDetails" class="tab-pane fade form-horizontal">
-  <div class="accountsettings-tab">
-	<div class="tab-content panel-body">
+  <div class="accountsettings-tab noMar">
+	<div class="tab-content panel-body noBor">
 		<form:form class="login-form clearfix"  id="informationDetails_form"  name="informationDetails_form" method="post" >
-		<div class="comLogContent">
+		<div class="comLogContent emptyShaPad">
 				   <div id="loading"></div> 
 			         <jsp:include page="onboard/informationDetails.jsp" />
 						<div class="clearfix">

@@ -8916,9 +8916,6 @@ content: ""; height: 0; margin-left: 32px; position: absolute; top:-8px; width: 
 .multidropdown-caret .multiselect-container li a{
 	padding-left: 0;
 }
-ul.jobsboard-list {
-	padding: 15px 15px 5px 15px;
-}
 ul.jobsboard-list > li {
 	border: 1px solid #ededed; border-radius: 5px; padding: 10px; margin-bottom: 15px;
 }
@@ -8945,9 +8942,6 @@ ul.jobsboard-list > li:hover {
 }
 .trashIcon:hover, .trashIcon.trashActive {
 	color:red;
-}
-.permissionDenied {
-color:#ededed !important; cursor: default !important;
 }
 .widthIcon.widthIcon-four {
 	width: 100px;
@@ -8984,7 +8978,7 @@ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 500px; di
 color:#4285f4 !important; font-weight: normal;
 }
 .mailbox-subject a:hover, .msg-content a p:hover {
-color:#609 !important;
+color:#1f43ab !important;
 }
 .mailbox-subject a.visitedAnchor, .msg-content a.visitedAnchor p {
 color:#909090 !important; font-weight: normal;
@@ -9213,7 +9207,12 @@ padding: 10px; border: none;
 .nestedTable table tr td, .nestedTable table tr th {
 	text-align:center; vertical-align: middle;
 }
-
+.fa-trash.trashIcon {
+color:#333 !important;
+}
+.permissionDenied.fa-trash {
+color:#ededed !important; cursor: default !important;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
@@ -9639,6 +9638,12 @@ z-index: -800;
 .menuWidget ul.menupop.menupop_3 {
     width:310px;
 	}
+	
+	
+	
+	
+	
+	
 	
 .level-second {
 transition: all ease-in-out 0.5s; display: none;
