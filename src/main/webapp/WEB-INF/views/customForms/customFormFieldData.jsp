@@ -6,8 +6,8 @@
 	<td class="cusFielAction tblminwidth-125">
 	   <div>
 	   <!--  <i class="fa fa-sort paddingRight" title="Drag"></i> -->
-		<i class="fa fa-eye" onclick="editFileDetails(${customFormDetails.id},'summary');"></i>
-		<i class="fa fa-file-text-o" title="edit file" onclick="editFileDetails(${customFormDetails.id},'editCustomRowField');"></i>
+		<i class="fa fa-eye mr5" onclick="editFileDetails(${customFormDetails.id},'summary');"></i>
+		<i class="fa fa-pencil mr5" title="edit file" onclick="editFileDetails(${customFormDetails.id},'editCustomRowField');"></i>
 		<c:if test="${customFormDetails.status eq 1}">
 			<i class="fa fa-trash" title="Delete" id="deletFildRow${customFormDetails.id}" onclick="activateOrDeactivateCustomField(${customFormDetails.id},'deactivate');"></i>
 		</c:if>
