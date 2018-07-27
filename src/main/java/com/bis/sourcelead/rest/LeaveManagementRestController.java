@@ -2353,7 +2353,8 @@ public class LeaveManagementRestController {
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(errorMessage);
+		if(StringUtils.isNotBlank(errorMessage))
+			sb.append(errorMessage);
 		List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
 		if(leaveList != null && !leaveList.isEmpty()) {
 //			validateDateDTO = new ValidateDateDTO();
