@@ -225,7 +225,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String isProjectForExpenses;
 	
-	@Required(desc="projectForValue")
+	//@Required(desc="projectForValue")
 	private String projectForValue;
 	
 	

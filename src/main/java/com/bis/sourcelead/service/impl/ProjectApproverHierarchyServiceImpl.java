@@ -326,7 +326,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 		    	}
 	    	//send mail to assigned Project Manager
 			
-			  if(!isNullOrEmpty(projectsDTO.getLevel2ExpenseApprover()) || !isNullOrEmpty(projectsDTO.getLevel2Manager())){	
+			  if(isNullOrEmpty(projectsDTO.getLevel1ExpenseApprover()) && !isNullOrEmpty(projectsDTO.getLevel2Manager())){	
 					User approverUserId2 = new User();
 					ExpenseProjectApproverHierarchy eah2 = new ExpenseProjectApproverHierarchy();
 					eah2.setProjectId(projects);
@@ -388,7 +388,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			}
 			
 			if(expenseApproverHierarchyList.size() == 1){
-				  if(!isNullOrEmpty(projectsDTO.getLevel2ExpenseApprover()) || !isNullOrEmpty(projectsDTO.getLevel2Manager())){	
+				  if(isNullOrEmpty(projectsDTO.getLevel1ExpenseApprover()) && !isNullOrEmpty(projectsDTO.getLevel2Manager())){	
 					User approverUserId2 = new User();
 					ExpenseProjectApproverHierarchy eah2 = new ExpenseProjectApproverHierarchy();
 					eah2.setProjectId(projects);

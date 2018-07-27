@@ -449,7 +449,7 @@ function editClientProjectDetails(projectId){
 			result = result + '	<label>Manager 1 <span class="text-danger">*</span></label>';
 			result = result + '<div class="row">';
 			 if ((json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") ||
-					 (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" 
+					 (json.managerLevel1UserType != null && json.managerLevel1UserType != "" && json.managerLevel1UserType != "undefined" 
 					 &&  json.managerLevel1UserType == "Admin")) {  
 				result = result + '<div class="col-md-12" id="levelone-select-manager">';
 			 }else{
@@ -743,7 +743,7 @@ function editClientProjectDetails(projectId){
 						result = result + '	<label>Manager 1 <span class="text-danger">*</span></label>';
 						result = result + '<div class="row">';
 						 if ((json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") ||
-								 (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" 
+								 (json.managerLevel1UserType != null && json.managerLevel1UserType != "" && json.managerLevel1UserType != "undefined" 
 								 &&  json.managerLevel1UserType == "Admin")) {  
 							result = result + '<div class="col-md-12" id="levelone-select-manager">';
 						 }else{
@@ -769,7 +769,7 @@ function editClientProjectDetails(projectId){
 						result = result + '</div>';
 						
 						
-						if (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" &&  json.managerLevel1UserType != "Admin") { 
+						if (json.managerLevel1UserType != null && json.managerLevel1UserType != "" && json.managerLevel1UserType != "undefined" &&  json.managerLevel1UserType != "Admin") { 
 							if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
 								result = result + '<div class="col-md-2" id="level2Toggle" style="display:none">';
 								result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
@@ -814,6 +814,87 @@ function editClientProjectDetails(projectId){
 							result = result + '</select>';
 							result = result + '</div>';
 							
+							result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
+							result = result + '	<label>Expense Approver 1 </label>';
+							result = result + '<div class="row">';
+							 if ((json.expenseApprover2 != null && json.expenseApprover2 != "" && json.expenseApprover2 != "undefined") ||
+									 (json.expenseApproverLevel1UserType != null && json.expenseApproverLevel1UserType != "" && json.expenseApproverLevel1UserType != "undefined" 
+									 &&  json.expenseApproverLevel1UserType == "Admin")) {  
+								result = result + '<div class="col-md-12" id="levelone-select-manager">';
+							 }else{
+								result = result + '<div class="col-md-8 paddingRight" id="levelone-select-approver">';	
+							} 
+							result = result	+ '<select class="form-control chosen-select"  onchange="getLevel2ExpenseApprovers('+json.expenseApprover2+ ');" id="level1ExpenseApprover" name="level1ExpenseApprover" >';
+							for (var j = 0; j < json.managersList.length; j++) {
+								var manager = json.managersList[j];
+								if(manager.lastName != null && manager.lastName != '' && manager.lastName != 'undefined'){
+									var managerName = manager.firstName +'' + manager.lastName ;
+								}else{
+									var managerName = manager.firstName;
+								}
+								
+								if (json.expenseApprover1 == manager.id) {
+									selected = 'selected';
+									result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >" + manager.name + " ("+manager.userType+")</option>";
+								} else {
+									result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.name + "  ("+manager.userType+")</option>";
+
+								}
+							}
+							result = result + '</select>';
+							result = result + '</div>';
+							
+							
+							if (json.expenseApproverLevel1UserType != null && json.expenseApproverLevel1UserType != "" && json.expenseApproverLevel1UserType != "undefined" &&  json.expenseApproverLevel1UserType != "Admin") { 
+								if (json.expenseApprover2 != null && json.expenseApprover2 != "" && json.expenseApprover2 != "undefined") { 
+									result = result + '<div class="col-md-2" id="level2ExpenseToggle" style="display:none">';
+									result = result + '<span class="btn btn-default formic1 addExpenseApproverLevel" onclick="getLevel2ExpenseApprovers(); showExpenseLevel2Div();">Add Level-II</span>';
+									result = result + '</div>';
+									} else{
+										result = result + '<div class="col-md-4 paddingLeft" id="level2ExpenseToggle" style="display:block">';
+										result = result + '<span class="btn btn-default formic1 addExpenseApproverLevel" onclick="getLevel2ExpenseApprovers(); showExpenseLevel2Div();">Add Level-II</span>';
+										result = result + '</div>';
+									} 
+							}else{
+								result = result + '<div class="col-md-4 paddingLeft" id="level2ExpenseToggle" style="display:none">';
+								result = result + '<span class="btn btn-default formic1 addExpenseApproverLevel" onclick="getLevel2ExpenseApprovers(); showExpenseLevel2Div();">Add Level-II</span>';
+								result = result + '</div>';
+							}
+							result = result	+ '<input type="hidden" id="level2Div">';
+							result = result + '</div>';
+							
+							result = result + '</div>';
+							
+
+							
+							
+							
+							if (json.expenseApprover2 != null && json.expenseApprover2 != "" && json.expenseApprover2 != "undefined") { 
+								result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" id="expensedemo" >';
+							}else{
+								result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" style="display:none;" id="expensedemo">';
+							}
+								result = result + '<label> Expense Approver 2  </label>';
+								result = result	+ '<select class="form-control chosen-select" id="level2ExpenseApprover" name="level2ExpenseApprover">';
+								result = result    +'<option value="">-Select Approver-</option>';
+								if(json.expensesApproversListwithoutApprover1 != null){
+								for (var j = 0; j < json.expensesApproversListwithoutApprover1.length; j++) {
+									var manager = json.expensesApproversListwithoutApprover1[j];
+									var managerName2 = manager.name;
+									if (json.expenseApprover2 == manager.id) {
+										selected = 'selected';
+										result = result	+ "<option value="+manager.id+" "+selected+" >"+ managerName2 +"  ("+manager.userType+")</option>";
+									} else {
+
+										result = result	+ "<option value="+manager.id+" >"+ managerName2 + "  ("+manager.userType+")</option>";									 
+									}
+								}
+								}
+								result = result + '</select>';
+								result = result + '</div>';
+							
+							
+								
 							
 							
 							result = result + '<div class="col-md-4 mt">';
@@ -1356,6 +1437,32 @@ function validateShortCode(){
 	}
 </script>
 
+
+
+<script type="text/javascript">
+	function getExpenseApproversLevel2(currentApproverId, manager2) {
+		var sourceleadUrl = '${sourceleadUrl}';
+		var currentApproverId = currentApproverId;
+		var manager2 = manager2;
+		$ .ajax({
+					type : "POST",
+					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+ currentApproverId,
+					success : function(json) {
+						var output = "";
+						output = output + "<option value=''>-Select Manager-</option>";
+						for (var i = 0; i < json.length; i++) {
+							var opt = json[i];
+							output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
+
+						}
+						$("#level2ExpenseApprover").empty();
+						$("#level2ExpenseApprover").append(output);
+					},
+				});
+
+	}
+</script>
+
 <script type="text/javascript">
 function showLevel2Div(){
 	var currentApproverId = document.getElementById("level1Manager").value;
@@ -1365,6 +1472,21 @@ function showLevel2Div(){
 	    $("#demo").show();  
 	}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
 	    $("#demo").hide();  
+	}
+}
+
+</script>
+
+
+<script type="text/javascript">
+function showExpenseLevel2Div(){
+	var currentApproverId = document.getElementById("level1ExpenseApprover").value;
+	var currentUser = currentApproverId.split(',');
+	var currentUserType = currentUser[1];
+	if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
+	    $("#expensedemo").show();  
+	}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
+	    $("#expensedemo").hide();  
 	}
 }
 
@@ -1421,6 +1543,65 @@ function showLevel2Div(){
 		}
 	}
 </script>
+
+
+
+
+
+
+<script type="text/javascript">
+	function getLevel2ExpenseApprovers(manager2) {
+		var currentApproverId = document.getElementById("level1ExpenseApprover").value;
+		var currentUser = currentApproverId.split(',');
+		var currentUserId = currentUser[0];
+		var currentUserType = currentUser[1];
+		$("#level2ExpenseApprover").empty();    
+		$('#level2ExpenseApprover').val('');
+		if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
+		    if(manager2 == null || manager2 == "" || manager2 == "undefined"){
+		    	$("#level2ExpenseToggle").show();
+		    	$("#levelone-select-approver").removeClass('col-md-12');
+			    $("#levelone-select-approver").addClass('col-md-8');  
+		    }else{
+		    	$("#expensedemo").show();
+		    }
+		    getChildLevel1ExpenseApprovers(currentUserId, manager2);
+		}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
+		    $("#level2ExpenseToggle").hide();   
+		    $("#levelone-select-approver").removeClass('col-md-8');
+		    $("#levelone-select-approver").addClass('col-md-12');  
+		    $("#expensedemo").hide();  
+		}
+	}
+</script>
+<script type="text/javascript">
+	function getChildLevel1ExpenseApprovers(currentApproverId, manager2) {
+		var sourceleadUrl = '${sourceleadUrl}';
+		if (currentApproverId == manager2) {
+			if (currentApproverId != null && currentApproverId != ''
+					&& currentApproverId != 'undefined') {
+				$.ajax({ 
+					type : "POST",
+					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
+					success : function(json) {
+						var output = "";
+						output = output + "<option value=''>-Select Manager-</option>";
+						for (var i = 0; i < json.length; i++) {
+							var opt = json[i];
+							output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + " ("+opt.userType+")</option>";
+						}
+						$("#level2ExpenseApprover").empty();
+						$("#level2ExpenseApprover").append(output);
+					},
+				});
+			}
+		} else {
+			getExpenseApproversLevel2(currentApproverId, manager2);
+		}
+	}
+</script>
+
+
 
 
 <!-- this script is for Email verification functionality at Projects screen -->
