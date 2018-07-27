@@ -671,8 +671,6 @@ function TeamMemberpagination(){
       
       </div>
       
-<div class="mask"></div>
-
     </div>
   </div>
 </section>
