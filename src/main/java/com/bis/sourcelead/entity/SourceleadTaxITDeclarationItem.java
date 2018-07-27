@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,7 +33,7 @@ public class SourceleadTaxITDeclarationItem implements Serializable {
 	private String name;
 
 	@Column(name = "MAX_LIMIT")
-	private double maxLimit;
+	private BigDecimal maxLimit;
 
 	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String description;
@@ -61,11 +62,11 @@ public class SourceleadTaxITDeclarationItem implements Serializable {
 		this.name = name;
 	}
 
-	public double getMaxLimit() {
+	public BigDecimal getMaxLimit() {
 		return maxLimit;
 	}
 
-	public void setMaxLimit(double maxLimit) {
+	public void setMaxLimit(BigDecimal maxLimit) {
 		this.maxLimit = maxLimit;
 	}
 
