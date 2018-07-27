@@ -33,7 +33,7 @@ window.onload = function () {
     
             <nav class="clearfix">
           <ul class="pull-right mr list-unstyled list-inline">
-            <li><a href="#" class="btn btn-primary btnSuccess" onclick="sendPayrollForApproval();">Sent for Approve</a></li>
+<!--             <li><a href="#" class="btn btn-primary btnSuccess" onclick="sendPayrollForApproval();">Sent for Approve</a></li> -->
             <li><a href="#" class="btn btn-default ml mr" onclick="sendPayrollForApproval();">Confirm</a></li>
             <li><a href="#" class="btn btn-default">Cancel</a></li>
           </ul>
@@ -276,9 +276,10 @@ window.onload = function () {
   <script>
   function getReviewPayroll(){
 	  var uuid = '${paySheetFrequencyUUID}';
+	  var payPeriodNum = '${payPeriodNum}';
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getPaySheetFrequencySummary?uuid="+uuid,                 
+		        url: sourceleadUrl+"/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum,                 
 		        success: function(data) {
 					var result = "";
 		        	result = result +'<table id="reviewTableId">';
@@ -408,12 +409,6 @@ window.onload = function () {
 	     	}
 	    } );
 	} */
-  </script>
-  
-  <script>
-  function sendPayrollForApproval(){
-	  
-  }
   </script>
 
 <jsp:include page="../masterFooter.jsp" />

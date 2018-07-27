@@ -94,23 +94,35 @@ $(document).ready(function(){
 				for (var i=0; i<json.length; i++)
 				{
 					var opt = json[i];
-					for (var j=0; j<data.payrollApprover.length; j++){
-						var usrId = data.payrollApprover[j];
-						if(usrId == opt.id){
-							output = output + "<option selected value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
-						}else{
-							output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
+					if(data.payrollApprover != null && data.payrollApprover != 'undefined'){
+						for (var j=0; j<data.payrollApprover.length; j++){
+							var usrId = data.payrollApprover[j];
+							if(usrId == opt.id){
+								output = output + "<option selected value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
+							}else{
+								output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
+							}
 						}
+					}else{
+						output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
 					}
+					
 				}
 				$("#approver").empty();
 				$("#approver").append(output);
 				$('#approver').trigger("chosen:updated");
-				 $("#payrollType").val(data.payrollType);
-				if(data.automaticPayroll == 'NO'){
-					$("#automaticPayroll").prop('checked', false); 
-				} 
-				$("#confAprrover").val(data.confAprrover);
+				if(data.payrollType != null && data.payrollType != 'undefined'){
+					 $("#payrollType").val(data.payrollType);
+				}
+				if(data.automaticPayroll != null && data.automaticPayroll != 'undefined'){
+					if(data.automaticPayroll == 'NO'){
+						$("#automaticPayroll").prop('checked', false); 
+					} 
+				}
+				if(data.confAprrover != null && data.confAprrover != 'undefined'){
+					$("#confAprrover").val(data.confAprrover);
+				}
+				
 		        },
 		    });
   }
