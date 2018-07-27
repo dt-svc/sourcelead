@@ -53,9 +53,11 @@ $(document).ready(function(){
 		result = result + '<table id="payFrequency" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		result = result + '<th>Pay Group</th>';
-		result = result + '<th>Pay Date</th>';
+		result = result + '<th>Pay run id</th>';
+		result = result + '<th>Group Name</th>';
 		result = result + '<th>Pay Period</th>';
+		result = result + '<th>Pay Date</th>';
+		result = result + '<th>Type</th>';
 		result = result + '<th>Total</th>';
 		result = result + '<th>Status</th>';
 		result = result + '</tr>';
@@ -83,12 +85,16 @@ $(document).ready(function(){
 							}),
 							
 							"columns" : [ {
-								"data" : "payGroup"
+								"data" : "Pay run id"
 							}, {
-								"data" : "payDate"
+								"data" : "Group Name"
 							}, {
-								"data" : "payPeriod"
+								"data" : "Pay Period"
 							}, {
+								"data" : "Pay Date"
+							},{
+								"data" : "Type"
+							},{
 								"data" : "total"
 							}, {
 								"data" : "status"
@@ -98,12 +104,36 @@ $(document).ready(function(){
 							 "columnDefs" : [
 									{
 										"targets" : colIndex++,
-										"data" : "payGroup",
+										"data" : "Pay run id",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											if(opt.payFrequency != null && opt.payFrequency != '' && opt.payFrequency !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'" title="'+opt.payFrequency+'">'+opt.payFrequency+'</a></div>';
+											if(opt.payPeriodNum != null && opt.payPeriodNum != '' && opt.payPeriodNum !='undefined'){
+						                		  result = result +'<div class="tblminwidth-100"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&payPeriodNum='+opt.payPeriodNum+'">'+opt.payPeriodNum+'</a></div>';
 											}else{
+						              		  result = result +'<div class="tblminwidth-100">--</div>';
+						              		}
+											return result;
+										}
+									},{
+										"targets" : colIndex++,
+										"data" : "Group Name",
+										"render" : function(data, type, opt,meta) {
+											var result = "";
+											if(opt.groupName != null && opt.groupName != '' && opt.groupName !='undefined'){
+						                		  result = result +'<div class="tblminwidth-100">'+opt.groupName+'</div>';
+											}else{
+						              		  result = result +'<div class="tblminwidth-100">--</div>';
+						              		}
+											return result;
+										}
+									},{
+										"targets" : colIndex++,
+										"data" : "Pay Period",
+										"render" : function(data, type, opt,meta) {
+											var result = "";
+											if(opt.payPeriod != null && opt.payPeriod != '' && opt.payPeriod !='undefined'){
+						                		  result = result +'<div class="tblminwidth-100">'+opt.payPeriod+'</div>';
+						              		}else{
 						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
 											return result;
@@ -111,7 +141,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "payDate",
+										"data" : "Pay Date",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payDate != null && opt.payDate != '' && opt.payDate !='undefined'){
@@ -125,11 +155,11 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "payPeriod",
+										"data" : "Type",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payPeriod != null && opt.payPeriod != '' && opt.payPeriod !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100">'+opt.payPeriod+'</div>';
+						                		  result = result +'<div class="tblminwidth-100">Regular</div>';
 						              		}else{
 						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
@@ -138,7 +168,7 @@ $(document).ready(function(){
 									},
 									{
 										"targets" : colIndex++,
-										"data" : "total",
+										"data" : "Total",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.total != null && opt.total != '' && opt.total !='undefined'){
@@ -151,7 +181,7 @@ $(document).ready(function(){
 										
 									},{
 										"targets" : colIndex++,
-										"data" : "status",
+										"data" : "Status",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.approverStatus != null && opt.approverStatus != '' && opt.approverStatus !='undefined'){
@@ -175,8 +205,7 @@ $(document).ready(function(){
 								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
-		$("#payFrequency").wrap(
-				"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+		$("#payFrequency").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
 		$("#dataTableSearch").keyup(function(e) {
 			if (e.which === 13) {

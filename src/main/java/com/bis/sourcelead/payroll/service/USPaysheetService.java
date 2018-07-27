@@ -24,5 +24,5 @@ public interface USPaysheetService {
 
 	PaysheetFrequency getPayFrequencyByUUID(String paySheetFrequencyUUID);
 
-	List<USPayrollDTO> getPaySheetFrequencySummary(String paySheetFrequencyUUID);
+	List<USPayrollDTO> getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO);
 }

@@ -63,6 +63,7 @@ import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
+import com.bis.sourcelead.payroll.entity.USPayPeriod;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
@@ -74,6 +75,7 @@ import com.bis.sourcelead.payroll.service.PayrollAdjustmentService;
 import com.bis.sourcelead.payroll.service.PayrollContributionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
+import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.service.AssociateSalaryHistoryService;
@@ -154,6 +156,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	PaysheetFrequencyService paysheetFrequencyService;
+	
+	@Autowired
+	private USPayPeriodService usPayPeriodService;
 	
 	/**
 	 * find all deduction types from lookup_data table 
@@ -1124,7 +1129,8 @@ public class USPayrollRestController {
 	public ResponseList<PaysheetFrequencyDTO> getPaySheetFrequencyList(PaysheetFrequencyDTO paysheetFrequencyDTO, @RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return uSPaysheetService.getPaySheetFrequencyListByOrgLocationId(orgLocation, paysheetFrequencyDTO);
+//		return uSPaysheetService.getPaySheetFrequencyListByOrgLocationId(orgLocation, paysheetFrequencyDTO);
+		return usPayPeriodService.getPayPeriodListByOrgLocationId(orgLocation, paysheetFrequencyDTO);
 	}
 	
 	/**
@@ -1136,14 +1142,15 @@ public class USPayrollRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/viewPaySheetFrequencyData")
-	public ModelAndView viewPaySheetFrequencyData(@RequestParam(value = "paySheetFrequencyUUID",required = true) String paySheetFrequencyUUID,@RequestParam(value = "approverStatus",required = true) String approverStatus,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ModelAndView viewPaySheetFrequencyData(@RequestParam(value = "paySheetFrequencyUUID",required = true) String paySheetFrequencyUUID,@RequestParam(value = "approverStatus",required = true) String approverStatus,@RequestParam(value = "payPeriodNum",required = true) Integer payPeriodNum,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("payPeriodNum", payPeriodNum);
 		model.addObject("paySheetFrequencyUUID", paySheetFrequencyUUID);
 		if(approverStatus.equalsIgnoreCase(Constants.SENT)) {
-			model.setViewName("payroll/confirmPayroll");
-		}else {
+			model.setViewName("payroll/reviewPayroll");
+		}else if(approverStatus.equalsIgnoreCase(Constants.APPROVED)){
 			model.setViewName("payroll/payrollSummary");
 		}
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
@@ -1164,9 +1171,9 @@ public class USPayrollRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getPaySheetFrequencySummary")
-	public List<USPayrollDTO> getPaySheetFrequencySummary(@RequestParam(value = "uuid",required = true) String paySheetFrequencyUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public List<USPayrollDTO> getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		return uSPaysheetService.getPaySheetFrequencySummary(paySheetFrequencyUUID);
+		return uSPaysheetService.getPaySheetFrequencySummary(paysheetFrequencyDTO);
 	}
 
 	
@@ -1188,11 +1195,13 @@ public class USPayrollRestController {
 		List<UserDTO>  userlist = configurePayrollApproverService.getPayrollApprover(orgLocation,loginUser);
 		ConfigurePayrollApprover  configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
 		approverDTO.setUser(userlist);
-		List<Long> approverList = configurePayrollApprover.getPayrollApprover().stream().map(ap->ap.getUser().getId()).collect(Collectors.toList());
-		approverDTO.setPayrollApprover(approverList);
-		approverDTO.setPayrollType(configurePayrollApprover.getPayrollType());
-		approverDTO.setAutomaticPayroll(configurePayrollApprover.getAutomaticPayroll());
-		approverDTO.setConfAprrover(String.valueOf(configurePayrollApprover.getId()));
+		if(configurePayrollApprover != null) {
+			List<Long> approverList = configurePayrollApprover.getPayrollApprover().stream().map(ap->ap.getUser().getId()).collect(Collectors.toList());
+			approverDTO.setPayrollApprover(approverList);
+			approverDTO.setPayrollType(configurePayrollApprover.getPayrollType());
+			approverDTO.setAutomaticPayroll(configurePayrollApprover.getAutomaticPayroll());
+			approverDTO.setConfAprrover(String.valueOf(configurePayrollApprover.getId()));
+		}
 		return approverDTO;
 	}
 	
