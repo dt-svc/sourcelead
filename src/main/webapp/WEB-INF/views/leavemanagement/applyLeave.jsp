@@ -615,7 +615,7 @@ function calcaulateDuraton(){
     	    	  result = result +'			<label>Balance Leaves :</label>';
     	          for (var i = 0; i < json.length; i++) { 
     	        		  var leaveType = json[i];
-    	        		  if(leaveType.leaveTypeBalanceLeaveCount > 0){
+    	        		  if(leaveType.visibleInBalanceLeaves == 'Y'){
     	        			  result = result +'	<li>';
       				  		result = result +'			<label>'+leaveType.name+'</label>';
       				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");

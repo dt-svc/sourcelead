@@ -6,21 +6,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<style type="text/css">
-.statusFiler-1 {
-	width: 180px; right: -18px;
-}
-.statusFiler-1 ul{
-	padding: 5px;
-}
-.statusFiler-1 li label {
-	padding-left: 5px; position: relative; top: -2px;
-}
-.statusFiler-1 li {
-	padding: 2px 10px !important; margin: 0 !important;
-}
-</style>
-
 <!-- Content Area -->
 <section class="content-wraper">
 <section class="content-header clearfix">
@@ -37,7 +22,6 @@ $(document).ready(function(){
    getTemplateList();
 });
 </script>
-	
 	
  <div class="project_wrap">
  

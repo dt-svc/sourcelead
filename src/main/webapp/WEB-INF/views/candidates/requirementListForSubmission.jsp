@@ -6,7 +6,7 @@
 
 <style>
 .refresh-icon.refreshIcon {
- top: 0px !important;
+ top: 16px !important;
 }
 </style>
 <script>
