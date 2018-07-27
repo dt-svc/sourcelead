@@ -194,5 +194,9 @@ public interface ImmigrationCommonDao {
 	String getOesSocCodeById(Long id, String socType);
 
 	List<LcaListExportView> getLcaListExportDetails(OrgLocations orgLocations);
+	
+	 public Lca getLcaDetailsByLcaNoAndId(String lcaNo,Long orgLocationId) throws Exception;
+	 
+	 public Boolean validateLcaNumber(String lcaNo, Long orgLocationId) throws Exception;
 
 }

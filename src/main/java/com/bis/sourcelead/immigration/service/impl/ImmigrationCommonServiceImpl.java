@@ -2518,6 +2518,16 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		String headers [] = ImmigrationConstants.LCA_LIST_EXCEL_HEADERS;
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 	}
+
+	@Override
+	public Lca getLcaDetailsByLcaNoAndId(String lcaNo, Long lcaId) throws Exception {
+		return immigrationCommonDao.getLcaDetailsByLcaNoAndId(lcaNo, lcaId);
+	}
+
+	@Override
+	public Boolean validateLcaNumber(String lcaNo, Long orgLocationId) throws Exception {
+		return immigrationCommonDao.validateLcaNumber(lcaNo, orgLocationId);
+	}
 	
 	/*
 	 * LCA Code Ends Here
