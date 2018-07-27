@@ -33,7 +33,7 @@
 			    <select id="daysFilter" onchange="getDynamicLCAList()" style="padding: 3px 5px;">
                    
                     <option value="All" selected >All</option>
-                    <option value="5">Expires In 5 Days</option>
+                    <option value="7">Expires In 7 Days</option>
                     <option value="15">Expires In 15 Days</option>
                     <option value="30">Expires In 30 Days</option>
                     <option value="60">Expires In 60 Days</option>
