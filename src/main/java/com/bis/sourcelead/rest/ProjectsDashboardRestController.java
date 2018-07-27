@@ -73,6 +73,7 @@ import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -533,6 +534,7 @@ public class ProjectsDashboardRestController {
 		     if(projectClientsList != null){
 		    	 for(ProjectClients projectClients : projectClientsList){
 		    		 if(projectClients.getOrgLocationsId().getId().equals(loginOrgLocation.getId())){
+		    			
 		    			 Set<ProjectApproverHierarchy> approverHierarchiesList =  projectClients.getProjectApproverHierarchyList();
 			    		 if(approverHierarchiesList != null){
 			    			 Set<ProjectApproverHierarchy> hirearchySet = new LinkedHashSet<ProjectApproverHierarchy>();
@@ -541,6 +543,17 @@ public class ProjectsDashboardRestController {
 				    		 }
 			    			 projects.setApproverHierarchyList(hirearchySet);
 			    		 }
+			    		 
+			    		 Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchiesList =  projectClients.getExpenseProjectApproverHierarchyList();
+			    		 if(expenseApproverHierarchiesList != null){
+			    			 Set<ExpenseProjectApproverHierarchy> expenseHirearchySet = new LinkedHashSet<ExpenseProjectApproverHierarchy>();
+			    			 for(ExpenseProjectApproverHierarchy hierarcy : expenseApproverHierarchiesList){
+			    				 expenseHirearchySet.add(hierarcy);
+				    		 }
+			    			 projects.setExpenseApproverHierarchyList(expenseHirearchySet);
+			    		 }
+			    		 
+			    		 
 		    		 }
 		    	 }
 		     }

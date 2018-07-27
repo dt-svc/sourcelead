@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
@@ -361,7 +362,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			projects.setProjectMode("Finished");
 			projects.setCreatedDate(new Date());
 			projects.setUpdatedDate(new Date());
-			
+			projects.setIsProjectForTimeSheets(Constants.YES);
+			projects.setIsProjectForExpenses(Constants.YES);
 			Countries countires = countriesDao.getCountriesByCountryName(orgLocations.getCountry());
 			if(countires != null) {
 				projects.setCurrency(countires.getCurrency());
@@ -396,7 +398,23 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			pah.setApproverUserId(approverUser);
 			pah.setLevel(1);
 			pah.setStatus("1");
+			pah.setCreatedDate(new Date());
+			pah.setCreatedBy(approverUser.getUserCode());
 			projectApproverHierarchyList.add(pah);
+			
+			
+			//prepare ProjectApproverHierarchy
+			Set<ExpenseProjectApproverHierarchy> projectExpenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+			ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+			eah.setProjectId(projects);
+			eah.setProjectClientsId(projectClients);
+			eah.setApproverUserId(approverUser);
+			eah.setLevel(1);
+			eah.setStatus("1");
+			eah.setCreatedDate(new Date());
+			eah.setCreatedBy(approverUser.getUserCode());
+			projectExpenseApproverHierarchyList.add(eah);
+			projectClients.setExpenseProjectApproverHierarchyList(projectExpenseApproverHierarchyList);
 			
 			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
 	    	projectClientsSet.add(projectClients);

@@ -1,13 +1,16 @@
 package com.bis.sourcelead.dao.impl;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ExpenseProjectApproverHierarchyDao;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 
 @Repository
 public class ExpenseProjectApproverHierarchyDaoImpl implements ExpenseProjectApproverHierarchyDao{
@@ -28,5 +31,21 @@ public class ExpenseProjectApproverHierarchyDaoImpl implements ExpenseProjectApp
 
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpenseProjectApproverHierarchyDaoImpl.class);
+
+
+	@Override
+	@Transactional
+	public void deleteProjectExpenseProjectApproverHierarchy(
+			ExpenseProjectApproverHierarchy expenseProjectApproverHierarchy) throws Exception {
+
+		logger.debug("In ExpenseProjectApproverHierarchy delete method");
+		Session session = this.sessionFactory.getCurrentSession();
+		if(expenseProjectApproverHierarchy != null){
+			session.delete(expenseProjectApproverHierarchy);
+			logger.info("Record deleted successfully..!");
+		}
+	
+		
+	}
 	
 }

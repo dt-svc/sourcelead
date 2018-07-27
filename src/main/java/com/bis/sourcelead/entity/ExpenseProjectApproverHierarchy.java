@@ -177,16 +177,18 @@ public class ExpenseProjectApproverHierarchy implements Serializable{
 		this.fullName = fullName;
 	}
 
-	public Long getProjectApproverUserId() {
+	public Long getExpenseApproverUserId() {
 		if(approverUserId != null){
 			expenseApproverUserId = approverUserId.getId();
 		}
 		return expenseApproverUserId;
 	}
 
-	public void setProjectApproverUserId(Long expenseApproverUserId) {
+	public void setExpenseApproverUserId(Long expenseApproverUserId) {
 		this.expenseApproverUserId = expenseApproverUserId;
 	}
+
+
 	
 	
 }

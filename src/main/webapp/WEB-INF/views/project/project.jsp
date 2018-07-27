@@ -188,6 +188,7 @@ function validateShortCode(){
 						</div>
 						
 						
+						
 						<div class="form-group">
 							<label class="col-md-3">Timesheet Frequency <span
 								class="text-danger">*</span></label>
@@ -203,6 +204,17 @@ function validateShortCode(){
 								</select>
 							</div>
 						</div>
+						
+						
+					<div class="form-group">
+						<label class="col-md-3">Project For<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9" id= "errorGenderMsg">
+						<label class="paddingRight"><input type="radio"  value="TimesheetsAndExpences"  name="projectFor" checked="checked" onblur="projectForCheckValidation(this)"><span class="mr5"></span>TimeSheets & Expenses</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Timehseets" name="projectFor" onblur="projectForCheckValidation(this)"><span class="mr5"></span>TimeSheets</label>
+						<label class="paddingRight"><input type="radio"  value="Expenses" name="projectFor" onblur="projectForCheckValidation(this)"><span class="mr5"></span>Expenses</label>
+						<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For" data-validation="required"/> 		
+						</div>
+					</div>
 						
 						<c:if test="${!empty projectType && projectType == 'sharedProject' }">
 							<input type="hidden" name="savedSharedClientOrgLocId" id="savedSharedClientOrgLocId">
@@ -343,7 +355,8 @@ function validateShortCode(){
 						
 						<c:if test="${not empty user_List}">
 							<div class="form-group">
-								<label class="col-md-3" for="Project Manager">Expense Approver</label>
+								<label class="col-md-3" for="Project Manager">Expense Approver&nbsp;<i class='fa fa-info-circle' title='Expense Approver for project. If not selected managers will be the default approvers'></i>
+								</label>
 								<div class="col-md-9">
 									<div class="form-icon-min" id="chosen-level1ExpenseApprover">
 										<select class="form-control chosen-select"
@@ -577,6 +590,23 @@ function validateShortCode(){
 </div>
 </section>
 <!-- Content Area Ends-->
+
+
+<script type="text/javascript">
+	function projectForCheckValidation(id){
+		 var projectForList = [];
+ 		 $("input[name='projectFor']:checked").each( function (i) {
+ 			projectForList[i] = $(this).val();
+ 		});
+ 		 
+		if (projectForList.length > 0) { 
+		document.getElementById("projectForValue").value = id.value;
+		}else{
+			$('#projectForValue').val(''); 
+		}
+	} 
+</script>
+
 <script>
 function removeFrequencyValidation(){
 	$('#chosen-frequency').find('p.jquery_form_error_message').remove();
@@ -808,6 +838,9 @@ function getProjectDetails(){
 	        	var level1ApproverUser = '';
 	        	var level2ApproverUser = '';
 	        	
+	        	var level1ExpenseApproverUser = '';
+	        	var level2ExpenseApproverUser = '';
+	        	
 	        	if(json.projectSequeneNumber != null && json.projectSequeneNumber != 'undefined'){
 	        		 $("input[name=projectSequeneNumber]").val(json.projectSequeneNumber);
 // 	        		 $("input[name=projectSequeneNumber]").attr("readonly","readonly");
@@ -961,6 +994,26 @@ function getProjectDetails(){
       			   if(level1ApproverUser != '' && level2ApproverUser != ''){
       				  getChildLevel1Approvers(level1ApproverUser,level2ApproverUser);
       			   }
+      			   
+      			
+      			 for(var i=0; i<json.expenseApproverHierarchyList.length; i++){
+	        		  var opt = json.expenseApproverHierarchyList[i];
+	        		  if(opt.level == "1"){
+	        			  level1ExpenseApproverUser = opt.expenseApproverUserId;
+	        			  getProjectLevel1ExpenseApprovers(opt.expenseApproverUserId);
+	        		  }
+	        		  
+	        		  if(opt.level == "2"){
+	        				 $("#level2ExpenseApproverToggle").hide(); 
+	        				 document.getElementById("level2ExpenseApproverDiv").removeAttribute("class");
+	        				 document.getElementById('level2ExpenseApproverDiv').className = 'form-group expenselevel-second expenselevel-second-active';
+	        				 level2ExpenseApproverUser = opt.expenseApproverUserId;
+	        		  }
+	        	  }  
+     			   
+     			   if(level1ExpenseApproverUser != '' && level2ExpenseApproverUser != ''){
+     				  getChildLevel1ExpenseApprovers(level1ExpenseApproverUser,level2ExpenseApproverUser);
+     			   }
       			 
       			   
       			   $("#projectDetailsloading").removeAttr("style");

@@ -62,6 +62,7 @@ import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.LeaveType;
@@ -966,6 +967,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projectApproverHierarchy.setStatus("1");
 		projectApproverHierarchyList.add(projectApproverHierarchy);
 		projectClients.setSharedClientProjectApproverHierarchyList(projectApproverHierarchyList);
+		
+		
+		HashSet<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+		ExpenseProjectApproverHierarchy expenseApproverHierarchy = new ExpenseProjectApproverHierarchy();
+		expenseApproverHierarchy.setProjectId(projects);
+		expenseApproverHierarchy.setProjectClientsId(projectClients);
+		expenseApproverHierarchy.setApproverUserId(orgSpoc.getClientUser());
+		expenseApproverHierarchy.setLevel(1);
+		expenseApproverHierarchy.setStatus("1");
+		expenseApproverHierarchyList.add(expenseApproverHierarchy);
+		projectClients.setSharedClientProjectExpenseApproverHierarchyList(expenseApproverHierarchyList);
+		
     	projectClientsSet.add(projectClients);
 		return projectClientsSet;
 	}
@@ -995,6 +1008,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 		//prepare ProjectApproverHierarchy
 		Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(projectsDTO,request,projects,projectClients);
 		projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+		
+		//prepare ProjectExpenseApproverHierarchy
+    	Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList = projectApproverHierarchyService.prepareExpenseProjectApproverHierarchyList(projectsDTO,request,projects,projectClients);
+    	projectClients.setExpenseProjectApproverHierarchyList(expenseApproverHierarchyList);
+    	
+    	
     	projectClientsSet.add(projectClients);
 		return projectClientsSet;
 	}
@@ -1028,7 +1047,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		//prepare ProjectApproverHierarchy
 		Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(projectsDTO,request,projects,projectClients);
 		projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+    	
+		//prepare ProjectExpenseApproverHierarchy
+    	Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList = projectApproverHierarchyService.prepareExpenseProjectApproverHierarchyList(projectsDTO,request,projects,projectClients);
+    	projectClients.setExpenseProjectApproverHierarchyList(expenseApproverHierarchyList);
+    	
     	projectClientsSet.add(projectClients);
+    	
 		return projectClientsSet;
 	}
 
@@ -2861,6 +2886,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 						
 						Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(projectsDTO,request,projects,projectClients);
 						projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+						
+						Set<ExpenseProjectApproverHierarchy> projectExpenseApproverHierarchyList = projectApproverHierarchyService.prepareExpenseProjectApproverHierarchyList(projectsDTO,request,projects,projectClients);
+						projectClients.setExpenseProjectApproverHierarchyList(projectExpenseApproverHierarchyList);
 					
 					projectClientsList.add(projectClients);
 					

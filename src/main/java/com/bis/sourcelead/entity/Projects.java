@@ -190,6 +190,12 @@ public class Projects implements Serializable{
     
     @Column(name = "IS_TASK_COMMENTS_REQUIRED")
    	private String isTaskCommentsRequired;
+    
+    @Column(name="IS_PROJECT_FOR_TIMESHEETS")
+    private String isProjectForTimeSheets;
+    
+    @Column(name="IS_PROJECT_FOR_EXPENSES")
+    private String isProjectForExpenses;
 	
      
     
@@ -330,6 +336,10 @@ public class Projects implements Serializable{
     @Transient
     @JsonProperty
     Set<ProjectApproverHierarchy>  approverHierarchyList;
+    
+    @Transient
+    @JsonProperty
+    Set<ExpenseProjectApproverHierarchy>  expenseApproverHierarchyList;
     
     @Transient
     private String employeeStartDateStr;
@@ -1132,6 +1142,30 @@ public class Projects implements Serializable{
 
 	public void setSharedClientOrgLocationId(Long sharedClientOrgLocationId) {
 		this.sharedClientOrgLocationId = sharedClientOrgLocationId;
+	}
+
+	public Set<ExpenseProjectApproverHierarchy> getExpenseApproverHierarchyList() {
+		return expenseApproverHierarchyList;
+	}
+
+	public void setExpenseApproverHierarchyList(Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList) {
+		this.expenseApproverHierarchyList = expenseApproverHierarchyList;
+	}
+
+	public String getIsProjectForTimeSheets() {
+		return isProjectForTimeSheets;
+	}
+
+	public void setIsProjectForTimeSheets(String isProjectForTimeSheets) {
+		this.isProjectForTimeSheets = isProjectForTimeSheets;
+	}
+
+	public String getIsProjectForExpenses() {
+		return isProjectForExpenses;
+	}
+
+	public void setIsProjectForExpenses(String isProjectForExpenses) {
+		this.isProjectForExpenses = isProjectForExpenses;
 	}
 
 	

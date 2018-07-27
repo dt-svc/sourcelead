@@ -215,7 +215,16 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private Long sharedProjectCreatedOrgLocId;
 	
-	 private BigInteger projId;
+	private BigInteger projId;
+	
+	private String level1ExpenseApprover;
+	
+	private String level2ExpenseApprover;
+	
+    private String isProjectForTimeSheets;
+	
+	private String isProjectForExpenses;
+	  
 	
 	
 	
@@ -991,7 +1000,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	}
 
 	public void setSavedSharedClientOrgLocId(String savedSharedClientOrgLocId) {
-		this.savedSharedClientOrgLocId = savedSharedClientOrgLocId;
+		this.savedSharedClientOrgLocId = savedSharedClientOrgLocId; 
 	}
 
 	public Long getSharedClientOrgLocationId() {
@@ -1024,5 +1033,37 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setProjId(BigInteger projId) {
 		this.projId = projId;
+	}
+
+	public String getLevel1ExpenseApprover() {
+		return level1ExpenseApprover;
+	}
+
+	public void setLevel1ExpenseApprover(String level1ExpenseApprover) {
+		this.level1ExpenseApprover = level1ExpenseApprover;
+	}
+
+	public String getLevel2ExpenseApprover() {
+		return level2ExpenseApprover;
+	}
+
+	public void setLevel2ExpenseApprover(String level2ExpenseApprover) {
+		this.level2ExpenseApprover = level2ExpenseApprover;
+	}
+
+	public String getIsProjectForTimeSheets() {
+		return isProjectForTimeSheets;
+	}
+
+	public void setIsProjectForTimeSheets(String isProjectForTimeSheets) {
+		this.isProjectForTimeSheets = isProjectForTimeSheets;
+	}
+
+	public String getIsProjectForExpenses() {
+		return isProjectForExpenses;
+	}
+
+	public void setIsProjectForExpenses(String isProjectForExpenses) {
+		this.isProjectForExpenses = isProjectForExpenses;
 	}
 }
