@@ -42,7 +42,7 @@ textarea {
 }
 /* Maring Styles */
 .mr {
-	margin-right: 15px !important;
+	margin-right: 15px;
 }
 .mr10{
 	margin-right: 10px !important;
@@ -51,19 +51,19 @@ textarea {
 	margin-right: 25px !important;
 }
 .mr5 {
-	margin-right: 5px !important;
+	margin-right: 5px;
 }
 .ml5 {
-	margin-left: 5px !important;
+	margin-left: 5px;
 }
 .mt {
-	margin-top: 15px !important;
+	margin-top: 15px;
 }
 .mt2 {
 	margin-top: 2px !important;
 }
 .mb {
-	margin-bottom: 15px !important;
+	margin-bottom: 15px;
 }
 .mb0 {
 	margin-bottom: 0px !important;
@@ -72,16 +72,16 @@ textarea {
 	margin-top: 10px !important;
 }
 .mb10 {
-	margin-bottom: 10px !important;
+	margin-bottom: 10px;
 }
 .mb5 {
-	margin-bottom: 5px !important;
+	margin-bottom: 5px;
 }
 .ml {
-	margin-left: 15px !important;
+	margin-left: 15px;
 }
 .ml10 {
-	margin-left: 10px !important;
+	margin-left: 10px;
 }
 
 .mt25 {
@@ -8916,14 +8916,11 @@ content: ""; height: 0; margin-left: 32px; position: absolute; top:-8px; width: 
 .multidropdown-caret .multiselect-container li a{
 	padding-left: 0;
 }
-ul.jobsboard-list {
-	padding: 15px 15px 5px 15px;
-}
 ul.jobsboard-list > li {
 	border: 1px solid #ededed; border-radius: 5px; padding: 10px; margin-bottom: 15px;
 }
 ul.jobsboard-list > li:hover {
-	background-color: #f9f9f9; border: 1px solid #e1e1e1;
+	background-color: #fafafa; border: 1px solid #e1e1e1;
 }
 .jobsboard-list li span.jobboard-company {
 	margin-bottom: 10px; display: inline-block; width: 100px; height: 33px;
@@ -9176,10 +9173,11 @@ border-bottom:none; margin-bottom: 5px;
 .customedTabStyles .nav-tabs>li>a { 
 padding: 10px; border: none; 
 }
-.customEvents-Calendar .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+.customEvents-Calendar .ui-state-default, .customEvents-Calendar .ui-widget-content .ui-state-default,
+.customEvents-Calendar .ui-widget-header .ui-state-default {
  	border: none !important; background: none !important; font-weight: normal !important; color: #909090 !important;
 }
-.customEvents-Calendar .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+.customEvents-Calendar .ui-state-active, .customEvents-Calendar .ui-widget-content .ui-state-active, .customEvents-Calendar .ui-widget-header .ui-state-active {
     background: #F4511E !important; border: 1px solid #F4511E !important; color: #fff !important; font-size: 14px !important;
 }
 .customEvents-Calendar .ui-state-highlight, .customEvents-Calendar .ui-widget-content .ui-state-highlight, .customEvents-Calendar .ui-widget-header .ui-state-highlight {
@@ -9638,10 +9636,6 @@ z-index: -800;
 .menuWidget ul.menupop.menupop_3 {
     width:310px;
 	}
-.level-second {
-transition: all ease-in-out 0.5s; display: none;
-}
-.level-second.level-second-active {
-display: block;
-}
+.level-second { transition: all ease-in-out 0.5s; display: none; }
+.level-second.level-second-active { display: block; }
 
