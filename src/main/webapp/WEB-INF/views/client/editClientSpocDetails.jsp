@@ -88,10 +88,32 @@
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
 							
+							/* check boxes start */
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Invoice Email:</strong>';
+							if(json.invoiceEmailStatus == 'Y' || json.invoiceEmailStatus == 'N'){
+								result = result + '<span>'+json.invoiceEmailStatus+'</span>';
+							}else{
+								result = result + '<span> N </span>';
+							}
+							result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>AP Email:</strong>';
+							if(json.apEmailStatus == 'Y' || json.apEmailStatus == 'N'){
+								result = result + '<span>'+json.apEmailStatus+'</span>';
+							}else{
+								result = result + '<span> N </span>';
+							}
+							result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							/* check boxes end */
+							
 							<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 							var sectionId = '${section.id}';
 							getCustomDependentFieldClientContact(spocLocationId,orgRelationId,sectionId);
-							if(${sectionOrder.index == 1}){
+							if("${sectionOrder.index == 1}"){
 								result = result + '<div id="customContactDiv${section.id}" class="customClinetContactDet"></div>';
 
 							}
@@ -184,7 +206,7 @@
 						} 
 						
 						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-						if(${sectionOrder.index == 1}){
+						if("${sectionOrder.index == 1}"){
 							var sectionId = '${section.id}';
 							  preapareClientContactCustomFieldDetails(spocLocationId,orgRelationId,sectionId);
 						}
