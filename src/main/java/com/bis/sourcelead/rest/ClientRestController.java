@@ -140,6 +140,8 @@ public class ClientRestController {
 
 	@Autowired
 	HttpServletRequest request;
+	
+	@Autowired
 	ProjectApproverHierarchyService projectApproverHierarchyService;
 
 	@Autowired

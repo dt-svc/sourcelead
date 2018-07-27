@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpenseProjectApproverHierarchyDao;
 import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -79,6 +81,33 @@ public class ExpenseProjectApproverHierarchyDaoImpl implements ExpenseProjectApp
 		}
 		
 		return expenseProjectApproverHierarchy;
+	}
+
+	@Override
+	@Transactional
+	public ExpenseProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId,
+			Long projectClientId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		logger.debug("In ExpenseProjectApproverHierarchy getProjectApproverByProjectIdAndLevel method");
+		String query = "from ExpenseProjectApproverHierarchy projectHirachy left join fetch projectHirachy.projectId projects left join fetch projectHirachy.projectClientsId pc left join fetch projectHirachy.approverUserId where projects.id = :projectId and pc.id = :projectClientId and projectHirachy.level IN(select Max(subpah.level) from ProjectApproverHierarchy subpah where subpah.projectId.id = :projectId and subpah.projectClientsId.id = :projectClientId)";
+		Collection<ExpenseProjectApproverHierarchy> projectApproverHierarchies = session.createQuery(query.toString()).setLong("projectId", projectId).setLong("projectClientId", projectClientId).list();
+
+		ExpenseProjectApproverHierarchy ph = null;
+		if (projectApproverHierarchies != null && projectApproverHierarchies.size() > 0) {
+			ph = (		ExpenseProjectApproverHierarchy) projectApproverHierarchies.iterator().next();
+		}
+		return ph;
+	}
+
+	@Override
+	@Transactional
+	public List<ExpenseProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,
+			Long orgLocationId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String query = "from ExpenseProjectApproverHierarchy hierarchy left join fetch hierarchy.projectId projects left join fetch hierarchy.projectClientsId pclient left join fetch hierarchy.approverUserId "
+				+ "where projects.id = :projectId and pclient.orgLocationsId.id = :orgLocationId ";
+		 List<ExpenseProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).list();
+	     return projectHirachyList;
 	}
 	
 }
