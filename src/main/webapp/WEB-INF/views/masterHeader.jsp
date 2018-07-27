@@ -729,6 +729,7 @@ function preventTabkey(e){
                         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 					       <li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i>Invite Company</a></li>
 	                   </c:if>
+                       <li><a href="<c:url value='${sourceleadUrl}/payrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
 	              </ul>
 	            </div>
 	          </li>

@@ -4340,5 +4340,12 @@ public class RequirementServiceImpl implements RequirementService {
 		Boolean flag = requirementDao.forceDeleteForSelectedJobs(uuids);
 		return flag;
 	}
+        
+	@Override
+	public Boolean forceDeleteForSelectedJobs(String[] uuids) throws Exception
+	{
+		Boolean flag = requirementDao.forceDeleteForSelectedJobs(uuids);
+		return flag;
+	}  
 	
 }
