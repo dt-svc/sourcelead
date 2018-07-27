@@ -233,6 +233,21 @@
                       <input type="checkbox" value="Y" name="isMailSent">Send Invitation</label>
                   </div>
                 </div>
+                
+                	<div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Billing Email </label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AR Email </label>
+              </div>
+            </div>
+                
                  <input type="hidden" name="vendorContact" value="vendorContact"/>
                 </div>
                 </div>
@@ -309,6 +324,28 @@ function getOrgName(){
 </script>
 
 <script type="text/javascript">
+
+
+function allowApEmailSent(){
+	var checked = document.getElementById("apOrArSent").checked
+	if(checked == true){
+		$("#apOrArSent").val("Y");
+	}else{
+		$("#apOrArSent").val("N");
+	}
+}
+
+
+function allowInvoiceEmailSent(){
+	var checked = document.getElementById("invoiceOrBillSent").checked
+	if(checked == true){
+		$("#invoiceOrBillSent").val("Y");
+	}else{
+		$("#invoiceOrBillSent").val("N");
+	}
+}
+
+
 function getOrgDetails()
 {
 	var orgName = document.getElementById("orgName").value;
