@@ -107,5 +107,7 @@ public interface TaxDao {
 
 	public SourceleadTaxChallanItem getITChallanSectionItem(Long id);
 
+	public long changeChallanItemStatus(long id);
+
 
 }

@@ -85,4 +85,6 @@ public interface TaxService {
 
 	public SourceleadTaxChallanItemDTO getChallanItemDetails(Long itemRowId);
 
+	 public Response<String> changeChallanItemStatus(long itemId);
+
 }

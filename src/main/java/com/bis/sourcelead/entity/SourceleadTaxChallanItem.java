@@ -83,7 +83,7 @@ public class SourceleadTaxChallanItem implements Serializable {
 	private Date updatedDate;
 
 	@Column(name = "ACTIVE")
-	private Boolean active;
+	private boolean active;
 
 	@OneToMany(mappedBy = "sourceleadTaxChallanItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<SourceleadTaxChallanItemSubFormField> sourceleadTaxChallanItemSubFormFieldList;
@@ -233,12 +233,13 @@ public class SourceleadTaxChallanItem implements Serializable {
 		this.updatedDate = updatedDate;
 	}
 
-	public Boolean getActive() {
+	public boolean isActive() {
 		return active;
 	}
 
-	public void setActive(Boolean active) {
+	public void setActive(boolean active) {
 		this.active = active;
 	}
+
 
 }

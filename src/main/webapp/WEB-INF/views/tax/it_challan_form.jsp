@@ -30,9 +30,19 @@
 				<table class="table table-itdeclaration table-challan table-bordered">
 				<thead>
 					<tr>
-						<th colspan="4" class="text-info">${section.name}<a
-							href="javascript:void(0)" class="ml fa fa-plus anchor-black"
-							title="Add Custom Field" onClick="addChallaItem(${section.id},'${section.name}');"></a>
+						<th colspan="4" class="text-info">${section.name}
+						 <a  href="javascript:void(0)" class="ml fa fa-plus anchor-black" title="Add Custom Field" onClick="addChallaItem(${section.id},'${section.name}');"></a>
+							
+							 <c:choose>
+								<c:when test="${sectionItems.active == '1'}">
+														<a class="fa fa-edit text-danger" title="Activate"
+															 onclick = "changeChallanItemStatus(${sectionItems.id});"></a>
+													</c:when>
+													<c:otherwise>
+														<a class="fa fa-trash text-danger" title="InActivate" 
+															 onclick = "changeChallanItemStatus(${sectionItems.id});"></a>
+													</c:otherwise>
+												</c:choose>
 						</th>
 					</tr>
 					<tr>
@@ -65,9 +75,17 @@
 										placeholder="Enter"></textarea></td>
 								<td>
 									<ul class="list-unstyled list-inline mt5 text-center">
-										<li><a title="Delete Row"
-											class="fa fa-trash text-danger deleteRow"></a></li>
-										<li><a title="EditItem" class="fa fa fa-floppy-o text-primary"  id="itChallanSectionItemForm" onclick="editItemDetails(${sectionItems.id});" =></a></li>
+									            <c:choose>
+													<c:when test="${sectionItems.active == '1'}">
+														<a class="fa fa-edit text-danger" title="Activate"
+															 onclick = "changeChallanItemStatus(${sectionItems.id});"></a>
+													</c:when>
+													<c:otherwise>
+														<a class="fa fa-trash text-danger" title="InActivate" 
+															 onclick = "changeChallanItemStatus(${sectionItems.id});"></a>
+													</c:otherwise>
+												</c:choose>
+										<li><a title="EditItem" class="fa fa-pencil"  id="itChallanSectionItemForm" onclick="editItemDetails(${sectionItems.id});" =></a></li>
 									</ul>
 								</td>
 							</tr>
@@ -80,7 +98,6 @@
 			
 		</div>
 		<!-- section fields ends -->
-
 		<div class="clearfix"></div>
 		<div class="clearfix footerstyelsNew">
 			<div class="col-lg-12">

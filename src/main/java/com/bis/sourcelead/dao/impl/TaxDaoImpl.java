@@ -666,4 +666,29 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
+	
+
+	
+	
+	@Override
+	public long changeChallanItemStatus(long itemId) {
+    try {
+    	Session session = this.sessionFactory.getCurrentSession();
+    	SourceleadTaxChallanItem sourceleadTaxChallanItem = session.get(SourceleadTaxChallanItem.class, itemId);
+		if(sourceleadTaxChallanItem != null){
+			sourceleadTaxChallanItem.setActive(!sourceleadTaxChallanItem.isActive());
+			session.saveOrUpdate(sourceleadTaxChallanItem);
+			return sourceleadTaxChallanItem.getId();
+		}else
+			return -2;
+	} catch (Exception e) {
+		e.printStackTrace();
+		}
+		return -1;
+	}
+	
+		
+	
+	
+
 }
