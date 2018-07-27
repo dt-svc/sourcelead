@@ -1335,15 +1335,11 @@ function dynamicUserListPagination(url){
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     },
-		  drawCallback: function(){
-
-   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
-
- 	    	  searchHighlight();
-
-  	         }); 
-
-  	   }
+    	  drawCallback: function(){
+    	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+    	    	  searchHighlight();
+    	         }); 
+    	   }
     } );
     $("#dynamicUserListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
