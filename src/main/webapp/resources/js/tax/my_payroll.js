@@ -22,3 +22,9 @@ function getRequestedLoans() {
 	$(".loan_and_advance_table").hide();
 	$("#requestTable").show();
 }
+function requestLoanPop() {
+	$(".requestPop, .sideMask").fadeIn();
+}
+function closeRequestLoanPop() {
+	$(".requestPop, .sideMask").fadeOut();
+}
