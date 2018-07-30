@@ -278,8 +278,8 @@
 														result = result + "<option value='SelectedOnInterview'>Selected on Interview</option>";
 													} */
 													result = result + "<option value='Reject'>Reject</option>";
-													if (opt.submissionStatus == 'OFFERACCEPTED'
-															|| opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
+													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
+														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
 														result = result
 																+ '<option value="backout">BackOut</option>';
 													}
