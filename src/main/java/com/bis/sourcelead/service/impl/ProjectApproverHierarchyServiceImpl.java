@@ -343,6 +343,19 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 					//ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
 					ids[1] = approverUserId2.getId();
 					expenseApproverHierarchyList.add(eah2);
+			 
+			  }else if(!isNullOrEmpty(projectsDTO.getLevel2ExpenseApprover())){	
+					User approverUserId2 = new User();
+					ExpenseProjectApproverHierarchy eah2 = new ExpenseProjectApproverHierarchy();
+					eah2.setProjectId(projects);
+					eah2.setProjectClientsId(projectClients);
+					approverUserId2.setId(Long.parseLong(projectsDTO.getLevel2ExpenseApprover()));
+					eah2.setApproverUserId(approverUserId2);
+					eah2.setLevel(2);
+					eah2.setStatus("1");
+					//ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+					ids[1] = approverUserId2.getId();
+					expenseApproverHierarchyList.add(eah2);
 			 }
 		}else{
 			Set<ExpenseProjectApproverHierarchy> expApproverHierarchyList = projectClients.getExpenseProjectApproverHierarchyList();

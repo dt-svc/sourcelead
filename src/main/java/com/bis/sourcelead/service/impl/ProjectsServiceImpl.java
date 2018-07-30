@@ -2996,7 +2996,8 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 						ProjectsDTO projectsDTO = new ProjectsDTO();
 						projectsDTO.setLevel1Manager(clientProjectDTO.getLevel1Manager());
 						projectsDTO.setLevel2Manager(clientProjectDTO.getLevel2Manager());
-						
+						projectsDTO.setLevel1ExpenseApprover(clientProjectDTO.getLevel1ExpenseApprover());
+						projectsDTO.setLevel2ExpenseApprover(clientProjectDTO.getLevel2ExpenseApprover());
 						Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(projectsDTO,request,projects,projectClients);
 						projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
 						
