@@ -1,8 +1,9 @@
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script type="text/javascript">
-function calculateTotalPay(formData){
-		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue, formData, function(json) {
+function calculateTotalPay(formData,confirmType){
+		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType, formData, function(json) {
 		    	  $("#totRegularHours").text(json.regularHours.toFixed(2));
 		    	  $("#totRegularEarningsAmt").text(json.regularHoursAmount.toFixed(2));
 		    	  $("#totOverTimeHours").text(json.overTimeHours.toFixed(2));
@@ -31,7 +32,11 @@ function calculateTotalPay(formData){
 		    	  $("#emplrWyomingWC").text(json.employerWyomingWcTax.toFixed(2));
 		    	  $("#emplrOregonWC").text(json.employerOregonWcTax.toFixed(2));
 		    	  $("#emplrTotalTaxes").text(json.employerTotalPay.toFixed(2));
-					 
+				  $("#pfUUID").val(json.pfUUID); 
+				  $("#payrollIds").val(json.payrollIds);
+				  $("#pid").val(json.pid);
+				  $("#confirmType").val(json.confirmType); 
+		    	  
 		    	  var dedJson = json.deduction;
 		    	  var dedResult = "";
 		    	   if(dedJson != null && dedJson.length >0){ 
@@ -80,10 +85,15 @@ function calculateTotalPay(formData){
     <div class="clearfix"></div>
     <div class="timesheet_out" id="approveDiv">
       <div class="clearfix mt">
+      <form:form id="approve_payroll_form" name="approve_payroll_form" method="post">
                <div class="clearfix approveTabelesStyles">
                		<div class="col-md-4 mb">
                			<h5>Hours &amp; Earnings</h5>
                			<div class="clearfix approveTabelesStyles-inner">
+               			<input type="hidden" name ="pfUUID" id="pfUUID"/>
+               			<input type="hidden" name ="pid" id="pid"/>
+               			<input type="hidden" name ="payrollIds" id="payrollIds"/>
+               			<input type="hidden" name ="confirmType" id="confirmType"/>
                				<table class="table">
                					<thead>
                						<tr>
@@ -288,17 +298,38 @@ function calculateTotalPay(formData){
  		<div class="clearfix mt"></div>
         <nav class="clearfix">
           <ul class="pull-right mr10 list-unstyled list-inline">
-            <li><a href="javascript:void(0)" class="btn btn-primary btnSuccess" onClick="successmodal();">Approve</a></li>
+            <li><a href="javascript:void(0)" class="btn btn-primary btnSuccess" onClick="approvePayroll();">Approve</a></li>
             <li><a href="javascript:void(0)" class="btn btn-default" onClick="rejectModal();">Cancel</a></li>
           </ul>
           <div class="clearfix"></div>
         </nav>
+        </form:form>
       </div>
     </div>
   <!-- </section> -->
   <!-- Content Area Ends--> 
 
 
+
+<script type="text/javascript">
+function approvePayroll(){
+      var formData = $($('#approve_payroll_form')[0]).serialize();
+      $.post(sourceleadUrl+"/approvePayroll?"+tokenParamName+"="+tokenValue, formData, function(result) {
+  		if (result.response === "INVALID_DATA") {
+ 		    showError(result.responseMessage);
+ 		} else if (result.response === "AWKWARD") {
+ 		    location.href = "/errorPage";
+ 		} else if (result.response === "SUCCESS") {
+		   location.replace(sourceleadUrl+ "/payrollList"); 
+ 		} else if (result.indexOf('Sign In') !== -1) {
+ 			location.replace(sourceleadUrl);
+ 		} else {
+ 		    showError("Operation failed, please try again");
+ 		}
+      });   
+    
+}
+</script> 
 
 
  		

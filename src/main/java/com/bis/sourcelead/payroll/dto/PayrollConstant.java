@@ -21,6 +21,7 @@ public class PayrollConstant {
 	public static final String DRAFT = "DRAFT";
 	public static final String PAYROLL = "PAYROLL";
 	public static final String SENT = "SENT";
+	public static final String APPROVE = "APPROVED";
 	
   
 
