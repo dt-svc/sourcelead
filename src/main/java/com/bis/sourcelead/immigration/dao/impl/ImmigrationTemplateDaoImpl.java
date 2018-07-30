@@ -568,26 +568,17 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public boolean validateTemplateNameExistance(String templateName, Long templateId) {
-        Session session = null;
-        try {
-            session = this.sessionFactory.openSession();
-            String query = "from ImmigrationTemplate iTemplate where iTemplate.name= :name and iTemplate.status = 1";
-            if (templateId > 0) {
-                query += " and iTemplate.id not in(" + templateId + ")";
-            }
-            List<ImmigrationTemplate> templateList = session.createQuery(query).setString("name", templateName).list();
+    public boolean validateTemplateNameExistance(String templateName, Long orgLocationId) {
+        Session  session = this.sessionFactory.openSession();
+            String query = "from ImmigrationTemplate iTemplate where iTemplate.name= :name and iTemplate.orgLocations.id =:orgLocationId";
+            List<ImmigrationTemplate> templateList = session.createQuery(query).setString("name", templateName).setLong("orgLocationId", orgLocationId).list();
+            
             if (templateList != null && !templateList.isEmpty()) {
                 return true;
+            }else{
+            	 return false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-        return false;
+        
     }
 
 	@Override
@@ -689,6 +680,20 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             }
         }
 		return returnVal;
+	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public ImmigrationTemplate getImmigrationTemplateByIdAndLocationId(String templateName,Long templateId, Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ImmigrationTemplate immiTemplate where immiTemplate.id =:templateId and immiTemplate.name = :templateName and immiTemplate.orgLocations.id =:orgLocationId";
+		Query finalQuery = session.createQuery(query);
+		List<ImmigrationTemplate> templateList = finalQuery.setParameter("templateName", templateName).setParameter("templateId", templateId).setParameter("orgLocationId", orgLocationId).list();
+		if(templateList.size()>0){
+		return 	templateList.get(0);
+		}else{
+			return null;	
+		}
 	}
 	
 	
