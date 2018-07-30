@@ -5,7 +5,7 @@
 <script src="/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 <style>
-.refresh-icon {
+.refresh-icon.refreshIcon {
  top: 16px !important;
 }
 </style>
@@ -103,7 +103,7 @@ $(document).ready(function() {
 								<div class="clearfix">
 								<div class="col-md-14">
 							      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
-								  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+								  <i class="fa fa-refresh btn btn-primary refresh-icon refreshIcon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
 								 </div>
 								</div>
 							</div>
@@ -364,7 +364,7 @@ function requirementListPagination(url,sourceleadUrl){
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
-	            	  result = result +"<td><div class='tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+	            	  result = result +"<td><div class='tbldata-dotdot_140'><span  title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
 	            	  return result;
 	              }
 		     },{

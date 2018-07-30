@@ -235,6 +235,7 @@ public class DumpPublicRestCalls {
 												    	   candidate.setLastName(projectMembers.getMasterCandidateId().getLastName());
 												    	   candidate.setEmail(projectMembers.getMasterCandidateId().getEmail());
 														   candidate.setOrgLocationId(pc.getOrgLocationsId());
+														   candidate.setStatus(1);
 														   candidate.setIsAssociate(Constants.NO);
 														   candidate.setDesignationType("C2C");
 														   candidate = candidateService.addCandidate(candidate);

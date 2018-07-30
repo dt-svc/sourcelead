@@ -209,7 +209,7 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 
 	@Override
 	@Transactional
-	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate, Long userId, String leaveStatus)
+	public List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate, Long userId, String leaveStatus,Long orgId)
 	{
 		try {
 	    	   String subQuery = "";
@@ -228,8 +228,8 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 	    		java.sql.Date startDate = new java.sql.Date(sDate.getTime());
 	    		java.sql.Date endDate = new java.sql.Date(eDate.getTime());
 	    	   Session session = this.sessionFactory.getCurrentSession();
-	           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid and alView.userId = :userId and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate) "+subQuery;
-	           List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+	           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and (alView.orglocationId = :orgLocationid or alView.orgId =:orgId) and alView.userId = :userId and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate) "+subQuery;
+	           List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("orgId", orgId).list();
 	           return appliedLeaveList;
 	       }catch (Exception e) {
 	    	   e.printStackTrace();

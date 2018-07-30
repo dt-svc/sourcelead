@@ -631,7 +631,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@JsonProperty
     private Set<String> tagsList;
 
+	@Transient
+	@JsonProperty
+	private String jobFairDates;
 	
+	public String getJobFairDates() {
+		return jobFairDates;
+	}
+
+	public void setJobFairDates(String jobFairDates) {
+		this.jobFairDates = jobFairDates;
+	}
+
+
 	public List<JobFair> getJobFairList() {
 		return jobFairList;
 	}
