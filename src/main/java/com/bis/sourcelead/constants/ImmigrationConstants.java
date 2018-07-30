@@ -29,8 +29,7 @@ public class ImmigrationConstants {
 	public static final Integer STATUS_ACTIVE = 1;
 	public static final Integer STATUS_IN_ACTIVE = 0;
 	
-	public static final String LCA_STATUS_ACTIVE = "Active";
-	public static final String LCA_STATUS_IN_ACTIVE = "In-Active";
+	public static final String LCA_STATUS_EXPIRED= "Expired";
 	
 	public static final String IMMIGRATION_UPLOAD ="immigrationUpload";
 	public static final String LCA_UPLOAD ="lcaUpload";

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.immigration.dao;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -194,5 +195,9 @@ public interface ImmigrationCommonDao {
 	String getOesSocCodeById(Long id, String socType);
 
 	List<LcaListExportView> getLcaListExportDetails(OrgLocations orgLocations);
+
+	List<Lca> getAllLcaList(Date currentDate);
+
+	String updateLcaStatusWithExpired(Long lcaId);
 
 }

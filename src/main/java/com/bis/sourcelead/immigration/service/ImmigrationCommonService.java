@@ -1,6 +1,7 @@
 package com.bis.sourcelead.immigration.service;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -149,6 +150,12 @@ public interface ImmigrationCommonService {
     ResponseList<LcaListViewDTO> getLcasList(LcaListViewDTO lcaListViewDTO, String status,String lcaStatus, String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal,String filterByDays) throws Exception;
     
     //Lca method declaration
+    
+    // below method added to get the LCA list which end dates are lesser than current date used in CRON.
+     public List<Lca> getAllLcaList(Date currentDate);
+ 
+    // below method used to the update lca status through cron.
+    public String updateLcaStatusWithExpired(Long lcaId);
     
     public List<Map<String, String>> getSocCodeWithSOCOccupationTitleList(String name,String category,String socType);
     

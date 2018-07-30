@@ -2518,6 +2518,17 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		String headers [] = ImmigrationConstants.LCA_LIST_EXCEL_HEADERS;
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 	}
+
+	@Override
+	public List<Lca> getAllLcaList(Date currentDate) {
+		// TODO Auto-generated method stub
+		return immigrationCommonDao.getAllLcaList(currentDate);
+	}
+
+	@Override
+	public String updateLcaStatusWithExpired(Long lcaId) {
+		return immigrationCommonDao.updateLcaStatusWithExpired(lcaId);
+	}
 	
 	/*
 	 * LCA Code Ends Here
