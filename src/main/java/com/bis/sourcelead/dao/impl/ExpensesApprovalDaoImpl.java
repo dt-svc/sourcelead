@@ -184,16 +184,10 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			+ globalUserQuery
 				
            + "  and   ((hierarchy.approverUserId.id = :userId ) "     
-			/*+ " and ( ("
-			+ "      hierarchy.approverUserId.id = :userId and "
-			+ "       (     (((emp IS NULL OR emp.user.id IS NULL) OR (emp.user.id IS NOT NULL and hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
-			+ "          OR (((emp IS NULL OR  emp.user.id IS NULL) OR (emp.user.id  IS NOT NULL and hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
-			+ "       )"
-			+ "      ) "*/
 		     /*
 			 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 			 */
-				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :orgLocationId and userRole.userState = 'ACTIVE') and  sah.hierarchyId.level IN(select MAX(pah.level) from ExpenseProjectApproverHierarchy pah where pah.projectClientsId.orgLocationsId.id = :orgLocationId and pah.status != '0' )) "
+				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = sah.hierarchyId.projectClientsId.orgLocationsId.id ) and  sah.hierarchyId.level IN(select MAX(pah.level) from ExpenseProjectApproverHierarchy pah where pah.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.id and pah.status != '0' )) "
 				+ "  OR  (pm.projects.isReportingManagerAsApprover = 'Y' and sah.hierarchyId.level = '1'  and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
 				+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+" "+query1.toString()+"  ORDER BY sah.id DESC ";
 		
@@ -202,12 +196,6 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			     countFrom = "Select count(*) from  ExpensesApproverHierarchy sah where "
 					+ globalUserCountQuery
 					+ " and ( (sah.hierarchyId.approverUserId.id = :userId  )"
-				/*	+ " and ( ("
-					+ "      sah.hierarchyId.approverUserId.id = :userId and "
-					+ "       (     (((sah.expenseId.projectMembers.employee IS NULL OR sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id IS NOT NULL and sah.hierarchyId.level = '2' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
-					+ "          OR (((sah.expenseId.projectMembers.employee IS NULL OR  sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id  IS NOT NULL and sah.hierarchyId.level = '1' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
-					+ "       )"
-					+ "      ) "*/
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 					 */
