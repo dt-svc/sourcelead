@@ -167,12 +167,32 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					orgSpoc.setClientUser(spocUser);
 					orgSpoc.setVendorUser(ownerUser);
 					orgSpoc.setOwnerUser(ownerUser);
+					if(StringUtils.isNotBlank(clientDTO.getInvoiceOrBillSent())){
+					orgSpoc.setInvoiceEmailStatus(clientDTO.getInvoiceOrBillSent());
+					}else{
+					orgSpoc.setInvoiceEmailStatus(Constants.NO);	
+					}
+					if(StringUtils.isNotBlank(clientDTO.getApOrArSent())){
+					orgSpoc.setApEmailStatus(clientDTO.getApOrArSent());
+					}else{
+					orgSpoc.setApEmailStatus(Constants.NO);
+					}
 				}else if(responderType.equalsIgnoreCase("Vendor")){
 					orgSpoc.setVendorLocationId(respondingOrgLocation);
 					orgSpoc.setClientLocationId(orgLocations);
 					orgSpoc.setClientUser(ownerUser);
 					orgSpoc.setVendorUser(spocUser);
 					orgSpoc.setOwnerUser(ownerUser);
+					if(StringUtils.isNotBlank(clientDTO.getInvoiceOrBillSent())){
+					orgSpoc.setBillingEmailStatus(clientDTO.getInvoiceOrBillSent());
+					}else{
+					orgSpoc.setBillingEmailStatus(Constants.NO);	
+					}
+					if(StringUtils.isNotBlank(clientDTO.getApOrArSent())){
+					orgSpoc.setArEmailStatus(clientDTO.getApOrArSent());
+					}else{
+					orgSpoc.setArEmailStatus(Constants.NO);
+					}
 				}
 			
 				if(StringUtils.isNotBlank(clientDTO.getIsMailSent())){

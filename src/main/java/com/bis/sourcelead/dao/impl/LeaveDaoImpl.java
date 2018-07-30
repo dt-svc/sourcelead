@@ -914,7 +914,12 @@ public class LeaveDaoImpl implements LeaveDao{
 	public List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate)
 	{
 		Date from = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), fromDate);
-		Date to = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), toDate);
+		Date to;
+		if(StringUtils.isNotBlank(toDate)){
+			to = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), toDate);
+		}else{
+			to = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), fromDate);
+		}
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(from.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(to.getTime());
