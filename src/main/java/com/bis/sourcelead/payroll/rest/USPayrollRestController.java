@@ -44,6 +44,7 @@ import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.AssociateContributionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
+import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
@@ -703,7 +704,7 @@ public class USPayrollRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
-			if(existedData.getPayrollDTO() != null && existedData.getPayrollDTO().size() >0) {
+			if(existedData != null) {
 				return existedData;
 			}else {
 				return generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO,loginUser);
@@ -1256,27 +1257,28 @@ public class USPayrollRestController {
 	
 	
 	/**
-	 * 
-	 * @param Approve Payroll
-	 * 
+	 * Confirm payroll (jsut calculating total pay sum)
+	 * @param payrollApproverDTO
 	 * @param request
 	 * @param response
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/approvePayroll")
-	public ModelAndView approvePayrollJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	@RequestMapping(value = { "/confirmPayroll","/rest/confirmPayroll" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ConfirmPayTotalSumDTO confirmPayroll(PayrollApproverDTO payrollApproverDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("payroll/usPayrollApprove");
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
-		if (sessionData == null) {
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.PAYROLL);
-		request.getSession().setAttribute("sessionData", sessionData);
-		return model;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ConfirmPayTotalSumDTO paySum = uSPayrollService.calculateTotalPaySum(payrollApproverDTO,orgLocation);
+		return paySum;
 	}
 	
+	@RequestMapping(value = { "/approvePayroll","/rest/approvePayroll" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<ConfirmPayTotalSumDTO> approvePayroll(ConfirmPayTotalSumDTO confirmPayTotalSumDto ,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<ConfirmPayTotalSumDTO> res = uSPayrollService.approvePayroll(confirmPayTotalSumDto,orgLocation);
+		return res;
+	}
 }

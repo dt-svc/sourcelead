@@ -12,6 +12,18 @@ public class DeductionDTO {
 	
 	private BigDecimal amount;
 	
+	private double dedAmount;
+	
+	public double getDedAmount()
+	{
+		return dedAmount;
+	}
+
+	public void setDedAmount(double dedAmount)
+	{
+		this.dedAmount = dedAmount;
+	}
+
 	private String description;
 	
 	private String associateDeductionUUID;

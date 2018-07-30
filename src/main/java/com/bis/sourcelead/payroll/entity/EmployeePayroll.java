@@ -114,7 +114,7 @@ public class EmployeePayroll {
 	
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
-	private Set<EmployeePayrollTax> usemployeepayroll;
+	private Set<EmployeePayrollTax> usPayrollTax;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
 	private Set<EmployerPayrollTax> employerpayrolltax;
@@ -213,10 +213,6 @@ public class EmployeePayroll {
 		return updatedDate;
 	}
 
-	public Set<EmployeePayrollTax> getUsemployeepayroll()
-	{
-		return usemployeepayroll;
-	}
 
 	public Set<EmployerPayrollTax> getEmployerpayrolltax()
 	{
@@ -299,10 +295,6 @@ public class EmployeePayroll {
 		this.updatedDate = updatedDate;
 	}
 
-	public void setUsemployeepayroll(Set<EmployeePayrollTax> usemployeepayroll)
-	{
-		this.usemployeepayroll = usemployeepayroll;
-	}
 
 	public void setEmployerpayrolltax(Set<EmployerPayrollTax> employerpayrolltax)
 	{
@@ -417,6 +409,16 @@ public class EmployeePayroll {
 	public void setPostTaxContribution(BigDecimal postTaxContribution)
 	{
 		this.postTaxContribution = postTaxContribution;
+	}
+
+	public Set<EmployeePayrollTax> getUsPayrollTax()
+	{
+		return usPayrollTax;
+	}
+
+	public void setUsPayrollTax(Set<EmployeePayrollTax> usPayrollTax)
+	{
+		this.usPayrollTax = usPayrollTax;
 	}
 	
 	

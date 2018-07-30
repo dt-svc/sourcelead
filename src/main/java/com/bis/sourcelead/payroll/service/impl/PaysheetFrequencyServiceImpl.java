@@ -89,6 +89,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		uSPayPeriod.setOrgLocation(orgLocation);
 		uSPayPeriod.setCreatedDate(new Date());
 		uSPayPeriod.setUpdatedDate(new Date());
+		uSPayPeriod.setApproverStatus(PayrollConstant.SENT);
 		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
 	}
 }
