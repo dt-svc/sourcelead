@@ -1,6 +1,7 @@
 package com.bis.sourcelead.immigration.dao;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -202,5 +203,9 @@ public interface ImmigrationCommonDao {
 	 public Lca getLcaDetailsByLcaTitleAndId(String lcaTitle, Long lcaId) throws Exception;
 	    
 	 public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception;
+
+	List<Lca> getAllLcaList(Date currentDate);
+
+	String updateLcaStatusWithExpired(Long lcaId);
 
 }

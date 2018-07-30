@@ -2520,7 +2520,15 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	}
 
 	@Override
-	public Lca getLcaDetailsByLcaNoAndId(String lcaNo, Long lcaId) throws Exception {
+	public List<Lca> getAllLcaList(Date currentDate) {
+		return immigrationCommonDao.getAllLcaList(currentDate);
+	}
+
+	@Override
+	public String updateLcaStatusWithExpired(Long lcaId) {
+		return immigrationCommonDao.updateLcaStatusWithExpired(lcaId);
+	}
+		public Lca getLcaDetailsByLcaNoAndId(String lcaNo, Long lcaId) throws Exception {
 		return immigrationCommonDao.getLcaDetailsByLcaNoAndId(lcaNo, lcaId);
 	}
 

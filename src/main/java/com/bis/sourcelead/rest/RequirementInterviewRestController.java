@@ -183,8 +183,7 @@ public class RequirementInterviewRestController {
 	@RequestMapping(value = "/app/saveInterview" , method = RequestMethod.POST)
 	   public String saveInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
- 	    String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
+			JSONObject jsonObj = new JSONObject(json);
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

@@ -1939,6 +1939,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public List<Lca> getAllLcaList(Date currentDate) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String listQuery = "from Lca lca where  lca.endDate<:currentDate";
+		List<Lca> lcaList = session.createQuery(listQuery).setDate("currentDate",currentDate).list();
+		return lcaList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String updateLcaStatusWithExpired(Long lcaId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Lca lca = session.get(Lca.class, lcaId);
+		lca.setLcaStatus(ImmigrationConstants.LCA_STATUS_EXPIRED);
+		session.saveOrUpdate(lca);
+		session.flush();
+		return "success";
+	}
 	public Lca getLcaDetailsByLcaNoAndId(String lcaNo, Long lcaId) throws Exception {
 		
 		Session session =  this.sessionFactory.getCurrentSession();

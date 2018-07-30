@@ -75,6 +75,7 @@ import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveType;
@@ -381,7 +382,29 @@ public class EMailJobScheduler {
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
-
+	@Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+	// @Scheduled(cron = "0/10 * * * * *") // used for dev testing run for every 10 seconds..
+	@Async
+	public void runJobSchedulerDailyUpdateLCA() { // check if LCA is expired on not on daily basis, if expired updating LCA status in Database.
+		logger.info("******************  updating All LCA  Deatails Started..! **********");
+		System.out.println("******************  updating All LCA  Deatails Started..! **********");
+		try {
+			  Date currentDate = new Date();
+			  List<Lca> lcaList= immigrationCommonService.getAllLcaList(currentDate);
+			
+			 for(Lca lcaObj : lcaList) {
+				 if(currentDate.compareTo(lcaObj.getEndDate())>0) {
+					 logger.debug("****Lca No :"+lcaObj.getLcaNo()+" is with end date as "+lcaObj.getEndDate()+" expired ");
+					 immigrationCommonService.updateLcaStatusWithExpired(lcaObj.getId());
+				 }
+			 }
+			
+		} catch (Exception e) {
+			logger.error("ERROR in " + e.getMessage());
+			// System.out.println("ERROR in " + e.getMessage());
+		}
+    }
+	
 	/**
 	 * @author Rajashekar & Prasad salina
 	 * Fires on Every 15 (semi_monthly) days at 11:45 PM and send mails to employees those who are not submited their timesheets

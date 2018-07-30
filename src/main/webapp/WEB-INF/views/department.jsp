@@ -75,7 +75,6 @@ $(document).ready(function() {
       </div>
     </div>
 		<div id="popUp"></div>
-		<div class="mask"></div>
 			<form:form id="department_form" name="department_form" method="post">
 				<div class="popupWrap" id="departmentCloseDiv">
 				<div class="popupHead">Add Department <i class="closePop pull-right popClose" onclick="flushRole();"></i></div>

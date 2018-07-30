@@ -36,8 +36,6 @@ $(document).ready(function(){
       </div> 
       </div>
     
-    
-  <div class="mask"></div>
   <div class="popupWrap" id="gradePopup" role="dialog">
     <div id="addGradeLoading"></div>
       <!-- Modal content-->
