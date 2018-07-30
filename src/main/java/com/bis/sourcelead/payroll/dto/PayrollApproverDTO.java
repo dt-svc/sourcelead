@@ -24,6 +24,7 @@ public class PayrollApproverDTO {
 	
 	private List<USPayrollDTO> uspayroll;
 	
+	private String confirmType;
 
 	public String getConfAprrover()
 	{
@@ -124,6 +125,16 @@ public class PayrollApproverDTO {
 	public void setUspayroll(List<USPayrollDTO> uspayroll)
 	{
 		this.uspayroll = uspayroll;
+	}
+
+	public String getConfirmType()
+	{
+		return confirmType;
+	}
+
+	public void setConfirmType(String confirmType)
+	{
+		this.confirmType = confirmType;
 	}
 	
 	

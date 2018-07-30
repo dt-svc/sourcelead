@@ -924,27 +924,7 @@ function savePayrollAdjustment(){
  }
  </script>
  
-<!-- <script>
-function getApprovers(){
-	$.ajax({
-    	type: "GET",
-        url: sourceleadUrl+"/getConfigurePayrollApprover?"+tokenParamName+"="+tokenValue                 , 
-        success: function(data) {
-         var output = "";
-         var json = data.data;
-		 for (var i=0; i<json.length; i++)
-		{
-			var opt = json[i];
-			output = output + "<option value='" +opt.userId+ "'>"+opt.approverName+"  ("+opt.roleName+")</option>";
-		} 
-		$("#approver").empty();
-		$("#approver").append(output);
-		$('#approver').trigger("chosen:updated");
-		
-        },
-    });
-}
-</script> -->
+
 
 
 
@@ -973,12 +953,11 @@ function sendPayrollForApprover(){
 
 <script>
 function confirmPayroll(){
-	alert("Hi");
 	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
-	
+	 var confirmType = "DRAFT";
 	 var formData = $($('#submit_for_approver')[0]).serialize();
-	 calculateTotalPay(formData);
+	 calculateTotalPay(formData,confirmType);
 }
 </script>
 

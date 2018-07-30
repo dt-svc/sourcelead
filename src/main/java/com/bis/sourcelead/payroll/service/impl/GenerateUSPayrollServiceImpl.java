@@ -393,10 +393,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	public PaysheetFrequencyDTO getPayrollData(GenerateUSPayrollDTO generateUSPayrollDTO, OrgLocations orgLocation, User loginUser)
 	{
 		PaysheetFrequency paysheetFrequency = generateUSPayrollDao.getPayrollData(generateUSPayrollDTO, orgLocation, loginUser);
-		PaysheetFrequencyDTO paysheetFrequencyDTO = new PaysheetFrequencyDTO();
+		PaysheetFrequencyDTO paysheetFrequencyDTO = null;
 		List<USPayrollDTO> list = null;
 		try {
 			if (paysheetFrequency != null && paysheetFrequency.getEmployeepayroll() != null) {
+				paysheetFrequencyDTO = new PaysheetFrequencyDTO();
 				paysheetFrequencyDTO.setPayrollFrequencyUUID(paysheetFrequency.getPaySheetFrequencyUUID());
 				list = new ArrayList<>();
 				for(EmployeePayroll pay : paysheetFrequency.getEmployeepayroll()) {

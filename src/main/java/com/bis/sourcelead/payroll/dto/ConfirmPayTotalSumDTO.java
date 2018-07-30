@@ -3,7 +3,7 @@ package com.bis.sourcelead.payroll.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ConfirmPayTotalSum {
+public class ConfirmPayTotalSumDTO {
 	
 	private double regularHours;
 	
@@ -76,6 +76,12 @@ public class ConfirmPayTotalSum {
 	private List<DeductionDTO> deduction;
 	
 	private List<ContributionDTO> contribution;
+	
+	private List<Long> pid;
+	
+	private String pfUUID;
+	
+	private String confirmType;
 
 	public double getTotalHours()
 	{
@@ -436,6 +442,40 @@ public class ConfirmPayTotalSum {
 	{
 		this.contribution = contribution;
 	}
+
+	public String getPfUUID()
+	{
+		return pfUUID;
+	}
+
+	public void setPfUUID(String pfUUID)
+	{
+		this.pfUUID = pfUUID;
+	}
+
+
+	public String getConfirmType()
+	{
+		return confirmType;
+	}
+
+	public void setConfirmType(String confirmType)
+	{
+		this.confirmType = confirmType;
+	}
+
+	public List<Long> getPid()
+	{
+		return pid;
+	}
+
+	public void setPid(List<Long> pid)
+	{
+		this.pid = pid;
+	}
+
+	
+
 	
 	
 }

@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +20,8 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.USPayrollDao;
-import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSum;
+import com.bis.sourcelead.payroll.dao.USPaysheetDao;
+import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
@@ -34,6 +36,7 @@ import com.bis.sourcelead.payroll.entity.USPayPeriod;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
+import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 
@@ -56,6 +59,12 @@ public class USPayrollServiceImpl  implements USPayrollService{
 	
 	@Autowired
 	AssociateContributionService associateContributionService;
+	
+	@Autowired
+	USPayPeriodService uSPayPeriodService;
+	
+	@Autowired
+	USPaysheetDao uSPaysheetDao;
 	
 	@Override
 	public ResponseList<PayrollDeductionDTO> findAllDeduction()
@@ -80,9 +89,9 @@ public class USPayrollServiceImpl  implements USPayrollService{
 	}
 
 	@Override
-	public ConfirmPayTotalSum calculateTotalPaySum(PayrollApproverDTO payrollApproverDTO, OrgLocations orgLocation)
+	public ConfirmPayTotalSumDTO calculateTotalPaySum(PayrollApproverDTO payrollApproverDTO, OrgLocations orgLocation)
 	{
-		ConfirmPayTotalSum paySum = new ConfirmPayTotalSum();
+		ConfirmPayTotalSumDTO paySum = new ConfirmPayTotalSumDTO();
 		
 		try {
 			// Emplyee Taxes
@@ -110,6 +119,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			BigDecimal emplrTotalTax = BigDecimal.ZERO;
 			
 			PaysheetFrequency pf = uSPaysheetService.getPayFrequencyByUUID(payrollApproverDTO.getPayrollFrequencyUUID());
+			paySum.setPfUUID(pf.getPaySheetFrequencyUUID());
 			Set<EmployeePayroll> payrollList = pf.getEmployeepayroll();
 			for (EmployeePayroll payroll : payrollList) {
 				for (USPayrollDTO payrollDTO : payrollApproverDTO.getUspayroll()) {
@@ -118,6 +128,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 					}
 				}
 			}
+			List<Long> payrollIds = payrollList.stream().map(p -> p.getId()).collect(Collectors.toList());
+			paySum.setPid(payrollIds);
 			double regularHours = payrollList.stream().filter(p->p.getRegularHours() != null).mapToDouble(p->Double.parseDouble(p.getRegularHours())).sum();
 			double overTimeHours = payrollList.stream().filter(p->p.getOverTimeHours() !=null).mapToDouble(p->Double.parseDouble(p.getOverTimeHours())).sum();
 			double regularTimeEarnings = payrollList.stream().mapToDouble(p->p.getRehularHoursAmount().doubleValue()).sum();
@@ -201,6 +213,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			paySum.setEmployerWyomingWcTax(emplrWyomingWC);
 			paySum.setEmployerOregonWcTax(emplrOregonWC);
 			paySum.setEmployerTotalPay(emplrTotalTax);
+			paySum.setConfirmType(payrollApproverDTO.getConfirmType());
 			
 			List<DeductionDTO> deduction = new ArrayList<>();
 			Map<String, Double> dedMap = dedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getDedAmount)));
@@ -230,5 +243,60 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		return paySum;
 	
 	}
+
+	@Override
+	public Response<ConfirmPayTotalSumDTO> approvePayroll(ConfirmPayTotalSumDTO confirmPaySumDto, OrgLocations orgLocation)
+	{
+		Response<ConfirmPayTotalSumDTO> res = new Response<>();
+		try {
+			PaysheetFrequency pf = uSPaysheetService.getPayFrequencyByUUID(confirmPaySumDto.getPfUUID());
+			pf.setApproverStatus(PayrollConstant.SENT);
+			USPayPeriod uSPayPeriod = null;
+			if (PayrollConstant.DRAFT.equalsIgnoreCase(confirmPaySumDto.getConfirmType())) {
+				USPayPeriod period = uSPayPeriodService.getPayPeriodNumber(pf.getId());
+				int payPeriodNum = 1;
+				if (period != null) {
+					payPeriodNum = payPeriodNum + period.getPayPeriodNum();
+				}
+				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation);
+			}
+			Set<EmployeePayroll> payrollList = pf.getEmployeepayroll();
+			for (EmployeePayroll payroll : payrollList) {
+				for (Long payrollId : confirmPaySumDto.getPid()) {
+					if (payrollId.longValue() == payroll.getId().longValue()) {
+						payroll.setSubmitForAproverStatus(PayrollConstant.APPROVE);
+						if (PayrollConstant.DRAFT.equalsIgnoreCase(confirmPaySumDto.getConfirmType())) {
+							payroll.setPayPeriodNum(String.valueOf(uSPayPeriod.getPayPeriodNum()));
+						}
+					}
+				}
+			}
+			pf.setEmployeepayroll(payrollList);
+			PaysheetFrequency savedPF = uSPaysheetDao.addPaysheetFrequency(pf);
+			if (savedPF != null) {
+				res.setResponse(Result.SUCCESS.name());
+				res.setResponseMessage(Result.SUCCESS.getValue());
+				res.setObject(confirmPaySumDto);
+			}
+		} catch (Exception e) {
+			res.setResponse(Result.AWKWARD.name());
+			res.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return res;
+	}
 	
+	
+	private USPayPeriod saevPayPeriodNumber(PaysheetFrequency pf, int payPeriodNum, OrgLocations orgLocation)
+	{
+		USPayPeriod  uSPayPeriod = new USPayPeriod();
+		uSPayPeriod.setPaysheetFrequency(pf);
+		uSPayPeriod.setPayPeriodNum(payPeriodNum);
+		uSPayPeriod.setStatus(1);
+		uSPayPeriod.setOrgLocation(orgLocation);
+		uSPayPeriod.setCreatedDate(new Date());
+		uSPayPeriod.setUpdatedDate(new Date());
+		uSPayPeriod.setApproverStatus(PayrollConstant.APPROVE);
+		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
+	}
 }
