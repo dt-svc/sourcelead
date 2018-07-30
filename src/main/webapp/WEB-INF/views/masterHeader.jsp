@@ -697,7 +697,7 @@ function preventTabkey(e){
 						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
 						  	<li><a href="<c:url value="/app/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
 						  </sec:authorize>
-						  <li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
+						  <li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Bank Accounts</a></li>
 						  
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-calendar" aria-hidden="true"></i>Leave Configuration</a></li>
@@ -1648,103 +1648,76 @@ $("#searchType").selectpicker('refresh');
 <div class="success_pop" id="inviteCompanyId" style="display: none;">
    	<i class="fa fa-check-circle"></i><span id="inviteCompanyMsgDiv"></span>
 </div>
-<div class="sideMask"></div>
-<div class="modal modalBulkImport" class="invite" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Bulk Import</h4>
-        </div>
+
+<div class="popupWrap" id="modalBulkImport" role="dialog">
+	<div class="popupHead"><span>Bulk Import</span><i class="closePop pull-right popClose"></i></div>
         <form:form id="bulkImportForm" name="bulkImportForm" method="post">
-         
-        <div class="modal-body invite_class">
-            <div class="form-group clearfix">
-                <label class="col-md-4 paddingRight" title="Path"><i class="fa fa-folder-open-o  paddingRight text-info" aria-hidden="true"></i>Folder Path<span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-8 paddingLeft">
+        <div class="popupContent">
+            <div class="clearfix mb">
+                <label class="noPad">Folder Path <b class="valStar">*</b></label>
+                <div class="clearfix">
                     <input type="text" class="form-control input-sm" placeholder="Folder Path" id="folderPath" name="folderPath" field-name="Folder Path" data-validation="required validate_Space">
                 </div>
             </div>
             <div id='bulkImportStatus' class="form-group clearfix">
             </div>
        </div>
-       
-       <div class="clearfix form-footer">
-            <div class="pull-right mr">
-          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="processCopiedFiles();"> <i class="paddingRight"></i>Continue</button>
-          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushBulkImportPath();"></i>Cancel
-            </button>
-                </div>
-        </div>
+        
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" onclick="processCopiedFiles();">Send</button>
+          <button type="button" class="slBtn md popClose" onclick="flushBulkImportPath();"> Cancel</button>
+        </div>        
+        
      </form:form>
    </div>
-  </div>
-</div>
-<div class="modal modalInvite" class="invite" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Invite Company</h4>
-        </div>
+
+<div class="popupWrap" id="modalInvite" role="dialog">
+      <div class="popupHead"><span>Invite Company</span><i class="closePop pull-right popClose"></i></div>
         <form:form id="inviteCompany_form" name="inviteCompany_form" method="post">
-         
-        <div class="modal-body invite_class">
-            <div class="form-group clearfix">
-                <label class="col-md-4 paddingRight" title="Company Name"><i class="fa fa-building paddingRight text-info"></i>Company Name <span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Company Name" id="compnayName" name="companyName" field-name="Company Name" data-validation="required validate_Space validate_length length2-100">
+        <div class="popupContent">
+            <div class="clearfix mb">
+                <label class="noPad">Company Name <b class="valStar">*</b></label>
+                <div class="clearfix">
+                    <input type="text" class="form-control" placeholder="Company Name" id="compnayName" name="companyName" field-name="Company Name" data-validation="required validate_Space validate_length length2-100">
                 </div>
             </div>
-            <div class="form-group clearfix">
-                <label class="col-md-4 paddingRight"><i class="fa fa-map-marker paddingRight text-info"></i>Location</label>
-                <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Location" name="location" id="inviteLocation" onclick="initLocationAuto('inviteLocation');">
+            <div class="clearfix mb">
+                <label class="noPad">Location </label>
+                <div class="clearfix">
+                    <input type="text" class="form-control" placeholder="Location" name="location" id="inviteLocation" onclick="initLocationAuto('inviteLocation');">
                 </div>
             </div>
-            <div class="form-group clearfix">
-                <label class="col-md-4 paddingRight"><i class="fa fa-user-o paddingRight text-info"></i>Name<span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Name" id="name" name="name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+            <div class="clearfix mb">
+                <label class="noPad">Name <b class="valStar">*</b></label>
+                <div class="clearfix">
+                    <input type="text" class="form-control" placeholder="Name" id="name" name="name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
                 </div>
             </div>
-            <div class="form-group clearfix">
-                <label class="col-md-4 paddingRight">
-                    <i class="fa fa-envelope paddingRight text-info"></i>Email<span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-8 paddingLeft">
+            <div class="clearfix mb">
+            	<label class="noPad">Email <b class="valStar">*</b></label>
+                <div class="clearfix">
                 <div class="input-group errorInptgroup">
-                    <input type="text" class="form-control input-sm" placeholder="Email" id="inviteCompanyemail" name="email" field-name="Email"  onblur="verifyEmail2();"  data-validation="required validate_Space validate_length length2-100 validate_email">
+                    <input type="text" class="form-control" placeholder="Email" id="inviteCompanyemail" name="email" field-name="Email"  onblur="verifyEmail2();"  data-validation="required validate_Space validate_length length2-100 validate_email">
                         <span id="emailStatusIconDiv" class="input-group-addon">
 	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
 	                  	</span>
-                
                 </div>
-                
                 </div>
             </div>
-                        <div class="form-group clearfix">
-                <label class="col-md-4 paddingRight"><i class="fa fa-phone paddingRight text-info"></i>Phone</label>
-                <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Phone" id="phone" name="phoneNumber" value="" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+			<div class="clearfix mb">
+                <label class="noPad">Phone <b class="valStar">*</b></label>
+                <div class="clearfix">
+                    <input type="text" class="form-control" placeholder="Phone" id="phone" name="phoneNumber" value="" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                 </div>
             </div>
         </div>
-        <div class="clearfix form-footer">
-            <div class="pull-right mr">
-          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveInviteCompany();"> <i class="fa fa-send paddingRight"></i>Send </button>
-          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushInviteCompany();"></i>Cancel
-            </button>
-                </div>
-        </div>
-        </form:form>
         
-      </div>
-      
-    </div>
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" onclick="saveInviteCompany();">Send</button>
+          <button type="button" class="slBtn md popClose" onclick="flushInviteCompany();"> Cancel</button>
+        </div>
+        
+        </form:form>
   </div>
   
   <%-- <div class="modal modalInvite" class="invite" id="scheduleMPopDiv" role="dialog">
@@ -1789,6 +1762,10 @@ $("#searchType").selectpicker('refresh');
     </div>
   </div> --%>
   
+  
+  <div class="mask"></div>
+  
+  
   <script>
   
 $(document).ready(function(){
@@ -1809,27 +1786,21 @@ $(document).ready(function(){
   </script> 
   <script>
   $("#invitePop").click(function(){
-  $(".modalInvite").fadeIn();
-  $(".sideMask").fadeOut();
+	  $("#modalInvite").fadeIn(100);
+	  $(".mask").show();
   });
   $("#bulkImport").click(function(){
-	  $(".modalBulkImport").fadeIn();
-	  $(".sideMask").fadeOut();
+	  $("#modalBulkImport").fadeIn(100);
+	  $(".mask").show();
 	  });
-  $(".close").click(function(){
-	  $(".modalInvite").fadeOut();
-	  $(".modalBulkImport").fadeOut();
-	  $(".sideMask").fadeOut();
+  $(".close, .popClose").click(function(){
+	  $("#modalInvite").fadeOut(100);
+	  $("#modalBulkImport").fadeOut(100);
+	  $(".mask").hide();
 	  flushInviteCompany();
 	  flushBulkImportPath();
  });
-  $(".btnClose").click(function(){
-	  $(".modalInvite").fadeOut();
-	  $(".modalBulkImport").fadeOut();
-	  $(".sideMask").fadeOut();
-	  flushInviteCompany();
-	  flushBulkImportPath();
-	  });
+
   
   function flushBulkImportPath() {
 	  $("#folderPath").val('');
@@ -1874,8 +1845,8 @@ function saveInviteCompany() {
 						} else if (result.response === "AWKWARD") {
 						    location.href = "/errorPage";
 						} else if (result.response === "SUCCESS") {
-							  $(".modalInvite").fadeOut();
-							  $(".sideMask").fadeOut(); 
+							  $("#modalInvite").fadeOut();
+							  $(".mask").hide(); 
 							  $("#inviteCompanyId").removeAttr("style");
 		            		  $("#inviteCompanyId").css({ display: "block" });
 		        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
@@ -1908,10 +1879,10 @@ $('body').on('blur', '#inviteCompany_form', function() {
 
 <%-- <c:if test='${viewPage == "campaignSender"}'> --%>
 <script src="/resources/js/campaignSender.js"></script>
-<div id='campaignSender' class='popUpOut'></div> 
+<div id='campaignSender' class='popupWrap popupWrapFixed'></div> 
 
 <script src="/resources/js/campaignRecipient.js"></script>
-<div id='campaignRecipient' class='popUpReci'></div> 
+<div id='campaignRecipient' class='popupWrap popupWrapFixed'></div> 
 <%-- </c:if> --%>
 
 <script>
@@ -2051,7 +2022,7 @@ document.onkeydown = function(evt) {
     evt = evt || window.event;
     if (evt.keyCode == 27) {
         $(".mask, .advancedsearch-mask").hide();
-        $(".popupWrap, div.cand-advsrch-popup").fadeOut(100);
+        $(".popupWrap, .popupWrapMid, div.cand-advsrch-popup, .remove_user_pop").fadeOut(100);
     }
 };
 </script>

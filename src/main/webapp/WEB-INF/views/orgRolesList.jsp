@@ -51,7 +51,6 @@ padding-right: 254px; padding-top: 10px;
 			</li>
         </ul>
 				<!-- Popup Div -->
-				<div class="mask"></div>
 				<div class="popupWrap" id="addRolePop">
 					<div class="popupHead">Add Role <i class="closePop pull-right popClose" onclick="flushRole();"></i></div>
 					<form:form id="addRole_form"  name="addRole_form" method="post"> 

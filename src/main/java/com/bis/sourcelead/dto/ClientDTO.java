@@ -78,6 +78,10 @@ public class ClientDTO {
 	
 	private String isMailSent;
 	
+	private String invoiceOrBillSent;
+	
+	private String apOrArSent;
+	
 	private String userRoleText;
 	
 	private String roleTypeId;
@@ -431,5 +435,18 @@ public class ClientDTO {
 	public void setIsAccountingFirm(String isAccountingFirm) {
 		this.isAccountingFirm = isAccountingFirm;
 	}
+	public String getInvoiceOrBillSent() {
+		return invoiceOrBillSent;
+	}
+	public void setInvoiceOrBillSent(String invoiceOrBillSent) {
+		this.invoiceOrBillSent = invoiceOrBillSent;
+	}
+	public String getApOrArSent() {
+		return apOrArSent;
+	}
+	public void setApOrArSent(String apOrArSent) {
+		this.apOrArSent = apOrArSent;
+	}
+	
 	
 }
