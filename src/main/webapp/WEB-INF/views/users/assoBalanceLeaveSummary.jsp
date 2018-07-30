@@ -62,7 +62,9 @@ function editBalLeave(typeId){
 <script>
 function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
 	var totalLeaves = $("#"+rowId+"noofLeaves").val();
-	if(totalLeaves != '' && totalLeaves != 'undefined' && totalLeaves != null){
+	var valid = !isNaN(totalLeaves);
+	alert(valid)
+	if(totalLeaves != "" && totalLeaves != null && totalLeaves != 'undefined' && valid){
 		$("#"+rowId+"errorDiv").text("");
 		$.ajax({
 	        type : "PUT",
@@ -71,9 +73,14 @@ function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
 	        	 assocBalanceLeaveSummary(userId);
 	        	 $('#'+rowId+'').attr("readonly",true);
 	                 },
-	              }); 
+	              });  
 	}else{
-		$("#"+rowId+"errorDiv").text("Total Leave Required");
+		if(totalLeaves == "" || totalLeaves == null || totalLeaves == 'undefined'){
+			$("#"+rowId+"errorDiv").text("Total Leave Required");
+		}else if(!valid){
+			$("#"+rowId+"errorDiv").text("Incorrect float value");
+		}
+		
 	}
  	 
 }
