@@ -87,4 +87,7 @@ public interface TaxService {
 
 	 public Response<String> changeChallanItemStatus(long itemId);
 
+	 public Response<String> changeSectionStatus(long sectionId);
+
+
 }

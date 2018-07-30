@@ -6,8 +6,6 @@
 	<div class="tablelist-wrap">
 
 		<div class="col-md-12">
-		
-		
 		<c:if test="${isEditable}">
 	<div class="col-md-12 text-center">
 		<a href="javascript:void(0)" title="Add New Section"
@@ -31,18 +29,19 @@
 				<thead>
 					<tr>
 						<th colspan="4" class="text-info">${section.name}
-						 <a  href="javascript:void(0)" class="ml fa fa-plus anchor-black" title="Add Custom Field" onClick="addChallaItem(${section.id},'${section.name}');"></a>
+							<c:choose>
+								<c:when test="${section.active == '1'}">
+									<a class="fa fa-edit text-danger" title="Activate" onclick="changeChallanSectionStatus(${section.id});"></a>
+									 <a href="javascript:void(0)" class="ml fa fa-plus anchor-black" title="Add Custom Field" ></a>
+									<a title="EditSection" class="fa fa-pencil"  id="itChallanSectionItemForm" ></a>
+								</c:when>
+										<c:otherwise>
+											<a class="fa fa-trash text-danger" title="InActivate" onclick = "changeChallanSectionStatus(${section.id});"></a>
+											 <a href="javascript:void(0)" class="ml fa fa-plus anchor-black" title="Add Custom Field" onClick="addChallaItem(${section.id},'${section.name}');"></a>
+											<a title="EditSection" class="fa fa-pencil"  id="itChallanSectionItemForm" onclick="editITChallanSection(${section.taxFormId}, ${section.id}, '${section.name}', '${section.description}');"></a>
+										</c:otherwise>
+							</c:choose>
 							
-							 <c:choose>
-								<c:when test="${sectionItems.active == '1'}">
-														<a class="fa fa-edit text-danger" title="Activate"
-															 onclick = "changeChallanItemStatus(${sectionItems.id});"></a>
-													</c:when>
-													<c:otherwise>
-														<a class="fa fa-trash text-danger" title="InActivate" 
-															 onclick = "changeChallanItemStatus(${sectionItems.id});"></a>
-													</c:otherwise>
-												</c:choose>
 						</th>
 					</tr>
 					<tr>
@@ -57,8 +56,7 @@
 								<td>
 									<div class="parentDiv">
 										<div class="editElementDiv">
-											<span class="edit-element">${sectionItems.labelName}</span> <a
-												class="fa fa-pencil faPencil editElement" title="Edit"></a>
+											<span class="edit-element">${sectionItems.labelName}</span>
 										</div>
 										<div class="row saveElementDiv">
 											<div class="col-md-11 paddigRight">
@@ -77,15 +75,17 @@
 									<ul class="list-unstyled list-inline mt5 text-center">
 									            <c:choose>
 													<c:when test="${sectionItems.active == '1'}">
-														<a class="fa fa-edit text-danger" title="Activate"
+														<a class="fa fa-edit text-danger" title="Activate" id = "inactiveStatus"
 															 onclick = "changeChallanItemStatus(${sectionItems.id});"></a>
+															 <li><a title="EditItem" class="fa fa-pencil "  id="itChallanSectionItemForm"></a></li>
 													</c:when>
 													<c:otherwise>
-														<a class="fa fa-trash text-danger" title="InActivate" 
+														<a class="fa fa-trash text-danger" title="InActivate" id = "activeStatus"
 															 onclick = "changeChallanItemStatus(${sectionItems.id});"></a>
+															 <li><a title="EditItem" class="fa fa-pencil"  id="itChallanSectionItemForm" onclick="editItemDetails(${sectionItems.id});"></a></li>
 													</c:otherwise>
 												</c:choose>
-										<li><a title="EditItem" class="fa fa-pencil"  id="itChallanSectionItemForm" onclick="editItemDetails(${sectionItems.id});" =></a></li>
+										
 									</ul>
 								</td>
 							</tr>
@@ -120,21 +120,19 @@
 				<h4 class="modal-title">Add Section</h4>
 			</div>
 			<form action="" id="itChallanSectionForm">
-				<input type="hidden" value="${form.id}" name="taxFormId"
-					id="taxFormId">
+				<input type="hidden" name="id" id="sectionId" value="0">
+				<input type="hidden" name="taxFormId" id="taxFormId" value="${form.id}">
 				<div class="modal-body">
 					<div class="form-group">
 						<label>Section Name</label>
 						<div class="clearfix">
-							<input type="text" class="form-control" name="name"
-								field-name="SectionName" data-validation="required">
+							<input type="text" id="sectionName" class="form-control" name="name" field-name="SectionName" data-validation="required" >
 						</div>
 					</div>
 					<div class="form-group">
 						<label>Description</label>
 						<div class="clearfix">
-							<textarea class="form-control" rows="2" name="description"
-								field-name="Description" data-validation="required"></textarea>
+							<textarea class="form-control" id="sectionDescription" rows="2" name="description" field-name="Description" data-validation="required"></textarea>
 						</div>
 					</div>
 				</div>
@@ -162,7 +160,7 @@
 				<h4 class="modal-title">IT Challan</h4>
 			</div>
 			<form action="" id="AddItChallanSectionItemForm">
-				<input type="hidden" value="0" name="taxSectionId" id="taxSectionId">
+				<input type="hidden" value="0" name="taxChallanId" id="taxChallanId">
 				<div class="modal-body">
 					<div class="form-group">
 						<label>Items</label>

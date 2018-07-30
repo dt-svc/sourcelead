@@ -560,10 +560,11 @@ public class TaxServiceImpl implements TaxService {
 						if (includeInactive || (!includeInactive && challanSection.isActive())) {
 							SourceleadTaxChallanDTO challanSectionDTO = new SourceleadTaxChallanDTO();
 							challanSectionDTO.setActive(challanSection.isActive());
-							challanSectionDTO.setChallanId(challanSection.getId());
+//							challanSectionDTO.setChallanId(challanSection.getId());
 							challanSectionDTO.setDescription(challanSection.getDescription());
 							challanSectionDTO.setName(challanSection.getName());
 							challanSectionDTO.setId(challanSection.getId());
+							challanSectionDTO.setTaxFormId(challanSection.getSourceleadTaxForm().getId());
 							List<SourceleadTaxChallanItemDTO> challanSectionItemDTOList = new LinkedList<>();
 							List<SourceleadTaxChallanItem> challanSectionItemList = challanSection
 									.getSourceleadTaxChallanItemList();
@@ -1035,6 +1036,7 @@ public class TaxServiceImpl implements TaxService {
 				sectionItem.setMinLength(sectionItemDTO.getMinLength());
 				sectionItem.setPlaceHolder(sectionItemDTO.getPlaceHolder());
 				sectionItem.setUpdatedDate(sectionItemDTO.getUpdatedDate());
+				sectionItem.setHelptext(sectionItemDTO.getHelpText());
 				sectionItem.setSourceleadtaxchallan(taxDao.getTaxChallanSection(sectionItemDTO.getTaxChallanId()));
 				return taxDao.addITChallanSectionItem(sectionItem);
 			} else
@@ -1050,7 +1052,7 @@ public class TaxServiceImpl implements TaxService {
 		try {
 			SourceleadTaxChallan section = null;
 			if (sourceleadTaxSectionDTO.getId() > 0) {
-				// section = taxDao.getTaxSection(sourceleadTaxSectionDTO.getId());
+				 section = taxDao.getTaxChallanSection(sourceleadTaxSectionDTO.getId());
 			} else {
 				section = new SourceleadTaxChallan();
 				section.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
@@ -1094,8 +1096,10 @@ public class TaxServiceImpl implements TaxService {
 				challanSectionItemDTO.setFieldRequired(challanItem.getIsFieldRequired());
 				challanSectionItemDTO.setFieldType(challanItem.getFieldType());
 				challanSectionItemDTO.setId(challanItem.getId());
+				challanSectionItemDTO.setHelpText(challanItem.getHelptext());
 				challanSectionItemDTO.setLabelName(challanItem.getLabelName());
 				challanSectionItemDTO.setMaxDate(challanItem.getMaxDate());
+				challanSectionItemDTO.setPlaceHolder(challanItem.getPlaceHolder());
 				challanSectionItemDTO.setMaxLength(challanItem.getMaxLength());
 				challanSectionItemDTO.setMaxNumber(challanItem.getMaxNumber());
 				challanSectionItemDTO.setUpdatedDate(challanItem.getUpdatedDate());
@@ -1141,5 +1145,28 @@ public class TaxServiceImpl implements TaxService {
 	}
 	return response;
 }
+
+	@Override
+	public Response<String> changeSectionStatus(long sectionId) {
+		Response<String> response = new Response<>();
+		try {
+			long result = taxDao.changeSectionStatus(sectionId);
+		 	   if (result > 0) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+	    	   } else if (result == -2) {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+
+
 
 }

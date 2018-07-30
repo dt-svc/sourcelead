@@ -109,5 +109,8 @@ public interface TaxDao {
 
 	public long changeChallanItemStatus(long id);
 
+	public long changeSectionStatus(long sectionId);
+
+
 
 }
