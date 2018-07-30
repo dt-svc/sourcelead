@@ -13,7 +13,7 @@ $(document).ready(function(){
 });
 </script>
 
-<section class="content-wraper contentWraper">
+<section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
       <h2>Batches</h2>
@@ -21,19 +21,19 @@ $(document).ready(function(){
     <div class="pull-right brud-crum">Home &raquo; Batches</div>
   </section>
   <div class="timesheet_out">
-    <div class="tablelist-wrap">
-      <div class="timesheetHead minHeight40 mt minHeight40">
+    <div class="tablelist-wrap backgroundWhite">
+      <div class="reportHead">
 	<div class="pull-right">
-		<ul class="list-unstyled list-inline">
+		<ul class="list-unstyled list-inline clearfix">
+		<li>
+			<a onClick="addbatches()" class="newAdBtn mr5" id="createbatches">+ Create</a>
+		</li>
 			<li>
-			<div class="dynamic_search">
+			<div class="dynamic_search mt10">
 			<input type="text" placeholder="Search" id='dataTableSearch' />
 			<i class="fa fa-search"></i>
 			</div>              
 			</li>
-			<li>
-			<a onClick="addbatches()" class="addBtn" id="createbatches">+ Create</a>
-		</li>
 		</ul>
 	</div>
 </div>
@@ -41,7 +41,7 @@ $(document).ready(function(){
 			<input type="text" placeholder="Search" id='dataTableSearch' onclick="getAllDeductionType();"/>
 			<i class="fa fa-search"></i>
 		 </div> -->
-      <div class="styleTables datatable_filter">
+      <div class="require_wrap_table datatable_filter">
       <div id="userGroupDiv"></div>
                
     <div class="clearfix"></div>

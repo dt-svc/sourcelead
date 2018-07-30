@@ -24,7 +24,7 @@
 			editMe(this);
 		 };
 	</script>
-<script>
+<script>	
 	$(document).ready(function() {
 		var location = "${location}";
 		document.getElementById("createUser_form").reset();
@@ -147,9 +147,9 @@
 	                  </div>
                   </div>
                   </div>
-                  <div class="col-md-5" id="EmailIdDiv">
-                  <label class="clearfix">SSN<span class="text-danger">&nbsp;*</span></label>
-                  <div class="clearfix">
+                  <div class="form-group" id="EmailIdDiv">
+                  <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9">
                     <input type="text" class="form-control" id="ssn" name="SSN" field-name="First Name" data-validation="required validate_Space validate_int validate_length length9-9">
                   </div>
                   </div>
@@ -176,9 +176,9 @@
                   </div>
                 </div>
                 
-               <div class="col-md-5">
-                  <label class="clearfix">Work Location<span class="text-danger">&nbsp;*</span></label>
-                  <div class="clearfix">
+               <div class="form-group">
+                  <label class="col-md-3">Work Location<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9">
                    	<select class="form-control chosen-select" id="workLocation" name="workLocation" field-name="Work Location" data-validation="required" >
                         <option value="">--Select Location--</option>
                         <c:forEach var="option" items="${locationList}">
@@ -188,9 +188,9 @@
                   </div>
                 </div>
                  
-                 <div class="col-md-5">
-                  <label class="clearfix">Residence Location<span class="text-danger">&nbsp;*</span></label>
-                  <div class="clearfix positionRelative">
+                 <div class="form-group">
+                  <label class="col-md-3">Residence Location<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9 positionRelative">
                     <input type="text" class="form-control" id="residenceLocation" name="residenceAddress" field-name="Residence Location" data-validation="required">
                      <input type="hidden" id="residenceCountry" name="residenceCountry" />
                      <input type="hidden" id="residenceState" name="residenceState" />
@@ -202,9 +202,9 @@
                   </div>
                 </div>
                   
-                 <div class="col-md-5">
-                  <label class="clearfix">Phone Number</label>
-                   <div class="clearfix">
+                 <div class="form-group">
+                  <label class="col-md-3">Phone Number</label>
+                   <div class="col-md-9">
                    <div class="row">
                     <div class="col-md-6 paddingRight">
                     <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
