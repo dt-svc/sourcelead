@@ -697,7 +697,7 @@ function preventTabkey(e){
 						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
 						  	<li><a href="<c:url value="/app/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
 						  </sec:authorize>
-						  <li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
+						  <li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Bank Accounts</a></li>
 						  
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-calendar" aria-hidden="true"></i>Leave Configuration</a></li>
@@ -1651,45 +1651,31 @@ $("#searchType").selectpicker('refresh');
 <div class="success_pop" id="inviteCompanyId" style="display: none;">
    	<i class="fa fa-check-circle"></i><span id="inviteCompanyMsgDiv"></span>
 </div>
-<div class="sideMask"></div>
-<div class="modal modalBulkImport" class="invite" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Bulk Import</h4>
-        </div>
+
+<div class="popupWrap" id="modalBulkImport" role="dialog">
+	<div class="popupHead"><span>Bulk Import</span><i class="closePop pull-right popClose"></i></div>
         <form:form id="bulkImportForm" name="bulkImportForm" method="post">
-         
-        <div class="modal-body invite_class">
-            <div class="form-group clearfix">
-                <label class="col-md-4 paddingRight" title="Path"><i class="fa fa-folder-open-o  paddingRight text-info" aria-hidden="true"></i>Folder Path<span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-8 paddingLeft">
+        <div class="popupContent">
+            <div class="clearfix mb">
+                <label class="noPad">Folder Path <b class="valStar">*</b></label>
+                <div class="clearfix">
                     <input type="text" class="form-control input-sm" placeholder="Folder Path" id="folderPath" name="folderPath" field-name="Folder Path" data-validation="required validate_Space">
                 </div>
             </div>
             <div id='bulkImportStatus' class="form-group clearfix">
             </div>
        </div>
-       
-       <div class="clearfix form-footer">
-            <div class="pull-right mr">
-          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="processCopiedFiles();"> <i class="paddingRight"></i>Continue</button>
-          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushBulkImportPath();"></i>Cancel
-            </button>
-                </div>
-        </div>
+        
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" onclick="processCopiedFiles();">Send</button>
+          <button type="button" class="slBtn md popClose" onclick="flushBulkImportPath();"> Cancel</button>
+        </div>        
+        
      </form:form>
    </div>
-  </div>
-</div>
 
 <div class="popupWrap" id="modalInvite" role="dialog">
-       
       <div class="popupHead"><span>Invite Company</span><i class="closePop pull-right popClose"></i></div>
-
         <form:form id="inviteCompany_form" name="inviteCompany_form" method="post">
         <div class="popupContent">
             <div class="clearfix mb">
@@ -1803,27 +1789,21 @@ $(document).ready(function(){
   </script> 
   <script>
   $("#invitePop").click(function(){
-  $("#modalInvite").fadeIn(100);
-  $(".mask").show();
+	  $("#modalInvite").fadeIn(100);
+	  $(".mask").show();
   });
   $("#bulkImport").click(function(){
-	  $(".modalBulkImport").fadeIn(100);
+	  $("#modalBulkImport").fadeIn(100);
 	  $(".mask").show();
 	  });
   $(".close, .popClose").click(function(){
 	  $("#modalInvite").fadeOut(100);
-	  $(".modalBulkImport").fadeOut(100);
+	  $("#modalBulkImport").fadeOut(100);
 	  $(".mask").hide();
 	  flushInviteCompany();
 	  flushBulkImportPath();
  });
-  $(".btnClose").click(function(){
-	  $("#modalInvite").fadeOut(100);
-	  $(".modalBulkImport").fadeOut(100);
-	  $(".mask").hide();
-	  flushInviteCompany();
-	  flushBulkImportPath();
-	  });
+
   
   function flushBulkImportPath() {
 	  $("#folderPath").val('');
