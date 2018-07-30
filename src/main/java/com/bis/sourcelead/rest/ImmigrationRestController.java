@@ -63,6 +63,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.dto.TaskDTO;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -1163,10 +1164,19 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean validateTemplateName(HttpServletRequest request,
-			@RequestParam(value = "templateName") String templateName,
-			@RequestParam(value = "templateId", defaultValue = "0") Long templateId) {
-		return immigrationTemplateService.validateTemplateNameExistance(templateName, templateId);
+	public boolean validateTemplateName(HttpServletRequest request,	@RequestParam(value = "templateName") String templateName,	@RequestParam(value = "templateId") Long templateId) {
+		
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 ImmigrationTemplate template = null;
+	       if(templateId != null){
+	    	   template = immigrationTemplateService.getImmigrationTemplateByIdAndLocationId(templateName, templateId, orgLocation.getId());
+	       }
+	       Boolean flag = false;
+		    if(template == null){
+		    	flag =  immigrationTemplateService.validateTemplateNameExistance(templateName, orgLocation.getId());
+		    }
+			return flag;
+		
 	}
 
 	@RequestMapping(value = { "/getCandidatesResumeDetailsById" })
