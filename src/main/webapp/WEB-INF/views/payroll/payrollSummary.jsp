@@ -219,9 +219,10 @@ $(document).ready(function(){
 function getPaySheetFrequencySummary(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var uuid = '${paySheetFrequencyUUID}';
+	var payPeriodNum = '${payPeriodNum}';
 	 $.ajax({
 		type : "GET",
-		url : sourceleadUrl+ "/getPaySheetFrequencySummary?uuid="+uuid,
+		url : sourceleadUrl+ "/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum,
 		success : function(data) {
 			var result = "";
 	        	result = result +'<table id="paySheetSummary">';

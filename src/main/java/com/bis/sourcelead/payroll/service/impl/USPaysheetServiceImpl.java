@@ -315,37 +315,41 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 	public List<USPayrollDTO> getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO) {
 		PaysheetFrequency pf = getPayFrequencyByUUID(paysheetFrequencyDTO.getPaySheetFrequencyuuid());
 		List<USPayrollDTO> list = new ArrayList<>();
-		if (pf != null && pf.getEmployeepayroll() != null) {
-			Set<EmployeePayroll> set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum()).collect(Collectors.toSet());
-			for(EmployeePayroll pay : set) {
-				USPayrollDTO payrollDTO = new USPayrollDTO();
-				payrollDTO.setEmpId(pay.getEmployee().getEmployeeId());
-				StringBuilder sb = new StringBuilder();
-				if (StringUtils.isNoneBlank(pay.getUser().getLastName())) {
-					sb.append(pay.getUser().getFirstName()).append(" ").append(pay.getUser().getLastName());
+		try {
+			if (pf != null && pf.getEmployeepayroll() != null) {
+				Set<EmployeePayroll> set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum()).collect(Collectors.toSet());
+				for(EmployeePayroll pay : set) {
+					USPayrollDTO payrollDTO = new USPayrollDTO();
+					payrollDTO.setEmpId(pay.getEmployee().getEmployeeId());
+					StringBuilder sb = new StringBuilder();
+					if (StringUtils.isNoneBlank(pay.getUser().getLastName())) {
+						sb.append(pay.getUser().getFirstName()).append(" ").append(pay.getUser().getLastName());
+					}
+					else {
+						sb.append(pay.getUser().getFirstName());
+					}
+					payrollDTO.setEmpName(sb.toString());
+					payrollDTO.setEmpPayrollId(pay.getId());
+					payrollDTO.setEmpPayrollUUID(pay.getUsEmpPayrollUUID());
+					payrollDTO.setGrossPay(pay.getGrossPay());
+					payrollDTO.setNetPay(pay.getNetPay());
+					payrollDTO.setRegularHrsTotalAmt(pay.getRehularHoursAmount());
+					payrollDTO.setPayRate(pay.getEmpPayRate());
+					payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
+					payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());
+					payrollDTO.setRegularHours(Float.parseFloat(pay.getRegularHours()));
+					payrollDTO.setTaxes(pay.getTaxes());
+					payrollDTO.setOtHoursTotalAmt(pay.getOverTimeAmount());
+					double overTimeHours = 0;
+					if(StringUtils.isNoneBlank(pay.getOverTimeHours())) {
+						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
+					}
+					payrollDTO.setOvertimeHours(overTimeHours);
+					list.add(payrollDTO);
 				}
-				else {
-					sb.append(pay.getUser().getFirstName());
-				}
-				payrollDTO.setEmpName(sb.toString());
-				payrollDTO.setEmpPayrollId(pay.getId());
-				payrollDTO.setEmpPayrollUUID(pay.getUsEmpPayrollUUID());
-				payrollDTO.setGrossPay(pay.getGrossPay());
-				payrollDTO.setNetPay(pay.getNetPay());
-				payrollDTO.setRegularHrsTotalAmt(pay.getRehularHoursAmount());
-				payrollDTO.setPayRate(pay.getEmpPayRate());
-				payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
-				payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());
-				payrollDTO.setRegularHours(Float.parseFloat(pay.getRegularHours()));
-				payrollDTO.setTaxes(pay.getTaxes());
-				payrollDTO.setOtHoursTotalAmt(pay.getOverTimeAmount());
-				double overTimeHours = 0;
-				if(StringUtils.isNoneBlank(pay.getOverTimeHours())) {
-					overTimeHours = Double.parseDouble(pay.getOverTimeHours());
-				}
-				payrollDTO.setOvertimeHours(overTimeHours);
-				list.add(payrollDTO);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return list;
 	}
