@@ -29,7 +29,8 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 	private Date updatedDate;
 	private String updatedBy;
 	private List<JSONObject> submissionItems;
-
+	private String submittedAmount;
+	private String taxAmount;
 	private List<SourceleadTaxITDeclarationSubmissionItemDTO> submissionItemList;
 
 	private List<SourceleadTaxITDeclarationSubmissionSectionDTO> submittedSectionList;
@@ -154,6 +155,22 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 
 	public void setSubmissionItemList(List<SourceleadTaxITDeclarationSubmissionItemDTO> submissionItemList) {
 		this.submissionItemList = submissionItemList;
+	}
+
+	public String getSubmittedAmount() {
+		return submittedAmount;
+	}
+
+	public void setSubmittedAmount(String submittedAmount) {
+		this.submittedAmount = submittedAmount;
+	}
+
+	public String getTaxAmount() {
+		return taxAmount;
+	}
+
+	public void setTaxAmount(String taxAmount) {
+		this.taxAmount = taxAmount;
 	}
 
 	public static long getSerialversionuid() {

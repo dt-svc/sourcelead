@@ -67,7 +67,7 @@ public interface TaxService {
 	Response<Long> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO,
 			User loggedInUser);
 
-	List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid, String financialYear);
+	List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid, String financialYear, Paginator paginator);
 
 	SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID);
 
@@ -85,9 +85,12 @@ public interface TaxService {
 
 	public SourceleadTaxChallanItemDTO getChallanItemDetails(Long itemRowId);
 
+
 	 public Response<String> changeChallanItemStatus(long itemId);
 
 	 public Response<String> changeSectionStatus(long sectionId);
+
+	Response<String> changeITDeclarationSubmissionStatus(long id, int status);
 
 
 }

@@ -586,8 +586,10 @@ function Tax() {
 						result += "</div>";
 						result += "</td>";
 						var sectionNames = "";
-						for(var i=0; i < formList[e].sourceleadTaxSectionList.length; i++){
-							sectionNames += formList[e].sourceleadTaxSectionList[i].name + (i < (formList[e].sourceleadTaxSectionList.length - 1) ? ",<br>" : "");
+						if(formList[e].sourceleadTaxSectionList != null) {
+							for(var i=0; i < formList[e].sourceleadTaxSectionList.length; i++){
+								sectionNames += formList[e].sourceleadTaxSectionList[i].name + (i < (formList[e].sourceleadTaxSectionList.length - 1) ? ",<br>" : "");
+							}
 						}
 						result += "<td><div>" + (sectionNames === "" ? "--------" : sectionNames) + "</div></td>";
 						result += "<td>";
@@ -690,7 +692,7 @@ function addSection() {
 	$(".comMask, .section").fadeIn();
 }
 function modalClose() {
-	$(".comMask, .section, .addSectionItemPopup").fadeOut();
+	$(".comMask, .section, .addSectionItemPopup, .addSectionChallanItemPopup").fadeOut();
 }
 function addSectionItem(sectionId, sectionName){
 	$(".addSectionItemPopup").data("sectionId", sectionId);
@@ -902,9 +904,6 @@ function flushPopupData(){
 	getSelectedFieldDetails();
 	
 	
-}
-function modalClose() {
-	$(".comMask, .section, .addSectionChallanItemPopup").fadeOut();
 }
 
 function addChallaItem(sectionId, sectionName){

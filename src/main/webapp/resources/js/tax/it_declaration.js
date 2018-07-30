@@ -175,3 +175,106 @@ function removeAttachment(ele) {
 			
 	});
 }
+
+function approveOrRejectForm(formId, status) {
+	$("#remove_user_pop p").html("You are choosing to make this form as "+ (status === 1 ? "Approve": "Reject"));
+	$("#confirmId").data("id", formId);
+	$("#confirmId").data("status", status);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function changeFormStatus() {
+	var formId = $("#confirmId").data("id");
+	var status = $("#confirmId").data("status");
+	$.post(sourceleadUrl + "/itDeclaration/changeStatus", {id: $("#confirmId").data("id"), status: $("#confirmId").data("status")}, function(response) {
+		if (response && response.response === "INVALID_DATA") {
+			showError(response.responseMessage);
+		} else if (response.response === "AWKWARD") {
+			location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
+			closeChangeStatusPopup();
+			$(".success_pop").css("display","block");
+			$(".success_pop span").html("Changed form status as " + (status === 1 ? "Approved" : "Rejected" ));
+    		setTimeout(function() {
+    			window.location.reload();
+    			$(".success_pop").css("display","none");
+	 		},500);
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+			showError("Operation failed, please try again");
+		}
+	});
+}
+
+function closeChangeStatusPopup() {
+	$("#remove_user_pop").slideUp(200);
+	$(".project_inn_mask").fadeOut(200);
+}
+
+function getItDeclarationSubmissionList(pageNo) {
+	var pageSize = $("#pageSize").val();
+	$("#formList").empty();
+	$.post(sourceleadUrl + "/itDeclaration/list", {pageNo:pageNo, pageSize:pageSize}, function(response) {
+		if (response && response.response === "INVALID_DATA") {
+			showError(response.responseMessage);
+		} else if (response.response === "AWKWARD") {
+			location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
+			var formList = response.data;
+			if(formList.length > 0) {
+				for(var e in formList) {
+					var text = "<tr>";
+					text += "	<td>" + formList[e].userId + "</td>";
+					text += "	<td>";
+					text += "		<div class='tblminwidth proj_show'>";
+					text += "			<span>" + formList[e].userName + "</span> <i class='fa fa-binoculars'></i>";
+					text += "		</div>";
+					text += "	</td>";
+					text += "	<td><div class='tbldata-dotdot-verybig'>" + formList[e].financialYear + "</div></td>";
+					text += "	<td>" + formList[e].submittedAmount + "</td>";
+					/*text += "	<td>" + formList[e].taxAmount + "</td>";*/
+					text += "	<td><div>" + formList[e].statusText + "</div></td>";
+					text += "	<td>";
+					text += "		<ul class='list-unstyled list-inline mb0'>";
+					text += "			<li><a href='viewForm?uuid=${uuid}&formUUID=" + formList[e].uuid + "' title='View' class='anchor-black'><i class='fa fa-eye-slash'></i></a></li>";
+					if(formList[e].status === 0) {
+						text += "				<li><a href='editForm?uuid=${uuid}&formUUID=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
+						text += "				<li><a href='javascript:void()' title='Approve' onclick='approveOrRejectForm(" + formList[e].id + ", 1)'><i class='fa fa-check'></i></a></li>";
+						text += "				<li><a href='javascript:void()' title='Reject' onclick='approveOrRejectForm(" + formList[e].id + ", -1)' class='text-danger'><i class='fa fa-close'></i></a></li>";
+					}
+					text += "		</ul>";
+					text += "	</td>";
+					text += "</tr>";
+					$("#formList").append(text);
+				}
+				var paginator = response.paginator;
+				var options = {
+						currentPage : paginator.pageNo + 1,
+						items : paginator.totalRows,
+						itemsOnPage : paginator.pageSize,
+						ellipsePageSet : false,
+						cssStyle : 'light-theme',
+						onPageClick : function(pageNumber, event) {
+							getItDeclarationSubmissionList(pageNumber-1);
+						}
+				};
+				$("#pagination-demo").pagination(options);
+				$("#pageMsg").html("Showing " + ((paginator.pageNo * paginator.pageSize) + 1) + " to " + (((paginator.pageNo + 1) * paginator.pageSize) > paginator.totalRows ? paginator.totalRows : ((paginator.pageNo + 1) * paginator.pageSize)) + " of " + paginator.totalRows + " results");
+			
+				$("#ResultsDiv").show();
+				$("#paginationDiv").show();
+				$("#emptyRecordsDiv").hide();
+			} else {
+				$("#ResultsDiv").hide();
+				$("#paginationDiv").hide();
+				$("#emptyRecordsDiv").show();
+			}
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+			showError("Operation failed, please try again");
+		}
+	});
+}
