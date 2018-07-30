@@ -23,6 +23,9 @@ public class PaysheetFrequencyDTO  extends SearchDTO{
 	private String paySheetFrequencyType;
 	private BigDecimal total;
 	private String paySheetFrequencyuuid;
+	private String approverStatus;
+	private Integer payPeriodNum;
+	private String groupName;
 	
 
 	private List<USPayrollDTO> payrollDTO;
@@ -116,6 +119,24 @@ public class PaysheetFrequencyDTO  extends SearchDTO{
 	public void setId(String id)
 	{
 		this.id = id;
+	}
+	public String getApproverStatus() {
+		return approverStatus;
+	}
+	public void setApproverStatus(String approverStatus) {
+		this.approverStatus = approverStatus;
+	}
+	public Integer getPayPeriodNum() {
+		return payPeriodNum;
+	}
+	public void setPayPeriodNum(Integer payPeriodNum) {
+		this.payPeriodNum = payPeriodNum;
+	}
+	public String getGroupName() {
+		return groupName;
+	}
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 	
 }

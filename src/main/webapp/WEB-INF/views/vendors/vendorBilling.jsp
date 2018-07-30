@@ -1134,6 +1134,9 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,paym
 
 			 }
 			 
+		 }if(invoiceStatus == "SENT"){
+			 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Bill"></i>Pay</a></li>';
+	 
 		 }
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
 		result = result+' <li><a class="" href="'+fileUrl+'" title="Print" target="_blank"><i class="fa fa-print paddingLeft paddingRight"></i>Print</a></li>';

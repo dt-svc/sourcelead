@@ -533,6 +533,7 @@ public class ProjectMembers implements Serializable {
 	}
 
 	@Transient
+	@JsonProperty
 	private List<Contracts> contractsList;
 
 	@JsonIgnore

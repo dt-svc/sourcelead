@@ -53,7 +53,7 @@ public class USPaysheetDaoImpl implements USPaysheetDao{
 	@Transactional
 	public ResponseList<PaysheetFrequency> getPaySheetFrequencyListByOrgLocationId(OrgLocations orgLocation,PaysheetFrequencyDTO paysheetFrequencyDTO) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String qry = "from PaysheetFrequency pf where pf.orgLocation.id =:orgLocationId and pf.status = '1'";
+		String qry = "from PaysheetFrequency pf where pf.orgLocation.id =:orgLocationId and pf.status = '1' and pf.type = 'PAYROLL'";
 		
 		List<PaysheetFrequency> freqList = null;
 		ResponseList<PaysheetFrequency> response = new ResponseList<>();

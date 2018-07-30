@@ -183,12 +183,28 @@ public class RequirementInterviewRestController {
 	@RequestMapping(value = "/app/saveInterview" , method = RequestMethod.POST)
 	   public String saveInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
- 	    String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
+			JSONObject jsonObj = new JSONObject(json);
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			
+			
+	     /*	Work is in progress.
+	        String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+			for (long c = 1; c < maxCount; c++) {
+				if(jsonObj.has(c+"applicant") && !jsonObj.getString(c+"applicant").isEmpty()){
+					if(jsonObj.has("externalInterviewersList["+c+"]")  && !jsonObj.getString("externalInterviewersList["+c+"]").isEmpty()) {
+						System.out.println(jsonObj.getString("externalInterviewersList["+c+"]"));
+						JSONArray jsonArray =  new JSONArray(jsonObj.getString("externalInterviewersList["+c+"]"));
+						for(int i=0; i<jsonArray.length(); i++) {
+							JSONObject jsonObject = jsonArray.getJSONObject(i);
+							System.out.println(jsonObject.getString("interviewerName")+">>>>"+jsonObject.getString("interviewerEmail"));
+						}
+					}
+				}
+			}*/
 			
 			requirementInterviewService.saveRequirementInterview(jsonObj,user,orgLocations,loginOrg);
  	    

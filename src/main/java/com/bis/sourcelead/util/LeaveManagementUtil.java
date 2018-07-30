@@ -599,15 +599,15 @@ public class LeaveManagementUtil {
 			}
 		}
 		
-		if (l.getIncludeHolidays() != null
-				&& !Constants.YES.equalsIgnoreCase(l.getIncludeHolidays())) {
+		if (leaveType.getIncludeHolidays() != null
+				&& !Constants.YES.equalsIgnoreCase(leaveType.getIncludeHolidays())) {
 			List<HolidayAndRestrictday> holidayList = holidayService.getHolidayByFromToDate(startDate, endDate, orgLocations);
 			for (HolidayAndRestrictday holiday : holidayList) {
 				Date holidayDate = commonUtil.orgLocationCommonDate(holiday.getDay(), orgLocations);
 				boolean s = appliedLeaves.removeIf(x -> commonUtil.orgLocationCommonDate(x.getApplyLeaveDate(), orgLocations).equals(holidayDate));
 			}
 		}
-		if (l.getIncludeWeekoff() != null && !Constants.YES.equalsIgnoreCase(l.getIncludeWeekoff())) {
+		if (leaveType.getIncludeWeekoff() != null && !Constants.YES.equalsIgnoreCase(leaveType.getIncludeWeekoff())) {
 			if (orgLocations.getWeekOffDays() != null) {
 				String[] weekOoffs = orgLocations.getWeekOffDays().split(",");
 				for (String weekEndDay : weekOoffs) {
@@ -800,7 +800,9 @@ public class LeaveManagementUtil {
                 	double oneHrMin = oneHr / 60;
                 	actualAppliedLeave = oneHrMin * fromMinutes;
                 }else if(Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())){
-                	
+                	double oneHr = leaveType.getNoOfDaysPerPeriod() / workingHours;
+                	double oneHrMin = oneHr / 60;
+                	actualAppliedLeave = oneHrMin * fromMinutes;
                 }else if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
                 	
                 }else if(Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod())){

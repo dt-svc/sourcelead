@@ -74,7 +74,7 @@ function approvePayroll(){
 			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date">
 		</div>
 		<div class="col-md-2">
-			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runUSPayroll();">Run Payroll</a>
+			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runUSPayroll();">Initiate Payroll</a>
 		</div>
 	</div>						
 </div>

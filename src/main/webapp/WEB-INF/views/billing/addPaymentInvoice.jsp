@@ -104,6 +104,8 @@
     	 		</form>
     </section>
 
+<div id="validateErrorMsgDivId"></div>
+
 <script type="text/javascript">
 $(document).ready(function() {
 	getInvoiceList();
@@ -185,7 +187,7 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'<td>'+opt.total+'</td>';
 	                    	 result = result +'<td>'+opt.dueAmount+'</td>';
 	                    	 result = result +'<td>'+opt.invoiceStatus+'</td>';
-	                    	 result = result +'<td><input type="text" value="" placeholder="Total Due" onkeyup="amountInputVal1(this);validateNumber(this);" class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'" field-name ="Total Due"></td>';
+	                    	 result = result +'<td><div><input type="text" value="" placeholder="Total Due" onkeyup="amountInputVal1(this);validateNumber(this);validateDueAmount(this,'+opt.dueAmount+');" onfocusout ="validateDueAmount(this,'+opt.dueAmount+');"  class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'" field-name ="Total Due"></div></td>';
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
@@ -231,7 +233,17 @@ $('#paymentDate').datepicker({
 	}
   
 function addInvoice(){
-	 if ($('#paymentForm').validate(false, validationSettings)) {
+	// check if dueamount is valid or not
+	var Duevalidate = true;
+	$("input[id^=totalAmountRow]").each(function() {
+		 if($(this).next('p').length >0){
+			 Duevalidate = false;
+			 console.log(" inside Duevalidate"+Duevalidate)
+			 return false;
+		  }	 
+	  });
+	 
+ 	 if ($('#paymentForm').validate(false, validationSettings) && Duevalidate) {
 		 var grandDueTotal = $("#grandTotalAmount").text();
 		 var grandTotalReceived = $("#totalAmount").val();
 		 if(grandDueTotal == grandTotalReceived){
@@ -245,21 +257,79 @@ function addInvoice(){
 		 if(amount !=null && amount !="" && amount !="undefined"){
 		 var formData = getFormData("paymentForm");
 		 $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
-			 location.reload();
+			 	if (result && result.response === "INVALID_DATA") {
+          		    showError(result.responseMessage);
+          		} else if (result.response === "AWKWARD") {
+          		    location.href = "/errorPage";
+          		} else if (result.response === "SUCCESS") {
+          			location.reload();
+          		} else if (result.indexOf('Sign In') !== -1) {
+          			location.replace(sourceleadUrl);
+          		} else {
+          		    showError("Operation failed, please try again");
+          		}
 	 });
 		 }else{
-			 alert("please select at least one record / Amount should not Empty");
+			// alert("please select at least one record / Amount should not Empty");
+			 showCheckBoxDivPopup();
 		 }
 		}else{
-			 alert("Amount Received and Due Total should be same");
+			 //alert("Amount Received and Due Total should be same");
+			 showAmountWarningPopup();
 		 }
-	 }
+	 } 
 }
 $('body').on('blur', '#paymentForm', function() {
 	$("#paymentForm").showHelpOnFocus();
 	$("#paymentForm").validateOnBlur(false, validationSettings);
+	console.log("inisde last form action");
+	
+	// using for adding error message for input filed again.
+	$("input[id^=totalAmountRow]").each(function() {
+		validateDueAmount(this, $(this).closest('td').prev().prev().text());
+	  });
 });
 </script>
+
+<script type="text/javascript">
+function showAmountWarningPopup(){ // multiWarnMsg populated when validated form and docs required upload docs info.
+	$("#validateErrorMsgDivId").val('');
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a modal-body'>";
+	result = result + " <b class='mt mb'>Amount Received and Due Total should be same</b>";
+	   result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result	+ "		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='closePop()'></b>";
+		result = result + "	</div>";
+		$("#validateErrorMsgDivId").append(result);
+		$("#remove_immigration_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
+function showCheckBoxDivPopup(){ 
+	$("#validateErrorMsgDivId").val('');
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a modal-body'>";
+	result = result + " <b class='mt mb'>Please select at least one record / Due Amount should not Empty</b>";
+	   result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result	+ "		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='closePop()'></b>";
+		result = result + "	</div>";
+		$("#validateErrorMsgDivId").append(result);
+		$("#remove_immigration_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+
+	function closePop() {
+		$("#remove_immigration_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+		$(".project_inn_mask").remove();
+		$("#remove_immigration_pop").remove();
+	}
+</script>
+
   <script>
   function amountInputVal1(obj){
 	  // this is for total value updation based our input
@@ -274,6 +344,20 @@ $('body').on('blur', '#paymentForm', function() {
 	// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
 	  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(totalValue.toFixed(2));
   }
+  
+  
+  function validateDueAmount(obj,dueAmount){
+	  var adjusteVal= $(obj).val();
+	  if($.isNumeric(adjusteVal)){
+		  if(adjusteVal > dueAmount){
+			  $('#'+obj.id).parent().find('p.jquery_form_error_message').remove();
+			 $('#'+obj.id).parent().append("<p class='jquery_form_error_message'>Entered amount should not greater the due amount</p>");
+		  }else{
+			  $('#'+obj.id).parent().find('p.jquery_form_error_message').remove();
+		  }
+	 } 
+  }
+  
   </script>
    <script>
 	function toggleInvoices(source) {

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -288,6 +289,7 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 			pfd.setPayFrequency(pay.getUserGroup().getPayFrequency());
 			pfd.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPayCheckDate()));
 			pfd.setPaySheetFrequencyType(pay.getType());
+			pfd.setApproverStatus(pay.getApproverStatus());
 			
 			StringBuilder sbDate = new StringBuilder();
 			pfd.setPayPeriod(sbDate.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyStartDate())).append(" / ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyEndDate())).toString());
@@ -310,11 +312,12 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 	}
 
 	@Override
-	public List<USPayrollDTO> getPaySheetFrequencySummary(String paySheetFrequencyUUID) {
-		PaysheetFrequency pf = getPayFrequencyByUUID(paySheetFrequencyUUID);
+	public List<USPayrollDTO> getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO) {
+		PaysheetFrequency pf = getPayFrequencyByUUID(paysheetFrequencyDTO.getPaySheetFrequencyuuid());
 		List<USPayrollDTO> list = new ArrayList<>();
 		if (pf != null && pf.getEmployeepayroll() != null) {
-			for(EmployeePayroll pay : pf.getEmployeepayroll()) {
+			Set<EmployeePayroll> set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum()).collect(Collectors.toSet());
+			for(EmployeePayroll pay : set) {
 				USPayrollDTO payrollDTO = new USPayrollDTO();
 				payrollDTO.setEmpId(pay.getEmployee().getEmployeeId());
 				StringBuilder sb = new StringBuilder();

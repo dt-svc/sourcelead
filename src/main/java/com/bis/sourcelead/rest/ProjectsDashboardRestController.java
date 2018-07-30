@@ -477,7 +477,6 @@ public class ProjectsDashboardRestController {
 			 }
 			 
 			 List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId());
-				List<OrgRelations> clientList = new ArrayList<>();
 				if(clientsList != null & clientsList.size() > 0) {
 					for(OrgRelations orgRelations : clientsList) {
 						OrgLocations clientOrgLoc = null;

@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
@@ -68,6 +69,9 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 	
 	@Autowired
 	private LeaveService leaveService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Override
 	@Transactional
@@ -176,11 +180,11 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 
 	@Override
 	@Transactional
-	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId,Long orgLocationId)
+	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId,Long orgLocationId, Long orgId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateBalanceLeave associateBalanceLeave = null;
-		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId and balLeave.orgLocationId.id = :orgLocationId").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).list();
+		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId and (balLeave.orgLocationId.id = :orgLocationId or balLeave.orgLocationId.org.id = :orgId)").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).setLong("orgId", orgId).list();
 		if (assoBalLeave != null && assoBalLeave.size() > 0) {
 			associateBalanceLeave = assoBalLeave.get(0);
 		}
@@ -213,7 +217,13 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						}else {
 							stmt.setLong(1, status);
 						}
-						AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
+						OrgLocations orgLoc = null;
+						try {
+							orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+						AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId,orgLoc.getOrg().getId());
 						float assoBalLeaves = Float.parseFloat(associateBalanceLeave.getTotalLeaves());
 						Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
 						float days = 0;

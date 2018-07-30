@@ -12,37 +12,24 @@
 <section class="content-wraper">
     <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
-          <div class="pull-left">
-      <!-- <h2>Submission Templates</h2> -->
-      <h2 class="pull-left">Vendor Onboard Templates</h2>
-				<div class=" pull-left reportsH">
-			
-			<div class="RePop openTemplates">
-				
-			</div>
-		</div>
-    </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Vendor Onboard Templates List</div>
- <div class="clearfix"></div>
+        <div class="pull-left"><h2 class="pull-left">Vendor Onboard Templates</h2></div>
+     	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Vendor Onboard Templates List</div>
+ 		<div class="clearfix"></div>
     </section>
     
-    <div class="timesheet_out">
-			<div class="project_wrap">
-			<div class="timesheet_head">
-			<ul>
-			 <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
-			 	<li><a href="<c:url value='${appPath}/addNewVendorOnboardTemplate'/>"><i class="fa fa-plus"></i>Add Template</a></li>
-		 	 </sec:authorize>
-			</ul>
-			     
-            </div>
-			
-			    <div class="clients_wrap_table datatable_scroll">
-				    <div id="onboardingTemplatesList" class="datatable_filter"></div>
-				</div>	   
-					
-			</div>
-	   </div>	
+	<div class="project_wrap">
+	
+	 <div class="reportHead reportHeadDataTab clearfix">
+	    <ul class="pull-right list-unstyled list-inline">
+		 <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
+		 	<li><a href="<c:url value='${appPath}/addNewVendorOnboardTemplate'/>" class="newAdBtn">+ Template</a></li>
+	 	 </sec:authorize>	    
+		</ul>
+	</div>		
+    <div class="clients_wrap_table datatable_scroll">
+	    <div id="onboardingTemplatesList" class="datatable_filter dataSeaTop"></div>
+	</div>	   
+	</div>
         
 </section>
     
@@ -112,11 +99,11 @@ function onboardingTemplatesList(){
 		                    		 result = result +"<td><div><span>"+opt.templateStatus+"</span></div></td>";
 		                    		 
 			                    	 result = result +"<td>";
-			                    	 result = result +"<div class=''>";
-			                    	 result = result +"<a href='"+sourceleadUrl+"/viewVendorOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>Edit</a> ";
+			                    	 result = result +"<div class='tblicons'>";
+			                    	 result = result +"<a href='"+sourceleadUrl+"/viewVendorOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"' title='Edit' class='mr10'><i class='fa fa-pencil'></i></a> ";
 			                    	
 			                    	 if(opt.isDefaultTemplate != 'Y'){
-			                    		 result = result +'| <a href="javascript:void(0)" onclick="deleteOnboadTemplate(\''+opt.templateUUID+'\','+opt.id+');">Delete</a>';
+			                    		 result = result +'| <a href="javascript:void(0)" onclick="deleteOnboadTemplate(\''+opt.templateUUID+'\','+opt.id+');" title="Delete"><i class="fa fa-trash text-danger"></i></a>';
 			                    	 }
 			                    	 result = result +"</div></td>"; 
 			                     
