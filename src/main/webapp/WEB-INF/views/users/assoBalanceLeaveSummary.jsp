@@ -63,7 +63,6 @@ function editBalLeave(typeId){
 function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
 	var totalLeaves = $("#"+rowId+"noofLeaves").val();
 	var valid = !isNaN(totalLeaves);
-	alert(valid)
 	if(totalLeaves != "" && totalLeaves != null && totalLeaves != 'undefined' && valid){
 		$("#"+rowId+"errorDiv").text("");
 		$.ajax({
