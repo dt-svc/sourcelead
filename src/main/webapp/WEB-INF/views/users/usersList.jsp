@@ -318,7 +318,7 @@ function getUsersSearchResult(searchValue){
 				</c:if>
 				
 				<c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
-				<li><a href="<c:url value='${appPath}/userGroupList'/>"><i class="fa fa-plus"></i>&nbsp;Create Batch</a></li>
+				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userGroupList'/>"><i class="fa fa-plus"></i>&nbsp;Create Batch</a></li>
 				</c:if>
 				
 				<c:if test="${orgLocationsCount == 1}">

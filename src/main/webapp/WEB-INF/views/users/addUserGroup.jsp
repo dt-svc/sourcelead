@@ -9,9 +9,9 @@
 <div class="popupWrap popBig">
  <form:form id="add_user_group_form"  name="add_user_group_form" method="post">
  <div id="loading"></div>
-    <div class="popupHead">Add Group <i class="closePop pull-right popClose"></i></div>
+    <div class="popupHead">Add Group <i class="closePop pull-right popClose" onclick="closeBatch();"></i></div>
     <div class="popupMid">
-                    <div class="row minHeightcol5">
+                    <div class="minHeightcol5">
                         <div class="col-md-6">
                             <label>Group Id<span class="text-danger">*</span> </label>
                             <div class="clearfix" id="groupIdDiv">
