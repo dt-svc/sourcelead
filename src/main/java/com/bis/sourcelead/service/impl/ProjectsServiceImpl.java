@@ -2025,6 +2025,19 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    			  }
 			    		}
 			    		
+			      		if(expenseApproverHierarchiesList != null && expenseApproverHierarchiesList.size() == 1 && (projectDTO.getLevel2ExpenseApprover() != null && !projectDTO.getLevel2ExpenseApprover().isEmpty()))	{
+		    				ExpenseProjectApproverHierarchy eah2 = new ExpenseProjectApproverHierarchy();
+		    				  User approverUser2 = new User();
+		    				  approverUser2.setId(Long.parseLong(projectDTO.getLevel2ExpenseApprover()));
+		    				  eah2.setApproverUserId(approverUser2);
+		    				  eah2.setProjectId(projects);
+		    				  ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocation.getId());
+		    				  eah2.setProjectClientsId(projectClients);
+		    				  eah2.setStatus("1");
+		    				  eah2.setLevel(2);
+		    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(eah2);
+		    		   }
+			    		
 			    	
 		    		/*if(templist != null && !templist.isEmpty()){
 			    			//getting projectmember userId's who are added to the project
@@ -3373,6 +3386,47 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		    			}
 		    			
 		    		}
+		    		
+		    		
+		    		
+		    		Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchiesList = projectClients.getExpenseProjectApproverHierarchyList();
+			    		for(ExpenseProjectApproverHierarchy expenseHierarchy : expenseApproverHierarchiesList) {
+			    			if(expenseHierarchy.getLevel() == 1) {
+			    				  String level1ApproverUserDetails[] = projectDTO.getLevel1ExpenseApprover().split(",");
+			    				  User approverUser = new User();
+			    				  approverUser.setId(Long.valueOf(level1ApproverUserDetails[0]));
+			    				  expenseHierarchy.setApproverUserId(approverUser);
+			    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(expenseHierarchy);
+			    			}
+			    			
+			    			  if(expenseHierarchy.getLevel() == 2){
+			    				  
+			    				  if((projectDTO.getLevel2ExpenseApprover() == null || projectDTO.getLevel2ExpenseApprover().isEmpty())) {
+			    					  expenseHierarchy.setStatus("0");
+				    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(expenseHierarchy);
+			    				  }else {
+				    				  User approverUser2 = new User();
+				    				  approverUser2.setId(Long.parseLong(projectDTO.getLevel2ExpenseApprover()));
+				    				  expenseHierarchy.setApproverUserId(approverUser2);
+				    				  expenseHierarchy.setStatus("1");
+				    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(expenseHierarchy);
+				    			  }
+			    				 
+			    			  }
+		    		}
+			    		
+		    		if(expenseApproverHierarchiesList != null && expenseApproverHierarchiesList.size() == 1 && (projectDTO.getLevel2ExpenseApprover() != null && !projectDTO.getLevel2ExpenseApprover().isEmpty()))	{
+		    				ExpenseProjectApproverHierarchy eah2 = new ExpenseProjectApproverHierarchy();
+		    				  User approverUser2 = new User();
+		    				  approverUser2.setId(Long.parseLong(projectDTO.getLevel2ExpenseApprover()));
+		    				  eah2.setApproverUserId(approverUser2);
+		    				  eah2.setProjectId(projects);
+		    				  eah2.setProjectClientsId(projectClients);
+		    				  eah2.setStatus("1");
+		    				  eah2.setLevel(2);
+		    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(eah2);
+		    		}
+			    		
 		    		 /**
 		    		  * Storing Submission Approver Hierarchy Records based on Changes Made Against Level1 and Level2 Approvers
 		    		  */

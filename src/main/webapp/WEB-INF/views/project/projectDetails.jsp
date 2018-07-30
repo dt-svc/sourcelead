@@ -519,6 +519,85 @@ function editClientProjectDetails(projectId){
 				}
 				result = result + '</select>';
 				result = result + '</div>';
+				
+			  result = result + '<div class="clearfix"></div>';	
+				
+				
+				result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
+				result = result + '	<label>Expense Approver 1 <span class="text-danger">*</span></label>';
+				result = result + '<div class="row">';
+				 if ((json.expenseApprover2 != null && json.expenseApprover2 != "" && json.expenseApprover2 != "undefined") ||
+						 (json.expenseApproverLevel1UserType != null && json.expenseApproverLevel1UserType != "" && json.expenseApproverLevel1UserType != "undefined" 
+						 &&  json.expenseApproverLevel1UserType == "Admin")) {  
+					result = result + '<div class="col-md-12" id="levelone-select-approver">';
+				 }else{
+					result = result + '<div class="col-md-8 paddingRight" id="levelone-select-approver">';	
+				} 
+				result = result	+ '<select  class="form-control chosen-select" onchange="getLevel2ExpenseApprovers('+json.expenseApprover2+ ');" id="level1ExpenseApprover" name="level1ExpenseApprover" >';
+				for (var j = 0; j < json.managersList.length; j++) {
+					var manager = json.managersList[j];
+					if(manager.lastName != null && manager.lastName != '' && manager.lastName != 'undefined'){
+						var managerName = manager.firstName +'' + manager.lastName ;
+					}else{
+						var managerName = manager.firstName;
+					}
+					if (json.expenseApprover1 == manager.id) {
+						selected = 'selected';
+						result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >" + manager.name + " ("+manager.userType+")</option>";
+					} else {
+						result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.name + "  ("+manager.userType+")</option>";
+
+					}
+				}
+				result = result + '</select>';
+				result = result + '</div>';
+				
+				
+				if (json.expenseApproverLevel1UserType != null && json.expenseApproverLevel1UserType != "" && json.expenseApproverLevel1UserType != "undefined" &&  json.expenseApproverLevel1UserType != "Admin") { 
+					if (json.expenseApprover2 != null && json.expenseApprover2 != "" && json.expenseApprover2 != "undefined") { 
+						result = result + '<div class="col-md-2" id="level2ExpenseToggle" style="display:none">';
+						result = result + '<span class="btn btn-default formic1 addExpenseApproverLevel" onclick="getLevel2ExpenseApprovers(); showExpenseLevel2Div();">Add Level-II</span>';
+						result = result + '</div>';
+						} else{
+							result = result + '<div class="col-md-4 paddingLeft" id="level2ExpenseToggle" style="display:block">';
+							result = result + '<span class="btn btn-default formic1 addExpenseApproverLevel" onclick="getLevel2ExpenseApprovers(); showExpenseLevel2Div();">Add Level-II</span>';
+							result = result + '</div>';
+						} 
+				}else{
+					result = result + '<div class="col-md-4 paddingLeft" id="level2ExpenseToggle" style="display:none">';
+					result = result + '<span class="btn btn-default formic1 addExpenseApproverLevel" onclick="getLevel2ExpenseApprovers(); showExpenseLevel2Div();">Add Level-II</span>';
+					result = result + '</div>';
+				}
+				result = result	+ '<input type="hidden" id="level2Div">';
+				result = result + '</div>';
+				
+				result = result + '</div>';
+				
+
+				if (json.expenseApprover2 != null && json.expenseApprover2 != "" && json.expenseApprover2 != "undefined") { 
+					result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" id="demo" >';
+				}else{
+					result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" style="display:none;" id="expensedemo">';
+				}
+					result = result + '<label> Expense Approver 2 </label>';
+					result = result	+ '<select class="form-control chosen-select" class="form-control chosen-select"  id="level2ExpenseApprover" name="level2ExpenseApprover">';
+					result = result    +'<option value="">-Select Manager-</option>';
+					if(json.expensesApproversListwithoutApprover1 != null){
+					for (var j = 0; j < json.expensesApproversListwithoutApprover1.length; j++) {
+						var manager = json.expensesApproversListwithoutApprover1[j];
+						var managerName2 = manager.name;
+						if (json.expenseApprover2 == manager.id) {
+							selected = 'selected';
+							result = result	+ "<option value="+manager.id+" "+selected+" >"+ managerName2 +"  ("+manager.userType+")</option>";
+						} else {
+
+							result = result	+ "<option value="+manager.id+" >"+ managerName2 + "  ("+manager.userType+")</option>";									 
+						}
+					}
+					}
+					result = result + '</select>';
+					result = result + '</div>';
+				
 		    result = result + '<div class="clearfix"></div>';
 			
 			result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta pull-right">';

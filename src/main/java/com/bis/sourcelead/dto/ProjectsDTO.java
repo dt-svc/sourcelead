@@ -149,6 +149,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private Collection<UserDTO> managersList;
 	
+	private Collection<UserDTO> ExpenseApproversList;
+	
 	private Collection<UserDTO> managersListwithoutManager1;
 	
 	private String[] projectManagerName;
@@ -1156,5 +1158,13 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setExpensesApproversListwithoutApprover1(Collection<UserDTO> expensesApproversListwithoutApprover1) {
 		this.expensesApproversListwithoutApprover1 = expensesApproversListwithoutApprover1;
+	}
+
+	public Collection<UserDTO> getExpenseApproversList() {
+		return ExpenseApproversList;
+	}
+
+	public void setExpenseApproversList(Collection<UserDTO> expenseApproversList) {
+		ExpenseApproversList = expenseApproversList;
 	}
 }
