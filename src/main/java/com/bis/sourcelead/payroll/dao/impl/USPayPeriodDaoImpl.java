@@ -92,7 +92,7 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 				if(paysheetFrequencyDTO.getSearchValue() !=null && !"".equalsIgnoreCase(paysheetFrequencyDTO.getSearchValue())) {
 				query1.append(" and (up.paysheetFrequency.userGroup.payFrequency like '%" + paysheetFrequencyDTO.getSearchValue() + "%' ")
 				.append("OR up.paysheetFrequency.userGroup.groupName like '%" + paysheetFrequencyDTO.getSearchValue() + "%' ")
-				.append("OR up.paysheetFrequency.approverStatus like '%" + paysheetFrequencyDTO.getSearchValue() + "%' ")
+				.append("OR up.approverStatus like '%" + paysheetFrequencyDTO.getSearchValue() + "%' ")
 				.append("OR up.paysheetFrequency.type like '%" + paysheetFrequencyDTO.getSearchValue() + "%' )");
 						
 			}
