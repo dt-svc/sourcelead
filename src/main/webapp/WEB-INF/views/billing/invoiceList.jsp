@@ -481,13 +481,23 @@ function getInvoiceList(){
 		invoice.push($(this).val());
     });
 	
+	
+	
 	$('input:checkbox[name=paymentStatus]:checked').each(function() 
 	 {
 		payment.push($(this).val());
 	 });
+	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+     {
+		tags.push($(this).val());
+     });
+	
+	
 	var searchValue = $("#invoiceDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable&searchValue="+searchValue+"&orgLocationId="+orgLocationId;
+	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags;
 	prepareInvoiceList(url,locationdateForList);
 }
 
@@ -1308,6 +1318,11 @@ function exportToReceivablePdf(){
 			paymentStatus.push($(this).val());
 		});
 		
+		var tags = [];
+		$('input:checkbox[name=tags]:checked').each(function() 
+	     {
+			tags.push($(this).val());
+		 });
 		var emptyExport = $('#emptyInvoiceId').val();
 		var durationType = $('#dayWiseTypeId').val();
 		
@@ -1315,7 +1330,7 @@ function exportToReceivablePdf(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-			window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=pdf&invoiceType=receivable";
+			window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&exportType=pdf&invoiceType=receivable";
 		}else{
 			 var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1347,7 +1362,10 @@ function exportToReceivableExcel(){
 		 {
 			paymentStatus.push($(this).val());
 		});
-		
+		$('input:checkbox[name=tags]:checked').each(function() 
+        {
+		   tags.push($(this).val());
+	    });
 		var emptyExport = $('#emptyInvoiceId').val();
 		var durationType = $('#dayWiseTypeId').val();
 		
@@ -1355,7 +1373,7 @@ function exportToReceivableExcel(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=xls&invoiceType=receivable";
+		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&exportType=xls&invoiceType=receivable";
 		}else{	
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1694,6 +1712,7 @@ function openInvoiceFilterPop(){
 function resetInvoiceFilter(){
 	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myInvoiceUL > li input:checkbox").prop("checked",false);
 	getInvoiceList();
 	
 }
@@ -1701,14 +1720,14 @@ function resetInvoiceFilter(){
 
 
      <div class="advancedsearch-mask"></div>
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="invoiceFilterId">
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="invoiceFilterId">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeInvoiceFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
 				<div class="addInner">
 					<div class="row">
-					  <div class="col-md-6">
+					  <div class="col-md-4">
 						<div class="row">
 						    <div class="col-md-12 mb">
 								<label><strong>Payment</strong></label>
@@ -1724,7 +1743,7 @@ function resetInvoiceFilter(){
 						  </div>
 						</div>
 						
-						<div class="col-md-6">
+						<div class="col-md-4">
 						<div class="row">
 						    <div class="col-md-12 mb">
 								<label><strong>Status</strong></label>
@@ -1741,6 +1760,22 @@ function resetInvoiceFilter(){
 						     </div> 
 						  </div>
 						</div>
+						
+						<c:if test="${!empty invoiceTagsList}">
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myInvoiceInput" onkeyup="myInvoiceFunction()" placeholder="Tags" title="Type in a tag">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myInvoiceUL">
+									<c:forEach var="tag" items="${invoiceTagsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="tags" value ="${tag}" ><label>${tag}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
 					  </div>
 					  
 					  
@@ -1754,6 +1789,31 @@ function resetInvoiceFilter(){
 					</div>
 				</div>
 <script>
+
+function myInvoiceFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myInvoiceInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myInvoicetUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closePop();
+	  }
+	});
+	
+	
 function getActions(){
 	$(".action-pop").slideToggle(200);
 	$(".newActPop").slideUp(200);

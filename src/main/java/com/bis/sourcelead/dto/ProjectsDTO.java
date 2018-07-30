@@ -217,7 +217,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	 private BigInteger projId;
 	
-	
+	 private String tags;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -1025,4 +1025,13 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	public void setProjId(BigInteger projId) {
 		this.projId = projId;
 	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+	
 }

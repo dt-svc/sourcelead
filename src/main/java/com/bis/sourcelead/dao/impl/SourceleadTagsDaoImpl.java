@@ -18,11 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.SourceleadTagsDao;
 import com.bis.sourcelead.dto.SourceleadTagsDTO;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
+@Transactional
+@SuppressWarnings("unchecked")
 public class SourceleadTagsDaoImpl implements SourceleadTagsDao{
 
 	@Autowired
@@ -42,7 +43,6 @@ public class SourceleadTagsDaoImpl implements SourceleadTagsDao{
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadTagsDaoImpl.class);
 
 	@Override
-	@Transactional
 	public SourceleadTags saveSourceleadTags(SourceleadTags sourceleadTags) throws Exception {
 		logger.debug("Storing Tags");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -59,7 +59,6 @@ public class SourceleadTagsDaoImpl implements SourceleadTagsDao{
 	}
 
 	@Override
-	@Transactional
 	public Set<String> getSourceleadTagsByOrgLocationId(Long orgLocationId) throws Exception {
 		
 		Set<String> tagsList = null;
@@ -81,7 +80,6 @@ public class SourceleadTagsDaoImpl implements SourceleadTagsDao{
 	}
 
 	@Override
-	@Transactional
 	public Set<String> getSourceleadTagsByOrgLocationIdAndEntityName(Long orgLocationId, String entityType,
 			Long entityId) throws Exception {
 		
@@ -107,7 +105,6 @@ public class SourceleadTagsDaoImpl implements SourceleadTagsDao{
 	}
 
 	@Override
-	@Transactional
 	public SourceleadTags getSourceleadTagsByEntityIdAndTagNameAndOrgLocationId(Long orgLocationId, String entityType,
 			Long entityId,String tagName) throws Exception {
 		
@@ -122,4 +119,49 @@ public class SourceleadTagsDaoImpl implements SourceleadTagsDao{
 		return sourceleadTags;
 	
 	}
+
+	@Override
+	public List<SourceleadTags> SourceleadTagsListByLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadTags st  where st.orgLocationId.id =:orgLocationId and st.status = '1' "; 
+		List<SourceleadTags> sourceleadTagsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		return sourceleadTagsList;
+	}
+
+	
+	@Override
+	public Integer individualTagsCount(String entiteyTpe, String tagName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String  query = "select  count(*) from SourceleadTags st  where st.entityType =:entiteyTpe  and st.tagName =:tagName and st.status = '1'";
+		List<Long> tagsCount = session.createQuery(query).setString("entiteyTpe", entiteyTpe).setString("tagName", tagName).list();
+		Integer count = 0;
+		if(tagsCount != null && !tagsCount.isEmpty()){
+			count = tagsCount.get(0).intValue();
+	}
+	return count;
+	}
+
+	@Override
+	public void deleteTag(Long orgLocationId, String tagName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadTags st where st.orgLocationId.id =:orgLocationId and st.tagName =:tagName";
+		List<SourceleadTags> tagsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("tagName", tagName).list();
+       if(tagsList != null && !tagsList.isEmpty()) {
+    	   for(SourceleadTags st :tagsList) {
+    		   session.delete(st);
+    	   }
+       }
+	}
+
+	@Override
+	public List<String> sourceleadTagsListByEntitypeAndOrgloactionId(String entityType, Long orgLocationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select distinct(st.tagName) from SourceleadTags st  where st.entityType =:entityType and st.orgLocationId.id =:orgLocationId and st.status = '1' "; 
+		List<String> sourceleadTagsList = session.createQuery(query).setString("entityType", entityType).setLong("orgLocationId", orgLocationId).list();
+		return sourceleadTagsList;
+	}
+
+
+
 }

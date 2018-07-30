@@ -35,6 +35,24 @@ margin: 0.1% 2%;
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo;Project Summary</div>
         </section>
 	   
+	   <div class="cearfix">
+		  <div class="newTagsWrap">
+			 <ul class="clearfix tagsWrap tagsWrapBor">
+				<select multiple class="chosen-select form-control" name="tagName" id="projectTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
+				</select>
+			</ul>
+			 <div class="clearfix"></div>
+		  </div>
+     </div>
+     <div class="success_pop tagStyles" id="addProjectTagAlert">
+		<i class="fa fa-check-circle"></i>
+   		<span></span>
+   </div>
+   <div class="remove_pop tagStyles" id="deleteProjectTagAlert">
+		<i class="fa fa-times"></i>
+   		<span></span>
+   </div>
+ 
 		   
 		     <div id="projectSideDiv">
 		     </div>   
@@ -56,6 +74,120 @@ margin: 0.1% 2%;
            <jsp:include page="projectReports.jsp"/>
             <jsp:include page="../masterFooter.jsp" />	
 
+
+
+<!--  ======================== Tags Related Scripts written by Laxman Start =============================== -->
+ <script>
+var select, chosen;
+select = $("#projectTagName");
+select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosen = select.data('chosen');
+chosen.search_field.on('keyup', function(e)
+{
+	var anyKeyword = this.value.replace(",","");
+    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+    {
+    	var par = this.parent;
+        var option = $("<option>").val(anyKeyword).text(anyKeyword);
+        select.append(option);
+        select.find(option).prop('selected', true);
+        $("#projectTagName option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#projectTagName").trigger("chosen:updated");
+		saveProjectsTags("add");
+    }
+});
+
+$('.chosen-select').chosen().on('change', function(evt, params) {
+	if (params.selected && params.selected != undefined) {
+		saveProjectsTags("add");
+	}
+	if (params.deselected && params.deselected != undefined) {
+		saveProjectsTags("delete");
+	}
+	
+});
+$("#projectTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+</script>
+<script>
+function getProjectsTagsList(projectId){
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getProjectsTags?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.projectsTags != null && json.projectsTags != 'undefined' && json.projectsTags != '') {
+	                var res = [];
+	                res = json.projectsTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            $("#projectTagName").empty();
+            $("#projectTagName").append(result);
+            $("#projectTagName").chosen().trigger("chosen:updated")
+        },
+	});
+}
+</script>
+<script>
+function saveProjectsTags(type){
+	 var projectId = '${projectId}';
+	 var tagName = $("#projectTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByProjectId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectId="+projectId+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByProjectId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectId="+projectId+"&tagName="+""
+	 } 
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup("Tag added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tag deleted successfully");
+        		}
+        		getJobsTagsList(requirementId);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+function showSuccessStatusPopup(status) {
+	$("#addProjectTagAlert").css("display","block");
+	$("#addProjectTagAlert span").html(status);
+    $('#addProjectTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteProjectTagAlert").css("display","block");
+	$("#deleteProjectTagAlert span").html(status);
+    $('#deleteProjectTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+<!--  ======================== Tags Related Scripts written by Laxman Ends =============================== -->
+
+
 	
 	
 <script type="text/javascript">
@@ -65,8 +197,8 @@ window.onload = function () {
 	var projectStartDate = '${projectStartDate}';
 	var projectEndDate = '${projectEndDate}';
 	var projectStatus = '${projectStatus}';
-	
 	var tabType = '${tabType}';
+	getProjectsTagsList(projectId);
 	projectSideBar(projectId,projectName,projectStartDate,projectEndDate,projectStatus);
  };
 </script>

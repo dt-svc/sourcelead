@@ -719,7 +719,9 @@ function preventTabkey(e){
 								</div>
 							 </li> 	
 						   </sec:authorize>
-
+                         
+                       <li><a href="<c:url value='${sourceleadUrl}/sourceLeadTags'/>"title="Source Lead Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Source Lead Tags</a></li>
+					  
 					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" ><i class="fa fa-key" aria-hidden="true"></i>Guest Action Roles</a></li>
                        </sec:authorize>
@@ -729,6 +731,7 @@ function preventTabkey(e){
                         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 					       <li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i>Invite Company</a></li>
 	                   </c:if>
+	                    
 	              </ul>
 	            </div>
 	          </li>

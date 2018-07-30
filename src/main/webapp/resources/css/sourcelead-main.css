@@ -9200,6 +9200,15 @@ padding: 10px; border: none;
 .menuWidget ul li:hover a, .menuWidget ul.menupop li a:hover i {
     color: #368ee0 !important;
 }
+.tagStyles {
+	width: 300px !important; padding: 5px 0;
+}
+.tagStyles i {
+	font-size: 20px !important;
+}
+.tagStyles span {
+	top: 0 !important;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,23 @@ public class SourceleadTagsServiceImpl implements SourceleadTagsService{
 		return sourceleadTagsDao.getSourceleadTagsByEntityIdAndTagNameAndOrgLocationId(orgLocationId, entityType, entityId,tagName);
 	}
 
-	
+	@Override
+	public List<SourceleadTags> SourceleadTagsListByLocationId(Long orgLocationId)throws Exception  {
+		return sourceleadTagsDao.SourceleadTagsListByLocationId(orgLocationId);
+	}
+
+	@Override
+	public Integer individualTagsCount(String entiteyTpe, String tagName) throws Exception {
+		return sourceleadTagsDao.individualTagsCount(entiteyTpe, tagName);
+	}
+
+	@Override
+	public void deleteTag(Long orgLocationId, String tagName) throws Exception {
+		sourceleadTagsDao.deleteTag(orgLocationId, tagName);
+	}
+
+	@Override
+	public List<String> sourceleadTagsListByEntitypeAndOrgloactionId(String entityType, Long orgLocationId) throws Exception {
+		return sourceleadTagsDao.sourceleadTagsListByEntitypeAndOrgloactionId(entityType, orgLocationId);
+	}
 }

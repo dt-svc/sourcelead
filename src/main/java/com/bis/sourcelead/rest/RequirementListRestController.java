@@ -1768,6 +1768,16 @@ public class RequirementListRestController {
 				if(StringUtils.isNotEmpty(search.getJobId())){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", search.getJobId()));
 			    }
+				
+				List<String> jobsTagsArray = search.getJobsTags();
+				if (jobsTagsArray != null && !jobsTagsArray.isEmpty()) {
+					BoolQueryBuilder tagBoolQueryBuilder = QueryBuilders.boolQuery();
+					for (String keywd : jobsTagsArray) {
+						tagBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("tags", keywd));
+					}
+					boolQueryBuilder.must(tagBoolQueryBuilder);
+				}
+				
 			   //Country
 				/*if(StringUtils.isNotEmpty(search.getCountry())){
 					boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry().split(",")[0]));

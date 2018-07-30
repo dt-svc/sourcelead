@@ -107,6 +107,27 @@ function statusvalidating(id){
 }
 </script>
 
+<script>
+   function getSourceleadTags(){
+ 		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getSourceleadTagsList?"+tokenParamName+"="+tokenValue, 
+		        success: function(json) {
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt+ "'>"+opt+"</option>";
+			        		
+					}
+		        	$("#jobsTags").empty();
+			        $("#jobsTags").append(output);
+			        $('#jobsTags').trigger("chosen:updated");
+		        },
+		    }); 
+   }
+   </script>
+   
 <div class='project_inn_mask'></div>
 
 <div id='changeStatusPopup' class='remove_user_pop remove_user_pop_a'>
@@ -356,20 +377,15 @@ function statusvalidating(id){
 			 </div>
 		</div>
 		
-		<div class="clearfix">
-		
-		<%-- <div class="col-md-4">
-				<label>Country</label>
-				<div class="clearfix adv-srh-chosen">
-					<select class="chosen-select" name="country" id="country" field-name="Country">
-						<option value="">---select Country---</option>
-						<c:forEach var="cntry" items="${countryList}">
-							<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
-						</c:forEach>
+		<div class="col-md-12">
+			<label>Tags</label>
+				<div class="clearfix">
+					<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="jobsTags" name="jobsTags">
 					</select>
-				</div>
-			</div> --%>
+				 </div>
+			</div>
 			
+		<div class="clearfix">
 		   <div class="col-md-4">
 				<label>Choose City</label>
 				<div class="clearfix">
@@ -379,6 +395,7 @@ function statusvalidating(id){
 				 </div>
 				</div>
 			</div>
+			
 			
 			<div class="col-md-8">
 				<label>Selected Cities</label>
@@ -740,7 +757,7 @@ function getActions(){
 			 $("div.cand-advsrch-popup").toggle();
 			 $(".advancedsearch-mask").fadeIn();
 			 $("#requirementFilterPopup").toggle();
-			 
+			 getSourceleadTags();
 		}
 		function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
