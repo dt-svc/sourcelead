@@ -385,7 +385,8 @@
 							<i class="subMenu">Payroll</i> <i class="fa fa-fw fa-caret-down"></i>
 						</a>
                         <ul class="collapses" style="display: none">
-                        	<li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/itDeclaration'/>" title="Invoices">IT Declaration</a></li>
+                        	<li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/itDeclaration'/>" title="IT Declaration">IT Declaration</a></li>
+                        	<li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayroll/pays'/>" title="My Payroll">My Payroll</a></li>
 						</ul>
 					</li>
 	         
