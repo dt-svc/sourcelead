@@ -44,6 +44,7 @@ import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.AssociateContributionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
+import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSum;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
@@ -1279,4 +1280,21 @@ public class USPayrollRestController {
 		return model;
 	}
 	
+	
+	/**
+	 * Confirm payroll (jsut calculating total pay sum)
+	 * @param payrollApproverDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/confirmPayroll","/rest/confirmPayroll" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ConfirmPayTotalSum confirmPayroll(PayrollApproverDTO payrollApproverDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ConfirmPayTotalSum paySum = uSPayrollService.calculateTotalPaySum(payrollApproverDTO,orgLocation);
+		return paySum;
+	}
 }

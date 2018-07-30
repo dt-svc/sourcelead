@@ -181,7 +181,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				if(totalHoursDto !=null) {
 					payRate = totalHoursDto.getPayRate();
 				}else {
-					payRate = associateTaxDTO.getHourlyRate().doubleValue();
+					if(associateTaxDTO.getHourlyRate() != null) {
+						payRate = associateTaxDTO.getHourlyRate().doubleValue();		
+					}
 				}
 				employeePayroll.setEmpPayRate(BigDecimal.valueOf(payRate));
 				double amount = getTotalAmount(totalHours,payRate);
@@ -230,7 +232,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					employeePayroll.setEmployee(employee);
 				}
 				Set<EmployeePayrollTax> payrollTaxSet = getPayrollTaxes(employeePayroll,orgLocation,payrollCalculator,loginUser);
-				employeePayroll.setUsemployeepayroll(payrollTaxSet);
+				employeePayroll.setUsPayrollTax(payrollTaxSet);
 				Set<EmployerPayrollTax> employerTaxes = getEmployerTaxes(employeePayroll,orgLocation,payrollCalculator,loginUser,user.getResidenceState());
 				employeePayroll.setEmployerpayrolltax(employerTaxes);
 				employeePayroll.setUsEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -319,8 +321,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	{
 		Set<EmployeePayrollTax> set = new HashSet<>();
 		EmployeePayrollTax taxes = null;
-		if(employeePayroll.getUsemployeepayroll()!= null) {
-			taxes = employeePayroll.getUsemployeepayroll().iterator().next();
+		if(employeePayroll.getUsPayrollTax()!= null) {
+			taxes = employeePayroll.getUsPayrollTax().iterator().next();
 		}else {
 			taxes = new EmployeePayrollTax();
 		}
@@ -487,7 +489,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setTotalEarnings(totalEarnings);
 			payrollDTO.setEmployeeAddress(payroll.getUser().getResidenceAddress());
 			
-			for(EmployeePayrollTax tax : payroll.getUsemployeepayroll()) {
+			for(EmployeePayrollTax tax : payroll.getUsPayrollTax()) {
 				payrollDTO.setFederal(tax.getFederalWithholding());
 				payrollDTO.setFica(tax.getFicaWithholding());
 				payrollDTO.setAeic(tax.getEarnedIncCredit());
@@ -571,7 +573,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			BigDecimal netPay = totalPay.subtract(BigDecimal.valueOf(postTax)).add(BigDecimal.valueOf(postTaxContriSum));
 			payroll.setNetPay(netPay);
 			Set<EmployeePayrollTax> payrollTaxSet = getPayrollTaxes(payroll,orgLocation,payrollCalculator,loginUser);
-			payroll.setUsemployeepayroll(payrollTaxSet);
+			payroll.setUsPayrollTax(payrollTaxSet);
 			Set<EmployerPayrollTax> employerTaxes = getEmployerTaxes(payroll,orgLocation,payrollCalculator,loginUser,payroll.getUser().getResidenceState());
 			payroll.setEmployerpayrolltax(employerTaxes);
 			payroll.setUpdatedBy(loginUser.getId());
