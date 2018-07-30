@@ -5,19 +5,24 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
+import com.bis.sourcelead.dto.StateTaxDTO;
+import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -62,29 +67,17 @@ public class TaxSubmissionController {
 
 	@RequestMapping(value = "/forms/list")
 	public ModelAndView getForms(HttpServletRequest request, @RequestParam(defaultValue = "") String financialYear,
-			@RequestParam(defaultValue = "") String uuid) {
+			@RequestParam(defaultValue = "") String uuid, Paginator paginator) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("errorPage");
 		try {
-			// String financialYear = "";
-			// Calendar c = Calendar.getInstance();
-			// if (year > 0) {
-			// c.set(Calendar.YEAR, year);
-			// c.roll(Calendar.YEAR, true);
-			// financialYear = year + "-" + c.get(Calendar.YEAR);
-			// } else {
-			// Calendar c1 = Calendar.getInstance();
-			// c1.set(Calendar.YEAR, c.get(Calendar.YEAR));
-			// c1.roll(Calendar.YEAR, true);
-			// financialYear = c.get(Calendar.YEAR) + "-" + c1.get(Calendar.YEAR);
-			// }
-
 			if (!uuid.isEmpty()) {
 				modelAndView.addObject("uuid", uuid);
 				SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, false, false);
 				if (sourceleadTaxFormDTO != null) {
 					modelAndView.addObject("taxForm", sourceleadTaxFormDTO);
-					modelAndView.addObject("formList", taxService.getITDeclarationSubmissionList(uuid, financialYear));
+//					modelAndView.addObject("formList", taxService.getITDeclarationSubmissionList(uuid, financialYear, paginator));
+//					modelAndView.addObject("paginator",paginator);
 					modelAndView.setViewName("payroll_india/org/form_list_by_formType");
 				}
 			} else {
@@ -216,6 +209,54 @@ public class TaxSubmissionController {
 								org.getId(), loginOrgLocation.getId(), response.getObject());
 					}
 				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/itDeclaration/list", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(HttpServletRequest request,
+			@RequestParam(defaultValue = "") String uuid, @RequestParam(defaultValue = "") String financialYear,
+			Paginator paginator) {
+		ResponseList<SourceleadTaxITDeclarationSubmissionDTO> response = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionDTOList = taxService
+						.getITDeclarationSubmissionList(uuid, financialYear, paginator);
+				response.setData(itDeclarationSubmissionDTOList);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				response.setPaginator(paginator);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/itDeclaration/changeStatus")
+	@ResponseBody
+	public Response<String> changeITDeclarationStatus(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") long id, @RequestParam(defaultValue = "0") int status) {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				response = taxService.changeITDeclarationSubmissionStatus(id, status);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

@@ -74,7 +74,7 @@ public interface TaxDao {
 
 	public int getITDeclarationFormsCountByYear(String financialYear, String tableName);
 
-	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, String financialYear);
+	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, String financialYear, Paginator paginator);
 
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(String taxFormUUID, String formUUID);
 
@@ -106,6 +106,8 @@ public interface TaxDao {
 	public SourceleadTaxChallanItem getChallanItemDetails(Long itemRowId);
 
 	public SourceleadTaxChallanItem getITChallanSectionItem(Long id);
+
+	public long changeITDeclarationSubmissionStatus(long id, int status);
 
 
 }

@@ -471,14 +471,36 @@ public class TaxDaoImpl implements TaxDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid,
-			String financialYear) {
+			String financialYear, Paginator paginator) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from SourceleadTaxITDeclarationSubmission it where it.sourceleadTaxForm.uuid=:uuid and it.financialYear=:financialYear";
+			String query = "from SourceleadTaxITDeclarationSubmission it";
+			if (!uuid.isEmpty()) {
+				query += " where it.sourceleadTaxForm.uuid=:uuid";
+			}
+			if (!financialYear.isEmpty()) {
+				query += (query.contains("where") ? " and " : " where ") + "it.financialYear=:financialYear";
+			}
+			query += " order by it.id desc";
 			Query queryObj = session.createQuery(query);
-			queryObj.setString("uuid", uuid);
-			queryObj.setString("financialYear", financialYear);
-			return queryObj.list();
+			List<String> params = new LinkedList<>();
+			if(!uuid.isEmpty()) {
+				queryObj.setString("uuid", uuid);
+				params.add("String;uuid;" + uuid);
+			}
+			if(!financialYear.isEmpty()) {
+				queryObj.setString("financialYear", financialYear);
+				params.add("String;financialYear;" + financialYear);
+			}
+			if (paginator != null) {
+				queryObj.setFirstResult(paginator.getPageNo() * paginator.getPageSize());
+				queryObj.setMaxResults(paginator.getPageSize());
+			}
+			List<SourceleadTaxITDeclarationSubmission> itDeclarationSubmissionList = queryObj.list();
+			if (paginator != null) {
+				paginator.applyPaginationData(query, session, params);
+			}
+			return itDeclarationSubmissionList;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -664,6 +686,22 @@ public class TaxDaoImpl implements TaxDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public long changeITDeclarationSubmissionStatus(long id, int status) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			SourceleadTaxITDeclarationSubmission itDeclarationSubmission = session.get(SourceleadTaxITDeclarationSubmission.class, id);
+			if (itDeclarationSubmission != null) {
+				itDeclarationSubmission.setStatus(status);
+				return itDeclarationSubmission.getId();
+			} else
+				return -2;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 }

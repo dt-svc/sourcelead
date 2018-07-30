@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
@@ -714,7 +715,7 @@ public class TaxServiceImpl implements TaxService {
 			}
 			itDeclarationSubmission.setFinancialYear(itDeclarationSubmissionDTO.getFinancialYear());
 			itDeclarationSubmission.setUser(userService.getUserById(itDeclarationSubmissionDTO.getUserId()));
-			itDeclarationSubmission.setStatus(itDeclarationSubmissionDTO.getStatus());
+//			itDeclarationSubmission.setStatus(itDeclarationSubmissionDTO.getStatus());
 			itDeclarationSubmission
 					.setSourceleadTaxForm(taxDao.getTaxFormType(itDeclarationSubmissionDTO.getTaxFormId()));
 			// Gson gson = new Gson();
@@ -795,11 +796,11 @@ public class TaxServiceImpl implements TaxService {
 
 	@Override
 	public List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid,
-			String financialYear) {
+			String financialYear, Paginator paginator) {
 		List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionList = new LinkedList<>();
 		try {
 			List<SourceleadTaxITDeclarationSubmission> itList = taxDao.getITDeclarationSubmissionList(uuid,
-					financialYear);
+					financialYear, paginator);
 			if (itList != null && !itList.isEmpty()) {
 				for (SourceleadTaxITDeclarationSubmission itSubmission : itList) {
 					SourceleadTaxITDeclarationSubmissionDTO itSubmissionDTO = new SourceleadTaxITDeclarationSubmissionDTO();
@@ -810,7 +811,11 @@ public class TaxServiceImpl implements TaxService {
 					itSubmissionDTO.setUserId(itSubmission.getUser().getId());
 					itSubmissionDTO.setUserName(itSubmission.getUser().getFullName());
 					itSubmissionDTO.setTaxFormId(itSubmission.getSourceleadTaxForm().getId());
-
+					double submittedAmount = getCalculatedAmountForSubmittedItDeclaration(itSubmission);
+					itSubmissionDTO.setSubmittedAmount(submittedAmount + "");
+					//TODO need to show calculated TDS Amount also
+//					itSubmissionDTO.setTaxAmount(calculateTaxAmountForSumittedAmount(submittedAmount, 0, ""));
+					itSubmissionDTO.setStatus(itSubmission.getStatus());
 					itDeclarationSubmissionList.add(itSubmissionDTO);
 				}
 			}
@@ -818,6 +823,33 @@ public class TaxServiceImpl implements TaxService {
 			e.printStackTrace();
 		}
 		return itDeclarationSubmissionList;
+	}
+	
+	private double getCalculatedAmountForSubmittedItDeclaration(SourceleadTaxITDeclarationSubmission itDeclarationSubmission) {
+		double amount = 0;
+		try {
+			JSONArray jsonArray = new JSONArray(itDeclarationSubmission.getSubmissionItems());
+			if (jsonArray != null) {
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject jsonObject = jsonArray.getJSONObject(i);
+					if (jsonObject != null) {
+						JSONArray itemsArray = jsonObject.getJSONArray("items");
+						if (itemsArray != null) {
+							for (int j = 0; j < itemsArray.length(); j++) {
+								JSONObject itemObject = itemsArray.getJSONObject(j);
+								if (itemObject != null) {
+									double itemAmount = itemObject.getDouble("amount");
+									amount += itemAmount;
+								}
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return amount;
 	}
 
 	@Override
@@ -1116,6 +1148,27 @@ public class TaxServiceImpl implements TaxService {
 			e.printStackTrace();
 		}
 		return getChallanItemDetails((long) 0);
+	}
+
+	@Override
+	public Response<String> changeITDeclarationSubmissionStatus(long id, int status) {
+		Response<String> response = new Response<>();
+		try {
+			long result = taxDao.changeITDeclarationSubmissionStatus(id, status);
+			if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (result == -2) {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
 	}
 
 }
