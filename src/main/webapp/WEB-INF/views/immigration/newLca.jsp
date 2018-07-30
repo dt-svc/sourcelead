@@ -30,22 +30,22 @@
 			<input type = "hidden" id="editMode" name = "editMode" value = "true">
 			</c:if>
 			
-  	<input type="hidden" name="lcaId" value="${lcaDTO.lcaId}">
+  	<input type="hidden" id="lcaId" name="lcaId" value="${lcaDTO.lcaId}">
   	<input type="hidden" name="lcaPlaceOfEmploymentList[0].plsempmntId" value="${lcaDTO.lcaPlaceOfEmploymentList[0].plsempmntId}">
   	<input type="hidden" name="lcaDocumentList[0].docId" value="${lcaDTO.lcaDocumentList[0].docId}">
-    <div class="row clearfix mt">
-         <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
+    <div class="row clearfix mt" >
+         <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaNoDiv">
             <label class="col-md-4">LCA No<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
                 <input type="text" name="lcaNo"  id="lcaNo" class="form-control" value="${lcaDTO.lcaNo}" placeholder="LCA No" field-name="LCA NO"
-								data-validation="required validate_AlphaNumber validate_length length1-20">
+								data-validation="required validate_AlphaNumber validate_length length1-20" onkeyup="validateLcaNumber();">
           	</div>
           </div>
-           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
+           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaTitleDiv">
             <label class="col-md-4">LCA Title<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
                 <input type="text" name="lcaTitle" id="lcaTitle" class="form-control" value="${lcaDTO.lcaTitle}" placeholder="LCA Title" field-name="LCA Title"
-								data-validation="required validate_AlphaNumber validate_length length1-250">
+								data-validation="required validate_AlphaNumber validate_length length1-250" onkeyup="validateLcaTitle();">
           	</div>
           </div>
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
@@ -457,7 +457,7 @@
   </div>
   </form>
 	</div>
-	
+	 <div id="popUp"></div>
 </section>
 
 <!-- content area ends here -->
@@ -474,7 +474,15 @@
             scrollToTopOnError: true,
             dateFormat: 'yyyy/mm/dd'
         };
-
+       
+       var isTotalValid= totalCountChek();
+        var newEmploymentCount = document.getElementById("newEmploymentCount").value;
+       if(newEmploymentCount != null && newEmploymentCount != '' && newEmploymentCount !='undefined'){ 
+	       if(!isTotalValid){
+	       	showLCAWarningPopup("Total Count value is not matched with No.of Positions !!!");
+	       	return false;
+	       }
+        } 
 	    if ($('#lcaDetailsForm').validate(false, validationSettings)) {
 		var formData = getFormData("lcaDetailsForm");
 		 $.ajax({
@@ -707,7 +715,7 @@ $('#endDate').datepicker({
 		  if(sizeOfplsOfEmpmnt > 0){
 		  	var count = 1;
 		  	var plsOfEmpmntArr = [];
-		  	 var th = $(this);
+		  	/*  var th = $(this); */
 		  	<c:forEach var='plsOfEmpmnt' items="${lcaDTO.lcaPlaceOfEmploymentList}">
 			  		plsOfEmpmntArr.push("${plsOfEmpmnt.plsempmntId == 'undefined' ? '':plsOfEmpmnt.plsempmntId}");
 			  		plsOfEmpmntArr.push("${plsOfEmpmnt.location}");
@@ -726,7 +734,7 @@ $('#endDate').datepicker({
  });
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 $('button').click(function (event) {
     $("#sourceTable tr:gt(0)").each(function(){
         var th = $(this);
@@ -741,7 +749,7 @@ $('button').click(function (event) {
         }
     });
 });
-</script>
+</script> -->
  <!-- Place of Employment Add Row Script END Here -->  	
  
  <!-- Attachment Add Row Script Start Here -->
@@ -793,6 +801,7 @@ $('button').click(function (event) {
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Comment</label>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-12'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <textarea class='form-control' name='lcaDocumentList["+rowId+"].description' id='description"+rowId+"' value='"+(typeof attachmentVal[3]==="undefined"?"":attachmentVal[3])+"' placeholder='Comment' rows='2'>";
+	   prepareAttachmentdiv =prepareAttachmentdiv+ ""+(typeof attachmentVal[3]==="undefined" ? " ":attachmentVal[3])+"";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</textarea>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
@@ -822,9 +831,12 @@ $('button').click(function (event) {
 
  <script type="text/javascript">
 	  $( document ).ready(function() {
-		  var sizeOfAttachment = "${fn:length(lcaDTO.lcaDocumentList)}";	
+		  var sizeOfAttachment = "${fn:length(lcaDTO.lcaDocumentList)}";
+			
 		  if(sizeOfAttachment > 0){
+			$("#appendDynamicAttachmentDiv").empty();
 		  	var count = 1;
+		  
 		  	var attachmentArr = [];
 		  	<c:forEach var='lcaAttachment' items="${lcaDTO.lcaDocumentList}">
 			  		attachmentArr.push("${lcaAttachment.docId == 'undefined' ? '':lcaAttachment.docId}");
@@ -853,8 +865,33 @@ $('button').click(function (event) {
 <script>
     function uploadBtnFile(id) {
         $('#uploadFile' + id).val($("#uploadBtn"+id).val().replace(/C:\\fakepath\\/i, ''));
-        $('#uploadFile' + id).val($("#uploadBtn" + id).val().replace(/C:\\fakepath\\/i, ''));
     }
+    
+    function showLCAWarningPopup(multiWarnMsg){ // multiWarnMsg populated when validated form and docs required upload docs info.
+    	$(".project_inn_mask").remove();
+    	
+    	var result = "";
+    	result = result +"	<div class='project_inn_mask'></div>";
+    	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a modal-body'>";
+    	 
+    	if (typeof multiWarnMsg != 'undefined' && multiWarnMsg != '') {
+    			result = result + " <b class='mt mb'>" + multiWarnMsg + "</b>";
+    	} 
+    	
+    	   result = result + ' <div id="reasonForTemplateDiv"/>';
+    		result = result	+ "		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='closePop()'></b>";
+    		result = result + "	</div>";
+    		$("#popUp").append(result);
+    		$("#remove_immigration_pop").slideDown(200);
+    		$(".project_inn_mask").fadeIn(200);
+    	}
+
+    function closePop() {
+		$("#remove_immigration_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+		$(".project_inn_mask").remove();
+		$("#remove_immigration_pop").remove();
+	}
 </script> 
 
 
@@ -993,6 +1030,84 @@ $('button').click(function (event) {
  });
 </script> 
  
+<script type="text/javascript">
 
+ function totalCountChek(){
+	 
+        var totalCount =	$.isNumeric($('#noOfPositions').val()) ? parseInt($('#noOfPositions').val()):parseInt(0);
+   		var newEmpCount =	$.isNumeric($('#newEmploymentCount').val()) ? $('#newEmploymentCount').val():0;
+		var conEmpCount =	$.isNumeric($('#concurrentEmploymentCount').val()) ? $('#concurrentEmploymentCount').val():0;
+		var extCount =		$.isNumeric($('#extentionCount').val()) ? $('#extentionCount').val():0;
+		var chngEmpCount =	$.isNumeric($('#changeInEmployerCount').val()) ? $('#changeInEmployerCount').val():0;
+		var chngPreEmpCount= $.isNumeric($('#changeEmployerPreviousCount').val()) ? $('#changeEmployerPreviousCount').val():0;
+		var amendMntCount =	 $.isNumeric($('#amendmentCount').val()) ? $('#amendmentCount').val():0;
+
+		var allCounts = parseInt(newEmpCount)+parseInt(conEmpCount)+parseInt(extCount)+parseInt(chngEmpCount)+parseInt(chngPreEmpCount)+parseInt(amendMntCount);
+		
+			if(allCounts == totalCount){
+				
+			    return true;
+			} else {
+				 return false;
+			}  
+			
+ };
+</script>
+
+<script type="text/javascript">
+function validateLcaNumber() {
+	  var lcaNo = document.getElementById("lcaNo").value;
+	  var lcaId = $("#lcaId").val();
+	  $('#errLcaNoDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl + immiModulePath + "/validateLcaNumber?"+tokenParamName+"="+tokenValue+"&lcaNo="+lcaNo+"&lcaId="+lcaId, 
+		        success: function(data) {
+		        	
+		        	if(data == true){
+		        		
+		        		  $('#errLcaNoDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#lcaNo").after("<p class='jquery_form_error_message'>"+lcaNo+" is Already Existed</span>");
+						  $("#saveLca").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#lcaNo').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errLcaNoDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#saveLca").removeAttr("disabled");
+		        	}
+		        	
+		        }
+		       
+		    });
+};
+</script>
+
+<script type="text/javascript">
+function validateLcaTitle() {
+	  var lcaTitle = document.getElementById("lcaTitle").value;
+	  var lcaId = $("#lcaId").val();
+	  $('#errLcaTitleDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl + immiModulePath + "/validateLcaTitle?"+tokenParamName+"="+tokenValue+"&lcaTitle="+lcaTitle+"&lcaId="+lcaId, 
+		        success: function(data) {
+		        	
+		        	if(data == true){
+		        		
+		        		  $('#errLcaTitleDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#lcaTitle").after("<p class='jquery_form_error_message'>"+lcaTitle+" is Already Existed</span>");
+						  $("#saveLca").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#lcaTitle').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errLcaTitleDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#saveLca").removeAttr("disabled");
+		        	}
+		        	
+		        }
+		       
+		    });
+};
+</script>
  
  

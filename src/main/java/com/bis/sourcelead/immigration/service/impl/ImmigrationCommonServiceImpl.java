@@ -2521,13 +2521,30 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 
 	@Override
 	public List<Lca> getAllLcaList(Date currentDate) {
-		// TODO Auto-generated method stub
 		return immigrationCommonDao.getAllLcaList(currentDate);
 	}
 
 	@Override
 	public String updateLcaStatusWithExpired(Long lcaId) {
 		return immigrationCommonDao.updateLcaStatusWithExpired(lcaId);
+	}
+		public Lca getLcaDetailsByLcaNoAndId(String lcaNo, Long lcaId) throws Exception {
+		return immigrationCommonDao.getLcaDetailsByLcaNoAndId(lcaNo, lcaId);
+	}
+
+	@Override
+	public Boolean validateLcaNumber(String lcaNo, Long orgLocationId) throws Exception {
+		return immigrationCommonDao.validateLcaNumber(lcaNo, orgLocationId);
+	}
+
+	@Override
+	public Lca getLcaDetailsByLcaTitleAndId(String lcaTitle, Long lcaId) throws Exception {
+		return immigrationCommonDao.getLcaDetailsByLcaTitleAndId(lcaTitle, lcaId);
+	}
+
+	@Override
+	public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception {
+		return immigrationCommonDao.validateLcaTitle(lcaTitle, orgLocationId);
 	}
 	
 	/*

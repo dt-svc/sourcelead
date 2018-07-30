@@ -58,7 +58,6 @@ import com.bis.sourcelead.entity.LcaListExportView;
 import com.bis.sourcelead.entity.LcaListView;
 import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.LcaVisaClarifications;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MyImmigrationView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -1956,6 +1955,60 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		session.saveOrUpdate(lca);
 		session.flush();
 		return "success";
+	}
+	public Lca getLcaDetailsByLcaNoAndId(String lcaNo, Long lcaId) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Lca lca where lca.lcaNo = :lcaNo and lca.id=:lcaId and lca.status = 1";
+		List<Lca> lcaNumbersList =  session.createQuery(query) .setString("lcaNo", lcaNo).setLong("lcaId", lcaId).list();
+		Lca lca = null;
+		if(lcaNumbersList != null && !lcaNumbersList.isEmpty())
+		{
+			lca = (Lca) lcaNumbersList.iterator().next();
+		}
+		return lca;
+		
+		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateLcaNumber(String lcaNo, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Lca lca where lca.lcaNo = :lcaNo and lca.orgLocationId=:orgLocationId";
+		List<Lca> lcaNumbersList = session.createQuery(query).setString("lcaNo", lcaNo).setLong("orgLocationId", orgLocationId).list();
+		if (lcaNumbersList != null && lcaNumbersList.size() > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Lca getLcaDetailsByLcaTitleAndId(String lcaTitle, Long lcaId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Lca lca where lca.lcaTitle = :lcaTitle and lca.id=:lcaId and lca.status = 1";
+		List<Lca> lcaNumbersList =  session.createQuery(query) .setString("lcaTitle", lcaTitle).setLong("lcaId", lcaId).list();
+		Lca lca = null;
+		if(lcaNumbersList != null && !lcaNumbersList.isEmpty())
+		{
+			lca = (Lca) lcaNumbersList.iterator().next();
+		}
+		return lca;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Lca lca where lca.lcaTitle = :lcaTitle and lca.orgLocationId=:orgLocationId";
+		List<Lca> lcaNumbersList = session.createQuery(query).setString("lcaTitle", lcaTitle).setLong("orgLocationId", orgLocationId).list();
+		if (lcaNumbersList != null && lcaNumbersList.size() > 0) {
+			flag = true;
+		}
+		return flag;
 	}
 
 }
