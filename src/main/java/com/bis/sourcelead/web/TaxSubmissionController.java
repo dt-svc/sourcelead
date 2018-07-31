@@ -21,7 +21,6 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
-import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -82,7 +81,7 @@ public class TaxSubmissionController {
 				}
 			} else {
 				// setYears(modelAndView, year);
-				TaxAdminController.setYears(modelAndView, null);
+				TaxAdminController.setYears(modelAndView, financialYear);
 				String year = "";
 				if (financialYear.isEmpty()) {
 					Calendar c = Calendar.getInstance();
@@ -91,6 +90,8 @@ public class TaxSubmissionController {
 					c1.roll(Calendar.YEAR, true);
 					year = c.get(Calendar.YEAR) + "-" + c1.get(Calendar.YEAR);
 
+				} else {
+					year = financialYear;
 				}
 				modelAndView.addObject("formList", taxService.getTaxFormTypeListForSubmission(year));
 				modelAndView.setViewName("payroll_india/org/forms_list");

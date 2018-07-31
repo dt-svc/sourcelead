@@ -1,7 +1,7 @@
 <script src="/resources/js/tax/my_payroll.js" type="text/javascript"></script>
 <section class="content-header clearfix">
 	<div class="pull-left">
-		<h2>My Forms</h2>
+		<h2>My ${activeTaxTab == 'pays' ? 'Pays' : activeTaxTab =='forms' ? 'Forms' : 'Loans & Advances'}</h2>
 	</div>
 	<div class="pull-right brud-crum">Home &raquo; My Forms</div>
 </section>
