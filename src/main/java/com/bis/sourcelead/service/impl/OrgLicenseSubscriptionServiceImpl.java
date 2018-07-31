@@ -439,6 +439,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 		 submissionTemplate.setUpdatedDate(new Date());
 		 submissionTemplate.setCreatedBy(user.getUserCode());
 		 submissionTemplate.setCreatedDate(new Date());
+		 submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 		 
 	 }
@@ -461,6 +462,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 		 submissionTemplate.setIsDefault(Constants.YES);
 		 submissionTemplate.setCreatedBy(user.getUserCode());
 		 submissionTemplate.setCreatedDate(new Date());
+		 submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 		 
 	 }

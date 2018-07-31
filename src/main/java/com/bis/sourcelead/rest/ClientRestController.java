@@ -101,6 +101,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -1401,6 +1402,7 @@ public class ClientRestController {
 				   submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
 				}else{
 					submissionTemplate = new SubmissionTemplate();
+					submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				}
 			   
 			   submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());

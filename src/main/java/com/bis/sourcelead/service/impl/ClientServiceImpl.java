@@ -568,6 +568,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setUpdatedBy(user.getUserCode());
 			submissionTemplate.setCreatedDate(new Date());
 			submissionTemplate.setUpdatedDate(new Date());
+			submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 			// store default interview feedback template in guest
@@ -588,6 +589,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setUpdatedDate(new Date());
 			submissionTemplate.setCreatedBy(user.getUserCode());
 			submissionTemplate.setCreatedDate(new Date());
+			submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 		}
@@ -615,6 +617,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setCreatedDate(new Date());
 			submissionTemplate.setUpdatedBy(user.getUserCode());
 			submissionTemplate.setUpdatedDate(new Date());
+			submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 			// store default interview feedback template in client & vedor
@@ -634,6 +637,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setUpdatedDate(new Date());
 			submissionTemplate.setCreatedBy(user.getUserCode());
 			submissionTemplate.setCreatedDate(new Date());
+			submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 		}

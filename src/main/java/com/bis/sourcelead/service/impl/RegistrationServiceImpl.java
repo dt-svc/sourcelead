@@ -884,6 +884,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 submissionTemplate.setUpdatedDate(new Date());
 		 submissionTemplate.setCreatedBy(user.getUserCode());
 		 submissionTemplate.setCreatedDate(new Date());
+		 submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 		 
 	 }
@@ -906,6 +907,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 submissionTemplate.setIsDefault(Constants.YES);
 		 submissionTemplate.setCreatedBy(user.getUserCode());
 		 submissionTemplate.setCreatedDate(new Date());
+		 submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 		 
 	 }
