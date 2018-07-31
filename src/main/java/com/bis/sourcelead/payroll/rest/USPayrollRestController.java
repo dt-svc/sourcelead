@@ -1223,7 +1223,7 @@ public class USPayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getPaySheetFrequencySummary")
+	@RequestMapping(value = { "/getPaySheetFrequencySummary","/rest/getPaySheetFrequencySummary" })
 	public PaysheetFrequencyDTO getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		return uSPaysheetService.getPaySheetFrequencySummary(paysheetFrequencyDTO);
@@ -1333,5 +1333,18 @@ public class USPayrollRestController {
 		Response<ConfirmPayTotalSumDTO> res = uSPayrollService.approvePayroll(confirmPayTotalSumDto,orgLocation);
 		return res;
 
+	}
+	
+	@RequestMapping(value = { "/getPayGroupsByPayFrequency","/rest/getPayGroupsByPayFrequency" })
+	@ResponseBody
+	public List<UserGroup> getPayGroupsByPayFrequency(UserGroupDTO userGroupDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<UserGroup> filteredGroupList = new ArrayList<>();
+		List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+		if(groupList != null)
+		filteredGroupList = groupList.stream().filter(i->i.getPayFrequency().equalsIgnoreCase(userGroupDTO.getPayFrequency())).collect(Collectors.toList());
+		return filteredGroupList;
 	}
 }

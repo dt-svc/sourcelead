@@ -27,12 +27,19 @@ $(document).ready(function(){
                    <div class="col-md-5">
                     <label>Pay Frequency</label>
                     <div>
-                      <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayFreqHours();" data-validation="required" field-name="Pay Frequency">
+                      <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayFreqHours();getPayGroups();" data-validation="required" field-name="Pay Frequency">
                         <option value="">--Select--</option>
                         <option value="Annual">Annually</option>
                         <option value="Monthly">Monthly</option>
                         <option value="Bi-Weekly">Bi-Weekly</option>
                         <option value="Weekly">Weekly</option>
+                      </select>
+                    </div>
+                  </div>
+                   <div class="col-md-5">
+                    <label>Pay Group</label>
+                    <div>
+                      <select class="sel" id="payGroupId" name="payGroup" data-validation="required" field-name="Pay Group">
                       </select>
                     </div>
                   </div>
@@ -414,5 +421,28 @@ function skipSalaryJsp(){
 	document.getElementById("associateBanking").removeAttribute("class"); 
 	associateBanking.href="#tab-2"; 
 	$("#associateBanking").click();
+}
+</script>
+
+<script>
+function getPayGroups(){
+	var payFrequency = $("#payFrequency").val();
+		 $.ajax({
+				type : "GET",
+				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency,
+				success : function(result) {
+				var output = "";
+				output = output + "<option value=''>Select Group</option>";
+				for (var i=0; i<result.length; i++)
+				{
+					var opt = result[i];
+					output = output + "<option value='" +opt.groupUUID+ "'>"+opt.groupName+"</option>";
+				}
+				$("#payGroupId").empty();
+				$("#payGroupId").append(output);
+				$('#payGroupId').trigger("chosen:updated");
+					
+				}
+		 });
 }
 </script>
