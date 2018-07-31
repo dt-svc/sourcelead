@@ -312,14 +312,18 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 	}
 
 	@Override
-	public List<USPayrollDTO> getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO) {
+	public PaysheetFrequencyDTO getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO) {
 		PaysheetFrequency pf = getPayFrequencyByUUID(paysheetFrequencyDTO.getPaySheetFrequencyuuid());
+		PaysheetFrequencyDTO pfDTO = new PaysheetFrequencyDTO(); 
+		pfDTO.setPayrollFrequencyUUID(pf.getPaySheetFrequencyUUID());
+		pfDTO.setId(String.valueOf(pf.getId()));
 		List<USPayrollDTO> list = new ArrayList<>();
 		try {
 			if (pf != null && pf.getEmployeepayroll() != null) {
 				Set<EmployeePayroll> set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum()).collect(Collectors.toSet());
 				for(EmployeePayroll pay : set) {
 					USPayrollDTO payrollDTO = new USPayrollDTO();
+					payrollDTO.setEmpPayrollId(pay.getId());
 					payrollDTO.setEmpId(pay.getEmployee().getEmployeeId());
 					StringBuilder sb = new StringBuilder();
 					if (StringUtils.isNoneBlank(pay.getUser().getLastName())) {
@@ -345,12 +349,14 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
 					}
 					payrollDTO.setOvertimeHours(overTimeHours);
+					pfDTO.setPayPeriodNum(Integer.parseInt(pay.getPayPeriodNum()));
 					list.add(payrollDTO);
 				}
+				pfDTO.setPayrollDTO(list);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return list;
+		return pfDTO;
 	}
 }

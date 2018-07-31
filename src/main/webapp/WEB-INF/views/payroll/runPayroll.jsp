@@ -16,7 +16,7 @@ function reviewPayrollDiv(){
 	$("#approveDiv").hide();
 }
 
-function approvePayroll(){
+function approvePayrollDiv(){
 	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
 }
@@ -41,8 +41,8 @@ function approvePayroll(){
 <div class="tabsMenu clearfix">
    		<ul class="list-unstyled">
 		   <li class="current"><a onclick="reviewPayrollDiv();">Review Payroll</a></li>
-		    <li class="current"><a onclick="approvePayroll();">Approve Payroll</a></li>
-		  <%--  <li><a href="<c:url value='${appPath}/approvePayroll'/>" >Approve Payroll</a></li> --%>
+		    <li class="current"><a onclick="approvePayrollDiv();">Approve Payroll</a></li>
+		  <%--  <li><a href="<c:url value='${appPath}/approvePayrollDiv'/>" >Approve Payroll</a></li> --%>
 	   </ul>
    </div>
 
@@ -814,9 +814,8 @@ function savePayrollAdjustment(){
  		} else if (result.response === "AWKWARD") {
  		    location.href = "/errorPage";
  		} else if (result.response === "SUCCESS") {
- 			$("#paysheetLoading").removeAttr("style");	
+ 			closeusRunpayrol();
  			runUSPayroll();
-				// location.replace(sourceleadUrl+ "/viewHoliday"); 
  		} else if (result.indexOf('Sign In') !== -1) {
  			location.replace(sourceleadUrl);
  		} else {

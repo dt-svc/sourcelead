@@ -26,6 +26,8 @@ public class PayrollApproverDTO {
 	
 	private String confirmType;
 
+	private String payPeriodNum;
+	
 	public String getConfAprrover()
 	{
 		return confAprrover;
@@ -136,6 +138,17 @@ public class PayrollApproverDTO {
 	{
 		this.confirmType = confirmType;
 	}
+
+	public String getPayPeriodNum()
+	{
+		return payPeriodNum;
+	}
+
+	public void setPayPeriodNum(String payPeriodNum)
+	{
+		this.payPeriodNum = payPeriodNum;
+	}
+	
 	
 	
 }

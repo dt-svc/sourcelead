@@ -710,7 +710,7 @@ public class USPayrollRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
-			if(existedData != null) {
+			if(existedData.getPayrollFrequencyUUID() != null) {
 				return existedData;
 			}else {
 				return generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO,loginUser);
@@ -1224,7 +1224,7 @@ public class USPayrollRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getPaySheetFrequencySummary")
-	public List<USPayrollDTO> getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public PaysheetFrequencyDTO getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		return uSPaysheetService.getPaySheetFrequencySummary(paysheetFrequencyDTO);
 	}
