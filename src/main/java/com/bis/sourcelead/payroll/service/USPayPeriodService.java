@@ -12,4 +12,6 @@ public interface USPayPeriodService {
 	USPayPeriod savePayPeriodNumber(USPayPeriod uSPayPeriod);
 
 	ResponseList<PaysheetFrequencyDTO> getPayPeriodListByOrgLocationId(OrgLocations orgLocation,PaysheetFrequencyDTO paysheetFrequencyDTO) throws Exception;
+
+	int updatedPayperiod(String payPeriodNum);
 }

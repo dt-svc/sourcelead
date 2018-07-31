@@ -47,7 +47,7 @@ public class EmployeePayroll {
 	@Column(name = "REGULAR_HOURS")
 	private String regularHours;
 	
-	@Column(name = "REHULAR_HOURS_AMOUNT")
+	@Column(name = "REGULAR_HOURS_AMOUNT")
 	private BigDecimal rehularHoursAmount;
 	
 	@Column(name = "OVER_TIME_AMOUNT")

@@ -4,20 +4,22 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script>
-window.onload = function () {
-	$("#approvePayrollId").addClass('disabled').removeAttr("href");
-	getReviewPayroll();
-}
+$(document).ready(function(){
+	$("#approveDiv").hide();
+	getReviewPayroll(); 
+});
 </script>
 
 
 <script>
 function reviewPayroll(){
+	$("#approveDiv").hide();
 	$("#reviewPayrollDiv").show();
 }
 
-function approvePayroll(){
-	$("#reviewPayrollDiv").hide();
+function approvePayrollTab(){
+	 $("#reviewPayrollDiv").hide();
+	$("#approveDiv").show(); 
 }
 </script>
 
@@ -33,11 +35,12 @@ function approvePayroll(){
     <div class="tabsMenu clearfix">
    		<ul class="list-unstyled">
 		   <li class="current"><a onclick="reviewPayroll();">Review Payroll</a></li>
-		   <li><a id="approvePayrollId" onclick="approvePayroll();">Approve Payroll</a></li>
+		   <li><a  onclick="approvePayrollTab();">Approve Payroll</a></li>
 	   </ul>
    </div>
    
     <div id="reviewPayrollDiv" class="candidate_wrap_table datatable_filter backgroundWhite">
+   <form:form id="submit_for_approver" name="submit_for_approver" method="post">
     <div class="positionRelative timesheet_head minHeight clearfix"></div>
     	<div id="reviewDiv"></div>
     
@@ -45,15 +48,18 @@ function approvePayroll(){
             <nav class="clearfix">
           <ul class="pull-right mr list-unstyled list-inline">
 <!--             <li><a href="#" class="btn btn-primary btnSuccess" onclick="sendPayrollForApproval();">Sent for Approve</a></li> -->
-            <li><a href="#" class="btn btn-default ml mr" onclick="sendPayrollForApproval();">Confirm</a></li>
-            <li><a href="#" class="btn btn-default">Cancel</a></li>
+            <li><a href="#" class="btn btn-default ml mr" onclick="confirmPayroll();">Confirm</a></li>
+            <li><a class="btn btn-default" href="<c:url value='${appPath}/payrollList'/>">Cancel</a></li>
           </ul>
           <div class="clearfix"></div>
         </nav>
     
     
     <div class="clearfix"></div>
+    </form:form>
   </div>
+  
+  <jsp:include page="usPayrollApprove.jsp" />
   </section>
   <!-- Content Area Ends--> 
   
@@ -65,7 +71,8 @@ function approvePayroll(){
 		    	type: "GET",
 		        url: sourceleadUrl+"/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum,                 
 		        success: function(data) {
-					var result = "";
+					var json = data.payrollDTO;
+		        	var result = "";
 		        	result = result +'<table id="reviewTableId">';
 			    	result = result +'<thead>';
 			    	result = result +'	<tr>';
@@ -83,10 +90,12 @@ function approvePayroll(){
 			    	result = result +'    </tr>';
 			    	result = result +'</thead>	';
 			    	result = result +'<tbody>';
-			    	
-			    	for (var i=0; i<data.length; i++)
+			    	result += '<input type="hidden" value='+data.id+' id="payrollFrequencyId" name="payrollFrequencyId" />';
+		        	result += '<input type="hidden" value='+data.payrollFrequencyUUID+' id="payrollFrequencyUUID" name="payrollFrequencyUUID" />';
+		        	result += '<input type="hidden" value='+data.payPeriodNum+' id="payPeriodNum" name="payPeriodNum" />';
+			    	for (var i=0; i<json.length; i++)
 	   				{
-			    	var report = data[i];
+			    	var report = json[i];
 			    	result = result +'<tr>																													';	
 		            
 			   	 	/* result += '<td>';
@@ -95,7 +104,7 @@ function approvePayroll(){
 		        	result += '<label for="'+i+'emp1" class="checkbox-custom-label"></label>';
 		        	result += '</div>';
 		        	result += '</td>';  */
-			    	
+		        	result += '<input type="hidden" value='+report.empPayrollId+' id="'+i+'empPayrollId" name="uspayroll['+i+'].empPayrollId" />';
 			    	if(report.empId != null && report.empId != '' && report.empId != 'undefined'){
 		            	result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.empId+'</div></td>                                                      ';
 		            }else{
@@ -178,9 +187,18 @@ function approvePayroll(){
 		    });
 	  
   }
-  
-  
-
   </script>
+  
+  
+  
+ <script>
+function confirmPayroll(){
+	$("#reviewPayrollDiv").hide();
+	$("#approveDiv").show();
+	 var confirmType = "SENT";
+	 var formData = $($('#submit_for_approver')[0]).serialize();
+	 calculateTotalPay(formData,confirmType);
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
