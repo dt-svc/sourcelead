@@ -118,9 +118,7 @@
           	</div>
           <div class="col-md-5 padding_left">
           		<input type="text"  name="newEmploymentCount" id="newEmploymentCount" value="${lcaDTO.newEmploymentCount}" class="form-control input-sm" 
-          		field-name="Count"
-				data-validation="validate_int"
-				data-validation-optional="true" placeholder="Enter" readonly>
+          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
           	</div>
 
           </div>
@@ -134,9 +132,8 @@
 				</div>
           	</div>
           	<div class="col-md-4 padding_left">
-          		<input type="text" name="concurrentEmploymentCount" value="${lcaDTO.concurrentEmploymentCount}" id="concurrentEmploymentCount" class="form-control input-sm" field-name="Count"
-				data-validation="validate_int"
-				data-validation-optional="true" placeholder="Enter" readonly>
+          		<input type="text" name="concurrentEmploymentCount" value="${lcaDTO.concurrentEmploymentCount}" id="concurrentEmploymentCount" class="form-control input-sm" 
+          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
           	</div>
 
           </div>
@@ -149,9 +146,8 @@
 				</div>
           	</div>
           	<div class="col-md-5 padding_left">
-          		<input type="text" name="extentionCount" id="extentionCount" value="${lcaDTO.extentionCount}" class="form-control input-sm" field-name="Count"
-				data-validation="validate_int"
-				data-validation-optional="true" placeholder="Enter" readonly>
+          		<input type="text" name="extentionCount" id="extentionCount" value="${lcaDTO.extentionCount}" class="form-control input-sm" 
+          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
           	</div>
 
           </div>
@@ -165,9 +161,8 @@
 				</div>
           	</div>
           	<div class="col-md-5 padding_left">
-          		<input type="text" name="changeInEmployerCount" id="changeInEmployerCount" value="${lcaDTO.changeInEmployerCount}" class="form-control input-sm" field-name="Count"
-				data-validation="validate_int"
-				data-validation-optional="true" placeholder="Enter" readonly>
+          		<input type="text" name="changeInEmployerCount" id="changeInEmployerCount" value="${lcaDTO.changeInEmployerCount}" class="form-control input-sm" 
+          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
           	</div>
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
@@ -179,9 +174,8 @@
 				</div>
           	</div>
           	<div class="col-md-4 padding_left">
-          		<input type="text" name="changeInPreApproEmplmtCount" id="changeEmployerPreviousCount" value="${lcaDTO.changeInPreApproEmplmtCount}" class="form-control input-sm" field-name="Count"
-				data-validation="validate_int"
-				data-validation-optional="true" placeholder="Enter" readonly>
+          		<input type="text" name="changeInPreApproEmplmtCount" id="changeEmployerPreviousCount" value="${lcaDTO.changeInPreApproEmplmtCount}" class="form-control input-sm" 
+          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
           	</div>
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
@@ -193,9 +187,8 @@
 				</div>
           	</div>
           	<div class="col-md-5 padding_left">
-          		<input type="text" name="amendmentCount" id="amendmentCount" value="${lcaDTO.amendmentCount}" class="form-control input-sm" field-name="Count"
-				data-validation="validate_int"
-				data-validation-optional="true" placeholder="Enter" readonly>
+          		<input type="text" name="amendmentCount" id="amendmentCount" value="${lcaDTO.amendmentCount}" class="form-control input-sm" 
+          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
           	</div>
 
           </div>
@@ -1124,4 +1117,9 @@ function validateLcaTitle() {
 };
 </script>
  
+ <script type="text/javascript">
+   function validateNumber(object){ 
+	   object.value = object.value.replace(/[^0-9\.]/g,'');
+	}
+ </script>
  
