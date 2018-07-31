@@ -109,15 +109,18 @@
           <div class="clearfix"></div>
           
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
-          	<div class="col-md-8">
+          	<div class="col-md-7">
           		<div class="pull-left">
 					<input id="newEmployment" class="checkbox-custom fmcheckbox" name="newEmployment" value="0" type="checkbox" ${lcaDTO.newEmployment == '1' ? 'checked' : '' }>
 					<label for="newEmployment" class="checkbox-custom-label fmcheckbox-lable" onclick="newEmployment();"></label>
 					<span class="ml5 mt2 pull-left">New Employment</span>
 				</div>
           	</div>
-          <div class="col-md-4 padding_left">
-          		<input type="text"  name="newEmploymentCount" id="newEmploymentCount" value="${lcaDTO.newEmploymentCount}" class="form-control input-sm" placeholder="Enter" readonly>
+          <div class="col-md-5 padding_left">
+          		<input type="text"  name="newEmploymentCount" id="newEmploymentCount" value="${lcaDTO.newEmploymentCount}" class="form-control input-sm" 
+          		field-name="Count"
+				data-validation="validate_int"
+				data-validation-optional="true" placeholder="Enter" readonly>
           	</div>
 
           </div>
@@ -131,33 +134,40 @@
 				</div>
           	</div>
           	<div class="col-md-4 padding_left">
-          		<input type="text" name="concurrentEmploymentCount" value="${lcaDTO.concurrentEmploymentCount}" id="concurrentEmploymentCount" class="form-control input-sm" placeholder="Enter" readonly>
+          		<input type="text" name="concurrentEmploymentCount" value="${lcaDTO.concurrentEmploymentCount}" id="concurrentEmploymentCount" class="form-control input-sm" field-name="Count"
+				data-validation="validate_int"
+				data-validation-optional="true" placeholder="Enter" readonly>
           	</div>
 
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
-          	<div class="col-md-8">
+          	<div class="col-md-7">
           		<div class="pull-left">
 					<input id="extention" class="checkbox-custom fmcheckbox" name="extention"  value="0" type="checkbox" ${lcaDTO.extention == '1' ? 'checked' : '' }>
 					<label for="extention" class="checkbox-custom-label fmcheckbox-lable" onclick="extention();"></label>
 					<span class="ml5 mt2 pull-left">Extension</span>
 				</div>
           	</div>
-          	<div class="col-md-4 padding_left">
-          		<input type="text" name="extentionCount" id="extentionCount" value="${lcaDTO.extentionCount}" class="form-control input-sm" placeholder="Enter" readonly>
+          	<div class="col-md-5 padding_left">
+          		<input type="text" name="extentionCount" id="extentionCount" value="${lcaDTO.extentionCount}" class="form-control input-sm" field-name="Count"
+				data-validation="validate_int"
+				data-validation-optional="true" placeholder="Enter" readonly>
           	</div>
 
           </div>
+          <div class="clearfix"></div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
-          	<div class="col-md-8">
+          	<div class="col-md-7">
           		<div class="pull-left">
 					<input id="changeEmployer" class="checkbox-custom fmcheckbox" name="changeInEmployer" value="0" type="checkbox" ${lcaDTO.changeInEmployer == '1' ? 'checked' : '' }>
 					<label for="changeEmployer" class="checkbox-custom-label fmcheckbox-lable" onclick="changEmployer()"></label>
 					<span class="ml5 mt2 pull-left">Change in Employer</span>
 				</div>
           	</div>
-          	<div class="col-md-4 padding_left">
-          		<input type="text" name="changeInEmployerCount" id="changeInEmployerCount" value="${lcaDTO.changeInEmployerCount}" class="form-control input-sm" placeholder="Enter" readonly>
+          	<div class="col-md-5 padding_left">
+          		<input type="text" name="changeInEmployerCount" id="changeInEmployerCount" value="${lcaDTO.changeInEmployerCount}" class="form-control input-sm" field-name="Count"
+				data-validation="validate_int"
+				data-validation-optional="true" placeholder="Enter" readonly>
           	</div>
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
@@ -169,19 +179,23 @@
 				</div>
           	</div>
           	<div class="col-md-4 padding_left">
-          		<input type="text" name="changeInPreApproEmplmtCount" id="changeEmployerPreviousCount" value="${lcaDTO.changeInPreApproEmplmtCount}" class="form-control input-sm" placeholder="Enter" readonly>
+          		<input type="text" name="changeInPreApproEmplmtCount" id="changeEmployerPreviousCount" value="${lcaDTO.changeInPreApproEmplmtCount}" class="form-control input-sm" field-name="Count"
+				data-validation="validate_int"
+				data-validation-optional="true" placeholder="Enter" readonly>
           	</div>
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
-          	<div class="col-md-8">
+          	<div class="col-md-7">
           		<div class="pull-left">
 					<input id="amendment" class="checkbox-custom fmcheckbox" name="amendment" value="${lcaDTO.amendment}" type="checkbox" ${lcaDTO.amendment == '1' ? 'checked' : '' }>
 					<label for="amendment" class="checkbox-custom-label fmcheckbox-lable" onclick="amendment()"></label>
 					<span class="ml5 mt2 pull-left">Amendment</span>
 				</div>
           	</div>
-          	<div class="col-md-4 padding_left">
-          		<input type="text" name="amendmentCount" id="amendmentCount" value="${lcaDTO.amendmentCount}" class="form-control input-sm" placeholder="Enter" readonly>
+          	<div class="col-md-5 padding_left">
+          		<input type="text" name="amendmentCount" id="amendmentCount" value="${lcaDTO.amendmentCount}" class="form-control input-sm" field-name="Count"
+				data-validation="validate_int"
+				data-validation-optional="true" placeholder="Enter" readonly>
           	</div>
 
           </div>
