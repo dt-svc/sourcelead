@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -76,8 +77,11 @@ public class SourceleadTaxChallanItem implements Serializable {
 	@Column(name = "DATAVALIDATION_RANGE")
 	private String dataValidationRange;
 
-	@Column(name = "MAX_LIMIT")
-	private double maxLimit;
+
+	@Column(name = "HELPTEXT")
+	private String helptext;
+/*	@Column(name = "MAX_LIMIT")
+	private BigDecimal maxLimit;*/
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -86,7 +90,7 @@ public class SourceleadTaxChallanItem implements Serializable {
 	private Date updatedDate;
 
 	@Column(name = "ACTIVE")
-	private Boolean active;
+	private boolean active;
 
 	@OneToMany(mappedBy = "sourceleadTaxChallanItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<SourceleadTaxChallanItemSubFormField> sourceleadTaxChallanItemSubFormFieldList;
@@ -236,20 +240,34 @@ public class SourceleadTaxChallanItem implements Serializable {
 		this.updatedDate = updatedDate;
 	}
 
-	public Boolean getActive() {
+	public boolean isActive() {
 		return active;
 	}
 
-	public void setActive(Boolean active) {
+	public void setActive(boolean active) {
 		this.active = active;
 	}
 
-	public double getMaxLimit() {
+	public String getHelptext() {
+		return helptext;
+	}
+
+	public void setHelptext(String helptext) {
+		this.helptext = helptext;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+/*	public BigDecimal getMaxLimit() {
 		return maxLimit;
 	}
 
-	public void setMaxLimit(double maxLimit) {
+	public void setMaxLimit(BigDecimal maxLimit) {
 		this.maxLimit = maxLimit;
-	}
+	}*/
+
+
 
 }

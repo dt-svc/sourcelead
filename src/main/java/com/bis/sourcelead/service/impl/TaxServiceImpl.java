@@ -561,15 +561,16 @@ public class TaxServiceImpl implements TaxService {
 						if (includeInactive || (!includeInactive && challanSection.isActive())) {
 							SourceleadTaxChallanDTO challanSectionDTO = new SourceleadTaxChallanDTO();
 							challanSectionDTO.setActive(challanSection.isActive());
-							challanSectionDTO.setChallanId(challanSection.getId());
+//							challanSectionDTO.setChallanId(challanSection.getId());
 							challanSectionDTO.setDescription(challanSection.getDescription());
 							challanSectionDTO.setName(challanSection.getName());
 							challanSectionDTO.setId(challanSection.getId());
+							challanSectionDTO.setTaxFormId(challanSection.getSourceleadTaxForm().getId());
 							List<SourceleadTaxChallanItemDTO> challanSectionItemDTOList = new LinkedList<>();
 							List<SourceleadTaxChallanItem> challanSectionItemList = challanSection
 									.getSourceleadTaxChallanItemList();
 							for (SourceleadTaxChallanItem challanSectionItem : challanSectionItemList) {
-								if (includeInactive || (!includeInactive && challanSectionItem.getActive())) {
+								if (includeInactive || (!includeInactive && challanSectionItem.isActive())) {
 									SourceleadTaxChallanItemDTO challanSectionItemDTO = new SourceleadTaxChallanItemDTO();
 									challanSectionItemDTO.setCreatedDate(challanSectionItem.getCreatedDate());
 									challanSectionItemDTO
@@ -587,6 +588,7 @@ public class TaxServiceImpl implements TaxService {
 									challanSectionItemDTO.setMinLength(challanSectionItem.getMinLength());
 									challanSectionItemDTO.setPlaceHolder(challanSectionItem.getPlaceHolder());
 									challanSectionItemDTO.setUpdatedDate(challanSectionItem.getUpdatedDate());
+									challanSectionItemDTO.setActive(challanSectionItem.isActive());
 									challanSectionItemDTOList.add(challanSectionItemDTO);
 								}
 							}
@@ -1037,6 +1039,8 @@ public class TaxServiceImpl implements TaxService {
 				sectionItem.setMinLength(sectionItemDTO.getMinLength());
 				sectionItem.setPlaceHolder(sectionItemDTO.getPlaceHolder());
 				sectionItem.setUpdatedDate(sectionItemDTO.getUpdatedDate());
+				sectionItem.setHelptext(sectionItemDTO.getHelpText());
+				sectionItem.setActive(true);
 				sectionItem.setSourceleadtaxchallan(taxDao.getTaxChallanSection(sectionItemDTO.getTaxChallanId()));
 				return taxDao.addITChallanSectionItem(sectionItem);
 			} else
@@ -1052,7 +1056,7 @@ public class TaxServiceImpl implements TaxService {
 		try {
 			SourceleadTaxChallan section = null;
 			if (sourceleadTaxSectionDTO.getId() > 0) {
-				// section = taxDao.getTaxSection(sourceleadTaxSectionDTO.getId());
+				 section = taxDao.getTaxChallanSection(sourceleadTaxSectionDTO.getId());
 			} else {
 				section = new SourceleadTaxChallan();
 				section.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
@@ -1096,12 +1100,14 @@ public class TaxServiceImpl implements TaxService {
 				challanSectionItemDTO.setFieldRequired(challanItem.getIsFieldRequired());
 				challanSectionItemDTO.setFieldType(challanItem.getFieldType());
 				challanSectionItemDTO.setId(challanItem.getId());
+				challanSectionItemDTO.setHelpText(challanItem.getHelptext());
 				challanSectionItemDTO.setLabelName(challanItem.getLabelName());
 				challanSectionItemDTO.setMaxDate(challanItem.getMaxDate());
+				challanSectionItemDTO.setPlaceHolder(challanItem.getPlaceHolder());
 				challanSectionItemDTO.setMaxLength(challanItem.getMaxLength());
 				challanSectionItemDTO.setMaxNumber(challanItem.getMaxNumber());
 				challanSectionItemDTO.setUpdatedDate(challanItem.getUpdatedDate());
-				challanSectionItemDTO.setStatus(challanItem.getActive());
+				challanSectionItemDTO.setStatus(challanItem.isActive());
 				challanSectionItemDTO.setTaxChallanId(challanItem.getSourceleadtaxchallan().getId());
 				List<SourceleadTaxChallanItemSubFormFieldDTO> subFormFieldDTOList = new LinkedList<>();
 				for (SourceleadTaxChallanItemSubFormField subFormField : challanItem
@@ -1121,6 +1127,51 @@ public class TaxServiceImpl implements TaxService {
 		return getChallanItemDetails((long) 0);
 	}
 
+
+	
+	
+	@Override
+	public Response<String> changeChallanItemStatus(long itemId) {
+       Response<String> response = new Response<>();
+       try {
+    	   long result = taxDao.changeChallanItemStatus(itemId);
+    	   if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+    	   } else if (result == -2) {
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+		} else {
+			response.setResponse(Result.FAILED.name());
+			response.setResponseMessage(Result.FAILED.getValue());
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return response;
+}
+
+	@Override
+	public Response<String> changeSectionStatus(long sectionId) {
+		Response<String> response = new Response<>();
+		try {
+			long result = taxDao.changeSectionStatus(sectionId);
+		 	 	   if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+    	   } else if (result == -2) {
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+		} else {
+			response.setResponse(Result.FAILED.name());
+			response.setResponseMessage(Result.FAILED.getValue());
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return response;
+}
+
 	@Override
 	public Response<String> changeITDeclarationSubmissionStatus(long id, int status) {
 		Response<String> response = new Response<>();
@@ -1130,6 +1181,7 @@ public class TaxServiceImpl implements TaxService {
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else if (result == -2) {
+
 				response.setResponse(Result.INVALID_DATA.name());
 				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			} else {
@@ -1141,5 +1193,6 @@ public class TaxServiceImpl implements TaxService {
 		}
 		return response;
 	}
+
 
 }

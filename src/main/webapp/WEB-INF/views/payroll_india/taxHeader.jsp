@@ -35,7 +35,7 @@
 			<c:if test="${viewPage == 'tax/addForm'}">
 				<input id='confirmId' type='button' value='Ok' onclick='tax.changeFormSectionStatus()'>
 			</c:if>
-			<c:if test="${viewPage == 'tax/form_list'}">
+			<c:if test="${viewPage == 'payroll_india/form_list'}">
 				<input id='confirmId' type='button' value='Ok' onclick='tax.changeFormStatus()'>
 			</c:if>
 		</c:when>
