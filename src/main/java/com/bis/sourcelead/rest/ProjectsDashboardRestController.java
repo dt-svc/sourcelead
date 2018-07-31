@@ -478,6 +478,9 @@ public class ProjectsDashboardRestController {
 					    projectsDTO.setExpensesApproversListwithoutApprover1(mrguserDTOList);
 			    }
 			    
+			    projectsDTO.setIsProjectForExpenses(projectClients.getProjectId().getIsProjectForExpenses());
+			    projectsDTO.setIsProjectForTimeSheets(projectClients.getProjectId().getIsProjectForTimeSheets());
+			    
 		 }
 		 
 		 return projectsDTO;

@@ -3303,6 +3303,21 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID); 
 				Projects projects = getProjectById(projectClients.getProjectId().getId());
 				
+		    	if(!isNullOrEmpty(projectDTO.getProjectForValue())) {
+		    		if(projectDTO.getProjectForValue().equalsIgnoreCase("Timesheets")) {
+		    			projects.setIsProjectForTimeSheets(Constants.YES);
+		    			projects.setIsProjectForExpenses(Constants.NO);
+		    		}else if(projectDTO.getProjectForValue().equalsIgnoreCase("Expenses")) {
+		    			projects.setIsProjectForExpenses(Constants.YES);
+		    			projects.setIsProjectForTimeSheets(Constants.NO);
+		    		}else {
+		    			projects.setIsProjectForTimeSheets(Constants.YES);
+		    			projects.setIsProjectForExpenses(Constants.YES);
+		    		}
+		    		
+		    		projectsDao.updateProject(projects);
+		    	}
+				
 				if(StringUtils.isNotBlank(projectDTO.getLevel1Manager()) && projectClients != null){
 		    		HashSet<Long> oldlist = new HashSet<>();
 		    		HashSet<Long> freshlist = new HashSet<>();

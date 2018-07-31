@@ -223,7 +223,12 @@ public class ExpensesRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		User loginUser = userService.getUserById(eedDTO.getUserId());
 		if(StringUtils.isNotEmpty(eedDTO.getExpenseFrom()) && eedDTO.getExpenseFrom().equalsIgnoreCase("approver")){
-			List<ProjectClients> projectClientsList = projectClientService.getAllProjectClientsByApproverUserAndOrgLocationId(loginUser.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser());
+			String purpose = "newExpense";
+			if(StringUtils.isNotEmpty(eedDTO.getExpenseId())) {
+				purpose = "editExpense";
+			}
+			
+			List<ProjectClients> projectClientsList = projectClientService.getAllProjectClientsByApproverUserAndOrgLocationId(loginUser.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser(),purpose);
 			ArrayList<ProjectsDTO> projectsList = new ArrayList<>();
 			for(ProjectClients pc : projectClientsList){
 				Projects projects = pc.getProjectId();
