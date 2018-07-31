@@ -39,6 +39,10 @@ public class AssociateSalary {
 	@JoinColumn(name = "USER_ID")
 	private User userId;
 	
+	@ManyToOne
+	@JoinColumn(name = "GROUP_ID")
+	private UserGroup groupId;
+	
 	@Column(name = "PAY_TYPE")
 	private String payType;
 	
@@ -312,6 +316,12 @@ public class AssociateSalary {
 		this.updatedBy = updatedBy;
 	}
 
+	public UserGroup getGroupId() {
+		return groupId;
+	}
 
-	
+	public void setGroupId(UserGroup groupId) {
+		this.groupId = groupId;
+	}
+
 }
