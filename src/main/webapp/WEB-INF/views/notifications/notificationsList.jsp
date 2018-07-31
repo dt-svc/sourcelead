@@ -4,38 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.table-top{
-    position: relative;
-    top: 35px;
-    z-index: 999;
-}
-.delete-icn {
-position: relative !important;
-top:0px !important;
-color:#fff;
-}
-.notification-table table thead{
-background:#6C7686 ;
-color:#fff;
-}
-.icAcc {
-font-size: 18px; color: #2ca12c;
-}
-.icRej {
-font-size: 18px; color: #ff3e3e;
-}
-.notificatons .notifica-checkbox a {
-padding-right: 7px;
-}
-.noti-checkbox span {
-	width: 18px; height: 18px;
-}
-.notificatons .notifica-checkbox a .fa{
-font-size: 18px;
-}
-</style>
-
 <script type="text/javascript">
 window.onload = function () {
 // 	getNotificationtLists();
@@ -48,7 +16,7 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Notifications</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Notifications</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Notifications</div>
     </section>
     <div class="content-dashboard clearfix">
       <section class="action-btns clearfix hidden">
@@ -187,27 +155,27 @@ function dynamicNotificationtPaginations(url){
 						result = result +'			<div class="mailbox-subject tbldata-dotdot-big500 pull-left text-left">';
 						if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID == null || report.spocUUID == "" || report.spocUUID == "undefined")){
 							if(report.mode == "read"){
-								result = result +'<span><a class="visitedAnchor" href="'+report.actionLink+'" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a class="visitedAnchor" href="'+report.actionLink+'" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');">'+report.body+'</a></span>';
 							}else{
-								result = result +'<span><a href="'+report.actionLink+'" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a href="'+report.actionLink+'" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');">'+report.body+'</a></span>';
 							}
 						}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined") && report.responderType == "vendor"){
 							if(report.mode == "read"){
-								result = result +'<span><a  class="visitedAnchor" href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a  class="visitedAnchor" href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}else{
-								result = result +'<span><a href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}
 						}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined")&& report.responderType == "client"){
 							if(report.mode == "read"){
-								  result = result +'<span><a class="visitedAnchor"  href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+								  result = result +'<span><a class="visitedAnchor"  href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}else{
-							  result = result +'<span><a href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+							  result = result +'<span><a href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}
 						}else{
 							if(report.mode == "read"){
-								result = result +'<span><a class="visitedAnchor" href="#" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a class="visitedAnchor" href="#" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');">'+report.body+'</a></span>';
 							}else{
-								result = result +'<span><a href="#" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a href="#" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');">'+report.body+'</a></span>';
 							}
 						}
 						result = result +'			</div>';

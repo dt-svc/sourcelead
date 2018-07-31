@@ -66,6 +66,18 @@ public class OrgSpoc implements Serializable{
 	@Column(name = "INVITATION_STATUS")
 	private String invitationStatus;
 	
+	@Column(name = "INVOICE_EMAIL_STATUS")
+	private String invoiceEmailStatus;
+	
+	@Column(name = "BILLING_EMAIL_STATUS")
+	private String billingEmailStatus;
+	
+	@Column(name = "AP_EMAIL_STATUS")
+	private String apEmailStatus;
+	
+	@Column(name = "AR_EMAIL_STATUS")
+	private String arEmailStatus;
+	
 	@Column(name = "SPOC_STATUS")
 	private String spocStatus;
 	
@@ -669,4 +681,36 @@ public class OrgSpoc implements Serializable{
 		this.clientCustomFieldlabelNameAndValue = clientCustomFieldlabelNameAndValue;
 	}
 
+	public String getInvoiceEmailStatus() {
+		return invoiceEmailStatus;
+	}
+
+	public void setInvoiceEmailStatus(String invoiceEmailStatus) {
+		this.invoiceEmailStatus = invoiceEmailStatus;
+	}
+
+	public String getBillingEmailStatus() {
+		return billingEmailStatus;
+	}
+
+	public void setBillingEmailStatus(String billingEmailStatus) {
+		this.billingEmailStatus = billingEmailStatus;
+	}
+
+	public String getApEmailStatus() {
+		return apEmailStatus;
+	}
+
+	public void setApEmailStatus(String apEmailStatus) {
+		this.apEmailStatus = apEmailStatus;
+	}
+
+	public String getArEmailStatus() {
+		return arEmailStatus;
+	}
+
+	public void setArEmailStatus(String arEmailStatus) {
+		this.arEmailStatus = arEmailStatus;
+	}
+	
 }

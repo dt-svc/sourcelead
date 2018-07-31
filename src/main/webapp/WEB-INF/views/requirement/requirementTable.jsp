@@ -301,6 +301,8 @@ function jpagination(url,sourceleadUrl){
 	         		 if((opt.isRequirementReleased != 'Y' && !opt.totalApplicants > 0) && ('${SourceLeadWeb_loginUserRole}' ==  'ROLE_ADMIN' || '${SourceLeadWeb_loginUserRole}' == 'ROLE_SOURCELEAD_ADMIN')){
 	         			if(jQuery.inArray(opt.requirementUUID, reqUUIDArr) !== -1){
 	         				trashActive = "trashActive";
+	         			}else{
+	         				trashActive = "trashIcon";
 	         			}
 	         		 		result = result +'<div class="text-center"><a href="javascript:void(0)" title="Select for Delete Job" class="add-applicant anchorBlack"><i class="fa fa-trash '+trashActive+'" id="'+opt.requirementUUID+'" onclick="selectDeleteJob(this);" ></i></a></div>';
 	         		 }else{
@@ -1050,7 +1052,7 @@ function selectDeleteJob(event) {
 	$(event).toggleClass("trashIcon trashActive");
 	var x = $(event).attr('id');
 	reqUUIDArr.push(x);
-	if($(event).attr('class') == "fa fa-trash"){
+	if($(event).attr('class') == "fa fa-trash trashIcon"){
 		reqUUIDArr = jQuery.grep(reqUUIDArr, function(value) {
 			  return value != x;
 			});

@@ -406,8 +406,8 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'            </div>                                                                ';
 	result = result +'            <div class="col-md-6 mt">                                                ';
 	result = result +'              <div class="clearfix mb invoiceAttachment">                         ';
-	result = result +'              <label><strong>Attachments</strong></label>                         ';
-	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
+	result = result +'              <label><strong>Attachment</strong></label>                         ';
+	result = result +'              <div class="timesheet_week_comm col-md-12 width100percnt">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
 	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment" onchange="getfileUrl()">                                            ';
 // 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
