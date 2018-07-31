@@ -1397,6 +1397,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projects.getProjectShortCode() != null){
 	    	projectsDTO.setProjectShortCode(projects.getProjectShortCode());
 	    }
+	  
+	    projectsDTO.setIsProjectForTimeSheets(projects.getIsProjectForTimeSheets());
+	    projectsDTO.setIsProjectForExpenses(projects.getIsProjectForExpenses());
 	    
 	    projectsDTO.setIsReportingManagerAsApprover(projects.getIsReportingManagerAsApprover());
 	    projectsDTO.setIsTaskCommentsRequired(projects.getIsTaskCommentsRequired());
@@ -1807,6 +1810,20 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}else {
 					projects.setProjectShortCode(null);
 				}
+		    	
+		    	if(StringUtils.isNotBlank(projectDTO.getProjectForValue())){	
+		    		if(projectDTO.getProjectForValue().equalsIgnoreCase("Timesheets")) {
+		    			projects.setIsProjectForTimeSheets(Constants.YES);
+		    			projects.setIsProjectForExpenses(Constants.NO);
+		    		}else if(projectDTO.getProjectForValue().equalsIgnoreCase("Expenses")) {
+		    			projects.setIsProjectForExpenses(Constants.YES);
+		    			projects.setIsProjectForTimeSheets(Constants.NO);
+		    		}else {
+		    			projects.setIsProjectForTimeSheets(Constants.YES);
+		    			projects.setIsProjectForExpenses(Constants.YES);
+		    		}
+		    	}
+		    	
 		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getIsTicketNumberRequired())){
 		    		projects.setIsTicketNumberRequired(Constants.YES);

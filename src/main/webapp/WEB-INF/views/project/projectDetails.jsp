@@ -1069,6 +1069,16 @@ function editClientProjectDetails(projectId){
 						result = result + '</div>';
 						
 						
+						result = result+' <div class="col-md-4">';
+						result = result + '<label>Project For</label>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="timesheets" '+(json.isProjectForTimeSheets == "Y" && json.isProjectForExpenses == "N" ? "checked=checked" : '')+'  value="Timesheets" name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets</label>';
+						result = result + '<label class="paddingRight"><input type="radio" id="expenses"  value="Expenses" '+(json.isProjectForTimeSheets == "N" && json.isProjectForExpenses == "Y" ? "checked=checked" : '')+' name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Expenses</label>';
+						result = result + '<label class="paddingRight"><input type="radio" id="timesheetsandexpenses" '+(json.isProjectForTimeSheets == "Y" && json.isProjectForExpenses == "Y" ? "checked=checked" : '')+' value="TimesheetsAndExpences"  name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets & Expenses</label>';
+						result = result + '<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For"/>';
+						result = result + '</div>';
+						
+						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta projectdetails_checkbox">';
 						result = result + '<label>&nbsp;</label>';
 							
@@ -1092,6 +1102,7 @@ function editClientProjectDetails(projectId){
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div id="customFieldDataId" class="customFieldDataId-3column"></div>';
 						
+					
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="width100percnt col-md-12 mb txtEditor_p">';
 						result = result + '<label>Description</label>';
@@ -1180,6 +1191,13 @@ function editClientProjectDetails(projectId){
 				});
 
 	}
+</script>
+
+
+<script type="text/javascript">
+	function projectForCheckValidation(id){
+		document.getElementById("projectForValue").value = id.value;
+	} 
 </script>
 
 <script>
