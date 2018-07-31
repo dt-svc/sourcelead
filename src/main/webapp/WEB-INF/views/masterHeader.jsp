@@ -720,8 +720,9 @@ function preventTabkey(e){
 							 </li> 	
 						   </sec:authorize>
 					
+					   <c:if test="${SourceLeadWeb_isAdmin == true}">
 					  	<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
-
+                        </c:if>
 
 					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" ><i class="fa fa-key" aria-hidden="true"></i>Guest Action Roles</a></li>
