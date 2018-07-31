@@ -44,15 +44,17 @@
 		</div>
 		
             <div  id="selectFieldDiv" ${form.fieldType == 'dropDown' || form.fieldType == 'checkBox' || form.fieldType == 'radioButton' ? "" : "style='display:none;'"}>
+				<c:forEach var="options" items="${form.optionData}" varStatus="optionStatus">
 				<div class="col-sm-12 noPad mt clearfix">
 					   <div class="col-md-3 noPad labHeight"><p>Options</p></div>
 						<c:if test="${not empty form.optionData}">
 							<div class="col-md-6">
-							<c:forEach var="options" items="${form.optionData}" varStatus="optionStatus">
+							
 								<input name="optionData[${optionStatus.index}].id" value="${options.id}" type="hidden">
 								<input name="optionData[${optionStatus.index}].labelName" value="${options.labelName}" field-name="Data" class="field-label form-control input-sm mb" type="text" data-validation="required">
-							</c:forEach>
-							 </div>	
+							
+							 </div>
+							 <div class="col-md-3 lblHeight"><span class="OpRemove"><i onclick="removeOption(9)" class="fa fa-close"></i></span></div>
 						</c:if>
 						<c:if test="${empty form.optionData}">
 						   
@@ -61,6 +63,7 @@
 						<div class="col-md-3 lblHeight"><span>&nbsp;</span>
 					</div>
 				</div>
+				</c:forEach>
 				<input type="hidden" id="optionCounter" value="${fn:length(form.optionData)}"/>
 				<div id="optionsDiv"></div>	
 				 <div class="col-sm-12 noPad mt clearfix">

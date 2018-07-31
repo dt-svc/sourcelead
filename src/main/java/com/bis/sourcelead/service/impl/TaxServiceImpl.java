@@ -1069,6 +1069,7 @@ public class TaxServiceImpl implements TaxService {
 				sectionItem.setPlaceHolder(sectionItemDTO.getPlaceHolder());
 				sectionItem.setUpdatedDate(sectionItemDTO.getUpdatedDate());
 				sectionItem.setHelptext(sectionItemDTO.getHelpText());
+				sectionItem.setActive(true);
 				sectionItem.setSourceleadtaxchallan(taxDao.getTaxChallanSection(sectionItemDTO.getTaxChallanId()));
 				return taxDao.addITChallanSectionItem(sectionItem);
 			} else

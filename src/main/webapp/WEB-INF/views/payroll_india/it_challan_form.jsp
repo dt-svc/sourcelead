@@ -28,17 +28,25 @@
 				<table class="table table-itdeclaration table-challan table-bordered">
 				<thead>
 					<tr>
-						<th colspan="4" class="text-info">${section.name}
+						<th colspan="4">${section.name}
 							<c:choose>
 								<c:when test="${section.active == '1'}">
-									<a class="fa fa-edit text-danger" title="Activate" onclick="changeChallanSectionStatus(${section.id});"></a>
-									 <a href="javascript:void(0)" class="ml fa fa-plus anchor-black" title="Add Custom Field" ></a>
-									<a title="EditSection" class="fa fa-pencil"  id="itChallanSectionItemForm" ></a>
+								   <span class="ml fa fa-plus text-muted" data-toggle="popover" data-placement="right" data-content="Section is deactived, please activate !."></span>
+									<div class="pull-right mr25">
+									<div class="mr25">
+										<a class="fa fa-toggle-off anchorBlack mr10 mt2 pull-left" title="Activate" onclick="changeChallanSectionStatus(${section.id});"></a>
+										<span title="Activate Section" class="fa fa-edit anchorBlack"  id="itChallanSectionItemForm"></span>
+									</div>
+									</div>
 								</c:when>
 										<c:otherwise>
-											<a class="fa fa-trash text-danger" title="InActivate" onclick = "changeChallanSectionStatus(${section.id});"></a>
-											 <a href="javascript:void(0)" class="ml fa fa-plus anchor-black" title="Add Custom Field" onClick="addChallaItem(${section.id},'${section.name}');"></a>
-											<a title="EditSection" class="fa fa-pencil"  id="itChallanSectionItemForm" onclick="editITChallanSection(${section.taxFormId}, ${section.id}, '${section.name}', '${section.description}');"></a>
+											<span class="ml fa fa-plus text-primary cursorPointer" title="Add Section" onClick="addChallaItem(${section.id},'${section.name}');"></span>
+										<div class="pull-right mr25">
+											<div class="mr25">
+												<a class="fa fa-toggle-on mr10 mt2 pull-left text-success" title="InActivate" onclick = "changeChallanSectionStatus(${section.id});"></a>
+												<a title="Edit Section" class="fa fa-edit"  id="itChallanSectionItemForm" onclick="editITChallanSection(${section.taxFormId}, ${section.id}, '${section.name}', '${section.description}');"></a>
+											</div>
+										</div>
 										</c:otherwise>
 							</c:choose>
 							
@@ -75,12 +83,12 @@
 									<ul class="list-unstyled list-inline mt5 text-center">
 									            <c:choose>
 													<c:when test="${sectionItems.active == '1'}">
-														<a class="fa fa-edit text-danger" title="Activate" id = "inactiveStatus"
+														<a class="fa fa-toggle-off anchorBlack mr5 mt2" title="Activate" id = "inactiveStatus"
 															 onclick = "changeChallanItemStatus(${sectionItems.id});"></a>
 															 <li><a title="EditItem" class="fa fa-pencil "  id="itChallanSectionItemForm"></a></li>
 													</c:when>
 													<c:otherwise>
-														<a class="fa fa-trash text-danger" title="InActivate" id = "activeStatus"
+														<a class="fa fa-toggle-on mr5 mt2 text-success" title="InActivate" id = "activeStatus"
 															 onclick = "changeChallanItemStatus(${sectionItems.id});"></a>
 															 <li><a title="EditItem" class="fa fa-pencil"  id="itChallanSectionItemForm" onclick="editItemDetails(${sectionItems.id});"></a></li>
 													</c:otherwise>
@@ -99,7 +107,7 @@
 		</div>
 		<!-- section fields ends -->
 		<div class="clearfix"></div>
-		<div class="clearfix footerstyelsNew">
+	<!-- 	<div class="clearfix footerstyelsNew">
 			<div class="col-lg-12">
 				<div class="pull-right">
 					<input value="Save" class="btn btn-success btnSuccess"
@@ -107,7 +115,7 @@
 						class="btn btn-default ml10" type="button">
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 	</div>
 
@@ -191,3 +199,8 @@
 		</div>
 	</div>
 </div>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+});
+</script>
