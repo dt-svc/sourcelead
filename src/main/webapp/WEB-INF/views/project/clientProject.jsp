@@ -56,12 +56,7 @@
 								data-validation="required" onchange="getEndClientProjects();">
 								<option value="">-- Select Client --</option>
 								<c:forEach var="report" items="${clientsList}">
-								 <c:if test="${report.locationId.id == SourceLeadWeb_orgLocations.id}">
-								    <option value="${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
-								 </c:if>
-								 <c:if test="${report.responderLocationId.id == SourceLeadWeb_orgLocations.id}">
-								    <option value="${report.locationId.id}">${report.locationId.orgLocationName}</option>
-								 </c:if>
+								 	<option value="${report.clientLocationId}">${report.clientName}</option>
 								</c:forEach>
 							</select> 
                 </div>	
