@@ -217,7 +217,7 @@
           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
             <label class="col-md-4 paddingRight">Offered Wage<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8 ">
-            <div class="input-group">
+            <div class="input-group er ratetype">
                 <div class="input-group-btn">
                   <select class="form-control selectpicker" id="offeredWageCurrency" name="offeredWageCurrency" data-style="btn-primary">
 										<option value="INR" ${lcaDTO.offeredWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
@@ -357,7 +357,7 @@
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
             <label class="col-md-4 paddingRight">Prevailing  Wage<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
-            <div class="input-group">
+            <div class="input-group er ratetype">
                 <div class="input-group-btn">
                    <select class="form-control selectpicker" id="privilingWageCurrency" name="privilingWageCurrency" data-style="btn-primary">
 						<option value="INR" ${lcaDTO.privilingWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
