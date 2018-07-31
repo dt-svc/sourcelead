@@ -65,7 +65,7 @@ public class TaxAdminController {
 		c.roll(Calendar.YEAR, -2);
 		for (int i = 0; i < 4; i++) {
 			Calendar c1 = Calendar.getInstance();
-			boolean isCurrent = selectedYear != null
+			boolean isCurrent = (selectedYear != null && !selectedYear.isEmpty())
 					? Integer.parseInt(selectedYear.split("-")[0]) == c.get(Calendar.YEAR)
 					: c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
 
