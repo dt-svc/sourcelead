@@ -9201,6 +9201,15 @@ padding: 10px; border: none;
 .menuWidget ul li:hover a, .menuWidget ul.menupop li a:hover i {
     color: #368ee0 !important;
 }
+.tagStyles {
+width: 300px !important; padding: 5px 0;
+}
+.tagStyles i {
+font-size: 20px !important;
+}
+.tagStyles span {
+top: 0 !important;
+}
 .nestedTable table thead {
 	background: #6C7686; color: #fff;
 }
@@ -9212,6 +9221,21 @@ color:#333 !important;
 }
 .permissionDenied.fa-trash {
 color:#ededed !important; cursor: default !important;
+}
+.tagslist li {
+border-bottom: 1px dotted #a0a0a0; padding:5px 0px 5px 0; min-width: 75px; margin: 0 10px 10px 0;
+}
+.tagslist li span.count {
+border: 1px solid #ededed; padding: 1px 5px; position: relative; top: -3px; border-radius:10%;
+}
+.tagslist li span.tagItem {
+min-width:10px; text-transform:capitalize; word-break:break-word;
+}
+.tagslist li i.fa-times {
+float: right; cursor: pointer; padding-left: 15px;color: #f5b1b1;
+}
+.tagslist li i.fa-times:hover {
+color: #fd0505;
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {
@@ -9628,7 +9652,6 @@ z-index: -800;
 .remove_uservalidation p.jquery_form_error_message {
 	position: absolute; bottom: 32px;
 }
-
 .view-count{
     font-size: 20px; text-align: center; font-weight: 500; border-bottom: 1px solid #bdbdbd; padding: 2px;color: #00488B;
 }
@@ -9638,13 +9661,6 @@ z-index: -800;
 .menuWidget ul.menupop.menupop_3 {
     width:310px;
 	}
-	
-	
-	
-	
-	
-	
-	
 .level-second {
 transition: all ease-in-out 0.5s; display: none;
 }
