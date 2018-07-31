@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
@@ -103,7 +104,7 @@ public interface LeaveService {
 
 	List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate);
 
-	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(LeaveReportView  leaveReportView,Long orgId, Long orgLocationId, String fromDate,String searchValue,List<Long> userRoleList,List<Long> departmentsList,List<String> employmentTypeList,List<Long> leaveTypeNamesList)throws Exception;
+	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId)throws Exception;
 
 	void updateBalanceLeaves(Leave leave, User user, OrgLocations orgLocations);
 	

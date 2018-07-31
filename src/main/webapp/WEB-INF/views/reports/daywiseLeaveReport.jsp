@@ -34,42 +34,17 @@ $(document).ready(function(){
             <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-search" onclick="searchThroughDates();"></i></button>
           </div>
 		   </li>
-		   
-		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
-	                    
-                  <c:if test="${orgLocationsCount > 1}">
-		                    <li>
-								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
-								<div class="action-pop">
-									<span> 
-									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
-									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
-									</span>
-								</div>
-							</li>
-				</c:if>
-				
-				<c:if test="${orgLocationsCount == 1}">
-				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
-				</c:if>		
-	           
-						
-	       </sec:authorize>
-			
-			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')"> 
+<!-- 			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')">  -->
 				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
-			</sec:authorize>
+<!-- 			</sec:authorize> -->
 				
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-						<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-							<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
-						</sec:authorize>	
-						<sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
+<!-- 						<sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')">  -->
 							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
 							<a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
-						</sec:authorize>
+<!-- 						</sec:authorize> -->
 						</span>
 					</div>
 				</li>
@@ -167,7 +142,7 @@ function daywiseLeaveReportsListPagination(url){
             { "data": "employmentType"},
             { "data": "userRoleName"},
             { "data": "leaveTypeName"},
-            { "data": "type"},
+            { "data": "leaveTypeBillable"},
             { "data": "duration"},
             { "data": "fromDate"},
             { "data": "toDate"},
@@ -254,7 +229,7 @@ function daywiseLeaveReportsListPagination(url){
 		          }
 		        }, {
 		            "targets": colIndex++,
-		            "data": "type",
+		            "data": "leaveTypeBillable",
 		            "sortable": true,
 		            "render": function ( data, type, user, meta ) {
 		            	var result = '';
@@ -680,7 +655,7 @@ function exportToPdf(){
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>Users List is Empty</p>";
+			result = result +"		<p>DailyWise Leave Report List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 			result = result +"	</div>";

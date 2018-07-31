@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Department;
@@ -122,63 +123,40 @@ public class LeaveManagementReportsRestController {
 	
 	@RequestMapping(value = "/getDaywiseLeaveReportList", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseList<LeaveReportView> getDaywiseLeaveReportList(@RequestParam(value="fromDate", required=false) String fromDate,
-			@RequestParam(value="searchValue", required=false) String searchValue,
-			@RequestParam(value="userRole", required=false) String userRole,
-			@RequestParam(value="orgDepartments", required=false) String orgDepartments,
-			@RequestParam(value="employmentType", required=false) String employmentType,
-			@RequestParam(value="leaveTypeNames", required=false) String leaveTypeNames,
+	public ResponseList<LeaveReportView> getDaywiseLeaveReportList(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		LeaveReportView leaveReportView = new LeaveReportView();
-		List<Long> departmentsList = new ArrayList<>();
-		List<Long> leaveTypeNamesList = new ArrayList<>();
-		List<String> employmentTypeList = new ArrayList<>();
+		
 		ResponseList<LeaveReportView> leaveReportsList=null;
 		try{
-		String[] tableColumns = {"name", "userDeptName", "employmentType", "leaveTypeName", "type", "duration", "fromDate", "toDate","reason","approver","status"};
+		String[] tableColumns = {"name", "userDeptName", "employmentType", "userRoleName","leaveTypeName", "leaveTypeBillable", "duration", "fromDate", "toDate","reason","approver","status"};
 
 		   int sortColumnIndex = 1; //by default sorting using updated date
 		   String sortColumnOrder = "desc"; //by default descending order
-				if(leaveReportView.getOrder() != null && !leaveReportView.getOrder().isEmpty()) {
-					sortColumnIndex = Integer.parseInt(leaveReportView.getOrder().get(0).get("column"));
-					sortColumnOrder = leaveReportView.getOrder().get(0).get("dir");
+				if(dayWiseLeaveReportDTO.getOrder() != null && !dayWiseLeaveReportDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(dayWiseLeaveReportDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = dayWiseLeaveReportDTO.getOrder().get(0).get("dir");
 				}
-				leaveReportView.setSortColumn(tableColumns[sortColumnIndex]);
-				leaveReportView.setSortOrder(sortColumnOrder);
-				List<Long> userRoleList = new ArrayList<>();
-				if(userRole != null && !userRole.isEmpty()) {
-					String[] userRoles = userRole.split(",");
-					for(int i=0; i < userRoles.length; i++) {
-						userRoleList.add(Long.parseLong(userRoles[i]));
-					}
-				}
-				if(orgDepartments != null && !orgDepartments.isEmpty()) {
-					String[] orgDepts = orgDepartments.split(",");
-					for(int i=0; i < orgDepts.length; i++) {
-						departmentsList.add(Long.parseLong(orgDepts[i]));
-					}
-				}
-				if(leaveTypeNames != null && !leaveTypeNames.isEmpty()) {
-					String[] leaveTypeName = leaveTypeNames.split(",");
-					for(int i=0; i < leaveTypeName.length; i++) {
-						leaveTypeNamesList.add(Long.parseLong(leaveTypeName[i]));
-					}
-				}
-				if(employmentType !=null && !employmentType.isEmpty()){
-					String[] empType = employmentType.split(",");
-					for(int i=0; i < empType.length; i++) {
-						employmentTypeList.add(empType[i]);
-					employmentTypeList.add(employmentType);
-				}
-					}
-		leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate( leaveReportView,orgLocation.getOrg().getId(),orgLocation.getId(),fromDate,searchValue,userRoleList,departmentsList,employmentTypeList,leaveTypeNamesList);
-		leaveReportsList.getData().stream().forEach(u -> {
-    		   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getFromDate()));
-    		   u.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getToDate()));
-    	   });
+				dayWiseLeaveReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				dayWiseLeaveReportDTO.setSortOrder(sortColumnOrder);
+			
+				
+		leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId());
+		List<LeaveReportView> list = leaveReportsList.getData();
+        for(LeaveReportView lrv : list){
+        	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
+    		 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getToDate());
+        }
+    	leaveReportsList.getData().stream().forEach(u -> {
+ 		   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getFromDate()));
+ 		   u.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getToDate()));
+ 		   u.setAppliedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
+ 		   u.setApprovedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
+ 		   
+ 	   });
 		
 		
 		}catch (Exception e) {
@@ -186,19 +164,15 @@ public class LeaveManagementReportsRestController {
 		}
 		
 		return leaveReportsList;
-//    	   leaveReportsList.setData(leaveList);
 		
 		
 }
 	
 	@RequestMapping(value = "/getExportDailyWiseLeaveReport", method = RequestMethod.GET)
 	@ResponseBody
-	public void getExportDailyWiseLeaveReport(@RequestParam(value="fromDate", required=false) String fromDate,
-			@RequestParam(value="exportType", required=false) String exportType,
-			@RequestParam(value="searchValue", required=false) String searchValue,
+	public void getExportDailyWiseLeaveReport(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		LeaveReportView leaveReportView = new LeaveReportView();
 		List<Long> departmentsList = new ArrayList<>();
 		List<Long> leaveTypeNamesList = new ArrayList<>();
 		List<String> employmentTypeList = new ArrayList<>();
@@ -210,8 +184,9 @@ public class LeaveManagementReportsRestController {
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("dailyWiseLeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
-			ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate( leaveReportView,orgLocations.getOrg().getId(),orgLocations.getId(),fromDate,searchValue,userRoleList,departmentsList,employmentTypeList,leaveTypeNamesList);
-			leaveReportsList.getData().stream().forEach(u -> {
+			ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId());
+
+		leaveReportsList.getData().stream().forEach(u -> {
 	    		   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getFromDate()));
 	    		   u.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getToDate()));
 	    		   u.setAppliedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getAppliedOn()));
@@ -220,7 +195,7 @@ public class LeaveManagementReportsRestController {
 	    	   });
 			
 			File file = null;
-	 		if(!"pdf".equalsIgnoreCase(exportType)){
+	 		if(!"pdf".equalsIgnoreCase(dayWiseLeaveReportDTO.getExportType())){
 	 			createExcelsheet = leaveService.getDailyWiseLeaveExcelFile(createExcelsheet,createExcelworkbook,leaveReportsList,orgLocations);
 	 			  StringBuilder templateSB = new StringBuilder();
 	 	 		  file = File.createTempFile(templateSB.append("Day_Wise_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
@@ -85,7 +86,7 @@ public interface LeaveDao {
 
 	int deleteApproversByLeaveId(Long leaveId);
 
-	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(LeaveReportView  leaveReportView,Long orgId, Long orgLocationId, String fromDate,String searchValue,List<Long> userRoleList,List<Long> departmentsList,List<String> employmentTypeList,List<Long> leaveTypeNamesList)throws Exception;
+	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId)throws Exception;
 
 
 }

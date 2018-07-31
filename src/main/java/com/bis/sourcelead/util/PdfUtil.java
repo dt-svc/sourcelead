@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -1347,9 +1348,6 @@ public class PdfUtil {
 		
 		String[] headers = Constants.DAILY_WISE_LEAVE_REPORT_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
-	    //DateFormat dateFormat =LoginSessionController.DATEFORMAT;
-
-	    /*File file = new File("users_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbUser =  new StringBuilder();
 	    sbUser.append("Day_Wise_Leave_Report_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 
@@ -1424,8 +1422,6 @@ public class PdfUtil {
 	}
 	private String[] prepareDailyWiseLeaveReportStringArray(LeaveReportView lrv, String[] headers) throws Exception {
 		String userArray[] = new String[headers.length];
-		//Set<Employees> employeeSet = userRoles.getUser().getEmployee();
-//		  Employees empl = employeesService.getEmployeeByUserId(userRoles.getUser().getId());
 			 if(lrv.getName() !=null){
 				 userArray[0] = lrv.getName();
 			 }else{
