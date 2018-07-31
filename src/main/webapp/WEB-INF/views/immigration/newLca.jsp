@@ -118,7 +118,7 @@
           	</div>
           <div class="col-md-5 padding_left">
           		<input type="text"  name="newEmploymentCount" id="newEmploymentCount" value="${lcaDTO.newEmploymentCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
+          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
           	</div>
 
           </div>
@@ -133,7 +133,7 @@
           	</div>
           	<div class="col-md-4 padding_left">
           		<input type="text" name="concurrentEmploymentCount" value="${lcaDTO.concurrentEmploymentCount}" id="concurrentEmploymentCount" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
+          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
           	</div>
 
           </div>
@@ -147,7 +147,7 @@
           	</div>
           	<div class="col-md-5 padding_left">
           		<input type="text" name="extentionCount" id="extentionCount" value="${lcaDTO.extentionCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
+          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
           	</div>
 
           </div>
@@ -162,7 +162,7 @@
           	</div>
           	<div class="col-md-5 padding_left">
           		<input type="text" name="changeInEmployerCount" id="changeInEmployerCount" value="${lcaDTO.changeInEmployerCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
+          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
           	</div>
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
@@ -175,7 +175,7 @@
           	</div>
           	<div class="col-md-4 padding_left">
           		<input type="text" name="changeInPreApproEmplmtCount" id="changeEmployerPreviousCount" value="${lcaDTO.changeInPreApproEmplmtCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
+          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
           	</div>
           </div>
           <div class="clearfix col-xs-12 col-sm-6 col-md-4 mb">
@@ -188,7 +188,7 @@
           	</div>
           	<div class="col-md-5 padding_left">
           		<input type="text" name="amendmentCount" id="amendmentCount" value="${lcaDTO.amendmentCount}" class="form-control input-sm" 
-          		onkeyup="validateNumber(this);" placeholder="Enter" readonly>
+          		onkeyup="validateNumber(this);" placeholder="Enter Count" readonly>
           	</div>
 
           </div>
@@ -230,7 +230,7 @@
                 </div>
                 <input type="text" id="offeredWage" name="offeredWage" value="${lcaDTO.offeredWage}" class="form-control" value="" field-name="Offered Wage"
 								data-validation="validate_Space validate_float validate_length length1-15"
-								data-validation-optional="true">
+								data-validation-optional="true" placeholder="Wage Or Rate">
                 <div class="input-group-btn">
                  <select class="selectpicker form-control" id="offeredWageRateType" name="offeredWageRateType" field-name="Rate Per" data-style="btn-primary">
 						 <option ${lcaDTO.offeredWageRateType == 'Rate Per' ? 'selected' : ''} value="Rate Per">Rate Per</option>
@@ -370,7 +370,7 @@
                 </div>
                 <input type="text" name="prevailingWage" id="prevailingWage" value="${lcaDTO.prevailingWage}" class="form-control" value="" field-name="Prevailing Wage"
 								data-validation="validate_Space validate_float validate_length length1-15"
-								data-validation-optional="true">
+								data-validation-optional="true" placeholder="Wage Or Rate">
                 <div class="input-group-btn">
                  <select class="selectpicker form-control" id="privilingWageRateType" name="privilingWageRateType" field-name="Rate Per" data-style="btn-primary">
 						 <option ${lcaDTO.privilingWageRateType == 'Rate Per' ? 'selected' : ''} value="Rate Per">Rate Per</option>
