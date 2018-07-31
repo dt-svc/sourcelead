@@ -259,12 +259,18 @@
 						result = result + '<strong>Timesheet Frequency:</strong><span>';
 						result = result + '	<span title="'+invoiceFrequency+'">'+invoiceFrequency+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Project For:</strong><span>';
+						if(json.isProjectForTimeSheets == 'Y' && json.isProjectForExpenses =='Y'){
+							result = result + '	<span>Timesheets & Expenses</span><div class="clearfix"></div>';
+						}else if(json.isProjectForTimeSheets == 'Y' && json.isProjectForExpenses !='Y'){
+							result = result + '	<span>Timesheets</span><div class="clearfix"></div>';
+						}else if(json.isProjectForTimeSheets != 'Y' && json.isProjectForExpenses =='Y'){
+							result = result + '	<span>Expenses</span><div class="clearfix"></div>';
+						}
+						result = result + '	</div>';
 
-						
-						
-						
-						
-						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
 						
@@ -637,6 +643,9 @@ function editClientProjectDetails(projectId){
 	function editProjectDetails(projectId) {
 		var projectClientUUID = '${projectClientUUID}';
 		var sourceleadUrl = '${sourceleadUrl}';
+		 var postedOrgLocationId = '${postedOrgLocationId}';
+		 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
+			 var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&projectClientUUID="+projectClientUUID,
@@ -1069,14 +1078,16 @@ function editClientProjectDetails(projectId){
 						result = result + '</div>';
 						
 						
-						result = result+' <div class="col-md-4">';
-						result = result + '<label>Project For</label>';
-						result = result + '<div class="clearfix"></div>';
-						result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="timesheets" '+(json.isProjectForTimeSheets == "Y" && json.isProjectForExpenses == "N" ? "checked=checked" : '')+'  value="Timesheets" name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets</label>';
-						result = result + '<label class="paddingRight"><input type="radio" id="expenses"  value="Expenses" '+(json.isProjectForTimeSheets == "N" && json.isProjectForExpenses == "Y" ? "checked=checked" : '')+' name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Expenses</label>';
-						result = result + '<label class="paddingRight"><input type="radio" id="timesheetsandexpenses" '+(json.isProjectForTimeSheets == "Y" && json.isProjectForExpenses == "Y" ? "checked=checked" : '')+' value="TimesheetsAndExpences"  name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets & Expenses</label>';
-						result = result + '<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For"/>';
-						result = result + '</div>';
+					   if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){
+								result = result+' <div class="col-md-4">';
+								result = result + '<label>Project For</label>';
+								result = result + '<div class="clearfix"></div>';
+								result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="timesheets" '+(json.isProjectForTimeSheets == "Y" && json.isProjectForExpenses == "N" ? "checked=checked" : '')+'  value="Timesheets" name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets</label>';
+								result = result + '<label class="paddingRight"><input type="radio" id="expenses"  value="Expenses" '+(json.isProjectForTimeSheets == "N" && json.isProjectForExpenses == "Y" ? "checked=checked" : '')+' name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Expenses</label>';
+								result = result + '<label class="paddingRight"><input type="radio" id="timesheetsandexpenses" '+(json.isProjectForTimeSheets == "Y" && json.isProjectForExpenses == "Y" ? "checked=checked" : '')+' value="TimesheetsAndExpences"  name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets & Expenses</label>';
+								result = result + '<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For"/>';
+								result = result + '</div>';
+						  }
 						
 						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta projectdetails_checkbox">';
