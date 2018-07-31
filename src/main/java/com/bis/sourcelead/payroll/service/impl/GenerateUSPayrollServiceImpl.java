@@ -25,11 +25,9 @@ import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.AssociateTax;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
-import com.bis.sourcelead.payroll.symmetry.HelloPayrollWorld;
 import com.bis.sourcelead.payroll.symmetry.SymmetryPaypal;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.symmetry.ste.*;
 
 @Service
 public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
@@ -86,10 +84,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				AssociateTaxDTO associateTaxDTO = associateTaxService.findAssociateTaxSummaryByUserId(user.getId(), orgLocation);
 //				Projects projects = pm.getProjects().getInvoiceFrequency();
 //				HelloPayrollWorld helloPayrollWorld = new HelloPayrollWorld();
-				SymmetryPaypal client = new SymmetryPaypal();
+//				SymmetryPaypal client = new SymmetryPaypal();
 //				String locationCode = "18-097-452890";
 				String locationCode = "04-013-12233";       // Arizona Location Code 
-				client.hello(locationCode);
+//				client.hello(locationCode);
 //				helloPayrollWorld.runUSPayroll(user,totalHours,amount,invoiceFrequency,associateTaxDTO);
 //				helloPayrollWorld.hello();
 				if (pm.getEmployee() != null) {

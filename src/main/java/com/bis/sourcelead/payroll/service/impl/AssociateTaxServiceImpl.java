@@ -220,7 +220,7 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 		AssociateTaxDTO associateTaxDTO = new AssociateTaxDTO();
 		if(associateTax != null) {
 			associateTaxDTO.setId(associateTax.getId());
-			associateTaxDTO.setFederaltaxFillingStatus(associateTax.getResidenceTaxFilliingStatus());
+			associateTaxDTO.setFederaltaxFillingStatus(associateTax.getFederalTaxFilliingStatus());
 			associateTaxDTO.setFederaltaxAllowances(associateTax.getFederalTaxAllowances());
 			associateTaxDTO.setFederaltaxAdditionalWithHolding(associateTax.getFederalTaxAdditionnalWithHolding());
 			associateTaxDTO.setStateTaxFillingStatus(associateTax.getStateTaxFilliingStatus());

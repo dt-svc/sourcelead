@@ -2382,6 +2382,7 @@ function cancel(){
 
 <script>
 function addCandidateDetailsForOnboarding(){
+	var loginCountry = "${SourceLeadWeb_orgLocations.country}";
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var result = "";
 	 result = result +'<div class="form-group">';
@@ -2487,19 +2488,21 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'<div class="clearfix"></div>';
 	 
-	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Employment Eligibility</label>';
-	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="Select Citizenship" name="employmentEligibility" id="employmentEligibility"   onchange="changeCitizenShip();" field-name="Role">';
-	 result = result +'<option value="">-- Select Citizenship --</option>';
-	 result = result +'<option >Citizenship of United States</option>';
-	 result = result +'<option >Resident Card</option>';
-	 result = result +'<option >An alien authorized to work</option>';
-	 result = result +'<option >Non-citizen</option>';
-	 result = result +'</select>';
-	 result = result +'</div>';
-	 result = result +'</div>';
-	 result = result +'<div class="clearfix"></div>';
+	 if(loginCountry == 'United States'){
+		 result = result +'<div class="form-group">';
+		 result = result +'<label class="col-md-3 control-label">Employment Eligibility</label>';
+		 result = result +'<div class="col-md-6">';
+		 result = result +'<select class="chosen-select" data-placeholder="Select Citizenship" name="employmentEligibility" id="employmentEligibility"   onchange="changeCitizenShip();" field-name="Role">';
+		 result = result +'<option value="">-- Select Citizenship --</option>';
+		 result = result +'<option >Citizenship of United States</option>';
+		 result = result +'<option >Resident Card</option>';
+		 result = result +'<option >An alien authorized to work</option>';
+		 result = result +'<option >Non-citizen</option>';
+		 result = result +'</select>';
+		 result = result +'</div>';
+		 result = result +'</div>';
+		 result = result +'<div class="clearfix"></div>';
+	 }
 	 
 	 result = result +'<div class="form-group" id="residentCardId" style="display:none">';
 	 result = result +'<label class="col-md-3 control-label">USCIS /Alien registration Number</label>';

@@ -49,6 +49,9 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.OnboardStatus;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
+import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
+import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -124,6 +127,9 @@ public class CandidateOnBoardRestController {
 
 	@Autowired
 	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	AssociatePfEsiService associatePfEsiService;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1788,7 +1794,40 @@ public class CandidateOnBoardRestController {
 				} else {
 					candidateOnBoarding.setZipCode(null);
 				}
+				
+				
+				if(StringUtils.isNotBlank(onboardingCandidateSetp2DTO.getGender())){
+					candidateOnBoarding.setGender(onboardingCandidateSetp2DTO.getGender());
+				}else{
+					candidateOnBoarding.setGender(null);
+				}
+				
+				if(StringUtils.isNotBlank(onboardingCandidateSetp2DTO.getDateOfBirth())){
+					candidateOnBoarding.setDateOfBirth(onboardingCandidateSetp2DTO.getDateOfBirth());
+				}else{
+					candidateOnBoarding.setDateOfBirth(null);
+				}
+				
+				if(StringUtils.isNotBlank(onboardingCandidateSetp2DTO.getAuthorizedWorkUntil())){
+					candidateOnBoarding.setAuthorizedWorkUntil(onboardingCandidateSetp2DTO.getAuthorizedWorkUntil());
+				}else{
+					candidateOnBoarding.setAuthorizedWorkUntil(null);
+				}
+				
+				if(StringUtils.isNotBlank(onboardingCandidateSetp2DTO.getEmploymentEligibility())){
+					candidateOnBoarding.setEmploymentEligibility(onboardingCandidateSetp2DTO.getEmploymentEligibility());
+				}else{
+					candidateOnBoarding.setEmploymentEligibility(null);
+				}
+				
+				if(StringUtils.isNotBlank(onboardingCandidateSetp2DTO.getUscisAlien())){
+					candidateOnBoarding.setUscisAlien(onboardingCandidateSetp2DTO.getUscisAlien());
+				}else{
+					candidateOnBoarding.setUscisAlien(null);
+				}
+				
 				candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
+				SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
 				response.setObject("success");
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -2097,4 +2136,14 @@ public class CandidateOnBoardRestController {
 		}
 		return result;
 	}
+	
+	@RequestMapping(value = "/saveOnboardingCandidatePfEsiDetails", method = RequestMethod.POST)
+	public @ResponseBody Response<AssociatePfEsiDetailsDTO> saveOnboardingCandidatePfEsiDetails(AssociatePfEsiDetailsDTO associatePfEsiDetailsDTO,
+			HttpServletRequest request) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<AssociatePfEsiDetailsDTO>  resObj = associatePfEsiService.saveAssociatePfEsi(associatePfEsiDetailsDTO,orgLocation,loginUser);	
+		return resObj;
+	}
+		
 }

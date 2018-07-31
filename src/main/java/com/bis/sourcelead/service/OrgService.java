@@ -73,4 +73,5 @@ public interface OrgService {
     
     public int changePaymentAccountStatus(long id, long orgId);
 
+    public List<PaymentAccountDTO> getPaymentAccountListByUserId(long userId,boolean onlyEnabledAccounts);
 }
