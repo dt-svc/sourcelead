@@ -224,7 +224,7 @@ function getPaySheetFrequencySummary(){
 		type : "GET",
 		url : sourceleadUrl+ "/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum,
 		success : function(data) {
-			var result = "";
+			    var result = "";
 	        	result = result +'<table id="paySheetSummary">';
 		    	result = result +'<thead>';
 		    	result = result +'	<tr>';
@@ -243,10 +243,10 @@ function getPaySheetFrequencySummary(){
 		    	result = result +'    </tr>';
 		    	result = result +'</thead>	';
 		    	result = result +'<tbody>';
-		    	
-		    	for (var i=0; i<data.length; i++)
+		    	var json = data.payrollDTO;
+		    	for (var i=0; i<json.length; i++)
    				{
-		    	var report = data[i];
+		    	var report = json[i];
 		    	result = result +'<tr>																													';	
 	            if(report.empName != null && report.empName != '' && report.empName != 'undefined'){
 	            	result = result +'  <td><div class="tbldata-dotdot-vsm">'+report.empName+'</div></td>                                                      ';

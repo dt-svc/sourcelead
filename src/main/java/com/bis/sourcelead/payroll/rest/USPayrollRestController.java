@@ -53,6 +53,7 @@ import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollContributionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.dto.PayrollScheduleDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
@@ -63,6 +64,7 @@ import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
+import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
@@ -75,6 +77,7 @@ import com.bis.sourcelead.payroll.service.PayItemService;
 import com.bis.sourcelead.payroll.service.PayrollAdjustmentService;
 import com.bis.sourcelead.payroll.service.PayrollContributionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
+import com.bis.sourcelead.payroll.service.PayrollScheduleService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
@@ -151,6 +154,9 @@ public class USPayrollRestController {
 	@Autowired
 	PayrollAdjustmentService payrollAdjustmentService; 
 	
+	@Autowired
+	PayrollScheduleService  payrollScheduleService;
+
 	@Autowired
 	ConfigurePayrollApproverService configurePayrollApproverService;
 	
@@ -704,7 +710,7 @@ public class USPayrollRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
-			if(existedData != null) {
+			if(existedData.getPayrollFrequencyUUID() != null) {
 				return existedData;
 			}else {
 				return generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO,loginUser);
@@ -1115,6 +1121,52 @@ public class USPayrollRestController {
 		return model;
 	}
 	
+	
+	/**
+	 * save Payroll Schedule
+	 * @param payrollScheduleDTO
+	 * @param request
+	 * @param response
+	 * @return Response<PayrollScheduleDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value =  "/savePayrollSchedule", method = RequestMethod.POST)
+	@ResponseBody
+	public UsPayrollSchedule savePayrollSchedule(PayrollScheduleDTO payrollScheduleDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		UsPayrollSchedule  payrollSchedule = payrollScheduleService.savePayrollSchedule(payrollScheduleDTO,orgLocation,loginUser);	
+		return payrollSchedule;
+	}
+	
+	@RequestMapping(value =  "/getWeeklyFrequenciesBySelectedDate", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<String> getWeeklyFrequenciesBySelectedDate(PayrollScheduleDTO payrollScheduleDTO , HttpServletRequest request) throws Exception
+	{
+		ResponseList<String> response = new ResponseList<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<String> datesList = payrollScheduleService.getWeeklyFrequenciesBySelectedDate(payrollScheduleDTO.getSelectedDate(),orgLocation.getDateFormat(),payrollScheduleDTO.getDateFrequency());
+		response.setData(datesList);
+		
+		return response;
+	}
+	
+	@RequestMapping(value =  "/getDisableApplyFrequencies", method = RequestMethod.GET)
+	@ResponseBody
+	public boolean getDisableApplyFrequencies(PayrollScheduleDTO payrollScheduleDTO , HttpServletRequest request) throws Exception
+	{
+		boolean bol = false;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		UsPayrollSchedule disable = payrollScheduleService.getWeeklyFrequenciesBySelectedDate(payrollScheduleDTO.getDateFrequency(),orgLocation);
+		if(disable != null) {
+			bol = true;
+		}
+		return bol;
+		
+	}
+
 	/**
 	 * Get Pay sheet frequency data
 	 * 
@@ -1172,7 +1224,7 @@ public class USPayrollRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = { "/getPaySheetFrequencySummary","/rest/getPaySheetFrequencySummary" })
-	public List<USPayrollDTO> getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public PaysheetFrequencyDTO getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		return uSPaysheetService.getPaySheetFrequencySummary(paysheetFrequencyDTO);
 	}
@@ -1280,6 +1332,7 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Response<ConfirmPayTotalSumDTO> res = uSPayrollService.approvePayroll(confirmPayTotalSumDto,orgLocation);
 		return res;
+
 	}
 	
 	@RequestMapping(value = { "/getPayGroupsByPayFrequency","/rest/getPayGroupsByPayFrequency" })

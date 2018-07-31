@@ -43,7 +43,7 @@ public class SymmetryPayrollCalculator {
 	@Value("${symmetry.jniHome}")
 	private String jniHome;
 	
-	public PayrollCalculatorDTO runUSPayroll(User user, float totalHours, BigDecimal grossAamount, int invoiceFrequency, AssociateTaxDedContriView associateTaxDTO,Date checkDate)
+	public PayrollCalculatorDTO runUSPayroll(User user, float totalHours, BigDecimal grossAamount, int invoiceFrequency, AssociateTaxDedContriView associateTaxView,Date checkDate)
 	{
 		PayrollCalculatorDTO payrollCalculatorDTO = new PayrollCalculatorDTO();
 //		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";
@@ -65,26 +65,30 @@ public class SymmetryPayrollCalculator {
 			Money zero = Money.zero();
 			STE.setWages(FEDERAL_LOCATION_CODE, WageType.REGULAR, new Hours(totalHours), new Money(grossAamount), zero, zero, zero);
 			FederalFilingStatus federalFilingStatus = FederalFilingStatus.SINGLE;
-			if(associateTaxDTO != null && "MARRIED".equalsIgnoreCase(associateTaxDTO.getFederalTaxFilliingStatus())){
+			if(associateTaxView != null && "MARRIED".equalsIgnoreCase(associateTaxView.getFederalTaxFilliingStatus())){
 				federalFilingStatus = FederalFilingStatus.MARRIED;
-			}else if(associateTaxDTO != null && "MARRIED_USE_SINGLE_RATE".equalsIgnoreCase(associateTaxDTO.getFederalTaxFilliingStatus())){
+			}else if(associateTaxView != null && "MARRIED_USE_SINGLE_RATE".equalsIgnoreCase(associateTaxView.getFederalTaxFilliingStatus())){
 				federalFilingStatus = FederalFilingStatus.MARRIED_USE_SINGLE_RATE;
-			}else if(associateTaxDTO != null && "NONRESIDENT_ALIEN".equalsIgnoreCase(associateTaxDTO.getFederalTaxFilliingStatus())){
+			}else if(associateTaxView != null && "NONRESIDENT_ALIEN".equalsIgnoreCase(associateTaxView.getFederalTaxFilliingStatus())){
 				federalFilingStatus = FederalFilingStatus.NONRESIDENT_ALIEN;
 			}
 			int numberOfAllowances = 0;
-			if(associateTaxDTO != null &&  StringUtils.isNotBlank(associateTaxDTO.getFederalTaxAllowances())){
-				numberOfAllowances = Integer.parseInt(associateTaxDTO.getFederalTaxAllowances());
+			if(associateTaxView != null &&  StringUtils.isNotBlank(associateTaxView.getFederalTaxAllowances())){
+				numberOfAllowances = Integer.parseInt(associateTaxView.getFederalTaxAllowances());
 			}
-//			System.out.println("----------------------------------++++++++++++++++++++++++++"+associateTaxDTO.getFederalExempt());
-			boolean federalExempt = false;
+//			logger.info("----------------------------------++++++++++++++++++++++++++"+associateTaxView.getFederalExempt());
+//			boolean federalExempt = false;
+//			boolean medicareExempt = false;
 			boolean isResident = PayrollUtil.getEmployeeResident(user);
-			if(associateTaxDTO.getFederalExempt() != null) {
-				federalExempt = associateTaxDTO.getFederalExempt();
-			}
-			STE.setFederalParameters(federalExempt, federalFilingStatus, numberOfAllowances, false, zero, zero, zero);
+//			if(associateTaxView.getFederalExempt() != null) {
+//				federalExempt = associateTaxView.getFederalExempt();
+//			}
+//			if(associateTaxView.getMediacareExempt()) {
+//				
+//			}
+			STE.setFederalParameters(associateTaxView.getFederalExempt(), federalFilingStatus, numberOfAllowances, false, zero, zero, zero);
 			STE.setFICAParameters(false, false, zero, zero, true);
-			STE.setMedicareParameters(false, zero, zero);
+			STE.setMedicareParameters(associateTaxView.getMediacareExempt(), zero, zero);
 			STE.setEICParameters(EarnedIncomeCredit.SINGLE, zero, false);
 			// The code for Indianapolis, Indiana (Marion County) is   MARRIED,SINGLE
 			// "18-097-452890"
@@ -97,11 +101,11 @@ public class SymmetryPayrollCalculator {
 			
 			
 			if(PayrollConstant.KENTUCKY.equalsIgnoreCase(user.getResidenceState().trim())) {
-				STE.setKYCountyParameters(locationCode, CountyTax.KY_MENTAL_HEALTH, federalExempt, isResident,zero);
+				STE.setKYCountyParameters(locationCode, CountyTax.KY_MENTAL_HEALTH, associateTaxView.getFederalExempt(), isResident,zero);
 			}
 			if(PayrollConstant.OREGON.equalsIgnoreCase(user.getResidenceState())) {
 				STE.setStateMiscellaneousParameters(locationCode, "FILINGSTATUS", "M");
-				STE.setStateMiscellaneousParameters(locationCode, "TOTALALLOWANCES", associateTaxDTO.getResidenceTaxAllowances());
+				STE.setStateMiscellaneousParameters(locationCode, "TOTALALLOWANCES", associateTaxView.getResidenceTaxAllowances());
 			}
 			
 			//TODO Need to explore
@@ -138,10 +142,10 @@ public class SymmetryPayrollCalculator {
 			if("New York".equalsIgnoreCase(user.getResidenceState().trim())) {
 				STE = calculateMCTMT(STE,locationCode,totalHours,grossAamount,FEDERAL_LOCATION_CODE);
 				STE.setStateMiscellaneousParameters(locationCode, "FILINGSTATUS", "M");
-				STE.setStateMiscellaneousParameters(locationCode, "TOTALALLOWANCESNYC",associateTaxDTO.getResidenceTaxAllowances());
+				STE.setStateMiscellaneousParameters(locationCode, "TOTALALLOWANCESNYC",associateTaxView.getResidenceTaxAllowances());
 			}
 			
-			STE.setCityParameters(locationCode, federalExempt, isResident, 0, zero);
+			STE.setCityParameters(locationCode, associateTaxView.getFederalExempt(), isResident, 0, zero);
 			//Employer Wyoming Workers Compensation Tax (WC)
 			STE.setWyomingWorkersComp(new Rate(0.014), true);
 			
@@ -155,7 +159,7 @@ public class SymmetryPayrollCalculator {
 		
 			//Employer Head Taxes (EHT)
 			calculateEmployerHeadTaxes(STE,locationCode,totalHours,grossAamount,FEDERAL_LOCATION_CODE);
-			STE.setCountyParameters(locationCode, federalExempt, isResident);
+			STE.setCountyParameters(locationCode, associateTaxView.getFederalExempt(), isResident);
 			
 			STE.calculateTaxes();
 			
@@ -167,109 +171,108 @@ public class SymmetryPayrollCalculator {
 			
 			
 		
-			System.out.println("************************************************");
 			String version = STE.getSTEVersion();
-			System.out.println("User Name : " +user.getFirstName() + " Id is "+user.getId());
-			System.out.println("STE Version: " + version);
-			System.out.println("FICA Withholding:" + STE.getFICACalc());
-			System.out.println("Medicare Withholding: " + STE.getMedicareCalc());
-			System.out.println("Federal Withholding: " + STE.getFederalCalc());
-			System.out.println("Earned Inc. Credit: " + STE.getEICCalc());
-			System.out.println("State Withholding: " + STE.getStateCalc(locationCode));
-			System.out.println("County Withholding:" + STE.getCountyCalc(locationCode));
-			System.out.println("Advanced Earned Income Credit :"+STE.getEICCalc());
+			logger.info("User Name : " +user.getFirstName() + " Id is "+user.getId());
+			logger.info("STE Version: " + version);
+			logger.info("FICA Withholding:" + STE.getFICACalc());
+			logger.info("Medicare Withholding: " + STE.getMedicareCalc());
+			logger.info("Federal Withholding: " + STE.getFederalCalc());
+			logger.info("Earned Inc. Credit: " + STE.getEICCalc());
+			logger.info("State Withholding: " + STE.getStateCalc(locationCode));
+			logger.info("County Withholding:" + STE.getCountyCalc(locationCode));
+			logger.info("Advanced Earned Income Credit :"+STE.getEICCalc());
 			
-			System.out.println("");
+			logger.info("");
 			if(PayrollConstant.KENTUCKY.equalsIgnoreCase(user.getResidenceState().trim())) {
 				Money kentonCountyMentalHealth = STE.getKYCountyCalc (locationCode,CountyTax.KY_MENTAL_HEALTH);
 				Money florenceWithholding = STE.getCityCalc(locationCode);
-				System.out.println("Kentucky County: " + kentonCountyMentalHealth);
-				System.out.println("Kentucky City: " + florenceWithholding);
+				logger.info("Kentucky County: " + kentonCountyMentalHealth);
+				logger.info("Kentucky City: " + florenceWithholding);
 			}
 			if(PayrollConstant.WASHINGTON.equalsIgnoreCase(user.getResidenceState())) {
 				Money industrialInsuranceWithholding = STE.getSDICalc(locationCode);
-				System.out.println("Washington Industrial Insurance: " + industrialInsuranceWithholding);
+				logger.info("Washington Industrial Insurance: " + industrialInsuranceWithholding);
 			}
-			System.out.println("albama,colorado,Delaware ,Missouri , Ohio , West Virginia and Michigan City Tax: " + STE.getCityCalc(locationCode)); // this for albama,colorado,Delaware
-//			System.out.println("************************************************");
+			logger.info("albama,colorado,Delaware ,Missouri , Ohio , West Virginia and Michigan City Tax: " + STE.getCityCalc(locationCode)); // this for albama,colorado,Delaware
+//			logger.info("************************************************");
 
 			// Employer Taxes
-			System.out.println("Employer FUTA/SUTA TAXES--------------------------");
+			logger.info("Employer FUTA/SUTA TAXES--------------------------");
 			UnemploymentCalculation federalUC = STE.getUnemployment(FEDERAL_LOCATION_CODE);
 			UnemploymentCalculation stateUC = STE.getUnemployment(locationCode);
-			System.out.println("Employer FUTA: " + federalUC.getCalculatedUITax());
-			System.out.println("Employer SUTA: " + stateUC.getCalculatedUITax());
-			System.out.println("");
+			logger.info("Employer FUTA: " + federalUC.getCalculatedUITax());
+			logger.info("Employer SUTA: " + stateUC.getCalculatedUITax());
+			logger.info("");
 			
-			System.out.println("Employer RUIA TAXES--------------------------");
+			logger.info("Employer RUIA TAXES--------------------------");
 			RUIACalculation ruia = STE.getRailroadUnemployment();
-			System.out.println("Employer RUIA Withholding: " + ruia.getCalculatedUITax());
-			System.out.println("");
+			logger.info("Employer RUIA Withholding: " + ruia.getCalculatedUITax());
+			logger.info("");
 			
-			System.out.println("Employer Oregon Transit TAXES--------------------------");
+			logger.info("Employer Oregon Transit TAXES--------------------------");
 			Money transitCalc = STE.getTransitTaxCalc(locationCode, TransitTaxType.WILSONVILLE_TRANSIT);
-			System.out.println("Employer Oregon Transit Tax: " + transitCalc);
-			System.out.println("");
+			logger.info("Employer Oregon Transit Tax: " + transitCalc);
+			logger.info("");
 			
-			System.out.println("UHI TAXES--------------------------");
+			logger.info("UHI TAXES--------------------------");
 			UnemploymentCalculation uc = STE.getMassachusettsUHI();
-			System.out.println("Massachusetts UHI: " +uc.getCalculatedUITax());
-			System.out.println("");
+			logger.info("Massachusetts UHI: " +uc.getCalculatedUITax());
+			logger.info("");
 			
-			System.out.println("Massachusetts EMAC TAXES--------------------------");
+			logger.info("Massachusetts EMAC TAXES--------------------------");
 			UnemploymentCalculation emac = STE.getMassachusettsEMAC();
-			System.out.println("Massachusetts EMAC: " +emac.getCalculatedUITax());
-			System.out.println("");
+			logger.info("Massachusetts EMAC: " +emac.getCalculatedUITax());
+			logger.info("");
 			
-			System.out.println("Massachusetts EMAC TAXES--------------------------");
+			logger.info("Massachusetts EMAC TAXES--------------------------");
 			UnemploymentCalculation emacs = STE.getEMACS(locationCode);
-			System.out.println("Massachusetts EMAC Supplemental: " +emacs.getCalculatedUITax());
-			System.out.println("");
+			logger.info("Massachusetts EMAC Supplemental: " +emacs.getCalculatedUITax());
+			logger.info("");
 			
 			if("New York".equalsIgnoreCase(user.getResidenceState().trim())) {
-				System.out.println("New York Metropolitan Commuter Transportation Mobility Tax (MCTMT) TAXES--------------------------");
+				logger.info("New York Metropolitan Commuter Transportation Mobility Tax (MCTMT) TAXES--------------------------");
 				Money mctmtWithholding = STE.getPercentTotalPayrollTax(locationCode, PercentOfPayrollTax.NEW_YORK_MCTMT);
 				payrollCalculatorDTO.setEmployerMetropolitanMCTMT(mctmtWithholding);
-				System.out.println("New York Metro Commuter Transportation: " + mctmtWithholding);
-				System.out.println("");	
+				logger.info("New York Metro Commuter Transportation: " + mctmtWithholding);
+				logger.info("");	
 			}
 			
 			
-			System.out.println("Employer Wyoming Workers Compensation Tax (WC)--------------------------");
+			logger.info("Employer Wyoming Workers Compensation Tax (WC)--------------------------");
 			Money wcCalc = STE.getWyomingWorkersCompCalc();
-			System.out.println("Wyoming Workers Comp: " +wcCalc);
-			System.out.println();
+			logger.info("Wyoming Workers Comp: " +wcCalc);
+			logger.info("###############################");
 			
-			System.out.println("Employer Oregon Workers Compensation Tax WC--------------------------");
+			logger.info("Employer Oregon Workers Compensation Tax WC--------------------------");
 			//Employer Oregon Workers Compensation Tax WC
 			Money oregonWC = STE.getOregonWorkersCompCalc();
-			System.out.println("Employer Oregon Workers Compensation Tax: " + oregonWC);
-			System.out.println();
+			logger.info("Employer Oregon Workers Compensation Tax: " + oregonWC);
+			logger.info("###############################");
 			
-			System.out.println("Employer SUTA Surcharge Taxes--------------------------");
+			logger.info("Employer SUTA Surcharge Taxes--------------------------");
 			UnemploymentCalculation surChargeTaxes = STE.getUnemploymentSurcharge(locationCode, SurchargeTaxType.IDAHO_ADMINISTRATIVE_RESERVE);
-			System.out.println("EMPLOYER SUTA Surcharge: " + surChargeTaxes.getCalculatedUITax());
+			logger.info("EMPLOYER SUTA Surcharge: " + surChargeTaxes.getCalculatedUITax());
 			
-			System.out.println("Employer SDI Taxes--------------------------");
+			logger.info("Employer SDI Taxes--------------------------");
 			if("New Jersey".equalsIgnoreCase(user.getResidenceState().trim())) {
 				Money empNJSDICalc = STE.getSDIEmployerCalc(locationCode, SDITaxType.NEW_JERSEY_SDI);
-				System.out.println("New Jersey Employer SDI: " + empNJSDICalc);
+				logger.info("New Jersey Employer SDI: " + empNJSDICalc);
 				payrollCalculatorDTO.setEmployerSDI(empNJSDICalc);
 			}
 			if("Puerto Rico".equalsIgnoreCase(user.getResidenceState().trim())) {
 				Money ricoSDICalc = STE.getSDIEmployerCalc(locationCode, SDITaxType.PUERTO_RICO_SDI);
-				System.out.println("Puerto Rico Employer SDI: " + ricoSDICalc);
+				logger.info("Puerto Rico Employer SDI: " + ricoSDICalc);
 				payrollCalculatorDTO.setEmployerSDI(ricoSDICalc);
 			}
 			
-			System.out.println("Employer FICA calc--------------------------");
+			logger.info("Employer FICA calc--------------------------");
 			// Calculating Employer FICA
 			Money empficaCalc = STE.getEmployerFICACalc();
-			System.out.println("Employer FICA calc: " +empficaCalc);
+			logger.info("Employer FICA calc: " +empficaCalc);
 						
 			// Calculating Employer Medicare
 			Money empMediCalc = STE.getEmployerMedicareCalc();
-			System.out.println("Employer Medicare calc: " +empMediCalc);
+			logger.info("Employer Medicare calc: " +empMediCalc);
 			
 			
 			payrollCalculatorDTO.setsTEPayrollCalculator(STE);
@@ -362,7 +365,7 @@ public class SymmetryPayrollCalculator {
 			STE.setHeadTax(locationCode, 23, false);
 			STE.calculateEmployerTaxes();
 			Money headTax = STE.getHeadTax(locationCode);
-			System.out.println("Head Tax: " + headTax);
+			logger.info("Head Tax: " + headTax);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -541,15 +544,15 @@ public class SymmetryPayrollCalculator {
 		// Calcualting Location Code
 		WebServiceLocationCodeV2 webServiceLocationCodeV2 = null;
 		try {
-			System.out.println("user.getResidenceState() ====================="+user.getResidenceState());
+			logger.info("user.getResidenceState() ====================="+user.getResidenceState());
 			STE.setWebService(WebServiceType.STE_LOC_CODE, "http://lcs2.symmetry.com/", null, "sourcelead", "s290sdq", null);
 			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2(user.getResidenceAddress(), user.getResidenceStreetAddress().trim(), user.getResidenceCity().trim(), user.getResidenceState().trim(), user.getResidenceZipCode().trim(), null, null);
-			System.out.println("Country code     : " + webServiceLocationCodeV2.getCountyCode());
-			System.out.println("City code        : " + webServiceLocationCodeV2.getCityCode());
-			System.out.println("Location Code    : " + webServiceLocationCodeV2.getLocationCode());
-			System.out.println("MunicipalityCode : "+ webServiceLocationCodeV2.getMunicipalityCode());
-			System.out.println("SchoolCode       : " + webServiceLocationCodeV2);
-			System.out.println("");
+			logger.info("Country code     : " + webServiceLocationCodeV2.getCountyCode());
+			logger.info("City code        : " + webServiceLocationCodeV2.getCityCode());
+			logger.info("Location Code    : " + webServiceLocationCodeV2.getLocationCode());
+			logger.info("MunicipalityCode : "+ webServiceLocationCodeV2.getMunicipalityCode());
+			logger.info("SchoolCode       : " + webServiceLocationCodeV2);
+			logger.info("");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

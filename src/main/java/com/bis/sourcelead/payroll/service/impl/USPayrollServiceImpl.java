@@ -214,7 +214,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			paySum.setEmployerOregonWcTax(emplrOregonWC);
 			paySum.setEmployerTotalPay(emplrTotalTax);
 			paySum.setConfirmType(payrollApproverDTO.getConfirmType());
-			
+			paySum.setPpn(payrollApproverDTO.getPayPeriodNum());
 			List<DeductionDTO> deduction = new ArrayList<>();
 			Map<String, Double> dedMap = dedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getDedAmount)));
 		     for (Map.Entry<String,Double> entry : dedMap.entrySet()) {
@@ -259,6 +259,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 					payPeriodNum = payPeriodNum + period.getPayPeriodNum();
 				}
 				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation);
+			}else {
+				int isUpadted = uSPayPeriodService.updatedPayperiod(confirmPaySumDto.getPpn());
 			}
 			Set<EmployeePayroll> payrollList = pf.getEmployeepayroll();
 			for (EmployeePayroll payroll : payrollList) {
