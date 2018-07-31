@@ -264,7 +264,7 @@ public class ExpensesRestController {
 				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 				for (ProjectMembers pm : projectMembersList) {
 					ProjectMembersDTO pmDTO =ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm);
-					 HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId());
+					 HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId(),"");
 					 if(dateMap != null && !dateMap.isEmpty()) {
 						 Date pmStartDate = dateMap.get("STARTDATE");
 						 Date pmEndDate =  dateMap.get("ENDDATE");
@@ -346,7 +346,7 @@ public class ExpensesRestController {
 				    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pm.getProjectClientsId().getOrgRelationId().getId());
 				    	 pmDTO.setOrgRelationUUID(orgRelations.getUUID());
 				    }
-					 HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId());
+					 HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId(),"");
 					 if(dateMap != null && !dateMap.isEmpty()) {
 						 Date pmStartDate = dateMap.get("STARTDATE");
 						 Date pmEndDate =  dateMap.get("ENDDATE");

@@ -497,7 +497,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 		if(projectMember != null && projectMember.getProjects() != null){
 			String timesheetFrequency = projectMember.getProjects().getInvoiceFrequency();
 			if(StringUtils.isNotEmpty(timesheetFrequency)){
-				HashMap<String,Date> dateList = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(projectMember.getId());
+				HashMap<String,Date> dateList = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(projectMember.getId(),frequencyFor);
 				if(dateList != null  && !dateList.isEmpty()){
 					Date empStartDate = dateList.get("STARTDATE");
 					Date empEndDate = dateList.get("ENDDATE");
@@ -1057,7 +1057,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 		if(projectMember != null && projectMember.getProjects() != null){
 			String timesheetFrequency = projectMember.getProjects().getInvoiceFrequency();
 			if(StringUtils.isNotEmpty(timesheetFrequency)){
-				HashMap<String,Date> dateList = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(projectMember.getId());
+				HashMap<String,Date> dateList = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(projectMember.getId(),"");
 				if(dateList != null  && !dateList.isEmpty()){
 					Date empStartDate = dateList.get("STARTDATE");
 					Date empEndDate = dateList.get("ENDDATE");
