@@ -2,9 +2,16 @@ package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +54,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import java.util.function.Function;
 
 /**
  * @author Laxman
@@ -100,11 +108,33 @@ private static final Logger logger = LoggerFactory.getLogger(SourceLeadTagsRestC
      */
     @RequestMapping(value = "/deleteTag", method = RequestMethod.POST)
 	public @ResponseBody  String deleteTag(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
-			@RequestParam(value="tagName", required=false) String tagName) throws Exception
+			@RequestParam(value="tagName", required=false) String tagName,
+			@RequestParam(value="entityType", required=false) String entityType) throws Exception
 	{
-    	sourceleadTagsService.deleteTag(orgLocationId,tagName); 
+    	sourceleadTagsService.deleteTag(orgLocationId,tagName,entityType); 
 		return "success";
 	}
+    
+	@RequestMapping(value = "/getTagsListByEntitype", method = RequestMethod.POST)
+   	public @ResponseBody Response<Map<String, Long>>  getTagsListByEntitype(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
+   			@RequestParam(value="entitype", required=false) String entityType) throws Exception
+   	{
+    	Response<Map<String, Long>> response = new Response<>();
+    	List<SourceleadTags> tagsList = sourceleadTagsService.getAllSourceleadTagsListByEntitypeAndOrgloactionId(entityType, orgLocationId);
+    	if(tagsList.size() > 0) {
+    		Map<String, Long> counting = tagsList.stream().collect(Collectors.groupingBy(SourceleadTags::getTagName, Collectors.counting()));
+    		Map<String, Long> treeMap = new TreeMap<String, Long>(counting);
+    		response.setObject(treeMap);
+            response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+    	}else {
+    		response.setResponse(Result.DATA_NOT_FOUND.name());
+			response.setResponseMessage(Result.DATA_NOT_FOUND.getValue());
+    	}
+    	return response;
+   	}
+    
+    
     
     
 	/**

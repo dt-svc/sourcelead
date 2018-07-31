@@ -21,5 +21,7 @@ public interface SourceleadTagsDao {
 
 	List<String> sourceleadTagsListByEntitypeAndOrgloactionId(String entityType,Long orgLocationId)throws Exception;
 
-	void deleteTag(Long orgLocationId, String tagName)throws Exception;
+	void deleteTag(Long orgLocationId, String tagName, String entitype)throws Exception;
+
+	List<SourceleadTags> getAllSourceleadTagsListByEntitypeAndOrgloactionId(String entityType, Long orgLocationId);
 }

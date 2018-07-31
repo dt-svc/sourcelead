@@ -20,6 +20,8 @@ public interface SourceleadTagsService {
 	Integer individualTagsCount(String entiteyTpe,String tagName)throws Exception;
 	
 	List<String> sourceleadTagsListByEntitypeAndOrgloactionId(String entityType,Long orgLocationId)throws Exception;
+	
+	List<SourceleadTags> getAllSourceleadTagsListByEntitypeAndOrgloactionId(String entityType,Long orgLocationId)throws Exception;
 
-	void deleteTag(Long orgLocationId, String tagName)throws Exception;
+	void deleteTag(Long orgLocationId, String tagName, String entitype)throws Exception;
 }

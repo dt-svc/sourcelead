@@ -49,12 +49,18 @@ public class SourceleadTagsServiceImpl implements SourceleadTagsService{
 	}
 
 	@Override
-	public void deleteTag(Long orgLocationId, String tagName) throws Exception {
-		sourceleadTagsDao.deleteTag(orgLocationId, tagName);
+	public void deleteTag(Long orgLocationId, String tagName,String entitype) throws Exception {
+		sourceleadTagsDao.deleteTag(orgLocationId, tagName,entitype);
 	}
 
 	@Override
 	public List<String> sourceleadTagsListByEntitypeAndOrgloactionId(String entityType, Long orgLocationId) throws Exception {
 		return sourceleadTagsDao.sourceleadTagsListByEntitypeAndOrgloactionId(entityType, orgLocationId);
+	}
+
+	@Override
+	public List<SourceleadTags> getAllSourceleadTagsListByEntitypeAndOrgloactionId(String entityType,
+			Long orgLocationId) throws Exception {
+		return sourceleadTagsDao.getAllSourceleadTagsListByEntitypeAndOrgloactionId(entityType,orgLocationId);
 	}
 }

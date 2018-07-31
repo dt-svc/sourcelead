@@ -33,24 +33,11 @@ public class SourceLeadTagsController {
 	SourceleadTagsService sourceleadTagsService;
 	
 	
-	@RequestMapping("/sourceLeadTags")
+	@RequestMapping("/tagList")
 	public ModelAndView sourceLeadTags(HttpServletRequest request) throws Exception {
-
 		ModelAndView modal = new ModelAndView();
-		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		 List<SourceleadTags> tagsList = sourceleadTagsService.SourceleadTagsListByLocationId(loginOrgLocation.getId());
-		 List<SourceleadTags> uniqueList = tagsList.stream().filter(distinctByKey(s->s.getTagName())).collect(Collectors.toList());
-		 for(SourceleadTags st : uniqueList) {
-			 st.setAssociateCount(sourceleadTagsService.individualTagsCount(TagEntites.ASSOCIATES.toString(), st.getTagName()));
-			 st.setCandidateCount(sourceleadTagsService.individualTagsCount(TagEntites.CANDIDATES.toString(), st.getTagName()));
-			 st.setJobCount(sourceleadTagsService.individualTagsCount(TagEntites.JOBS.toString(), st.getTagName()));
-			 st.setClientCount(sourceleadTagsService.individualTagsCount(TagEntites.CLIENTS.toString(), st.getTagName()));
-			 st.setVendorCount(sourceleadTagsService.individualTagsCount(TagEntites.VENDORS.toString(), st.getTagName()));
-			 st.setProjectCount(sourceleadTagsService.individualTagsCount(TagEntites.PROJECTS.toString(), st.getTagName()));
-		 }
-	     modal.addObject("tagsList",uniqueList);
 		modal.addObject("sourceleadUrl",sourceleadUrl);
-		modal.setViewName("/sourceLeadTags");
+		modal.setViewName("/tagsList");
 		return modal;
 	}
 	

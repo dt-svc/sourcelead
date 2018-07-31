@@ -720,7 +720,7 @@ function preventTabkey(e){
 							 </li> 	
 						   </sec:authorize>
                          
-                       <li><a href="<c:url value='${sourceleadUrl}/sourceLeadTags'/>"title="Source Lead Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Source Lead Tags</a></li>
+                       <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Tags</a></li>
 					  
 					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" ><i class="fa fa-key" aria-hidden="true"></i>Guest Action Roles</a></li>

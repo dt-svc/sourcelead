@@ -90,6 +90,23 @@ public class SourceleadTags implements Serializable{
     @JsonProperty
     private String entityName;
     
+    @Transient
+    @JsonProperty
+    private Integer invoicetCount;
+    
+    
+    @Transient
+    @JsonProperty
+    private Integer billsCount;
+    
+    
+    @Transient
+    @JsonProperty
+    private Integer assetCount;
+    
+    @Transient
+    @JsonProperty
+    private Integer taskCount;
     
 
 	public static long getSerialversionuid() {
@@ -231,5 +248,36 @@ public class SourceleadTags implements Serializable{
 	public void setAssociateCount(Integer associateCount) {
 		this.associateCount = associateCount;
 	}
-	
+
+	public Integer getInvoicetCount() {
+		return invoicetCount;
+	}
+
+	public Integer getBillsCount() {
+		return billsCount;
+	}
+
+	public Integer getAssetCount() {
+		return assetCount;
+	}
+
+	public void setInvoicetCount(Integer invoicetCount) {
+		this.invoicetCount = invoicetCount;
+	}
+
+	public void setBillsCount(Integer billsCount) {
+		this.billsCount = billsCount;
+	}
+
+	public void setAssetCount(Integer assetCount) {
+		this.assetCount = assetCount;
+	}
+
+	public Integer getTaskCount() {
+		return taskCount;
+	}
+
+	public void setTaskCount(Integer taskCount) {
+		this.taskCount = taskCount;
+	}
 }

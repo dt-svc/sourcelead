@@ -142,10 +142,10 @@ public class SourceleadTagsDaoImpl implements SourceleadTagsDao{
 	}
 
 	@Override
-	public void deleteTag(Long orgLocationId, String tagName) throws Exception {
+	public void deleteTag(Long orgLocationId, String tagName,String entityType) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from SourceleadTags st where st.orgLocationId.id =:orgLocationId and st.tagName =:tagName";
-		List<SourceleadTags> tagsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("tagName", tagName).list();
+		String query = "from SourceleadTags st where st.entityType  =:entityType and st.orgLocationId.id =:orgLocationId and st.tagName =:tagName";
+		List<SourceleadTags> tagsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("entityType", entityType).setString("tagName", tagName).list();
        if(tagsList != null && !tagsList.isEmpty()) {
     	   for(SourceleadTags st :tagsList) {
     		   session.delete(st);
@@ -162,6 +162,13 @@ public class SourceleadTagsDaoImpl implements SourceleadTagsDao{
 		return sourceleadTagsList;
 	}
 
-
+	@Override
+	public List<SourceleadTags> getAllSourceleadTagsListByEntitypeAndOrgloactionId(String entityType,
+			Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadTags st  where st.entityType =:entityType and st.orgLocationId.id =:orgLocationId and st.status = '1' "; 
+		List<SourceleadTags> sourceleadTagsList = session.createQuery(query).setString("entityType", entityType).setLong("orgLocationId", orgLocationId).list();
+		return sourceleadTagsList;
+	}
 
 }
