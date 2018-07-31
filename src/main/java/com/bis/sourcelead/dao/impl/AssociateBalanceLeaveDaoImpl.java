@@ -503,7 +503,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 	@Transactional
 	public int addAssociateLeaveType(User user, Long orgLocationId,Employees employee, UserRole userRole)
 	{
-		List<LeaveType> leavetypeList = leaveTypeService.getLeaveTypeListByLocationId(orgLocationId.toString());
+		List<LeaveType> leavetypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(orgLocationId.toString());
 		List<LeaveType> roleLeaveType = new ArrayList<>();
 		if (leavetypeList != null && !leavetypeList.isEmpty()) {
 			for (LeaveType leaveType : leavetypeList) {
@@ -570,12 +570,12 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						}else {
 							stmt.setString(6, null);
 						}
-						if(leaveType.getDepartmentIds() != null) {
+						if(StringUtils.isNotBlank(leaveType.getDepartmentIds())) {
 							stmt.setString(7, leaveType.getDepartmentIds());
 						}else {
 							stmt.setString(7, null);
 						}
-						if(!leaveType.getLeaveEmpType().isEmpty()) {
+						if(StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 							stmt.setString(8, leaveType.getLeaveEmpType());
 						}else {
 							stmt.setString(8, null);
