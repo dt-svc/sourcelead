@@ -130,6 +130,7 @@ function getUsersSearchResult(searchValue){
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Associates List </div>
     </section>
 
+	<div class="project_wrap">
       <section class="clearfix usersHeader positionRelative  hidden">
       
       <div class="pull-left cand-advsrche onboardBtn">
@@ -159,7 +160,6 @@ function getUsersSearchResult(searchValue){
       </div>
       </div>
       </section>
-      
 	    
 				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
 				<h5 class="headerAdsrch">Filters
@@ -296,9 +296,6 @@ function getUsersSearchResult(searchValue){
 						</div>
 					</div>
 				</div>
-			
-			
-			
       
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
       
@@ -321,7 +318,7 @@ function getUsersSearchResult(searchValue){
 				</c:if>
 				
 				<c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
-				<li><a href="<c:url value='${appPath}/userGroupList'/>"><i class="fa fa-plus"></i>&nbsp;Create Batch</a></li>
+				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userGroupList'/>"><i class="fa fa-plus"></i>&nbsp;Create Batch</a></li>
 				</c:if>
 				
 				<c:if test="${orgLocationsCount == 1}">
@@ -353,9 +350,6 @@ function getUsersSearchResult(searchValue){
         </ul>
       </div>
       
-      
-      
-      
               <div id="dynamicUserListViewDiv" class="filter_position positionRelative"></div> 
           </div>  
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
@@ -367,6 +361,7 @@ function getUsersSearchResult(searchValue){
       
       <div id="usersListEmptyBody"></div>
       <div id="popUp"></div>
+      </div>
       </div>
       </div>
   </section>

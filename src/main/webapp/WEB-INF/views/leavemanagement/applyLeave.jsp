@@ -22,7 +22,7 @@ window.onload = function() {
 			$("#toDateFromTimeDiv").show();
 			$("#toDateTimeDiv").show();
 		}
-		
+		validateDate();
 	}
 	
 	getPieChartBasedOnUser();
@@ -54,12 +54,14 @@ window.onload = function() {
       <div class="clearfix form-horizontal inner-content">
           <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-1">
           <sec:authorize access="hasRole('ROLE_APPLY_BEHALF_LEAVE')"> 
-              <div class="form-group">
+          	<c:if test="${empty leaveUUID}">
+          		<div class="form-group">
                    <label class="pull-left ml checkBox">
 					<input id="checkbox-1" class="onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
                   </label>
                   <span class="pull-left mt5">On behalf of</span>
               </div>
+          	</c:if>
           </sec:authorize> 
                <div class="form-group" style="display: none" id="onbehalf">
               <label class="col-md-3">Select Employee<span class="text-danger paddingLeft">*</span></label>
@@ -202,7 +204,7 @@ window.onload = function() {
               </div>
             </div>
             
-<%--             <c:if test="${SourceLeadWeb_isSuperUser != true}"> --%>
+            <c:if test="${SourceLeadWeb_isSuperUser != true}">
             	<div class="form-group" id="approvalDiv">
 	              <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
 	              <div class="col-md-9 dropdown-select" id="approverUserDiv">
@@ -210,7 +212,7 @@ window.onload = function() {
 	                  </select>
 	              </div>
             	</div>
-<%--             </c:if> --%>
+            </c:if>
 
 		<div class="clearfix"></div>
 		 <sec:authorize access="hasAnyRole('LEAVE_NOTIFY_TO_OTHTERS')"> 
@@ -525,7 +527,7 @@ function calcaulateDuraton(){
 	var toDateFromHalfTime = $("#toDateFromHalfTime").val();
 	var toDateToHalfTime = $("#toDateToHalfTime").val();
 	
-	if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined' && leaveTypeUUID != null && leaveTypeUUID != '' && leaveTypeUUID != 'undefined'){
+	if(fromDate != null && fromDate != '' && fromDate != 'undefined' && leaveTypeUUID != null && leaveTypeUUID != '' && leaveTypeUUID != 'undefined'){
 		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId+
 				"&fromHalfDay="+fromHalfDay+"&toHalfDay="+toHalfDay+"&fromDateFromHalfTime="+fromDateFromHalfTime+
 				"&fromDateToHalfTime="+fromDateToHalfTime+"&toDateFromHalfTime="+toDateFromHalfTime+
@@ -615,7 +617,7 @@ function calcaulateDuraton(){
     	    	  result = result +'			<label>Balance Leaves :</label>';
     	          for (var i = 0; i < json.length; i++) { 
     	        		  var leaveType = json[i];
-    	        		  if(leaveType.leaveTypeBalanceLeaveCount > 0){
+    	        		  if(leaveType.visibleInBalanceLeaves == 'Y'){
     	        			  result = result +'	<li>';
       				  		result = result +'			<label>'+leaveType.name+'</label>';
       				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
@@ -1156,7 +1158,7 @@ function validateDate(){
 	}else{
 		userId = '${SourceLeadWeb_userId}';
 	}
-	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
+	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' ){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId+"&errorMessage="+errorMessage, function(data) {
 			if(data !=null && data.validateType == 'SAMEDAY'){
 				errorMessage += data.errorMessage;
@@ -1177,6 +1179,7 @@ function validateDate(){
 					$("#ApplyLeave").attr('disabled','disabled');
 				}
 		    	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+data.errorMessage+"</p> ");
+		    	errorMessage = "";
 		    	$(".warMess").fadeIn();
 		    	$(".comMask").fadeIn();
 		    }else{
@@ -1256,6 +1259,7 @@ $("#toDateHalfTime").timepicker({
 }).on('changeTime', function() {
     $("#fromDateHalfTime").timepicker('option', 'maxTime', $(this).val());
     calcaulateDuraton();
+    validateDate();
 }); 
 
 $("#toDateFromHalfTime").timepicker({
@@ -1273,6 +1277,7 @@ $("#toDateToHalfTime").timepicker({
 }).on('changeTime', function() {
     $("#toDateFromHalfTime").timepicker('option', 'maxTime', $(this).val());
     calcaulateDuraton();
+    validateDate();
 }); 
 
 

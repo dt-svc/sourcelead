@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,8 +33,10 @@ import com.bis.sourcelead.payroll.dao.USPaysheetDao;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.Paysheet;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
@@ -272,5 +275,82 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 	public PaysheetFrequency addPaysheetFrequency(PaysheetFrequency paySheetFreq)
 	{
 		return uSPaysheetDao.addPaysheetFrequency(paySheetFreq);
+	}
+
+	@Override
+	public ResponseList<PaysheetFrequencyDTO> getPaySheetFrequencyListByOrgLocationId(OrgLocations orgLocation,PaysheetFrequencyDTO paysheetFrequencyDTO) throws Exception {
+		ResponseList<PaysheetFrequency> paySheetList = uSPaysheetDao.getPaySheetFrequencyListByOrgLocationId(orgLocation,paysheetFrequencyDTO);
+		
+		ResponseList<PaysheetFrequencyDTO> res = new ResponseList<>();
+		List<PaysheetFrequencyDTO> totalList = new ArrayList<>();
+		paySheetList.getData().forEach(pay -> {
+			PaysheetFrequencyDTO pfd = new PaysheetFrequencyDTO();
+			pfd.setPaySheetFrequencyuuid(pay.getPaySheetFrequencyUUID());
+			pfd.setPayFrequency(pay.getUserGroup().getPayFrequency());
+			pfd.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPayCheckDate()));
+			pfd.setPaySheetFrequencyType(pay.getType());
+			pfd.setApproverStatus(pay.getApproverStatus());
+			
+			StringBuilder sbDate = new StringBuilder();
+			pfd.setPayPeriod(sbDate.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyStartDate())).append(" / ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyEndDate())).toString());
+		
+			Set<EmployeePayroll> payRollSet = pay.getEmployeepayroll();
+			double sum = payRollSet.stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+			pfd.setTotal(BigDecimal.valueOf(sum));
+			pfd.setGroupId(String.valueOf(pay.getUserGroup().getId()));
+			totalList.add(pfd);
+		});
+		res.setData(totalList);
+		res.setRecordsFiltered(totalList.size());
+		res.setRecordsTotal(totalList.size());
+		return res;
+	}
+
+	@Override
+	public PaysheetFrequency getPayFrequencyByUUID(String paySheetFrequencyUUID) {
+		return uSPaysheetDao.getPayFrequencyByUUID(paySheetFrequencyUUID);
+	}
+
+	@Override
+	public List<USPayrollDTO> getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO) {
+		PaysheetFrequency pf = getPayFrequencyByUUID(paysheetFrequencyDTO.getPaySheetFrequencyuuid());
+		List<USPayrollDTO> list = new ArrayList<>();
+		try {
+			if (pf != null && pf.getEmployeepayroll() != null) {
+				Set<EmployeePayroll> set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum()).collect(Collectors.toSet());
+				for(EmployeePayroll pay : set) {
+					USPayrollDTO payrollDTO = new USPayrollDTO();
+					payrollDTO.setEmpId(pay.getEmployee().getEmployeeId());
+					StringBuilder sb = new StringBuilder();
+					if (StringUtils.isNoneBlank(pay.getUser().getLastName())) {
+						sb.append(pay.getUser().getFirstName()).append(" ").append(pay.getUser().getLastName());
+					}
+					else {
+						sb.append(pay.getUser().getFirstName());
+					}
+					payrollDTO.setEmpName(sb.toString());
+					payrollDTO.setEmpPayrollId(pay.getId());
+					payrollDTO.setEmpPayrollUUID(pay.getUsEmpPayrollUUID());
+					payrollDTO.setGrossPay(pay.getGrossPay());
+					payrollDTO.setNetPay(pay.getNetPay());
+					payrollDTO.setRegularHrsTotalAmt(pay.getRehularHoursAmount());
+					payrollDTO.setPayRate(pay.getEmpPayRate());
+					payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
+					payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());
+					payrollDTO.setRegularHours(Float.parseFloat(pay.getRegularHours()));
+					payrollDTO.setTaxes(pay.getTaxes());
+					payrollDTO.setOtHoursTotalAmt(pay.getOverTimeAmount());
+					double overTimeHours = 0;
+					if(StringUtils.isNoneBlank(pay.getOverTimeHours())) {
+						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
+					}
+					payrollDTO.setOvertimeHours(overTimeHours);
+					list.add(payrollDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 }

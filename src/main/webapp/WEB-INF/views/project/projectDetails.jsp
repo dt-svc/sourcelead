@@ -435,7 +435,7 @@ function editClientProjectDetails(projectId){
 			 }else{
 				result = result + '<div class="col-md-8 paddingRight" id="levelone-select-manager">';	
 			} 
-			result = result	+ '<select  onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
+			result = result	+ '<select  class="form-control chosen-select" onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
 			for (var j = 0; j < json.managersList.length; j++) {
 				var manager = json.managersList[j];
 				if(manager.lastName != null && manager.lastName != '' && manager.lastName != 'undefined'){
@@ -482,7 +482,7 @@ function editClientProjectDetails(projectId){
 				result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" style="display:none;" id="demo">';
 			}
 				result = result + '<label> Manager 2 </label>';
-				result = result	+ '<select class="form-control chosen-select"  id="level2Manager" name="level2Manager">';
+				result = result	+ '<select class="form-control chosen-select" class="form-control chosen-select"  id="level2Manager" name="level2Manager">';
 				result = result    +'<option value="">-Select Manager-</option>';
 				if(json.managersListwithoutManager1 != null){
 				for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
@@ -512,6 +512,22 @@ function editClientProjectDetails(projectId){
 			$(".project_details").toggleClass("project_detailsHei");
 			$("#editProjectDetailsDiv").empty();
 			$("#editProjectDetailsDiv").append(result);
+			
+			
+		    var config = {
+			  		  '.chosen-select'           : {},
+			  		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  		  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  		  '.chosen-select-width'     : {width:"95%"}
+			  		}
+			  		for (var selector in config) {
+			  		  $(selector).chosen(config[selector]);
+			  		}
+			  		$('.chosen-select').each(function() {
+			  			var $this = $(this);
+			  			$this.next().css({'width': '100%'});
+			           });
 		},
 	});
 }

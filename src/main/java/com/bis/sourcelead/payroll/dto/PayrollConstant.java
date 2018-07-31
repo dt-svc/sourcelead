@@ -16,6 +16,12 @@ public class PayrollConstant {
 	public static final String PENNSYLVANIA = "Pennsylvania";
 	public static final String WASHINGTON = "Washington";
 	public static final String WEST_VIRGINIA = "West Virginia";
+	public static final String YES = "YES";
+	public static final String NO = "NO";
+	public static final String DRAFT = "DRAFT";
+	public static final String PAYROLL = "PAYROLL";
+	public static final String SENT = "SENT";
+	public static final String APPROVE = "APPROVED";
 	
   
 

@@ -16,60 +16,52 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Grades List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="${appPath}/orgRolesList">Roles List</a> &raquo;  Grades List </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="${appPath}/orgRolesList"> Roles List </a> &raquo;  Grades List </div>
     </section>
     
     
-    <div class="project_wrap_table datatable_filter backgroundWhite" id="gradesListGrid">
-      <div class="positionRelative table_head section-action-btns section-action-btns-associates clearfix">
-      <div id="gradesLoading"></div>
+    <div class="project_wrap">
+    <div class="project_wrap_table backgroundWhite" id="gradesListGrid">
+    
+<div class="reportHead positionRelative clearfix">
       <ul class="pull-right list-unstyled list-inline">
-		   <li class="addcon-pop mt"><a href="javascript:void(0)" title="" onclick="showGradePopUp();"><i class="fa fa-plus"></i>Add Grade</a></li>
-		  <li class="positionRelative">
-			  <div class="dynamic_search">
-	   			<input type='text' placeholder='Search' id='gradesDataTableSearch'/>
-	   			<span class="cursorPointer" title="Search"><i class="fa fa-search" onClick="gradeDataTableList();"></i></span>
-			  </div>
-		  </li>
+			<li class="addcon-pop">
+				<a href="javascript:void(0)" title="" class="newAdBtn mr5" onclick="showGradePopUp();">+ Grade</a>
+            </li>      
+	       <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='gradesDataTableSearch'/><span class="repSearchIcon" onClick="gradeDataTableList();"></span></li>
         </ul>
-      </div>
+      </div>     
               
-              <div id="gradesList" class="filter_position positionRelative"></div> 
-          </div> 
+          <div id="gradesList" class="filter_position positionRelative datatable_filter"></div> 
+      </div> 
+      </div>
     
-    
-  <div class="comMask"></div>
-  <div class="modal paymentaccount-modal" id="gradePopup" role="dialog">
-    <div class="modal-dialog">
+  <div class="popupWrap" id="gradePopup" role="dialog">
     <div id="addGradeLoading"></div>
       <!-- Modal content-->
-      <div class="modal-content">
-      
-        <div class="modal-header">
-          <button type="button" class="close" onclick="closeGradePopUp();" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add/Edit Grade</h4>
-        </div>
-        <div class="modal-body">
+        <div class="popupHead">Add/Edit Grade <i class="closePop pull-right popClose" onclick="closeGradePopUp();"></i></div>
+        
+        <div class="popupContent">
         	<form:form class="clearfix"  id="addgrade_form"  name="addgrade_form" method="POST">
 	      		<input type="hidden" id="uuid" name="uuid">
-	      		<div class="form-group clearfix minHeight40" id="gradeDiv">
-		           <label class="col-md-4">Grade<span class="text-danger">&nbsp;*</span></label>
-		           <div class="col-md-8">
+	      		<div class="form-group clearfix mb" id="gradeDiv">
+		           <label class="">Grade <b class="valStar">*</b></label>
+		           <div class="">
 		                 <input type="text" id="gradeName" name="gradeName" class="form-control" onblur="validateGrade();" data-validation="required validate_Space validate_AlphaNumber validate_length length1-20" field-name="Grade"/>
 		           </div>
 	           </div>
 	           
-	           <div class="form-group clearfix minHeight40" id="designationDiv">
-		           <label class="col-md-4">Designation</label>
-		           <div class="col-md-8">
+	           <div class="form-group clearfix mb" id="designationDiv">
+		           <label class="">Designation</label>
+		           <div class="">
 		                 <input type="text" id="designation" name="designation" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100"/>
 		           </div>
 	           </div>
 	           
-	           <div class="form-group clearfix minHeight40">
-		           <label class="col-md-4">Min Wage/Salary</label>
-		           
-		          <div class="col-md-2 padding_right dropdown-select drpdownCurrency">
+	           <div class="form-group clearfix mb">
+		           <label class="">Min Wage/Salary</label>
+		            <div class="">
+		          <div class="col-md-4 noPad dropdown-select drpdownCurrency">
 						<select id="minSalaryRateType" name="minSalaryRateType" data-required-optional="true">
 						<option ${SourceLeadWeb_currencyCode  == 'INR' ? 'selected' : ''} value="INR">INR</option>
 						<option ${SourceLeadWeb_currencyCode  == 'AUD' ? 'selected' : ''} value="AUD">AUD</option>
@@ -80,11 +72,11 @@ $(document).ready(function(){
 						</select>
 				</div>
 	
-		          <div class="col-md-3 padding_right padding_left inputRate" id="minSalDiv">
+		          <div class="col-md-4 noPad inputRate" id="minSalDiv">
 		                 <input type="text" id="minSalary" name="minSalary" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_float validate_length length1-10" field-name="Min Wage/Salary" />
 		           </div>
 		           
-		          <div class="col-md-3 padding_left drpdownMonthly dropdown-select" data-validation-optional="true">
+		          <div class="col-md-4 noPad drpdownMonthly dropdown-select" data-validation-optional="true">
 					<select id="minSalaryRatePer" name="minSalaryRatePer">
 					<option value="Hourly">Hourly</option>
 					<option value="Weekly">Weekly</option>
@@ -95,13 +87,14 @@ $(document).ready(function(){
 					<option value="Yearly" selected>Yearly</option>
 					</select>
 				</div>
+				</div>
 			</div>
 			
 			
 			<div class="form-group clearfix minHeight40">
-		           <label class="col-md-4">Mid Wage/Salary</label>
-		           
-		          <div class="col-md-2 padding_right dropdown-select drpdownCurrency">
+		           <label class="">Mid Wage/Salary</label>
+		           <div class="">
+		          <div class="col-md-4 noPad dropdown-select drpdownCurrency">
 					<select id="midSalaryRateType" name="midSalaryRateType" data-validation-optional="true">
 						<option ${SourceLeadWeb_currencyCode  == 'INR' ? 'selected' : ''} value="INR">INR</option>
 						<option ${SourceLeadWeb_currencyCode  == 'AUD' ? 'selected' : ''} value="AUD">AUD</option>
@@ -112,11 +105,11 @@ $(document).ready(function(){
 					</select>
 				</div>
 	
-		          <div class="col-md-3 padding_right padding_left inputRate" id="midSalDiv">
+		          <div class="col-md-4 noPad inputRate" id="midSalDiv">
 		                 <input type="text" id="midSalary" name="midSalary" class="form-control" data-validation-optional="true"  data-validation="validate_Space validate_float validate_length length1-10" field-name="Mid Wage/Salary"/>
 		           </div>
 		           
-		          <div class="col-md-3 padding_left drpdownMonthly dropdown-select" data-validation-optional="true">
+		          <div class="col-md-4 noPad drpdownMonthly dropdown-select" data-validation-optional="true">
 					<select id="midSalaryRatePer" name="midSalaryRatePer">
 					<option value="Hourly">Hourly</option>
 					<option value="Weekly">Weekly</option>
@@ -127,13 +120,14 @@ $(document).ready(function(){
 					<option value="Yearly" selected>Yearly</option>
 					</select>
 				</div>
+				</div>
 			</div>
 			
 			
 			<div class="form-group clearfix minHeight40">
-		           <label class="col-md-4">Max Wage/Salary</label>
-		           
-		          <div class="col-md-2 padding_right dropdown-select drpdownCurrency">
+		           <label class="">Max Wage/Salary</label>
+		           <div class="">
+		          <div class="col-md-4 noPad dropdown-select drpdownCurrency">
 					<select id="maxSalaryRateType" name="maxSalaryRateType" data-validation-optional="true">
 						<option ${SourceLeadWeb_currencyCode  == 'INR' ? 'selected' : ''} value="INR">INR</option>
 						<option ${SourceLeadWeb_currencyCode  == 'AUD' ? 'selected' : ''} value="AUD">AUD</option>
@@ -144,11 +138,11 @@ $(document).ready(function(){
 					</select>
 				</div>
 	
-		          <div class="col-md-3 padding_right padding_left inputRate" id="maxSalDiv">
+		          <div class="col-md-4 noPad inputRate" id="maxSalDiv">
 		                 <input type="text" id="maxSalary" name="maxSalary" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_float validate_length length1-10" field-name="Max Wage/Salary"/>
 		           </div>
 		           
-		          <div class="col-md-3 padding_left drpdownMonthly dropdown-select" data-validation-optional="true">
+		          <div class="col-md-4 noPad drpdownMonthly dropdown-select" data-validation-optional="true">
 					<select id="maxSalaryRatePer" name="maxSalaryRatePer">
 					<option value="Hourly">Hourly</option>
 					<option value="Weekly">Weekly</option>
@@ -159,18 +153,17 @@ $(document).ready(function(){
 					<option value="Yearly" selected>Yearly</option>
 					</select>
 				</div>
+				</div>
 			</div>
 			
 			</form:form>
 		</div>
-			<div class="clearfix"></div>
-	        <div class="modal-footer">
-	         <button type="button" class="btn btn-danger"  onclick="closeGradePopUp();" >Cancel</button>
-	         <input type="submit" value="Save" id="create_grade" onclick="createGrade();" class="btn btn-primary">
-	        </div>
-         </div>
+		
+		<div class="popupFoot text-right">
+			<button type="submit" id="create_grade" onclick="createGrade();" class="slBtn md colorBtn">Add</button>					
+			<input type="button" value="Cancel" class="slBtn md popClose" onclick="closeGradePopUp();">
+		</div>	        
         	
-        </div>
         </div>
 <div id="choicepopUp"></div>    
  </section>
@@ -178,8 +171,8 @@ $(document).ready(function(){
  
  <script>
  function showGradePopUp() {
-	    $(".modal.paymentaccount-modal").fadeIn();
-	    $(".comMask").fadeIn();
+	    $(".popupWrap").fadeIn(100);
+	    $(".mask").show();
 	}
  
  function closeGradePopUp() {
@@ -207,8 +200,8 @@ $(document).ready(function(){
 	    $('#midSalDiv').find('p.jquery_form_error_message').remove();
 	    $('#maxSalDiv').find('p.jquery_form_error_message').remove();
 	    
-	    $(".modal.paymentaccount-modal").fadeOut();
-	    $(".comMask").fadeOut();
+	    $(".popupWrap").fadeOut(100);
+	    $(".mask").hide();
 		
 	}
  </script>
@@ -216,7 +209,6 @@ $(document).ready(function(){
  
  <script type="text/javascript">
  function createGrade() {
-	 
 	   if ($('#addgrade_form').validate(false, validationSettings)){ 
 		
 		    var formData = getFormData("addgrade_form");
@@ -446,7 +438,12 @@ function gradesPagination(url,sourceleadUrl){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result	+ '<td><div class="tblminwidth-50 pull-left ml5"><div class="pull-left"><div class="fa fa-edit text-success cursorPointer" title="Edit" onclick="editGrade(\''+opt.uuid+'\');"></div></div>&nbsp;&nbsp;&nbsp;<div class="pull-left ml5"><div class="fa fa-trash text-danger cursorPointer" title="Delete" onclick="deleteGrade(\''+opt.uuid+'\',\''+opt.gradeName+'\');"></div></div></div></td>';
+	            	    result = result	+ '<td>';
+	            	    result = result	+ '<div class="tblicons">';
+	            	    result = result	+ '	<i class="glyphicon glyphicon-pencil paddingRight" title="Edit" onclick="editGrade(\''+opt.uuid+'\');"></i>';
+	            	    result = result	+ '	<i class="glyphicon glyphicon-trash paddingLeft" title="Delete" onclick="deleteGrade(\''+opt.uuid+'\',\''+opt.gradeName+'\');"></i>';
+	            	    result = result	+ ' </div>';
+	            	    result = result	+ '</td>';
 	            	    return result;
 	              }
 		     }],

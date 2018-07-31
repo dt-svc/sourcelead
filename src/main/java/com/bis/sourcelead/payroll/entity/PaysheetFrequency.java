@@ -51,6 +51,9 @@ public class PaysheetFrequency {
 	@Column (name = "TYPE")
 	private String type;
 	
+	@Column (name="APPROVER_STATUS")
+	private String approverStatus;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -230,6 +233,16 @@ public class PaysheetFrequency {
 	public void setType(String type)
 	{
 		this.type = type;
+	}
+
+	public String getApproverStatus()
+	{
+		return approverStatus;
+	}
+
+	public void setApproverStatus(String approverStatus)
+	{
+		this.approverStatus = approverStatus;
 	}
 
 

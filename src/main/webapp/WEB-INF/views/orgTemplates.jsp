@@ -8,18 +8,13 @@
 <section class="content-wraper">
     <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
-          <div class="pull-left">
-      <!-- <h2>Submission Templates</h2> -->
-      <h2 class="pull-left">Templates</h2>
-				
-    </div>
+          <div class="pull-left"> <h2 class="pull-left">Templates</h2></div>
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Templates</div>
- <div class="clearfix"></div>
+ 		<div class="clearfix"></div>
     </section>
     
-    
  
-<section class="landTemp">
+<section class="landTemp reportNewDash">
 	<div class="landTempCta">
 		<div class="pull-left mr10">
            <i class="fa fa-address-book-o fa-2x text-primary"></i>

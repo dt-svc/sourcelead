@@ -180,13 +180,13 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+ '<div class="col-md-6" id="teamNameDiv">';
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
 	        	outPut = outPut+ '<input type = "hidden" name="tabType" value="editTeamForm"/>';
-	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
+	        	outPut = outPut+ '<label>Team Name <b class="valStar">*</b> </label>';
 	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  onblur="validateTeamName();">';
 	        	outPut = outPut+ '                </div>';
 	        	
 	        	
 	        	outPut = outPut+ '                <div class="col-md-5">';
-	        	outPut = outPut+ '                <label>Team Lead<b class="text-danger">*</b> </label>';
+	        	outPut = outPut+ '                <label>Team Lead <b class="valStar">*</b> </label>';
 	        	outPut = outPut + '<select   class="form-control" name="editOwnerUserId" value="'+json.teamOwnerName+'" id="editOwnerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead">';
 	            outPut = outPut + '</select>';
 	        	outPut = outPut+ '                </div>';
@@ -312,48 +312,57 @@ function storeEditedTeam(teamId){
 function addTeam(){ 
 	var outPut = '';
 	outPut = outPut+'<form role="form"  id="team_form" name="team_form" method="post" > ';
-	outPut = outPut+ '<i class="fa fa-close close-div"  onClick="closeTeamPopup();"></i>';
-	outPut = outPut+ '<div class="form-horizontal clearfix">';
-	outPut = outPut+ '<div class="clearfix mb10">';
+	outPut = outPut+ '<div class="popupHead">Add Team <i class="closePop pull-right popClose" onclick="closeTeamPopup();"></i></div>';
+	
+	outPut = outPut+ '<div class="popupContent clearfix">';
+	outPut = outPut+ '<div class="clearfix mb">';
 	/* outPut = outPut + '<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">'; */
 	outPut = outPut+ '<input type = "hidden" name="tabType" value="teamForm"/>';
-	outPut = outPut+ '<div class="col-md-12">';
-	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
+	outPut = outPut+ '<div class="">';
+	outPut = outPut+ '<label>Team Name <b class="valStar">*</b></label>';
 	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">';
+	outPut = outPut+ '</div>';
+	outPut = outPut+ '</div>';
+	
+	outPut = outPut+ '              <div class="clearfix mb">';
+	outPut = outPut+ '                <div class="">';
+	outPut = outPut+ '                <label>Team Lead <b class="valStar">*</b></label>';
 	outPut = outPut+ '                </div>';
-	outPut = outPut+ '              </div>';
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                <label>Team Lead<b class="text-danger">*</b> </label>';
-	outPut = outPut+ '                </div>';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut + '<select   class="form-control" name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">';
-				
+	outPut = outPut+ '                <div class="">';
+	outPut = outPut + '<select class="form-control" name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">';
     outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div> ';
-	outPut = outPut+ '              <div class="clearfix mb10">';
-	outPut = outPut+ '                <div class="col-md-12">';
-	outPut = outPut+ '                <label>Team Member<b class="text-danger">*</b> </label>';
+	
+	outPut = outPut+ '              <div class="clearfix mb">';
+	outPut = outPut+ '                <div class="">';
+	outPut = outPut+ '                <label>Team Member <b class="valStar">*</b></label>';
 	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" data-placeholder="Select Team Members" data-validation="required validate_Space" field-name="Team Member">';
     outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div> ';
-	outPut = outPut+ '              <div class="clearfix mr">';
-	outPut = outPut+ '<button type="button" id="add_team" class="btn btn-sm btn-primary pull-right" onclick="storeTeam();">Add</button>';
-	outPut = outPut+ '              </div>';
+	
 	outPut = outPut+ '            </div>';
+	
+	outPut = outPut+ ' <div class="popupFoot text-right">';
+	outPut = outPut+ ' <button type="button" id="add_team" class="slBtn md colorBtn" onclick="storeTeam();">Add</button>';	
+	outPut = outPut+ ' <input type="button" value="Cancel" class="slBtn md popClose" onclick="closeTeamPopup();">';
+	outPut = outPut+ ' </div>';
+	
+/* 	outPut = outPut+ '              <div class="clearfix mr">';
+	outPut = outPut+ '<button type="button" id="add_team" class="btn btn-sm btn-primary pull-right" onclick="storeTeam();">Add</button>';
+	outPut = outPut+ '              </div>'; */
+	
 	outPut = outPut+ '</form>';
 	$("#popUpDivTeamParent").empty();
 	$("#popUpDivTeamParent").append(outPut); 
 	
-	$(".edit-details").toggleClass("edit-details-active");
-	$(".close-div").click(function(){
-		$(this).parent("div.edit-details").removeClass("edit-details-active");
-		 });
-	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-		 e.stopPropagation();
-	 });
+	$("#popUpDivTeamParent").fadeIn(100);
+	$(".mask").show();
+	$(".popClose").click(function(){
+		$("#popUpDivTeamParent").fadeOut(100);
+		$(".mask").hide();
+	});
 	 
 	 var config = {
 			  '.chosen-select'           : {},
@@ -381,8 +390,8 @@ function addTeam(){
 
 <script>
 function closeTeamPopup(){
-	
-	 $("#popUpDivTeamParent").removeClass("edit-details-active");
+		$(".mask").hide();
+	 $("#popUpDivTeamParent").fadeOut(100);
 }
 </script>
 
@@ -630,35 +639,24 @@ function TeamMemberpagination(){
     <div class="pull-left">
       <h2>Team</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="${appPath}/orgRolesList">Roles List</a>&raquo; Team</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo; <a href="${appPath}/orgRolesList"> Roles List </a>&raquo; Team</div>
   </section>
+  
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head candidateHead">
-        <ul>
-          <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
-            <div class="export_pop">
-              <ul>
-                <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                <li>Word<i class="fa fa-file-word-o"></i></li>
-              </ul>
-            </div>
-          </li>
+    
+<div class="reportHead reportHeadDataTab  clearfix">
+      <ul class="pull-right list-unstyled list-inline">
           <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
-<!--           <input type = "hidden" id="existedMemberId" name="existedMemberId"/> -->
-          	<li><a href="#" onclick="addTeam();getTeamOwners();" title=""><i class="fa fa-plus"></i>Add Team</a></li>
-          </sec:authorize>
-          <div class="clearfix"></div>
+<!--        <input type = "hidden" id="existedMemberId" name="existedMemberId"/> -->
+          	<li><a href="javascript:void(0)" onclick="addTeam();getTeamOwners();" title="Add Team" class="action newAdBtn">+ Team</a></li>
+          </sec:authorize>			
         </ul>
-        <div class="clearfix"></div>
-        <!-- <div class="remove_search">
-          <input type="text" placeholder="search" />
-        </div> -->
-      </div>
+      </div>    
+      
       <div class="project_tabs_inn_table vendor_wrap_inn_table">
-       			<div id="popUpDivTeamParent" class="edit-details col-md-4"></div>  
-      			<div id="teamList" class="datatable_filter"></div>
+       			<div id="popUpDivTeamParent" class="popupWrap popupWrapFixed"></div>  
+      			<div id="teamList" class="datatable_filter dataSeaTop"></div>
       			<div id="deleteTeamPopUp"></div>
               </div>
         </div>      
@@ -668,19 +666,12 @@ function TeamMemberpagination(){
     <div class="clients_side_wrap">
       <!-- <div class="clients_side_wrap_inn candidate_wrap_table"> -->
       <div class="clients_side_wrap_inn candidate_wrap_table candidatewrap_Table">
-      
       <div id="teamSideDiv" class="datatable_filter">
 	  </div>
       
       </div>
       
- <!-- Edit Details Popup -->      
-   
- <!-- Edit Details Popup Ends -->      
-
     </div>
-    <!-- Compnay details Ends --> 
-    <!-- Project --> 
   </div>
 </section>
 

@@ -3,12 +3,24 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<!-- <script>
+ <script>
 $(document).ready(function(){
-	prepareUSPayrollList("NO_RECORDS");
+	$("#approveDiv").hide();
+	$("#submitButtonDiv").hide();
 });
-</script> -->
+</script> 
 
+<script>
+function reviewPayrollDiv(){
+	$("#reviewPayrollDiv").show();
+	$("#approveDiv").hide();
+}
+
+function approvePayroll(){
+	$("#reviewPayrollDiv").hide();
+	$("#approveDiv").show();
+}
+</script>
 
 
 
@@ -22,10 +34,20 @@ $(document).ready(function(){
 </div>
 <div class="pull-right brud-crum">Home &raquo; Payroll</div>
 </section>
+		<div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
 
+<div class="tabsMenu clearfix">
+   		<ul class="list-unstyled">
+		   <li class="current"><a onclick="reviewPayrollDiv();">Review Payroll</a></li>
+		    <li class="current"><a onclick="approvePayroll();">Approve Payroll</a></li>
+		  <%--  <li><a href="<c:url value='${appPath}/approvePayroll'/>" >Approve Payroll</a></li> --%>
+	   </ul>
+   </div>
 
 <div class="clearfix"></div>
-<div class="timesheet_out">
+<div class="timesheet_out" id="reviewPayrollDiv">
 
 <div class="tablelist-wrap">
 <div class="timesheet_head minHeight">
@@ -52,7 +74,7 @@ $(document).ready(function(){
 			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date">
 		</div>
 		<div class="col-md-2">
-			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runUSPayroll();">Run Payroll</a>
+			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runUSPayroll();">Initiate Payroll</a>
 		</div>
 	</div>						
 </div>
@@ -63,33 +85,81 @@ $(document).ready(function(){
 </form:form>
 </div>
 
+  
+ 
 <div class="tableScroll">
+<form:form id="submit_for_approver" name="submit_for_approver" method="post">
  <div class="styleTables clearfix mt">
- <div id="USPayrollDiv"></div>
- <div id="testDiv"></div>
+ <!-- <div id="USPayrollDiv"></div> -->
+ <div id="payrollDataDiv"></div>
 </div> 
-</div>
+
 <div class="clearfix mt"></div>
-<nav class="clearfix">
-	
-<div class="col-md-2">
-			<a href="javascript:void(0)" class="btn anchorBlue">Exclude</a>
-</div>
+
+<div class="clearfix">
+<!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
+	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
-		<li><a href="#" class="btn btn-primary btnSuccess">Sent for Approve</a></li>
-		<li><a href="#" class="btn btn-default ml mr">Confirm</a></li>
-		<li><a href="#" class="btn btn-default">Cancel</a></li>
+		<li><a href="#" class="btn btn-primary btnSuccess" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
+		<li><a href="#" class="btn btn-default ml mr" onclick="confirmPayroll();">Confirm</a></li>
+		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
+	</div>
 <div class="clearfix"></div>
-</nav>	
-
+</div>
+</form:form>
+</div>
 
 
 </div>
 
 
-</div>  
+</div>
 
+
+<!--  send approver popup -->
+<div class="comMask"></div>
+<!-- Modal -->
+  <div class="modal sendApprover" id="sendApprover" style="display:none;">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" onclick="closeApproverFun();">&times;</button>
+          <h4 class="modal-title">Approver</h4>
+        </div>
+        <div class="modal-body">
+        	<div class="form-group clearfix mb0">
+            
+          <lable class="col-md-3">Select Approver</lable>
+          <div class="col-md-9">
+          <select class="form-control chosen-select" multiple data-placeholder="Select Approvers" id="approver" name="approver" field-name="Approver" data-validation="required">
+          <!-- 	<option>Approver1</option>
+            <option>Approver2</option> -->
+          </select>
+          </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="sendPayrollForApprover();">Send</button>
+          <button type="button" class="btn btn-default ml" onClick="closeApproverFun();">Cancel</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+<!--  send approver popup -->
+
+<!-- <script>
+function sendApproverFun() {
+	getApprovers();
+	$(".sendApprover, .comMask").fadeIn();
+}
+
+function closeApproverFun() {
+	$(".sendApprover, .comMask").fadeOut();
+}
+</script> -->
 
 <!-- New Code Here -->
 
@@ -123,6 +193,9 @@ function getGroupFrequency(){
 
 <!--   Error Message   --> 
 
+
+
+<jsp:include page="usPayrollApprove.jsp" />
 
 </section>
 
@@ -195,17 +268,18 @@ function runUSPayroll(){
 		    	type: "POST",
 		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate,                 
 		        success: function(data) {
-		            var json = data.data;
+		            var json = data.payrollDTO;
 		        	var result = "";
 		        	result += '<table>';
 		        	result += '<thead>';
 		        	result += '<tr>';
-		        	result += '<th>';
+		         	/* result += '<th>';
 		        	result += '<div class="checkbox-new pull-left">';
 		        	result += '<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">';
 		        	result += '<label for="all" class="checkbox-custom-label"></label>';
 		        	result += '</div>';
-		        	result += '</th>';
+		        	result += '</th>'; */ 
+		        	result += '<th>Exclude</th>';
 		        	result += '<th>Emp ID</th>';
 		        	result += '<th>Emp Name</th>';
 		        	result += '<th>Regular<br>Hours</th>';
@@ -219,20 +293,21 @@ function runUSPayroll(){
 		        	result += '</tr>';
 		        	result += '</thead>	';
 		        	result += '<tbody>';
+		        	result += '<input type="hidden" value='+data.id+' id="payrollFrequencyId" name="payrollFrequencyId" />';
+		        	result += '<input type="hidden" value='+data.payrollFrequencyUUID+' id="payrollFrequencyUUID" name="payrollFrequencyUUID" />';
 		        	if(json != null && json.length > 0){
 		        		for (var i=0; i<json.length; i++){
 		        			var opt = json[i];
 		        			result += '<tr>';
-				        	result += '<td>';
+				        	 result += '<td>';
 				        	result += '<div class="checkbox-new pull-left ml5">';
-				        	result += '<input id="emp1" class="checkbox-custom" name="paidComponent" type="checkbox">';
-				        	result += '<label for="emp1" class="checkbox-custom-label"></label>';
+				        	result += '<input id="'+i+'emp1" value="YES" class="checkbox-custom" name="uspayroll['+i+'].isExcept" type="checkbox">';
+				        	result += '<label for="'+i+'emp1" class="checkbox-custom-label"></label>';
 				        	result += '</div>';
-				        	result += '</td>';
-				        	
-				        	 result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
-				        	 result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
-				        	
+				        	result += '</td>'; 
+				        	result += '<input type="hidden" value='+opt.empPayrollId+' id="'+i+'empPayrollId" name="uspayroll['+i+'].empPayrollId" />';
+				        	result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
+				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
 				        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
 				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.payRate+'</div></td>';
 				        	
@@ -262,8 +337,9 @@ function runUSPayroll(){
 		        	}
 		        	result += '</tbody>';
 		        	result += '</table>';
-		        	$("#testDiv").empty();
-		        	$("#testDiv").append(result);
+		        	$("#payrollDataDiv").empty();
+		        	$("#payrollDataDiv").append(result);
+		        	$("#submitButtonDiv").show();
 		        },
 		    });
 		 
@@ -492,7 +568,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
             <label class="clearfix"><strong>Deposit Type</strong></label>
             <div class="clearfix">
               <select class="sel" title="Select Type" id="depositType" name="depositType">
-                <option value="Direct Deposit">Direct Deposit</option>
+                <option selected value="Direct Deposit">Direct Deposit</option>
                 <option value = "By Check">By Check</option>
               </select>
               <input type="hidden" id="payRate" name="payRate"/>
@@ -577,30 +653,25 @@ $('body').on('blur', '#generate_payroll_form', function() {
                           <th>Amount</th>
                         </tr>
                         <tr>
-                          <td>Federal with holding</td>
+                          <td>Federal Withholding</td>
                           <td><span id="federal">0</span></td>
-                         <!--  <td><input type="text" id="federal" name="federal" value="" class="formControl" readOnly></td> -->
                         </tr>
                         <tr>
                           <td>Medicare</td>
                            <td><span id="medicare">0</span></td>
-                         <!--  <td><input type="text" id="medicare" name="medicare" value="" class="formControl" readOnly></td> -->
                         </tr>
                         <tr>
                           <td>FICA</td>
                            <td><span id="fica">0</span></td>
-                         <!-- <td><input type="text" id="fica" name="fica" value="" class="formControl" readOnly></td> -->
                         </tr>
                       
                         <tr>
                           <td>State Withholding</td>
                           <td><span id="stateWithHolding">0</span></td>
-                         <!--  <td><input type="text" id="stateWithHolding" name="stateWithHolding" value="" class="formControl" readOnly></td> -->
                         </tr>
                           <tr>
                           <td>Advanced Earned Income Credit</td>
                            <td><span id="aeic">0</span></td>
-                          <!-- <td><input type="text" id="aeic" name="aeic" value="124,783.00" class="formControl" readOnly></td> -->
                         </tr>
                         
                       </tbody>
@@ -734,7 +805,6 @@ $('body').on('blur', '#generate_payroll_form', function() {
 
 <script>
 function savePayrollAdjustment(){
-	alert("KKKKKKKKKKKKK");
 	  var formData = getFormData("payroll_adjustment_form");
 	 /* var formData = $($('#payroll_adjustment_form')[0]).serialize(); */
 	  	//$("#paysheetLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -745,6 +815,7 @@ function savePayrollAdjustment(){
  		    location.href = "/errorPage";
  		} else if (result.response === "SUCCESS") {
  			$("#paysheetLoading").removeAttr("style");	
+ 			runUSPayroll();
 				// location.replace(sourceleadUrl+ "/viewHoliday"); 
  		} else if (result.indexOf('Sign In') !== -1) {
  			location.replace(sourceleadUrl);
@@ -854,5 +925,48 @@ function savePayrollAdjustment(){
  </script>
  
 
+
+
+
+
+<script type="text/javascript">
+function sendPayrollForApprover(){
+      var formData = $($('#submit_for_approver')[0]).serialize();
+      $.post(sourceleadUrl+"/sendPayrollForApprover?"+tokenParamName+"="+tokenValue, formData, function(result) {
+        if (result && result.response === "INVALID_DATA") {
+              showError(result.responseMessage);
+          } else if (result.response === "AWKWARD") {
+              location.href = "/errorPage";
+          } else if (result.response === "SUCCESS") {
+        	  location.replace(sourceleadUrl+ "/payrollList"); 
+        	  $("#msgDiv").html("Submited Successfully");
+          } else if (result.indexOf('Sign In') !== -1) {
+            location.replace(sourceleadUrl);
+          } else {
+              showError("Operation failed, please try again");
+          }
+      });   
+    
+}
+</script>
+
+
+<script>
+function confirmPayroll(){
+	$("#reviewPayrollDiv").hide();
+	$("#approveDiv").show();
+	 var confirmType = "DRAFT";
+	 var formData = $($('#submit_for_approver')[0]).serialize();
+	 calculateTotalPay(formData,confirmType);
+}
+</script>
+
+<script>
+function msgFadein() {
+	$("#selector1").fadeIn(200);
+    $('#selector1').delay(2000).fadeOut('slow');
+}
+
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

@@ -1,5 +1,8 @@
 package com.bis.sourcelead.payroll.view;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -81,7 +84,20 @@ public class AssociateTaxDedContriView {
 	@Column (name = "BANK_LOCATION_ID")
 	private Long bankLocationId;
 	
-
+	
+	@Column (name="ANNUAL_SALARY")
+	private BigDecimal annualSalary;
+	
+	@Column (name="HOURLY_RATE")
+	private BigDecimal hourlyRate;
+	
+	@Column (name="PAY_TYPE")
+	private String payType;
+	
+	@Column (name="PAY_FREQUENCY")
+	private String payFrequency;
+	
+	
 	public Long getUserId()
 	{
 		return userId;
@@ -306,6 +322,51 @@ public class AssociateTaxDedContriView {
 	public void setBankLocationId(Long bankLocationId)
 	{
 		this.bankLocationId = bankLocationId;
+	}
+
+	public static long getSerialversionuid()
+	{
+		return serialVersionUID;
+	}
+
+	public BigDecimal getAnnualSalary()
+	{
+		return annualSalary;
+	}
+
+	public BigDecimal getHourlyRate()
+	{
+		return hourlyRate;
+	}
+
+	public String getPayType()
+	{
+		return payType;
+	}
+
+	public String getPayFrequency()
+	{
+		return payFrequency;
+	}
+
+	public void setAnnualSalary(BigDecimal annualSalary)
+	{
+		this.annualSalary = annualSalary;
+	}
+
+	public void setHourlyRate(BigDecimal hourlyRate)
+	{
+		this.hourlyRate = hourlyRate;
+	}
+
+	public void setPayType(String payType)
+	{
+		this.payType = payType;
+	}
+
+	public void setPayFrequency(String payFrequency)
+	{
+		this.payFrequency = payFrequency;
 	}
 
 	

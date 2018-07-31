@@ -522,7 +522,7 @@ public class LeaveManagementUtil {
 		if(StringUtils.isNotBlank(leave.getToDateToHalfTime())) {
 			al.setToHalfToTime(leave.getToDateToHalfTime());
 		}
-		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId(),leaveStatus);
+		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId(),leaveStatus,orgLocations.getOrg().getId());
 		List<AppliedLeaveDateView> unique = appliedLeaves.stream().filter(distinctByKey(p -> p.getApplyLeaveDate())).collect(Collectors.toList());
 		float appliedLeavesCount = (float) getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, leave.getFromDate(), leave.getToDate(),l);
 		return appliedLeavesCount;
@@ -549,22 +549,22 @@ public class LeaveManagementUtil {
 		List<AppliedLeaveDateView> appliedLeaves = null;
 		if (Constants.MONTHLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 			Date[] monthDates = conversionUtil.getMonthStartDateEndDate();
-			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), monthDates[0], monthDates[1], userId);
+			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), monthDates[0], monthDates[1], userId,orgLocations.getOrg().getId());
 			appliedLeaveCount = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,al,monthDates[0],monthDates[1],l);
 		}
 		else if (Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 			LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
-			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), userId);
+			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), userId,orgLocations.getOrg().getId());
 			appliedLeaveCount = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,al,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate(),l);
 		}
 		else if (Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 			LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
-			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId);
+			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId,orgLocations.getOrg().getId());
 			appliedLeaveCount = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,al,currentHalfYear[0].toDate(),currentHalfYear[1].toDate(),l);
 		}
 		else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 			LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
-			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), userId);
+			appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), l.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), userId,orgLocations.getOrg().getId());
 			appliedLeaveCount = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,al,thisYearDates[0].toDate(),thisYearDates[1].toDate(),l);
 		}
 		/*if (appliedLeaves != null && appliedLeaves.size() > 0) {
@@ -599,15 +599,15 @@ public class LeaveManagementUtil {
 			}
 		}
 		
-		if (l.getIncludeHolidays() != null
-				&& !Constants.YES.equalsIgnoreCase(l.getIncludeHolidays())) {
+		if (leaveType.getIncludeHolidays() != null
+				&& !Constants.YES.equalsIgnoreCase(leaveType.getIncludeHolidays())) {
 			List<HolidayAndRestrictday> holidayList = holidayService.getHolidayByFromToDate(startDate, endDate, orgLocations);
 			for (HolidayAndRestrictday holiday : holidayList) {
 				Date holidayDate = commonUtil.orgLocationCommonDate(holiday.getDay(), orgLocations);
 				boolean s = appliedLeaves.removeIf(x -> commonUtil.orgLocationCommonDate(x.getApplyLeaveDate(), orgLocations).equals(holidayDate));
 			}
 		}
-		if (l.getIncludeWeekoff() != null && !Constants.YES.equalsIgnoreCase(l.getIncludeWeekoff())) {
+		if (leaveType.getIncludeWeekoff() != null && !Constants.YES.equalsIgnoreCase(leaveType.getIncludeWeekoff())) {
 			if (orgLocations.getWeekOffDays() != null) {
 				String[] weekOoffs = orgLocations.getWeekOffDays().split(",");
 				for (String weekEndDay : weekOoffs) {
@@ -800,7 +800,9 @@ public class LeaveManagementUtil {
                 	double oneHrMin = oneHr / 60;
                 	actualAppliedLeave = oneHrMin * fromMinutes;
                 }else if(Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())){
-                	
+                	double oneHr = leaveType.getNoOfDaysPerPeriod() / workingHours;
+                	double oneHrMin = oneHr / 60;
+                	actualAppliedLeave = oneHrMin * fromMinutes;
                 }else if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
                 	
                 }else if(Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod())){
@@ -855,6 +857,7 @@ public class LeaveManagementUtil {
 							expDays = type.getExperiencedDuration();
 						}
 						if (diffDays > expDays) {
+							
 							if(Constants.ANNUALLY.equalsIgnoreCase(type.getPeriod()) || Constants.NO.equalsIgnoreCase(type.getAccuralPolicy())) {
 								totalLeaves = type.getExperiencedApplicableDays();
 							}else {
@@ -875,11 +878,72 @@ public class LeaveManagementUtil {
 						if(Constants.ANNUALLY.equalsIgnoreCase(type.getPeriod()) || Constants.NO.equalsIgnoreCase(type.getAccuralPolicy())) {
 							totalLeaves = type.getExperiencedApplicableDays();
 						}else {
-							totalLeaves = type.getExperiencedPerPeriod();
+							if(type.getExperiencedPerPeriod() != null){
+								totalLeaves = type.getExperiencedPerPeriod();
+							}else{
+								if(Constants.MONTHLY.equalsIgnoreCase(type.getPeriod())){
+									totalLeaves = type.getExperiencedApplicableDays() / 12;
+								}else if(Constants.QUARTERLY.equalsIgnoreCase(type.getPeriod())){
+									totalLeaves = type.getExperiencedApplicableDays() / 4;
+								}else if(Constants.HALFYEARLY.equalsIgnoreCase(type.getPeriod())){
+									totalLeaves = type.getExperiencedApplicableDays() / 6;
+								}
+							}
+							
 						}
 						
 					}
 		}
 		return totalLeaves;
+	}
+	
+	public String test(LeaveType type, Employees emp, User loginUser) throws ParseException
+	{
+		String userType = "";
+		if (type.getPeriod() != null) {
+					if (emp.getHireDate() != null) {
+						Date joinDate = emp.getHireDate();
+						Date currentDate = new Date();
+						int diffDays = commonUtil.getNumberOfDaysBetweenTwoDates(joinDate, currentDate);
+						int expDays = 0;
+						if ("Year".equalsIgnoreCase(type.getExperiencedType())) {
+							expDays = type.getExperiencedDuration() * 365;
+						}
+						else if ("Month".equalsIgnoreCase(type.getExperiencedType())) {
+							expDays = type.getExperiencedDuration() * 30;
+						}
+						else {
+							expDays = type.getExperiencedDuration();
+						}
+						if (diffDays > expDays) {
+							
+//							if(Constants.ANNUALLY.equalsIgnoreCase(type.getPeriod()) || Constants.NO.equalsIgnoreCase(type.getAccuralPolicy())) {
+//								totalLeaves = type.getExperiencedApplicableDays();
+//							}else {
+//								totalLeaves = type.getExperiencedPerPeriod();
+//							}
+							userType = "EXP";
+							
+						}
+						else {
+//							if(Constants.ANNUALLY.equalsIgnoreCase(type.getPeriod()) || Constants.NO.equalsIgnoreCase(type.getAccuralPolicy())) {
+//								totalLeaves = type.getNewJoinee();
+//							}else {
+//								totalLeaves = type.getNewJoinPerPeriod();
+//							}
+							userType = "FRESHER";
+							
+						}
+					}
+					else {
+//						if(Constants.ANNUALLY.equalsIgnoreCase(type.getPeriod()) || Constants.NO.equalsIgnoreCase(type.getAccuralPolicy())) {
+//							totalLeaves = type.getExperiencedApplicableDays();
+//						}else {
+//							totalLeaves = type.getExperiencedPerPeriod();
+//						}
+						userType = "EXP";
+					}
+		}
+		return userType;
 	}
 }

@@ -4,38 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.table-top{
-    position: relative;
-    top: 35px;
-    z-index: 999;
-}
-.delete-icn {
-position: relative !important;
-top:0px !important;
-color:#fff;
-}
-.notification-table table thead{
-background:#375d81;
-color:#fff;
-}
-.icAcc {
-font-size: 18px; color: #2ca12c;
-}
-.icRej {
-font-size: 18px; color: #ff3e3e;
-}
-.notificatons .notifica-checkbox a {
-padding-right: 7px;
-}
-.noti-checkbox span {
-	width: 18px; height: 18px;
-}
-.notificatons .notifica-checkbox a .fa{
-font-size: 18px;
-}
-</style>
-
 <script type="text/javascript">
 window.onload = function () {
 // 	getNotificationtLists();
@@ -48,7 +16,7 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Notifications</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Notifications</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Notifications</div>
     </section>
     <div class="content-dashboard clearfix">
       <section class="action-btns clearfix hidden">
@@ -58,49 +26,25 @@ window.onload = function () {
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal">
-        <div class="row">
 		<!-- Notifications -->
-			<div class="col-md-3 hidden">
-          <div class="mail-box">
-            <div class="mail-box-header">
-              <h3>Folders</h3>
-            </div>
-            <div>
-              <ul class="nav nav-pills nav-stacked">
-                <li class="active"><a href="mailbox.html"><i class="fa fa-inbox"></i> Inbox
-                  <span class="label label-primary pull-right">12</span></a></li>
-                <li><a href="#"><i class="fa fa-envelope-o"></i> Sent</a></li>
-                <li><a href="#"><i class="fa fa-file-text-o"></i> Drafts</a></li>
-                <li><a href="#"><i class="fa fa-filter"></i> Junk <span class="label label-warning pull-right">65</span></a>
-                </li>
-                <li><a href="#"><i class="fa fa-trash-o"></i> Trash</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+
 			<!-- mail side-bar ends -->
-			<div class="col-md-12 col-lg-12">
 			<div class="notificatons">
-			<!-- /.box-tools -->
 			<div class="mailbox-controls clearfix pull-left table-top">
 			<div class="pull-left">
 				 <div class="notifica-checkbox noti-checkbox">
-				<a href="#">
+					<a href="#">
 					<label>
 						  <input type="checkbox" name="list" id = "selectall"/>
 						  <span></span>
 						</label>
-				</a>
+					</a>
 				<a href="#" onclick="deleleteAll();"><i id="navbar1" class="fa"></i></a>
 				</div>
                 </div>
               </div>
-              <div class="clearfix"></div>
 			<div class="notification-table datatable_filter notification-table"  id="notificationListDiv">
-                
               </div>
-			</div>
-			</div>
 			</div>
 		   </div>
 		</div>
@@ -117,10 +61,19 @@ function dynamicNotificationtLists(){
 }
 function prepareDynamicNotificationtLists(url){
 	var result = "";
-    result = result	+ '<div class="dynamic_search dynamic_search-new">';
+	
+	result = result	+ '<div class="positionRelative reportHead clearfix">';
+	result = result	+ '<ul class="pull-right list-unstyled list-inline">';
+	result = result	+ '<li class=""><input type="text" class="repSearchBar" placeholder="Search" id="notificationDataTableSearch"/><span class="repSearchIcon" onClick="projectTaskList();"></span></li>';
+	result = result	+ '</ul>';
+	result = result	+ '</div>';
+	
+/*     result = result	+ '<div class="dynamic_search dynamic_search-new">';
     result = result +" <input type='text' placeholder='Search' id='notificationDataTableSearch'/>";
- 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='projectTaskList();'></i></span>";     
-	result = result	+ '</div><div class="clearfix">';
+ 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='projectTaskList();'></i></span></div>";    */
+ 	
+ 	
+	result = result	+ '<div class="clearfix">';
 	result = result + '<table id="notificationTaskPagination" class="display table table-borderd table-hover table-striped" cellspacing="0" width="100%">';
 	result = result +'<thead>';
 	result = result +'<tr>';
@@ -202,27 +155,27 @@ function dynamicNotificationtPaginations(url){
 						result = result +'			<div class="mailbox-subject tbldata-dotdot-big500 pull-left text-left">';
 						if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID == null || report.spocUUID == "" || report.spocUUID == "undefined")){
 							if(report.mode == "read"){
-								result = result +'<span><a class="visitedAnchor" href="'+report.actionLink+'" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a class="visitedAnchor" href="'+report.actionLink+'" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');">'+report.body+'</a></span>';
 							}else{
-								result = result +'<span><a href="'+report.actionLink+'" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a href="'+report.actionLink+'" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');">'+report.body+'</a></span>';
 							}
 						}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined") && report.responderType == "vendor"){
 							if(report.mode == "read"){
-								result = result +'<span><a  class="visitedAnchor" href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a  class="visitedAnchor" href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}else{
-								result = result +'<span><a href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}
 						}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined")&& report.responderType == "client"){
 							if(report.mode == "read"){
-								  result = result +'<span><a class="visitedAnchor"  href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+								  result = result +'<span><a class="visitedAnchor"  href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}else{
-							  result = result +'<span><a href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+							  result = result +'<span><a href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}
 						}else{
 							if(report.mode == "read"){
-								result = result +'<span><a class="visitedAnchor" href="#" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a class="visitedAnchor" href="#" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');">'+report.body+'</a></span>';
 							}else{
-								result = result +'<span><a href="#" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+								result = result +'<span><a href="#" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');">'+report.body+'</a></span>';
 							}
 						}
 						result = result +'			</div>';

@@ -307,12 +307,12 @@ background-color: #fcfcfc;
                         </div>
                         <div class="clearfix col-md-6 pull-right">
                         
-							<ul class="col-md-5 empUlAli">
+							<ul class="col-md-5 empUlAli mb0 mt5">
 	                            <li id="filterDepartmentPop"><i class="fa fa-filter"></i> <span>Department</span><i class="fa fa-caret-down"></i>
 	                            <div class="statusFiler-1">
 	                            <ul>
 		                            <c:forEach var="report" items="${departmentList}">
-		                            	<li><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();"><label class="tbldata-dotdot_140" title="${report.departmentName}">${report.departmentName}</label></li>
+		                            	<li class="clearfix mb5"><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();" class="pull-left"><label class="tbldata-dotdot-vsm pull-left mt5" title="${report.departmentName}">${report.departmentName}</label></li>
 		                            </c:forEach>
 	                            </ul>
 	                            </div>
@@ -362,14 +362,14 @@ background-color: #fcfcfc;
                    <h4 class="heading col-md-4">Top leave Takers</h4>
                     <div class="timesheet_head clearfix col-md-8">
                     <ul class="list-unstyled noPad pull-left">
-                    	<li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
+                    	<!-- <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
 					        	<div id="exportPop" class="ExpPop">
 					              <ul>
 					                <li onclick="leavePdfExport();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
 					                <li onclick="leaveExcelExport();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
 					              </ul>
 					            </div>
-					          </li>  
+					          </li>   -->
                     </ul>
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">

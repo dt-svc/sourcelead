@@ -12,6 +12,8 @@ public class ContributionDTO {
 	
 	private BigDecimal contributionAmount;
 	
+	private double amount;
+	
 	private String associateContributionUUID;
 	
 	private String description;
@@ -98,6 +100,16 @@ public class ContributionDTO {
 	public void setTaxType(String taxType)
 	{
 		this.taxType = taxType;
+	}
+
+	public double getAmount()
+	{
+		return amount;
+	}
+
+	public void setAmount(double amount)
+	{
+		this.amount = amount;
 	}
 	
 	

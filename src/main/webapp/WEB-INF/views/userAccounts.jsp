@@ -106,7 +106,7 @@ background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-s
 		
 		
 		result = result + ' <div class="footerBtns">';
-		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="u_can_color" type="button" value="Save" onclick="saveLinkedUser();"><input  type="button"  value="Cancel" onClick="cancelAddDetails();"></b>';
+		result = result +'		<input id="confirm-id" class="u_can_color" type="button" value="Save" onclick="saveLinkedUser();"><input  type="button"  value="Cancel" onClick="cancelAddDetails();">';
 		result = result +"	</div>";
 		result = result +"	</div>";
 		

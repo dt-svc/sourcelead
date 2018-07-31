@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
+import com.bis.sourcelead.dto.LeaveTypeEditDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
@@ -39,6 +41,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
@@ -66,6 +69,9 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 	
 	@Autowired
 	private LeaveService leaveService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Override
 	@Transactional
@@ -174,11 +180,11 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 
 	@Override
 	@Transactional
-	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId,Long orgLocationId)
+	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId,Long orgLocationId, Long orgId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateBalanceLeave associateBalanceLeave = null;
-		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId and balLeave.orgLocationId.id = :orgLocationId").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).list();
+		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId and (balLeave.orgLocationId.id = :orgLocationId or balLeave.orgLocationId.org.id = :orgId)").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).setLong("orgId", orgId).list();
 		if (assoBalLeave != null && assoBalLeave.size() > 0) {
 			associateBalanceLeave = assoBalLeave.get(0);
 		}
@@ -211,45 +217,71 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						}else {
 							stmt.setLong(1, status);
 						}
-						if(!"NONE".equalsIgnoreCase(actionType)) {
-							AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
-							float assoBalLeaves = Float.parseFloat(associateBalanceLeave.getTotalLeaves());
-							float additionLeaves = 0;
-							if("ADD".equalsIgnoreCase(actionType)) {
-								 additionLeaves = assoBalLeaves + diffLeaves;
-							}if("SUB".equalsIgnoreCase(actionType)) {
-								additionLeaves = assoBalLeaves - diffLeaves;
-							}if("IMPORT".equalsIgnoreCase(actionType)) {
-								additionLeaves = diffLeaves;
-							}
-							stmt.setString(2, String.valueOf(additionLeaves));
-						}else {
-							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
-								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-									stmt.setString(2, String.valueOf(leaveType.getNoOfDaysPerPeriod()));
-								}else {
-									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
-									 try {
-										float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
-										stmt.setString(2, String.valueOf(days));
-									} catch (ParseException e) {
-										e.printStackTrace();
-									}
+						OrgLocations orgLoc = null;
+						try {
+							orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+						AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId,orgLoc.getOrg().getId());
+						float assoBalLeaves = Float.parseFloat(associateBalanceLeave.getTotalLeaves());
+						Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+						float days = 0;
+								try{
+//								days =	leaveManagementUtil.test(leaveType, emp, user);
+								}catch (Exception e) {
+									e.printStackTrace();
 								}
-							}else {
 								
-								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-									stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
-								}else {
-									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
-									 try {
-										float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
-										stmt.setString(2, String.valueOf(days));
-									} catch (ParseException e) {
-										e.printStackTrace();
-									}
+						if(!"NONE".equalsIgnoreCase(actionType)) {
+							float additionLeaves = 0;
+							if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+								if("ADD".equalsIgnoreCase(actionType)) {
+									 additionLeaves = assoBalLeaves + diffLeaves;
+								}if("SUB".equalsIgnoreCase(actionType)) {
+									additionLeaves = assoBalLeaves - diffLeaves;
+								}if("IMPORT".equalsIgnoreCase(actionType)) {
+									additionLeaves = diffLeaves;
+								}
+								
+							}else{
+								if("ADD".equalsIgnoreCase(leaveType.getActionExpType())) {
+									 additionLeaves = assoBalLeaves + days;
+								}if("SUB".equalsIgnoreCase(leaveType.getActionExpType())) {
+									additionLeaves = assoBalLeaves - days;
+								}if("IMPORT".equalsIgnoreCase(leaveType.getActionExpType())) {
+									additionLeaves = days;
+								}
+								
+								if("ADD".equalsIgnoreCase(leaveType.getActionFresherType())) {
+									 additionLeaves = assoBalLeaves + days;
+								}if("SUB".equalsIgnoreCase(leaveType.getActionFresherType())) {
+									additionLeaves = assoBalLeaves - days;
+								}if("IMPORT".equalsIgnoreCase(leaveType.getActionFresherType())) {
+									additionLeaves = days;
 								}
 							}
+							stmt.setString(2, String.valueOf(additionLeaves));	
+						}else {
+							stmt.setString(2, String.valueOf(assoBalLeaves+days));
+//							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && !Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
+//								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+//									stmt.setString(2, String.valueOf(assoBalLeaves+days));
+//								}else {
+////									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+////										float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+//										stmt.setString(2, String.valueOf(assoBalLeaves+days));
+//								}
+//							}else {
+//								
+//								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+//									stmt.setString(2, String.valueOf(assoBalLeaves+days));
+//								}else {
+////									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocationId);
+////										float days = leaveManagementUtil.getNumberofDaysPerPeriodForLeaveType(leaveType, emp, user);
+//										stmt.setString(2, String.valueOf(days));
+//								}
+//							}
 						}
 						stmt.setLong(3, orgLocationId);
 						stmt.setLong(4, user.getId());
@@ -471,7 +503,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 	@Transactional
 	public int addAssociateLeaveType(User user, Long orgLocationId,Employees employee, UserRole userRole)
 	{
-		List<LeaveType> leavetypeList = leaveTypeService.getLeaveTypeListByLocationId(orgLocationId.toString());
+		List<LeaveType> leavetypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(orgLocationId.toString());
 		List<LeaveType> roleLeaveType = new ArrayList<>();
 		if (leavetypeList != null && !leavetypeList.isEmpty()) {
 			for (LeaveType leaveType : leavetypeList) {
@@ -538,12 +570,12 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						}else {
 							stmt.setString(6, null);
 						}
-						if(leaveType.getDepartmentIds() != null) {
+						if(StringUtils.isNotBlank(leaveType.getDepartmentIds())) {
 							stmt.setString(7, leaveType.getDepartmentIds());
 						}else {
 							stmt.setString(7, null);
 						}
-						if(!leaveType.getLeaveEmpType().isEmpty()) {
+						if(StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 							stmt.setString(8, leaveType.getLeaveEmpType());
 						}else {
 							stmt.setString(8, null);
@@ -567,4 +599,41 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 		}
 	  }return 0;
 	}
+
+
+	@Override
+	@Transactional
+	public int updateLeaveTypeAssociateBalances(List<LeaveTypeEditDTO> list)
+	{
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.doWork(new Work() {
+				@Override
+				public void execute(java.sql.Connection connection) throws SQLException {
+					boolean initialAutocommitSetting = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+					CallableStatement stmt = connection.prepareCall("{call deleteAssociateBalLeave(?,?,?,?,?,?,?,?)}");
+					for (LeaveTypeEditDTO dto : list) {
+						stmt.setLong(1, dto.getStatus());
+						stmt.setString(2, String.valueOf(dto.getTotalLeaves()));	
+						stmt.setLong(3,  dto.getLocationId());
+						stmt.setLong(4,  dto.getUserId());
+						stmt.setLong(5,  dto.getLeaveTypeId());
+						stmt.setString(6, dto.getLeavetypeRoles());
+						stmt.setString(7, dto.getLeavetypeDepartment());
+						stmt.setString(8, dto.getLeavetypeEmpType());
+						stmt.addBatch();
+					}
+					int[] updateCount = stmt.executeBatch();
+					connection.commit();
+					connection.setAutoCommit(initialAutocommitSetting);
+				}
+			});
+			return 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
 }
