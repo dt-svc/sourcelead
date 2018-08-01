@@ -109,5 +109,23 @@ public class ExpenseProjectApproverHierarchyDaoImpl implements ExpenseProjectApp
 		 List<ExpenseProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).list();
 	     return projectHirachyList;
 	}
+
+	@Override
+	@Transactional
+	public ExpenseProjectApproverHierarchy getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(
+			Long approverUserId, Long projectClientId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		logger.debug("In ExpenseProjectApproverHierarchy getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId method");
+		String query = "from ExpenseProjectApproverHierarchy projectHirachy left join fetch projectHirachy.projectId projects left join fetch projectHirachy.projectClientsId pc  "
+				+ " left join fetch projectHirachy.approverUserId approverUser where approverUser.id = :approverUserId and pc.id = :projectClientId and projectHirachy.status = '1' ";
+		Collection<ExpenseProjectApproverHierarchy> projectApproverHierarchies = session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("projectClientId", projectClientId).list();
+
+		ExpenseProjectApproverHierarchy ph = null;
+		if (projectApproverHierarchies != null && projectApproverHierarchies.size() > 0) {
+			ph = (ExpenseProjectApproverHierarchy) projectApproverHierarchies.iterator().next();
+		}
+		return ph;
+	}
 	
 }
