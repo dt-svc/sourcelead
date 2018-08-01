@@ -4,7 +4,7 @@
 
 <div id="orglocationDocuments" class="tab-pane fade form-horizontal">
   <div class="accountsettings-tab">
-	<div class="tab-content panel-body">
+	<div class="tab-content panel-body noBor">
 	
 		<form:form id="documents_form" name="documents_form"  enctype='multipart/form-data'  method="post">
 			    <div class="comLogContent">
