@@ -96,26 +96,30 @@ public class InterviewFeedbackTemplateDaoImpl implements InterviewFeedbackTempla
 		List<InterviewFeedbackTemplate> interviewFeedbackTemplate = new ArrayList<InterviewFeedbackTemplate>();
 		List<Object[]> objList = null;
 		 objList  = session.createSQLQuery("select ift.INTERVIEW_TEMPLATE_JSON_STRING, u.FIRST_NAME, u.LAST_NAME from INTERVIEW_FEEDBACK_TEMPLATE ift, REQUIREMENT_INTERVIEWER ri, USER u  where ri.id=ift.REQUIREMENT_INTERVIEWER_ID and u.id=ri.INTERVIEWER_USER_ID and ri.INTERVIEW_ID =:requirementInterviewId ").setLong("requirementInterviewId", requirementInterviewId).list();
-			for(Object[] obj : objList){
-				InterviewFeedbackTemplate ifTemplate = new InterviewFeedbackTemplate();
-				ifTemplate.setInterviewerRating(obj[0].toString());
-				if(obj[2] != null && obj[2] != "") {
-					ifTemplate.setInterviewerName(obj[1].toString()+" "+obj[2].toString());
-				}else {
-					ifTemplate.setInterviewerName(obj[1].toString());
+		if(objList != null && objList.size() > 0) {
+			 for(Object[] obj : objList){
+					InterviewFeedbackTemplate ifTemplate = new InterviewFeedbackTemplate();
+					ifTemplate.setInterviewerRating(obj[0].toString());
+					if(obj[2] != null && obj[2] != "") {
+						ifTemplate.setInterviewerName(obj[1].toString()+" "+obj[2].toString());
+					}else {
+						ifTemplate.setInterviewerName(obj[1].toString());
+					}
+					interviewFeedbackTemplate.add(ifTemplate);
 				}
-				interviewFeedbackTemplate.add(ifTemplate);
-			}
+		}
+	
 			
-		 if(objList.size() == 0) {
-			objList  = session.createSQLQuery("select ift.INTERVIEW_TEMPLATE_JSON_STRING,ri.EXTERNAL_INTERVIEWER_NAME from INTERVIEW_FEEDBACK_TEMPLATE ift, REQUIREMENT_INTERVIEWER ri, REQUIREMENT_INTERVIEW iterview, REQUIREMENT_SUBMISSION submission  where ri.id=ift.REQUIREMENT_INTERVIEWER_ID and ri.INTERVIEW_ID = iterview.ID and iterview.SUBMISSION_ID = submission.ID  and ri.INTERVIEW_ID =:requirementInterviewId ").setLong("requirementInterviewId", requirementInterviewId).list();
-			for(Object[] obj : objList){
-				InterviewFeedbackTemplate ifTemplate = new InterviewFeedbackTemplate();
-				ifTemplate.setInterviewerRating(obj[0].toString());
-				ifTemplate.setInterviewerName(obj[1].toString());
-				interviewFeedbackTemplate.add(ifTemplate);
+			List<Object[]> externalObjList  = session.createSQLQuery("select ift.INTERVIEW_TEMPLATE_JSON_STRING, ri.EXTERNAL_INTERVIEWER_NAME from INTERVIEW_FEEDBACK_TEMPLATE ift, REQUIREMENT_INTERVIEWER ri, REQUIREMENT_INTERVIEW iterview, REQUIREMENT_SUBMISSION submission  where ift.REQUIREMENT_INTERVIEWER_ID  = ri.id  and ri.INTERVIEW_ID = iterview.ID and iterview.SUBMISSION_ID = submission.ID  and ri.INTERVIEW_ID = :requirementInterviewId and ri.INTERVIEWER_USER_ID IS NULL ").setLong("requirementInterviewId", requirementInterviewId).list();
+			if(externalObjList != null && externalObjList.size() > 0) {
+				for(Object[] obj : externalObjList){
+					InterviewFeedbackTemplate ifTemplate = new InterviewFeedbackTemplate();
+					ifTemplate.setInterviewerRating(obj[0].toString());
+					ifTemplate.setInterviewerName(obj[1].toString());
+					interviewFeedbackTemplate.add(ifTemplate);
+				}
+			
 			}
-		 }
 		
 
 		return interviewFeedbackTemplate;

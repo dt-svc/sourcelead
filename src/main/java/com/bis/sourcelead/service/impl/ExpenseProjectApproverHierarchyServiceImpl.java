@@ -32,6 +32,12 @@ public class ExpenseProjectApproverHierarchyServiceImpl implements ExpenseProjec
 			ExpenseProjectApproverHierarchy expenseProjectApproverHierarchy) throws Exception {
 		return expenseProjectApproverHierarchyDao.saveProjectExpenseProjectApproverHierarchy(expenseProjectApproverHierarchy);
 	}
+
+	@Override
+	public ExpenseProjectApproverHierarchy getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(
+			Long approverUserId, Long projectClientId) throws Exception {
+		return expenseProjectApproverHierarchyDao.getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(approverUserId, projectClientId);
+	}
 	
 	
 }
