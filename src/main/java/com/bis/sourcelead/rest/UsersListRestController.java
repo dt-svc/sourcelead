@@ -8,9 +8,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -50,6 +53,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
@@ -82,12 +86,15 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -110,6 +117,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
@@ -246,6 +254,9 @@ public class UsersListRestController {
 	
 	@Autowired
 	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	private SourceleadTagsService sourceleadTagsService;
 	/**
 	 * To get All the Users by filtering
 	 * 
@@ -694,7 +705,21 @@ public class UsersListRestController {
 	@RequestMapping(value = "/userSummary/{userCode}", method = RequestMethod.GET)
 	public @ResponseBody void userSummary(@PathVariable String userCode, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
 		StringBuilder redirectUrl = new StringBuilder();
+	    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+	    request.getSession().setAttribute("tagsList", tagsList);
+	    User user = userService.getUserByUserCode(userCode);
+		Set<String> associateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.ASSOCIATES.getValue(), user.getId());
+		if(associateTagsList != null && !associateTagsList.isEmpty()) {
+			StringBuilder associateTagsStr = new StringBuilder();
+			for(String tags : associateTagsList) {
+				associateTagsStr = associateTagsStr.append(tags).append(",");
+			}
+			associateTagsStr.toString();
+			request.getSession().setAttribute("associateTags", associateTagsStr.substring(0,associateTagsStr.length()-1));
+		}
 		response.sendRedirect(redirectUrl.append("/app/userSummaryDetails?userCode=").append(userCode).toString());
 
 	}
@@ -2291,7 +2316,93 @@ public class UsersListRestController {
 
 	}
 	
+	@RequestMapping(value = "/saveOrUpdateTagsByAssociateId")
+	public Response<String> saveOrUpdateTagsBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "associateId", required = false) long associateId,
+			@RequestParam(value = "tagName", required = false) String tagName, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 
+		try {
+			User user = userService.getUserById(loginUserId);
+			if (user != null) {
+				User associate = userService.getUserById(associateId);
+					Set<String> associateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(orgLocations.getId(), TagEntites.ASSOCIATES.getValue(), associate.getId());
+					ArrayList<String> newTags = new ArrayList<>(Arrays.asList(tagName.split("\\s*,\\s*")));
+					ArrayList<String> actualNewTags = new ArrayList<>();
+					actualNewTags.addAll(newTags);
+				    Set<String> newTagsSet = new HashSet<String>(actualNewTags);
+				    newTagsSet.removeAll(associateTagsList);
+				    associateTagsList.removeAll(actualNewTags);
+				    associate.setAssociateTags(tagName);
+				    
+				    
+				    if(newTagsSet != null && !newTagsSet.isEmpty() && newTagsSet.size() > 0) {
+				    	for(String tag : newTagsSet) {
+				    		if(StringUtils.isNotBlank(tag)) {
+				    			SourceleadTags tags = new SourceleadTags();
+					    		tags.setEntityType(TagEntites.ASSOCIATES);
+					    		tags.setEntityId(associate.getId());
+					    		tags.setTagName(tag);
+					    		tags.setOrgLocationId(orgLocations);
+					    		tags.setStatus(Constants.CANDIDATE_ACTIVE);
+					    		tags.setCreatedBy(user);
+					    		tags.setCreatedDate(new Date());
+					    		sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    	
+				    }
+				    
+				    if(associateTagsList != null && !associateTagsList.isEmpty() && associateTagsList.size() > 0) {
+				    	for(String removedTags : associateTagsList) {
+				    		SourceleadTags tags = sourceleadTagsService.getSourceleadTagsByEntityIdAndTagNameAndOrgLocationId(orgLocations.getId(), TagEntites.ASSOCIATES.getValue(), associate.getId(),removedTags);
+				    		if(tags != null) {
+				    			tags.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				    			tags.setUpdatedBy(user);
+				    			tags.setUpdatedDate(new Date());
+				    			sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    	
+				    }
+				    
+			    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+			    SourceLeadSessionManager.removeSessionAttribute(request, "tagsList");
+			    SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
+				response.setResponse(Result.SUCCESS.name());
+
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+	
+	@RequestMapping(value = "/getAssociateTags", method = RequestMethod.POST)
+	public User getAssociateTags(@RequestParam(value = "associateId", required = false) Long associateId , HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = userService.getUserById(associateId);
+	    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+	    request.getSession().setAttribute("tagsList", tagsList);
+	    user.setTagsList(tagsList);
+		Set<String> associateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.ASSOCIATES.getValue(), user.getId());
+		if(associateTagsList != null && !associateTagsList.isEmpty()) {
+			StringBuilder associateTagsStr = new StringBuilder();
+			for(String tags : associateTagsList) {
+				associateTagsStr = associateTagsStr.append(tags).append(",");
+			}
+			associateTagsStr.toString();
+			user.setAssociateTags(associateTagsStr.substring(0,associateTagsStr.length()-1));
+		}
+		return user;
+
+	}
+	
 	private String toJSON(Object obj) {
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 			public HierarchicalStreamWriter createWriter(Writer writer) {

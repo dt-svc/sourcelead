@@ -14,6 +14,7 @@ $(document).ready(function() {
 	 var candidateId = '${candidateId}';
 	 var submissionStatus='${submissionStatus}'
 	 var type = '${type}';
+	 getJobsTagsList(requirementId)
 	 if(type != null && type != '' && type != 'undefined'){
 		 sideBar(requirementId,type);
 	 }
@@ -92,7 +93,28 @@ function duplicateCount(requirementId){
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Job Details</div>
   </section>
-  <div class="timesheet_out">
+  
+  <div class="cearfix">
+	  <div class="newTagsWrap">
+			<ul class="clearfix tagsWrap tagsWrapBor">
+			<select multiple class="chosen-select form-control" name="tagName" id="jobsTagName" data-placeholder="Add Tags" data-validation="validate_Space"  data-validation-optional="true">
+			</select>
+			</ul>
+			<div class="clearfix"></div>
+	  </div>
+ </div>
+ 
+  <div class="success_pop tagStyles" id="addJobTagAlert">
+		<i class="fa fa-check-circle"></i>
+   		<span></span>
+   </div>
+   <div class="remove_pop tagStyles" id="deleteJobTagAlert">
+		<i class="fa fa-times"></i>
+   		<span></span>
+   </div>
+   
+  <!-- <div class="timesheet_out"> -->
+  <div class="clearfix">
     
     
      <div class="clients_side_wrap_inn no_pad">
@@ -133,25 +155,118 @@ function duplicateCount(requirementId){
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 
-
-  
-<!-- <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-
+ 
+<script>
+var select, chosen;
+select = $("#jobsTagName");
+select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosen = select.data('chosen');
+chosen.search_field.on('keyup', function(e)
+{
+	var anyKeyword = this.value.replace(",","");
+    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+    {
+    	var par = this.parent;
+        var option = $("<option>").val(anyKeyword).text(anyKeyword);
+        select.append(option);
+        select.find(option).prop('selected', true);
+        $("#jobsTagName option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#jobsTagName").trigger("chosen:updated");
+		saveJobsTags("add");
+    }
 });
-</script>  -->
+
+$('.chosen-select').chosen().on('change', function(evt, params) {
+	if (params.selected && params.selected != undefined) {
+		saveJobsTags("add");
+	}
+	if (params.deselected && params.deselected != undefined) {
+		saveJobsTags("delete");
+	}
+	
+});
+$("#jobsTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+</script>
+<script>
+function getJobsTagsList(requirementId){
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getJobsTags?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.jobsTags != null && json.jobsTags != 'undefined' && json.jobsTags != '') {
+	                var res = [];
+	                res = json.jobsTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            
+            $("#jobsTagName").empty();
+            $("#jobsTagName").append(result);
+            $("#jobsTagName").chosen().trigger("chosen:updated")
+        },
+	});
+}
+</script>
+<script>
+function saveJobsTags(type){
+	 var requirementId = '${requirementId}';
+	 var tagName = $("#jobsTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByJobId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&requirementId="+requirementId+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByJobId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&requirementId="+requirementId+"&tagName="+""
+	 }
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+        	$("#editRoleLoading").removeAttr('style');
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup("Tag added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tag deleted successfully");
+        		}
+        		getJobsTagsList(requirementId);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+function showSuccessStatusPopup(status) {
+	$("#addJobTagAlert").css("display","block");
+	$("#addJobTagAlert span").html(status);
+    $('#addJobTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteJobTagAlert").css("display","block");
+	$("#deleteJobTagAlert span").html(status);
+    $('#deleteJobTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+
 
 <!-- Show success message after form submission script -->
 <script>

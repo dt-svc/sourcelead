@@ -15,7 +15,7 @@ $(document).ready(function(){
 		
 		document.getElementById("invoiceIdBr").style.display="block";
 		document.getElementById("BillIdBr").style.display="none";
-		
+		getInvoiceTagsList();
 	}
 	if(invoiceType === "Payables"){
 		document.getElementById("BillIdHidden").style.display="block";
@@ -23,7 +23,7 @@ $(document).ready(function(){
 		
 		document.getElementById("invoiceIdBr").style.display="none";
 		document.getElementById("BillIdBr").style.display="block";
-		
+		getBillsTagsList();
 		
 	}
 	
@@ -32,19 +32,58 @@ $(document).ready(function(){
 
 <section class="content-wraper">
     <section class="content-header clearfix">
-      <div class="pull-left" id="invoiceIdHidden" style="display:none">
-          <h2>Invoice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
-      </div>
-      
-      <div class="pull-left" id="BillIdHidden" style="display:none">
-          <h2>Bill Id: <span><input class="ReadTextFliA" id="billIdDiv" readonly="readonly"></span></h2>
-      </div>
-      
-      <div class="pull-right brud-crum" style="display:none" id="invoiceIdBr"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Receivable List</a> » Invoice View</div>
-      
+     <div class="pull-right brud-crum" style="display:none" id="invoiceIdBr"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Receivable List</a> » Invoice View</div>
       <div class="pull-right brud-crum" style="display:none" id="BillIdBr" ><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/payablesList'/>">Payable List</a> » Bill View</div>
       
+      <div class="" id="invoiceIdHidden" style="display:none">
+          <h2>Invoice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
+<!--      =================== Tags related html code written by Laxman Start ============================ -->
+			  <div class="newTagsWrap">
+				    <ul class="clearfix tagsWrap tagsWrapBor">
+					<select multiple class="chosen-select form-control" name="invoiceTagName" id="invoiceTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
+					</select>
+					</ul>
+					<div class="clearfix"></div>
+			  </div>
+		   <div class="success_pop tagStyles" id="addInvoiceTagAlert">
+				<i class="fa fa-check-circle"></i>
+		   		<span></span>
+		   </div>
+		   <div class="remove_pop tagStyles" id="deleteInvoiceTagAlert">
+				<i class="fa fa-times"></i>
+		   		<span></span>
+		   </div>
+<!--      =================== Tags related html code written by Laxman Ends ============================ -->
+		  
+      </div>
+      
+      <div class="" id="BillIdHidden" style="display:none">
+          <h2>Bill Id: <span><input class="ReadTextFliA" id="billIdDiv" readonly="readonly"></span></h2>
+ <!--      =================== Tags related html code written by Laxman Start ============================ -->
+          <div class="cearfix">
+			  <div class="newTagsWrap">
+				    <ul class="clearfix tagsWrap tagsWrapBor">
+					<select multiple class="chosen-select form-control" name="billstagName" id="billingTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
+					</select>
+					</ul>
+					<div class="clearfix"></div>
+			  </div>
+		 </div>
+		   <div class="success_pop tagStyles" id="addBillingTagAlert">
+				<i class="fa fa-check-circle"></i>
+		   		<span></span>
+		   </div>
+		   <div class="remove_pop tagStyles" id="deleteBillingTagAlert">
+				<i class="fa fa-times"></i>
+		   		<span></span>
+		   </div>
+<!--      =================== Tags related html code written by Laxman Ends ============================ -->
+      </div>
+      
+     
     </section>
+    
+    
     <div class="content-area content-new clearfix">
       <div class="client_invoice">
         <div class="tabbable positionRelative">
@@ -1112,4 +1151,251 @@ function paymentHistoryPagination(){
 </script>
 
 <script type="text/javascript" src="https://www.wepay.com/min/js/iframe.wepay.js">
+
+
+
+<!--  ============================= Invoice tags related scripts written by Laxman Start ================================ -->
+<script>
+
+</script>
+<script>
+var select, chosen;
+select = $("#invoiceTagName");
+select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosen = select.data('chosen');
+chosen.search_field.on('keyup', function(e)
+{
+	var anyKeyword = this.value.replace(",","");
+    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+    {
+    	var par = this.parent;
+        var option = $("<option>").val(anyKeyword).text(anyKeyword);
+        select.append(option);
+        select.find(option).prop('selected', true);
+        $("#invoiceTagName option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#invoiceTagName").trigger("chosen:updated");
+		saveInvoiceTags("add");
+    }
+});
+
+$('.chosen-select').chosen().on('change', function(evt, params) {
+	if (params.selected && params.selected != undefined) {
+		saveInvoiceTags("add");
+	}
+	if (params.deselected && params.deselected != undefined) {
+		saveInvoiceTags("delete");
+	}
+	
+});
+
+$("#invoiceTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag");
+
+function getInvoiceTagsList(){
+	var invoiceUUID ='${invoiceUUID}';
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getInvoiceTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.invoiceTags != null && json.invoiceTags != 'undefined' && json.invoiceTags != '') {
+	                var res = [];
+	                res = json.invoiceTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            $("#invoiceTagName").empty();
+            $("#invoiceTagName").append(result);
+            $("#invoiceTagName").chosen().trigger("chosen:updated")
+
+        },
+	});
+}
+</script>
+<script>
+function saveInvoiceTags(type){
+	var invoiceUUID ='${invoiceUUID}';
+	 var tagName = $("#invoiceTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+""
+	 }
+	
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+        	$("#editRoleLoading").removeAttr('style');
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup("Tags added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tags deleted successfully");
+        		}
+        		getInvoiceTagsList(invoiceUUID);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+function showSuccessStatusPopup(status) {
+	$("#addInvoiceTagAlert").css("display","block");
+	$("#addInvoiceTagAlert span").html(status);
+    $('#addInvoiceTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteInvoiceTagAlert").css("display","block");
+	$("#deleteInvoiceTagAlert span").html(status);
+    $('#deleteInvoiceTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+<!--  ============================= Invoice tags related scripts written by Laxman Ends ================================ -->
+
+
+
+
+<!--  ============================= Bills tags related scripts written by Laxman Start ================================ -->
+<script>
+var select, chosen;
+select = $("#billingTagName");
+select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosen = select.data('chosen');
+chosen.search_field.on('keyup', function(e)
+{
+	var anyKeyword = this.value.replace(",","");
+    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+    {
+    	
+    	var par = this.parent;
+        var option = $("<option>").val(anyKeyword).text(anyKeyword);
+        select.append(option);
+        select.find(option).prop('selected', true);
+        $("#billingTagName option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#billingTagName").trigger("chosen:updated");
+		saveBillsTags("add");
+    }
+});
+
+$('.chosen-select').chosen().on('change', function(evt, params) {
+	if (params.selected && params.selected != undefined) {
+		saveBillsTags("add");
+	}
+	if (params.deselected && params.deselected != undefined) {
+		saveBillsTags("delete");
+	}
+	
+});
+$("#billingTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+</script>
+<script>
+function getBillsTagsList(){
+	var invoiceUUID ='${invoiceUUID}';
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getBillsTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.billsTags != null && json.billsTags != 'undefined' && json.billsTags != '') {
+	                var res = [];
+	                res = json.billsTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            $("#billingTagName").empty();
+            $("#billingTagName").append(result);
+            $("#billingTagName").chosen().trigger("chosen:updated")
+
+        },
+	});
+}
+</script>
+<script>
+function saveBillsTags(type){
+	var invoiceUUID ='${invoiceUUID}';
+	 var tagName = $("#billingTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByBillsId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByBillsId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+""
+	 }
+	
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+        	$("#editRoleLoading").removeAttr('style');
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup("Tags added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tags deleted successfully");
+        		}
+        		getBillsTagsList(invoiceUUID);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+function showSuccessStatusPopup(status) {
+	$("#addBillingTagAlert").css("display","block");
+	$("#addBillingTagAlert span").html(status);
+    $('#addBillingTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteBillingTagAlert").css("display","block");
+	$("#deleteBillingTagAlert span").html(status);
+    $('#deleteBillingTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+<!--  ============================= Bills tags related scripts written by Laxman Ends ================================ -->
+
+
+
+
+
+
 <jsp:include page="../masterFooter.jsp" />	
