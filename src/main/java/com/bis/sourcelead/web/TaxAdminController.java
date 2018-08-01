@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.ResponseProcessingException;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -535,6 +536,7 @@ public class TaxAdminController {
 				if (sectionItemDTO.getOptionData() != null) {
 					for (SourceleadTaxChallanItemSubFormFieldDTO optionData : sectionItemDTO.getOptionData()) {
 						taxService.addSourceleadTaxChallanItemSubFormField(optionData, addChallanSectionItemId);
+				
 					}
 				}
 
@@ -609,6 +611,52 @@ public class TaxAdminController {
 			logger.error(e.getMessage());
 		}
 		return modelAndView;
+	}
+
+
+	
+	@RequestMapping (value = "/form/changeChallanItemStatus", method = RequestMethod.POST )
+	@ResponseBody
+	public Response<String> changeChallanItemStatus(HttpServletRequest request,@RequestParam(defaultValue = "0") long itemId){
+		Response<String> response = new Response<>();
+		try {
+			User user =  (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null){
+				response = taxService.changeChallanItemStatus(itemId);
+			}
+		 else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+	} catch (Exception e) {
+		logger.error(e.getMessage());
+		response.setResponse(Result.AWKWARD.name());
+		response.setResponseMessage(Result.AWKWARD.getValue());
+	}
+	return response;
+}
+
+
+@RequestMapping (value = "/form/changeChallanSectionStatus", method = RequestMethod.POST)
+@ResponseBody
+public Response<String> changeSectionStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long  sectionId){
+	
+	Response<String> response = new Response<>();
+	try {
+		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user!=null){
+			response = taxService.changeSectionStatus(sectionId);
+		}
+		 else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 	}
 
 }

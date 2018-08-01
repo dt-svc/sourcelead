@@ -75,12 +75,13 @@ public interface TaxDao {
 
 	public int getITDeclarationFormsCountByYear(String financialYear, String tableName);
 
-	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, String financialYear, Paginator paginator);
+	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, String financialYear,
+			Paginator paginator);
 
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(String taxFormUUID, String formUUID);
 
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(long id);
-	
+
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(long userId, String financialYear);
 
 	// public SourceleadTaxITDeclarationSubmissionItem
@@ -89,7 +90,7 @@ public interface TaxDao {
 	public boolean saveDocument(SourceleadTaxSubmissionDocument taxSubmissionDocument);
 
 	public List<SourceleadTaxSubmissionDocument> getUploadedDocumentsBySubmissionId(long submissionId);
-	
+
 	public SourceleadTaxSubmissionDocument getSourceleadTaxSubmissionDocumentById(long submissionDocumentId);
 
 	public void removeTaxSubmissionDocumentAttachment(SourceleadTaxSubmissionDocumentAttachment attachment);
@@ -108,11 +109,15 @@ public interface TaxDao {
 
 	public SourceleadTaxChallanItem getITChallanSectionItem(Long id);
 
+	public long changeChallanItemStatus(long id);
+
+	public long changeSectionStatus(long sectionId);
+
 	public long changeITDeclarationSubmissionStatus(long id, int status);
 
-	public List<SourceleadTaxSubmissionMaster> getTaxSubmissionMasterList(Long userId, String financialYear, Paginator paginator);
+	public List<SourceleadTaxSubmissionMaster> getTaxSubmissionMasterList(Long userId, String financialYear,
+			Paginator paginator);
 
 	public void saveTaxSubmissionMaster(SourceleadTaxSubmissionMaster sourceleadTaxSubmissionMaster);
-
 
 }
