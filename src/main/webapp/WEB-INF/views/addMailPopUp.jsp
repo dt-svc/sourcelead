@@ -6,31 +6,26 @@
 <!-- -email popup statrs -->
 
 <form:form id="email_from_form" name="email_from_form"  method="post" >
-<div id="emailMailFrom">
-	<div class="modal-dialog">
-		<div class="modal-content clearfix">
-			<div class="modal-header">
-				<a href="javascript:void(0)" class="close" onClick="closeEmailNotifications()">&times;</a>
-				<h4 class="modal-title">Add From Email</h4>
-			</div>
-			<div class="modal-body">
-			
+<div id="emailMailFrom" class="">
+		<div class="popupHead">Add From Email <i class="closePop pull-right popClose" onclick="closeEmailNotifications();"></i></div>
+		
+			<div class="popupContent">
 			<c:if test="${ empty emailFromMail.email}">
-			<div class="col-md-12 minHeight">
-                <label>Email<span class="text-danger">&nbsp;*</span></label>
+			<div class="clearfix mb">
+                <label class="noPad">Email <b class="valStar">*</b></label>
                 <input class="form-control" value="" name="email" id="fromMail"  field-name="fromMail" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter EMail" type="text"> 
                 </div>
 			</c:if>
 			<c:if test="${! empty emailFromMail.email}">
-				<div class="col-md-12 minHeight">
-                <label>Email<span class="text-danger">&nbsp;*</span></label>
+				<div class="clearfix mb">
+				<label class="noPad">Email <b class="valStar">*</b></label>
                 <input class="form-control" value="${emailFromMail.email}" name="email" id="fromMail"  field-name="fromMail" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter EMail" type="text"> 
                 </div>
 			</c:if>
 			
 			
-            <div class="col-md-12 minHeight">
-             <label>Module Names</label>
+            <div class="clearfix mb">
+             <label class="noPad">Module Names </label>
            <select multiple class="form-control" name="emailModules" data-placeholder="Select Module Options" id="emailModules" field-name="Module name" data-validation-optional="true">
                 
 			<c:forEach var="education" items="${modulesList}">
@@ -49,18 +44,13 @@
 			
           </select>
         </div>
-		        <div class="clearfix"></div>
 			</div>
-			<div class="modal-footer clearfix">
-				<div>
+			<div class="popupFoot text-right">
 				<input type="hidden" name="id" id=id value="${emailFromMail.id}"/>
-					<button type="button" id="save_title" class="btn btn-primary btnsStyles" onClick="saveConfFromMail();">Save</button>
-					<button type="button" class="btn btn-default ml" onClick="closeEmailNotifications();">Cancel</button>
-				</div>
+					<button type="button" id="save_title" class="slBtn md colorBtn" onClick="saveConfFromMail();">Save</button>
+					<button type="button" class="slBtn md popClose" onClick="closeEmailNotifications();">Cancel</button>
 			</div>
 		</div>
-	</div>
-</div>
  <div id="deleteFromMailDiv" class="datatable_filter"> </div>
 
 </form:form>
@@ -83,7 +73,7 @@ $(function(){
 });
 
 function closeEmailNotifications(){
-	$(".sideMask").fadeOut();
-	$(".popOut").fadeOut();
+	$(".mask").hide();
+	$(".popupWrap").fadeOut(100);
 }
 </script>
