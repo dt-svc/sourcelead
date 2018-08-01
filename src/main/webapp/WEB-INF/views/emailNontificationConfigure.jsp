@@ -62,25 +62,28 @@
 						</div> 
 					             
 		            </div>
-		            <div class="clearfix"></div>
+		            
 			<div class="clearfix">
 					<div class="pull-right mb">
-						
 						<input type="hidden" name="id" id="id" value="${emailSceconf.email_UUID}"/>
 							<button type="button" id="save" class="btn btn-primary pull-right" onClick="saveEmailNotification();">Save</button>
 							<!--  <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="">Cancel</button> -->
 						</div>
 					</div>
+					
             </form>
                             
-            
 			</div>  
 			</div> 
 			<div id="configuredMailDiv"></div> 
 			<div id="configuredMailDivTwo"></div> 
-			<div class="tab-content panel-body">
-                     <a href="javascript:void(0)" class="btn btn-primary pull-right" onClick="addEmailPopUp();"><i class="fa fa-plus paddingRight"></i>Add Email</a>   
-                     <div id="emailList"></div>  
+			<div class="clearfix">
+                  <div class="reportHead clearfix">
+                     <ul class="pull-right list-unstyled list-inline">
+                     	<li><a href="javascript:void(0)" class="action newAdBtn mr5" onClick="addEmailPopUp();">+ Email</a></li>
+                     </ul>
+                  </div> 			
+                 <div id="emailList"></div>  
             </div>
 			   
             </div> 
@@ -96,12 +99,12 @@
 <script type="text/javascript">
 //Email Notifications Script
 function addEmail() {
-	$(".comMask").fadeIn();
-	$(".emailfromMail").fadeIn();
+	$(".mask").show();
+	$(".emailfromMail").fadeIn(100);
 }
 function closeEmailNotifications(){
-	$(".comMask").fadeOut();
-	$(".emailfromMail").fadeOut();
+	$(".mask").hide();
+	$(".emailfromMail").fadeOut(100);
 }
 </script>
 
@@ -207,7 +210,7 @@ function getEmailList(){
 		    success: function(response) {
 		    	var result = "";
 		    	
-		    	result  = result + '	 <div class="clearfix styleTables">';
+		    	result  = result + '	 <div class="clearfix project_wrap_table project_tabs_inn_table_a">';
 		    	result  = result + '	<table>								';
 		    	result  = result + '<thead>									';
 		    	result  = result + '<tr>									';
@@ -229,10 +232,10 @@ function getEmailList(){
      			result  = result + '	<td><div class="tbldata-dotdot">'+report.email+'</div></td>                                ';
      			result  = result + '	<td><div class="tbldata-dotdot">'+emailModules+'</div></td>                                ';
      			result  = result + '	<td>                                                                                                 ';
-     			result  = result + '	<div class="tblminwidth-100">                                                                        ';
-     			result  = result + '	<ul class="list-unstyled list-inline">                                                               ';
+     			result  = result + '	<div class="tbldata-dotdot">                                                                        ';
+     			result  = result + '	<ul class="list-unstyled list-inline noMar">                                                               ';
      			result  = result + '	<li>                                                                                                 ';
-				result  = result + '	<label class="switch" style="position:relative; top:10px;">                                                                          ';
+				result  = result + '	<label class="switch" style="position:relative; top:5px;">                                                                          ';
 				result  = result + '	<input onclick="changeDefaultemailConfig(this, '+report.id+')" type="checkbox" '+(report.status ? 'checked' : '')+'/>                                                                    ';
 				result  = result + '	 <span class="slider round"></span>                                                                  ';
 				result  = result + '	</label>                                                                                             ';
@@ -256,19 +259,19 @@ function getEmailList(){
 <script type="text/javascript">
 function deleteFromMail(emailId){ 
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p style='text-align: center;'>.Do you want to delete?</p>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteEmailFromMail('+emailId+')"><input class="u_can_color" type="button"  value="Cancel" onclick="cancelDeleteMail()"></b>';
 	result = result +"	</div>";
 	$("#deleteFromMailDiv").append(result);
+	 $(".mask").show();
 	$("#remove_user_pop").slideDown(200);
 }
 
 function cancelDeleteMail(){
 		$("#deleteFromMailDiv").empty();
-		 $(".project_inn_mask").fadeOut(200);
+		 $(".mask").hide();
 	}
 	
 function deleteEmailFromMail(emailId){
@@ -285,7 +288,7 @@ function deleteEmailFromMail(emailId){
     		    location.href = "/errorPage";
     		} else if (response.response === "SUCCESS") {
     			 $("#deleteFromMailDiv").empty();
- 			 	$(".project_inn_mask").fadeOut(200);
+ 			 	$(".mask").hide();
  			 	getEmailList();
     		}else if (response.indexOf('Sign In') !== -1) {
     			location.replace(sourceleadUrl);
@@ -308,7 +311,7 @@ function changeDefaultemailConfig(ele, id) {
  </script>
  
  
- <div id="popUpEmailConfigDiv" class="modal editContactDiv" style='display: none; top:15%;'></div>
+ <div id="popUpEmailConfigDiv" class="popupWrap popupWrapFixed editContactDiv"></div>
  <script>
  function editFromMail(emailUUID){
 	 
@@ -337,13 +340,10 @@ function changeDefaultemailConfig(ele, id) {
     				
     				
     		result = result  +'<form id="editEmail_form"  name="editEmail_form" method="post">                                                                                                                                             ';
-    	result = result  +'<div class="modal fade in editemailfromMail" id="editemailfromMail" style="display:block;">                                                                                                                                                           ';
-    	result = result  +'<div class="modal-dialog">                                                                                                                                                                                             ';
-    	result = result  +'<div class="modal-content clearfix">                                                                                                                                                                                   ';
-    	result = result  +'<div class="modal-header">                                                                                                                                                                                             ';
-    	result = result  +'<a href="javascript:void(0)" class="close" onClick="closeEditNotification()">&times;</a>                                                                                                                             ';
-    	result = result  +'<h4 class="modal-title">Add from Email</h4>                                                                                                                                                                            ';
-    	result = result  +'</div>                                                                                                                                                                                                                 ';
+    	result = result  +'<div class="popupWrap popupWrapFixed" id="editemailfromMail" style="display:block;">                                                                                                                                                           ';
+    	
+    	result = result  +'<div class="popupHead">Add from Email <i class="closePop pull-right popClose" onclick="closeEditNotification();"></i></div>                                                                                                                                                                                             ';
+
     	result = result  +'<div class="modal-body">                                                                                                                                                                                               ';
     	result = result  +'	                                                                                                                                                                                                                      ';
     	result = result  +'<div class="col-md-12 minHeight">                                                                                                                                                                                      ';
@@ -378,14 +378,12 @@ function changeDefaultemailConfig(ele, id) {
     	result = result  +'</div>                                                                                                                                                                                                                 ';
     	result = result  +'<div class="clearfix"></div>                                                                                                                                                                                           ';
     	result = result  +'</div>                                                                                                                                                                                                                 ';
-    	result = result  +'<div class="modal-footer clearfix">                                                                                                                                                                                    ';
-    	result = result  +'<div>                                                                                                                                                                                                                  ';
-    	result = result  +'<button type="button" class="btn btn-success btnSuccess mr" onClick="closeEmailNotifications();saveEditConfFromMail();">Save</button>                                                                                      ';
-    	result = result  +'<button type="button" class="btn btn-Default">Cancel</button>                                                                                                                                                          ';
+    	
+    	result = result  +'<div class="popupFoot text-right">                                                                                                                                                                                    ';
+    	result = result  +'<button type="button" class="slBtn md colorBtn" onClick="closeEmailNotifications();saveEditConfFromMail();">Save</button>                                                                                      ';
+    	result = result  +'<button type="button" class="slBtn md popClose" onclick="closeEditNotification();">Cancel</button>                                                                                                                                                          ';
     	result = result  +'</div>                                                                                                                                                                                                                 ';
-    	result = result  +'</div>                                                                                                                                                                                                                 ';
-    	result = result  +'</div>                                                                                                                                                                                                                 ';
-    	result = result  +'</div>                                                                                                                                                                                                                 ';
+    
     	result = result  +'</div>                                                                                                             ';
     		result = result  +'</form>';
     		$("#popUpEmailConfigDiv").empty();
@@ -400,23 +398,23 @@ function changeDefaultemailConfig(ele, id) {
 	 
 	 
 	 });
-	 $(".sideMask").fadeIn();
-	 $("#popUpEmailConfigDiv").show();
+	 $(".mask").show();
+	 $("#popUpEmailConfigDiv").fadeIn(100);
  }
  </script>
   <script>
  function closeEditNotification(){
-	 $(".sideMask").fadeOut();
-	 $("#popUpEmailConfigDiv").fadeOut();
+	 $(".mash").hide();
+	 $("#popUpEmailConfigDiv").fadeOut(100);
 
  }
  </script>
- <div id="emailfromMail" style="display:none" class="popOut">
+ <div id="emailfromMail" class="popupWrap">
    <jsp:include page="addMailPopUp.jsp"></jsp:include>
 </div>
  <script>
  function addEmailPopUp(){
-	 $(".sideMask").fadeIn();
+	 $(".mask").show();
 	 $("#emailfromMail").show();
 	 addEmailPop();
  }
@@ -436,7 +434,7 @@ function addEmailPop(){
 </script>
 <script>
  function editEmailPopUp(emailUUID){
-	 $(".sideMask").fadeIn();
+	 $(".mask").show();
 	 $("#emailfromMail").show();
 	 editEmailPop(emailUUID);
  }

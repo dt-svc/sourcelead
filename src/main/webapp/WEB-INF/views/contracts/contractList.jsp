@@ -219,6 +219,18 @@ padding: 2px 300px 2px 0px;
 			<a href="#" id="Applicants1" class="tabActivation" onclick="tabEnable(this);Check('Applicants');">Applicants (${contractsCount.totalDraftClientCount})</a>
 		</div>
 		<ul>
+		
+		<%--  <li id="filterContractTagPop"><i class="fa fa-filter"></i><span>Tags</span><i class="glyphicon glyphicon-play"></i>
+	           	<div class="statusFiler-4 approved_pop">
+					<ul class="list-unstyled">
+					<c:forEach var="tag" items="${contractTagsList}">
+						<li><input type="checkbox" name="contractType" value="${tag}" onclick="getTemplateList();"><label for="c1">${tag}</label></li>
+					</c:forEach>
+					</ul>
+				</div>	                	
+			</li> --%>
+			
+			
 			<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
 	           	<div class="statusFiler-1 approved_pop">
 					<ul class="list-unstyled">
@@ -394,24 +406,31 @@ function previewTemplatePDF(uuid, templateName){
 		$(".statusFiler-1, .statusFiler-3").hide();
 	});
     $("html").click(function() {
-        $(".statusFiler-2, .statusFiler-1").hide();
+        $(".statusFiler-2, .statusFiler-1,.statusFiler-4").hide();
     });
     $(".export_pop, #export-pop").click(function(e) {
         e.stopPropagation();
     });	
 	$("#filterContractTypePop").click(function(){
 		$(".statusFiler-1").toggle();
-		$(".statusFiler-2, .statusFiler-3").hide();
+		$(".statusFiler-2, .statusFiler-4, .statusFiler-3").hide();
 	});
+	
+	$("#filterContractTagPop").click(function(){
+		$(".statusFiler-4").toggle();
+		$(".statusFiler-2,.statusFiler-3, .statusFiler-1").hide();
+	});
+	
+	
 	$("#filterContractTypePop-2").click(function(){
 		$(".statusFiler-3").toggle();
-		$(".statusFiler-2, .statusFiler-1").hide();
+		$(".statusFiler-2, .statusFiler-1,.statusFiler-4").hide();
 	});
 	
     $("html").click(function() {
         $(".filterContractType_pop").hide();
     });	
-    $(".filterContractType_pop, #filterContractTypePop, #filterContractTypePop-2, .statusFiler-1, .statusFiler-2, .statusFiler-3").click(function(e) {
+    $(".filterContractType_pop, #filterContractTypePop, #filterContractTagPop, #filterContractTypePop-2, .statusFiler-1, .statusFiler-2, .statusFiler-3").click(function(e) {
         e.stopPropagation();
     });	
 
@@ -477,6 +496,11 @@ function getTemplateList(listType){
     {
 		contractsType.push($(this).val());
     });
+	/* $('input:checkbox[name=tags]:checked').each(function() 
+     {
+		tags.push($(this).val());
+	 }); */
+
 	var tabType = $("#tabType").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var selectedContractType = "";

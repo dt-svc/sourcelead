@@ -20,7 +20,7 @@ input::-moz-focus-inner, input::-webkit-focus-inner {
     border: 0;
 }
 table tr td {
-       text-align: center;
+	text-align: center;
 }
 @-ms-viewport{
 width:auto!important;
@@ -85,7 +85,7 @@ textarea {
 }
 
 .mt25 {
-	margin-top: 25px;
+	margin-top: 25px !important;
 }
 .margin-top0 {
 	margin-top: 0 !important;
@@ -933,6 +933,14 @@ border: 1px solid #d8d8d8; padding: 10px; box-sizing: border-box; background-col
 .level-second.level-second-active {
 	display: block;
 }
+
+.expenselevel-second {
+	transition: all ease-in-out 0.5s; display: none;
+}
+.expenselevel-second.expenselevel-second-active {
+	display: block;
+}
+
 /* notificaton styles */
 .bell {
 	color: #EEE;
@@ -3418,6 +3426,7 @@ border-bottom: none !important;
     display: inline-block; vertical-align: middle; border-radius: 2px; width: 18px;
 	line-height: 18px; height:18px; padding: 5px; margin-right: 3px; text-align: center;
 }
+
 .radio-custom + .radio-custom-label:before {
 content: ''; background: #EEEEEE; border: 1px solid #BDBDBD;
 display: inline-block; vertical-align: middle; border-radius: 50%; width: 18px;
@@ -8202,6 +8211,7 @@ margin: 6px; float:left;
 .timesheet_week_comm.slticket span i.fa-plus {
 float: left; position: relative; top: 5px; width: 10%;
 }
+
 #mySidenav {
 position: fixed; top: 165px; right: 0px; z-index: 1;
 }
@@ -8916,14 +8926,11 @@ content: ""; height: 0; margin-left: 32px; position: absolute; top:-8px; width: 
 .multidropdown-caret .multiselect-container li a{
 	padding-left: 0;
 }
-ul.jobsboard-list {
-	padding: 15px 15px 5px 15px;
-}
 ul.jobsboard-list > li {
 	border: 1px solid #ededed; border-radius: 5px; padding: 10px; margin-bottom: 15px;
 }
 ul.jobsboard-list > li:hover {
-	background-color: #f9f9f9; border: 1px solid #e1e1e1;
+	background-color: #fafafa; border: 1px solid #e1e1e1;
 }
 .jobsboard-list li span.jobboard-company {
 	margin-bottom: 10px; display: inline-block; width: 100px; height: 33px;
@@ -8945,9 +8952,6 @@ ul.jobsboard-list > li:hover {
 }
 .trashIcon:hover, .trashIcon.trashActive {
 	color:red;
-}
-.permissionDenied {
-color:#ededed !important; cursor: default !important;
 }
 .widthIcon.widthIcon-four {
 	width: 100px;
@@ -8984,7 +8988,7 @@ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 500px; di
 color:#4285f4 !important; font-weight: normal;
 }
 .mailbox-subject a:hover, .msg-content a p:hover {
-color:#609 !important;
+color:#1f43ab !important;
 }
 .mailbox-subject a.visitedAnchor, .msg-content a.visitedAnchor p {
 color:#909090 !important; font-weight: normal;
@@ -9176,10 +9180,11 @@ border-bottom:none; margin-bottom: 5px;
 .customedTabStyles .nav-tabs>li>a { 
 padding: 10px; border: none; 
 }
-.customEvents-Calendar .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+.customEvents-Calendar .ui-state-default, .customEvents-Calendar .ui-widget-content .ui-state-default,
+.customEvents-Calendar .ui-widget-header .ui-state-default {
  	border: none !important; background: none !important; font-weight: normal !important; color: #909090 !important;
 }
-.customEvents-Calendar .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+.customEvents-Calendar .ui-state-active, .customEvents-Calendar .ui-widget-content .ui-state-active, .customEvents-Calendar .ui-widget-header .ui-state-active {
     background: #F4511E !important; border: 1px solid #F4511E !important; color: #fff !important; font-size: 14px !important;
 }
 .customEvents-Calendar .ui-state-highlight, .customEvents-Calendar .ui-widget-content .ui-state-highlight, .customEvents-Calendar .ui-widget-header .ui-state-highlight {
@@ -9206,13 +9211,42 @@ padding: 10px; border: none;
 .menuWidget ul li:hover a, .menuWidget ul.menupop li a:hover i {
     color: #368ee0 !important;
 }
+.tagStyles {
+width: 300px !important; padding: 5px 0;
+}
+.tagStyles i {
+font-size: 20px !important;
+}
+.tagStyles span {
+top: 0 !important;
+}
 .nestedTable table thead {
 	background: #6C7686; color: #fff;
 }
 .nestedTable table tr td, .nestedTable table tr th {
 	text-align:center; vertical-align: middle;
 }
-
+.fa-trash.trashIcon {
+color:#333 !important;
+}
+.permissionDenied.fa-trash {
+color:#ededed !important; cursor: default !important;
+}
+.tagslist li {
+border-bottom: 1px dotted #a0a0a0; padding:5px 0px 5px 0; min-width: 75px; margin: 0 10px 10px 0;
+}
+.tagslist li span.count {
+border: 1px solid #ededed; padding: 1px 5px; position: relative; top: -3px; border-radius:10%;
+}
+.tagslist li span.tagItem {
+min-width:10px; text-transform:capitalize; word-break:break-word;
+}
+.tagslist li i.fa-times {
+float: right; cursor: pointer; padding-left: 15px;color: #f5b1b1;
+}
+.tagslist li i.fa-times:hover {
+color: #fd0505;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
@@ -9638,6 +9672,13 @@ z-index: -800;
 .menuWidget ul.menupop.menupop_3 {
     width:310px;
 	}
+	
+	
+	
+	
+	
+	
+	
 .level-second {
 transition: all ease-in-out 0.5s; display: none;
 }

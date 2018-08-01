@@ -52,6 +52,7 @@ import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
@@ -567,6 +568,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			projects.setProjectMode("Finished");
 			projects.setCreatedDate(new Date());
 			projects.setUpdatedDate(new Date());
+			projects.setIsProjectForTimeSheets(Constants.YES);
+			projects.setIsProjectForExpenses(Constants.YES);
 			
 			Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(countires != null) {
@@ -600,11 +603,27 @@ public class RegistrationServiceImpl implements RegistrationService{
 			pah.setProjectId(projects);
 			pah.setProjectClientsId(projectClients);
 			pah.setApproverUserId(approverUser);
+			pah.setCreatedDate(new Date());
+			pah.setCreatedBy(approverUser.getUserCode());
 			pah.setLevel(1);
 			pah.setStatus("1");
 			projectApproverHierarchyList.add(pah);
-			
 			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+			
+			
+			//prepare Project Expense Approver Hierarchy
+			Set<ExpenseProjectApproverHierarchy> projectExpenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+			ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+			eah.setProjectId(projects);
+			eah.setProjectClientsId(projectClients);
+			eah.setApproverUserId(approverUser);
+			eah.setLevel(1);
+			eah.setStatus("1");
+			eah.setCreatedDate(new Date());
+			eah.setCreatedBy(approverUser.getUserCode());
+			projectExpenseApproverHierarchyList.add(eah);
+			projectClients.setExpenseProjectApproverHierarchyList(projectExpenseApproverHierarchyList);
+			
 	    	projectClientsSet.add(projectClients);
 			return projectClientsSet;
 		}
@@ -865,6 +884,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 submissionTemplate.setUpdatedDate(new Date());
 		 submissionTemplate.setCreatedBy(user.getUserCode());
 		 submissionTemplate.setCreatedDate(new Date());
+		 submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 		 
 	 }
@@ -887,6 +907,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 submissionTemplate.setIsDefault(Constants.YES);
 		 submissionTemplate.setCreatedBy(user.getUserCode());
 		 submissionTemplate.setCreatedDate(new Date());
+		 submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 		 
 	 }

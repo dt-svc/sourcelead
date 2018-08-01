@@ -5,14 +5,17 @@
 
 
 <div id="orglocationSignatory" class="tab-pane fade form-horizontal">
-  <div class="accountsettings-tab">
-	<div class="tab-content panel-body">
-		<div class="clearfix">
-			<a href="javascript:void(0)" class="btn btn-primary pull-right" onclick="addOrgLocationSignatoryDiv()"><i class="fa fa-plus paddingRight"></i> Signatory</a>
+  <div class="accountsettings-tab noMar">
+	<div class="tab-content panel-body noPad noBor">
+	
+		 <div class="positionRelative reportHead clearfix">
+		<ul class="pull-right list-unstyled list-inline">
+			<li><a class="action newAdBtn mr5" href="javascript:void(0)" onclick="addOrgLocationSignatoryDiv()">+ Signatory</a></li>
+		</ul>
 		</div>
 		
 		<!--  Table starts -->
-		<div class="require_wrap_table mt clearfix signatory_table datatable_filter">
+		<div class="require_wrap_table datatable_filter">
 		<div id="orgLocationSignatoriesListDiv"></div>
         </div>
 		<div class="clearfix"></div>

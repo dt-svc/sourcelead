@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import com.bis.sourcelead.annotations.Required;
 
 public class ProjectMembersDTO implements Serializable {
@@ -62,7 +64,9 @@ public class ProjectMembersDTO implements Serializable {
 	
 	private String orgRelationUUID;
 	
-	
+    private String isProjectForTimeSheets;
+	    
+	private String isProjectForExpenses;
 
 	public String getExpenseId() {
 		return expenseId;
@@ -275,6 +279,22 @@ public class ProjectMembersDTO implements Serializable {
 
 	public void setValidateRow(String validateRow) {
 		this.validateRow = validateRow;
+	}
+
+	public String getIsProjectForTimeSheets() {
+		return isProjectForTimeSheets;
+	}
+
+	public void setIsProjectForTimeSheets(String isProjectForTimeSheets) {
+		this.isProjectForTimeSheets = isProjectForTimeSheets;
+	}
+
+	public String getIsProjectForExpenses() {
+		return isProjectForExpenses;
+	}
+
+	public void setIsProjectForExpenses(String isProjectForExpenses) {
+		this.isProjectForExpenses = isProjectForExpenses;
 	}
 	
 }
