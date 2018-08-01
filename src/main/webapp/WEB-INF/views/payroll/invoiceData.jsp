@@ -47,6 +47,7 @@ function prepareInvoiceDetailsList(url){
 		result = result + '<th>Last Modified</th>';
 		result = result + '<th>Due Date</th>';
 		result = result + '<th>Rate</th>';
+		result = result + '<th>Pay Rate</th>';
 		result = result + '<th>Qty</th>';
 		result = result + '<th>Amount</th>';
 		result = result + '<th>A/R Paid</th>';
@@ -82,6 +83,7 @@ function invoiceDetailsPagination(url){
             { "data": "lastmodified" },
             { "data": "dueDate"},
             { "data": "rate"},
+            { "data": "payRate"},
             { "data": "qty"},
             { "data": "amount"},
             { "data": "arPaid"},
@@ -202,6 +204,20 @@ function invoiceDetailsPagination(url){
                     	return result;
                     }
                   },{
+                      "targets": colIndex++,
+                      "data": "payRate",
+                      "render": function ( data, type, opt, meta ) {
+                      	var result = "";
+                      	var rateTotal = opt.payRate;
+                      	var twoPlacedFloat = parseFloat(rateTotal).toFixed(2);
+                      	if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined'){
+  							result = result + '<td><div class="tblminwidth-75">$ '+twoPlacedFloat+'</div></td>';
+  						}else{
+  							result = result + ' <td><div class="tblminwidth-75">0.00</div></td>';
+  						}
+                      	return result;
+                      }
+                    },{
                       "targets": colIndex++,
                       "data": "qty",
                       "render": function ( data, type, opt, meta ) {

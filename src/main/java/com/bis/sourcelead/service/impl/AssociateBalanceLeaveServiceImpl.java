@@ -655,7 +655,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				 previousExpNoOfDays = leaveTypeDTO.getPreviousExpApplicableDays();
 				 currentExpNofDays = leaveType.getExperiencedApplicableDays();
 			}
-		
+		}
 			float diffLeaves = 0;
 			float diffFresherLeaves = 0;
 			float diffExpLeaves = 0;
@@ -707,12 +707,32 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					userType = leaveManagementUtil.test(leaveType, emp, user);
 					if(!"All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
 						if("EXP".equalsIgnoreCase(userType)){
-							allowedLeaves = assoBalLeaves + diffExpLeaves;
+							if("ADD".equalsIgnoreCase(actionExpType)){
+								allowedLeaves = assoBalLeaves + diffExpLeaves;
+							}else if("SUB".equalsIgnoreCase(actionExpType)){
+								allowedLeaves = assoBalLeaves - diffExpLeaves;
+							}else{
+								allowedLeaves = assoBalLeaves;
+							}
 						}else if("FRESHER".equalsIgnoreCase(userType)){
-							allowedLeaves = assoBalLeaves + diffFresherLeaves;
+							if("ADD".equalsIgnoreCase(actionFresherType)){
+								allowedLeaves = assoBalLeaves + diffFresherLeaves;
+							}else if("SUB".equalsIgnoreCase(actionFresherType)){
+								allowedLeaves = assoBalLeaves - diffFresherLeaves;
+							}else{
+								allowedLeaves = assoBalLeaves;
+							}
+//							allowedLeaves = assoBalLeaves + diffFresherLeaves;
 						}
 					}else{
-						allowedLeaves = assoBalLeaves + diffLeaves;
+						if("ADD".equalsIgnoreCase(actionType)){
+							allowedLeaves = assoBalLeaves + diffLeaves;
+						}else if("SUB".equalsIgnoreCase(actionType)){
+							allowedLeaves = assoBalLeaves - diffLeaves;
+						}else{
+							allowedLeaves = assoBalLeaves;
+						}
+//						allowedLeaves = assoBalLeaves + diffLeaves;
 					}
 				} catch (ParseException e) {
 					e.printStackTrace();
@@ -745,7 +765,6 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				list.add(dto);
 			}
 			status = associateBalanceLeaveDao.updateLeaveTypeAssociateBalances(list);
-			}
 		return status;
 	}
 	
