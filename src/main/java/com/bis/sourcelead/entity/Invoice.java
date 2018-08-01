@@ -363,6 +363,18 @@ public class Invoice {
 	@JsonProperty
 	private PaymentAccountDTO paymentAccountDTO;
 	
+	@Transient
+    @JsonProperty
+    private String invoiceTags;
+	
+	@Transient
+    @JsonProperty
+    private String billsTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
 	public Long getId()
 	{
 		return id;
@@ -1142,5 +1154,29 @@ public class Invoice {
 
 	public void setPaymentAccountDTO(PaymentAccountDTO paymentAccountDTO) {
 		this.paymentAccountDTO = paymentAccountDTO;
+	}
+
+	public String getInvoiceTags() {
+		return invoiceTags;
+	}
+
+	public String getBillsTags() {
+		return billsTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setInvoiceTags(String invoiceTags) {
+		this.invoiceTags = invoiceTags;
+	}
+
+	public void setBillsTags(String billsTags) {
+		this.billsTags = billsTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
 	}
 }

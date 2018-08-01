@@ -92,6 +92,11 @@
 		   $(".level-second").toggleClass("level-second-active");
 		});
        
+       $(".addExpenseApproverLevel").click(function(){
+		   $(".expenselevel-second").toggleClass("expenselevel-second-active");
+		});
+       
+       
        $(".tree-view").click(function(){
     	   $(this).next('ul').slideToggle();
            $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli ").next('ul').slideUp();

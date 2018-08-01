@@ -224,6 +224,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@JsonProperty
 	private Long requirementIntervieweId;
 	
+	
+	@Transient
+	@JsonProperty
+	private String interviewTemplateUUId;
+	
+	@Transient
+	@JsonProperty
+	private String interviewerUUID;
+	
 	public String getCandidateEmail() {
 		return candidateEmail;
 	}
@@ -635,5 +644,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setRequirementIntervieweId(Long requirementIntervieweId) {
 		this.requirementIntervieweId = requirementIntervieweId;
+	}
+
+	public String getInterviewTemplateUUId() {
+		return interviewTemplateUUId;
+	}
+
+	public void setInterviewTemplateUUId(String interviewTemplateUUId) {
+		this.interviewTemplateUUId = interviewTemplateUUId;
+	}
+
+	public String getInterviewerUUID() {
+		return interviewerUUID;
+	}
+
+	public void setInterviewerUUID(String interviewerUUID) {
+		this.interviewerUUID = interviewerUUID;
 	}
 }

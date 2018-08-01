@@ -157,8 +157,6 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					proMembersIds.add(proMembers.getId());
 				}*/
 			 monthStringDate.put(format.format(startCal.getTime()),"");
-			 System.out.println(startCal.getTime());
-			 System.out.println(endCal.getTime());
 		 }
 		return monthStringDate;
 	}

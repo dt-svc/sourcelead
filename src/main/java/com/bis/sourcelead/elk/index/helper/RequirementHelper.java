@@ -145,6 +145,10 @@ public class RequirementHelper {
 				requirementIndex.setClientRateType(requirement.getClientRateType());
 			}
 			
+			if(requirement.getJobsTags() != null && !requirement.getJobsTags().isEmpty()) {
+				requirementIndex.setTags(requirement.getJobsTags());
+			}
+			
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
 			// requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
 			

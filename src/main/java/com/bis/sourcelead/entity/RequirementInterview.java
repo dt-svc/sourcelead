@@ -112,6 +112,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "INTERVIEW_COMMENT", columnDefinition = "TEXT default NULL")
 	private String interviewComment;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Transient
 	private String remainderTime;
 	
@@ -468,6 +471,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setScheduleType(String scheduleType)
 	{
 		this.scheduleType = scheduleType;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 }
