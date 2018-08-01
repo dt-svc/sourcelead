@@ -20,7 +20,7 @@ input::-moz-focus-inner, input::-webkit-focus-inner {
     border: 0;
 }
 table tr td {
-       text-align: center;
+	text-align: center;
 }
 @-ms-viewport{
 width:auto!important;
@@ -3426,6 +3426,7 @@ border-bottom: none !important;
     display: inline-block; vertical-align: middle; border-radius: 2px; width: 18px;
 	line-height: 18px; height:18px; padding: 5px; margin-right: 3px; text-align: center;
 }
+
 .radio-custom + .radio-custom-label:before {
 content: ''; background: #EEEEEE; border: 1px solid #BDBDBD;
 display: inline-block; vertical-align: middle; border-radius: 50%; width: 18px;
@@ -8210,6 +8211,7 @@ margin: 6px; float:left;
 .timesheet_week_comm.slticket span i.fa-plus {
 float: left; position: relative; top: 5px; width: 10%;
 }
+
 #mySidenav {
 position: fixed; top: 165px; right: 0px; z-index: 1;
 }
@@ -9210,13 +9212,13 @@ padding: 10px; border: none;
     color: #368ee0 !important;
 }
 .tagStyles {
-	width: 300px !important; padding: 5px 0;
+width: 300px !important; padding: 5px 0;
 }
 .tagStyles i {
-	font-size: 20px !important;
+font-size: 20px !important;
 }
 .tagStyles span {
-	top: 0 !important;
+top: 0 !important;
 }
 .nestedTable table thead {
 	background: #6C7686; color: #fff;
@@ -9224,28 +9226,27 @@ padding: 10px; border: none;
 .nestedTable table tr td, .nestedTable table tr th {
 	text-align:center; vertical-align: middle;
 }
-.tagslist li {
-	border-bottom: 1px dotted #a0a0a0; padding:5px 0px 5px 0; min-width: 75px; margin: 0 10px 10px 0;
-}
-.tagslist li span.count {
-	border: 1px solid #ededed; padding: 1px 5px; position: relative; top: -3px; border-radius:10%;
-}
-.tagslist li span.tagItem {
-	min-width:10px; text-transform:capitalize; word-break:break-word;
-}
-.tagslist li i.fa-times {
-	float: right; cursor: pointer; padding-left: 15px;color: #f5b1b1;
-}
-.tagslist li i.fa-times:hover {
-	color: #fd0505;
-}
 .fa-trash.trashIcon {
 color:#333 !important;
 }
 .permissionDenied.fa-trash {
 color:#ededed !important; cursor: default !important;
 }
-
+.tagslist li {
+border-bottom: 1px dotted #a0a0a0; padding:5px 0px 5px 0; min-width: 75px; margin: 0 10px 10px 0;
+}
+.tagslist li span.count {
+border: 1px solid #ededed; padding: 1px 5px; position: relative; top: -3px; border-radius:10%;
+}
+.tagslist li span.tagItem {
+min-width:10px; text-transform:capitalize; word-break:break-word;
+}
+.tagslist li i.fa-times {
+float: right; cursor: pointer; padding-left: 15px;color: #f5b1b1;
+}
+.tagslist li i.fa-times:hover {
+color: #fd0505;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
