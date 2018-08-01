@@ -106,10 +106,33 @@
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
+							
+							/* check boxes start */
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Billing Email:</strong>';
+							if(json.billingEmailStatus == 'Y' || json.billingEmailStatus == 'N'){
+								result = result + '<span>'+json.billingEmailStatus+'</span>';
+							}else{
+								result = result + '<span>N</span>';
+							}
+							result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>AR Email:</strong>';
+							if(json.arEmailStatus == 'Y' || json.arEmailStatus == 'N'){
+								result = result + '<span>'+json.arEmailStatus+'</span>';
+							}else{
+								result = result + '<span>N</span>';
+							}
+							result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							/* check boxes end */
+							
 							<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 							var sectionId = '${section.id}';
 							getCustomDependentFieldVedorContact(spocLocationId,orgRelationId,sectionId);
-							if(${sectionOrder.index == 1}){
+							if("${sectionOrder.index == 1}"){
 								result = result + '<div id="customVendorContactDiv${section.id}" class="customClinetContactDet"></div>';
 							}
 							</c:forEach>
@@ -170,6 +193,8 @@ function getCustomDependentFieldVedorContact(clientLocationId,orgRelationID,sect
 						var selected5 = '';				
 					    var spocMobilePhone='';
 					    var spocExtensionNumber='';
+					    var billingEmailStatus;
+						var arEmailStatus;
 						if(json.spocMobilePhone != null && json.spocMobilePhone != '' && json.spocMobilePhone != 'undefined'){
 							spocMobilePhone = json.spocMobilePhone;
 						}else{
@@ -211,10 +236,13 @@ function getCustomDependentFieldVedorContact(clientLocationId,orgRelationID,sect
 						
 						if(json.spocStatus == 'Contracted'){
 							selected5 = 'selected';
-						} 
-						
+						}
+						/*For checkboxes Edit mode start */
+						billingEmailStatus = (json.billingEmailStatus =='Y' ? true : false);
+						arEmailStatus = (json.arEmailStatus =='Y' ? true :false);
+						/*For checkboxes Edit mode end */
 						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-						if(${sectionOrder.index == 1}){
+						if("${sectionOrder.index == 1}"){
 							var sectionId = '${section.id}';
 							preapareVendorContactCustomFieldDetails(spocLocationId,orgRelationId,sectionId);
 						}
@@ -339,6 +367,18 @@ function getCustomDependentFieldVedorContact(clientLocationId,orgRelationID,sect
 					    result = result  +'	 </div>';
 					    result = result  +'	 </div>'; 
 					    
+					    result = result +' <div class="col-md-9">';
+			            result = result +' <div class="checkbox checkBox">';
+			            result = result +' <label> <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Billing Email</label>';
+			            result = result +' </div>';
+			            result = result +' </div>';
+			            
+			            result = result +' <div class="col-md-9">';
+			            result = result +' <div class="checkbox checkBox">';
+			            result = result +' <label> <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AR Email</label>';
+			            result = result +' </div>';
+			            result = result +' </div>';
+					    
                         result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth errorInptgroup"  id="customFieldDataId"></div>';
 
 						result = result + '<div class="clearfix"></div>';
@@ -350,6 +390,14 @@ function getCustomDependentFieldVedorContact(clientLocationId,orgRelationID,sect
 						$(".user_summary_edit").slideToggle(100);
 						$("#editVendorContactDetailsDiv").empty();
 				        $("#editVendorContactDetailsDiv").append(result);
+				        
+				        /*For checkboxes Edit mode start */
+				        $("#invoiceOrBillSent").attr('checked', billingEmailStatus);
+				        $("#invoiceOrBillSent").val(billingEmailStatus?'Y':'N');
+				        
+				        $("#apOrArSent").attr('checked', arEmailStatus);
+				        $("#apOrArSent").val(arEmailStatus?'Y':'N');
+				        /*For checkboxes Edit mode end */
 				        
 				        var config = {
 								  '.chosen-select'           : {},
@@ -373,6 +421,27 @@ function getCustomDependentFieldVedorContact(clientLocationId,orgRelationID,sect
 </script>
 
 <script type="text/javascript">
+
+
+function allowApEmailSent(){
+	var checked = document.getElementById("apOrArSent").checked
+	if(checked == true){
+		$("#apOrArSent").val("Y");
+	}else{
+		$("#apOrArSent").val("N");
+	}
+}
+
+
+function allowInvoiceEmailSent(){
+	var checked = document.getElementById("invoiceOrBillSent").checked
+	if(checked == true){
+		$("#invoiceOrBillSent").val("Y");
+	}else{
+		$("#invoiceOrBillSent").val("N");
+	}
+}
+
  function validateClientEmail(spocId) {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();

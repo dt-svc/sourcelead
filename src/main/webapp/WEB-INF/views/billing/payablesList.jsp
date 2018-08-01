@@ -406,8 +406,8 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'            </div>                                                                ';
 	result = result +'            <div class="col-md-6 mt">                                                ';
 	result = result +'              <div class="clearfix mb invoiceAttachment">                         ';
-	result = result +'              <label><strong>Attachments</strong></label>                         ';
-	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
+	result = result +'              <label><strong>Attachment</strong></label>                         ';
+	result = result +'              <div class="timesheet_week_comm col-md-12 width100percnt">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
 	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment" onchange="getfileUrl()">                                            ';
 // 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
@@ -611,9 +611,16 @@ function getPayableInvoiceList(){
 	 {
 		payment.push($(this).val());
 	 });
+	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+     {
+		tags.push($(this).val());
+	 });
+	
 	var searchValue = $("#payableDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId;
+	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags;
 	preparePayableList(url,orgLocationDate);
 }
 
@@ -1405,7 +1412,11 @@ function exportToPayablePdf(){
 		 {
 			paymentStatus.push($(this).val());
 		});
-		
+		var tags = [];
+		$('input:checkbox[name=tags]:checked').each(function() 
+	     {
+			tags.push($(this).val());
+		 });
 		var emptyExport = $('#emptyPayableInvoiceId').val();
 		var durationType = $('#dayWiseTypeId').val();
 		
@@ -1413,7 +1424,7 @@ function exportToPayablePdf(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=pdf&invoiceType=Payables";
+		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&exportType=pdf&invoiceType=Payables";
 		}else{
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1445,6 +1456,12 @@ function exportToPayableExcel(){
 			paymentStatus.push($(this).val());
 		});
 		
+		var tags = [];
+		$('input:checkbox[name=tags]:checked').each(function() 
+	     {
+			tags.push($(this).val());
+		 });
+		
 		var emptyExport = $('#emptyPayableInvoiceId').val();
 		var durationType = $('#dayWiseTypeId').val();
 		
@@ -1452,7 +1469,7 @@ function exportToPayableExcel(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=xls&invoiceType=Payables";
+		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&exportType=xls&invoiceType=Payables";
 		}else{	
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1831,14 +1848,14 @@ function resetBillsFilter(){
 
 
 <div class="advancedsearch-mask"></div>
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="assetFilterId">
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="assetFilterId">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeBillsFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
 				<div class="addInner">
 					<div class="row">
-					  <div class="col-md-6">
+					  <div class="col-md-4">
 						<div class="row">
 						    <div class="col-md-12 mb">
 								<label><strong>Payment</strong></label>
@@ -1854,7 +1871,7 @@ function resetBillsFilter(){
 						  </div>
 						</div>
 						
-						<div class="col-md-6">
+						<div class="col-md-4">
 						<div class="row">
 						    <div class="col-md-12 mb">
 								<label><strong>Status</strong></label>
@@ -1871,6 +1888,22 @@ function resetBillsFilter(){
 						     </div> 
 						  </div>
 						</div>
+						
+						<c:if test="${!empty billsTagsList}">
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myInvoiceInput" onkeyup="myInvoiceFunction()" placeholder="Tags" title="Type in a tag">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myInvoiceUL">
+									<c:forEach var="tag" items="${billsTagsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="tags" value ="${tag}" ><label>${tag}</label></li>
+									</c:forEach> 
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
 					  </div>
 					  
 					  

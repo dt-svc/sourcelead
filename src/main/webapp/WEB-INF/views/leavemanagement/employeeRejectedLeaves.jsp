@@ -190,7 +190,11 @@ function redirectlocation(location){
 		    	  	"data": "rejectedBy",
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		 var result = "";
-		    	  		 result = result + ' <div title="'+opt.rejectedBy+'" class="tblminwidth-75">'+opt.rejectedBy+'</div>';
+		    	  		 if(opt.rejectedBy != null && opt.rejectedBy != '' && opt.rejectedBy != 'undefined'){
+		    	  			result = result + ' <div title="'+opt.rejectedBy+'" class="tblminwidth-75">'+opt.rejectedBy+'</div>';
+		    	  		 }else{
+		    	  			result = result + ' <div title="---" class="tblminwidth-75">---</div>';
+		    	  		 }
 	  	                 return result; 
 		    	  	}
 		    	  },{
@@ -198,7 +202,11 @@ function redirectlocation(location){
 		    	  	"data": "reason",
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		 var result = "";
-		    	  		  result = result + ' <div title="'+opt.rejectedReason+'" class="tblminwidth-75">'+opt.rejectedReason+'</div>';	
+		    	  		if(opt.rejectedReason != null && opt.rejectedReason != '' && opt.rejectedReason != 'undefined'){
+		    	  			result = result + ' <div title="'+opt.rejectedReason+'" class="tblminwidth-75">'+opt.rejectedReason+'</div>';
+		    	  		}else{
+		    	  			result = result + ' <div title="---" class="tblminwidth-75">---</div>';
+		    	  		}
 		    	  		 return result; 
 		    	  	}
 		    	  }], 
