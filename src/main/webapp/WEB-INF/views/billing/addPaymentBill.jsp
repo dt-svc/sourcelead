@@ -67,7 +67,7 @@
     	 				<label class="col-md-3 paddingRight">Amount Received<span class="text-danger paddingLeft">*</span></label>
 	    	 			<div class="clearfix">
 	    	 			<div class="col-md-6">
-	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" onkeyup="validateNumber(this);" data-validation="required validate_length length2-250" field-name ="Amount Received">
+	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" data-validation="required validate_length length2-250" field-name ="Amount Received">
 	    	 			</div>
 	    	 			<div class="col-md-3">
 	    	 				<input type="text" class="form-control" id="currencyType" name = "currencyType" readonly="readonly">
@@ -339,6 +339,15 @@ $('#paymentDate').datepicker({
 	});
 </script>
   <script>
+  
+//allow only number
+  $("#totalAmount").on("keypress keyup blur",function (event) {
+	$(this).val($(this).val().replace(/[^0-9\.]/g,''));
+      if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+          event.preventDefault();
+      }
+  });
+  
   function validateNumber(object){ 
 	   object.value = object.value.replace(/[^0-9\.]/g,'');
 	}
@@ -411,7 +420,7 @@ function ListPagination(){
 	
 	 $("#invoiceListTable").DataTable( { 
 		 	"scrollY":"350px",	
-		 	"scrollCollapse": false,
+		 	"scrollCollapse": true,
 		 	"paging": false,
 	    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
 	    	"bLengthChange": false,

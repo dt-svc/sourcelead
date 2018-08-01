@@ -497,4 +497,10 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	{
 		return leaveTypeDao.getLeaveTypeByLeaveTypeName(leaveTypeName,orgLocation);
 	}
+
+	@Override
+	public List<String> getLeaveTypeNameListByLocationId(Long orgLocationId)
+	{
+		return leaveTypeDao.getLeaveTypeNameListByLocationId(orgLocationId);
+	}
 }

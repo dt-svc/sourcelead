@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 
@@ -34,7 +32,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -43,14 +41,11 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
@@ -58,6 +53,7 @@ import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
+import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
@@ -77,18 +73,15 @@ import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
+import com.bis.sourcelead.entity.LeaveReportView;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.entity.UsersImport;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.rest.TimesheetRestController;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
@@ -107,6 +100,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -191,6 +185,8 @@ public class LeaveServiceImpl implements LeaveService{
     
     @Autowired
     ConversionUtil conversionUtil;
+    @Autowired
+    PdfUtil pdfUtil;
     
     
     private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
@@ -2397,4 +2393,163 @@ public class LeaveServiceImpl implements LeaveService{
 		assBalLeave.setTotalLeaves(String.valueOf(balanceLeaves));
 		associateBalanceLeaveService.saveOrUpdateAssocicateBalanceLeaves(assBalLeave);
 	}
+
+
+	@Override
+	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId)throws Exception
+	{
+		return leaveDao.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgId,orgLocationId);
+	}
+
+	@Override
+	public Sheet getDailyWiseLeaveExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<LeaveReportView> leaveReportsList, OrgLocations orgLocations) throws Exception
+	{
+
+			Row writeRow = null;
+	        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,leaveReportsList,orgLocations);
+	        List<LeaveReportView> list = leaveReportsList.getData();
+	        int column=0;
+	        for(LeaveReportView lrv : list){
+	       	 writeRow = createExcelsheet.createRow(column+1);
+	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,column,lrv);
+	       	 column++;
+	        }
+			return createExcelsheet;
+		
+	}
+
+	
+	
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,ResponseList<LeaveReportView> leaveReportsList, OrgLocations orgLocations) {
+
+		
+		
+		CellStyle style = createExcelworkbook.createCellStyle();
+	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	     org.apache.poi.ss.usermodel.Font font = createExcelworkbook.createFont();
+        font.setColor(IndexedColors.BLACK.getIndex());
+         style.setFont(font);
+		 
+		 writeRow = createExcelsheet.createRow(0);
+		 createExcelsheet.setColumnWidth(0, 10000);
+		 createExcelsheet.setColumnWidth(1, 10000);
+		 createExcelsheet.setColumnWidth(2, 5000);
+		 createExcelsheet.setColumnWidth(3, 5000);
+		 createExcelsheet.setColumnWidth(4, 5000);
+		 createExcelsheet.setColumnWidth(5, 5000);
+		 createExcelsheet.setColumnWidth(6, 5000);
+		 createExcelsheet.setColumnWidth(7, 5000);
+		 createExcelsheet.setColumnWidth(8, 5000);
+		 createExcelsheet.setColumnWidth(9, 5000);
+		 createExcelsheet.setColumnWidth(10, 5000);
+		 createExcelsheet.setColumnWidth(11, 5000);
+		 createExcelsheet.setColumnWidth(12, 5000);
+		 createExcelsheet.setColumnWidth(13, 5000);
+		 
+		 String headers [] = Constants.DAILY_WISE_LEAVE_REPORT_HEADERS;
+		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+	}
+	
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column,LeaveReportView leaveReportDTO) throws Exception {
+			if(leaveReportDTO.getName() !=null){
+				 writeRow.createCell(0).setCellValue(leaveReportDTO.getName()); 
+			 }
+			else{
+				   writeRow.createCell(0).setCellValue("--");   
+			   }
+			   if(leaveReportDTO.getEmploymentType() !=null){
+				   writeRow.createCell(1).setCellValue(leaveReportDTO.getEmploymentType());
+			   }
+			   else{
+				   writeRow.createCell(1).setCellValue("--");   
+			   }
+			   if(leaveReportDTO.getUserDeptName() != null){
+				   writeRow.createCell(2).setCellValue(leaveReportDTO.getUserDeptName());
+			   }
+			   else{
+				   writeRow.createCell(2).setCellValue("--");   
+			   }
+			   if(leaveReportDTO.getUserRoleName() !=null){
+				   writeRow.createCell(3).setCellValue(leaveReportDTO.getUserRoleName());
+			   }
+			   else{
+				   writeRow.createCell(3).setCellValue("--");   
+			   }
+			   if(leaveReportDTO.getLeaveTypeName() != null){
+				   writeRow.createCell(4).setCellValue(leaveReportDTO.getLeaveTypeName());
+			   }
+			   else{
+				   writeRow.createCell(4).setCellValue("--");   
+			   }
+				 if(leaveReportDTO.getLeaveTypeBillable() !=null){
+					 writeRow.createCell(5).setCellValue(leaveReportDTO.getLeaveTypeBillable()); 
+				 }
+				 else{
+					   writeRow.createCell(5).setCellValue("--");   
+				   }
+				 if(leaveReportDTO.getDuration() != null){
+					 writeRow.createCell(6).setCellValue(leaveReportDTO.getDuration());
+				 }
+				 else{
+					   writeRow.createCell(6).setCellValue("--");   
+				   }
+				 if(leaveReportDTO.getFromDateStr() != null){
+					   writeRow.createCell(7).setCellValue(leaveReportDTO.getFromDateStr());
+				   }
+				 else{
+					   writeRow.createCell(7).setCellValue("--");   
+				   }
+				 if(leaveReportDTO.getToDateStr() != null){
+					   writeRow.createCell(8).setCellValue(leaveReportDTO.getToDateStr());
+				   }
+				 else{
+					   writeRow.createCell(8).setCellValue("--");   
+				   }
+				 if(leaveReportDTO.getAppliedOnDateStr() != null){
+					   writeRow.createCell(9).setCellValue(leaveReportDTO.getAppliedOnDateStr());
+				   }
+				 else{
+					   writeRow.createCell(9).setCellValue("--");   
+				   }
+				 if(leaveReportDTO.getReason() != null){
+					   writeRow.createCell(10).setCellValue(leaveReportDTO.getReason());
+				   }
+				 else{
+					   writeRow.createCell(10).setCellValue("--");   
+				   }
+				 if(leaveReportDTO.getStatus() != null){
+					   writeRow.createCell(11).setCellValue(leaveReportDTO.getStatus() );
+				   }
+				 else{
+					   writeRow.createCell(11).setCellValue("--");   
+				   }
+				 if(leaveReportDTO.getApprover() != null){
+					   writeRow.createCell(12).setCellValue(leaveReportDTO.getApprover() );
+				   }
+				 else{
+					   writeRow.createCell(12).setCellValue("--");   
+				   }
+				 if(leaveReportDTO.getAppliedOnDateStr()  != null){
+					 if(leaveReportDTO.getStatus().equalsIgnoreCase("APPROVED")){
+					   writeRow.createCell(13).setCellValue(leaveReportDTO.getAppliedOnDateStr());
+					   }
+					 else{
+						 writeRow.createCell(13).setCellValue("--");
+					 }
+				   }
+				
+			
+//		}
+		
+		return createExcelsheet;
+		
+	}
+
+	@Override
+	public File getDailyWiseLeavePdfFile(ResponseList<LeaveReportView> leaveReportsList,OrgLocations orgLocations) throws Exception
+	{
+		return pdfUtil.createDayWiseLeaveReportPdfTable(leaveReportsList,orgLocations);
+	}
+
 }

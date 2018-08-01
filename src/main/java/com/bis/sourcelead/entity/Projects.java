@@ -376,6 +376,14 @@ public class Projects implements Serializable{
     @JsonProperty
     Set<ProjectDocuments>  projectDocumentsList;
     
+    @Transient
+    @JsonProperty
+    private String projectsTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
     
     @Column(name = "GENERATED_ID")
 	private String generatedId;
@@ -1144,6 +1152,7 @@ public class Projects implements Serializable{
 		this.sharedClientOrgLocationId = sharedClientOrgLocationId;
 	}
 
+
 	public Set<ExpenseProjectApproverHierarchy> getExpenseApproverHierarchyList() {
 		return expenseApproverHierarchyList;
 	}
@@ -1167,7 +1176,21 @@ public class Projects implements Serializable{
 	public void setIsProjectForExpenses(String isProjectForExpenses) {
 		this.isProjectForExpenses = isProjectForExpenses;
 	}
+	
+	public String getProjectsTags() {
+		return projectsTags;
+	}
 
-	
-	
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setProjectsTags(String projectsTags) {
+		this.projectsTags = projectsTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
 }

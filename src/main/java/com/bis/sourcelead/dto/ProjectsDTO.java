@@ -247,7 +247,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	  
 	private Collection<UserDTO> expensesApproversListwithoutApprover1;
 	
-	
+	 private String tags;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -1056,6 +1056,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.projId = projId;
 	}
 
+
 	public String getLevel1ExpenseApprover() {
 		return level1ExpenseApprover;
 	}
@@ -1167,4 +1168,14 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	public void setExpenseApproversList(Collection<UserDTO> expenseApproversList) {
 		ExpenseApproversList = expenseApproversList;
 	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+	
+
 }
