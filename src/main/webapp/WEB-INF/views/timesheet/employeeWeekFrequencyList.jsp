@@ -36,8 +36,8 @@
 <script>
 $(document).ready(function(){
 	if('${NORECORDSFOUND}' == "true"){
-		$("#timesheetEntriesDiv").empty();
-  	  $("#timesheetEntriesDiv").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
+		$("#timesheetDivByWeekFrequency").empty();
+  	  $("#timesheetDivByWeekFrequency").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
 	 }
 });
 </script>
