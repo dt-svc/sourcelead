@@ -576,6 +576,9 @@ public class Constants {
 	public static final String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name",
 			"Email-id", "Phone Number", "Date Of Join", "Rate", "Role", "Manager",
 			"status" };
+	public static final String[] DAILY_WISE_LEAVE_REPORT_HEADERS = { "Emp Name", "Emp Type", "Departement",
+			"Role", "Leave Type", "Type", "Duration", "From Date",
+			"To Date", "Applied On", "Reason", "Status", "Approver", "Approved On" };
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",
 			"Rate", "Vendor", "Vendor Contact", "Is Favourite"};
