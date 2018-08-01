@@ -20,7 +20,7 @@ input::-moz-focus-inner, input::-webkit-focus-inner {
     border: 0;
 }
 table tr td {
-       text-align: center;
+	text-align: center;
 }
 @-ms-viewport{
 width:auto!important;
@@ -3418,6 +3418,7 @@ border-bottom: none !important;
     display: inline-block; vertical-align: middle; border-radius: 2px; width: 18px;
 	line-height: 18px; height:18px; padding: 5px; margin-right: 3px; text-align: center;
 }
+
 .radio-custom + .radio-custom-label:before {
 content: ''; background: #EEEEEE; border: 1px solid #BDBDBD;
 display: inline-block; vertical-align: middle; border-radius: 50%; width: 18px;
@@ -8202,6 +8203,7 @@ margin: 6px; float:left;
 .timesheet_week_comm.slticket span i.fa-plus {
 float: left; position: relative; top: 5px; width: 10%;
 }
+
 #mySidenav {
 position: fixed; top: 165px; right: 0px; z-index: 1;
 }
@@ -9652,6 +9654,7 @@ z-index: -800;
 .remove_uservalidation p.jquery_form_error_message {
 	position: absolute; bottom: 32px;
 }
+
 .view-count{
     font-size: 20px; text-align: center; font-weight: 500; border-bottom: 1px solid #bdbdbd; padding: 2px;color: #00488B;
 }
@@ -9661,6 +9664,13 @@ z-index: -800;
 .menuWidget ul.menupop.menupop_3 {
     width:310px;
 	}
+	
+	
+	
+	
+	
+	
+	
 .level-second {
 transition: all ease-in-out 0.5s; display: none;
 }

@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -146,6 +148,8 @@ public class ProjectsController {
 	@Autowired
 	UserRoleService userRoleService;
 	
+	 @Autowired
+	 private SourceleadTagsService sourceleadTagsService;
 	
 	 protected boolean isNullOrEmpty(String str)
 	 {
@@ -440,6 +444,9 @@ public class ProjectsController {
 				     List<SourceleadSectionDTO> sectionsProjectTsk  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionIDProjectTask.getId(),orgLocations.getId());
 					 model.addObject("sourceleadSectionListForProjectTask",sectionsProjectTsk);
 					 
+					 List<String> taskTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.TASKS.toString(), orgLocations.getId());
+				     model.addObject("taskTagsList", taskTagsList);
+				        
 					model.setViewName("project/projectSummary");
 				}else {
 					model.setViewName("registration/persmissionDenied");
