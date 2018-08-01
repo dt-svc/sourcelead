@@ -234,6 +234,14 @@ public class ProjectTasks implements Serializable{
 	@Transient
 	private String actionTimeStr;
 	
+	@Transient
+    @JsonProperty
+    private String taskTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
 	public Long getId() {
 		return Id;
 	}
@@ -666,5 +674,21 @@ public class ProjectTasks implements Serializable{
 
 	public void setTaskOwnerName(String taskOwnerName) {
 		this.taskOwnerName = taskOwnerName;
+	}
+
+	public String getTaskTags() {
+		return taskTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTaskTags(String taskTags) {
+		this.taskTags = taskTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
 	}
 }

@@ -373,7 +373,7 @@ function validateTimeZone(){
 
 
 <div id="divTaskTd8"  style="display: none; float: left;" >
-	 <!-- <button type="button" class="btn-sm btn-success btn_Avail" title="External Interviewers" id ="REPLACEROWIDexternalInterviewers" onClick="getExternalInterviewers(REPLACEROWID);"><i class="fa fa-user-plus"></i></button> --> 
+	 <button type="button" class="btn-sm btn-success btn_Avail" title="External Interviewers" id ="REPLACEROWIDexternalInterviewers" onClick="getExternalInterviewers(REPLACEROWID);"><i class="fa fa-user-plus"></i></button> 
 	 <button type="button" class="btn-sm btn-primary btn_Avail" title="Available slots" id ="REPLACEROWIDAvail" onClick ="showCal(this.id);"><i class="fa fa-clock-o"></i></button>
      
      <input type="hidden" id="external_button_id" name="external_button_id" value="1externalInterviewers" />
@@ -1131,9 +1131,9 @@ function interviewTemplate(){
 			 			{
 			 	        		var opt = json[i];
 			 	        		 if(opt.isDefault == "Y"){
-			 	 	        		output = output + "<option value='" +opt.id+ "' selected>"+opt.templateName+"</option>";
+			 	 	        		output = output + "<option value='" +opt.uuid+ "' selected>"+opt.templateName+"</option>";
 			 	        		}else{
-				 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+				 	        		output = output + "<option value='" +opt.uuid+ "'>"+opt.templateName+"</option>";
 		
 			 	        		} 
 			 			}

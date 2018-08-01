@@ -19,6 +19,7 @@ background-color: #fff;
 
 <script type="text/javascript">
 $(document).ready(function(){
+	getContractTagsList();
 // 	if("" != localStorage.getItem("stage") && null != localStorage.getItem("stage")){
 		displyContract(localStorage.getItem("stage"));
 // 	}
@@ -33,6 +34,27 @@ $(document).ready(function(){
       </div>
      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts</a> &raquo; View Contract</div>
     </section>
+    
+      <div class="cearfix">
+		  <div class="newTagsWrap">
+			    <ul class="clearfix tagsWrap tagsWrapBor">
+				<select multiple class="chosen-select form-control" name="tagName" id="contractTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
+				</select>
+				</ul>
+				<div class="clearfix"></div>
+		  </div>
+		 </div>
+		   <div class="success_pop tagStyles" id="addContractTagAlert">
+				<i class="fa fa-check-circle"></i>
+		   		<span></span>
+		   </div>
+		   <div class="remove_pop tagStyles" id="deleteContractTagAlert">
+				<i class="fa fa-times"></i>
+		   		<span></span>
+		   </div>
+		   
+		   
+    
     <div class="content-area content-new clearfix">
     
      <div class="quickviewTabs viewontracts">
@@ -98,6 +120,133 @@ $(document).ready(function(){
      </div>
      <!-- Content Area Ends--> 
 </section>
+
+
+
+
+<!--  ============================= Contract tags related scripts written by Laxman Start ================================ -->
+<script>
+var select, chosen;
+select = $("#contractTagName");
+select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosen = select.data('chosen');
+chosen.search_field.on('keyup', function(e)
+{
+	var anyKeyword = this.value.replace(",","");
+    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+    {
+    	
+    	var par = this.parent;
+        var option = $("<option>").val(anyKeyword).text(anyKeyword);
+        select.append(option);
+        select.find(option).prop('selected', true);
+        $("#contractTagName option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#contractTagName").trigger("chosen:updated");
+		saveContractTags("add");
+    }
+});
+
+$('.chosen-select').chosen().on('change', function(evt, params) {
+	if (params.selected && params.selected != undefined) {
+		saveContractTags("add");
+	}
+	if (params.deselected && params.deselected != undefined) {
+		saveContractTags("delete");
+	}
+	
+});
+$("#contractTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+</script>
+<script>
+function getContractTagsList(){
+	var contractUUID ='${contractUUID}';
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getContractTags?"+tokenParamName+"="+tokenValue+"&contractUUID="+contractUUID,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.contractTags != null && json.contractTags != 'undefined' && json.contractTags != '') {
+	                var res = [];
+	                res = json.contractTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            $("#contractTagName").empty();
+            $("#contractTagName").append(result);
+            $("#contractTagName").chosen().trigger("chosen:updated")
+
+        },
+	});
+}
+</script>
+<script>
+function saveContractTags(type){
+	 var contractUUID ='${contractUUID}';
+	 var tagName = $("#contractTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByContractUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&contractUUID="+contractUUID+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByContractUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&contractUUID="+contractUUID+"&tagName="+""
+	 }
+	
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+        	$("#editRoleLoading").removeAttr('style');
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup("Tags added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tags deleted successfully");
+        		}
+        		
+        		getContractTagsList(contractUUID);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+function showSuccessStatusPopup(status) {
+	$("#addContractTagAlert").css("display","block");
+	$("#addContractTagAlert span").html(status);
+    $('#addContractTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteContractTagAlert").css("display","block");
+	$("#deleteContractTagAlert span").html(status);
+    $('#deleteContractTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+<!--  ============================= Contract tags related scripts written by Laxman Ends ================================ -->
+
+
+
+
+
+
 
 <script>
    function viewContractCommentRemoveSpaces() {

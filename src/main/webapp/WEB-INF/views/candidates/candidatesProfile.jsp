@@ -1156,40 +1156,7 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 
 <script>
 
-function editTag(candidateId){
-	$('.tagsWrap').addClass("tagsWrapBor");
-	$("#tagName").prop('disabled', false).trigger("chosen:updated");
-	$("#editTagBtn").remove();
-	$("#editTagBtnSpan").hide();
-	window.tagCountBefore = $("#tagName :selected").length;
-	var result = '';
-	result = result + '<button type="button" id="saveTagBtn" name="saveTagBtn" class="btn btn-primary btn-sm" onclick="saveTag('+candidateId+');">Save Tag</button>';
-	$("#saveTagBtnSpan").empty();
-	$("#saveTagBtnSpan").append(result);
-	$("#saveTagBtnSpan").show();
-	
-	//Adding Customized Tags to the list this method is slead-common.js
-	tagIt("tagName", 'Press Enter-Key Or Comma(,) To Add New Tag:', 'tagItBykeyForSkills','tags','');
-	
-}
-
-
-function saveTag(candidateId){
-	$("#tagName").prop('disabled', true).trigger("chosen:updated");
-	window.tagCountAfter = $("#tagName :selected").length;
-	saveCandidateTags(candidateId);
-	$("#saveTagBtn").remove();
-	$("#saveTagBtnSpan").hide();
-	var result = '';
-	result = result + '<button type="button" id="editTagBtn" name="editTagBtn" class="btn btn-primary btn-sm" onclick="editTag('+candidateId+');">Edit Tag</button>';
-	$("#editTagBtnSpan").empty();
-	$("#editTagBtnSpan").append(result);
-	$("#editTagBtnSpan").show();
-	$('.tagsWrap').removeClass("tagsWrapBor");
-	tagCountAfter = tagCountBefore = 0;
-	
-}
-
+ 
 
 
 function saveCandidateTags(candidateId){
