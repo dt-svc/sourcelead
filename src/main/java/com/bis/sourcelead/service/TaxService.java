@@ -12,6 +12,7 @@ import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
 import com.bis.sourcelead.dto.SourceleadTaxSubmissionDocumentDTO;
+import com.bis.sourcelead.dto.SourceleadTaxSubmissionMasterDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -86,5 +87,7 @@ public interface TaxService {
 	public SourceleadTaxChallanItemDTO getChallanItemDetails(Long itemRowId);
 
 	Response<String> changeITDeclarationSubmissionStatus(long id, int status);
+
+	List<SourceleadTaxSubmissionMasterDTO> getTaxSubmissionMaster(Long userId, String dateFormat, String financialYear, Paginator paginator);
 
 }

@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocument;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocumentAttachment;
+import com.bis.sourcelead.entity.SourceleadTaxSubmissionMaster;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -702,6 +703,50 @@ public class TaxDaoImpl implements TaxDao {
 			e.printStackTrace();
 		}
 		return -1;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SourceleadTaxSubmissionMaster> getTaxSubmissionMasterList(Long userId, String financialYear,
+			Paginator paginator) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from SourceleadTaxSubmissionMaster submissionMaster where submissionMaster.user.id=:userId";
+			if(financialYear!=null && !financialYear.isEmpty()) {
+				query += " and submissionMaster.financialYear=:financialYear";
+			}
+			query += " order by submissionMaster.id desc";
+			List<String> params = new LinkedList<>();
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("userId", userId);
+			params.add("long;userId;" + userId);
+			if (financialYear != null && !financialYear.isEmpty()) {
+				queryObj.setString("financialYear", financialYear);
+				params.add("String;financialYear;" + financialYear);
+			}
+			if (paginator != null) {
+				queryObj.setFirstResult(paginator.getPageNo() * paginator.getPageSize());
+				queryObj.setMaxResults(paginator.getPageSize());
+			}
+			List<SourceleadTaxSubmissionMaster> taxSubmissionMasterList = queryObj.list();
+			if (paginator != null) {
+				paginator.applyPaginationData(query, session, params);
+			}
+			return taxSubmissionMasterList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public void saveTaxSubmissionMaster(SourceleadTaxSubmissionMaster sourceleadTaxSubmissionMaster) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(sourceleadTaxSubmissionMaster);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

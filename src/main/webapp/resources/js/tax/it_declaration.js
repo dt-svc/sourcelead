@@ -213,7 +213,7 @@ function closeChangeStatusPopup() {
 	$(".project_inn_mask").fadeOut(200);
 }
 
-function getItDeclarationSubmissionList(pageNo) {
+function getItDeclarationSubmissionList(uuid, pageNo) {
 	var pageSize = $("#pageSize").val();
 	$("#formList").empty();
 	$.post(sourceleadUrl + "/itDeclaration/list", {pageNo:pageNo, pageSize:pageSize}, function(response) {
@@ -229,7 +229,7 @@ function getItDeclarationSubmissionList(pageNo) {
 					text += "	<td>" + formList[e].userId + "</td>";
 					text += "	<td>";
 					text += "		<div class='tblminwidth proj_show'>";
-					text += "			<span>" + formList[e].userName + "</span> <i class='fa fa-binoculars'></i>";
+					text += "			<span>" + formList[e].userName + "</span> <a href='viewForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "'><i class='fa fa-binoculars'></i></a>";
 					text += "		</div>";
 					text += "	</td>";
 					text += "	<td><div class='tbldata-dotdot-verybig'>" + formList[e].financialYear + "</div></td>";
@@ -241,7 +241,7 @@ function getItDeclarationSubmissionList(pageNo) {
 //					text += "			<li><a href='viewForm?uuid=${uuid}&formUUID=" + formList[e].uuid + "' title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
 					text += "			<li><a href='javascript:void()' class='text-danger' title='Export' onclick='exportFormToPDF(" + formList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
 					if(formList[e].status === 0) {
-						text += "				<li><a href='editForm?uuid=${uuid}&formUUID=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
+						text += "				<li><a href='editForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						text += "				<li><a href='javascript:void()' title='Approve' onclick='approveOrRejectForm(" + formList[e].id + ", 1)'><i class='fa fa-check'></i></a></li>";
 						text += "				<li><a href='javascript:void()' title='Reject' onclick='approveOrRejectForm(" + formList[e].id + ", -1)' class='text-danger'><i class='fa fa-close'></i></a></li>";
 					}
@@ -258,7 +258,7 @@ function getItDeclarationSubmissionList(pageNo) {
 						ellipsePageSet : false,
 						cssStyle : 'light-theme',
 						onPageClick : function(pageNumber, event) {
-							getItDeclarationSubmissionList(pageNumber-1);
+							getItDeclarationSubmissionList(uuid, pageNumber-1);
 						}
 				};
 				$("#pagination-demo").pagination(options);

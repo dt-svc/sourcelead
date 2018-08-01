@@ -22,10 +22,9 @@
 								field-name="Employee" data-validation="required"
 								name="userId">
 								<c:forEach items="${userRoleList}" var="userRole">
-									<option value="${userRole.user.id}"
-										data-id="${userRole.user.id}"
-										data-name="${userRole.user.firstName.concat(' ' ).concat(userRole.user.lastName)}">${userRole.user.firstName}
-										${userRole.user.lastName}</option>
+									<option ${user.id == userRole.user.id ? "selected='selected'" : ""} value="${userRole.user.id}" data-id="${userRole.user.id}" data-name="${userRole.user.firstName.concat(' ' ).concat(userRole.user.lastName)}">
+										${userRole.user.firstName} ${userRole.user.lastName}
+									</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -35,14 +34,14 @@
 						<label class="clearfix">Associate Name</label>
 						<div class="clearfix">
 							<input type="text" class="form-control" readonly="readonly"
-								id="associateName" field-name="Associate Name"
+								id="associateName" field-name="Associate Name" value="${user.firstName} ${user.lastName}"
 								data-validation="required" placeholder="Associate Name">
 						</div>
 					</div>
 					<div class="col-md-5">
 						<label class="clearfix">Associate ID</label>
 						<div class="clearfix">
-							<input type="text" class="form-control" readonly="readonly"
+							<input type="text" class="form-control" readonly="readonly" value="${user.id}"
 								id="associateId" placeholder="Associate Id">
 						</div>
 					</div>
@@ -175,3 +174,10 @@
 	</form>
 	<!-- Content Area Ends-->
 </section>
+<script type="text/javascript">
+	var userId = "${user.id}";
+	$(document).ready(function() {
+		/* $('#employeeSelect').val(12); */
+		$('#employeeSelect').selectpicker('refresh');
+	});
+</script>

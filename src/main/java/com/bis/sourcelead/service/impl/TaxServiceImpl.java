@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,7 +16,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
@@ -30,6 +30,7 @@ import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionItemDTO;
 import com.bis.sourcelead.dto.SourceleadTaxSubmissionDocumentAttachmentDTO;
 import com.bis.sourcelead.dto.SourceleadTaxSubmissionDocumentDTO;
+import com.bis.sourcelead.dto.SourceleadTaxSubmissionMasterDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocument;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocumentAttachment;
+import com.bis.sourcelead.entity.SourceleadTaxSubmissionMaster;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -56,6 +58,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+
+import ucar.nc2.ft.point.standard.TableAnalyzer;
 
 @Service
 public class TaxServiceImpl implements TaxService {
@@ -714,7 +718,8 @@ public class TaxServiceImpl implements TaxService {
 				itDeclarationSubmission.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
 			}
 			itDeclarationSubmission.setFinancialYear(itDeclarationSubmissionDTO.getFinancialYear());
-			itDeclarationSubmission.setUser(userService.getUserById(itDeclarationSubmissionDTO.getUserId()));
+			User user = userService.getUserById(itDeclarationSubmissionDTO.getUserId());
+			itDeclarationSubmission.setUser(user);
 //			itDeclarationSubmission.setStatus(itDeclarationSubmissionDTO.getStatus());
 			itDeclarationSubmission
 					.setSourceleadTaxForm(taxDao.getTaxFormType(itDeclarationSubmissionDTO.getTaxFormId()));
@@ -749,6 +754,13 @@ public class TaxServiceImpl implements TaxService {
 			itDeclarationSubmission.setSubmissionItems(jsonArray.toString());
 			long result = taxDao.submitITDeclaration(itDeclarationSubmission);
 			if (result > 0) {
+				if (itDeclarationSubmissionDTO.getId() == 0) {
+					SourceleadTaxSubmissionMaster sourceleadTaxSubmissionMaster = new SourceleadTaxSubmissionMaster();
+					sourceleadTaxSubmissionMaster.setFinancialYear(itDeclarationSubmissionDTO.getFinancialYear());
+					sourceleadTaxSubmissionMaster.setUser(user);
+					sourceleadTaxSubmissionMaster.setSourceleadTaxITDeclarationSubmission(itDeclarationSubmission);
+					taxDao.saveTaxSubmissionMaster(sourceleadTaxSubmissionMaster);
+				}
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 				response.setObject(itDeclarationSubmission.getId());
@@ -1140,6 +1152,37 @@ public class TaxServiceImpl implements TaxService {
 			e.printStackTrace();
 		}
 		return response;
+	}
+
+	@Override
+	public List<SourceleadTaxSubmissionMasterDTO> getTaxSubmissionMaster(Long userId, String dateFormat,
+			String financialYear, Paginator paginator) {
+		List<SourceleadTaxSubmissionMasterDTO> taxSubmissionMasterDTOList = new LinkedList<>();
+		try {
+			List<SourceleadTaxSubmissionMaster> taxSubmissionMasterList = taxDao.getTaxSubmissionMasterList(userId,
+					financialYear, paginator);
+			if (taxSubmissionMasterList != null && !taxSubmissionMasterList.isEmpty()) {
+				for (SourceleadTaxSubmissionMaster taxSubmissionMaster : taxSubmissionMasterList) {
+					SourceleadTaxSubmissionMasterDTO taxSubmissionMasterDTO = new SourceleadTaxSubmissionMasterDTO();
+					taxSubmissionMasterDTO.setId(taxSubmissionMaster.getId());
+					taxSubmissionMasterDTO.setFinancialYear(taxSubmissionMaster.getFinancialYear());
+					taxSubmissionMasterDTO.setUserId(taxSubmissionMaster.getUser().getId());
+					SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+					if (taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission() != null) {
+						taxSubmissionMasterDTO.setItDeclarationSubmissionId(
+								taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission().getId());
+						taxSubmissionMasterDTO.setFillingDate(sdf.format(
+								taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission().getCreatedDate()));
+					}
+					taxSubmissionMasterDTO
+							.setStatus(taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission().getStatus());
+					taxSubmissionMasterDTOList.add(taxSubmissionMasterDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return taxSubmissionMasterDTOList;
 	}
 
 }
