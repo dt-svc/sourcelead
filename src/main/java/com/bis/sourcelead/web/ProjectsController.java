@@ -241,7 +241,6 @@ public class ProjectsController {
 	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
 	 @RequestMapping(value = "/clientProject")
 		public ModelAndView clientProject(HttpServletRequest request) throws Exception {
-		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    
 				ModelAndView model = new ModelAndView();
@@ -255,24 +254,9 @@ public class ProjectsController {
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 					
-					List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId());
-					List<OrgRelations> clientList = new ArrayList<>();
-					if(clientsList != null & clientsList.size() > 0) {
-						for(OrgRelations orgRelations : clientsList) {
-							OrgLocations clientOrgLocations = null;
-							if(orgRelations.getLocationId().getId().equals(loginOrgLocations.getId())) {
-								clientOrgLocations = orgRelations.getResponderLocationId();
-							}else {
-								clientOrgLocations = orgRelations.getLocationId();
-							}
-							
-							if(StringUtils.isNotBlank(clientOrgLocations.getOrg().getOrgType()) && clientOrgLocations.getOrg().getOrgType().equalsIgnoreCase("Guest")) {
-								clientList.add(orgRelations);
-							}
-							
-						}
-					}
-					model.addObject("clientsList", clientList);
+					List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(loginOrgLocations.getId());
+				    model.addObject("clientsList", orgClientList);
+					
 					model.addObject("sourceleadUrl", sourceleadUrl);
 					model.setViewName("project/clientProject");
 					return model;
