@@ -68,36 +68,44 @@ public class TaxSubmissionController {
 	public ModelAndView getForms(HttpServletRequest request, @RequestParam(defaultValue = "") String financialYear,
 			@RequestParam(defaultValue = "") String uuid, Paginator paginator) {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("errorPage");
+		
 		try {
-			if (!uuid.isEmpty()) {
-				modelAndView.addObject("uuid", uuid);
-				SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, false, false);
-				if (sourceleadTaxFormDTO != null) {
-					modelAndView.addObject("taxForm", sourceleadTaxFormDTO);
-//					modelAndView.addObject("formList", taxService.getITDeclarationSubmissionList(uuid, financialYear, paginator));
-//					modelAndView.addObject("paginator",paginator);
-					modelAndView.setViewName("payroll_india/org/form_list_by_formType");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			if (user != null) {
+				if (!uuid.isEmpty()) {
+					modelAndView.addObject("uuid", uuid);
+					SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, false, false);
+					if (sourceleadTaxFormDTO != null) {
+						modelAndView.addObject("taxForm", sourceleadTaxFormDTO);
+	//					modelAndView.addObject("formList", taxService.getITDeclarationSubmissionList(uuid, financialYear, paginator));
+	//					modelAndView.addObject("paginator",paginator);
+						modelAndView.setViewName("payroll_india/org/form_list_by_formType");
+					}
+				} else {
+					// setYears(modelAndView, year);
+					TaxAdminController.setYears(modelAndView, financialYear);
+					String year = "";
+					if (financialYear.isEmpty()) {
+						Calendar c = Calendar.getInstance();
+						Calendar c1 = Calendar.getInstance();
+						c1.set(Calendar.YEAR, c.get(Calendar.YEAR));
+						c1.roll(Calendar.YEAR, true);
+						year = c.get(Calendar.YEAR) + "-" + c1.get(Calendar.YEAR);
+	
+					} else {
+						year = financialYear;
+					}
+					modelAndView.addObject("formList", taxService.getTaxFormTypeListForSubmission(year, orgLocations.getId()));
+					modelAndView.setViewName("payroll_india/org/forms_list");
 				}
 			} else {
-				// setYears(modelAndView, year);
-				TaxAdminController.setYears(modelAndView, financialYear);
-				String year = "";
-				if (financialYear.isEmpty()) {
-					Calendar c = Calendar.getInstance();
-					Calendar c1 = Calendar.getInstance();
-					c1.set(Calendar.YEAR, c.get(Calendar.YEAR));
-					c1.roll(Calendar.YEAR, true);
-					year = c.get(Calendar.YEAR) + "-" + c1.get(Calendar.YEAR);
-
-				} else {
-					year = financialYear;
-				}
-				modelAndView.addObject("formList", taxService.getTaxFormTypeListForSubmission(year));
-				modelAndView.setViewName("payroll_india/org/forms_list");
+				modelAndView.setViewName("login");
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
+			modelAndView.setViewName("errorPage");
 		}
 		return modelAndView;
 	}
@@ -213,9 +221,11 @@ public class TaxSubmissionController {
 		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			if (user != null) {
 				itDeclarationSubmissionDTO.setStatus(1);
-				response = taxService.submitITDeclaration(itDeclarationSubmissionDTO, user);
+				response = taxService.submitITDeclaration(itDeclarationSubmissionDTO, user, orgLocations);
 				// response.setObject(1L);
 //				response.setResponse(Result.SUCCESS.name());
 				if (response.getResponse().equals(Result.SUCCESS.name())) {
@@ -249,9 +259,11 @@ public class TaxSubmissionController {
 		ResponseList<SourceleadTaxITDeclarationSubmissionDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			if (user != null) {
 				List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionDTOList = taxService
-						.getITDeclarationSubmissionList(uuid, financialYear, paginator);
+						.getITDeclarationSubmissionList(orgLocations.getId(), uuid, financialYear, paginator);
 				response.setData(itDeclarationSubmissionDTOList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

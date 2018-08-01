@@ -59,8 +59,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
-import ucar.nc2.ft.point.standard.TableAnalyzer;
-
 @Service
 public class TaxServiceImpl implements TaxService {
 
@@ -412,7 +410,7 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public List<SourceleadTaxFormDTO> getTaxFormTypeListForSubmission(String financialYear) {
+	public List<SourceleadTaxFormDTO> getTaxFormTypeListForSubmission(String financialYear, long orgLocationId) {
 		List<SourceleadTaxFormDTO> sourceleadTaxFormList = new LinkedList<>();
 		try {
 			List<SourceleadTaxForm> stList = taxDao.getTaxFormTypeList(false);
@@ -430,7 +428,7 @@ public class TaxServiceImpl implements TaxService {
 					// dynamically to all taxForm types
 					if (sourceleadTaxForm.getName().equalsIgnoreCase("IT Declaration")) {
 						count = taxDao.getITDeclarationFormsCountByYear(financialYear,
-								sourceleadTaxForm.getName().replaceAll(" ", ""));
+								sourceleadTaxForm.getName().replaceAll(" ", ""), orgLocationId);
 					}
 					sourceleadTaxFormDTO.setTotalFormsCount(count);
 					// if (count > 0)
@@ -699,7 +697,7 @@ public class TaxServiceImpl implements TaxService {
 
 	@Override
 	public Response<Long> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO,
-			User loggedInUser) {
+			User loggedInUser, OrgLocations orgLocations) {
 		Response<Long> response = new Response<>();
 		try {
 			SourceleadTaxITDeclarationSubmission existedItDeclarationSubmission = taxDao.getITDeclarationSubmission(itDeclarationSubmissionDTO.getUserId(), itDeclarationSubmissionDTO.getFinancialYear());
@@ -722,6 +720,7 @@ public class TaxServiceImpl implements TaxService {
 			itDeclarationSubmission.setFinancialYear(itDeclarationSubmissionDTO.getFinancialYear());
 			User user = userService.getUserById(itDeclarationSubmissionDTO.getUserId());
 			itDeclarationSubmission.setUser(user);
+			itDeclarationSubmission.setOrgLocations(orgLocations);
 //			itDeclarationSubmission.setStatus(itDeclarationSubmissionDTO.getStatus());
 			itDeclarationSubmission
 					.setSourceleadTaxForm(taxDao.getTaxFormType(itDeclarationSubmissionDTO.getTaxFormId()));
@@ -780,11 +779,11 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid,
+	public List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(long orgLocationId, String uuid,
 			String financialYear, Paginator paginator) {
 		List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionList = new LinkedList<>();
 		try {
-			List<SourceleadTaxITDeclarationSubmission> itList = taxDao.getITDeclarationSubmissionList(uuid,
+			List<SourceleadTaxITDeclarationSubmission> itList = taxDao.getITDeclarationSubmissionList(orgLocationId, uuid,
 					financialYear, paginator);
 			if (itList != null && !itList.isEmpty()) {
 				for (SourceleadTaxITDeclarationSubmission itSubmission : itList) {
@@ -949,47 +948,50 @@ public class TaxServiceImpl implements TaxService {
 					+ System.getProperty("file.separator") + orgLocationId + System.getProperty("file.separator")
 					+ "temp";
 			for (SourceleadTaxSubmissionDocumentDTO submissionDocumentDTO : documentList) {
-				SourceleadTaxSubmissionDocument taxSubmissionDocument;
-				if (submissionDocumentDTO.getId() > 0) {
-					taxSubmissionDocument = taxDao.getSourceleadTaxSubmissionDocumentById(submissionDocumentDTO.getId());
-					if(submissionDocumentDTO.isUpdateFile()) {
-						List<SourceleadTaxSubmissionDocumentAttachment> savedAttachmentList = taxSubmissionDocument.getAttachmentList();
-						if(savedAttachmentList!=null) {
-							for(SourceleadTaxSubmissionDocumentAttachment attachment : savedAttachmentList) {
-								taxDao.removeTaxSubmissionDocumentAttachment(attachment);
+				if (submissionDocumentDTO.getAttachmentList() != null
+						&& !submissionDocumentDTO.getAttachmentList().isEmpty()) {
+					SourceleadTaxSubmissionDocument taxSubmissionDocument;
+					if (submissionDocumentDTO.getId() > 0) {
+						taxSubmissionDocument = taxDao.getSourceleadTaxSubmissionDocumentById(submissionDocumentDTO.getId());
+						if(submissionDocumentDTO.isUpdateFile()) {
+							List<SourceleadTaxSubmissionDocumentAttachment> savedAttachmentList = taxSubmissionDocument.getAttachmentList();
+							if(savedAttachmentList!=null) {
+								for(SourceleadTaxSubmissionDocumentAttachment attachment : savedAttachmentList) {
+									taxDao.removeTaxSubmissionDocumentAttachment(attachment);
+								}
 							}
 						}
+					}else {
+						taxSubmissionDocument = new SourceleadTaxSubmissionDocument();
 					}
-				}else {
-					taxSubmissionDocument = new SourceleadTaxSubmissionDocument();
-				}
-				taxSubmissionDocument.setName(submissionDocumentDTO.getName());
-				taxSubmissionDocument
-						.setSourceleadTaxITDeclarationSubmission(taxDao.getITDeclarationSubmission(submissionId));
-
-				if (submissionDocumentDTO.isUpdateFile()) {
-					List<SourceleadTaxSubmissionDocumentAttachment> attachmentList = new LinkedList<>();
-					for (SourceleadTaxSubmissionDocumentAttachmentDTO attachmentDTO : submissionDocumentDTO
-							.getAttachmentList()) {
-						File file = new File(path, attachmentDTO.getAttachment());
-						SourceleadTaxSubmissionDocumentAttachment attachment;
-						if (attachmentDTO.getId() > 0)
-							attachment = new SourceleadTaxSubmissionDocumentAttachment();
-						else {
-							attachment = new SourceleadTaxSubmissionDocumentAttachment();
-							attachment.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
+					taxSubmissionDocument.setName(submissionDocumentDTO.getName());
+					taxSubmissionDocument
+							.setSourceleadTaxITDeclarationSubmission(taxDao.getITDeclarationSubmission(submissionId));
+	
+					if (submissionDocumentDTO.isUpdateFile()) {
+						List<SourceleadTaxSubmissionDocumentAttachment> attachmentList = new LinkedList<>();
+						for (SourceleadTaxSubmissionDocumentAttachmentDTO attachmentDTO : submissionDocumentDTO
+								.getAttachmentList()) {
+							File file = new File(path, attachmentDTO.getAttachment());
+							SourceleadTaxSubmissionDocumentAttachment attachment;
+							if (attachmentDTO.getId() > 0)
+								attachment = new SourceleadTaxSubmissionDocumentAttachment();
+							else {
+								attachment = new SourceleadTaxSubmissionDocumentAttachment();
+								attachment.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
+							}
+							attachment.setAttachment(attachmentDTO.getAttachment());
+							attachment.setSourceleadTaxSubmissionDocument(taxSubmissionDocument);
+							attachment.setActive(true);
+							attachmentList.add(attachment);
+							// boolean flag = taxDao.saveDocumentAttachment(attachment);
+							// if (flag)
+							FileUploadUtil.moveFile(staticPath, orgId, orgLocationId, "taxDocuments", file);
 						}
-						attachment.setAttachment(attachmentDTO.getAttachment());
-						attachment.setSourceleadTaxSubmissionDocument(taxSubmissionDocument);
-						attachment.setActive(true);
-						attachmentList.add(attachment);
-						// boolean flag = taxDao.saveDocumentAttachment(attachment);
-						// if (flag)
-						FileUploadUtil.moveFile(staticPath, orgId, orgLocationId, "taxDocuments", file);
+						taxSubmissionDocument.setAttachmentList(attachmentList);
 					}
-					taxSubmissionDocument.setAttachmentList(attachmentList);
+					taxDao.saveDocument(taxSubmissionDocument);
 				}
-				taxDao.saveDocument(taxSubmissionDocument);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

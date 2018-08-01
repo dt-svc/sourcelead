@@ -454,11 +454,12 @@ public class TaxDaoImpl implements TaxDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public int getITDeclarationFormsCountByYear(String financialYear, String tableName) {
+	public int getITDeclarationFormsCountByYear(String financialYear, String tableName, long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from SourceleadTax" + tableName + "Submission it where it.financialYear=:financialYear";
+			String query = "from SourceleadTax" + tableName + "Submission it where it.orgLocations.id=:orgLocationId and it.financialYear=:financialYear";
 			Query queryObj = session.createQuery(query);
+			queryObj.setLong("orgLocationId", orgLocationId);
 			queryObj.setString("financialYear", financialYear + "");
 			List<Object> submissionList = queryObj.list();
 			if (submissionList != null && !submissionList.isEmpty())
@@ -471,13 +472,13 @@ public class TaxDaoImpl implements TaxDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid,
+	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(long orgLocationId, String uuid,
 			String financialYear, Paginator paginator) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from SourceleadTaxITDeclarationSubmission it";
+			String query = "from SourceleadTaxITDeclarationSubmission it where it.orgLocations.id=:orgLocationId";
 			if (!uuid.isEmpty()) {
-				query += " where it.sourceleadTaxForm.uuid=:uuid";
+				query += (query.contains("where") ? " and " : " where ") + "it.sourceleadTaxForm.uuid=:uuid";
 			}
 			if (!financialYear.isEmpty()) {
 				query += (query.contains("where") ? " and " : " where ") + "it.financialYear=:financialYear";
@@ -485,11 +486,13 @@ public class TaxDaoImpl implements TaxDao {
 			query += " order by it.id desc";
 			Query queryObj = session.createQuery(query);
 			List<String> params = new LinkedList<>();
-			if(!uuid.isEmpty()) {
+			queryObj.setLong("orgLocationId", orgLocationId);
+			params.add("long;orgLocationId;" + orgLocationId);
+			if (!uuid.isEmpty()) {
 				queryObj.setString("uuid", uuid);
 				params.add("String;uuid;" + uuid);
 			}
-			if(!financialYear.isEmpty()) {
+			if (!financialYear.isEmpty()) {
 				queryObj.setString("financialYear", financialYear);
 				params.add("String;financialYear;" + financialYear);
 			}

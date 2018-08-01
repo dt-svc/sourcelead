@@ -12,12 +12,27 @@ $(document).ready(function() {
 	$("#saveBtn, #submitBtn").click(function() {
 		if ($('#itDeclarationForm').validate(false, validationSettings)) {
 			var flag = true;
+			$("#documentsTable tr").each(function() {
+				var docNameInput = $(this).find("input[data-name='docName']");
+				var fileNameInput = $(this).find("input[data-name='fileName']");
+				/*if(docNameInput.val() === "" && fileNameInput.val() === "") {
+					$(docNameInput).parent().append("<p class='jquery_form_error_message'>Document Name is required</p>");
+					$(fileNameInput).parent().append("<p class='jquery_form_error_message'>Document File is required</p>");
+					flag = false;
+				} else*/ 
+				if(docNameInput.val() !== "" && fileNameInput.val() === "") {
+					$(fileNameInput).parent().append("<p class='jquery_form_error_message'>Document File is required</p>");
+					flag = false;
+				} else if(docNameInput.val() === "" && fileNameInput.val() !== "") {
+					$(docNameInput).parent().append("<p class='jquery_form_error_message'>Document Name is required</p>");
+					flag = false;
+				}
+			});
 			if(flag) {
 				$("#saveBtn").attr("disabled","disabled");
 				$("#submitBtn").attr("disabled","disabled");
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 				var formData = getFormData("itDeclarationForm");
-				
 				$.ajax({
 					type : "POST",
 	        	    data: formData,
@@ -118,8 +133,7 @@ function addDocumentRow() {
 	row += "<div style='display: none;' class='attachments' data-index=" + uploadCount + "></div>";
 	row += "<input type='hidden' name='documentList[" + uploadCount + "].name' data-name='documentName' />";
 	row += "<input type='hidden' name='documentList[" + uploadCount + "].updateFile' data-name='updateFile' value='false'/>";
-	/*row += "<input type='hidden' name='documentList[" + uploadCount + "].fileNames' data-name='documentFileNames' />";*/
-	row += "<input data-name='docName' type='text' class='form-control input-sm' placeholder='Enter Document Name' field-name='Document Name' data-validation='required' onchange='enableDisableRefresh(this);applyKeyToDocument(this);' onkeyup='enableDisableRefresh(this);applyKeyToDocument(this);'>";
+	row += "<input data-name='docName' type='text' class='form-control input-sm' placeholder='Enter Document Name' field-name='Document Name' onchange='enableDisableRefresh(this);applyKeyToDocument(this);' onkeyup='enableDisableRefresh(this);applyKeyToDocument(this);'>";
 	row +="</td>";
 	row += "<td>";
 	row += "<div class='clearfix attchments'>";
@@ -130,10 +144,10 @@ function addDocumentRow() {
 			+ "' class='upload' type='file' onchange='fileUploadEvent(this)' data-index=" + uploadCount + ">";
 	row += "</span>";
 	row += "</label>";
-	row += "<input class='form-control' readonly='readonly' id='uploadFile' placeholder='Select File(s)' type='text' field-name='Document File' data-validation='required'>";
+	row += "<input class='form-control' readonly='readonly' data-name='fileName' id='uploadFile" + uploadCount + "' placeholder='Select File(s)' type='text' field-name='Document File'>";
 	row += "</div>";
 	row += "</div>";
-	row += "<div class='uploadedFiles'></div>";
+	row += "<div class='uploadedFiles' data-id=" + uploadCount + "></div>";
 	row += "</td>";
 	row += "<td>";
 	row += "<div class='tblminwidth-75 text-center'>";
@@ -152,6 +166,23 @@ function removeDocumentRow(ele) {
 		$(this).attr("id", "uploadBtn" + (uploadCount++));
 		document.getElementById($(this).attr("id")).value = "";
 	});
+	refreshDocumentInputIndexes();
+}
+
+function refreshDocumentInputIndexes() {
+	var count = 0;
+	$("#documentsTable tr").each(function () {
+		$(this).data("index", count);
+		$(this).find(".attachments").data("index", count);
+		var attachmentCount = 0;
+		$(this).find(".attachments").find("input").each(function () {
+			$(this).prop("name", "documentList[" + count + "].attachmentList[" + attachmentCount + "].attachment");
+			attachmentCount++;
+		});
+		$(this).find("input[data-name='documentName']").prop("name", "documentList[" + count + "].name");
+		$(this).find("input[data-name='updateFile']").prop("name", "documentList[" + count + "].updateFile");
+		count++;
+	});
 }
 
 function refreshDocumentRow(ele) {
@@ -162,18 +193,10 @@ function refreshDocumentRow(ele) {
 }
 
 function removeAttachment(ele) {
-	/*var parentDiv = $(this).parents("div[class='uploadedFiles']");
-	$(this).parent().remove();
-	var attachmentsCount = $(parentDiv).find("i").length;
-	if(attachmentsCount)
-	$(parentDiv).find("i").each(function(){
-		
-	});*/
 	var parentDiv = $(ele).parent().parent();
 	$(ele).parent().remove();
-	$(parentDiv).find("i").each(function(){
-			
-	});
+	var filesCount = $(parentDiv).find("i").length;
+	$("#uploadFile" + $(parentDiv).data("id")).val(filesCount > 1 ? (filesCount + " files selected") : filesCount === 1 ? "1 file selected" : "");
 }
 
 function approveOrRejectForm(formId, status) {

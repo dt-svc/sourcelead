@@ -19,7 +19,7 @@
 					<input type="hidden" value="${form.taxFormId}" name="taxFormId"/>
 					<div class="col-md-6 col-md-offset-2">
 						<div class="clearfix dropdown-select">
-							<select class="selectpicker width100percnt" id="employeeSelect" ${viewForm ? "disabled='disabled'" : ""} 
+							<select class="selectpicker width100percnt" id="employeeSelect" ${viewForm || editForm ? "disabled='disabled'" : ""} 
 							 data-live-search="true" title="Select Employee" field-name="Employee" data-validation="required" name="userId">
 								<c:forEach items="${userRoleList}" var="userRole">
 									<option ${form.userId == userRole.user.id ? "selected" : ""} value="${userRole.user.id}" data-id="${userRole.user.id}" data-name="${userRole.user.firstName.concat(' ' ).concat(userRole.user.lastName)}">
@@ -62,168 +62,170 @@
 					</div>
 					<div class="clearfix"></div>
 					<div class="col-md-10">
-					<c:set var="sectionCount" value="0"></c:set>
-					<c:set var="sectionItemCount" value="0"></c:set>
-					<c:forEach items="${form.submissionItems}" var="submissionItem">
-						<table class="table table-itdeclaration table-bordered">
-							<thead>
-								<tr>
-									<th colspan="4" class="text-info">${submissionItem.get("taxSectionName")}</th>
-								</tr>
-								<tr>
-									<th>Items</th>
-									<th>Max Limit</th>
-									<th>Description</th>
-									<th>Declared Amount</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:forEach begin="0" end="${submissionItem.get('items').length() - 1}" var="index">
-									<input type="hidden" name="submissionItemList[${sectionItemCount}].taxSectionId" value="${submissionItem.get('taxSectionId')}">
-									<input type="hidden" name="submissionItemList[${sectionItemCount}].taxSectionName" value="${submissionItem.get('taxSectionName')}">
-									<input type="hidden" name="submissionItemList[${sectionItemCount}].name" value="${submissionItem.get('items').getJSONObject(index).getString('name')}">
-									<input type="hidden" name="submissionItemList[${sectionItemCount}].maxLimit" value="${submissionItem.get('items').getJSONObject(index).getString('maxLimit')}">
-									<input type="hidden" name="submissionItemList[${sectionItemCount}].description" value="${submissionItem.get('items').getJSONObject(index).getString('description')}">
+						<c:set var="sectionCount" value="0"></c:set>
+						<c:set var="sectionItemCount" value="0"></c:set>
+						<c:forEach items="${form.submissionItems}" var="submissionItem">
+							<table class="table table-itdeclaration table-bordered">
+								<thead>
 									<tr>
-										<td>${submissionItem.get('items').getJSONObject(index).getString('name')}</td>
-										<td>${submissionItem.get('items').getJSONObject(index).getString('maxLimit')}</td>
-										<td>${submissionItem.get('items').getJSONObject(index).getString('description') != null && submissionItem.get('items').getJSONObject(index).getString('description') != '' ? submissionItem.get('items').getJSONObject(index).getString('description') : '--NA--'}</td>
-										<td>
-											<input ${viewForm ? "disabled='disabled'" : ""} type="text" class="form-control input-sm" name="submissionItemList[${sectionItemCount}].amount"
-											placeholder='Enter Amount' field-name='Amount' value="${submissionItem.get('items').getJSONObject(index).getString('amount')}"
-											data-validation='required validate_float'>
-										</td>
+										<th colspan="4" class="text-info">${submissionItem.get("taxSectionName")}</th>
 									</tr>
-									<c:set var="sectionItemCount" value="${sectionItemCount + 1}"></c:set>
-								</c:forEach>
-							</tbody>
-						</table>
-						<div class="clearfix"></div>
-					</c:forEach>
-						<table class="table table-itdeclaration table-bordered">
-							<thead>
-								<tr>
-									<th colspan="4" class="text-info">Upload Documents</th>
-								</tr>
-								<tr>
-									<th>Document Name</th>
-									<th>${viewForm ? "Attached Document(s)" : "Attach Document"}</th>
-									<c:if test="${!viewForm}">
-										<th>Action</th>
-									</c:if>
-								</tr>
-							</thead>
-							<tbody id="documentsTable">
-								<c:choose>
-									<c:when test="${documents.size() > 0}">
-										<c:set value="0" var="documentCount"></c:set>
-										<c:forEach items="${documents}" var="document">
-											<tr data-index="${documentCount}">
+									<tr>
+										<th>Items</th>
+										<th>Max Limit</th>
+										<th>Description</th>
+										<th>Declared Amount</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach begin="0" end="${submissionItem.get('items').length() - 1}" var="index">
+										<input type="hidden" name="submissionItemList[${sectionItemCount}].taxSectionId" value="${submissionItem.get('taxSectionId')}">
+										<input type="hidden" name="submissionItemList[${sectionItemCount}].taxSectionName" value="${submissionItem.get('taxSectionName')}">
+										<input type="hidden" name="submissionItemList[${sectionItemCount}].name" value="${submissionItem.get('items').getJSONObject(index).getString('name')}">
+										<input type="hidden" name="submissionItemList[${sectionItemCount}].maxLimit" value="${submissionItem.get('items').getJSONObject(index).getString('maxLimit')}">
+										<input type="hidden" name="submissionItemList[${sectionItemCount}].description" value="${submissionItem.get('items').getJSONObject(index).getString('description')}">
+										<tr>
+											<td>${submissionItem.get('items').getJSONObject(index).getString('name')}</td>
+											<td>${submissionItem.get('items').getJSONObject(index).getString('maxLimit')}</td>
+											<td>${submissionItem.get('items').getJSONObject(index).getString('description') != null && submissionItem.get('items').getJSONObject(index).getString('description') != '' ? submissionItem.get('items').getJSONObject(index).getString('description') : '--NA--'}</td>
+											<td>
+												<input ${viewForm ? "disabled='disabled'" : ""} type="text" class="form-control input-sm" name="submissionItemList[${sectionItemCount}].amount"
+												placeholder='Enter Amount' field-name='Amount' value="${submissionItem.get('items').getJSONObject(index).getString('amount')}"
+												data-validation='required validate_float'>
+											</td>
+										</tr>
+										<c:set var="sectionItemCount" value="${sectionItemCount + 1}"></c:set>
+									</c:forEach>
+								</tbody>
+							</table>
+							<div class="clearfix"></div>
+						</c:forEach>
+						<c:if test="${documents.size() > 0 || editForm}">
+							<table class="table table-itdeclaration table-bordered">
+								<thead>
+									<tr>
+										<th colspan="4" class="text-info">Upload Documents</th>
+									</tr>
+									<tr>
+										<th>Document Name</th>
+										<th>${viewForm ? "Attached Document(s)" : "Attach Document"}</th>
+										<c:if test="${!viewForm}">
+											<th>Action</th>
+										</c:if>
+									</tr>
+								</thead>
+								<tbody id="documentsTable">
+									<c:choose>
+										<c:when test="${documents.size() > 0}">
+											<c:set value="0" var="documentCount"></c:set>
+											<c:forEach items="${documents}" var="document">
+												<tr data-index="${documentCount}">
+													<td>
+														<div style="display: none;" class="attachments" data-index="${documentCount}">
+															<c:set value="0" var="attachmentCount"></c:set>
+															<c:forEach items="${document.attachmentList}" var="attachment">
+																<input name="documentList[${documentCount}].attachmentList[${attachmentCount}].attachment" data-name="documentFileNames" value="${attachment.attachment}" type="hidden">
+																<c:set value="${attachmentCount + 1}" var="attachmentCount"></c:set>
+															</c:forEach>
+														</div>
+														<input name="documentList[${documentCount}].id" data-name="documentId" type="hidden" value="${document.id}">
+														<input name="documentList[${documentCount}].name" data-name="documentName" type="hidden" value="${document.name}">
+														<input name="documentList[${documentCount}].updateFile" data-name="updateFile" type="hidden" value="false"/>
+														<%-- <input name="documentList[${documentCount}].fileNames" data-name="documentFileNames" type="hidden"> --%>
+														<input ${viewForm ? "disabled='disabled'" : ""} value="${document.name}" data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
+															data-validation='required' onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
+													</td>
+													<td>
+														<c:if test="${!viewForm}">
+															<div class="clearfix attchments">
+																<div class="input-group">
+																	<label class="input-group-btn">
+																		<span class="btn btn-primary">Browse File <input style="visibility: hidden; height: 0; width: 10px; overflow: hidden"
+																				multiple="multiple" id="uploadBtn${documentCount}" class="upload"
+																				onchange="fileUploadEvent(this)" type="file" data-index="${documentCount}">
+																		</span>
+																	</label>
+																	<input class="form-control" readonly="readonly" field-name='Document File' data-validation='required'
+																		id="uploadFile1" placeholder="Select File(s)" type="text" value="${document.attachmentList.size()} files selected">
+																</div>
+															</div>
+														</c:if>
+														<div class="uploadedFiles">
+															<c:set value="0" var="attachmentCount"></c:set>
+															<c:forEach items="${document.attachmentList}" var="attachment">
+																<div data-index="${attachmentCount}">
+																	<c:if test="${!viewForm}">
+																		<i onclick="removeAttachment(this);" class="text-danger fa fa-remove cursorPointer"></i>
+																	</c:if>
+																	${attachment.attachment}
+																</div>
+																<c:set value="${attachmentCount + 1}" var="attachmentCount"></c:set>
+															</c:forEach>
+														</div>
+													</td>
+													<c:if test="${!viewForm}">
+														<td>
+															<div class="tblminwidth-75 text-center">
+																<c:choose>
+																	<c:when test="${documentCount == 0}">
+																		<i class="fa fa-plus mr cursorPointer" onclick="addDocumentRow()"></i>
+																	</c:when>
+																	<c:otherwise>
+																		<i class="fa fa-trash text-danger mr cursorPointer" onclick="removeDocumentRow(this)"></i>
+																	</c:otherwise>
+																</c:choose>
+																		<i class="fa fa-refresh cursorPointer disableBtn" onclick="refreshDocumentRow(this)"></i>
+															</div>
+														</td>
+													</c:if>
+												</tr>
+												<c:set value="${documentCount + 1}" var="documentCount"></c:set>
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr data-index="0">
 												<td>
-													<div style="display: none;" class="attachments" data-index="${documentCount}">
-														<c:set value="0" var="attachmentCount"></c:set>
-														<c:forEach items="${document.attachmentList}" var="attachment">
-															<input name="documentList[${documentCount}].attachmentList[${attachmentCount}].attachment" data-name="documentFileNames" value="${attachment.attachment}" type="hidden">
-															<c:set value="${attachmentCount + 1}" var="attachmentCount"></c:set>
-														</c:forEach>
-													</div>
-													<input name="documentList[${documentCount}].id" data-name="documentId" type="hidden" value="${document.id}">
-													<input name="documentList[${documentCount}].name" data-name="documentName" type="hidden" value="${document.name}">
-													<input name="documentList[${documentCount}].updateFile" data-name="updateFile" type="hidden" value="false"/>
-													<%-- <input name="documentList[${documentCount}].fileNames" data-name="documentFileNames" type="hidden"> --%>
-													<input ${viewForm ? "disabled='disabled'" : ""} value="${document.name}" data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
+													<div style="display: none;" class="attachments" data-index="0"></div>
+													<input name="documentList[0].name" data-name="documentName" type="hidden">
+													<input name="documentList[0].updateFile" data-name="updateFile" type="hidden" value="false"/>
+													<input ${viewForm ? "disabled='disabled'" : ""} data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
 														data-validation='required' onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
 												</td>
 												<td>
-													<c:if test="${!viewForm}">
-														<div class="clearfix attchments">
-															<div class="input-group">
+													<div class="clearfix attchments">
+														<div class="input-group">
+															<c:if test="${!viewForm}">
 																<label class="input-group-btn">
-																	<span class="btn btn-primary">Browse File <input style="visibility: hidden; height: 0; width: 10px; overflow: hidden"
-																			multiple="multiple" id="uploadBtn${documentCount}" class="upload"
-																			onchange="fileUploadEvent(this)" type="file" data-index="${documentCount}">
+																	<span class="btn btn-primary">Browse File 
+																		<input style="visibility: hidden; height: 0; width: 10px; overflow: hidden"
+																			multiple="multiple" id="uploadBtn0" class="upload"
+																			onchange="fileUploadEvent(this)" type="file" data-index="0">
 																	</span>
 																</label>
-																<input class="form-control" readonly="readonly" field-name='Document File' data-validation='required'
-																	id="uploadFile1" placeholder="Select File(s)" type="text" value="${document.attachmentList.size()} files selected">
-															</div>
+															</c:if>
+															<input class="form-control" readonly="readonly"
+																field-name='Document File' data-validation='required'
+																id="uploadFile1" placeholder="Select File(s)" type="text">
 														</div>
-													</c:if>
-													<div class="uploadedFiles">
-														<c:set value="0" var="attachmentCount"></c:set>
-														<c:forEach items="${document.attachmentList}" var="attachment">
-															<div data-index="${attachmentCount}">
-																<c:if test="${!viewForm}">
-																	<i onclick="removeAttachment(this);" class="text-danger fa fa-remove cursorPointer"></i>
-																</c:if>
-																${attachment.attachment}
-															</div>
-															<c:set value="${attachmentCount + 1}" var="attachmentCount"></c:set>
-														</c:forEach>
 													</div>
+													<div class="uploadedFiles"></div>
 												</td>
 												<c:if test="${!viewForm}">
 													<td>
 														<div class="tblminwidth-75 text-center">
-															<c:choose>
-																<c:when test="${documentCount == 0}">
-																	<i class="fa fa-plus mr cursorPointer" onclick="addDocumentRow()"></i>
-																</c:when>
-																<c:otherwise>
-																	<i class="fa fa-trash text-danger mr cursorPointer" onclick="removeDocumentRow(this)"></i>
-																</c:otherwise>
-															</c:choose>
-																	<i class="fa fa-refresh cursorPointer disableBtn" onclick="refreshDocumentRow(this)"></i>
+															<i class="fa fa-plus mr cursorPointer"
+																onclick="addDocumentRow()"></i> <i
+																class="fa fa-refresh cursorPointer disableBtn"
+																onclick="refreshDocumentRow(this)"></i>
 														</div>
 													</td>
 												</c:if>
 											</tr>
-											<c:set value="${documentCount + 1}" var="documentCount"></c:set>
-										</c:forEach>
-									</c:when>
-									<c:otherwise>
-										<tr data-index="0">
-											<td>
-												<div style="display: none;" class="attachments" data-index="0"></div>
-												<input name="documentList[0].name" data-name="documentName" type="hidden">
-												<input name="documentList[0].updateFile" data-name="updateFile" type="hidden" value="false"/>
-												<input ${viewForm ? "disabled='disabled'" : ""} data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
-													data-validation='required' onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
-											</td>
-											<td>
-												<div class="clearfix attchments">
-													<div class="input-group">
-														<c:if test="${!viewForm}">
-															<label class="input-group-btn">
-																<span class="btn btn-primary">Browse File 
-																	<input style="visibility: hidden; height: 0; width: 10px; overflow: hidden"
-																		multiple="multiple" id="uploadBtn0" class="upload"
-																		onchange="fileUploadEvent(this)" type="file" data-index="0">
-																</span>
-															</label>
-														</c:if>
-														<input class="form-control" readonly="readonly"
-															field-name='Document File' data-validation='required'
-															id="uploadFile1" placeholder="Select File(s)" type="text">
-													</div>
-												</div>
-												<div class="uploadedFiles"></div>
-											</td>
-											<c:if test="${!viewForm}">
-												<td>
-													<div class="tblminwidth-75 text-center">
-														<i class="fa fa-plus mr cursorPointer"
-															onclick="addDocumentRow()"></i> <i
-															class="fa fa-refresh cursorPointer disableBtn"
-															onclick="refreshDocumentRow(this)"></i>
-													</div>
-												</td>
-											</c:if>
-										</tr>
-									</c:otherwise>
-								</c:choose>
-							</tbody>
-						</table>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+						</c:if>
 					</div>
 				</div>
 			</div>

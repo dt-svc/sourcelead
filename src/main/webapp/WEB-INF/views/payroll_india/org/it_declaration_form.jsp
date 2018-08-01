@@ -17,7 +17,7 @@
 					<input type="hidden" value="${form.id}" name="taxFormId"/>
 					<div class="col-md-6 col-md-offset-2">
 						<div class="clearfix dropdown-select">
-							<select class="selectpicker width100percnt" id="employeeSelect"
+							<select class="selectpicker width100percnt" id="employeeSelect" ${autoSelectUser ? "disabled='disabled'" : ""}
 								data-live-search="true" title="Select Employee"
 								field-name="Employee" data-validation="required"
 								name="userId">
@@ -125,8 +125,8 @@
 										<div style="display: none;" class="attachments" data-index="0"></div>
 										<input name="documentList[0].name" data-name="documentName" type="hidden">
 										<input name="documentList[0].updateFile" data-name="updateFile" type="hidden" value="false"/>
-										<input data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
-											data-validation='required' onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
+										<input data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" 
+											onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
 									</td>
 									<td>
 										<div class="clearfix attchments">
@@ -137,12 +137,11 @@
 														multiple="multiple" id="uploadBtn0" class="upload"
 														onchange="fileUploadEvent(this)" type="file" data-index="0">
 												</span>
-												</label> <input class="form-control" readonly="readonly"
-													field-name='Document File' data-validation='required'
-													id="uploadFile1" placeholder="Select File(s)" type="text">
+												</label> <input class="form-control" readonly="readonly" data-name='fileName'
+													id="uploadFile0" placeholder="Select File(s)" type="text">
 											</div>
 										</div>
-										<div class="uploadedFiles"></div>
+										<div class="uploadedFiles" data-id="0"></div>
 									</td>
 									<td>
 										<div class="tblminwidth-75 text-center">
