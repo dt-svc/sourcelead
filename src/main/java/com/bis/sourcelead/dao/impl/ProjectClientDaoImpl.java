@@ -168,7 +168,7 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 
 	@Override
 	@Transactional
-	public List<ProjectClients> getAllProjectClientsByApproverUserAndOrgLocationId(Long userId, Long locationsId,String isGlobalUser,String purpose) throws Exception
+	public List<ProjectClients> getAllProjectClientsForExpensesByApproverUserAndOrgLocationId(Long userId, Long locationsId,String isGlobalUser,String purpose) throws Exception
 	{
 		logger.debug("In getProjectClientsListByProjectId method");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -196,7 +196,7 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 			  	 + " pc.projectId.id IN( select pm.projects.id from ProjectMembers pm where pm.status = '1')"
 			  	 + " and "
 				 +"  pc.id IN("
-				 + " select hierarchy.projectClientsId.id from ProjectApproverHierarchy hierarchy  where  "
+				 + " select hierarchy.projectClientsId.id from ExpenseProjectApproverHierarchy hierarchy  where  "
 				 + " ("+globalUserQuery2+" and hierarchy.approverUserId.id = :userId "
 				 + " OR "
 				 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
