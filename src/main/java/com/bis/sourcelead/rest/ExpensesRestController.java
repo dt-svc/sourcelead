@@ -228,7 +228,7 @@ public class ExpensesRestController {
 				purpose = "editExpense";
 			}
 			
-			List<ProjectClients> projectClientsList = projectClientService.getAllProjectClientsByApproverUserAndOrgLocationId(loginUser.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser(),purpose);
+			List<ProjectClients> projectClientsList = projectClientService.getAllProjectClientsForExpensesByApproverUserAndOrgLocationId(loginUser.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser(),purpose);
 			ArrayList<ProjectsDTO> projectsList = new ArrayList<>();
 			for(ProjectClients pc : projectClientsList){
 				Projects projects = pc.getProjectId();
