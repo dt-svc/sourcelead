@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.cxf.common.util.StringUtils;
+import org.apache.pdfbox.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,8 +79,13 @@ public class RequirementInterviewController {
 		     //OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    // SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		     RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
-		     /*if(!requirementInterview.getInterviewStatus().equalsIgnoreCase(interviewStatus)) {*/
-			    if("Maybe".equalsIgnoreCase(interviewStatus)){
+		     if(requirementInterview.getInterviewStatus() != null && requirementInterview.getInterviewStatus().equalsIgnoreCase(interviewStatus)) {
+		    	 model.setViewName("requirement/interviewAcceptOrRejectOrTentative");
+		    	 model.addObject("interviewStatus","Action_Done");
+		    	 model.addObject("sourceleadUrl", sourceleadUrl);
+		     }else {
+		    	 
+		    	 if("Maybe".equalsIgnoreCase(interviewStatus)){
 			    	 requirementInterview.setInterviewStatus(null);	 
 			     }else{
 			    	 requirementInterview.setInterviewStatus(interviewStatus);
@@ -201,11 +208,7 @@ public class RequirementInterviewController {
 					model.addObject("interviewEndTime",requirementInterview.getEndTimeStr());
 					model.addObject("interviewStartTime",requirementInterview.getStartTimeStr());
 					model.addObject("sourceleadUrl", sourceleadUrl);
-		     /*}else {
-		    	 model.setViewName("requirement/interviewAcceptOrRejectOrTentative");
-		    	 model.addObject("interviewStatus","Action_Done");
-		    	 model.addObject("sourceleadUrl", sourceleadUrl);
-		     }*/
+		     }
 			 return model;
 	 }	
 	
