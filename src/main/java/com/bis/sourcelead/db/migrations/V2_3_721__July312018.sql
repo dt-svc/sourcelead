@@ -16,6 +16,7 @@ SELECT
     uLeave.TO_DATE,
     uLeave.REASON AS REASON,
     uLeave.USER_ID,
+    uRole.ROLE_ID AS ROLE_ID,
     uLeave.ORGLOCATION_ID,
     emp.DEPARTMENT_ID,
     uLeave.CREATED_DATE,

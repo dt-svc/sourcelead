@@ -936,21 +936,15 @@ function cancelOrgImg(){
       </style>
 </body>
 <!-- Add Payment Account Modal -->
-  <div class="modal paymentaccount-modal" id="paymentAccountPopup" role="dialog">
-    <div class="modal-dialog modal-lg">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" onclick="closePaymentAccountPopup();" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add/Edit Payment Account</h4>
-        </div>
-        <div class="modal-body minHeightcol5">
+  <div class="popupWrapMid" id="paymentAccountPopup" role="dialog">
+  	<div class="popupHead">Add/Edit Payment Account <i class="closePop pull-right popClose" onclick="closePaymentAccountPopup();"></i></div>
+  
+        <div class="popupContent popupContentFixed">
         <form:form class="clearfix"  id="paymentaccount_form"  name="paymentaccount_form" method="POST" >
          <inpu type="hidden" id='paymentAccountId' value='0'/>
          <input type="hidden" name="id" id="paymentAccountId"/>
-          <div class="col-md-5">
-           <label class="clearfix">Account Type<span class="text-danger">&nbsp;*</span></label>
+          <div class="col-md-6 minHe">
+           <label class="noPad">Account Type <b class="valStar">*</b></label>
            <div class="clearfix">
                 <select onchange="showOrHidePaymentFormFields($(this).val());" id="paymentAccountType" name="paymentAccountLocation" class="form-control" data-required="required">
                     <option value="0">--Select Location--</option>
@@ -961,8 +955,8 @@ function cancelOrgImg(){
            </div>
           </div>
            
-         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
-           <label class="clearfix">Location<span class="text-danger">&nbsp;*</span></label>
+         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">Location <b class="valStar">*</b></label>
            <div class="clearfix">
                 <select id="paymentAccountLocation" name="paymentAccountLocation" class="form-control" data-required="required">
                     <option>Select Location</option>
@@ -970,60 +964,60 @@ function cancelOrgImg(){
            </div>
          </div>
            
-        <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
-           <label class="clearfix">Bank Name<span class="text-danger">&nbsp;*</span></label>
+        <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+           <label class="noPad">Bank Name <b class="valStar">*</b></label>
            <div class="clearfix">
                 <input type="text" id="paymentAccountBankName" name="paymentAccountBankName" placeholder="Bank Name" class="form-control" data-required="required"/>
            </div>
            </div>
-          <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
+          <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
            <label class="clearfix">Account Number<span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
                 <input type="text" id="paymentAccountNumber" data-min='9' data-max='15' placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-required="required"/>
            </div>
            </div>
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}"> 
-           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
+           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
               <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
 	           <div class="clearfix">
 	                <input type="text" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control" data-required="required"/>
 	           </div>
            </div>
            
-           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
-              <label class="clearfix">MICR Code <span class="text-danger">&nbsp;*</span></label>
+           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+              <label class="noPad">MICR Code <b class="valStar">*</b></label>
 	           <div class="clearfix">
 	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-required="required"/>
 	           </div>
            </div>
            </c:if>
         
-        <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-5">
+        <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-6 minHe">
            <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
-              <label class="clearfix">Routing Number<span class="text-danger">&nbsp;*</span></label>
+              <label class="noPad">Routing Number <b class="valStar">*</b></label>
            </c:if>
            <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-              <label class="clearfix">IFSC Code <span class="text-danger">&nbsp;*</span></label>
+              <label class="noPad">IFSC Code <b class="valStar">*</b></label>
            </c:if>
            <div class="clearfix">
                 <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="IFC Code / Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
            </div>
            </div>
-           <div data-fieldtype="account" data-fieldfor="3" class="col-md-5">
-           <label class="clearfix">Email<span class="text-danger">&nbsp;*</span></label>
+           <div data-fieldtype="account" data-fieldfor="3" class="col-md-6 minHe">
+           <label class="noPad">Email <b class="valStar">*</b></label>
            <div class="clearfix">
                 <input type="text" id="paymentAccountEmail" name="paymentAccountEmail" placeholder="Email"  class="form-control" data-required="required"/>
            </div>
            </div>
-        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
-           <label class="clearfix">First Name<span class="text-danger">&nbsp;*</span></label>
+        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">First Name <b class="valStar">*</b></label>
            <div class="clearfix">
                 <input type="text" id="paymentAccountFirstName" name="paymentAccountFirstName" placeholder="First Name" class="form-control" data-required="required"/>
            </div>
            </div>
         
-        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
-           <label class="clearfix">Last Name<span class="text-danger">&nbsp;*</span></label>
+        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">Last Name <b class="valStar">*</b></label>
            <div class="clearfix">
                 <input type="text" id="paymentAccountLastName" name="paymentAccountLastName" placeholder="Last Name" class="form-control" data-required="required"/>
            </div>
@@ -1033,13 +1027,13 @@ function cancelOrgImg(){
         </form:form>
           
         </div>
-        <div class="clearfix"></div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id="savePaymentButton" onclick="savePaymentAccount();" >Save</button>
+        
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" id="savePaymentButton" onclick="savePaymentAccount();" >Save</button>
+          <button type="button" class="slBtn md popClose" onClick="closePaymentAccountPopup();">Cancel</button>
         </div>
-      </div>
-    </div>
   </div>
+  
 <!-- Add IP Modal -->
   <div class="popupWrap" id="addipPopup" role="dialog">
 	<div class="popupHead">Add IP <i class="closePop pull-right close" onclick="closeWhiteListIp();"></i></div>
@@ -1440,7 +1434,7 @@ function changeActivePaymentAccount(id){
 function editPaymentAccount(type, id, locationId, firstName, lastName, accountNumber, routingNumber, bankName,bsrNumber,micrCode) {
 	$("[data-fieldtype=account]").hide();
 	showOrHidePaymentFormFields(type);
-	$(".modal.paymentaccount-modal").fadeIn(100);
+	$("#paymentAccountPopup").fadeIn(100);
 	$(".mask").show();
 	$("#paymentAccountFirstName").val(firstName);
 	$("#paymentAccountBankName").val(bankName);
@@ -1457,7 +1451,7 @@ function showPaymentAccountPopup() {
     $("#paymentAccountId").val('0');
     $("[data-fieldtype=account]").hide();
     showOrHidePaymentFormFields('SAVINGS');
-    $(".modal.paymentaccount-modal").fadeIn(100);
+    $("#paymentAccountPopup").fadeIn(100);
     $(".mask").show();
     $("input[id*=paymentAccount]").val("");
     $('#paymentaccount_form')[0].reset();
@@ -1493,7 +1487,7 @@ function showOrHidePaymentFormFields(type) {
     });
 }
 function closePaymentAccountPopup(type) {
-    $(".modal.paymentaccount-modal").fadeOut(100);
+    $("#paymentAccountPopup").fadeOut(100);
     $(".mask").hide();
     if(type) {
         showOrHidePaymentFormFields('0');
