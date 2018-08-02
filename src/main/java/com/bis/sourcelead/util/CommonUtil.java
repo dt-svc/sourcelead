@@ -77,6 +77,7 @@ import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
@@ -113,6 +114,7 @@ import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
+import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -253,6 +255,9 @@ public class CommonUtil {
 
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
 	
 	/**
 	 * This method is used to convert JSON String to HashMap<Key,Value>
@@ -2127,9 +2132,10 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 				if((projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) || (StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES))) {
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
+						ExpenseProjectApproverHierarchy expenseApproverHierarchy = expenseProjectApproverHierarchyService.getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
 						Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-						if(approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode()) || isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
+						if(expenseApproverHierarchy != null || approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode()) || isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
 							flag = true;
 						}
 					}else {
@@ -2608,6 +2614,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		return "success";
 	}
 
+  
 	public static String toFixed2(double d) {
 		String str;
 		d = d * 100;

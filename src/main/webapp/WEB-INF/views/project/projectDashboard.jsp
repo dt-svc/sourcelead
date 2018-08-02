@@ -191,6 +191,20 @@ overflow-x: auto;
 									 </div> 
 							 </div> 
 							 </c:if>
+							 
+							 <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myTagsInput" onkeyup="myTagsFunction()" placeholder="Tags" title="Type in a tags">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTagsUL">
+											<c:forEach var="tags" items="${prjectTagsList}">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="tags" value ="${tags}" ><label>${tags}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
 						
 						
 					</div>
@@ -294,6 +308,7 @@ function resetProjectFilter(){
 	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
 	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
 	$("ul#frequencyFilter > li input:checkbox").prop("checked",false);
+	$("ul#myTagsUL > li input:checkbox").prop("checked",false);
 	
 	$("#projectsDataTableSearch").val('');
 	document.getElementById("c6").checked = true;
@@ -325,6 +340,23 @@ function myManagersFunction() {
     input = document.getElementById("myManagersInput");
     filter = input.value.toUpperCase();
     ul = document.getElementById("myManagersUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function myTagsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTagsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTagsUL");
     li = ul.getElementsByTagName("li");
     for (i = 0; i < li.length; i++) {
         a = li[i].getElementsByTagName("label")[0];
@@ -484,13 +516,18 @@ function projectDataTableList(){
 		invoiceFrequency.push($(this).val());
      });
 	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+    {
+		tags.push($(this).val());
+    });
 	
 	
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency;
+	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency+"&tags="+tags;
 	 projectsPagination(url,sourceleadUrl);
 }
 </script>
@@ -1013,7 +1050,7 @@ $(document).ready(function() {
 		    	var employeeNameAdvanced = this.value.replace(",","");
 		        if ((e2.which == 13 || e2.which == 188) && (employeeNameAdvanced != null  && employeeNameAdvanced != '' && employeeNameAdvanced != 'undefined'))
 		        {
-		        	var par = this.parent;
+		        	var par = this.1;
 		            var option = $("<option>").val(employeeNameAdvanced).text(employeeNameAdvanced);
 		            selectnine.append(option);
 		            selectnine.find(option).prop('selected', true);
@@ -1284,10 +1321,16 @@ function projectExport(type){
 		invoiceFrequency.push($(this).val());
      });
 	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+    {
+		tags.push($(this).val());
+     });
+	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency;
+	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency+"&tags="+tags;
 	
 }
 </script>

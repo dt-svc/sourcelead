@@ -353,9 +353,17 @@ public class TimesheetRestController {
 					
 					if(tedDTO.getStatusMap().get(pmDTO.getId()) == null || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("REJECTED") 
 							|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT") || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW") ) {
-						freshProjectMembersList.add(pmDTO);
-						allProjectMembersList.add(pmDTO);
+						
+						if(tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW") && (
+								StringUtils.isNotEmpty(pmDTO.getIsProjectForTimeSheets()) 
+								                          && pmDTO.getIsProjectForTimeSheets().equalsIgnoreCase("Y"))
+						  ) {
+							freshProjectMembersList.add(pmDTO);
+							allProjectMembersList.add(pmDTO);
+						}
 						if(!tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
+							freshProjectMembersList.add(pmDTO);
+							allProjectMembersList.add(pmDTO);
 							attProjectMemberIdsList.add(pmDTO);
 							oldSubmittedPmIdsList.add(pmDTO.getId());
 						}
@@ -423,9 +431,16 @@ public class TimesheetRestController {
                 if(StringUtils.isNotEmpty(isTimesheetAvgHoursRequired) && isTimesheetAvgHoursRequired.equalsIgnoreCase("Y")) {
                 	timesheetAvgHoursValidation = "Y";
                 }
-				model.addObject("timesheetAvgHoursValidation", timesheetAvgHoursValidation);
-				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
-				model.setViewName("timesheet/employeeTImesheetInvoiceList");
+				if(allProjectMembersList == null || allProjectMembersList.isEmpty()) {
+					model.addObject("NORECORDSFOUND", true);
+					model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
+					model.setViewName("timesheet/employeeTImesheetInvoiceList");
+				}else {
+					model.addObject("timesheetAvgHoursValidation", timesheetAvgHoursValidation);
+					model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
+					model.setViewName("timesheet/employeeTImesheetInvoiceList");
+				}
+				
 			}
 			
 		} catch (Exception e) {
@@ -2072,6 +2087,7 @@ public class TimesheetRestController {
 						if(sunEditable && !combinedSunEditable) {
 							combinedSunEditable = sunEditable;
 						}
+						
 						if(!submitButtonVisible) {
 							submitButtonVisible = tedDTO.getStatusMap().get(pmDTO.getId()).getSubmitButtonVisible();
 						}
@@ -2080,30 +2096,38 @@ public class TimesheetRestController {
 							isRejected = true;
 							combinedStatus = "REJECTED";
 						}
-						else if (!isRejected
-								&& (tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("SUBMITTED") || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW"))) {
+						else if (!isRejected 
+								&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("SUBMITTED")) {
 							isSUBMITTED = true;
 							combinedStatus = "SUBMITTED";
 							
 						}
-						else if (!isRejected  && !isSUBMITTED
+						else if (!isRejected && !isSUBMITTED
 								&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("APPROVED")) {
 							isAPPROVED = true;
 							combinedStatus = "APPROVED";
-							
-						}else if(!isRejected && !isSUBMITTED && !isAPPROVED && tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
+						} else if(!isRejected && !isSUBMITTED && !isAPPROVED && tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
 							combinedStatus = "NEW";
 						}
 						
 						
 						if(tedDTO.getStatusMap().get(pmDTO.getId()) == null || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("REJECTED") 
 								|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT") || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW") ) {
-							freshProjectMembersList.add(pmDTO);
-							allProjectMembersList.add(pmDTO);
+							
+							if(tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW") && (
+									StringUtils.isNotEmpty(pmDTO.getIsProjectForTimeSheets()) 
+									                          && pmDTO.getIsProjectForTimeSheets().equalsIgnoreCase("Y"))
+							  ) {
+								freshProjectMembersList.add(pmDTO);
+								allProjectMembersList.add(pmDTO);
+							}
 							if(!tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
+								freshProjectMembersList.add(pmDTO);
+								allProjectMembersList.add(pmDTO);
 								attProjectMemberIdsList.add(pmDTO);
 								oldSubmittedPmIdsList.add(pmDTO.getId());
 							}
+							
 						}else{
 							submittedProjectMembersList.add(pmDTO);
 							oldSubmittedPmIdsList.add(pmDTO.getId());
@@ -2169,10 +2193,15 @@ public class TimesheetRestController {
 	                	timesheetAvgHoursValidation = "Y";
 	                }
 					model.addObject("timesheetAvgHoursValidation", timesheetAvgHoursValidation);
+					if(allProjectMembersList == null || allProjectMembersList.isEmpty()) {
+						model.addObject("NORECORDSFOUND", true);
+						model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
+						model.setViewName("timesheet/employeeTImesheetInvoiceList");
+					}else {
+						model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
+						model.setViewName("timesheet/employeeTImesheetInvoiceList");
+					}
 				}
-				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
-				model.setViewName("timesheet/employeeTImesheetInvoiceList");
-						
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addObject("AWKWARD", true);

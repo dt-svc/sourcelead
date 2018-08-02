@@ -1,8 +1,1 @@
-
-table.dataTable span.highlight {
-    background-color: #FFFF88; border-radius: 0.28571429rem; position: relative; top:4px; color:#a21e23;
-}
-
-table.dataTable span.column_highlight {
-  background-color: #FFFF88; color:#a21e23; border-radius: 0.28571429rem;
-}
+table.dataTable span.column_highlight,table.dataTable span.highlight{background-color:#FF8;color:#a21e23;border-radius:.28571429rem}table.dataTable span.highlight{position:relative;top:4px}

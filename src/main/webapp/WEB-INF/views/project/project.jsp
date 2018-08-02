@@ -188,6 +188,7 @@ function validateShortCode(){
 						</div>
 						
 						
+						
 						<div class="form-group">
 							<label class="col-md-3">Timesheet Frequency <span
 								class="text-danger">*</span></label>
@@ -203,6 +204,18 @@ function validateShortCode(){
 								</select>
 							</div>
 						</div>
+						
+						
+					<div class="form-group">
+						<label class="col-md-3">Project For<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<label class="paddingLeft paddingRight"><input type="radio" id="timesheets" value="Timesheets" name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets</label>
+							<label class="paddingRight"><input type="radio" id="expenses"  value="Expenses" name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Expenses</label>
+							<label class="paddingRight"><input type="radio" id="timesheetsandexpenses"  value="TimesheetsAndExpences"  name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets & Expenses</label>
+							<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For" data-validation="required"/> 		
+						</div>
+						
+					</div>
 						
 						<c:if test="${!empty projectType && projectType == 'sharedProject' }">
 							<input type="hidden" name="savedSharedClientOrgLocId" id="savedSharedClientOrgLocId">
@@ -312,7 +325,7 @@ function validateShortCode(){
 							</div>
 						</div>
 
-						<c:if test="${not empty user_List}">
+					<c:if test="${not empty user_List}">
 							<div class="form-group">
 								<label class="col-md-3" for="Project Manager">Manager <span
 									class="text-danger">*&nbsp;</span></label>
@@ -322,10 +335,6 @@ function validateShortCode(){
 											name="level1Manager" id="level1Manager" field-name="Manager"
 											data-validation="required" onchange="getLevel2Approvers();">
 											<option value="">-- Select Level1 Manager --</option>
-											<%-- <c:forEach var="option" items="${user_List}">
-												<option value="${option.id},${option.userType}">${option.firstName}
-													${option.lastName}</option>
-											</c:forEach> --%>
 										</select> <span class="btn btn-default formic1 addLevel"
 											id="level2Toggle" onclick="getLevel2Approvers();">Add
 											Level-II</span>
@@ -334,10 +343,40 @@ function validateShortCode(){
 								</div>
 							</div>
 							<div class="form-group level-second" id="level2Div">
-								<label class="col-md-3" for="Level-II">Level-II</label>
+								<label class="col-md-3" for="Level-II">Level-II Manager</label>
 								<div class="col-md-9">
 									<select class="form-control chosen-select" name="level2Manager"
 										id="level2Manager">
+									</select>
+								</div>
+							</div>
+						</c:if>
+						
+						
+						
+						<c:if test="${not empty user_List}">
+							<div class="form-group">
+								<label class="col-md-3" for="Project Manager">Expense Approver&nbsp;<i class='fa fa-info-circle' title='Expense Approver for project. If not selected managers will be the default approvers'></i>
+								</label>
+								<div class="col-md-9">
+									<div class="form-icon-min" id="chosen-level1ExpenseApprover">
+										<select class="form-control chosen-select"
+											name="level1ExpenseApprover" id="level1ExpenseApprover" field-name="Expense Approver"
+											data-validation-optional="true" onchange="getLevel2ExpenseApprovers();">
+											<option value="">-- Select Level1 Approver --</option>
+											
+										</select> <span class="btn btn-default formic1 addExpenseApproverLevel"
+											id="level2ExpenseApproverToggle" onclick="getLevel2ExpenseApprovers();">Add
+											Level-II</span>
+									</div>
+									<span class="hidden">Select Project Manager</span>
+								</div>
+							</div>
+							<div class="form-group expenselevel-second" id="level2ExpenseApproverDiv">
+								<label class="col-md-3" for="Level-II">Level-II Approver</label>
+								<div class="col-md-9">
+									<select class="form-control chosen-select" name="level2ExpenseApprover"
+										id="level2ExpenseApprover">
 									</select>
 								</div>
 							</div>
@@ -552,6 +591,14 @@ function validateShortCode(){
 </div>
 </section>
 <!-- Content Area Ends-->
+
+
+<script type="text/javascript">
+	function projectForCheckValidation(id){
+		document.getElementById("projectForValue").value = id.value;
+	} 
+</script>
+
 <script>
 function removeFrequencyValidation(){
 	$('#chosen-frequency').find('p.jquery_form_error_message').remove();
@@ -662,6 +709,7 @@ function getStatus(){
 				additionalDetails.className = "disabledLink";
 			}
 			getProjectLevel1Approvers();
+			getProjectLevel1ExpenseApprovers();
 			getBudgetApprover();
 		}
 		
@@ -782,6 +830,9 @@ function getProjectDetails(){
 	        	var level1ApproverUser = '';
 	        	var level2ApproverUser = '';
 	        	
+	        	var level1ExpenseApproverUser = '';
+	        	var level2ExpenseApproverUser = '';
+	        	
 	        	if(json.projectSequeneNumber != null && json.projectSequeneNumber != 'undefined'){
 	        		 $("input[name=projectSequeneNumber]").val(json.projectSequeneNumber);
 // 	        		 $("input[name=projectSequeneNumber]").attr("readonly","readonly");
@@ -803,9 +854,20 @@ function getProjectDetails(){
 	        		 $("input[name=projectShortCode]").attr("readonly","readonly");
 	        		 $('#projectShortCode').removeAttr('onblur');
 	        	 }
-	        	
-	        	
-	        	 $("#notifyBudgetAt").val(json.notifyBudgetAt);
+	        	 
+	        	 if(json.isProjectForTimeSheets == 'Y' && json.isProjectForExpenses == 'Y'){
+	        		 document.getElementById("timesheetsandexpenses").checked = true;
+	        		 $("#projectForValue").val('TimesheetsAndExpences');
+	        	 }else  if(json.isProjectForTimeSheets == 'Y' && json.isProjectForExpenses == 'N'){
+	        		 document.getElementById("timesheets").checked = true;
+	        		 $("#projectForValue").val('Timesheets');
+	        	 }else  if(json.isProjectForTimeSheets == 'N' && json.isProjectForExpenses == 'Y'){
+	        		 document.getElementById("expenses").checked = true;
+	        		 $("#projectForValue").val('Expences');
+	        	 }
+	        	 
+	        	 
+        	   $("#notifyBudgetAt").val(json.notifyBudgetAt);
 	        	 
 	           var projectStatus = '';
 	           if(json.projectStatus == 'NOTSTARTED'){
@@ -935,6 +997,26 @@ function getProjectDetails(){
       			   if(level1ApproverUser != '' && level2ApproverUser != ''){
       				  getChildLevel1Approvers(level1ApproverUser,level2ApproverUser);
       			   }
+      			   
+      			
+      			 for(var i=0; i<json.expenseApproverHierarchyList.length; i++){
+	        		  var opt = json.expenseApproverHierarchyList[i];
+	        		  if(opt.level == "1"){
+	        			  level1ExpenseApproverUser = opt.expenseApproverUserId;
+	        			  getProjectLevel1ExpenseApprovers(opt.expenseApproverUserId);
+	        		  }
+	        		  
+	        		  if(opt.level == "2"){
+	        				 $("#level2ExpenseApproverToggle").hide(); 
+	        				 document.getElementById("level2ExpenseApproverDiv").removeAttribute("class");
+	        				 document.getElementById('level2ExpenseApproverDiv').className = 'form-group expenselevel-second expenselevel-second-active';
+	        				 level2ExpenseApproverUser = opt.expenseApproverUserId;
+	        		  }
+	        	  }  
+     			   
+     			   if(level1ExpenseApproverUser != '' && level2ExpenseApproverUser != ''){
+     				  getChildLevel1ExpenseApprovers(level1ExpenseApproverUser,level2ExpenseApproverUser);
+     			   }
       			 
       			   
       			   $("#projectDetailsloading").removeAttr("style");
@@ -1122,6 +1204,7 @@ $(window).load(function() {
 		});
 	}
 </script>
+
 <script type="text/javascript">
 function getLevel2Approvers(level1ApproverUser){
 	var currentApproverId = '';
@@ -1150,6 +1233,43 @@ function getLevel2Approvers(level1ApproverUser){
 	}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
 	    $("#level2Toggle").hide();   
 	    $("#level2Div").removeClass("level-second-active");
+	}
+	
+	
+} 
+</script>
+
+
+
+<script type="text/javascript">
+function getLevel2ExpenseApprovers(level1ExpenseApprover){
+	var currentExpenseApproverId = '';
+	$('#chosen-level1ExpenseApprover').find('p.jquery_form_error_message').remove();
+	if(level1ExpenseApprover != null && level1ExpenseApprover != '' && level1ExpenseApprover != 'undefined'){
+		currentExpenseApproverId = level1ExpenseApprover;
+	}else{
+		currentExpenseApproverId = document.getElementById("level1ExpenseApprover").value;
+	}
+	
+	var currentExpenseApprover = currentExpenseApproverId.split(',');
+	var currentExpenseApproverId = currentExpenseApprover[0];
+	var currentExpenseApproverType = currentExpenseApprover[1];
+	var count = 1;
+	$(".myCheckbox").each(
+					function() {
+						var localId = this.id;
+						document.getElementById(localId).checked = false; 
+	});
+	$(".myCheckbox").val('');
+	
+	$("#level2ExpenseApprover").empty();    
+	$('#level2ExpenseApprover').val('').trigger('chosen:updated');
+	if(currentExpenseApproverType != null && currentExpenseApproverType != '' && currentExpenseApproverType !='undefined' && currentExpenseApproverType != 'Admin'){
+	    $("#level2ExpenseApproverToggle").show();
+		getChildLevel1ExpenseApprovers(currentExpenseApproverId);
+	}else if(currentExpenseApproverType != null && currentExpenseApproverType != '' && currentExpenseApproverType !='undefined' && currentExpenseApproverType == 'Admin'){
+	    $("#level2ExpenseApproverToggle").hide();   
+	    $("#level2ExpenseApproverDiv").removeClass("expenselevel-second-active");
 	}
 	
 	
@@ -1189,6 +1309,40 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 } 
 </script>
 
+<script type="text/javascript">
+function getChildLevel1ExpenseApprovers(currentExpenseApproverId,level2ExpenseApproverUserId){
+	 if(currentExpenseApproverId != null && currentExpenseApproverId != ''  && currentExpenseApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentExpenseApproverId,
+		        success: function(json) {
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Approver-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		var selected = '';
+			        		if(level2ExpenseApproverUserId != null && level2ExpenseApproverUserId != 'undefied' && level2ExpenseApproverUserId != '' && level2ExpenseApproverUserId == opt.id){
+			        			selected = "selected";
+			        		}
+			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
+					}
+		        	$("#level2ExpenseApprover").empty();
+			        $("#level2ExpenseApprover").append(output);
+			        $('#level2ExpenseApprover').trigger("chosen:updated");
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }else{
+		 getApproversLevel2();
+		
+	 }
+} 
+</script>
+
+
 
 <script type="text/javascript">
 function getProjectLevel1Approvers(approverUserId){
@@ -1211,10 +1365,39 @@ function getProjectLevel1Approvers(approverUserId){
 		        	
 			        $("#level1Manager").append(output);
 			        $('#level1Manager').trigger("chosen:updated");
+			        
 		        }
 		    });
 	 }
 </script>
+
+<script type="text/javascript">
+function getProjectLevel1ExpenseApprovers(approverUserId){
+	 $("#level1ExpenseApprover").empty();
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
+		        success: function(json) {
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Level1 Approver --</option>";
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var selected = "";
+		        		var opt = json[i];
+		        		if(approverUserId != null && approverUserId != 'undefied' && approverUserId != '' && approverUserId == opt.id){
+		        			selected = "selected";
+		        		}
+			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
+					}
+		        	
+			        
+			        $("#level1ExpenseApprover").append(output);
+			        $('#level1ExpenseApprover').trigger("chosen:updated");
+		        }
+		    });
+	 }
+</script>
+
 <script>
 function getBudgetApprover(approverUserId){
 	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';

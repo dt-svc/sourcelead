@@ -198,4 +198,23 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		}
    	}
 
+
+	@Override
+	@Transactional
+	public SubmissionTemplate getSubmissionTemplateByUUID(String uuid) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
+		logger.debug("getSubmissionTemplateByUUID start");
+		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.uuid = :uuid " )
+				.setString("uuid", uuid).list();
+		logger.debug("getSubmissionTemplateByUUID end");
+		if (submissionTemplate.size() > 0) {
+			return submissionTemplate.get(0);
+		} else {
+			return null;
+		}
+   	
+	}
+
 }
