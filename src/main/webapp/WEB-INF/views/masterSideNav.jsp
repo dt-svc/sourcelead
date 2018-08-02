@@ -346,7 +346,21 @@
 			         </c:if>
             	   
 		       	   <c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_USER'}">
-		             <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
+		       	   <sec:authorize access="hasAnyRole('ROLE_US_GENERATE_PAYROLL','ROLE_US_MY_PAYROLL')"> 
+		             <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}">
+		             	<a href="#" class="expencesLi" title="Payroll">
+		             		<span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i> 
+		             		<i class="fa fa-fw fa-caret-down"></i></a>
+		             			<ul class="collapses" style="display: none">
+								
+								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
+								
+								<li><a	href="#" title="My Payroll">My Payroll</a></li>
+									
+								</ul>
+		             		
+		             		</li>
+		          	</sec:authorize>
 		          	</c:if>	
 		          	
 		          	<c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_ADMIN'}">

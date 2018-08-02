@@ -32,5 +32,12 @@ public class StatesServiceImpl implements StatesService{
 	}
 
 
+	@Override
+	public String getStateCodeByCountryCodeAndState(String countryCode, String state)
+	{
+		return statesDao.getStateCodeByCountryCodeAndState(countryCode,state);
+	}
+
+
 
 }
