@@ -3,7 +3,16 @@ package com.bis.sourcelead.enums;
 public enum TagEntites {
 	
 	CANDIDATES("Candidates"),
-	JOBS("Jobs");
+	JOBS("Jobs"),
+	CLIENTS("Clients"),
+	VENDORS("Vendors"),
+	ASSOCIATES("Associates"),
+	TASKS("Tasks"),
+	CONTRACT("Contract"),
+	ASSETMANAGEMENT("AssetManagement"),
+	INVOICES("Invoices"),
+	BILLS("Bills"),
+	PROJECTS("Projects");
 	
     private String value;
 	private TagEntites(String value){

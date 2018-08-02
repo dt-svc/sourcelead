@@ -4,6 +4,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <div class="timesheetNewHead">
+       <c:if test="${!empty employeeTimesheetEntryDetailsDTO.invoiceFrequencyList}">
        <div id="timesheetFrequencyDiv" class="timeNewSe">
        <!-- onchange="timesheetEmployeeDetils('frequency');" -->
 		<select id="invoiceFrequency" name="invoiceFrequency" class="form-control chosen-select" onchange="timesheetEntriesDivByInvoiceFrequency()">
@@ -11,11 +12,12 @@
 				<option data-icon="fa fa-calendar" value="${invoiceFrequency}"  ${invoiceFrequency == employeeTimesheetEntryDetailsDTO.invoiceFrequency ? 'selected' : ''}>${invoiceFrequency}</option>
 			</c:forEach>
 		</select>
-
 	  </div>
+	  </c:if>
 	  <div id='timesheetEntriesDivByInvoiceFrequency'>
 	     <jsp:include page="employeeWeekFrequencyList.jsp"></jsp:include>
 	  </div>
+	  
 </div>
  <script>
 	function timesheetEntriesDivByInvoiceFrequency(){ 

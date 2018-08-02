@@ -1891,11 +1891,8 @@ public class CandidateListRestController {
 			    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
 			    SourceLeadSessionManager.removeSessionAttribute(request, "tagsList");
 			    SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
-				    
-				response.setResponseMessage(Result.SUCCESS.getValue());
+				response.setResponse(Result.SUCCESS.name());
 
-				response.setResponse(Result.SESSION_TIMEDOUT.name());
-				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());

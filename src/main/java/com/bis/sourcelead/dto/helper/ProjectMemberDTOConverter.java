@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto.helper;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.entity.ProjectMembers;
 
@@ -26,6 +28,17 @@ public class ProjectMemberDTOConverter {
 			    if(projectMembers.getProjectEndDateStr() != null) {
 			    	pmDTO.setMemberEndDate(projectMembers.getProjectEndDateStr());
 			    }
+			    if(StringUtils.isNotEmpty(projectMembers.getProjects().getIsProjectForTimeSheets())) {
+			    	pmDTO.setIsProjectForTimeSheets(projectMembers.getProjects().getIsProjectForTimeSheets());
+			    }else {
+			    	pmDTO.setIsProjectForTimeSheets("N");
+			    }
+			    if(StringUtils.isNotEmpty(projectMembers.getProjects().getIsProjectForExpenses())) {
+			    	 pmDTO.setIsProjectForExpenses(projectMembers.getProjects().getIsProjectForExpenses());
+			    }else {
+			    	pmDTO.setIsProjectForExpenses("N");
+			    }
+			   
 		}
 		pmDTO.setMasterCandidateId(projectMembers.getMasterCandidateId().getId());
 		return pmDTO;

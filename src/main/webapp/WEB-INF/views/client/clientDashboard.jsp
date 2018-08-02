@@ -351,6 +351,8 @@ z-index: 1;
 					<i></i>
 				</div>
 				<div id="clientSideDiv"></div>
+				
+				
 			</div>
          </div>
 	</section>
@@ -359,11 +361,12 @@ z-index: 1;
 </body>
 
 
+
 <script type="text/javascript">
 window.onload = function () {
+	
 	/* clientOnLoad("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}");  */
 	 loadClientDatatable("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}"); 
-	
 	if('${orgRelationUUID}' != null && '${orgRelationUUID}' != '' && '${orgRelationUUID}' != 'undefined'){
 			clientSideBar('${clientOrgLocationId}','${orgRelationId}','${clientName}');
 		}
@@ -1036,7 +1039,6 @@ function pagination(){
 		result = result + '</div>';
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
-		
 		/* $("#clientNameDiv").empty();
 		$("#clientNameDiv").append(orgName); */
 		
