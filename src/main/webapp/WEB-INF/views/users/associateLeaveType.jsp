@@ -12,7 +12,7 @@
  <!--  Tab-2 Banking Starts -->
  <form:form id="associate_leave_form" name="associate_leave_form" method="post">
  <div id="loading"></div>
-            <div id="tab-2" class="tabsMenu_tabs_inn">
+            <div id="tab-7" class="tabsMenu_tabs_inn">
             <div class="project_tabs_inn_table">
             	<div class="clearfix"></div>
             	
