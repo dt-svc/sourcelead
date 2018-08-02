@@ -126,7 +126,7 @@ $(document).ready(function() {
 	});	
 });
 function closeBatch() {
-	$(".popupWrap, .mask").fadeOut();
+	$(".addPayrollGroupWrap, .mask").fadeOut();
 	 document.getElementById("add_user_group_form").reset(); 
 	 $('#add_user_group_form').find('p.jquery_form_error_message').remove();
 	 $("#userId").empty();
@@ -142,7 +142,7 @@ function addbatches(groupUUID){
 		$("#addUserGroupFormDiv").empty();
 		$("#addUserGroupFormDiv").append(result);
 // 		getUsersByDepartment();
-		$(".popupWrap, .mask").fadeIn();
+		$(".addPayrollGroupWrap, .mask").fadeIn();
 	});
 }
 
@@ -198,7 +198,7 @@ function cancelDelete(){
 				$("#assocByDept").empty();
 				$("#assocByDept").append(output);
 				$('#assocByDept').trigger("chosen:updated");
-				$(".popupWrap, .mask").fadeIn();
+				$(".addPayrollGroupWrap, .mask").fadeIn();
 		        },
 		    });
 	 

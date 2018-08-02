@@ -6,7 +6,7 @@
 
     <!--  Popups -->
 <div class="mask" ></div>
-<div class="popupWrap popBig">
+<div class="addPayrollGroupWrap">
  <form:form id="add_user_group_form"  name="add_user_group_form" method="post">
  <div id="loading"></div>
     <div class="popupHead">Add Group <i class="closePop pull-right popClose" onclick="closeBatch();"></i></div>
@@ -241,13 +241,13 @@ $(document).ready(function() {
   $(".popupWrap, .mask").fadeIn();
 } */
 function closeBatch() {
-	$(".popupWrap, .mask").fadeOut();
+	$(".addPayrollGroupWrap, .mask").fadeOut();
 	 document.getElementById("add_user_group_form").reset(); 
 	 $('#add_user_group_form').find('p.jquery_form_error_message').remove();
 	 $("#userId").empty();
 	 $("#addUserGroupFormDiv").empty();
 }
 document.getElementById("createbatches").addEventListener("click", function(){
-	$(".popupWrap, .mask").fadeIn();
+	$(".addPayrollGroupWrap, .mask").fadeIn();
 });
 </script> 
