@@ -196,6 +196,7 @@ function getGroupFrequency(){
 
 
 <jsp:include page="usPayrollApprove.jsp" />
+<jsp:include page="payrollAdjustment.jsp" />
 
 </section>
 
@@ -306,7 +307,11 @@ function runUSPayroll(){
 				        	result += '</div>';
 				        	result += '</td>'; 
 				        	result += '<input type="hidden" value='+opt.empPayrollId+' id="'+i+'empPayrollId" name="uspayroll['+i+'].empPayrollId" />';
-				        	result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
+				        	if(opt.empId != null && opt.empId != 'undefined' && opt.empId != ''){
+				        		result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
+				        	}else{
+				        		result += '<td><div class="tblminwidth-50">--</div></td>';
+				        	}
 				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
 				        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
 				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.payRate+'</div></td>';
@@ -357,7 +362,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
 
 </script>
 
-<script>
+<!-- <script>
 	function payAdjustment(payrollUUID){
 		  $.ajax({
 		  	type: "GET",
@@ -545,11 +550,11 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		$(".usRunpayroll").fadeOut();
 		$(".sideMask").fadeOut();
 	};
-</script>
+</script> -->
 
  <!-- Net Edit popup -->
 
-<div class="sideMask"></div>
+<%-- <div class="sideMask"></div>
 <div class="modal usRunpayroll" style="display: none;" id="usRunpayroll">
 <form:form id="payroll_adjustment_form" name="payroll_adjustment_form" method="post">
   <div class="modal-dialog modal-lg">
@@ -776,10 +781,10 @@ $('body').on('blur', '#generate_payroll_form', function() {
   </div>
   </form:form>
 </div>
-
+ --%>
 
 //Net payedit Script
-	<script>
+<!-- 	<script>
 	function editUspayslip(event){
 		var text = document.getElementById("editUspaysliptext");
 		if(text.innerHTML === "Edit") {
@@ -799,11 +804,11 @@ $('body').on('blur', '#generate_payroll_form', function() {
 			}
 		}
 	}
-</script>
+</script> -->
 
 <!-- Net Edit popup Ends -->
 
-<script>
+<!-- <script>
 function savePayrollAdjustment(){
 	  var formData = getFormData("payroll_adjustment_form");
 	 /* var formData = $($('#payroll_adjustment_form')[0]).serialize(); */
@@ -824,10 +829,10 @@ function savePayrollAdjustment(){
 			/*  $("#paysheetLoading").hide(); */
 		});
 }
-</script>
+</script> -->
  
  
- <script>
+<!--  <script>
  function editRegularHours(){
 	var regularHours = $("#regularHours").val();
 	var overTimeHours = $("#overTimeHours").val();
@@ -850,9 +855,9 @@ function savePayrollAdjustment(){
 	 var overTimeAmt = $("#overTimeHoursAmt").val();
 	 calculateTotalEarnings(totlalAmount,overTimeAmt);
  }
- </script>
+ </script> -->
  
- <script>
+ <!-- <script>
  function editOverTimeHours(){
 	  var payRate = $("#payRate").val();
 	  var overTimeHours = $("#overTimeHours").val();
@@ -921,7 +926,7 @@ function savePayrollAdjustment(){
 	 var totalEarn = parseFloat(regularHourAmt) + parseFloat(overTimeHourAmt);
 	 $("#totalEarnings").text(totalEarn.toFixed(2));
  }
- </script>
+ </script> -->
  
 
 
