@@ -149,6 +149,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private Collection<UserDTO> managersList;
 	
+	private Collection<UserDTO> ExpenseApproversList;
+	
 	private Collection<UserDTO> managersListwithoutManager1;
 	
 	private String[] projectManagerName;
@@ -215,7 +217,35 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private Long sharedProjectCreatedOrgLocId;
 	
-	 private BigInteger projId;
+	private BigInteger projId;
+	
+	private String level1ExpenseApprover;
+	
+	private String level2ExpenseApprover;
+	
+    private String isProjectForTimeSheets;
+	
+	private String isProjectForExpenses;
+	
+	//@Required(desc="projectForValue")
+	private String projectForValue;
+	
+	
+	private int expenseApprover1;
+	
+	private int expenseApprover2;
+	
+	private String expenseApprover1Name;
+	
+	private String expenseApprover2Name;
+	
+	private String expenseApproverLevel1UserType;
+	
+	private String expenseApproverLevel1;
+	
+	private String expenseApproverLevel2;
+	  
+	private Collection<UserDTO> expensesApproversListwithoutApprover1;
 	
 	 private String tags;
 	
@@ -991,7 +1021,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	}
 
 	public void setSavedSharedClientOrgLocId(String savedSharedClientOrgLocId) {
-		this.savedSharedClientOrgLocId = savedSharedClientOrgLocId;
+		this.savedSharedClientOrgLocId = savedSharedClientOrgLocId; 
 	}
 
 	public Long getSharedClientOrgLocationId() {
@@ -1026,6 +1056,119 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.projId = projId;
 	}
 
+
+	public String getLevel1ExpenseApprover() {
+		return level1ExpenseApprover;
+	}
+
+	public void setLevel1ExpenseApprover(String level1ExpenseApprover) {
+		this.level1ExpenseApprover = level1ExpenseApprover;
+	}
+
+	public String getLevel2ExpenseApprover() {
+		return level2ExpenseApprover;
+	}
+
+	public void setLevel2ExpenseApprover(String level2ExpenseApprover) {
+		this.level2ExpenseApprover = level2ExpenseApprover;
+	}
+
+	public String getIsProjectForTimeSheets() {
+		return isProjectForTimeSheets;
+	}
+
+	public void setIsProjectForTimeSheets(String isProjectForTimeSheets) {
+		this.isProjectForTimeSheets = isProjectForTimeSheets;
+	}
+
+	public String getIsProjectForExpenses() {
+		return isProjectForExpenses;
+	}
+
+	public void setIsProjectForExpenses(String isProjectForExpenses) {
+		this.isProjectForExpenses = isProjectForExpenses;
+	}
+
+	public String getProjectForValue() {
+		return projectForValue;
+	}
+
+	public void setProjectForValue(String projectForValue) {
+		this.projectForValue = projectForValue;
+	}
+
+	public int getExpenseApprover1() {
+		return expenseApprover1;
+	}
+
+	public void setExpenseApprover1(int expenseApprover1) {
+		this.expenseApprover1 = expenseApprover1;
+	}
+
+	public int getExpenseApprover2() {
+		return expenseApprover2;
+	}
+
+	public void setExpenseApprover2(int expenseApprover2) {
+		this.expenseApprover2 = expenseApprover2;
+	}
+
+	public String getExpenseApprover1Name() {
+		return expenseApprover1Name;
+	}
+
+	public void setExpenseApprover1Name(String expenseApprover1Name) {
+		this.expenseApprover1Name = expenseApprover1Name;
+	}
+
+	public String getExpenseApprover2Name() {
+		return expenseApprover2Name;
+	}
+
+	public void setExpenseApprover2Name(String expenseApprover2Name) {
+		this.expenseApprover2Name = expenseApprover2Name;
+	}
+
+	public String getExpenseApproverLevel1UserType() {
+		return expenseApproverLevel1UserType;
+	}
+
+	public void setExpenseApproverLevel1UserType(String expenseApproverLevel1UserType) {
+		this.expenseApproverLevel1UserType = expenseApproverLevel1UserType;
+	}
+
+	public String getExpenseApproverLevel1() {
+		return expenseApproverLevel1;
+	}
+
+	public void setExpenseApproverLevel1(String expenseApproverLevel1) {
+		this.expenseApproverLevel1 = expenseApproverLevel1;
+	}
+
+	public String getExpenseApproverLevel2() {
+		return expenseApproverLevel2;
+	}
+
+	public void setExpenseApproverLevel2(String expenseApproverLevel2) {
+		this.expenseApproverLevel2 = expenseApproverLevel2;
+	}
+
+	public Collection<UserDTO> getExpensesApproversListwithoutApprover1() {
+		return expensesApproversListwithoutApprover1;
+	}
+
+	public void setExpensesApproversListwithoutApprover1(Collection<UserDTO> expensesApproversListwithoutApprover1) {
+		this.expensesApproversListwithoutApprover1 = expensesApproversListwithoutApprover1;
+	}
+
+	public Collection<UserDTO> getExpenseApproversList() {
+		return ExpenseApproversList;
+	}
+
+	public void setExpenseApproversList(Collection<UserDTO> expenseApproversList) {
+		ExpenseApproversList = expenseApproversList;
+	}
+
 	public String getTags() {
 		return tags;
 	}
@@ -1034,4 +1177,5 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.tags = tags;
 	}
 	
+
 }

@@ -1190,7 +1190,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 }
 
 	@Override
-	public List<ExpensesApproverHierarchy> getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(Long userId, Long orgLocationId, String expenseStatus) throws Exception
+	public List<ExpensesApproverHierarchy> getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(Long userId, Long orgLocationId, String expenseStatus,String isGlobalAccess) throws Exception
 	{
 		String submissionStatus = null;
 		if ("submitted".equalsIgnoreCase(expenseStatus)) {
@@ -1206,7 +1206,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			submissionStatus = "REOPENED";
 		}
 		
-		return expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, submissionStatus);
+		return expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, submissionStatus,isGlobalAccess);
 	}
 
 	@Override

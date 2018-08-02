@@ -18,6 +18,7 @@ public class InvoiceDetailsDTO extends SearchDTO implements Serializable {
 	private String lastmodified;
 	private String dueDate;
 	private String rate;
+	private String payRate;
 	private String qty;
 	private String amount;
 	private String arPaid;
@@ -119,6 +120,14 @@ public class InvoiceDetailsDTO extends SearchDTO implements Serializable {
 	public void setRate(String rate)
 	{
 		this.rate = rate;
+	}
+	public String getPayRate()
+	{
+		return payRate;
+	}
+	public void setPayRate(String payRate)
+	{
+		this.payRate = payRate;
 	}
 	public String getQty()
 	{

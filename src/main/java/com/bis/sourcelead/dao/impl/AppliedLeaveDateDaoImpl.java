@@ -170,10 +170,6 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
     	   e.printStackTrace();
 	}
     	return null;
-		
-    	
-    	
-    	
 	}
 
 	@Override
