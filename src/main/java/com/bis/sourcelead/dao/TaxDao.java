@@ -88,7 +88,11 @@ public interface TaxDao {
 	// getITDeclarationSubmissionItem(long id);
 
 	public boolean saveDocument(SourceleadTaxSubmissionDocument taxSubmissionDocument);
+	
+	public void deleteDocumentAttachment(long attachmentId);
 
+	public void deleteDocument(long documentId);
+	
 	public List<SourceleadTaxSubmissionDocument> getUploadedDocumentsBySubmissionId(long submissionId);
 
 	public SourceleadTaxSubmissionDocument getSourceleadTaxSubmissionDocumentById(long submissionDocumentId);
@@ -119,5 +123,6 @@ public interface TaxDao {
 			Paginator paginator);
 
 	public void saveTaxSubmissionMaster(SourceleadTaxSubmissionMaster sourceleadTaxSubmissionMaster);
+
 
 }

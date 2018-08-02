@@ -580,6 +580,35 @@ public class TaxDaoImpl implements TaxDao {
 		return false;
 	}
 
+	
+	@Override
+	public void deleteDocumentAttachment(long attachmentId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			SourceleadTaxSubmissionDocumentAttachment documentAttachment = session
+					.get(SourceleadTaxSubmissionDocumentAttachment.class, attachmentId);
+			if (documentAttachment != null) {
+				session.delete(documentAttachment);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void deleteDocument(long documentId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			SourceleadTaxSubmissionDocument document = session
+					.get(SourceleadTaxSubmissionDocument.class, documentId);
+			if (document != null) {
+				session.delete(document);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SourceleadTaxSubmissionDocument> getUploadedDocumentsBySubmissionId(long submissionId) {

@@ -159,16 +159,6 @@ function addDocumentRow() {
 	uploadCount++;
 }
 
-function removeDocumentRow(ele) {
-	$(ele).parents("tr").remove();
-	uploadCount = 1;
-	$(".upload").each(function() {
-		$(this).attr("id", "uploadBtn" + (uploadCount++));
-		document.getElementById($(this).attr("id")).value = "";
-	});
-	refreshDocumentInputIndexes();
-}
-
 function refreshDocumentInputIndexes() {
 	var count = 0;
 	$("#documentsTable tr").each(function () {
@@ -192,11 +182,42 @@ function refreshDocumentRow(ele) {
 	$(ele).parents("tr").find(".fa-refresh").addClass("disableBtn");
 }
 
+function removeDocumentRow(ele) {
+	var parentDiv = $(ele).parents("tr");
+	$(ele).parents("tr").remove();
+	uploadCount = 1;
+	$(".upload").each(function() {
+		$(this).attr("id", "uploadBtn" + (uploadCount++));
+		document.getElementById($(this).attr("id")).value = "";
+	});
+	
+	var documentId = $(parentDiv).find("input[data-name='documentId']").val();
+	if(documentId && documentId > 0) {
+		var documentRemoveIds = $("#documentRemoveIds").val();
+		$("#documentRemoveIds").val(documentRemoveIds + (documentRemoveIds === "" ? "" : ",") + documentId);
+	}
+	alert("Doc ID : " + $("#documentRemoveIds").val() + " <> Attch ID : " + $("#attachmentRemoveIds").val());
+	refreshDocumentInputIndexes();
+}
+
 function removeAttachment(ele) {
-	var parentDiv = $(ele).parent().parent();
+	var parentDiv = $(ele).parents("tr");
 	$(ele).parent().remove();
-	var filesCount = $(parentDiv).find("i").length;
-	$("#uploadFile" + $(parentDiv).data("id")).val(filesCount > 1 ? (filesCount + " files selected") : filesCount === 1 ? "1 file selected" : "");
+	var filesCount = $(parentDiv).find("i[data-name='attachment']").length;
+	$("#uploadFile" + $(parentDiv).data("index")).val(filesCount > 1 ? (filesCount + " files selected") : filesCount === 1 ? "1 file selected" : "");
+	var attachmentId = $(ele).data("id");
+	if(attachmentId && attachmentId > 0) {
+		var attachmentRemoveIds = $("#attachmentRemoveIds").val();
+		$("#attachmentRemoveIds").val(attachmentRemoveIds + (attachmentRemoveIds === "" ? "" : ",") + attachmentId);
+	}
+	if(filesCount === 0) {
+		var documentId = $(parentDiv).find("input[data-name='documentId']").val();
+		if(documentId && documentId > 0) {
+			var documentRemoveIds = $("#documentRemoveIds").val();
+			$("#documentRemoveIds").val(documentRemoveIds + (documentRemoveIds === "" ? "" : ",") + documentId);
+		}
+	}
+	alert("Doc ID : " + $("#documentRemoveIds").val() + " <> Attch ID : " + $("#attachmentRemoveIds").val());
 }
 
 function approveOrRejectForm(formId, status) {

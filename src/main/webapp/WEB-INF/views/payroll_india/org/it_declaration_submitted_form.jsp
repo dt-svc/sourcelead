@@ -17,6 +17,9 @@
 				<div class="row min">
 					<input type="hidden" value="${form.id}" name="id"/>
 					<input type="hidden" value="${form.taxFormId}" name="taxFormId"/>
+					<c:if test="${viewForm || editForm}">
+						<input type="hidden" value="${form.userId}" name="userId"/>
+					</c:if>
 					<div class="col-md-6 col-md-offset-2">
 						<div class="clearfix dropdown-select">
 							<select class="selectpicker width100percnt" id="employeeSelect" ${viewForm || editForm ? "disabled='disabled'" : ""} 
@@ -100,6 +103,8 @@
 							</table>
 							<div class="clearfix"></div>
 						</c:forEach>
+						<input type="hidden" id="attachmentRemoveIds" name="attachmentRemoveIds"/>
+						<input type="hidden" id="documentRemoveIds" name="documentRemoveIds"/>
 						<c:if test="${documents.size() > 0 || editForm}">
 							<table class="table table-itdeclaration table-bordered">
 								<thead>
@@ -146,7 +151,7 @@
 																		</span>
 																	</label>
 																	<input class="form-control" readonly="readonly" field-name='Document File' data-validation='required'
-																		id="uploadFile1" placeholder="Select File(s)" type="text" value="${document.attachmentList.size()} files selected">
+																		id="uploadFile${documentCount}" placeholder="Select File(s)" type="text" value="${document.attachmentList.size()} files selected">
 																</div>
 															</div>
 														</c:if>
@@ -155,7 +160,7 @@
 															<c:forEach items="${document.attachmentList}" var="attachment">
 																<div data-index="${attachmentCount}">
 																	<c:if test="${!viewForm}">
-																		<i onclick="removeAttachment(this);" class="text-danger fa fa-remove cursorPointer"></i>
+																		<i onclick="removeAttachment(this);" data-id="${attachment.id}" data-uuid="${attachment.uuid}" data-name="attachment" class="text-danger fa fa-remove cursorPointer"></i>
 																	</c:if>
 																	${attachment.attachment}
 																</div>
@@ -171,7 +176,7 @@
 																		<i class="fa fa-plus mr cursorPointer" onclick="addDocumentRow()"></i>
 																	</c:when>
 																	<c:otherwise>
-																		<i class="fa fa-trash text-danger mr cursorPointer" onclick="removeDocumentRow(this)"></i>
+																		<i class="fa fa-trash text-danger mr cursorPointer" data-name="removeDocument" onclick="removeDocumentRow(this)"></i>
 																	</c:otherwise>
 																</c:choose>
 																		<i class="fa fa-refresh cursorPointer disableBtn" onclick="refreshDocumentRow(this)"></i>
@@ -203,8 +208,7 @@
 																	</span>
 																</label>
 															</c:if>
-															<input class="form-control" readonly="readonly"
-																field-name='Document File' data-validation='required'
+															<input class="form-control" readonly="readonly" field-name='Document File' data-validation='required'
 																id="uploadFile1" placeholder="Select File(s)" type="text">
 														</div>
 													</div>
@@ -213,10 +217,8 @@
 												<c:if test="${!viewForm}">
 													<td>
 														<div class="tblminwidth-75 text-center">
-															<i class="fa fa-plus mr cursorPointer"
-																onclick="addDocumentRow()"></i> <i
-																class="fa fa-refresh cursorPointer disableBtn"
-																onclick="refreshDocumentRow(this)"></i>
+															<i class="fa fa-plus mr cursorPointer" onclick="addDocumentRow()"></i>
+															<i class="fa fa-refresh cursorPointer disableBtn" onclick="refreshDocumentRow(this)"></i>
 														</div>
 													</td>
 												</c:if>

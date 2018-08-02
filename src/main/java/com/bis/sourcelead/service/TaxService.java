@@ -74,6 +74,10 @@ public interface TaxService {
 
 	void saveUploadedDocuments(List<SourceleadTaxSubmissionDocumentDTO> documentList, String staticPath, Long orgId,
 			Long orgLocationId, long submissionId);
+	
+	void deleteDocumentAttachment(long attachmentId);
+	
+	void deleteDocument(long documentId);
 
 	List<SourceleadTaxSubmissionDocumentDTO> getUploadedDocumentsBySubmissionId(long submissionId);
 

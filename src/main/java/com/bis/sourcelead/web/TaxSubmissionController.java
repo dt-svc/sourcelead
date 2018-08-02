@@ -1,7 +1,9 @@
 package com.bis.sourcelead.web;
 
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,7 +36,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Controller
 @RequestMapping("/app")
 public class TaxSubmissionController {
-	private static final Logger logger = LoggerFactory.getLogger(TaxAdminController.class);
+	private static final Logger logger = LoggerFactory.getLogger(TaxSubmissionController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -232,11 +234,26 @@ public class TaxSubmissionController {
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 							"orgLocations");
-
-					if (itDeclarationSubmissionDTO.getDocumentList() != null
-							&& !itDeclarationSubmissionDTO.getDocumentList().isEmpty()) {
+					if (itDeclarationSubmissionDTO.getDocumentList() != null && !itDeclarationSubmissionDTO.getDocumentList().isEmpty()) {
 						taxService.saveUploadedDocuments(itDeclarationSubmissionDTO.getDocumentList(), staticPath,
 								org.getId(), loginOrgLocation.getId(), response.getObject());
+					}
+					//delete attachments based on attachmentRemoveIds
+					if (itDeclarationSubmissionDTO.getAttachmentRemoveIds() != null && !itDeclarationSubmissionDTO.getAttachmentRemoveIds().isEmpty()) {
+						for (String attachmentRemoveId : itDeclarationSubmissionDTO.getAttachmentRemoveIds().split(",")) {
+							taxService.deleteDocumentAttachment(Long.parseLong(attachmentRemoveId));
+						}
+					}
+					// delete documents based on documentRemoveIdsIDs
+					if (itDeclarationSubmissionDTO.getDocumentRemoveIds() != null && !itDeclarationSubmissionDTO.getDocumentRemoveIds().isEmpty()) {
+						//from javascript we have a chance of getting duplicate documentIds, so we are assigning to Set<Long>
+						Set<Long> docRemoveIdSet = new HashSet<>();
+						for (String documentRemoveId : itDeclarationSubmissionDTO.getDocumentRemoveIds().split(",")) {
+							docRemoveIdSet.add(Long.parseLong(documentRemoveId));
+						}
+						for(Long docId : docRemoveIdSet) {
+							taxService.deleteDocument(docId);
+						}
 					}
 				}
 			} else {
@@ -244,6 +261,7 @@ public class TaxSubmissionController {
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(e.getMessage());
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());

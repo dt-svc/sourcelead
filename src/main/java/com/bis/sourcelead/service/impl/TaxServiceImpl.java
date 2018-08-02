@@ -999,6 +999,24 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
+	public void deleteDocumentAttachment(long attachmentId) {
+		try {
+			taxDao.deleteDocumentAttachment(attachmentId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void deleteDocument(long documentId) {
+		try {
+			taxDao.deleteDocument(documentId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
 	public List<SourceleadTaxSubmissionDocumentDTO> getUploadedDocumentsBySubmissionId(long submissionId) {
 		List<SourceleadTaxSubmissionDocumentDTO> documentList = new LinkedList<>();
 		try {
