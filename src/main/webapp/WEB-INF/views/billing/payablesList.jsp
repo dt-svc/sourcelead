@@ -1000,13 +1000,15 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 		 if(invoiceStatus == "Accepted"){
 			 if(paymentStatus != "Paid"){
 				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Bill"></i>Pay</a></li>';
+				 //result = result +' <li><a onclick="voidBill(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Bill"></i>Void Bill</a></li>';
 
 			 }
 			 
 		 }
 		 if(invoiceStatus == "SENT"){
 				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Bill"></i>Pay</a></li>';
-			 
+				 //result = result +' <li><a onclick="voidBill(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Bill"></i>Void Bill</a></li>';
+
 		 }
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
 		result = result+' <li><a class="" href="'+fileUrl+'" title="Print" target="_blank"><i class="fa fa-print paddingLeft paddingRight"></i>Print</a></li>';
@@ -1760,6 +1762,21 @@ function deleteBill(invoiceUUID){
 	$(".project_inn_mask").fadeIn(200);
 }
 
+function voidBill(invoiceUUID){
+	var result = "";
+	$("#popUp").empty();
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"		<p>Are you sure you want to Void Bill ?</p>";
+	result = result + ' <div id="voidBillId"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="savevoidBill(\''+invoiceUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
 function cancelTermination(){
 	$("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
@@ -1786,6 +1803,30 @@ function saveBillRejectedReason(invoiceUUID){
 	else{
 			$("#reasonForBillDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
+	
+}
+
+function savevoidBill(invoiceUUID){
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/voidInvoiceOrBill?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
+				    success: function(result) {
+		  		    	if (result && result.response === "INVALID_DATA") {
+		          		    showError(result.responseMessage);
+		          		} else if (result.response === "AWKWARD") {
+		          		    location.href = "/errorPage";
+		          		} else if (result.response === "SUCCESS") {
+		          			$("#popUp").empty();
+		   	 			    $(".project_inn_mask").fadeOut(200);
+		   		    	    location.replace(sourceleadUrl+"/payablesList");
+		          		} else if (result.indexOf('Sign In') !== -1) {
+		          			location.replace(sourceleadUrl);
+		          		} else {
+		          		    showError("Operation failed, please try again");
+		          		}
+				    }
+		  		    	
+			     });
 	
 }
 

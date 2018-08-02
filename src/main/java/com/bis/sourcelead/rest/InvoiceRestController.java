@@ -1376,21 +1376,75 @@ public class InvoiceRestController {
 					if (invoice != null) {
 						invoice.setInvoiceStatus(Constants.INVOICE_REJECTED);
 						invoice.setRejectReason(reason);
-						invoice.setCreatedBy(user.getUserCode());
-						invoice.setCreatedDate(commonUtil.currentDate());
+						invoice.setUpdatedBy(user.getUserCode());
+						invoice.setUpdatedDate(commonUtil.currentDate());
 						Invoice childInvoice = invoiceDao.saveInvoce(invoice);
 						if (null != childInvoice) {
 							if (null != invoice.getParentInvoiceId()) {
 								Invoice parentInvoice = invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
 								parentInvoice.setInvoiceStatus(Constants.INVOICE_REJECTED);
 								parentInvoice.setRejectReason(reason);
-								invoice.setCreatedBy(user.getUserCode());
-								parentInvoice.setCreatedDate(commonUtil.currentDate());
+								parentInvoice.setUpdatedBy(user.getUserCode());
+								parentInvoice.setUpdatedDate(commonUtil.currentDate());
 								invoiceDao.saveInvoce(parentInvoice);
 							}
 						}
 						// Reject invoice/bill mail
 						invoiceRejectMailtoVendor(user, invoice, orgLocation, invoice.getInvoiceType());
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/voidInvoiceOrBill", method = RequestMethod.POST)
+	public @ResponseBody Response<String> voidInvoiceOrBill(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID, HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (invoiceUUID != null) {
+//					Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceUUID));
+					Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+					if (invoice != null) {
+						// update child/parent invoice
+						invoice.setInvoiceStatus(Constants.INVOICE_BILL_VOID);
+						invoice.setUpdatedBy(user.getUserCode());
+						invoice.setDueAmount("0.0");
+						invoice.setUpdatedDate(commonUtil.currentDate());
+						Invoice childOrParentInvoice = invoiceDao.saveInvoce(invoice);
+						if (null != childOrParentInvoice) {
+							if (null != invoice.getParentInvoiceId()) {
+								// parent invoice update
+								Invoice parentInvoice = invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+								parentInvoice.setInvoiceStatus(Constants.INVOICE_BILL_VOID);
+								parentInvoice.setDueAmount("0.0");
+								parentInvoice.setUpdatedBy(user.getUserCode());
+								parentInvoice.setUpdatedDate(commonUtil.currentDate());
+								invoiceDao.saveInvoce(parentInvoice);
+							}else{
+								// update child invoice
+								Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
+								childInvoice.setInvoiceStatus(Constants.INVOICE_BILL_VOID);
+								childInvoice.setDueAmount("0.0");
+								childInvoice.setUpdatedBy(user.getUserCode());
+								childInvoice.setUpdatedDate(commonUtil.currentDate());
+								invoiceDao.saveInvoce(childInvoice);
+							}
+						}
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
 					}
