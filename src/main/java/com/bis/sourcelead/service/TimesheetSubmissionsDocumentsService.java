@@ -14,6 +14,8 @@ public interface TimesheetSubmissionsDocumentsService {
 	
 	List<TimesheetSubmissionsDocuments> getAllTimesheetSubmissionsDocumentsBySubmissionId(Long submissionId)throws Exception;  
 	
+	List<Long> getAllTimesheetSubmissionsDocumentIdsBySubmissionId(Long submissionId)throws Exception; 
+	
 	public TimesheetSubmissionsDocuments getTimesheetSubmissionsDocuments(Long id)throws Exception;
 	
 	List<TimesheetSubmissionsDocumentsHistory> getAllTimesheetSubmissionsDocumentsHistoryBySubmissionId(Long submissionId)throws Exception;

@@ -42,8 +42,8 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 	}
 	
 	@Override
-	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status) {
-		return expensesCategoryDao.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, status);
+	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status,String isGlobalUser) {
+		return expensesCategoryDao.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, status,isGlobalUser);
 	}
 
 	@Override
@@ -90,6 +90,13 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 		if(jsonObject.has("description")){
 			expensesCategory.setDescription(jsonObject.getString("description"));
 		}
+		
+		if(jsonObject.has("isAttachmetRequired")){
+			expensesCategory.setIsAttachemtRequired(jsonObject.getString("isAttachmetRequired"));
+		}else {
+			expensesCategory.setIsAttachemtRequired(null);
+		}
+		
 		expensesCategory.setStatus(Constants.MEMBER_ACTIVE);
 		expensesCategory.setCreatedBy(user.getUserCode());
 		expensesCategory.setCreatedDate(commonUtil.currentDate());
@@ -119,6 +126,12 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 	@Override
 	public Boolean validateExpensesCategoryType(Long orgLocationId, String categoryName) throws Exception {
 		return expensesCategoryDao.validateExpensesCategoryType(orgLocationId, categoryName);
+	}
+
+	@Override
+	public String getExpenseAttachmentStatusByCategoryId(Long categoryId) {
+		return expensesCategoryDao.getExpenseAttachmentStatusByCategoryId(categoryId);
+
 	}
 	
 	

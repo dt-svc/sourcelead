@@ -2,7 +2,9 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,13 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
+import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectDocumentFolder;
+import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
@@ -59,6 +66,12 @@ public class HolidayServiceImpl implements HolidayService{
 		}
 		if(holidayDTO != null)
 		{
+			if(orgLocations.getAverageWorkingHours() != null) {
+				holiday.setOrgAvgHrs(CommonUtil.getTimeFormat(Float.valueOf(orgLocations.getAverageWorkingHours()), null));
+			}else {
+				holiday.setOrgAvgHrs(CommonUtil.getTimeFormat(8f, null));
+			}
+			
 			if(StringUtils.isNotBlank(holidayDTO.getOrgLocationId()))
 			{
 				holiday.setOrgLocations(orgLocations);
@@ -111,13 +124,50 @@ public class HolidayServiceImpl implements HolidayService{
 			}
 			
 			holiday.setStatus("1");
+			holiday.setBillableType(holidayDTO.getHolidayBillableType());
 			
+			//Holiday Relates Shifts Storing
+			List<Long> dbShifts = null;
+			if(StringUtils.isNotBlank(holidayDTO.getHolidayId())){
+				dbShifts = holidayDAO.getHolidayShiftCout(Long.valueOf(holidayDTO.getHolidayId()));
+			}
+		    HashSet<Long> freshShifts = new HashSet<>();
+			Set<HolidayShift> holidayShiftDBList = new HashSet<>();
+			if(holidayDTO.getShift() != null) {
+				String[] shift = holidayDTO.getShift().split(",");
+				for(String s:shift) {
+					if(dbShifts == null || dbShifts.isEmpty() || (StringUtils.isNotEmpty(s) && dbShifts != null && !dbShifts.isEmpty() && !dbShifts.contains(Long.parseLong(s)))) {
+						HolidayShift hs = new HolidayShift();
+						hs.setHoliday(holiday);
+						Shift sh = new Shift();
+						sh.setId(Long.valueOf(s));
+						hs.setShift(sh);
+						holidayShiftDBList.add(hs);
+					}else if(StringUtils.isNotEmpty(s) && dbShifts != null && !dbShifts.isEmpty() && dbShifts.contains(Long.parseLong(s))){
+						freshShifts.add(Long.parseLong(s));
+					}
+				}
+			}
+			if(!freshShifts.isEmpty()) {
+				dbShifts.removeAll(freshShifts);
+				if(dbShifts != null && !dbShifts.isEmpty()) {
+					holidayDAO.removeHolidayShiftList(dbShifts,Long.valueOf(holidayDTO.getHolidayId()));
+				}
+			}
+			holiday.setHolidayShift(holidayShiftDBList);
 		}
+		
+		
 		
 		holiday = holidayDAO.storeHoliday(holiday);
 		//to save all days of duration
 		leaveService.storeHolidayOrRestrictDays(orgLocations,user,holiday);
 		return holiday;
+	}
+
+	private Set<HolidayShift> storeHolidayShift(HolidayDTO holidayDTO, User user) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -238,6 +288,71 @@ public class HolidayServiceImpl implements HolidayService{
 	public List<Holiday> getAllHoliday() {
 		return holidayDAO.getAllHoliday();
 	}
-	
+
+	@Override
+	public List<HolidayDTO> getAllHolidaysListByOrgloationIdAndShiftId(Long locationId, String shiftIds) throws Exception {
+		List<HolidayDTO> holidayDTOList = new ArrayList<HolidayDTO>();
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+		List<Holiday> holidaysList =  holidayDAO.getAllHolidaysListByOrgloationIdAndShiftId(locationId,shiftIds);
+		for(Holiday hlist : holidaysList)
+		{ 
+			HolidayDTO hDTO = new HolidayDTO();
+		    hDTO.setId(hlist.getId());
+			if(StringUtils.isNotBlank(hlist.getHolidayName()))
+			hDTO.setHolidayName(hlist.getHolidayName());
+			if(hlist.getFromDate() != null){
+				hDTO.setFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), hlist.getFromDate()));
+				hDTO.setDayOfTheWeek(Constants.WEEK_DAY.format(hlist.getFromDate()));
+			}
+			if(hlist.getToDate() != null)
+			hDTO.setToDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), hlist.getToDate()));
+			if(StringUtils.isNotBlank(hlist.getFromHalfDayCheckBox()))
+			hDTO.setFromHalfDayCheckBox(hlist.getFromHalfDayCheckBox());
+			if(StringUtils.isNotBlank(hlist.getFromHalfDayAmPm()))
+			hDTO.setFromHalfDayAmPm(hlist.getFromHalfDayAmPm());
+			if(StringUtils.isNotBlank(hlist.getToHalfDayCheckBox()))
+			hDTO.setToHalfDayCheckBox(hlist.getToHalfDayCheckBox());
+			if(StringUtils.isNotBlank(hlist.getToHalfDayAmPm()))
+			hDTO.setToHalfDayAmPm(hlist.getToHalfDayAmPm());
+			if(StringUtils.isNotBlank(hlist.getDescription()))
+		    hDTO.setDescription(hlist.getDescription());
+			
+			hDTO.setHolidayUUID(hlist.getHolidayUUID());
+			
+			Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date());
+			Date fromDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), hlist.getFromDate());
+			if(fromDate.before(currentDate)){
+				hDTO.setIsPast(Constants.YES);
+			}else if(fromDate.after(currentDate)){
+				hDTO.setIsFuture(Constants.YES);
+			}else{
+				hDTO.setIsCurrent(Constants.YES);
+			}
+			holidayDTOList.add(hDTO);
+		}
+		return holidayDTOList;
+	}
+
+	@Override
+	public List<Long> getHolidayShiftCout(Long holidayId) throws Exception {
+		return holidayDAO.getHolidayShiftCout(holidayId);
+	}
+
+	@Override
+	public List<HolidayShift> getHolidayShiftListByHolidayId(Long holidayId) throws Exception {
+		return holidayDAO.getHolidayShiftListByHolidayId(holidayId);
+	}
+
+	@Override
+	public void deleteHolidayByHolidayId(Long holidayId) throws Exception {
+		holidayDAO.deleteHolidayByHolidayId(holidayId);
+	}
+
+	@Override
+	public List<HolidayAndRestrictday> getHolidayByFromToDate(Date startDate, Date endDate,OrgLocations orgLocations)
+	{
+		return holidayDAO.getHolidayByFromToDate(startDate,endDate,orgLocations);
+	}
+
 	
 }

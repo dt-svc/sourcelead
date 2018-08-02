@@ -3,6 +3,9 @@ package com.bis.sourcelead.immigration.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
@@ -33,7 +36,7 @@ public interface ImmigrationCommonService {
 	
 	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
 
-	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations, String[] ids, String status, String sendRequest) throws Exception;
+	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations, String[] ids) throws Exception;
 
 	ImmigrationDTO getImmigrationDetails(String immigrationId, OrgLocations orgLocations);
 	
@@ -79,9 +82,9 @@ public interface ImmigrationCommonService {
 
 	 Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception;
 	 
-	 List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId,Long templateId, Long candidateId,User user,OrgLocations orgLocations, String searchVal) throws Exception;
+	 List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId,Long templateId, Long candidateId,User user,OrgLocations orgLocations, String searchVal, String myImmigration) throws Exception;
 
-	List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId, Long immigrationId, String searchVal);
+	List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId, Long immigrationId, String searchVal, String myImmigration);
 
 	ImmigrationCandidateForms saveImmigrationCandidateForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, User user, OrgLocations orgLocations) throws Exception;
 
@@ -89,9 +92,12 @@ public interface ImmigrationCommonService {
 
 	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO, String searchValue,  OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal) throws Exception;
 
+	ResponseList<ImmigrationListViewDTO> getImmigrationsListByCountsLink(ImmigrationListViewDTO immigrationListDTO, String searchValue,  OrgLocations orgLocations) throws Exception;
+
+	
 	String updateUscisTypeDropDown(Long templateId, Long uscisId,Long uscisOldId,User user,OrgLocations orgLocations) throws Exception;
 
-	ImmigrationDTO editImmigrationDetails(Long immigrationId, OrgLocations orgLocations);
+	ImmigrationDTO editImmigrationDetails(Long immigrationUUID, OrgLocations orgLocations);
 
 	ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations);
 	
@@ -116,5 +122,23 @@ public interface ImmigrationCommonService {
 	List<ImmigrationActivityHistory> getImmigrationActivitiesList(Long immigrationId,Long orglocationId) throws Exception;
 	
 	Integer getTableRecordCountByImmigrationId(String entityName,Long immigrationId, String condition);
+	
+	public Boolean validateCandidatePassportVisa(Long candidateId,String idType,String idNumVal) throws Exception;
+	
+	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType, Long candidateId,Long id) throws Exception;
 
+	Long getImmigrationIdByUUID(String immigrationUUID);
+
+	Long getCandidateIdByUUID(String candidateUUID);
+	
+	public ImmigrationCandidateForms getImmigrationCandidateFormsDetailsByFormNameAndId(String formName, Long candidateId,Long immigrationId,Long id) throws Exception;
+	
+	public Boolean validateImmigrationCandidateForms(String formName, Long candidateId,Long immigrationId) throws Exception;
+
+	Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, OrgLocations orgLocations);
+	
+	Long getTemplateDetailsByNameAndOrgLoacationId(String name, OrgLocations orgLocations);
+
+	List<Immigration> getImmigrationsByOrgId(Long id);
+	
 }

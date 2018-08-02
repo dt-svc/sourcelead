@@ -32,6 +32,8 @@ public interface ImmigrationTemplateDao {
     ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId);
     
     ImmigrationTemplate getImmigrationTemplateById(Long templateId);
+    
+    ImmigrationTemplate getImmigrationTemplateByIdAndLocationId(String templateName,Long templateId,Long orgLocationId);
 
     ImmigrationTemplateDocs savePetitionTemplateDocDetails(ImmigrationTemplateDocs immigrationTemplateDocs);
 
@@ -76,11 +78,16 @@ public interface ImmigrationTemplateDao {
     void savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
             CandidateResumes candidateResume, List<CandidateLcaI94Summary> lcaSummaryLst) throws Exception;
 
-    public boolean validateTemplateNameExistance(String templateName, Long templateId);
+    public boolean validateTemplateNameExistance(String templateName, Long orgLocationId);
 
 	List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal);
 
 	ImmigrationTemplateTasks getImmigratonTemplateTasksById(Long id);
 
 	List<ImmigrationTemplateTasks> getImmigratonTemplateTasksByTemplateId(Long templateId);
+
+	Long getTemplateIdByUUID(String immiTemplateUUID);
+
+	boolean validateTemplateTaskNameExistance(String templateTaskName, Long templateId, Long immiTaskId);
+
 }

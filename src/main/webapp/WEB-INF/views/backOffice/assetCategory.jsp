@@ -26,22 +26,20 @@ $(document).ready(function(){
   </div>
   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/assetManagement'/>">Assets List</a> &raquo; Category</div>
 </section>
+
+
 <div class="timesheet_out">
-  <div class="vendor_wrap">
-    <div class="timesheet_head">
-      <ul>
-        <li> <a href="javascript:void(0)" class="addcon-pop" onClick="addCategoryDoc();"><i class="fa fa-plus"></i>Add Categories</a> 
+
+<div class="positionRelative reportHead reportHeadDataTab clearfix">
+      <ul class="pull-right list-unstyled list-inline">
+         <li> <a href="javascript:void(0)" class="newAdBtn addcon-pop" onClick="addCategoryDoc();">+ Categories</a> 
           <!-- Add Asset Popup -->
-           <div id="popUpDiv"> 
-           </div>
+           <div id="popUpDiv"> </div>
         </li>
-        <li>
-        </li>
-        <div class="clearfix"></div>
-      </ul>
-      <div class="clearfix"></div>
-    </div>
-    <div class="require_wrap_table table-wrap datatable_filter overflow_inherint">
+        </ul>
+      </div>
+    
+    <div class="require_wrap_table table-wrap datatable_filter overflow_inherint dataSeaTop">
     <div id="popUp"></div>
      <div id="assetCategoryLoderDiv"></div>
     <table id="assetCategoryList" class="display" cellspacing="0" width="100%"> </table>

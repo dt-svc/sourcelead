@@ -80,6 +80,7 @@ function submitReviseContractReason(contractUUID){
 }
 
 
+
 function getParallelApprovers(){
 	$("#parallel i").addClass("apprverReq-active");
 	$("#sequential i").removeClass("apprverReq-active");
@@ -92,7 +93,7 @@ function getParallelApprovers(){
 	$('#sequentialOwner2').trigger("chosen:updated");
 // 	$('#parallelOwner').trigger("chosen:updated");
 	
-	$('#parallelOwner').removeAttr('data-validation');
+	$('#parallelOwner').removeAttr('data-validation-optional');
 	$('#parallelOwner').attr('data-validation',"required");
 	$('#sequentialOwner2').removeAttr('data-validation');
 	$('#sequentialOwner2').attr('data-validation-optional',"true");
@@ -112,10 +113,12 @@ function getSequentialApprovers(){
 //	 	$('#sequentialOwner1').trigger("chosen:updated");
 //	 	$('#sequentialOwner2').trigger("chosen:updated");
 		$('#parallelOwner').trigger("chosen:updated");
-		$('#sequentialOwner1').removeAttr('data-validation');
+		$('#sequentialOwner1').removeAttr('data-validation-optional');
 		$('#sequentialOwner1').attr('data-validation',"required");
-		$('#sequentialOwner2').removeAttr('data-validation');
+		$('#sequentialOwner2').removeAttr('data-validation-optional');
 		$('#sequentialOwner2').attr('data-validation',"required");
 		$('#parallelOwner').removeAttr('data-validation');
 		$('#parallelOwner').attr('data-validation-optional',"true");
 }
+
+

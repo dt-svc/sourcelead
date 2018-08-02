@@ -1,16 +1,23 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
@@ -28,6 +35,8 @@ public interface RequirementService {
     public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId, String status, String clients, User user, String userRoleName) throws Exception;
 
     public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
+    
+    public Requirement getRequirementByRequirementIdAndSearchValue(Long requirementId,String searchValue) throws Exception;
 
     public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String url) throws Exception;
 
@@ -59,8 +68,10 @@ public interface RequirementService {
 
     public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 
-    public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception;
 
+    public List<String> getJobFairDaysListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId);
+    
     public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode, String statusType) throws Exception;
 
     public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, Long userId) throws Exception;
@@ -121,6 +132,8 @@ public interface RequirementService {
 
     public String getNoticePeriodByRequirementId(Long requirementId) throws Exception;
 
+    public Requirement getRequirementByGeneratedIdAndLocationId(String generatedId,Long orgLocationId)throws Exception;
+    
     // This method is if the user is requirement manager or approver or assignTo
     // or creator this method is for consolidated reports
     public List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId, User user) throws Exception;
@@ -135,7 +148,7 @@ public interface RequirementService {
 
     public List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(Long orgLocationId, TeamMembers teamMembers) throws Exception;
 
-    Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception;
+    BigInteger getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception;
 
     public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId, Date startDateUTC, Date endDateUTC);
 
@@ -147,6 +160,8 @@ public interface RequirementService {
 
     public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays) throws Exception;
 
+    public List<Requirement> getRequirementListByPostedDateAndSelectedClients(Long orgLocationId, Long userId, String postedDateRange, String selectedClients);
+    
     public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId, Date startDateUTC, Date endDateUTC) throws Exception;
 
     public List<Requirement> getAllReleasedJobsBasedOnUserIdAndLocationId(User user, OrgLocations orgLocations) throws Exception;
@@ -158,6 +173,10 @@ public interface RequirementService {
     public List<Requirement> getAllClosedRequirementsByStartDateAndEndDate(Date startDateUTC, Date endDateUTC) throws Exception;
 
     public String getRequirementId(OrgLocations orgLocations);
+    
+    public String getGeneratedJobFairIdByOrgLocationId(long orgLocationsId);
+    
+    public String getGeneratedJobFairId(OrgLocations orgLocations);
 
     public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId, Long relationId, String userRoleName, User user, String status);
 
@@ -186,5 +205,42 @@ public interface RequirementService {
     public ResponseList<RequirementDTO> getRequirementList(Long id, String search, Long location, String employmentType, int pageNo, int pageSize);
     
     public List<RequirementDTO> getAllManagerRequirementForJobSharing(Date[] searchDates,Long managerUserId,Long orgLocationId) throws Exception;
+    
+    List<RecruiterReportAssociateCountView> getAssociateCountsCreatedUserList(Long orgLocationId, List<Long> userIdsList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
+    
+    List<RecruiterRrportDTO> getAssociateCountsCreatedUserListByLocation(Long orgLocationId, List<Long> userIdsList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
+
+    
+    public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,Long userId,OrgLocations orgLocations) throws Exception;
+
+    /*public long addRequirementToJobFairs(List<JobFairDTO> jobFairDTOList);*/
+    
+    /*public long addRequirementToJobFair(long jobFairId, long requirementId, String[] jobFairDates);*/
+    
+    public Response<String> saveJobFair(JobFairDTO jobFairDTO, User user, OrgLocations orgLocation);
+    
+    public ResponseList<JobFairDTO> getJobFairsList(JobFairDTO jobFairDTO, boolean includeInactive);
+    
+    public JobFairDTO getJobFairByUUID(String uuid);
+    
+    public boolean changeJobFairStatus(Long jobFairId, int status);
+
+	public List<JobFair> getJobFairsListByRequirementId(Long requirementId);
+
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat);
+
+	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date);
+
+	public List<JobFairDTO> getJobFairsDTOListByRequirementId(long requirementId);
+	
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId);
+	
+	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
+	
+	public void assignGeneratedIdToJobFairs();
+	
+	public ResponseList<RequirementDTO> getJobListOfRecruiter(RequirementDTO requirementDTO, Long recruiterUserId,Date[] searchDates,List<Long> teamsList) throws Exception;
+	
+	Boolean forceDeleteForSelectedJobs(String[] uuids) throws Exception;
 
 }

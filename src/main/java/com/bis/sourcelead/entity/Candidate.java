@@ -529,6 +529,19 @@ public class Candidate implements Serializable {
 	 @JsonProperty
 	 private String dateofBirthString;
 	 
+	 
+     @Transient
+	 @JsonProperty
+	 private String candidateTags;
+     
+     @Transient
+	 @JsonProperty
+     private Set<String> tagsList;
+	 
+     @Transient
+	 @JsonProperty
+	 private Set<String> candidateTagsList;
+	 
 	public int getProfilePercentage()
 	{
 
@@ -1652,7 +1665,6 @@ public class Candidate implements Serializable {
 	public void setResidenceEndDate(Date residenceEndDate) {
 		this.residenceEndDate = residenceEndDate;
 	}
-
 	public Shift getShift() {
 		return shift;
 	}
@@ -1660,4 +1672,29 @@ public class Candidate implements Serializable {
 	public void setShift(Shift shift) {
 		this.shift = shift;
 	}
+	public String getCandidateTags() {
+		return candidateTags;
+	}
+
+	public void setCandidateTags(String candidateTags) {
+		this.candidateTags = candidateTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public Set<String> getCandidateTagsList() {
+		return candidateTagsList;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public void setCandidateTagsList(Set<String> candidateTagsList) {
+		this.candidateTagsList = candidateTagsList;
+	}
+
+>>>>>>> 0856efe947b7f3b87fba4b507c404a1cb6e7bf89
 }

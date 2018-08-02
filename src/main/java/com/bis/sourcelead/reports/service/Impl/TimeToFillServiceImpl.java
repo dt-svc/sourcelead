@@ -28,4 +28,10 @@ public class TimeToFillServiceImpl implements TimeToFillService{
 		return timeToFillDao.getRequirementHistoryBySubmissionIdsAndStage(submissionId, stage);
 	}
 
+	@Override
+	public List<RequirementSubmissionHistory> getRequirementHistoryByJobIdsAndStageForTimeToFill(List<Long> jobIdList, Date[] searchDates)
+			throws Exception {
+		return timeToFillDao.getRequirementHistoryByJobIdsAndStageForTimeToFill(jobIdList, searchDates);
+	}
+
 }

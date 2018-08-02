@@ -66,13 +66,6 @@ function getRequestedAssociatesList(){
 				result = result +'</div>';
 				
 				result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Approver :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.approverName+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>';
-				
-				result = result +'<div class="col-md-6">'; 
 				result = result +'<label class="col-md-4 control-label">Total Budget :</label>';
 				result = result +'<div class="col-md-8">';
 				result = result +'<label>${SourceLeadWeb_currencyCode}&nbsp;<strong>'+json.estimatedBudget+'</strong></label>  ';
@@ -86,12 +79,7 @@ function getRequestedAssociatesList(){
 				result = result +' </div>';    
 				result = result +'</div>';
 				
-				/* result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Status :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.requestStatus+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>'; */
+				
 				
 				result = result +'</div>';
 				result = result +'</div> ';  
@@ -102,6 +90,7 @@ function getRequestedAssociatesList(){
 				result = result +'                 <tr>';
 				result = result +'                     <th>Name</th>';
 				result = result +'                     <th>Location</th>';
+				result = result +'                     <th>Approver</th>';
 				result = result +'                     <th>Pay Rate</th>';
 				result = result +'                     <th>Bill Rate</th>';
 				result = result +'                     <th>Start Date</th>';
@@ -138,6 +127,10 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
+					 	result = result +'<div class="tbldata-dotdot" title="'+opt.approverName+'">'+opt.approverName+'</div>';
+						result = result +'</td>';
+						
+						result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+opt.payRateStr+'">'+opt.payRateStr+'</div>';
 						result = result +'</td>';
 						
@@ -165,14 +158,30 @@ function getRequestedAssociatesList(){
 					 	result = result +'<div class="tbldata-dotdot_80" title="'+opt.estimatedBudget+'">'+opt.estimatedBudget+'</div>';
 						result = result +'</td>';
 						
+						
 						result = result +'<td>';
+						if(opt.rejectedReason==null){
+						result = result +'<div class="tbldata-dotdot-vsm paTp">';
+			     		result = result +'<p class="text-success" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</p>';
+						result = result +'</div>';
+						}
+						if(opt.rejectedReason!=null){
+						result = result +'<div class="tbldata-dotdot-vsm paTp">';
+			     		result = result +"<i class='glyphicon glyphicon-comment edit-reason colB'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
+	    				result = result +'<p class="holdPro" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</p>';
+						result = result +'</div>';
+						}
+						result = result +'</td>';
+						
+						
+						/* result = result +'<td>';
 						if(opt.resourceStatus == null){
 							result = result +'<div class="tbldata-dotdot_vsm text-warning">Sent For Approval</div>';
 						}else{
 							result = result +'<div class="tbldata-dotdot_80" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'<strong></div>';
 						}
 					 	
-						result = result +'</td>';
+						result = result +'</td>'; */
 						
 					 result = result +'</tr>';
 				 }

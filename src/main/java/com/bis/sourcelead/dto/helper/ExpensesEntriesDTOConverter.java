@@ -10,13 +10,14 @@ import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
+import com.bis.sourcelead.entity.OrgLocations;
 
 public class ExpensesEntriesDTOConverter {
 
-	public static ExpensesEntriesDTO  getExpensesEntriesDTOFromExpensesEntries(ExpensesEntries expensesEntries,ExpensesDTO expensesDTO){
+	public static ExpensesEntriesDTO  getExpensesEntriesDTOFromExpensesEntries(OrgLocations loc, ExpensesEntries expensesEntries,ExpensesDTO expensesDTO){
 		ExpensesEntriesDTO expensesEntriesDTO = new ExpensesEntriesDTO();
 		if(expensesEntries!=null) {
-			SimpleDateFormat dateFormat=expensesEntries.getExpensesId().getOrgLocationId().getLocFullFormDateFormatter();
+			SimpleDateFormat dateFormat=loc.getLocFullFormDateFormatter();
 			expensesEntriesDTO.setId(expensesEntries.getId());
 			expensesEntriesDTO.setDateOccurred(dateFormat.format(expensesEntries.getExpenseDate()));
 			if(expensesEntries.getPaymentMode()!= null) {

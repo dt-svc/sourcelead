@@ -84,65 +84,7 @@ right: 15px;
 	<section class="comLogBg">
 			<section class="comLogInn">
 				<div class="comLogHead">
-				
-	<c:if test="${!empty SourceLeadWeb_userSpocRolesList && SourceLeadWeb_prodSupportLoginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
-		<div class="offOrg offOrgCompanyOnboard ">
-             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
-	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-				                <div class="clearfix">
-				                   <div class="pull-left image-parent positionRelative">
-				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                     <c:if test="${!empty links.orgLocations.org.fileContentType}">
-				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-				                   </c:if>
-				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
-				                     <img src="/resources/images/office-image.jpg">
-				                   </c:if>
-				                     </div>
-				                   </div>
-				                   <div class="pull-left mt5">
-				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-				                   </div>
-				                </div>
-			                </a>
-		              </li>
-	              </c:forEach>
-	              </ul>
-	            </div>
-	            </div>
-          </c:if>
-          
-          <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
-          	<div class="offOrg offOrgCompanyOnboard ">
-             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
-		              <li>
-		              <a href="<c:url value='${sourceleadUrl}/productionSupportdashboard/${SourceLeadWeb_prodSupportOrgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink">
-						                   <img src="/resources/images/office-image.jpg">
-						                     </div>
-						                   </div>
-					                       <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${SourceLeadWeb_prodSupportLoginOrgName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${SourceLeadWeb_prodSupportLoginUserDisplayName}</p>
-						                   </div>
-					                </div>
-				                </a>
-		              </li>
-	              </ul>
-	            </div>
-	            </div>		
-		              			
-              </c:if>
+				<jsp:include page="../userManageAccounts.jsp" />
 				 <div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
 				  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
 				       <ul>
@@ -226,16 +168,10 @@ right: 15px;
 </script>
 
 <script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
+$(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+})
 </script>
-
-
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
 
 
 
@@ -402,11 +338,11 @@ function savePaymentAccount() {
         } else {
             if(validate('paymentAccountBankName', "Bank Name")
                     && validate('paymentAccountNumber', "Account Number")
-                    && validate('paymentAccountRoutingNumber', "Routing Number")
-                    && validate('paymentAccountFirstName', "First Name")
-                    && validate('paymentAccountLastName', "Last Name")
+                    && validate('paymentBSRNumber', "BSR Number")
                     && validate('paymentMICRCode', "MICR Code")
-                    && validate('paymentBSRNumber', "BSR Number")) {
+                    && validate('paymentAccountRoutingNumber', "IFSC Code	")
+                    && validate('paymentAccountFirstName', "First Name")
+                    && validate('paymentAccountLastName', "Last Name")) {
             	data["micrCode"] = $("#paymentMICRCode").val().trim();
             	data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
                 data["accountNumber"] = $("#paymentAccountNumber").val().trim();
@@ -468,3 +404,6 @@ function grantWePayAccess(id) {
     });
 }
 </script>
+
+
+

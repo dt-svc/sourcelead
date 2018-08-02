@@ -11,7 +11,8 @@
 		<div class="comLogContent">
 			  <div id="taxPopUp" ></div>	
 			    <div id="loading"></div> 
-			         <div class="clearfix"> 
+			         <div class="clearfix">
+			         <h3 class=".margin-top0">Federal Taxes</h3>
 		         			<div class="col-md-6">
 					   		
 					   		<div class="form-group clearfix">

@@ -14,8 +14,8 @@ width: 75px; padding: 0 !important;
 }
 </style>
  <!-- Applicant Authorization -->
-      <div class="dashboard-widget clearfix mb eventAlert">
-        <div class="row">
+      <div class=" mb eventAlert col-md-12 ">
+        <div class="dashboard-widget  clearfix">
         <div class="col-xs-12 col-md-12 event_calendar">
             <h4 class="pull-left mb10">Events</h4>
             <sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">
@@ -24,10 +24,22 @@ width: 75px; padding: 0 !important;
         </div>
       <!-- show Calendar -->
         <div class="col-xs-12 col-md-5 mb">
-            <div id="eventCalendar"></div>    
+            <div id="eventCalendar"></div>
+            <div id="jobFairCalendar" style="display: none;"></div>
         </div>
-        
-      <!-- show Calendar -->
+
+
+		<ul class="project-tabs-menu projecttabs-custom events-tabs">
+			<li id="interviewsTab" class="current">
+				<a href="javascript:void(0)" onclick="getInterviewsandTasks()">Interviews & Tasks</a>
+			</li>
+			<li id="jobFairsTab">
+				<a href="javascript:void(0)" onclick="getJobFairs()">Job Fairs</a>
+			</li>
+			<div class="clearfix"></div>
+		</ul>
+
+		<!-- show Calendar -->
             <div class="col-xs-12 col-md-7 mb alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
                   
                   <div class="eventHeader">                                               
@@ -47,69 +59,150 @@ width: 75px; padding: 0 !important;
            	 	<div id ="taskDiv"></div>
            	 	</div>
 	     </div>
-      </div>
+
+		<div class="col-xs-12 col-md-7 mb alert alert-dismissable positionRelative" id="dashboardJobFairsDiv" style="display: none;">
+			<div class="eventHeader">
+				<div class="media">
+					<div class="media-left bg-success paddingRight">
+						<i class="fa fa-calendar fa-3x"></i>
+					</div>
+					<div class="media-body paddingLeft">
+						<h4 class="media-heading" id="dayOfweekForJobFair"></h4>
+						<p class="small" id="selectedDateForJobFair"></p>
+					</div>
+				</div>
+			</div>
+			<div class="eventCalendr_content">
+				<div id="fairJobsDiv"></div>
+			</div>
+		</div>
+	</div>
 		<div class="add_inter_wrap">
 			<div class="new_side_wrap_inn" id="addInterviewDiv"></div>
 		</div> 
     </div>
     
 <script type="text/javascript">
-window.onload = function() { 
-	getInterviewsandTasks();
-	getInterviewsDates();
+	window.onload = function() {
+		getInterviewsandTasks();
+		getInterviewsDates();
 	}
 </script>
 
 <script>
-function getInterviewsDates(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var dates = {}
-	 $.ajax({
-		type: "POST",
-        url: sourceleadUrl+"/getInterviewsTaskDates?${_csrf.parameterName}=${_csrf.token}",
-        success: function(result) {
-        		if (result.response === "FAILED") {
-		    		showError(result.responseMessage);
-		    	} else if (result.response === "AWKWARD") {
-		    		location.href = "/errorPage";
-		    	} else if (result.response === "SUCCESS") {
-		    		var data = result.data;
-		    		if(data.length > 0){
-		          		 for(var i=0; i<data.length; i++){
-		          			dates[new Date(data[i]).getTime()]='visible';
-		          		 }
-		          	 }
-		          	eventCalendar(dates);
-		    	}else if (result.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
-	    	} else {
-	    		showError("Operation failed, please try again");
-	    	}
-        }
-	}); 
-}
+	var allDates = {};
+	var interviewDates = {};
+	function getInterviewsDates() {
+		var sourceleadUrl = '${sourceleadUrl}';
+		var dates = {}
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl
+					+ "/getInterviewsTaskDates?${_csrf.parameterName}=${_csrf.token}",
+			success : function(result) {
+				if (result.response === "FAILED") {
+					showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					var data = result.data;
+					if (data.length > 0) {
+						for (var i = 0; i < data.length; i++) {
+							dates[new Date(data[i]).getTime()] = 'visible';
+						}
+					}
+					interviewDates = dates;
+					eventCalendar(dates);
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+			}
+		});
+	}
+
+	var jobFairDates = {};
+	function getJobFairDates() {
+		var sourceleadUrl = '${sourceleadUrl}';
+		var dates = {}
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl
+					+ "/getJobFairDatesForCalendar?${_csrf.parameterName}=${_csrf.token}",
+			success : function(result) {
+				if (result.response === "FAILED") {
+					showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					var data = result.data;
+					if (data.length > 0) {
+						for (var i = 0; i < data.length; i++) {
+							dates[new Date(data[i]).getTime()] = 'visible';
+						}
+					}
+					jobFairDates = dates;
+					getJobFairCalendar(dates);
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+			}
+		});
+	}
+	function test() {
+		for(var e in jobFairDates) {
+			alert(jobFairDates[e]);
+		}
+	}
 </script>
 
 <script type="text/javascript">
-	function getInterviewsandTasks() {
+function getJobFairs() {
+	$("#interviewsTab").removeClass("current");
+	$("#dashboardEventsDiv").hide();
+	
+	$("#jobFairsTab").addClass("current");
+	$("#dashboardJobFairsDiv").show();
+	getJobFairDates();
+	getJobsForSelectedFairDate();
+}
+
+function getInterviewsandTasks() {
+	$("#interviewsTab").addClass("current");
+	$("#dashboardEventsDiv").show();
+	
+	$("#jobFairsTab").removeClass("current");
+	$("#dashboardJobFairsDiv").hide();
+	
+	getInterviewsDates();
+	getInterviewsandTasksForSelectedDate();
+}
+
+function getSelectedDateFromCalendar(selectedDate) {
+	var date = selectedDate;
+	if(date == null || date == '' || date == 'undefined'){
+		date = new Date(); 
+		var month = parseInt(date.getMonth())+parseInt(1);
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  if(locationDate.match("yyyy-MM-dd")){
+		      date = date.getFullYear()+"-"+month+"-"+date.getDate();
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  date = date.getDate()+"-"+month+"-"+date.getFullYear();
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  date = month+"-"+date.getDate()+"-"+date.getFullYear();
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  date = date.getFullYear()+"-"+date.getDate()+"-"+month;
+		  }
+	}
+	return date;
+}
+
+	function getInterviewsandTasksForSelectedDate() {
 		var sourceleadUrl ='${sourceleadUrl}';
-		var date = '';
-		var date = $("#eventCalendar").val();
-		if(date == null || date == '' || date == 'undefined'){
-			date = new Date(); 
-			var month = parseInt(date.getMonth())+parseInt(1);
-			  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-			  if(locationDate.match("yyyy-MM-dd")){
-			      date = date.getFullYear()+"-"+month+"-"+date.getDate();
-			  }if(locationDate.match("dd-MM-yyyy")){
-				  date = date.getDate()+"-"+month+"-"+date.getFullYear();
-			  }if(locationDate.match("MM-dd-yyyy")){
-				  date = month+"-"+date.getDate()+"-"+date.getFullYear();
-			  }if(locationDate.match("yyyy-dd-MM")){
-				  date = date.getFullYear()+"-"+date.getDate()+"-"+month;
-			  }
-		}
-		
+		var date = getSelectedDateFromCalendar($("#eventCalendar").val());
 		
 		$.ajax({
 	    	type: "POST",
@@ -239,7 +332,7 @@ function getInterviewsDates(){
 		           	 $("#interviewDiv").append(result);
 		           	 $("#taskDiv").empty();
 		           	 $("#taskDiv").append(opt);
-		    	}else if (data.indexOf('Sign In') !== -1) {
+		    	} else if (data.indexOf('Sign In') !== -1) {
 		    		location.replace(sourceleadUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
@@ -248,6 +341,77 @@ function getInterviewsDates(){
 		});
 	}
 	
+	function getJobsForSelectedFairDate() {
+		var sourceleadUrl ='${sourceleadUrl}';
+		var date = getSelectedDateFromCalendar($("#jobFairCalendar").val());
+		$("#fairJobsDiv").empty();
+		$("#fairJobsDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getJobFairRequirements?${_csrf.parameterName}=${_csrf.token}&date="+date,
+	        success: function(result) {
+	        	if (result.response === "FAILED") {
+		    		showError(result.responseMessage);
+		    	} else if (result.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (result.response === "SUCCESS") {
+		    		var dateFormat = "";
+		    		if(locationDate.match("yyyy-MM-dd")) {
+		    			dateFormat = 'yy-mm-dd';
+		    		} if(locationDate.match("dd-MM-yyyy")) {
+		    			dateFormat = 'dd-mm-yy'; 
+		    		} if(locationDate.match("MM-dd-yyyy")) {
+		    			dateFormat = 'mm-dd-yy'; 
+		    		} if(locationDate.match("yyyy-dd-MM")) {
+		    			dateFormat = 'yy-dd-mm'; 
+		    		}
+		    		
+					$("#dayOfweekForJobFair").text(result.responseMessage.split("<>")[0]);
+					$("#selectedDateForJobFair").text(result.responseMessage.split("<>")[1]);
+
+					var data = result.data;
+					if (data != null && data.length > 0) {
+						var jobFairsText = "";
+						for (var e in data) {
+							var text = "<div class='eventList clearfix'>";
+							text += "	<div class='pull-left event_details form-horizontal dashboard_fair_table'>";
+							text += "		<p>";
+							text += "			<a target='_blank' href='" + sourceleadUrl + "/requirementSummary?requirementUUID=" + data[e].requirementUUID + "'>" + data[e].jobTitle + "</a>";
+							text += "		</p>";
+							if(data[e].clientId != null) {								
+								text += "		<p>";
+								text += " 			<a target='_blank' href='" + sourceleadUrl + "/clientDashboard?orgRelationUUID=" + data[e].clientId.uuid + "' title='" + data[e].clientId.clientName + "'>" + data[e].clientId.clientName + "</a>";
+								text += "		</p>";
+							}
+							text += "		<p>";
+							for (var i in data[e].jobFairList) {
+								text += "<span class='dashboard_span'>" + data[e].jobFairList[i].name + "</span>";
+							}
+							text += "		</p>";
+							text += "	</div>";
+							text += "</div>";
+
+							/* $("#fairJobsDiv").append(text); */
+							jobFairsText += text;
+						}
+						$("#fairJobsDiv").append(jobFairsText);
+					} else {
+						var text = '<div class="row">';
+						text = text + '	<div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;">';
+						text = text + '	</div>';
+						text = text + ' </div>';
+						text = text + ' </div>';
+						$("#fairJobsDiv").append(text);
+					}
+					$("#fairJobsDiv").removeAttr("style");
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+			}
+		});
+	}
 </script>
 
 
@@ -913,46 +1077,71 @@ function cancelAddInterviewDiv(){
 	});	
 </script>
 	
-  <script>
-  function eventCalendar(dates) {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatEDashboardeventCalendar = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEDashboardeventCalendar = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEDashboardeventCalendar = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEDashboardeventCalendar = 'yy-dd-mm'; 
-	  }
-	  
-    $("#eventCalendar" ).datepicker({
-	  changeMonth: true,
-      changeYear: true,
-      dateFormat : finalDateFormatEDashboardeventCalendar,
-      onSelect : function(selected) {
-  		getInterviewsandTasks();
-	   },
-	    beforeShowDay: function(date) {
-	  	  var hlText = dates[date.getTime()];
-	        return (hlText)?[true, "Highlighted", '']: [true, '', ''];
-	  	}
-    });
-  } 
+<script>
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var finalDateFormatEDashboardeventCalendar = '';
+	$(document).ready(function () {		
+		if(locationDate.match("yyyy-MM-dd")) {
+			finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
+		} if(locationDate.match("dd-MM-yyyy")) {
+			finalDateFormatEDashboardeventCalendar = 'dd-mm-yy'; 
+		} if(locationDate.match("MM-dd-yyyy")) {
+			finalDateFormatEDashboardeventCalendar = 'mm-dd-yy'; 
+		} if(locationDate.match("yyyy-dd-MM")) {
+			finalDateFormatEDashboardeventCalendar = 'yy-dd-mm'; 
+		}
+	});
+	function eventCalendar(dates) {
+		$("#eventCalendar").show();
+		$("#jobFairCalendar").hide();
+	    $("#eventCalendar").datepicker({
+		  changeMonth: true,
+	      changeYear: true,
+	      dateFormat : finalDateFormatEDashboardeventCalendar,
+	      onSelect : function(selected) {
+	    	  getInterviewsandTasksForSelectedDate();
+		   },
+		    beforeShowDay: function(date) {
+		  	  var hlText = dates[date.getTime()];
+		        return (hlText)?[true, "Highlighted", '']: [true, '', ''];
+		  	}
+	    });
+	}
+  
+	function getJobFairCalendar(dates) {
+		$("#eventCalendar").hide();
+		$("#jobFairCalendar").show();
+		$("#jobFairCalendar").datepicker({
+		  changeMonth: true,
+	      changeYear: true,
+	      dateFormat : finalDateFormatEDashboardeventCalendar,
+	      onSelect : function(selected) {
+	    	  getJobsForSelectedFairDate();
+		   },
+		    beforeShowDay: function(date) {
+		  	  var hlText = dates[date.getTime()];
+		        return (hlText)?[true, "HighlightedFair", '']: [true, '', ''];
+		  	}
+	    });	
+	}
       
- $(function(){
-   $('#example').timepicker(); 
+$(function(){
+	$('#example').timepicker(); 
 });
-  </script>  
+</script>  
  
-  <style>
-  .Highlighted a{
-	   background-color : #9ACD32 !important;
-	   font-weight:bold !important;
-	   font-size: 12pt;
+<style>
+.Highlighted a {
+	background-color : #9ACD32 !important;
+	font-weight:bold !important;
+	font-size: 12pt;
 }
-  </style>
+.HighlightedFair a {
+	background-color : #32A7CD !important;
+	font-weight:bold !important;
+	font-size: 12pt;
+}
+</style>
   	
  <!-- <script>
  function personalInfo(){

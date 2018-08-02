@@ -142,73 +142,30 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			              <div class="timesheet_out">                                                                                                                                                                       ';
  result = result + '			                <div class="clearfix">                                                                                                                                                                             ';
  result = result + '			                  <div class="timesheet_head timesheetHead-UL ">                                                                                                                                                                     ';
- result = result + '			                    <ul>                                                                                                                                                                                           ';
- result = result + '			                                                                                                                                                                                                                   ';
- result = result + '			                    	                                                                                                                                                                                           ';
- result = result + '			                      <li class="dropdown"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></div>';
- result = result + '			                        <div class="dropdown-menu bootstrap_dropdownMenu">                                                                                                                                              ';
- result = result + '			                          <ul  class="paddingLi">                                                                                                                                                                                     ';
- result = result + '			                            <li>                                                                                                                                                                                   ';
- result = result + '			                              <input type="checkbox" value="DRAFT" name="invoiceStatus" id="" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');" >                                                                                        ';
- result = result + '			                              <label for="onboard1">Draft</label>                                                                                                                                                  ';
- result = result + '			                            </li>                                                                                                                                                                                  ';
- result = result + '			                            <li>                                                                                                                                                                                   ';
- result = result + '			                              <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');">                                                                                          ';
- result = result + '			                              <label for="onboard2">Sent</label>                                                                                                                                                   ';
- result = result + '			                            </li>                                                                                                                                                                                  ';
- result = result + '			                            <li>                                                                                                                                                                                   ';
- result = result + '			                              <input type="checkbox" value="RECEIVED" name="invoiceStatus" id="" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');" >                                                                                     ';
- result = result + '			                              <label for="onboard1">Received</label>                                                                                                                                               ';
- result = result + '			                            </li>                                                                                                                                                                                  ';
- result = result + '			                            <li>                                                                                                                                                                                   ';
- result = result + '			                              <input type="checkbox" id="" value="ACCEPTED" name="invoiceStatus" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');">                                                                                      ';
- result = result + '			                              <label for="onboard2">Accepted</label>                                                                                                                                               ';
- result = result + '			                            </li>                                                                                                                                                                                  ';
- result = result + '			                            <li>                                                                                                                                                                                   ';
- result = result + '			                              <input type="checkbox" id="" value="REJECTED" name="invoiceStatus" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');">                                                                                      ';
- result = result + '			                              <label for="onboard2">Rejected</label>                                                                                                                                               ';
- result = result + '			                            </li>                                                                                                                                                                                  ';
- result = result + '			                            <li>                                                                                                                                                                                   ';
- result = result + '			                              <input type="checkbox" id="" value="LINKED" name="invoiceStatus" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');">                                                                                        ';
- result = result + '			                              <label for="onboard2">Linked</label>                                                                                                                                                 ';
- result = result + '			                            </li>                                                                                                                                                                                  ';
- result = result + '			                          </ul>                                                                                                                                                                                    ';
- result = result + '			                        </div>                                                                                                                                                                                     ';
- result = result + '			                      </li>                                                                                                                                                                                        ';
- result = result + '			                                                                                                                                                                                                                   ';
- result = result + '			                      <li class="dropdown"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i></div>';
- result = result + '			                        <div class="dropdown-menu bootstrap_dropdownMenu">                                                                                                                                              ';
- result = result + '			                          <ul  class="paddingLi">                                                                                                                                                                                     ';
- result = result + '			                            <li>                                                                                                                                                                                   ';
- result = result + '			                              <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');">                                                                                          ';
- result = result + '			                              <label for="onboard3">Paid</label>                                                                                                                                                   ';
- result = result + '			                            </li>                                                                                                                                                                                  ';
- result = result + '			                            <li>                                                                                                                                                                                   ';
- result = result + '			                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');">                                                                                  ';
- result = result + '			                              <label for="onboard2">Partially Paid</label>                                                                                                                                         ';
- result = result + '			                            </li>                                                                                                                                                                                  ';
- result = result + '			                            <li>                                                                                                                                                                                   ';
- result = result + '			                              <input type="checkbox" id="" value="OverDue" name="paymentStatus" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');">                                                                                       ';
- result = result + '			                              <label for="onboard4">OverDue</label>                                                                                                                                                ';
- result = result + '			                            </li>                                                                                                                                                                                  ';
- result = result + '			                            <li>                                                                                                                                                                                   ';
- result = result + '			                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');">                                                                                        ';
- result = result + '			                              <label for="onboard1">Unpaid</label>                                                                                                                                                 ';
- result = result + '			                            </li>                                                                                                                                                                                  ';
- result = result + '			                          </ul>                                                                                                                                                                                    ';
- result = result + '			                        </div>                                                                                                                                                                                     ';
- result = result + '			                      </li>                                                                                                                                                                                        ';
- 													'<sec:authorize access="hasAnyRole(\'ROLE_ADD_BILL\')"> ';
- result = result + '			                      <li><a href="javascript:void(0)" class="anchorTag" title="Create Bill"  onclick="createBill('+orgRelationId+');"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|</li>        ';
- 													'</sec:authorize>';
- result = result + '			                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Bill</a>&nbsp;&nbsp;&nbsp;|</li>';
- result = result + '			                      <div class="clearfix"></div>                                                                                                                                                                 ';
- result = result + '			                    </ul>                                                                                                                                                                                          ';
- result = result + '			                    <div class="clearfix"></div>                                                                                                                                                                   ';
- result = result + '			                                                                                                                                                                                                                   ';
+
+ result = result + ' <div class="pull-left cand-advsrch advsrch_chosen">';
+ result = result + ' <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetBillFilter('+orgRelationId+','+vendorLocationId+');" title="Refresh">';
+ result = result + '    <span class="fa fa-refresh"></span>';
+ result = result + '</button>';
+ result = result + '<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openBillFilterPop('+orgRelationId+','+vendorLocationId+');"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>';
+ result = result + '</a>';
+ result = result + '</div>';
+ 
+ result = result + '			                    <ul>   ';
+ 
+ result = result + ' <li>';
+ result = result + '	<a id="actionDiv" class="action mr" href="javascript:void(0)"><i class="fa fa-user-plus"></i>&nbsp;Add<i class="fa fa-caret-down"></i></a>';
+ result = result + '	<div class="action-pop">';	
+ result = result + '		<span style="width:225px;">';
+	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_BILL\')"> ';
+ result = result + '           <a href="javascript:void(0)" class="anchorTag" title="Create Bill"  onclick="createBill('+orgRelationId+');"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>';
+      '</sec:authorize>';
+ result = result + '        <a href="javascript:void(0)" class="" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();"> <i class="fa fa-gears paddingRight"></i>Generate Automatic Bill</a>';
+ result = result + '		<div class="clearfix"></div>';
+ result = result + '		</span>';
+ result = result + '	</div>';
+ result = result + '</li>';
  result = result + '			                  </div>                                                                                                                                                                                           ';
- result = result + '			                                                                                                                                                                                                                   ';
- result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                  <div class="candidate_wrap_table">                                                                                                                                                               ';
  result = result + '				                  <div id="invoiceList"></div>                                                                                                                                                                 ';
  result = result + '			                  </div>                                                                                                                                                                                           ';
@@ -236,6 +193,16 @@ result = result  +'    <div class="billingArea"> ';
     $("#tab-4").empty();
     $("#tab-4").append(result);  
 	
+    
+    $("#actionDiv").click(function(){
+		$(".action-pop").slideToggle(200);
+	});
+ 	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop, #actionDiv").click(function(e){
+	 	e.stopPropagation();
+ 	});
     getInvoiceListBasedonVendor(orgRelationId,vendorLocationId);
     
 }
@@ -306,6 +273,7 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'	<table id="vendorInvoiceListPagination">                                                                                                         ';
 			result = result +'     <thead>                            ';
 			result = result +'       <tr>                             ';
+			result = result +'         <th>Action</th>                ';
 			result = result +'         <th>Reference ID</th>                    ';
 			result = result +'         <th>Vendor Contact</th>               ';
 			result = result +'         <th>Invoice Date <br>(<small class="custom-small">'+billingVendorDatePattern+'</small>)</th>               ';
@@ -314,7 +282,6 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'         <th>Due date <br>(<small class="custom-small">'+billingVendorDatePattern+'</small>)</th>              ';
 			result = result +'         <th>Status</th>                ';
 			result = result +'         <th>Payment Status</th>                ';
-			result = result +'         <th>Action</th>                ';
 			result = result +'       </tr>                            ';
 			result = result +'     </thead>                           ';
 			result = result +'     <tbody>                            ';
@@ -367,6 +334,67 @@ result = result  +'    <div class="billingArea"> ';
 	       			}
 	        		
 	        		result = result +'       <tr> ';
+	        		result = result +'         <td> ';
+					result = result +'     <div class="tblminwidth-90" style="position: inherit;">';
+					 result = result +'  <div class="pull-right menuWidget" style="position: inherit;">';
+					 if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected"){
+						 result = result +' <i class="fa fa-ellipsis-v divPadding" onClick="showPopUp(\''+report.id+'\',\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.paymentStatus+'\',\''+report.fileUrl+'\',\''+report.dueAmount+'\');" ></i>  ';
+							result = result +'  <div id="popupDiv'+report.invoiceUUID+'" style="position: inherit;"></div>';
+					} 
+					result = result +'  </div> ';  
+					
+					if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
+						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+							if(report.paymentStatus == "Paid"){
+								result = result +'           <span class="text-primary primary pull-left" title="Paid" >Paid</span>         ';
+							}else if(report.invoiceStatus == "DRAFT"){
+								result = result +'           <span class="textWarning pull-left" title="Draft">Draft</span>          ';
+							}else if(report.invoiceStatus == "Rejected"){
+								result = result +'           <div class="colorRed pull-left">Rejected</div>   ';	
+							}
+								
+						}else{
+							if(report.invoiceStatus == "Accepted"){
+                              if(report.paymentAccountDTO != null && report.paymentAccountDTO.accountType == "WEPAY")
+                                  result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="initPaymentOnline(\''+report.invoiceUUID+'\','+report.dueAmount+');" title="Pay">Pay</span> </td>';
+                              else
+								result = result +'           <span class="textSuccess pull-left" title="Accepted">Accepted</span> </td>';
+							}else if(report.invoiceStatus == "Linked"){
+									result = result +' <a class="successBtn primary pull-left cursorPointer" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+								}else{
+									result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+								}
+								
+						}
+						
+					}else{
+						if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
+							if(report.paymentStatus == "Paid"){
+								result = result +'           <span class="textSuccess pull-left" title="Paid" >Paid</span> </td>          ';	
+							}else if(report.invoiceStatus == "DRAFT"){
+								result = result +'           <span class="textWarning pull-left" title="Draft">Draft</span></td>          ';
+							}else if(report.invoiceStatus == "SENT"){
+								result = result +'           <span class="text-primary pull-left" title="Sent" >Sent</span> </td>          ';
+							}else if(report.invoiceStatus == "Rejected"){
+								result = result +'           <div class="colorRed pull-left">Rejected</div>   ';
+							}
+								
+						}else{
+							if(report.invoiceStatus == "Linked"){
+								result = result +' <a class="successBtn primary pull-left" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+							}else if(report.invoiceStatus == "Received"){
+								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+							}else{
+								result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
+							}
+						}
+						
+						
+					}
+					
+	 
+			        result = result +'</div>';
+			        result = result +'</td>';
 					result = result +'         <td>';
 					if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						
@@ -424,51 +452,7 @@ result = result  +'    <div class="billingArea"> ';
 					result = result +'           <div class="tbldata-dotdot_100">'+report.paymentStatus+'</div> ';
 					result = result +'         </td>';
 					
-					result = result +'         <td> ';
-					result = result +'     <div class="tblminwidth-90">';
-					 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-					 if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected"){
-						 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.paymentStatus+'\');" ></i>  ';
-							result = result +'  <div id="popupDiv'+report.invoiceUUID+'"></div>';
-					} 
-					result = result +'  </div> ';  
-					
-					if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
-						if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="successBtn primary pull-left" title="Paid">Paid</span> </td>          ';	
-						}else if(report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
-						}else{
-							if(report.invoiceStatus == "Accepted"){
-								result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
-							}else{
-								if(report.invoiceStatus == "Rejected"){
-									result = result +'           <span class="text-danger successBtn primary pull-left">Rejected</span> </td>          ';	
-								}else{
-									result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
-								}
-								
-							}
-						}
-						
-					}else{
-						if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
-						}else if(report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
-						}else if(report.invoiceStatus == "SENT"){
-							result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';
-						}else if(report.invoiceStatus == "Accepted"){
-							result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
-						}
-						
-						
-					}
-					
-	 
-			        result = result +'</div>';
-			        result = result +'</td>';
-	                
+					                
 					result = result +'       </tr>                                                                                                           ';
 				}
     		}else{
@@ -713,7 +697,7 @@ function saveBillRejectedReason(invoiceUUID){
 
 <!-- modal pop -->
 <div class="side_mask" style="display: none"></div>
-<div class="modal modal_invoice" style="display: none;">
+<div class="modal modal_invoice datatable_filter" style="display: none;">
    <div id="linkPayblePopup" ></div>
 </div>
 <!-- modal pop -->
@@ -1012,7 +996,7 @@ function generateAutomaticInvoice(){
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&contractType=clientSow", 
+	    	 url: sourceleadUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&contractType=vendorSow", 
              success: function(json) {
             	  $("#invoiceLoading").removeAttr("style");
 					$("#selector13").removeAttr("style");
@@ -1116,18 +1100,18 @@ function cancelbtn(){
 </script>
   
 <script>
-function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,paymentStatus){
+function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,paymentStatus,fileUrl,dueAmount){
 		 removePopup();
-	     result = "";
+		 result = "";
 	     if(invoiceParentId == 'undefined'){
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
+	    	 result = result +'    <ul class="list-unstyled menupop"> ';
 	     }else{
 	    	 if(invoiceStatus == 'DRAFT'){
-	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	    		  result = result +'    <ul class="list-unstyled menupop"> ';
 	    	  }else if(invoiceParentId != 'null'){
-	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
+	    		  result = result +'    <ul class="list-unstyled menupop"> ';
 	    	  }else{
-	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
+	    		  result = result +'    <ul class="list-unstyled menupop"> ';
 
 	    	  }
 	     }
@@ -1135,18 +1119,37 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,payment
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
 		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
-			 result = result +'      <li onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 result = result +'<li><a onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight paddingLeft" title="Send reminder"></i>Send reminder</a> </li>';
 			 '</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
-		 result = result +'      <li onclick="getPrint(\''+invoiceUUID+'\');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
-		 '</sec:authorize>'
 		 
-		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
-		 result = result +'      <li onclick="downloadInvoice(\''+invoiceUUID+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
-		 '</sec:authorize>'
-		 
-		 result = result +'      <li onclick="linkPayableInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Bill</li>';
+		 if(invoiceStatus == "DRAFT"){
+			 result = result +' <li><a onClick="deleteBill(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove Bill"></i>Delete</a></li>';
+ 
+		 }
+		 if(invoiceStatus == "Accepted"){
+			 if(paymentStatus != "Paid"){
+				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Bill"></i>Pay</a></li>';
+
+			 }
+			 
+		 }if(invoiceStatus == "SENT"){
+			 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Bill"></i>Pay</a></li>';
+	 
+		 }
+// 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+		result = result+' <li><a class="" href="'+fileUrl+'" title="Print" target="_blank"><i class="fa fa-print paddingLeft paddingRight"></i>Print</a></li>';
+	     '</sec:authorize>'
+	     
+	     '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
+// 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+ 		 result = result+' <li><a href="'+fileUrl+'" title="Download" download><i class="glyphicon glyphicon-save paddingLeft paddingRight"></i>Download</a></li>';
+	     '</sec:authorize>'
+	     if(invoiceStatus != 'DRAFT')
+	     {
+	     result = result +'  <li><a onclick="linkPayableInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Bill"></i>Link Bill</a></li>';
+	     }
 	     result = result +'    </ul>';
     	 $("#popupDiv"+invoiceUUID+"").append(result);
     	 showMenu();
@@ -1239,7 +1242,7 @@ function linkPayableInvoice(invoiceUUID,totalAmount){
 			result = result +'      <div class="modal-body clearfix">                                                                                       ';
 			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
 			result = result +'      <div class="candidate_wrap_table">                                                                                      ';
-			result = result +'      <table>                                                                                                                 ';
+			result = result +'      <table id="linkInvoiceVendorPaginationId">                                                                                                                 ';
 			result = result +'        <thead>                                                                                                               ';
 			result = result +'          <tr>                                                                                                                ';
 			result = result +'            <th>&nbsp;                                                                                                        ';
@@ -1306,6 +1309,7 @@ function linkPayableInvoice(invoiceUUID,totalAmount){
 		
 			$("#linkPayblePopup").empty();
 			$("#linkPayblePopup").append(result);
+			LinkInvoiceVendorPagination();
 			$('.modal.modal_invoice').fadeIn(200);
 	        $('.side_mask').fadeIn(200);
 			   
@@ -1314,6 +1318,29 @@ function linkPayableInvoice(invoiceUUID,totalAmount){
 }
 </script>
 
+
+<script>
+function LinkInvoiceVendorPagination(){  
+	// $.fn.dataTable.moment( 'DD-MM-YYYY' );
+    $('#linkInvoiceVendorPaginationId').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"aaSorting": [[3,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $("#linkInvoiceVendorPaginationId").wrap("<div class='overflow_Auto'></div>");
+}
+</script>
 
 <!-- Script for Linked Invoice pop -->
     <script>
@@ -1414,6 +1441,79 @@ function cancel(){
 		};
 	})(jQuery);
 </script>
+
+<!-- ========================== Filter popup Written By Laxman ===============================  -->
+<script>
+function closeBillFilterPop(){
+	$("#invoiceFilterId").hide();
+	$(".comMask").fadeOut();
+}
+function openBillFilterPop(orgRelationId,vendorLocationId){
+	 $("#invoiceFilterId").toggle();
+	 $('#search_requiremet').attr("onclick","getInvoiceListBasedonVendor("+orgRelationId+","+vendorLocationId+");closeBillFilterPop();");
+	 $('#clear_search').attr("onclick","resetBillFilter("+orgRelationId+","+vendorLocationId+");closeBillFilterPop();");
+	 $(".comMask").fadeIn();
+}
+function resetBillFilter(orgRelationId,vendorLocationId){
+	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	getInvoiceListBasedonVendor(orgRelationId,vendorLocationId)
+}
+</script>
+
+<div class="comMask" style="z-index:99999"></div>
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="invoiceFilterId" style="display: none">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeBillFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Payment</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="paymnetFilter">
+									<li class="checkBox positionRelative" ><input type="checkbox"  class="mb0" value="Paid" name="paymentStatus"><label for="onboard3">Paid</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  class="mb0" value="Partial Paid" name="paymentStatus"><label for="onboard2">Partially Paid</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" class="mb0"  value="OverDue" name="paymentStatus"><label for="onboard4">Overdue</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" class="mb0" value="Unpaid" name="paymentStatus"><label for="onboard1">Unpaid</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						
+						<div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+									<li class="checkBox positionRelative" ><input type="checkbox" class="mb0" value="DRAFT" name="invoiceStatus"><label for="onboard1">Draft</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" class="mb0" value="SENT" name="invoiceStatus"><label for="onboard2">Sent</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" class="mb0" value="RECEIVED" name="invoiceStatus"><label for="onboard1">Received</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" class="mb0"  value="ACCEPTED" name="invoiceStatus"><label for="onboard2">Accepted</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" class="mb0" value="REJECTED" name="invoiceStatus"><label for="onboard2">Rejected</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" class="mb0" value="LINKED" name="invoiceStatus"><label for="onboard2">Linked</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+					  </div>
+					  
+					  
+					  
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet"  class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
 
 
 

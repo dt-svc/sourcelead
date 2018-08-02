@@ -9,6 +9,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,6 +48,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
@@ -67,6 +69,7 @@ import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
@@ -80,6 +83,7 @@ import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesCategoryService;
@@ -239,6 +243,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Value("${static.path}")
     private String staticPath;
 	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioConfigurationService;
+	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 	}
@@ -324,7 +331,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		try {
 			userService.addUser(user);
 			if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
-				sendActivationEmail(user);
+				sendActivationEmail(user,null);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -365,10 +372,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveOrgRoleHierarchy(orgLocations,user);
 		saveOrgBasedRoles(org,orgLocations,user);
-		
+		Shift shift = commonUtil.saveDefaultGenaeralShift(orgLocations,user,Constants.GENERAL_SHIFT);
 		//For saving the User Role (At registration user will have Admin Role)
 		UserRole userRole = getUserRoleDetails(user,orgLocations);
 		try {
+			userRole.setShift(shift);
 			userRoleService.addUserRole(userRole);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -413,6 +421,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 		commonUtil.saveDefaultEmployeeVerificationTemplate(org,orgLocations,user,"Default Employee Verification Template");
 //		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
+		
+		
+
 		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
 		commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
@@ -804,9 +815,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 						
 						List<Long> roleActonsList = new ArrayList<Long>();
 						if(null != roles.getActionId()){
-							for (String s : roles.getActionId().split(",")){
+							/*for (String s : roles.getActionId().split(",")){
 								 roleActonsList.add(Long.parseLong(s));
-							 }
+							 }*/
+							for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+				    			 roleActonsList.add(Long.parseLong(s));
+				        	 }
 						}
 						
 						
@@ -1152,7 +1166,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userService.saveOrUpdateUserElkDocument(userRole,employees,orgUser.getUserCode());
 		
 		if("Newly Registered".equalsIgnoreCase(orgUser.getRegistrationType()))
-	    	sendActivationEmail(orgUser);
+	    	sendActivationEmail(orgUser,orgLocations);
 		sendEmail(orgUser,user,password,orgLocations.getId(),addUserDTO.getRegistredOrgId());
 	}
 	
@@ -1366,7 +1380,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
-			sendActivationEmail(user);
+			sendActivationEmail(user,orgLocations);
 		else
 			sendEmailToProfessional(user);
 		
@@ -1374,7 +1388,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	
-	public void sendActivationEmail(User user) throws Exception
+	public void sendActivationEmail(User user,OrgLocations orgLocations) throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1387,8 +1401,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 }
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("Info@sourcelead.com");
+		 if(orgLocations != null) {
+			 emailMessage.setFromName(orgLocations.getOrgName());
+			 EmailConfigurationFromMail confFromMail = emailScenarioConfigurationService.getConfFromMailByStatus(orgLocations.getId());
+			 if(confFromMail != null) {
+				 emailMessage.setFromEmail(confFromMail.getEmail());
+			 }else {
+				 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+			 }
+		 }else {
+			 emailMessage.setFromName("Sourcelead Admin");
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 }
+	
+		 
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -1400,23 +1426,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
 
 		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.ACTIVATE_EMAIL, null);
 		
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACTIVATE_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
-		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
-		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
-		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
 	}
 
 	public void sendEmailToProfessional(User user) throws Exception {
@@ -1614,7 +1626,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
 		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
-			sendActivationEmail(user);
+			sendActivationEmail(user,orgLocations);
 		else
 			sendEmailToIndividualRecruiter(user);
 		

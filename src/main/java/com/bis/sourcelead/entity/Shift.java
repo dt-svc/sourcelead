@@ -96,6 +96,9 @@ public class Shift {
 	@Column(name = "SUNDAY_OUT_TIME")
 	private String sundayOutTime;
 	
+	@Column(name = "DEFAULT_STATUS")
+	private String defaultStatus;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -384,5 +387,12 @@ public class Shift {
 	public void setSundayOutTime(String sundayOutTime) {
 		this.sundayOutTime = sundayOutTime;
 	}
-	
+
+	public String getDefaultStatus() {
+		return defaultStatus;
+	}
+
+	public void setDefaultStatus(String defaultStatus) {
+		this.defaultStatus = defaultStatus;
+	}
 }

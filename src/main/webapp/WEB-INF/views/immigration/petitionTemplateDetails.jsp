@@ -20,16 +20,16 @@
                     <div class="col-md-7 clearfix noPad mt">
                         <div class="col-md-12 noPad mb" id="templateNameDiv">
                             <label class="col-md-3">Template Name<span class="text-danger paddingLeft">*</span></label>
-                            <div class="col-md-9"><input type="text" id="templateName" value="${not empty templateDTO.templateName ? templateDTO.templateName : ''}" name="templateName" class="form-control" field-name="Template Name" data-validation="required validate_length length2-100" onkeyup="validateTemplateName();"></div>
+                            <div class="col-md-9"><input type="text" id="templateName" value="${not empty templateDTO.templateName ? templateDTO.templateName : ''}" name="templateName" class="form-control" field-name="Template Name" data-validation="required validate_length length2-100 validate_AlphaNumber" onkeyup="validateTemplateName();" onblur="validateTemplateName();"></div>
                         </div> 
                         <div class="col-md-12 noPad mb">
                             <label class="col-md-3">Description<span class="text-danger paddingLeft">*</span></label>
-                            <div class="col-md-9"><textarea id="templateDescription" name="templateDescription" class="form-control" rows="3" field-name="Description" data-validation="required validate_length length2-500">${not empty templateDTO.templateDescription ? templateDTO.templateDescription : ''} </textarea></div>
+                            <div class="col-md-9"><textarea id="templateDescription" name="templateDescription" class="form-control" rows="3" field-name="Description" data-validation="required validate_length length2-500">${not empty templateDTO.templateDescription ? templateDTO.templateDescription : ''}</textarea></div>
                         </div>
                         <div class="col-md-12 noPad mb" id="templateNameDiv">
                             <label class="col-md-3">Country<span class="text-danger paddingLeft">*</span></label>
                            	<div class="col-md-8 padding_right">
-								<select class="chosen-select form-control" name="country" onchange="getPetitionTypeOnCountries($(this), ${templateDTO.petitionType});" id= "countryName" field-name="Country" data-validation="required">
+								<select class="chosen-select form-control" name="country" onchange="getPetitionTypeOnCountries($(this), ${templateDTO.petitionType});" id="countryName" field-name="Country" data-validation="required">
 									<option value="">--Select Country--</option>
 									<option value="Singapore" ${templateDTO.country == 'Singapore' ? 'selected' : ''}>Singapore</option>
 									<option value="Canada" ${templateDTO.country == 'Canada' ? 'selected' : ''}>Canada</option>
@@ -63,11 +63,25 @@
 </section>  
 
 <script type="text/javascript">
-    $(document).ready(function () {
-    	//var immTemplId = $("#templateId").val(immTemplId);
-    	//var immTemplId = immTemplId;
-    	 immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
+		
+	    $(document).ready(function () {
+	    	 immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
+	        getPetitionTypeOnCountries($("#countryName"),"${templateDTO.petitionType}");
+	    });
+      
+	    var config = {
+  		  '.chosen-select'           : {},
+  		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+  		  '.chosen-select-no-single' : {disable_search_threshold:10},
+  		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+  		  '.chosen-select-width'     : {width:"95%"}
+  		}
 
-        getPetitionTypeOnCountries($("#countryName"),"${templateDTO.petitionType}");
-    });
+  		for (var selector in config) {
+  			  $(selector).chosen(config[selector]);
+  			}
+  			$('.chosen-select').each(function() {
+  				var $this = $(this);
+  				$this.next().css({'width': '100%'});
+  			})
 </script>

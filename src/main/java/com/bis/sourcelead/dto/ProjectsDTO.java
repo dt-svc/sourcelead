@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,12 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String endDateStr;
 	
+	private String savedSharedClientOrgLocId;
+	
+	 private Long sharedClientOrgLocationId;
+	 
+	 private String isProjectShared;
+	
 	private String estimatedBudgetCurrency;
 	
 	private String budgetApproverUser;
@@ -94,7 +101,6 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String budgetStatus;
 	
-	@Required(desc="projectShortCode")
 	private String projectShortCode;
 	
 	private String projectStatusId;
@@ -191,7 +197,27 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String clients;
 	
+	private String isGlobalAccess;
+	
 	private long orgLocationsId;
+	
+	private Long orgId;
+	
+	private String dateFormat;
+	
+	private String isReportingManagerAsApprover;
+	
+	private String isTicketNumberRequired;
+	
+	private String isTaskCommentsRequired;
+	
+	private String sharedClientOrgLocId;
+	
+	private Long sharedProjectCreatedOrgLocId;
+	
+	 private BigInteger projId;
+	
+	
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -902,5 +928,101 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setOrgLocationsId(long orgLocationsId) {
 		this.orgLocationsId = orgLocationsId;
+	}
+
+	public String getIsGlobalAccess() {
+		return isGlobalAccess;
+	}
+
+	public void setIsGlobalAccess(String isGlobalAccess) {
+		this.isGlobalAccess = isGlobalAccess;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
+	public String getIsReportingManagerAsApprover() {
+		return isReportingManagerAsApprover;
+	}
+
+	public void setIsReportingManagerAsApprover(String isReportingManagerAsApprover) {
+		this.isReportingManagerAsApprover = isReportingManagerAsApprover;
+	}
+
+	public String getIsTicketNumberRequired() {
+		return isTicketNumberRequired;
+	}
+
+	public void setIsTicketNumberRequired(String isTicketNumberRequired) {
+		this.isTicketNumberRequired = isTicketNumberRequired;
+	}
+
+	public String getIsTaskCommentsRequired() {
+		return isTaskCommentsRequired;
+	}
+
+	public void setIsTaskCommentsRequired(String isTaskCommentsRequired) {
+		this.isTaskCommentsRequired = isTaskCommentsRequired;
+	}
+
+	public String getSharedClientOrgLocId() {
+		return sharedClientOrgLocId;
+	}
+
+	public void setSharedClientOrgLocId(String sharedClientOrgLocId) {
+		this.sharedClientOrgLocId = sharedClientOrgLocId;
+	}
+
+	public String getSavedSharedClientOrgLocId() {
+		return savedSharedClientOrgLocId;
+	}
+
+	public void setSavedSharedClientOrgLocId(String savedSharedClientOrgLocId) {
+		this.savedSharedClientOrgLocId = savedSharedClientOrgLocId;
+	}
+
+	public Long getSharedClientOrgLocationId() {
+		return sharedClientOrgLocationId;
+	}
+
+	public void setSharedClientOrgLocationId(Long sharedClientOrgLocationId) {
+		this.sharedClientOrgLocationId = sharedClientOrgLocationId;
+	}
+
+	public String getIsProjectShared() {
+		return isProjectShared;
+	}
+
+	public void setIsProjectShared(String isProjectShared) {
+		this.isProjectShared = isProjectShared;
+	}
+
+	public Long getSharedProjectCreatedOrgLocId() {
+		return sharedProjectCreatedOrgLocId;
+	}
+
+	public void setSharedProjectCreatedOrgLocId(Long sharedProjectCreatedOrgLocId) {
+		this.sharedProjectCreatedOrgLocId = sharedProjectCreatedOrgLocId;
+	}
+
+	public BigInteger getProjId() {
+		return projId;
+	}
+
+	public void setProjId(BigInteger projId) {
+		this.projId = projId;
 	}
 }

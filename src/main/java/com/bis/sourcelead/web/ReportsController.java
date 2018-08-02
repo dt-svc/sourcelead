@@ -12,14 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -41,6 +44,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	@Autowired
 	TabsService tabsService;
 	
+	@Autowired
+	private TeamService teamService;
+	
 	@RequestMapping(value = "/recruitersReports")
 	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
 	 
@@ -54,14 +60,53 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 
 	 ModelAndView model = new ModelAndView();
 	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+	 List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+     model.addObject("teamsList", teamsList);
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
 	 model.addObject("sourceleadUrl", sourceleadUrl);
 	 model.setViewName("reports/recruitersReports");
 	 return model;
 		
-    }	
+    }
 	
+	
+	
+	@RequestMapping(value = "/recruiterJobsReport")
+	public ModelAndView recruiterJobsReport(@RequestParam(value="userCode", required=false)String recruiterUserCode, 
+			@RequestParam(value="searchValue", required=false)String searchValue,
+			@RequestParam(value="timePeriod", required=false)String timePeriod,
+			@RequestParam(value="customStartDate", required=false)String customStartDate,
+			@RequestParam(value="customEndDate", required=false)String customEndDate,
+			@RequestParam(value="orgTeams", required=false)String orgTeams,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+		 
+		 User recruiterUser = userService.getUserByUserCode(recruiterUserCode);
+		 
+		 
+		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		 ModelAndView model = new ModelAndView();
+		 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		 List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(recruiterUser.getId(), orgLocations.getId());
+		 model.addObject("teamsList", teamsList);
+		 model.addObject("userList", userList);
+		 model.addObject("recruiterUser", recruiterUser);
+		 
+		 model.addObject("searchValue", searchValue);
+		 model.addObject("timePeriod", timePeriod);
+		 model.addObject("customStartDate", customStartDate);
+		 model.addObject("customEndDate", customEndDate);
+		 model.addObject("orgTeams", orgTeams);
+		 
+		 model.addObject("requirementTabAccess", requirementTabAccess);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/recruiterJobsReport");
+		 return model;
+    }
 	
 	
 	@RequestMapping(value = "/reportsDashboard")
@@ -152,6 +197,39 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.setViewName("reports/requirementStageReports");
+		  return model;		
+	 }	
+	 
+	 
+	 @RequestMapping(value = "/financialReportsList")
+		public ModelAndView financialReportsList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/financialReportsList");
+		  return model;		
+	 }	
+	 
+	 @RequestMapping(value = "/performanceReportList")
+		public ModelAndView performanceReportList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/performanceReportList");
+		  return model;		
+	 }	
+	 
+	 @RequestMapping(value = "/hrReportsList")
+		public ModelAndView hrReportsList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/hrReportsList");
+		  return model;		
+	 }	
+	 
+	 @RequestMapping(value = "/associateReportsList")
+		public ModelAndView associateReportsList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/associateReportsList");
 		  return model;		
 	 }	
 

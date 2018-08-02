@@ -70,7 +70,7 @@
 						
 
 						<div class="col-md-3 contrCus">
-						<h3>Custom Fields</h3>
+						<h3>Class Fields</h3>
 							<ul id="clientmsa" style="display: block">
 							 <c:if test="${!empty classFieldList}">
 					            <c:forEach var="classField" items="${classFieldList}" >

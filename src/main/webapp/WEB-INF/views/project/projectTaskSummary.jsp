@@ -5,7 +5,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
@@ -132,7 +132,9 @@ var sourceleadUrl = '${sourceleadUrl}';
 	          <div class="col-md-11 paddingRight paddingLeft edit-field edit-inputfield">
 		          
 		          <div class="showTaskname" id="taskedit-parent" onclick="editFun();">
-		          <span class="taskgeneratedid text-muted paddingRight bg-green" title="Task Generated ID">${projectTask.generatedId}</span>
+		          <c:if test="${not fn:contains(projectTask.generatedId, 'null') && !empty projectTask.generatedId}">
+		             <span class="taskgeneratedid text-muted paddingRight bg-green" title="Task Generated ID">${projectTask.generatedId}</span>
+		          </c:if>
 		          <span class="paddingLeft" id="projectTaskName">${projectTask.taskName}</span>
 		          <span class="editicon">
 		          	<i class="fa fa-pencil fa-2x"></i>
@@ -675,7 +677,7 @@ function inlineEditDescription(taskId){
 			  success : function(data) {
 				   $("#jobAlert2").removeAttr("style");
 	    			$("#jobAlert2").css({ display: "block" });
-					$("#editJobAlertMsgDiv").html("Successfully Update Description");
+					$("#editJobAlertMsgDiv").html("Description Updated Successfully!!");
 						editAlertMsgFadeinFunction();
 						getTaskActivities(); 
 			}, 
@@ -1366,6 +1368,10 @@ function taskDocumentPagination(){
 </div>
 <script>
 function addSubTasks(){
+	 <c:forEach var="section" items="${sourceleadSectionListForProjectTask}" varStatus="sectionOrder">
+	  var sectionId = '${section.id}';
+	  getCustomDependentFieldProjectSubTask(sectionId);
+  </c:forEach> 
 			var projectId =  "${projectId}";
 			var projectStartDate = '${projectStartDate}';
 			var result = "";
@@ -1375,8 +1381,8 @@ function addSubTasks(){
 			result = result	+ '     <form name="projectTask_form" id="projectTask_form" method="post">';
 			result = result	+ '       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Task Type<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Task Type<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 		    result = result	+ '             <select class="form-control" onchange="showtasktype()" id="taskstype" name="taskstype" field-name="Task Type"  data-validation="required">'; 
 		    result = result	+ '         <c:forEach var="type" items="${taskTypeList}">  ';      
 		    result = result	+ '            <option value="${type.uniqueKey}" ${type.uniqueKey  == "SubTask" ? "selected" : ''} >${type.name}</option>'; 
@@ -1386,52 +1392,52 @@ function addSubTasks(){
 			result = result	+ '         </div>';
 			
 			result = result	+ '           <div class="form-group" style="display: block" id="epic">';
-			result = result	+ '           <label class="col-md-4">Epic</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Epic</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="chosen-select form-control" id="epicId" name="epic">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			
 			result = result	+ '           <div class="form-group" style="display: none" id="userStory">';
-			result = result	+ '           <label class="col-md-4">User Story</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">User Story</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="chosen-select form-control" id="userStroyId" name="userStory">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			
 			result = result	+ '           <div class="form-group" style="display: none" id="task">';
-			result = result	+ '           <label class="col-md-4">Task<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Task<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="chosen-select form-control" id="subTasksId" name="subTask" field-name="Task">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Task Title<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Task Title<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <input class="form-control"  placeholder="Task Title" type="text" id="taskName" name="taskName" field-name="Task Title"  data-validation="required validate_length length2-250" >';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Assign To</label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Assign To</label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <select class="form-control chosen-select choose" multiple  id="assignTaskId" name="assignTaskId" data-placeholder="Select Assign To">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Due Date</label>';
-			result = result	+ '           <div class="col-md-8 clearDate" onClick="cleartprojectdueDate();">';
+			result = result	+ '           <label class="col-md-3">Due Date</label>';
+			result = result	+ '           <div class="col-md-9 clearDate" onClick="cleartprojectdueDate();">';
 			result = result	+ '             <input class="form-control calendar" value="" name="duDate" id="dueDate" placeholder="Due Date" type="text" readonly>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Priority</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Priority</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" id="priority" name="priority">';
 			result = result	+ '               <option value="">-- Select Priority --</option>';
 			result = result	+ '           <c:forEach var="priority" items="${taskPriorityList}"> ';        
@@ -1442,8 +1448,8 @@ function addSubTasks(){
 			result = result	+ '         </div>';
 			
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Estimated Time</label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Estimated Time</label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <input class="form-control"  placeholder="Estimated Time" type="text" id="estimatedTime" name="estimatedTime" field-name="Estimated Time"  data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" >';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
@@ -1455,8 +1461,8 @@ function addSubTasks(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>'; */
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Severity</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Severity</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" id="severity" name="severity">';
 			result = result	+ '               <option value="">-- Select Severity --</option>';
 			result = result	+ '                 <c:forEach var="severity" items="${taskSeverityList}">  ';       
@@ -1466,8 +1472,8 @@ function addSubTasks(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Status<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Status<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" field-name="Status"  id="taskStatus" name="taskStatus" data-validation="required">';
 			result = result	+ '              <c:forEach var="Status" items="${taskStatusList}">    ';   
 			result = result	+ ' 			  <option value="${Status.id}">${Status.name}</option> ';
@@ -1476,15 +1482,15 @@ function addSubTasks(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Owner</label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Owner</label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <select class="form-control" data-placeholder="Select Owner" id="ownerId" name="taskOwner">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Billing Type<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Billing Type<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" field-name="Billing Type" id="taskBillableType" name="taskBillableType" data-validation="required">';
 			result = result	+ '               <option value="Billable">Billable</option>';
 			result = result	+ '               <option value="Non-Billable">Non-Billable</option>';
@@ -1493,8 +1499,8 @@ function addSubTasks(){
 			result = result	+ '         </div>';
 			
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Business Value</label>';
-			result = result	+ '             <div  class="col-md-8 positionRelative">';
+			result = result	+ '           <label class="col-md-3">Business Value</label>';
+			result = result	+ '             <div  class="col-md-9 positionRelative">';
 			result = result	+ '             <div class="input-group er ratetype">';
 			result = result	+ '					<div class="input-group-btn">';
 			result = result	+ '					<select class="selectpicker" id="currencyType" name="currencyType">';
@@ -1511,6 +1517,16 @@ function addSubTasks(){
 			result = result	+ '					<div class="clearfix"></div>';
 			result = result	+ '					</div>';
 			result = result	+ '             </div>';
+			
+			result = result	+ '           <c:if test= "${!empty sourceleadSectionListForProjectTask}">  ';
+			result = result	+ '           <c:forEach var="section" items="${sourceleadSectionListForProjectTask}" varStatus="sectionOrder"> ';
+			result = result	+ '	          <c:if test="${sectionOrder.index == 0}">';
+			result = result	+ '           <div class="clearfix" id="customDiv${section.id}"></div>';
+			result = result	+ '           </c:if>';
+			result = result	+ '           </c:forEach>';
+			result = result	+ '           </c:if>';
+			
+			
 			result = result	+ '         <div class="clearfix"></div>';
 			result = result	+ '         <div class="clearfix mb">';
 			result = result	+ '           <label class="col-md-12">Description</label>';
@@ -1901,7 +1917,7 @@ function getSubTaskList(){
 				result = result + '<tr>';
 				
 				'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_SUB_TASK\')">'; 
-				   result = result+ '<td><div class="proj_show tblminwidth-100"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+ opt.taskName+ '" class="tbldata-dotdot_80 pull-left anchorBlack" >'+ opt.taskName+ '</a><i class="fa fa-binoculars pull-right"></i></div></td>';
+				   result = result+ '<td><div class="proj_show tblminwidth-100"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+ opt.taskName+ '" class="pull-left anchorBlack" >'+ opt.taskName+ '<i class="fa fa-binoculars" style="position:absolute; right:0;"></i></a></div></td>';
 				'</sec:authorize>';
 				
 				'<sec:authorize access="!hasRole(\'ROLE_VIEW_EDIT_SUB_TASK\')">'; 
@@ -2129,6 +2145,21 @@ function commentTableList(){
     		$("#taskCommentsListDivId").append(result); 
 		}
 	});
+}
+</script>
+<script>
+function getCustomDependentFieldProjectSubTask(sectionId){
+	$.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	var result ='';
+		        	result = result + data;
+		        	$('#customDiv'+sectionId).append(result);
+		        	
+				 }
+		  }); 
 }
 </script>
 

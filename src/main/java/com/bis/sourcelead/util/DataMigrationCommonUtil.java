@@ -38,10 +38,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.AssociateGrades;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
@@ -52,6 +56,9 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
@@ -61,9 +68,12 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -74,6 +84,8 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -164,6 +176,23 @@ public class DataMigrationCommonUtil {
 	@Autowired 
 	private CountriesService countriesService;
 	
+	@Autowired
+	ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
+	private CandidateDao candidateDao;
+	
+	@Autowired
+	private ShiftService shiftService;
+	
+	@Autowired
+	private DepartmentService departmentService;
+	
+	@Autowired
+	private RolesService rolesService;
+	
+	@Autowired
+	private AssociateGradesService associateGradesService;
 	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
@@ -552,6 +581,135 @@ public class DataMigrationCommonUtil {
 			}
 		}
 	}
+	
+	
+	
+			@SuppressWarnings("unchecked")
+			public void dataValidationForCandidates(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
+			{
+				if(dataMigrationDTOJsonCopy.getString("firstName").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("firstName"))) {
+					errorSet.put("firstName", "First Name field is missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.getString("email").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
+					errorSet.put("email", "Email field is missing");
+				}else {
+					Candidate candidate = candidateDao.findByCandidateEmail(dataMigrationDTOJsonCopy.getString("email").toString().trim(),orgLocation.getId());
+					if (candidate != null) {
+						errorSet.put("email", "Candidate already exist.!");
+					}
+				}
+				
+				/*if(dataMigrationDTOJsonCopy.getString("designation").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designation"))) {
+					errorSet.put("designation", "Designation Type field is missing");
+				}*/
+				
+				
+				Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+						+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+				
+				if (!dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("undefined")) {
+					Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("email").toString().trim());
+					if(matcher.matches() == false) {
+						errorSet.put("email", "Invalid Email");
+					}
+				}
+				
+				if (!dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("undefined")) {
+					Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("vendorcontact").toString().trim());
+					if(matcher.matches() == false) {
+						errorSet.put("vendorcontact", "Invalid Vendor Contact Email");
+					}
+					
+					if (!dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase("undefined")) {
+						
+						List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+						Long vendorId = 0l;
+						for(OrgRelations rel : vendorsList) {
+							if((dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+								vendorId = rel.getId();
+								break;
+							}
+						}
+						
+
+						List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
+						
+						for(OrgSpoc vendorContacts : vendorContactsList) {
+							if(!dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
+								errorSet.put("vendorcontact", "No contact exists with entered email");
+							}
+						}
+						
+						if(vendorContactsList == null || vendorContactsList.size() == 0) {
+							errorSet.put("vendorcontact","No Active contacts exists with this vendor");
+						}
+					
+						
+					}
+					
+					if(dataMigrationDTOJsonCopy.getString("vendor").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("vendor"))) {
+						errorSet.put("vendor", "Vendor field is missing for Vendor");
+					}
+				}
+			
+				String mobileRegex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
+				if (!dataMigrationDTOJsonCopy.get("mobilePhone").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("mobilePhone").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("mobilePhone").toString().equalsIgnoreCase("undefined")) {
+					boolean flag = false;
+					String mobNum = dataMigrationDTOJsonCopy.get("mobilePhone").toString();
+					if (mobNum.length() > 9 && mobNum.length() <= 20) {
+						flag = mobNum.matches(mobileRegex);
+					}
+					if(flag == false) {
+						errorSet.put("mobilePhone", "Invalid Mobile Phone");
+					}
+					
+				}
+				
+				if (!dataMigrationDTOJsonCopy.get("alternateMobilePhone").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("alternateMobilePhone").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("alternateMobilePhone").toString().equalsIgnoreCase("undefined")) {
+					boolean flag = false;
+					String alternatemobNum = dataMigrationDTOJsonCopy.get("alternateMobilePhone").toString();
+					if (alternatemobNum.length() > 9 && alternatemobNum.length() <= 20) {
+						flag = alternatemobNum.matches(mobileRegex);
+					}
+					if(flag == false) {
+						errorSet.put("alternateMobilePhone", "Invalid Alternate Mobile Phone");
+					}
+					
+				}
+				
+				String rateRegEx = "^[0-9\b]+$";
+				if (!dataMigrationDTOJsonCopy.get("expectedRate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("expectedRate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("expectedRate").toString().equalsIgnoreCase("undefined")) {
+					boolean flag = false;
+					String expectedRate = dataMigrationDTOJsonCopy.get("expectedRate").toString();
+					if (expectedRate.length() > 0 && expectedRate.length() <= 8) {
+						flag = expectedRate.matches(rateRegEx);
+					}
+					if(flag == false) {
+						errorSet.put("expectedRate", "Expected Rate Allow Only Integers and length 0-8");
+					}
+					
+				}
+				
+				if (!dataMigrationDTOJsonCopy.get("currentRate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("currentRate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("currentRate").toString().equalsIgnoreCase("undefined")) {
+					boolean flag = false;
+					String currentRate = dataMigrationDTOJsonCopy.get("currentRate").toString();
+					if (currentRate.length() > 0 && currentRate.length() <= 8) {
+						flag = currentRate.matches(rateRegEx);
+					}
+					if(flag == false) {
+						errorSet.put("currentRate", "Current Rate Allow Only Integers and length 0-8");
+					}
+					
+				}
+				
+				
+			}
+			
+			
+			
+			
+			
 			public void dataValidationForTimesheets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation, String timeFrequency) throws Exception
 			{
 				logger.debug("In dataValidationForTimesheets method...");
@@ -909,6 +1067,7 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 								  int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
 					    		  float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
 					    		  saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+					    		  System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 						    		 
 							 }  else if(project.getInvoiceFrequency().equalsIgnoreCase("Semi-Monthly")){
 								   Date empMonth15thDate = CalendarUtil.getMonth15thDateByGivenDate(startDate,Constants.CURRENT_MONTH).get("STARTDATE");
@@ -933,6 +1092,7 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 										   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
 								    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
 								    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,subStartDate,subEndDate,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+								    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 								    	   
 								    	   subStartDate = CalendarUtil.getMonth16thDateByGivenDate(startDate,Constants.CURRENT_MONTH).get("STARTDATE");
 										   subEndDate = value;
@@ -948,9 +1108,11 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 										   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
 								    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
 								    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+								    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 									   }
 								   }
 								   
+						    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 							 }  
 							 else if(project.getInvoiceFrequency().equalsIgnoreCase("Bi-Weekly")) {
 								 
@@ -983,6 +1145,7 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 								  int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
 					    		  float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
 					    		  saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+					    		  System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 							 }
 							 else if(project.getInvoiceFrequency().equalsIgnoreCase("Monthly")){
 								   frequencyStartDate = startDate;
@@ -991,6 +1154,7 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 								   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
 						    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
 						    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+						    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 							 }
 							 
 							
@@ -1032,6 +1196,7 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 								 flag++;
 							 }
 							 saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,key,value,key,value,0f,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+				    		 System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 						}
 					}
 			 }
@@ -1133,7 +1298,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				  	
 					String taskType =projectTasks.getBillableType();
 					timesheetDayEntries.setProjectTask(projectTasks);
-					String hours =CalendarUtil.getTimesheetHoursDisplayFormat(averageHours).replace(".", ":");
+					String hours =CalendarUtil.getTimesheetHoursDisplayFormat(averageHours,null).replace(".", ":");
 					SimpleDateFormat simpleDateformat = new SimpleDateFormat("E");
 			    	 String day_Of_Date = simpleDateformat.format(weekStartDate);
 					if(CalendarUtil.isDateBetweenTwoDates(actualStartDate,actualEndDate, weekStartDate) && (!day_Of_Date.equals("Sat") && !day_Of_Date.equals("Sun"))){
@@ -1510,35 +1675,27 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 				}
 				
-				if(!dataMigrationDTOJsonCopy.getString("assignAssetStr").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignAssetStr"))) {
-					StringBuffer assignAssetStrSB = new StringBuffer();
-					String[] assignUsere = dataMigrationDTOJsonCopy.getString("assignAssetStr").split("&");
-					int assignUsereCoiunt = assignUsere.length;
-					int incr = 0;
-					for(String as:assignUsere) {
-						String[] email = as.split("#");
-						boolean emailVaild = isValidEmailAddress(email[0]);
-						if(emailVaild == true) {		 
-							User user2 = userService.findByEmailAndOrgLocationsId(email[0], orgLocation.getId());
-							if(user2 != null) {
-								incr++;
-								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user2.getId(), orgLocation.getId());
-								email[0] = userRole.getId().toString();
-								assignAssetStrSB.append(email[0]).append("#").append(email[1]);
-								if(assignUsereCoiunt > 1 && incr < assignUsereCoiunt) {
-									assignAssetStrSB.append("&");
-								}
-							}else {
-								errorSet.put("employeeEmail",email[0]);
-							}
-							
-						}else {
-							errorSet.put("assignAssetStr", "invalid date");
-						}
+				
+				
+				
+				if(!dataMigrationDTOJsonCopy.getString("shiftAEmp").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftAEmp"))) {
+					User user1= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftAEmp"), orgLocation.getId());
+					if(user1 == null){
+					errorSet.put("shiftAEmp", dataMigrationDTOJsonCopy.getString("shiftAEmp")+" is Not Exist");	
+					}else{
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user1.getId(), orgLocation.getId());
+						dataMigrationDTOJsonCopy.put("shiftAEmp", userRole.getId().toString());	
 					}
-					dataMigrationDTOJsonCopy.put("assignAssetStr",assignAssetStrSB.toString());
 				}
-			 
+				
+				if(!dataMigrationDTOJsonCopy.getString("shiftBEmp").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftBEmp"))) {
+					User user2= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftBEmp"), orgLocation.getId());
+					if(user2 == null){
+						errorSet.put("shiftBEmp", dataMigrationDTOJsonCopy.getString("shiftBEmp")+" is Not Exist");	
+					}else{
+						dataMigrationDTOJsonCopy.put("shiftBEmp", user2.getId().toString());	
+					}
+				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("workingStatus").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workingStatus"))) {
 					String status = dataMigrationDTOJsonCopy.getString("workingStatus").toLowerCase();
@@ -1569,7 +1726,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		
 		
 		
-		public void dataValidationForProjectTasks(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception {
+		public void dataValidationForProjectTasks(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception {
 			 Projects project = projectsService.getProjectByProjectUUID(dataMigrationDTOJsonCopy.getString("projectUUID"));
 			if(dataMigrationDTOJsonCopy.getString("taskstype").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskstype"))) {
 				errorSet.put("taskstype", "Taskstype field is missing");
@@ -1676,7 +1833,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 			//Assigned To 
 			if(!dataMigrationDTOJsonCopy.getString("assignTaskId").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("assignTaskId"))) {
-			 List<ProjectMembers> projectAssignedList = projectsService.getProjectEmployeeListByProjectIdAndStatus(project.getId(),"Active",orgLocation,null,null);
+			 List<ProjectMembers> projectAssignedList = projectsService.getProjectEmployeeListByProjectIdAndStatus(project.getId(),"Active",orgLocation,null,null,isGlobalAccess);
 			 int incr = 0;
 			 String[] emails = dataMigrationDTOJsonCopy.getString("assignTaskId").trim().replace("\n","").toLowerCase().split(",");
 			 ArrayList<String> validEmails = new ArrayList<>();
@@ -1850,6 +2007,644 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		}
 		
 		
+		public void dataValidationForImmigration(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy,
+				User user, OrgLocations orgLocation) throws Exception {
+			
+			    boolean orgFound = false;
+			
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
+				errorSet.put("beneficiaryEmail", "Beneficiary Email is missing"); // need to validate email address.
+				} else {
+				String email = dataMigrationDTOJsonCopy.getString("beneficiaryEmail").trim();
+				boolean emailVaild = isValidEmailAddress(email);
+				if (emailVaild) {
+				Candidate candidateByEmail = candidateDao.getAllActiveCandidatesByLocationEmail(email, orgLocation.getId());
+				if (candidateByEmail == null) {
+				errorSet.put("beneficiaryEmail", "Beneficiary Email is not found");
+				} else {
+				dataMigrationDTOJsonCopy.put("candidateId", candidateByEmail.getId());
+				// System.out.println("candidateId
+				// INSIDE---->>>>>"+dataMigrationDTOJsonCopy.getString("candidateId"));
+				}
+				} else {
+				errorSet.put("beneficiaryEmail", "Beneficiary Email is is not a valid email address");
+				}
+				}
+
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth")) || dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null")) {
+				errorSet.put("dateOfBirth", "DOB is missing");
+				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+				errorSet.put("dateOfBirth", "DOB is invalid date");
+				}
+
+				/* if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
+				errorSet.put("maritalStatus", "Marital status is missing");/// dropdown value.
+				} else {
+				String maritalStatus = dataMigrationDTOJsonCopy.getString("maritalStatus");
+				if (!ImmigrationConstants.MARRAIAGE_STATUS_LIST.contains(maritalStatus)) {
+				errorSet.put("maritalStatus", "Marital status is invalid input");/// dropdown value.
+				}
+				}*/
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType"))) {
+				errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.
+
+				} else {
+
+				LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
+				dataMigrationDTOJsonCopy.getString("petitionType"));
+				if (data == null) {
+				errorSet.put("petitionType", "Petition Type is not found"); /// dropdown value.
+				} else {
+				// dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
+				dataMigrationDTOJsonCopy.put("petitionType", data.getId());
+				}
+
+				}
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("template"))) {
+				errorSet.put("template", "Template is missing"); /// dropdown value.
+				} else {
+				Long tempId = immigrationCommonService.getTemplateDetailsByNameAndOrgLoacationId(
+				dataMigrationDTOJsonCopy.getString("template"), orgLocation);
+				if (tempId == null)
+				errorSet.put("template", "Template name is not found");
+				else
+				dataMigrationDTOJsonCopy.put("template", tempId);
+
+				}
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("immigrationJobId"))) {
+				errorSet.put("immigrationJobId", "Job is missing"); /// dropdown value.
+				} else {
+				Requirement requirement = requirementService.getRequirementByGeneratedIdAndLocationId(
+				dataMigrationDTOJsonCopy.getString("immigrationJobId"), orgLocation.getId());
+				if (requirement == null) {
+				errorSet.put("immigrationJobId", "Job is not found"); /// dropdown value.
+				} else {
+				// dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
+				dataMigrationDTOJsonCopy.put("immigrationJobId", requirement.getId());
+				}
+
+				}
+
+				if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
+				&& !dataMigrationDTOJsonCopy.getString("passportNo").equals("null")) {
+				boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
+				Constants.ID_TYPE_PASSPORT,dataMigrationDTOJsonCopy.getString("passportNo") );
+				if(!flag) {
+
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportCountry")) || dataMigrationDTOJsonCopy.getString("passportCountry").equals("null")) {
+				errorSet.put("passportCountry", "passportCountry is invalid input");/// dropdown value.
+				}
+
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportStartDate")) || dataMigrationDTOJsonCopy.getString("passportStartDate").equals("null")) {
+				errorSet.put("passportStartDate", "passportStartDate is mandatory if you have entered passportNo");/// dropdown value.
+				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("passportStartDate"))) {
+				errorSet.put("passportStartDate", "passportStartDate is invalid date");
+				}
+
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportEndDate")) || dataMigrationDTOJsonCopy.getString("passportEndDate").equals("null")) {
+				errorSet.put("passportEndDate", "passportEndDate is mandatory if you have entered passportNo");/// dropdown value.
+				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("passportEndDate"))) {
+				errorSet.put("passportEndDate", "passportEndDate is invalid date");
+				}
+				}else {
+				errorSet.put("passportNo", "passportNo is already exist.");
+				}
+				}
+
+
+				if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
+				&& !dataMigrationDTOJsonCopy.getString("visaNo").equals("null")) {
+				boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
+				Constants.ID_TYPE_VISA,dataMigrationDTOJsonCopy.getString("visaNo") );
+				if(!flag) {
+
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaCountry")) || dataMigrationDTOJsonCopy.getString("visaCountry").equals("null")) {
+				errorSet.put("visaCountry", "visaCountry is mandatory if you have entered visano");/// dropdown value.
+				}
+
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaStartDate")) || dataMigrationDTOJsonCopy.getString("visaStartDate").equals("null")){
+				errorSet.put("visaStartDate", "visaStartDate is mandatory if you have entered visano");/// dropdown value.
+				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("visaStartDate"))) {
+				errorSet.put("visaStartDate", "visaStartDate is invalid date");
+				}
+
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaEndDate")) || dataMigrationDTOJsonCopy.getString("visaEndDate").equals("null")) {
+				errorSet.put("visaEndDate", "visaEndDate is mandatory if you have entered visano");/// dropdown value.
+				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("visaEndDate"))) {
+				errorSet.put("visaEndDate", "visaEndDate is invalid date");
+				}
+
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaType")) || dataMigrationDTOJsonCopy.getString("visaType").equals("null")) {
+				errorSet.put("visaType", "Visa Type is missing"); /// dropdown value.
+				} else {
+				LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
+				dataMigrationDTOJsonCopy.getString("visaType"));
+				System.out.println(" Visa Type--->"+dataMigrationDTOJsonCopy.getString("visaType"));
+				if (data == null) {
+				errorSet.put("visaType", "Visa Type is not found"); /// dropdown value.
+				} else {
+				// dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
+				dataMigrationDTOJsonCopy.put("visaType", data.getId());
+				}
+
+				}
+				}else {
+				errorSet.put("visaNo", "visaNo is already exist.");
+				}
+
+				}
+
+
+				if (!dataMigrationDTOJsonCopy.getString("dateOfArrival").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfArrival"))) {
+				errorSet.put("dateOfArrival", "dateOfArrival is invalid date");
+				}
+
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("openOn")) || dataMigrationDTOJsonCopy.getString("openOn").equals("null")) {
+				errorSet.put("openOn", "Open On is missing");
+				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("openOn"))) {
+				errorSet.put("openOn", "openOn is invalid date");
+				}
+
+
+				if (!dataMigrationDTOJsonCopy.getString("lcaStartDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("lcaStartDate"))) {
+				errorSet.put("lcaStartDate", "lcaStartDate is invalid date");
+				}
+
+				if (!dataMigrationDTOJsonCopy.getString("lcaEndDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("lcaEndDate"))) {
+				errorSet.put("lcaEndDate", "lcaEndDate is invalid date");
+				}
+
+				if (!dataMigrationDTOJsonCopy.getString("prevLcaStartDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("prevLcaStartDate"))) {
+				errorSet.put("prevLcaStartDate", "prevLcaStartDate is invalid date");
+				}
+
+				if (!dataMigrationDTOJsonCopy.getString("prevLcaEndDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"))) {
+				errorSet.put("prevLcaEndDate", "prevLcaEndDate is invalid date");
+				}
+
+
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("status"))) {
+				errorSet.put("status", "Status is missing");
+				} else {
+
+				LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(ImmigrationConstants.PETITION_STATUS,
+				dataMigrationDTOJsonCopy.getString("status"));
+				if (data == null) {
+				errorSet.put("status", "status is not found"); /// dropdown value.
+				} else {
+				dataMigrationDTOJsonCopy.put("status", data.getId());
+				}
+
+				}
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("company"))) {// company start
+				errorSet.put("company", "Company is missing"); /// dropdown value.
+				} else {
+				List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+				
+				for (OrgRelations rel : vendorsList) {
+				if (StringUtils.isNotBlank(orgLocation.getIsLawFirm())
+				&& orgLocation.getIsLawFirm().equalsIgnoreCase("Y")) {
+				if (rel.getLocationId().getOrgLocationName()
+				.equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("company"))) {
+				dataMigrationDTOJsonCopy.put("company", rel.getId());
+				orgFound = true;
+				break;
+				/// dropdown value.
+				}
+				} else {
+				if (rel.getResponderLocationId().getOrgLocationName()
+				.equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("company"))) {
+				dataMigrationDTOJsonCopy.put("company", rel.getId());
+				orgFound = true;
+				break;
+				/// dropdown value.
+				}
+				}
+				}
+				if (!orgFound)
+				errorSet.put("company", "Company is not found"); //
+
+				} // company end
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("companyContactEmail"))) {
+				errorSet.put("companyContactEmail", "Attorney/Contact email is missing"); /// dropdown value.
+
+				} else if(orgFound){
+				String email = dataMigrationDTOJsonCopy.getString("companyContactEmail");
+				String venodorId = dataMigrationDTOJsonCopy.getString("company");
+				boolean isSpocFound = false;
+				boolean emailVaild = isValidEmailAddress(email);
+				if (emailVaild && StringUtils.isNotBlank(venodorId)) {
+				// User userByEmail = userService.findByEmailAndOrgLocationsId(email,
+				// orgLocation.getId());
+				List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(venodorId));
+				if (vendorContactsList != null) {
+				for (OrgSpoc vendorContacts : vendorContactsList) {
+				if (StringUtils.isNotBlank(orgLocation.getIsLawFirm())
+				&& orgLocation.getIsLawFirm().equalsIgnoreCase("Y")) {
+				if (vendorContacts.getClientUser().getEmail().equalsIgnoreCase(email)) {
+				dataMigrationDTOJsonCopy.put("companyContactEmail", vendorContacts.getId());
+				isSpocFound = true;
+				break;
+				}
+				} else {
+				if (vendorContacts.getVendorUser().getEmail().equalsIgnoreCase(email)) {
+				dataMigrationDTOJsonCopy.put("companyContactEmail", vendorContacts.getId());
+				isSpocFound = true;
+				break;
+				}
+				}
+				}
+				if (!isSpocFound)
+				errorSet.put("companyContactEmail", "Attorney/Contact email is not found");
+				}
+
+				} else {
+				errorSet.put("companyContactEmail", "Attorney/Contact email is not a valid email address");
+				}
+
+				}
+
+				}
+		
+		
+		
+		public void dataValidationForAsscoaites(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation, String isGlobalAccess) throws Exception {
+
+			//First Name
+			if(dataMigrationDTOJsonCopy.getString("firstName").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("firstName"))) {
+				errorSet.put("firstName", "First Name field is missing");
+			}
+			
+			
+			//Email
+			Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+					+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+			
+			if (!dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("undefined")) {
+				Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("email").toString().trim());
+				if(matcher.matches() == false) {
+					errorSet.put("email", "Invalid Email");
+				}
+			}
+			if(dataMigrationDTOJsonCopy.getString("email").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
+				errorSet.put("email", "Email field is missing");
+			}else {
+				User userEmail = userService.findByEmail(dataMigrationDTOJsonCopy.getString("email").toString().trim());
+				if (userEmail != null) {
+					errorSet.put("email", "Associate already exist.!");
+				}
+			}
+			
+
+			
+			//vendor & Vendor Contact
+			if (!dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("undefined")) {
+				Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("vendorcontact").toString().trim());
+				if(matcher.matches() == false) {
+					errorSet.put("vendorcontact", "Invalid Vendor Contact Email");
+				}
+				
+				if (!dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase("undefined")) {
+					List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+					Long vendorId = 0l;
+					for(OrgRelations rel : vendorsList) {
+						if((dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+							vendorId = rel.getId();
+							break;
+						}
+					}
+					
+					List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
+					for(OrgSpoc vendorContacts : vendorContactsList) {
+						if(!dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
+							errorSet.put("vendorcontact", "No contact exists with entered email");
+						}
+					}
+					if(vendorContactsList == null || vendorContactsList.size() == 0) {
+						errorSet.put("vendorcontact","No Active contacts exists with this vendor");
+					}
+				}
+				
+				if(dataMigrationDTOJsonCopy.getString("vendors").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("vendors"))) {
+					errorSet.put("vendors", "Vendor field is missing for Vendor");
+				}
+			}
+			
+			//Phone number
+			String mobileRegex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
+			if (!dataMigrationDTOJsonCopy.get("phoneNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("phoneNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("phoneNumber").toString().equalsIgnoreCase("undefined")) {
+				boolean flag = false;
+				String mobNum = dataMigrationDTOJsonCopy.get("phoneNumber").toString();
+				if (mobNum.length() > 9 && mobNum.length() <= 20) {
+					flag = mobNum.matches(mobileRegex);
+				}
+				if(flag == false) {
+					errorSet.put("phoneNumber", "Invalid Phone Number");
+				}
+				
+			}
+			
+			//Extension Number
+			if (!dataMigrationDTOJsonCopy.get("extensionNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("extensionNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("extensionNumber").toString().equalsIgnoreCase("undefined")) {
+				boolean flag = false;
+				String alternatemobNum = dataMigrationDTOJsonCopy.get("extensionNumber").toString();
+				if (alternatemobNum.length() > 1 && alternatemobNum.length() <= 5) {
+					flag = alternatemobNum.matches(mobileRegex);
+				}
+				if(flag == false) {
+					errorSet.put("extensionNumber", "Invalid Extension Number");
+				}
+				
+			}
+			
+			//Marital Status
+			if(!dataMigrationDTOJsonCopy.getString("maritalStatus").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
+				String maritalStatus = dataMigrationDTOJsonCopy.getString("maritalStatus").trim().toLowerCase();
+				if(maritalStatus.equalsIgnoreCase("Single")) {
+					dataMigrationDTOJsonCopy.put("maritalStatus", "Single");
+				}else if(maritalStatus.equalsIgnoreCase("Married")) {
+					dataMigrationDTOJsonCopy.put("maritalStatus", "Married");
+				}else if(maritalStatus.equalsIgnoreCase("Divorsed")) {
+					dataMigrationDTOJsonCopy.put("maritalStatus", "Divorsed");
+				}else if(maritalStatus.equalsIgnoreCase("Separated")) {
+					dataMigrationDTOJsonCopy.put("maritalStatus", "Separated");
+				}else {
+					errorSet.put("maritalStatus", dataMigrationDTOJsonCopy.getString("maritalStatus").trim()+" Invalid Marital Status Type");
+				}
+			}
+			
+			//Gender
+			if(!dataMigrationDTOJsonCopy.getString("genderValue").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("genderValue"))) {
+				String gender = dataMigrationDTOJsonCopy.getString("genderValue").trim().toLowerCase();
+				if(gender.equalsIgnoreCase("Male")) {
+					dataMigrationDTOJsonCopy.put("genderValue", "Male");
+				}else if(gender.equalsIgnoreCase("Female")) {
+					dataMigrationDTOJsonCopy.put("genderValue", "Female");
+				}else if(gender.equalsIgnoreCase("Transgender")) {
+					dataMigrationDTOJsonCopy.put("genderValue", "Transgender");
+				}else {
+					errorSet.put("genderValue", dataMigrationDTOJsonCopy.getString("gender").trim()+" Invalid Gender Type");
+				}
+			}
+			
+			//currency 
+			if(!dataMigrationDTOJsonCopy.getString("currentCurrency").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("currentCurrency"))) {
+				String currency = dataMigrationDTOJsonCopy.getString("currencyType").trim().toLowerCase();
+				if(currency.equalsIgnoreCase("INR")) {
+					dataMigrationDTOJsonCopy.put("currentCurrency", "INR");
+				}else if(currency.equalsIgnoreCase("AUD")) {
+					dataMigrationDTOJsonCopy.put("currentCurrency", "AUD");
+				}else if(currency.equalsIgnoreCase("USD")) {
+					dataMigrationDTOJsonCopy.put("currentCurrency", "USD");
+				}else if(currency.equalsIgnoreCase("GBP")) {
+					dataMigrationDTOJsonCopy.put("currentCurrency", "GBP");
+				}else if(currency.equalsIgnoreCase("SGD")) {
+					dataMigrationDTOJsonCopy.put("currentCurrency", "SGD");
+				}else if(currency.equalsIgnoreCase("EUR")) {
+					dataMigrationDTOJsonCopy.put("currentCurrency", "EUR");
+				}else {
+					errorSet.put("currentCurrency", dataMigrationDTOJsonCopy.getString("currentCurrency").trim()+" Invalid currency Type");
+				}
+			}
+			
+			//Rate value
+			String rateRegEx = "^[0-9\b]+$";
+			if (!dataMigrationDTOJsonCopy.get("rate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("rate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("rate").toString().equalsIgnoreCase("undefined")) {
+				boolean flag = false;
+				String currentRate = dataMigrationDTOJsonCopy.get("rate").toString();
+				if (currentRate.length() > 0 && currentRate.length() <= 8) {
+					flag = currentRate.matches(rateRegEx);
+				}
+				if(flag == false) {
+					errorSet.put("rate", "Rate Allow Only Integers and length 0-8");
+				}
+				
+			}
+			//RatePer
+			if(!dataMigrationDTOJsonCopy.getString("ratePer").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("ratePer"))) {
+				String ratePer = dataMigrationDTOJsonCopy.getString("RatePer").trim().toLowerCase();
+				if(ratePer.equalsIgnoreCase("Hourly")) {
+					dataMigrationDTOJsonCopy.put("ratePer", "Hourly");
+				}else if(ratePer.equalsIgnoreCase("Daily")) {
+					dataMigrationDTOJsonCopy.put("ratePer", "Daily");
+				}else if(ratePer.equalsIgnoreCase("Weekly")) {
+					dataMigrationDTOJsonCopy.put("ratePer", "Weekly");
+				}else if(ratePer.equalsIgnoreCase("Bi-Weekly")) {
+					dataMigrationDTOJsonCopy.put("ratePer", "Bi-Weekly");
+				}else if(ratePer.equalsIgnoreCase("Semi-Monthly")) {
+					dataMigrationDTOJsonCopy.put("ratePer", "Semi-Monthly");
+				}else if(ratePer.equalsIgnoreCase("Bi-Monthly")) {
+					dataMigrationDTOJsonCopy.put("ratePer", "Bi-Monthly");
+				}else if(ratePer.equalsIgnoreCase("Monthly")) {
+					dataMigrationDTOJsonCopy.put("ratePer", "Monthly");
+				}else if(ratePer.equalsIgnoreCase("Yearly")) {
+					dataMigrationDTOJsonCopy.put("ratePer", "Yearly");
+				}else {
+					errorSet.put("ratePer", dataMigrationDTOJsonCopy.getString("RatePer").trim()+" Invalid RatePer Type");
+				}
+			}
+			
+			//DateOfJoin
+			if(!dataMigrationDTOJsonCopy.getString("dateofJoin").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateofJoin"))) {
+				try {
+					DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
+					Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateofJoin"));
+					String dateofjoin = formatter.format(date);
+					dataMigrationDTOJsonCopy.put("dateofJoin", dateofjoin);
+				} catch (Exception e) {
+					errorSet.put("dateofJoin", dataMigrationDTOJsonCopy.getString("dateofJoin")+" is invalid Date of join");
+				}
+			}
+			
+
+			//Date of Birth
+			if(!dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+				try {
+					DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
+					Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateOfBirth"));
+					String dateofbirth = formatter.format(date);
+					dataMigrationDTOJsonCopy.put("dateOfBirth", dateofbirth);
+				} catch (Exception e) {
+					errorSet.put("dateOfBirth", dataMigrationDTOJsonCopy.getString("dateofBirth")+" is invalid Date Of Birth");
+				}
+			}
+			
+			//Employment type
+			if(dataMigrationDTOJsonCopy.getString("designationType").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designationType"))) {
+				errorSet.put("designationType", "Designation Type field is missing");
+			}else {
+				   if(!dataMigrationDTOJsonCopy.getString("designationType").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designationType"))) {
+					String designationType = dataMigrationDTOJsonCopy.getString("designationType").trim().toLowerCase();
+					if(designationType.equalsIgnoreCase("C2C")) {
+						dataMigrationDTOJsonCopy.put("designationType", "C2C");
+					}else if(designationType.equalsIgnoreCase("C2C-1099")) {
+						dataMigrationDTOJsonCopy.put("designationType", "C2C-1099");
+					}else if(designationType.equalsIgnoreCase("W-2")) {
+						dataMigrationDTOJsonCopy.put("designationType", "W-2");
+					}else if(designationType.equalsIgnoreCase("C2H")) {
+						dataMigrationDTOJsonCopy.put("designationType", "C2H");
+					}else if(designationType.equalsIgnoreCase("C2H -1099")) {
+						dataMigrationDTOJsonCopy.put("designationType", "C2H -1099");
+					}else if(designationType.equalsIgnoreCase("Part Time")) {
+						dataMigrationDTOJsonCopy.put("designationType", "Part Time");
+					}else if(designationType.equalsIgnoreCase("Full Time")) {
+						dataMigrationDTOJsonCopy.put("designationType", "Full Time");
+					}else if(designationType.equalsIgnoreCase("Other")) {
+						dataMigrationDTOJsonCopy.put("designationType", "Other");
+					}else {
+						errorSet.put("designationType", dataMigrationDTOJsonCopy.getString("designationType").trim()+" Invalid DesignationType Type");
+					}
+			  }
+			}
+			
+			//Shift
+			if(dataMigrationDTOJsonCopy.getString("shiftId").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("shiftId"))) {
+				errorSet.put("shiftId", "Shift field is missing");
+			}else {
+				Boolean isValidated = shiftNameValidation(dataMigrationDTOJsonCopy.getString("shiftId"),orgLocation.getId());
+				if(isValidated == false){
+					errorSet.put("shiftId", "Shift is not existed");
+				}
+			}
+
+			//Designation
+			if(dataMigrationDTOJsonCopy.getString("designation").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designation"))) {
+				errorSet.put("designation", "Designation Type field is missing");
+			}else {
+				Boolean isValidated = isFnameLnameValid(dataMigrationDTOJsonCopy.getString("designation"));
+				if(isValidated == false){
+					errorSet.put("designation", "should contain above 2 char and should not allowed special charecters");
+				}
+			}
+			
+			//Department
+			if(!dataMigrationDTOJsonCopy.getString("department").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("department"))) {
+	    		Boolean   flag = departmentService.validateDepartmentnameByOrgLocationIdAndDepartmentName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("department"));
+	    		if(flag == true) {
+					errorSet.put("department", "Deparment is not existed");
+	    		}
+			}
+			
+			//Roles
+			if(dataMigrationDTOJsonCopy.getString("roleType").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("roleType"))) {
+				errorSet.put("roleType", "Role type field is missing");
+			}else {
+				Roles roles = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(dataMigrationDTOJsonCopy.getString("roleType"),orgLocation.getId());
+				if (null == roles) {
+					errorSet.put("roleType", "Role is not existed");
+				}
+			}
+		
+			//Grade
+			if(!dataMigrationDTOJsonCopy.getString("grade").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("grade"))) {
+				boolean flag = true;
+				List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocation.getId());
+				if(gradesList != null) {
+					for(AssociateGrades grades : gradesList) {
+						if(grades.getGradeName().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("grade"))) {
+							 flag = false;
+						}
+					}
+				}
+	    		if(flag == true) {
+					errorSet.put("grade", "Grade is not existed");
+	    		}
+			}
+			
+
+			//Manager
+			if (!dataMigrationDTOJsonCopy.get("reportingManager").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("reportingManager").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("undefined")) {
+				Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("reportingManager").toString().trim());
+				if(matcher.matches() == false) {
+					errorSet.put("reportingManager", "Invalid Email");
+				}
+			}
+			
+			if(dataMigrationDTOJsonCopy.getString("reportingManager").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("reportingManager"))) {
+				errorSet.put("reportingManager", "Email field is missing");
+			}else {
+				User userEmail = userService.findByEmail(dataMigrationDTOJsonCopy.getString("reportingManager").toString().trim());
+				if (userEmail == null) {
+					errorSet.put("reportingManager", "Manager is not a current org user");
+				}
+			}
+			
+			
+			//Day hours
+			if(!dataMigrationDTOJsonCopy.getString("dayHours").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("dayHours"))) {
+				 String DayHours = dataMigrationDTOJsonCopy.getString("dayHours"); 
+				 String result = isDayHourValid(DayHours);
+					if(result.split(",")[0] == "false"){
+						 errorSet.put("dayHours", "Day Hours should less than 24 Hours");
+					} else {
+						dataMigrationDTOJsonCopy.put("dayHours", result.split(",")[1]);
+					}
+			}
+			
+			//Employee ID
+			if(!dataMigrationDTOJsonCopy.getString("employeeId").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("DayHours"))) {
+				Boolean flag = employeesService.validateEmployeeId(dataMigrationDTOJsonCopy.getString("employeeId"),orgLocation.getId());
+				if(flag == true) {
+					  errorSet.put("employeeId", ""+dataMigrationDTOJsonCopy.getString("employeeId")+"is Already Existed");
+				}
+			}
+			
+			
+			
+			// Send Mail to Associate
+			if(!dataMigrationDTOJsonCopy.getString("isMailSent").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("isMailSent"))) {
+				String sendEmailtype = dataMigrationDTOJsonCopy.getString("isMailSent").trim().toLowerCase();
+				if(sendEmailtype.equalsIgnoreCase("Y")) {
+					dataMigrationDTOJsonCopy.put("isMailSent", "Y");
+				}else if(sendEmailtype.equalsIgnoreCase("N")) {
+					dataMigrationDTOJsonCopy.put("isMailSent", "N");
+				}else {
+					errorSet.put("isMailSent"," Invalid isMailSent Type");
+				}
+			}
+			
+			//Is Global Manager
+			if(!dataMigrationDTOJsonCopy.getString("isGlobalAccess").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("isGlobalAccess"))) {
+				String globleType = dataMigrationDTOJsonCopy.getString("isGlobalAccess").trim().toLowerCase();
+				if(globleType.equalsIgnoreCase("Y")) {
+					dataMigrationDTOJsonCopy.put("isGlobalAccess", "Y");
+				}else if(globleType.equalsIgnoreCase("N")) {
+					dataMigrationDTOJsonCopy.put("isGlobalAccess", "N");
+				}else {
+					errorSet.put("isGlobalAccess"," Invalid isMailSent Type");
+				}
+			}
+			
+			
+			
+		}
+		
+		
+		 
+
+		private boolean isFnameLnameValid(String name){
+			boolean flag = false;
+			boolean istabSpace = name.matches("^[A-Za-z][A-Z a-z 0-9]*$");
+			if(istabSpace==false){
+				flag = false;
+			}else{
+				if(name.length() > 2 && name.length() <= 200){
+					flag = true;
+				}
+		}
+			
+			return flag;
+		}
+		
+		private boolean shiftNameValidation(String shiftName, Long loginLoationId) {
+			List<Shift> shiftList  = shiftService.getShiftList(loginLoationId);
+			Shift shift = shiftList.stream().filter(x -> shiftName.equalsIgnoreCase(x.getShiftName())).findAny().orElse(null); 
+			 boolean flag = false;
+			 if(shift != null)
+				 flag= true;
+			return flag;
+		}
+		
 		//validate Email For Excel Written by Laxman
 		private static boolean isValid(String email) {
 			String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$";
@@ -1859,4 +2654,27 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				return false;
 			return pat.matcher(email).matches();
 		}
+
+	private String isDayHourValid(String dayHours) {
+		Pattern pattern;
+		Matcher matcher;
+		String TIME12HOURS_PATTERN = "([01]?[0-9]|2[0-3]):[0-5][0-9]";
+		pattern = Pattern.compile(TIME12HOURS_PATTERN);
+		int hours = 0;
+		int mins = 0;
+		if (dayHours.contains(":")) {
+			hours = Integer.parseInt(dayHours.split(":")[0]);
+			mins = Integer.parseInt(dayHours.split(":")[1]);
+		} else {
+			hours = Integer.parseInt(dayHours);
+		}
+		String finalTime = (hours < 10 ? "0" + hours : hours) + ":" + (mins < 10 ? "0" + mins : mins);
+		matcher = pattern.matcher(finalTime);
+		boolean result = matcher.matches();
+		return result + "," + finalTime;
+	}
+
+		
+		
+		
 	}

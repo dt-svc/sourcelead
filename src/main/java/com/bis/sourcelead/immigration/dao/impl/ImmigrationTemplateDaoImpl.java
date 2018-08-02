@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
@@ -50,9 +49,6 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
     @Autowired
     private SessionFactory sessionFactory;
-
-    @Autowired
-    private UserRoleDao userRoleDao;
 
     @Value("${SourceLead.100}")
     private String notFound;
@@ -302,8 +298,8 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         }
         String listQuery = "from ImmigrationTemplateTasks itt where status = 1 AND itt.immigrationTempId.id = :templateId";
         immigrationTemplateTasks = session.createQuery(listQuery + query1 + sortingQry).setLong("templateId", templateDTO.getTemplateId()).list();
-        String listQueryCount = "select count(*) from ImmigrationTemplateTasks itt";
-        countlist = session.createQuery(listQueryCount).setFirstResult(templateDTO.getStart()).setMaxResults(templateDTO.getLength()).list();
+        String listQueryCount = "select count(*) from ImmigrationTemplateTasks itt where status = 1 AND itt.immigrationTempId.id = :templateId";
+        countlist = session.createQuery(listQueryCount+query1+sortingQry).setLong("templateId", templateDTO.getTemplateId()).setFirstResult(templateDTO.getStart()).setMaxResults(templateDTO.getLength()).list();
         int totalCount = 0;
         if (templateDTO != null) {
             if (countlist != null && !countlist.isEmpty()) {
@@ -365,6 +361,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             templateDto.setTemplateDescription(entityObj.getDescription());
             templateDto.setCountry(entityObj.getCountry());
             templateDto.setPetitionType(entityObj.getPetitionType().getId().toString());
+            templateDto.setUuid(entityObj.getUuid());
             // 
 
         } catch (Exception e) {
@@ -388,6 +385,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
                 ImmigrationTemplateDocDTO docDto = new ImmigrationTemplateDocDTO();
                 docDto.setId(entityObj.getId());
                 docDto.setDocumentType(entityObj.getDocumentType().getId());
+                docDto.setDocumentCategory(entityObj.getDocumentCategory());
                 docDto.setDescription(entityObj.getDescription());
                 docDto.setIsRequired(entityObj.getIsRequired());
                 docDto.setMultiple(entityObj.getIsMultipleRequired());
@@ -421,6 +419,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             for (ImmigrationTemplateForms entityObj : formsList) {
                 ImmigrationTemplateFormDTO formDto = new ImmigrationTemplateFormDTO();
                 formDto.setId(entityObj.getId());
+                formDto.setFormCategory(entityObj.getFormCategory());
                 formDto.setFormName(entityObj.getFormName());
                 formDto.setFormDescription(entityObj.getDescription());
                 formDto.setFileName(entityObj.getFileName());
@@ -454,7 +453,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             query.setLong("templateId", templateId);
             query.setString("reason", reason);
             int result = query.executeUpdate();
-            //System.out.println(" updated ImmigrationTemplate records count : " + result);
+            /*//System.out.println(" updated ImmigrationTemplate records count : " + result);
             logger.debug(" updated ImmigrationTemplate records count : " + result);
             // update ImmigrationTemplateDocs
             queryString = "UPDATE ImmigrationTemplateDocs SET status = 0  where immigrationTempId = :templateId";
@@ -469,7 +468,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             query.setLong("templateId", templateId);
             result = query.executeUpdate();
             //System.out.println(" updated ImmigrationTemplateForms records count : " + result);
-            logger.debug(" updated ImmigrationTemplateForms records count : " + result);
+            logger.debug(" updated ImmigrationTemplateForms records count : " + result);*/
         }
     }
     
@@ -484,7 +483,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             Query query = session.createQuery(queryString);
             query.setLong("templateId", templateId);
             int result = query.executeUpdate();
-            // update ImmigrationTemplateDocs
+            /*// update ImmigrationTemplateDocs
             queryString = "UPDATE ImmigrationTemplateDocs SET status = 1  where immigrationTempId = :templateId";
             query = session.createQuery(queryString);
             query.setLong("templateId", templateId);
@@ -493,7 +492,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             queryString = "UPDATE ImmigrationTemplateForms SET status = 1  where immigrationTempId = :templateId";
             query = session.createQuery(queryString);
             query.setLong("templateId", templateId);
-            result = query.executeUpdate();
+            result = query.executeUpdate();*/
             }
     }
 
@@ -569,26 +568,17 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public boolean validateTemplateNameExistance(String templateName, Long templateId) {
-        Session session = null;
-        try {
-            session = this.sessionFactory.openSession();
-            String query = "from ImmigrationTemplate iTemplate where iTemplate.name= :name";
-            if (templateId > 0) {
-                query += " and iTemplate.id not in(" + templateId + ")";
-            }
-            List<ImmigrationTemplate> templateList = session.createQuery(query).setString("name", templateName).list();
+    public boolean validateTemplateNameExistance(String templateName, Long orgLocationId) {
+        Session  session = this.sessionFactory.openSession();
+            String query = "from ImmigrationTemplate iTemplate where iTemplate.name= :name and iTemplate.orgLocations.id =:orgLocationId";
+            List<ImmigrationTemplate> templateList = session.createQuery(query).setString("name", templateName).setLong("orgLocationId", orgLocationId).list();
+            
             if (templateList != null && !templateList.isEmpty()) {
                 return true;
+            }else{
+            	 return false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-        return false;
+        
     }
 
 	@Override
@@ -652,6 +642,58 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			String queryString = "from ImmigrationTemplateTasks td where td.immigrationTempId.id=:templateId";
 			ImmigrationTemplateTasksList = session.createQuery(queryString).setLong("templateId", templateId).list();
 		return ImmigrationTemplateTasksList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public Long getTemplateIdByUUID(String immiTemplateUUID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select temp.id from ImmigrationTemplate temp where temp.uuid = :templateUUID";
+		Long tempId = (Long) session.createQuery(query).setParameter("templateUUID", immiTemplateUUID).uniqueResult();
+		return tempId;
+	}
+
+	@Override
+	public boolean validateTemplateTaskNameExistance(String templateTaskName, Long templateId, Long immiTaskId) {
+		Session session = null;
+		boolean returnVal = false;
+        try {
+            session = this.sessionFactory.openSession();
+            String query = null;
+            query = " from ImmigrationTemplateTasks iTemplate where iTemplate.taskName= :name and iTemplate.status = 1 and iTemplate.immigrationTempId.id = :templateId";
+            if(immiTaskId != 0) {
+                query += " and iTemplate.id <> :templateTaskId";
+            }
+            Query hqlQuery = session.createQuery(query);
+            if(immiTaskId != 0) {
+            	hqlQuery.setLong("templateTaskId", immiTaskId);
+            }
+            List<ImmigrationTemplate> templateList = hqlQuery.setString("name", templateTaskName).setLong("templateId",templateId).list();
+            if (templateList != null && !templateList.isEmpty()) {
+                returnVal = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+		return returnVal;
+	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public ImmigrationTemplate getImmigrationTemplateByIdAndLocationId(String templateName,Long templateId, Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ImmigrationTemplate immiTemplate where immiTemplate.id =:templateId and immiTemplate.name = :templateName and immiTemplate.orgLocations.id =:orgLocationId";
+		Query finalQuery = session.createQuery(query);
+		List<ImmigrationTemplate> templateList = finalQuery.setParameter("templateName", templateName).setParameter("templateId", templateId).setParameter("orgLocationId", orgLocationId).list();
+		if(templateList.size()>0){
+		return 	templateList.get(0);
+		}else{
+			return null;	
+		}
 	}
 	
 	

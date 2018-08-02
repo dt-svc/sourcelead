@@ -224,10 +224,11 @@ public class ContractController {
     		} 
     		
     		if(contract != null){
+    			List<Long> parallelOwnerIds = new ArrayList<>();
     			for (ContractOwnerHierarchy coh : contract.getOwnerHierarchyList()) {
     				if(Constants.PARALLEL.equalsIgnoreCase(coh.getHierarchyType().getValue())){
     					contract.setOwnersType(coh.getHierarchyType().getValue());
-    					contract.setParallelOwner(coh.getOwnerUserId().getId());
+    					parallelOwnerIds.add(coh.getOwnerUserId().getId());
     				}else{
     					contract.setOwnersType(coh.getHierarchyType().getValue());
     					if(coh.getLevel() == 1)
@@ -236,6 +237,7 @@ public class ContractController {
     						contract.setSequentialOwner2(coh.getOwnerUserId().getId());
     				}
     			}
+    			contract.setParallelOwnerId(parallelOwnerIds);
     		}
 			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -426,7 +428,7 @@ public class ContractController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 //		commonUtil.highLightMenu(Constants.List_by_status, request);
-		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+		List<User> userList = contractsTemplateService.getSigningAuthoritiesForContract(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
 		List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
 		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
 		for (OrgRelations orgRelations : orgRelationsList) {
@@ -518,7 +520,26 @@ public class ContractController {
 				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
 				contract.setEndDateStr(endDateInTimezone);
 			}
+			
 			if(null != contract){
+				
+				// To get Signing Authority Owners  
+				List<Long> parallelOwnerIds = new ArrayList<>();
+    			for (ContractOwnerHierarchy coh : contract.getOwnerHierarchyList()) {
+    				if(Constants.PARALLEL.equalsIgnoreCase(coh.getHierarchyType().getValue())){
+    					contract.setOwnersType(coh.getHierarchyType().getValue());
+    					parallelOwnerIds.add(coh.getOwnerUserId().getId());
+    				}else{
+    					contract.setOwnersType(coh.getHierarchyType().getValue());
+    					if(coh.getLevel() == 1)
+    						contract.setSequentialOwner1(coh.getOwnerUserId().getId());
+    					else if(coh.getLevel() == 2)
+    						contract.setSequentialOwner2(coh.getOwnerUserId().getId());
+    				}
+    			}
+    			contract.setParallelOwnerId(parallelOwnerIds);
+    			
+				
 				List<ContractsTemplate> contractsTemplateList = contractsTemplateService.getAllContractsTemplatesByContractTypeLandLocationId(orgLocation.getId(),contract.getContractType());
 				model.addObject("contractsTemplateList", contractsTemplateList);
 				
@@ -591,7 +612,8 @@ public class ContractController {
 		}
 		
 //		commonUtil.highLightMenu(Constants.List_by_status, request);
-		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+//		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+		List<User> userList = contractsTemplateService.getSigningAuthoritiesForContract(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
 		List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
 		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
 		for (OrgRelations orgRelations : orgRelationsList) {

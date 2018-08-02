@@ -41,7 +41,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
@@ -63,16 +62,18 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dao.ShiftDao;
+import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
-import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
@@ -92,6 +93,9 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
@@ -101,10 +105,12 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.MasterCandidateService;
@@ -116,6 +122,8 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -125,9 +133,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.DecimalFormat;
 import com.thoughtworks.xstream.XStream;
@@ -236,6 +242,17 @@ public class CommonUtil {
 	@Value("${static.path}")
     private String staticPath;
 	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioconService;
+	
+	@Autowired
+	private ShiftDao shiftDao;
+
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
+
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	/**
 	 * This method is used to convert JSON String to HashMap<Key,Value>
@@ -400,7 +417,17 @@ public class CommonUtil {
 	    }
 		return date;
 	}
-	
+
+	public static boolean isValidDate(String inDate) {
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	  //  dateFormat.setLenient(false);
+	    try {
+	      dateFormat.parse(inDate.trim());
+	    } catch (ParseException pe) {
+	      return false;
+	    }
+	    return true;
+	  }
 	/**
 	 *  returns current date based on orglocation date format
 	 * @param orgDateFormat
@@ -535,9 +562,9 @@ public class CommonUtil {
 		 }
 		 
 		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-		 emailMessage.setLastName(pmh.getProjectMemberId().getEmployee().getUser().getLastName());
-		 emailMessage.setToEmail(pmh.getProjectMemberId().getEmployee().getUser().getEmail());
+		 emailMessage.setFirstName(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+		 emailMessage.setLastName(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+		 emailMessage.setToEmail(pmh.getProjectMemberId().getProjectMemberCandidteId().getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		// StringBuilder msgBuild = new StringBuilder();
@@ -550,17 +577,15 @@ public class CommonUtil {
 		 
 		 String statrDate = dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectAssignedDate());
 		 
-		 if(null!= pmh.getProjectMemberId().getEmployee()){
-			 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
-				 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
-					 StringBuilder empName = new StringBuilder();
-					 globalVarsMap.put("EmployeeName", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
-				 }	 
-		 else{
-			 globalVarsMap.put("EmployeeName", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-			}
-		 }
-		 }
+		 StringBuilder employeeName = new StringBuilder();
+		 	 if(StringUtils.isNotBlank(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName())) {
+		 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName()).append(" ").append(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+		 	 }else {
+		 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+		  		 }
+		  		 
+		 	 globalVarsMap.put("EmployeeName", employeeName.toString());
+		 	 
 		 
 		 if(null != pmh.getProjectMemberId().getProjects()){
 			 if(null != pmh.getProjectMemberId().getProjects().getProjectName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getProjects().getProjectName())){
@@ -620,14 +645,20 @@ public class CommonUtil {
 		 
 		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
-
-		 
-		 User toUser = pmh.getProjectMemberId().getEmployee().getUser();
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_TERMINATION,new ArrayList<EmailAttachment>());
-		 String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario,new HashMap<String,String>());
+		 
+		 if(pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser() != null) {
+	 			 User toUser = pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
+	 			 String actionLink="";
+	 			 emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getProjectMemberCandidteId().getOrgLocationId(), notificationScenario,new HashMap<String,String>());
+			  
+ 		 }
+
+		 
+		 
+		
 
 			
 		}
@@ -1306,16 +1337,18 @@ public class CommonUtil {
 			float cthHours = hours1;
 			float cthHoursValue = (int) cthHours;
 			float cthMinutesValue = cthHours - cthHoursValue;
+			cthMinutesValue = (float) Math.round(cthMinutesValue * 100) / 100;
 			float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
 
 			float wthHours = hours2;
 			float wthHoursValue = (int) wthHours;
 			float wthMinutesValue = wthHours - wthHoursValue;
+			wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
 			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
 			float totalMinutes = totalCthMinutes+totalWthMinutes;
 
-			float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+			float actualHours = (int) (totalMinutes / 60); 
 			float actualMinutes = (totalMinutes % 60)/100;
 
 			String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
@@ -1323,19 +1356,14 @@ public class CommonUtil {
 			return Float.parseFloat(actualTimeString);
 		}
 		
-		public static String getHoursDisplayFormat(Float hours2){
-			float cthHours = 0;
-			float cthHoursValue = (int) cthHours;
-			float cthMinutesValue = cthHours - cthHoursValue;
-			float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
-
-			float wthHours = hours2;
-			float wthHoursValue = (int) wthHours;
-			float wthMinutesValue = wthHours - wthHoursValue;
-			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
-
-			float totalMinutes = totalCthMinutes+totalWthMinutes;
-
+		public static String getHoursDisplayFormat(Float hours2,Float totalMinutes){
+			if(totalMinutes == null) {
+				float wthHours = hours2;
+				float wthHoursValue = (int) wthHours;
+				float wthMinutesValue = wthHours - wthHoursValue;
+				wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
+			    totalMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+			}
 			float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
 			float actualMinutes = (totalMinutes % 60)/100;
 			String actualTimeString = null;
@@ -1347,6 +1375,20 @@ public class CommonUtil {
 			}
 			
 			return actualTimeString;
+		}
+		
+		public static String getTimeFormat(Float hours2,Float totalMinutes) {
+			if(totalMinutes == null) {
+				float wthHours = hours2;
+				float wthHoursValue = (int) wthHours;
+				float wthMinutesValue = wthHours - wthHoursValue;
+				wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
+			    totalMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+			}
+			int hours = (int) (totalMinutes / 60); 
+			int mins = (int)(totalMinutes % 60);
+	        String finalTime = (hours < 10 ? "0" + hours : hours) + ":" + (mins < 10 ? "0" + mins : mins);
+	        return finalTime;
 		}
 
 		public void updateClientVendorElk(OrgRelations orgRelation, OrgLocations orgLocations, User user, String responderType) {
@@ -2041,17 +2083,17 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		return usersDTOList;
 	}
 	
-	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId) {
+	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId,String isGlobalAccess) {
 		boolean flag = false;
 		try {
 			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
 			if(projectClients != null) {
-				if(projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+				if((projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) || (StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES))) {
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
 						Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-						if(approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode())) {
+						if(approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode()) || isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
 							flag = true;
 						}
 					}else {
@@ -2143,15 +2185,14 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 String endDate = dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
 		 
-		 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
-			 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
-				 StringBuilder empName = new StringBuilder();
-				 globalVarsMap.put("EmployeeName", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
-			 }
-		 else{
-			 globalVarsMap.put("EmployeeName", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-			}
-		 }
+	     StringBuilder employeeName = new StringBuilder();
+	 		 if(StringUtils.isNotBlank(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName())) {
+	 			 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName()).append(" ").append(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+	 		 }else {
+	 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+	  		 }
+	  		 
+	 	 globalVarsMap.put("EmployeeName", employeeName.toString());
 		 
 		 
 		 if(null != pmh.getProjectMemberId().getProjects()){
@@ -2408,4 +2449,122 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 	}
 	  
   }
+  
+  
+  public String getConfiguredFromEmail(Long orgLocationId,EmailScenario  emailScenario) throws Exception{
+	  
+	     String fromEmail = null;
+		 EmailConfigurationFromMail confFromMail=null;
+		 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocationId);
+		 if(emailConfigMailList != null){
+			 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+				 if( fromMail.getEmailModules() != null){
+ 					String[] jobIds = fromMail.getEmailModules().split(",");
+						for(int i=0; i<jobIds.length; i++) {
+							if(Long.valueOf(jobIds[i]) == emailScenario.getTabId().getId() ){
+								confFromMail=fromMail;
+							}
+						}
+				 }
+			 } 
+			 
+			 if(confFromMail == null){
+				 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocationId);
+				 if(confFromMail != null){
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }else{
+				 fromEmail = confFromMail.getEmail();
+			 }
+		 }
+		 
+		 return fromEmail;
+  }
+  
+	
+  public Shift saveDefaultGenaeralShift(OrgLocations orgLocations, User user,String shiftName) throws Exception {
+	     Shift shift = new Shift();
+	     shift.setShiftUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	     shift.setOrgLocations(orgLocations);
+	     shift.setShiftName(shiftName);
+	     shift.setTimeIn("9:00 AM");
+	     shift.setTimeOut("6:00 PM");
+	     shift.setMinmumHours("9 hrs");
+	     shift.setTotalHours("9 hrs");
+	     shift.setShiftDescription("Genearal Shift");
+	     
+	     shift.setMondayInTime("9:00 AM");
+	     shift.setMondayOutTime("6:00 PM");
+	     
+	     shift.setTuesdayInTime("9:00 AM");
+	     shift.setTuesdayOutTime("6:00 PM");
+	     
+	     shift.setWednesdayInTime("9:00 AM");
+	     shift.setWednesdayOutTime("6:00 PM");
+	     
+	     shift.setThursdayInTime("9:00 AM");
+	     shift.setThursdayOutTime("6:00 PM");
+	     
+	     shift.setFridayInTime("9:00 AM");
+	     shift.setFridayOutTime("6:00 PM");
+	     
+	     shift.setSaturdayInTime("9:00 AM");
+	     shift.setSaturdayOutTime("6:00 PM");
+	     
+	     shift.setSundayInTime("9:00 AM");
+	     shift.setSundayOutTime("6:00 PM");
+	     shift.setDefaultStatus("Y");
+	     shift.setStatus(Constants.RECORD_ACTIVE.toString());
+	     if(user != null) {
+			 shift.setUpdatedBy(user.getUserCode());
+			 shift.setCreatedBy(user.getUserCode());
+	     }
+		 shift.setUpdatedDate(new Date());
+		 shift.setCreatedDate(new Date());
+		 shiftDao.saveShift(shift);
+		 return shift;
+	}
+  
+  
+  public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+
+		if(!requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.JOINED)) {
+			// to update submission history
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
+
+			// to update Submission status
+			requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
+			requirementSubmission.setUpdatedBy(user.getUserCode());
+			StringBuilder sb = new StringBuilder();
+			requirementSubmission.setUpdatedUser(sb.append(user.getFullName()).toString());
+			requirementSubmission.setUpdatedDate(new Date());
+			
+			if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getJoinDate()) && !"".equalsIgnoreCase(applicantRejectBackOutDTO.getJoinDate())) {
+				try {
+					Date convertedDate = orgLocationDateFormat(orgLocations.getDateFormat(), applicantRejectBackOutDTO.getJoinDate());
+					requirementSubmission.setJoinedDate(convertedDate);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				requirementSubmission.setJoinedDate(null);
+			}
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		}
+		return "success";
+	}
+
+	public static String toFixed2(double d) {
+		String str;
+		d = d * 100;
+		d = Math.round(d);
+		d = d / 100;
+		str = ("" + d).lastIndexOf(".") == ("" + d).length() - 2 ? d + "0" : d + "";
+		return str;
+	}
 }

@@ -18,6 +18,8 @@
 
  
    <%
+   
+   
     if (request.getRequestURL().toString().indexOf("www.") == -1 
             && request.getRequestURL().toString().indexOf("localhost") == -1
             && request.getRequestURL().toString().indexOf("qa.") == -1

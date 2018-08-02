@@ -5,14 +5,18 @@
  
 
  <c:forEach var="section" items="${SourceleadForm_Sections}" varStatus="sectionStatus">
-     <div class="cusFielInn" >
-        <div class="cusFielInnHead clearfix">
+     <div class="project_wrap mb">
+     
+     
+     
+        <div class="cusFielInnHead reportHead clearfix">
 	  				<h2>${section.sectionName}</h2>
 	  				<c:if test="${sectionStatus.index == 0}">
-		          	    <a href="javascript:void(0)" id="addField" onclick="editFileDetails('','addNewCustomField');" ><i class="glyphicon glyphicon-plus"></i> Add Field</a> 
+		          	    <a href="javascript:void(0)" id="addField" class="newAdBtn mr5" onclick="editFileDetails('','addNewCustomField');" >+ Field</a> 
 		          	</c:if>
 		</div>
-	  	<div class="cusFielTable" >
+		
+	  	<div class="project_wrap_table" >
 			<table>
 			<tbody id="cusFielTable${section.id}">
 			  <tr>
@@ -86,10 +90,9 @@ function viewSectionFileDetails(sectionId,sourceleadFormId,type){
 	  if(optionCounter == 0){
 		  optionCounter = +optionCounter + 1;
 	  }
-	  var divText = '<div id="optionDiv'+optionCounter+'" class="col-sm-12 noPad mt clearfix">'+
-	                 '<div class="col-md-3 noPad labHeight">&nbsp;</div>'+
-	                   '<div class="col-md-6"><input id = "selectOptionId" placeholder="" name="optionData['+optionCounter+'].option" class="field-label form-control input-sm" type="text"> </div>'+
-	                   '<div class="col-md-3 lblHeight"><span class="OpRemove"><i onclick = "removeOption('+optionCounter+')" class="fa fa-close"></i></span>'+
+	  var divText = '<div id="optionDiv'+optionCounter+'" class="clearfix mb5">'+
+	                   '<div class="col-md-11 noPad"><input id = "selectOptionId" placeholder="" name="optionData['+optionCounter+'].option" class="field-label form-control input-sm" type="text"> </div>'+
+	                   '<div class="col-md-1 lblHeight"><span class="OpRemove"><i onclick = "removeOption('+optionCounter+')" class="fa fa-close"></i></span>'+
 		             '</div>'+
 		             '</div>';
 	  
@@ -208,11 +211,11 @@ function getSelectedFieldDetails(){
 		 $('#selectFieldDiv').show();
 		 $('#textBoxDiv').hide();
 		 if(field == 'selectBox'){
-			 $("#selectFieldDiv p:contains('Choices')").html("Options");
+			 $("#selectFieldDiv p:contains('Choices')").html("Options").append("<span class='text-danger paddingLeft'>*</span>");
 			 $("#addOptionDiv p:contains('Add Choice')").html("Add Option");
 			 $('#placeHolderDiv').show();
 		 }else if(field == 'CheckBox' || field == 'radioButton'){
-			 $("#selectFieldDiv p:contains('Options')").html("Choices");
+			 $("#selectFieldDiv p:contains('Options')").html("Choices").append("<span class='text-danger paddingLeft'>*</span>");
 			 $("#addOptionDiv p:contains('Add Option')").html("Add Choice");
 			 $('#placeHolderDiv').hide();
 		 }

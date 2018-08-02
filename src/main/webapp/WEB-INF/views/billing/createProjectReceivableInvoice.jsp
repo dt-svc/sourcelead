@@ -201,9 +201,9 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               <tr id='divAttachmentTsRow0'>
             	<td>
               	<label><strong>Attachments</strong></label>
-              	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs">
+              	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs width100percnt">
                 <span><div id="savedAttachments"></div></span></div> </div>
-	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
+	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt" >
 	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
 	                <span>
 	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation' onchange="attachFile(0);"><i class='fa fa-times' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
@@ -462,14 +462,14 @@ function populateInlineItemsGrid(json){
              result = result +'  </td>';
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
-             result = result +'<select class="form-control input-sm" id="'+i+'sow" name="lineItems['+i+'].sow" onchange="getSowRate('+i+')">';
+             result = result +'<select class="form-control input-sm" id="'+i+'sow" name="lineItems['+i+'].sow" onchange="getSowRate('+i+');">';
              result = result +'<option value="">select Sow</option>';
-             if(opt.contractsList != '' && opt.contractsList != null && opt.contractsList != 'undefined'){
+              if(opt.contractsList != '' && opt.contractsList != null && opt.contractsList != 'undefined'){
                  for (var j = 0; j < opt.contractsList.length; j++) { 
                      var opt1 = opt.contractsList[j]; 
                      result = result +'<option value='+opt1.id+'>'+opt1.contractTitle+'</option>';
                  } 
-             }
+             } 
              result = result +' </select>';
              result = result +'</div>';
              result = result +'</td>';
@@ -617,7 +617,7 @@ function populateInlineItemsGrid1(data){
     	 
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
-    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="lineItems['+i+'].sow" onchange="getSowRate('+i+')">';
+    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="lineItems['+i+'].sow" onchange="getSowRate('+i+');">';
     	 result = result +'<option value="">select Sow</option>';
     	 if(opt.contractList != '' && opt.contractList != null && opt.contractList != 'undefined'){
              for (var j = 0; j < opt.contractList.length; j++) { 
@@ -721,15 +721,14 @@ function populateInlineItemsGrid1(data){
   <script>
 function getSowRate(id){
 	var contractId = $("#"+id+'sow').val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(contractId !='' && contractId != 'undefined' && contractId != null){
 		$.ajax({
 	    	type: "GET",
 	    	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
 	        success: function(json) {
-	        	 if(json.data != null && json.data != ''){
+	        	 if(json.object != null && json.object != ''){
 // 	        		var json = JSON.parse(data);
-		        	 $ ('#'+id+'rate').val(json.billingAmount);
+		        	 $ ('#'+id+'rate').val(json.object.billingAmount);
 		        	 totalHoursCalculateAmount(id);
 	        	} 
 	        },
@@ -1278,7 +1277,7 @@ function calculateTaxDiscount(){
 <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
   
   <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-  			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
+  			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt">
                 <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
                		 <span> 
                		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='attachFile(REPLACEROWID);validateContractsUploadFile(REPLACEROWID)'>

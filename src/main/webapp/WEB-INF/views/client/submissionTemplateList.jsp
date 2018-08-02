@@ -127,13 +127,13 @@ function clientSubmissionTemplate(clientLocationId){
 	        	result = result +"</table>";
 	        	
     		}else{
-      			 result = result + '<div class="table_nodata">';
-       			 result = result + '<div class="table_nodata_inn">';
+      			 result = result + '<div class="dataTables_empty">';
+       			/*  result = result + '<div class="table_nodata_inn">';
        			 result = result + '<img src="/resources/images/no-data.png" />';
        			 result = result + '<span>Nothing is here to show </b>';
        			 result = result + '</span>';
        			 result = result + '<div class="clearfix"></div>';
-       			 result = result + '</div>';
+       			 result = result + '</div>'; */
        			 result = result + '</div>';
        		 } 
     		 

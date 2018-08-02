@@ -29,12 +29,15 @@ function prepareHrDeductionsList(url){
  	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
- 	result = result +" <div class='modal-header'>";
- 	result = result +" <div class='remove_search'>";
- 	result = result +" <input type='text' placeholder='Search' id='hrDataTableSearch'/>";
- 	result = result +"</div>";
- 	result = result +"</div>";
- 	  result = result +"<table id='hrDeductionsPagination' class='display' cellspacing='0' width='100%' >"; 
+
+ 	 	result = result +" <div class='reportHead'>";
+		result = result + " <ul class='pull-right'>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='hrDataTableSearch'/><span class='repSearchIcon' onClick='hrDataTableSearch();'></span></li>";
+		result = result + "</ul>";
+		result = result + "</div>"; 	 	
+	 	
+	 	
+ 	  	result = result +"<table id='hrDeductionsPagination' class='display' cellspacing='0' width='100%' >"; 
  	    result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '<th>Employee Id</th>';
@@ -215,6 +218,9 @@ function hrDeductionsPagination(url){
     		   hrDeductionsList();
     	   }
     	});
+}
+function hrDataTableSearch(){
+	hrDeductionsList();
 }
 </script>
 

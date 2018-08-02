@@ -39,6 +39,7 @@
 							<div class="pull-left select-fild">
 								<select onchange="redirectlocation(this.value);">
 									<option value="/pendingLeaves">Pending Leaves</option>
+									<option value="/withdrawLeaves">Withdraw Leaves</option>
 									<option value="/approvedLeaves">Approved Leaves</option>
 									<option value="/rejectedLeaves">Rejected Leaves</option>
 									<option value="/cancelLeaves" selected>Cancelled Leaves</option>
@@ -299,7 +300,7 @@
 						            }
 								result = result + ' </div>';
 								result = result + ' </div>';
-								result = result + '<div class="col-md-12 mb">';
+								/* result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
 								result = result + ' <div class="col-md-8">';
@@ -309,7 +310,7 @@
 						            	result = result +' <span>--</span>';
 						            }
 								result = result + '</div>';
-								result = result + '</div>';
+								result = result + '</div>'; */
 								result = result + '<div class="col-md-12 mb">';
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Applied on:</b></label>';

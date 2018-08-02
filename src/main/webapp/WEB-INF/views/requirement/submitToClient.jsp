@@ -20,6 +20,15 @@
 .add_inter table tr td {
  vertical-align: middle;
 }
+.timesheet_week_comm {
+float: none !important; width: auto;
+}
+.timesheet_week_comm.mail-attach table tr {
+width: 100%;
+}
+.timesheet_week_comm span input, .commentFile span input {
+width: 80%;
+}
 </style>
 <script>
 function submitToClient(requirementId){
@@ -337,6 +346,7 @@ function cancelSumitToClient(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	$(".sideMask").fadeOut(200);
+	$(".comMask").fadeOut(200);
 }
 </script>
 

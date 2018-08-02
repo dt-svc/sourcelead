@@ -741,7 +741,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		//String regex = "^\\+?[0-9 ()-]{10,25}$";
 		String regex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
 		boolean flag;
-		if (phoneNumber.length() > 9 && phoneNumber.length() <= 20) {
+		if (phoneNumber.length() > 8 && phoneNumber.length() <= 20) {
 			flag = phoneNumber.matches(regex);
 		}
 		else {
@@ -1585,7 +1585,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation,user);
 													try {
 														clientDTO.setTemplateId(clientVendorUploadDTO.getTemplateId());
-														clientDTO.getAddUserDTO().setIsMailSent(Constants.YES);
+//														clientDTO.getAddUserDTO().setIsMailSent(Constants.YES);
 														OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
 														clientOrVendor.setRecordStatus("1");
 														responseList.setStatusCode("success");
@@ -1864,7 +1864,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 				boolean isValidated = isFnameLnameValid(client.getOrgName());
 				if (isValidated == false) {
 //					client.setReason("Client name should contain above 2 char");
-					client.setFileReason("Client name should contain above 2 char");
+					client.setFileReason("Client name should contain above 2 characters");
 					clientImportDao.saveClientVendorExcelData(client);
 					return isValidated;
 				}
@@ -1881,7 +1881,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 				boolean isValidated = isFnameLnameValid(client.getOrgName());
 				if (isValidated == false) {
 //					client.setReason("Vendor name should contain above 2 char");
-					client.setFileReason("Vendor name should contain above 2 char");
+					client.setFileReason("Vendor name should contain above 2 characters");
 					clientImportDao.saveClientVendorExcelData(client);
 					return isValidated;
 				}

@@ -1023,6 +1023,11 @@ jQueryFormUtils.validateAlphaNumber = function(val) {
 	return val.trim().match(/^[A-Za-z][A-Z a-z 0-9]*$/) !== null;
 };
 
+//******************Validate Allow at least one numeric,alphabet******
+jQueryFormUtils.validateAtleastOneNumericAlphabet = function(val) {
+	return val.trim().match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) !== null;
+};
+
 //**** validate Alphanumeric value must start with Alphabet and contains numeric and SpecialChar
 jQueryFormUtils.validateAlphaNumericSpecialChar = function(val) {
 	return val.trim().match(/^[a-zA-Z][a-zA-Z0-9 .,$;@#]*$/) !== null;
@@ -1062,6 +1067,10 @@ jQueryFormUtils.validatefile_pdf = function(val) {
 
 jQueryFormUtils.validate_importFile = function(val) {
     return val.toLowerCase().match(/(.*)(csv|xls|xlsx)$/) !== null;
+};
+
+jQueryFormUtils.validate_xls_importFile = function(val) {
+    return val.toLowerCase().match(/(.*)(xls|xlsx)$/) !== null;
 };
 
 jQueryFormUtils.validatefile_csv = function(val) {
@@ -1238,6 +1247,10 @@ jQueryFormUtils.validateName = function(val) {
             return validationErrorMsg || language.badImportFile;
         }
         
+        // simple File .xls and xlsx
+        else if (validationRules.indexOf('validate_xls_importFile') > -1 && !jQueryFormUtils.validate_xls_importFile(value, validationRules)) {
+            return validationErrorMsg || language.badXlsImportFile;
+        }
         
 		 // simple File csv check
         else if (validationRules.indexOf('validatecsv') > -1 && !jQueryFormUtils.validatefile_csv(value, validationRules)) {
@@ -1308,6 +1321,10 @@ jQueryFormUtils.validateName = function(val) {
 // Validate if  Must start with Alphabet - Alphanumeric allowed
         else if (validationRules.indexOf('validate_AlphaNumber') > -1 && !jQueryFormUtils.validateAlphaNumber(value)) {
             return validationErrorMsg || language.badAlphaNumber;
+      }
+     // Validate Allow at least one numeric,alphabet
+        else if (validationRules.indexOf('validate_AtLeastOneAlphaNumber') > -1 && !jQueryFormUtils.validateAtleastOneNumericAlphabet(value)) {
+            return validationErrorMsg || language.badAtLeastOneAlphaNumber;
       }
      // Validate if  Must start with Alphabet - Alphanumeric and special characters allowed       
         else if(validationRules.indexOf('validate_AlphaNumeric_SpecialChar') > -1 && !jQueryFormUtils.validateAlphaNumericSpecialChar(value)) {
@@ -1419,6 +1436,7 @@ jQueryFormUtils.LANG =  {
 	badNumberAlphabet:'Allows Only Alphanumeric and must start with a Number',
 	badNumberAndAlphabet:'Allows Only Alphanumeric',
 	badAlphaNumber:'Allows Only Alphanumeric and must start with an Alphabet',
+	badAtLeastOneAlphaNumber:'Allow Only Alphanumeric and at Least One Alphabet and Number',
 	badAlphaNumericSpecialChar:'Allows Alphanumeric and Special Characters and must start with an Alphabet',
 	badImage:'Invalid Image Format Use .jpeg,jpg,gif,png formats only',
 	badDoc:'doc,docx,pdf,txt formats allowed',
@@ -1426,6 +1444,7 @@ jQueryFormUtils.LANG =  {
 	badResume:'Invalid Resume Type Use .doc,.docx,.pdf,.rtf formats only',
 	badPdf:'Invalid Document Type Use .PDF formats only',
 	badImportFile:'Invalid File Type. Use xls,xlsx and csv formats only',
+	badXlsImportFile:'Invalid File Type. Use xls and xlsx formats only',
 	badCsv:'Invalid Document Type Use .csv,txt formats only',
 	badMaskPhone:'Invalid characters in phone number',
 	badMaskZipCode:'Invalid characters in Zip Code',

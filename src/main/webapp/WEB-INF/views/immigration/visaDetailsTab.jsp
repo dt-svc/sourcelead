@@ -28,6 +28,7 @@
 				<th>Country</th>
 				<th>Valid From</th>
 				<th>Valid To</th>
+				<th>Status</th>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <th>Action</th>
@@ -45,16 +46,17 @@
 			  </tr>
 			  <c:forEach var="visadetails" items="${PassportList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-sm">${!empty visadetails.visaType ? visadetails.visaType : '---'}</div></td>
-				<td><div class="tbldata-dotdot-sm">${!empty visadetails.idNumber ? visadetails.idNumber : '---'}</div></td>
-				<td><div class="tbldata-dotdot-sm">${!empty visadetails.country ? visadetails.country : '---'}</div></td>
-				<td><div class="tbldata-dotdot-sm">${!empty visadetails.validFromDateStr ? visadetails.validFromDateStr : '---'}</div></td>
-				<td><div class="tbldata-dotdot-sm">${!empty visadetails.validToDateStr ? visadetails.validToDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.visaType}">${!empty visadetails.visaType ? visadetails.visaType : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.idNumber}">${!empty visadetails.idNumber ? visadetails.idNumber : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.country}">${!empty visadetails.country ? visadetails.country : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.validFromDateStr}">${!empty visadetails.validFromDateStr ? visadetails.validFromDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.validToDateStr}">${!empty visadetails.validToDateStr ? visadetails.validToDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.currentStatus}">${visadetails.currentStatus}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${visadetails.id},'${visadetails.idType}');"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="immigration.deletePassportVisaDetailsById(${visadetails.id},'${visadetails.idType}');" 
+				 onclick="deleteImmigrationRecord('deletePassportVisaDetails',${visadetails.id},'${visadetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 				    </c:when>
 				    <c:otherwise>
@@ -62,7 +64,7 @@
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
 						      <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${visadetails.id},'${visadetails.idType}');"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="immigration.deletePassportVisaDetailsById(${visadetails.id},'${visadetails.idType}');" 
+				 onclick="deleteImmigrationRecord('deletePassportVisaDetails',${visadetails.id},'${visadetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
@@ -95,12 +97,12 @@
 			<h2>Add Visa</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
 		
-	<div class="popupMid clearfix">
+	<div class="clearfix">
 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Visa Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name = "visaType" id = "visaType" field-name = "Visa Type"  data-validation = "required" >
+					<select class="selectpicker width100percnt" name = "visaType" id = "visaType" field-name = "Visa Type"  data-validation = "required" data-live-search="true">
 					  <option value="" selected>Select Visa Type</option>
 					  <c:forEach var="visaType" items="${visaList}">
 						<option value="${visaType}">${visaType}</option>
@@ -109,16 +111,16 @@
 				</div>
 			</div>
          
-          <div class="col-sm-12 noPad mt clearfix">
+          <div class="col-sm-12 noPad mt clearfix" id="idNumberVisaDiv">
 				<label class="col-md-4 padding_left">Visa Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required"/>
+              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required validate_length length8-20 validate_AtLeastOneAlphaNumber" onkeyup = "validateCandidatePassportVisa('Visa');"/>
 				</div>
 			</div>				          
           	<div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Country<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name="country" id= "visaCountry"  field-name="Country" data-validation="required">
+					<select class="selectpicker width100percnt" name="country" id= "visaCountry"  field-name="Country" data-validation="required" data-live-search="true">
 					<option value="" selected>--Select Country--</option>
 					  <c:forEach var="country" items="${countryList}">
 						<option value="${country.name}">${country.name}</option>
@@ -152,8 +154,8 @@
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#passportsTab');" class="btn btn-default btn-sm">
-             	<input type="button" value="Skip" onclick="goToSummaryTab('#employersTab');" class="btn btn-default btn-sm"> 
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#employersTab');" class="btn btn-primary btn-sm ml10">
+             	<input type="button" value="Skip" onclick="goToSummaryNextTab('#employersTab');" class="btn btn-default btn-sm"> 
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#employersTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>	
 	</form>
@@ -168,6 +170,8 @@
 				$("#popUpVisa").fadeOut(200);
 				$("#CandidateVisaform")[0].reset();
 				$("#candidateVisaId").val('');
+				$('#popUpVisa').find('p.jquery_form_error_message').remove();
+				$("#visa_save_id").removeAttr("disabled");
 			}
 		   	
 		</script>
@@ -197,12 +201,28 @@
 		            $("#visaValidFrom").datepicker("option", "maxDate", dt);
 		        }
 		  });
+		 
+		  var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
 		  $("#searchValueVisa").keyup(function (e) {
 			    if (e.which === 13) {
 			    	searchVisaValue();
 			    }
 			});
+		 
 		  
+		  for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+			})
 		</script>
 <script>
   var visaListCount = '<c:out value ="${visaListCount}"/>';
@@ -213,6 +233,8 @@
 	else{
         $('#visafilled').hide()
 	}
+  $('#visaType').selectpicker('refresh');
+  $('#visaCountry').selectpicker('refresh');
 </script>
 		
 

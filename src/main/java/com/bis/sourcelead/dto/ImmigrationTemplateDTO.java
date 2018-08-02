@@ -36,6 +36,10 @@ public class ImmigrationTemplateDTO extends SearchDTO implements Serializable {
 	
 	@Required(desc ="Petition Type")
 	private String petitionType;
+	
+	private String uuid;
+	
+	private String documentCategory;
 
 	public Long getId() {
 		return id;
@@ -129,6 +133,20 @@ public class ImmigrationTemplateDTO extends SearchDTO implements Serializable {
 		this.petitionType = petitionType;
 	}
 
-	
+	public String getUuid() {
+		return uuid;
+	}
 
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getDocumentCategory() {
+		return documentCategory;
+	}
+
+	public void setDocumentCategory(String documentCategory) {
+		this.documentCategory = documentCategory;
+	}
+	
 }
