@@ -19,14 +19,10 @@
 <div id="recommLoading"></div>
                     <div class="accountsettings-tab">
                     
-                    <div class="tab-content panel-body">
+                    <div class="tab-content panel-body noBar">
                     <div id="emailConfiguredprev" >
                      <div id="ConfigLoading"></div>
-                            <div class="clearfix mb">
-                                <div class="pull-left">
-                                    <h4 id="emailHeading">Email Settings</h4>
-                                </div>
-                            </div>
+                       <div class="clearfix"><h4 class="pull-left" id="emailHeading">Email Settings</h4></div>
                             
             <form id="email_configuration_form"  name="email_configuration_form" method="post">
                      <div class="clearfix row">
@@ -63,7 +59,7 @@
 					             
 		            </div>
 		            
-			<div class="clearfix">
+			<div class="clearfix col-md-10 noPad">
 					<div class="pull-right mb">
 						<input type="hidden" name="id" id="id" value="${emailSceconf.email_UUID}"/>
 							<button type="button" id="save" class="btn btn-primary pull-right" onClick="saveEmailNotification();">Save</button>
@@ -344,10 +340,10 @@ function changeDefaultemailConfig(ele, id) {
     	
     	result = result  +'<div class="popupHead">Add from Email <i class="closePop pull-right popClose" onclick="closeEditNotification();"></i></div>                                                                                                                                                                                             ';
 
-    	result = result  +'<div class="modal-body">                                                                                                                                                                                               ';
+    	result = result  +'<div class="popupContent">                                                                                                                                                                                               ';
     	result = result  +'	                                                                                                                                                                                                                      ';
     	result = result  +'<div class="col-md-12 minHeight">                                                                                                                                                                                      ';
-    	result = result  +'<label>Email<span class="text-danger">&nbsp;*</span></label>                                                                                                                                                           ';
+    	result = result  +'<label>Email <span class="text-danger">&nbsp;*</span></label>                                                                                                                                                           ';
     	result = result  +' <input class="form-control" value="'+email+'" name="email" id="fromMail"  field-name="fromMail" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter EMail" type="text">    ';
     	result = result  +'                                                                                                                                                                                                                       ';
     	result = result  +' </div>                                                                                                                                                                                                                ';
@@ -404,12 +400,12 @@ function changeDefaultemailConfig(ele, id) {
  </script>
   <script>
  function closeEditNotification(){
-	 $(".mash").hide();
+	 $(".mask").hide();
 	 $("#popUpEmailConfigDiv").fadeOut(100);
 
  }
  </script>
- <div id="emailfromMail" class="popupWrap">
+ <div id="emailfromMail" class="popupWrap popupWrapFixed">
    <jsp:include page="addMailPopUp.jsp"></jsp:include>
 </div>
  <script>
