@@ -55,6 +55,7 @@ import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.HrLeaveReportDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
@@ -2550,6 +2551,12 @@ public class LeaveServiceImpl implements LeaveService{
 	public File getDailyWiseLeavePdfFile(ResponseList<LeaveReportView> leaveReportsList,OrgLocations orgLocations) throws Exception
 	{
 		return pdfUtil.createDayWiseLeaveReportPdfTable(leaveReportsList,orgLocations);
+	}
+
+	@Override
+	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromDateToDate(HrLeaveReportDTO hrLeaveReportDTO, Long orgId, Long orgLocationId) throws Exception
+	{
+		return leaveDao.getLeaveReportsOrglocationIdAndFromToDate(hrLeaveReportDTO,orgId,orgLocationId);
 	}
 
 }

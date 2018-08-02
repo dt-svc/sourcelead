@@ -194,7 +194,10 @@
 				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-				<li><a href="daywiseLeaveReport">Daywise Leave Report</a></li>
+				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
+				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
+				<li><a href="leaveReport">Leave Report</a></li>
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
 				<li><a href="leaveBalancesReport">Leave Balances Report</a></li>

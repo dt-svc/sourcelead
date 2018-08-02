@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
+import com.bis.sourcelead.dto.HrLeaveReportDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
@@ -1093,6 +1094,62 @@ public class LeaveDaoImpl implements LeaveDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 		response.setData(leaveReportList);
+		return response;
+	}
+
+
+	@Override
+	@Transactional
+	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(HrLeaveReportDTO hrLeaveReportDTO, Long orgId, Long orgLocationId) throws Exception
+	{
+		OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+		SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+		Date startDate = null;
+		Date endDate = null;
+		java.sql.Date startDateSqlDate = null;
+		java.sql.Date endDateSqlDate = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		startDate=format.parse(hrLeaveReportDTO.getStartDate());
+		endDate=format.parse(hrLeaveReportDTO.getEndDate());
+		startDate = commonUtil.getOrgLocationCurrentDate(orgLoc.getDateFormat(), startDate);
+		endDate = commonUtil.getOrgLocationCurrentDate(orgLoc.getDateFormat(), endDate);
+		startDateSqlDate = new java.sql.Date(startDate.getTime());
+		endDateSqlDate = new java.sql.Date(endDate.getTime());
+		String query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
+		StringBuilder query1 = new StringBuilder();
+		Query queryString = null;
+		Query countQueryString;
+		List<LeaveReportView> leaveReportList = null;
+		ResponseList<LeaveReportView> response = new ResponseList<>();
+		List<Long> countlist = null;
+		queryString = session.createQuery(query);
+		queryString.setLong("orgLocationId", orgLocationId);
+		queryString.setLong("orgId", orgId);
+		queryString.setDate("fromDate", startDateSqlDate);
+		queryString.setDate("toDate", endDateSqlDate);
+		leaveReportList = queryString.list();
+		countQueryString = session.createQuery(("select count(*) " + query));
+		countQueryString.setParameter("orgLocationId", orgLocationId);
+		countQueryString.setParameter("orgId", orgId);
+		countQueryString.setParameter("fromDate", startDateSqlDate);
+		countQueryString.setParameter("toDate", endDateSqlDate);
+		countlist = countQueryString.list();
+		response.setData(leaveReportList);
+		int count = 0;
+		int filteredCount = 0;
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (leaveReportList != null) {
+			List<Long> filteredCountlist = null;
+			filteredCountlist = session.createQuery("select count(*) " + query
+					+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		}
 		return response;
 	}
 }
