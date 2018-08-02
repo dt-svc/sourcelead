@@ -105,6 +105,7 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 				DeductionDTO deductionDTO = new DeductionDTO();
 				deductionDTO.setId(String.valueOf(ad.getId()));
 				deductionDTO.setDeductionType(ad.getDeductionTypeId().getPayrollDeductionType());
+				deductionDTO.setDedSchedule(ad.getDeductionTypeId().getPayrollDeductionType());
 				deductionDTO.setMethod(ad.getDeductionMethod());
 				deductionDTO.setAmount(ad.getDeductionAmount());
 				deductionDTO.setDedAmount(ad.getDeductionAmount().doubleValue());
@@ -122,5 +123,11 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 	public AssociateDeduction findAssociateDeductionById(Long associateDeductionId)
 	{
 		return associateDeductionDao.findAssociateDeductionById(associateDeductionId);
+	}
+
+	@Override
+	public AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId)
+	{
+		return associateDeductionDao.getAsociateDedByUserIdDeductionId(deductionId,userId);
 	}
 }

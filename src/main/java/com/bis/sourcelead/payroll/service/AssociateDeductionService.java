@@ -19,4 +19,6 @@ public interface AssociateDeductionService {
 
 	AssociateDeduction findAssociateDeductionById(Long associateDeductionId);
 
+	AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId);
+
 }
