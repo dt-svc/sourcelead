@@ -313,11 +313,10 @@ var rFlag = false;
 function showMessage(message, type, redirectFlag) {
     rFlag = redirectFlag ? redirectFlag : false;
     $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger") + " span").html(message);
-    $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).show();
+    $(".alert").show();
     $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).addClass('bounceInUp animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
         $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).removeClass('bounceInUp animated');
     });
-     $(".mask").fadeIn(400);
 }
 
 function hideMessage(type) {
@@ -325,7 +324,6 @@ function hideMessage(type) {
          $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).removeClass('bounceOutDown animated');
          $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).hide();
     });
-    $(".mask").fadeOut(400);
     if(rFlag) {
         location.href = "/";
     }

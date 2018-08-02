@@ -1143,6 +1143,7 @@ public class UserRole implements Serializable {
 
 	public void setUserRoleShiftId(BigInteger userRoleShiftId) {
 		this.userRoleShiftId = userRoleShiftId;
+
 	}
 
 	public String getIsExistedOrgGlobalUser() {
@@ -1152,4 +1153,5 @@ public class UserRole implements Serializable {
 	public void setIsExistedOrgGlobalUser(String isExistedOrgGlobalUser) {
 		this.isExistedOrgGlobalUser = isExistedOrgGlobalUser;
 	}
+
 }

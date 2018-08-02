@@ -719,6 +719,11 @@ function preventTabkey(e){
 								</div>
 							 </li> 	
 						   </sec:authorize>
+					
+					   <c:if test="${SourceLeadWeb_isAdmin == true}">
+					  	<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
+                        </c:if>
+
                          
                        <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Tags</a></li>
 					  
@@ -785,7 +790,7 @@ function preventTabkey(e){
   
   <!--  Alert message for Switching Locaction -->
   <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
-    <a href="#" class="loc-alertclose close">&times;</a>
+    <a href="#" class="loc-alertclose closeAlt">&times;</a>
     <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
   </div>
  <!--  Alert message for Switching Locaction -->
@@ -1034,8 +1039,8 @@ function preventTabkey(e){
 <div class="addtAsk_popmask"></div>
 </sec:authorize>
 
-<!--  Theme Switcher div -->
-  <sec:authorize access="hasRole('ROLE_COLOUR_THEME')"> 
+<!--  Theme Switcher div  Commented By Mahesh  -->
+<%--   <sec:authorize access="hasRole('ROLE_COLOUR_THEME')"> 
   <div class="theme-color">
       <span class="icon-theme theme-styels" title="click here">
           <figure class="rotate">
@@ -1051,8 +1056,8 @@ function preventTabkey(e){
       <li class="hidden"><a href="#" class="" id="btn6"><span class="hdr-grey"></span><span class="sidenav-red"></span></a></li>
     </ul>
   </div>
-  </sec:authorize>
-<!--  Theme Swithcer div ends  -->
+  </sec:authorize> --%>
+<!--  Theme Swithcer div ends Commented By Mahesh -->
 
 <!--  Support div -->
  <sec:authorize access="hasRole('ROLE_SUPPORT')"> 
@@ -1947,9 +1952,11 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
   if(type == "invite"){
 	  getTimezonesList();
   }
+
   if(type != "editAssociate"){
     zipcodeMask(address.country,zipCodeId);	
   }
+
 });
 }
 function geolocate(latitudeId,longtitudeId) {
@@ -2024,7 +2031,7 @@ function verifyEmail2() {
 document.onkeydown = function(evt) {
     evt = evt || window.event;
     if (evt.keyCode == 27) {
-        $(".mask, .advancedsearch-mask").hide();
+        $(".mask, .advancedsearch-mask, .location-alert").hide();
         $(".popupWrap, .popupWrapMid, div.cand-advsrch-popup, .remove_user_pop").fadeOut(100);
     }
 };
