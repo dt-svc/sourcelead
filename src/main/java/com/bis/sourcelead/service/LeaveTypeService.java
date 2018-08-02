@@ -24,5 +24,7 @@ public interface LeaveTypeService {
 	public List<LeaveType> getLeaveTypesByTypeList(List<String> typeList, OrgLocations orgLocation);
 
 	public LeaveType getLeaveTypeByLeaveTypeName(String leaveTypeName, OrgLocations orgLocation);
+	
+	List<String> getLeaveTypeNameListByLocationId(Long orgLocationId);
 
 }

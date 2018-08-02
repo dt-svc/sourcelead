@@ -55,7 +55,7 @@ gtag('config', 'UA-115098165-1');
 		
 	    <div class="navbar-header">
 		  <a class="navbar-brand" href="/">
-			<img src="/resources/static-web/images/logo-sourceld.png">
+			<img src="/resources/images/SourceLead-logo.png">
 		  </a>
 		</div>
 

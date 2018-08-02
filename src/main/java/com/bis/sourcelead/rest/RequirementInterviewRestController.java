@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -190,8 +191,7 @@ public class RequirementInterviewRestController {
 			Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			
 			
-	     /*	Work is in progress.
-	        String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+	  /*      String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
 			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 			for (long c = 1; c < maxCount; c++) {
 				if(jsonObj.has(c+"applicant") && !jsonObj.getString(c+"applicant").isEmpty()){

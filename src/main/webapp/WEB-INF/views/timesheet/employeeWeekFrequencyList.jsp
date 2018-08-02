@@ -2,18 +2,21 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- <div class='timeNewSe timeNewSe_a addicon'>
-	<select id='currentTimeFrequency' name='currentTimeFrequency' class='form-control chosen-select' onchange="timesheetEntriesDivByTimeFrequency();">
-		<c:forEach var="tf" items="${employeeTimesheetEntryDetailsDTO.weekFrequencyList}">
-		    <option data-icon='fa fa-calendar' ${tf.key == employeeTimesheetEntryDetailsDTO.currentTimeFrequency ? "selected='selected'":"" } value="${tf.key}">${tf.value}</option>
-		</c:forEach>
-	</select>
- </div>
- 
- <div id="timesheetDivByWeekFrequency">
-    <jsp:include page="employeeTimeSheetSubmission.jsp"></jsp:include>
- </div> 
- 
+
+
+    <c:if test="${!empty employeeTimesheetEntryDetailsDTO.weekFrequencyList}">
+	 <div class='timeNewSe timeNewSe_a addicon'>
+		<select id='currentTimeFrequency' name='currentTimeFrequency' class='form-control chosen-select' onchange="timesheetEntriesDivByTimeFrequency();">
+			<c:forEach var="tf" items="${employeeTimesheetEntryDetailsDTO.weekFrequencyList}">
+			    <option data-icon='fa fa-calendar' ${tf.key == employeeTimesheetEntryDetailsDTO.currentTimeFrequency ? "selected='selected'":"" } value="${tf.key}">${tf.value}</option>
+			</c:forEach>
+		</select>
+	 </div>
+	 </c:if> 
+	 <div id="timesheetDivByWeekFrequency">
+	    <jsp:include page="employeeTimeSheetSubmission.jsp"></jsp:include>
+	 </div> 
+
  <script>
 	function timesheetEntriesDivByTimeFrequency(){ 
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
@@ -36,8 +39,8 @@
 <script>
 $(document).ready(function(){
 	if('${NORECORDSFOUND}' == "true"){
-		$("#timesheetEntriesDiv").empty();
-  	  $("#timesheetEntriesDiv").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
+		$("#timesheetDivByWeekFrequency").empty();
+  	  $("#timesheetDivByWeekFrequency").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
 	 }
 });
 </script>

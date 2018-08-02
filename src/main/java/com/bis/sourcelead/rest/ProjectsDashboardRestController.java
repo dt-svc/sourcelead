@@ -73,6 +73,7 @@ import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -324,14 +325,43 @@ public class ProjectsDashboardRestController {
 				    }
 			    }
 			    
+			    
+				 Set<ExpenseProjectApproverHierarchy> expenseApproverList =  projectClients.getExpenseProjectApproverHierarchyList();
+				    if(expenseApproverList != null && !expenseApproverList.isEmpty()) {
+					 	for(ExpenseProjectApproverHierarchy approverHierarchy : expenseApproverList){
+					    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
+					    		projectsDTO.setExpenseApprover1(approverHierarchy.getApproverUserId().getId().intValue());
+					    		projectsDTO.setExpenseApprover1Name(approverHierarchy.getApproverUserId().getFullName());
+					    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
+					    		if(null != userRole){
+					    			projectsDTO.setExpenseApproverLevel1UserType(userRole.getUserType());
+					    		}
+					    		StringBuilder projectApprover = new StringBuilder();
+					    		projectsDTO.setLevel1ExpenseApprover(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+					    	}
+					    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
+					    		projectsDTO.setExpenseApprover2(approverHierarchy.getApproverUserId().getId().intValue());
+					    		projectsDTO.setExpenseApprover2Name(approverHierarchy.getApproverUserId().getFullName());
+					    		StringBuilder projectApprover = new StringBuilder();
+					    		projectsDTO.setLevel2ExpenseApprover(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+					    	}
+					    	
+					    }
+				    }
+			    
+			    
 			    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 			    List<User> globalUserList = userService.getTabAccessGlobalOwnersByOrgIdAndTabId(loginOrgLocations.getId(),org.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			 
 			    List<User> level1ApproversList = new CopyOnWriteArrayList<>();
+			    List<User> level1ExpenseApproversList = new CopyOnWriteArrayList<>();
 				if(userList != null && !userList.isEmpty()) {
 					level1ApproversList.addAll(userList);
+					level1ExpenseApproversList.addAll(userList);
 				}
 				if(globalUserList != null && !globalUserList.isEmpty()) {
 					level1ApproversList.addAll(globalUserList);
+					level1ExpenseApproversList.addAll(globalUserList);
 				}
 				HashMap<Long,User> userMap = new HashMap<>();
 			    List<UserDTO> userDTOList = new ArrayList<>();
@@ -354,6 +384,7 @@ public class ProjectsDashboardRestController {
 				    		}
 						}else {
 							level1ApproversList.remove(mrguser);
+							level1ExpenseApproversList.remove(mrguser);
 							continue;
 						}
 			    		
@@ -361,6 +392,7 @@ public class ProjectsDashboardRestController {
 			    	}
 			    }
 			    projectsDTO.setManagersList(userDTOList);
+			    projectsDTO.setExpenseApproversList(userDTOList);
 			    
 			    if(projectsDTO.getManager1() != 0){
 			    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getManager1()),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
@@ -403,6 +435,52 @@ public class ProjectsDashboardRestController {
 					    projectsDTO.setManagersListwithoutManager1(mrguserDTOList);
 			    }
 			    
+			    
+			    
+			    if(projectsDTO.getExpenseApprover1() != 0){
+			    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getExpenseApprover1()),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			    	  List<User> globalUserListwithoutmaneger1 = userService.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getExpenseApprover1()),org.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			    	  List<UserDTO> mrguserDTOList = new ArrayList<>();
+			    	  List<User> managersListwithoutmaneger1 = new CopyOnWriteArrayList<>();
+			    	  if(userListwithoutmaneger1 != null && !userListwithoutmaneger1.isEmpty()) {
+			    		  managersListwithoutmaneger1.addAll(userListwithoutmaneger1);
+			    	  }
+			    	  
+			    	  if(globalUserListwithoutmaneger1 != null && !globalUserListwithoutmaneger1.isEmpty()) {
+			    		  managersListwithoutmaneger1.addAll(globalUserListwithoutmaneger1);
+			    	  }
+			    	  HashMap<Long,User> userMap2 = new HashMap<>();
+					    if(managersListwithoutmaneger1 != null && managersListwithoutmaneger1.size() > 0) {
+					    	for(User mrguser2 : managersListwithoutmaneger1) {
+					    		
+					    		User tempUser = userMap2.get(mrguser2.getId());
+					    		if(tempUser == null) {
+					    			userMap2.put(mrguser2.getId(),mrguser2);
+					    			UserDTO userDTO = new UserDTO();
+						    		userDTO.setId(mrguser2.getId());
+						    		userDTO.setName(mrguser2.getFullName());
+						    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
+						    		if(roleType != null) {
+						    			userDTO.setUserType(roleType.getUserType());
+						    		}else {
+						    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(mrguser2.getId());
+						    			userDTO.setUserType(primaryRole.getUserType());
+						    		}
+						    		
+						    		mrguserDTOList.add(userDTO);
+					    		}else {
+					    			mrguserDTOList.remove(mrguser2);
+									continue;
+					    		}
+					    		
+					    	}
+					    }
+					    projectsDTO.setExpensesApproversListwithoutApprover1(mrguserDTOList);
+			    }
+			    
+			    projectsDTO.setIsProjectForExpenses(projectClients.getProjectId().getIsProjectForExpenses());
+			    projectsDTO.setIsProjectForTimeSheets(projectClients.getProjectId().getIsProjectForTimeSheets());
+			    
 		 }
 		 
 		 return projectsDTO;
@@ -444,6 +522,7 @@ public class ProjectsDashboardRestController {
 		 	  }
 				 Integer projectMembersCount  = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
 				 ProjectDetails.setProjectMembersCount(projectMembersCount.toString());
+				
 		   }
 		 
 		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
@@ -533,6 +612,7 @@ public class ProjectsDashboardRestController {
 		     if(projectClientsList != null){
 		    	 for(ProjectClients projectClients : projectClientsList){
 		    		 if(projectClients.getOrgLocationsId().getId().equals(loginOrgLocation.getId())){
+		    			
 		    			 Set<ProjectApproverHierarchy> approverHierarchiesList =  projectClients.getProjectApproverHierarchyList();
 			    		 if(approverHierarchiesList != null){
 			    			 Set<ProjectApproverHierarchy> hirearchySet = new LinkedHashSet<ProjectApproverHierarchy>();
@@ -541,6 +621,17 @@ public class ProjectsDashboardRestController {
 				    		 }
 			    			 projects.setApproverHierarchyList(hirearchySet);
 			    		 }
+			    		 
+			    		 Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchiesList =  projectClients.getExpenseProjectApproverHierarchyList();
+			    		 if(expenseApproverHierarchiesList != null){
+			    			 Set<ExpenseProjectApproverHierarchy> expenseHirearchySet = new LinkedHashSet<ExpenseProjectApproverHierarchy>();
+			    			 for(ExpenseProjectApproverHierarchy hierarcy : expenseApproverHierarchiesList){
+			    				 expenseHirearchySet.add(hierarcy);
+				    		 }
+			    			 projects.setExpenseApproverHierarchyList(expenseHirearchySet);
+			    		 }
+			    		 
+			    		 
 		    		 }
 		    	 }
 		     }

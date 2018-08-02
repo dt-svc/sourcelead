@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -146,6 +148,8 @@ public class ProjectsController {
 	@Autowired
 	UserRoleService userRoleService;
 	
+	 @Autowired
+	 private SourceleadTagsService sourceleadTagsService;
 	
 	 protected boolean isNullOrEmpty(String str)
 	 {
@@ -237,7 +241,6 @@ public class ProjectsController {
 	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
 	 @RequestMapping(value = "/clientProject")
 		public ModelAndView clientProject(HttpServletRequest request) throws Exception {
-		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    
 				ModelAndView model = new ModelAndView();
@@ -251,24 +254,9 @@ public class ProjectsController {
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 					
-					List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId());
-					List<OrgRelations> clientList = new ArrayList<>();
-					if(clientsList != null & clientsList.size() > 0) {
-						for(OrgRelations orgRelations : clientsList) {
-							OrgLocations clientOrgLocations = null;
-							if(orgRelations.getLocationId().getId().equals(loginOrgLocations.getId())) {
-								clientOrgLocations = orgRelations.getResponderLocationId();
-							}else {
-								clientOrgLocations = orgRelations.getLocationId();
-							}
-							
-							if(StringUtils.isNotBlank(clientOrgLocations.getOrg().getOrgType()) && clientOrgLocations.getOrg().getOrgType().equalsIgnoreCase("Guest")) {
-								clientList.add(orgRelations);
-							}
-							
-						}
-					}
-					model.addObject("clientsList", clientList);
+					List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(loginOrgLocations.getId());
+				    model.addObject("clientsList", orgClientList);
+					
 					model.addObject("sourceleadUrl", sourceleadUrl);
 					model.setViewName("project/clientProject");
 					return model;
@@ -440,6 +428,9 @@ public class ProjectsController {
 				     List<SourceleadSectionDTO> sectionsProjectTsk  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionIDProjectTask.getId(),orgLocations.getId());
 					 model.addObject("sourceleadSectionListForProjectTask",sectionsProjectTsk);
 					 
+					 List<String> taskTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.TASKS.toString(), orgLocations.getId());
+				     model.addObject("taskTagsList", taskTagsList);
+				        
 					model.setViewName("project/projectSummary");
 				}else {
 					model.setViewName("registration/persmissionDenied");

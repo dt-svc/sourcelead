@@ -36,6 +36,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -785,6 +786,23 @@ public class ProjectPlanningRestController {
 										projectApproverHierarchyList.add(pah);
 										projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
 										
+										//prepare Project Expense ApproverHierarchy
+										Set<ExpenseProjectApproverHierarchy> projectExpenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+										ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+										eah.setProjectId(projectPlanningRequest.getProjectId());
+										eah.setProjectClientsId(projectClients);
+										
+										if(cand.getOrgLocationId().getUser() != null) {
+											eah.setApproverUserId(cand.getOrgLocationId().getUser());
+										}else {
+											OrgSpoc orgSpoc1 = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+											eah.setApproverUserId(orgSpoc1.getVendorUser());
+										}
+										eah.setLevel(1);
+										eah.setStatus("1");
+										projectExpenseApproverHierarchyList.add(eah);
+										projectClients.setExpenseProjectApproverHierarchyList(projectExpenseApproverHierarchyList);
+										
 										projectClientService.storeProjectClients(projectClients);
 									}
 									if(cand.getConsultantUser() != null){
@@ -869,6 +887,16 @@ public class ProjectPlanningRestController {
 							projectApproverHierarchyList.add(pah);
 							projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
 							
+							//prepare Project Expense ApproverHierarchy
+							Set<ExpenseProjectApproverHierarchy> projectExpenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+							ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+							eah.setProjectId(projectPlanningRequest.getProjectId());
+							eah.setProjectClientsId(projectClients);
+							eah.setApproverUserId(candidate.getOrgLocationId().getUser());
+							eah.setLevel(1);
+							eah.setStatus("1");
+							projectExpenseApproverHierarchyList.add(eah);
+							projectClients.setExpenseProjectApproverHierarchyList(projectExpenseApproverHierarchyList);
 							projectClientService.storeProjectClients(projectClients);
 						}
 						ProjectMembers projectMembers = null;

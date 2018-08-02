@@ -145,6 +145,10 @@ public class RequirementSubmissionTemplateFields implements Serializable{
     @Transient
     @JsonProperty
     private String submissionJsonString;
+    
+    @Transient
+    @JsonProperty
+    private String externalInterviewerUUID;;
 
 
 
@@ -443,5 +447,13 @@ public class RequirementSubmissionTemplateFields implements Serializable{
 
 	public void setSubmissionJsonString(String submissionJsonString) {
 		this.submissionJsonString = submissionJsonString;
+	}
+
+	public String getExternalInterviewerUUID() {
+		return externalInterviewerUUID;
+	}
+
+	public void setExternalInterviewerUUID(String externalInterviewerUUID) {
+		this.externalInterviewerUUID = externalInterviewerUUID;
 	}
 }

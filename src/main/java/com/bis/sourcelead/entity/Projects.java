@@ -190,6 +190,12 @@ public class Projects implements Serializable{
     
     @Column(name = "IS_TASK_COMMENTS_REQUIRED")
    	private String isTaskCommentsRequired;
+    
+    @Column(name="IS_PROJECT_FOR_TIMESHEETS")
+    private String isProjectForTimeSheets;
+    
+    @Column(name="IS_PROJECT_FOR_EXPENSES")
+    private String isProjectForExpenses;
 	
      
     
@@ -332,6 +338,10 @@ public class Projects implements Serializable{
     Set<ProjectApproverHierarchy>  approverHierarchyList;
     
     @Transient
+    @JsonProperty
+    Set<ExpenseProjectApproverHierarchy>  expenseApproverHierarchyList;
+    
+    @Transient
     private String employeeStartDateStr;
     
     @Transient
@@ -366,6 +376,14 @@ public class Projects implements Serializable{
     @JsonProperty
     Set<ProjectDocuments>  projectDocumentsList;
     
+    @Transient
+    @JsonProperty
+    private String projectsTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
     
     @Column(name = "GENERATED_ID")
 	private String generatedId;
@@ -1134,6 +1152,45 @@ public class Projects implements Serializable{
 		this.sharedClientOrgLocationId = sharedClientOrgLocationId;
 	}
 
+
+	public Set<ExpenseProjectApproverHierarchy> getExpenseApproverHierarchyList() {
+		return expenseApproverHierarchyList;
+	}
+
+	public void setExpenseApproverHierarchyList(Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList) {
+		this.expenseApproverHierarchyList = expenseApproverHierarchyList;
+	}
+
+	public String getIsProjectForTimeSheets() {
+		return isProjectForTimeSheets;
+	}
+
+	public void setIsProjectForTimeSheets(String isProjectForTimeSheets) {
+		this.isProjectForTimeSheets = isProjectForTimeSheets;
+	}
+
+	public String getIsProjectForExpenses() {
+		return isProjectForExpenses;
+	}
+
+	public void setIsProjectForExpenses(String isProjectForExpenses) {
+		this.isProjectForExpenses = isProjectForExpenses;
+	}
 	
-	
+	public String getProjectsTags() {
+		return projectsTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setProjectsTags(String projectsTags) {
+		this.projectsTags = projectsTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
 }
