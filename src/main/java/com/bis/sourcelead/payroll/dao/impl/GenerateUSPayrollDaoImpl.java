@@ -39,7 +39,8 @@ public class GenerateUSPayrollDaoImpl implements GenerateUSPayrollDao{
 	@Transactional
 	public PaysheetFrequency getPayrollData(GenerateUSPayrollDTO generateUSPayrollDTO, OrgLocations orgLocation, User loginUser)
 	{
-		UserGroup userGroup = userGroupDao.findUserGroupById(generateUSPayrollDTO.getGroupId());
+		String[] groupUUID = generateUSPayrollDTO.getGroupId().split(",");
+		UserGroup userGroup = userGroupDao.findUserGroupById(groupUUID[0]);
 		String dates[] = generateUSPayrollDTO.getPayPeriod().split(",");
 		Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
 		Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));

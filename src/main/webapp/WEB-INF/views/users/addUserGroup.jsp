@@ -27,7 +27,7 @@
                             </div>
                         </div>
                 
-                        <div class="col-md-12">
+      <%--                   <div class="col-md-12">
                             <div class="popTabl mb clearfix">
                                 
                                 <div class="row">
@@ -67,7 +67,7 @@
                                     </tr>    
                                 </table>
                             </div>
-                        </div>
+                        </div> --%>
           	         <div class="col-md-6">
 							<label>Pay Frequencey<span class="text-danger">*</span> </label>
 							<div class="clearfix" >
@@ -145,13 +145,13 @@ function validateGroupName(){
 
  <script type="text/javascript">
  function createUserGroup() {
-	 var  arr = [] ;   
-	 $("#userId option").each(function()
-			 {
-			     arr.push($(this).val());
-			 });
+// 	 var  arr = [] ;   
+// 	 $("#userId option").each(function()
+// 			 {
+// 			     arr.push($(this).val());
+// 			 });
 	 if ($('#add_user_group_form').validate(false, validationSettings)){ 
-		 if(arr != null && arr != '' && arr != 'undefined'){
+// 		 if(arr != null && arr != '' && arr != 'undefined'){
 
 			    var formData = getFormData("add_user_group_form");
 				$("#save_user_group_button").attr("disabled", "disabled");
@@ -160,7 +160,7 @@ function validateGroupName(){
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/createUserGroup?"+tokenParamName+"="+tokenValue+"&associateIds="+arr,
+					url : sourceleadUrl+"/createUserGroup?"+tokenParamName+"="+tokenValue,
 					success : function(result) {
 						 if (result && result.response === "INVALID_DATA") {
 			                    $("#save_user_group_button").removeAttr("disabled");
@@ -185,11 +185,11 @@ function validateGroupName(){
 						
 					},
 				});
-		 }else{
-			 $('#userErrorMsgDic').find('p.jquery_form_error_message').remove();
-			  $("#userId").after("<p class='jquery_form_error_message'>Associate Required</span>");
+// 		 }else{
+// 			 $('#userErrorMsgDic').find('p.jquery_form_error_message').remove();
+// 			  $("#userId").after("<p class='jquery_form_error_message'>Associate Required</span>");
 			 
-		 }
+// 		 }
 	        return true;
 	  }else{
 		return false;

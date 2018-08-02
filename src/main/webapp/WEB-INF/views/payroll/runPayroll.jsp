@@ -59,7 +59,7 @@ function approvePayrollDiv(){
 			<select id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
 				<option value="">--Select User Group--</option>
                     <c:forEach var="ug" items="${userGroupList}">
-					<option value="${ug.groupUUID}">${ug.groupName}</option>
+					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
 				</c:forEach>
 			</select>
 			</div>

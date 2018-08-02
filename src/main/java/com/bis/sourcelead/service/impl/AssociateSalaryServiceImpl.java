@@ -276,4 +276,14 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	public AssociatePayItem saveUpdatedPayItem(AssociatePayItem associatePayItem) {
 		return associateSalaryDao.saveUpdatedPayItem(associatePayItem);
 	}
+
+	@Override
+	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation,long groupId) {
+		
+		List<AssociateSalary> list = associateSalaryDao.getAssociateSalaryListByGroupId(orgLocation,groupId);
+		for(AssociateSalary sal : list) {
+			sal.setUser(sal.getUserId().getId());
+		}
+		return list;
+	}
 }
