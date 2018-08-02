@@ -88,7 +88,8 @@ public class InvoiceDTO extends SearchDTO {
     private String paymentAccount;
     private String invoiceUUID;
     private String count;
-
+    private String tags;
+    
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
 	}
@@ -512,6 +513,15 @@ public class InvoiceDTO extends SearchDTO {
 		this.count = count;
 	}
 
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
 	public String getOrgRelationId() {
 		return orgRelationId;
 	}
@@ -520,4 +530,5 @@ public class InvoiceDTO extends SearchDTO {
 		this.orgRelationId = orgRelationId;
 	}
 	
+
 }

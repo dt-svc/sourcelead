@@ -19,6 +19,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		getprojectTaskMembersByProjectId(projectId);
 		getSubTaskList();
 		getSavedTaskDetails();
+		getProjectTaskTagsList();
 		maskme();
 		var taskType = '${taskStatus}';
 		if(taskType == "Bug"){
@@ -153,6 +154,25 @@ var sourceleadUrl = '${sourceleadUrl}';
 	          </div>
 	          
 	          </div>
+	          
+	          <div class="cearfix">
+				<div id="tagClientId"></div>
+				  <div class="newTagsWrap">
+					    <ul class="clearfix tagsWrap tagsWrapBor">
+							<select multiple class="chosen-select form-control" name="tagName" id="projectTaskTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
+							</select>
+						</ul>
+						<div class="clearfix"></div>
+				  </div>
+			 </div>
+			 <div class="success_pop tagStyles" id="addTaskTagAlert">
+					<i class="fa fa-check-circle"></i>
+			   		<span></span>
+			   </div>
+			   <div class="remove_pop tagStyles" id="deleteTaskTagAlert">
+					<i class="fa fa-times"></i>
+			   		<span></span>
+			   </div>
           
               <div class="col-md-12 alert-custom" data-toggle="collapse" href="#collapse2" onclick="description(${projectTask.id});">
                 <div class="alert alert-info row">  
@@ -2166,5 +2186,119 @@ function getCustomDependentFieldProjectSubTask(sectionId){
 
 
 <!-- ============================ Comments related Script End's ========================================== -->
+
+
+<!--  ======================== Tags Related Scripts written by Laxman Start =============================== -->
+ <script>
+var select, chosen;
+select = $("#projectTaskTagName");
+select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosen = select.data('chosen');
+chosen.search_field.on('keyup', function(e)
+{
+	var anyKeyword = this.value.replace(",","");
+    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+    {
+    	var par = this.parent;
+        var option = $("<option>").val(anyKeyword).text(anyKeyword);
+        select.append(option);
+        select.find(option).prop('selected', true);
+        $("#projectTaskTagName option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#projectTaskTagName").trigger("chosen:updated");
+		saveTaskTags("add");
+    }
+});
+
+$('.chosen-select').chosen().on('change', function(evt, params) {
+	if (params.selected && params.selected != undefined) {
+		saveTaskTags("add");
+	}
+	if (params.deselected && params.deselected != undefined) {
+		saveTaskTags("delete");
+	}
+	
+});
+$("#projectTaskTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+</script>
+<script>
+function getProjectTaskTagsList(){
+	var projectTaskId = "${projectTask.id}";
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getTaskTags?"+tokenParamName+"="+tokenValue+"&projectTaskId="+projectTaskId,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.taskTags != null && json.taskTags != 'undefined' && json.taskTags != '') {
+	                var res = [];
+	                res = json.taskTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            $("#projectTaskTagName").empty();
+            $("#projectTaskTagName").append(result);
+            $("#projectTaskTagName").chosen().trigger("chosen:updated")
+        },
+	});
+}
+</script>
+<script>
+function saveTaskTags(type){
+	var projectTaskId = "${projectTask.id}";
+	 var tagName = $("#projectTaskTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByProjectTaskId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectTaskId="+projectTaskId+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByProjectTaskId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectTaskId="+projectTaskId+"&tagName="+""
+	 } 
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup("Tag added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tag deleted successfully");
+        		}
+        		getProjectTaskTagsList(clientId);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+function showSuccessStatusPopup(status) {
+	$("#addTaskTagAlert").css("display","block");
+	$("#addTaskTagAlert span").html(status);
+    $('#addTaskTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteTaskTagAlert").css("display","block");
+	$("#deleteTaskTagAlert span").html(status);
+    $('#deleteTaskTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+<!--  ======================== Tags Related Scripts written by Laxman Ends =============================== -->
+
 
  <jsp:include page="../masterFooter.jsp" />	

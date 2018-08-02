@@ -43,6 +43,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.rest.ContractRestController;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
@@ -55,6 +56,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -128,6 +130,8 @@ public class ContractController {
 	@Autowired
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
 	
+	@Autowired
+	private SourceleadTagsService sourceleadTagsService;
 	/**
 	 * display contract template list page
 	 * @return model
@@ -185,7 +189,9 @@ public class ContractController {
 		if (!isNullOrEmpty(contractType)) {
 			model.addObject("contractType", contractType);
 		}
-
+		List<String> contractTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.PROJECTS.toString(), orgLocation.getId());
+        model.addObject("contractTagsList", contractTagsList);
+        
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("staticPath", staticPath);
 		model.addObject("contractsCount", contractsCount);

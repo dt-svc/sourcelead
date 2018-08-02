@@ -137,6 +137,10 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 							String newOld = getCellValueAsString(row.getCell(12), fileName);
 							invoiceData.setOldNew(newOld);
 						}
+						if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
+							String payRate = getCellValueAsString(row.getCell(13), fileName);
+							invoiceData.setPayRate(payRate);
+						}
 						invoiceData.setCreatedBy(user.getUserCode());
 						invoiceData.setCreatedDate(new Date());
 						invoiceData.setUpdatedBy(user.getUserCode());
@@ -184,7 +188,8 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
                 || row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString()) 
                 || row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())
                 || row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString()) 
-                || row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+                || row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())
+		    	|| row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())){
 
 			return true;
 		}
@@ -317,5 +322,11 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 	public int getInvoiceDataVersionByOrgLocationId(Long orgLocationId)
 	{
 		return invoiceDataDao.getInvoiceDataVersionByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public ResponseList<InvoiceData> getAllEmployeeInvoiceDetailsByEmpIdAndOrgLocationId(Long orgLocationId, Long userId)
+	{
+		return invoiceDataDao.getAllEmployeeInvoiceDetailsByEmpIdAndOrgLocationId(orgLocationId,userId);
 	}
 }
