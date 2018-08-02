@@ -65,7 +65,7 @@
 						</div>
 					</div>
 					<div class="clearfix"></div>
-					<div class="col-md-10">
+					<div class="col-md-11">
 					<c:set var="sectionCount" value="0"></c:set>
 					<c:set var="sectionItemCount" value="0"></c:set>
 						<c:forEach items="${form.sourceleadTaxSectionList}" var="section">
@@ -80,6 +80,7 @@
 											<th>Max Limit</th>
 											<th>Description</th>
 											<th>Declared Amount</th>
+											<th>Comment</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -95,8 +96,12 @@
 												<td>${sectionItem.description != null && sectionItem.description != "" ? sectionItem.description : "--NA--"}</td>
 												<td>
 													<input type="text" class="form-control input-sm" name="submissionItemList[${sectionItemCount}].amount"
-													placeholder='Enter Amount' field-name='Amount' value="${sectionItemCount}"
+													placeholder='Enter Amount' field-name='Amount' value="0"
 													data-validation='required validate_float'>
+												</td>
+												<td>
+													<input type="text" class="form-control input-sm" name="submissionItemList[${sectionItemCount}].comment"
+													placeholder='Enter Comment' field-name='Comment'>
 												</td>
 											</tr>
 											<c:set var="sectionItemCount" value="${sectionItemCount + 1}"></c:set>

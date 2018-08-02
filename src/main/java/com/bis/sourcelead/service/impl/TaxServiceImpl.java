@@ -745,6 +745,7 @@ public class TaxServiceImpl implements TaxService {
 						itemObject.put("maxLimit", submissionItemDTO.getMaxLimit());
 						itemObject.put("amount", submissionItemDTO.getAmount());
 						itemObject.put("description", submissionItemDTO.getDescription());
+						itemObject.put("comment", submissionItemDTO.getComment());
 						itemArray.put(itemObject);
 					}
 				}

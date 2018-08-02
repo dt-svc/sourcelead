@@ -177,6 +177,7 @@ function refreshDocumentInputIndexes() {
 
 function refreshDocumentRow(ele) {
 	$(ele).parents("tr").find("input").val("");
+	$(ele).parents("tr").find("input[data-name='updateFile']").val("false");
 	$(ele).parents("tr").find("p").remove();
 	$(ele).parents("tr").find(".uploadedFiles").html("");
 	$(ele).parents("tr").find(".fa-refresh").addClass("disableBtn");
@@ -196,7 +197,6 @@ function removeDocumentRow(ele) {
 		var documentRemoveIds = $("#documentRemoveIds").val();
 		$("#documentRemoveIds").val(documentRemoveIds + (documentRemoveIds === "" ? "" : ",") + documentId);
 	}
-	alert("Doc ID : " + $("#documentRemoveIds").val() + " <> Attch ID : " + $("#attachmentRemoveIds").val());
 	refreshDocumentInputIndexes();
 }
 
@@ -217,7 +217,6 @@ function removeAttachment(ele) {
 			$("#documentRemoveIds").val(documentRemoveIds + (documentRemoveIds === "" ? "" : ",") + documentId);
 		}
 	}
-	alert("Doc ID : " + $("#documentRemoveIds").val() + " <> Attch ID : " + $("#attachmentRemoveIds").val());
 }
 
 function approveOrRejectForm(formId, status) {

@@ -8749,11 +8749,17 @@ table.table-itdeclaration tr th, table.table-itdeclaration tr td  {
 	text-align: left; border-bottom: 1px solid #ddd;
 	padding:10px; vertical-align: middle;
 }
-table.table-itdeclaration tr td:nth-child(1) {
-	width: 380px;
+table.table-itdeclaration tr td {
+	width: 100px;
 }
-table.table-itdeclaration tr td:nth-child(2) {
-	width: 300px;
+table.table-itdeclaration tr td:nth-child(1) {
+	width: 200px;
+}
+table.table-itdeclaration tr td:nth-child(3) {
+	width: 150px;
+}
+table.table-itdeclaration tr td:nth-child(5) {
+	width: 180px;
 }
 .attchments .btn-primary {
  background-color: #42CDAD !important; border-color: #42CDAD !important; border-radius: 4px;
@@ -8812,7 +8818,7 @@ display: inline-block; width: 100%; clear:both;
 }
 /* forms edit element styles */
 .editElementDiv {
-	min-height: 25px; position: relative; transition: 0.3s ease-in-out;
+	min-height: 25px; position: relative; transition: 0.3s ease-in-out; white-space: normal;
 }
 .editElementDiv .edit-element {
 	float: left; width: 90%;

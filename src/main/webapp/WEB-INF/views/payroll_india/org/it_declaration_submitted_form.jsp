@@ -64,7 +64,7 @@
 						</div>
 					</div>
 					<div class="clearfix"></div>
-					<div class="col-md-10">
+					<div class="col-md-11">
 						<c:set var="sectionCount" value="0"></c:set>
 						<c:set var="sectionItemCount" value="0"></c:set>
 						<c:forEach items="${form.submissionItems}" var="submissionItem">
@@ -78,6 +78,7 @@
 										<th>Max Limit</th>
 										<th>Description</th>
 										<th>Declared Amount</th>
+										<th>Comment</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -95,6 +96,10 @@
 												<input ${viewForm ? "disabled='disabled'" : ""} type="text" class="form-control input-sm" name="submissionItemList[${sectionItemCount}].amount"
 												placeholder='Enter Amount' field-name='Amount' value="${submissionItem.get('items').getJSONObject(index).getString('amount')}"
 												data-validation='required validate_float'>
+											</td>
+											<td>
+												<input ${viewForm ? "disabled='disabled'" : ""} type="text" class="form-control input-sm" name="submissionItemList[${sectionItemCount}].comment"
+												placeholder='Enter Comment' field-name='Comment' value="${submissionItem.get('items').getJSONObject(index).getString('comment')}">
 											</td>
 										</tr>
 										<c:set var="sectionItemCount" value="${sectionItemCount + 1}"></c:set>
@@ -137,8 +142,8 @@
 														<input name="documentList[${documentCount}].name" data-name="documentName" type="hidden" value="${document.name}">
 														<input name="documentList[${documentCount}].updateFile" data-name="updateFile" type="hidden" value="false"/>
 														<%-- <input name="documentList[${documentCount}].fileNames" data-name="documentFileNames" type="hidden"> --%>
-														<input ${viewForm ? "disabled='disabled'" : ""} value="${document.name}" data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
-															data-validation='required' onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
+														<input ${viewForm ? "disabled='disabled'" : ""} value="${document.name}" data-name="docName" class="form-control input-sm" placeholder="Enter Document Name"
+															 onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
 													</td>
 													<td>
 														<c:if test="${!viewForm}">
@@ -150,7 +155,7 @@
 																				onchange="fileUploadEvent(this)" type="file" data-index="${documentCount}">
 																		</span>
 																	</label>
-																	<input class="form-control" readonly="readonly" field-name='Document File' data-validation='required'
+																	<input class="form-control" readonly="readonly" data-name='fileName'
 																		id="uploadFile${documentCount}" placeholder="Select File(s)" type="text" value="${document.attachmentList.size()} files selected">
 																</div>
 															</div>
@@ -193,8 +198,8 @@
 													<div style="display: none;" class="attachments" data-index="0"></div>
 													<input name="documentList[0].name" data-name="documentName" type="hidden">
 													<input name="documentList[0].updateFile" data-name="updateFile" type="hidden" value="false"/>
-													<input ${viewForm ? "disabled='disabled'" : ""} data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
-														data-validation='required' onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
+													<input ${viewForm ? "disabled='disabled'" : ""} data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" 
+														 onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
 												</td>
 												<td>
 													<div class="clearfix attchments">
@@ -208,7 +213,7 @@
 																	</span>
 																</label>
 															</c:if>
-															<input class="form-control" readonly="readonly" field-name='Document File' data-validation='required'
+															<input class="form-control" readonly="readonly" data-name='fileName'
 																id="uploadFile1" placeholder="Select File(s)" type="text">
 														</div>
 													</div>
