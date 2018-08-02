@@ -54,9 +54,7 @@ gtag('config', 'UA-115098165-1');
 	  <div class="container-fluid">
 		
 	    <div class="navbar-header">
-		  <a class="navbar-brand" href="/">
-			<img src="/resources/images/SourceLead-logo.png">
-		  </a>
+		  <a class="navbar-brand" href="/"><img src="/resources/images/SourceLead-logo.png"></a>
 		</div>
 
 		<!-- Mobile Nav -->

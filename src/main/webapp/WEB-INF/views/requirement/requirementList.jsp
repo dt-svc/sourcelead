@@ -12,8 +12,6 @@
      1.usage     : onclick on requirementList() ; 
      
 --%>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tag-it/2.0/css/jquery.tagit.css"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tag-it/2.0/css/tagit.ui-zendesk.css"></script>
 <script>
 function clearList(){
 	location.reload();

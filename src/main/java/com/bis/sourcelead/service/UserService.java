@@ -243,6 +243,8 @@ public interface UserService  {
 
 	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 
+	User getUserbyConsultantUserId(Long consultantUserId);
+
 }	
 		
 	
