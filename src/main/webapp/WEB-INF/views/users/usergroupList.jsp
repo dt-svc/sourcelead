@@ -141,7 +141,7 @@ function addbatches(groupUUID){
 	$.get(sourceleadUrl+"/addUserGroup?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID,  function(result) {
 		$("#addUserGroupFormDiv").empty();
 		$("#addUserGroupFormDiv").append(result);
-		getUsersByDepartment();
+// 		getUsersByDepartment();
 		$(".popupWrap, .mask").fadeIn();
 	});
 }
@@ -227,7 +227,7 @@ function getUserGroupList(url){
         result = result + '<tr>';
 		result = result + '<th>Group Id</th>';
 		result = result + '<th>Group Name</th>';
-		result = result + '<th>No.Of Associates</th>';
+// 		result = result + '<th>No.Of Associates</th>';
 		result = result + '<th>Pay Frequency</th>';
 		result = result + '<th>Action</th>';
 		result = result + '</tr>';
@@ -256,7 +256,7 @@ function userGroupPaginationFun(url){
         "columns": [
             { "data": "groupId" },
             { "data": "groupName"},
-            { "data": "numOfAssociates"},
+//             { "data": "numOfAssociates"},
             { "data": "payFrequency" },
             { "data": "Action"}
         ],
@@ -279,7 +279,7 @@ function userGroupPaginationFun(url){
 	              return result;
               		
               }
-	          },{
+	          },/* {
             "targets": colIndex++,
             "data": "numOfAssociates",
             "sortable": false,
@@ -288,7 +288,7 @@ function userGroupPaginationFun(url){
 					 result = result + ' <td><div  class="tblminwidth-100">'+opt.numOfAssociates+'</div></td>';
             return result;
             }
-          }, {
+          }, */ {
               "targets": colIndex++,
               "data": "payFrequency",
               "sortable": true,
@@ -323,7 +323,7 @@ function userGroupPaginationFun(url){
     $("input[type=search]").hide();
     $("#dataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
-    		   getUserGroupList();
+    		   hub();
     	   }
     	});
 }

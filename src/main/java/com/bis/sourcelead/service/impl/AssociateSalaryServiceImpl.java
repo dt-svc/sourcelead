@@ -16,16 +16,20 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.AssociateSalaryDao;
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.AssociateSalaryService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -37,6 +41,9 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 		
 	@Autowired
 	AssociateSalaryDao associateSalaryDao;
+	
+	@Autowired
+	private UserGroupDao userGroupDao;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -69,6 +76,8 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 					Set<AssociatePayItem> assoPayItemSet = getAssociatePayItemSet(associateSalary,associateSalaryDTO,orgLocation,loginUser);
 					associateSalary.setAssociatePayItem(assoPayItemSet);
 				}
+				UserGroup uesrgroup = userGroupDao.findUserGroupById(associateSalaryDTO.getPayGroup());
+				associateSalary.setGroupId(uesrgroup);
 				associateSalary.setPayType(associateSalaryDTO.getPayType());
 				associateSalary.setPayFrequency(associateSalaryDTO.getPayFrequency());
 				associateSalary.setStandardHours(associateSalaryDTO.getStandardHours());
@@ -221,6 +230,8 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 			associateSalaryDTO.setPerPaySal(String.valueOf(asal.getGrossSalary()));
 			associateSalaryDTO.setHourlyRate(String.valueOf(asal.getHourlyRate()));
 			associateSalaryDTO.setAssociateSalUUID(asal.getAssociateSalaryUuid());
+			associateSalaryDTO.setPayGroupUUID(asal.getGroupId().getGroupUUID());
+			associateSalaryDTO.setPayGroup(asal.getGroupId().getGroupName());
 			
 			Set<AssociatePayItem> payItemList = asal.getAssociatePayItem();
 			List<AssociatePayItemDTO> list = new ArrayList<>();
@@ -264,5 +275,15 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	@Override
 	public AssociatePayItem saveUpdatedPayItem(AssociatePayItem associatePayItem) {
 		return associateSalaryDao.saveUpdatedPayItem(associatePayItem);
+	}
+
+	@Override
+	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation,long groupId) {
+		
+		List<AssociateSalary> list = associateSalaryDao.getAssociateSalaryListByGroupId(orgLocation,groupId);
+		for(AssociateSalary sal : list) {
+			sal.setUser(sal.getUserId().getId());
+		}
+		return list;
 	}
 }

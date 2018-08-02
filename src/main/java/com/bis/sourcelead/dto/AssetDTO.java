@@ -71,6 +71,8 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		
 		private List<AssetAssign> assetAssignList;
 		
+		private String tags;
+		
 		public List<CustomFormFieldDTO> getCustomFormData() {
 			return customFormData;
 		}
@@ -304,5 +306,13 @@ public class AssetDTO extends SearchDTO implements Serializable {
 
 		public void setShiftIds(String shiftIds) {
 			this.shiftIds = shiftIds;
+		}
+
+		public String getTags() {
+			return tags;
+		}
+
+		public void setTags(String tags) {
+			this.tags = tags;
 		}
 }

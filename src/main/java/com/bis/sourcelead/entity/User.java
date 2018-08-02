@@ -329,6 +329,13 @@ public class User implements Serializable{
 	@Transient
 	private Long userId;
 	
+	@Transient
+    @JsonProperty
+    private String associateTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -1050,5 +1057,21 @@ public class User implements Serializable{
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public String getAssociateTags() {
+		return associateTags;
+	}
+
+	public void setAssociateTags(String associateTags) {
+		this.associateTags = associateTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
 	}
 }

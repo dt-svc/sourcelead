@@ -680,7 +680,7 @@ function getInternalInterviewsList(submissionId){
 	   					     if(submissionId == report.interviewSubmissionId){
 	   					    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
 			   						  if(report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
-			   							result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';  
+			   							result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback(\''+report.interviewId.id+'\',\''+report.interviewTemplateUUId+'\',\''+report.id+'\',\''+submissionId+'\');"></i>';  
 			   						  }
 			   					  }
 	   					     }
@@ -1926,7 +1926,7 @@ function savedCommentAndCount(candidateId,submissionId) {
 
 <!-- this script using for interview feedback Start -->
 <script type="text/javascript">
-function interviewFeedback(interviewId,templateId,id) {
+function interviewFeedback(interviewId,templateId,id,submissionId) {
 	$("#mask_inner").fadeIn();
 	$("#feedbackdiv"+interviewId+"").show();
 	$(".reSchPop").removeClass("reSchPopActive");
@@ -1936,7 +1936,7 @@ function interviewFeedback(interviewId,templateId,id) {
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type: "GET",
-		url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
+		url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId+"&submissionId="+submissionId,
 		success: function(json) {
 			var result = "";
 			result = result +"<strong>Interview Feedback</strong>";
@@ -1960,7 +1960,7 @@ function interviewFeedback(interviewId,templateId,id) {
 				    result = result +'<td><div class="tbldata-dotdot-me">'+report.interviewerName+'</div></td>'; 
 				    result = result +' <td><div class="tblminwidth-100">'+feedbackDate+'</div></td>'; 
 				    if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
-				    	result = result +' <td><div class="tblminwidth-50"><span class="text-primary"><a onclick="viewfeedback('+report.id+',\''+templateId+'\',\''+report.feedbackStatus+'\');">View</a></span></div></td>';
+				    	result = result +' <td><div class="tblminwidth-50"><span class="text-primary"><a onclick="viewfeedback(\''+report.uuid+'\',\''+templateId+'\',\''+report.feedbackStatus+'\');">View</a></span></div></td>';
 				    }else{
 				    	result = result +'<td><div class="tblminwidth-50"> &nbsp;<span class="text-danger">Notfilled</span></div></td>';
 				    }
@@ -1986,7 +1986,7 @@ function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
 			$(".bg_mask").fadeIn(200);
 			$.ajax({
 		    	type: "GET",
-		    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
+		    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	 var submissionDetails = "";

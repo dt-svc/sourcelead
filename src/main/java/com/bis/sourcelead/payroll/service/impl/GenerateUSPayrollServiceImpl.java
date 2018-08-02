@@ -23,6 +23,7 @@ import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -124,9 +125,14 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		Date freqEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
 		PaysheetFrequencyDTO paysheetFrequencyDTO = null;
 		
-		UserGroup userGroup = userGroupDao.findUserGroupById(generateUSPayrollDTO.getGroupId());
-		List<String> usrs = Arrays.asList(userGroup.getUserId().split(","));
-		List<Long> usersList = usrs.stream().map(Long::valueOf).collect(Collectors.toList());
+		
+		String[] groupId = generateUSPayrollDTO.getGroupId().split(",");
+		List<AssociateSalary> list = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]));
+		
+		UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
+		
+//		List<String> usrs = Arrays.asList(userGroup.getUserId().split(","));
+		List<Long> usersList = list.stream().map(AssociateSalary::getUser).collect(Collectors.toList());
 //		ResponseList<ProjectMembers> response = projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(orgLocation.getId(), actualStartDate, actualEndDate, 1, 10);
 		if (usersList != null && usersList.size() >0) {
 			PaysheetFrequency paySheetFreq = new PaysheetFrequency();

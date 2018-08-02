@@ -1,8 +1,11 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
+import com.bis.sourcelead.entity.OrgLocations;
 
 public interface AssociateSalaryDao {
 
@@ -17,4 +20,6 @@ public interface AssociateSalaryDao {
 	AssociatePayItem findPayItemByPayItemId(Long payItemId);
 
 	AssociatePayItem saveUpdatedPayItem(AssociatePayItem associatePayItem);
+
+	List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId);
 }

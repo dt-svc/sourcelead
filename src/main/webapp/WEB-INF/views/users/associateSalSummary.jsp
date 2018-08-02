@@ -4,7 +4,7 @@
  
  
  <script>
-function associateSalSummary(userId){  
+function associateSalSummary(userId){
 	$.ajax({
            type : "GET",
            url: sourceleadUrl+"/findAssociateSalary?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
@@ -13,7 +13,7 @@ function associateSalSummary(userId){
             	result = result + '<div class="clearfix mt minHeightcol5">';
             	result = result + '		<div class="col-md-3 col-md-offset-9">';
             	result = result + '	<ul class="list-inline list-unstyled pull-right mb0">';
-            	result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\');">Update</a></li>';
+            	result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\',\''+json.payGroupUUID+'\');">Update</a></li>';
             	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
             	result = result + '		</ul>';
             	result = result + '	</div>';
@@ -29,6 +29,13 @@ function associateSalSummary(userId){
             	result = result + '   <label>Pay Frequency</label>';
             	result = result + '   <div>';
             	result = result + '     <p class="form-control-static text-muted">'+json.payFrequency+'</p>';
+            	result = result + '    </div>';
+            	result = result + '  </div>';
+            	
+            	result = result + ' <div class="col-md-5">';
+            	result = result + '   <label>Pay Group</label>';
+            	result = result + '   <div>';
+            	result = result + '     <p class="form-control-static text-muted">'+json.payGroup+'</p>';
             	result = result + '    </div>';
             	result = result + '  </div>';
                     
@@ -193,7 +200,7 @@ function associateSalSummary(userId){
                 <label>Pay Frequency</label>
                 <div>
                 <input class="form-control" name="previousPayFrequency" id="previousPayFrequency" type="hidden">
-                  <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayFreqHours();" data-validation="required" field-name="Pay Type">
+                  <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayFreqHours();getPayGroups();" data-validation="required" field-name="Pay Type">
                     <option value="">--Select--</option>
                     <option value="Annual">Annually</option>
                     <option value="Monthly">Monthly</option>
@@ -202,6 +209,13 @@ function associateSalSummary(userId){
                   </select>
                 </div>
               </div>
+               <div class="col-md-5">
+                    <label>Pay Group</label>
+                    <div>
+                      <select class="sel" id="payGroupId" name="payGroup" data-validation="required" field-name="Pay Group">
+                      </select>
+                    </div>
+                  </div>
               <div class="col-md-5">
                 <label>Standard Hours</label>
                 <div>
@@ -387,7 +401,8 @@ function closeupdateSalaryDetails() {
 </script>  
 
 <script>
-function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,perPaySal,hourlyRate,userId) {
+function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,perPaySal,hourlyRate,userId,groupUUID) {
+	
 	 document.getElementById("update_associate_salary_form").reset(); 
 	$("#payType").val(payType);
 	$("#payFrequency").val(payFrequency);
@@ -395,6 +410,8 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 	$("#annualSal").val(annualSal);
 	$("#perPaySal").val(perPaySal);
 	$("#hourlyRate").val(hourlyRate);
+// 	$("#payGroupId").val(groupName);
+// 	$('#payGroupId').trigger("chosen:updated");
 	$(".updateSalaryDetails, .sideMask").fadeIn() 
 	
 	$("#id").val(id);
@@ -405,6 +422,8 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 	$("#previousPerPaySal").val(perPaySal);
 	$("#previousHourlyRate").val(hourlyRate);
 	$("#userId").val(userId);
+	
+	getPayGroups(groupUUID);
 
 	 
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -523,16 +542,11 @@ function calculateHourlyRateSal(){
 function calculatePercentSal(){
 	
 	var increasePer  = $("#increasePer").val();
-	alert("increasePer "+increasePer);
 	var annualSal = $("#previousAnnualSal").val();
-	alert("annualSal "+annualSal);
 	var percentValue = increasePer/100;
-	alert("percentValue "+percentValue);
 
 	var percentMulValue =  percentValue * parseFloat(annualSal);
-	alert("percentMulValue "+percentMulValue);
 	var incrementAnnualSal = parseFloat(percentMulValue)  + parseFloat(annualSal) ;
-	alert("incrementAnnualSal "+incrementAnnualSal.toFixed(2));
 	$("#annualSal").val(incrementAnnualSal);
 	$("#salaryType").val('increment');
 	calculateSal();
@@ -545,25 +559,17 @@ function calaculateIncDecPer(){
 	var previousAnnualSal = $("#previousAnnualSal").val();
 	if(curAnnualSal > previousAnnualSal){
 		$("#salaryType").val('increment');
-		alert("increment");
 		var diffSal = parseFloat(curAnnualSal) - parseFloat(previousAnnualSal);
-		alert("diffSal = "+diffSal);
 		var percent = diffSal / parseFloat(previousAnnualSal);
-		alert("percent = "+percent);
 		var icrementPer = percent * 100;
-		alert("icrementPer = "+icrementPer);
 		$("#increasePer").val(icrementPer.toFixed(2));
 		calculateSal();
 	}
 	if(curAnnualSal < previousAnnualSal){
 		$("#salaryType").val('decrement');
-		alert("Decremnet");
 		var diffSal = parseFloat(previousAnnualSal) - parseFloat(curAnnualSal);
-		alert("diffSal = "+diffSal);
 		var percent = diffSal / parseFloat(previousAnnualSal);
-		alert("percent = "+percent);
 		var icrementPer = percent * 100;
-		alert("icrementPer = "+icrementPer);
 		$("#increasePer").val(icrementPer.toFixed(2));
 		calculateSal();
 	}
@@ -573,7 +579,6 @@ function calaculateIncDecPer(){
  <script type="text/javascript">
  function updateAssociateSal() {
 	var salaryType = $("#salaryType").val();
-	 alert(salaryType);
 	   if ($('#update_associate_salary_form').validate(false, validationSettings)){ 
 			   var formData = $($('#update_associate_salary_form')[0]).serialize();
 				/* $("#update_associate_sal_button").attr("disabled", "disabled"); */
@@ -764,6 +769,37 @@ function proceedToDelete(payItemId,userId){
 			
 		},
 	}); 
+}
+</script>
+
+<script>
+function getPayGroups(groupUUID){
+	var payFrequency = $("#payFrequency").val();
+		 $.ajax({
+				type : "GET",
+				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency,
+				success : function(result) {
+				var output = "";
+				output = output + "<option value=''>Select Group</option>";
+				for (var i=0; i<result.length; i++)
+				{
+					var opt = result[i];
+					if(groupUUID != null && groupUUID != '' && groupUUID != 'undefined'){
+						if(groupUUID == opt.groupUUID){
+							output = output + "<option selected value='" +opt.groupUUID+ "'>"+opt.groupName+"</option>";
+						}else{
+							output = output + "<option value='" +opt.groupUUID+ "'>"+opt.groupName+"</option>";
+						}
+					}else{
+						output = output + "<option value='" +opt.groupUUID+ "'>"+opt.groupName+"</option>";
+					}
+				}
+				$("#payGroupId").empty();
+				$("#payGroupId").append(output);
+				$('#payGroupId').trigger("chosen:updated");
+					
+				}
+		 });
 }
 </script>
 

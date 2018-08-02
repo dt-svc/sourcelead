@@ -91,7 +91,6 @@ window.onload = function () {
 <script type="text/javascript">
 function alertMessage(message){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -99,7 +98,7 @@ function alertMessage(message){
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 
 }
 
@@ -108,7 +107,6 @@ function alertMessage(message){
 <script type="text/javascript">
 function deleteImage(){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure to delete image?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -116,7 +114,7 @@ function deleteImage(){
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 }
 </script>
 
@@ -142,7 +140,7 @@ function deleteOrgImage(){
 <script type="text/javascript">
 function cancelOrgImg(){
 	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".mask").hide();
 }
 </script>
 
@@ -865,19 +863,16 @@ function cancelOrgImg(){
     			
     			<div id="whiteListIp" class="tab-pane fade form-horizontal"> 
                 <!-- Tab for Profile setting-area -->
-                    <div class="accountsettings-tab">
-                        <div class="tab-content panel-body">
+                    <div class="accountsettings-tab noMar">
+                        <div class="tab-content panel-body noPad noBor">
                         <div id="whiteListLoading"></div>
-                            <div class="clearfix mb">
-                                <div class="pull-left">
-                                    <h4 id="whiteListHeading">Whitelist Ips</h4>
-                                </div>
-                                <div class="pull-right">
-                                	<button data-toggle="modal" type="button" class="btn btn-primary" onClick="addipPopup();"><i class="fa fa-plus paddingRight"></i>Add IP</button>
-                                </div>
+                            <div class="reportHead reportHeadDataTab clearfix">
+                                <ul class="pull-right list-unstyled list-inline">
+                                	<li><a class="action newAdBtn" onClick="addipPopup();" href="javascript:void(0)">+ IP</a></li>
+                                </ul>
                              </div>
                             
-                            <div class="clients_wrap_table datatable_filter mt40">
+                            <div class="clients_wrap_table datatable_filter dataSeaTop">
                 				<div id="whiteListIpsDiv"></div>   
                 			</div>
                 			
@@ -887,19 +882,18 @@ function cancelOrgImg(){
         			</div>
         			<div id="paymentAccount" class="tab-pane fade form-horizontal"> 
                 <!-- Tab for Profile setting-area -->
-                    <div class="accountsettings-tab">
-                        <div class="tab-content panel-body">
+                    
+                    <div class="accountsettings-tab noMar">
+                        <div class="tab-content panel-body noPad noBor">
                         <div id="paymentAccountLoading"></div>
-                            <div class="clearfix mb">
-                                <div class="pull-left">
-                                    <h4 id="whiteListHeading">Payment Accounts</h4>
-                                </div>
-                                <div class="pull-right">
-                                	<button data-toggle="modal" type="button" class="btn btn-primary" onClick="showPaymentAccountPopup();"><i class="fa fa-plus paddingRight"></i>Add Payment Account</button>
-                                </div>
-                             </div>
+                        
+                            <div class="reportHead clearfix">
+                                <ul class="pull-right list-unstyled list-inline">
+                                	<li><a class="action newAdBtn mr5" onClick="showPaymentAccountPopup();" href="javascript:void(0)">+ Payment Account</a></li>
+                                </ul>
+                             </div>                        
                             
-                            <div class="require_wrap_table datatable_filter mt40">
+                            <div class="require_wrap_table datatable_filter">
                 				<div id="payemntAccountsDiv"></div>   
                 			</div>
                 			
@@ -941,23 +935,16 @@ function cancelOrgImg(){
       .clients_wrap_table.table1 tr td div { position: unset !important; }
       </style>
 </body>
-<div class="comMask"></div>
 <!-- Add Payment Account Modal -->
-  <div class="modal paymentaccount-modal" id="paymentAccountPopup" role="dialog">
-    <div class="modal-dialog modal-lg">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" onclick="closePaymentAccountPopup();" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add/Edit Payment Account</h4>
-        </div>
-        <div class="modal-body minHeightcol5">
+  <div class="popupWrapMid" id="paymentAccountPopup" role="dialog">
+  	<div class="popupHead">Add/Edit Payment Account <i class="closePop pull-right popClose" onclick="closePaymentAccountPopup();"></i></div>
+  
+        <div class="popupContent popupContentFixed">
         <form:form class="clearfix"  id="paymentaccount_form"  name="paymentaccount_form" method="POST" >
          <inpu type="hidden" id='paymentAccountId' value='0'/>
          <input type="hidden" name="id" id="paymentAccountId"/>
-          <div class="col-md-5">
-           <label class="clearfix">Account Type<span class="text-danger">&nbsp;*</span></label>
+          <div class="col-md-6 minHe">
+           <label class="noPad">Account Type <b class="valStar">*</b></label>
            <div class="clearfix">
                 <select onchange="showOrHidePaymentFormFields($(this).val());" id="paymentAccountType" name="paymentAccountLocation" class="form-control" data-required="required">
                     <option value="0">--Select Location--</option>
@@ -968,8 +955,8 @@ function cancelOrgImg(){
            </div>
           </div>
            
-         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
-           <label class="clearfix">Location<span class="text-danger">&nbsp;*</span></label>
+         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">Location <b class="valStar">*</b></label>
            <div class="clearfix">
                 <select id="paymentAccountLocation" name="paymentAccountLocation" class="form-control" data-required="required">
                     <option>Select Location</option>
@@ -977,60 +964,60 @@ function cancelOrgImg(){
            </div>
          </div>
            
-        <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
-           <label class="clearfix">Bank Name<span class="text-danger">&nbsp;*</span></label>
+        <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+           <label class="noPad">Bank Name <b class="valStar">*</b></label>
            <div class="clearfix">
                 <input type="text" id="paymentAccountBankName" name="paymentAccountBankName" placeholder="Bank Name" class="form-control" data-required="required"/>
            </div>
            </div>
-          <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
+          <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
            <label class="clearfix">Account Number<span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
                 <input type="text" id="paymentAccountNumber" data-min='9' data-max='15' placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-required="required"/>
            </div>
            </div>
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}"> 
-           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
+           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
               <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
 	           <div class="clearfix">
 	                <input type="text" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control" data-required="required"/>
 	           </div>
            </div>
            
-           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
-              <label class="clearfix">MICR Code <span class="text-danger">&nbsp;*</span></label>
+           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+              <label class="noPad">MICR Code <b class="valStar">*</b></label>
 	           <div class="clearfix">
 	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-required="required"/>
 	           </div>
            </div>
            </c:if>
         
-        <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-5">
+        <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-6 minHe">
            <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
-              <label class="clearfix">Routing Number<span class="text-danger">&nbsp;*</span></label>
+              <label class="noPad">Routing Number <b class="valStar">*</b></label>
            </c:if>
            <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-              <label class="clearfix">IFSC Code <span class="text-danger">&nbsp;*</span></label>
+              <label class="noPad">IFSC Code <b class="valStar">*</b></label>
            </c:if>
            <div class="clearfix">
                 <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="IFC Code / Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
            </div>
            </div>
-           <div data-fieldtype="account" data-fieldfor="3" class="col-md-5">
-           <label class="clearfix">Email<span class="text-danger">&nbsp;*</span></label>
+           <div data-fieldtype="account" data-fieldfor="3" class="col-md-6 minHe">
+           <label class="noPad">Email <b class="valStar">*</b></label>
            <div class="clearfix">
                 <input type="text" id="paymentAccountEmail" name="paymentAccountEmail" placeholder="Email"  class="form-control" data-required="required"/>
            </div>
            </div>
-        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
-           <label class="clearfix">First Name<span class="text-danger">&nbsp;*</span></label>
+        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">First Name <b class="valStar">*</b></label>
            <div class="clearfix">
                 <input type="text" id="paymentAccountFirstName" name="paymentAccountFirstName" placeholder="First Name" class="form-control" data-required="required"/>
            </div>
            </div>
         
-        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
-           <label class="clearfix">Last Name<span class="text-danger">&nbsp;*</span></label>
+        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">Last Name <b class="valStar">*</b></label>
            <div class="clearfix">
                 <input type="text" id="paymentAccountLastName" name="paymentAccountLastName" placeholder="Last Name" class="form-control" data-required="required"/>
            </div>
@@ -1040,48 +1027,40 @@ function cancelOrgImg(){
         </form:form>
           
         </div>
-        <div class="clearfix"></div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id="savePaymentButton" onclick="savePaymentAccount();" >Save</button>
+        
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" id="savePaymentButton" onclick="savePaymentAccount();" >Save</button>
+          <button type="button" class="slBtn md popClose" onClick="closePaymentAccountPopup();">Cancel</button>
         </div>
-      </div>
-    </div>
   </div>
+  
 <!-- Add IP Modal -->
-  <div class="modal addipPopup-modal" id="addipPopup" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" onclick="closeWhiteListIp();" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add IP</h4>
-        </div>
-        <div class="modal-body">
+  <div class="popupWrap" id="addipPopup" role="dialog">
+	<div class="popupHead">Add IP <i class="closePop pull-right close" onclick="closeWhiteListIp();"></i></div>
+          
+
+        <div class="popupContent">
         <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
         <input type="hidden" name="id" id="whiteListId"/>
-         <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
-           <label class="col-md-3">From IP<span class="text-danger">&nbsp;*</span></label>
-           <div class="col-md-9">
+         <div class="clearfix mb" id="fromIpAddressDiv">
+           <label class="noPad">From IP <b class="valStar">*</b></label>
+           <div class="clearfix">
            		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('fromIpAddr');">
            </div>
            </div>
-           <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
-           <label class="col-md-3">To IP<span class="text-danger">&nbsp;*</span></label>
-           <div class="col-md-9">
+           <div class="clearfix mb" id="toIpAddressDiv">
+           <label class="noPad">To IP <b class="valStar">*</b></label>
+           <div class="clearfix">
            		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('toIpAddr');">
            </div>
            </div>
-        
         </form:form>
-          
         </div>
-        <div class="clearfix"></div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id="saveWhiteListbtn" onclick="saveWhiteListIps();" >Save</button>
+        
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" id="saveWhiteListbtn" onclick="saveWhiteListIps();" >Save</button>
+          <input type="button" value="Cancel" class="slBtn md" onclick="closeWhiteListIp();">
         </div>
-      </div>
-    </div>
   </div>
   <!-- Add IP Modal -->
 
@@ -1212,6 +1191,8 @@ function closeWhiteListIp(){
 	$("#fromIpAddress").val("");
 	 $("#toIpAddress").val("");
 	 $("#whiteListId").val("");
+	$("#addipPopup").fadeOut(100);
+	$(".mask").hide();	 
 }
 
 function saveWhiteListIps(){
@@ -1243,8 +1224,8 @@ function saveWhiteListIps(){
 			    		else if(result.response === "SUCCESS"){
 			    	   $("#fromIpAddress").val("");
 			    	   $("#toIpAddress").val("");
-			    	   $(".modal.addipPopup-modal").fadeOut();
-			    	   $(".comMask").fadeOut();
+			    	   $("#addipPopup").fadeOut(100);
+			    	   $(".mask").hide();
 			    	   closeWhiteListIp();
 			    	   getWhiteListIps();
 			       	} 
@@ -1453,8 +1434,8 @@ function changeActivePaymentAccount(id){
 function editPaymentAccount(type, id, locationId, firstName, lastName, accountNumber, routingNumber, bankName,bsrNumber,micrCode) {
 	$("[data-fieldtype=account]").hide();
 	showOrHidePaymentFormFields(type);
-	$(".modal.paymentaccount-modal").fadeIn();
-	$(".comMask").fadeIn();
+	$("#paymentAccountPopup").fadeIn(100);
+	$(".mask").show();
 	$("#paymentAccountFirstName").val(firstName);
 	$("#paymentAccountBankName").val(bankName);
 	$("#paymentAccountLastName").val(lastName);
@@ -1470,8 +1451,8 @@ function showPaymentAccountPopup() {
     $("#paymentAccountId").val('0');
     $("[data-fieldtype=account]").hide();
     showOrHidePaymentFormFields('SAVINGS');
-    $(".modal.paymentaccount-modal").fadeIn();
-    $(".comMask").fadeIn();
+    $("#paymentAccountPopup").fadeIn(100);
+    $(".mask").show();
     $("input[id*=paymentAccount]").val("");
     $('#paymentaccount_form')[0].reset();
 }
@@ -1506,8 +1487,8 @@ function showOrHidePaymentFormFields(type) {
     });
 }
 function closePaymentAccountPopup(type) {
-    $(".modal.paymentaccount-modal").fadeOut();
-    $(".comMask").fadeOut();
+    $("#paymentAccountPopup").fadeOut(100);
+    $(".mask").hide();
     if(type) {
         showOrHidePaymentFormFields('0');
         showOrHidePaymentFormFields(type);
@@ -1581,8 +1562,8 @@ function editWhiteListIp(id){
 	    type: "GET",
         url: sourceleadUrl+"/editWhiteListIp?whiteListId="+id,
         success: function(data) {
-        	$(".modal.addipPopup-modal").fadeIn();
-        	$(".comMask").fadeIn();
+        	$("#addipPopup").fadeIn(100);
+        	$(".mask").show();
         	if(data.id != null && data.id != '' && data.id != 'undefined'){
         		$("#whiteListId").val(data.id);
         	}
@@ -2202,7 +2183,6 @@ function getSignaturePreview(){
 function restoreSignature(){
 	
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure to restore</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -2210,7 +2190,7 @@ function restoreSignature(){
 	result = result +"	</div>";
 	$("#restorePopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 
 }
 </script>
@@ -2218,7 +2198,7 @@ function restoreSignature(){
 <script type="text/javascript">
 function cancel(){
 	$("#restorePopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".mask").hide();
 }
 </script>
 
@@ -2226,7 +2206,7 @@ function cancel(){
 function restSignature(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$("#restorePopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".mask").hide();
 	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	   $.ajax({
@@ -2512,8 +2492,8 @@ function resendInvitation(userId){
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 
-			        	$("#resendOrg").fadeIn(200);
-		   		        $('#resendOrg').delay(2000).fadeOut('slow');
+			        	$("#resendOrg").fadeIn(100);
+		   		        $('#resendOrg').delay(2000).fadeOut(100);
 			        },
 			    });
 		 }
@@ -3649,13 +3629,13 @@ function addipPopup(){
 	$('#toIpAddressDiv').val("");
 	$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
 	$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
-	$(".modal.addipPopup-modal").fadeIn();
-	$(".comMask").fadeIn();
+	$("#addipPopup").fadeIn(100);
+	$(".mask").show();
 }
 $(function(){
 $(".close").click(function(){
-	$(".modal.addipPopup-modal").fadeOut();
-	$(".comMask").fadeOut();
+	$("#addipPopup").fadeOut(100);
+	$(".mask").hide();
 });
 })
 </script>
@@ -3726,19 +3706,18 @@ function validateDuplicateIpAddress(fromType){
 <script>
 function deleteWhiteListIp(whiteListIpId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure you want to delete ?</p>";
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteIP(\''+whiteListIpId+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 }
 
 function cancelTermination(){
 	$("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
+	 $(".mask").hide();
 }
 
 function deleteIP(id){
@@ -3747,7 +3726,7 @@ function deleteIP(id){
 				    url: sourceleadUrl+"/deleteIP?"+tokenParamName+"="+tokenValue+"&id="+id,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
-		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 	$(".mask").hide();
 		   			 getWhiteListIps()
 		   		    }
 			     });
@@ -3814,8 +3793,8 @@ function financialYear(){
 
 <script>
 	function msgFadein() {
-		$("#selector1").fadeIn(200);
-        $('#selector1').delay(2000).fadeOut('slow');
+		$("#selector1").fadeIn(100);
+        $('#selector1').delay(2000).fadeOut(100);
 	}
 </script> 
 
