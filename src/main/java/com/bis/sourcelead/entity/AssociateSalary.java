@@ -16,8 +16,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.bis.sourcelead.payroll.entity.PayItem;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ASSOCIATE_SALARY")
@@ -101,6 +103,10 @@ public class AssociateSalary {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "associateSalary")
 	private Set<AssociatePayItem> associatePayItem;
+	
+	@Transient
+	@JsonProperty
+	private Long user;
 
 	public Long getId()
 	{
@@ -322,6 +328,18 @@ public class AssociateSalary {
 
 	public void setGroupId(UserGroup groupId) {
 		this.groupId = groupId;
+	}
+
+	public Long getUser() {
+		return user;
+	}
+
+	public void setUser(Long user) {
+		this.user = user;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }
