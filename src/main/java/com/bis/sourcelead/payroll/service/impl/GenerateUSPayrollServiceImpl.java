@@ -284,25 +284,36 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						}
 					}
 				}
-				List<DeductionDTO> postDedList = res.getData().stream().filter(ded -> "posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
-				// double preDeduction =
-				// res.getData().stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
-				// preTax = BigDecimal.valueOf(preDeduction);
-				// employeePayroll.setPreTaxDeduction(preTax);
 				deductions[0] = preTax;
+				List<DeductionDTO> postDedList = res.getData().stream().filter(ded -> "posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
+				
 				for (DeductionDTO postDed : postDedList) {
-					if (PayrollConstant.FIXED.equalsIgnoreCase(postDed.getMethod())) {
-						postTax.add(postDed.getAmount());
+					AssociateDeduction assoDeduction = associateDeductionService.getAsociateDedByUserIdDeductionId(Long.parseLong(postDed.getId()), user.getId());
+					boolean dedSchedulePay = payrollUtil.findDeductionSchedulePay(assoDeduction, freqStartDate, freqEndDate);
+					if (!dedSchedulePay) {
+						if (PayrollConstant.FIXED.equalsIgnoreCase(postDed.getMethod())) {
+							postTax.add(postDed.getAmount());
+						}
+						else {
+							BigDecimal perAmount = getPercentAmount(BigDecimal.valueOf(amount), postDed.getAmount());
+							postTax.add(perAmount);
+						}
+						
+						if (StringUtils.isNoneBlank(assoDeduction.getDedStatus())) {
+							Date[] deductionDates = payrollUtil.getDeductionDates(assoDeduction.getDedEndDate(), assoDeduction.getDeductionTypeId().getPayrollScheduled());
+							assoDeduction.setDedStartDate(deductionDates[0]);
+							assoDeduction.setDedEndDate(deductionDates[1]);
+						}
+						else {
+							assoDeduction.setDedStatus("DEDUCTED");
+							Date[] deductionDates = payrollUtil.getDeductionDates(freqStartDate, assoDeduction.getDeductionTypeId().getPayrollScheduled());
+							assoDeduction.setDedStartDate(deductionDates[0]);
+							assoDeduction.setDedEndDate(deductionDates[1]);
+						}
 					}
-					else {
-						BigDecimal perAmount = getPercentAmount(BigDecimal.valueOf(amount), postDed.getAmount());
-						postTax.add(perAmount);
-					}
+				
 				}
 				deductions[1] = postTax;
-				// double postDeduction =
-				// res.getData().stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
-				// postTax = BigDecimal.valueOf(postDeduction);
 			}
 		} catch (Exception e) {
 		}
