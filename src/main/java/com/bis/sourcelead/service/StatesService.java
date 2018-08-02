@@ -8,5 +8,7 @@ public interface StatesService {
 
 	
 	List<States> getAllStatesByCountry(String countryName) throws Exception;
+
+	String getStateCodeByCountryCodeAndState(String countryCode, String state);
 	
 }

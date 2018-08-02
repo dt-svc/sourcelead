@@ -45,4 +45,6 @@ public interface EmployeesService {
 	public List<Employees> getEmployeesByLocationId(Long orgLocationsId) throws Exception;
 
 	public Employees getEmployeByUserIdAndOrgRelationId(Long userId, Long orgRelationId)throws Exception;
+
+	public Employees getEmployeeByUserAndOrgLocationId(Long userId, Long orgLocationId);
 }

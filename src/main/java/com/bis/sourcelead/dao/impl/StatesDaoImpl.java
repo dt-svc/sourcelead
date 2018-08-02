@@ -68,4 +68,19 @@ public class StatesDaoImpl implements StatesDao{
 		}
 		return stateCodesList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String getStateCodeByCountryCodeAndState(String countryCode, String state)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<String> stateCode = new ArrayList<String>();
+		logger.debug("StatesDaoImpl getStatesByStateName");
+		stateCode = session.createQuery("select states.stateCode from States states where states.stateName = :state and states.countryCode = :countryCode" ).setString("countryCode", countryCode).setString( "state", state ).list();
+		if (stateCode.size() > 0) {
+			return stateCode.get(0);
+		} else {
+			return null;
+		}
+	}
 }

@@ -25,7 +25,29 @@ import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
 
-public  class CalendarUtil {
+public  class CalendarUtil {	
+	public static double getCombinedHours(double hours1,double hours2){
+		double cthHours = hours1;
+		double cthHoursValue = (int) cthHours;
+		double cthMinutesValue = cthHours - cthHoursValue;
+		double totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+		double wthHours = hours2;
+		double wthHoursValue = (int) wthHours;
+		double wthMinutesValue = wthHours - wthHoursValue;
+		double totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+		double totalMinutes = totalCthMinutes+totalWthMinutes;
+
+		double actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+		double actualMinutes = (totalMinutes % 60)/100;
+
+		String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
+		
+		
+		return Double.parseDouble(actualTimeString);
+	}
+
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
