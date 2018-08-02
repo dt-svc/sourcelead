@@ -427,11 +427,11 @@ public class LeaveManagementRestController {
 					double fromHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(),leave.getFromDateToHalfTime(),orgLocations.getAverageWorkingHours(),l);
 					double toHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(),leave.getToDateToHalfTime(),orgLocations.getAverageWorkingHours(),l);
 					double appliedLeaveCount = 0;
-					if(leave.getFromDate().equals(leave.getToDate())){
-						appliedLeaveCount = (fromHalf + toHalf);
-					}else{
+//					if(leave.getFromDate().equals(leave.getToDate())){
+//						appliedLeaveCount = (fromHalf + toHalf);
+//					}else{
 						appliedLeaveCount = leave.getNumberOfDays() - (fromHalf + toHalf);
-					}
+//					}
 					
 
 					if (Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
@@ -1161,6 +1161,8 @@ public class LeaveManagementRestController {
 							}if(previousExpNoOfDays == currentExpNofDays) {
 								actionExpType = "NONE";
 							}
+							leaveType.setDiffLeaves(diffLeaves);
+							leaveType.setActionType(actionType);
 							leaveType.setActionFresherType(actionFresherType);
 							leaveType.setActionExpType(actionExpType);
 							leaveType.setDiffFresherLeaves(diffFresherLeaves);
@@ -2359,32 +2361,40 @@ public class LeaveManagementRestController {
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
 		StringBuilder sb = new StringBuilder();
-		if(StringUtils.isNotBlank(errorMessage))
+		if(StringUtils.isNotBlank(errorMessage)){
 			sb.append(errorMessage);
-		List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
-		if(leaveList != null && !leaveList.isEmpty()) {
-//			validateDateDTO = new ValidateDateDTO();
-			validateDateDTO.setValidateType("SAMEDAY");	
-			sb.append(" You cannot apply two leaves on same day.!");
-			validateDateDTO.setErrorMessage(sb.toString());
-//			sb = new StringBuilder();
-//			sb.append("you cannot apply two leaves on same day.!");
-			return validateDateDTO;
+			validateDateDTO.setValidateType("MESSAGE");
+		}
+		if(StringUtils.isNotBlank(fromDate) && StringUtils.isNotBlank(toDate)){
+			List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
+			if(leaveList != null && !leaveList.isEmpty()) {
+//				validateDateDTO = new ValidateDateDTO();
+				validateDateDTO.setValidateType("SAMEDAY");	
+				sb.append(" You cannot apply two leaves on same day.!");
+				validateDateDTO.setErrorMessage(sb.toString());
+//				sb = new StringBuilder();
+//				sb.append("you cannot apply two leaves on same day.!");
+				return validateDateDTO;
+			}
 		}
 		
-		
-		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate, toDate, orgLocations);
-		List<Date> daysList = new ArrayList<>();
-		Set<Long> roleIds = new HashSet<>();
-		for (HolidayAndRestrictday day : list) {
-			if (day.getRestrictDay() != null) {
-				RestrictDay res = restrictDayService.getRestrictDayById(day.getRestrictDay().getId());
-				if (!"Y".equalsIgnoreCase(res.getApplicableToAll())) {
-					List<LeaveRole> leaveRoleList = leaveService.getLeaveRolesByRestrictDayId(res.getId());
-					for (LeaveRole leaveRole : leaveRoleList) {
-						roleIds.add(leaveRole.getRoleId().getId());
+		if(StringUtils.isNotBlank(fromDate) && StringUtils.isNotBlank(toDate)){
+			List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate, toDate, orgLocations);
+			List<Date> daysList = new ArrayList<>();
+			Set<Long> roleIds = new HashSet<>();
+			for (HolidayAndRestrictday day : list) {
+				if (day.getRestrictDay() != null) {
+					RestrictDay res = restrictDayService.getRestrictDayById(day.getRestrictDay().getId());
+					if (!"Y".equalsIgnoreCase(res.getApplicableToAll())) {
+						List<LeaveRole> leaveRoleList = leaveService.getLeaveRolesByRestrictDayId(res.getId());
+						for (LeaveRole leaveRole : leaveRoleList) {
+							roleIds.add(leaveRole.getRoleId().getId());
+						}
+						if (roleIds.contains(userRole.getRoles().getId())) {
+							daysList.add(day.getDay());
+						}
 					}
-					if (roleIds.contains(userRole.getRoles().getId())) {
+					else {
 						daysList.add(day.getDay());
 					}
 				}
@@ -2392,28 +2402,25 @@ public class LeaveManagementRestController {
 					daysList.add(day.getDay());
 				}
 			}
-			else {
-				daysList.add(day.getDay());
-			}
-		}
-		daysList = new ArrayList<Date>(new HashSet<Date>(daysList));
-		int i = 0;
-		Collections.sort(daysList);
-		if (daysList.size() > 0) {
-//			validateDateDTO = new ValidateDateDTO();
-			sb.append(" You cannot apply for leave on restricted/holiday day ");
-			for (Date d : daysList) {
-				sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
-				if (i != daysList.size() - 1) {
-					sb.append(", ");
+			daysList = new ArrayList<Date>(new HashSet<Date>(daysList));
+			int i = 0;
+			Collections.sort(daysList);
+			if (daysList.size() > 0) {
+//				validateDateDTO = new ValidateDateDTO();
+				sb.append(" You cannot apply for leave on restricted/holiday day ");
+				for (Date d : daysList) {
+					sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
+					if (i != daysList.size() - 1) {
+						sb.append(", ");
+					}
+					i++;
 				}
-				i++;
+				validateDateDTO.setValidateType("HOLIDAY");
+//				return validateDateDTO;
 			}
-			validateDateDTO.setValidateType("HOLIDAY");
-			validateDateDTO.setErrorMessage(sb.toString());
-			return validateDateDTO;
 		}
-		
+		if(StringUtils.isNotBlank(sb.toString()))
+			validateDateDTO.setErrorMessage(sb.toString());
 		if(validateDateDTO.getValidateType() == null){
 			validateDateDTO.setValidateType("N/A");
 			validateDateDTO.setErrorMessage("N/A");
