@@ -103,7 +103,7 @@
                         </div>
 
                         <div data-fieldtype="account" data-prop='password' data-fieldfor="2,3" data-requiredfor="2,3" class="col-md-12 mb10">
-                            <label class="clearfix">Password<span class="text-danger">&nbsp;*</span></label>
+                            <label class="clearfix">Password<span class="text-danger">&nbsp;*</span><i class='fa fa-info-circle' title='Account password, please type the password instead of pasting to eliminate hidden and extra characters from password.'></i></label>
                             <div class="clearfix">
                                 <input type="password" autocomplete="off" id="jobBoarddAccountPassword" name="jobBoarddAccountPassword" field-name="Password" placeholder="Password"  class="form-control" data-validation="required"/>
                             </div>

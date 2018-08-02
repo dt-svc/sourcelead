@@ -49,6 +49,7 @@ import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.exception.JobPostException;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -175,11 +176,16 @@ public class RequirementDaoImpl implements RequirementDao {
                             r.setRequirement(requirement);
                             if (jobBoard.getName().equalsIgnoreCase("Monster")) {
                                 String bodyContent = FileUploadUtil.getFileContent(staticPath, jobBoard.getContentFileUrl());
-                                if (!bodyContent.isEmpty()) {
+                                if (!bodyContent.isEmpty()) { 
                                     bodyContent = bodyContent.replace("{username}", orgJobBoardAccount.getUsername());
                                     bodyContent = bodyContent.replace("{password}", new PasswordSecurity().decrypt(orgJobBoardAccount.getPassword()));
                                     bodyContent = bodyContent.replace("{title}", requirement.getJobTitle());
-                                    bodyContent = bodyContent.replace("{jobDetail}", requirement.getDescription() == null ? requirement.getJobTitle() : requirement.getDescription());
+                                    String desc = requirement.getDescription() == null ? requirement.getJobTitle() : requirement.getDescription();
+                                    if(desc.length() < 25) {
+                                        System.out.println("Description");
+                                        throw new JobPostException("Job desc is required and it should be more than 25 character length.");
+                                    }
+                                    bodyContent = bodyContent.replace("{jobDetail}", desc);
                                     String loc[] = requirement.getLocationsList() == null || requirement.getLocationsList().isEmpty() ? "Hyderabad, Telangana, IN".split(", ") : requirement.getLocationsList().get(0).split(", ");
                                     bodyContent = bodyContent.replace("{city}", loc.length > 0 ? loc[0] : "Hyderabad");
                                     bodyContent = bodyContent.replace("{state}", loc.length > 1 ? loc[1] : "Telangana");
@@ -194,26 +200,17 @@ public class RequirementDaoImpl implements RequirementDao {
                                     String dateString1 = Constants.FULL_DATE.format(today);
                                     bodyContent = bodyContent.replace("{dateTime2}", dateString1);
 
-                                    String jobStatusCode = "4";
-                                    JobBoardData jobStatusCodeData = requirement.getJobType() == null ? null : jobBoardConfigurationDAO.getJobBoardDataList(jobBoard.getId(), "JobStatus", "jobType", requirement.getJobType(), requirement.getJobType());
-                                    if (jobStatusCodeData != null) {
-                                        jobStatusCode = jobStatusCodeData.getJobBoardValue();
-                                    }
+                                    int jobBoardId = jobBoard.getId();
+                                    
+                                    String jobStatusCode = jobFieldValue("4", jobBoardId, "JobStatus", "jobType", requirement.getJobType(), requirement.getJobType());
                                     bodyContent = bodyContent.replace("{jobStatusCode}", jobStatusCode);
 
-                                    String jobCateogoryCode = "660";
-                                    JobBoardData jobCateogoryData = requirement.getIndustryName() == null ? null : jobBoardConfigurationDAO.getJobBoardDataList(jobBoard.getId(), "JobCategory", "industryName", requirement.getIndustryName(), requirement.getIndustryName());
-                                    if (jobCateogoryData != null) {
-                                        jobCateogoryCode = jobCateogoryData.getJobBoardValue();
-                                    }
+                                    String jobCateogoryCode = jobFieldValue("660", jobBoardId, "JobCategory", "industryName", requirement.getIndustryName(), requirement.getIndustryName());
                                     bodyContent = bodyContent.replace("{jobCategoryCode}", jobCateogoryCode);
 
-                                    String industryCode = "0";
-                                    JobBoardData industryData = requirement.getIndustryName() == null ? null : jobBoardConfigurationDAO.getJobBoardDataList(jobBoard.getId(), "Industry", "industryName", requirement.getIndustryName(), requirement.getIndustryName());
-                                    if (industryData != null) {
-                                        industryCode = industryData.getJobBoardValue();
-                                    }
+                                    String industryCode = jobFieldValue("0", jobBoardId, "Industry", "industryName", requirement.getIndustryName(), requirement.getIndustryName());
                                     bodyContent = bodyContent.replace("{industryCode}", industryCode);
+                                    
                                     OkHttpClient client = new OkHttpClient();
                                     RequestBody body = RequestBody.create(XML, bodyContent);
                                     Request req = new Request.Builder().url(jobBoard.getPostUrl())
@@ -246,14 +243,21 @@ public class RequirementDaoImpl implements RequirementDao {
                                                         error.append("[Warning]").append(ele1.getTextContent()).append("<br/>");
                                                     }
                                                 }
-                                                throw new Exception(new Exception(error.toString()));
+                                                System.out.println("other error");
+                                                throw new JobPostException(error.toString());
                                             }
+                                        }
+                                        if(doc.getElementsByTagName("faultstring").getLength() > 0) {
+                                            System.out.println("faultstring");
+                                             throw new JobPostException(doc.getElementsByTagName("faultstring").item(0).getTextContent().replace("<![CDATA[", "").replace("]]", ""));
                                         }
                                         Element ele = (Element) doc.getElementsByTagName("JobPostingResponse").item(0); 
                                         String postingId = ele.getAttribute("postingId");
                                         r.setJobId(postingId);
                                         r.setJobUrl("http://jobview.monster.com/getjob.aspx?jobid="+postingId);
                                         session.saveOrUpdate(r);
+                                    } else {
+                                        throw new JobPostException("Unable to publish job to job board");
                                     }
                                 }
                             } else if (jobBoard.getName().equalsIgnoreCase("Dice")) {
@@ -269,6 +273,8 @@ public class RequirementDaoImpl implements RequirementDao {
                     session.saveOrUpdate(requirement);
                 }
                 logger.debug("Requirement Stored Successfully");
+            } catch (JobPostException exception) {
+                throw exception;
             } catch (Exception exception) {
                 exception.printStackTrace();
                 StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "Requirement"));
@@ -276,6 +282,16 @@ public class RequirementDaoImpl implements RequirementDao {
             }
             return requirement;
 	}
+        
+        private String jobFieldValue(String defaultValue, int jobBoardId, String jobBoardField, 
+                                        String fieldName, String fieldValue, String fieldAlias) {
+            JobBoardData jobBoardData = fieldValue == null ? null : 
+                    jobBoardConfigurationDAO.getJobBoardDataList(jobBoardId, jobBoardField, fieldName, fieldValue, fieldAlias);
+            if (jobBoardData != null) {
+                return jobBoardData.getJobBoardValue();
+            }
+            return defaultValue; 
+        }
 
 	/**
 	 * @author sarath kumar

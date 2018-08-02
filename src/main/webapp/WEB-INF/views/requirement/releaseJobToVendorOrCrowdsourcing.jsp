@@ -465,11 +465,8 @@ function releaseToOneVendor(vendorcheckboxId){
      		
      		if(isPublicGlobel == 'Y' || isCrowdScourcingGlobel == 'Y'){
      			 isContinue = true;
-     			 document.getElementById("openNetworkRelease").style.display="none";
      			 $("#releaseToCWBtn").attr("disabled", "disabled");
      			 $("#releaseToCWBtn" ).addClass('button').val('Processing..');
-     		}else{
-     			 document.getElementById("openNetworkRelease").style.display="";
      		}
      		  var jobRecommendations = '${jobRecommendations}';
      		  var requirementUUID = '${requirementUUID}';
@@ -489,6 +486,7 @@ function releaseToOneVendor(vendorcheckboxId){
             });
 //            jsonData["jobBoardAccounts"] = jobBoardAccounts;
 	        if((jobBoardAccounts.length > 0 && valid) || isContinue){
+                    document.getElementById("openNetworkRelease").style.display="none";
 	       	     $.ajax({
 			    	type: "POST",
 			    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&requirementId="+requirementId+"&jobBoardAccounts="+jobBoardAccounts, 
@@ -507,7 +505,9 @@ function releaseToOneVendor(vendorcheckboxId){
 			        },
 			    });  
 		        return true;
-	        } 
+	        } else {
+                    document.getElementById("openNetworkRelease").style.display="";
+                }
 		
 	  }else{
 		return false;
