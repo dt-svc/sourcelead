@@ -14,6 +14,8 @@ public class DeductionDTO {
 	
 	private double dedAmount;
 	
+	private String dedSchedule;
+	
 	public double getDedAmount()
 	{
 		return dedAmount;
@@ -99,6 +101,18 @@ public class DeductionDTO {
 	{
 		this.dedTaxType = dedTaxType;
 	}
+
+	public String getDedSchedule()
+	{
+		return dedSchedule;
+	}
+
+	public void setDedSchedule(String dedSchedule)
+	{
+		this.dedSchedule = dedSchedule;
+	}
+	
+	
 	
 	
 }

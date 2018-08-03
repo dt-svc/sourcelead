@@ -708,7 +708,7 @@ public class USPayrollRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
-			if(existedData != null) {
+			if(existedData.getPayrollFrequencyUUID() != null) {
 				return existedData;
 			}else {
 				return generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO,loginUser);
@@ -1221,8 +1221,8 @@ public class USPayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getPaySheetFrequencySummary")
-	public List<USPayrollDTO> getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	@RequestMapping(value = { "/getPaySheetFrequencySummary","/rest/getPaySheetFrequencySummary" })
+	public PaysheetFrequencyDTO getPaySheetFrequencySummary(PaysheetFrequencyDTO paysheetFrequencyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		return uSPaysheetService.getPaySheetFrequencySummary(paysheetFrequencyDTO);
 	}
@@ -1333,6 +1333,7 @@ public class USPayrollRestController {
 
 	}
 	
+
 	@RequestMapping(value = "/validateDeduction", method = RequestMethod.GET)
 	@ResponseBody
 	public boolean validateDeduction(@RequestParam(value = "dedType",required = false)Long deductionTypeId, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -1359,4 +1360,18 @@ public class USPayrollRestController {
 		return bol;
 	}
 	
+
+	@RequestMapping(value = { "/getPayGroupsByPayFrequency","/rest/getPayGroupsByPayFrequency" })
+	@ResponseBody
+	public List<UserGroup> getPayGroupsByPayFrequency(UserGroupDTO userGroupDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<UserGroup> filteredGroupList = new ArrayList<>();
+		List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+		if(groupList != null)
+		filteredGroupList = groupList.stream().filter(i->i.getPayFrequency().equalsIgnoreCase(userGroupDTO.getPayFrequency())).collect(Collectors.toList());
+		return filteredGroupList;
+	}
+
 }

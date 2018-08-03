@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.criteria.CriteriaBuilder.In;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +41,7 @@ public class USPayPeriodServiceImpl implements USPayPeriodService{
 	@Override
 	public ResponseList<PaysheetFrequencyDTO> getPayPeriodListByOrgLocationId(OrgLocations orgLocation,
 			PaysheetFrequencyDTO paysheetFrequencyDTO) throws Exception {
-		// TODO Auto-generated method stub
 		ResponseList<USPayPeriod> periodList = uSPayPeriodDao.getPayPeriodListByOrgLocationId(orgLocation,paysheetFrequencyDTO);
-		
-		
 		ResponseList<PaysheetFrequencyDTO> res = new ResponseList<>();
 		List<PaysheetFrequencyDTO> totalList = new ArrayList<>();
 		periodList.getData().forEach(pay -> {
@@ -68,6 +67,18 @@ public class USPayPeriodServiceImpl implements USPayPeriodService{
 		res.setRecordsFiltered(totalList.size());
 		res.setRecordsTotal(totalList.size());
 		return res;
+	}
+	
+	@Override
+	public int updatedPayperiod(String payPeriodNum)
+	{
+		int isUpdated = 0;
+		try {
+			isUpdated = uSPayPeriodDao.updatedPayperiod(payPeriodNum);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isUpdated;
 	}
 	
 }

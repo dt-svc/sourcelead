@@ -175,9 +175,17 @@ $("#exportTaskPop, #export-pop, .userExp").click(function(e) {
 			teams.push($(this).val());
 		});
 		
+		var tags = [];
+		$('input:checkbox[name=tags]:checked').each(function() 
+	    {
+			tags.push($(this).val());
+		});
+		
+		
+		
 		var searchValue = $("#taskDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams;
+		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&tags="+tags;
 		prepareTasksList(url);
 	}
 </script>
@@ -1112,6 +1120,22 @@ function openFilterTaskPop(){
 										</ul>
 									 </div> 
 							 </div> 
+							 
+							 <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myTagsInput" onkeyup="myTagsFunction()" placeholder="Tags" title="Type in a tags">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTagsTeamUL">
+											<c:forEach var="tag" items="${taskTagsList}"> 
+											<li class="checkBox positionRelative clearfix"><input value="${tag}" name="tags"  type="checkbox" ><label>${tag}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 
+							 
 					</div>
 					</div>
 					<div class="clearfix advancedsearch-footer">
@@ -1128,6 +1152,7 @@ function resetTaskFilter(){
 	$("ul#taskStatusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myAssignedUL > li input:checkbox").prop("checked",false);
 	$("ul#myTaskTeamUL > li input:checkbox").prop("checked",false);
+	$("ul#myTagsTeamUL > li input:checkbox").prop("checked",false);
 	
 	document.getElementById("taskStatusId1069").checked = true;
 	document.getElementById("taskStatusId1070").checked = true;
@@ -1166,7 +1191,22 @@ function myTaskTeamFunction() {
         }
     }
 }
+function myTagsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTagsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTagsTeamUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
 
+        }
+    }
+}
 </script>			
 
 <script>

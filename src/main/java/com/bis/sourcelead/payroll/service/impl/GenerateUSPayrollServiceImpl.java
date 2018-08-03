@@ -6,13 +6,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.internal.resources.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +26,10 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.GenerateUSPayrollDao;
-import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
@@ -43,11 +39,9 @@ import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
-import com.bis.sourcelead.payroll.entity.AssociateTax;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollTax;
-import com.bis.sourcelead.payroll.entity.Paysheet;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
@@ -55,18 +49,16 @@ import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
 import com.bis.sourcelead.payroll.service.PayrollAdjustmentService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
-import com.bis.sourcelead.payroll.symmetry.HelloPayrollWorldBis;
 import com.bis.sourcelead.payroll.symmetry.PayrollCalculatorDTO;
-import com.bis.sourcelead.payroll.symmetry.SymmetryPaypal;
 import com.bis.sourcelead.payroll.symmetry.SymmetryPayrollCalculator;
+import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.payroll.view.AssociateTaxDedContriView;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.EmployeesService;
-import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.symmetry.ste.*;
+import com.symmetry.ste.STEPayrollCalculator;
 
 @Service
 public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
@@ -121,18 +113,26 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	@Autowired
 	EmployeesService employeesService;
 	
+	@Autowired
+	PayrollUtil payrollUtil;
+	
 	 
 	@Override
 	public PaysheetFrequencyDTO generateUSPayroll(OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO,User loginUser) throws Exception
 	{
 		String dates[] = generateUSPayrollDTO.getPayPeriod().split(",");
-		Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
-		Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
+		Date freqStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
+		Date freqEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
 		PaysheetFrequencyDTO paysheetFrequencyDTO = null;
 		
-		UserGroup userGroup = userGroupDao.findUserGroupById(generateUSPayrollDTO.getGroupId());
-		List<String> usrs = Arrays.asList(userGroup.getUserId().split(","));
-		List<Long> usersList = usrs.stream().map(Long::valueOf).collect(Collectors.toList());
+		
+		String[] groupId = generateUSPayrollDTO.getGroupId().split(",");
+		List<AssociateSalary> list = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]));
+		
+		UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
+		
+//		List<String> usrs = Arrays.asList(userGroup.getUserId().split(","));
+		List<Long> usersList = list.stream().map(AssociateSalary::getUser).collect(Collectors.toList());
 //		ResponseList<ProjectMembers> response = projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(orgLocation.getId(), actualStartDate, actualEndDate, 1, 10);
 		if (usersList != null && usersList.size() >0) {
 			PaysheetFrequency paySheetFreq = new PaysheetFrequency();
@@ -152,7 +152,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			paySheetFreq.setType(PayrollConstant.PAYROLL);
 			paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			Set<EmployeePayroll> payrollList = calculatePayroll(paySheetFreq, loginUser, orgLocation,usersList,actualStartDate, actualEndDate,userGroup);
+			Set<EmployeePayroll> payrollList = calculatePayroll(paySheetFreq, loginUser, orgLocation,usersList,freqStartDate, freqEndDate,userGroup);
 			paySheetFreq.setEmployeepayroll(payrollList);
 			PaysheetFrequency savedPaysheetFrequency = uSPaysheetService.addPaysheetFrequency(paySheetFreq);
 			if(savedPaysheetFrequency != null) {
@@ -162,15 +162,15 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		return paysheetFrequencyDTO;
 	}
 
-	private Set<EmployeePayroll> calculatePayroll(PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<Long> userList, Date actualStartDate, Date actualEndDate, UserGroup userGroup)
+	private Set<EmployeePayroll> calculatePayroll(PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<Long> userList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
 	{
 		Set<EmployeePayroll> set = new HashSet<>();
 		try {
 			for (Long userId : userList) {
 			    EmployeePayroll employeePayroll = new EmployeePayroll();
 			    employeePayroll.setPaysheetFrequency(paySheetFreq);
-			    TotalHoursDTO totalHoursDto = userGroupDao.getTotalHoursByUserId(userId,actualStartDate,actualEndDate);
-			    AssociateTaxDedContriView associateTaxDTO = associateTaxService.findUserTaxDeatails(userId, orgLocation);
+			    TotalHoursDTO totalHoursDto = userGroupDao.getTotalHoursByUserId(userId,freqStartDate,freqEndDate);
+			    AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(userId, orgLocation);
 //				Map<String, Float> hoursMap = submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(), orgLocation.getId(), actualStartDate, actualEndDate,"");
 				float totalHours = 0;
 				if(totalHoursDto !=null && StringUtils.isNotBlank(totalHoursDto.getTotalHours())) {
@@ -181,8 +181,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				if(totalHoursDto !=null) {
 					payRate = totalHoursDto.getPayRate();
 				}else {
-					if(associateTaxDTO.getHourlyRate() != null) {
-						payRate = associateTaxDTO.getHourlyRate().doubleValue();		
+					if(associateTaxView.getHourlyRate() != null) {
+						payRate = associateTaxView.getHourlyRate().doubleValue();		
 					}
 				}
 				employeePayroll.setEmpPayRate(BigDecimal.valueOf(payRate));
@@ -194,18 +194,13 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
 				
 				employeePayroll.setRehularHoursAmount(BigDecimal.valueOf(amount));
-				ResponseList<DeductionDTO> res = associateDeductionService.findAllDeductionSummaryByUserId(user.getId(), orgLocation);
+				BigDecimal[] deductions = getDeductionAmount(user,orgLocation,freqStartDate,freqEndDate,amount);
+				BigDecimal preTax = deductions[0];
+				BigDecimal postTax = deductions[1];
+				employeePayroll.setPreTaxDeduction(postTax);
+				employeePayroll.setPostTaxDeduction(postTax);
 				ResponseList<ContributionDTO> contributionRes = associateContributionService.findAllContributionSummaryByUserId(user.getId(), orgLocation);
-				BigDecimal preTax = BigDecimal.ZERO;
-				BigDecimal postTax = BigDecimal.ZERO;
-				 if(res.getData() != null) {
-						double preDeduction = res.getData().stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
-						preTax = BigDecimal.valueOf(preDeduction);
-						employeePayroll.setPreTaxDeduction(preTax);
-						double postDeduction = res.getData().stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
-						postTax = BigDecimal.valueOf(postDeduction);
-						employeePayroll.setPostTaxDeduction(postTax);
-					} 
+				 
 				 BigDecimal preContriSum = BigDecimal.ZERO;
 				 BigDecimal postContriSum = BigDecimal.ZERO;
 				if(contributionRes.getData() != null) {
@@ -217,15 +212,15 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				}
 				BigDecimal grossAmount = BigDecimal.valueOf(amount).subtract(preTax).add(preContriSum);
 				employeePayroll.setGrossPay(grossAmount);
-				PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(user,totalHours,grossAmount,invoiceFrequency,associateTaxDTO,paySheetFreq.getPayCheckDate());
+				PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(user,totalHours,grossAmount,invoiceFrequency,associateTaxView,paySheetFreq.getPayCheckDate());
 				STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
 				String  locationCode = payrollCalculator.getWebServiceLocationCodeV2().getLocationCode();
 				BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal().add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal()).add(STE.getCityCalc(locationCode).asBigDecimal());
 				employeePayroll.setTaxes(taxes);
-				System.out.println("*** Taxes :"+taxes);
+				logger.info("*** Taxes :"+taxes);
 				BigDecimal totalPay = grossAmount.subtract(taxes);
 				BigDecimal netPay = totalPay.subtract(postTax).add(postContriSum);
-				System.out.println("*** Net Pay :"+netPay);
+				logger.info("*** Net Pay :"+netPay);
 				employeePayroll.setNetPay(netPay);
 				Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(userId,orgLocation.getId());
 				if (employee != null) {
@@ -252,6 +247,85 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		
 	}
 	
+	/**
+	 * Calculating Deductions
+	 * 
+	 * @param user
+	 * @param orgLocation
+	 * @param freqStartDate
+	 * @param freqEndDate
+	 * @param amount
+	 * @return BigDecimal[]
+	 */
+	private BigDecimal[] getDeductionAmount(User user, OrgLocations orgLocation, Date freqStartDate, Date freqEndDate, double amount)
+	{
+		BigDecimal deductions[] = new BigDecimal[2];
+		BigDecimal preTax = BigDecimal.ZERO;
+		BigDecimal postTax = BigDecimal.ZERO;
+		try {
+			ResponseList<DeductionDTO> res = associateDeductionService.findAllDeductionSummaryByUserId(user.getId(), orgLocation);
+			if (res.getData() != null) {
+				List<DeductionDTO> preDedList = res.getData().stream().filter(ded -> "pretax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
+				for (DeductionDTO ded : preDedList) {
+					AssociateDeduction assoDeduction = associateDeductionService.getAsociateDedByUserIdDeductionId(Long.parseLong(ded.getId()), user.getId());
+					boolean dedSchedulePay = payrollUtil.findDeductionSchedulePay(assoDeduction, freqStartDate, freqEndDate);
+					if (!dedSchedulePay) {
+						if (PayrollConstant.FIXED.equalsIgnoreCase(ded.getMethod())) {
+							preTax.add(ded.getAmount());
+						}
+						else {
+							BigDecimal perAmount = getPercentAmount(BigDecimal.valueOf(amount), ded.getAmount());
+							preTax.add(perAmount);
+						}
+						if (StringUtils.isNoneBlank(assoDeduction.getDedStatus())) {
+							Date[] deductionDates = payrollUtil.getDeductionDates(assoDeduction.getDedEndDate(), assoDeduction.getDeductionTypeId().getPayrollScheduled());
+							assoDeduction.setDedStartDate(deductionDates[0]);
+							assoDeduction.setDedEndDate(deductionDates[1]);
+						}
+						else {
+							assoDeduction.setDedStatus("DEDUCTED");
+							Date[] deductionDates = payrollUtil.getDeductionDates(freqStartDate, assoDeduction.getDeductionTypeId().getPayrollScheduled());
+							assoDeduction.setDedStartDate(deductionDates[0]);
+							assoDeduction.setDedEndDate(deductionDates[1]);
+						}
+					}
+				}
+				List<DeductionDTO> postDedList = res.getData().stream().filter(ded -> "posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
+				// double preDeduction =
+				// res.getData().stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
+				// preTax = BigDecimal.valueOf(preDeduction);
+				// employeePayroll.setPreTaxDeduction(preTax);
+				deductions[0] = preTax;
+				for (DeductionDTO postDed : postDedList) {
+					if (PayrollConstant.FIXED.equalsIgnoreCase(postDed.getMethod())) {
+						postTax.add(postDed.getAmount());
+					}
+					else {
+						BigDecimal perAmount = getPercentAmount(BigDecimal.valueOf(amount), postDed.getAmount());
+						postTax.add(perAmount);
+					}
+				}
+				deductions[1] = postTax;
+				// double postDeduction =
+				// res.getData().stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
+				// postTax = BigDecimal.valueOf(postDeduction);
+			}
+		} catch (Exception e) {
+		}
+		return deductions;
+	}
+
+	/**
+	 * Calcualting deduction % amount
+	 * @param valueOf
+	 * @param amount
+	 * @return BigDecimal
+	 */
+	private BigDecimal getPercentAmount(BigDecimal gross, BigDecimal pct)
+	{
+		 return gross.multiply(pct).divide(PayrollConstant.ONE_HUNDRED);
+	}
+
 	/**'
 	 * populating employer taxes
 	 * @param employeePayroll
@@ -393,7 +467,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	public PaysheetFrequencyDTO getPayrollData(GenerateUSPayrollDTO generateUSPayrollDTO, OrgLocations orgLocation, User loginUser)
 	{
 		PaysheetFrequency paysheetFrequency = generateUSPayrollDao.getPayrollData(generateUSPayrollDTO, orgLocation, loginUser);
-		PaysheetFrequencyDTO paysheetFrequencyDTO = null;
+		PaysheetFrequencyDTO paysheetFrequencyDTO = new PaysheetFrequencyDTO();
 		List<USPayrollDTO> list = null;
 		try {
 			if (paysheetFrequency != null && paysheetFrequency.getEmployeepayroll() != null) {
@@ -432,8 +506,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					}
 					
 				}
+				paysheetFrequencyDTO.setPayrollDTO(list);
 			}
-			paysheetFrequencyDTO.setPayrollDTO(list);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -590,9 +665,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			res.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-	
-		
-		return null;
+		return res;
 	}
 	
 }

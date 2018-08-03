@@ -66,6 +66,7 @@ $(document).ready(function(){
                 <select class="form-control sel" id="payrollScheduled" name="payrollScheduled" data-validation="required" field-name="Scheduled">
 					    <option value = "">Select Scheduled</option>
 						 <option ${payrollDeduction.payrollScheduled == 'EVERY_PAY' ? 'selected' : ''} value = "EVERY_PAY">Every Pay</option>
+						  <option ${payrollDeduction.payrollScheduled == 'MONTHLY' ? 'selected' : ''} value = "MONTHLY">Monthly</option>
 						 <option ${payrollDeduction.payrollScheduled == 'QUARTERLY' ? 'selected' : ''} value = "QUARTERLY">Quarterly</option>
 						 <option ${payrollDeduction.payrollScheduled == 'SEMI_ANNUALLY' ? 'selected' : ''} value = "SEMI_ANNUALLY">Semi-Annually</option>
 						 <option ${payrollDeduction.payrollScheduled == 'ANNUALLY' ? 'selected' : ''} value = "ANNUALLY">Annually</option>

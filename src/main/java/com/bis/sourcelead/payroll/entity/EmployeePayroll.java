@@ -47,7 +47,7 @@ public class EmployeePayroll {
 	@Column(name = "REGULAR_HOURS")
 	private String regularHours;
 	
-	@Column(name = "REHULAR_HOURS_AMOUNT")
+	@Column(name = "REGULAR_HOURS_AMOUNT")
 	private BigDecimal rehularHoursAmount;
 	
 	@Column(name = "OVER_TIME_AMOUNT")
@@ -119,8 +119,9 @@ public class EmployeePayroll {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
 	private Set<EmployerPayrollTax> employerpayrolltax;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
+	private Set<DeductionHistory> deductionHistory;
 	
-
 	public String getSubmitForAproverStatus()
 	{
 		return submitForAproverStatus;
@@ -419,6 +420,16 @@ public class EmployeePayroll {
 	public void setUsPayrollTax(Set<EmployeePayrollTax> usPayrollTax)
 	{
 		this.usPayrollTax = usPayrollTax;
+	}
+
+	public Set<DeductionHistory> getDeductionHistory()
+	{
+		return deductionHistory;
+	}
+
+	public void setDeductionHistory(Set<DeductionHistory> deductionHistory)
+	{
+		this.deductionHistory = deductionHistory;
 	}
 	
 	

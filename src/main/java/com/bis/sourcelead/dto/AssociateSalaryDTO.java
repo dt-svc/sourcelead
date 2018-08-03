@@ -14,6 +14,9 @@ public class AssociateSalaryDTO {
 	@Required(desc = "Pay Frequency")
 	private String payFrequency;
 	
+	@Required(desc = "Pay Group")
+	private String payGroup;
+	
 	private String standardHours;
 	
 	private String annualSal;
@@ -49,6 +52,8 @@ public class AssociateSalaryDTO {
 	private String increasePer;
 	
 	private String changeReason;
+	
+	private String payGroupUUID;
 	
 	
 	public String getId()
@@ -219,6 +224,17 @@ public class AssociateSalaryDTO {
 	{
 		this.changeReason = changeReason;
 	}
-	
+	public String getPayGroup() {
+		return payGroup;
+	}
+	public void setPayGroup(String payGroup) {
+		this.payGroup = payGroup;
+	}
+	public String getPayGroupUUID() {
+		return payGroupUUID;
+	}
+	public void setPayGroupUUID(String payGroupUUID) {
+		this.payGroupUUID = payGroupUUID;
+	}
 	
 }

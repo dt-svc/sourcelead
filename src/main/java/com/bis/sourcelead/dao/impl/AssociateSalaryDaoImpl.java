@@ -14,6 +14,7 @@ import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.impl.AssociateBankDataDaoImpl;
 
 @Repository
@@ -123,5 +124,18 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			logger.error("add associate pay item failed due to : "+exception.getMessage());
 		}
 		return associatePayItem;
+	}
+
+
+	@Override
+	@Transactional
+	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
+		List<AssociateSalary> assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
+		if(assList != null)
+			return assList;
+		else
+			return null;
 	}
 }

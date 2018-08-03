@@ -1174,7 +1174,7 @@ function validateDate(){
 // 				$("#ApplyLeave").removeAttr('disabled');
 // 				$(".comMask").fadeIn();	
 			}
-			if(data.errorMessage != "N/A"){
+			if(data.errorMessage != "N/A" && data.errorMessage != null){
 				if(data.validateType == 'SAMEDAY'){
 					$("#ApplyLeave").attr('disabled','disabled');
 				}

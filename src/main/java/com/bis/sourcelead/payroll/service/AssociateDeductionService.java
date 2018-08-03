@@ -21,4 +21,6 @@ public interface AssociateDeductionService {
 
 	AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation);
 
+	AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId);
+
 }

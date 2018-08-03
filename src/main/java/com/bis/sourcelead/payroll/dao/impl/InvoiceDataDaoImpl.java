@@ -104,6 +104,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 					.append("OR ind.lastmodified like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
 					.append("OR ind.dueDate like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
 					.append("OR ind.rate like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
+					.append("OR ind.payRate like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
 					.append("OR ind.qty like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
 					.append("OR ind.amount like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
 					.append("OR ind.arPaid like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
@@ -197,6 +198,18 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 				count = version.get(0).intValue();
 		}
 		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<InvoiceData> getAllEmployeeInvoiceDetailsByEmpIdAndOrgLocationId(Long orgLocationId, Long userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		ResponseList<InvoiceData> res = new ResponseList<>();
+		String query = "from InvoiceData invoiceData where invoiceData.sku in (select distinct(wts.employeeId) from WageTaxSummary wts where wts.userId.id =:userId and wts.orgLocationId.id =:orgLocationId)";
+		List<InvoiceData> list = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+		res.setData(list);
+		return res;
 	}
 
 }

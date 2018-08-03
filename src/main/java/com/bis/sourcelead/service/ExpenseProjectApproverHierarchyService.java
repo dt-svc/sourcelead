@@ -1,5 +1,17 @@
 package com.bis.sourcelead.service;
 
-public interface ExpenseProjectApproverHierarchyService {
+import java.util.List;
 
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+
+public interface ExpenseProjectApproverHierarchyService {
+	
+	public List<ExpenseProjectApproverHierarchy> getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(long projectMemberMasterCandidateId,long projectId) throws Exception;
+	
+	public ExpenseProjectApproverHierarchy saveProjectExpenseProjectApproverHierarchy(ExpenseProjectApproverHierarchy expenseProjectApproverHierarchy) throws Exception;
+	
+	public List<ExpenseProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,Long orgLocationId) throws Exception;
+
+	public ExpenseProjectApproverHierarchy getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(Long approverUserId, Long projectClientId) throws Exception;
 }

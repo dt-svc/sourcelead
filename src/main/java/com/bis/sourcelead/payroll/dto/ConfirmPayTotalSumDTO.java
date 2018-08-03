@@ -82,6 +82,8 @@ public class ConfirmPayTotalSumDTO {
 	private String pfUUID;
 	
 	private String confirmType;
+	
+	private String ppn;
 
 	public double getTotalHours()
 	{
@@ -472,6 +474,16 @@ public class ConfirmPayTotalSumDTO {
 	public void setPid(List<Long> pid)
 	{
 		this.pid = pid;
+	}
+
+	public String getPpn()
+	{
+		return ppn;
+	}
+
+	public void setPpn(String ppn)
+	{
+		this.ppn = ppn;
 	}
 
 	

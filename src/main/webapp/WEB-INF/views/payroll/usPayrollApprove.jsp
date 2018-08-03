@@ -36,6 +36,8 @@ function calculateTotalPay(formData,confirmType){
 				  $("#payrollIds").val(json.payrollIds);
 				  $("#pid").val(json.pid);
 				  $("#confirmType").val(json.confirmType); 
+				  alert(json.ppn);
+				  $("#ppn").val(json.ppn); 
 		    	  
 		    	  var dedJson = json.deduction;
 		    	  var dedResult = "";
@@ -94,6 +96,7 @@ function calculateTotalPay(formData,confirmType){
                			<input type="hidden" name ="pid" id="pid"/>
                			<input type="hidden" name ="payrollIds" id="payrollIds"/>
                			<input type="hidden" name ="confirmType" id="confirmType"/>
+               			<input type="hidden" name ="ppn" id="ppn"/>
                				<table class="table">
                					<thead>
                						<tr>
