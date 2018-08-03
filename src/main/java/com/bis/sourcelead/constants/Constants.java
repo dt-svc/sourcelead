@@ -796,6 +796,7 @@ public class Constants {
 	public static final String ONE_YEAR = "oneyear";
 	public static final String INVOICE_ACCEPETED = "Accepted";
 	public static final String INVOICE_REJECTED = "Rejected";
+	public static final String INVOICE_BILL_VOID = "Void";
 	public static final String INVOICE_RECEIVED = "Received";
 	public static final String INVOICE_STATUS_UNPAID = "Unpaid";
 	public static final String INVOICE_STATUS_PAID = "Paid";
@@ -972,6 +973,8 @@ public class Constants {
 	
 	public static final String MANUAL_CANDIDATE = "manual";
 	public static final String IMPORT_CANDIDATE = "import";
+	public static final String INVOICE_ENTITY_SHORTCODE = "INV";
+	public static final String BILL_ENTITY_SHORTCODE = "BIL";
 	public static final String CANDIDATE_ADDED_MANUALLY = "added manually";
 	public static final String CANDIDATE_ADDED_BY_IMPORTING = "imported";
 	public static final String CANDIDATE_EDITTED = "updated profile";
@@ -1177,5 +1180,7 @@ public class Constants {
 	
 	public static final String HALFYEARLY = "HalfYearly";
 	public static final String QUARTERLY = "Quarterly";
+	
+
 	
 }
