@@ -15,4 +15,6 @@ public interface AssociateContributionService {
 	ResponseList<ContributionDTO> findAllContributionSummaryByUserId(Long userId, OrgLocations orgLocation);
 
 	AssociateContribution findAssociateContributionById(Long associateContributionId);
+
+	AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation);
 }

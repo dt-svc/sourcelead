@@ -175,10 +175,10 @@ function associateTaxSummary(userId){
         	  result = result + '   <div>';
         	  result = result + '  <select class="sel" id="federaltaxFillingStatus" name="federaltaxFillingStatus" data-validation="required" field-name="Filling Status">';
         	  result = result + '     <option value="">--Select--</option>';
-        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "SINGLE" ? "selected" : '') +' value="SINGLE">Single</option>';
-        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "MARRIED" ? "selected" : '') +' value="MARRIED">Married</option>';
-        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "MARRIED_USE_SINGLE_RATE" ? "selected" : '') +' value="MARRIED_USE_SINGLE_RATE">Married Use Single Rate</option>';
-        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "NONRESIDENT_ALIEN" ? "selected" : '') +' value="NONRESIDENT_ALIEN">Non Resident Alien</option>';
+        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "Single" ? "selected" : '') +' value="Single">Single</option>';
+        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "Married" ? "selected" : '') +' value="Married">Married</option>';
+        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "Married_Use_Single_Rate" ? "selected" : '') +' value="Married_Use_Single_Rate">Married Use Single Rate</option>';
+        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "NonResident_Alien" ? "selected" : '') +' value="NonResident_Alien">Non Resident Alien</option>';
         	  result = result + '    </select>';
         	  result = result + '  </div>';
         	  result = result + '  </div>';

@@ -22,6 +22,8 @@ public class ContributionDTO {
 	
 	private String taxType;
 	
+	private int status;
+	
 	public String getId()
 	{
 		return id;
@@ -110,6 +112,14 @@ public class ContributionDTO {
 	public void setAmount(double amount)
 	{
 		this.amount = amount;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 	
 	

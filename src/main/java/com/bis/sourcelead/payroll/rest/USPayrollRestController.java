@@ -321,12 +321,12 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = { "/deleteContributionType","/rest/deleteContributionType" }, method = RequestMethod.POST)
 	@ResponseBody
-	public boolean deleteSelectedContributionType(PayrollContributionDTO payrollContributionDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public boolean deleteSelectedContributionType(@RequestParam(value = "contributionId", required = false)Long contributionId,@RequestParam(value = "changeStatus", required = false)String changeStatus, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		if (payrollContributionDTO.getContributionId() !=0 ) {
-			return payrollContributionService.deleteContributionById(payrollContributionDTO.getContributionId());
-		}
-		return false;
+//		if (payrollContributionDTO.getContributionId() !=0 ) {
+			return payrollContributionService.deleteContributionById(contributionId,changeStatus);
+//		}
+//		return false;
 	}
 	
 	/**
@@ -340,12 +340,10 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = { "/deleteDeductionType","/rest/deleteDeductionType" }, method = RequestMethod.POST)
 	@ResponseBody
-	public boolean deleteSelectedContributionType(PayrollDeduction payrollDeduction, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public boolean deleteSelectedDeductionType(@RequestParam(value = "id", required = false)Long deductionId,@RequestParam(value = "changeStatus", required = false)String changeStatus, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		if (payrollDeduction.getId() !=0 ) {
-			return payrollDeductionService.deleteDeductionById(payrollDeduction.getId());
-		}
-		return false;
+		
+			return payrollDeductionService.deleteDeductionById(deductionId,changeStatus);
 	}
 	
 	
@@ -1334,4 +1332,31 @@ public class USPayrollRestController {
 		return res;
 
 	}
+	
+	@RequestMapping(value = "/validateDeduction", method = RequestMethod.GET)
+	@ResponseBody
+	public boolean validateDeduction(@RequestParam(value = "dedType",required = false)Long deductionTypeId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		boolean bol = false;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		AssociateDeduction  validateDed = associateDeductionService.getValidateDeduction(deductionTypeId,orgLocation);	
+		if(validateDed != null) {
+			bol = true;
+		}
+		return bol;
+	}
+	
+	@RequestMapping(value = "/validateContribution", method = RequestMethod.GET)
+	@ResponseBody
+	public boolean validateContribution(@RequestParam(value = "contriType",required = false)Long contriTypId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		boolean bol = false;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		AssociateContribution  validateCon = associateContributionService.getValidateContribution(contriTypId,orgLocation);	
+		if(validateCon != null) {
+			bol = true;
+		}
+		return bol;
+	}
+	
 }

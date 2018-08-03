@@ -109,6 +109,7 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 				contributionDTO.setAssociateContributionUUID(con.getAssociateContributionUuid());
 				contributionDTO.setPayrollDeductionId(String.valueOf(con.getContributionTypeId().getDeductionTypeId().getId()));
 				contributionDTO.setTaxType(con.getContributionTypeId().getDeductionTypeId().getTaxType());
+				contributionDTO.setStatus(con.getStatus());
 				list.add(contributionDTO);
 			});
 			res.setData(list);
@@ -120,5 +121,11 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 	public AssociateContribution findAssociateContributionById(Long assContriId)
 	{
 		return associateContributionDao.findAssociateContributionById(assContriId);
+	}
+
+	@Override
+	public AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation) {
+		AssociateContribution assContribution = associateContributionDao.getValidateContribution(contriTypId,orgLocation);
+		return assContribution;
 	}
 }
