@@ -1407,7 +1407,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     display:inline-block; color:#368ee0; padding:0px 10px 0px 0px;
     }
 .vendor_wrap_inn_table table tr td div .fa-pencil {
-    display:inline-block; color:#368ee0; padding:0px 10px 0px 0px; font-size:16px;
+    display:inline-block; color:#368ee0; padding:0px 10px 0px 0px;
     }      
 .side_mask .proj_close {
     width:60px; height:60px; background-color:#fff; box-shadow:0px 0px 3px rgba(0,0,0,0.4); text-align:center; position:relative;
@@ -8118,17 +8118,24 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 
 
 /*  New Css File  */
-.mask {
-	position: fixed; width: 100%; height: 100%; background-color: #000; opacity: 0.6; top: 0px; left: 0px;
+.mask, .maskTwo {
+	position: fixed; width: 100%; height: 100%; background-color: #000; opacity: 0.5; top: 0px; left: 0px;
 	z-index: 10000; display: none;
+}
+.maskTwo {
+	z-index: 10100; opacity: 0.2;
 }
 .popupWrap {
 	position: absolute; width: 550px; margin: 0px auto; left: 0px; right: 0px; top: 6%; background-color: #fff;
-	z-index: 10005; display: none;
+	z-index: 10005; display: none; box-shadow:0px 0px 6px rgba(0,0,0,0.5);
+}
+.popupWrapZin {
+	position: absolute; width: 450px; margin: 0px auto; left: 0px; right: 0px; top: 25%; background-color: #fff;
+	z-index: 10200; display: none; box-shadow:0px 0px 6px rgba(0,0,0,0.5); border-radius: 3px;
 }
 .popupWrapMid {
 	position: fixed; width: 900px; margin: 0px auto; left: 0px; right: 0px; top: 6%; background-color: #fff;
-	z-index: 10005; display: none; 
+	z-index: 10005; display: none; box-shadow:0px 0px 6px rgba(0,0,0,0.5);
 }
 .popupWrap .chosen-choices {
 	margin: 0px 0px !important;
@@ -8140,7 +8147,7 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 	width: 1000px; 
 }
 .popupHead {
-	background-color: #E6E6E6; height: 47px; line-height: 47px; font-size: 15px; font-weight: 500; color: #353535;
+	background-color: #f5f5f5; height: 47px; line-height: 47px; font-size: 15px; font-weight: 500; color: #353535;
 	padding: 0px 10px 0px 15px;
 }
 .closePop {
@@ -8149,16 +8156,25 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 	float: right; position: relative !important;
 	}
 .popupContent {
-	padding: 20px 40px 15px 35px;
+	padding: 20px 40px 15px 35px; min-height: 100px;
 }
 .popupContent.popupContentFixed {
 	max-height: 460px; overflow: auto;
 }
 .popupContent label {
-	display: block; margin-bottom: 5px !important; color: #666; font-size: 12px !important; font-weight: 400 !important;
+	display: block; margin-bottom: 3px !important; color: #666; font-size: 12px !important; font-weight: 400 !important;
+}
+.popupContent ul {
+	padding: 0px 0px; margin: 0px 0px;
+}
+.popupContent ul li {
+	list-style-type: none; padding: 6px 0px;
+}
+.popupContent ul li span {
+	display: inline-block; padding: 0px 0px 0px 10px; position: relative; top: 3px; width: 95%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .popupFoot {
-	height: 60px; border-top: 1px solid #ededed; padding: 14px 10px 0px 0px;
+	height: 50px; border-top: 1px solid #ededed; padding: 10px 10px 0px 0px;
 }
 .slBtn {
 	width: 75px; height: 30px; border: 1px solid #C2C5C8; border-radius: 4px; background-color: #fff; color: #6C7686;
@@ -8699,7 +8715,7 @@ max-width: 100% !important;
 	padding: 8px 0px 0px 12px;
 }
 .newAdBtn {
-	height: 32px; color: #fff !important; background-color: #368ee0; display: block; line-height: 31px; padding: 0px 10px !important;
+	height: 32px; color: #fff !important; background-color: #368ee0; display: block; line-height: 30px; padding: 0px 10px !important;
     border-radius: 3px; border: 1px solid #2b7ecc; font-weight: 400 !important; font-size: 14px !important;
 }
 .newAdBtn i {
@@ -8712,7 +8728,7 @@ max-width: 100% !important;
 	top: 35px;
 }
 .reportHead .action-pop span {
-	width: 200px; box-shadow: 0px 0px 6px rgba(0,0,0,0.2); border-radius: 2px;
+	width: 200px; box-shadow: 1px 1px 7px rgba(0,0,0,0.3); border-radius: 2px;
 }
 .reportHead .action-pop a {
 	padding: 9px 12px;
@@ -8745,6 +8761,14 @@ max-width: 100% !important;
 .sendIcon {
 	width: 34px; height: 32px; display: inline-block; background: url("../images/paper-plane.svg"); background-repeat: no-repeat;
 	background-position: center; background-size: 22px; cursor: pointer;
+}
+.folderIcon {
+	width: 34px; height: 32px; display: block; background: url("../images/folder.svg"); background-repeat: no-repeat;
+	background-position: center; background-size: 34px; cursor: pointer;
+}
+.manFolderIcon {
+	width: 34px; height: 32px; display: block; background: url("../images/folder1.svg"); background-repeat: no-repeat;
+	background-position: center; background-size: 34px; cursor: pointer;
 }
 .newActPop {
 	position: absolute;  top: 36px; right: -10px;  z-index: 100; display: none;
@@ -9027,8 +9051,7 @@ max-width: 100% !important;
 	padding: 0px 10px !important; box-shadow: 0px 0px 0px #000 !important;
 }
 .addPayrollGroupWrap {
-	position: absolute; width: 550px; margin: 0px auto; left: 0px; right: 0px; top: 6%; background-color: #fff;
-	z-index: 10005; display: none; width: 1000px;
+	position: absolute; width: 550px; margin: 0px auto; left: 0px; right: 0px; top: 6%; background-color: #fff; z-index: 10005; display: none; width: 1000px;
 }
 .closeAlt {
 	position: absolute; top: 10px; right: 10px; color: #a94454; font-size: 20px;
@@ -9036,5 +9059,18 @@ max-width: 100% !important;
 .popHeadTwo {
 	font-size: 16px; font-weight: 500; color: #454545; padding: 0px 0px 12px 0px;
 }
-
-
+.emailWidth {
+	width:400px;
+}
+.model-err-msg {
+    clear: both;  margin: 0 auto;  padding: 0px; color: #E65C8D; text-align: center; width: 54%; margin-bottom: 10px; margin-top: -18px; font-size: 12px;
+}
+img.contact-images {
+	width:24px; height: 24px; margin-right: 10px;
+}
+.importcsv-accordion .panel-title a {
+	display: block; width:100%;
+}
+.popupWrap .jquery_form_error_message {
+	padding: 0px 0px 0px 0px !important;
+}

@@ -1771,8 +1771,8 @@ $("#searchType").selectpicker('refresh');
   </div> --%>
   
   
-  <div class="mask"></div>
-  
+ <div class="mask"></div>
+ <div class="maskTwo"></div>
   
   <script>
   
@@ -2031,7 +2031,7 @@ function verifyEmail2() {
 document.onkeydown = function(evt) {
     evt = evt || window.event;
     if (evt.keyCode == 27) {
-        $(".mask, .advancedsearch-mask, .location-alert").hide();
+        $(".mask, .maskTwo, .advancedsearch-mask, .location-alert, .impConPop").hide();
         $(".popupWrap, .popupWrapMid, div.cand-advsrch-popup, .remove_user_pop").fadeOut(100);
     }
 };
