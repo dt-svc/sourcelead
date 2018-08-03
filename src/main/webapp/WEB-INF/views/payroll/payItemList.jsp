@@ -15,7 +15,10 @@ $(document).ready(function(){
 <div class="pull-left">
 <h2>Pay Item list</h2>
 </div>
-<div class="pull-right brud-crum">Home &raquo; Pay Item list</div>
+        <div class="pull-right brud-crum">
+                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Pay Item list
+				</div>
 </section>
 
 <!-- Timesheet -->
