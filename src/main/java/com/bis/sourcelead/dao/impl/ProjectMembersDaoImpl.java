@@ -395,7 +395,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(Long locationsId,Date startDate,Date endDate,int start,int length){
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		
@@ -440,9 +439,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Query query = session.createQuery(queryStr.toString());
 		
 		
-		String countQuery = " Select count(*) from ProjectMembers pm where pm.projectMemberCandidteId.orgLocationId.id = :locationsId "
-				+ statusQuery
-				+ dateCountQuery;
+//		String countQuery = " Select count(*) from ProjectMembers pm where pm.projectMemberCandidteId.orgLocationId.id = :locationsId "
+//				+ statusQuery
+//				+ dateCountQuery;
 		
 		
 		if(startDate != null && endDate != null){
@@ -450,24 +449,25 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		
 		@SuppressWarnings("unchecked")
-		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setFirstResult(start).setMaxResults(length).list();;
+//		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setFirstResult(start).setMaxResults(length).list();
+		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).list();
 		response.setData(projectMemberList);
 		
-		Query countQ = session.createQuery(countQuery);
-		if(startDate != null && endDate != null){
-			countQ.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
-		}
-		countQ.setLong("locationsId", locationsId);
-		
-		List<Long> countList  = null;
-		if(countQ != null) {
-			countList  = countQ.list();
-		}
-		int recordsTotal=0;
-		if(countList != null && !countList.isEmpty()) {
-			recordsTotal  =  countList.iterator().next().intValue();
-		}
-		response.setRecordsTotal(recordsTotal);
+//		Query countQ = session.createQuery(countQuery);
+//		if(startDate != null && endDate != null){
+//			countQ.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+//		}
+//		countQ.setLong("locationsId", locationsId);
+//		
+//		List<Long> countList  = null;
+//		if(countQ != null) {
+//			countList  = countQ.list();
+//		}
+//		int recordsTotal=0;
+//		if(countList != null && !countList.isEmpty()) {
+//			recordsTotal  =  countList.iterator().next().intValue();
+//		}
+//		response.setRecordsTotal(recordsTotal);
 		
 		/*if(searchQuery.toString() != null && !searchQuery.toString().isEmpty()){
 			response.setRecordsFiltered(recordsFiltered);
@@ -481,8 +481,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-
-	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,Long projectId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length, timesheetFor, isGlobalUser){
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,Long projectId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor,String isGlobalUser){
 
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		
@@ -630,12 +629,14 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	     
 	    String globalUserQuery = "";
 	    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-	    	globalUserQuery = " pm.projectMemberCandidteId.orgLocationId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)";
+	    	globalUserQuery = " and  pm.projectMemberCandidteId.orgLocationId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)";
 	    }else {
-	    	globalUserQuery = " pm.projectMemberCandidteId.orgLocationId.id = :locationsId";
+	    	globalUserQuery = " and  pm.projectMemberCandidteId.orgLocationId.id = :locationsId";
 	    }
+	    String projectForQuery = " (pm.projects.isProjectForTimeSheets = 'Y' OR pm.id IN(select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.status != '0' and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))";
 		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation"
-				+ " where  "
+				+ " where "
+				    +projectForQuery
 				    +globalUserQuery
 				    +frequencyQuery
 				    +fillingOptionQuery
@@ -652,6 +653,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 		
 		String countQuery = " Select count(*) from ProjectMembers pm where  "
+				+projectForQuery
 				+globalUserQuery
 				+frequencyQuery
 				+fillingOptionCountQuery

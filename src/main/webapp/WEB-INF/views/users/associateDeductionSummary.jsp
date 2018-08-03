@@ -2,9 +2,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
  
- 
  <script>
-function associateDeductionSummary(userId){  
+function associateDeductionSummary(userId){
 	$.ajax({
            type : "GET",
            url: sourceleadUrl+"/findAllDeductionSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
@@ -16,7 +15,7 @@ function associateDeductionSummary(userId){
             result = result + '<div class="table-header clearfix">';
             result = result + '<h4 class="pull-left margin-top0">Deductions</h4>';
             result = result + '<ul class="list-unstyled list-inline pull-right">';
-            result = result + '<li><a><i class="fa fa-plus paddingRight"></i>Add</a></li>';
+            result = result + '<li><a href="<c:url value="${appPath}/addAssociateDeduction?userId='+userId+'"/>" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
             result = result + '<div class="clearfix"></div>';
             result = result + '</ul>';
             result = result + '</div>';
@@ -79,7 +78,8 @@ function associateDeductionSummary(userId){
                 $("#tab-20").empty();
                 $("#tab-21").empty(); 
                 $("#tab-22").empty(); 
-                $("#tab-23").empty(); 
+                $("#tab-23").empty();
+                $("#tab-25").empty();
                 $("#tab-23").append(result); 
                 associateDeductonListPagination();
                 

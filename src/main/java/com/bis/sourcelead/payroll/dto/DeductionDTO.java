@@ -12,9 +12,25 @@ public class DeductionDTO {
 	
 	private BigDecimal amount;
 	
+	private double dedAmount;
+	
+	private String dedSchedule;
+	
+	public double getDedAmount()
+	{
+		return dedAmount;
+	}
+
+	public void setDedAmount(double dedAmount)
+	{
+		this.dedAmount = dedAmount;
+	}
+
 	private String description;
 	
 	private String associateDeductionUUID;
+	
+	private String dedTaxType;
 
 	public String getId()
 	{
@@ -75,6 +91,28 @@ public class DeductionDTO {
 	{
 		this.associateDeductionUUID = associateDeductionUUID;
 	}
+
+	public String getDedTaxType()
+	{
+		return dedTaxType;
+	}
+
+	public void setDedTaxType(String dedTaxType)
+	{
+		this.dedTaxType = dedTaxType;
+	}
+
+	public String getDedSchedule()
+	{
+		return dedSchedule;
+	}
+
+	public void setDedSchedule(String dedSchedule)
+	{
+		this.dedSchedule = dedSchedule;
+	}
+	
+	
 	
 	
 }

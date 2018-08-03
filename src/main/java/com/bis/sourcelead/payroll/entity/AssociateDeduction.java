@@ -48,9 +48,17 @@ public class AssociateDeduction implements Serializable{
 	@Column(name = "DEDUCTION_AMOUNT")
 	private BigDecimal deductionAmount;
 	
+	@Column(name = "DED_STATUS")
+	private String dedStatus;
+	
+	@Column(name = "DED_START_DATE")
+	private Date dedStartDate;
+	
+	@Column(name = "DED_END_DATE")
+	private Date dedEndDate;
+
 	@Column(name = "STATUS")
 	private Integer status;
-	
 	
 	@Column(name = "ASSOCIATE_DEDUCTION_UUID")
 	private String associateDeductionUuid;
@@ -76,7 +84,6 @@ public class AssociateDeduction implements Serializable{
 	{
 		this.id = id;
 	}
-
 	
 	public PayrollDeduction getDeductionTypeId()
 	{
@@ -192,8 +199,36 @@ public class AssociateDeduction implements Serializable{
 	{
 		this.associateDeductionUuid = associateDeductionUuid;
 	}
-	
-	
-	
+
+	public String getDedStatus()
+	{
+		return dedStatus;
+	}
+
+	public void setDedStatus(String dedStatus)
+	{
+		this.dedStatus = dedStatus;
+	}
+
+	public Date getDedStartDate()
+	{
+		return dedStartDate;
+	}
+
+	public Date getDedEndDate()
+	{
+		return dedEndDate;
+	}
+
+	public void setDedStartDate(Date dedStartDate)
+	{
+		this.dedStartDate = dedStartDate;
+	}
+
+	public void setDedEndDate(Date dedEndDate)
+	{
+		this.dedEndDate = dedEndDate;
+	}
+
 	
 }

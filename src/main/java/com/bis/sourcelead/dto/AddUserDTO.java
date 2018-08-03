@@ -938,5 +938,4 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setShiftId(String shiftId) {
 			this.shiftId = shiftId;
 		}
-
 }

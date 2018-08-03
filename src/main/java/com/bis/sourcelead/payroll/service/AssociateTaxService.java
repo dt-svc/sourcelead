@@ -5,6 +5,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
+import com.bis.sourcelead.payroll.view.AssociateTaxDedContriView;
 
 public interface AssociateTaxService {
 
@@ -13,5 +14,7 @@ public interface AssociateTaxService {
 	Response<AssociateTaxDTO> isLocalTaxYes(AssociateTaxDTO associateTaxDTO, OrgLocations orgLocation, User loginUser);
 
 	AssociateTaxDTO findAssociateTaxSummaryByUserId(Long userId, OrgLocations orgLocation);
+
+	AssociateTaxDedContriView findUserTaxDeatails(Long userId, OrgLocations orgLocation);
 
 }

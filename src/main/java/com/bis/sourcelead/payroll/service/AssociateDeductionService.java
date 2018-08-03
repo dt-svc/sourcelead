@@ -18,4 +18,7 @@ public interface AssociateDeductionService {
 	ResponseList<DeductionDTO> findAllDeductionSummaryByUserId(Long userId, OrgLocations orgLocation);
 
 	AssociateDeduction findAssociateDeductionById(Long associateDeductionId);
+
+	AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId);
+
 }

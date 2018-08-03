@@ -371,7 +371,6 @@ public class UserServiceImpl implements UserService {
 				 userRole.setDesignation(addUserDTO.getDesignation());
 		    }
 	   }
-		
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
 		if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess())) {
 			userRole.setIsGlobal(Constants.YES);

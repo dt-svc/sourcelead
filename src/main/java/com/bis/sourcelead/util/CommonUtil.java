@@ -77,6 +77,7 @@ import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
@@ -113,6 +114,7 @@ import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
+import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -253,6 +255,9 @@ public class CommonUtil {
 
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
 	
 	/**
 	 * This method is used to convert JSON String to HashMap<Key,Value>
@@ -1356,6 +1361,42 @@ public class CommonUtil {
 			return Float.parseFloat(actualTimeString);
 		}
 		
+
+		public static double getTotalRegularOverTimeHours(double regulraHours,double overTimeHours){
+			double cthHours = regulraHours;
+			double cthHoursValue = (int) cthHours;
+			double cthMinutesValue = cthHours - cthHoursValue;
+			double totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+			double wthHours = overTimeHours;
+			double wthHoursValue = (int) wthHours;
+			double wthMinutesValue = wthHours - wthHoursValue;
+			double totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+			double totalMinutes = totalCthMinutes+totalWthMinutes;
+
+			double actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+			double actualMinutes = (totalMinutes % 60)/100;
+
+			String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
+			
+			return Double.parseDouble(actualTimeString);
+		}
+		
+	/*	public static String getHoursDisplayFormat(Float hours2){
+			float cthHours = 0;
+			float cthHoursValue = (int) cthHours;
+			float cthMinutesValue = cthHours - cthHoursValue;
+			float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+			float wthHours = hours2;
+			float wthHoursValue = (int) wthHours;
+			float wthMinutesValue = wthHours - wthHoursValue;
+			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+			float totalMinutes = totalCthMinutes+totalWthMinutes;
+			return paymentSuccessReturnEmail;
+		}*/
 		public static String getHoursDisplayFormat(Float hours2,Float totalMinutes){
 			if(totalMinutes == null) {
 				float wthHours = hours2;
@@ -2091,9 +2132,10 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 				if((projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) || (StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES))) {
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
+						ExpenseProjectApproverHierarchy expenseApproverHierarchy = expenseProjectApproverHierarchyService.getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
 						Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-						if(approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode()) || isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
+						if(expenseApproverHierarchy != null || approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode()) || isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
 							flag = true;
 						}
 					}else {
@@ -2449,6 +2491,19 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 	}
 	  
   }
+
+/**
+ * Conert Date to OrgLocation format with HH:MM:SS 
+ * @param dateFormat
+ * @param date
+ * @return String
+ */
+public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
+{
+	DateFormat sdf = new SimpleDateFormat(dateFormat+" HH:mm:ss");
+	return sdf.format(date);
+}
+
   
   
   public String getConfiguredFromEmail(Long orgLocationId,EmailScenario  emailScenario) throws Exception{
@@ -2559,6 +2614,7 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 		return "success";
 	}
 
+  
 	public static String toFixed2(double d) {
 		String str;
 		d = d * 100;

@@ -139,5 +139,14 @@ public class LeaveTypeDaoImpl implements LeaveTypeDao {
 		return leaveType;
 	}
 
+	@Override
+	@Transactional
+	public List<String> getLeaveTypeNameListByLocationId(Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select leaveType.name from LeaveType leaveType where leaveType.orgLocations.id = :orgLocationId"; 
+		List<String> leaveTypesNamesList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		return leaveTypesNamesList;
+	}
 
 }

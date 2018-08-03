@@ -64,4 +64,19 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		}
 		return associateDeduction;
 	}
+
+
+	@Override
+	@Transactional
+	public AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId)
+	{
+		AssociateDeduction associateDeduction = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			associateDeduction = (AssociateDeduction) session.createQuery("from AssociateDeduction ded where ded.id=:deductionId and ded.userId.id=:userId").setLong("deductionId", deductionId).setLong("userId", userId).uniqueResult();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return associateDeduction;
+	}
 }

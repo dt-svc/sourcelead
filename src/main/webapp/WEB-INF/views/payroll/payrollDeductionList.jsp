@@ -16,22 +16,17 @@ $(document).ready(function(){
 <section class="content-wraper contentWraper">
 <section class="content-header clearfix">
   <div class="pull-left">
-    <h2>Payroll Configuration</h2>
+    <h2>Payroll Deduction</h2>
   </div>
   
   <div class="success_pop" id="selector2" style="display: none;">
    <i class="fa fa-check-circle"></i><span id="deductionDeleteMsgDiv"></span>
  </div>
  
-  <div class="pull-right brud-crum">Home &raquo; Payroll Configuration</div>
+  <div class="pull-right brud-crum">Home &raquo; Payroll Deduction</div>
 </section>
  
-   <div class="tabsMenu clearfix">
-   <ul class="list-unstyled">
-	   <li class="current"><a href="<c:url value='${appPath}/payrollConfigure'/>" >Deduction</a></li>
-	   <li><a href="<c:url value='${appPath}/payrollContribution'/>" class="active">Contribution</a></li>
-	   </ul>
-   </div>  
+
  
   <div class="tablelist-wrap clearfix">
    

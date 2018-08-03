@@ -12,9 +12,15 @@ public class ContributionDTO {
 	
 	private BigDecimal contributionAmount;
 	
+	private double amount;
+	
 	private String associateContributionUUID;
 	
 	private String description;
+	
+	private String payrollDeductionId;
+	
+	private String taxType;
 	
 	public String getId()
 	{
@@ -74,6 +80,36 @@ public class ContributionDTO {
 	public void setDescription(String description)
 	{
 		this.description = description;
+	}
+
+	public String getPayrollDeductionId()
+	{
+		return payrollDeductionId;
+	}
+
+	public void setPayrollDeductionId(String payrollDeductionId)
+	{
+		this.payrollDeductionId = payrollDeductionId;
+	}
+
+	public String getTaxType()
+	{
+		return taxType;
+	}
+
+	public void setTaxType(String taxType)
+	{
+		this.taxType = taxType;
+	}
+
+	public double getAmount()
+	{
+		return amount;
+	}
+
+	public void setAmount(double amount)
+	{
+		this.amount = amount;
 	}
 	
 	

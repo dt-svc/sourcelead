@@ -66,6 +66,7 @@ $(document).ready(function(){
                 <select class="form-control sel" id="payrollScheduled" name="payrollScheduled" data-validation="required" field-name="Scheduled">
 					    <option value = "">Select Scheduled</option>
 						 <option ${payrollDeduction.payrollScheduled == 'EVERY_PAY' ? 'selected' : ''} value = "EVERY_PAY">Every Pay</option>
+						  <option ${payrollDeduction.payrollScheduled == 'MONTHLY' ? 'selected' : ''} value = "MONTHLY">Monthly</option>
 						 <option ${payrollDeduction.payrollScheduled == 'QUARTERLY' ? 'selected' : ''} value = "QUARTERLY">Quarterly</option>
 						 <option ${payrollDeduction.payrollScheduled == 'SEMI_ANNUALLY' ? 'selected' : ''} value = "SEMI_ANNUALLY">Semi-Annually</option>
 						 <option ${payrollDeduction.payrollScheduled == 'ANNUALLY' ? 'selected' : ''} value = "ANNUALLY">Annually</option>
@@ -85,7 +86,7 @@ $(document).ready(function(){
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Save" class="btn btn-success btnSuccess" id="save_deductionType" type="button" onclick="saveDeduction();">
-            <input value="Cancel" class="btn btn-defualt ml10" onclick="window.location='${appPath}/payrollConfigure'" type="button">
+            <input value="Cancel" class="btn btn-defualt ml10" onclick="window.location='${appPath}/payrollConfiguration'" type="button">
           </div>
         </div>
       </div>      
@@ -130,12 +131,14 @@ function validateDeductionMethodType() {
 	$('#deductionAmountDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 var selectedMethod = document.getElementById("payrollDeductionMethod").value;
 	 var enteredValue = document.getElementById("deductionAmount").value;
-	 
+	 var nameErrorDiv = $('#deductionNameDive p').length > 0;
 	 if(selectedMethod =='Percent'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(enteredValue.match(floatNum)){
-			  $("#save_deductionType").removeAttr("disabled", "disabled");
-			   return true;
+			  if(!nameErrorDiv){
+				  $("#save_deductionType").removeAttr("disabled", "disabled");
+			  }
+			  return true;
 		  }		  
 		 else{
 				$("#deductionAmountDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
@@ -143,6 +146,7 @@ function validateDeductionMethodType() {
 				return false; 
 		 	 }
 	  }if(selectedMethod =='Fixed'){
+		  if(!nameErrorDiv)
 			  $("#save_deductionType").removeAttr("disabled", "disabled");
 		  }		  
 }
@@ -155,7 +159,7 @@ function saveDeduction(){
 		        	  $("#addDeductionLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.post(sourceleadUrl+"/savePayrollDeduction?"+tokenParamName+"="+tokenValue, formData, function(data) {
 		        		  $("#addDeductionLoading").removeAttr("style");
-		        		  location.replace(sourceleadUrl+ "/payrollConfigure");
+		        		  location.replace(sourceleadUrl+ "/payrollDeductionList");
 		        		  
 		        		    $("#selector2").removeAttr("style");
 			     			 $("#selector2").css({ display: "block" });
@@ -185,22 +189,24 @@ $('body').on('blur', '#add_deduction_form', function() {
 function validateDeductionType(){
 	var payrollDeductionType = $("#deductionType").val();
 	$('#deductionNameDive').find('p.jquery_form_error_message').remove();
+	var isDisabled = $('#save_contributionType').is('[disabled=disabled]');
 	if (payrollDeductionType != null && payrollDeductionType != '') {
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl + "/isValidDeductionType?"+tokenParamName+"="+tokenValue+"&payrollDeductionType="+payrollDeductionType,
 			success : function(data) {
 				if (data == true) {
-					$("#save_deductionType").removeAttr("disabled");
+// 					$("#save_deductionType").removeAttr("disabled");
 			        $("#save_deductionType").attr("disabled", "disabled");
 					$("#deductionNameDive").append( "<p class='jquery_form_error_message'>" + payrollDeductionType + " is Existed</span>");
 					$('#deductionNameDive').removeAttr( "record-exist record-exist-errorMsg");
 					
 				}else {
-					$("#save_deductionType").removeAttr("disabled");
+					if(!isDisabled)
+						$("#save_deductionType").removeAttr("disabled");
 					$('#deductionNameDive').find('p.jquery_form_error_message').remove();
-					$("#save_deductionType").click(function() {
-					});
+// 					$("#save_deductionType").click(function() {
+// 					});
 					
 				}
 				

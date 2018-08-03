@@ -14,8 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bis.sourcelead.enums.TagEntites;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sun.star.ucb.InteractiveNetworkGeneralException;
 
 @Entity
 @Table(name = "SOURCELEAD_TAGS")
@@ -59,6 +62,64 @@ public class SourceleadTags implements Serializable{
     @Column(name = "UPDATED_DATE")
 	private Date updatedDate;
     
+    @Transient
+    @JsonProperty
+    private Integer candidateCount;
+    
+    @Transient
+    @JsonProperty
+    private Integer jobCount;
+    
+    @Transient
+    @JsonProperty
+    private Integer clientCount;
+ 
+    @Transient
+    @JsonProperty
+    private Integer vendorCount;
+    
+    @Transient
+    @JsonProperty
+    private Integer projectCount;
+    
+    @Transient
+    @JsonProperty
+    private Integer associateCount;
+    
+    @Transient
+    @JsonProperty
+    private String entityName;
+    
+    @Transient
+    @JsonProperty
+    private Integer invoicetCount;
+    
+    
+    @Transient
+    @JsonProperty
+    private Integer billsCount;
+    
+    
+    @Transient
+    @JsonProperty
+    private Integer assetCount;
+    
+    @Transient
+    @JsonProperty
+    private Integer taskCount;
+    
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String getEntityName() {
+		return entityName;
+	}
+
+	public void setEntityName(String entityName) {
+		this.entityName = entityName;
+	}
 
 	public Long getId() {
 		return id;
@@ -138,5 +199,85 @@ public class SourceleadTags implements Serializable{
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public Integer getCandidateCount() {
+		return candidateCount;
+	}
+
+	public Integer getJobCount() {
+		return jobCount;
+	}
+
+	public Integer getClientCount() {
+		return clientCount;
+	}
+
+	public Integer getVendorCount() {
+		return vendorCount;
+	}
+
+	public Integer getProjectCount() {
+		return projectCount;
+	}
+
+	public void setCandidateCount(Integer candidateCount) {
+		this.candidateCount = candidateCount;
+	}
+
+	public void setJobCount(Integer jobCount) {
+		this.jobCount = jobCount;
+	}
+
+	public void setClientCount(Integer clientCount) {
+		this.clientCount = clientCount;
+	}
+
+	public void setVendorCount(Integer vendorCount) {
+		this.vendorCount = vendorCount;
+	}
+
+	public void setProjectCount(Integer projectCount) {
+		this.projectCount = projectCount;
+	}
+
+	public Integer getAssociateCount() {
+		return associateCount;
+	}
+
+	public void setAssociateCount(Integer associateCount) {
+		this.associateCount = associateCount;
+	}
+
+	public Integer getInvoicetCount() {
+		return invoicetCount;
+	}
+
+	public Integer getBillsCount() {
+		return billsCount;
+	}
+
+	public Integer getAssetCount() {
+		return assetCount;
+	}
+
+	public void setInvoicetCount(Integer invoicetCount) {
+		this.invoicetCount = invoicetCount;
+	}
+
+	public void setBillsCount(Integer billsCount) {
+		this.billsCount = billsCount;
+	}
+
+	public void setAssetCount(Integer assetCount) {
+		this.assetCount = assetCount;
+	}
+
+	public Integer getTaskCount() {
+		return taskCount;
+	}
+
+	public void setTaskCount(Integer taskCount) {
+		this.taskCount = taskCount;
 	}
 }

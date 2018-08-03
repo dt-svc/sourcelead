@@ -78,7 +78,7 @@ $(document).ready(function(){
 	        <div class="col-lg-12">
 	          <div class="pull-right">
 	            <input value="Save" class="btn btn-success btnSuccess" id="save_contributionType" type="button" onclick="saveContribution();">
-	            <input value="Cancel" class="btn btn-default ml10" onclick="window.location='${appPath}/payrollContribution';" type="button">
+	            <input value="Cancel" class="btn btn-default ml10" onclick="window.location='${appPath}/payrollConfiguration';" type="button">
 	          </div>
 	        </div>
       	</div>   
@@ -150,19 +150,23 @@ function validateContributionMethodType() {
 	$('#contributionAmountDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 var selectedMethod = document.getElementById("payrollContributionMethod").value;
 	 var enteredValue = document.getElementById("contributionAmount").value;
-	 
+	 var isDisabled = $('#save_contributionType').is('[disabled=disabled]');
+	 var nameErrorDiv = $('#contributionNameDive p').length > 0;
 	 if(selectedMethod =='Percent'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(enteredValue.match(floatNum)){
-			  $("#save_contributionType").removeAttr("disabled", "disabled");
-			   return true;
+			  if(!nameErrorDiv){
+				  $("#save_contributionType").removeAttr("disabled", "disabled");
+			  }
+			  return true;
 		  }		  
 		 else{
-				$("#contributionAmountDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
-				$("#save_contributionType").attr("disabled", "disabled");
-				return false; 
-		 	 }
+			 $("#contributionAmountDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+			 $("#save_contributionType").attr("disabled", "disabled");
+			 return false; 
+	 	 }
 	  }if(selectedMethod =='Fixed'){
+		  if(!nameErrorDiv)
 			  $("#save_contributionType").removeAttr("disabled", "disabled");
 		  }		  
 }
@@ -188,6 +192,7 @@ function validateContributionMethodType() {
 function isValidContributionType(){
 	var deductionTypeId = $("#deductionTypeId").val();
 	var deductionTypeName = $('#deductionTypeId').find(":selected").text();
+	var isDisabled = $('#save_contributionType').is('[disabled=disabled]');
 	$('#contributionNameDive').find('p.jquery_form_error_message').remove();
 	if (deductionTypeId != null && deductionTypeId != '') {
 		$.ajax({
@@ -195,16 +200,17 @@ function isValidContributionType(){
 			url : sourceleadUrl + "/isValidContributionType?"+tokenParamName+"="+tokenValue+"&deductionTypeId="+deductionTypeId,
 			success : function(data) {
 				if (data == true) {
-					$("#save_contributionType").removeAttr("disabled");
+// 					$("#save_contributionType").removeAttr("disabled");
 			        $("#save_contributionType").attr("disabled", "disabled");
 					$("#contributionNameDive").append( "<p class='jquery_form_error_message'>"+deductionTypeName+" is already Existed</span>");
 					$('#contributionNameDive').removeAttr( "record-exist record-exist-errorMsg");
 					
 				}else {
-					$("#save_contributionType").removeAttr("disabled");
+					if(!isDisabled)
+						$("#save_contributionType").removeAttr("disabled");
 					$('#contributionNameDive').find('p.jquery_form_error_message').remove();
-					$("#save_contributionType").click(function() {
-					});
+// 					$("#save_contributionType").click(function() {
+// 					});
 					
 				}
 				

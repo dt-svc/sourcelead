@@ -13,7 +13,7 @@
         <h4 class="modal-title">${candidate.fullName}, <span class="ml10 small text-muted">${candidate.designationType}</span></h4>
       </div>
   		<div class="modal-body">
-  			<div class="clearfix tablecustom-styles">
+  			<div class="clearfix tablecustom-styles mailerpopup overflow_Auto">
   				<table class="table">
   					<thead>
   					<tr>

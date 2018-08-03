@@ -21,9 +21,8 @@
                         <option value="">--Select--</option>
                         <option value="SINGLE">Single</option>
                         <option value="MARRIED">Married</option>
-                        <option value="MARRIED_USE_SINGLE_RATE">Married Single Income</option>
-                        <option value="Married_Dual_Income">Married Dual Income</option>
-                        <option value="Head_of_Household">Head of Household</option>
+                        <option value="MARRIED_USE_SINGLE_RATE">Married Use Single Rate</option>
+                        <option value="NONRESIDENT_ALIEN">Non Resident Alien</option>
                       </select>
                     </div>
                   </div>
@@ -178,10 +177,11 @@
 					<div class="clearfix"></div>
                   <div class="clearfix footerstyelsNew">
                   <div class="col-md-6">
-                 <a href="javascript:void(0)" class="anchorBlack" onClick="skipAssociateTaxJsp();">Skip</a>
+                 <input type="button" value="Previous" onclick="shiftToBankingTab();" class="btn btn-default">
 			     </div> 
                   <div class="col-md-6">
                    <div class="pull-right">
+                   <input value="Skip" class="btn btn-default mr10" onClick="skipAssociateTaxJsp();" type="button">
                     <input value="Save & Continue" class="btn btn-success btnSuccess" id="associate_tax_button" type="button" onclick="saveAssociateTax();">
                     <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
                     </div>
@@ -242,6 +242,18 @@
 		$("#associate_tax_form").showHelpOnFocus();
 		$("#associate_tax_form").validateOnBlur(false, validationSettings);  
    });  
+</script>
+
+<script>
+function shiftToBankingTab(){
+	var associates = document.getElementById("associateBanking");
+	document.getElementById("associateBanking").removeAttribute("class"); 
+	associates.href="#tab-2"; 
+	$("#loading").removeAttr('style');
+	$("#save_associate_bank_data_button" ).addClass('button').val('Save & Continue');
+    $("#save_associate_bank_data_button").removeAttr("disabled");
+    $("#associateBanking").click();
+}
 </script>
 
 
