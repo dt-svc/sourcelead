@@ -770,8 +770,30 @@ public class USPayrollRestController {
 			int year = now.get(Calendar.YEAR);
 			int month = now.get(Calendar.MONTH);
 			listDates = getNumberOfWeeks(year, month, orgLocation);
+		}else if("Monthly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+			Calendar now = Calendar.getInstance(); // Gets the current date and
+			int month = now.get(Calendar.MONTH);
+			listDates = getStartDateAndEndDateOfMonths(month, orgLocation);
+			
+			
 		}
 		return listDates;
+	}
+	/**
+	 * Get start date and end date of months
+	 * @param month
+	 * @param orgLocation
+	 * @return
+	 */
+	private List<String> getStartDateAndEndDateOfMonths(int month, OrgLocations orgLocation)
+	{
+		List<String> dateList = new ArrayList<>();
+		for (int i = 0; i <month; i++) {
+			java.util.Date[] datesss = commonUtil.getMonthStartDateEndDateByMonth(i);
+			StringBuilder sb = new StringBuilder();
+			dateList.add(sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),datesss[0])).append(",").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),datesss[1])).toString());
+		}
+		return dateList;
 	}
 		
 		
