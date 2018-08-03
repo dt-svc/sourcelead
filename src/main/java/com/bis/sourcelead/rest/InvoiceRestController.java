@@ -600,8 +600,6 @@ public class InvoiceRestController {
 	public @ResponseBody Response<String> saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO,  @RequestParam(value = "invoiceIds", required = false) List<String> invoiceIds, HttpServletRequest request) throws Exception
 	{
 		Response<String> response = new Response<>();
-		System.out.println(" invoiceJsonString ");
-	     System.out.println(invoiceIds);
 	     HashMap<Long, String> invoiceMap = new HashMap<Long, String>();
 	     for(String obj: invoiceIds){
 	    	 String [] arr = obj.split("_");
@@ -650,15 +648,10 @@ public class InvoiceRestController {
 		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		Integer draftCount = 0;
 		Integer paidCount = 0;
-		Integer overDueInvoiceCount = 0;
-		Integer openInvoiceCount = 0;
 		Float draftTotalAmount = 0f;
 		Float paidTotalAmount = 0f;
-		Float dueAfterInvoiceAmount = 0f;
-		Float dueBeforeInvoiceAmount = 0f;
 		for (Invoice invoice : invoiceFilterList) {
 		BillingDTO billingDto = new BillingDTO();
-		boolean isInvoiceDueDate = false;
                     if(invoice.getPaymentAccount() != null) {
 			invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
 		}
@@ -743,32 +736,7 @@ public class InvoiceRestController {
 				paidTotalAmount = paidTotalAmount + paidAmount;
 				billingDto.setPaidInvoiceAmount(String.format("%.2f", paidTotalAmount));
 			}
-			if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
-					&& !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
-					&& (Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())
-							|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
-							|| Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus()))) {
-				
-				String dueDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), invoice.getDueDate());
-				Date invoiceDueDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), dueDate);
-				Float dueAmount = Float.parseFloat(invoice.getDueAmount());
-				/*if (dueAmount > 0) {
-					
-					if (todayDate.after(invoiceDueDate)) {
-						overDueInvoiceCount = overDueInvoiceCount + 1;
-						dueAfterInvoiceAmount = dueAfterInvoiceAmount
-								+ Float.parseFloat(invoice.getDueAmount());
-						billingDto.setDueAfterInvoiceAmount(String.format("%.2f", dueAfterInvoiceAmount));
-						isInvoiceDueDate = true;
-					}
-					else {
-						openInvoiceCount = openInvoiceCount + 1;
-						dueBeforeInvoiceAmount = dueBeforeInvoiceAmount
-								+ Float.parseFloat(invoice.getDueAmount());
-						billingDto.setDueBeforeInvoiceAmount(String.format("%.2f", dueBeforeInvoiceAmount));
-					}
-				}*/
-			}
+			
 		}
 		if (null != invoice.getParentInvoiceId()) {
 			billingDto.setInvoiceParentId(invoice.getParentInvoiceId().getId());
