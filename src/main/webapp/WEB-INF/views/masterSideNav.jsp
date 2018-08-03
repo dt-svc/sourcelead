@@ -385,12 +385,13 @@
 							<i class="subMenu">Payroll</i> <i class="fa fa-fw fa-caret-down"></i>
 						</a>
                         <ul class="collapses" style="display: none">
-                        	<li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/itDeclaration'/>" title="IT Declaration">IT Declaration</a></li>
+                        	<%-- <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/itDeclaration'/>" title="IT Declaration">IT Declaration</a></li> --%>
+                        	<li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/forms/list'/>" title="Forms">Forms</a></li>
                         	<li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayroll/pays'/>" title="My Payroll">My Payroll</a></li>
 						</ul>
 					</li>
 	         
-	         <li class=""><a href="<c:url value='${appPath}/forms/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Payroll</i></a></li>        
+	         <%-- <li class=""><a href="<c:url value='${appPath}/forms/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Payroll</i></a></li> --%>        
              <li class="${sessionData.nav == 'Taxes' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/stateTax/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Taxes</i></a></li>
           	
 <%--            	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">

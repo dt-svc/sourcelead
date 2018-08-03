@@ -237,18 +237,17 @@
 				</div>
 			</div>
 		</div>
-		<div class="clearfix footerstyelsNew">
-			<div class="col-lg-12">
-				<div class="pull-right">
-					<input value="Save" class="btn btn-primary btn-primary"
-						type="button" id="saveBtn"> <input value="Submit"
-						class="btn btn-success btnSuccess mr10 ml10" type="button"
-						id="submitBtn"> <input value="Cancel"
-						class="btn btn-default" type="button" id="cancelBtn"
-						onclick="history.back()">
+		<c:if test="${!viewForm}">
+			<div class="clearfix footerstyelsNew">
+				<div class="col-lg-12">
+					<div class="pull-right">
+						<input value="Save" class="btn btn-primary btn-primary" type="button" id="saveBtn">
+						<input value="Submit" class="btn btn-success btnSuccess mr10 ml10" type="button" id="submitBtn">
+						<input value="Cancel" class="btn btn-default" type="button" id="cancelBtn" onclick="history.back()">
+					</div>
 				</div>
 			</div>
-		</div>
+		</c:if>
 	</form>
 	<!-- Content Area Ends-->
 </section>

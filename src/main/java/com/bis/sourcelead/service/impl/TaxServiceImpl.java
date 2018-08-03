@@ -1240,6 +1240,8 @@ public class TaxServiceImpl implements TaxService {
 					taxSubmissionMasterDTO.setId(taxSubmissionMaster.getId());
 					taxSubmissionMasterDTO.setFinancialYear(taxSubmissionMaster.getFinancialYear());
 					taxSubmissionMasterDTO.setUserId(taxSubmissionMaster.getUser().getId());
+					taxSubmissionMasterDTO.setTaxFormUUID(taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission().getSourceleadTaxForm().getUuid());
+					taxSubmissionMasterDTO.setFormUUID(taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission().getUuid());
 					SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 					if (taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission() != null) {
 						taxSubmissionMasterDTO.setItDeclarationSubmissionId(

@@ -43,6 +43,7 @@
 						<th>Form Type</th>
 						<th>Filling Date</th>
 						<th>Status</th>
+						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody id="submissionList">

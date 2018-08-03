@@ -15,12 +15,13 @@
 			<div class="clearfix form-horizontal minHeight_225 minHeightcol5">
 				<div class="row min">
 					<input type="hidden" value="${form.id}" name="taxFormId"/>
+					<c:if test="${autoSelectUser}">
+						<input type="hidden" value="${user.id}" name="userId"/>
+					</c:if>
 					<div class="col-md-6 col-md-offset-2">
 						<div class="clearfix dropdown-select">
 							<select class="selectpicker width100percnt" id="employeeSelect" ${autoSelectUser ? "disabled='disabled'" : ""}
-								data-live-search="true" title="Select Employee"
-								field-name="Employee" data-validation="required"
-								name="userId">
+								data-live-search="true" title="Select Employee" field-name="Employee" data-validation="required" name="userId">
 								<c:forEach items="${userRoleList}" var="userRole">
 									<option ${user.id == userRole.user.id ? "selected='selected'" : ""} value="${userRole.user.id}" data-id="${userRole.user.id}" data-name="${userRole.user.firstName.concat(' ' ).concat(userRole.user.lastName)}">
 										${userRole.user.firstName} ${userRole.user.lastName}

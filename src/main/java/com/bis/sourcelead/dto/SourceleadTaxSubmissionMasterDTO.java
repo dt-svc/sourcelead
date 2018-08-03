@@ -18,6 +18,8 @@ public class SourceleadTaxSubmissionMasterDTO extends SearchDTO implements Seria
 	private String fillingDate;
 	private int status;
 	private String statusText;
+	private String taxFormUUID;
+	private String formUUID;
 
 	public long getId() {
 		return id;
@@ -96,4 +98,21 @@ public class SourceleadTaxSubmissionMasterDTO extends SearchDTO implements Seria
 		}
 		return text;
 	}
+
+	public String getTaxFormUUID() {
+		return taxFormUUID;
+	}
+
+	public void setTaxFormUUID(String taxFormUUID) {
+		this.taxFormUUID = taxFormUUID;
+	}
+
+	public String getFormUUID() {
+		return formUUID;
+	}
+
+	public void setFormUUID(String formUUID) {
+		this.formUUID = formUUID;
+	}
+
 }
