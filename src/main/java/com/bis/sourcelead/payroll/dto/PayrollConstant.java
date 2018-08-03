@@ -32,6 +32,10 @@ public class PayrollConstant {
 	public static final String SEMI_ANNUALLY = "SEMI_ANNUALLY";
 	public static final String ANNUALLY = "ANNUALLY";
 	public static final String MONTHLY = "MONTHLY";
+	
+	public static final String DEDUCTED = "DEDUCTED";
+	public static final String CONTRIBUTED = "CONTRIBUTED";
+	 
 	  
 	
   

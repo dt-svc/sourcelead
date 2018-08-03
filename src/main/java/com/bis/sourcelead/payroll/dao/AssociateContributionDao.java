@@ -12,4 +12,7 @@ public interface AssociateContributionDao {
 	List<AssociateContribution> findAllContributionSummaryByUserId(Long userId, OrgLocations orgLocation);
 
 	AssociateContribution findAssociateContributionById(Long assContriId);
+
+	AssociateContribution findContributionByUserIdContributionId(Long userId, Long contributionId);
+
 }

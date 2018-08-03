@@ -61,4 +61,24 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 		}
 		return associateContribution;
 	}
+
+	@Override
+	@Transactional
+	public AssociateContribution findContributionByUserIdContributionId(Long userId, Long contributionId)
+	{
+		AssociateContribution associateContribution = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.id=:contributionId and userId.id =:userId").setLong("contributionId", contributionId).setLong("userId", userId).list();
+			if(associateContributionList != null && associateContributionList.size() >0) {
+				associateContribution = associateContributionList.get(0);
+			}
+		}catch (Exception e) {
+         e.printStackTrace();
+		}
+		
+		return associateContribution;
+	}
+
+
 }

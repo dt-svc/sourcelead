@@ -50,6 +50,17 @@ public class AssociateContribution implements Serializable{
 	@Column(name = "CONTRIBUTION_AMOUNT")
 	private BigDecimal contributionAmount;
 	
+	
+	@Column(name = "CONTRIBUTION_STATUS")
+	private String contributionStatus;
+	
+	@Column(name = "CONTRIBUTION_START_DATE")
+	private Date contributionStartDate;
+	
+	@Column(name = "CONTRIBUTION_END_DATE")
+	private Date contributionEndDate;
+	
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -188,6 +199,36 @@ public class AssociateContribution implements Serializable{
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getContributionStatus()
+	{
+		return contributionStatus;
+	}
+
+	public Date getContributionStartDate()
+	{
+		return contributionStartDate;
+	}
+
+	public Date getContributionEndDate()
+	{
+		return contributionEndDate;
+	}
+
+	public void setContributionStatus(String contributionStatus)
+	{
+		this.contributionStatus = contributionStatus;
+	}
+
+	public void setContributionStartDate(Date contributionStartDate)
+	{
+		this.contributionStartDate = contributionStartDate;
+	}
+
+	public void setContributionEndDate(Date contributionEndDate)
+	{
+		this.contributionEndDate = contributionEndDate;
 	}
 	
 	
