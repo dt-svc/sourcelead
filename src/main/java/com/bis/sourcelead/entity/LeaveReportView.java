@@ -26,6 +26,10 @@ public class LeaveReportView {
 	private String name;
 	@Column(name = "ORGLOCATION_ID", nullable = false)
 	private Long orglocationId;
+	
+	@Column(name = "Employee_ID", nullable = false)
+	private Long employeeId;
+	
 	@Column(name = "REASON",columnDefinition = "TEXT default NULL")
 	private String reason;
 	@Column(name = "FROM_DATE")
@@ -367,6 +371,16 @@ public class LeaveReportView {
 	public void setApprovedOnDateStr(String approvedOnDateStr)
 	{
 		this.approvedOnDateStr = approvedOnDateStr;
+	}
+
+	public Long getEmployeeId()
+	{
+		return employeeId;
+	}
+
+	public void setEmployeeId(Long employeeId)
+	{
+		this.employeeId = employeeId;
 	}
 	
 	

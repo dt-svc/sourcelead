@@ -1109,20 +1109,126 @@ public class LeaveDaoImpl implements LeaveDao{
 		java.sql.Date startDateSqlDate = null;
 		java.sql.Date endDateSqlDate = null;
 		Session session = this.sessionFactory.getCurrentSession();
+		if(hrLeaveReportDTO.getStartDate() != null && hrLeaveReportDTO.getEndDate() != null){
 		startDate=format.parse(hrLeaveReportDTO.getStartDate());
 		endDate=format.parse(hrLeaveReportDTO.getEndDate());
 		startDate = commonUtil.getOrgLocationCurrentDate(orgLoc.getDateFormat(), startDate);
 		endDate = commonUtil.getOrgLocationCurrentDate(orgLoc.getDateFormat(), endDate);
 		startDateSqlDate = new java.sql.Date(startDate.getTime());
 		endDateSqlDate = new java.sql.Date(endDate.getTime());
+	}
 		String query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
 		StringBuilder query1 = new StringBuilder();
+		if (StringUtils.isNotBlank(hrLeaveReportDTO.getSearchValue())) {
+			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			Matcher matcher = pattern.matcher(hrLeaveReportDTO.getSearchValue());
+			if (matcher.matches() == true) {
+				if (hrLeaveReportDTO.getSearchValue().contains("/") || (hrLeaveReportDTO.getSearchValue().contains("-"))) {
+					String replacedValue = hrLeaveReportDTO.getSearchValue().replaceAll("/", "-");
+					Date date1 = format.parse(replacedValue);
+					startDateSqlDate = new java.sql.Date(date1.getTime());
+				}
+			}
+			
+			query1.append(" and (leaveReport.name like '%" + hrLeaveReportDTO.getSearchValue()
+			+ "%' ").append("OR leaveReport.employmentType like '%" + hrLeaveReportDTO.getSearchValue()
+					+ "%' ").append("OR leaveReport.leaveTypeName like '%" + hrLeaveReportDTO.getSearchValue()
+							+ "%' ").append("OR leaveReport.leaveTypeBillable like '%"
+									+ hrLeaveReportDTO.getSearchValue()
+									+ "%' ").append("OR leaveReport.reason like '%"
+											+ hrLeaveReportDTO.getSearchValue()
+											+ "%' ").append("OR leaveReport.approver like '%"
+													+ hrLeaveReportDTO.getSearchValue()
+													+ "%' ").append("OR leaveReport.status like '%"
+															+ hrLeaveReportDTO.getSearchValue() + "%') ");
+			
+			/*if (startDateSqlDate != null) {
+				query1.append("OR (leaveReport.fromDate <=" + startDateSqlDate + " and leaveReport.toDate >="
+						+ startDateSqlDate + ") ");
+			}*/
+		}
+		String deptSubQuery = "";
+		String userRoleSubQuery = "";
+		String employmentTypeSubQuery = "";
+		String leaveTypeSubQuery= "";
+		String associateSubQuery= "";
+		if (hrLeaveReportDTO.getReportRolesId() != null && !hrLeaveReportDTO.getReportRolesId().isEmpty() ) {
+			userRoleSubQuery = " and leaveReport.roleId  IN (:userRoleList)";
+		}
+		if (hrLeaveReportDTO.getDepartmentIds() !=null && !hrLeaveReportDTO.getDepartmentIds().isEmpty()) {
+			deptSubQuery = " and leaveReport.deptId  IN (:departmentsList)";
+		}
+		if (hrLeaveReportDTO.getEmploymentType() != null && !hrLeaveReportDTO.getEmploymentType().isEmpty()) {
+			employmentTypeSubQuery = " and leaveReport.employmentType  IN (:employmentTypeList)";
+		}
+		if (hrLeaveReportDTO.getLeaveTypeIds() != null && !hrLeaveReportDTO.getLeaveTypeIds().isEmpty()) {
+			leaveTypeSubQuery = " and leaveReport.leaveTypeId  IN (:leaveTypeNamesList)";
+		}
+		if (hrLeaveReportDTO.getAssociateListId() != null && !hrLeaveReportDTO.getAssociateListId().isEmpty()) {
+			associateSubQuery = " and leaveReport.userId  IN (:associateNamesList)";
+		}
 		Query queryString = null;
 		Query countQueryString;
 		List<LeaveReportView> leaveReportList = null;
 		ResponseList<LeaveReportView> response = new ResponseList<>();
 		List<Long> countlist = null;
-		queryString = session.createQuery(query);
+		/*queryString = session.createQuery(query + query1.toString() + " " + userRoleSubQuery + " "
+				+ deptSubQuery + " " + employmentTypeSubQuery + " " + leaveTypeSubQuery + " "
+				+ sortingQry);*/
+		queryString = session.createQuery(query+" "+query1.toString()+" "+deptSubQuery+" "+userRoleSubQuery+" "+employmentTypeSubQuery+" "+associateSubQuery+" "+leaveTypeSubQuery);
+		
+		List<Long> userRoleList = new ArrayList<>();
+		List<Long> departmentsList = new ArrayList<>();
+		List<Long> leaveTypeNamesList = new ArrayList<>();
+		List<String> employmentTypeList = new ArrayList<>();
+		List<Long> associateNamesList = new ArrayList<>();
+		if(hrLeaveReportDTO.getReportRolesId() != null && !hrLeaveReportDTO.getReportRolesId().isEmpty()) {
+			for(String role:hrLeaveReportDTO.getReportRolesId()){
+				userRoleList.add(Long.parseLong(role));
+			}
+			 
+		}
+		if(hrLeaveReportDTO.getDepartmentIds() != null && !hrLeaveReportDTO.getDepartmentIds().isEmpty()) {
+			for(String dept:hrLeaveReportDTO.getDepartmentIds()){
+				departmentsList.add(Long.parseLong(dept));
+			}
+			 
+		}
+		if(hrLeaveReportDTO.getLeaveTypeIds() != null && !hrLeaveReportDTO.getLeaveTypeIds().isEmpty()) {
+			for(String leaveTypeID:hrLeaveReportDTO.getLeaveTypeIds()){
+				leaveTypeNamesList.add(Long.parseLong(leaveTypeID));
+			}
+			 
+		}
+	
+		if(hrLeaveReportDTO.getEmploymentType() != null && !hrLeaveReportDTO.getEmploymentType().isEmpty()) {
+			for(String empType:hrLeaveReportDTO.getEmploymentType()){
+				employmentTypeList.add(empType);
+			}
+			 
+		}
+		if(hrLeaveReportDTO.getAssociateListId() != null && !hrLeaveReportDTO.getAssociateListId().isEmpty()) {
+			for(String associateId:hrLeaveReportDTO.getAssociateListId()){
+				associateNamesList.add(Long.parseLong(associateId));
+			}
+			 
+		}
+		
+		if (!userRoleList.isEmpty()) {
+			queryString.setParameterList("userRoleList", userRoleList);
+		}
+		if (!departmentsList.isEmpty()) {
+			queryString.setParameterList("departmentsList", departmentsList);
+		}
+		if (!employmentTypeList.isEmpty()) {
+			queryString.setParameterList("employmentTypeList", employmentTypeList);
+		}
+		if (!leaveTypeNamesList.isEmpty()) {
+			queryString.setParameterList("leaveTypeNamesList", leaveTypeNamesList);
+		}
+		if (!associateNamesList.isEmpty()) {
+			queryString.setParameterList("associateNamesList", associateNamesList);
+		}
 		queryString.setLong("orgLocationId", orgLocationId);
 		queryString.setLong("orgId", orgId);
 		queryString.setDate("fromDate", startDateSqlDate);

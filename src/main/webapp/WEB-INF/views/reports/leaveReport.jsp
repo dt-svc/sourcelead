@@ -17,6 +17,7 @@ $( document ).ready(function() {
     
 });
 </script>
+<input type="hidden" id="noReports" name="noReports"/>
     <div id="loadingId"></div>
 	<div id="dayEntryformData">
 	<section class="content-wraper contentWraper">
@@ -27,12 +28,31 @@ $( document ).ready(function() {
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>"> HR Reports
 </a> &raquo; Leave Report</div>
     </section>
+      <div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+         
+      <ul class="pull-right list-unstyled list-inline">
+        <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='leaveReportDataTableSearch'/><span class="repSearchIcon" onClick="leaveReport();"></span></li>
+        </ul>
+      </div>
     <form id="leaveReportForm" name="leaveReportForm">
     <div class="contentareaInner-styles clearfix">
     <h4 class="panel-title">
-          <a data-toggle="collapse" href="#collapse1">Show Report</a>
+          <a href="javascript:void(0)" id="showReport">Search Report</a>
+          <a href="javascript:void(0)" onclick="searchReportCollapse();" id="searchReport" style="display:none;">Search Report</a>
     </h4>
-    <div id="collapse1" class="rundiv panel-collapse collapse mt in">
+    <div id="reportCollapse" class="rundiv panel-collapse collapse mt in">
       <div class="clearfix form-horizontal minHeight_225 minHeightcol5">
         <div class="row min">
             <div class="col-md-5">
@@ -98,7 +118,7 @@ $( document ).ready(function() {
             <div class="col-md-5">
               <label class="clearfix">Leave Type</label>
               <div class="clearfix">
-                <select id="leaveTypeList" name="leaveTypeIds" class="form-control chosen-select" field-name="Leave Type" data-placeholder="Select LeaveType" multiple></select>
+                <select id="leaveTypeList" name="leaveTypeIds"  class="form-control chosen-select" field-name="Leave Type" data-placeholder="Select LeaveType" multiple></select>
               </div>
             </div>
 
@@ -123,28 +143,89 @@ $( document ).ready(function() {
           </div>
   </section>
  </div>
-
-
-<%-- <div id="expensesExportListDiv" style="display: none;">
-	 <jsp:include page="dayEntriesReportList.jsp"></jsp:include> 
-</div> --%>
 <script>
-function leaveReport(){
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+</script>
+<script>
+function exportToPdf(){
+	var ReportsListEmpty = $("#noReports").val();
+	var exportType = "pdf";
+	var type="leaveReport"
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	var startDate = $('#fromDate').val();
 	var endDate = $('#toDate').val();
-	var departmentIds  = $('#departmentList').val();
-	var reportRolesId  = $('#reportRoles').val();
-	var associateListId  = $('#associateList').val();
-	var leaveTypeIds  = $('#leaveTypeList').val();
+	var searchValue = $("#leaveReportDataTableSearch").val();
+	if(ReportsListEmpty != 'noReports'){
+		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&type="+type;
+	}else{
+		 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Leave Report List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	}
 	
-	var employmentType  = $('#designationType').val();
-// 	var formData = getFormData("leaveReportForm");
-	var url = sourceleadUrl+"/leaveReportsList?"+tokenParamName+"="+tokenValue+"&departmentIds="+departmentIds+"&reportRolesId="+reportRolesId+"&associateListId="+associateListId+"&leaveTypeIds="+leaveTypeIds+"&employmentType="+employmentType+"&startDate="+startDate+"&endDate="+endDate;
-	prepareAllLeaveReportList(url);	
 }
-function prepareAllLeaveReportList(url){
+</script>
+<script>
+function exportUserData(){
+	var ReportsListEmpty = $("#noReports").val();
+	var exportType = "xls";
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	var startDate = $('#fromDate').val();
+	var endDate = $('#toDate').val();
+	var searchValue = $("#leaveReportDataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	if(ReportsListEmpty != 'noReports'){
+		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue;
+	}else{
+		 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Leave Report List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	}
+	
+
+}
+</script> 
+<script>
+function leaveReport(){
+	var formData = getFormData("leaveReportForm");
+	var searchValue = $("#leaveReportDataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+    var url = sourceleadUrl+"/leaveReportsList?searchValue="+searchValue;
+    if ($('#leaveReportForm').validate(false, validationSettings)){	
+    prepareAllLeaveReportList(url,formData);
+    }else{ 
+		return false;
+ } 
+	reportCollapse();
+	$("#showReport").hide();
+	$("#searchReport, #leaveReportsList").show();
+}
+function prepareAllLeaveReportList(url,formData){
 	var result = "";
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a mt">';
 		result = result + '<table id="leaveReportsListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
@@ -165,12 +246,12 @@ function prepareAllLeaveReportList(url){
 		result = result	+ '</div>';
 		$("#leaveReportsList").empty();
 		$("#leaveReportsList").append(result);
-		leaveReportsListPagination(url);
+		leaveReportsListPagination(url,formData);
 }
 </script>
 
 <script>
-function leaveReportsListPagination(url){
+function leaveReportsListPagination(url,formData){
 	var colIndex = 0;
 	table = $('#leaveReportsListView').DataTable( { 
 		  "processing": true,
@@ -180,6 +261,7 @@ function leaveReportsListPagination(url){
 	      "ajax": $.fn.dataTable.pipeline( {
 	    	  url: url,
 	          method: 'POST',
+	          data: formData,
 	          pages: 10
 	        }),
 	        "columns": [
@@ -203,10 +285,10 @@ function leaveReportsListPagination(url){
 	    	  	"render": function(data, type, user, meta) {
 	    	  	  var result = '';
 	        	  result = result + ' <td>';
-		          if(user.id !=null && user.id !='' && user.id !='undefined'){
-						 result = result +'<div class="tbldata-dotdot" title="'+user.id+'">'+user.id+'</div>';
+		          if(user.employeeId !=null && user.employeeId !='' && user.employeeId !='undefined'){
+						 result = result +'<div class="tblminwidth-75" title="'+user.employeeId+'">'+user.employeeId+'</div>';
 		          }else{
-						result = result + ' <div class="tbldata-dotdot">--</div>';
+						result = result + ' <div class="tblminwidth-75">--</div>';
 					}
 		          result = result + ' </td>';
 		              return result;
@@ -218,9 +300,9 @@ function leaveReportsListPagination(url){
 	    	  	  var result = '';
 	        	  result = result + ' <td>';
 		          if(user.name !=null && user.name !='' && user.name !='undefined'){
-						 result = result +'<div class="tbldata-dotdot" title="'+user.name+'">'+user.name+'</div>';
+						 result = result +'<div class="tbldata-dotdot-vsm" title="'+user.name+'">'+user.name+'</div>';
 		          }else{
-						result = result + ' <div class="tbldata-dotdot">--</div>';
+						result = result + ' <div class="tbldata-dotdot-vsm">--</div>';
 					}
 		          result = result + ' </td>';
 		              return result;
@@ -232,9 +314,9 @@ function leaveReportsListPagination(url){
 	    	  	  var result = '';
 	        	  result = result + ' <td>';
 	        	  if(user.userDeptName !=null && user.userDeptName !='' && user.userDeptName !='undefined'){
-						 result = result + '<div class="tblminwidth-75">'+user.userDeptName+'</div>';
+						 result = result + '<div class="tbldata-dotdot-vsm">'+user.userDeptName+'</div>';
 		          }else{
-						result = result + ' <div class="tblminwidth-75">--</div>';
+						result = result + ' <div class="tbldata-dotdot-vsm">--</div>';
 					}
 	        	  result = result + ' </td>';
 	        	 return result;
@@ -302,9 +384,9 @@ function leaveReportsListPagination(url){
 	    	  		var result = '';
 		        	result = result + ' <td>';
 		          	if(user.appliedOnDateStr !=null && user.appliedOnDateStr !='' && user.appliedOnDateStr !='undefined'){
-						 result = result + '<div class="tblminwidth-50">'+user.appliedOnDateStr+'</div>';
+						 result = result + '<div class="tblminwidth-75">'+user.appliedOnDateStr+'</div>';
 		          }else{
-						result = result + '<div class="tblminwidth-50">--</div>';
+						result = result + '<div class="tblminwidth-75">--</div>';
 					}
 		          	result = result + ' </td>';
 			        return result;
@@ -343,8 +425,8 @@ function leaveReportsListPagination(url){
 	    	  	"render": function(data, type, user, meta) {
 	    	  		var result = '';
 		          	result = result + ' <td>';
-		          	if(user.approvedOn !=null && user.approvedOn !='' && user.approvedOn !='undefined'){
-						 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.approvedOn+'">'+user.approvedOn+'</div>';
+		          	if(user.approvedOn !=null && user.approvedOnDateStr !='' && user.approvedOnDateStr !='undefined'){
+						 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.approvedOnDateStr+'">'+user.approvedOnDateStr+'</div>';
 		          }else{
 						result = result + '<div class="tbldata-dotdot-vsm">--</div>';
 					}
@@ -364,9 +446,14 @@ function leaveReportsListPagination(url){
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     },
-	    } );
+	    });
+$("#leaveReportsListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 }
-
+$("#leaveReportDataTableSearch").keydown(function(e) {
+	   if(e.which === 13) {
+		   leaveReport();
+	   }
+	});
 
 </script>
 <script>
@@ -425,39 +512,8 @@ function resetValues(){
 	$('#designationType').trigger("chosen:updated");
 }
 </script>
-<script>
-function getSelectedProjectDetailsList(){
-	getProjectListBasedOnStartAndEndDate();
-}
-</script>
 
 <script>
-function runExport(){
-	var projectIds  = $('#projectList').val();
-	var associateList = $('#associateList').val();
-	var templateType = "";
-	
-	if((projectIds == null || projectIds =='' || projectIds=='undefined')&& (associateList == null || associateList =='' || associateList=='undefined')){
-		projectIds = $("#projectList option[name='all']").val();
-		templateType = "proJectMembersExport";
-	}
-	var startDate = $('#fromDate').val();
-	var endDate = $('#toDate').val();
-	var exportType = $('#exportType').val();
-	
-	if(associateList == null || associateList =='' || associateList=='undefined'){
-		projectMemberList = '';
-	}
-	if ($('#leaveReportForm').validate(false, validationSettings)){
-		if(startDate != null && startDate !='' && startDate !='undefined' && endDate != null && endDate !='' && endDate !='undefined'){
-// 			window.location.href = sourcelesadUrl+"/exportDaywiseTimesheetReport?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportTypassociateListListId="+projectMemberList+"&templateType="+templateType;
-		}
-			return true;
-		}else{
-			return false;
-	}
-}
-
 function getAllUserListBasedOnOrgLocationId(){
 	$.ajax({
         url: sourceleadUrl + "/getAllUserListBasedOnOrgLocationId",
@@ -515,7 +571,9 @@ function refreshRoleList(){
 	        		var opt = json[i];
 	        		var name = '';
 	        		name = opt.departmentName;
-	        		output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
+	        		if(name != null && name !='undefined' && name !=''){
+	        			output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
+	        		}
 				}
 	        	
 	        	$("#departmentList").empty();
@@ -571,7 +629,34 @@ function clearDate(requestFrom){
 }
 </script>
 
- 
+ <script>
+function resetFilter(){
+	$("#leaveReportDataTableSearch").val('');
+	leaveReport();
+}
+function reportCollapse() {
+	$("#reportCollapse").slideToggle(300);
+	//$("#leaveReportsList").slideUp();
+}
+function searchReportCollapse() {
+	$("#fromDate").val('');
+	$("#toDate").val('');
+	$("#departmentList").val('');
+	$("#reportRoles").val('');
+	$("#designationType").val('');
+	$("#associateList").val('');
+	$("#leaveTypeList").val('');
+	$('#departmentList').trigger("chosen:updated");
+	$('#reportRoles').trigger("chosen:updated");
+	$('#designationType').trigger("chosen:updated");
+	$('#associateList').trigger("chosen:updated");
+	$('#leaveTypeList').trigger("chosen:updated");
+	$("#leaveTypeList").val('');
+	$("#leaveReportsList").hide();
+	$("#reportCollapse").show();
+}
+
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
  

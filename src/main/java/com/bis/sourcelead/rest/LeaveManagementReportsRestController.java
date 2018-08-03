@@ -278,4 +278,67 @@ public class LeaveManagementReportsRestController {
 					file.delete();
 				}
 	}
+	
+	@RequestMapping(value = "/getExportLeaveReport", method = RequestMethod.GET)
+	@ResponseBody
+	public void getExportLeaveReport(HrLeaveReportDTO hrLeaveReportDTO,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		List<Long> departmentsList = new ArrayList<>();
+		List<Long> leaveTypeNamesList = new ArrayList<>();
+		List<String> employmentTypeList = new ArrayList<>();
+		List<Long> userRoleList = new ArrayList<>();
+		 Workbook createExcelworkbook =  new XSSFWorkbook();
+		 StringBuilder excelSB = new StringBuilder();
+         
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+ 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+ 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("dailyWiseLeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+			ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromDateToDate(hrLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId());
+
+
+		leaveReportsList.getData().stream().forEach(u -> {
+	    		   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getFromDate()));
+	    		   u.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getToDate()));
+	    		   u.setAppliedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getAppliedOn()));
+	    		   u.setApprovedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getAppliedOn()));
+	    		   
+	    	   });
+			
+			File file = null;
+	 		if(!"pdf".equalsIgnoreCase(hrLeaveReportDTO.getExportType())){
+	 			createExcelsheet = leaveService.getLeaveReportExcelFile(createExcelsheet,createExcelworkbook,leaveReportsList,orgLocations);
+	 			  StringBuilder templateSB = new StringBuilder();
+	 	 		  file = File.createTempFile(templateSB.append("Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+	 	 		  file.setReadable(true);
+	 	 		  
+	 			 FileOutputStream fos = new FileOutputStream(file);
+	 			 try {
+	 				createExcelworkbook.write(fos);
+	 				fos.close();
+	 			} catch (IOException e) {
+	 				e.printStackTrace();
+	 			}	 	
+	 		}else{
+	 			file = leaveService.getLeaveReportPdfFile(leaveReportsList,orgLocations);
+	 		
+	 		}
+	 		 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();	
+				if(file!= null){
+					file.delete();
+				}
+	}
 }
