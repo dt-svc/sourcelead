@@ -581,7 +581,7 @@ function invoicePagination(url){
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
 						if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="text-primary primary pull-left" >Paid</span>   ';
+							result = result +'           <span class="textSuccess pull-left" >Paid</span>   ';
 						}else if(report.invoiceStatus == "DRAFT"){
 							result = result +'           <span class="textWarning pull-left">Draft</span>';	
 						}else if(report.invoiceStatus == "Rejected"){
@@ -895,7 +895,7 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 		 if(invoiceStatus == "SENT"){
 				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Invoice"></i>Received</a></li>';
 
-				// result = result +' <li><a onclick="voidInvoice(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Invoice"></i>Void Invoice</a></li>';
+				//result = result +' <li><a onclick="voidInvoice(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Invoice"></i>Void Invoice</a></li>';
 
 		 }
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';

@@ -703,7 +703,7 @@ function payablePagination(url){
 							if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 								if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 									if(report.paymentStatus == "Paid"){
-										result = result +'           <span class="textSuccess primary pull-left" title="Paid" >Paid</span> </td>          ';
+										result = result +'           <span class="textSuccess pull-left" title="Paid" >Paid</span> </td>          ';
 									}else if(report.invoiceStatus == "DRAFT"){
 										result = result +'           <span class="textWarning pull-left" title="Send">Draft</span></td>';
 									}else if(report.invoiceStatus == "Rejected"){
