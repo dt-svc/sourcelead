@@ -193,6 +193,4 @@ public interface UserDao {
 
 	public long saveDashboardItems(DashboardItems dashboardItems);
 
->>>>>>> 0856efe947b7f3b87fba4b507c404a1cb6e7bf89
-
 }

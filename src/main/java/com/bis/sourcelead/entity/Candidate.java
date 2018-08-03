@@ -1696,5 +1696,4 @@ public class Candidate implements Serializable {
 		this.candidateTagsList = candidateTagsList;
 	}
 
->>>>>>> 0856efe947b7f3b87fba4b507c404a1cb6e7bf89
 }
