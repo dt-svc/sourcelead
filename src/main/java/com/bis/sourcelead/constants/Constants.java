@@ -1106,6 +1106,10 @@ public class Constants {
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
 	public static final String LEAVE_DATA =  "Leaves";
 	
+	public static final String IT_DECLARATION_FORM =  "It_Declaration_Submission_form";
+	public static final String IT_DECLARATION_FORM_PARAGRAPHDATA =  "I hereby declare that the following investment will be made by me during the financial year";
+	
+	
 	public static final String[] USERS_USAGE_REPORT_EXPORT = { "Users", "Email", "User Type", "Org", "No.of Activities", "Multiple Ips", "Created On", "Last Activity On"};
 
 	public static final String ORG_REQUEST_FILTER_TODAY = "Today";
@@ -1169,6 +1173,8 @@ public class Constants {
 	public static final String QUARTERLY = "Quarterly";
 	
 	public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
+	
+	public static final String[] IT_DECLARATION_SUBMISSION_FORM = { "Item Name", "Particulars" ,"Eligibility(Rs.)","Amount"};
 	
 //	Annually   
 

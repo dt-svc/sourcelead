@@ -17,6 +17,7 @@ import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocumentAttachment;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
+import com.bis.sourcelead.entity.User;
 
 public interface TaxDao {
 
@@ -112,6 +113,10 @@ public interface TaxDao {
 	public long changeSectionStatus(long sectionId);
 
 	public long changeITDeclarationSubmissionStatus(long id, int status);
+
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionDetails(long formId);
+
+	public User getEmployeeDetails(Long id);
 
 
 }

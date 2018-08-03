@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import com.bis.sourcelead.dto.CentralTaxDTO;
@@ -16,6 +18,7 @@ import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProfessionalTax;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
@@ -91,6 +94,14 @@ public interface TaxService {
 	 public Response<String> changeSectionStatus(long sectionId);
 
 	Response<String> changeITDeclarationSubmissionStatus(long id, int status);
+
+	 public SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionDetails(long formId);
+
+     public File exportItDeclarationSubmissionPdf(SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, User loginUser,OrgLocations orgLoc,User user);
+
+	  public  User getEmployeeDetails(Long id);
+
+	 public File exportItDeclarationSubmissionExcel(SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, User loginUser,OrgLocations orgLoc, User user) throws IOException, Exception;
 
 
 }
