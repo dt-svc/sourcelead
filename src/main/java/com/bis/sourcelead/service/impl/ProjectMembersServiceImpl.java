@@ -1835,6 +1835,11 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	
 
 	@Override
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(Long locationsId, Date startDate, Date endDate, int start, int length)
+	{
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(locationsId, startDate, endDate, start, length);
+	}
+	@Override
 	public List<ProjectMembers> getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception {
 		return projectMembersDao.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
 	}
@@ -2104,8 +2109,6 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		projects.setIsProjectMembersFilled(Constants.YES);
 		projectsService.saveProject(projects);
 		
-		
-	
 		
 	}
 
