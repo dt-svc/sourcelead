@@ -1125,8 +1125,7 @@ public class Constants {
 	public static final String[] UNSUBSCRIPTION_TABID_LISTED = {"3","4","8","16","20","23","30" };
 
 
-	
-	
+	public static final String PAYROLL_CATEGORY = "Payroll_Deduction";
 	public static final String ID_TYPE_SSN = "SSN";
 	public static final String ID_TYPE_LCA = "LCA";
 	public static final String RELATION_TYPE_SPOUSE = "Spouse";
@@ -1160,6 +1159,11 @@ public class Constants {
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
 	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
 	
+    public static final String BOOLEAN_TRUE = "true";
+    public static final String LOCAL_TAX_YES = "YES";
+    public static final String LOCAL_TAX_NO = "NO";
+    
+    public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";
@@ -1174,9 +1178,4 @@ public class Constants {
 	public static final String HALFYEARLY = "HalfYearly";
 	public static final String QUARTERLY = "Quarterly";
 	
-	public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
-	
-//	Annually   
-
-
 }
