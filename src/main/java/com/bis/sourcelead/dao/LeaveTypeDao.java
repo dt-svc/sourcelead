@@ -23,4 +23,6 @@ public interface LeaveTypeDao {
 	List<LeaveType> getLeaveTypesByTypeList(List<String> typeList, OrgLocations orgLocation);
 
 	LeaveType getLeaveTypeByLeaveTypeName(String leaveTypeName, OrgLocations orgLocation);
+	
+	List<String> getLeaveTypeNameListByLocationId(Long orgLocationId);
 }

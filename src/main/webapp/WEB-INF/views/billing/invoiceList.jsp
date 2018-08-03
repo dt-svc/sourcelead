@@ -319,7 +319,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'            <div class="col-md-6 mt">                                                ';
 	result = result +'              <div class="clearfix mb invoiceAttachment">                         ';
 	result = result +'              <label><strong>Attachment</strong></label>                         ';
-	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
+	result = result +'              <div class="timesheet_week_comm col-md-12 width100percnt">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
 	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment" onchange="getfileUrl()"> ';
 	result = result +'                  </span> </div>';
@@ -482,13 +482,23 @@ function getInvoiceList(){
 		invoice.push($(this).val());
     });
 	
+	
+	
 	$('input:checkbox[name=paymentStatus]:checked').each(function() 
 	 {
 		payment.push($(this).val());
 	 });
+	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+     {
+		tags.push($(this).val());
+     });
+	
+	
 	var searchValue = $("#invoiceDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable&searchValue="+searchValue+"&orgLocationId="+orgLocationId;
+	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags;
 	prepareInvoiceList(url,locationdateForList);
 }
 
@@ -571,7 +581,7 @@ function invoicePagination(url){
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
 						if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="text-primary primary pull-left" >Paid</span>   ';
+							result = result +'           <span class="textSuccess pull-left" >Paid</span>   ';
 						}else if(report.invoiceStatus == "DRAFT"){
 							result = result +'           <span class="textWarning pull-left">Draft</span>';	
 						}else if(report.invoiceStatus == "Rejected"){
@@ -584,7 +594,10 @@ function invoicePagination(url){
 					}else{
 						if(report.invoiceStatus == "Linked"){
 							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
-						}else{
+						}else if(report.invoiceStatus == "Void"){
+							result = result +'           <span class="colorRed pull-left">Void</span>   ';	
+						}
+						else{
 							result = result +'           <span class="textSuccess primary pull-left">Accepted</span>';
 						}
 					}
@@ -601,7 +614,10 @@ function invoicePagination(url){
 							result = result +'           <div class="colorRed pull-left">Rejected</div>   ';	
 						}else if(report.invoiceStatus == "Linked"){
 							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
-						}else{
+						}else if(report.invoiceStatus == "Void"){
+							result = result +'           <span class="colorRed pull-left">Void</span>   ';	
+						}
+						else{
 							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 
 						}                                                                         
@@ -661,6 +677,10 @@ function invoicePagination(url){
 						'</sec:authorize>' ;
 					}
 	    	  	  else if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
+						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
+						'</sec:authorize>' ;
+					}else{
 						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
 						'</sec:authorize>' ;
@@ -854,7 +874,7 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
-		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid'){
+		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid' && invoiceStatus != 'Void'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_INVOICE_REMINDER\')">';
 			 result = result +' <li><a onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight paddingLeft" title="Send reminder"></i>Send reminder</a></li>';
 			'</sec:authorize>'
@@ -867,12 +887,15 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 		 if(invoiceStatus == "Accepted"){
 			 if(paymentStatus != "Paid"){
 				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Invoice"></i>Received</a></li>';
+				 //result = result +' <li><a onclick="voidInvoice(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Invoice"></i>Void Invoice</a></li>';
 
 			 }
 			 
 		 }
 		 if(invoiceStatus == "SENT"){
 				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Invoice"></i>Received</a></li>';
+
+				//result = result +' <li><a onclick="voidInvoice(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Invoice"></i>Void Invoice</a></li>';
 
 		 }
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
@@ -882,7 +905,7 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
 	     result = result+'<li><a download href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 	     '</sec:authorize>'
-	     if(invoiceStatus != 'DRAFT')
+	     if(invoiceStatus != 'DRAFT' && invoiceStatus != 'Void')
 	     {
 	     result = result +'<li><a onclick="linkInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</a></li>';
 	     }
@@ -1313,6 +1336,11 @@ function exportToReceivablePdf(){
 			paymentStatus.push($(this).val());
 		});
 		
+		var tags = [];
+		$('input:checkbox[name=tags]:checked').each(function() 
+	     {
+			tags.push($(this).val());
+		 });
 		var emptyExport = $('#emptyInvoiceId').val();
 		var durationType = $('#dayWiseTypeId').val();
 		
@@ -1320,7 +1348,7 @@ function exportToReceivablePdf(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-			window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=pdf&invoiceType=receivable";
+			window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&exportType=pdf&invoiceType=receivable";
 		}else{
 			 var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1352,7 +1380,10 @@ function exportToReceivableExcel(){
 		 {
 			paymentStatus.push($(this).val());
 		});
-		
+		$('input:checkbox[name=tags]:checked').each(function() 
+        {
+		   tags.push($(this).val());
+	    });
 		var emptyExport = $('#emptyInvoiceId').val();
 		var durationType = $('#dayWiseTypeId').val();
 		
@@ -1360,7 +1391,7 @@ function exportToReceivableExcel(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=xls&invoiceType=receivable";
+		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&exportType=xls&invoiceType=receivable";
 		}else{	
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1636,6 +1667,21 @@ function deleteInvoice(invoiceUUID){
 	$(".project_inn_mask").fadeIn(200);
 }
 
+function voidInvoice(invoiceUUID){
+	var result = "";
+	$("#popUp").empty();
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"		<p>Are you sure you want to Void Invoice ?</p>";
+	result = result + ' <div id="voidInvoiceId"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="savevoidInvoice(\''+invoiceUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
 function cancelTermination(){
 	$("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
@@ -1663,6 +1709,31 @@ function saveInvoiceRejectedReason(invoiceUUID){
 			$("#reasonForInvoiceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
 	
+}
+
+
+function savevoidInvoice(invoiceUUID){
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/voidInvoiceOrBill?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
+  		    success: function(result) {
+  		    	if (result && result.response === "INVALID_DATA") {
+          		    showError(result.responseMessage);
+          		} else if (result.response === "AWKWARD") {
+          		    location.href = "/errorPage";
+          		} else if (result.response === "SUCCESS") {
+          			$("#popUp").empty();
+   	 			    $(".project_inn_mask").fadeOut(200);
+   		    	    location.replace(sourceleadUrl+"/invoiceList");
+          		} else if (result.indexOf('Sign In') !== -1) {
+          			location.replace(sourceleadUrl);
+          		} else {
+          		    showError("Operation failed, please try again");
+          		}
+		    }
+  		    	
+	     });
+
 }
 
 </script>
@@ -1699,6 +1770,7 @@ function openInvoiceFilterPop(){
 function resetInvoiceFilter(){
 	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myInvoiceUL > li input:checkbox").prop("checked",false);
 	getInvoiceList();
 	
 }
@@ -1706,14 +1778,14 @@ function resetInvoiceFilter(){
 
 
      <div class="advancedsearch-mask"></div>
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="invoiceFilterId">
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="invoiceFilterId">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeInvoiceFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
 				<div class="addInner">
 					<div class="row">
-					  <div class="col-md-6">
+					  <div class="col-md-4">
 						<div class="row">
 						    <div class="col-md-12 mb">
 								<label><strong>Payment</strong></label>
@@ -1729,7 +1801,7 @@ function resetInvoiceFilter(){
 						  </div>
 						</div>
 						
-						<div class="col-md-6">
+						<div class="col-md-4">
 						<div class="row">
 						    <div class="col-md-12 mb">
 								<label><strong>Status</strong></label>
@@ -1746,6 +1818,22 @@ function resetInvoiceFilter(){
 						     </div> 
 						  </div>
 						</div>
+						
+						<c:if test="${!empty invoiceTagsList}">
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myInvoiceInput" onkeyup="myInvoiceFunction()" placeholder="Tags" title="Type in a tag">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myInvoiceUL">
+									<c:forEach var="tag" items="${invoiceTagsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="tags" value ="${tag}" ><label>${tag}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
 					  </div>
 					  
 					  
@@ -1759,6 +1847,31 @@ function resetInvoiceFilter(){
 					</div>
 				</div>
 <script>
+
+function myInvoiceFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myInvoiceInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myInvoicetUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closePop();
+	  }
+	});
+	
+	
 function getActions(){
 	$(".action-pop").slideToggle(200);
 	$(".newActPop").slideUp(200);

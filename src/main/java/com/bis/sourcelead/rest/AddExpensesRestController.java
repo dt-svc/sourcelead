@@ -9,8 +9,6 @@ import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,19 +19,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpenseProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
-import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
@@ -41,12 +39,12 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntryDocumentsService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
-import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
@@ -63,11 +61,6 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	private ProjectsService projectsService; 
-	
-	@Autowired
-	private ProjectApproverHierarchyService projectApproverHierarchyService; 
-	
-	
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
@@ -113,7 +106,7 @@ public class AddExpensesRestController {
 	ProjectMembersDao projectMembersDao;
 	
 	@Autowired
-	ProjectApproverHierarchyDao projectApproverHierarchyDao;
+	ExpenseProjectApproverHierarchyDao expenseProjectApproverHierarchyDao;
 	
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
@@ -359,7 +352,7 @@ public class AddExpensesRestController {
 	 
 	 private void sendEmailToSuperUserForReOpenExpenseApprovalStatus(Long projectMemberId,Expenses expenses, User loginUser, OrgLocations orgLoc, String reason, String currencyCode) throws Exception {
 		 ProjectMembers clientProjectMember = projectMembersDao.getClientProjectMemberByProjectMemberId(projectMemberId);
-		 ProjectApproverHierarchy pah =  projectApproverHierarchyDao.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());	
+		 ExpenseProjectApproverHierarchy pah =  expenseProjectApproverHierarchyDao.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());	
 			
 		// ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId());
 			

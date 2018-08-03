@@ -244,14 +244,14 @@ function openAssetFilterPop(){
 
 </script>
      <div class="advancedsearch-mask"></div>
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="assetFilterId">
+          <div class="cand-advsrch-popup advancedsearch-popup" id="assetFilterId">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeAssetFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
 				<div class="addInner">
 					<div class="row">
-						<div class="col-md-4">
+						<div class="col-md-3">
 						<div class="row">
 						<div class="col-md-12 mb">
 							<label><strong>Working Status</strong></label>
@@ -265,7 +265,7 @@ function openAssetFilterPop(){
 						 </div>
 						</div>
 						
-						<div class="col-md-4 mb positionRelative">
+						<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myCategoryInput" onkeyup="myCategoryFunction()" placeholder="Category" title="Type in a clients">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -279,7 +279,7 @@ function openAssetFilterPop(){
 							 </div> 
 					   </div> 
 					   
-					   <div class="col-md-4 mb positionRelative">
+					   <div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myShiftInput" onkeyup="myShiftFunction()" placeholder="Availability" title="Type in a clients">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -288,6 +288,20 @@ function openAssetFilterPop(){
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myShiftUL">
 								    <c:forEach var="shift" items="${siftList}">
 									     <li class="checkBox positionRelative"><input  id="shift${shift.id}" name="shiftId" value ="${shift.id}"  type="checkbox"><label>${shift.shiftName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+					   </div>
+					   
+					   <div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myTagsInput" onkeyup="myTagsFunction()" placeholder="Tags" title="Type in a tags">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTagsUL">
+								    <c:forEach var="tag" items="${assetTagsList}">
+									     <li class="checkBox positionRelative"><input  name="tags" value ="${tag}"  type="checkbox"><label>${tag}</label></li>
 									</c:forEach>
 								</ul>
 							 </div> 
@@ -309,6 +323,7 @@ function resetAssetFilter(){
 	$("ul#workStatusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myCategoryUL > li input:checkbox").prop("checked",false);
 	$("ul#myShiftUL > li input:checkbox").prop("checked",false);
+	$("ul#myTagsUL > li input:checkbox").prop("checked",false);
 	$("#assetDataTableSearch").val('');
 	getDynamicAssetList();
 	
@@ -348,6 +363,25 @@ function myShiftFunction() {
     }
 }
 
+
+function myTagsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTagsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTagsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
 function getDynamicAssetList(){
 	
 	var categoryIds = [];
@@ -368,9 +402,15 @@ function getDynamicAssetList(){
 		workingStatus.push($(this).val());
     });
 	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+    {
+		tags.push($(this).val());
+    });
+	
 	var searchValue = $("#assetDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl	+"/getAssetDynamicList?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds;
+	var url = sourceleadUrl	+"/getAssetDynamicList?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags;
 	prepareDynamicAssetList(url);	
 }
 function prepareDynamicAssetList(url){

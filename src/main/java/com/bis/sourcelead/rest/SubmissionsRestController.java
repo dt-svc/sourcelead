@@ -77,6 +77,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.RequirementSubmissionServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -329,9 +330,9 @@ public class SubmissionsRestController {
 
 	
 	@RequestMapping(value = "/getInterviewrsViewFeedbackList", method = RequestMethod.GET)
-	public String getInterviewFeedbackTemplate(@RequestParam(value = "templateId", required = false) Long templateId)
+	public String getInterviewFeedbackTemplate(@RequestParam(value = "templateId", required = false) String templateId)
 			throws Exception {
-		SubmissionTemplate st = submissionTemplateService.getSubmissionTemplateById(templateId);
+		SubmissionTemplate st = submissionTemplateService.getSubmissionTemplateByUUID(templateId);
 		return st.getJsonString();
 	}
 
@@ -493,6 +494,7 @@ public class SubmissionsRestController {
 				submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
 			} else {
 				submissionTemplate = new SubmissionTemplate();
+				submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			}
 
 			submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());

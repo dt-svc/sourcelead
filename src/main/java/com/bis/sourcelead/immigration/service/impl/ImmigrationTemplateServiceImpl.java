@@ -380,8 +380,8 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
     }
 
     @Override
-    public boolean validateTemplateNameExistance(String templateName, Long templateId) {
-        return immigrationTemplateDao.validateTemplateNameExistance(templateName, templateId);
+    public boolean validateTemplateNameExistance(String templateName, Long orgLocationId) {
+        return immigrationTemplateDao.validateTemplateNameExistance(templateName, orgLocationId);
     }
 
 	@Override
@@ -403,6 +403,12 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	@Override
 	public boolean validateTemplateTaskNameExistance(String templateTaskName, Long templateId, Long immiTaskId) {
 		return immigrationTemplateDao.validateTemplateTaskNameExistance(templateTaskName, templateId, immiTaskId);
+	}
+
+	@Override
+	public ImmigrationTemplate getImmigrationTemplateByIdAndLocationId(String templateName,Long templateId, Long orgLocationId) {
+		// TODO Auto-generated method stub
+		return immigrationTemplateDao.getImmigrationTemplateByIdAndLocationId(templateName,templateId, orgLocationId);
 	}
 
 }
