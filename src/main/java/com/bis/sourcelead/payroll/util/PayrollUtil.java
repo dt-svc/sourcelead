@@ -192,7 +192,8 @@ public class PayrollUtil {
 				        dates[1]  = cal.getTime();
 					break;
 				case PayrollConstant.ANNUALLY:
-	
+					 cal.add(Calendar.MONTH, +12);  
+				        dates[1]  = cal.getTime();
 					break;
 				default:
 					break;

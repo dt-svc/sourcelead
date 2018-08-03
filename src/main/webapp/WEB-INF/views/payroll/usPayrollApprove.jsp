@@ -36,7 +36,6 @@ function calculateTotalPay(formData,confirmType){
 				  $("#payrollIds").val(json.payrollIds);
 				  $("#pid").val(json.pid);
 				  $("#confirmType").val(json.confirmType); 
-				  alert(json.ppn);
 				  $("#ppn").val(json.ppn); 
 		    	  
 		    	  var dedJson = json.deduction;
@@ -44,7 +43,6 @@ function calculateTotalPay(formData,confirmType){
 		    	   if(dedJson != null && dedJson.length >0){ 
 		    		  for (var i=0; i<dedJson.length; i++){
 			    		  var ded = dedJson[i];
-			    		  alert(ded.deductionType);
 			    		  dedResult = dedResult + '<tr>';
 			    		  dedResult = dedResult + '<td>'+ded.deductionType+'</td>';
 			    		  dedResult = dedResult + '<td>$ '+ded.amount.toFixed(2)+'</td>';
@@ -64,7 +62,6 @@ function calculateTotalPay(formData,confirmType){
 		    	   if(contJson != null && contJson.length >0){ 
 		    		  for (var i=0; i<contJson.length; i++){
 			    		  var cont = contJson[i];
-			    		  alert(ded.deductionType);
 			    		  contResult = contResult + '<tr>';
 			    		  contResult = contResult + '<td>'+cont.contributionType+'</td>';
 			    		  contResult = contResult + '<td>$ '+cont.contributionAmount.toFixed(2)+'</td>';

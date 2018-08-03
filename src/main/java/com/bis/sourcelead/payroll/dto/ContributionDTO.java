@@ -23,6 +23,9 @@ public class ContributionDTO {
 	private String taxType;
 	
 	private int status;
+
+	private String contributionSchedule;
+
 	
 	public String getId()
 	{
@@ -120,6 +123,16 @@ public class ContributionDTO {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	
+	public String getContributionSchedule()
+	{
+		return contributionSchedule;
+	}
+
+	public void setContributionSchedule(String contributionSchedule)
+	{
+		this.contributionSchedule = contributionSchedule;
 	}
 	
 	
