@@ -65,10 +65,8 @@ function approvePayrollDiv(){
 			</div>
 		</div>
 		<div class="col-md-4 paddingLeft paddingRight">
-			<div class="dropdown-select">
-			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period">
+			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period" class="chosen-select">
 			</select>
-			</div>
 		</div>
 		<div class="col-md-3 paddingRight">
 			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date">
