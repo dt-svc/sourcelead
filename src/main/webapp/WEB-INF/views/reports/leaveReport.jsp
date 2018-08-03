@@ -52,7 +52,7 @@ $( document ).ready(function() {
           <a href="javascript:void(0)" id="showReport">Search Report</a>
           <a href="javascript:void(0)" onclick="searchReportCollapse();" id="searchReport" style="display:none;">Search Report</a>
     </h4>
-    <div id="reportCollapse" class="rundiv panel-collapse collapse mt in">
+    <div id="reportCollapse" class="rundiv mt">
       <div class="clearfix form-horizontal minHeight_225 minHeightcol5">
         <div class="row min">
             <div class="col-md-5">
@@ -220,7 +220,7 @@ function leaveReport(){
 		return false;
  } 
 	reportCollapse();
-	$("#showReport").hide();
+	$("#showReport, #reportCollapse").hide();
 	$("#searchReport, #leaveReportsList").show();
 }
 function prepareAllLeaveReportList(url,formData){

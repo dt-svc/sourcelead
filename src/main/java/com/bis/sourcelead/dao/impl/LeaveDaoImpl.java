@@ -967,9 +967,15 @@ public class LeaveDaoImpl implements LeaveDao{
 			sqlDate = new java.sql.Date(date.getTime());
 		}*/
 		Session session = this.sessionFactory.getCurrentSession();
-		date=format.parse(dayWiseLeaveReportDTO.getFromDate());
-		date = commonUtil.getOrgLocationCurrentDate(orgLoc.getDateFormat(), date);
-		sqlDate = new java.sql.Date(date.getTime());
+		if(dayWiseLeaveReportDTO.getFromDate() != null && !dayWiseLeaveReportDTO.getFromDate().isEmpty()){
+			date=format.parse(dayWiseLeaveReportDTO.getFromDate());
+			date = commonUtil.getOrgLocationCurrentDate(orgLoc.getDateFormat(), date);
+			sqlDate = new java.sql.Date(date.getTime());
+		}else{
+			date = commonUtil.getOrgLocationCurrentDate(orgLoc.getDateFormat(), new Date());
+			sqlDate = new java.sql.Date(date.getTime());	
+		}
+		
 		String query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and ((:fromDate BETWEEN leaveReport.fromDate AND leaveReport.toDate) or (leaveReport.fromDate = :fromDate and leaveReport.toDate = :fromDate)) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
 		StringBuilder query1 = new StringBuilder();
 		if (StringUtils.isNotBlank(dayWiseLeaveReportDTO.getSearchValue())) {
@@ -994,8 +1000,7 @@ public class LeaveDaoImpl implements LeaveDao{
 															+ "%' ").append("OR leaveReport.status like '%"
 																	+ dayWiseLeaveReportDTO.getSearchValue() + "%') ");
 			if (sqlDate != null) {
-				query1.append("OR (leaveReport.fromDate <=" + sqlDate + " and leaveReport.toDate >="
-						+ sqlDate + ") ");
+				query1.append("OR (leaveReport.fromDate like '%" + sqlDate + "%' and leaveReport.toDate like '%" + sqlDate + "%'" + ") ");
 			}
 		}
 		List<LeaveReportView> leaveReportList = null;
@@ -1175,7 +1180,12 @@ public class LeaveDaoImpl implements LeaveDao{
 		/*queryString = session.createQuery(query + query1.toString() + " " + userRoleSubQuery + " "
 				+ deptSubQuery + " " + employmentTypeSubQuery + " " + leaveTypeSubQuery + " "
 				+ sortingQry);*/
-		queryString = session.createQuery(query+" "+query1.toString()+" "+deptSubQuery+" "+userRoleSubQuery+" "+employmentTypeSubQuery+" "+associateSubQuery+" "+leaveTypeSubQuery);
+		String sortingQry = "";
+		if (StringUtils.isNotBlank(hrLeaveReportDTO.getSortColumn())) {
+					sortingQry = " order by leaveReport." + hrLeaveReportDTO.getSortColumn() + " "
+							+ hrLeaveReportDTO.getSortOrder();
+				}
+		queryString = session.createQuery(query+" "+query1.toString()+" "+deptSubQuery+" "+userRoleSubQuery+" "+employmentTypeSubQuery+" "+associateSubQuery+" "+leaveTypeSubQuery+" "+sortingQry);
 		
 		List<Long> userRoleList = new ArrayList<>();
 		List<Long> departmentsList = new ArrayList<>();
