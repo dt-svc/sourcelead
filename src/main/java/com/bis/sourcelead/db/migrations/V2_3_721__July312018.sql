@@ -18,7 +18,6 @@ SELECT
     uRole.ROLE_ID AS ROLE_ID,
     uLeave.ORGLOCATION_ID,
     emp.DEPARTMENT_ID,
-    emp.ID AS Employee_ID,
     uLeave.CREATED_DATE,
     uLeave.UPDATED_DATE,
     uLeave.LEAVE_TYPE_ID,
