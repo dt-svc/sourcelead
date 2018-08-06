@@ -213,4 +213,6 @@ public class UserGroupDaoImpl implements UserGroupDao{
 		}
 		return totalHoursDTO;
 	}
+	
+	
 }

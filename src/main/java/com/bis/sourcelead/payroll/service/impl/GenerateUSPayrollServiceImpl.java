@@ -172,9 +172,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			Set<EmployeePayroll> payrollList = calculatePayroll(paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
 			paySheetFreq.setEmployeepayroll(payrollList);
-			PaysheetFrequency savedPaysheetFrequency = uSPaysheetService.addPaysheetFrequency(paySheetFreq);
-			if(savedPaysheetFrequency != null) {
-			 paysheetFrequencyDTO = getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
+			if(payrollList !=null && payrollList.size() > 0) {
+				PaysheetFrequency savedPaysheetFrequency = uSPaysheetService.addPaysheetFrequency(paySheetFreq);
+				if(savedPaysheetFrequency != null) {
+				 paysheetFrequencyDTO = getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
+				}	
 			}
 		}
 		return paysheetFrequencyDTO;
@@ -187,13 +189,13 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			for (AssociateSalary assoSal : assoSalList) {
 			    EmployeePayroll employeePayroll = new EmployeePayroll();
 			    employeePayroll.setPaysheetFrequency(paySheetFreq);
-			    TotalHoursDTO totalHoursDto = userGroupDao.getTotalHoursByUserId(assoSal.getId(),freqStartDate,freqEndDate);
-			    AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(assoSal.getId(), orgLocation);
+			    TotalHoursDTO totalHoursDto = userGroupDao.getTotalHoursByUserId(assoSal.getUserId().getId(),freqStartDate,freqEndDate);
+			    AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(assoSal.getUserId().getId(), orgLocation);
 //				Map<String, Float> hoursMap = submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(), orgLocation.getId(), actualStartDate, actualEndDate,"");
 				float totalHours = 0;
 				BigDecimal payRate = BigDecimal.ZERO;
 				BigDecimal amount = BigDecimal.ZERO;
-				if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getSalaryType())) {
+				if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
 					payRate = assoSal.getHourlyRate();
 					if(totalHoursDto !=null && StringUtils.isNotBlank(totalHoursDto.getTotalHours())) {
 						totalHours = Float.parseFloat(totalHoursDto.getTotalHours());
@@ -206,14 +208,14 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 //							payRate = associateTaxView.getHourlyRate().doubleValue();		
 //						}
 //					}	
-				}else if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getSalaryType())) {
+				}else if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
 					amount = assoSal.getGrossSalary();
 				}
 				employeePayroll.setRegularHours(String.valueOf(totalHours));
 				employeePayroll.setEmpPayRate(payRate);
-//				User user = userService.getUserById(assoSal.getId());
-				User user = new User();
-				user.setId(assoSal.getUser());
+				User user = userService.getUserById(assoSal.getUserId().getId());
+//				User user = new User();
+//				user.setId(assoSal.getUser());
 				employeePayroll.setUser(user);
 				int invoiceFrequency = getProjectInvoiceFrequency(userGroup.getPayFrequency());
 				employeePayroll.setFrequency(invoiceFrequency);
@@ -243,7 +245,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				BigDecimal netPay = totalPay.subtract(postTax).add(postContriSum);
 				logger.info("*** Net Pay :"+netPay);
 				employeePayroll.setNetPay(netPay);
-				Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getId(),orgLocation.getId());
+				Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getUserId().getId(),orgLocation.getId());
 				if (employee != null) {
 					employeePayroll.setEmployee(employee);
 				}
@@ -312,7 +314,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							preTax = preTax.add(perAmount);
 						}
 						Date[] deductionDates = null;
-						if (StringUtils.isNoneBlank(assoDeduction.getDedStatus())) {
+						if (StringUtils.isNoneBlank(assoDeduction.getDedStatus()) && !PayrollConstant.EVERY_PAY.equalsIgnoreCase(assoDeduction.getDeductionTypeId().getPayrollScheduled())) {
 							deductionDates = payrollUtil.getDeductionDates(assoDeduction.getDedEndDate(), assoDeduction.getDeductionTypeId().getPayrollScheduled());
 						}
 						else {
@@ -320,12 +322,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							deductionDates = payrollUtil.getDeductionDates(paySheet.getFrequencyStartDate(), assoDeduction.getDeductionTypeId().getPayrollScheduled());
 						}
 						assoDeduction.setDedStartDate(deductionDates[0]);
-						if(deductionDates[1] != null) {
-							assoDeduction.setDedEndDate(deductionDates[1]);	
-						}else {
-							assoDeduction.setDedEndDate(paySheet.getFrequencyEndDate());
-						}
-						
+						assoDeduction.setDedEndDate(deductionDates[1]);
 						associateDeductionDao.saveAssociateDeduction(assoDeduction);
 						
 						Long contributionId = null;
@@ -345,11 +342,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								}
 								assContribution.setContributionStatus("CONTRIBUTED");
 								assContribution.setContributionStartDate(deductionDates[0]);
-								if(deductionDates[1] != null) {
-									assContribution.setContributionEndDate(deductionDates[1]);	
-								}else {
-									assContribution.setContributionEndDate(paySheet.getFrequencyEndDate());
-								}
+								assContribution.setContributionEndDate(deductionDates[1]);
 								associateContributionDao.saveAssociateContribution(assContribution);
 								contributionId = assContribution.getId();
 							}
@@ -375,7 +368,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							postTax = postTax.add(perAmount);
 						}
 						Date[] deductionDates = null;
-						if (StringUtils.isNoneBlank(assoDeduction.getDedStatus())) {
+						if (StringUtils.isNoneBlank(assoDeduction.getDedStatus()) && !PayrollConstant.EVERY_PAY.equalsIgnoreCase(assoDeduction.getDeductionTypeId().getPayrollScheduled())) {
 							deductionDates = payrollUtil.getDeductionDates(assoDeduction.getDedEndDate(), assoDeduction.getDeductionTypeId().getPayrollScheduled());
 						}
 						else {
@@ -383,12 +376,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							 deductionDates = payrollUtil.getDeductionDates(paySheet.getFrequencyStartDate(), assoDeduction.getDeductionTypeId().getPayrollScheduled());
 						}
 						assoDeduction.setDedStartDate(deductionDates[0]);
-						if(deductionDates[1] != null) {
-							assoDeduction.setDedEndDate(deductionDates[1]);		
-						}else {
-							assoDeduction.setDedEndDate(paySheet.getFrequencyEndDate());
-						}
-						
+						assoDeduction.setDedEndDate(deductionDates[1]);
 						associateDeductionDao.saveAssociateDeduction(assoDeduction);
 						
 						
@@ -409,11 +397,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								}
 								assContribution.setContributionStatus(PayrollConstant.CONTRIBUTED);
 								assContribution.setContributionStartDate(deductionDates[0]);
-								if(deductionDates[1] != null) {
-									assContribution.setContributionEndDate(deductionDates[1]);
-								}else {
-									assContribution.setContributionEndDate(paySheet.getFrequencyEndDate());
-								}
+								assContribution.setContributionEndDate(deductionDates[1]);
 								associateContributionDao.saveAssociateContribution(assContribution);
 								contributionId = assContribution.getId();
 							}
