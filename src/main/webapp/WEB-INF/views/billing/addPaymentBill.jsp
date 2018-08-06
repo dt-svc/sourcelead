@@ -406,8 +406,9 @@ $('#paymentDate').datepicker({
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
 		  }else{
+			  var inputAmount = $("#totalAmountRow"+id).val();
 			  $("#totalAmountRow"+id).val('');
-			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
+			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(inputAmount);
 		  }
 		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
 		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
