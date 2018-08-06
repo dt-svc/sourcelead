@@ -34,6 +34,8 @@ import com.bis.sourcelead.payroll.dao.AssociateContributionDao;
 import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
 import com.bis.sourcelead.payroll.dao.GenerateUSPayrollDao;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
+import com.bis.sourcelead.payroll.dto.ContributionHistoryDTO;
+import com.bis.sourcelead.payroll.dto.DeductionHistoryDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
@@ -51,6 +53,7 @@ import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
+import com.bis.sourcelead.payroll.service.DeductionHistoryService;
 import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
 import com.bis.sourcelead.payroll.service.PayrollAdjustmentService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
@@ -126,6 +129,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	
 	@Autowired
 	AssociateContributionDao associateContributionDao;
+	
+	@Autowired
+	DeductionHistoryService deductionHistoryService;
 	
 	
 	 
@@ -311,14 +317,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						
 						Long contributionId = null;
 						if(contributions != null) {
-							System.out.println("************ Deduction Id "+assoDeduction.getDeductionTypeId().getId());
 							AssociateContribution assContribution = contributions
 									.stream()
 									.filter(con->con.getContributionTypeId().getDeductionTypeId().getId().longValue() == assoDeduction.getDeductionTypeId().getId().longValue())
 									.findAny()
 									.orElse(null);
 							if(assContribution != null) {
-								System.out.println("*******assContribution Ded Id "+assContribution.getContributionTypeId().getDeductionTypeId().getId());
 								if (PayrollConstant.FIXED.equalsIgnoreCase(assContribution.getContributionMethod())) {
 			    					preContriTax = preContriTax.add(assContribution.getContributionAmount());
 								}
@@ -702,23 +706,31 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			}
 			payrollDTO.setTaxes(payroll.getTaxes());
 			
-			ResponseList<DeductionDTO> dedRes = associateDeductionService.findAllDeductionSummaryByUserId(payroll.getUser().getId(), orgLocation);
-			ResponseList<ContributionDTO> contributionRes = associateContributionService.findAllContributionSummaryByUserId(payroll.getUser().getId(), orgLocation);
+//			ResponseList<DeductionDTO> dedRes = associateDeductionService.findAllDeductionSummaryByUserId(payroll.getUser().getId(), orgLocation);
+			List<DeductionHistoryDTO> dedContrbutionHistory = deductionHistoryService.getDeductionsByPayrollId(payroll.getId());
+			List<ContributionHistoryDTO> contributionHistory = deductionHistoryService.getContributionsByPayrollId(payroll.getId());
+//			ResponseList<ContributionDTO> contributionRes = associateContributionService.findAllContributionSummaryByUserId(payroll.getUser().getId(), orgLocation);
 			AssociateSalaryDTO assoSal = associateSalaryService.findAssociateSalaryByUserId(payroll.getUser().getId(), orgLocation);
-			if(dedRes.getData() != null) {
-				List<DeductionDTO>  preDedList = dedRes.getData().stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
-				List<DeductionDTO>  postDedList = dedRes.getData().stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
+			if(dedContrbutionHistory != null) {
+				List<DeductionHistoryDTO>  preDedList = dedContrbutionHistory
+						.stream()
+						.filter(ded->"pretax".equalsIgnoreCase(ded.getTaxType()))
+						.collect(Collectors.toList());
+				List<DeductionHistoryDTO>  postDedList = dedContrbutionHistory
+						.stream()
+						.filter(ded->"posttax".equalsIgnoreCase(ded.getTaxType()))
+						.collect(Collectors.toList());
 				
-				double  preDedTotal = dedRes.getData().stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
-				double postDedTotal = dedRes.getData().stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
+				double  preDedTotal = dedContrbutionHistory.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
+				double postDedTotal = dedContrbutionHistory.stream().filter(ded->"posttax".equalsIgnoreCase(ded.getTaxType())).mapToDouble(ded->ded.getAmount().doubleValue()).sum();
 				payrollDTO.setPostDed(postDedList);
 				payrollDTO.setPreDed(preDedList);
 				payrollDTO.setPreDedTotal(BigDecimal.valueOf(preDedTotal));
 				payrollDTO.setPostDedTotal(BigDecimal.valueOf(postDedTotal));
 			} 
-			if(contributionRes.getData() != null) {
-				payrollDTO.setContribution(contributionRes.getData());
-				double contributionTotal = contributionRes.getData().stream().mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
+			if(contributionHistory != null) {
+				payrollDTO.setContribution(contributionHistory);
+				double contributionTotal = contributionHistory.stream().mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
 				payrollDTO.setContributionTotal(BigDecimal.valueOf(contributionTotal));
 			}
 			BigDecimal piTotal = BigDecimal.ZERO;
