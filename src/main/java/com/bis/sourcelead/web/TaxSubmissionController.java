@@ -291,16 +291,11 @@ public class TaxSubmissionController {
 			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails = taxService.getITDeclarationSubmissionDetails(formId);
 			User user = taxService.getEmployeeDetails(sourceleadTaxITDeclarationSubmissionDetails.getUser().getId());
 			if (sourceleadTaxITDeclarationSubmissionDetails != null){
-				file = taxService.exportItDeclarationSubmissionExcel(sourceleadTaxITDeclarationSubmissionDetails,loginUser,orgLoc,user);
-			/*	if (exportType.equalsIgnoreCase("excel")) {
+			if (exportType.equalsIgnoreCase("exel")) {
 					file = taxService.exportItDeclarationSubmissionExcel(sourceleadTaxITDeclarationSubmissionDetails,loginUser,orgLoc,user);
-					
-					
-			//	file = taxService.exportItDeclarationSubmissionPdf(sourceleadTaxITDeclarationSubmissionDetails,loginUser,orgLoc,user);
 			}else{
-				//file = taxService.exportItDeclarationSubmissionExcel(sourceleadTaxITDeclarationSubmissionDetails,loginUser,orgLoc,user);
 				file = taxService.exportItDeclarationSubmissionPdf(sourceleadTaxITDeclarationSubmissionDetails,loginUser,orgLoc,user);
-			}*/
+			 }
 			}
 			
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
@@ -321,6 +316,7 @@ public class TaxSubmissionController {
 			
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 		

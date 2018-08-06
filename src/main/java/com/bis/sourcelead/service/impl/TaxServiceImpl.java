@@ -2,7 +2,10 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
@@ -19,6 +23,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +47,7 @@ import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.CentralTax;
+import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxChallan;
@@ -89,7 +95,8 @@ public class TaxServiceImpl implements TaxService {
 
 	@Autowired
 	private UserService userService;
-
+	
+	@Autowired
 	private CommonUtil commonUtil;
 
 	@Override
@@ -1263,6 +1270,7 @@ public class TaxServiceImpl implements TaxService {
 			/*
 			Chunk underline = new Chunk("Underline. ");
 			underline.setUnderline(0.1f, -2f); //0.1 thick, -2 y-location
+			document.getelemt
 			document.add(underline);*/
 
 			BaseColor myBordColor = WebColors.getRGBColor("#000000");
@@ -1277,7 +1285,6 @@ public class TaxServiceImpl implements TaxService {
 	          
 	          table.addCell(getCell("",Element.ALIGN_LEFT,font12b));
 	          table.addCell(getCell("INVESTMENT DECLARATION FORM FOR THE YEAR OF"+" "+(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().toString()),Element.ALIGN_LEFT,font12b));
-	          
 	          
 	          table.addCell(getCell("Employee Code",Element.ALIGN_LEFT,font10b));
 	          table.addCell(getCell("M123M",Element.ALIGN_LEFT,font10b));
@@ -1455,153 +1462,77 @@ public class TaxServiceImpl implements TaxService {
 
 	@Override
 	public File exportItDeclarationSubmissionExcel(SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, User loginUser,OrgLocations orgLoc, User user) throws Exception {
-	
-	        Row writeRow = null;
+	     	File file = null;
 	    	Workbook createExcelworkbook = new XSSFWorkbook();
-			Sheet createExcelsheet = createExcelworkbook.createSheet();
-	        createExcelsheet = getDeclarationSubmissionExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,sourceleadTaxITDeclarationSubmissionDetails,orgLoc);
-	 
-	  		
-	  		List<String[]> itDeclaratiopnItemList = new ArrayList<>();
-
-	  		JSONArray submissionItemsArray = new JSONArray(sourceleadTaxITDeclarationSubmissionDetails.getSubmissionItems());
-			if (submissionItemsArray != null) {
-				for (int i = 0; i < submissionItemsArray.length(); i++) {
-					JSONObject jsonObject = submissionItemsArray.getJSONObject(i);
-					String taxSectionName = jsonObject.getString("taxSectionName");
-					JSONArray itemsArray = jsonObject.getJSONArray("items");
+			Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrgLocationName() + "_"+ "ItDeclarationForm");
+			Row writeRow = null;
+			createExcelsheet = getItDeclarationSubmissionExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,sourceleadTaxITDeclarationSubmissionDetails,orgLoc,user);
+			int row = 7;
 				
-					String[] sectionNameArray = new String[1];
-					
-					
-					if (itemsArray != null) {
-					  	  int column=0;
-						sectionNameArray[0] = taxSectionName;
-					    writeRow = createExcelsheet.createRow(column+1);
-			            createExcelsheet = createItDeclarationXlsSheet(createExcelsheet,writeRow,column,itemsArray,user);
-					//	for (int k = 0; k < itemsArray.length(); k++) {
-							
-							//JSONObject itemObject = itemsArray.getJSONObject(k);
-							//itDeclaratiopnItemList	.add(prepareItemListToArray(itemObject, headers, orgLoc, loginUser, user));
+		  		JSONArray submissionItemsArray = new JSONArray(sourceleadTaxITDeclarationSubmissionDetails.getSubmissionItems());
+				if (submissionItemsArray != null) {
+					for (int i = 0; i < submissionItemsArray.length(); i++) {
+						JSONObject jsonObject = submissionItemsArray.getJSONObject(i);
+						String taxSectionName = jsonObject.getString("taxSectionName");
+						JSONArray itemsArray = jsonObject.getJSONArray("items");
 						
+						
+						if (itemsArray != null) {
+							writeRow = createExcelsheet.createRow(row++);
+							writeRow.createCell(0).setCellValue(taxSectionName);
+						//	createExcelsheet.autoSizeColumn(0);
+							
+							for (int k = 0; k < itemsArray.length(); k++) {
+								JSONObject itemObject = itemsArray.getJSONObject(k);
+								writeRow = createExcelsheet.createRow(row++);
+								createExcelsheet = createXlsSheet(createExcelsheet, writeRow, itemObject,user);
+							}
+							
+							//create an empty row
+							writeRow.createCell(0).setCellValue(" ");
+					}
+				}
 				
-			}
-	        return (File) createExcelsheet;
-	    }
-			}
-			return null;
-	       
-	        
-//	    }
-	    
-	    
-		
-		
-		
-		
-		
-	
-	}
-
-
-	private Sheet createItDeclarationXlsSheet(Sheet createExcelsheet, Row writeRow, int column, JSONArray itemsArray,User user) {
-		// TODO Auto-generated method stub
-		 if(user.getFullName() !=null){
-             writeRow.createCell(0).setCellValue(user.getFullName()); 
-         }
-        else{
-               writeRow.createCell(0).setCellValue("--");   
-           }
-               writeRow.createCell(1).setCellValue("Employee Code");
-               
-               writeRow.createCell(1).setCellValue("Employee Code");
-               writeRow.createCell(1).setCellValue("Employee Code");
-               writeRow.createCell(1).setCellValue("Employee Code");
-               writeRow.createCell(1).setCellValue("Employee Code");
-		
-		return createExcelsheet;
-	}
-
-	private Sheet getDeclarationSubmissionExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow,Workbook createExcelworkbook,SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, OrgLocations orgLoc) {
-
-        CellStyle style = createExcelworkbook.createCellStyle();
-         style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-         style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-         org.apache.poi.ss.usermodel.Font font = createExcelworkbook.createFont();
-        font.setColor(IndexedColors.BLACK.getIndex());
-         style.setFont(font);
-         
-         writeRow = createExcelsheet.createRow(0);
-         createExcelsheet.setColumnWidth(0, 10000);
-         createExcelsheet.setColumnWidth(1, 10000);
-         createExcelsheet.setColumnWidth(2, 5000);
-         createExcelsheet.setColumnWidth(3, 5000);
-         
-         
-         String headers [] = Constants.IT_DECLARATION_SUBMISSION_FORM;
-        return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
-    }
-
-	/*	File file = null;
-		Workbook createExcelworkbook = new XSSFWorkbook();
-		Sheet createExcelsheet = createExcelworkbook.createSheet();
-		Row writeRow = null;
-	
-		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,sourceleadTaxITDeclarationSubmissionDetails,orgLoc,user);
-		int column = 0;
-		
-		List<String[]> itDeclaratiopnItemList = new ArrayList<>();
-		try {
-			
-			writeRow = createExcelsheet.createRow(column + 14);	
-			
-			
-			JSONArray submissionItemsArray = new JSONArray(sourceleadTaxITDeclarationSubmissionDetails.getSubmissionItems());
-			
-			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, submissionItemsArray,orgLoc,user);
-			column++;
-			
-			 file = File.createTempFile(user.getFullName(),".xls");
-			 file.setReadable(true);
-			 FileOutputStream fos = new FileOutputStream(file);
-		
-			 createExcelworkbook.write(fos);
-			 fos.close();
-	} catch (IOException e) {
-			e.printStackTrace();
-	} catch (JSONException e) {
-				e.printStackTrace();
+				String home = System.getProperty("user.home");
+                StringBuilder fileSB = null;
+              file = File.createTempFile("ItdeclarationForm ",".xls");
+            	//file = new File(home+"/Downloads/" + fileSB.append(Constants.IT_DECLARATION_FORM).toString()+".xls");
+    		   file.setReadable(true);
+				FileOutputStream fos = new FileOutputStream(file);
+				try {
+					createExcelworkbook.write(fos);
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return file;
 			}
 			return file;
-		}
+	}
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, JSONObject itemObject, User user) throws JSONException {
 
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, JSONArray submissionItemsArray,OrgLocations orgLoc, User user) {
-		if(submissionItemsArray != null){
-
-				writeRow.createCell(0).setCellValue(  items   );
-				createExcelsheet.autoSizeColumn(0);
-				
-  		       writeRow.createCell(1).setCellValue(     );
-		       createExcelsheet.autoSizeColumn(1);
-		       
-	        	writeRow.createCell(2).setCellValue(     );
-		         createExcelsheet.autoSizeColumn(2);
-
-		      writeRow.createCell(3).setCellValue(        );
-		      createExcelsheet.autoSizeColumn(3);
-	
-	 }
+	String itemArray[] = new String[4];
+		
+		
+		writeRow.createCell(0).setCellValue(itemObject.getString("name"));
+		//createExcelsheet.autoSizeColumn(0);
+		
+		writeRow.createCell(1).setCellValue(itemObject.getString("description"));
+		//createExcelsheet.autoSizeColumn(1);
+		
+		writeRow.createCell(2).setCellValue( itemObject.getDouble("maxLimit"));
+		//createExcelsheet.autoSizeColumn(2);
+		
+		writeRow.createCell(3).setCellValue(itemObject.getDouble("amount"));
+		//createExcelsheet.autoSizeColumn(3);
+		
 		return createExcelsheet;
 	}
-
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, OrgLocations orgLoc,User user) {
-		
-		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
-		writeRow = createExcelsheet.createRow(0);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
 	
-		
+
+
+	private Sheet getItDeclarationSubmissionExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow,Workbook createExcelworkbook,
+			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, OrgLocations orgLoc, User user ) {
 		
 		CellStyle style = createExcelworkbook.createCellStyle();
         style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -1610,68 +1541,67 @@ public class TaxServiceImpl implements TaxService {
        font.setColor(IndexedColors.BLACK.getIndex());
         style.setFont(font);
 		
+		
+		
+		writeRow = createExcelsheet.createRow(0);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
 		Cell cell1 = writeRow.createCell(0);
 		cell1.setCellValue("Employee Code :");
 		cell1.setCellStyle(style);
 		Cell cell2 = writeRow.createCell(1);
-	    cell2.setCellValue( "Mahesha123");
+	    cell2.setCellValue(user.getFullName());
 		cell2.setCellStyle(style);
+		
 
 		writeRow = createExcelsheet.createRow(1);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
-
 		Cell cell3 = writeRow.createCell(0);
 		cell3.setCellValue("Employee Name :");
 		cell3.setCellStyle(style);
-
 		Cell cell4 = writeRow.createCell(1);
-		cell4.setCellValue(user.getFullName());
+		cell4.setCellValue("M1223M");
 		cell4.setCellStyle(style);
 
+		
 		writeRow = createExcelsheet.createRow(2);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
-
 		Cell cell5 = writeRow.createCell(0);
 		cell5.setCellValue("Employee Designation : ");
 		cell5.setCellStyle(style);
-
 		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue( "Former");
+		cell6.setCellValue(("1-3-2018"));
 		cell6.setCellStyle(style);
 		
 		
 		writeRow = createExcelsheet.createRow(3);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
-		
 		Cell cell7 = writeRow.createCell(0);
 		cell7.setCellValue("Employee PAN : ");
 		cell7.setCellStyle(style);
-
 		Cell cell8 = writeRow.createCell(1);
-		cell8.setCellValue("CDYU4455");
+		cell8.setCellValue("21325masgv");
 		cell8.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(4);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
-		
 		Cell cell9 = writeRow.createCell(0);
-		cell7.setCellValue("Employee DOB : ");
-		cell7.setCellStyle(style);
-
+		cell9.setCellValue("Employee DOB : ");
+		cell9.setCellStyle(style);
 		Cell cell10 = writeRow.createCell(1);
-		cell8.setCellValue(user.getDateOfBirth()       );
-		cell8.setCellStyle(style);
+		cell10.setCellValue("21325masgv");
+		cell10.setCellStyle(style);
 		
-		writeRow = createExcelsheet.createRow(4);
-		createExcelsheet.setColumnWidth(0, 10000);
-		createExcelsheet.setColumnWidth(1, 10000);
-		
-		
+		String[] headers = null;
+		 headers  = Constants.IT_DECLARATION_SUBMISSION_FORM;
+		 createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,6);
+		 
 		return createExcelsheet;
-	}*/
-
+	}
 }
+
+
