@@ -45,7 +45,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 	public List<AssociateContribution> findAllContributionSummaryByUserId(Long userId, OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.userId.id=:userId and contri.orgLocationId.id= :orgLocationId and contri.status = 1" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+		List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.userId.id=:userId and contri.orgLocationId.id= :orgLocationId" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
 		return associateContributionList;
 	}
 
@@ -60,6 +60,19 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 			associateContribution = associateContributionList.get(0);
 		}
 		return associateContribution;
+	}
+
+	@Override
+	@Transactional
+	public AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateContribution assContribution where assContribution.contributionTypeId.id =:contriTypeId and assContribution.orgLocationId.id =:orgLocationId";
+		List<AssociateContribution> assContribution = session.createQuery(query).setLong("contriTypeId", contriTypId).setLong("orgLocationId", orgLocation.getId()).list();
+		if(assContribution.size() > 0) {
+			return assContribution.get(0);
+		}else {
+			return null;
+		}
 	}
 
 	@Override
@@ -79,6 +92,5 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 		
 		return associateContribution;
 	}
-
 
 }

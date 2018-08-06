@@ -25,7 +25,7 @@ $(document).ready(function(){
       <!-- <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Add Deduction</div> -->
        <div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/payrollConfigure'/>"> Payroll Deduction List</a>
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Add Deduction
 		</div>
     </section>
     <div id="addDeductionLoading"></div>
@@ -75,7 +75,7 @@ $(document).ready(function(){
             </div>
             
             <div class="form-group col-md-5">
-              <label class="col-md-12">Description</label>
+              <label class="col-md-12">Description<span class="text-danger paddingLeft">&nbsp;*</span></label>
               <div class="col-md-12">
                <textarea rows="2" class="form-control" id="description" name="description" data-validation="validate_length length1-250">${payrollDeduction.description }</textarea>
               </div>
