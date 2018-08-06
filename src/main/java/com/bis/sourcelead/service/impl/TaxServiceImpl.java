@@ -982,6 +982,8 @@ public class TaxServiceImpl implements TaxService {
 								attachment.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
 							}
 							attachment.setAttachment(attachmentDTO.getAttachment());
+							attachment.setFileURL(attachmentDTO.getFileURL());
+							attachment.setContentType(attachmentDTO.getContentType());
 							attachment.setSourceleadTaxSubmissionDocument(taxSubmissionDocument);
 							attachment.setActive(true);
 							attachmentList.add(attachment);
@@ -1034,8 +1036,9 @@ public class TaxServiceImpl implements TaxService {
 						attachmentDTO.setId(attachment.getId());
 						attachmentDTO.setUuid(attachment.getUuid());
 						attachmentDTO.setAttachment(attachment.getAttachment());
-						attachmentDTO
-								.setTaxSubmissionDocumentId(attachment.getSourceleadTaxSubmissionDocument().getId());
+						attachmentDTO.setFileURL(attachment.getFileURL());
+						attachmentDTO.setContentType(attachment.getContentType());
+						attachmentDTO.setTaxSubmissionDocumentId(attachment.getSourceleadTaxSubmissionDocument().getId());
 						attachmentDTO.setActive(attachment.isActive());
 						attachmentList.add(attachmentDTO);
 					}

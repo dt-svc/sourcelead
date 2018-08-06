@@ -91,15 +91,18 @@ function fileUploadEvent(ele) {
 				var filesText = "";
 				for(var e in data) {
 					filesText += "<div data-index=" + e + ">";
+					var fileName = data[e].fileURL.substring(data[e].fileURL.lastIndexOf("/") + 1 , data[e].fileURL.length);
 					filesText += "<i onclick='removeAttachment(this);' class='text-danger fa fa-remove cursorPointer'></i>";
-					filesText += data[e].fileName + "</div>";
-					var fileURL = data[e].fileURL.substring(data[e].fileURL.lastIndexOf("/") + 1 , data[e].fileURL.length);
+					filesText += fileName;
+					filesText += "<i onclick='viewFile(\"" + data[e].fileURL.replace("taxDocuments","temp") + "\",\"" + fileName + "\",\"" + data[e].contentType + "\");' title='preview' class='fa fa-eye cursorPointer'></i>";
+					filesText += "</div>";
 					$(parentDiv).find("input[data-name='updateFile']").val(true);
-					$(attachmentDiv).append("<input name='documentList[" + $(attachmentDiv).data('index') + "].attachmentList[" + e + "].attachment' data-name='documentFileNames' type='hidden' value='" + fileURL + "'>");
+					var text = "<input name='documentList[" + $(attachmentDiv).data('index') + "].attachmentList[" + e + "].attachment' data-name='documentFileNames' type='hidden' value='" + fileName + "'>";
+					text += "<input name='documentList[" + $(attachmentDiv).data('index') + "].attachmentList[" + e + "].fileURL' type='hidden' value='" + data[e].fileURL + "'>";
+					text += "<input name='documentList[" + $(attachmentDiv).data('index') + "].attachmentList[" + e + "].contentType' type='hidden' value='" + data[e].contentType + "'>";
+					$(attachmentDiv).append(text);
 				}
-				
 //				var docName = $(ele).parents("tr").find("input[data-name='documentName']").val();
-				
 				var uploadedFilesDiv = $(parentDiv).find(".uploadedFiles");
 				uploadedFilesDiv.html(filesText);
 				enableDisableRefresh(ele);

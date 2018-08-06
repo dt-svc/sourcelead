@@ -164,10 +164,11 @@
 															<c:set value="0" var="attachmentCount"></c:set>
 															<c:forEach items="${document.attachmentList}" var="attachment">
 																<div data-index="${attachmentCount}">
+																	${attachment.attachment}
 																	<c:if test="${!viewForm}">
 																		<i onclick="removeAttachment(this);" data-id="${attachment.id}" data-uuid="${attachment.uuid}" data-name="attachment" class="text-danger fa fa-remove cursorPointer"></i>
 																	</c:if>
-																	${attachment.attachment}
+																	<i onclick="viewFile('${attachment.fileURL}','${attachment.attachment}','${attachment.contentType}');" title="preview" class="fa fa-eye cursorPointer"></i>
 																</div>
 																<c:set value="${attachmentCount + 1}" var="attachmentCount"></c:set>
 															</c:forEach>

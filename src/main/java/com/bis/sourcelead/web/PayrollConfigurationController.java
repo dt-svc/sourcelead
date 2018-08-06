@@ -54,7 +54,7 @@ public class PayrollConfigurationController {
 	PayrollPayheadService payrollPayheadService;
 	
 	
-	@RequestMapping(value = "/payrollConfiguration")
+	@RequestMapping(value = "/indPayrollConfiguration")
 	public ModelAndView payrollConfiguration(HttpServletRequest request)
 	{
 		ModelAndView model = new ModelAndView();

@@ -78,7 +78,8 @@ public class StatesDaoImpl implements StatesDao {
 			e.printStackTrace();
 		}
 		return null;
-
+	}
+	
 	@Transactional(rollbackFor = { Exception.class })
 	public String getStateCodeByCountryCodeAndState(String countryCode, String state)
 	{
