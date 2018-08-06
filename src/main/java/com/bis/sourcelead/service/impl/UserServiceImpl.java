@@ -1723,7 +1723,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId) throws Exception {
-		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId);
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception {
+		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList);
 	 }
 }

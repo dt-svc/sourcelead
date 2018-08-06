@@ -9,7 +9,6 @@ $(document).ready(function(){
 });
 </script>
 
-
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -20,12 +19,138 @@ $(document).ready(function(){
     </section>
     <div class="timesheet_out">
       <div class="vendor_wrap">
-        <div class="timesheet_head table_head">
-          <div class="pull-left ml mt5 mr">
-            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" onclick="resetCandidateFilter();" title="Refresh"> <span class="fa fa-refresh"></span> </button>
-          </div>
-          <div class="pull-left mt5"> <a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openPop();"><i class="fa fa-filter faFilter padding_right"></i> </a> </div>
-        </div>
+        <div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+      <ul class="pull-right list-unstyled list-inline">
+        <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
+		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
+	                    
+                  <c:if test="${orgLocationsCount > 1}">
+		                    <li>
+								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+								<div class="action-pop">
+									<span> 
+									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
+									</span>
+								</div>
+							</li>
+				</c:if>
+				
+				<c:if test="${orgLocationsCount == 1}">
+				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
+				</c:if>		
+	           
+						
+	       </sec:authorize>
+			
+			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')"> 
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
+			</sec:authorize>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						<sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
+							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
+						</sec:authorize>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='balanceLeavesTableSearch'/><span class="repSearchIcon" onClick="getBalanceLeaveReportList();"></span></li>
+        </ul>
+      </div>
+      
+<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+				<h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+							
+						<div class="col-md-2">
+						<div class="row">
+							 
+							 <div class="col-md-12 mb">
+								<label><strong>Leave Type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="employmentTypeFilter">
+			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="leaveType"  value ="Billable"><label>&nbsp;Billable</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="leaveType"  value ="Non Billable" ><label>&nbsp;Non Billable</label></li>
+			                        </ul>
+								 </div>
+							 </div> 
+							 
+						  </div>
+						</div>
+						
+				
+						
+						<div class="col-md-2 positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a roles">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
+									<c:forEach var="roles" items="${rolesList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="userRole" value ="${roles.id}" ><label>${roles.displayName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						
+							<div class="col-md-2 positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="leaveTypeInput" onkeyup="leaveTypeFunction()" placeholder="leaveType" title="Type in a leaveType">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="leaveTypeUL">
+									<c:forEach var="leaveType" items="${leaveTypeList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="userleaveType" value ="${leaveType.id}" ><label>${leaveType.name}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						
+						
+						<div class="col-md-2">
+						<div class="row">
+						
+					
+						<div class="col-md-12 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myDepartmentInput" onkeyup="myDepartmentFunction()" placeholder="Departments" title="Type in a departments">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myDepartmentUL">
+									<c:forEach var="dep" items="${departmentList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgDepartments" value ="${dep.id}"><label>${dep.departmentName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</div></div>
+						
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet"
+								onclick="closePop();getBalanceLeaveReportList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+
+
   <!--       <div class="require_wrap_table tableFirstSecond clearfix">
           <table>
             <thead>
@@ -55,8 +180,7 @@ $(document).ready(function(){
     </div>
   </section>
 
-
-<script>
+<!-- <script>
 function getBalanceLeaveReportList(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#employeeDataTableSearch").val();
@@ -66,13 +190,36 @@ function getBalanceLeaveReportList(){
 	prepareBalanceLeaveReportList(url);
 	
 }
-</script>	
+</script>	 -->
 
 <script>
-function prepareBalanceLeaveReportList(url){
+function getBalanceLeaveReportList(){
+	
+var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	
+	var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	var userleaveType = [];
+	$('input:checkbox[name=userleaveType]:checked').each(function() 
+		    {
+		userleaveType.push($(this).val());
+     });
+	var leaveType = [];
+	$('input:checkbox[name=leaveType]:checked').each(function() 
+		    {
+		leaveType.push($(this).val());
+     });
+	var url = sourceleadUrl+"/getLeaveBalanceReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType;
 $("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.get(url,
-						function(response) {
+		$.get(url,function(response) {
 							if (response.response === "AWKWARD") {
 								location.href = "/errorPage";
 							} else if (response.response === "SUCCESS") {
@@ -83,50 +230,53 @@ $("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; heig
 								result = result + '<tr>';
 								result = result + '<th>Employee Name</th>';
 							 	result = result + '<th>Emp Type</th>';
-							 	for (i = 0; i < response.data.length; i++) {
-									var report = response.data[i];
-								if(report.leaveTypeNames !=null && report.leaveTypeNames !='' && report.leaveTypeNames !='undefined')
-								result = result + '<th>'+report.leaveTypeNames+'</th>';
+							 	var opt = response.object;	
+							 	for (i = 0; i < opt.leaveTypeNames.length; i++) {
+							 		for(j=0; j < opt.users.length; j++)
+							 		var report = opt.users[j];
+							 		for(var k in opt.map){
+										var ltName = k.split("-");
+										if(ltName[1] == report.userId && ltName[0] == opt.leaveTypeNames[i]){
+											var v =ltName[0];
+											
+											result = result + '<th>'+v+'</th>';
 							 	}
+							 		}
+							 	}
+							 	
 								result = result + '<th>Total Balance Leaves</th>';
 								result = result + '</tr>';
 								result = result + '</thead>';
 								result = result + '<tbody>';
-								 for (i =0; i < response.data.length; i++) {
-									var report = response.data[i];
-									result = result + '<tr>';
-									 if(report.empName !=null && report.empName !='' && report.empName !='undefined'){
-										result = result + ' <td><div class="tbldata-dotdot-100" title = "'+report.empName+'">'+report.empName+'</div></td>';
-									}else{
-										result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
-									} 
-									 if(report.empType !=null && report.empType !='' && report.empType !='undefined'){
-											result = result + ' <td><div class="tbldata-dotdot-vsm" title = "'+report.empType+'">'+report.empType+'</div></td>';
-										}else{
-											result = result + ' <td><div class="tbldata-dotdot-vsm">--</div></td>';
+								
+								for(j=0; j < opt.users.length; j++){
+									var report = opt.users[j];
+									result += "<tr>";
+									
+									result += "<td> "+report.empName+" </td>";
+									result += "<td> "+report.empType+" </td>";
+									var lo=0;
+									for (i = 0; i < opt.leaveTypeNames.length; i++) {
+										for(var k in opt.map){
+											var ltName = k.split("-");
+											if(ltName[1] == report.userId && ltName[0] == opt.leaveTypeNames[i]){
+												var l = opt.map[k];
+													result += "<td> "+l+" </td>";
+											       lo = lo+l;
+												}else if(ltName[0] == null &&opt.leaveTypeNames[i] == null)
+													result += "<td> -- </td>";
+												
+											
 										}
-									 var k="";
-									 var v="";
-								for (var a in report.map)
-									{
-									k=report.map[a];
-									v=a;
 									}
-//  									 for (i = 0; i < report.leaveTypeNames.length; i++)
-//  										 {
-//  										 if(report.leaveTypeNames ==v)
-										result = result + '    <td>';
-											result = result + '<div class="tbldata-dotdot-100">'+k+'</div>';
-										result = result + '    </td>'; 
-//  										 }
-// 								 }
-										result = result + '    <td>';
-											result = result + '<div class="tbldata-dotdot-100">'+v+'</div>';
-										result = result + '    </td>'; 
-									result = result + '    </tr>';
-								} 
-										result = result + '  </tbody>                                                                                                        ';
-										result = result + '</table> ';
+									result += "<td> "+lo+" </td>";
+									result += "</tr>"
+								}
+								
+								
+								
+								result = result + '  </tbody>                                                                                                        ';
+								result = result + '</table> ';
 							
 							$("#balanceLeaveReportsList").empty();
 							$("#balanceLeaveReportsList").append(result);
@@ -169,205 +319,6 @@ $("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; heig
 
 	}
 </script>
-
-<!-- <script>
-function prepareAllDaywiseLeaveReportList(url){
-	 	var result = "";
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
-		result = result + '<table id="dynamicDaywiseLeaveReportsListView" class="display" cellspacing="0" width="100%" >';
-		result = result + '<thead>';
-		result = result + '<tr>';
-		result = result + '<th>Employee Name</th>';
-		result = result + '<th>Emp Type</th>';
-		result = result + '<th>Leave Type</th>';
-		result = result + '<th>Type</th>';
-		result = result + '<th>Duration</th>';
-		result = result + '<th>Leave Period</th>';
-		result = result + '<th>Reason</th>';
-		result = result + '<th>Approver</th>';
-		result = result + '<th>Status</th>';
-		result = result + '</tr>';
-		result = result + '</thead>';
-		result = result + '</table>';
-		result = result	+ '</div>';
-		$("#daywiseLeaveReportsList").empty();
-		$("#daywiseLeaveReportsList").append(result);
-		daywiseLeaveReportsListPagination(url);
-}
-</script>
-
-<script>
-var table = '';
-function daywiseLeaveReportsListPagination(url){
-	var colIndex = 0;
-	table = $('#dynamicDaywiseLeaveReportsListView').DataTable( { 
-	  "processing": true,
-      "serverSide": true,
-      "searching": false,
-      "searchHighlight": true,
-      "ajax": $.fn.dataTable.pipeline( {
-          url: url,
-          method: 'GET',
-          pages: 10
-        }),
-        "columns": [
-        	{ "data": "empName" },
-            { "data": "employmentType" },
-            { "data": "leaveTypeNames"},
-            { "data": "vacationLeave"},
-            { "data": "totalBalanceLeaves"}
-            
-        ],
-		 "columnDefs": [ {
-		    	  	"targets": colIndex++,
-		    	  	"data": "empName",
-		    	  	"render": function(data, type, report, meta) {
-		    	  		var result = '';
-		    	  		 if(report.empName !=null && report.empName !='' && report.empName !='undefined'){
-								result = result + ' <td><div class="tbldata-dotdot-100" title = "'+report.empName+'">'+report.empName+'</div></td>';
-							}else{
-								result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
-							}
-			             return result;
-		    	  	}
-		      },{
-		    	  "targets": colIndex++,
-		          "data": "name",
-		          "render": function ( data, type, report, meta ) {
-		        	  var result = '';
-		          if(report.employmentType !=null && report.employmentType !='' && report.employmentType !='undefined'){
-						 result = result +" <a href='<c:url value='/app/reportSummary/"+report.employmentType+"'/>'' title = '"+report.employmentType+"' class='reportTextLeft'>"+report.employmentType+"</a>";
-		          }else{
-						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
-					}
-		              return result;
-		          		
-		          }
-		          },{
-		        "targets": colIndex++,
-		        "data": "leaveTypeNames",
-		        "render": function ( data, type, report, meta ) {
-		        	  var result = '';
-		        	  if(report.leaveTypeNames !=null && report.leaveTypeNames !='' && report.leaveTypeNames !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-vsm" title = "'+report.leaveTypeNames+'">'+report.leaveTypeNames+'</div></td>';
-						}else{
-							result = result + ' <td><div class="tbldata-dotdot-vsm">--</div></td>';
-						}
-		        	 return result;
-		        }
-		      }, {
-		          "targets": colIndex++,
-		          "data": "mobilePhone",
-		          "render": function ( data, type, report, meta ) {
-		        	  var result = '';
-		        	  if(report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
-							result = result + ' <td><div class="tblminwidth-100" title = "'+report.mobilePhone+'">'+report.mobilePhone+'</div></td>';
-						}else{
-							result = result + ' <td><div class="tblminwidth-100">--</div></td>';
-						}
-
-		        	  return result;
-		          }
-		        }, {
-		            "targets": colIndex++,
-		            "data": "employmentType",
-		            "sortable": false,
-		            "render": function ( data, type, report, meta ) {
-		            	var result = '';
- 		            	if(report.employmentType !=null && report.employmentType !='' && report.employmentType !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot" title = "'+report.employmentType+'">'+report.employmentType+'</div></td>';
-						}else{
-							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
-						}
- 
-			              return result;
-		            }
-		      },
-		      {
-		          "targets": colIndex++,
-		          "data": "fromDate",
-		          "sortable": false,
-		          "render": function ( data, type, report, meta ) {
-		          	var result = '';
-		          	if(report.dateofJoin !=null && report.dateofJoin !='' && report.dateofJoin !='undefined'){
-						result = result + ' <td><div class="tblminwidth-100" title = "'+report.dateofJoin+'">'+report.dateofJoin+'</div></td>';
-					}else{
-						result = result + ' <td><div class="tblminwidth-100">--</div></td>';
-					}
-
-			              return result;
-		          }
-		    },
-		    {
-		        "targets": colIndex++,
-		        "data": "toDate",
-		        "sortable": false,
-		        "render": function ( data, type, report, meta ) {
-		        	var result = '';
-		        	 if(report.dateOfTermination !=null && report.dateOfTermination !='' && report.dateOfTermination !='undefined'){
-						result = result + ' <td><div class="tbldata-dotdot" title = "'+report.dateOfTermination+'">'+report.dateOfTermination+'</div></td>';
-					}else{
-						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
-					}
-		              return result;
-		        }
-		    },
-		    {
-			          "targets": colIndex++,
-			          "data": "designation",
-			          "sortable": false,
-			          "render": function ( data, type, report, meta ) {
-			          	var result = '';
-			         	if(report.designation !=null && report.designation !='' && report.designation !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot" title = "'+report.designation+'">'+report.designation+'</div></td>';
-						}else{
-							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
-						} 
-				        return result;
-			          }
-			},{
-			          "targets": colIndex++,
-			          "data": "actions",
-			          "sortable": false,
-			          "render": function ( data, type, report, meta ) {
-			          	var result = '';
-					       result = result + '      <td><div class="tblminwidth-75 text-center">             ';
-				           result = result + '      <div class="positionRelative actionList-vdse-div">';
-				           result = result + '        <ul class="list-unstyled list-inline clearfix actionList-vdse">';
-				           result = result + '          <li><a href="javascript:void(0)" title="Print" class="fa fa-print" onClick="printEVR();commonview('+report.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Download" class="fa fa-download" onClick="downloadEVR();commonview('+report.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR();commonview('+report.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="View" class="fa fa-eye" onClick="viewEVR();commonview('+report.employeeId+')"></a></li>';
-				           result = result + '        </ul>';
-				           result = result + '      </div>';
-				           result = result + '    </div>';
-				           result = result + '    </td>';
-				        return result;
-			          }
-		  }],
-		    "scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"oLanguage": {
-	     		"sSearch": "",
-	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     },
-    } );
-    $("#dynamicEmployeeListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
-    $("input[type=search]").hide();
-}
-
-$("#employeeDataTableSearch").keydown(function(e) {
-	   if(e.which === 13) {
-		   getAllEmployeesList();
-	   }
-	});
-</script>
- -->
  
 <script>
 function viewCompleteTemplate(temp){
@@ -397,5 +348,163 @@ function viewCompleteTemplate(temp){
 				$this.next().css({'width': '100%'});
 			})
 </script>
+<script>
+function exportToPdf(){
+	var exportType = "pdf";
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+    
+	var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	var userleaveType = [];
+	$('input:checkbox[name=userleaveType]:checked').each(function() 
+		    {
+		userleaveType.push($(this).val());
+     });
+	var leaveType = [];
+	$('input:checkbox[name=leaveType]:checked').each(function() 
+		    {
+		leaveType.push($(this).val());
+     });
+	
+	window.location.href = sourceleadUrl + "/getExportReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType;
+	
+}
+</script>
+<script>
+function exportToExcel(){
+	var exportType = "excel";
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+    
+	var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	var userleaveType = [];
+	$('input:checkbox[name=userleaveType]:checked').each(function() 
+		    {
+		userleaveType.push($(this).val());
+     });
+	var leaveType = [];
+	$('input:checkbox[name=leaveType]:checked').each(function() 
+		    {
+		leaveType.push($(this).val());
+     });
+	
+	window.location.href = sourceleadUrl + "/getExportReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType;
+	
+}
+</script>
+<script>
+function resetFilter(){
+	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
+	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
+	$("#dynamicUserDataTableSearch").val('');
+	
+	document.getElementById("activeStatus").checked = true;
+	document.getElementById("notloggedInStatus").checked = true;
+	
+	getBalanceLeaveReportList();
+}
+</script>
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
 
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+</script>
+<script>
+function myRolesFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myRolesInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myRolesUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function myDepartmentFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myDepartmentInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myDepartmentUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closePop();
+	  }
+	});
+
+</script>
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
+		}
+		
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		}
+</script>
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
 <jsp:include page="../masterFooter.jsp" />

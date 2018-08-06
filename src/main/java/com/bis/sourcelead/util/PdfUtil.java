@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +23,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -38,6 +40,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectBudgetService;
@@ -61,6 +64,8 @@ import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.bis.sourcelead.dto.Response;
+
 
 /**
  * 
@@ -154,7 +159,7 @@ public class PdfUtil {
 	        PdfPTable table = new PdfPTable(headers.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(11);
+	        cell1.setColspan(10);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{3, 5, 3,5, 5, 5,5,5,5,3});
@@ -1343,5 +1348,147 @@ public class PdfUtil {
 		
 		return projectTaskArray;
 	}
+public File creategetLeaveBalancePdfTable(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation) throws Exception{
+	
+	 java.util.List<String> headers = new ArrayList<String>();
+		headers.add("Employee Name");
+		headers.add("Employee Type");
+		headers.add("Department");
+		headers.add("Role");
+		for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
+		{
+		headers.add(str);
+		}
+		headers.add("TotalBalanceLeaves");
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    StringBuilder sbUser =  new StringBuilder();
+	    sbUser.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date()));
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+	    System.out.println("***************************************"+file.getAbsolutePath());
+	    file.setReadable(true);
+	    
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(orgLocation.getOrgLocationName()).append(" ").append("Balance_Leave_Report");
+          
+
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgLocation.getOrgLocationName()).toString());
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	      
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.size());
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(headers.size());
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+//	        for (int i = 0; i<headers.size(); i++) {
+//	        	table.setWidths(new int [] {5});
+//	        }
+	        //table.setWidths(new int[]{5, 5, 5,5});
+	        //for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
+			 //{
+				// int i=4;
+				 //table.setWidths(new int[] {5}); 
+				 //i++;
+			 //}
+            table.addCell(cell1);
+	        for (String head:headers) {
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(head.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> lrvList = new ArrayList<>();
+	        java.util.List<LeaveBalanceReportDTO> list =  LeaveBalanceReport.getObject().getUsers();
+	        for(LeaveBalanceReportDTO leaveBalanceReportDTO : list){
+	        	lrvList.add(prepareLeaveBalanceReportStringArray(leaveBalanceReportDTO,LeaveBalanceReport,headers));
+	        }
+	        for (String[] userArray: lrvList) {
+                for (int i = 0; i < userArray.length; i++) {
+                    String datum = userArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        document.addTitle("BalanceLeaves Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+		
+	}
+
+	private String[] prepareLeaveBalanceReportStringArray(LeaveBalanceReportDTO leaveBalanceReportDTO,Response<LeaveBalanceReportDTO> LeaveBalanceReport, java.util.List<String> headers) throws Exception {
+		String userArray[] = new String[headers.size()];
+			 if(leaveBalanceReportDTO.getEmpName() !=null){
+				 userArray[0] = leaveBalanceReportDTO.getEmpName();
+			 }else{
+				 userArray[0] = "--";
+			 }
+			   if(leaveBalanceReportDTO.getEmpType() !=null){
+				   userArray[1] = leaveBalanceReportDTO.getEmpType();
+			   }else{
+				   userArray[1] = "--";
+			   }
+			   if(LeaveBalanceReport.getObject().getDepart().entrySet() != null) {
+			   for(Map.Entry<Long, String> k: LeaveBalanceReport.getObject().getDepart().entrySet()){
+					Long ltv =   k.getKey();
+					String lti = k.getValue();
+					if(ltv == leaveBalanceReportDTO.getUserId().longValue()){ 
+						userArray[2]=lti;
+			   }}}else{
+				   userArray[2] = "--";
+			   }
+			   if(leaveBalanceReportDTO.getRole() !=null){
+				   userArray[3] = leaveBalanceReportDTO.getRole();
+			   }else{
+				   userArray[3] = "--";
+			   }
+			   float lo =0;
+			   int i=4;
+			   float l=0;
+			   for (String str :LeaveBalanceReport.getObject().getLeaveTypeNames()) {
+					for(Map.Entry<String, Float> k: LeaveBalanceReport.getObject().getMap().entrySet()){
+						String[] ltName =   k.getKey().split("-");
+						if((Long.parseLong(ltName[1]) == leaveBalanceReportDTO.getUserId().longValue()) && (ltName[0].equalsIgnoreCase(str))){
+							 l = k.getValue();
+							 userArray[i]=Float.toString(l);
+						       lo = lo+l;
+							 }else if(ltName[0] == null &&str == null)
+								 userArray[i]="--";		
+					          }
+				i++;} 
+			   userArray[i]=Float.toString(lo);
+		   
+		   
+		return userArray;
+		
 	
 	}
+	
+	}
+	
