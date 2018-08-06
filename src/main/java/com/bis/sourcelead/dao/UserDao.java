@@ -166,6 +166,8 @@ public interface UserDao {
 	
 	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
 
+	User getUserbyConsultantUserId(Long consultantUserId);
+
 	List<User> getUsersListForSignatoryByOrglocationId(Long locationId);
 
 	List<User> getGlobalUsersByOrgId(Long roleId,Long orgId,Long tabId) throws Exception;
@@ -190,8 +192,5 @@ public interface UserDao {
 	public DashboardItems getDashboardItemsByDashboardId(long dashboardItemId);
 
 	public long saveDashboardItems(DashboardItems dashboardItems);
-
-
-	User getUserbyConsultantUserId(Long consultantUserId);
 
 }

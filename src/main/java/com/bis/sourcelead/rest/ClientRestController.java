@@ -470,7 +470,7 @@ public class ClientRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 ResponseList<OrgSpocDTO> vendConList = new ResponseList<>();
 		 List<OrgSpocDTO> vconList = new ArrayList<>();
-		 if(orgRelationId != "" && orgRelationId != null) {
+		 if(orgRelationId != null && orgRelationId != "") {
 			 List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(Long.valueOf(orgRelationId), loginUser.getId(),orgLocations.getId(),type);
 				for(OrgSpoc orgspoc:orgSpocsList){
 					OrgSpocDTO orgSpocDTO = new OrgSpocDTO();

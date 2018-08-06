@@ -1660,9 +1660,8 @@ public class UserDaoImpl implements UserDao {
 		String query = "select user.id from User user where user.linkUserId.id = :userId " ;
 	    List<Long> userIds = session.createQuery(query).setLong( "userId", userId).list();
         return userIds;
-        
 	}
-
+	
 	@Override
 	@Transactional
 	public List<User> getUsersListForSignatoryByOrglocationId(Long locationId) {

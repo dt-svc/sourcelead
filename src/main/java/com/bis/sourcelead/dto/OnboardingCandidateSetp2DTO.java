@@ -33,6 +33,17 @@ public class OnboardingCandidateSetp2DTO implements Serializable {
 	private String address1;
 	
 	private String address2;
+	
+	private String gender;
+	
+    private String dateOfBirth;
+	
+	private String employmentEligibility;
+	
+	private String uscisAlien;
+	
+	private String authorizedWorkUntil;
+	
 
 	public String getFirstName() {
 		return firstName;
@@ -113,5 +124,44 @@ public class OnboardingCandidateSetp2DTO implements Serializable {
 	public void setAddress2(String address2) {
 		this.address2 = address2;
 	}
-	
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public String getEmploymentEligibility() {
+		return employmentEligibility;
+	}
+
+	public String getUscisAlien() {
+		return uscisAlien;
+	}
+
+	public String getAuthorizedWorkUntil() {
+		return authorizedWorkUntil;
+	}
+
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public void setEmploymentEligibility(String employmentEligibility) {
+		this.employmentEligibility = employmentEligibility;
+	}
+
+	public void setUscisAlien(String uscisAlien) {
+		this.uscisAlien = uscisAlien;
+	}
+
+	public void setAuthorizedWorkUntil(String authorizedWorkUntil) {
+		this.authorizedWorkUntil = authorizedWorkUntil;
+	}
 }
