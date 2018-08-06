@@ -139,7 +139,7 @@ public class UserRole implements Serializable {
     
     
     @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "GRADE_ID", nullable = false)
+	@JoinColumn(name = "GRADE_ID")
 	private AssociateGrades gradeId;
 
 	@Transient
