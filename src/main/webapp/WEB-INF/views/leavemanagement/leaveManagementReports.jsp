@@ -307,12 +307,12 @@ background-color: #fcfcfc;
                         </div>
                         <div class="clearfix col-md-6 pull-right">
                         
-							<ul class="col-md-5 empUlAli">
+							<ul class="col-md-5 empUlAli mb0 mt5">
 	                            <li id="filterDepartmentPop"><i class="fa fa-filter"></i> <span>Department</span><i class="fa fa-caret-down"></i>
 	                            <div class="statusFiler-1">
 	                            <ul>
 		                            <c:forEach var="report" items="${departmentList}">
-		                            	<li><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();"><label class="tbldata-dotdot_140" title="${report.departmentName}">${report.departmentName}</label></li>
+		                            	<li class="clearfix mb5"><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();" class="pull-left"><label class="tbldata-dotdot-vsm pull-left mt5" title="${report.departmentName}">${report.departmentName}</label></li>
 		                            </c:forEach>
 	                            </ul>
 	                            </div>

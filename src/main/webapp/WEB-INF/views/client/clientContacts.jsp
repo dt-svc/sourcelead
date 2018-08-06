@@ -426,7 +426,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	<div class="form-horizontal clearfix">';
 	result = result  +'                  </div>  ';             
 	
-	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
+	result = result  +'	 <div class="clearfix mb" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
 	result = result + '<div class="input-group errorInptgroup">';
 	result = result  +'<input type="text" class="form-control input-sm" id="EmailId" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail1('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
@@ -439,30 +439,29 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
-	result = result  +'	<div class="clearfix mb10">';
-	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	<div class="clearfix mb mt">';
+	result = result  +'	 <div class="col-md-12 mt2">';
 	result = result  +'	<input type="text" class="form-control input-sm" value="" id="firstName" name="firstName" field-name="First name" placeholder="First name *" data-validation="required validate_Space validate_length length1-100">';
 	result = result  +'	</div>';
 	result = result  +'	</div>';
 	
-	result = result  +'	<div class="clearfix mb10">';
+	result = result  +'	<div class="clearfix mb">';
 	result = result  +'	  <div class="col-md-12">';
 	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" id="lastName" value="" placeholder="Last name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	 <div class="clearfix mb">';
 	result = result  +'	   <div class="col-md-12">';
 	result = result  +'	     <input type="text" class="form-control input-sm" value="" name="phoneNumber" id="phoneNumber" placeholder="Phone number" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 	result = result  +'	    </div>';
 	result = result  +'	  </div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10">';
-	result = result  +'	 <label class="col-md-12">Status</label>';
+	result = result  +'	 <div class="clearfix mb">';
 	result = result  +'	 <div class="col-md-12">';
-	result = result  +'	  <select class="form-control" id="spocStatus" name="spocStatus">';
+	result = result  +'	  <select class="width100percnt form-control" id="spocStatus" name="spocStatus">';
 	result = result  +'	   <option value="Active">Active</option>';
 	result = result  +'	   <option value="In-Active">In-Active</option>';
 	/* result = result  +'	   <option value="New">New</option>';
@@ -472,8 +471,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 </div>';
 	result = result  +'	 </div>';
 	
-	result = result  +'	 <div class="clearfix mb10">';
-	result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
+	result = result  +'	 <div class="clearfix">';
 	result = result  +'	 <div class="col-md-12">';
 	result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 	result = result  +'	       <c:forEach var="user" items="${userList}">';
@@ -507,10 +505,20 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'</div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10">';
-	result = result  +'	   <div class="col-md-12 checkbox">';
+	result = result  +'	 <div class="clearfix">';
+	result = result  +'	   <div class="col-md-6 checkbox margin-top0">';
 	result = result  +'	     <label>';
 	result = result  +'	      <input type="checkbox" value="Y" name="isMailSent">Send Invitation</label>';
+	result = result  +'	   </div>';
+	
+	result = result  +'	   <div class="col-md-6 checkbox margin-top0">';
+	result = result  +'	     <label>';
+	result = result  +'	      <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AP Email</label>';
+	result = result  +'	   </div>';
+	
+	result = result  +'	   <div class="col-md-6 checkbox margin-top0">';
+	result = result  +'	     <label>';
+	result = result  +'	      <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Invoice Email</label>';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
@@ -524,6 +532,7 @@ function addContact(orgRelationID,clientLocationId) {
 	$("#popUpDivContact").empty();
 	$("#popUpDivContact").append(result);
 	
+	
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
 		 $(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -531,6 +540,7 @@ function addContact(orgRelationID,clientLocationId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
+
 	 
 	 var config = {
 			  '.chosen-select'           : {},
@@ -546,8 +556,9 @@ function addContact(orgRelationID,clientLocationId) {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-	 
+				 $("#owner_chosen").find("ul.chosen-choices > li input").attr("placeholder", "Select Owners *");
 	}
+	
 </script>
  <!-- This Script is For Popup Div Ends --> 
  
@@ -555,6 +566,26 @@ function addContact(orgRelationID,clientLocationId) {
 function closePopupDiv(){
 	 $("#popUpDivContact").removeClass("edit-details-active");
 }
+
+function allowApEmailSent(){
+	var checked = document.getElementById("apOrArSent").checked
+	if(checked == true){
+		$("#apOrArSent").val("Y");
+	}else{
+		$("#apOrArSent").val("N");
+	}
+}
+
+
+function allowInvoiceEmailSent(){
+	var checked = document.getElementById("invoiceOrBillSent").checked
+	if(checked == true){
+		$("#invoiceOrBillSent").val("Y");
+	}else{
+		$("#invoiceOrBillSent").val("N");
+	}
+}
+
 </script>
 
 <!-- to add new contact -->

@@ -77,6 +77,8 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private String loginUserId;
 	
+	private String tags;
+	
 	public Long getId() {
 		return id;
 	}
@@ -281,6 +283,12 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	}
 	public void setLoginUserId(String loginUserId) {
 		this.loginUserId = loginUserId;
+	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 }
 

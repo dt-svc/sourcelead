@@ -75,7 +75,6 @@ $(document).ready(function() {
       </div>
     </div>
 		<div id="popUp"></div>
-		<div class="mask"></div>
 			<form:form id="department_form" name="department_form" method="post">
 				<div class="popupWrap" id="departmentCloseDiv">
 				<div class="popupHead">Add Department <i class="closePop pull-right popClose" onclick="flushRole();"></i></div>
@@ -84,7 +83,7 @@ $(document).ready(function() {
                       <div class="clearfix mb">
                         <div class="" id="departmentNameDiv">
                         	<label class="noPad">Department Name <b class="valStar">*</b></label>
-                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Name" onkeyup="validDepartmentname();">
+                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Name" onkeyup="validDepartmentname();" onkeydown="return (event.keyCode!=13);">
                         </div>
                       </div>
                       <div class="clearfix mb">

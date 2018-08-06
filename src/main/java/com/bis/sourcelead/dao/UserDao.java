@@ -167,6 +167,8 @@ public interface UserDao {
 	
 	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
 
+	User getUserbyConsultantUserId(Long consultantUserId);
+
 	List<User> getUsersListForSignatoryByOrglocationId(Long locationId);
 
 	List<User> getGlobalUsersByOrgId(Long roleId,Long orgId,Long tabId) throws Exception;
@@ -192,7 +194,7 @@ public interface UserDao {
 
 	public long saveDashboardItems(DashboardItems dashboardItems);
 
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception;
 
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception;
 
 }

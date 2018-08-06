@@ -3,71 +3,46 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
-<style>
-.edit_member_pop {
-	top:12% !important; left: 35%; margin: 0px auto; z-index: 15500; width: 520px;
-	position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
-}
-.edit_member_pop .footerBtns input {
-    width: 50%; border: none; height: 30px; font-size: 14px; font-weight: 500; color: #FFF; background-color: #ff4b4b;
-}
-.edit_member_pop .footerBtns input.u_can_color {
-    background-color: #375d81;
-}
-.edit_member_pop h4 {
-background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-size: 15px;
-}
-</style>
-
 <div id="myLinkaccounts" class="tab-pane fade">
-			  <div class="tab-content panel-body">
-                  <div class="clearfix mb">
-                      <div class="col-md-5">
-				        <h4 class="pull-left">Accounts</h4>
-				        	<a href="javascripit:void(0)" onclick="addNewLinkUser();"  class="pull-left ml mt2"><i class="fa fa-plus paddingRight"></i>Add</a>
-				        </div>
-                  </div>
-					
-					<div class="clearfix styleTables mt">
-						<table width="100%">
-							<thead>
-								<tr>
-								    <th>Email</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:if test="${userDTOListSize > 0}">
-									
-										<c:forEach var="user" items="${userDTOList}">
-										<tr>
-												<td>${user.email}</td>
-												<td>
-													<ul class="list-inline list-unstyled">
-														<li><a href="javascript:void(0)" onclick="removeLinkedUser('${user.userCode}');"><i class="fa fa-trash text-danger"></i></a></li>
-													</ul>
-													
-												</td>
-										</tr>
-										</c:forEach>
-										
-									
-									
-								</c:if>
-							</tbody>
-						</table>
-						<c:if test="${userDTOListSize == 0}">
-						 <div class='row'> 
-							 <div class='col-lg-12'> 
-								 <div class='dataTables_empty'>
-								 </div>
-							 </div>
-						 </div>
-						</c:if>
-					</div>
-					
-				</div>
+			  
+		 <div class="positionRelative reportHead clearfix">
+			<ul class="pull-right list-unstyled list-inline">
+				<li><a class="action newAdBtn mr5" href="javascript:void(0)" onclick="addNewLinkUser()">+ Account</a></li>
+			</ul>
+		</div>			  
+			  
+	<div class="project_tabs_inn_table project_tabs_inn_table_a">
+		<table>
+			<thead>
+				<tr>
+				    <th>Email</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:if test="${userDTOListSize > 0}">
+						<c:forEach var="user" items="${userDTOList}">
+						<tr>
+								<td>${user.email}</td>
+								<td>
+									<ul class="list-inline list-unstyled">
+										<li><a href="javascript:void(0)" onclick="removeLinkedUser('${user.userCode}');"><i class="fa fa-trash text-danger"></i></a></li>
+									</ul>
+								</td>
+						</tr>
+						</c:forEach>
+				</c:if>
+			</tbody>
+		</table>
+		<c:if test="${userDTOListSize == 0}">
+		 <div class='row'> 
+			 <div class='col-lg-12'> 
+				 <div class='dataTables_empty'>
+				 </div>
+			 </div>
+		 </div>
+		</c:if>
+	</div>
 </div>
 
 <div id="userLinksPopUp"></div>
@@ -77,24 +52,22 @@ background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-s
 <script>
  function addNewLinkUser(){
 	 var result = "";
-		result = result +"	<div class='project_inn_mask'></div>"; 
-		result = result +" <div id='edit_member_pop' class='edit_member_pop'>";
+		result = result +" <div id='edit_member_pop' class='popupWrap popupWrapFixed'>";
 		result = result +"	<div id='linkUserLoading'></div>"; 
-		result = result +"	<h4>Link Account</h4>";
-		result = result + '<div class="form-horizontal clearfix">';
+		result = result +"<div class='popupHead'>Link Account <i class='closePop pull-right popClose' onclick='cancelAddDetails();''></i></div>";
+		
+		result = result + '<div class="popupContent clearfix">';
 		result = result + '<form id="linkUser_form" name="linkUser_form">';
 		
-		result = result + '	    <div class="row">';
-		
-		result = result + '	    <div class="clearfix mb10 col-md-6" id="linkedUserNameDiv">';
-		result = result + '	      <label class="clearfix">User Name<span class="text-danger">&nbsp;*</span></label>';
+		result = result + '	    <div class="clearfix mb" id="linkedUserNameDiv">';
+		result = result + '	      <label class="clearfix">User Name <span class="text-danger">*</span></label>';
 		result = result + '	      <div class="">';
 		result = result + '	        <input type="text" class="form-control inlineField" onblur="validateLinkedUserName();" id="linkedUserName" name="linkedUserName" field-name="User Name"  data-validation="required">';
 		result = result + '	      </div>';
 		result = result + '	    </div>';
 		
-		result = result + '	    <div class="clearfix mb10 col-md-6" id="linkedUserPwddiv">';
-		result = result + '	      <label class="clearfix">Password<span class="text-danger">&nbsp;*</span></label>';
+		result = result + '	    <div class="clearfix mb" id="linkedUserPwddiv">';
+		result = result + '	      <label class="clearfix">Password <span class="text-danger">*</span></label>';
 		result = result + '	      <div class="">';
 		result = result + '	        <input type="password" class="form-control inlineField"  id="linkedUserPwd" name="linkedUserPwd" field-name="Password" onblur="validateLinkUsePwd();" data-validation="required">';
 		result = result + '	      </div>';
@@ -102,11 +75,9 @@ background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-s
 		
 		result = result + '	    </div>';
 		
-		result = result + '	    </div>';
-		
-		
-		result = result + ' <div class="footerBtns">';
-		result = result +'		<input id="confirm-id" class="u_can_color" type="button" value="Save" onclick="saveLinkedUser();"><input  type="button"  value="Cancel" onClick="cancelAddDetails();">';
+		result = result + ' <div class="popupFoot text-right">';
+		result = result +'		<input id="confirm-id" class="slBtn md colorBtn" type="button" value="Save" onclick="saveLinkedUser();">';
+		result = result +' 		<input  type="button" class="slBtn md popClose"  value="Cancel" onClick="cancelAddDetails();">';
 		result = result +"	</div>";
 		result = result +"	</div>";
 		
@@ -114,8 +85,8 @@ background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-s
 		
 		
 		 $("#userLinksPopUp").append(result);
-         $("#edit_member_pop").slideDown(200);
-         $(".project_inn_mask").fadeIn(200); 
+         $("#edit_member_pop").fadeIn(100);
+         $(".mask").show(); 
          
          
 		
@@ -123,8 +94,8 @@ background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-s
  
  function cancelAddDetails(){
 		$("#userLinksPopUp").empty();
-		 $(".project_inn_mask").fadeOut(200);
-		 $(".vendor_wrap_mask").fadeOut(200);
+		$("#edit_member_pop").fadeOut(100);
+		 $(".mask").hide();
 	}
  
  </script>	
@@ -231,6 +202,7 @@ background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-s
 			                } else if (result.response === "SUCCESS") {
 							 $("#linkUserLoading").removeAttr("style");
 							 location.replace(sourceleadUrl+"/userProfile");
+							 cancelAddDetails();
 			                } else if (result.indexOf('Sign In') !== -1) {
 								location.replace(sourceleadUrl);
 							} else {
@@ -256,7 +228,6 @@ background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-s
  <script>
  function removeLinkedUser(userCode){
 	    var result = "";
-		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	<div id='removeLinkUserLoading'></div>";
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Are you sure to remove?</p>";
@@ -265,7 +236,7 @@ background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-s
 		result = result +"	</div>";
 		$("#linkChoicepopUp").append(result);
 		$("#remove_user_pop").slideDown(200);
-		$(".project_inn_mask").fadeIn(200);
+		$(".mask").show();
  }
  
  
@@ -298,7 +269,7 @@ background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-s
 <script type="text/javascript">
 function cancelLink(){
 	$("#linkChoicepopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".mask").hide();
 }
 </script>
  

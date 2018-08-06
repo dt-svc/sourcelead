@@ -1,6 +1,8 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +26,10 @@ public class LeaveReportView {
 	private String name;
 	@Column(name = "ORGLOCATION_ID", nullable = false)
 	private Long orglocationId;
+	
+	@Column(name = "Employee_ID", nullable = false)
+	private Long employeeId;
+	
 	@Column(name = "REASON",columnDefinition = "TEXT default NULL")
 	private String reason;
 	@Column(name = "FROM_DATE")
@@ -36,14 +42,40 @@ public class LeaveReportView {
 	private Long leaveTypeId;
 	@Column(name = "LEAVE_TYPE_NAME")
 	private String leaveTypeName;
+
 	@Column(name = "APPROVER_NAME" , columnDefinition = "TEXT default NULL")
-	private String approver;
+    private String approver;
 	@Column(name = "LEAVE_TYPE_BILLABLE", columnDefinition = "TEXT default NULL")
 	private String leaveTypeBillable;
 	@Column(name = "DURATION", columnDefinition = "TEXT default NULL")
 	private String duration;
 	@Column(name = "EMP_TYPE", columnDefinition = "TEXT default NULL")
 	private String employmentType;
+	
+	@Column(name = "USER_DEPT_NAME", columnDefinition = "TEXT default NULL")
+	private String userDeptName;
+	
+	@Column(name = "USER_ROLE_NAME")
+	private String userRoleName;
+	
+	@Column(name = "ROLE_ID", nullable = false)
+	private Long roleId;
+	
+	@Column(name = "DEPARTMENT_ID", nullable = false)
+	private Long deptId;
+	
+	@Column(name = "CREATED_DATE")
+	private Date appliedOn;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date approvedOn;
+	
+	@Transient
+	private List<Map<String, String>> order;
+	@Transient
+	private String sortColumn;
+	@Transient
+	private String sortOrder;
 	
 	@Transient
 	@JsonProperty
@@ -52,6 +84,14 @@ public class LeaveReportView {
 	@Transient
 	@JsonProperty
 	private String toDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String appliedOnDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String approvedOnDateStr;
 	
 	public Long getId()
 	{
@@ -223,4 +263,126 @@ public class LeaveReportView {
 	{
 		this.toDateStr = toDateStr;
 	}
+
+	public List<Map<String, String>> getOrder()
+	{
+		return order;
+	}
+
+	public void setOrder(List<Map<String, String>> order)
+	{
+		this.order = order;
+	}
+
+	public String getSortColumn()
+	{
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn)
+	{
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortOrder()
+	{
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder)
+	{
+		this.sortOrder = sortOrder;
+	}
+
+	public String getUserDeptName()
+	{
+		return userDeptName;
+	}
+
+	public void setUserDeptName(String userDeptName)
+	{
+		this.userDeptName = userDeptName;
+	}
+
+	public String getUserRoleName()
+	{
+		return userRoleName;
+	}
+
+	public void setUserRoleName(String userRoleName)
+	{
+		this.userRoleName = userRoleName;
+	}
+
+	public Long getRoleId()
+	{
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId)
+	{
+		this.roleId = roleId;
+	}
+
+	public Long getDeptId()
+	{
+		return deptId;
+	}
+
+	public void setDeptId(Long deptId)
+	{
+		this.deptId = deptId;
+	}
+
+	public Date getAppliedOn()
+	{
+		return appliedOn;
+	}
+
+	public void setAppliedOn(Date appliedOn)
+	{
+		this.appliedOn = appliedOn;
+	}
+
+	public Date getApprovedOn()
+	{
+		return approvedOn;
+	}
+
+	public void setApprovedOn(Date approvedOn)
+	{
+		this.approvedOn = approvedOn;
+	}
+
+	public String getAppliedOnDateStr()
+	{
+		return appliedOnDateStr;
+	}
+
+	public void setAppliedOnDateStr(String appliedOnDateStr)
+	{
+		this.appliedOnDateStr = appliedOnDateStr;
+	}
+
+	public String getApprovedOnDateStr()
+	{
+		return approvedOnDateStr;
+	}
+
+	public void setApprovedOnDateStr(String approvedOnDateStr)
+	{
+		this.approvedOnDateStr = approvedOnDateStr;
+	}
+
+	public Long getEmployeeId()
+	{
+		return employeeId;
+	}
+
+	public void setEmployeeId(Long employeeId)
+	{
+		this.employeeId = employeeId;
+	}
+	
+	
 }

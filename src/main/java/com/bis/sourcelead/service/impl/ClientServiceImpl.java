@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -504,14 +505,33 @@ public class ClientServiceImpl implements ClientService {
 					orgSpoc.setClientUser(spocUser);
 					orgSpoc.setVendorUser(ownerUser);
 					orgSpoc.setOwnerUser(ownerUser);
+					if(StringUtils.isNotBlank(clientDTO.getInvoiceOrBillSent())){
+					orgSpoc.setInvoiceEmailStatus(clientDTO.getInvoiceOrBillSent());
+					}else{
+					orgSpoc.setInvoiceEmailStatus(Constants.NO);	
+					}
+					if(StringUtils.isNotBlank(clientDTO.getApOrArSent())){
+					orgSpoc.setApEmailStatus(clientDTO.getApOrArSent());
+					}else{
+					orgSpoc.setApEmailStatus(Constants.NO);
+					}
 				} else if (responderType.equalsIgnoreCase("Vendor")) {
 					orgSpoc.setClientLocationId(orgLocations);
 					orgSpoc.setVendorLocationId(clientOrgLocations);
 					orgSpoc.setClientUser(ownerUser);
 					orgSpoc.setVendorUser(spocUser);
 					orgSpoc.setOwnerUser(ownerUser);
+					if(StringUtils.isNotBlank(clientDTO.getInvoiceOrBillSent())){
+					orgSpoc.setBillingEmailStatus(clientDTO.getInvoiceOrBillSent());
+					}else{
+					orgSpoc.setBillingEmailStatus(Constants.NO);	
+					}
+					if(StringUtils.isNotBlank(clientDTO.getApOrArSent())){
+					orgSpoc.setArEmailStatus(clientDTO.getApOrArSent());
+					}else{
+					orgSpoc.setArEmailStatus(Constants.NO);
+					}
 				}
-
 				if (StringUtils.isNotBlank(clientDTO.getSpocStatus())) {
 					orgSpoc.setSpocStatus(clientDTO.getSpocStatus());
 				} else {
@@ -567,6 +587,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setUpdatedBy(user.getUserCode());
 			submissionTemplate.setCreatedDate(new Date());
 			submissionTemplate.setUpdatedDate(new Date());
+			submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 			// store default interview feedback template in guest
@@ -587,6 +608,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setUpdatedDate(new Date());
 			submissionTemplate.setCreatedBy(user.getUserCode());
 			submissionTemplate.setCreatedDate(new Date());
+			submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 		}
@@ -614,6 +636,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setCreatedDate(new Date());
 			submissionTemplate.setUpdatedBy(user.getUserCode());
 			submissionTemplate.setUpdatedDate(new Date());
+			submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 			// store default interview feedback template in client & vedor
@@ -633,6 +656,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setUpdatedDate(new Date());
 			submissionTemplate.setCreatedBy(user.getUserCode());
 			submissionTemplate.setCreatedDate(new Date());
+			submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 		}
@@ -800,6 +824,8 @@ public class ClientServiceImpl implements ClientService {
 			projects.setCreatedDate(new Date());
 			projects.setUpdatedDate(new Date());
 			projects.setProjectShortCode("DFP");
+			projects.setIsProjectForTimeSheets(Constants.YES);
+			projects.setIsProjectForExpenses(Constants.YES);
 			Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(countires != null) {
 				projects.setCurrency(countires.getCurrency());
@@ -826,17 +852,33 @@ public class ClientServiceImpl implements ClientService {
 			projectClients.setCreatedBy(approverUser);
 			projectClients.setUpdatedBy(approverUser);
 			
+			
 			//prepare ProjectApproverHierarchy
 			Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
 			ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
 			pah.setProjectId(projects);
 			pah.setProjectClientsId(projectClients);
 			pah.setApproverUserId(approverUser);
+			pah.setCreatedDate(new Date());
+			pah.setCreatedBy(approverUser.getUserCode());
 			pah.setLevel(1);
 			pah.setStatus("1");
 			projectApproverHierarchyList.add(pah);
-			
 			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+			
+			//prepare ProjectApproverHierarchy
+			Set<ExpenseProjectApproverHierarchy> projectExpenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+			ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+			eah.setProjectId(projects);
+			eah.setProjectClientsId(projectClients);
+			eah.setApproverUserId(approverUser);
+			eah.setLevel(1);
+			eah.setStatus("1");
+			eah.setCreatedDate(new Date());
+			eah.setCreatedBy(approverUser.getUserCode());
+			projectExpenseApproverHierarchyList.add(eah);
+			projectClients.setExpenseProjectApproverHierarchyList(projectExpenseApproverHierarchyList);
+			
 	    	projectClientsSet.add(projectClients);
 			return projectClientsSet;
 		}
@@ -1579,6 +1621,16 @@ public class ClientServiceImpl implements ClientService {
 
 			if (null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)) {
 				User user = orgSpoc.getClientUser();
+				if(StringUtils.isNotBlank(clientDTO.getInvoiceOrBillSent())){
+					orgSpoc.setInvoiceEmailStatus(clientDTO.getInvoiceOrBillSent());
+					}else{
+					orgSpoc.setInvoiceEmailStatus(Constants.NO);	
+					}
+					if(StringUtils.isNotBlank(clientDTO.getApOrArSent())){
+					orgSpoc.setApEmailStatus(clientDTO.getApOrArSent());
+					}else{
+					orgSpoc.setApEmailStatus(Constants.NO);
+					}
 				for(String owners : clientDTO.getOwner()){
 					orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 					User spocUser = new User();
@@ -1596,6 +1648,16 @@ public class ClientServiceImpl implements ClientService {
 				}
 			} else if (null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)) {
 				User user = orgSpoc.getVendorUser();
+				if(StringUtils.isNotBlank(clientDTO.getInvoiceOrBillSent())){
+					orgSpoc.setBillingEmailStatus(clientDTO.getInvoiceOrBillSent());
+					}else{
+					orgSpoc.setBillingEmailStatus(Constants.NO);	
+					}
+					if(StringUtils.isNotBlank(clientDTO.getApOrArSent())){
+					orgSpoc.setArEmailStatus(clientDTO.getApOrArSent());
+					}else{
+					orgSpoc.setArEmailStatus(Constants.NO);
+					}
 				for(String owners : clientDTO.getOwner()){
 					orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());
 					User spocUser = new User();

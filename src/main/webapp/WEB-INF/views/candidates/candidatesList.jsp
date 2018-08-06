@@ -467,14 +467,20 @@ function candidateSideBar(candidateId){
 			             result = result+'               </div>';
 			             result = result+'			</div>';
 			             
-			             result = result+' <div class="newTagsWrap">';
-							result = result+'    <h2>Tags:';
-							result = result +'		          <span id="editTagBtnSpan" class="pull-right mb"><button type="button" id="editTagBtn" name="editTagBtn" class="btn btn-primary btn-sm" onclick="editTag('+candidateId+');">Edit Tag</button></span>';
-							result = result +'		          <span id="saveTagBtnSpan" class="pull-right mb" style.display = "none";></span>';
-							
-							result = result+'</h2>';
-							
-							result = result+'    <ul class="clearfix tagsWrap">';
+			             
+			             result = result+'  <div class="cearfix">';
+				         result = result+'	  <div class="newTagsWrap">';
+				         result = result+'		    <ul class="clearfix tagsWrap tagsWrapBor">';
+				         result = result+'			<select multiple class="chosen-select form-control" name="tagName" id="candidateTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">';
+				         result = result+'			</select>';
+				         result = result+'			</ul>';
+				         result = result+'			<div class="clearfix"></div>';
+				         result = result+'	  </div>';
+				         result = result+' </div>';
+	
+				        
+			            /*  result = result+' <div class="newTagsWrap">';
+							result = result+'    <ul class="clearfix tagsWrap tagsWrapBor">';
 							result = result + '<select multiple class="chosen-select form-control" name="tagName" id="tagName" data-placeholder="add tags" data-validation="validate_Space" data-validation-optional="true">';
 							// here get lookup data tags and manually enter skills 
 							$.each( json.tagsList, function( i, tags ) {
@@ -496,7 +502,7 @@ function candidateSideBar(candidateId){
 			                result = result + '</select>';
 							result = result+'        <div class="clearfix"></div>';
 							result = result+'    </ul>';
-							result = result+'</div>';
+							result = result+'</div>'; */
 							
 							
 							
@@ -579,6 +585,8 @@ function candidateSideBar(candidateId){
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
+						 getCandidateTagsList(candidateId);
+						 
 						 
 						 if("${candidateKeyword}" == "requestedDocumentNotification"){
 						    	$("#quickview").removeClass("active in");
@@ -596,6 +604,41 @@ function candidateSideBar(candidateId){
 						 output = output + '<a data-toggle="tab" href="#timelineview" onclick="getActivityDiv('+candidateId+')">Timeline</a>';
 						 $("#candTimelineView").empty();  
 			 		     $("#candTimelineView").append(output);
+			 		     
+			 		     
+			 		    // Tags relatd code
+			 		    var select, chosen;
+			 		   select = $("#candidateTagName");
+			 		   select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+			 		   chosen = select.data('chosen');
+			 		   chosen.search_field.on('keyup', function(e)
+			 		   {
+			 		   	var anyKeyword = this.value.replace(",","");
+			 		       if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+			 		       {
+			 		       	var par = this.parent;
+			 		           var option = $("<option>").val(anyKeyword).text(anyKeyword);
+			 		           select.append(option);
+			 		           select.find(option).prop('selected', true);
+			 		           $("#candidateTagName option").each(function(){
+			 		                 $(this).siblings("[value='"+ this.value+"']").remove();
+			 		           });
+			 		   		$("#candidateTagName").trigger("chosen:updated");
+			 		   		saveCandidateTags("add",candidateId);
+			 		       }
+			 		   });
+
+			 		   $('#candidateTagName').chosen().on('change', function(evt, params) {
+			 		   	if (params.selected && params.selected != undefined) {
+			 		   		saveCandidateTags("add",candidateId);
+			 		   	}
+			 		   	if (params.deselected && params.deselected != undefined) {
+			 		   		saveCandidateTags("delete",candidateId);
+			 		   	}
+			 		   	
+			 		   });
+			 		   $("#candidateTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+
 			 		   
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
@@ -621,6 +664,85 @@ function candidateSideBar(candidateId){
 				
 }
 </script>
+
+<!--  ============================= Candidate tags related scripts written by Laxman Start ================================ -->
+<script>
+function getCandidateTagsList(candidateId){
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getCandidatesTags?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.candidateTags != null && json.candidateTags != 'undefined' && json.candidateTags != '') {
+	                var res = [];
+	                res = json.candidateTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            $("#candidateTagName").empty();
+            $("#candidateTagName").append(result);
+            $("#candidateTagName").chosen().trigger("chosen:updated")
+
+        },
+	});
+}
+function saveCandidateTags(type,candidateId){
+	 var tagName = $("#candidateTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+""
+	 }
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup1("Tags added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tags deleted successfully");
+        		}
+        		getCandidateTagsList(candidateId);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+
+function showSuccessStatusPopup1(status) {
+	$("#addCandidateTagAlert").css("display","block");
+	$("#addCandidateTagAlert span").html(status);
+    $('#addCandidateTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteCandidateTagAlert").css("display","block");
+	$("#deleteCandidateTagAlert span").html(status);
+    $('#deleteCandidateTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+
+<!--  ============================= Candidate tags related scripts written by Laxman Start ================================ -->
 
 <%-- 
      @author : sarath kumar.
@@ -1303,6 +1425,15 @@ function cancel(candidateId){
 		<i class="fa fa-check-circle"></i>
    		<span></span>
    </div>
+   <div class="success_pop tagStyles" id="addCandidateTagAlert" style="z-index: 99999;">
+		<i class="fa fa-check-circle"></i>
+   		<span></span>
+   </div>
+   <div class="remove_pop tagStyles" id="deleteCandidateTagAlert"  style="z-index: 99999;">
+		<i class="fa fa-times"></i>
+   		<span></span>
+   </div>
+   
  <div class="clients_side_wrap quickviewTabs">
     
  <ul class="nav nav-tabs">

@@ -66,7 +66,12 @@ public class PaymentAccount extends Record implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_ID", nullable = false)
     private Org org;
-
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ASSOCIATE_USER_ID", nullable = false)
+    private User associateUser;
+    
+    
     /**
      * @return the id
      */
@@ -299,5 +304,13 @@ public class PaymentAccount extends Record implements Serializable {
 
 	public void setMicrCode(String micrCode) {
 		this.micrCode = micrCode;
+	}
+
+	public User getAssociateUser() {
+		return associateUser;
+	}
+
+	public void setAssociateUser(User associateUser) {
+		this.associateUser = associateUser;
 	}
 }

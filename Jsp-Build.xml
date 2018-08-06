@@ -15,7 +15,10 @@
 	</condition>
 	
     <!--Location Of Tomcat-Server -->
-	<property name="tomcat.dir" value="\apache-tomcat-9.0.10" />
+
+
+	<property name="tomcat.dir" value="/apache-tomcat-8.0.38" />
+
 
 	<target name="copy-jsp">
 		<copy todir="${root.dir}/${tomcat.dir}/webapps/sourcelead/WEB-INF/views" includeEmptyDirs="no">

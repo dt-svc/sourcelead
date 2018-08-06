@@ -59,7 +59,7 @@ private Long id;
 @ManyToOne
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name="HIERARCHY_ID", nullable=false )        
-private ProjectApproverHierarchy hierarchyId;
+private ExpenseProjectApproverHierarchy hierarchyId;
 
 @NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
@@ -175,12 +175,12 @@ public void setId(Long id)
 	this.id = id;
 }
 
-public ProjectApproverHierarchy getHierarchyId()
+public ExpenseProjectApproverHierarchy getHierarchyId()
 {
 	return hierarchyId;
 }
 
-public void setHierarchyId(ProjectApproverHierarchy hierarchyId)
+public void setHierarchyId(ExpenseProjectApproverHierarchy hierarchyId)
 {
 	this.hierarchyId = hierarchyId;
 }

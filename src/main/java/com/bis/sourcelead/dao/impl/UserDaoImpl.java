@@ -1580,6 +1580,20 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional
+	public User getUserbyConsultantUserId(Long consultantUserId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = null;
+		String query = "from User user where user.id = :userId";
+		List<User> userList = session.createQuery(query).setLong( "userId", consultantUserId ).list();
+		if (userList.size() > 0) {
+			user = userList.get(0);
+		}
+		return user;
+	}
+
+	@Override
+	@Transactional
 	public List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception {
 		// TODO Auto-generated method stub
 		
@@ -1647,9 +1661,8 @@ public class UserDaoImpl implements UserDao {
 		String query = "select user.id from User user where user.linkUserId.id = :userId " ;
 	    List<Long> userIds = session.createQuery(query).setLong( "userId", userId).list();
         return userIds;
-        
 	}
-
+	
 	@Override
 	@Transactional
 	public List<User> getUsersListForSignatoryByOrglocationId(Long locationId) {

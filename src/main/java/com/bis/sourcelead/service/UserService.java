@@ -215,6 +215,8 @@ public interface UserService  {
 
 	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
 
+	User getUserbyConsultantUserId(Long consultantUserId);
+
 	List<User> getGlobalUsersByOrgId(Long roleId,Long orgId,Long tabId) throws Exception;
 	
 	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgLocationId,Long orgId,Long tabId) throws Exception;
@@ -245,6 +247,7 @@ public interface UserService  {
 	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 
 	 List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception;
+
 }	
 		
 	

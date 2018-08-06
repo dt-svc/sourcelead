@@ -334,6 +334,7 @@ function validateTimeZone(){
 
 
 <div id="divTaskTd1" style="display: none; float: left;" class="positionRelative">
+<input type="hidden" name="externalInterviewersList[REPLACEROWID]" id="REPLACEROWIDexternalInterviewersList"/>
 <small class='requiresymbol text-danger'>*</small>
        <select  multiple data-placeholder="Select Applicants" onchange="selectInterviewApplicants()" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
 			
@@ -371,13 +372,202 @@ function validateTimeZone(){
 </div> 
 
 
-<div id="divTaskTd8" style="display: none; float: left;" >
-		  <button type="button"class="btn-sm btn-primary btn_Avail" title="Available slots" id ="REPLACEROWIDAvail" onClick ="showCal(this.id);"><i class="fa fa-clock-o"></i></button>
-
-	<input type="hidden" id="button_id" name="button_id" value="1Avail" />
+<div id="divTaskTd8"  style="display: none; float: left;" >
+	 <button type="button" class="btn-sm btn-success btn_Avail" title="External Interviewers" id ="REPLACEROWIDexternalInterviewers" onClick="getExternalInterviewers(REPLACEROWID);"><i class="fa fa-user-plus"></i></button> 
+	 <button type="button" class="btn-sm btn-primary btn_Avail" title="Available slots" id ="REPLACEROWIDAvail" onClick ="showCal(this.id);"><i class="fa fa-clock-o"></i></button>
+     
+     <input type="hidden" id="external_button_id" name="external_button_id" value="1externalInterviewers" />
+	 <input type="hidden" id="button_id" name="button_id" value="1Avail" />
 	 <a href="#" title="Remove" onclick="removeInterviewRow(REPLACEROWID);"><i class="text-danger glyphicon glyphicon-remove deme"></i></a>
 
 </div>  
+
+<div id="externalInterviewersDiv"></div>
+
+ <div id="divInterviewerTd1" style="display: none; float: left;">
+	<input type="text" class="form-control input-sm" placeholder="Interviewer Name" data-validation="required" field-name="Interviewer Name" name="interviewerName" id="REPLACEROWIDinterviewerName">
+ </div>
+  
+  <div id="divInterviewerTd2" style="display: none; float: left;">
+           <input type="text" class="form-control input-sm" placeholder="Email" data-validation="required validate_email"  field-name="Email" name="interviewerEmail" id="REPLACEROWIDinterviewerEmail">
+  </div>
+  
+  <div id="divInterviewerTd3" style="display: none; float: left;">
+     <div class="pull-left">
+   			<button type="button" class="btn btm-sm pull-right mt5" onclick="removeInterviewerType(REPLACEROWID)"><i class="fa fa-remove text-danger"></i></button>
+     </div>
+</div> 
+
+<script>
+
+  function getRowDetails(result,rowId,interviewerName,interviewerEmail){
+	  if(interviewerName == null || interviewerName == '' || interviewerName == 'undefined'){
+		  interviewerName = '';
+	  }
+	  
+	  if(interviewerEmail == null || interviewerEmail == '' || interviewerEmail == 'undefined'){
+		  interviewerEmail = '';
+	  }
+	  
+	    result = result +'<tr id="divInterviewerRow'+rowId+'">';
+		result = result +'<td width="200px">';
+		result = result +'<input type="text" class="form-control input-sm" value="'+interviewerName+'" placeholder="Interviewer Name"  data-validation="required" field-name="Interviewer Name" id="'+rowId+'interviewerName">';
+		result = result +'</div>';
+		result = result +'</td>';
+		result = result +'<td width="200px">';
+		result = result +'<input type="text" class="form-control input-sm" value="'+interviewerEmail+'" placeholder="Email" data-validation="required validate_email" field-name="Email" id="'+rowId+'interviewerEmail">';
+		result = result +'</td>';
+		result = result +'<td width="30px">';
+		result = result +'<div class="pull-left">';
+		if(rowId == 0){
+			result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="addInterviewerRow();"><i class="fa fa-plus text-primary"></i></button>';
+		}else{
+			result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="removeInterviewerType('+rowId+')"><i class="fa fa-remove text-danger"></i></button>';
+		}
+		result = result +'</div>';
+		result = result +'</td>';
+		result = result +'</tr>';
+		
+		return result;
+  }
+</script>
+<script>
+function getExternalInterviewers(rowId){
+	var externalInterviewersList = $("#"+rowId+"externalInterviewersList").val();
+	var interviewerMaxRowNumber = 1;
+	var arr = '';
+	if(externalInterviewersList != ''){
+	    arr = JSON.parse(externalInterviewersList);
+		interviewerMaxRowNumber = arr.length;
+	}
+	
+	$("#externalInterviewersDiv").empty();
+	var result = "";
+	result = result + '	<div class="settPop">';
+	result = result + '<form id="externalInterviewer_form" name="externalInterviewer_form" method="post">';
+	result = result + '	<h3>External Interviewers<i class="fa fa-times" onclick="cancelExternalInterviewers();"></i></h3>  ';
+	result = result + '	<div class="settPopInn"> ';
+	
+	result = result +'<div class="clearfix requestdocmntTable">';
+	result = result +'<input type="hidden" name="interviewRowId"  id="interviewRowId" value='+rowId+' />';
+	result = result +'<input type="hidden" name="interviewerMaxRowNumber"  id="interviewerMaxRowNumber" value="'+interviewerMaxRowNumber+'" />';
+	result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="interviewerDocumentsTable" border="0">';
+	result = result +'<tbody>';
+	
+	var rowId = 0;
+	if(arr != null && arr != 'undefined' && arr != ''){
+		for(var i=0; i<interviewerMaxRowNumber; i++){
+			rowId = i; 
+		    result = getRowDetails(result,rowId,arr[i].interviewerName,arr[i].interviewerEmail);
+		}
+	}else{
+		result = getRowDetails(result,rowId);
+	}
+	 
+	result = result +'</tbody>';
+	result = result +'</table>';
+	result = result +'</div>';
+	
+	result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+	result = result + '		<div class="pull-right">  ';
+	result = result + '		  <input type="submit" value="Add" id="submit_rejectedReason"  class="btn btn-primary" >';
+	result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="cancelExternalInterviewers();">';
+	result = result + '		</div>';
+	result = result + '		</div>';
+	result = result + '		<div class="clearfix"></div>   ';
+	result = result + '	</div>  ';
+	result = result + '</form>';
+	result = result + '	</div>';
+	
+	$("#externalInterviewersDiv").append(result);
+	$(".settPop").slideDown(200);
+	$(".vendor_wrap_mask").fadeIn(200);
+}
+
+</script>
+
+
+<script type="text/javascript">
+$('body').on('submit', '#externalInterviewer_form', function(e) {
+	  if ($(this).validate(false, validationSettings)) {
+	   	e.preventDefault();
+	  	var checkMaxTsRowNum = $("#interviewerMaxRowNumber").val();
+	  	var interviewRowId = $("#interviewRowId").val();
+	  
+	     var result = [];
+	     for(var i=0;i<checkMaxTsRowNum;i++){
+	    	 if($("#"+i+"interviewerName").val() != null && $("#"+i+"interviewerName").val() != '' && $("#"+i+"interviewerName").val() != 'undefined'){
+	    		 var obj = {
+	    		    		"rowId" : i,
+	    		    		"interviewerName" : $("#"+i+"interviewerName").val(),
+	    		    		"interviewerEmail" : $("#"+i+"interviewerEmail").val(),
+	    		    	 }
+	    		    	 result.push(obj);
+	    	 }
+	     }
+	     $("#"+interviewRowId+"externalInterviewersList").val(JSON.stringify(result));
+	     cancelExternalInterviewers(); 
+	      return true; 
+	    }
+	    else {
+	    	return false;	
+		}
+});
+
+$('body').on('blur', '#externalInterviewer_form', function() {
+	$("#externalInterviewer_form").showHelpOnFocus();
+	$("#externalInterviewer_form").validateOnBlur(false, validationSettings);
+});
+</script>
+
+
+<script>
+function addInterviewerRow(){
+	var checkMaxTsRowNum = $("#interviewerMaxRowNumber").val();
+	var tbl = document.getElementById("interviewerDocumentsTable");
+	var maxRowNum = parseInt($("input[name = 'interviewerMaxRowNumber']").val());
+	$("input[name = 'interviewerMaxRowNumber']").val(maxRowNum + 1);
+	
+	var row = tbl.insertRow(maxRowNum);
+	row.setAttribute("id", "divInterviewerRow" + maxRowNum);
+	
+	
+	var cell0 = row.insertCell(0);
+	var divDocTypeTdStr = document.getElementById("divInterviewerTd1").innerHTML;
+	divDocTypeTdStr = divDocTypeTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell0.innerHTML = divDocTypeTdStr;
+	
+	var cell1 = row.insertCell(1);
+	var divDocDescTdStr = document.getElementById("divInterviewerTd2").innerHTML;
+	divDocDescTdStr = divDocDescTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell1.innerHTML = divDocDescTdStr; 
+	
+	var cell2 = row.insertCell(2);
+	var divDocDescTdStr = document.getElementById("divInterviewerTd3").innerHTML;
+	divDocDescTdStr = divDocDescTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell2.innerHTML = divDocDescTdStr; 
+	
+}
+
+function removeInterviewerType(rowId){
+	 document.getElementById("divInterviewerRow"+rowId).style.display = 'none';
+	 document.getElementById("divInterviewerRow"+rowId).value= '';
+	 var  rId = "divInterviewerRow"+rowId;
+	  var r = document.getElementById("interviewerDocumentsTable").rows[rId];
+     var count = 2*(r.cells.length);
+	    for(i=0;i<=count;i++){
+	        r.deleteCell(0);
+	    } 
+}
+</script>
+
+
+<script>
+function cancelExternalInterviewers(){
+	$(".settPop").slideUp(200);
+	$(".vendor_wrap_mask").fadeOut(200);
+}
+</script> 
 
 
 <script type="text/javascript">
@@ -652,13 +842,10 @@ function getNotifyToOtersValInterview(){
         e.preventDefault();
         var frm = $('#addInterview_form').serializeFormJSON();
         var con = JSON.stringify(frm);
-        con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var requirementId = '${requirementId}';
 
         var maxRowNum = parseInt($("input[name = 'changeMaxTsRowNum']").val());
-//         var rowNum = maxRowNum - 1;
-//         var selectedInterviewApplicants = $('#'+rowNum+'applicant_chosen span').size();
         
         if(maxRowNum >= 2){
 	        $("#add_interview").attr("disabled", "disabled");
@@ -944,9 +1131,9 @@ function interviewTemplate(){
 			 			{
 			 	        		var opt = json[i];
 			 	        		 if(opt.isDefault == "Y"){
-			 	 	        		output = output + "<option value='" +opt.id+ "' selected>"+opt.templateName+"</option>";
+			 	 	        		output = output + "<option value='" +opt.uuid+ "' selected>"+opt.templateName+"</option>";
 			 	        		}else{
-				 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+				 	        		output = output + "<option value='" +opt.uuid+ "'>"+opt.templateName+"</option>";
 		
 			 	        		} 
 			 			}

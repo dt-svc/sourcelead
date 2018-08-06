@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -66,7 +65,6 @@ import com.bis.sourcelead.dto.InvoiceExpensesDTO;
 import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -114,7 +112,6 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 
@@ -138,6 +135,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	private EmailScenarioService emailScenarioService;
+	
 	@Autowired
 	ContractsTemplateService contractsTemplateService;
 	
@@ -237,7 +235,7 @@ public class InvoiceServiceImpl implements InvoiceService{
         	invoice = new Invoice();
         	invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
         }
-        
+        String generatedId = null;
 		OrgLocations vendorOrgLocation = null;;
         if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
         	if(StringUtils.isNotBlank(invoiceDTO.getVendorOrgRelationId())){
@@ -257,6 +255,7 @@ public class InvoiceServiceImpl implements InvoiceService{
       			invoice.setContactUser(contactUser);
       		}
       		invoice.setInvoiceType(Constants.Payables);
+      		 //generatedId = getInvoiceOrBillGeneratedId(orgLocation, vendorOrgLocation, Constants.Receivable);
         }else{
         	 if(StringUtils.isNotBlank(invoiceDTO.getClientOrgRelationId())){
      			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(invoiceDTO.getClientOrgRelationId()));
@@ -275,8 +274,9 @@ public class InvoiceServiceImpl implements InvoiceService{
      			invoice.setContactUser(userContactName);
      		}
      		invoice.setInvoiceType(Constants.Receivable);
+     		 //generatedId = getInvoiceOrBillGeneratedId(orgLocation, vendorOrgLocation, Constants.Receivable);
         }
-
+       
         //currency conversion
         String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
 		if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
@@ -1540,7 +1540,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  						invoice.setDiscountType(Constants.PERCENTAGE);
   	  						invoice.setIsAutomaticGenerateInvoice(Constants.YES);
   	  						float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.valueOf(invoice.getTotal()));
-  	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1);
+  	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1f);
   	  		  		      	float roundAmount = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
@@ -2838,6 +2838,46 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	public ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(InvoiceDTO invoiceDTO,OrgLocations orgLocations, Long orgRelationId)
 			throws Exception {
 		return invoiceDao.invoiceListByOrgLocationIdAndRelationId(invoiceDTO,orgLocations,orgRelationId);
+	}
+	@Override
+	public String getInvoiceOrBillGeneratedId(OrgLocations loginOrgLoc, OrgLocations orgLoc, String invoiceType) {
+		String companyShortCode = null;
+    	Long number = 1L;
+		String expId = null;
+		String type = "";
+		Integer generatedIdcount =0;
+		if(invoiceType.equalsIgnoreCase(Constants.Payables)){
+			type = Constants.BILL_ENTITY_SHORTCODE;
+		}else{
+			type = Constants.INVOICE_ENTITY_SHORTCODE;
+		}
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(loginOrgLoc.getGeneratedUserId()).append(type);
+		String generatedUsreId = sbuilder.toString();
+		for(int i=0;i< generatedUsreId.length();i++){
+			char ch = generatedUsreId.charAt(i);
+			if(Character.isAlphabetic(ch)){
+				generatedIdcount++;
+			}
+		}
+		generatedIdcount = generatedIdcount+1;
+		Long checkNumber = invoiceDao.checkInvoiceOrBillIdNumberInDatebase(loginOrgLoc.getId(),generatedIdcount,invoiceType);
+		if(checkNumber == null){
+			expId = number.toString();
+		}else{
+		Long reqId = checkNumber+1;
+		expId = reqId.toString();
+		}
+		//final DecimalFormat decimalFormat = new DecimalFormat("0"); /*OLD CODE*/  
+		//final DecimalFormat decimalFormat = new DecimalFormat("000000");                
+        //String convetredExpId = decimalFormat.format(Long.parseLong(expId));
+		Calendar cal = Calendar.getInstance();
+		int year = cal.getWeekYear();
+        StringBuffer sb = new StringBuffer();
+        if(loginOrgLoc.getGeneratedUserId() != null && !"".equalsIgnoreCase(loginOrgLoc.getGeneratedUserId())){
+        	 companyShortCode = loginOrgLoc.getGeneratedUserId();
+        }
+		return sb.append(companyShortCode).append("-").append(type).append("-").append(orgLoc.getGeneratedUserId()).append("-").append(year).append("-").append(expId).toString();
 	}
 	
 }
