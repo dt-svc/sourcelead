@@ -686,7 +686,7 @@ function exportToPdf(){
 		    {
 		employmentType.push($(this).val());
      });
-	
+
 	var tags = [];
 	$('input:checkbox[name=tags]:checked').each(function() 
 		    {
