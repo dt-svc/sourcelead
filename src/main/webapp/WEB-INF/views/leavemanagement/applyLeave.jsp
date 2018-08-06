@@ -204,7 +204,7 @@ window.onload = function() {
               </div>
             </div>
             
-            <c:if test="${SourceLeadWeb_isSuperUser != true}">
+<%--             <c:if test="${SourceLeadWeb_isSuperUser != true}"> --%>
             	<div class="form-group" id="approvalDiv">
 	              <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
 	              <div class="col-md-9 dropdown-select" id="approverUserDiv">
@@ -212,7 +212,7 @@ window.onload = function() {
 	                  </select>
 	              </div>
             	</div>
-            </c:if>
+<%--             </c:if> --%>
 
 		<div class="clearfix"></div>
 		 <sec:authorize access="hasAnyRole('LEAVE_NOTIFY_TO_OTHTERS')"> 
