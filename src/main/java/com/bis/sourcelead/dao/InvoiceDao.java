@@ -55,4 +55,5 @@ public interface InvoiceDao{
 
 	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId, Long orgLocationId, String invoiceStatus, Date startDate, Date endDate);
 
+	public Long checkInvoiceOrBillIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount,String invoiceType);
 }

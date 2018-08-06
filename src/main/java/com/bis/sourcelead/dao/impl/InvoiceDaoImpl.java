@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,6 +20,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +28,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
@@ -38,6 +39,9 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceDaoImpl.class);
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${jdbc.schema}")
+	private String schema;
 	
 	@Override
 	@Transactional
@@ -602,5 +606,19 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		List<Invoice> invoiceList = session.createQuery(query).setParameter("orgRelationId", orgRelationId).setParameter("orgLocationId", orgLocations.getId()).list();
 		response.setData(invoiceList);
 		return response;
+	}
+	
+	@Override
+	@Transactional
+	public Long checkInvoiceOrBillIdNumberInDatebase(Long orgLocationId, Integer generatedIdcount, String invoiceType) {
+		Session session = this.sessionFactory.getCurrentSession();
+		//String query = "SELECT MAX(CAST(SUBSTR(TRIM(EXPENSE_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".EXPENSES WHERE LOCATION_ID = '"+ orgLocationId + "'"; /*OLD CODE*/
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(INVOICE_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".INVOICE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "' AND INVOICE_TYPE = '"+invoiceType+"'";
+		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+		Long count = 0L;
+		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+			count = (Long) maxCountList.iterator().next().longValue();
+		}
+		return count;	
 	}
 }

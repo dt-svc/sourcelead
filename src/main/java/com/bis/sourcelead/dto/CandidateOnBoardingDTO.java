@@ -43,6 +43,16 @@ public class CandidateOnBoardingDTO implements Serializable {
 	
 	private String companyEmail;
 	
+	private String gender;
+	
+	private String dateOfBirth;
+	
+	private String employmentEligibility;
+	
+	private String uscisAlien;
+	
+	private String authorizedWorkUntil;
+	
 	private String onboardCandidateRole;
 	
 	private String startDate;
@@ -56,6 +66,10 @@ public class CandidateOnBoardingDTO implements Serializable {
 	private String reportingManager;
 	
 	private String team;
+	
+	private String shift;
+	
+	private String shiftName;
 	
 	private String employmentType;
 	
@@ -368,6 +382,47 @@ public class CandidateOnBoardingDTO implements Serializable {
 		return companyEmail;
 	}
 
+	
+	public String getGender() {
+		return gender;
+	}
+
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public String getEmploymentEligibility() {
+		return employmentEligibility;
+	}
+
+	public String getUscisAlien() {
+		return uscisAlien;
+	}
+
+	public String getAuthorizedWorkUntil() {
+		return authorizedWorkUntil;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public void setEmploymentEligibility(String employmentEligibility) {
+		this.employmentEligibility = employmentEligibility;
+	}
+
+	public void setUscisAlien(String uscisAlien) {
+		this.uscisAlien = uscisAlien;
+	}
+
+	public void setAuthorizedWorkUntil(String authorizedWorkUntil) {
+		this.authorizedWorkUntil = authorizedWorkUntil;
+	}
+
 	public String getOnboardCandidateRole() {
 		return onboardCandidateRole;
 	}
@@ -622,6 +677,20 @@ public class CandidateOnBoardingDTO implements Serializable {
 	public void setVendorContact(String vendorContact) {
 		this.vendorContact = vendorContact;
 	}
-	
-	
+
+	public String getShift() {
+		return shift;
+	}
+
+	public void setShift(String shift) {
+		this.shift = shift;
+	}
+
+	public String getShiftName() {
+		return shiftName;
+	}
+
+	public void setShiftName(String shiftName) {
+		this.shiftName = shiftName;
+	}
 }

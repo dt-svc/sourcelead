@@ -191,4 +191,9 @@ public class OrgServiceImpl implements OrgService {
 		return orgDao.changePaymentAccountStatus(id, orgId);
 		
 	}
+
+	@Override
+	public List<PaymentAccountDTO> getPaymentAccountListByUserId(long userId, boolean onlyEnabledAccounts) {
+		 return orgDao.getPaymentAccountListByUserId(userId, onlyEnabledAccounts);
+	}
 }
