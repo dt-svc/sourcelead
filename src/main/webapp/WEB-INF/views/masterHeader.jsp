@@ -47,6 +47,7 @@ $(document).ready(function(){
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <!-- <link href="/resources/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"> -->
 <link href="/resources/css/buttons.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/fixedColumns.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
@@ -155,6 +156,7 @@ $(document).ready(function(){
 
 <!--  Data tables script files -->
 <!-- <script src="/resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="/resources/js/dataTables.fixedColumns.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <script src="/resources/js/dataTables.buttons.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 

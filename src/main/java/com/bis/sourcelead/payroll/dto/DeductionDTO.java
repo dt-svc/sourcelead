@@ -1,6 +1,9 @@
 package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
+import java.util.Set;
+
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
 
 public class DeductionDTO {
 	
@@ -15,6 +18,12 @@ public class DeductionDTO {
 	private double dedAmount;
 	
 	private String dedSchedule;
+	
+	private BigDecimal[] dedTaxes;
+	
+	private Set<DeductionHistory> dedHis;
+	
+	private BigDecimal[] contributionTaxes;
 	
 	public double getDedAmount()
 	{
@@ -110,6 +119,36 @@ public class DeductionDTO {
 	public void setDedSchedule(String dedSchedule)
 	{
 		this.dedSchedule = dedSchedule;
+	}
+
+	public BigDecimal[] getDedTaxes()
+	{
+		return dedTaxes;
+	}
+
+	public Set<DeductionHistory> getDedHis()
+	{
+		return dedHis;
+	}
+
+	public void setDedTaxes(BigDecimal[] dedTaxes)
+	{
+		this.dedTaxes = dedTaxes;
+	}
+
+	public void setDedHis(Set<DeductionHistory> dedHis)
+	{
+		this.dedHis = dedHis;
+	}
+
+	public BigDecimal[] getContributionTaxes()
+	{
+		return contributionTaxes;
+	}
+
+	public void setContributionTaxes(BigDecimal[] contributionTaxes)
+	{
+		this.contributionTaxes = contributionTaxes;
 	}
 	
 	
