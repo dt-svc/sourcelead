@@ -601,10 +601,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		double min = Double.parseDouble(rate[1]);
 		double hrsToMin = hr * 60;
 		double totalMin = hrsToMin + min;
-		BigDecimal b = payRate.divide(PayrollConstant.ONE_MIN_SEC);
-//		double perMinRate = payRate / 60;
-		BigDecimal totatAmount = BigDecimal.valueOf(totalMin).multiply(payRate);
-		return totatAmount;
+//		BigDecimal perMinRate= payRate.divide(PayrollConstant.ONE_MIN_SEC,);
+		double perMinRate = payRate.doubleValue() / 60;
+		double totatAmount = totalMin * perMinRate;
+		return BigDecimal.valueOf(totatAmount);
 	}
 
 	@Override
