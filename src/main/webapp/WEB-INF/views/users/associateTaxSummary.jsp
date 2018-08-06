@@ -305,6 +305,8 @@ function associateTaxSummary(userId){
             	  result = result + ' <option selected value="NO_TAX">No Tax</option>';
               }else if(json.localTax != null && json.localTax != '' && json.localTax != 'undefined'){
             	  result = result + '     <option selected value='+json.localTaxState+'>'+json.localTax+'</option>';
+              }else{
+            	  result = result + '     <option selected value='+json.location+'>'+json.location+'</option>';
               }
               result = result + ' </select>';
               result = result + '  </div>';
@@ -504,5 +506,7 @@ function associateTaxSummary(userId){
 		$("#associate_tax_form").validateOnBlur(false, validationSettings);  
    });  
 </script>
+
+
  
  

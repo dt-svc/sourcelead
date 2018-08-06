@@ -52,13 +52,13 @@ $(document).ready(function(){
                    <div class="col-md-5">
                     <label>Annual Salary</label>
                     <div>
-                      <input type="text" class="form-control" id="annualSal" name="annualSal" onblur="calculateSal();">
+                      <input type="text" class="form-control" id="annualSal" name="annualSal" data-validation="validate_int" onblur="calculateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
                     <label>Pay Per Salary</label>
                     <div>
-                      <input type="text" class="form-control" id="perPaySal" name="perPaySal" onblur = "calculatePayPerSal();">
+                      <input type="text" class="form-control" id="perPaySal" name="perPaySal" data-validation="validate_int" onblur = "calculatePayPerSal();">
                     </div>
                   </div>  
                    <div class="col-md-5">
