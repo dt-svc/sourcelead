@@ -726,7 +726,6 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				float assoBalLeaves = Float.parseFloat(associateBalanceLeave.getTotalLeaves());
 				float allowedLeaves = 0;
 				String userType = "";
-				System.out.println(user.getId());
 				Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), leaveType.getOrgLocations().getId());
 				try {
 					if(!"All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
