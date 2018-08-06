@@ -14,6 +14,7 @@ import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocument;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocumentAttachment;
+import com.bis.sourcelead.entity.SourceleadTaxSubmissionMaster;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -73,23 +74,28 @@ public interface TaxDao {
 
 	public long submitITDeclaration(SourceleadTaxITDeclarationSubmission itDeclarationSubmission);
 
-	public int getITDeclarationFormsCountByYear(String financialYear, String tableName);
+	public int getITDeclarationFormsCountByYear(String financialYear, String tableName, long orgLocationId);
 
-	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, String financialYear, Paginator paginator);
+	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(long orgLocationId, String uuid, String financialYear,
+			Paginator paginator);
 
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(String taxFormUUID, String formUUID);
 
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(long id);
-	
+
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(long userId, String financialYear);
 
 	// public SourceleadTaxITDeclarationSubmissionItem
 	// getITDeclarationSubmissionItem(long id);
 
 	public boolean saveDocument(SourceleadTaxSubmissionDocument taxSubmissionDocument);
-
-	public List<SourceleadTaxSubmissionDocument> getUploadedDocumentsBySubmissionId(long submissionId);
 	
+	public void deleteDocumentAttachment(long attachmentId);
+
+	public void deleteDocument(long documentId);
+	
+	public List<SourceleadTaxSubmissionDocument> getUploadedDocumentsBySubmissionId(long submissionId);
+
 	public SourceleadTaxSubmissionDocument getSourceleadTaxSubmissionDocumentById(long submissionDocumentId);
 
 	public void removeTaxSubmissionDocumentAttachment(SourceleadTaxSubmissionDocumentAttachment attachment);
@@ -114,9 +120,16 @@ public interface TaxDao {
 
 	public long changeITDeclarationSubmissionStatus(long id, int status);
 
+
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionDetails(long formId);
 
 	public User getEmployeeDetails(Long id);
+
+	public List<SourceleadTaxSubmissionMaster> getTaxSubmissionMasterList(Long userId, String financialYear,
+			Paginator paginator);
+
+	public void saveTaxSubmissionMaster(SourceleadTaxSubmissionMaster sourceleadTaxSubmissionMaster);
+
 
 
 }

@@ -406,8 +406,8 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'            </div>                                                                ';
 	result = result +'            <div class="col-md-6 mt">                                                ';
 	result = result +'              <div class="clearfix mb invoiceAttachment">                         ';
-	result = result +'              <label><strong>Attachments</strong></label>                         ';
-	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
+	result = result +'              <label><strong>Attachment</strong></label>                         ';
+	result = result +'              <div class="timesheet_week_comm col-md-12 width100percnt">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
 	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment" onchange="getfileUrl()">                                            ';
 // 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
@@ -611,9 +611,16 @@ function getPayableInvoiceList(){
 	 {
 		payment.push($(this).val());
 	 });
+	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+     {
+		tags.push($(this).val());
+	 });
+	
 	var searchValue = $("#payableDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId;
+	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags;
 	preparePayableList(url,orgLocationDate);
 }
 
@@ -696,7 +703,7 @@ function payablePagination(url){
 							if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 								if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 									if(report.paymentStatus == "Paid"){
-										result = result +'           <span class="textSuccess primary pull-left" title="Paid" >Paid</span> </td>          ';
+										result = result +'           <span class="textSuccess pull-left" title="Paid" >Paid</span> </td>          ';
 									}else if(report.invoiceStatus == "DRAFT"){
 										result = result +'           <span class="textWarning pull-left" title="Send">Draft</span></td>';
 									}else if(report.invoiceStatus == "Rejected"){
@@ -710,10 +717,13 @@ function payablePagination(url){
                                       else
 										result = result +'           <span class="textSuccess pull-left" title="Accepted">Accepted</span> </td>';
 									}else if(report.invoiceStatus == "Linked"){
-											result = result +' <a class="successBtn primary pull-left cursorPointer" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
-										}else{
-											result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
-										}
+										result = result +' <a class="successBtn primary pull-left cursorPointer" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+									}else if(report.invoiceStatus == "Void"){
+										result = result +'           <span class="colorRed pull-left">Void</span>   ';	
+									}
+									else{
+										result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+									}
 										
 								}
 								
@@ -734,7 +744,10 @@ function payablePagination(url){
 										result = result +' <a class="successBtn primary pull-left" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 									}else if(report.invoiceStatus == "Received"){
 										result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
-									}else{
+									}else if(report.invoiceStatus == "Void"){
+										result = result +'           <span class="colorRed pull-left">Void</span>   ';	
+									}
+									else{
 										result = result +'           <span class="textSuccess pull-left" title="Accepted">Accepted</span> </td>          ';
 									}
 								}
@@ -804,6 +817,10 @@ function payablePagination(url){
 							
 						}
 				    	else if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
+							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							'</sec:authorize>';
+						}else{
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
 							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
@@ -979,7 +996,7 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
-		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid'){
+		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid' && invoiceStatus != 'Void'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
 			 result = result +'<li><a onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight paddingLeft" title="Send reminder"></i>Send reminder</a> </li>';
 			 '</sec:authorize>'
@@ -993,13 +1010,15 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 		 if(invoiceStatus == "Accepted"){
 			 if(paymentStatus != "Paid"){
 				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Bill"></i>Pay</a></li>';
+				 //result = result +' <li><a onclick="voidBill(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Bill"></i>Void Bill</a></li>';
 
 			 }
 			 
 		 }
 		 if(invoiceStatus == "SENT"){
 				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Bill"></i>Pay</a></li>';
-			 
+				 //result = result +' <li><a onclick="voidBill(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Bill"></i>Void Bill</a></li>';
+
 		 }
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
 		result = result+' <li><a class="" href="'+fileUrl+'" title="Print" target="_blank"><i class="fa fa-print paddingLeft paddingRight"></i>Print</a></li>';
@@ -1009,7 +1028,7 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 // 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
  		 result = result+' <li><a href="'+fileUrl+'" title="Download" download><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 	     '</sec:authorize>'
-	     if(invoiceStatus != 'DRAFT')
+	     if(invoiceStatus != 'DRAFT' && invoiceStatus != 'Void')
 	     {
 	     result = result +'  <li><a onclick="linkPayableInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Bill"></i>Link Bill</a></li>';
 	     }
@@ -1405,7 +1424,11 @@ function exportToPayablePdf(){
 		 {
 			paymentStatus.push($(this).val());
 		});
-		
+		var tags = [];
+		$('input:checkbox[name=tags]:checked').each(function() 
+	     {
+			tags.push($(this).val());
+		 });
 		var emptyExport = $('#emptyPayableInvoiceId').val();
 		var durationType = $('#dayWiseTypeId').val();
 		
@@ -1413,7 +1436,7 @@ function exportToPayablePdf(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=pdf&invoiceType=Payables";
+		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&exportType=pdf&invoiceType=Payables";
 		}else{
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1445,6 +1468,12 @@ function exportToPayableExcel(){
 			paymentStatus.push($(this).val());
 		});
 		
+		var tags = [];
+		$('input:checkbox[name=tags]:checked').each(function() 
+	     {
+			tags.push($(this).val());
+		 });
+		
 		var emptyExport = $('#emptyPayableInvoiceId').val();
 		var durationType = $('#dayWiseTypeId').val();
 		
@@ -1452,7 +1481,7 @@ function exportToPayableExcel(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=xls&invoiceType=Payables";
+		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&exportType=xls&invoiceType=Payables";
 		}else{	
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1743,6 +1772,21 @@ function deleteBill(invoiceUUID){
 	$(".project_inn_mask").fadeIn(200);
 }
 
+function voidBill(invoiceUUID){
+	var result = "";
+	$("#popUp").empty();
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"		<p>Are you sure you want to Void Bill ?</p>";
+	result = result + ' <div id="voidBillId"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="savevoidBill(\''+invoiceUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
 function cancelTermination(){
 	$("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
@@ -1769,6 +1813,30 @@ function saveBillRejectedReason(invoiceUUID){
 	else{
 			$("#reasonForBillDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
+	
+}
+
+function savevoidBill(invoiceUUID){
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/voidInvoiceOrBill?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
+				    success: function(result) {
+		  		    	if (result && result.response === "INVALID_DATA") {
+		          		    showError(result.responseMessage);
+		          		} else if (result.response === "AWKWARD") {
+		          		    location.href = "/errorPage";
+		          		} else if (result.response === "SUCCESS") {
+		          			$("#popUp").empty();
+		   	 			    $(".project_inn_mask").fadeOut(200);
+		   		    	    location.replace(sourceleadUrl+"/payablesList");
+		          		} else if (result.indexOf('Sign In') !== -1) {
+		          			location.replace(sourceleadUrl);
+		          		} else {
+		          		    showError("Operation failed, please try again");
+		          		}
+				    }
+		  		    	
+			     });
 	
 }
 
@@ -1831,14 +1899,14 @@ function resetBillsFilter(){
 
 
 <div class="advancedsearch-mask"></div>
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="assetFilterId">
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="assetFilterId">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeBillsFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
 				<div class="addInner">
 					<div class="row">
-					  <div class="col-md-6">
+					  <div class="col-md-4">
 						<div class="row">
 						    <div class="col-md-12 mb">
 								<label><strong>Payment</strong></label>
@@ -1854,7 +1922,7 @@ function resetBillsFilter(){
 						  </div>
 						</div>
 						
-						<div class="col-md-6">
+						<div class="col-md-4">
 						<div class="row">
 						    <div class="col-md-12 mb">
 								<label><strong>Status</strong></label>
@@ -1871,6 +1939,22 @@ function resetBillsFilter(){
 						     </div> 
 						  </div>
 						</div>
+						
+						<c:if test="${!empty billsTagsList}">
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myInvoiceInput" onkeyup="myInvoiceFunction()" placeholder="Tags" title="Type in a tag">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myInvoiceUL">
+									<c:forEach var="tag" items="${billsTagsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="tags" value ="${tag}" ><label>${tag}</label></li>
+									</c:forEach> 
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
 					  </div>
 					  
 					  

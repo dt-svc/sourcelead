@@ -109,7 +109,6 @@
 									<div class="parentDiv">
 										<div class="editElementDiv">
 											<span class="edit-element">${sectionItem.name}</span>
-											<!-- <a class="fa fa-pencil faPencil editElement" title="Edit"></a> -->
 										</div>
 										<div class="row saveElementDiv">
 											<form id="sectionItem_${sectionItem.id}_name_form">
@@ -118,8 +117,8 @@
 													name="taxSectionId">
 												<div class="col-md-11 paddigRight">
 													<input type="text" class="form-control input-sm"
-														field-name="name" data-validation="required" name="name"
-														value="${sectionItem.name}"
+														field-name="name" data-validation="required validate_length length10-250" 
+														name="name" value="${sectionItem.name}"
 														data-old_value="${sectionItem.name}"
 														placeholder="Item Name">
 												</div>
@@ -133,7 +132,7 @@
 										<form id="sectionItem_${sectionItem.id}_maxLimit_form">
 											<input type="text" class="form-control input-sm"
 												field-name="Max Limit"
-												data-validation="required validate_float" name="maxLimit"
+												data-validation="required validate_float validate_length length1-20" name="maxLimit"
 												value="${sectionItem.maxLimit}"
 												data-old_value="${sectionItem.maxLimit}"
 												placeholder="Maximum Amount Limit">
@@ -145,8 +144,8 @@
 										<div class="editElementDiv">${sectionItem.description != null && sectionItem.description != "" ? sectionItem.description : "--NA--"}</div>
 										<div class="saveElementDiv">
 											<form id="sectionItem_${sectionItem.id}_description_form">
-												<textarea class="form-control" rows="1" name="description"
-													data-old_value="${sectionItem.description}"
+												<textarea class="form-control" rows="2" name="description"
+													data-old_value="${sectionItem.description}" data-validation="validate_length length0-500"
 													placeholder="Short Description">${sectionItem.description}</textarea>
 											</form>
 										</div>

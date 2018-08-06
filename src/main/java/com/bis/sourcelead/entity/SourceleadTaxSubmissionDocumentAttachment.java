@@ -34,6 +34,12 @@ public class SourceleadTaxSubmissionDocumentAttachment implements Serializable {
 	@Column(name = "ATTACHMENT")
 	private String attachment;
 
+	@Column(name = "FILE_URL")
+	private String fileURL;
+
+	@Column(name = "CONTENT_TYPE")
+	private String contentType;
+
 	@Column(name = "ACTIVE")
 	private boolean active;
 
@@ -64,6 +70,22 @@ public class SourceleadTaxSubmissionDocumentAttachment implements Serializable {
 
 	public void setAttachment(String attachment) {
 		this.attachment = attachment;
+	}
+
+	public String getFileURL() {
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL) {
+		this.fileURL = fileURL;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 	public boolean isActive() {

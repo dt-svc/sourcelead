@@ -146,6 +146,14 @@ public class Asset implements Serializable{
 	@Transient 
 	private List<Employees> employeesList;
 
+	@Transient
+    @JsonProperty
+    private String assetTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
 	public Long getId() {
 		return id;
 	}
@@ -385,5 +393,21 @@ public class Asset implements Serializable{
 
 	public void setIssueDateStr(String issueDateStr) {
 		this.issueDateStr = issueDateStr;
+	}
+
+	public String getAssetTags() {
+		return assetTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setAssetTags(String assetTags) {
+		this.assetTags = assetTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
 	}
 }

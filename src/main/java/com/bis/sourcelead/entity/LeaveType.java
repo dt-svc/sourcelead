@@ -266,6 +266,12 @@ public class LeaveType {
 	private String userGender;
 	
 	@Transient
+	private float diffLeaves;
+	
+	@Transient
+	private String actionType;
+	
+	@Transient
 	float diffFresherLeaves;
 	
 	@Transient
@@ -1039,5 +1045,25 @@ public class LeaveType {
 	public void setActionExpType(String actionExpType)
 	{
 		this.actionExpType = actionExpType;
+	}
+
+	public float getDiffLeaves()
+	{
+		return diffLeaves;
+	}
+
+	public void setDiffLeaves(float diffLeaves)
+	{
+		this.diffLeaves = diffLeaves;
+	}
+
+	public String getActionType()
+	{
+		return actionType;
+	}
+
+	public void setActionType(String actionType)
+	{
+		this.actionType = actionType;
 	}
 }

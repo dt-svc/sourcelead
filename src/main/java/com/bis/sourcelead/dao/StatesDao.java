@@ -18,4 +18,7 @@ public interface StatesDao {
 	List<String> getStatesCodesByStateName(String name) throws Exception;
 
 	States getStateById(long stateId);
+
+	String getStateCodeByCountryCodeAndState(String countryCode, String state);
+
 }

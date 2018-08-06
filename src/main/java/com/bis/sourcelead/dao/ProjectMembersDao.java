@@ -104,6 +104,8 @@ public interface ProjectMembersDao {
 	
 	List<ProjectMembers> getAllProjectMembersByMasterCandidateId(Long masterCandidateId,Long projectId) throws Exception;
 	
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(Long locationsId,Date startDate,Date endDate,int start,int length);
+	
 	Integer getProjectMembersCountByProjectClientId(Long projectClientId) throws Exception;
 	
 	ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId,Long projectId) throws Exception;

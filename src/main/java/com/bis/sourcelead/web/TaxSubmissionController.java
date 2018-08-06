@@ -6,7 +6,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +45,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Controller
 @RequestMapping("/app")
 public class TaxSubmissionController {
-	private static final Logger logger = LoggerFactory.getLogger(TaxAdminController.class);
+	private static final Logger logger = LoggerFactory.getLogger(TaxSubmissionController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -77,36 +79,44 @@ public class TaxSubmissionController {
 	public ModelAndView getForms(HttpServletRequest request, @RequestParam(defaultValue = "") String financialYear,
 			@RequestParam(defaultValue = "") String uuid, Paginator paginator) {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("errorPage");
+		
 		try {
-			if (!uuid.isEmpty()) {
-				modelAndView.addObject("uuid", uuid);
-				SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, false, false);
-				if (sourceleadTaxFormDTO != null) {
-					modelAndView.addObject("taxForm", sourceleadTaxFormDTO);
-//					modelAndView.addObject("formList", taxService.getITDeclarationSubmissionList(uuid, financialYear, paginator));
-//					modelAndView.addObject("paginator",paginator);
-					modelAndView.setViewName("payroll_india/org/form_list_by_formType");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			if (user != null) {
+				if (!uuid.isEmpty()) {
+					modelAndView.addObject("uuid", uuid);
+					SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, false, false);
+					if (sourceleadTaxFormDTO != null) {
+						modelAndView.addObject("taxForm", sourceleadTaxFormDTO);
+	//					modelAndView.addObject("formList", taxService.getITDeclarationSubmissionList(uuid, financialYear, paginator));
+	//					modelAndView.addObject("paginator",paginator);
+						modelAndView.setViewName("payroll_india/org/form_list_by_formType");
+					}
+				} else {
+					// setYears(modelAndView, year);
+					TaxAdminController.setYears(modelAndView, financialYear);
+					String year = "";
+					if (financialYear.isEmpty()) {
+						Calendar c = Calendar.getInstance();
+						Calendar c1 = Calendar.getInstance();
+						c1.set(Calendar.YEAR, c.get(Calendar.YEAR));
+						c1.roll(Calendar.YEAR, true);
+						year = c.get(Calendar.YEAR) + "-" + c1.get(Calendar.YEAR);
+	
+					} else {
+						year = financialYear;
+					}
+					modelAndView.addObject("formList", taxService.getTaxFormTypeListForSubmission(year, orgLocations.getId()));
+					modelAndView.setViewName("payroll_india/org/forms_list");
 				}
 			} else {
-				// setYears(modelAndView, year);
-				TaxAdminController.setYears(modelAndView, financialYear);
-				String year = "";
-				if (financialYear.isEmpty()) {
-					Calendar c = Calendar.getInstance();
-					Calendar c1 = Calendar.getInstance();
-					c1.set(Calendar.YEAR, c.get(Calendar.YEAR));
-					c1.roll(Calendar.YEAR, true);
-					year = c.get(Calendar.YEAR) + "-" + c1.get(Calendar.YEAR);
-
-				} else {
-					year = financialYear;
-				}
-				modelAndView.addObject("formList", taxService.getTaxFormTypeListForSubmission(year));
-				modelAndView.setViewName("payroll_india/org/forms_list");
+				modelAndView.setViewName("login");
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
+			modelAndView.setViewName("errorPage");
 		}
 		return modelAndView;
 	}
@@ -124,10 +134,15 @@ public class TaxSubmissionController {
 	}
 
 	@RequestMapping(value = "/itDeclaration")
-	public String itDeclaration(HttpServletRequest request) {
+	public String itDeclaration(HttpServletRequest request,
+			@RequestParam(defaultValue = "false") boolean autoSelectUser) {
 		try {
-			List<SourceleadTaxFormDTO> formList = taxService.getTaxFormTypeList(false);
-			return "redirect:/app/itDeclaration/getForm?uuid=" + formList.get(0).getUuid();
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				List<SourceleadTaxFormDTO> formList = taxService.getTaxFormTypeList(false);
+				return "redirect:/app/itDeclaration/getForm?uuid=" + formList.get(0).getUuid()
+						+ (autoSelectUser ? "&autoSelectUser=" + autoSelectUser: "");
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -139,34 +154,40 @@ public class TaxSubmissionController {
 			@RequestParam(defaultValue = "") String formUUID) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
-			if (sourceleadTaxFormDTO != null) {
-				// setYears(modelAndView, 0);
-				TaxAdminController.setYears(modelAndView, null);
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-						"orgLocations");
-				List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
-				modelAndView.addObject("userRoleList", userRoleList);
-				if (!formUUID.isEmpty()) {
-					boolean isEditable = request.getRequestURL().toString().contains("editForm");
-					modelAndView.addObject("isEditable", isEditable);
-					modelAndView.addObject("uuid", uuid);
-					SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO = taxService
-							.getITDeclarationSubmission(uuid, formUUID);
-					modelAndView.addObject("form", itDeclarationSubmissionDTO);
-					modelAndView.addObject("documents",
-							taxService.getUploadedDocumentsBySubmissionId(itDeclarationSubmissionDTO.getId()));
-					modelAndView.setViewName("payroll_india/org/"
-							+ sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_submitted_form");
-				} else {
-					// modelAndView.addObject("activeFormTabUUID", uuid);
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
+				if (sourceleadTaxFormDTO != null) {
 					// setYears(modelAndView, 0);
-					modelAndView.addObject("form", sourceleadTaxFormDTO);
-					modelAndView.setViewName(
-							"payroll_india/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
-				}
-			} else
-				modelAndView.setViewName("errorPage");
+					TaxAdminController.setYears(modelAndView, null);
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+							"orgLocations");
+					List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
+					modelAndView.addObject("userRoleList", userRoleList);
+					if (!formUUID.isEmpty()) {
+						modelAndView.addObject("editForm", request.getRequestURL().toString().contains("editForm"));
+						modelAndView.addObject("viewForm", request.getRequestURL().toString().contains("viewForm"));
+						modelAndView.addObject("uuid", uuid);
+						SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO = taxService
+								.getITDeclarationSubmission(uuid, formUUID);
+						modelAndView.addObject("form", itDeclarationSubmissionDTO);
+						modelAndView.addObject("documents",
+								taxService.getUploadedDocumentsBySubmissionId(itDeclarationSubmissionDTO.getId()));
+						modelAndView.setViewName(
+								"payroll_india/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_")
+										+ "_submitted_form");
+					} else {
+						// modelAndView.addObject("activeFormTabUUID", uuid);
+						// setYears(modelAndView, 0);
+						modelAndView.addObject("form", sourceleadTaxFormDTO);
+						modelAndView.setViewName("payroll_india/org/"
+								+ sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+					}
+				} else
+					modelAndView.setViewName("errorPage");
+			} else {
+				modelAndView.setViewName("login");
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -174,22 +195,30 @@ public class TaxSubmissionController {
 	}
 
 	@RequestMapping(value = "/itDeclaration/getForm")
-	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam String uuid) {
+	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam String uuid,
+			@RequestParam(defaultValue = "false") boolean autoSelectUser) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			// User user = (User) SourceLeadSessionManager.getSessionAttribute(request,
-			// "user");
-			SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
-			modelAndView.addObject("form", sourceleadTaxFormDTO);
-			modelAndView.addObject("formList", taxService.getTaxFormTypeList(false));
-			modelAndView.addObject("activeFormTabUUID", uuid);
-			TaxAdminController.setYears(modelAndView, null);
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-			List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
-			modelAndView.addObject("userRoleList", userRoleList);
-			modelAndView.setViewName(
-					"payroll_india/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
+				modelAndView.addObject("form", sourceleadTaxFormDTO);
+				modelAndView.addObject("formList", taxService.getTaxFormTypeList(false));
+				modelAndView.addObject("activeFormTabUUID", uuid);
+				TaxAdminController.setYears(modelAndView, null);
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+						"orgLocations");
+				List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
+				modelAndView.addObject("userRoleList", userRoleList);
+				if (autoSelectUser) {
+					modelAndView.addObject("user", user);
+					modelAndView.addObject("autoSelectUser",autoSelectUser);
+				}
+				modelAndView.setViewName("payroll_india/org/"
+						+ sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+			} else {
+				modelAndView.setViewName("login");
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -203,20 +232,37 @@ public class TaxSubmissionController {
 		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			if (user != null) {
 				itDeclarationSubmissionDTO.setStatus(1);
-				response = taxService.submitITDeclaration(itDeclarationSubmissionDTO, user);
+				response = taxService.submitITDeclaration(itDeclarationSubmissionDTO, user, orgLocations);
 				// response.setObject(1L);
 //				response.setResponse(Result.SUCCESS.name());
 				if (response.getResponse().equals(Result.SUCCESS.name())) {
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 							"orgLocations");
-
-					if (itDeclarationSubmissionDTO.getDocumentList() != null
-							&& !itDeclarationSubmissionDTO.getDocumentList().isEmpty()) {
+					if (itDeclarationSubmissionDTO.getDocumentList() != null && !itDeclarationSubmissionDTO.getDocumentList().isEmpty()) {
 						taxService.saveUploadedDocuments(itDeclarationSubmissionDTO.getDocumentList(), staticPath,
 								org.getId(), loginOrgLocation.getId(), response.getObject());
+					}
+					//delete attachments based on attachmentRemoveIds
+					if (itDeclarationSubmissionDTO.getAttachmentRemoveIds() != null && !itDeclarationSubmissionDTO.getAttachmentRemoveIds().isEmpty()) {
+						for (String attachmentRemoveId : itDeclarationSubmissionDTO.getAttachmentRemoveIds().split(",")) {
+							taxService.deleteDocumentAttachment(Long.parseLong(attachmentRemoveId));
+						}
+					}
+					// delete documents based on documentRemoveIdsIDs
+					if (itDeclarationSubmissionDTO.getDocumentRemoveIds() != null && !itDeclarationSubmissionDTO.getDocumentRemoveIds().isEmpty()) {
+						//from javascript we have a chance of getting duplicate documentIds, so we are assigning to Set<Long>
+						Set<Long> docRemoveIdSet = new HashSet<>();
+						for (String documentRemoveId : itDeclarationSubmissionDTO.getDocumentRemoveIds().split(",")) {
+							docRemoveIdSet.add(Long.parseLong(documentRemoveId));
+						}
+						for(Long docId : docRemoveIdSet) {
+							taxService.deleteDocument(docId);
+						}
 					}
 				}
 			} else {
@@ -224,6 +270,7 @@ public class TaxSubmissionController {
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(e.getMessage());
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
@@ -239,9 +286,11 @@ public class TaxSubmissionController {
 		ResponseList<SourceleadTaxITDeclarationSubmissionDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			if (user != null) {
 				List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionDTOList = taxService
-						.getITDeclarationSubmissionList(uuid, financialYear, paginator);
+						.getITDeclarationSubmissionList(orgLocations.getId(), uuid, financialYear, paginator);
 				response.setData(itDeclarationSubmissionDTOList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +29,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
@@ -43,6 +43,7 @@ import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionItemDTO;
 import com.bis.sourcelead.dto.SourceleadTaxSubmissionDocumentAttachmentDTO;
 import com.bis.sourcelead.dto.SourceleadTaxSubmissionDocumentDTO;
+import com.bis.sourcelead.dto.SourceleadTaxSubmissionMasterDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
@@ -59,6 +60,7 @@ import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocument;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocumentAttachment;
+import com.bis.sourcelead.entity.SourceleadTaxSubmissionMaster;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -438,7 +440,7 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public List<SourceleadTaxFormDTO> getTaxFormTypeListForSubmission(String financialYear) {
+	public List<SourceleadTaxFormDTO> getTaxFormTypeListForSubmission(String financialYear, long orgLocationId) {
 		List<SourceleadTaxFormDTO> sourceleadTaxFormList = new LinkedList<>();
 		try {
 			List<SourceleadTaxForm> stList = taxDao.getTaxFormTypeList(false);
@@ -456,7 +458,7 @@ public class TaxServiceImpl implements TaxService {
 					// dynamically to all taxForm types
 					if (sourceleadTaxForm.getName().equalsIgnoreCase("IT Declaration")) {
 						count = taxDao.getITDeclarationFormsCountByYear(financialYear,
-								sourceleadTaxForm.getName().replaceAll(" ", ""));
+								sourceleadTaxForm.getName().replaceAll(" ", ""), orgLocationId);
 					}
 					sourceleadTaxFormDTO.setTotalFormsCount(count);
 					// if (count > 0)
@@ -725,7 +727,7 @@ public class TaxServiceImpl implements TaxService {
 
 	@Override
 	public Response<Long> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO,
-			User loggedInUser) {
+			User loggedInUser, OrgLocations orgLocations) {
 		Response<Long> response = new Response<>();
 		try {
 			SourceleadTaxITDeclarationSubmission existedItDeclarationSubmission = taxDao.getITDeclarationSubmission(itDeclarationSubmissionDTO.getUserId(), itDeclarationSubmissionDTO.getFinancialYear());
@@ -746,7 +748,9 @@ public class TaxServiceImpl implements TaxService {
 				itDeclarationSubmission.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
 			}
 			itDeclarationSubmission.setFinancialYear(itDeclarationSubmissionDTO.getFinancialYear());
-			itDeclarationSubmission.setUser(userService.getUserById(itDeclarationSubmissionDTO.getUserId()));
+			User user = userService.getUserById(itDeclarationSubmissionDTO.getUserId());
+			itDeclarationSubmission.setUser(user);
+			itDeclarationSubmission.setOrgLocations(orgLocations);
 //			itDeclarationSubmission.setStatus(itDeclarationSubmissionDTO.getStatus());
 			itDeclarationSubmission
 					.setSourceleadTaxForm(taxDao.getTaxFormType(itDeclarationSubmissionDTO.getTaxFormId()));
@@ -771,6 +775,7 @@ public class TaxServiceImpl implements TaxService {
 						itemObject.put("maxLimit", submissionItemDTO.getMaxLimit());
 						itemObject.put("amount", submissionItemDTO.getAmount());
 						itemObject.put("description", submissionItemDTO.getDescription());
+						itemObject.put("comment", submissionItemDTO.getComment());
 						itemArray.put(itemObject);
 					}
 				}
@@ -781,6 +786,13 @@ public class TaxServiceImpl implements TaxService {
 			itDeclarationSubmission.setSubmissionItems(jsonArray.toString());
 			long result = taxDao.submitITDeclaration(itDeclarationSubmission);
 			if (result > 0) {
+				if (itDeclarationSubmissionDTO.getId() == 0) {
+					SourceleadTaxSubmissionMaster sourceleadTaxSubmissionMaster = new SourceleadTaxSubmissionMaster();
+					sourceleadTaxSubmissionMaster.setFinancialYear(itDeclarationSubmissionDTO.getFinancialYear());
+					sourceleadTaxSubmissionMaster.setUser(user);
+					sourceleadTaxSubmissionMaster.setSourceleadTaxITDeclarationSubmission(itDeclarationSubmission);
+					taxDao.saveTaxSubmissionMaster(sourceleadTaxSubmissionMaster);
+				}
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 				response.setObject(itDeclarationSubmission.getId());
@@ -798,11 +810,11 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid,
+	public List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(long orgLocationId, String uuid,
 			String financialYear, Paginator paginator) {
 		List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionList = new LinkedList<>();
 		try {
-			List<SourceleadTaxITDeclarationSubmission> itList = taxDao.getITDeclarationSubmissionList(uuid,
+			List<SourceleadTaxITDeclarationSubmission> itList = taxDao.getITDeclarationSubmissionList(orgLocationId, uuid,
 					financialYear, paginator);
 			if (itList != null && !itList.isEmpty()) {
 				for (SourceleadTaxITDeclarationSubmission itSubmission : itList) {
@@ -967,48 +979,71 @@ public class TaxServiceImpl implements TaxService {
 					+ System.getProperty("file.separator") + orgLocationId + System.getProperty("file.separator")
 					+ "temp";
 			for (SourceleadTaxSubmissionDocumentDTO submissionDocumentDTO : documentList) {
-				SourceleadTaxSubmissionDocument taxSubmissionDocument;
-				if (submissionDocumentDTO.getId() > 0) {
-					taxSubmissionDocument = taxDao.getSourceleadTaxSubmissionDocumentById(submissionDocumentDTO.getId());
-					if(submissionDocumentDTO.isUpdateFile()) {
-						List<SourceleadTaxSubmissionDocumentAttachment> savedAttachmentList = taxSubmissionDocument.getAttachmentList();
-						if(savedAttachmentList!=null) {
-							for(SourceleadTaxSubmissionDocumentAttachment attachment : savedAttachmentList) {
-								taxDao.removeTaxSubmissionDocumentAttachment(attachment);
+				if (submissionDocumentDTO.getAttachmentList() != null
+						&& !submissionDocumentDTO.getAttachmentList().isEmpty()) {
+					SourceleadTaxSubmissionDocument taxSubmissionDocument;
+					if (submissionDocumentDTO.getId() > 0) {
+						taxSubmissionDocument = taxDao.getSourceleadTaxSubmissionDocumentById(submissionDocumentDTO.getId());
+						if(submissionDocumentDTO.isUpdateFile()) {
+							List<SourceleadTaxSubmissionDocumentAttachment> savedAttachmentList = taxSubmissionDocument.getAttachmentList();
+							if(savedAttachmentList!=null) {
+								for(SourceleadTaxSubmissionDocumentAttachment attachment : savedAttachmentList) {
+									taxDao.removeTaxSubmissionDocumentAttachment(attachment);
+								}
 							}
 						}
+					}else {
+						taxSubmissionDocument = new SourceleadTaxSubmissionDocument();
 					}
-				}else {
-					taxSubmissionDocument = new SourceleadTaxSubmissionDocument();
-				}
-				taxSubmissionDocument.setName(submissionDocumentDTO.getName());
-				taxSubmissionDocument
-						.setSourceleadTaxITDeclarationSubmission(taxDao.getITDeclarationSubmission(submissionId));
-
-				if (submissionDocumentDTO.isUpdateFile()) {
-					List<SourceleadTaxSubmissionDocumentAttachment> attachmentList = new LinkedList<>();
-					for (SourceleadTaxSubmissionDocumentAttachmentDTO attachmentDTO : submissionDocumentDTO
-							.getAttachmentList()) {
-						File file = new File(path, attachmentDTO.getAttachment());
-						SourceleadTaxSubmissionDocumentAttachment attachment;
-						if (attachmentDTO.getId() > 0)
-							attachment = new SourceleadTaxSubmissionDocumentAttachment();
-						else {
-							attachment = new SourceleadTaxSubmissionDocumentAttachment();
-							attachment.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
+					taxSubmissionDocument.setName(submissionDocumentDTO.getName());
+					taxSubmissionDocument
+							.setSourceleadTaxITDeclarationSubmission(taxDao.getITDeclarationSubmission(submissionId));
+	
+					if (submissionDocumentDTO.isUpdateFile()) {
+						List<SourceleadTaxSubmissionDocumentAttachment> attachmentList = new LinkedList<>();
+						for (SourceleadTaxSubmissionDocumentAttachmentDTO attachmentDTO : submissionDocumentDTO
+								.getAttachmentList()) {
+							File file = new File(path, attachmentDTO.getAttachment());
+							SourceleadTaxSubmissionDocumentAttachment attachment;
+							if (attachmentDTO.getId() > 0)
+								attachment = new SourceleadTaxSubmissionDocumentAttachment();
+							else {
+								attachment = new SourceleadTaxSubmissionDocumentAttachment();
+								attachment.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
+							}
+							attachment.setAttachment(attachmentDTO.getAttachment());
+							attachment.setFileURL(attachmentDTO.getFileURL());
+							attachment.setContentType(attachmentDTO.getContentType());
+							attachment.setSourceleadTaxSubmissionDocument(taxSubmissionDocument);
+							attachment.setActive(true);
+							attachmentList.add(attachment);
+							// boolean flag = taxDao.saveDocumentAttachment(attachment);
+							// if (flag)
+							FileUploadUtil.moveFile(staticPath, orgId, orgLocationId, "taxDocuments", file);
 						}
-						attachment.setAttachment(attachmentDTO.getAttachment());
-						attachment.setSourceleadTaxSubmissionDocument(taxSubmissionDocument);
-						attachment.setActive(true);
-						attachmentList.add(attachment);
-						// boolean flag = taxDao.saveDocumentAttachment(attachment);
-						// if (flag)
-						FileUploadUtil.moveFile(staticPath, orgId, orgLocationId, "taxDocuments", file);
+						taxSubmissionDocument.setAttachmentList(attachmentList);
 					}
-					taxSubmissionDocument.setAttachmentList(attachmentList);
+					taxDao.saveDocument(taxSubmissionDocument);
 				}
-				taxDao.saveDocument(taxSubmissionDocument);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void deleteDocumentAttachment(long attachmentId) {
+		try {
+			taxDao.deleteDocumentAttachment(attachmentId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void deleteDocument(long documentId) {
+		try {
+			taxDao.deleteDocument(documentId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1031,8 +1066,9 @@ public class TaxServiceImpl implements TaxService {
 						attachmentDTO.setId(attachment.getId());
 						attachmentDTO.setUuid(attachment.getUuid());
 						attachmentDTO.setAttachment(attachment.getAttachment());
-						attachmentDTO
-								.setTaxSubmissionDocumentId(attachment.getSourceleadTaxSubmissionDocument().getId());
+						attachmentDTO.setFileURL(attachment.getFileURL());
+						attachmentDTO.setContentType(attachment.getContentType());
+						attachmentDTO.setTaxSubmissionDocumentId(attachment.getSourceleadTaxSubmissionDocument().getId());
 						attachmentDTO.setActive(attachment.isActive());
 						attachmentList.add(attachmentDTO);
 					}
@@ -1436,7 +1472,8 @@ public class TaxServiceImpl implements TaxService {
 		p.setAlignment(alignLeft);
 		cell.addElement(p);
 		return cell;
-	}
+
+	
 
 	private static void headerCellStyle(PdfPCell cell) {
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -1602,6 +1639,41 @@ public class TaxServiceImpl implements TaxService {
 		 
 		return createExcelsheet;
 	}
+	
+	public List<SourceleadTaxSubmissionMasterDTO> getTaxSubmissionMaster(Long userId, String dateFormat,
+			String financialYear, Paginator paginator) {
+		List<SourceleadTaxSubmissionMasterDTO> taxSubmissionMasterDTOList = new LinkedList<>();
+		try {
+			List<SourceleadTaxSubmissionMaster> taxSubmissionMasterList = taxDao.getTaxSubmissionMasterList(userId,
+					financialYear, paginator);
+			if (taxSubmissionMasterList != null && !taxSubmissionMasterList.isEmpty()) {
+				for (SourceleadTaxSubmissionMaster taxSubmissionMaster : taxSubmissionMasterList) {
+					SourceleadTaxSubmissionMasterDTO taxSubmissionMasterDTO = new SourceleadTaxSubmissionMasterDTO();
+					taxSubmissionMasterDTO.setId(taxSubmissionMaster.getId());
+					taxSubmissionMasterDTO.setFinancialYear(taxSubmissionMaster.getFinancialYear());
+					taxSubmissionMasterDTO.setUserId(taxSubmissionMaster.getUser().getId());
+					taxSubmissionMasterDTO.setTaxFormUUID(taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission().getSourceleadTaxForm().getUuid());
+					taxSubmissionMasterDTO.setFormUUID(taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission().getUuid());
+					SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+					if (taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission() != null) {
+						taxSubmissionMasterDTO.setItDeclarationSubmissionId(
+								taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission().getId());
+						taxSubmissionMasterDTO.setFillingDate(sdf.format(
+								taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission().getCreatedDate()));
+					}
+					taxSubmissionMasterDTO
+							.setStatus(taxSubmissionMaster.getSourceleadTaxITDeclarationSubmission().getStatus());
+					taxSubmissionMasterDTOList.add(taxSubmissionMasterDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return taxSubmissionMasterDTOList;
+
+	}
+	
+	
 }
 
 

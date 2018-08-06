@@ -1,10 +1,16 @@
 <jsp:include page="../../masterHeader.jsp" />
 <jsp:include page="../../masterSideNav.jsp" />
-<section class="content-wraper contentWraper">
-	<jsp:include page="../my_payroll/myPayrollHeader.jsp"></jsp:include>
-
+<section class="content-wraper">
+	<section class="content-header clearfix">
+		<div class="pull-left">
+			<h2>My ${activeTaxTab == 'pays' ? 'Pays' : activeTaxTab =='forms' ? 'Forms' : 'Loans & Advances'}</h2>
+		</div>
+		<div class="pull-right brud-crum">Home &raquo; My Forms</div>
+	</section>
 	<div class="clearfix"></div>
-	<div class="timesheet_out">
+	<div class="project_wrap">
+		<jsp:include page="../my_payroll/myPayrollHeader.jsp"></jsp:include>
+		
 		<div class="tablelist-wrap">
 			<div class="col-md-12">
 				<ul class="list-unstyled mt row">
@@ -38,7 +44,7 @@
 			</div>
 			<div class="clearfix"></div>
 
-			<div class="loan_and_advance_table styleTables clearfix mt" id="outStadingTable">
+			<div class="loan_and_advance_table project_tabs_inn_table clearfix" id="outStadingTable">
 				<table id="outstandingList">
 					<thead>
 						<tr>
@@ -70,7 +76,7 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="loan_and_advance_table styleTables clearfix mt" id="completedTable" style="display: none">
+			<div class="loan_and_advance_table project_tabs_inn_table clearfix" id="completedTable" style="display: none">
 				<table id="completedList">
 					<thead>
 						<tr>
@@ -98,7 +104,7 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="loan_and_advance_table styleTables clearfix mt" id="requestTable" style="display: none">
+			<div class="loan_and_advance_table project_tabs_inn_table clearfix" id="requestTable" style="display: none">
 				<table id="requestedList">
 					<thead>
 						<tr>

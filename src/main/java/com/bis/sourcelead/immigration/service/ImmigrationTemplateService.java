@@ -12,6 +12,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -26,6 +27,8 @@ public interface ImmigrationTemplateService {
     Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, OrgLocations orgLocations, String templateId);
 
     ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId);
+    
+    ImmigrationTemplate getImmigrationTemplateByIdAndLocationId(String templateName,Long templateId,Long orgLocationId);
 
     List<ImmigrationTemplateDocDTO> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user,OrgLocations orgLocations);
 
@@ -55,7 +58,7 @@ public interface ImmigrationTemplateService {
 
     List<LookUpData> getLookupDataByType(String type);
 
-    public boolean validateTemplateNameExistance(String templateName, Long templateId);
+    public boolean validateTemplateNameExistance(String templateName, Long orgLocationId);
 
 	List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal);
 

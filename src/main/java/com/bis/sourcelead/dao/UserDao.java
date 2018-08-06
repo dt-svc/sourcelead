@@ -192,4 +192,6 @@ public interface UserDao {
 	public long saveDashboardItems(DashboardItems dashboardItems);
 
 
+	User getUserbyConsultantUserId(Long consultantUserId);
+
 }

@@ -84,7 +84,11 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 	@Override
 	public void updatedFeedbackMailFromInterviewerToRequirementOwner(RequirementInterviewer requirementInterviewer,RequirementSubmission requirementSubmission,JSONObject json,String templateId) throws Exception {
 		
-		 User interviewerUser = userService.getUserById(requirementInterviewer.getInterviewerUser().getId());
+		User interviewerUser = null;
+		if(requirementInterviewer.getInterviewerUser() != null) {
+			interviewerUser = userService.getUserById(requirementInterviewer.getInterviewerUser().getId());
+		}
+		
 		 Requirement requirement = requirementservice.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
 		 RequirementInterview requirementInterview = requirementInterviewService.getinterviewBySubmissionId(requirementSubmission.getId());
 		
@@ -94,10 +98,16 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 emailMessage.setFirstName(requirement.getCreatedBy().getFirstName());
 		 emailMessage.setLastName(requirement.getCreatedBy().getLastName());
 		 emailMessage.setToEmail(requirement.getCreatedBy().getEmail());
-		 emailMessage.setFromEmail(interviewerUser.getEmail());
-		 emailMessage.setCreatedBy(interviewerUser.getUserCode());
-		 StringBuilder msgBuild = new StringBuilder();
-		 emailMessage.setFromName(msgBuild.append(interviewerUser.getFirstName()).append(" ").append(interviewerUser.getLastName()).toString());
+			if(interviewerUser != null) {
+				 emailMessage.setFromEmail(interviewerUser.getEmail());
+				 emailMessage.setCreatedBy(interviewerUser.getUserCode());
+				 StringBuilder msgBuild = new StringBuilder();
+				 emailMessage.setFromName(msgBuild.append(interviewerUser.getFirstName()).append(" ").append(interviewerUser.getLastName()).toString());
+			}else {
+				emailMessage.setFromEmail(requirementInterviewer.getExternalInterviewerEmail());
+				emailMessage.setFromName(requirementInterviewer.getExternalInterviewerName());
+			}
+
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -132,14 +142,15 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 			 }else{
 				 globalVarsMap.put("applicantName",requirementSubmission.getCandidate().getFirstName());
 			 }
-		 if(interviewerUser.getFullName()!= null && !"".equalsIgnoreCase(interviewerUser.getFullName())){
-			 globalVarsMap.put("interviewerName", interviewerUser.getFullName());
-			 }else{
-				 globalVarsMap.put("interviewerName","--");
+		
+			 if(interviewerUser != null && interviewerUser.getFullName()!= null && !"".equalsIgnoreCase(interviewerUser.getFullName())){
+				 globalVarsMap.put("interviewerName", interviewerUser.getFullName());
+			 }else {
+				 emailMessage.setFromName(requirementInterviewer.getExternalInterviewerName());
 			 }
 		 
 			 StringBuilder feedbackBuilder = new StringBuilder();
-			 globalVarsMap.put("feedBackLink", feedbackBuilder.append("<a href='").append(sourceleadUrl).append("/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementInterviewer.getId()).append("&interviewerUser=").append(interviewerUser.getId()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").toString());
+			 globalVarsMap.put("feedBackLink", feedbackBuilder.append("<a href='").append(sourceleadUrl).append("/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementInterviewer.getUuid()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").toString());
 			
 			
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -157,7 +168,10 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 StringBuilder actionLinkBuilder = new StringBuilder();
 		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmission.getCandidate().getCandidateUUID()).toString();		 
 
-		 emailScenerioUtil.sendNotification(actionLink, interviewerUser, requirement.getCreatedBy(), OrgLoc, notificationScenario,new HashMap<String,String>());
+		if(interviewerUser != null) {
+			emailScenerioUtil.sendNotification(actionLink, interviewerUser, requirement.getCreatedBy(), OrgLoc, notificationScenario,new HashMap<String,String>());
+		}
+		 
 		}
 		 
 		 //send email to point of contact
@@ -246,6 +260,23 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 	@Override
 	public List<RequirementInterviewerDTO> getInterviwersListByInterviewIdFromDTO(Long interviewId) {
 		return requirementInterviewerDao.getInterviwersListByInterviewIdFromDTO(interviewId);
+	}
+
+	@Override
+	public RequirementInterviewer getRequirementInterviewerByUUID(String uuid) throws Exception {
+		return requirementInterviewerDao.getRequirementInterviewerByUUID(uuid);
+	}
+
+	@Override
+	public List<RequirementInterviewerDTO> getInterviwersListByInterviewIdAndSubmissionIdFromDTO(Long interviewId,
+			Long submissionId) {
+		return requirementInterviewerDao.getInterviwersListByInterviewIdAndSubmissionIdFromDTO(interviewId, submissionId);
+	}
+
+	@Override
+	public RequirementInterviewer getRequirementInterviewerByInterviewIdAndExternalInterviewerEmail(
+			Long requirementInterviewId, String email) throws Exception {
+		return requirementInterviewerDao.getRequirementInterviewerByInterviewIdAndExternalInterviewerEmail(requirementInterviewId, email);
 	}
 
 }

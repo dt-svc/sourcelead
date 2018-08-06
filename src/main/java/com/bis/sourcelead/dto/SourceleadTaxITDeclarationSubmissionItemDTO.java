@@ -13,18 +13,11 @@ public class SourceleadTaxITDeclarationSubmissionItemDTO implements Serializable
 	private double maxLimit;
 	private double amount;
 	private String description;
+	private String comment;
 	private long taxSectionId;
 	private String taxSectionName;
 
 	// private long sourceleadTaxITDeclarationSubmissionId;
-
-	// public long getId() {
-	// return id;
-	// }
-	//
-	// public void setId(long id) {
-	// this.id = id;
-	// }
 
 	public String getName() {
 		return name;
@@ -58,15 +51,13 @@ public class SourceleadTaxITDeclarationSubmissionItemDTO implements Serializable
 		this.description = description;
 	}
 
-	// public long getSourceleadTaxITDeclarationSubmissionId() {
-	// return sourceleadTaxITDeclarationSubmissionId;
-	// }
-	//
-	// public void setSourceleadTaxITDeclarationSubmissionId(long
-	// sourceleadTaxITDeclarationSubmissionId) {
-	// this.sourceleadTaxITDeclarationSubmissionId =
-	// sourceleadTaxITDeclarationSubmissionId;
-	// }
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;

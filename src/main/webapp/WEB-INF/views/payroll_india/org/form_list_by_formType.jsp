@@ -48,30 +48,6 @@
 							</tr>
 						</thead>
 						<tbody id="formList">
-							<%-- <c:forEach items="${formList}" var="form">
-								<tr>
-									<td>${form.userId}</td>
-									<td>
-										<div class="tblminwidth proj_show">
-											<span>${form.userName}</span> <i class="fa fa-binoculars"></i>
-										</div>
-									</td>
-									<td><div class="tbldata-dotdot-verybig">${form.financialYear}</div></td>
-									<td>${form.submittedAmount}</td>
-									<td>${form.taxAmount}</td>
-									<td><div>${form.statusText}</div></td>
-									<td>
-										<ul class="list-unstyled list-inline mb0">
-											<li><a href="viewForm?uuid=${uuid}&formUUID=${form.uuid}" title="View" class="anchor-black"><i class="fa fa-eye-slash"></i></a></li>
-											<c:if test="${form.status == 0}">
-												<li><a href="editForm?uuid=${uuid}&formUUID=${form.uuid}" title="Edit" class="anchor-black"><i class="fa fa-pencil"></i></a></li>
-												<li><a href="javascript:void()" title="Approve" onclick="approveOrRejectForm(${form.id}, 1)"><i class="fa fa-check"></i></a></li>
-												<li><a href="javascript:void()" title="Reject" onclick="approveOrRejectForm(${form.id}, -1)" class="text-danger"><i class="fa fa-close"></i></a></li>
-											</c:if>
-										</ul>
-									</td>
-								</tr>
-							</c:forEach> --%>
 						</tbody>
 					</table>
 				</div>
@@ -82,7 +58,7 @@
 						<label class="pull-left">
 						<span class="pull-left mt10 mr5">Show</span>
 							<div class="dropdown-select pull-left mr5 tblminwidth-50">
-								<select id="pageSize" onchange="getItDeclarationSubmissionList(0);">
+								<select id="pageSize" onchange="getItDeclarationSubmissionList('${uuid}', 0);">
 									<option value="5">5</option>
 									<option value="10">10</option>
 									<option value="15">15</option>
@@ -124,7 +100,7 @@
 	var taxFormName = "${taxForm.name}";
 	$(document).ready(function () {
 		if(taxFormName === "IT Declaration") {
-			getItDeclarationSubmissionList(0);
+			getItDeclarationSubmissionList('${uuid}',0);
 		}
 	})
 	/* $('#form_table').DataTable(); */

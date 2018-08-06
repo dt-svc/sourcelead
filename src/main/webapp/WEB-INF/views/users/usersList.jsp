@@ -203,8 +203,12 @@ function getUsersSearchResult(searchValue){
 						  </div>
 						</div>
 						
+						<div class="col-md-10">
+						
+						<div class="row">
+						
 						<c:if test="${reportingManagersListSize > 0}">
-							 <div class="col-md-2 mb positionRelative">
+							 <div class="col-md-4 positionRelative mb">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Managers" title="Type in a managers">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -219,7 +223,7 @@ function getUsersSearchResult(searchValue){
 							 </div> 
 							 </c:if>
 						
-						<div class="col-md-2 positionRelative">
+						<div class="col-md-4 positionRelative mb">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a roles">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -234,7 +238,7 @@ function getUsersSearchResult(searchValue){
 						</div>
 						
 						<c:if test="${clientListSize > 0}">
-						<div class="col-md-3 positionRelative">
+						<div class="col-md-4 positionRelative mb">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a clients">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -249,11 +253,25 @@ function getUsersSearchResult(searchValue){
 						</div>
 						</c:if>
 						
+						<c:if test="${!empty associateTagsList}">
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Tags" title="Type in a tag">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
+									<c:forEach var="tag" items="${associateTagsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="tags" value ="${tag}" ><label>${tag}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
 						
-						<div class="col-md-2">
-						<div class="row">
+						
 						<c:if test="${teamsListSize > 0}">
-						<div class="col-md-12 mb positionRelative">
+						<div class="col-md-4 mb positionRelative mb">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Type in a teams">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -269,7 +287,7 @@ function getUsersSearchResult(searchValue){
 						</c:if>
 						
 						<c:if test="${departmentListSize > 0}">
-						<div class="col-md-12 mb positionRelative">
+						<div class="col-md-4 mb positionRelative mb">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myDepartmentInput" onkeyup="myDepartmentFunction()" placeholder="Departments" title="Type in a departments">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -282,7 +300,11 @@ function getUsersSearchResult(searchValue){
 								</ul>
 							 </div> 
 						</div>
-						</c:if></div></div>
+						</c:if>
+						
+						</div>
+						
+						</div>
 						
 						
 					</div>
@@ -315,6 +337,10 @@ function getUsersSearchResult(searchValue){
 									</span>
 								</div>
 							</li>
+				</c:if>
+				
+				<c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userGroupList'/>"><i class="fa fa-plus"></i>&nbsp;Create Batch</a></li>
 				</c:if>
 				
 				<c:if test="${orgLocationsCount == 1}">
@@ -538,10 +564,16 @@ function exportUserData(){
 			employmentType.push($(this).val());
 	     });
 		
+		var tags = [];
+		$('input:checkbox[name=tags]:checked').each(function() 
+	     {
+			tags.push($(this).val());
+	     });
+		
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
 	if(userListEmpty != 'nousers'){
-		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&exportType=xls";
+		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags+"&exportType=xls";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -655,13 +687,17 @@ function exportToPdf(){
 		employmentType.push($(this).val());
      });
 	
-	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+		    {
+		tags.push($(this).val());
+     });
     
     
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
 	if(userListEmpty != 'nousers'){
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&exportType=pdf";
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags+"&exportType=pdf";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1141,6 +1177,12 @@ function getDynamciUserList(){
      });
 	
 	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+	{
+		tags.push($(this).val());
+     });
+	
 	var orgDepartments = [];
 	$('input:checkbox[name=orgDepartments]:checked').each(function() 
 		    {
@@ -1149,7 +1191,7 @@ function getDynamciUserList(){
 	
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType;
+	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags;
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
 	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
 	prepareDynamicUserList(url);

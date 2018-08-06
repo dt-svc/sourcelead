@@ -92,7 +92,7 @@ $(document).ready(function(){
 	 var candidateId = '${candidateId}';
 	 var timesheet = '${SourceLeadWeb_timesheet}';
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}'; 
-	 
+	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}';
 	 
 		 result = result + ' <div class="user_summ_wrap">';
 		 result = result + '<div class="project_side_wrap_inn_tabs">';
@@ -115,9 +115,19 @@ $(document).ready(function(){
 			 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
 		 '</sec:authorize>';
 
+		 if(loginCurrencyCode != 'USD'){
 		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
 		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
 		 '</sec:authorize>';
+		 }
+		 
+		 if(loginCurrencyCode == 'USD'){
+			 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
+			 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
+			 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
+			 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
+			 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
+		 }
 
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
@@ -136,6 +146,21 @@ $(document).ready(function(){
 		 result = result + '<div id="tab-17" class="project_tabs_inn project_tabs_inn_table">';
 		 result = result + '<div id="candidateSideDiv">';
 		 result = result + '</div>';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-21" class="table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative clearfix">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-22" class="clearfix table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-23" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-24" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-25" class="clearfix axes-details">';
 		 result = result + '</div>';
 		 
 		 result = result + '<div id="tab-29" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
@@ -694,7 +719,8 @@ $(document).ready(function(){
 				$("#tab-19").empty();
 				$("#tab-17").empty();
 				$("#tab-18").empty(); 
-				 $("#tab-29").empty();  
+				 $("#tab-29").empty();
+				 $("#tab-25").empty();
 			    $("#tab-18").append(result);  
 			    
 			    var config = {
@@ -3711,6 +3737,7 @@ function profileDetails(candidateId){
 			             result = result+'   </div>';
 			             $("#tab-18").empty();  
 			             $("#tab-19").empty();
+			             $("#tab-25").empty();
 			             $("#candidateSideDiv").empty();  
 			 		     $("#candidateSideDiv").append(result);  
 				 		/*  $(".clients_side_wrap").addClass("clients_side_wrap_active");
@@ -4179,3 +4206,8 @@ function getShiftList(shiftId){
 <%--  <sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> --%>
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  <%-- </sec:authorize>  --%>
+ <jsp:include page="associateBankDataSummary.jsp" />
+<jsp:include page="associateTaxSummary.jsp" />
+<jsp:include page="associateDeductionSummary.jsp" />
+<jsp:include page="associationContributionSummary.jsp" />
+<jsp:include page="associateSalSummary.jsp" />

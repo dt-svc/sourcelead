@@ -12,12 +12,27 @@ $(document).ready(function() {
 	$("#saveBtn, #submitBtn").click(function() {
 		if ($('#itDeclarationForm').validate(false, validationSettings)) {
 			var flag = true;
+			$("#documentsTable tr").each(function() {
+				var docNameInput = $(this).find("input[data-name='docName']");
+				var fileNameInput = $(this).find("input[data-name='fileName']");
+				/*if(docNameInput.val() === "" && fileNameInput.val() === "") {
+					$(docNameInput).parent().append("<p class='jquery_form_error_message'>Document Name is required</p>");
+					$(fileNameInput).parent().append("<p class='jquery_form_error_message'>Document File is required</p>");
+					flag = false;
+				} else*/ 
+				if(docNameInput.val() !== "" && fileNameInput.val() === "") {
+					$(fileNameInput).parent().append("<p class='jquery_form_error_message'>Document File is required</p>");
+					flag = false;
+				} else if(docNameInput.val() === "" && fileNameInput.val() !== "") {
+					$(docNameInput).parent().append("<p class='jquery_form_error_message'>Document Name is required</p>");
+					flag = false;
+				}
+			});
 			if(flag) {
 				$("#saveBtn").attr("disabled","disabled");
 				$("#submitBtn").attr("disabled","disabled");
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 				var formData = getFormData("itDeclarationForm");
-				
 				$.ajax({
 					type : "POST",
 	        	    data: formData,
@@ -76,15 +91,18 @@ function fileUploadEvent(ele) {
 				var filesText = "";
 				for(var e in data) {
 					filesText += "<div data-index=" + e + ">";
+					var fileName = data[e].fileURL.substring(data[e].fileURL.lastIndexOf("/") + 1 , data[e].fileURL.length);
 					filesText += "<i onclick='removeAttachment(this);' class='text-danger fa fa-remove cursorPointer'></i>";
-					filesText += data[e].fileName + "</div>";
-					var fileURL = data[e].fileURL.substring(data[e].fileURL.lastIndexOf("/") + 1 , data[e].fileURL.length);
+					filesText += fileName;
+					filesText += "<i onclick='viewFile(\"" + data[e].fileURL.replace("taxDocuments","temp") + "\",\"" + fileName + "\",\"" + data[e].contentType + "\");' title='preview' class='fa fa-eye cursorPointer'></i>";
+					filesText += "</div>";
 					$(parentDiv).find("input[data-name='updateFile']").val(true);
-					$(attachmentDiv).append("<input name='documentList[" + $(attachmentDiv).data('index') + "].attachmentList[" + e + "].attachment' data-name='documentFileNames' type='hidden' value='" + fileURL + "'>");
+					var text = "<input name='documentList[" + $(attachmentDiv).data('index') + "].attachmentList[" + e + "].attachment' data-name='documentFileNames' type='hidden' value='" + fileName + "'>";
+					text += "<input name='documentList[" + $(attachmentDiv).data('index') + "].attachmentList[" + e + "].fileURL' type='hidden' value='" + data[e].fileURL + "'>";
+					text += "<input name='documentList[" + $(attachmentDiv).data('index') + "].attachmentList[" + e + "].contentType' type='hidden' value='" + data[e].contentType + "'>";
+					$(attachmentDiv).append(text);
 				}
-				
 //				var docName = $(ele).parents("tr").find("input[data-name='documentName']").val();
-				
 				var uploadedFilesDiv = $(parentDiv).find(".uploadedFiles");
 				uploadedFilesDiv.html(filesText);
 				enableDisableRefresh(ele);
@@ -118,8 +136,7 @@ function addDocumentRow() {
 	row += "<div style='display: none;' class='attachments' data-index=" + uploadCount + "></div>";
 	row += "<input type='hidden' name='documentList[" + uploadCount + "].name' data-name='documentName' />";
 	row += "<input type='hidden' name='documentList[" + uploadCount + "].updateFile' data-name='updateFile' value='false'/>";
-	/*row += "<input type='hidden' name='documentList[" + uploadCount + "].fileNames' data-name='documentFileNames' />";*/
-	row += "<input data-name='docName' type='text' class='form-control input-sm' placeholder='Enter Document Name' field-name='Document Name' data-validation='required' onchange='enableDisableRefresh(this);applyKeyToDocument(this);' onkeyup='enableDisableRefresh(this);applyKeyToDocument(this);'>";
+	row += "<input data-name='docName' type='text' class='form-control input-sm' placeholder='Enter Document Name' field-name='Document Name' onchange='enableDisableRefresh(this);applyKeyToDocument(this);' onkeyup='enableDisableRefresh(this);applyKeyToDocument(this);'>";
 	row +="</td>";
 	row += "<td>";
 	row += "<div class='clearfix attchments'>";
@@ -130,10 +147,10 @@ function addDocumentRow() {
 			+ "' class='upload' type='file' onchange='fileUploadEvent(this)' data-index=" + uploadCount + ">";
 	row += "</span>";
 	row += "</label>";
-	row += "<input class='form-control' readonly='readonly' id='uploadFile' placeholder='Select File(s)' type='text' field-name='Document File' data-validation='required'>";
+	row += "<input class='form-control' readonly='readonly' data-name='fileName' id='uploadFile" + uploadCount + "' placeholder='Select File(s)' type='text' field-name='Document File'>";
 	row += "</div>";
 	row += "</div>";
-	row += "<div class='uploadedFiles'></div>";
+	row += "<div class='uploadedFiles' data-id=" + uploadCount + "></div>";
 	row += "</td>";
 	row += "<td>";
 	row += "<div class='tblminwidth-75 text-center'>";
@@ -145,35 +162,64 @@ function addDocumentRow() {
 	uploadCount++;
 }
 
+function refreshDocumentInputIndexes() {
+	var count = 0;
+	$("#documentsTable tr").each(function () {
+		$(this).data("index", count);
+		$(this).find(".attachments").data("index", count);
+		var attachmentCount = 0;
+		$(this).find(".attachments").find("input").each(function () {
+			$(this).prop("name", "documentList[" + count + "].attachmentList[" + attachmentCount + "].attachment");
+			attachmentCount++;
+		});
+		$(this).find("input[data-name='documentName']").prop("name", "documentList[" + count + "].name");
+		$(this).find("input[data-name='updateFile']").prop("name", "documentList[" + count + "].updateFile");
+		count++;
+	});
+}
+
+function refreshDocumentRow(ele) {
+	$(ele).parents("tr").find("input").val("");
+	$(ele).parents("tr").find("input[data-name='updateFile']").val("false");
+	$(ele).parents("tr").find("p").remove();
+	$(ele).parents("tr").find(".uploadedFiles").html("");
+	$(ele).parents("tr").find(".fa-refresh").addClass("disableBtn");
+}
+
 function removeDocumentRow(ele) {
+	var parentDiv = $(ele).parents("tr");
 	$(ele).parents("tr").remove();
 	uploadCount = 1;
 	$(".upload").each(function() {
 		$(this).attr("id", "uploadBtn" + (uploadCount++));
 		document.getElementById($(this).attr("id")).value = "";
 	});
-}
-
-function refreshDocumentRow(ele) {
-	$(ele).parents("tr").find("input").val("");
-	$(ele).parents("tr").find("p").remove();
-	$(ele).parents("tr").find(".uploadedFiles").html("");
-	$(ele).parents("tr").find(".fa-refresh").addClass("disableBtn");
+	
+	var documentId = $(parentDiv).find("input[data-name='documentId']").val();
+	if(documentId && documentId > 0) {
+		var documentRemoveIds = $("#documentRemoveIds").val();
+		$("#documentRemoveIds").val(documentRemoveIds + (documentRemoveIds === "" ? "" : ",") + documentId);
+	}
+	refreshDocumentInputIndexes();
 }
 
 function removeAttachment(ele) {
-	/*var parentDiv = $(this).parents("div[class='uploadedFiles']");
-	$(this).parent().remove();
-	var attachmentsCount = $(parentDiv).find("i").length;
-	if(attachmentsCount)
-	$(parentDiv).find("i").each(function(){
-		
-	});*/
-	var parentDiv = $(ele).parent().parent();
+	var parentDiv = $(ele).parents("tr");
 	$(ele).parent().remove();
-	$(parentDiv).find("i").each(function(){
-			
-	});
+	var filesCount = $(parentDiv).find("i[data-name='attachment']").length;
+	$("#uploadFile" + $(parentDiv).data("index")).val(filesCount > 1 ? (filesCount + " files selected") : filesCount === 1 ? "1 file selected" : "");
+	var attachmentId = $(ele).data("id");
+	if(attachmentId && attachmentId > 0) {
+		var attachmentRemoveIds = $("#attachmentRemoveIds").val();
+		$("#attachmentRemoveIds").val(attachmentRemoveIds + (attachmentRemoveIds === "" ? "" : ",") + attachmentId);
+	}
+	if(filesCount === 0) {
+		var documentId = $(parentDiv).find("input[data-name='documentId']").val();
+		if(documentId && documentId > 0) {
+			var documentRemoveIds = $("#documentRemoveIds").val();
+			$("#documentRemoveIds").val(documentRemoveIds + (documentRemoveIds === "" ? "" : ",") + documentId);
+		}
+	}
 }
 
 function approveOrRejectForm(formId, status) {
@@ -213,7 +259,7 @@ function closeChangeStatusPopup() {
 	$(".project_inn_mask").fadeOut(200);
 }
 
-function getItDeclarationSubmissionList(pageNo) {
+function getItDeclarationSubmissionList(uuid, pageNo) {
 	var pageSize = $("#pageSize").val();
 	$("#formList").empty();
 	$.post(sourceleadUrl + "/itDeclaration/list", {pageNo:pageNo, pageSize:pageSize}, function(response) {
@@ -229,7 +275,7 @@ function getItDeclarationSubmissionList(pageNo) {
 					text += "	<td>" + formList[e].userId + "</td>";
 					text += "	<td>";
 					text += "		<div class='tblminwidth proj_show'>";
-					text += "			<span>" + formList[e].userName + "</span> <i class='fa fa-binoculars'></i>";
+					text += "			<span>" + formList[e].userName + "</span> <a href='viewForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "'><i class='fa fa-binoculars'></i></a>";
 					text += "		</div>";
 					text += "	</td>";
 					text += "	<td><div class='tbldata-dotdot-verybig'>" + formList[e].financialYear + "</div></td>";
@@ -242,7 +288,7 @@ function getItDeclarationSubmissionList(pageNo) {
 					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportPDF' onclick='exportFormToPDF(" + formList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
 					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportEXEL' onclick='exportFormToExel(" + formList[e].id + ")'><i class='fa fa-file-excel-o'></i></a></li>";
 					if(formList[e].status === 0) {
-						text += "				<li><a href='editForm?uuid=${uuid}&formUUID=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
+						text += "				<li><a href='editForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						text += "				<li><a href='javascript:void()' title='Approve' onclick='approveOrRejectForm(" + formList[e].id + ", 1)'><i class='fa fa-check'></i></a></li>";
 						text += "				<li><a href='javascript:void()' title='Reject' onclick='approveOrRejectForm(" + formList[e].id + ", -1)' class='text-danger'><i class='fa fa-close'></i></a></li>";
 					}
@@ -259,7 +305,7 @@ function getItDeclarationSubmissionList(pageNo) {
 						ellipsePageSet : false,
 						cssStyle : 'light-theme',
 						onPageClick : function(pageNumber, event) {
-							getItDeclarationSubmissionList(pageNumber-1);
+							getItDeclarationSubmissionList(uuid, pageNumber-1);
 						}
 				};
 				$("#pagination-demo").pagination(options);

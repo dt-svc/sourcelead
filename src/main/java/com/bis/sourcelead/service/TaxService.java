@@ -14,6 +14,7 @@ import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
 import com.bis.sourcelead.dto.SourceleadTaxSubmissionDocumentDTO;
+import com.bis.sourcelead.dto.SourceleadTaxSubmissionMasterDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -47,7 +48,7 @@ public interface TaxService {
 
 	List<SourceleadTaxFormDTO> getTaxFormTypeList(boolean includeAll);
 
-	List<SourceleadTaxFormDTO> getTaxFormTypeListForSubmission(String financialYear);
+	List<SourceleadTaxFormDTO> getTaxFormTypeListForSubmission(String financialYear, long orgLocationId);
 
 	long addITDeclarationSection(SourceleadTaxITDeclarationDTO sectionDTO);
 
@@ -68,14 +69,18 @@ public interface TaxService {
 	Tds getTDSById(long id);
 
 	Response<Long> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO,
-			User loggedInUser);
+			User loggedInUser, OrgLocations orgLocations);
 
-	List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid, String financialYear, Paginator paginator);
+	List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(long orgLocationId, String uuid, String financialYear, Paginator paginator);
 
 	SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID);
 
 	void saveUploadedDocuments(List<SourceleadTaxSubmissionDocumentDTO> documentList, String staticPath, Long orgId,
 			Long orgLocationId, long submissionId);
+	
+	void deleteDocumentAttachment(long attachmentId);
+	
+	void deleteDocument(long documentId);
 
 	List<SourceleadTaxSubmissionDocumentDTO> getUploadedDocumentsBySubmissionId(long submissionId);
 
@@ -103,5 +108,6 @@ public interface TaxService {
 
 	 public File exportItDeclarationSubmissionExcel(SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, User loginUser,OrgLocations orgLoc, User user) throws IOException, Exception;
 
+	List<SourceleadTaxSubmissionMasterDTO> getTaxSubmissionMaster(Long userId, String dateFormat, String financialYear, Paginator paginator);
 
 }

@@ -15,17 +15,17 @@
 			<div class="clearfix form-horizontal minHeight_225 minHeightcol5">
 				<div class="row min">
 					<input type="hidden" value="${form.id}" name="taxFormId"/>
+					<c:if test="${autoSelectUser}">
+						<input type="hidden" value="${user.id}" name="userId"/>
+					</c:if>
 					<div class="col-md-6 col-md-offset-2">
 						<div class="clearfix dropdown-select">
-							<select class="selectpicker width100percnt" id="employeeSelect"
-								data-live-search="true" title="Select Employee"
-								field-name="Employee" data-validation="required"
-								name="userId">
+							<select class="selectpicker width100percnt" id="employeeSelect" ${autoSelectUser ? "disabled='disabled'" : ""}
+								data-live-search="true" title="Select Employee" field-name="Employee" data-validation="required" name="userId">
 								<c:forEach items="${userRoleList}" var="userRole">
-									<option value="${userRole.user.id}"
-										data-id="${userRole.user.id}"
-										data-name="${userRole.user.firstName.concat(' ' ).concat(userRole.user.lastName)}">${userRole.user.firstName}
-										${userRole.user.lastName}</option>
+									<option ${user.id == userRole.user.id ? "selected='selected'" : ""} value="${userRole.user.id}" data-id="${userRole.user.id}" data-name="${userRole.user.firstName.concat(' ' ).concat(userRole.user.lastName)}">
+										${userRole.user.firstName} ${userRole.user.lastName}
+									</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -35,14 +35,14 @@
 						<label class="clearfix">Associate Name</label>
 						<div class="clearfix">
 							<input type="text" class="form-control" readonly="readonly"
-								id="associateName" field-name="Associate Name"
+								id="associateName" field-name="Associate Name" value="${user.firstName} ${user.lastName}"
 								data-validation="required" placeholder="Associate Name">
 						</div>
 					</div>
 					<div class="col-md-5">
 						<label class="clearfix">Associate ID</label>
 						<div class="clearfix">
-							<input type="text" class="form-control" readonly="readonly"
+							<input type="text" class="form-control" readonly="readonly" value="${user.id}"
 								id="associateId" placeholder="Associate Id">
 						</div>
 					</div>
@@ -66,7 +66,7 @@
 						</div>
 					</div>
 					<div class="clearfix"></div>
-					<div class="col-md-10">
+					<div class="col-md-11">
 					<c:set var="sectionCount" value="0"></c:set>
 					<c:set var="sectionItemCount" value="0"></c:set>
 						<c:forEach items="${form.sourceleadTaxSectionList}" var="section">
@@ -81,6 +81,7 @@
 											<th>Max Limit</th>
 											<th>Description</th>
 											<th>Declared Amount</th>
+											<th>Comment</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -96,8 +97,12 @@
 												<td>${sectionItem.description != null && sectionItem.description != "" ? sectionItem.description : "--NA--"}</td>
 												<td>
 													<input type="text" class="form-control input-sm" name="submissionItemList[${sectionItemCount}].amount"
-													placeholder='Enter Amount' field-name='Amount' value="${sectionItemCount}"
+													placeholder='Enter Amount' field-name='Amount' value="0"
 													data-validation='required validate_float'>
+												</td>
+												<td>
+													<input type="text" class="form-control input-sm" name="submissionItemList[${sectionItemCount}].comment"
+													placeholder='Enter Comment' field-name='Comment'>
 												</td>
 											</tr>
 											<c:set var="sectionItemCount" value="${sectionItemCount + 1}"></c:set>
@@ -126,8 +131,8 @@
 										<div style="display: none;" class="attachments" data-index="0"></div>
 										<input name="documentList[0].name" data-name="documentName" type="hidden">
 										<input name="documentList[0].updateFile" data-name="updateFile" type="hidden" value="false"/>
-										<input data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" field-name='Document Name' 
-											data-validation='required' onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
+										<input data-name="docName" class="form-control input-sm" placeholder="Enter Document Name" 
+											onchange="enableDisableRefresh(this);applyKeyToDocument(this);" onkeyup="enableDisableRefresh(this);applyKeyToDocument(this);" type="text" >
 									</td>
 									<td>
 										<div class="clearfix attchments">
@@ -138,12 +143,11 @@
 														multiple="multiple" id="uploadBtn0" class="upload"
 														onchange="fileUploadEvent(this)" type="file" data-index="0">
 												</span>
-												</label> <input class="form-control" readonly="readonly"
-													field-name='Document File' data-validation='required'
-													id="uploadFile1" placeholder="Select File(s)" type="text">
+												</label> <input class="form-control" readonly="readonly" data-name='fileName'
+													id="uploadFile0" placeholder="Select File(s)" type="text">
 											</div>
 										</div>
-										<div class="uploadedFiles"></div>
+										<div class="uploadedFiles" data-id="0"></div>
 									</td>
 									<td>
 										<div class="tblminwidth-75 text-center">
@@ -175,3 +179,10 @@
 	</form>
 	<!-- Content Area Ends-->
 </section>
+<script type="text/javascript">
+	var userId = "${user.id}";
+	$(document).ready(function() {
+		/* $('#employeeSelect').val(12); */
+		$('#employeeSelect').selectpicker('refresh');
+	});
+</script>

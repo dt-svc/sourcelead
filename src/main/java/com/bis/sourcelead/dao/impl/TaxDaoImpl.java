@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocument;
 import com.bis.sourcelead.entity.SourceleadTaxSubmissionDocumentAttachment;
+import com.bis.sourcelead.entity.SourceleadTaxSubmissionMaster;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -454,11 +455,12 @@ public class TaxDaoImpl implements TaxDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public int getITDeclarationFormsCountByYear(String financialYear, String tableName) {
+	public int getITDeclarationFormsCountByYear(String financialYear, String tableName, long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from SourceleadTax" + tableName + "Submission it where it.financialYear=:financialYear";
+			String query = "from SourceleadTax" + tableName + "Submission it where it.orgLocations.id=:orgLocationId and it.financialYear=:financialYear";
 			Query queryObj = session.createQuery(query);
+			queryObj.setLong("orgLocationId", orgLocationId);
 			queryObj.setString("financialYear", financialYear + "");
 			List<Object> submissionList = queryObj.list();
 			if (submissionList != null && !submissionList.isEmpty())
@@ -471,13 +473,13 @@ public class TaxDaoImpl implements TaxDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid,
+	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(long orgLocationId, String uuid,
 			String financialYear, Paginator paginator) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from SourceleadTaxITDeclarationSubmission it";
+			String query = "from SourceleadTaxITDeclarationSubmission it where it.orgLocations.id=:orgLocationId";
 			if (!uuid.isEmpty()) {
-				query += " where it.sourceleadTaxForm.uuid=:uuid";
+				query += (query.contains("where") ? " and " : " where ") + "it.sourceleadTaxForm.uuid=:uuid";
 			}
 			if (!financialYear.isEmpty()) {
 				query += (query.contains("where") ? " and " : " where ") + "it.financialYear=:financialYear";
@@ -485,11 +487,13 @@ public class TaxDaoImpl implements TaxDao {
 			query += " order by it.id desc";
 			Query queryObj = session.createQuery(query);
 			List<String> params = new LinkedList<>();
-			if(!uuid.isEmpty()) {
+			queryObj.setLong("orgLocationId", orgLocationId);
+			params.add("long;orgLocationId;" + orgLocationId);
+			if (!uuid.isEmpty()) {
 				queryObj.setString("uuid", uuid);
 				params.add("String;uuid;" + uuid);
 			}
-			if(!financialYear.isEmpty()) {
+			if (!financialYear.isEmpty()) {
 				queryObj.setString("financialYear", financialYear);
 				params.add("String;financialYear;" + financialYear);
 			}
@@ -575,6 +579,35 @@ public class TaxDaoImpl implements TaxDao {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	
+	@Override
+	public void deleteDocumentAttachment(long attachmentId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			SourceleadTaxSubmissionDocumentAttachment documentAttachment = session
+					.get(SourceleadTaxSubmissionDocumentAttachment.class, attachmentId);
+			if (documentAttachment != null) {
+				session.delete(documentAttachment);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void deleteDocument(long documentId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			SourceleadTaxSubmissionDocument document = session
+					.get(SourceleadTaxSubmissionDocument.class, documentId);
+			if (document != null) {
+				session.delete(document);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -767,5 +800,50 @@ public class TaxDaoImpl implements TaxDao {
 			}
 			return null;
 		}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SourceleadTaxSubmissionMaster> getTaxSubmissionMasterList(Long userId, String financialYear,
+			Paginator paginator) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from SourceleadTaxSubmissionMaster submissionMaster where submissionMaster.user.id=:userId";
+			if(financialYear!=null && !financialYear.isEmpty()) {
+				query += " and submissionMaster.financialYear=:financialYear";
+			}
+			query += " order by submissionMaster.id desc";
+			List<String> params = new LinkedList<>();
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("userId", userId);
+			params.add("long;userId;" + userId);
+			if (financialYear != null && !financialYear.isEmpty()) {
+				queryObj.setString("financialYear", financialYear);
+				params.add("String;financialYear;" + financialYear);
+			}
+			if (paginator != null) {
+				queryObj.setFirstResult(paginator.getPageNo() * paginator.getPageSize());
+				queryObj.setMaxResults(paginator.getPageSize());
+			}
+			List<SourceleadTaxSubmissionMaster> taxSubmissionMasterList = queryObj.list();
+			if (paginator != null) {
+				paginator.applyPaginationData(query, session, params);
+			}
+			return taxSubmissionMasterList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public void saveTaxSubmissionMaster(SourceleadTaxSubmissionMaster sourceleadTaxSubmissionMaster) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(sourceleadTaxSubmissionMaster);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 
 }

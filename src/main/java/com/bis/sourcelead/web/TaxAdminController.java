@@ -111,7 +111,7 @@ public class TaxAdminController {
 			setYears(modelAndView, stateTaxDTO.getFinancialYear());
 			setStates(modelAndView);
 
-			modelAndView.addObject("activeTaxTab", "state");
+			modelAndView.addObject("activeTaxTab", "createStateTax");
 			modelAndView.setViewName("payroll_india/addStateTax");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -119,28 +119,6 @@ public class TaxAdminController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "/centralTax/create")
-	public ModelAndView addCentralTax(HttpServletRequest request,
-			@RequestParam(value = "centraltaxuuid", required = false) String centraltaxuuid) {
-		ModelAndView modelAndView = new ModelAndView();
-		try {
-			CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
-			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(2, false);
-			modelAndView.addObject("taxTypes", taxTypeList);
-			if (centraltaxuuid != null) {
-				centralTaxDTO = taxService.getCentralTax(centraltaxuuid);
-			}
-			modelAndView.addObject("centralTax", centralTaxDTO);
-			setYears(modelAndView, centralTaxDTO.getCtfinancialYear());
-			modelAndView.addObject("activeTaxTab", "central");
-			// Map<String, Boolean> yearList = caliculateYearList();
-			// modelAndView.addObject("yearList", yearList);
-			modelAndView.setViewName("payroll_india/addCentralTax");
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-		return modelAndView;
-	}
 
 	@RequestMapping(value = "/stateTax/add")
 	@ResponseBody
@@ -285,6 +263,29 @@ public class TaxAdminController {
 		return modelAndView;
 	}
 
+	@RequestMapping(value = "/centralTax/create")
+	public ModelAndView addCentralTax(HttpServletRequest request,
+			@RequestParam(value = "centraltaxuuid", required = false) String centraltaxuuid) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
+			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(2, false);
+			modelAndView.addObject("taxTypes", taxTypeList);
+			if (centraltaxuuid != null) {
+				centralTaxDTO = taxService.getCentralTax(centraltaxuuid);
+			}
+			modelAndView.addObject("centralTax", centralTaxDTO);
+			setYears(modelAndView, centralTaxDTO.getCtfinancialYear());
+			modelAndView.addObject("activeTaxTab", "createCentralTax");
+			// Map<String, Boolean> yearList = caliculateYearList();
+			// modelAndView.addObject("yearList", yearList);
+			modelAndView.setViewName("payroll_india/addCentralTax");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+	
 	@RequestMapping(value = "/centralTax/add", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Long> saveCentralTax(CentralTaxDTO centralTaxDTO, HttpServletRequest request) {
