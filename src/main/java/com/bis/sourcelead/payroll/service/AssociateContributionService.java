@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.service;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -15,4 +17,9 @@ public interface AssociateContributionService {
 	ResponseList<ContributionDTO> findAllContributionSummaryByUserId(Long userId, OrgLocations orgLocation);
 
 	AssociateContribution findAssociateContributionById(Long associateContributionId);
+
+	AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation);
+
+	AssociateContribution findContributionByUserIdContributionId(Long userId, Long contributionId);
+	
 }

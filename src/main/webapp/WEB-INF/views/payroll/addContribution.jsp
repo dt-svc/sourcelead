@@ -26,7 +26,7 @@ $(document).ready(function(){
       
       <div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/payrollContribution'/>"> Payroll Contribution List</a>
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Add Contribution
 		</div>
       
       
@@ -66,7 +66,7 @@ $(document).ready(function(){
             </div>
             
 			<div class="col-md-5">
-			<label class="clearfix">Description</label>
+			<label class="clearfix">Description<span class="text-danger paddingLeft">&nbsp;*</span></label>
 			<div class="clearfix">
 			<textarea rows="2" class="form-control" id="description" name="description" data-validation="validate_length length1-250">${payrollContribution.description  }</textarea>
 			</div>

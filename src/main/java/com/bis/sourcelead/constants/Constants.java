@@ -1181,6 +1181,6 @@ public class Constants {
 	public static final String HALFYEARLY = "HalfYearly";
 	public static final String QUARTERLY = "Quarterly";
 	
-
-	
+	public static final String PAYROLL_DELETE = "Delete";
+	public static final String REACTIVE = "Reactive";
 }
