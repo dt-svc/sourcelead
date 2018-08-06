@@ -15,7 +15,10 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Approval</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Add Configure</div>
+      <div class="pull-right brud-crum">
+                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Approval
+       </div>
     </section>
     
     <div class="contentareaInner-styles clearfix">

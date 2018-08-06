@@ -26,6 +26,7 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.PaymentAccountType;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -620,7 +621,7 @@ public class OrgDaoImpl implements OrgDao {
             pay.setMicrCode(account.getMicrCode());
             pay.setAccountNumber(account.getAccountNumber());
             pay.setRoutingNumber(account.getRoutingNumber());
-            
+            pay.setAssociateUser(session.get(User.class,account.getAssociateUserId()));
             pay.setDefaultAccount(account.isDefaultAccount());
             pay.setDisabled(account.isDisabled());
             session.saveOrUpdate(pay);
@@ -742,6 +743,7 @@ public class OrgDaoImpl implements OrgDao {
         pay.setDefaultAccount(p.isDefaultAccount());
         pay.setOrgId(p.getOrg().getId());
         pay.setOrgLocationId(p.getOrgLocation().getId());
+        pay.setAssociateUserId(p.getAssociateUser().getId());
         pay.setFirstName(p.getFirstName());
         pay.setBankName(p.getBankName());
         pay.setLastName(p.getLastName());
@@ -776,5 +778,29 @@ public class OrgDaoImpl implements OrgDao {
         return 0;
 	}
 
+	@Override
+	 @Transactional
+	public List<PaymentAccountDTO> getPaymentAccountListByUserId(long userId, boolean onlyEnabledAccounts) {
+		List<PaymentAccountDTO> resultList = new ArrayList<>();
+		try {
+            Session session = this.sessionFactory.getCurrentSession();
+            String query = "from PaymentAccount p where p.associateUser.id = :userId";
+            if(onlyEnabledAccounts) {
+            	query += " and p.disabled = 0";
+            }
+            Query queryObj = session.createQuery(query);
+            queryObj.setLong("userId", userId);
+            List<PaymentAccount> list = queryObj.list();
+            for (PaymentAccount p : list) {
+                PaymentAccountDTO pay = new PaymentAccountDTO();
+                applyEntityDataToDTO(p, pay);
+                resultList.add(pay);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return resultList;
+	}
+	 
 }
 

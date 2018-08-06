@@ -23,7 +23,10 @@ $(document).ready(function(){
    <i class="fa fa-check-circle"></i><span id="deductionDeleteMsgDiv"></span>
  </div>
  
-  <div class="pull-right brud-crum">Home &raquo; Payroll Deduction</div>
+         <div class="pull-right brud-crum">
+                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Payroll Deduction
+				</div>
 </section>
  
 
@@ -153,7 +156,11 @@ function deductionTypepagination(url){
                 		var result = "";
                 		result = result + '<td><div class="tbldata-dotdot_50">';
                 		result = result + '<a href="'+sourceleadUrl+'/editDeductionType?deductionUUID='+opt.deductionUUID+'" class="text-primary"><i class="fa fa-pencil-square-o mr5"></i></a>';
-                		result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash" onclick="deleteDeductionType('+opt.id+');"></i></a>';
+                		if(opt.status == 1){
+                			result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash" onclick="deleteDeductionType('+opt.id+');"></i></a>';
+                		}else{
+                			result = result + '<span title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick = "reactiveDeduction('+opt.id+');"></i></span>';
+                		}
                 		result = result + '</div>';
                 		result = result + '</td>';
     	              return result;
@@ -211,7 +218,7 @@ function deleteDeductionPopUp(){
 function deleteSelectedDeductionType(id){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/deleteDeductionType?${_csrf.parameterName}=${_csrf.token}&id="+id, 	   
+	    url: sourceleadUrl+"/deleteDeductionType?${_csrf.parameterName}=${_csrf.token}&id="+id+"&changeStatus=DELETE", 	   
 		    success: function(data) {
 		    	if(data == true){
 		    		getAllDeductionType();
@@ -232,4 +239,18 @@ function deleteSelectedDeductionType(id){
         $('#selector2').delay(2000).fadeOut('slow');
 	}
 </script>
+
+ <script>
+function reactiveDeduction(id){
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/deleteDeductionType?${_csrf.parameterName}=${_csrf.token}&id="+id+"&changeStatus=REACTIVE", 	   
+		    success: function(data) {
+		    	if(data == true){
+		    		getAllDeductionType();
+		    	}
+		    },
+     });
+}
+</script> 
 <jsp:include page="../masterFooter.jsp" />

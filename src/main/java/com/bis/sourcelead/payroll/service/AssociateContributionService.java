@@ -18,6 +18,8 @@ public interface AssociateContributionService {
 
 	AssociateContribution findAssociateContributionById(Long associateContributionId);
 
+	AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation);
+
 	AssociateContribution findContributionByUserIdContributionId(Long userId, Long contributionId);
 	
 }
