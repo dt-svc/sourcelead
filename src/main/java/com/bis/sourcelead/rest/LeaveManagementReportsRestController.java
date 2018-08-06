@@ -162,10 +162,8 @@ public class LeaveManagementReportsRestController {
 		model.setViewName("reports/leaveReport");
 		return model;
 	}
+
 	
-/*
-	@RequestMapping(value = "/getDaywiseLeaveReportList", method = RequestMethod.GET)
-=======
 	@RequestMapping(value="/leaveReportsList",method= RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<LeaveReportView> getDayEntriesList(HrLeaveReportDTO hrLeaveReportDTO,HttpServletRequest request) throws Exception {
@@ -206,7 +204,54 @@ public class LeaveManagementReportsRestController {
 			
 			return leaveReportsList;	
 	}
-*/
+	
+	@RequestMapping(value = "/getDaywiseLeaveReportList", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<LeaveReportView> getDaywiseLeaveReportList(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		LeaveReportView leaveReportView = new LeaveReportView();
+		
+		ResponseList<LeaveReportView> leaveReportsList=null;
+		try{
+		String[] tableColumns = {"name", "userDeptName", "employmentType", "userRoleName","leaveTypeName", "leaveTypeBillable", "duration", "fromDate", "toDate","reason","approver","status"};
+
+		   int sortColumnIndex = 1; //by default sorting using updated date
+		   String sortColumnOrder = "desc"; //by default descending order
+				if(dayWiseLeaveReportDTO.getOrder() != null && !dayWiseLeaveReportDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(dayWiseLeaveReportDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = dayWiseLeaveReportDTO.getOrder().get(0).get("dir");
+				}
+				dayWiseLeaveReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				dayWiseLeaveReportDTO.setSortOrder(sortColumnOrder);
+			
+				
+		leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId());
+		List<LeaveReportView> list = leaveReportsList.getData();
+        for(LeaveReportView lrv : list){
+        	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
+    		 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getToDate());
+        }
+    	leaveReportsList.getData().stream().forEach(u -> {
+ 		   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getFromDate()));
+ 		   u.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getToDate()));
+ 		   u.setAppliedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
+ 		   u.setApprovedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
+ 		   
+ 	   });
+		
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return leaveReportsList;
+		
+		
+}
+
 	
 	@RequestMapping(value="/getLeaveBalanceReportList",method = RequestMethod.GET)
 	@ResponseBody

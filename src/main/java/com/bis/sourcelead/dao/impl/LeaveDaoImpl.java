@@ -1117,7 +1117,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		java.sql.Date startDateSqlDate = null;
 		java.sql.Date endDateSqlDate = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		if(hrLeaveReportDTO.getStartDate() != null && hrLeaveReportDTO.getEndDate() != null){
+		if(hrLeaveReportDTO.getStartDate() != null && StringUtils.isNotEmpty(hrLeaveReportDTO.getStartDate()) && hrLeaveReportDTO.getEndDate() != null && StringUtils.isNotEmpty(hrLeaveReportDTO.getEndDate())){
 		startDate=format.parse(hrLeaveReportDTO.getStartDate());
 		endDate=format.parse(hrLeaveReportDTO.getEndDate());
 		startDate = commonUtil.getOrgLocationCurrentDate(orgLoc.getDateFormat(), startDate);
