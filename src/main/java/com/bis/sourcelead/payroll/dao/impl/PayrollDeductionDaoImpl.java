@@ -66,8 +66,8 @@ public class PayrollDeductionDaoImpl implements PayrollDeductionDao{
 			qry = " order by payrollDed." + payrollDeductionDTO.getSortColumn() + " "
 					+ payrollDeductionDTO.getSortOrder();
 		}
-		String query = "from PayrollDeduction payrollDed where payrollDed.orgLocationId.id =:orgLocationId and payrollDed.status = 1";
-		String countQuery = "from PayrollDeduction payrollDed where payrollDed.orgLocationId.id =:orgLocationId and payrollDed.status = 1";
+		String query = "from PayrollDeduction payrollDed where payrollDed.orgLocationId.id =:orgLocationId";
+		String countQuery = "from PayrollDeduction payrollDed where payrollDed.orgLocationId.id =:orgLocationId";
 		StringBuilder searchQuery = new StringBuilder();
 		if(StringUtils.isNoneBlank(payrollDeductionDTO.getSearchValue())) {
 			searchQuery.append(" and payrollDed.payrollDeductionType like '%" + payrollDeductionDTO.getSearchValue() + "%' ")
@@ -112,7 +112,7 @@ public class PayrollDeductionDaoImpl implements PayrollDeductionDao{
 		List<PayrollDeduction> res = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from PayrollDeduction payrollDed where payrollDed.orgLocationId.id =:orgLocationId";
+			String query = "from PayrollDeduction payrollDed where payrollDed.orgLocationId.id =:orgLocationId and payrollDed.status = 1";
 			res =  session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
 			return res;
 		} catch (Exception e) {
@@ -174,4 +174,6 @@ public class PayrollDeductionDaoImpl implements PayrollDeductionDao{
 		}
 		return payrollDeduction;
 	}
+
+	
 }

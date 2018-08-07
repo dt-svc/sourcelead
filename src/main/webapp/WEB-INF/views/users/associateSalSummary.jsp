@@ -372,8 +372,17 @@ function salaryHistory(id) {
 					result = result + '<td>'+opt.annualSalary+'</td>';
 					result = result + '<td>'+opt.grossSalary+'</td>';
 					result = result + '<td>'+opt.hourlyRate+'</td>';
-					result = result + '<td>'+opt.effectiveDate+'</td>';
-					result = result + '<td>'+opt.increasePercentage+'%</td>';
+					if(opt.effectiveDate != null && opt.effectiveDate !='' && opt.effectiveDate !='undefined'){
+						result = result + '<td>'+opt.effectiveDate+'</td>';
+					}else{
+						result = result + '<td>0</td>';
+					}
+					if(opt.increasePercentage != null && opt.increasePercentage != '' && opt.increasePercentage != 'undefined'){
+						result = result + '<td>'+opt.increasePercentage+'%</td>';
+					}else{
+						result = result + '<td>0%</td>';
+					}
+					
 					result = result + '</tr>';
              			
              		

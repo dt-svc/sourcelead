@@ -579,6 +579,9 @@ public class Constants {
 	public static final String[] DAILY_WISE_LEAVE_REPORT_HEADERS = { "Emp Name", "Emp Type", "Departement",
 			"Role", "Leave Type", "Type", "Duration", "From Date",
 			"To Date", "Applied On", "Reason", "Status", "Approver", "Approved On" };
+	public static final String[] LEAVE_REPORT_HEADERS = { "Employee Id", "Emp Name", "Departement", "Leave Type",
+			"Reason", "Type", "From Date", "To Date", "Applied On",
+			"Status", "Approver", "Approved On" };
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",
 			"Rate", "Vendor", "Vendor Contact", "Is Favourite"};
@@ -1178,6 +1181,6 @@ public class Constants {
 	public static final String HALFYEARLY = "HalfYearly";
 	public static final String QUARTERLY = "Quarterly";
 	
-
-	
+	public static final String PAYROLL_DELETE = "Delete";
+	public static final String REACTIVE = "Reactive";
 }
