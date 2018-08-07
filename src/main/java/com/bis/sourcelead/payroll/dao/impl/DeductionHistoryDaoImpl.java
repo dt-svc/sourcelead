@@ -50,7 +50,6 @@ private static final Logger logger = LoggerFactory.getLogger(DeductionHistoryDao
 			.append(" AND assoDed.DED_STATUS = 'DEDUCTED' ")
 			.append(" AND dedHis.PAYROLL_ID = :payrollId");
 			Query queryObj = session.createSQLQuery(sb.toString());
-			System.out.println(sb.toString());
 			queryObj.setLong("payrollId", payrollId);
 			queryObj.setResultTransformer(Transformers.aliasToBean(DeductionHistoryDTO.class));
 			dedHis = queryObj.list();
@@ -69,7 +68,7 @@ private static final Logger logger = LoggerFactory.getLogger(DeductionHistoryDao
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder sb = new StringBuilder();
-			sb.append("SELECT con.ID as id,")
+			sb.append("SELECT con.ID as id,") 
 			.append("con.USER_ID as userId,")
 			.append("con.CONTRIBUTION_TYPE_ID as contributionId,")
 			.append("con.CONTRIBUTION_METHOD as contributionMethod,")
