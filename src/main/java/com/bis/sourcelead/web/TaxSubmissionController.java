@@ -57,20 +57,6 @@ public class TaxSubmissionController {
 
 	// forms tab org/user
 
-//	private void setYears(ModelAndView modelAndView, int selectedYear) {
-//		Map<String, Boolean> yearList = new LinkedHashMap<>();
-//		Calendar c = Calendar.getInstance();
-//		c.roll(Calendar.YEAR, -2);
-//		for (int i = 0; i < 4; i++) {
-//			Calendar c1 = Calendar.getInstance();
-//			boolean isCurrent = selectedYear > 0 ? selectedYear == c.get(Calendar.YEAR)
-//					: c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
-//			yearList.put(c.get(Calendar.YEAR) + "", isCurrent);
-//			c.roll(Calendar.YEAR, 1);
-//		}
-//		modelAndView.addObject("yearList", yearList);
-//	}
-
 	@RequestMapping(value = "/forms/list")
 	public ModelAndView getForms(HttpServletRequest request, @RequestParam(defaultValue = "") String financialYear,
 			@RequestParam(defaultValue = "") String uuid, Paginator paginator) {
@@ -92,7 +78,6 @@ public class TaxSubmissionController {
 						modelAndView.setViewName("payroll_india/org/form_list_by_formType");
 					}
 				} else {
-					// setYears(modelAndView, year);
 					TaxAdminController.setYears(modelAndView, financialYear);
 					String year = "";
 					if (financialYear.isEmpty()) {
@@ -155,7 +140,6 @@ public class TaxSubmissionController {
 			if (user != null) {
 				SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
 				if (sourceleadTaxFormDTO != null) {
-					// setYears(modelAndView, 0);
 					TaxAdminController.setYears(modelAndView, null);
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 							"orgLocations");
@@ -174,8 +158,6 @@ public class TaxSubmissionController {
 								"payroll_india/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_")
 										+ "_submitted_form");
 					} else {
-						// modelAndView.addObject("activeFormTabUUID", uuid);
-						// setYears(modelAndView, 0);
 						modelAndView.addObject("form", sourceleadTaxFormDTO);
 						modelAndView.setViewName("payroll_india/org/"
 								+ sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
@@ -234,8 +216,6 @@ public class TaxSubmissionController {
 			if (user != null) {
 				itDeclarationSubmissionDTO.setStatus(1);
 				response = taxService.submitITDeclaration(itDeclarationSubmissionDTO, user, orgLocations);
-				// response.setObject(1L);
-//				response.setResponse(Result.SUCCESS.name());
 				if (response.getResponse().equals(Result.SUCCESS.name())) {
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
