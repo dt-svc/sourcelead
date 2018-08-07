@@ -18,12 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -133,6 +135,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	@Autowired
 	DeductionHistoryService deductionHistoryService;
 	
+	@Autowired
+	private AssociateSalaryDao associateSalaryDao;
+	
 	
 	 
 	@Override
@@ -229,11 +234,14 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				BigDecimal postTax = dedTaxes[1];
 				BigDecimal preContriSum = contributionTaxes[0];
 				BigDecimal postContriSum = contributionTaxes[1];
+				
+//				BigDecimal payItemSum = getPayItemSum(orgLocation,assoSal.getAssociatePayItem(),paySheetFreq,freqStartDate, freqEndDate);
+				
 				employeePayroll.setPreTaxDeduction(preTax);
 				employeePayroll.setPostTaxDeduction(postTax);
 				employeePayroll.setPreTaxContribution(postContriSum);
 				employeePayroll.setPostTaxContribution(postContriSum);
-				BigDecimal grossAmount = amount.subtract(preTax).add(preContriSum);
+				BigDecimal grossAmount = (amount.subtract(preTax)).add(preContriSum);
 				employeePayroll.setGrossPay(grossAmount);
 				PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(user,totalHours,grossAmount,invoiceFrequency,associateTaxView,paySheetFreq.getPayCheckDate());
 				STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
@@ -242,7 +250,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				employeePayroll.setTaxes(taxes);
 				logger.info("*** Taxes :"+taxes);
 				BigDecimal totalPay = grossAmount.subtract(taxes);
-				BigDecimal netPay = totalPay.subtract(postTax).add(postContriSum);
+				BigDecimal netPay = (totalPay.subtract(postTax)).add(postContriSum);
 				logger.info("*** Net Pay :"+netPay);
 				employeePayroll.setNetPay(netPay);
 				Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getUserId().getId(),orgLocation.getId());
@@ -271,6 +279,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		
 	}
 	
+
 
 
 	/**
@@ -420,6 +429,48 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		return dedDto;
 	}
 
+	
+	/**
+	 * Calculation payItemSums
+	 * 
+	 * @param orgLocation
+	 * @param associatePayItem
+	 * @param paySheet
+	 * @param freqStartDate
+	 * @param freqEndDate
+	 * @return BigDecimal
+	 */
+	private BigDecimal getPayItemSum(OrgLocations orgLocation, Set<AssociatePayItem> associatePayItem, PaysheetFrequency paySheet, Date freqStartDate, Date freqEndDate)
+	{
+		BigDecimal payItemSum = BigDecimal.ZERO;
+		if(associatePayItem != null && associatePayItem.size() >0) {
+			for (AssociatePayItem payItem : associatePayItem) {
+				boolean schedulePay = payrollUtil.findPayItemSchedulePay(payItem, paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
+				if (!schedulePay) {
+					payItemSum = payItem.getPayItemAmount();
+					Date[] payItemDate = null;
+					if (StringUtils.isNotBlank(payItem.getPayitemStatus())
+							&& !PayrollConstant.EVERY_PAY.equalsIgnoreCase(payItem.getPayItemSchedule())) {
+						payItemDate = payrollUtil.getDeductionDates(payItem.getPayitemEndDate(), payItem.getPayItemSchedule());
+					}
+					else {
+						payItem.setPayitemStatus(PayrollConstant.ADDED);
+						payItemDate = payrollUtil.getDeductionDates(paySheet.getFrequencyStartDate(), payItem.getPayItemSchedule());
+					}
+					payItem.setPayitemStartDate(payItemDate[0]);
+					if (payItemDate[0] != null) {
+						payItem.setPayitemEndDate(payItemDate[1]);
+					}
+					else {
+						payItem.setPayitemEndDate(paySheet.getFrequencyEndDate());
+					}
+					AssociatePayItem assPayItem = associateSalaryDao.saveUpdatedPayItem(payItem);
+				}
+			}
+		}
+	
+		return payItemSum;
+	}
 	/**
 	 * populating deduction histroy
 	 * 
@@ -742,7 +793,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			} 
 			if(contributionHistory != null) {
 				payrollDTO.setContribution(contributionHistory);
-				double contributionTotal = contributionHistory.stream().mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
+				double contributionTotal = contributionHistory.stream().mapToDouble(con->con.getAmount().doubleValue()).sum();
 				payrollDTO.setContributionTotal(BigDecimal.valueOf(contributionTotal));
 			}
 			BigDecimal piTotal = BigDecimal.ZERO;

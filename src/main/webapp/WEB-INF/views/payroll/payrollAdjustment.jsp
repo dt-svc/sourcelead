@@ -245,7 +245,7 @@
 		            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
 		            $("#totalHours").text(json.totalHours.toFixed(2));
 		            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
-		        	
+		        	alert(json.federal);
 		            $("#federal").text(json.federal);
 		            $("#medicare").text(json.medicare);
 		            $("#fica").text(json.fica);
