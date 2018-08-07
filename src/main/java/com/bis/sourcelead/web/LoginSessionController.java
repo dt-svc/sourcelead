@@ -231,6 +231,7 @@ public class LoginSessionController {
 		Integer billingTabsCount = 0;
 		Integer expensesTabCount = 0;
 		Integer resourcesTabCount = 0;
+		Integer paryrollTabCount = 0;
 		
 		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
 		if(userLoginSession != null){
@@ -280,6 +281,10 @@ public class LoginSessionController {
 					if(tabs.getTabName().equalsIgnoreCase("Reports")){
 						SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "Y");
 					}
+					
+					if(tabs.getTabName().equalsIgnoreCase("Run Payroll") || tabs.getTabName().equalsIgnoreCase("My Payroll")){
+						paryrollTabCount = paryrollTabCount+1;
+					}
 				}
 				
 			}
@@ -314,6 +319,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "resourcesTabCount", resourcesTabCount);
+			SourceLeadSessionManager.setSessionAttribute(request, "paryrollTabCount", paryrollTabCount);
 			
 			Candidate candidate = candidateService.getCandidateByConsultantUserId(userRole.getUser().getId(), orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
