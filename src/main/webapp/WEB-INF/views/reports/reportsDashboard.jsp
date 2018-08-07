@@ -194,7 +194,8 @@
 				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
 				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
-				<li><a href="leaveReport">Leave Report</a></li>
+				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
+				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
 <!-- 				<li><a href="leaveBalancesReport">Leave Balances Report</a></li> -->
 				<!-- <li><a href="#">Employment Verficication</a></li>
 				<li><a href="#">Wage and Tax</a></li>
@@ -399,8 +400,8 @@
 				
 				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
 				
-				<li><a href="leaveReport">Leave Report</a></li>
-				
+				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
+				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 

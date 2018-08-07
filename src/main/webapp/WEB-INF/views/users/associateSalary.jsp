@@ -46,25 +46,25 @@ $(document).ready(function(){
                   <div class="col-md-5">
                     <label>Standard Hours</label>
                     <div>
-                      <input type="text" class="form-control"  id="standardHours" name="standardHours" onblur="calculateSal();">
+                      <input type="text" class="form-control"  id="standardHours" name="standardHours" data-validation="required validate_float" field-name="Standard Hours" onblur="calculateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
                     <label>Annual Salary</label>
                     <div>
-                      <input type="text" class="form-control" id="annualSal" name="annualSal" data-validation="validate_int" onblur="calculateSal();">
+                      <input type="text" class="form-control" id="annualSal" name="annualSal" data-validation="required validate_float" field-name="Annual Salary" onblur="calculateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
                     <label>Pay Per Salary</label>
                     <div>
-                      <input type="text" class="form-control" id="perPaySal" name="perPaySal" data-validation="validate_int" onblur = "calculatePayPerSal();">
+                      <input type="text" class="form-control" id="perPaySal" name="perPaySal" data-validation="required validate_float" field-name="Pay Per Salary" onblur = "calculatePayPerSal();">
                     </div>
                   </div>  
                    <div class="col-md-5">
                     <label>Hourly Rate</label>
                     <div>
-                      <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" onblur = "calculateHourlyRateSal();">
+                      <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" data-validation="required validate_float" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
