@@ -42,8 +42,9 @@ public class LeaveReportView {
 	private Long leaveTypeId;
 	@Column(name = "LEAVE_TYPE_NAME")
 	private String leaveTypeName;
-	@Column(name = "APPROVER_NAME", columnDefinition = "TEXT default NULL")
-	private String approver;
+
+	@Column(name = "APPROVER_NAME" , columnDefinition = "TEXT default NULL")
+    private String approver;
 	@Column(name = "LEAVE_TYPE_BILLABLE", columnDefinition = "TEXT default NULL")
 	private String leaveTypeBillable;
 	@Column(name = "DURATION", columnDefinition = "TEXT default NULL")
