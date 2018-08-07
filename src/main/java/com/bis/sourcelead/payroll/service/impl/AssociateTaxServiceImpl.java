@@ -46,7 +46,7 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 		try {
 			AssociateTax associateTax = null;
 			if (Validator.validate(associateTaxDTO)) {
-				if(associateTaxDTO.getId() != 0) {
+				if(associateTaxDTO.getId() != null && associateTaxDTO.getId() != 0) {
 					associateTax = associateTaxDao.findAssociateTaxById(associateTaxDTO.getId());
 				}else {
 					associateTax = new AssociateTax();
