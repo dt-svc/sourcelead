@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -49,6 +51,9 @@ public class TaxSubmissionController {
 
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	// forms tab org/user
 
@@ -72,6 +77,7 @@ public class TaxSubmissionController {
 		ModelAndView modelAndView = new ModelAndView();
 		
 		try {
+			commonUtil.highLightMenu(Constants.FORMS, request);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");

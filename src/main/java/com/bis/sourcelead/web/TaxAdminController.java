@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -40,6 +41,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -59,6 +61,9 @@ public class TaxAdminController {
 
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	public static void setYears(ModelAndView modelAndView, String selectedYear) {
 		Map<String, Boolean> yearList = new LinkedHashMap<>();
@@ -88,6 +93,7 @@ public class TaxAdminController {
 	public ModelAndView stateTaxList(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
+			commonUtil.highLightMenu(Constants.TAXES, request);
 			setYears(modelAndView, null);
 			setStates(modelAndView);
 			modelAndView.addObject("activeTaxTab", "state");
