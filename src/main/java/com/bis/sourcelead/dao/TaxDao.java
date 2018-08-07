@@ -18,6 +18,7 @@ import com.bis.sourcelead.entity.SourceleadTaxSubmissionMaster;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
+import com.bis.sourcelead.entity.User;
 
 public interface TaxDao {
 
@@ -119,10 +120,16 @@ public interface TaxDao {
 
 	public long changeITDeclarationSubmissionStatus(long id, int status);
 
+
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionDetails(long formId);
+
+	public User getEmployeeDetails(Long id);
+
 	public List<SourceleadTaxSubmissionMaster> getTaxSubmissionMasterList(Long userId, String financialYear,
 			Paginator paginator);
 
 	public void saveTaxSubmissionMaster(SourceleadTaxSubmissionMaster sourceleadTaxSubmissionMaster);
+
 
 
 }

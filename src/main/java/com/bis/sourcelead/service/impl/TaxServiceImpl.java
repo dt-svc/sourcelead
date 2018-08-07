@@ -1,7 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,11 +16,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
@@ -35,6 +49,7 @@ import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.CentralTax;
+import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxChallan;
@@ -58,6 +73,20 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.itextpdf.layout.property.Underline;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.html.WebColors;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 @Service
 public class TaxServiceImpl implements TaxService {
@@ -70,6 +99,9 @@ public class TaxServiceImpl implements TaxService {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	public List<SourceleadTaxType> getAllTaxesByType(long type, boolean includeInactive) {
@@ -1231,6 +1263,361 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionDetails(long formId) {
+		return taxDao.getITDeclarationSubmissionDetails(formId);
+	}
+
+	@Override
+	public User getEmployeeDetails(Long id) {
+		return taxDao.getEmployeeDetails(id);
+	}
+
+	
+	@Override
+	public File exportItDeclarationSubmissionPdf(SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, User loginUser,OrgLocations orgLoc,User user) {
+		String FONTB = "/fonts/OpenSans-Bold.ttf";
+		String FONT = "/fonts/OpenSans-Regular.ttf";
+		BaseFont bf = null,bfb = null;
+		StringBuilder fileSB = new StringBuilder();
+    	File file = null;
+		try {
+			bf = BaseFont.createFont(FONT, BaseFont.WINANSI, BaseFont.EMBEDDED);
+			bfb = BaseFont.createFont(FONTB, BaseFont.WINANSI, BaseFont.EMBEDDED);
+		    } catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+		Font font10 = new Font(bf,10);
+		Font font10b = new Font(bfb,10);
+		Font font10B_U = new Font(bf,10, Font.BOLD | Font.UNDERLINE);
+		Font font12 = new Font(bf,12);
+		Font font12B_U = new Font(bf,12, Font.BOLD | Font.UNDERLINE);
+		Font font12b = new Font(bfb,12);
+		
+        try {
+        	String[] headers = Constants.IT_DECLARATION_SUBMISSION_FORM;
+        	String paragraphData = Constants.IT_DECLARATION_FORM_PARAGRAPHDATA;
+        	Document document = new Document(PageSize.LETTER.rotate());
+        	String home = System.getProperty("user.home");
+//        	File file = new File(home+"/Downloads/" + fileName + ".txt"); 
+        	file = new File(home+"/Downloads/" + fileSB.append(Constants.IT_DECLARATION_FORM).toString()+".pdf");
+    		file.setReadable(true);
+    		PdfWriter.getInstance(document, new FileOutputStream(file));
+			document.open();
+			Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL);
+
+			BaseColor myBordColor = WebColors.getRGBColor("#000000");
+			boldFont.setColor(myBordColor);
+	          PdfPTable table = new PdfPTable(2);
+	          table = new PdfPTable(2);
+	          table.setWidthPercentage(80);
+	          table.setSpacingBefore(10);
+	          table.setSpacingAfter(10);
+	          table.setWidths(new int[]{2,5});
+	          
+	        // table.addCell(getCell("",Element.ALIGN_LEFT,font12b));
+	          table.addCell(getCell("INVESTMENT DECLARATION FORM FOR THE YEAR OF"+" "+(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().toString()),Element.ALIGN_CENTER,font12B_U,2, 36f));
+	          
+	          table.addCell(getCell("Employee Code",Element.ALIGN_LEFT,font10b,1 ,18f));
+	          table.addCell(getCell("M123M",Element.ALIGN_LEFT,font10b,1 ,18f));
+	          table.addCell(getCell("Employee Name",Element.ALIGN_LEFT,font10b,1 ,18f));
+	          table.addCell(getCell(user.getFullName(),Element.ALIGN_LEFT,font10b,1 ,18f));
+	          table.addCell(getCell("Employee Designation ",Element.ALIGN_LEFT,font10b,1 ,18f));
+	          table.addCell(getCell(user.getDateOfJoin(),Element.ALIGN_LEFT,font10b,1 ,18f));
+	          table.addCell(getCell("Employee PAN ",Element.ALIGN_LEFT,font10b,1 ,18f));
+	          table.addCell(getCell("CQDP6563M ",Element.ALIGN_LEFT,font10b,1 ,18f));
+	          table.addCell(getCell("Employee DOB ",Element.ALIGN_LEFT,font10b,1 ,18f));
+	          table.addCell(getCell(user.getDateOfJoin(),Element.ALIGN_LEFT,font10b,1 ,18f));
+	          document.add(table);
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph(paragraphData+" "+(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().toString())+" "+"starting from"));
+	          document.add(new Paragraph(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear()));
+	          document.add(new Paragraph("  "));
+	          PdfPTable table2 = new PdfPTable(headers.length);
+				PdfPCell cell1 = new PdfPCell();
+				cell1.setColspan(4);
+				headerCellStyle(cell1);
+				table2.setWidthPercentage(80);
+				table2.setSpacingBefore(10);
+		        table2.setSpacingAfter(10);
+				table2.setWidths(new int[] {4,2,1,1});
+				table2.addCell(cell1);
+	          for (int i = 0; i < headers.length; i++) {
+					String header = headers[i];
+					PdfPCell cell = new PdfPCell();
+					cell.setGrayFill(0.9f);
+					cell.setPhrase(new Phrase(header, new Font(FontFamily.HELVETICA, 11, Font.BOLD)));
+					BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+					cell.setBackgroundColor(myColor);
+					table2.addCell(cell);
+				}
+	  		table.completeRow();
+	  		List<String[]> itDeclaratiopnItemList = new ArrayList<>();
+	  		JSONArray submissionItemsArray = new JSONArray(sourceleadTaxITDeclarationSubmissionDetails.getSubmissionItems());
+			if (submissionItemsArray != null) {
+				for (int i = 0; i < submissionItemsArray.length(); i++) {
+					JSONObject jsonObject = submissionItemsArray.getJSONObject(i);
+					String taxSectionName = jsonObject.getString("taxSectionName");
+					JSONArray itemsArray = jsonObject.getJSONArray("items");
+					String[] sectionNameArray = new String[1];
+					if (itemsArray != null) {
+						sectionNameArray[0] = taxSectionName;
+						itDeclaratiopnItemList.add(sectionNameArray);
+						for (int k = 0; k < itemsArray.length(); k++) {
+							
+							JSONObject itemObject = itemsArray.getJSONObject(k);
+							itDeclaratiopnItemList
+									.add(prepareItemListToArray(itemObject, headers, orgLoc, loginUser, user));
+						}
+				}
+			}
+		       for (String[] itemArray: itDeclaratiopnItemList) {
+	                for (int i = 0; i < itemArray.length; i++) {
+	                    String datum = itemArray[i];
+	                    PdfPCell cell = new PdfPCell();
+	                    if(itemArray.length == 1) {
+	                    	cell.setColspan(1);
+	                    	cell.setRowspan(1);
+	                    	cell.setPhrase(new Phrase(datum, new Font(font10B_U)));
+	                    } else {	                    	
+	                    	cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 9, Font.NORMAL)));
+	                    }
+	                    table2.addCell(cell);
+	                }
+	                table2.completeRow();
+	            }
+	          document.add(table2);
+	          document.add(new Paragraph("  "));
+	          Font font2 = new Font(Font.FontFamily.TIMES_ROMAN,12,Font.NORMAL | Font.UNDERLINE);
+	          document.add(new Paragraph("Income from Previous Employment:-",font2));
+	          
+	          // Below commented code is for preparing dynamic data
+	          
+	        /*  com.itextpdf.text.List orderedList = new com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
+		  
+	            StringBuilder st1=new StringBuilder();
+	            StringBuilder st2=new StringBuilder();
+	            StringBuilder st3=new StringBuilder();
+	            StringBuilder st4=new StringBuilder();
+	            
+		        orderedList.add(new ListItem(st1.append("Income after exemptions :").append(   dynamic        )));
+		        
+		        orderedList.add(new ListItem(st2.append("Provident found :").append()));
+		        
+	            orderedList.add(new ListItem(st3.append("Professional tax:").append()));	
+		    	  
+	            orderedList.add(new ListItem(st4.append("tax Deducted at source:").append()));  
+	            document.add(orderedList);*/
+	          
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("Income after exemptions:-",font10b));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("Provident found:-",font10b));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("Professional tax:-",font10b));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("tax Deducted at source:-",font10b));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("  "));
+	          Font font3 = new Font(Font.FontFamily.TIMES_ROMAN,12,Font.NORMAL | Font.UNDERLINE);
+	          document.add(new Paragraph("Income from Other Sources:-",font3));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("1.  "));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("2.  "));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("Declaration"));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("I here by declare that the information that given above is correct and true in all respect. I also undertake to indemnify to company for any loss/liability may arrise in the event of the above information being incorrect.",font10b));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("Date :-",font10b));
+	          document.add(new Paragraph("  "));
+	          document.add(new Paragraph("Place : -",font10b));
+	          document.close();
+        } }catch (Exception e) {
+            e.printStackTrace();
+        }
+		return file;
+
+	}
+	
+	private PdfPCell getCell(String value, int alignLeft, Font font,int colSpan,float cellheight)
+	{
+		PdfPCell cell = new PdfPCell();
+		cell.setUseAscender(true);
+		cell.setUseAscender(true);
+		Paragraph p = new Paragraph(value,font);
+		p.setAlignment(alignLeft);
+		cell.addElement(p);
+		cell.setColspan(colSpan);
+		cell.setMinimumHeight(cellheight);
+		return cell;
+
+	}
+
+	private static void headerCellStyle(PdfPCell cell) {
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setPaddingTop(0f);
+		cell.setPaddingBottom(7f);
+		cell.setBackgroundColor(new BaseColor(0, 121, 182));
+		cell.setBorder(0);
+		cell.setBorderWidthBottom(2f);
+	}
+	
+	private String[] prepareItemListToArray(JSONObject itemObject, String[] headers,  OrgLocations orgLoc, User loginUser,User user) throws Exception {
+		String itemArray[] = new String[headers.length];
+		itemArray[0] = itemObject.getString("name");
+		itemArray[1] = itemObject.getString("description");
+		itemArray[2] = itemObject.getDouble("maxLimit") + "";
+		itemArray[3] = itemObject.getDouble("amount") + "";
+		return itemArray;
+	}
+
+	@Override
+	public File exportItDeclarationSubmissionExcel(SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, User loginUser,OrgLocations orgLoc, User user) throws Exception {
+	     	File file = null;
+	    	Workbook createExcelworkbook = new XSSFWorkbook();
+			Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrgLocationName() + "_"+ "ItDeclarationForm");
+			Row writeRow = null;
+			createExcelsheet = getItDeclarationSubmissionExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,sourceleadTaxITDeclarationSubmissionDetails,orgLoc,user);
+			int row = 8;
+				
+		  		JSONArray submissionItemsArray = new JSONArray(sourceleadTaxITDeclarationSubmissionDetails.getSubmissionItems());
+				if (submissionItemsArray != null) {
+					for (int i = 0; i < submissionItemsArray.length(); i++) {
+						JSONObject jsonObject = submissionItemsArray.getJSONObject(i);
+						String taxSectionName = jsonObject.getString("taxSectionName");
+						JSONArray itemsArray = jsonObject.getJSONArray("items");
+						
+						if (itemsArray != null) {
+							writeRow = createExcelsheet.createRow(row++);
+							Cell cell =  writeRow.createCell(0);
+							cell.setCellValue(taxSectionName);
+							CellStyle cellStyle = createExcelworkbook.createCellStyle();
+							org.apache.poi.ss.usermodel.Font font  = createExcelworkbook.createFont();
+							cellStyle.setFont(font);
+							font.setBoldweight(org.apache.poi.ss.usermodel.Font.BOLDWEIGHT_BOLD);
+							cell.setCellStyle(cellStyle);
+							for (int k = 0; k < itemsArray.length(); k++) {
+								JSONObject itemObject = itemsArray.getJSONObject(k);
+								writeRow = createExcelsheet.createRow(row++);
+								createExcelsheet = createXlsSheet(createExcelsheet, writeRow, itemObject,user);
+							}
+							writeRow.createCell(0).setCellValue(" ");
+					}
+				}
+				
+				String home = System.getProperty("user.home");
+                StringBuilder fileSB = null;
+              file = File.createTempFile("ItdeclarationForm ",".xls");
+            	//file = new File(home+"/Downloads/" + fileSB.append(Constants.IT_DECLARATION_FORM).toString()+".xls");
+    		   file.setReadable(true);
+				FileOutputStream fos = new FileOutputStream(file);
+				try {
+					createExcelworkbook.write(fos);
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return file;
+			}
+			return file;
+	}
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, JSONObject itemObject, User user) throws JSONException {
+
+	String itemArray[] = new String[4];
+		writeRow.createCell(0).setCellValue(itemObject.getString("name"));
+		writeRow.createCell(1).setCellValue(itemObject.getString("description"));
+		writeRow.createCell(2).setCellValue( itemObject.getDouble("maxLimit"));
+		writeRow.createCell(3).setCellValue(itemObject.getDouble("amount"));
+		return createExcelsheet;
+	}
+
+	private Sheet getItDeclarationSubmissionExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow,Workbook createExcelworkbook,
+			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, OrgLocations orgLoc, User user ) {
+		
+		CellStyle style = createExcelworkbook.createCellStyle();
+        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        org.apache.poi.ss.usermodel.Font font = createExcelworkbook.createFont();
+       font.setColor(IndexedColors.BLACK.getIndex());
+        style.setFont(font);
+		
+		
+		
+		writeRow = createExcelsheet.createRow(0);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+		Cell cell1 = writeRow.createCell(0);
+		cell1.setCellValue("Employee Code :");
+		cell1.setCellStyle(style);
+		Cell cell2 = writeRow.createCell(1);
+	    cell2.setCellValue("this is pending task");
+		cell2.setCellStyle(style);
+		
+
+		writeRow = createExcelsheet.createRow(1);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+		Cell cell3 = writeRow.createCell(0);
+		cell3.setCellValue("Employee Name :");
+		cell3.setCellStyle(style);
+		Cell cell4 = writeRow.createCell(1);
+		cell4.setCellValue(user.getFullName());
+		cell4.setCellStyle(style);
+
+		
+		writeRow = createExcelsheet.createRow(2);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+		Cell cell5 = writeRow.createCell(0);
+		cell5.setCellValue("Employee Designation : ");
+		cell5.setCellStyle(style);
+		Cell cell6 = writeRow.createCell(1);
+		cell6.setCellValue(("this task is pending "));
+		cell6.setCellStyle(style);
+		
+		
+		writeRow = createExcelsheet.createRow(3);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+		Cell cell7 = writeRow.createCell(0);
+		cell7.setCellValue("Employee PAN : ");
+		cell7.setCellStyle(style);
+		Cell cell8 = writeRow.createCell(1);
+		cell8.setCellValue("this is pending task");
+		cell8.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(4);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+		Cell cell9 = writeRow.createCell(0);
+		cell9.setCellValue("Employee DOB : ");
+		cell9.setCellStyle(style);
+		Cell cell10 = writeRow.createCell(1);
+		cell10.setCellValue(user.getDateOfBirth());
+		cell10.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(5);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+		Cell cell11 = writeRow.createCell(0);
+		cell11.setCellValue("Gender : ");
+		cell11.setCellStyle(style);
+		Cell cell12 = writeRow.createCell(1);
+		cell12.setCellValue(user.getGender());
+		cell12.setCellStyle(style);
+		
+		
+		String[] headers = null;
+		 headers  = Constants.IT_DECLARATION_SUBMISSION_FORM;
+		 createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,7);
+		 
+		return createExcelsheet;
+	}
+	
 	public List<SourceleadTaxSubmissionMasterDTO> getTaxSubmissionMaster(Long userId, String dateFormat,
 			String financialYear, Paginator paginator) {
 		List<SourceleadTaxSubmissionMasterDTO> taxSubmissionMasterDTOList = new LinkedList<>();
@@ -1261,6 +1648,10 @@ public class TaxServiceImpl implements TaxService {
 			e.printStackTrace();
 		}
 		return taxSubmissionMasterDTOList;
-	}
 
+	}
+	
+	
 }
+
+
