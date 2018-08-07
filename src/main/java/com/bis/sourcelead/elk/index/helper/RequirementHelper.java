@@ -145,6 +145,10 @@ public class RequirementHelper {
 				requirementIndex.setClientRateType(requirement.getClientRateType());
 			}
 			
+			if(requirement.getJobsTags() != null && !requirement.getJobsTags().isEmpty()) {
+				requirementIndex.setTags(requirement.getJobsTags());
+			}
+			
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
 			// requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
 			
@@ -215,6 +219,11 @@ public class RequirementHelper {
 			requirementIndex.setReqUpdatedBy(requirement.getUpdatedBy());
 			if (requirement.getManagerUserId() != null) {
 				requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
+			}
+			if (requirement.getPrimaryRecruiterUserId() != null) {
+				requirementIndex.setPrimaryRecruiterUserId(requirement.getPrimaryRecruiterUserId().getId().toString());
+			} else {
+				requirementIndex.setPrimaryRecruiterUserId("");
 			}
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			if (null != requirement.getClosedDate()) {

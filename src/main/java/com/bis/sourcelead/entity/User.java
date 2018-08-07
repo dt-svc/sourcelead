@@ -108,6 +108,36 @@ public class User implements Serializable{
 	@Type(type="text")
 	private String location;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "WORK_LOCATION")
+	private OrgLocations workLocation;
+	
+	@Column(name = "RESIDENCE_ADDRESS")
+	private String residenceAddress;
+	
+	@Column(name = "RESIDENCE_STREET_ADDRESS")
+	private String residenceStreetAddress;
+	
+	@Column(name = "RESIDENCE_COUNTRY")
+	private String residenceCountry;
+	
+	@Column(name = "RESIDENCE_STATE")
+	private String residenceState;
+	
+	@Column(name = "RESIDENCE_CITY")
+	private String residenceCity;
+	
+	@Column(name = "RESIDENCE_ZIP_CODE")
+	private String residenceZipCode;
+	
+	@Column(name = "RESIDENCE_STATE_CODE")
+	private String residenceStateCode;
+	
+	@Column(name = "RESIDENCE_LATITUDE")
+	private String residenceLatitude;
+	
+	@Column(name = "RESIDENCE_LONGITUDE")
+	private String residenceLongitude;
 	
 	@Column(name = "LINKEDIN")
 	@Type(type="text")
@@ -146,6 +176,24 @@ public class User implements Serializable{
 	
 	@Column(name = "RECRUITER_REGISTER_COUNTRY")
 	private String recruiterRegisterCountry;
+	
+	// Immigration columns Start
+	@Column(name = "MIDDLE_NAME")
+	private String middelName ;
+		
+	@Column(name = "DATE_OF_BIRTH")
+	private Date dateOfBirth;
+		
+	@Column(name = "GENDER")
+	private String gender;
+	
+	@Column(name = "MARITAL_STATUS")
+	private String maritalStatus;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LINK_USER_ID")
+	@JsonProperty
+    private User linkUserId;
 	
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -216,6 +264,7 @@ public class User implements Serializable{
 	private String role;
 	
 	@Transient
+	@JsonProperty
 	private String assignedTeamId;
 	
 	@Transient
@@ -274,6 +323,19 @@ public class User implements Serializable{
 	@Transient
 	private String isMailSent;
 	
+	@Transient
+	private String associateUserCode;
+	
+	@Transient
+	private Long userId;
+	
+	@Transient
+    @JsonProperty
+    private String associateTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -495,14 +557,14 @@ public class User implements Serializable{
 		if(StringUtils.isNotEmpty(fullName))
 			return fullName;
 		else{
-			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)){
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isEmpty(middelName)){
 				fullName = firstName;
-			}
-			else if(StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
-				fullName = lastName;
-			}
-			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
-				fullName = firstName+" "+lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isEmpty(middelName)){
+				fullName = firstName +" "+lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName +" "+middelName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName+" "+middelName+" "+lastName;
 			}
 			return fullName;
 		}
@@ -841,5 +903,175 @@ public class User implements Serializable{
 		this.vendorContactName = vendorContactName;
 	}
 
-	
+	public String getResidenceAddress()
+	{
+		return residenceAddress;
+	}
+
+	public void setResidenceAddress(String residenceAddress)
+	{
+		this.residenceAddress = residenceAddress;
+	}
+
+	public String getResidenceStreetAddress()
+	{
+		return residenceStreetAddress;
+	}
+
+	public void setResidenceStreetAddress(String residenceStreetAddress)
+	{
+		this.residenceStreetAddress = residenceStreetAddress;
+	}
+
+	public String getResidenceState()
+	{
+		return residenceState;
+	}
+
+	public void setResidenceState(String residenceState)
+	{
+		this.residenceState = residenceState;
+	}
+
+	public String getResidenceCity()
+	{
+		return residenceCity;
+	}
+
+	public void setResidenceCity(String residenceCity)
+	{
+		this.residenceCity = residenceCity;
+	}
+
+	public String getResidenceZipCode()
+	{
+		return residenceZipCode;
+	}
+
+	public void setResidenceZipCode(String residenceZipCode)
+	{
+		this.residenceZipCode = residenceZipCode;
+	}
+
+	public String getResidenceStateCode()
+	{
+		return residenceStateCode;
+	}
+
+	public void setResidenceStateCode(String residenceStateCode)
+	{
+		this.residenceStateCode = residenceStateCode;
+	}
+
+	public String getResidenceCountry()
+	{
+		return residenceCountry;
+	}
+
+	public void setResidenceCountry(String residenceCountry)
+	{
+		this.residenceCountry = residenceCountry;
+	}
+
+	public String getResidenceLatitude()
+	{
+		return residenceLatitude;
+	}
+
+	public void setResidenceLatitude(String residenceLatitude)
+	{
+		this.residenceLatitude = residenceLatitude;
+	}
+
+	public String getResidenceLongitude()
+	{
+		return residenceLongitude;
+	}
+
+	public void setResidenceLongitude(String residenceLongitude)
+	{
+		this.residenceLongitude = residenceLongitude;
+	}
+
+	public OrgLocations getWorkLocation()
+	{
+		return workLocation;
+	}
+
+	public void setWorkLocation(OrgLocations workLocation)
+	{
+		this.workLocation = workLocation;
+	}
+
+	public String getMiddelName() {
+		return middelName;
+	}
+
+	public void setMiddelName(String middelName) {
+		this.middelName = middelName;
+	}
+
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public User getLinkUserId() {
+		return linkUserId;
+	}
+
+	public void setLinkUserId(User linkUserId) {
+		this.linkUserId = linkUserId;
+	}
+
+	public String getAssociateUserCode() {
+		return associateUserCode;
+	}
+
+	public void setAssociateUserCode(String associateUserCode) {
+		this.associateUserCode = associateUserCode;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getAssociateTags() {
+		return associateTags;
+	}
+
+	public void setAssociateTags(String associateTags) {
+		this.associateTags = associateTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
 }

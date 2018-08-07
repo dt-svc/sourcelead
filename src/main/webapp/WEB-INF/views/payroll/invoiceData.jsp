@@ -28,12 +28,14 @@ function prepareInvoiceDetailsList(url){
  	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
- 	result = result +" <div class='modal-header'>";
- 	result = result +" <div class='remove_search'>";
- 	result = result +" <input type='text' placeholder='Search' id='invoiceDataTableSearch'/>";
- 	result = result +"</div>";
- 	result = result +"</div>";
- 	  result = result +"<table id='invoiceDetailsPagination' class='display' cellspacing='0' width='100%' >"; 
+	 	
+ 		result = result +" <div class='reportHead'>";
+		result = result + " <ul class='pull-right'>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='invoiceDataTableSearch'/><span class='repSearchIcon' onClick='invoiceDataTableSearch();'></span></li>";
+		result = result + "</ul>";
+		result = result + "</div>"; 	 	
+	 	
+	 	result = result +"<table id='invoiceDetailsPagination' class='display' cellspacing='0' width='100%' >"; 
  	    result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '<th>SKU</th>';
@@ -45,6 +47,7 @@ function prepareInvoiceDetailsList(url){
 		result = result + '<th>Last Modified</th>';
 		result = result + '<th>Due Date</th>';
 		result = result + '<th>Rate</th>';
+		result = result + '<th>Pay Rate</th>';
 		result = result + '<th>Qty</th>';
 		result = result + '<th>Amount</th>';
 		result = result + '<th>A/R Paid</th>';
@@ -80,6 +83,7 @@ function invoiceDetailsPagination(url){
             { "data": "lastmodified" },
             { "data": "dueDate"},
             { "data": "rate"},
+            { "data": "payRate"},
             { "data": "qty"},
             { "data": "amount"},
             { "data": "arPaid"},
@@ -201,6 +205,20 @@ function invoiceDetailsPagination(url){
                     }
                   },{
                       "targets": colIndex++,
+                      "data": "payRate",
+                      "render": function ( data, type, opt, meta ) {
+                      	var result = "";
+                      	var rateTotal = opt.payRate;
+                      	var twoPlacedFloat = parseFloat(rateTotal).toFixed(2);
+                      	if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined'){
+  							result = result + '<td><div class="tblminwidth-75">$ '+twoPlacedFloat+'</div></td>';
+  						}else{
+  							result = result + ' <td><div class="tblminwidth-75">0.00</div></td>';
+  						}
+                      	return result;
+                      }
+                    },{
+                      "targets": colIndex++,
                       "data": "qty",
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
@@ -271,5 +289,8 @@ function invoiceDetailsPagination(url){
     		 getInvoiceDetails();
     	   }
     	});
+}
+function invoiceDataTableSearch(){
+	getInvoiceDetails();
 }
 </script>

@@ -186,25 +186,11 @@ function validateShortCode(){
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
-						<!--<div class="form-group">
-							<label class="col-md-3">Timesheet Frequency <span
-								class="text-danger">*</span></label>
-							<div class="col-md-9" id="chosen-frequency">
-								<select class="form-control chosen-select"
-									id="timeSheetFrequency" name="timeSheetFrequency"
-									onchange="removeFrequencyValidation();"
-									field-name="Timesheet Frequency" data-validation="required">
-									<option value="">--Timesheet Frequency-</option>
-									<option value="Weekly">Weekly</option>
-									<option value="Bi-Weekly">Bi-Weekly</option>
-									<option value="Semi-Monthly">Semi-Monthly</option>
-									<option value="Monthly">Monthly</option>
-								</select>
-							</div>
-						</div> -->
+						
+						
 						
 						<div class="form-group">
-							<label class="col-md-3">Invoice Frequency <span
+							<label class="col-md-3">Timesheet Frequency <span
 								class="text-danger">*</span></label>
 							<div class="col-md-9" id="chosen-InvoiceFrequency">
 								<select class="form-control chosen-select" id="invoiceFrequency"
@@ -218,6 +204,59 @@ function validateShortCode(){
 								</select>
 							</div>
 						</div>
+						
+						
+					<div class="form-group">
+						<label class="col-md-3">Project For<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<label class="paddingLeft paddingRight"><input type="radio" id="timesheets" value="Timesheets" name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets</label>
+							<label class="paddingRight"><input type="radio" id="expenses"  value="Expenses" name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Expenses</label>
+							<label class="paddingRight"><input type="radio" id="timesheetsandexpenses"  value="TimesheetsAndExpences"  name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets & Expenses</label>
+							<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For" data-validation="required"/> 		
+						</div>
+						
+					</div>
+						
+						<c:if test="${!empty projectType && projectType == 'sharedProject' }">
+							<input type="hidden" name="savedSharedClientOrgLocId" id="savedSharedClientOrgLocId">
+							<div class="form-group">
+							<label class="col-md-3" for="Client">Client<span class="text-danger">*</span></label>
+							<div class="col-md-9 select-field">
+								<select class="form-control chosen-select"
+											name="sharedClientOrgLocId" id="sharedClientOrgLocId" field-name="Client"
+											data-validation-optional="true">
+											<option value="">-- Select Client --</option>
+											<c:forEach var="report" items="${clientsList}">
+											<option value="${report.clientLocationId}">${report.clientName}</option>
+											</c:forEach>
+								</select>
+							</div>
+						</div>
+							
+					</c:if>
+						
+						
+						<div class="form-group">
+					             <label class="col-md-3"></label>
+					              <div class="col-md-9">
+					                <div class="checkbox checkBox">
+					                  <label>
+					                    <input type="checkbox" value="Y" name="isTicketNumberRequired" id="isTicketNumberRequired">
+					                   Ref/Ticket Number Required In Time Sheets</label>
+					                </div>
+					                 </div>
+			               </div>
+			               
+			               <div class="form-group">
+					             <label class="col-md-3"></label>
+					              <div class="col-md-9">
+					                <div class="checkbox checkBox">
+					                  <label>
+					                    <input type="checkbox" value="Y" name="isTaskCommentsRequired" id="isTaskCommentsRequired">
+					                   Task Comments Required In Time Sheets</label>
+					                </div>
+					                 </div>
+			               </div>
 
 						 <div class="form-group">
 							<label class="col-md-3"></label>
@@ -286,7 +325,7 @@ function validateShortCode(){
 							</div>
 						</div>
 
-						<c:if test="${not empty user_List}">
+					<c:if test="${not empty user_List}">
 							<div class="form-group">
 								<label class="col-md-3" for="Project Manager">Manager <span
 									class="text-danger">*&nbsp;</span></label>
@@ -296,10 +335,6 @@ function validateShortCode(){
 											name="level1Manager" id="level1Manager" field-name="Manager"
 											data-validation="required" onchange="getLevel2Approvers();">
 											<option value="">-- Select Level1 Manager --</option>
-											<%-- <c:forEach var="option" items="${user_List}">
-												<option value="${option.id},${option.userType}">${option.firstName}
-													${option.lastName}</option>
-											</c:forEach> --%>
 										</select> <span class="btn btn-default formic1 addLevel"
 											id="level2Toggle" onclick="getLevel2Approvers();">Add
 											Level-II</span>
@@ -308,7 +343,7 @@ function validateShortCode(){
 								</div>
 							</div>
 							<div class="form-group level-second" id="level2Div">
-								<label class="col-md-3" for="Level-II">Level-II</label>
+								<label class="col-md-3" for="Level-II">Level-II Manager</label>
 								<div class="col-md-9">
 									<select class="form-control chosen-select" name="level2Manager"
 										id="level2Manager">
@@ -317,16 +352,57 @@ function validateShortCode(){
 							</div>
 						</c:if>
 						
+						
+						
+						<c:if test="${not empty user_List}">
+							<div class="form-group">
+								<label class="col-md-3" for="Project Manager">Expense Approver&nbsp;<i class='fa fa-info-circle' title='Expense Approver for project. If not selected managers will be the default approvers'></i>
+								</label>
+								<div class="col-md-9">
+									<div class="form-icon-min" id="chosen-level1ExpenseApprover">
+										<select class="form-control chosen-select"
+											name="level1ExpenseApprover" id="level1ExpenseApprover" field-name="Expense Approver"
+											data-validation-optional="true" onchange="getLevel2ExpenseApprovers();">
+											<option value="">-- Select Level1 Approver --</option>
+											
+										</select> <span class="btn btn-default formic1 addExpenseApproverLevel"
+											id="level2ExpenseApproverToggle" onclick="getLevel2ExpenseApprovers();">Add
+											Level-II</span>
+									</div>
+									<span class="hidden">Select Project Manager</span>
+								</div>
+							</div>
+							<div class="form-group expenselevel-second" id="level2ExpenseApproverDiv">
+								<label class="col-md-3" for="Level-II">Level-II Approver</label>
+								<div class="col-md-9">
+									<select class="form-control chosen-select" name="level2ExpenseApprover"
+										id="level2ExpenseApprover">
+									</select>
+								</div>
+							</div>
+						</c:if>
+						
+						<div class="form-group">
+					             <label class="col-md-3"></label>
+					              <div class="col-md-9">
+					                <div class="checkbox checkBox">
+					                  <label>
+					                    <input type="checkbox" value="Y" name="isReportingManagerAsApprover" id="isReportingManagerAsApprover">
+					                   Reporting Manager will be T/E approver</label>
+					                </div>
+					                 </div>
+			               </div> 
+						
 						<div class="form-group" id="shortCodeDivId">
-							<label class="col-md-3"> Project Short Code <span
-								class="text-danger">* </span><i class='fa fa-info-circle' title='The internal unique code for the project'></i>
+							<label class="col-md-3"> Project Short Code <i class='fa fa-info-circle' title='The internal unique code for the project'></i>
 							</label>
 							<div class="col-md-9">
-								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length3-3"
+								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation-optional="true" data-validation="validate_length length3-3"
 									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"  pattern="[a-zA-Z]"  maxlength="3">  
 
 							</div>
 						</div>
+						
 						
 						<div class="form-group">
 							<label class="col-md-3"></label>
@@ -453,7 +529,7 @@ function validateShortCode(){
 
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
-						<textarea id="txtEditor" name="projectDescription"   value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
+						<textarea id="txtEditor" name="projectDescription"   value="" class="form-control newContrtextarea"  data-validation-optional="true"></textarea>
 					</div>
 					
 					<div id="timesheetDocumentsId">
@@ -515,6 +591,14 @@ function validateShortCode(){
 </div>
 </section>
 <!-- Content Area Ends-->
+
+
+<script type="text/javascript">
+	function projectForCheckValidation(id){
+		document.getElementById("projectForValue").value = id.value;
+	} 
+</script>
+
 <script>
 function removeFrequencyValidation(){
 	$('#chosen-frequency').find('p.jquery_form_error_message').remove();
@@ -625,6 +709,7 @@ function getStatus(){
 				additionalDetails.className = "disabledLink";
 			}
 			getProjectLevel1Approvers();
+			getProjectLevel1ExpenseApprovers();
 			getBudgetApprover();
 		}
 		
@@ -745,19 +830,44 @@ function getProjectDetails(){
 	        	var level1ApproverUser = '';
 	        	var level2ApproverUser = '';
 	        	
+	        	var level1ExpenseApproverUser = '';
+	        	var level2ExpenseApproverUser = '';
+	        	
 	        	if(json.projectSequeneNumber != null && json.projectSequeneNumber != 'undefined'){
 	        		 $("input[name=projectSequeneNumber]").val(json.projectSequeneNumber);
 // 	        		 $("input[name=projectSequeneNumber]").attr("readonly","readonly");
 	        		 $('#projectSequeneNumber').removeAttr('onblur');
 	        	}
 	        	
+	        	if(json.isProjectShared != null && json.isProjectShared != 'undefined' && json.isProjectShared == 'Y'){
+	        		$("#savedSharedClientOrgLocId").val(json.sharedClientOrgLocationId);
+	        		 $("select[name=sharedClientOrgLocId]").val(json.sharedClientOrgLocationId);
+	        		 $('#sharedClientOrgLocId').prop('disabled', true).trigger("chosen:updated");
+	        	}
+	        	 
+	        	
 	        	 $("input[name=projectName]").val(json.projectName);
 	        	 $("input[name=startDate]").val(json.startDateStr);
 	        	 $("input[name=endDate]").val(json.endDateStr);
-	        	 $("#projectShortCode").val(json.projectShortCode);
-	        	 $("input[name=projectShortCode]").attr("readonly","readonly");
-	        	 $('#projectShortCode').removeAttr('onblur');
-	        	 $("#notifyBudgetAt").val(json.notifyBudgetAt);
+	        	 if(json.projectShortCode != null && json.projectShortCode != '' && json.projectShortCode != 'undefined'){
+	        		 $("#projectShortCode").val(json.projectShortCode);
+	        		 $("input[name=projectShortCode]").attr("readonly","readonly");
+	        		 $('#projectShortCode').removeAttr('onblur');
+	        	 }
+	        	 
+	        	 if(json.isProjectForTimeSheets == 'Y' && json.isProjectForExpenses == 'Y'){
+	        		 document.getElementById("timesheetsandexpenses").checked = true;
+	        		 $("#projectForValue").val('TimesheetsAndExpences');
+	        	 }else  if(json.isProjectForTimeSheets == 'Y' && json.isProjectForExpenses == 'N'){
+	        		 document.getElementById("timesheets").checked = true;
+	        		 $("#projectForValue").val('Timesheets');
+	        	 }else  if(json.isProjectForTimeSheets == 'N' && json.isProjectForExpenses == 'Y'){
+	        		 document.getElementById("expenses").checked = true;
+	        		 $("#projectForValue").val('Expences');
+	        	 }
+	        	 
+	        	 
+        	   $("#notifyBudgetAt").val(json.notifyBudgetAt);
 	        	 
 	           var projectStatus = '';
 	           if(json.projectStatus == 'NOTSTARTED'){
@@ -813,6 +923,25 @@ function getProjectDetails(){
         	   }
         	   
         	   
+        	   if(json.isReportingManagerAsApprover == 'Y'){
+        		   document.getElementById("isReportingManagerAsApprover").checked = true;
+        	   }else{
+        		   document.getElementById("isReportingManagerAsApprover").checked = false;
+        	   }
+        	   
+        	   if(json.isTicketNumberRequired == 'Y'){
+        		   document.getElementById("isTicketNumberRequired").checked = true;
+        	   }else{
+        		   document.getElementById("isTicketNumberRequired").checked = false;
+        	   }
+        	   
+        	   if(json.isTaskCommentsRequired == 'Y'){
+        		   document.getElementById("isTaskCommentsRequired").checked = true;
+        	   }else{
+        		   document.getElementById("isTaskCommentsRequired").checked = false;
+        	   }
+        	   
+        	   
         	   $("textarea[name=projectDescription]").val(json.description);
         	   $(".Editor-editor").html(json.description);
         	   
@@ -836,7 +965,7 @@ function getProjectDetails(){
         			   var opt = json.projectDocumentsList[i];
         			  
         			     result = result +"<strong id='projectDocument"+opt.id+"'>";
-      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileUrl+"\"></a></i>";
+      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' target='_blank' href=\""+opt.fileUrl+"\"></a></i>";
       					 result = result +"<input type='button' value='"+opt.fileName+"'>";
       					 result = result +"</a>";
       					 result = result +"<input class='dele' type='button' onClick='removeProjectDocuments("+opt.id+","+json.id+");' >";
@@ -868,6 +997,26 @@ function getProjectDetails(){
       			   if(level1ApproverUser != '' && level2ApproverUser != ''){
       				  getChildLevel1Approvers(level1ApproverUser,level2ApproverUser);
       			   }
+      			   
+      			
+      			 for(var i=0; i<json.expenseApproverHierarchyList.length; i++){
+	        		  var opt = json.expenseApproverHierarchyList[i];
+	        		  if(opt.level == "1"){
+	        			  level1ExpenseApproverUser = opt.expenseApproverUserId;
+	        			  getProjectLevel1ExpenseApprovers(opt.expenseApproverUserId);
+	        		  }
+	        		  
+	        		  if(opt.level == "2"){
+	        				 $("#level2ExpenseApproverToggle").hide(); 
+	        				 document.getElementById("level2ExpenseApproverDiv").removeAttribute("class");
+	        				 document.getElementById('level2ExpenseApproverDiv').className = 'form-group expenselevel-second expenselevel-second-active';
+	        				 level2ExpenseApproverUser = opt.expenseApproverUserId;
+	        		  }
+	        	  }  
+     			   
+     			   if(level1ExpenseApproverUser != '' && level2ExpenseApproverUser != ''){
+     				  getChildLevel1ExpenseApprovers(level1ExpenseApproverUser,level2ExpenseApproverUser);
+     			   }
       			 
       			   
       			   $("#projectDetailsloading").removeAttr("style");
@@ -916,7 +1065,8 @@ function assignEmployeeCancel(){
 
 
 <script>
-	$(function() {
+$(window).load(function() {
+	var dbStartDate = $("#startDate").val();
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatProjectSave = '';
 		  if(locationDate.match("yyyy-MM-dd")){
@@ -943,6 +1093,7 @@ function assignEmployeeCancel(){
 			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
 			changeYear: true, 
+			minDate:dbStartDate,
 			onSelect : function(selected) {
 				var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate() - 1);
@@ -1053,6 +1204,7 @@ function assignEmployeeCancel(){
 		});
 	}
 </script>
+
 <script type="text/javascript">
 function getLevel2Approvers(level1ApproverUser){
 	var currentApproverId = '';
@@ -1081,6 +1233,43 @@ function getLevel2Approvers(level1ApproverUser){
 	}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
 	    $("#level2Toggle").hide();   
 	    $("#level2Div").removeClass("level-second-active");
+	}
+	
+	
+} 
+</script>
+
+
+
+<script type="text/javascript">
+function getLevel2ExpenseApprovers(level1ExpenseApprover){
+	var currentExpenseApproverId = '';
+	$('#chosen-level1ExpenseApprover').find('p.jquery_form_error_message').remove();
+	if(level1ExpenseApprover != null && level1ExpenseApprover != '' && level1ExpenseApprover != 'undefined'){
+		currentExpenseApproverId = level1ExpenseApprover;
+	}else{
+		currentExpenseApproverId = document.getElementById("level1ExpenseApprover").value;
+	}
+	
+	var currentExpenseApprover = currentExpenseApproverId.split(',');
+	var currentExpenseApproverId = currentExpenseApprover[0];
+	var currentExpenseApproverType = currentExpenseApprover[1];
+	var count = 1;
+	$(".myCheckbox").each(
+					function() {
+						var localId = this.id;
+						document.getElementById(localId).checked = false; 
+	});
+	$(".myCheckbox").val('');
+	
+	$("#level2ExpenseApprover").empty();    
+	$('#level2ExpenseApprover').val('').trigger('chosen:updated');
+	if(currentExpenseApproverType != null && currentExpenseApproverType != '' && currentExpenseApproverType !='undefined' && currentExpenseApproverType != 'Admin'){
+	    $("#level2ExpenseApproverToggle").show();
+		getChildLevel1ExpenseApprovers(currentExpenseApproverId);
+	}else if(currentExpenseApproverType != null && currentExpenseApproverType != '' && currentExpenseApproverType !='undefined' && currentExpenseApproverType == 'Admin'){
+	    $("#level2ExpenseApproverToggle").hide();   
+	    $("#level2ExpenseApproverDiv").removeClass("expenselevel-second-active");
 	}
 	
 	
@@ -1120,6 +1309,40 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 } 
 </script>
 
+<script type="text/javascript">
+function getChildLevel1ExpenseApprovers(currentExpenseApproverId,level2ExpenseApproverUserId){
+	 if(currentExpenseApproverId != null && currentExpenseApproverId != ''  && currentExpenseApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentExpenseApproverId,
+		        success: function(json) {
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Approver-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		var selected = '';
+			        		if(level2ExpenseApproverUserId != null && level2ExpenseApproverUserId != 'undefied' && level2ExpenseApproverUserId != '' && level2ExpenseApproverUserId == opt.id){
+			        			selected = "selected";
+			        		}
+			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
+					}
+		        	$("#level2ExpenseApprover").empty();
+			        $("#level2ExpenseApprover").append(output);
+			        $('#level2ExpenseApprover').trigger("chosen:updated");
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }else{
+		 getApproversLevel2();
+		
+	 }
+} 
+</script>
+
+
 
 <script type="text/javascript">
 function getProjectLevel1Approvers(approverUserId){
@@ -1142,10 +1365,39 @@ function getProjectLevel1Approvers(approverUserId){
 		        	
 			        $("#level1Manager").append(output);
 			        $('#level1Manager').trigger("chosen:updated");
+			        
 		        }
 		    });
 	 }
 </script>
+
+<script type="text/javascript">
+function getProjectLevel1ExpenseApprovers(approverUserId){
+	 $("#level1ExpenseApprover").empty();
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
+		        success: function(json) {
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Level1 Approver --</option>";
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var selected = "";
+		        		var opt = json[i];
+		        		if(approverUserId != null && approverUserId != 'undefied' && approverUserId != '' && approverUserId == opt.id){
+		        			selected = "selected";
+		        		}
+			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
+					}
+		        	
+			        
+			        $("#level1ExpenseApprover").append(output);
+			        $('#level1ExpenseApprover').trigger("chosen:updated");
+		        }
+		    });
+	 }
+</script>
+
 <script>
 function getBudgetApprover(approverUserId){
 	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
@@ -1208,6 +1460,13 @@ function getBudgetApprover(approverUserId){
 		  var sectionId = '${section.id}';
 		  getCustomDependentField(sectionId);
 		 </c:forEach>
+		 
+		 var projectType = '${projectType}';
+		 if(projectType != '' && projectType != 'undefined' && projectType == 'sharedProject'){
+			 $("#sharedClientOrgLocId").removeAttr("data-validation-optional");
+			 $("#sharedClientOrgLocId").attr("data-validation", "required");
+		 }
+		 
 	});
 </script>
 
@@ -1222,9 +1481,10 @@ function getBudgetApprover(approverUserId){
  
 <script>
 function getCustomDependentField(sectionId){
+	var projectId = $('#projectId').val();
 	$.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&projectId="+projectId+"&requestFrom=project",
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);

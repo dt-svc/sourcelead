@@ -7,6 +7,7 @@ import java.util.Map;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +93,7 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ExpensesApproverHierarchy> getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(
-			Long userId, Long orgLocationId, String submissionStatus) throws Exception {
+			Long userId, Long orgLocationId, String submissionStatus,String isGlobalAccess) throws Exception {
 		Map<String, Object> params = new HashMap<String,Object>();
 		String subQuery2 = "";
 		if ("SUBMITTEDFORAPPROVAL".equalsIgnoreCase(submissionStatus)) {
@@ -108,16 +109,18 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 			subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'REOPENED' ";
 		}
 		
+		String globalUserQuery = "";
+	    if(StringUtils.isNotEmpty(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase("Y")) {
+	    	globalUserQuery = " pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId) and ";
+	    }else {
+	    	globalUserQuery = " pc.orgLocationsId.id = :orgLocationId and ";
+	    }
+		 
 		Session session = this.sessionFactory.getCurrentSession();
 		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projectMemberCandidteId cand left join fetch cand.orgRelationId rel left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user where "
+			+globalUserQuery
 			+ " pc.orgLocationsId.id = :orgLocationId"
 			+ " and ( ( hierarchy.approverUserId.id = :userId )"
-			/*+ " and ( ("
-			+ "      hierarchy.approverUserId.id = :userId and "
-			+ "       (     (( emp.user.id IS NULL) OR (emp.user.id IS NOT NULL and hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2'))) "
-			+ "          OR (( emp.user.id IS NULL) OR (emp.user.id IS NOT NULL and hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id))) "
-			+ "       )"
-			+ "      ) "*/
 		    /*
 			 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 			 */

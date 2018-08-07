@@ -8,19 +8,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -51,6 +53,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
@@ -61,6 +64,7 @@ import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
@@ -68,6 +72,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -79,13 +84,19 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.TagEntites;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
+import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -103,8 +114,10 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
@@ -121,6 +134,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
+
+import opennlp.tools.parser.Cons;
 
 @RestController
 @RequestMapping("/app")
@@ -231,7 +246,17 @@ public class UsersListRestController {
 	@Autowired
     ProjectsIndexHelper projectsIndexHelper;
 	
+	@Autowired
+	AssociateGradesService associateGradesService;
 	
+	@Autowired
+	private ShiftService shiftService;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	private SourceleadTagsService sourceleadTagsService;
 	/**
 	 * To get All the Users by filtering
 	 * 
@@ -249,6 +274,7 @@ public class UsersListRestController {
 	public @ResponseBody   ResponseList<UserRoleDTO> getDynamicUserList(UserDTO userDTO,UserRoleDTO userRoleDto,HttpServletRequest request) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<Long> orgRelationsList = new ArrayList<>();
 		List<Long> projectAssignedUserIds = new ArrayList<>();
@@ -303,17 +329,9 @@ public class UsersListRestController {
 			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds,teamsList,departmentsList);
 				for(UserRole role : rolesList.getData()){
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
-					StringBuilder userName = new StringBuilder();
-					
 					userRoleDTO.setUserRoleName(role.getRoles().getDisplayName());
 					userRoleDTO.setIsMailSent(role.getIsMailSent().toString());
-					if(!isNullOrEmpty(role.getUser().getLastName())){
-						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
-						userRoleDTO.setUserName(userName.toString());
-						
-					}else{
-						userRoleDTO.setUserName(role.getUser().getFirstName());
-					}
+					userRoleDTO.setUserName(role.getUser().getFullName());
 					userRoleDTO.setUserEmail(role.getUser().getEmail());
 					userRoleDTO.setUserId(role.getUser().getId());
 					userRoleDTO.setUserCode(role.getUser().getUserCode());
@@ -687,7 +705,21 @@ public class UsersListRestController {
 	@RequestMapping(value = "/userSummary/{userCode}", method = RequestMethod.GET)
 	public @ResponseBody void userSummary(@PathVariable String userCode, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
 		StringBuilder redirectUrl = new StringBuilder();
+	    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+	    request.getSession().setAttribute("tagsList", tagsList);
+	    User user = userService.getUserByUserCode(userCode);
+		Set<String> associateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.ASSOCIATES.getValue(), user.getId());
+		if(associateTagsList != null && !associateTagsList.isEmpty()) {
+			StringBuilder associateTagsStr = new StringBuilder();
+			for(String tags : associateTagsList) {
+				associateTagsStr = associateTagsStr.append(tags).append(",");
+			}
+			associateTagsStr.toString();
+			request.getSession().setAttribute("associateTags", associateTagsStr.substring(0,associateTagsStr.length()-1));
+		}
 		response.sendRedirect(redirectUrl.append("/app/userSummaryDetails?userCode=").append(userCode).toString());
 
 	}
@@ -704,10 +736,11 @@ public class UsersListRestController {
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody UserRole getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
-		String resultJson = null;
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
@@ -720,15 +753,29 @@ public class UsersListRestController {
 			userRole.setRate(employee.getRate());
 			userRole.setRatePer(employee.getRatePer());
 			userRole.setCurrentCurrency(employee.getCurrentCurrency());
+			
+			Boolean flag = userRoleService.getIsGlobalManager(org.getId(),userId);
+			if(flag == true) {
+				userRole.setIsExistedOrgGlobalUser(Constants.YES);
+			}else {
+				userRole.setIsExistedOrgGlobalUser(Constants.NO);
+			}
+			
 			if (employee.getHireDate() != null) {
 				userRole.setHireDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),employee.getHireDate()));
 			} else {
 				userRole.setHireDateStr("");
 			}
-
+			if(userRole != null) {
+				userRole.setTerminateDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getTerminateDate()));
+			}
 			userRole.setDailyHours(employee.getDailyHours());
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
+			if(userRole.getShift() != null) {
+				userRole.setShiftId(userRole.getShift().getId());
+				userRole.setShiftName(userRole.getShift().getShiftName());
+			}
 			
 			if(null != employee.getDepartmentId()){
 				userRole.setDepartment(employee.getDepartmentId().getId().toString());
@@ -759,14 +806,37 @@ public class UsersListRestController {
 			
 		}
 		
-		List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
-		 for (User user : userList) {
+		List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
+		userRole.setGradesList(gradesList);
+		
+		List<User> reportingManagersList = new ArrayList<>();
+		List<User> userList = userService.getReportingManagersByUserRolesAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
+		List<User> globalUserList = userService.getGlobalReportingManagersUsersByOrgId(userRole.getRoles().getId(), org.getId()); 
+		if(userList != null && !userList.isEmpty()) {
+			reportingManagersList.addAll(userList);
+		}
+		if(globalUserList != null && !globalUserList.isEmpty()) {
+			reportingManagersList.addAll(globalUserList);
+		}
+		for (User user : reportingManagersList) {
 			    UserRole userRole1 = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(null != userRole1){
 					user.setUserType(userRole1.getUserType());
+				}else {
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
 				}
+				
 		  }
-		 userRole.setAllReportingManagers(userList);
+		 userRole.setAllReportingManagers(reportingManagersList);
+		 
+		 
+		 List<User> resourceManagersList = userService.getResourceManagersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
+		 for (User user : resourceManagersList) {
+			    UserRole ur = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+			    user.setUserType(ur.getUserType());
+		  }
+		 userRole.setAllResourceManagers(resourceManagersList);
 		 
 		 //	old records currency changed code 
 		 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
@@ -775,8 +845,16 @@ public class UsersListRestController {
 			 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
 		 }
 		 
+
+		 if (userRole.getUser().getDateOfBirth() != null) {
+				userRole.setDateofBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getUser().getDateOfBirth()));
+			} else {
+				userRole.setDateofBirthStr("");
+			}
+
 		 
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_ASSOCIATE);
+
 		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
 		 if(sections != null && !sections.isEmpty()) {
@@ -847,6 +925,27 @@ public class UsersListRestController {
 		}
 
 		userRole.setReportingManagers(reportManagerUsersList);
+		
+		
+		
+	// To change resource manager
+			List<Long> resourceMgrUserIds = userRoleService.getAllAssignedUsersIdsByResourceManagerId(userId, orgLocations.getId());
+			userRole.setAssignedUsersCountToResourceManager(resourceMgrUserIds.size());
+			List<User> resourceManagerUsersList = new ArrayList<User>();
+			if (resourceMgrUserIds.size() > 0) {
+				resourceMgrUserIds.add(userId);
+				List<User> managerUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(
+						orgLocations.getId(), resourceMgrUserIds, Long.valueOf(Constants.TAB_USER));
+				for (User user : managerUsersList) {
+					UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					if (role != null) {
+						user.setUserType(role.getRoles().getDisplayName());
+						resourceManagerUsersList.add(user);
+					}
+				}
+			}
+
+			userRole.setResourceManagers(resourceManagerUsersList);
 
 		// To change client owner and spoc
 		List<Long> cleintSpocIds = orgSpocService.getAssignedAsClientOrVendorSpocCountByUserId(userId,
@@ -1078,6 +1177,29 @@ public class UsersListRestController {
 				}
 
 			}
+			
+			
+			
+			
+			
+			if (StringUtils.isNotBlank(addUserDTO.getAssignResourceManagers())) {
+				List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByResourceManagerId(userId,
+						orgLocations.getId());
+				User resourceManager = new User();
+				resourceManager.setId(Long.valueOf(addUserDTO.getAssignResourceManagers()));
+				//List<Long> userIds = userRoleService.getAllAssignedUsersIdsByResourceManagerId(userId, orgLocations.getId());
+				if (null != userRolesList) {
+					for (UserRole roles : userRolesList) {
+						roles.setResourceManager(resourceManager);
+						roles.setUpdatedBy(user.getUserCode());
+						roles.setUpdatedDate(new Date());
+						userRoleService.addUserRole(roles);
+					}
+				}
+
+			}
+			
+			
 			if (StringUtils.isNotBlank(addUserDTO.getVendorUsers())) {
 				User clientOwnerOrUser = new User();
 				clientOwnerOrUser.setId(Long.valueOf(addUserDTO.getVendorUsers()));
@@ -1330,6 +1452,7 @@ public class UsersListRestController {
 			userRole.setPreviousUserState(userRole.getUserState());
 			userRole.setUserState(Status.INACTIVE);
 			userRole.setTerminateReason(addUserDTO.getReason());
+			userRole.setTerminateDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),  addUserDTO.getTerminateDate()));
 			userRole.setUpdatedBy(user.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
 						
@@ -1794,9 +1917,9 @@ public class UsersListRestController {
 			if (null != employee) {
 				userService.saveOrUpdateUserElkDocument(userRole, employee, user.getUserCode());
 			}
-
+			int updated = associateBalanceLeaveService.updateAssociateBalanceLeaves(userRole.getUser(), orgLocations, employee, userRole);
 		}
-
+		
 		return "success";
 	}
 
@@ -1891,7 +2014,7 @@ public class UsersListRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-
+		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		User user = userService.getUserById(userId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 
@@ -1901,9 +2024,13 @@ public class UsersListRestController {
 		boolean isUserActive = false;
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
+		User updatedUser = null;
 		if (user != null) {
 			user.setFirstName(addUserDTO.getFirstName());
 			user.setLastName(addUserDTO.getLastName());
+			user.setMiddelName(addUserDTO.getMiddleName());
+			user.setGender(addUserDTO.getGender());
+			user.setMaritalStatus(addUserDTO.getMaritalStatus());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
 			user.setExtensionNumber(addUserDTO.getExtensionNumber());
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
@@ -1913,6 +2040,35 @@ public class UsersListRestController {
 			} else {
 				userRole.setReportingManager(null);
 			}
+
+			if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
+				try {
+					user.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));
+					  
+					} catch (Exception e) {
+					  e.printStackTrace();
+					}
+			}else{
+				user.setDateOfBirth(null);
+			}
+
+			
+			if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				userRole.setDesignation(addUserDTO.getDesignation());
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){
+				User resourceManager = new User();
+				resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
+				userRole.setResourceManager(resourceManager);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getShiftId())){
+				Shift shift = new Shift();
+				shift.setId(Long.parseLong(addUserDTO.getShiftId()));
+				userRole.setShift(shift);
+			}
+
 
 			isUserActive = userRoleService.isUserActive(user.getId());
 			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmail())) {
@@ -1927,7 +2083,22 @@ public class UsersListRestController {
 			user.setUpdatedDate(commonUtil.currentDate());
 			userRole.setUpdatedBy(loginUser.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
-			User updatedUser = userService.addUser(user);
+			 updatedUser = userService.addUser(user);
+			
+			
+			if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess()) && addUserDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
+				userRole.setIsGlobal(Constants.YES);
+			}else {
+				userRole.setIsGlobal(Constants.NO);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getGrade())) {
+				AssociateGrades grades = new AssociateGrades();
+				grades.setId(Long.valueOf(addUserDTO.getGrade()));
+				userRole.setGradeId(grades);
+			}else {
+				userRole.setGradeId(null);
+			}
 			
 			if(addUserDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
@@ -2042,10 +2213,11 @@ public class UsersListRestController {
 			}
 			
 			candidate.setFirstName(addUserDTO.getFirstName());
-			if(StringUtils.isNotBlank(addUserDTO.getLastName())){
-				candidate.setLastName(addUserDTO.getLastName());
-			}
-			
+			candidate.setLastName(addUserDTO.getLastName());
+			candidate.setMiddelName(addUserDTO.getMiddleName());
+			candidate.setGender(addUserDTO.getGender());
+			candidate.setMobilePhone(addUserDTO.getPhoneNumber());
+			candidate.setMaritalStatus(addUserDTO.getMaritalStatus());
 			
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
@@ -2065,7 +2237,10 @@ public class UsersListRestController {
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole, employees, loginUser.getUserCode());
 		
-
+//		int updated = associateBalanceLeaveService.updateAssociateBalanceLeaves(updatedUser,orgLocations,employees,userRole);
+		
+		 associateBalanceLeaveService.updateAssociateDateOfJoinBalanceLeaveType(orgLocations.getId(), updatedUser,Constants.CANDIDATE_ACTIVE,Constants.UPDATE);
+		
 		return "success";
 		}else{
 			return "DataMissing";
@@ -2132,7 +2307,102 @@ public class UsersListRestController {
 		return userRoleDTOList;
 
 	}
+	
+	@RequestMapping(value = "/getShiftList", method = RequestMethod.POST)
+	public @ResponseBody List<Shift> getShiftList(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Shift> shifList = shiftService.getShiftList(orgLocations.getId());
+		return shifList;
 
+	}
+	
+	@RequestMapping(value = "/saveOrUpdateTagsByAssociateId")
+	public Response<String> saveOrUpdateTagsBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "associateId", required = false) long associateId,
+			@RequestParam(value = "tagName", required = false) String tagName, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
+		try {
+			User user = userService.getUserById(loginUserId);
+			if (user != null) {
+				User associate = userService.getUserById(associateId);
+					Set<String> associateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(orgLocations.getId(), TagEntites.ASSOCIATES.getValue(), associate.getId());
+					ArrayList<String> newTags = new ArrayList<>(Arrays.asList(tagName.split("\\s*,\\s*")));
+					ArrayList<String> actualNewTags = new ArrayList<>();
+					actualNewTags.addAll(newTags);
+				    Set<String> newTagsSet = new HashSet<String>(actualNewTags);
+				    newTagsSet.removeAll(associateTagsList);
+				    associateTagsList.removeAll(actualNewTags);
+				    associate.setAssociateTags(tagName);
+				    
+				    
+				    if(newTagsSet != null && !newTagsSet.isEmpty() && newTagsSet.size() > 0) {
+				    	for(String tag : newTagsSet) {
+				    		if(StringUtils.isNotBlank(tag)) {
+				    			SourceleadTags tags = new SourceleadTags();
+					    		tags.setEntityType(TagEntites.ASSOCIATES);
+					    		tags.setEntityId(associate.getId());
+					    		tags.setTagName(tag);
+					    		tags.setOrgLocationId(orgLocations);
+					    		tags.setStatus(Constants.CANDIDATE_ACTIVE);
+					    		tags.setCreatedBy(user);
+					    		tags.setCreatedDate(new Date());
+					    		sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    	
+				    }
+				    
+				    if(associateTagsList != null && !associateTagsList.isEmpty() && associateTagsList.size() > 0) {
+				    	for(String removedTags : associateTagsList) {
+				    		SourceleadTags tags = sourceleadTagsService.getSourceleadTagsByEntityIdAndTagNameAndOrgLocationId(orgLocations.getId(), TagEntites.ASSOCIATES.getValue(), associate.getId(),removedTags);
+				    		if(tags != null) {
+				    			tags.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				    			tags.setUpdatedBy(user);
+				    			tags.setUpdatedDate(new Date());
+				    			sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    	
+				    }
+				    
+			    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+			    SourceLeadSessionManager.removeSessionAttribute(request, "tagsList");
+			    SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
+				response.setResponse(Result.SUCCESS.name());
+
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+	
+	@RequestMapping(value = "/getAssociateTags", method = RequestMethod.POST)
+	public User getAssociateTags(@RequestParam(value = "associateId", required = false) Long associateId , HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = userService.getUserById(associateId);
+	    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+	    request.getSession().setAttribute("tagsList", tagsList);
+	    user.setTagsList(tagsList);
+		Set<String> associateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.ASSOCIATES.getValue(), user.getId());
+		if(associateTagsList != null && !associateTagsList.isEmpty()) {
+			StringBuilder associateTagsStr = new StringBuilder();
+			for(String tags : associateTagsList) {
+				associateTagsStr = associateTagsStr.append(tags).append(",");
+			}
+			associateTagsStr.toString();
+			user.setAssociateTags(associateTagsStr.substring(0,associateTagsStr.length()-1));
+		}
+		return user;
+
+	}
+	
 	private String toJSON(Object obj) {
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 			public HierarchicalStreamWriter createWriter(Writer writer) {

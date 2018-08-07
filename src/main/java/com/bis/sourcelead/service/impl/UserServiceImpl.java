@@ -1,10 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,9 +9,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
@@ -27,6 +24,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -44,19 +42,24 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.JobCustomFieldData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -67,12 +70,17 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.MasterCandidateService;
@@ -84,6 +92,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserCustomFieldDataService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -190,6 +199,18 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserCustomFieldDataService userCustomFieldDataService;
 	
+	@Autowired
+	StatesService statesService;
+	
+	@Autowired
+	CountriesService countriesService;
+	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioConfigurationService;
+
+	@Autowired
+	private AssociateBalanceLeaveService associateBalanceLeaveService;
+	
 	@Override
 	public User findByUserName(String username) {
 		logger.debug("In UserService class...");
@@ -213,6 +234,7 @@ public class UserServiceImpl implements UserService {
       *  
       *  @return 
       */
+	@SuppressWarnings("unused")
 	@Override
 	public User storeUser(AddUserDTO addUserDTO,CandidateDTO candidateDTO,User loginuser,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg) throws Exception {
 	   User user1 = null;
@@ -220,6 +242,7 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
+	   boolean associateBalance = false;
 	   user = userDao.findByUserName(addUserDTO.getEmail());
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
@@ -236,14 +259,39 @@ public class UserServiceImpl implements UserService {
 			  user.setMobilePhone(addUserDTO.getPhoneNumber());
 		  }
 		  
-		  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
-			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
-		  }
+			  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+				  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+			  }
 		  
-		  if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
+		     if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
 		    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
-		    }
-		 
+		     }
+		     if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
+			  user.setMiddelName(addUserDTO.getMiddleName());
+			  }else{
+			  user.setMiddelName(null);
+			  }
+
+			  if(StringUtils.isNotBlank(addUserDTO.getGender())) {
+			  user.setGender(addUserDTO.getGender());
+			  }else{
+			  user.setGender(null);
+			  }
+
+			  if(StringUtils.isNotBlank(addUserDTO.getMaritalStatus())) {
+			  user.setMaritalStatus(addUserDTO.getMaritalStatus());
+			  }else{
+			  user.setMaritalStatus(null);
+			  }
+
+			  if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
+			  try {
+			  user.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));
+
+			  } catch (Exception e) {
+			  e.printStackTrace();
+			  }
+			  }
 	   }
 	   
 	   if(null == user){
@@ -254,7 +302,7 @@ public class UserServiceImpl implements UserService {
  		  user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
  		  user.setUrlSentTime(new Date());
  		  user.setIsVerified(Constants.NO);
- 		  
+ 		 associateBalance  = true;
 		}else if(isUserActive == false){
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
@@ -272,11 +320,34 @@ public class UserServiceImpl implements UserService {
 	 		user.setUserType("Employee");
 	    } 
 		
+	    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+	    	user.setWorkLocation(orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation())));
+	    }
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+	    	user.setResidenceAddress(addUserDTO.getResidenceAddress());
+	    	user.setResidenceCountry(addUserDTO.getResidenceCountry());
+	    	user.setResidenceState(addUserDTO.getResidenceState());
+	    	user.setResidenceCity(addUserDTO.getResidenceCity());
+	    	user.setResidenceLatitude(addUserDTO.getResidenceLatitude());
+	    	user.setResidenceLongitude(addUserDTO.getResidenceLongitude());
+	    	user.setResidenceZipCode(addUserDTO.getResidenceZipCode());
+	    	user.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+	    	
+	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+	    	user.setResidenceStateCode(stateCode);
+	    }
 	    
        //For saving the User Role 
 	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
 	   if(userRole == null){
 		   userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
+		   
+		   if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				 userRole.setDesignation(addUserDTO.getDesignation());
+		    }
+		   
 		   if(null == user.getId()){
 				userRole.setIsPrimary(1);
 				 if(sourceType.equalsIgnoreCase("PROJECTS")){
@@ -295,9 +366,23 @@ public class UserServiceImpl implements UserService {
 			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
 				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
 			}
+			
+		 if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				 userRole.setDesignation(addUserDTO.getDesignation());
+		    }
 	   }
-		
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
+		if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess())) {
+			userRole.setIsGlobal(Constants.YES);
+		}else {
+			userRole.setIsGlobal(Constants.NO);	
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getGrade())) {
+			AssociateGrades grades = new AssociateGrades();
+			grades.setId(Long.valueOf(addUserDTO.getGrade()));
+			userRole.setGradeId(grades);
+		}
 		userRoleList.add(userRole);
 		user.setUserRole(userRoleList);
 		
@@ -320,7 +405,7 @@ public class UserServiceImpl implements UserService {
 			e1.printStackTrace();
 		}
 
-		if(addUserDTO.getCustomFormData() !=null) {
+		if(addUserDTO.getCustomFormData() !=null && !responderType.equalsIgnoreCase("vendor") && !responderType.equalsIgnoreCase("client")) {
 			for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
 				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
 					UserCustomFieldData userCustomFields = null;
@@ -413,6 +498,16 @@ public class UserServiceImpl implements UserService {
 				sendEmail(user,loginuser,password,orgLocations.getId());
 			}
 			
+			
+			/**
+			 * @author Laxman
+			 * Update the leaveTypes
+			 */
+			if(associateBalance == true) {
+			     associateBalanceLeaveService.addAssociateLeaveType(user1,orgLocations.getId(),employee,userRole);
+			}
+			
+			
 			/**
 			 * This method is used to newly added admin as a level2 manager for all existing projectmembers
 			 * @author: Naresh Bolisetty
@@ -427,7 +522,7 @@ public class UserServiceImpl implements UserService {
 			 */
 			
 			if(isUserActive == false && Constants.YES.equalsIgnoreCase(addUserDTO.getIsMailSent()))
-				registrationService.sendActivationEmail(user1);
+				registrationService.sendActivationEmail(user1,orgLocations);
 			
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
 			user1.setTempPwd(password);
@@ -517,6 +612,33 @@ public class UserServiceImpl implements UserService {
 	    if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
 			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
 	    }
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
+			  user.setMiddelName(addUserDTO.getMiddleName());
+	    }else{
+	    	 user.setMiddelName(null);
+	    }
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getGender())) {
+			  user.setGender(addUserDTO.getGender());
+	    }else{
+	    	 user.setGender(null);
+	    }
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getMaritalStatus())) {
+			  user.setMaritalStatus(addUserDTO.getMaritalStatus());
+	    }else{
+	    	 user.setMaritalStatus(null);
+	    }
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
+			try {
+				user.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));
+				  
+				} catch (Exception e) {
+				  e.printStackTrace();
+				}
+		}
 		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);
@@ -538,6 +660,18 @@ public class UserServiceImpl implements UserService {
 			userRole.setReportingManager(reportingManager);
 		}else {
 			userRole.setReportingManager(user);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){
+			User resourceManager = new User();
+			resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
+			userRole.setResourceManager(resourceManager);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getShiftId())) {
+			Shift shift = new Shift();
+			shift.setId(Long.parseLong(addUserDTO.getShiftId()));
+			userRole.setShift(shift);
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
@@ -1038,8 +1172,8 @@ public class UserServiceImpl implements UserService {
 			 
 			 
 		 }else if("Vendor".equals(responderType)){
-			 globalVarsMap.put("firstName", emailMessage.getFirstName());
-			 globalVarsMap.put("lastName",emailMessage.getLastName());
+			 globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			 globalVarsMap.put("LastName",emailMessage.getLastName());
 			 globalVarsMap.put("vendorFirstName", user.getFirstName());
 			 globalVarsMap.put("vendorLastName",user.getLastName());
 			 globalVarsMap.put("clientFirstName", ownerUser.getFirstName());
@@ -1189,14 +1323,6 @@ public class UserServiceImpl implements UserService {
 		
 		List<User> userList = null;
 		userList = userDao.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationsId, tabId);
-		if(null != userList && !userList.isEmpty()){
-			for (User user : userList) {
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationsId);
-				if(null != userRole){
-					user.setUserType(userRole.getUserType());
-				}
-			}
-		}
 		return userList;
 	}
 	
@@ -1411,12 +1537,15 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 
+		 EmailConfigurationFromMail confFromMail = emailScenarioConfigurationService.getConfFromMailByStatus(orgLocations.getId());
+		 if(confFromMail != null) {
+			 emailMessage.setFromEmail(confFromMail.getEmail());
+		 }else {
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 }
+		 
 		 emailMessage.setCreatedBy(user.getUserCode());
-		// StringBuilder msgBuild = new StringBuilder();
-		// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 StringBuffer userNameStringBuffer =  new StringBuffer();
 		 if (user.getLastName() != null && !"".equalsIgnoreCase(user.getLastName()) ) {
@@ -1489,8 +1618,139 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation) throws Exception {
-		return userDao.getUsersResponseListByOrglocationId(userDTO,orgLocation);
+	public ResponseList<UserRole> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation,Date[] searchDates) throws Exception {
+		return userDao.getUsersResponseListByOrglocationId(userDTO,orgLocation,searchDates);
+	}
+
+	@Override
+	public List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception {
+		return userDao.getLinkedUserListByUserId(id);
+	}
+
+	@Override
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception {
+		return userDao.getUserIdsListByLinkedUserId(userId);
+	}
+
+	@Override
+	public List<User> getUsersListForSignatoryByOrglocationId(Long locationId) {
+		return userDao.getUsersListForSignatoryByOrglocationId(locationId);
+	}
+
+	@Override
+	public User getUserbyConsultantUserId(Long consultantUserId)
+	{
+		return userDao.getUserbyConsultantUserId(consultantUserId);
 	}
 	
+	public List<User> getGlobalUsersByOrgId(Long roleId, Long orgId, Long tabId) throws Exception {
+		return userDao.getGlobalUsersByOrgId(roleId, orgId, tabId);
+	}
+
+	@Override
+	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgLocationId,Long orgId, Long tabId) throws Exception {
+		
+		List<User> userList = null;
+		userList = userDao.getTabAccessGlobalOwnersByOrgIdAndTabId(orgId, tabId);
+		return userList;
+	}
+
+	@Override
+	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId,
+			Long orgId, Long tabId) throws Exception {
+		return userDao.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId, orgId, tabId);
+	}
+
+	@Override
+	public List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getResourceManagersByOrgLocationIdAndTabId(orgLocationsId, tabId);
+
+	}
+
+	@Override
+	public List<User> getReportingManagersByUserRolesAndOrgLocationId(Long roleId, Long orgLocationsId)
+			throws Exception {
+		return userDao.getReportingManagersByUserRolesAndOrgLocationId(roleId, orgLocationsId);
+	}
+
+	@Override
+	public List<User> getGlobalReportingManagersUsersByOrgId(Long roleId, Long orgId) throws Exception {
+		return userDao.getGlobalReportingManagersUsersByOrgId(roleId, orgId);
+	}
+
+	@Override
+	public List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId,
+			Long orgLocationsId) throws Exception {
+		return userDao.getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userId, roleId, orgLocationsId);
+	}
+
+	@Override
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList)
+			throws Exception {
+		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates,teamsList);
+	}
+
+
+	@Override
+	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId) {
+		try {
+			DashboardItems dashboardItems = userDao.getDashboardItemsByUserId(loginUserId, orgLocationId);
+			if (dashboardItems != null) {
+				DashboardItemsDTO dashboardItemsDTO = new DashboardItemsDTO();
+				
+				JSONArray jsonArray = new JSONArray(dashboardItems.getItems());
+				if (jsonArray != null) {
+					List<JSONObject> itemsObjectList = new LinkedList<>();
+					for (int i = 0; i < jsonArray.length(); i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						/*System.out.println("JSON OBJECT : " + jsonObject);*/
+						itemsObjectList.add(jsonObject.getInt("order") - 1, jsonObject);
+					}
+					dashboardItemsDTO.setItemsObjectList(itemsObjectList);
+				}
+				dashboardItemsDTO.setId(dashboardItems.getId());
+				return dashboardItemsDTO;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations) {
+		Response<String> response = new Response<>();
+		try {
+			DashboardItems dashboardItems = null;
+			if (dashboardItemsDTO.getId() > 0) {
+				dashboardItems = userDao.getDashboardItemsByDashboardId(dashboardItemsDTO.getId());
+			}
+			else {
+				dashboardItems = new DashboardItems();
+			}
+			/*String items = "";
+			for (int i = 0; i < dashboardItemsDTO.getItemsArray().length(); i++) {
+				String jsonString = dashboardItemsDTO.getItemsArray().getString(i);
+				items += "[" + jsonString + "]";
+			}*/
+			dashboardItems.setItems(dashboardItemsDTO.getJsonData());
+			dashboardItems.setUser(user);
+			dashboardItems.setOrgLocations(orgLocations);
+			
+			long result = userDao.saveDashboardItems(dashboardItems);
+			if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
 }

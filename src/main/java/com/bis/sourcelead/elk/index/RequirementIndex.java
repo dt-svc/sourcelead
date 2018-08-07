@@ -205,6 +205,19 @@ public class RequirementIndex implements Serializable {
 	
 	private String isClientJob;
 	
+	private String primaryRecruiterUserId;
+	
+	private String tags;
+	
+	
+	public String getPrimaryRecruiterUserId() {
+		return primaryRecruiterUserId;
+	}
+
+	public void setPrimaryRecruiterUserId(String primaryRecruiterUserId) {
+		this.primaryRecruiterUserId = primaryRecruiterUserId;
+	}
+
 	public String getManagerUserId() {
 		return managerUserId;
 	}
@@ -1038,6 +1051,14 @@ public class RequirementIndex implements Serializable {
 
 	public void setIsClientJob(String isClientJob) {
 		this.isClientJob = isClientJob;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 
 }

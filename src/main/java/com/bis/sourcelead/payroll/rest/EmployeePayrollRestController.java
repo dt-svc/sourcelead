@@ -351,10 +351,11 @@ public class EmployeePayrollRestController {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		
-		List<UserPayroll> payrollReportList = employerPayrollCostService.runPayrollCycle(orgLocation,user,jsonObj);
+		List<UserPayroll> payrollReportList = employerPayrollCostService.runPayrollCycle(orgLocation,user,isGlobalAccess,jsonObj);
 		Collections.sort(payrollReportList, new Comparator<Object>() {  
             @Override  
             public int compare(Object obj1, Object obj2) {  
@@ -538,7 +539,7 @@ public class EmployeePayrollRestController {
 		{
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
-		 String[] tableColumns = {"sku", "productService", "empName", "number", "memoDescription", "date","lastmodified","dueDate","rate","qty","amount","arPaid","oldNew"};
+		 String[] tableColumns = {"sku", "productService", "empName", "number", "memoDescription", "date","lastmodified","dueDate","rate","payRate","qty","amount","arPaid","oldNew"};
 	     int sortColumnIndex = 5; //by default sorting using updated date
 		String sortColumnOrder = "asc"; //by default descending order
 		if(invoiceDetailsDTO.getOrder() != null && !invoiceDetailsDTO.getOrder().isEmpty()) {
@@ -718,4 +719,12 @@ public class EmployeePayrollRestController {
 		return list;
 	}
 	
+	@RequestMapping(value = {"/getPayrollInvoiceDataList", "/rest/getPayrollInvoiceDataList"}, method = RequestMethod.GET)
+	public @ResponseBody  ResponseList<InvoiceData> getPayrollInvoiceDataList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+            @RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		ResponseList<InvoiceData> list = invoiceDataService.getAllEmployeeInvoiceDetailsByEmpIdAndOrgLocationId(orgLocation.getId(),userId);
+		return list;
+	}
 }

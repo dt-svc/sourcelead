@@ -1,9 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +28,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
@@ -37,6 +39,9 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceDaoImpl.class);
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Value("${jdbc.schema}")
+	private String schema;
 	
 	@Override
 	@Transactional
@@ -146,6 +151,18 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			subQuery3 = " and invoice.invoiceStatus <> 'Linked' ";
 		}
 		
+		
+		List<String> tagsList = new ArrayList<>();
+		if(invoiceDTO.getTags() != null && !invoiceDTO.getTags().isEmpty()) {
+			String[] tags = invoiceDTO.getTags().split(",");
+			for(int i=0; i<tags.length; i++){
+				tagsList.add(tags[i]);
+			}
+		}else {
+			tagsList.add("");
+		}
+		String tagsQuery = " and ((:varString  IN (:tagsList)) OR (:varString NOT IN (:tagsList) and invoice.id IN (select st.entityId from SourceleadTags st where st.tagName IN (:tagsList) and st.status ='1' ))) ";
+		
 		List<Invoice> invoiceList = null;
 		ResponseList<Invoice> response = new ResponseList<>();
 		
@@ -155,12 +172,12 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 
 		String query = "from Invoice invoice  left join fetch  invoice.orgRelationID left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
-		 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" "+tagsQuery+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		String countQuery = "";
 		if(invoiceDTO.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
-			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" "+tagsQuery+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}else{
-		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" "+tagsQuery+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}
 		
 		StringBuilder query1 = new StringBuilder("");
@@ -203,18 +220,18 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			queryObj.setMaxResults(invoiceDTO.getLength());
 //			queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 		}
-		invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+		invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setString("varString", "").setParameterList("tagsList", tagsList).list();
 		int count = 0;
 		int filteredCount = 0;
 
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setString("varString", "").setParameterList("tagsList", tagsList).list();
 
 		if(countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (invoiceDTO != null) {
-			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setString("varString", "").setParameterList("tagsList", tagsList).list();
 			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
@@ -239,10 +256,6 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			String query = "from Contracts contract left join fetch contract.requirementSubmission submission left join fetch submission.requirement where contract.orgLocationId.id = :orgLocationId and "
 					+ "contract.orgRelations.id = :orgRelationId and contract.candidate.id = :candidateId and contract.contractType = :contractType and contract.templateSubmissionStatus = 'FINALIZED'";
 		     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setString("contractType", contractType).list();
-		  if(null != contractsList){
-			  return contractsList;
-		  }
-		  return contractsList;
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -263,6 +276,17 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		} else {
 			return null;
 		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Invoice> getInvoiceListByIdsAndLocationId(List<Long> invoiceIds, Long locationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Invoice invoice  where invoice.id IN (:invoiceIds) and invoice.orgLocation.id = :locationId";
+		List<Invoice> invoiceList = session.createQuery(query).setParameter("locationId", locationId).setParameterList("invoiceIds", invoiceIds).list();
+		
+		return invoiceList;
 	}
 
 
@@ -560,5 +584,41 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		String query = "from Invoice invoice  where invoice.projectID.id = :projectId and invoice.invoiceStatus =:invoiceStatus and invoice.orgLocation.id = :orgLocationId and date(invoice.createdDate) BETWEEN :startDate and :endDate";
 		List<Invoice> viewInvoiceList = session.createQuery(query.toString()).setString("invoiceStatus", invoiceStatus).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 		return viewInvoiceList;
+	}
+
+
+	@Override
+	@Transactional
+	public ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(InvoiceDTO invoiceDTO,OrgLocations orgLocations, Long orgRelationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = "";
+		if(invoiceDTO.getInvoiceType().equalsIgnoreCase("payables")){
+			subQuery = " and invoice.invoiceType = 'Payables'";
+		}else{
+			subQuery = " and invoice.invoiceType = 'Receivable'";
+		}
+		
+		ResponseList<Invoice> response = new ResponseList<>();
+		String query ="from Invoice invoice  left join fetch  invoice.orgRelationID left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
+ 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.orgRelationID.id = :orgRelationId and invoice.status = '1' "+subQuery+" and (invoice.invoiceStatus = 'SENT' or invoice.invoiceStatus = 'ACCEPTED') and (invoice.paymentStatus = 'Unpaid' or invoice.paymentStatus = 'Partial Paid' or invoice.paymentStatus = 'Overdue') and invoice.dueAmount !=00.00";
+		List<Invoice> invoiceList = session.createQuery(query).setParameter("orgRelationId", orgRelationId).setParameter("orgLocationId", orgLocations.getId()).list();
+		response.setData(invoiceList);
+		return response;
+	}
+	
+	@Override
+	@Transactional
+	public Long checkInvoiceOrBillIdNumberInDatebase(Long orgLocationId, Integer generatedIdcount, String invoiceType) {
+		Session session = this.sessionFactory.getCurrentSession();
+		//String query = "SELECT MAX(CAST(SUBSTR(TRIM(EXPENSE_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".EXPENSES WHERE LOCATION_ID = '"+ orgLocationId + "'"; /*OLD CODE*/
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(INVOICE_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".INVOICE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "' AND INVOICE_TYPE = '"+invoiceType+"'";
+		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+		Long count = 0L;
+		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+			count = (Long) maxCountList.iterator().next().longValue();
+		}
+		return count;	
 	}
 }

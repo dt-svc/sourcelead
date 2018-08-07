@@ -37,6 +37,7 @@ $(document).ready(function(){
                 <div class="pull-left select-fild">
                         <select onchange="redirectlocation(this.value);">
                         <option value="/pendingLeaves" selected>Pending Leaves</option>
+                        <option value="/withdrawLeaves">Withdraw Leaves</option>
                         <option  value="/approvedLeaves">Approved Leaves</option>
                         <option value="/rejectedLeaves">Rejected Leaves</option>
                         <option value="/cancelLeaves">Cancelled Leaves</option>
@@ -190,8 +191,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,status){
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
 			 result = result +'<div class="col-md-8">';
-			 if(data.leaveType != null && data.leaveType !='' && data.leaveType !='undefined'){
-				 result = result +'<span>'+data.leaveType+'</span>';
+			 if(data.leaveName != null && data.leaveName !='' && data.leaveName !='undefined'){
+				 result = result +'<span>'+data.leaveName+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -217,7 +218,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,status){
 	            }
              result = result +' </div>';
              result = result +' </div>';
-             result = result +'<div class="col-md-12 mb">';
+             /* result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">'; 
              if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
@@ -226,7 +227,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,status){
 	            	result = result +' <span>--</span>';
 	            }
              result = result +'</div>';
-             result = result +'</div>';
+             result = result +'</div>'; */
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Applied on:</b></label>';
              result = result +'<div class="col-md-8">';

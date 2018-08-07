@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -72,7 +73,21 @@ public class DataMigrationCommonController {
 			return model;
 
 		}
-	 
+	 @RequestMapping(value = "/uploadImmigrationForm")
+		public ModelAndView uploadImmigrationForm(HttpServletRequest request) {
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Immigrations);
+			request.getSession().setAttribute("sessionData",sessionData);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadImmigrationForm");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
 	 @RequestMapping(value = "/uploadProjectTasks")
 		public ModelAndView uploadProjectTasks(@RequestParam(value="projectUUID", required=true) String projectUUID,
 				@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) {
@@ -172,7 +187,48 @@ public class DataMigrationCommonController {
 	        }
 			
 		}
+	 @RequestMapping(value = "/downloadImmigrationTemplate", method = RequestMethod.GET)
+		public void downloadImmigrationTemplate(HttpServletRequest request,HttpServletResponse response) throws Exception{
+			logger.debug("download Immigration template is for Import downloadImmigrationTemplate method");
+	        @SuppressWarnings("resource")
+			XSSFWorkbook workbook = new XSSFWorkbook();
+	        XSSFSheet sheet = workbook.createSheet("Immigration Template");
+	        String[] tableColumns = ImmigrationConstants.IMPORT_DOWNLOAD_IMMIGRATION_EXCEL_HEADERS;
 	 
+	        Row row = sheet.createRow(0);
+	        int cellnum = 0;
+	        for (String key : tableColumns) {
+	            Cell cell = row.createCell(cellnum++);
+	            cell.setCellValue((String)key);
+	        }
+	        try {
+	            File file = new File("Immigration_Import_Template.xlsx");
+	    		FileOutputStream out = new FileOutputStream(file);
+	    		workbook.write(out);
+	            
+	            out.close();
+	            out.flush();
+	            
+	            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+	            
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+			
+		}
 	 @RequestMapping(value = "/downloadDataImportTemplateForAsset", method = RequestMethod.GET)
 		public void downloadDataImportTemplateForAsset(HttpServletRequest request,HttpServletResponse response) throws Exception{
 			logger.debug("download Asset template is for Import downloadAssetDataImportTemplate method");
@@ -232,6 +288,48 @@ public class DataMigrationCommonController {
 	        }
 	        try {
 	            File file = new File("Project_Task_Import_Template.xlsx");
+	    		FileOutputStream out = new FileOutputStream(file);
+	    		workbook.write(out);
+	            
+	            out.close();
+	            out.flush();
+	            
+	            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+	            
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+			
+		}
+	 
+	 @RequestMapping(value = "/downloadDataImportTemplateForAssociate", method = RequestMethod.GET)
+		public void downloadDataImportTemplateForAssociate(HttpServletRequest request,HttpServletResponse response) throws Exception{
+	        @SuppressWarnings("resource")
+			XSSFWorkbook workbook = new XSSFWorkbook();
+	        XSSFSheet sheet = workbook.createSheet("AssociateTemplate");
+	        String[] tableColumns = Constants.DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS;
+	 
+	        Row row = sheet.createRow(0);
+	        int cellnum = 0;
+	        for (String key : tableColumns) {
+	            Cell cell = row.createCell(cellnum++);
+	            cell.setCellValue((String)key);
+	        }
+	        try {
+	            File file = new File("Associate_Import_Template.xlsx");
 	    		FileOutputStream out = new FileOutputStream(file);
 	    		workbook.write(out);
 	            

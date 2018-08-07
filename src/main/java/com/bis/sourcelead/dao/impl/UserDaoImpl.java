@@ -1,25 +1,28 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +33,27 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ConnectionsDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
+import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.RecruiterReportView;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -52,6 +63,18 @@ public class UserDaoImpl implements UserDao {
 	
 	@Autowired
 	private UserRoleDao userRoleDao;
+	
+	@Autowired
+    OrgLocationService orgLocationService;
+	
+	@Autowired
+	RequirementService requirementService;
+	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -79,7 +102,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();
 		logger.debug("findByUserName start");
-		users = session.createQuery("from User where userName=:username" ).setString( "username", username ).list();
+		users = session.createQuery("from User user left join fetch user.linkUserId where user.userName = :username" ).setString( "username", username ).list();
 		logger.debug("findByUserName end");
 		if (users.size() > 0) {
 			return users.get(0);
@@ -212,7 +235,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();
 		logger.debug("getUserById start");
-		users = session.createQuery("from User where id=:id" ).setLong( "id", Id ).list();
+		users = session.createQuery("from User user left join fetch user.linkUserId where user.id=:id" ).setLong( "id", Id ).list();
 		logger.debug("getUserById end");
 		if (users.size() > 0) {
 			return users.get(0);
@@ -351,9 +374,12 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-		    	 for (String s : roles.getActionId().split(",")){
+		    	 /*for (String s : roles.getActionId().split(",")){
 		    		 roleActionsList.add(Long.parseLong(s));
-		    	 }
+		    	 }*/
+		    	 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 		    	 
 		    	 roleActionsList.retainAll(tabActionsIds);
 		    	 if(roleActionsList.size() > 0){
@@ -364,7 +390,7 @@ public class UserDaoImpl implements UserDao {
 	     
 	     
 		
-		subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel <= (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)";
+		subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel <= (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE' and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList)";
 		
 		String query = "from User user where user.id IN (select "+subQuery+" )  ";
 	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgLocationsId", orgLocationsId).list();
@@ -390,9 +416,12 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-		    	 for (String s : roles.getActionId().split(",")){
+		    	 /*for (String s : roles.getActionId().split(",")){
 		    		 roleActionsList.add(Long.parseLong(s));
-		    	 }
+		    	 }*/
+		    	 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 		    	 
 		    	 roleActionsList.retainAll(tabActionsIds);
 		    	 if(roleActionsList.size() > 0){
@@ -495,8 +524,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -574,8 +606,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		/* for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -671,8 +706,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -711,8 +749,11 @@ public class UserDaoImpl implements UserDao {
 		     for(Roles roles : rolesList){
 		    	 if(null != roles.getActionId()){
 		    		 List<Long> roleActionsList = new ArrayList<Long>();
-		    		 for (String s : roles.getActionId().split(",")){
+		    		 /*for (String s : roles.getActionId().split(",")){
 		        		 roleActionsList.add(Long.parseLong(s));
+		        	 }*/
+		    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+		    			 roleActionsList.add(Long.parseLong(s));
 		        	 }
 		        	 
 		        	 roleActionsList.retainAll(tabActionsIds);
@@ -797,8 +838,11 @@ public class UserDaoImpl implements UserDao {
      for(Roles roles : rolesList){
     	 if(null != roles.getActionId()){
     		 List<Long> roleActionsList = new ArrayList<Long>();
-    		 for (String s : roles.getActionId().split(",")){
+    		 /*for (String s : roles.getActionId().split(",")){
         		 roleActionsList.add(Long.parseLong(s));
+        	 }*/
+    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+    			 roleActionsList.add(Long.parseLong(s));
         	 }
         	 
         	 roleActionsList.retainAll(tabActionsIds);
@@ -809,7 +853,7 @@ public class UserDaoImpl implements UserDao {
     	 
      }
 	 
-     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))  ";
+     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList))  ";
      List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).list();
      return userRoleList;
         
@@ -829,9 +873,12 @@ public class UserDaoImpl implements UserDao {
 		for (Roles roles : rolesList) {
 			if (null != roles.getActionId()) {
 				List<Long> roleActionsList = new ArrayList<Long>();
-				for (String s : roles.getActionId().split(",")) {
+				/*for (String s : roles.getActionId().split(",")) {
 					roleActionsList.add(Long.parseLong(s));
-				}
+				}*/
+				for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 				roleActionsList.retainAll(tabActionsIds);
 				if (roleActionsList.size() > 0) {
 					ownerRolesList.add(roles.getId());
@@ -857,9 +904,9 @@ public class UserDaoImpl implements UserDao {
 	  String query = "";
 	  Boolean isAdmin = userRoleDao.isUserAdminByOrgLocationId(currentApproverId,orgLocationsId);
 	  if(isAdmin){
-		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList) and userRole.roles.roleName = 'ROLE_ADMIN' and userRole.user.id != :currentApproverId)";
+		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.orgLocations.id = :orgLocationsId and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList) and userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.user.id != :currentApproverId)";
 	  }else{
-		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList) and userRole.user.id != :currentApproverId)";
+		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.orgLocations.id = :orgLocationsId and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList) and userRole.user.id != :currentApproverId)";
 	  }
 		
 	  String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
@@ -872,8 +919,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -883,7 +933,7 @@ public class UserDaoImpl implements UserDao {
 	    	 }
 	    	 
 	     }
-     List<User> userRoleList = session.createQuery(query).setLong("currentApproverId", currentApproverId).setParameterList("ownerRolesList", ownerRolesList).list();
+     List<User> userRoleList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("currentApproverId", currentApproverId).setParameterList("ownerRolesList", ownerRolesList).list();
      return userRoleList;
         
 	}
@@ -932,8 +982,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -967,8 +1020,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -1059,8 +1115,11 @@ public class UserDaoImpl implements UserDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
@@ -1098,9 +1157,12 @@ public class UserDaoImpl implements UserDao {
          for(Roles roles : rolesList){
         	 if(null != roles.getActionId()){
         		 List<Long> roleActionsList = new ArrayList<Long>();
-        		 for (String s : roles.getActionId().split(",")){
+        		 /*for (String s : roles.getActionId().split(",")){
             		 roleActionsList.add(Long.parseLong(s));
-            	 }
+            	 }*/
+        		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
             	 
             	 roleActionsList.retainAll(tabActionsIds);
             	 if(roleActionsList.size() > 0){
@@ -1133,9 +1195,12 @@ public class UserDaoImpl implements UserDao {
 	       for(Roles roles : rolesList){
 	      	 if(null != roles.getActionId()){
 	      		 List<Long> roleActionsList = new ArrayList<Long>();
-	      		 for (String s : roles.getActionId().split(",")){
+	      		 /*for (String s : roles.getActionId().split(",")){
 	          		 roleActionsList.add(Long.parseLong(s));
-	          	 }
+	          	 }*/
+	      		for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 	          	 roleActionsList.retainAll(tabActionsIds);
 	          	 if(roleActionsList.size() > 0){
 	          		 ownerRolesList.add(roles.getId());
@@ -1165,9 +1230,12 @@ public class UserDaoImpl implements UserDao {
 	       for(Roles roles : rolesList){
 	      	 if(null != roles.getActionId()){
 	      		 List<Long> roleActionsList = new ArrayList<Long>();
-	      		 for (String s : roles.getActionId().split(",")){
+	      		 /*for (String s : roles.getActionId().split(",")){
 	          		 roleActionsList.add(Long.parseLong(s));
-	          	 }
+	          	 }*/
+	      		for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 	          	 roleActionsList.retainAll(tabActionsIds);
 	          	 if(roleActionsList.size() > 0){
 	          		 ownerRolesList.add(roles.getId());
@@ -1226,9 +1294,12 @@ public class UserDaoImpl implements UserDao {
          for(Roles roles : rolesList){
 	      	 if(null != roles.getActionId()){
 	      		 List<Long> roleActionsList = new ArrayList<Long>();
-	      		 for (String s : roles.getActionId().split(",")){
+	      		 /*for (String s : roles.getActionId().split(",")){
 	          		 roleActionsList.add(Long.parseLong(s));
-	          	 }
+	          	 }*/
+	      		for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
 	      		 
 	      		 if(roleActionsList.contains(roleActionId)) {
 	      			ownerRolesList.add(roles.getId());
@@ -1406,6 +1477,9 @@ public class UserDaoImpl implements UserDao {
 				if(null != userRole.getOrgLocations().getUser() && user.getId().equals(userRole.getOrgLocations().getUser().getId())){
 					userDTO.setIsPrimaryAdmin("Y");
 				}
+				if(null != userRole.getOrgLocations().getOrg().getUser() && user.getId().equals(userRole.getOrgLocations().getOrg().getUser().getId())){
+					userDTO.setIsSuperAdmin("Y");
+				}
 				
 				userDTOList.add(userDTO);
 			}
@@ -1415,81 +1489,752 @@ public class UserDaoImpl implements UserDao {
 	
 	}
 
+	@SuppressWarnings({ "unchecked", "unchecked" })
 	@Override
 	@Transactional
-	public ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation) throws Exception {
+	public ResponseList<UserRole> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation,Date[] searchDates) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationId) ";
-	     
-	    List<User> usersList = null;
-		ResponseList<User> response = new ResponseList<>();
-	     
+		 String query = "";
+		 java.sql.Date startDate = null;
+		 java.sql.Date endDate = null;
+		 java.sql.Date sqlDate = null;
+		 if(searchDates != null) {
+			  startDate = new java.sql.Date(searchDates[0].getTime()); 
+			  endDate = new java.sql.Date(searchDates[1].getTime()); 
+			 query = "from UserRole userRole  where  userRole.orgLocations=:orgLocationId  and date(userRole.user.createdDate) BETWEEN :startDate and :endDate ";
+		 }else {
+			 query = "from UserRole userRole  where  userRole.orgLocations=:orgLocationId";
+		 }
+	      
+
+	    List<UserRole> usersRoleList = null;
+		ResponseList<UserRole> response = new ResponseList<>();
+		List<Long> countlist = null;
 	    String qry = "";
 		if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
 				qry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
 		}
 	     
 	     StringBuilder query1 = new StringBuilder("");
-			if(StringUtils.isNotBlank(userDTO.getSearchValue())){
-				if(userDTO.getSearchValue().contains("/") || userDTO.getSearchValue().contains("-")){
-				String convertedDate=userDTO.getSearchValue();
-				if(userDTO.getSearchValue().contains("/")){
-					convertedDate = userDTO.getSearchValue().replaceAll("/", "-");
-				}
-				DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocation.getDateFormat()).toFormatter();
-	            LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
-	            DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	            String newDate = parsedDate.format(f2);
-	            Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
-	            java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-//	            String queryDate = "";
-//	            Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocations.getId());
-//	            response.setData(queryObjDate.list());
-				}else{
-					if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-					query1.append(" and (user.firstName like '%" + userDTO.getSearchValue() + "%' ")
-					.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ")
-					.append("OR user.email like '%" + userDTO.getSearchValue() + "%' ")
-					.append("OR user.mobilePhone like '%" + userDTO  .getSearchValue() + "%' ")
-//					.append("OR user.id like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-					.append("OR user.id like '%" + userDTO.getSearchValue() + "%' )");
-							
-				}
-				}
-			}
 	     
+	     if(StringUtils.isNotEmpty(userDTO.getSearchValue()) && userDTO.getSearchValue() != null) {
+	    	 Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			   Matcher matcher = pattern.matcher(userDTO.getSearchValue());
+			    if(matcher.matches() == true) {
+							if(userDTO.getSearchValue().contains("/")||(userDTO.getSearchValue().contains("-"))) {
+								String replacedValue = userDTO.getSearchValue().replaceAll("/", "-");
+								    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocation.getId());
+									SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+							        java.util.Date utilDate = format.parse(replacedValue);
+							        sqlDate = new java.sql.Date(utilDate.getTime());
+							}
+			    }
+			    
+			    query1.append(" and (userRole.user.firstName like '%" + userDTO.getSearchValue() + "%' ")
+				.append("OR userRole.user.lastName like '%" + userDTO.getSearchValue() + "%' ")
+				.append("OR userRole.user.email like '%" + userDTO.getSearchValue() + "%' ")
+				.append("OR userRole.user.mobilePhone like '%" + userDTO  .getSearchValue() + "%' ")
+				.append("OR userRole.designation like '%" + userDTO  .getSearchValue() + "%' ")
+				.append("OR userRole.user.id like '%" + userDTO.getSearchValue() + "%' )");
+			    if(sqlDate != null) {
+			    	query1.append("OR userRole.updatedDate like '%" + sqlDate + "%' ");
+			    	query1.append("OR userRole.user.id IN(select employee.user.id from Employees employee where employee.hireDate like '%" + sqlDate + "%')");
+			    }
+	    	 
+	     }
 	     
 	     Query queryObj = session.createQuery(query + query1.toString()+qry);
-			if (userDTO != null && userDTO.getLength() > 0) {
-				queryObj.setFirstResult(userDTO.getStart());
-				queryObj.setMaxResults(userDTO.getLength());
-//				queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+			
+			if(searchDates != null) {
+				usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
+				 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+			}else {
+				usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+				 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocation.getId()).list();
 			}
-			usersList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+			
 			int count = 0;
 			int filteredCount = 0;
-
-			List<Long> countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocation.getId()).list();
 
 			if(countlist != null && !countlist.isEmpty()) {
 				count = countlist.iterator().next().intValue();
 			}
 			response.setRecordsTotal(count);
 			if (userDTO != null) {
-				List<Long> filteredCountlist  = session.createQuery("select count(*) " + query + query1.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+				List<Long> filteredCountlist = null;
+				if(searchDates != null) {
+					filteredCountlist  = session.createQuery("select count(*) " + query + query1.toString()).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+				}else {
+					filteredCountlist  = session.createQuery("select count(*) " + query + query1.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+				}
 				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
 				response.setRecordsFiltered(filteredCount);
 			} 
-				response.setData(usersList);
+				response.setData(usersRoleList);
 				return response;
 	     
 	}
+
+	@Override
+	@Transactional
+	public User getUserbyConsultantUserId(Long consultantUserId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = null;
+		String query = "from User user where user.id = :userId";
+		List<User> userList = session.createQuery(query).setLong( "userId", consultantUserId ).list();
+		if (userList.size() > 0) {
+			user = userList.get(0);
+		}
+		return user;
+	}
+
+	@Override
+	@Transactional
+	public List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception {
+		// TODO Auto-generated method stub
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from User user where user.linkUserId.id = :id  ";
+	    List<User> usersList = session.createQuery(query.toString()).setLong("id", id).list();
+	    List<UserDTO> userDTOList = new ArrayList<>();
+	    if(usersList != null && !usersList.isEmpty()) {
+	    	for(User user : usersList) {
+	    		UserDTO userDTO = new UserDTO();
+	    		userDTO.setEmail(user.getEmail());
+	    		userDTO.setUserCode(user.getUserCode());
+	    		userDTOList.add(userDTO);
+	    	}
+	    }
+        return userDTOList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<User> getGlobalUsersByOrgId(Long roleId, Long orgId, Long tabId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		
+		
+		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
+	     
+	     String rolesQuery = "from Roles roles where roles.org.id = :orgId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgId", orgId).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 List<Long> roleActionsList = new ArrayList<Long>();
+		    	 /*for (String s : roles.getActionId().split(",")){
+		    		 roleActionsList.add(Long.parseLong(s));
+		    	 }*/
+		    	 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
+		    	 
+		    	 roleActionsList.retainAll(tabActionsIds);
+		    	 if(roleActionsList.size() > 0){
+		    		 ownerRolesList.add(roles.getId());
+		    	 }
+	    	 }
+	     }
+	     
+	     
+		
+		subQuery = "userRole.user.id from UserRole userRole where (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations.org.id = :orgId and userRole.userState != 'INACTIVE' and userRole.isGlobal = 'Y' and userRole.roles.id IN (:ownerRolesList)";
+		
+		String query = "from User user where user.id IN (select "+subQuery+" )  ";
+	    List<User> userRoleList = session.createQuery(query).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgId", orgId).list();
+        return userRoleList;
+
+        
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select user.id from User user where user.linkUserId.id = :userId " ;
+	    List<Long> userIds = session.createQuery(query).setLong( "userId", userId).list();
+        return userIds;
+        
+	}
+
+	@Override
+	@Transactional
+	public List<User> getUsersListForSignatoryByOrglocationId(Long locationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> userList = null;
+		String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationId) and user.id NOT IN (select ols.userId.id from OrglocationSignatory ols where ols.orgLocationId.id = :orgLocationId) ORDER BY user.id DESC";
+		userList = session.createQuery(query).setLong( "orgLocationId", locationId).list();
+		return userList;
+	}
+
+	@Override
+	@Transactional
+	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgId, Long tabId) throws Exception {
+		
+		  Session session = this.sessionFactory.getCurrentSession();
+			
+		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
+	     
+	     String rolesQuery = "from Roles roles where roles.org.id = :orgId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgId", orgId).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 List<Long> roleActionsList = new ArrayList<Long>();
+	    		 /*for (String s : roles.getActionId().split(",")){
+	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
+	        	 
+	        	 roleActionsList.retainAll(tabActionsIds);
+	        	 if(roleActionsList.size() > 0){
+	        		 ownerRolesList.add(roles.getId());
+	        	 }
+	    	 }
+	    	 
+	     }
+		 
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.isGlobal = 'Y' and userRole.roles.id IN (:ownerRolesList))  ";
+	     List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).list();
+	     return userRoleList;
+	        
+		}
+
+	@Override
+	@Transactional
+	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId,
+			Long orgId, Long tabId) throws Exception {
+		
+		  Session session = this.sessionFactory.getCurrentSession();
+		  String query = query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.orgLocations.org.id = :orgId and userRole.isGlobal = 'Y'  and userRole.roles.id IN (:ownerRolesList) and userRole.user.id != :currentApproverId)";
+		 
+			
+		  String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+		     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
+		     
+		     String rolesQuery = "from Roles roles where roles.org.id = :orgId ";
+		     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgId", orgId).list();
+		     List<Long> ownerRolesList = new ArrayList<Long>();
+		     
+		     for(Roles roles : rolesList){
+		    	 if(null != roles.getActionId()){
+		    		 List<Long> roleActionsList = new ArrayList<Long>();
+		    		 /*for (String s : roles.getActionId().split(",")){
+		        		 roleActionsList.add(Long.parseLong(s));
+		        	 }*/
+		    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+		    			 roleActionsList.add(Long.parseLong(s));
+		        	 }
+		        	 
+		        	 roleActionsList.retainAll(tabActionsIds);
+		        	 if(roleActionsList.size() > 0){
+		        		 ownerRolesList.add(roles.getId());
+		        	 }
+		    	 }
+		    	 
+		     }
+	     List<User> userRoleList = session.createQuery(query).setLong("orgId", orgId).setLong("currentApproverId", currentApproverId).setParameterList("ownerRolesList", ownerRolesList).list();
+	     return userRoleList;
+	        
+		}
+
+	@Override
+	@Transactional
+	public List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		
+		
+/*		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
+*/	     
+	     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 ownerRolesList.add(roles.getId());
+	    		 /*List<Long> roleActionsList = new ArrayList<Long>();
+		    	 for (String s : roles.getActionId().split(",")){
+		    		 roleActionsList.add(Long.parseLong(s));
+		    	 }
+		    	 
+		    	 roleActionsList.retainAll(tabActionsIds);
+		    	 if(roleActionsList.size() > 0){
+		    		 ownerRolesList.add(roles.getId());
+		    	 }*/
+	    	 }
+	     }
+	     
+		
+		subQuery = "userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)";
+		
+		String query = "from User user where user.id IN (select "+subQuery+" )  ";
+	    List<User> userRoleList = session.createQuery(query).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgLocationsId", orgLocationsId).list();
+        return userRoleList;
+        
+
+	}
+
+	@Override
+	@Transactional
+	public List<User> getReportingManagersByUserRolesAndOrgLocationId(Long roleId, Long orgLocationsId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		
+		
+	     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 ownerRolesList.add(roles.getId());
+	    	 }
+	     }
+	     
+		
+		subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel <= (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE' and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList)";
+		
+		String query = "from User user where user.id IN (select "+subQuery+" )  ";
+	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgLocationsId", orgLocationsId).list();
+        return userRoleList;
+        
+	}
+
+	@Override
+	@Transactional
+	public List<User> getGlobalReportingManagersUsersByOrgId(Long roleId, Long orgId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		
+		
+	     
+	     String rolesQuery = "from Roles roles where roles.org.id = :orgId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgId", orgId).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 ownerRolesList.add(roles.getId());
+	    	 }
+	     }
+		
+		subQuery = "userRole.user.id from UserRole userRole where (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations.org.id = :orgId and userRole.userState != 'INACTIVE' and userRole.isGlobal = 'Y' and userRole.roles.id IN (:ownerRolesList)";
+		
+		String query = "from User user where user.id IN (select "+subQuery+" )  ";
+	    List<User> userRoleList = session.createQuery(query).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgId", orgId).list();
+        return userRoleList;
+
+        
+	}
+
+	@Override
+	@Transactional
+	public List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId,
+			Long orgLocationsId) throws Exception {
+		
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+	     
+	     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 ownerRolesList.add(roles.getId());
+	    	 }
+	     }
+	     
+		
+		subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel <= (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList) and userRole.user.id <> :userId";
+		
+		String query = "from User user where user.id IN (select "+subQuery+" )  ";
+	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setLong( "userId", userId).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgLocationsId", orgLocationsId).list();
+        return userRoleList;
+        
+	
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList)
+			throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<UserDTO> response = new ResponseList<>();
+		Query queryObj = null;
+		List<User> usersList = null;
+		StringBuilder query1 = new StringBuilder("");
+		StringBuilder query2 = new StringBuilder("");
+		String globalAccessQuery = "";
+		String searchQuery = "";
+		int totalCount = 0;
+		String subQueryTeam = "";
+		String sortingQry = "";
+		
+		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+			
+			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+				searchQuery = " AND U.FIRST_NAME LIKE '%" + userDTO.getSearchValue() + "%' OR U.LAST_NAME LIKE '%" + userDTO.getSearchValue() + "%'";
+			}
+			if(teamsList.size()>0 && !teamsList.isEmpty()){
+			subQueryTeam = " AND UR.USER_ID IN (SELECT TM.MEMBER_USER_ID FROM TEAM_MEMBERS TM WHERE TM.TEAM_ID IN (:teamsList) and TM.STATUS = '1' )";
+			}
+			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
+				sortingQry = " ORDER BY U.FIRST_NAME"+" "+userDTO.getSortOrder();
+			}
+			
+			if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+				
+				try {
+				query ="SELECT "
+						+" CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS fullName, "
+						+" U.ID AS userId,"
+						+" U.USER_CODE AS userCode"
+						+ " FROM "
+					    + " USER U,"
+					    + " USER_ROLE UR,"
+					    + " ORG_LOCATIONS OL"
+						+ " WHERE OL.ID = UR.ORG_LOCATIONS_ID AND "
+						+ " UR.USER_ID = U.ID AND "
+					    + " UR.USER_STATE = 'ACTIVE' "
+						+searchQuery
+						+subQueryTeam
+						+ " AND  OL.ORG_ID = :orgId"
+					    + " GROUP BY UR.USER_ID"
+					    +sortingQry;
+				
+				
+				queryObj = session.createSQLQuery(query);
+				queryObj.setParameter("orgId", orgId);
+				queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
+				queryObj.setFirstResult(userDTO.getStart());
+				queryObj.setMaxResults(userDTO.getLength());
+			List<UserDTO> userDTOList = queryObj.list();
+			if(userDTOList != null && !userDTOList.isEmpty()) {
+				usersList = new ArrayList<>();
+				for(UserDTO uDTO :userDTOList) {
+					User user = new User();
+					user.setId(uDTO.getUserId().longValue());
+					user.setFullName(uDTO.getFullName());
+					user.setUserCode(uDTO.getUserCode());
+					usersList.add(user);
+				}
+			}
+			
+			
+			String countQuery ="SELECT"
+					+ " COUNT(DISTINCT UR.USER_ID) AS USER_COUNT"
+					+ " FROM"
+					    + " USER U,"
+					    + " USER_ROLE UR,"
+					    + " ORG_LOCATIONS OL"
+						+ " WHERE UR.USER_ID = U.ID AND "
+					    + " OL.ID = UR.ORG_LOCATIONS_ID AND"
+					    + " UR.USER_STATE = 'ACTIVE' "
+						+searchQuery
+						+subQueryTeam
+						+ " AND  OL.ORG_ID = :orgId"
+					    +sortingQry;
+			
+			Query countqueryString = session.createSQLQuery(countQuery);
+			countqueryString.setParameter("orgId", orgId);
+			BigInteger filterCount1 =  (BigInteger) countqueryString.uniqueResult();
+			filterCount = filterCount1.intValue();
+			totalCount = filterCount1.intValue();
+			
+				
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}else {
+				
+				try {
+				
+					query ="SELECT "
+							+" CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS fullName, "
+							+" U.ID AS userId,"
+							+" U.USER_CODE AS userCode"
+							+ " FROM"
+						    + " USER U,"
+						    + " USER_ROLE UR"
+							+ " WHERE"
+							+ " UR.USER_ID = U.ID AND "
+						    + " UR.USER_STATE = 'ACTIVE' "
+							+searchQuery
+							+subQueryTeam
+							+ " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
+						    + " GROUP BY UR.USER_ID"
+						    +sortingQry;
+				
+					queryObj = session.createSQLQuery(query);
+					queryObj.setParameter("orgLocationId", orgLocationId);
+					if(teamsList.size()>0 && !teamsList.isEmpty()){
+					queryObj.setParameterList("teamsList", teamsList);
+					}
+					queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
+					queryObj.setFirstResult(userDTO.getStart());
+					queryObj.setMaxResults(userDTO.getLength());
+				List<UserDTO> userDTOList = queryObj.list();
+				if(userDTOList != null && !userDTOList.isEmpty()) {
+					usersList = new ArrayList<>();
+					for(UserDTO uDTO :userDTOList) {
+						User user = new User();
+						user.setId(uDTO.getUserId().longValue());
+						user.setFullName(uDTO.getFullName());
+						user.setUserCode(uDTO.getUserCode());
+						usersList.add(user);
+					}
+				}
+				
+				String countQuery ="SELECT"
+						+ " COUNT(DISTINCT UR.USER_ID) AS USER_COUNT"
+						+ " FROM"
+						    + " USER U,"
+						    + " USER_ROLE UR"
+							+ " WHERE UR.USER_ID = U.ID AND "
+						    + " UR.USER_STATE = 'ACTIVE' "
+							+searchQuery
+							+subQueryTeam
+						    + " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
+						    +sortingQry;
+				
+				Query countqueryString = session.createSQLQuery(countQuery);
+				countqueryString.setParameter("orgLocationId", orgLocationId);
+				if(teamsList.size()>0 && !teamsList.isEmpty()){
+				countqueryString.setParameterList("teamsList", teamsList);
+				}
+				BigInteger filterCount1 =  (BigInteger) countqueryString.uniqueResult();
+				filterCount = filterCount1.intValue();
+				totalCount = filterCount1.intValue();
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+
+			
+		}else {
+			
+			if(teamsList != null && teamsList.isEmpty()){
+				teamsList.add(0l);
+			}
+			
+			String subQuery = " and ((:varZero  IN (:teamsList)) OR (:varZero NOT IN (:teamsList) and tm.teamId.id IN (:teamsList))) ";
+			
+			if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+				globalAccessQuery = " and userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+			}else {
+				globalAccessQuery = " and userRole.orgLocations.id = :orgLocationId";
+			}
+			
+			
+			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+				query1.append(" user.firstName like '%" + userDTO.getSearchValue() + "%' ")
+				.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ");
+							
+				}
+			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
+					sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
+			}
+			
+			query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+globalAccessQuery+" ) "
+					+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId  "+subQuery+"))";
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
+			}else{
+				 queryObj = session.createQuery(query +query1.toString()+" "+sortingQry);
+			}
+			
+				queryObj.setLong("orgLocationId", orgLocationId).setLong("userId", userId).setParameterList("teamsList", teamsList).setLong("varZero", 0).list();
+	
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}else {
+				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("varZero", 0).setParameterList("teamsList", teamsList).list();
+				filterCount = countlist.iterator().next().intValue();
+			}
+			queryObj.setFirstResult(userDTO.getStart());
+			queryObj.setMaxResults(userDTO.getLength());
+			usersList = queryObj.list();
+		}
+		
+		if (userDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(getUserListForRecruiterReport(usersList,orgLocationId,searchDates,isGlobalUser,orgId));
+		return response;
+	}
+	
+	private List<UserDTO> getUserListForRecruiterReport(List<User> usersList,Long orgLocationId,Date[] searchDates,String isGlobalUser,Long orgId){
+		List<UserDTO> usersDTOList = new ArrayList<>();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String fromDate = sdf.format(searchDates[0]);
+		String toDate = sdf.format(searchDates[1]);
+		Map<String, UserDTO> userListMap = new HashMap<String, UserDTO>();
+		Map<BigInteger, UserDTO> associatesListMap = new HashMap<BigInteger, UserDTO>();
+		List<String> userCodeList = new ArrayList<>();
+		List<Long> userIdsList = new ArrayList<>();
+		if(usersList != null && !usersList.isEmpty()) {
+			for(User user : usersList) {
+				
+				try {
+					UserDTO userDTO = new UserDTO();
+					userDTO.setFullName(user.getFullName());
+					userDTO.setUserCode(user.getUserCode());
+					userListMap.put(user.getUserCode(), userDTO);
+					associatesListMap.put(BigInteger.valueOf(user.getId()), userDTO);
+					userCodeList.add(user.getUserCode());
+					userIdsList.add(user.getId());
+					usersDTOList.add(userDTO);
+					
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
+			try {
+				
+				
+				List<RecruiterReportCandidateCountView> RecruiterReportCandidatesList = candidateService.getCandidateCountsCreatedUserList(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
+				if(RecruiterReportCandidatesList != null && !RecruiterReportCandidatesList.isEmpty()) {
+					for(RecruiterReportCandidateCountView candidateReportView : RecruiterReportCandidatesList) {
+						UserDTO userDTO = userListMap.get(candidateReportView.getAssociateUserCode());
+						if(candidateReportView.getCandCount() != null) {
+							userDTO.setUserCandidatesCount(candidateReportView.getCandCount());
+						}
+						
+					}
+				}
+				
+				//List<RecruiterReportAssociateCountView> RecruiterReportAssociateList = requirementService.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
+				List<RecruiterRrportDTO> recruiterReportAssociateList1 = requirementService.getAssociateCountsCreatedUserListByLocation(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
+				//Map<Long,List<Long>> requirementMap = new HashMap<Long,List<Long>>();
+				UserDTO userDTO1 = null;
+				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
+					
+					userDTO1 = associatesListMap.get(reportDTO.getManagerUserId());
+					if(userDTO1 != null){
+						userDTO1.setUserRequirementsCount(userDTO1.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO1.getUserRequirementsCount().add(BigDecimal.ONE) );
+					}
+					userDTO1 = associatesListMap.get(reportDTO.getAssignedUserId());
+					if(userDTO1 != null){
+						userDTO1.setUserRequirementsCount(userDTO1.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO1.getUserRequirementsCount().add(BigDecimal.ONE) );
+					}
+				}
+				
+				
+				
+				
+			/*if(RecruiterReportAssociateList != null && !RecruiterReportAssociateList.isEmpty()) {
+					for(RecruiterReportAssociateCountView associateReportView : RecruiterReportAssociateList) {
+						UserDTO userDTO = associatesListMap.get(associateReportView.getAssociateUserId());
+						if(associateReportView.getJobCount() != null) {
+							userDTO.setUserRequirementsCount(associateReportView.getJobCount());
+						}
+						
+					}
+				}*/
+				
+				List<RecruiterReportView> recruiterReportViewList = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
+				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
+					for(RecruiterReportView recuiterReportView : recruiterReportViewList) {
+						UserDTO userDTO = userListMap.get(recuiterReportView.getUserCode());
+						userDTO.setUserApplicantsCount(recuiterReportView.getApplicantSubmissionCount());
+						userDTO.setUserShortlistedApplicantsCount(recuiterReportView.getApplicantShortlistedCount());
+						userDTO.setUserSubmittedApplicantsCount(recuiterReportView.getApplicantSubmittedClientCount());
+						userDTO.setUserOfferedApplicantsCount(recuiterReportView.getApplicantOfferMadeCount());
+						userDTO.setUserRejectedApplicantsCount(recuiterReportView.getApplicantRejectedCount());
+						userDTO.setUserInterviewedApplicantsCount(recuiterReportView.getApplicantInterviewCount());
+						userDTO.setUserApplicantsBackOutCount(recuiterReportView.getApplicantBackOutCount());
+						userDTO.setUserApplicantsJoinedCount(recuiterReportView.getApplicantJoinedCount());
+					}
+					
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return usersDTOList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public DashboardItems getDashboardItemsByUserId(long loginUserId, long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from DashboardItems items where items.user.id= :userId and items.orgLocations.id=:orgLocationId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("userId", loginUserId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			List<DashboardItems> dashboardItems = queryObj.list();
+			if (dashboardItems != null && !dashboardItems.isEmpty())
+				return dashboardItems.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public DashboardItems getDashboardItemsByDashboardId(long dashboardItemId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(DashboardItems.class, dashboardItemId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public long saveDashboardItems(DashboardItems dashboardItems) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(dashboardItems);
+			return dashboardItems.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+
 }

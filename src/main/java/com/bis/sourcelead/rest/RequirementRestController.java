@@ -1,9 +1,13 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,11 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +35,9 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -36,6 +45,7 @@ import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
+import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.JobShareCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -49,8 +59,11 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
@@ -67,13 +80,16 @@ import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -165,6 +181,152 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 JobShareService jobShareService;
+	 
+	 @Autowired
+	 RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	 
+	 @Autowired
+	 TimeZoneService timeZoneService;
+	 
+	@RequestMapping(value = "/storeFairJob", method = RequestMethod.POST)
+	public @ResponseBody Response<String> storeFairJob(JobFairDTO jobFairDTO, HttpServletRequest request)
+			throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			if (user != null) {
+				response = requirementService.saveJobFair(jobFairDTO, user, orgLocation);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/changeJobFairStatus", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> changeJobFairStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long jobFairId,
+			@RequestParam(defaultValue = "0") int status) {
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				boolean result = requirementService.changeJobFairStatus(jobFairId, status);
+				response.setObject(result);
+				response.setResponse(result ? Result.SUCCESS.name() : Result.FAILED.name());
+				response.setResponseMessage(result ? Result.SUCCESS.getValue() : Result.FAILED.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	
+	@RequestMapping(value="/getJobFairDatesForCalendar")
+	public ResponseList<String> getJobFairDatesForCalendar(HttpServletRequest request){
+		ResponseList<String> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user !=null) {
+				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				
+				/*Timezone timezone = null;
+				if(loginOrgLocations.getTimezone() != null){
+					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+				}*/
+				
+				responseList.setData(requirementService.getJobFairDatesForCalendar(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat()));
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
+	
+	@RequestMapping(value = "/getJobFairRequirements")
+	public ResponseList<Requirement> getJobFairRequirements(HttpServletRequest request, @RequestParam(defaultValue="") String date) {
+		ResponseList<Requirement> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(), date);
+				DateFormat week_Day = new SimpleDateFormat ("EEEE");
+				String dayOfweek = week_Day.format(startTime);
+				SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
+				String selectedDate  = formatter.format(startTime);
+				
+				responseList.setData(requirementService.getJobFairRequirementsByDate(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), date));
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(dayOfweek + "<>" + selectedDate);
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
+	
+	@RequestMapping(value = "/getRequirementsByJobFair")
+	public ResponseList<Requirement> getRequirementsByJobFairId(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") long jobFairId) {
+		ResponseList<Requirement> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				List<Requirement> requirementList = requirementService.getRequirementsListByJobFairId(user.getId(), loginOrgLocations.getId(), jobFairId);
+				for(Requirement requirement : requirementList) {
+					//setting jobfair date(s)
+					requirement.setJobFairDates(requirementService.getJobFairDatesByRequirementIdAndJobFairId(requirement.getId(), jobFairId));
+					//setting counts
+					RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, loginOrgLocations, "ALL");
+					requirement.setNoOfApplicants(String.valueOf(rsCount.getApplicantsCount()));
+					requirement.setNoOfShortlistedApplicants(String.valueOf(rsCount.getShortlistCount()));
+					requirement.setNoOfSubmittedApplicants(String.valueOf(rsCount.getSubmitToClientCount()));
+					requirement.setNoOfInterviewedApplicants(String.valueOf(rsCount.getInterviewCount()));
+					requirement.setNoOfOfferedApplicants(String.valueOf(rsCount.getOffersCount()));
+					requirement.setNoOfJoinedApplicants(String.valueOf(rsCount.getJoinedCount()));
+				}
+				responseList.setData(requirementList);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
+	 
 	/**
 	 * @author prasad k
 	 * @since sept 13 2016
@@ -1041,6 +1203,7 @@ public class RequirementRestController {
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch (Exception e) {
+				e.printStackTrace();
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
@@ -1070,7 +1233,7 @@ public class RequirementRestController {
 					}
 					else {
 						existedUser = existedUser + comma+requirementAssignTo.getAssignUserId().getId().toString()
-								+ ",undefined";
+								+ ",null";
 					}
 				}
 				response.setObject(existedUser);
@@ -1146,5 +1309,166 @@ public class RequirementRestController {
 		return response;
 	}
 	
+	
+	
+	@RequestMapping(value = "/submitRecommendationCandidates", method = RequestMethod.POST)
+	public @ResponseBody Response<String> submitRecommendationCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId, 
+			@RequestParam(value = "candidateIds", required = false) String candidateIds,
+			@RequestParam(value = "candidateResume", required = false) String candidateResume,
+			HttpServletRequest request)throws Exception {
+		Response<String> response = new Response<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		if(loginUser != null) {
+			try {
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				
+				String[] candidateId = candidateIds.split(",");
+				if(candidateId != null &&  candidateId.length > 0){
+					for(String candidateid   : candidateId){
+						
+						
+						boolean flag = requirementSubmissionService.getRequirementSubmissionByCandidateIdAndJobId(Long.valueOf(candidateid),requirement.getId());
+						if(flag == false) {
+						
+							CandidateDTO candidate = candidateService.getCandidateDTOByCandidateId(Long.valueOf(candidateid));
+							JSONObject labelItems = new JSONObject();
+							labelItems.put("requirementId", requirementId);
+							labelItems.put("reqCoolingOffPeriod", requirement.getReqCoolingOffPeriod());
+							labelItems.put("candidateId", candidate.getCandId());
+							labelItems.put("candidateResumeRequired", candidateResume);
+							
+							JSONArray array = new JSONArray();
+							JSONObject firstNameItem = new JSONObject();
+							firstNameItem.put("label", "First Name");
+							firstNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+							firstNameItem.put("name", "FirstName");
+							firstNameItem.put("value", candidate.getFirstName());
+							labelItems.put("FirstName", candidate.getFirstName());
+							array.put(firstNameItem);
+							
+							JSONObject lastNameItem = new JSONObject();
+							lastNameItem.put("label", "Last Name");
+							lastNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+							lastNameItem.put("name", "LastName");
+							lastNameItem.put("value", candidate.getLastName());
+							labelItems.put("LastName", candidate.getLastName());
+							array.put(lastNameItem);
+							
+							if(StringUtils.isNotBlank(candidate.getPhoneNumber())) {
+								JSONObject mobilePhoneItem = new JSONObject();
+								mobilePhoneItem.put("label", "Phone Number");
+								mobilePhoneItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+								mobilePhoneItem.put("name", "PhoneNumber");
+								mobilePhoneItem.put("value", candidate.getPhoneNumber());
+								array.put(mobilePhoneItem);
+								labelItems.put("PhoneNumber", candidate.getPhoneNumber());
+							}
+							
+							JSONObject emailItem = new JSONObject();
+							emailItem.put("label", "Email Id");
+							emailItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+							emailItem.put("name", "EmailId");
+							emailItem.put("value", candidate.getEmail());
+							labelItems.put("EmailId", candidate.getEmail());
+							array.put(emailItem);
+							
+							JSONObject locationItem = new JSONObject();
+							locationItem.put("label", "Location");
+							locationItem.put("id", "submissionLocation");
+							locationItem.put("name", "location");
+							locationItem.put("value", candidate.getLocation());
+							labelItems.put("location", candidate.getLocation());
+							array.put(locationItem);
+							
+							JSONObject countryItem = new JSONObject();
+							countryItem.put("label", "Country");
+							countryItem.put("id", "submissionCountry");
+							countryItem.put("name", "country");
+							countryItem.put("value", candidate.getCountry());
+							labelItems.put("country", candidate.getCountry());
+							array.put(countryItem);
+							
+							if(StringUtils.isNotBlank(candidate.getState())) {
+								JSONObject stateItem = new JSONObject();
+								stateItem.put("label", "State");
+								stateItem.put("id", "submissionState");
+								stateItem.put("name", "state");
+								stateItem.put("value", candidate.getState());
+								labelItems.put("state", candidate.getState());
+								array.put(stateItem);
+							}
+							
+							if(StringUtils.isNotBlank(candidate.getCity())) {
+								JSONObject cityItem = new JSONObject();
+								cityItem.put("label", "City");
+								cityItem.put("id", "submissionCity");
+								cityItem.put("name", "city");
+								cityItem.put("value", candidate.getCity());
+								labelItems.put("city", candidate.getCity());
+								array.put(cityItem);
+							}
+							
+							if(StringUtils.isNotBlank(candidate.getNoticePeriod())) {
+								JSONObject npItem = new JSONObject();
+								npItem.put("label", "Notice Period");
+								npItem.put("id", "select-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+								npItem.put("name", "NoticePeriod");
+								npItem.put("value", candidate.getNoticePeriod());
+								labelItems.put("NoticePeriod", candidate.getNoticePeriod());
+								array.put(npItem);
+							}
+							
+							
+							String con = array.toString();
+							RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(labelItems,loginUser, orgLocation, con, loginUserRole);
+					
+							RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+							requirementSubmissionHistory.setFromStage("NEW");
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser,requirementSubmissionHistory);
+							
+							if(null != requirement){
+								Integer totalApplicatsCountForRequirement = 0;
+							   //updating total number of applicants for requrement
+								totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+								if(totalApplicatsCountForRequirement > 0){
+									requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+									requirementService.updateRequirement(requirement);
+								}else{
+									requirement.setTotalApplicants(0); 
+								}
+								
+								// pass dto as parameter
+								RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+								requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
+							}
+						
+					  }
+					}
+					
+					response.setObject("success");
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
+	
+	@RequestMapping(value = "/ws/assignGeneratedIdToJobFairs", method = RequestMethod.GET)
+	public String assignGeneratedIdToJobFairs(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("---- Calling assignGenerateIdToJobFairs() -----");
+		requirementService.assignGeneratedIdToJobFairs();
+		return "Successfully added Generated Id's to JobFairs";
+	}
 	
 }

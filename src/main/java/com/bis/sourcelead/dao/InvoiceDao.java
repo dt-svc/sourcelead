@@ -17,7 +17,11 @@ public interface InvoiceDao{
 	
 	ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 	
+	ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(InvoiceDTO invoiceDTO,OrgLocations orgLocations, Long orgRelationId) throws Exception;
+	
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
+	
+	List<Invoice> getInvoiceListByIdsAndLocationId(List<Long> invoiceIds,Long locationId)throws Exception;
 	
 	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId,  String invoiceType) throws Exception;
 
@@ -51,4 +55,5 @@ public interface InvoiceDao{
 
 	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId, Long orgLocationId, String invoiceStatus, Date startDate, Date endDate);
 
+	public Long checkInvoiceOrBillIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount,String invoiceType);
 }

@@ -30,11 +30,11 @@
   		<h4>Reach Us &#64;</h4>
   		<div class="reachus">
   			<h5>INDIA</h5>
-			<p>Hyderabad, Telangana.<br><i class="fa fa-phone"></i>  91. 40-6700-7676</p>
+			<p>Hyderabad, Telangana.<br><i class="fa fa-phone"></i>91. 40-6700-7676</p>
   		</div>
   		<div class="reachus mt clearfix">
   			<h5>USA</h5>
-  			<p>3535 Victory Group Way, Frisco,<br>TX 75034, USA<br><i class="fa fa-phone"></i>  (214) 295-5535</p>
+  			<p>3535 Victory Group Way, Frisco,<br>TX 75034, USA<br><i class="fa fa-phone"></i>+1 972 999 2656</p>
   		</div>
   	</div>
   	<div class="col-md-5 col-sm-6">

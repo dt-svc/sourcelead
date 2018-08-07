@@ -12,21 +12,26 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementInterviewDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProposeTime;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
@@ -37,11 +42,13 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProposeTimeService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
@@ -61,7 +68,8 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 public class RequirementInterviewRestController {
 
-	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	@Autowired
 	UserService userService;
@@ -98,6 +106,12 @@ public class RequirementInterviewRestController {
 	 
 	 @Autowired
 	 RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	 
+	@Autowired
+	private RequirementService requirementService;
+	
+	@Autowired
+	private CandidateService candidateService;
 	
 	@RequestMapping(value = "/app/getAllInterviewers")
 	public @ResponseBody ResponseList<User> getAllApprovers(HttpServletRequest request) throws Exception {
@@ -126,6 +140,10 @@ public class RequirementInterviewRestController {
 			                                              HttpServletRequest request) throws Exception {
 		ResponseList<RequirementSubmission> response = new ResponseList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		if (requirement != null && requirement.getPrimaryRecruiterUserId() != null) {
+			user = requirement.getManagerUserId();
+		}
 		if(user != null) {
 			try {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -166,12 +184,27 @@ public class RequirementInterviewRestController {
 	@RequestMapping(value = "/app/saveInterview" , method = RequestMethod.POST)
 	   public String saveInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
- 	    String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
+			JSONObject jsonObj = new JSONObject(json);
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			
+			
+	  /*      String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+			int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+			for (long c = 1; c < maxCount; c++) {
+				if(jsonObj.has(c+"applicant") && !jsonObj.getString(c+"applicant").isEmpty()){
+					if(jsonObj.has("externalInterviewersList["+c+"]")  && !jsonObj.getString("externalInterviewersList["+c+"]").isEmpty()) {
+						System.out.println(jsonObj.getString("externalInterviewersList["+c+"]"));
+						JSONArray jsonArray =  new JSONArray(jsonObj.getString("externalInterviewersList["+c+"]"));
+						for(int i=0; i<jsonArray.length(); i++) {
+							JSONObject jsonObject = jsonArray.getJSONObject(i);
+							System.out.println(jsonObject.getString("interviewerName")+">>>>"+jsonObject.getString("interviewerEmail"));
+						}
+					}
+				}
+			}*/
 			
 			requirementInterviewService.saveRequirementInterview(jsonObj,user,orgLocations,loginOrg);
  	    
@@ -687,4 +720,112 @@ public class RequirementInterviewRestController {
 			}	
 			return response;
 		}
+	 
+	 @RequestMapping(value = {"/app/getInterviewsListBySubmission","/rest/getInterviewsListBySubmission"}, method = RequestMethod.POST)
+		public ModelAndView getInterviewsListBySubmission(@RequestParam(value = "submissionId", required = false) Long submissionId,
+							@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception{
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			  
+			ModelAndView model = new ModelAndView();
+			try {
+				model.addObject("candidate", candidateService.getCandidateByCandidateId(candidateId));
+				model.addObject("interviewsList", requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId, orgLocations));
+				model.setViewName("requirement/requirementSubmissionInterviewsList");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			return model;
+		}
+	 
+	 
+	 @RequestMapping(value = "/app/saveInterviewStatusByInterviewId" , method = RequestMethod.POST)
+		   public Response<String> saveInterviewStatusByInterviewId(RequirementInterviewDTO requirementInterviewDTO, HttpServletRequest request) throws Exception {
+		 		Response<String> response = new Response<>();
+		 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 		if(user != null) {
+					try {
+						RequirementInterview ri = requirementInterviewService.getRequirementInterviewById(requirementInterviewDTO.getId());
+						if(ri != null) {
+							if(StringUtils.isNotEmpty(requirementInterviewDTO.getInterviewScore())) {
+								ri.setInterviewScore(Integer.parseInt(requirementInterviewDTO.getInterviewScore()));
+							}
+							if(StringUtils.isNotEmpty(requirementInterviewDTO.getInterviewPhase())) {
+								ri.setInterviewPhase(requirementInterviewDTO.getInterviewPhase());
+								
+								if(requirementInterviewDTO.getInterviewPhase().equalsIgnoreCase("Rejected")) {
+									saveSubmissionStatusForRejectInterview(ri.getSubmissionId(), user, orgLocations);
+								}else if(requirementInterviewDTO.getInterviewPhase().equalsIgnoreCase("Selected")) {
+									saveSubmissionStatusForSelectedInterview(ri.getId(), ri.getSubmissionId(), user, orgLocations);
+								}
+							}
+							if(StringUtils.isNotEmpty(requirementInterviewDTO.getInterviewComment())) {
+								ri.setInterviewComment(requirementInterviewDTO.getInterviewComment());
+							}
+							ri.setUpdatedBy(user.getUserCode());
+							ri.setUpdatedDate(new Date());
+							requirementInterviewService.saveRequirementInterview(ri);
+							
+							response.setObject("success");
+							response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+						}else {
+							response.setResponse(Result.AWKWARD.name());
+							response.setResponseMessage(Result.AWKWARD.getValue());
+						}
+					}catch (Exception e) {
+						e.printStackTrace();
+						response.setResponse(Result.AWKWARD.name());
+						response.setResponseMessage(Result.AWKWARD.getValue());
+					}
+		 		}else {
+		 			response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		 		}
+				return response;
+	}
+	 
+	 
+	public void saveSubmissionStatusForRejectInterview(RequirementSubmission submission, User user, OrgLocations orgLocations) throws Exception{
+		//RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		// to update submission history
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().toString());
+		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.REJECTED.toString());
+		// to update Submission status
+		submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
+		submission.setRejectedReason("Interview Rejected");
+		submission.setRejectedCategoryType("Interview Rejection");
+		submission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+		submission.setUpdatedBy(user.getUserCode());
+		StringBuilder sb = new StringBuilder();
+		submission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		submission.setUpdatedDate(new Date());
+		requirementSubmissionService.storeRequirementSubmission(submission);
+		if(!orgLocations.getId().equals(submission.getCandidate().getOrgLocationId().getId()) && submission.getSourceSubmission() != null &&  !submission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
+			requirementSubmissionService.sendRejectionMailToVendorContact(user, submission.getRejectedReason(), submission.getId(), orgLocations);
+		}
+		requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+	}
+	
+	public void saveSubmissionStatusForSelectedInterview(Long interviewId, RequirementSubmission submission, User user, OrgLocations orgLocations) throws Exception {
+		RequirementInterview ri = requirementInterviewService.getLatestInterviewBySubmissionId(submission.getId());
+		if(ri.getId().equals(interviewId)) {
+			// to update submission history
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().toString());
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW.toString());
+			// to update Submission status
+			submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
+			submission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW);
+			submission.setUpdatedBy(user.getUserCode());
+			StringBuilder sb = new StringBuilder();
+			submission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			submission.setUpdatedDate(new Date());
+			requirementSubmissionService.storeRequirementSubmission(submission);
+			requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+		}
+	}
+	 
 }

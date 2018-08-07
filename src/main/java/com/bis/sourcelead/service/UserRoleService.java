@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
+import com.bis.sourcelead.entity.AssociateDepartmentView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
@@ -158,5 +160,23 @@ public interface UserRoleService {
 	List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception;
 
 	public List<UsersUsageReportDTO> getUsageReportUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO, OrgLocations orgLocations) throws Exception;
+	
+	public List<UserRole> getUserAccountsListByUserId(List<Long> userId) throws Exception;
+
+	List<Long> getAllAssignedUsersIdsByResourceManagerId(Long resourceManagerId,Long orgLocationId);
+	
+	List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId,Long orgLocationId);
+
+	 List<BigInteger> getAllUsersRoleList() throws Exception;
+	 
+	 List<UserDTO> getAllReportingManagersListAssignedToAssociates(Long orgLocationId) throws Exception;
+	 
+	 Boolean getIsGlobalManager(Long orgId,Long userId) throws Exception;
+
+	public UserRole getGlobalUserReportingManagerByUserIdAndOrgId(Long userId, Long orgId);
+
+   List<AssociateDepartmentView> getUserRolesByDepartmentId(String departmentId, Long orgLocationId);
+
+   	 List<UserRole> getUserListByUserIdList(List<Long> userIdList, Long orgLocationId);
 
 }

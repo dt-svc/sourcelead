@@ -43,6 +43,8 @@ public class AddClientVendorELK {
 	private static final Logger logger = LoggerFactory.getLogger(AddClientVendorELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
 	 private SourceleadELKTC<ClientVendorIndex> client;
+	 ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	 
 	 protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -65,7 +67,7 @@ public class AddClientVendorELK {
 		Connection conn = dataSource.getConnection();
 		 try {
 				
-				String sql = "SELECT * FROM sourcelead.ORG_RELATIONS relation";
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".ORG_RELATIONS relation";
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
 			    while(rs.next()){
@@ -103,7 +105,7 @@ public class AddClientVendorELK {
 			    	}
 			    	
 			    	
-			    	String sql1 = "SELECT * FROM sourcelead.USER  user where  user.USER_CODE = '"+createdBy+"' ";
+			    	String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".USER  user where  user.USER_CODE = '"+createdBy+"' ";
 						Statement stmt1 = conn.createStatement();
 						ResultSet rs1 = stmt1.executeQuery(sql1);
 						if(rs1 != null){
@@ -118,7 +120,7 @@ public class AddClientVendorELK {
 								   }
 						    }
 	    	           }
-						String sql2 = "SELECT * FROM sourcelead.ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+responderLocationId+"' ";
+						String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+responderLocationId+"' ";
 						Statement stmt2 = conn.createStatement();
 						ResultSet rs2 = stmt2.executeQuery(sql2);
 						if(rs2 != null){
@@ -142,7 +144,7 @@ public class AddClientVendorELK {
 								   
 								   
 								   
-							/*	   String sql3 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+orgId+"' ";
+							/*	   String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".ORG  org where  org.ID = '"+orgId+"' ";
 									Statement stmt3 = conn.createStatement();
 									ResultSet rs3 = stmt3.executeQuery(sql3);
 									if(rs3 != null){
@@ -158,7 +160,7 @@ public class AddClientVendorELK {
 						    }
 							
 	    	           }
-						String sql4 = "SELECT * FROM sourcelead.ORG_LOCATIONS  initiatorLocationId where initiatorLocationId.ID = '"+initiatorLocationId+"' ";
+						String sql4 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS  initiatorLocationId where initiatorLocationId.ID = '"+initiatorLocationId+"' ";
 						Statement stmt4 = conn.createStatement();
 						ResultSet rs4 = stmt4.executeQuery(sql4);
 						if(rs4 != null){
@@ -180,7 +182,7 @@ public class AddClientVendorELK {
 									   clientVendorIndex.setInitiatorWebSite(rs4.getString("WEB_SITE"));
 								   }
 								   
-							/*	   String sql5 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+orgId+"' ";
+							/*	   String sql5 = "SELECT * FROM "+dbconfig.getSchema()+".ORG  org where  org.ID = '"+orgId+"' ";
 									Statement stmt5 = conn.createStatement();
 									ResultSet rs5 = stmt5.executeQuery(sql5);
 									if(rs5 != null){
@@ -216,7 +218,7 @@ public class AddClientVendorELK {
 		 Statement stmt11 = null;
 		 try {
 			  //conn11 = dataSource1.getConnection();
-				String sql = "SELECT  count(*) FROM sourcelead.ORG_SPOC where ORG_RELATION_ID = "+orgRelationId;
+				String sql = "SELECT  count(*) FROM "+dbconfig.getSchema()+".ORG_SPOC where ORG_RELATION_ID = "+orgRelationId;
 				stmt11 = conn11.createStatement();
 				ResultSet rs = stmt11.executeQuery(sql);
 				while(rs.next()) {
@@ -239,10 +241,6 @@ public class AddClientVendorELK {
 	 
 	@Bean
 	public DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

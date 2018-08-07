@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dto.DataMigrationCommonDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -81,14 +82,16 @@ public class DataMigrationCommonRestController {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		  
 		ModelAndView model = new ModelAndView();
+		try {
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
 		dataWithCellId = dataMigrationService.getfileData(ac+dataMigrationCommonDTO.getFilePath(), dataMigrationCommonDTO.getHeaderPosition());
 		List<SourceleadFormFields> formFields = null;
-		
 		switch(dataMigrationCommonDTO.getUploadType()){  
 	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;
 	    case "projectTasks": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(94l, 1);break;  
+	    case "associateUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(161l, 1);break;  
+	    case "candidatesUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(73l, 1);break;  
 	    }
 		
 		if("timesheetUpload".equalsIgnoreCase(dataMigrationCommonDTO.getUploadType())) {
@@ -126,6 +129,16 @@ public class DataMigrationCommonRestController {
 		model.addObject("uploadType", dataMigrationCommonDTO.getUploadType());
 		model.addObject("timesheetMode", dataMigrationCommonDTO.getTimesheetMode());
 		model.addObject("headerPosition", dataMigrationCommonDTO.getHeaderPosition());
+		if(StringUtils.isNotBlank(dataMigrationCommonDTO.getUploadType()) 
+				&& dataMigrationCommonDTO.getUploadType().equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_UPLOAD)) {
+
+			model.addObject("columnHeaders", ImmigrationConstants.IMPORT_IMMIGRATION_EXCEL_HEADERS);
+			model.addObject("headersNamesMap", ImmigrationConstants.HEADERS_NAMES_MAP);
+			model.addObject("headersFieldNamesMap", ImmigrationConstants.HEADERS_FIELD_NAMES_MAP);
+		}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		return model;
 	}
 	

@@ -11,9 +11,7 @@
 --%>
 
   <div id="shareEmptypopUp"></div>
-   <div class="success_pop" id="selector4" style="display: none;"> 
-     <i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span> 
-   </div>
+  
 <script>
   function noAccess(id){ 	
 	 
@@ -49,7 +47,19 @@
  </sec:authorize>
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  <jsp:include page="candidatesTimelineActivity.jsp"></jsp:include>
+ <jsp:include page="requirementListForSubmission.jsp"></jsp:include>
  
+ <div class="new_side_wrap">
+	<div class="new_side_wrap_inn">
+		<div class="new_side_wrap_cta">
+		 <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop datatable_filter">
+		    <div id="addApplicantDivLoading"></div>
+			<div id="addApplicantDiv"></div>
+			</div>
+		</div>
+	</div>
+</div>
+	
 	<script>
 	var isAssociate = 'N';
 	var _csrfParam = '${_csrf.parameterName}';
@@ -122,6 +132,7 @@ function candidateSideBar(candidateId){
 			            var city = '';
 			            var currencyCodes = '';
 			            var generatedId = '';
+			            var middleName = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'Month(s)';            			 		
          			 	}else{
@@ -144,6 +155,11 @@ function candidateSideBar(candidateId){
          			 		lastName = json.lastName;
          			 	}else{
          			 		lastName = "";
+         			 	}
+         			 	if(json.middelName != null && json.middelName !='' && json.middelName != 'undefined'){
+         			 		middleName = json.middelName;
+         			 	}else{
+         			 		middleName = "";
          			 	}
 
          			 	
@@ -269,6 +285,22 @@ function candidateSideBar(candidateId){
 						result = result+'   </div>  ';
 						result = result+' </div>                 ';                                                                                                                                                      
 						result = result+' </div> ';
+						result = result+'<div class="socialnetwork-details socialnetworkIcons">';
+			             result = result+'<ul class="list-inline list-unstyled">';
+			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
+				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
+				             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
+				             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
+				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
+				             }
+			             result = result+'</ul>';
+			             result = result+'                 </div>';
 						/* else{ 
 							result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
 							result = result+' <div class="progress nomr">                                                                                                                                                       ';
@@ -283,6 +315,9 @@ function candidateSideBar(candidateId){
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
+						 
+							
+						
 						  
 			             /*  result = result+'                     <div class="media-left image-parent">';
 			             result = result+'                     <div class="imageParent">'; */
@@ -292,7 +327,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'<div class="media-body candidate-details candidateDetails padding_left">';
 			            /*  result = result+'<h4 class="media-heading" title = "">'+json.generatedId+'</h4>'; */
-			             result = result+'<h4 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h4>';
+			             result = result+'<h4 class="media-heading" title = "'+json.firstName+' '+middleName+' '+lastName+'">'+json.firstName+' '+middleName+' '+lastName+'</h4>';
 			            
 			             result = result+'<ul class="list-unstyled">';
 			             
@@ -354,24 +389,23 @@ function candidateSideBar(candidateId){
 			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="col-md-7 padding_left padding_right">---</span</li>';  
 			             }
 			             
+			             if(json.gender != null && json.gender != '' && json.gender != 'undefined'){
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Gender</span><span class="padding_left padding_right">'+json.gender+'</span></li>';
+			             }else{
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Gender</span><span class="col-md-7 padding_left padding_right">---</span</li>';  
+			             }
+			             
+			             if(json.maritalStatus != null && json.maritalStatus != '' && json.maritalStatus != 'undefined'){
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Marital Status</span><span class="padding_left padding_right">'+json.maritalStatus+'</span></li>';
+			             }
+			             if(json.dateofBirthString != null && json.dateofBirthString != '' && json.dateofBirthString != 'undefined'){
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">DateOfBirth</span><span class="padding_left padding_right">'+json.dateofBirthString+'</span></li>';
+			             }else{
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">DateOfBirth</span><span class="col-md-7 padding_left padding_right">---</span</li>';  
+			             }
+			             
 			             result = result+'</ul>';
 			             result = result+'</div>';
-			             result = result+'<div class="socialnetwork-details socialnetworkIcons">';
-			             result = result+'<ul class="list-inline list-unstyled">';
-			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
-				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
-				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
-				             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
-				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
-				             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
-				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
-				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
-				             }
-			             result = result+'</ul>';
-			             result = result+'                 </div>';
 			             result = result+'                 </div>';
 			             result = result+'               </div>';
 			             result = result+'                   </div>';
@@ -430,16 +464,54 @@ function candidateSideBar(candidateId){
 			 		    /* New comments div creation Nov 8th, 2016 */
 			             
 			             
-			             
 			             result = result+'               </div>';
 			             result = result+'			</div>';
+			             
+			             
+			             result = result+'  <div class="cearfix">';
+				         result = result+'	  <div class="newTagsWrap">';
+				         result = result+'		    <ul class="clearfix tagsWrap tagsWrapBor">';
+				         result = result+'			<select multiple class="chosen-select form-control" name="tagName" id="candidateTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">';
+				         result = result+'			</select>';
+				         result = result+'			</ul>';
+				         result = result+'			<div class="clearfix"></div>';
+				         result = result+'	  </div>';
+				         result = result+' </div>';
+	
+				        
+			            /*  result = result+' <div class="newTagsWrap">';
+							result = result+'    <ul class="clearfix tagsWrap tagsWrapBor">';
+							result = result + '<select multiple class="chosen-select form-control" name="tagName" id="tagName" data-placeholder="add tags" data-validation="validate_Space" data-validation-optional="true">';
+							// here get lookup data tags and manually enter skills 
+							$.each( json.tagsList, function( i, tags ) {
+							  var existed = 0;
+				                if(json.candidateTags != null && json.candidateTags != 'undefined' && json.candidateTags != '') {
+					                var res = [];
+					                res = json.candidateTags.split(",");
+					                res.forEach(function(item) {
+					                	if(tags == item){
+					                		existed = 1;
+					                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+					                	}
+					                });
+				                }
+				                if(existed == 0){
+				                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+				                }
+							});
+			                result = result + '</select>';
+							result = result+'        <div class="clearfix"></div>';
+							result = result+'    </ul>';
+							result = result+'</div>'; */
+							
+							
+							
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu">'; 
-			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 
-			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\');">Profile</a></li>';
+			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\',\''+json.isAssociate+'\');">Profile</a></li>';
 
 			             '</sec:authorize>';
 			             
@@ -513,6 +585,8 @@ function candidateSideBar(candidateId){
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
+						 getCandidateTagsList(candidateId);
+						 
 						 
 						 if("${candidateKeyword}" == "requestedDocumentNotification"){
 						    	$("#quickview").removeClass("active in");
@@ -523,13 +597,48 @@ function candidateSideBar(candidateId){
 						    	$("#candDetailView").addClass("active");
 					 	    	candidateDocuments(candidateId);
 						    }else{
-						    	candidateProfile(candidateId,candidateType);
+						    	candidateProfile(candidateId,candidateType,json.isAssociate);
 						    }
 						 
 						 var output = "";
 						 output = output + '<a data-toggle="tab" href="#timelineview" onclick="getActivityDiv('+candidateId+')">Timeline</a>';
 						 $("#candTimelineView").empty();  
 			 		     $("#candTimelineView").append(output);
+			 		     
+			 		     
+			 		    // Tags relatd code
+			 		    var select, chosen;
+			 		   select = $("#candidateTagName");
+			 		   select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+			 		   chosen = select.data('chosen');
+			 		   chosen.search_field.on('keyup', function(e)
+			 		   {
+			 		   	var anyKeyword = this.value.replace(",","");
+			 		       if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+			 		       {
+			 		       	var par = this.parent;
+			 		           var option = $("<option>").val(anyKeyword).text(anyKeyword);
+			 		           select.append(option);
+			 		           select.find(option).prop('selected', true);
+			 		           $("#candidateTagName option").each(function(){
+			 		                 $(this).siblings("[value='"+ this.value+"']").remove();
+			 		           });
+			 		   		$("#candidateTagName").trigger("chosen:updated");
+			 		   		saveCandidateTags("add",candidateId);
+			 		       }
+			 		   });
+
+			 		   $('#candidateTagName').chosen().on('change', function(evt, params) {
+			 		   	if (params.selected && params.selected != undefined) {
+			 		   		saveCandidateTags("add",candidateId);
+			 		   	}
+			 		   	if (params.deselected && params.deselected != undefined) {
+			 		   		saveCandidateTags("delete",candidateId);
+			 		   	}
+			 		   	
+			 		   });
+			 		   $("#candidateTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+
 			 		   
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
@@ -556,6 +665,85 @@ function candidateSideBar(candidateId){
 }
 </script>
 
+<!--  ============================= Candidate tags related scripts written by Laxman Start ================================ -->
+<script>
+function getCandidateTagsList(candidateId){
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getCandidatesTags?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.candidateTags != null && json.candidateTags != 'undefined' && json.candidateTags != '') {
+	                var res = [];
+	                res = json.candidateTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            $("#candidateTagName").empty();
+            $("#candidateTagName").append(result);
+            $("#candidateTagName").chosen().trigger("chosen:updated")
+
+        },
+	});
+}
+function saveCandidateTags(type,candidateId){
+	 var tagName = $("#candidateTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+""
+	 }
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup1("Tags added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tags deleted successfully");
+        		}
+        		getCandidateTagsList(candidateId);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+
+function showSuccessStatusPopup1(status) {
+	$("#addCandidateTagAlert").css("display","block");
+	$("#addCandidateTagAlert span").html(status);
+    $('#addCandidateTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteCandidateTagAlert").css("display","block");
+	$("#deleteCandidateTagAlert span").html(status);
+    $('#deleteCandidateTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+
+<!--  ============================= Candidate tags related scripts written by Laxman Start ================================ -->
+
 <%-- 
      @author : sarath kumar.
 
@@ -576,6 +764,11 @@ $(document).ready(function() {
     $(".proj_close, .side_mask").click(function(){
 		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+		
+		clearJobAdvSearch();
+		$(".new_side_wrap").removeClass("new_side_wrap_active");
+		$(".req_side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
 	});	
 }); 
@@ -645,6 +838,7 @@ function deleteProfileImage(candidateId){
 	       },
      }); 
 }
+
 </script>
 
 <%-- 
@@ -857,6 +1051,11 @@ function cancel(candidateId){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
+  
+   <div class="success_pop" id="candSelector" style="display: none;"> 
+     <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
+   </div>
+   
    <c:if test="${!empty msg}">
 	        <div class="success_pop" id="sucesspop"  style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
@@ -884,19 +1083,8 @@ function cancel(candidateId){
 		</div>   --%> 
 		
   </section>
-  <div class="timesheet_out">
-    <div class="vendor_wrap">
-    <div class="pull-left pull-left ml mt10 mr5">
-                <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr10" onclick="resetCandidateFilter();" title="Refresh">
-				    <span class="fa fa-refresh"></span>
-				</button>
-	</div>
-     <div class="pull-left cand-advsrche">
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
-			  Advanced Search&nbsp;&nbsp;
-			  <i class="fa fa-search"></i>
-			  </a> 
-			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
+  
+  		  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
 				  <!-- <div class="cand-advsrch-popup cand-advsrchPopup"> -->
 				  <div class="cand-advsrch-popup advancedsearch-popup">
 					  <h5 class="headerAdsrch">Advanced Search
@@ -930,6 +1118,17 @@ function cancel(candidateId){
 					  </div>
 					  <div class="row">
 					  <div class="clearfix">
+					  
+					  
+					  <div class="col-md-8">
+						<label>Tags</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="canTags" name="candidateTags">
+								</select>
+							 </div>
+						</div>
+						
+						
 						<div class="col-md-8">
 						<label>Immigration Status</label>
 							<div class="clearfix">
@@ -1165,65 +1364,53 @@ function cancel(candidateId){
 				  </div>
 				  <div class="clearfix advancedsearch-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); minMaxExperience();" class="btn btn-sm btn-success"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); closePop();minMaxExperience();" class="btn btn-sm btn-success"/>
                                <input type="button"  value="Reset"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> -->
 						  </div>
 					  </div>
 				  </div>
 			  </form:form>
-      </div>
+  
+  <div class="timesheet_out">
+    
+ <div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a>
+      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();getSourceleadTags();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
+      </span>
       
-      <div class="pull-left pull-left ml mt10 mr5">
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
-				</a>
-	</div>
-      <div class="dropdown pull-left ml mt">
-			  <div class="dropdown-toggle" data-toggle="dropdown">
-			  <span class="fa fa-share-alt cursorPointer" title="Share" href="#" onclick="shareJob();"></span></div>
-			  <!-- <ul class="dropdown-menu dropdown-morecustom">
-			    <li><a title="Share"  data-toggle="modal" data-target="#myModal">Share Job</a></li>
-			    <li><a href="#">Compose Email</a></li>
-			  </ul> -->
-			</div>
-			
-			<!-- <div class="dropdown pull-left ml mt">
-			  <div class="dropdown-toggle" data-toggle="dropdown">
-			  <span class="fa fa-envelope cursorPointer" title="Compose Email"></span></div>
-			</div> -->
-      <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
-      <div class="timesheet_head customtimesheet-head topfilters topfilters2 pull-right hdrFilter">
-        <ul>
-            
-          <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
-          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-user-plus" style="font-size:17px;"></i></b>
-          <div id="addmorepop" class="approved_pop">
-           
-           </div>
+      <ul class="pull-right list-unstyled list-inline">
+      
+	  <li class="tableShare" style="display: none;">
+	  	<a class="shareIcon mr5" title="Share" href="javascript:void(0)" onclick="shareJob();"></a>
+	  	<a class="sendIcon mr5" title="Submit" href="javascript:void(0)" onclick="submitCandidatesToJob();"></a>
+	  </li>        
+      
+           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
+          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate" class="newAdBtn mr5" href="javascript:void(0)">+  Candidate</a></b>
+          		<div id="addmorepop" class="approved_pop"></div>
           </li>
           </sec:authorize>
-          
-          <li title="Import"><a href="uploadCandidateForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li> 
-          
-          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES','ROLE_CROWDSOURCING_CANDIDATES')">
-          <li title="Export" id="candidate-export" class="mrPOP"><i class="glyphicon glyphicon-export expIcon"></i>
-            <div class="export_pop">
-              <ul>
-                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-              </ul>
-            </div>
-          </li>
-          </sec:authorize>
-          
-          <div class="clearfix"></div>
+      
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openCandidateFilterPop();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+		                 <a href="uploadCandidateForm">Import</a>
+         				 <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES','ROLE_CROWDSOURCING_CANDIDATES')">
+          					<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
+          				</sec:authorize>		           
+						</span>
+					</div>
+				</li>
+				
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="candidateList();"></span></li>
         </ul>
-	       
-        <div class="clearfix"></div>
-        <div class='remove_search'>
-        		<input type='text' placeholder='search' id='dataTableSearch'/>
-        </div>
-      </div>
+      </div>   
+    
       <div id="emptyPopup"></div>
       <div class="candidate_wrap_table datatable_filter">
         <div id="candidateList"></div>
@@ -1238,6 +1425,15 @@ function cancel(candidateId){
 		<i class="fa fa-check-circle"></i>
    		<span></span>
    </div>
+   <div class="success_pop tagStyles" id="addCandidateTagAlert" style="z-index: 99999;">
+		<i class="fa fa-check-circle"></i>
+   		<span></span>
+   </div>
+   <div class="remove_pop tagStyles" id="deleteCandidateTagAlert"  style="z-index: 99999;">
+		<i class="fa fa-times"></i>
+   		<span></span>
+   </div>
+   
  <div class="clients_side_wrap quickviewTabs">
     
  <ul class="nav nav-tabs">
@@ -1266,7 +1462,6 @@ function cancel(candidateId){
 			</div>			     
     </div>
     <!-- Compnay details Ends --> 
-  </div>
 </section>
 
 <!--   Error Message   -->
@@ -1277,7 +1472,36 @@ function cancel(candidateId){
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 <!--   Error Message   --> 
 
-
+   
+   <script>
+   function getSourceleadTags(){
+ 		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getSourceleadTagsList?"+tokenParamName+"="+tokenValue, 
+		        success: function(json) {
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt+ "'>"+opt+"</option>";
+			        		
+					}
+		        	$("#canTags").empty();
+			        $("#canTags").append(output);
+			        $('#canTags').trigger("chosen:updated");
+		        },
+		    }); 
+   }
+   </script>
+   
+   
+   <script>
+	   function msgFadein() {
+			$("#candSelector").fadeIn(200);
+		    $('#candSelector').delay(2000).fadeOut('slow');
+		}
+   </script>
+   
 <script>
 	function activeTab() {
 		$("#candDetailView").removeClass("active");
@@ -1287,6 +1511,11 @@ function cancel(candidateId){
 		$("#candTimelineView").removeClass("active");
 		$("#timelineview").removeClass("active in");
 		$(".location-alert").fadeOut();
+		
+		$(".new_side_wrap").removeClass("new_side_wrap_active");
+		$(".req_side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+		candidateList();
 	}
 </script>
 
@@ -1454,10 +1683,13 @@ function exportToPdf(){
 		 candidateTypeFilter.push($(this).val());
 		 });
 	 
+	 var createdByRadio = $('input[name=createdByFilter]');
+	  var createdByFilter = createdByRadio.filter(':checked').val();
+	 
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1511,11 +1743,14 @@ function exportToExcel(){
 		     {
 			 candidateTypeFilter.push($(this).val());
 			 });
+		 
+		 var createdByRadio = $('input[name=createdByFilter]');
+		  var createdByFilter = createdByRadio.filter(':checked').val();
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1781,6 +2016,7 @@ function getCities(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#canVisa").val('').trigger("chosen:updated");
+	    $("#canTags").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
@@ -1827,6 +2063,8 @@ function getCities(){
 		 
 		   //Adding Customized Visa list this method is slead-common.js
 		   tagIt("canVisa", 'Press Enter-Key Or Comma(,) Or Tab To Add Visa:', 'tagItBykeyForSkills','skills','Visa');
+		   
+		   tagIt("canTags", 'Press Enter-Key Or Comma(,) Or Tab To Add Tags:', 'tagItBykeyForSkills','skills','Visa');
 		   
 		   //Adding Customized Visa list this method is slead-common.js
 		   tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add Education:', 'tagItBykeyForSkills','skills','Education');
@@ -2254,6 +2492,7 @@ function minMaxExperience(){
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#canVisa").val('').trigger("chosen:updated");
+	    $("#canTags").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");
@@ -2297,6 +2536,7 @@ function minMaxExperience(){
 	     $("#applicantType").val('');
 	     $("#canSkills").val('');
 	     $("#canVisa").val('');
+	     $("#canTags").val('');
 	     $("#primarySkill").val('');
 	    
 	}
@@ -2311,11 +2551,14 @@ function minMaxExperience(){
 <script>
 function toggleShareCandidates(source){
 	  var checkboxes = document.querySelectorAll('input[class="contactscheckbox"]');
-	  if($(source).is(":checked"))
+	  if($(source).is(":checked")){
 		  $('input[class="contactscheckbox"]').prop('checked', 'checked');
-	  else 
+	  	  $(".tableShare").show();
+	  }
+	  else{ 
 		  $('input[class="contactscheckbox"]').removeProp('checked');
-	  
+	      $(".tableShare").hide();
+	  }
 	  $('input[class="contactscheckbox"]').each(function(i) {
 		  if($(this).is(":checked")) {
 		      shareCandidates[$(this).data("id")] = $(this).val();
@@ -2348,8 +2591,18 @@ function checkOrUncheckParent(tableId, selectedItems, checkboxId) {
 var shareCandidates = {};
 function checkShareCandidates(elem) {
 	if($(elem).is(":checked")) {
+		 $(".tableShare").show();
 		shareCandidates[$(elem).data("id")] = $(elem).val();
 	} else{
+		 var candidateIds = new Array();
+		 for(var e in shareCandidates) {
+			 if(!e || !shareCandidates[e] || shareCandidates[e] === "")
+				   continue;
+			 candidateIds.push(shareCandidates[e]);
+		 } 
+		 if(candidateIds.length - 1 == 0){
+			 $(".tableShare").hide();
+		 }
 		$("#sharedcheckbox").removeProp('checked');
 		shareCandidates[$(elem).data("id")] = "";
 	}
@@ -2376,7 +2629,7 @@ function shareJob() {
 	 }else{
 		 $("#sharejob-pop").hide();
 			$(".sideMask").hide();
-		  var result = "";
+		    var result = "";
 			result = result +"	<div class='project_inn_mask'></div>"; 
 			result = result +"	   <div id='shareCandidate' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Please select at least one Candidate</p>";
@@ -2629,6 +2882,7 @@ function openCandidateFilterPop(){
 	 $(".advancedsearch-mask").fadeIn();
 }
 function resetCandidateFilter(){
+	clearCandidateSearchKeys();
 	$("ul#TypeFilter > li input:radio").prop("checked",false);
 	$("ul#AllTypeFilter > li input:radio").prop("checked",false);
 	$("ul#UpdatedFilter > li input:radio").prop("checked",false);
@@ -2636,11 +2890,14 @@ function resetCandidateFilter(){
 	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
 	$("ul#skillsUL > li input:checkbox").prop("checked",false);
 	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
+	$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
+	
 	
 	$("#dataTableSearch").val('');
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
 	document.getElementById("candidateCheck").checked = true;
+	document.getElementById("allCandidatesRadio").checked = true;
 	candidateList();
 }
 </script>		
@@ -2699,7 +2956,7 @@ function resetCandidateFilter(){
 				     <label><strong>Updated</strong></label>
 					 <div class="clearfix">
 						<ul class="list-unstyled" id="UpdatedFilter">
-						<li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="all" ><label for="candidateDayAgo">All</label></li>
+						<li class="radioIput positionRelative" ><input id="allCandidates" type="radio" name="upcandidateStatus" value ="all" ><label for="allCandidates">All</label></li>
                         <li class="radioIput positionRelative" ><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="0"  ><label for="candidateDayAgo">Today</label></li>
                         <li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1" ><label for="candidateDayAgo">1 Day ago</label></li>
 						<li class="radioIput positionRelative" ><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3" ><label for="candidate3DayAgo">3 Days ago</label></li>
@@ -2711,6 +2968,16 @@ function resetCandidateFilter(){
                         </ul>
 					 </div>
 				 </div>
+				 
+				 <div class="col-md-12 mb">
+				<label><strong>Created By</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="createdByTypeFilter">
+					    <li class="radioIput positionRelative" ><input  type="radio" id="myCandidatesRadio" name="createdByFilter"  value ="myCandidates"  ><label>My Candidates</label></li>
+						<li class="radioIput positionRelative" ><input  type="radio" id="allCandidatesRadio"  name="createdByFilter"  value ="allCandidates" checked ><label>All Candidates</label></li>
+                    </ul>
+				 </div>
+				 </div>  
 			 </div>
 			</div> 
 			
@@ -2801,5 +3068,29 @@ $(document).keyup(function(e) {
 </script>
 
 	
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
 
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+</script>
+ 
 <jsp:include page="../masterFooter.jsp" /> 

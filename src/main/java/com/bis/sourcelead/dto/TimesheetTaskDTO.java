@@ -16,6 +16,8 @@ public class TimesheetTaskDTO implements Serializable{
 	
 	@Required(desc="taskType")
 	private String taskType;
+	
+	private String ticketNumber;
 
 	private String generatedId;
 	
@@ -49,6 +51,14 @@ public class TimesheetTaskDTO implements Serializable{
 
 	public void setGeneratedId(String generatedId) {
 		this.generatedId = generatedId;
+	}
+
+	public String getTicketNumber() {
+		return ticketNumber;
+	}
+
+	public void setTicketNumber(String ticketNumber) {
+		this.ticketNumber = ticketNumber;
 	}
 
 	

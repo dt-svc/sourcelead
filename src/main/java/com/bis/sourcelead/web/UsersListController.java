@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -42,10 +43,12 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -82,6 +85,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@Autowired
 	DepartmentService departmentService;
 	
+	@Autowired
+	 private SourceleadTagsService sourceleadTagsService;
 	
 	/**
 	 * To forward users List jsp page
@@ -135,26 +140,12 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		model.addObject("orgLocationsCount", orgLocationsCount);
 		
 		
-        List<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
-        for(OrgRelations orgRelations:orgClientList){
-        	if(null != orgRelations.getLocationId() && orgRelations.getLocationId().getId() != null && orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				if(orgRelations.getResponderLocationId() != null){
-					orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
-				}
-			}
-			if(null != orgRelations.getResponderLocationId() && null != orgRelations.getResponderLocationId().getId() && orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				if(orgRelations.getLocationId() != null){
-					orgRelations.setClientName(orgRelations.getLocationId().getOrgLocationName());
-				}
-			}
-			
-			
-        }
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(orgLocations.getId()); 
         model.addObject("clientsList", orgClientList);
         model.addObject("clientListSize", orgClientList.size());
         
         
-        List<User> reportingManagersList = userRoleService.getAllReportingManagersAssignedToAssociates(orgLocations.getId());
+        List<UserDTO> reportingManagersList = userRoleService.getAllReportingManagersListAssignedToAssociates(orgLocations.getId());
         model.addObject("reportingManagersList", reportingManagersList);
         model.addObject("reportingManagersListSize", reportingManagersList.size());
         
@@ -166,6 +157,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
         model.addObject("departmentList", departmentList);
         model.addObject("departmentListSize", departmentList.size());
 		
+        List<String> associateTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.ASSOCIATES.toString(), orgLocations.getId());
+        model.addObject("associateTagsList", associateTagsList);
+        
 		return model;
 
 	}

@@ -6,13 +6,13 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
-	function clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId) {
+	function clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId) {
+		
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Client",
-					success : function(data) {
-						
-						var json = JSON.parse(data);
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&orgRelationId="+orgRelationId+"&spocLocationId="+spocLocationId+"&type=Client",
+					success : function(json) {
+						/* var json = JSON.parse(data); */
 						getClientSpocname(json.spocName);
 						var result = "";
 						result  = result + '<div class="success_pop" id="clientEditMsgDiv" style="display: none;">';
@@ -28,7 +28,7 @@
 						result = result + '<div class="project_details">';
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CLIENT_CONTACT\')">';
 							result = result + ' <div class="useredit useredit_a">';
-								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+','+orgRelationId+','+spocLocationId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 							result = result + ' </div>'; 
 						'</sec:authorize>';
 							
@@ -88,6 +88,37 @@
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
 							
+							/* check boxes start */
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Invoice Email:</strong>';
+							if(json.invoiceEmailStatus == 'Y' || json.invoiceEmailStatus == 'N'){
+								result = result + '<span>'+json.invoiceEmailStatus+'</span>';
+							}else{
+								result = result + '<span> N </span>';
+							}
+							result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>AP Email:</strong>';
+							if(json.apEmailStatus == 'Y' || json.apEmailStatus == 'N'){
+								result = result + '<span>'+json.apEmailStatus+'</span>';
+							}else{
+								result = result + '<span> N </span>';
+							}
+							result = result + '<div class="clearfix"></div>';
+							result = result + '</div>';
+							/* check boxes end */
+							
+							<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+							var sectionId = '${section.id}';
+							getCustomDependentFieldClientContact(spocLocationId,orgRelationId,sectionId);
+							if("${sectionOrder.index == 1}"){
+								result = result + '<div id="customContactDiv${section.id}" class="customClinetContactDet"></div>';
+
+							}
+							</c:forEach>
+							
 							
 							result = result + '<div class="clearfix"></div>';
 							result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editVendorContactDetailsDiv"></div>';
@@ -125,12 +156,12 @@
 	}
 </script> 
 <script type="text/javascript">
-	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
+	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId) {
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Client",
-						success : function(data) {
-						var json = JSON.parse(data);
+						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&spocLocationId="+spocLocationId+"&orgRelationId="+orgRelationId+"&type=Client",
+						success : function(json) {
+						/* var json = JSON.parse(data); */
 						var result = "";
 						var selected1 = '';
 						var selected2 = '';
@@ -139,6 +170,8 @@
 						var selected5 = '';
 						var spocMobilePhone = "";
 						var spocExtensionNumber="";
+						var invoiceEmailStatus;
+						var apEmailStatus;
 						if(json.spocMobilePhone != null && json.spocMobilePhone != '' && json.spocMobilePhone != 'undefined'){
 							spocMobilePhone = json.spocMobilePhone;
 						}else{
@@ -173,6 +206,17 @@
 						if(json.spocStatus == 'Contracted'){
 							selected5 = 'selected';
 						} 
+						/*For checkboxes Edit mode start */
+						invoiceEmailStatus = (json.invoiceEmailStatus =='Y' ? true : false);
+						apEmailStatus = (json.apEmailStatus =='Y' ? true :false);
+						/*For checkboxes Edit mode end */
+						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+						if("${sectionOrder.index == 1}"){
+							var sectionId = '${section.id}';
+							  preapareClientContactCustomFieldDetails(spocLocationId,orgRelationId,sectionId);
+						}
+						</c:forEach> 
+						
 						result = result + ' <form id="editVendorContact_form"  name="editVendorContact_form" method="post">';
 						/* readonly="readonly" */
 				     	if(json.userState == 'ACTIVE' || json.userState == 'INACTIVE'){
@@ -191,9 +235,9 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 							result = result + ' <div class="row">';
-							result = result + ' <div class="col-md-7">';
+							result = result + ' <div class="col-md-7 phoneValid">';
 							result = result + '<label>Phone No:</label>';
-							result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" readonly="readonly" >';
+							result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" data-validation="validate_Space validate_phone validate_length length9-20" field-name="Mobile Phone" data-validation-optional="true">';
 							result = result + '</div>';
 							
 							result = result + ' <div class="col-md-5 errBotVal">';
@@ -263,9 +307,9 @@
 		        			result = result + ' <select id="spocStatus" name="spocStatus">';
 							result = result + ' <option '+selected1+'>Active</option>';
 							result = result + ' <option '+selected2+'>In-Active</option>';
-							result = result + ' <option '+selected3+'>New</option>';
+							/*result = result + ' <option '+selected3+'>New</option>';
 							result = result + ' <option '+selected4+'>Negotiation</option>';
-							result = result + ' <option '+selected5+'>Contracted</option>';
+							result = result + ' <option '+selected5+'>Contracted</option>';*/
 							result = result + ' </select>';
 		        		}
 						result = result + ' </div>'
@@ -287,16 +331,40 @@
 						result = result  +'	  </select>';
 					    result = result  +'	 </div>';
 					    result = result  +'	 </div>'; 
+					    
+					    
+					    result = result +' <div class="col-md-9">';
+			            result = result +' <div class="checkbox checkBox">';
+			            result = result +' <label> <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Invoice Email</label>';
+			            result = result +' </div>';
+			            result = result +' </div>';
+			            
+			            result = result +' <div class="col-md-9">';
+			            result = result +' <div class="checkbox checkBox">';
+			            result = result +' <label> <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AP Email</label>';
+			            result = result +' </div>';
+			            result = result +' </div>';
 						
+                        result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth errorInptgroup"  id="customFieldDataId"></div>';
+
+                        
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeClientContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"/>';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeClientContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+','+orgRelationId+','+spocLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+','+orgRelationId+','+spocLocationId+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>'; 
 						$(".user_summary_edit").slideToggle(100);
 						$("#editVendorContactDetailsDiv").empty();
 				        $("#editVendorContactDetailsDiv").append(result);
+				        
+				        /*For checkboxes Edit mode start */
+				        $("#invoiceOrBillSent").attr('checked', invoiceEmailStatus);
+				        $("#invoiceOrBillSent").val(invoiceEmailStatus?'Y':'N');
+				        
+				        $("#apOrArSent").attr('checked', apEmailStatus);
+				        $("#apOrArSent").val(apEmailStatus?'Y':'N');
+				        /*For checkboxes Edit mode end */
 				        
 				        var config = {
 								  '.chosen-select'           : {},
@@ -320,6 +388,26 @@
 </script>
 
 <script type="text/javascript">
+
+function allowApEmailSent(){
+	var checked = document.getElementById("apOrArSent").checked
+	if(checked == true){
+		$("#apOrArSent").val("Y");
+	}else{
+		$("#apOrArSent").val("N");
+	}
+}
+
+
+function allowInvoiceEmailSent(){
+	var checked = document.getElementById("invoiceOrBillSent").checked
+	if(checked == true){
+		$("#invoiceOrBillSent").val("Y");
+	}else{
+		$("#invoiceOrBillSent").val("N");
+	}
+}
+
  function validateClientEmail(spocId) {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -356,21 +444,20 @@
             };
 </script>
  <script type="text/javascript">
-	function storeClientContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
+	function storeClientContactDetails(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
              var formData = getFormData("editVendorContact_form");
 		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Client", formData, function(data) {
 			 var ownerId = data;
 		    	
 		    	$("#spocDetailsId").removeAttr("onClick")
-		    	$("#spocDetailsId").attr("onclick","clientDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"')");
+		    	$("#spocDetailsId").attr("onclick","clientDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"','"+orgRelationId+"','"+spocLocationId+"')");
 		    	$("#clientEditMsgDiv").removeAttr("style");
 	 			$("#clientEditMsgDiv").css({ display: "block" });
 	 			$("#clientEditMsg").html("Contact Details Updated");
-		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,ownerId);
+		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,ownerId,orgRelationId,spocLocationId);
 		    	clientEditMsgFadein();
 		    	/* getVendorContactLists();  */
-		    	getVendorContactListsELK();
 			});
 		 
 	     	return true;
@@ -394,3 +481,29 @@
 </script> 
 <!-- End -->
 
+<script type="text/javascript">
+function preapareClientContactCustomFieldDetails(clientLocationId,orgRelationID,sectionId){
+	$.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+clientLocationId+"&orgRelationID="+orgRelationID+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
+}
+</script>
+
+<script>
+function getCustomDependentFieldClientContact(clientLocationId,orgRelationID,sectionId){
+	var type= 'view';
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+clientLocationId+"&orgRelationID="+orgRelationID+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId+"&requestType="+type,
+				 success: function(data) {
+		        	$('#customContactDiv'+sectionId).empty();
+		        	$('#customContactDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>

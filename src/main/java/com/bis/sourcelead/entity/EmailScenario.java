@@ -102,6 +102,9 @@ public class EmailScenario implements Serializable{
 	@Column(name="EMAIL_UUID")
 	private String emailUUID;
 	
+	@Column(name="STATUS")
+	private Integer status;
+	
 	@Transient
 	private String UUID;
 
@@ -306,6 +309,14 @@ public class EmailScenario implements Serializable{
 
 	public void setEmailUUID(String emailUUID) {
 		this.emailUUID = emailUUID;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	
 }

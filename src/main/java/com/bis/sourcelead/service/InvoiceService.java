@@ -26,6 +26,8 @@ public interface InvoiceService {
 
 	ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC, Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 
+	ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(InvoiceDTO invoiceDTO,OrgLocations orgLocations,Long orgRelationId) throws Exception;
+
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 	
 	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId, String invoiceType) throws Exception;
@@ -55,7 +57,7 @@ public interface InvoiceService {
 
 	File getExportBillingFile(ResponseList<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate, String invoiceType,OrgLocations orgLocations) throws Exception;
 
-	Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType)throws Exception;
+	Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType,String globalUser)throws Exception;
 
 	List<Invoice> getInvoiceByOrgLocationId(Long idorgLocationId, Date startDateUTC, Date endDateUTC, String invoiceTYpe)throws Exception;
 
@@ -84,6 +86,7 @@ public interface InvoiceService {
 	void updateExpensesForinvoice(Invoice invoice, String invoiceType)throws Exception;
 
 	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId,Long orgLocationId,String invoiceStatus,Date startDate,Date endDate)throws Exception;
-
+	
+	public String getInvoiceOrBillGeneratedId(OrgLocations loginOrgLoc,OrgLocations orgLoc,String invoiceType);
 
 }

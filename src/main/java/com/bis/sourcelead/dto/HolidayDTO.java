@@ -51,7 +51,11 @@ private static final long serialVersionUID = 1L;
 	
 	private String isPast;
 	
+	private String holidayBillableType;
+	
 	private String holidayUUID;
+	
+	private String shift;
 
 	public long getId()
 	{
@@ -267,6 +271,23 @@ private static final long serialVersionUID = 1L;
 	{
 		this.holidayUUID = holidayUUID;
 	}
-	
+
+	public String getShift() {
+		return shift;
+	}
+
+	public void setShift(String shift) {
+		this.shift = shift;
+	}
+
+	public String getHolidayBillableType()
+	{
+		return holidayBillableType;
+	}
+
+	public void setHolidayBillableType(String holidayBillableType)
+	{
+		this.holidayBillableType = holidayBillableType;
+	}
 	
 }

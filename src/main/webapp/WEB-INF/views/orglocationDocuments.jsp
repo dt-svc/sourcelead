@@ -4,7 +4,7 @@
 
 <div id="orglocationDocuments" class="tab-pane fade form-horizontal">
   <div class="accountsettings-tab">
-	<div class="tab-content panel-body">
+	<div class="tab-content panel-body noBor">
 	
 		<form:form id="documents_form" name="documents_form"  enctype='multipart/form-data'  method="post">
 			    <div class="comLogContent">
@@ -43,9 +43,9 @@
 						</div>
 						
 						<div class="form-group clearfix">
-						<label class="col-md-4 noPad">Bank Void Cheque<span class="text-danger">&nbsp;*</span></label>
+						<label class="col-md-4 noPad">Void Bank Cheque<span class="text-danger">&nbsp;*</span></label>
 						<div class="col-md-8 padding_right">
-						<c:if test="${!empty bankChequeDoc.fileUrl}">	
+			 			<c:if test="${!empty bankChequeDoc.fileUrl}">	
 								<div class="clearfix">
 									<div class="pull-left fileContainer" title="${bankChequeDoc.fileName}">
 									${bankChequeDoc.fileName}

@@ -30,14 +30,16 @@ function prepareWagesAndTaxList(url){
  	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
- 	result = result +" <div class='modal-header'>";
- 	result = result +" <div class='remove_search'>";
- 	result = result +" <input type='text' placeholder='Search' id='dataTableSearch'/>";
- 	result = result +"</div>";
- 	result = result +"</div>";
- 	  result = result +"<table id='wageTaxPagination' class='display' cellspacing='0' width='100%' >"; 
-      result = result +"<thead>"; 
-      result = result + '<tr>';
+ 	 
+ 		result = result +" <div class='reportHead'>";
+		result = result + " <ul class='pull-right'>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' onClick='dataTableSearch()'></span></li>";
+		result = result + "</ul>";
+		result = result + "</div>";  		
+ 		
+ 	  	result = result +"<table id='wageTaxPagination' class='display' cellspacing='0' width='100%' >"; 
+      	result = result +"<thead>"; 
+      	result = result + '<tr>';
 		result = result + '<th>From Date</th>';
 		result = result + '<th>To Date</th>';
 		result = result + '<th>Employee Id</th>';
@@ -274,10 +276,13 @@ function wagesTaxpagination(url){
     	   }
     	});
 }
+function dataTableSearch(){
+	wagesAndTaxList();
+}
 </script>
 
 <script>
-function wagesAndTaxListRajashekar(){
+function wagesAndTaxListTEST(){
 	$("#addPayrollDiv").hide();
 	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';

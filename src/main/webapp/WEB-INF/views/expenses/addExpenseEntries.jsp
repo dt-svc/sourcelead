@@ -219,14 +219,8 @@ function hideAndShowDetailsRow(rowId,type){
 			   }
 			}
 		}
-		if(validation_required == "true"){
-			 $("#0docFile"+entityId).removeAttr('data-validation-optional');
-			 $("#0docFile"+entityId).attr('data-validation','required');
-		}
-		else{
-			 $("#0docFile"+entityId).removeAttr('data-validation');
-			 $("#0docFile"+entityId).attr('data-validation-optional','true');
-		}
+		 $("#0docFile"+entityId).removeAttr('data-validation');
+		 $("#0docFile"+entityId).removeAttr('data-validation-optional');
 		displayCalendar(entityId);
 		if($("#divEntityTsRow"+rowId).is(':visible'))
 	   {
@@ -245,6 +239,10 @@ function hideAndShowDetailsRow(rowId,type){
 		else{
 			$("#divEntityTsRow"+rowId).removeAttr('style');
 			$("#categoryDateDiv"+entityId).removeClass("ColRed");   
+			if(validation_required == "true"){
+				 $("#0docFile"+entityId).removeAttr('data-validation-optional');
+				 getExpenseAttachmentStatus(entityId);
+			}
 		}
 	}
 }
@@ -398,7 +396,7 @@ function addAttachment(entityRowId,from){
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
 						<div class="col-md-4 minHeight chosen-custom chooRadius">
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-							<select id="categoryTypeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].categoryType" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
+							<select id="categoryTypeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].categoryType" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);getExpenseAttachmentStatus(REPLACEROWID);">
 							   <option value="">Select Category Type</option>				 							   
 							</select>
 						
@@ -876,4 +874,26 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 }
 </script>
 
-
+<script>
+function getExpenseAttachmentStatus(rowId){
+    $('#0docFileuploadFileGroup'+rowId).find('p.jquery_form_error_message').remove();
+	$('#0docFile'+rowId).removeAttr('data-validation');
+	var category = $('#categoryType'+rowId).val();
+	if(category !=null && category !='' && category!='Undefined'){
+		var idArray = category.split("\,")
+		if(idArray[0] != null && idArray[0]!='' && idArray[0]!='undefined' && idArray[0] > 0){
+			var categoryId = idArray[0];
+			$.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/getExpenseAttachmentStatus?&categoryId="+categoryId,
+				success : function(data) {
+					
+					if(data == 'Y'){
+						$('#0docFile'+rowId).attr('data-validation','required');
+					}
+				},
+			});
+		}
+	}
+}
+</script>

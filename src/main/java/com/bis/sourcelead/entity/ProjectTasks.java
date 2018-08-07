@@ -234,6 +234,14 @@ public class ProjectTasks implements Serializable{
 	@Transient
 	private String actionTimeStr;
 	
+	@Transient
+    @JsonProperty
+    private String taskTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
 	public Long getId() {
 		return Id;
 	}
@@ -496,9 +504,9 @@ public class ProjectTasks implements Serializable{
 		if(projectAssignTask != null && !projectAssignTask.isEmpty()) {
 			for(ProjectAssignTask assignedTask: projectAssignTask) {
 				if(assignedTask.getProjectMemberId() != null && 
-						assignedTask.getProjectMemberId().getEmployee() != null && 
-						assignedTask.getProjectMemberId().getEmployee().getUser() != null) {
-					usersList.add(assignedTask.getProjectMemberId().getEmployee().getUser().getFullName());
+						assignedTask.getProjectMemberId().getProjectMemberCandidteId() != null && 
+						assignedTask.getProjectMemberId().getProjectMemberCandidteId() != null) {
+					usersList.add(assignedTask.getProjectMemberId().getProjectMemberCandidteId().getFullName());
 				}
 			}
 		}
@@ -666,5 +674,21 @@ public class ProjectTasks implements Serializable{
 
 	public void setTaskOwnerName(String taskOwnerName) {
 		this.taskOwnerName = taskOwnerName;
+	}
+
+	public String getTaskTags() {
+		return taskTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTaskTags(String taskTags) {
+		this.taskTags = taskTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
 	}
 }

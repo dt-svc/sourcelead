@@ -13,7 +13,7 @@ public interface ProjectMembersHistoryDao {
 	
 	ProjectMembersHistory getProjectMembersRecentClosedByProjectMemberId(Long projectMemberId) throws Exception;
 	
-	HashMap<String,Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId) throws Exception;
+	HashMap<String,Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId,String reportFor) throws Exception;
 	
 	HashSet<Date> getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(Long projectMemberId,Date startDate,Date endDate);
 	
@@ -34,5 +34,7 @@ public interface ProjectMembersHistoryDao {
 	public HashMap<String,Date> getAssignDateandEndDateByProjectMemberId(Long projectMemberId);
 	
 	ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(Long projectMemberId,Long orgLocationId) throws Exception;
+	
+	public ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgId(Long projectMemberId,Long orgId) throws Exception;
 	
 }

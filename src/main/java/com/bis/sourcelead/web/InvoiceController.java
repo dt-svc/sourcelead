@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -27,11 +28,13 @@ import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -74,6 +77,9 @@ public class InvoiceController {
 	@Autowired
 	private ConversionUtil conversionUtil;
 	
+	@Autowired
+	private SourceleadTagsService sourceleadTagsService;
+	
 /**
  * @author Laxman
  * @param type
@@ -114,6 +120,47 @@ public class InvoiceController {
 	return model;
 	}
 	
+	@RequestMapping(value = "/addPaymentInvoice")
+	public ModelAndView addPayment(HttpServletRequest request) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("billing/addPaymentInvoice");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+		for(OrgRelations vendors:orgClientList){
+			if(vendors.getLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
+			}
+			if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
+			}
+			
+		}
+		model.addObject("clientsList", orgClientList);
+		return model;
+		
+	}
+	
+	@RequestMapping(value = "/addPaymentBill")
+	public ModelAndView addPaymentBill(HttpServletRequest request) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("billing/addPaymentBill");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		Collection<OrgRelations> vendorsList =orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId()); 
+		for(OrgRelations vendors:vendorsList){
+			if(vendors.getLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
+			}
+			if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
+			}
+			
+		}
+		model.addObject("vendorsList", vendorsList);
+		return model;
+		
+	}
 	
 	/**
 	 * @author Laxman
@@ -122,6 +169,7 @@ public class InvoiceController {
 	 * @return
 	 * @throws Exception
 	 */
+	
 	
 	@RequestMapping(value = "/getReceivableInvoiceByUUID")
 	public ModelAndView getReceivableInvoiceByUUID(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID,@RequestParam(value="projectId", required=false) String projectId,HttpServletRequest request) throws Exception {
@@ -223,6 +271,9 @@ public class InvoiceController {
 		model.setViewName("billing/invoiceList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		
+		List<String> invoiceTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.INVOICES.toString(), orgLocations.getId());
+        model.addObject("invoiceTagsList", invoiceTagsList);
+        
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;

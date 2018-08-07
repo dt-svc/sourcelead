@@ -19,6 +19,7 @@ background-color: #fff;
 
 <script type="text/javascript">
 $(document).ready(function(){
+	getContractTagsList();
 // 	if("" != localStorage.getItem("stage") && null != localStorage.getItem("stage")){
 		displyContract(localStorage.getItem("stage"));
 // 	}
@@ -33,6 +34,27 @@ $(document).ready(function(){
       </div>
      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts</a> &raquo; View Contract</div>
     </section>
+    
+      <div class="cearfix">
+		  <div class="newTagsWrap">
+			    <ul class="clearfix tagsWrap tagsWrapBor">
+				<select multiple class="chosen-select form-control" name="tagName" id="contractTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
+				</select>
+				</ul>
+				<div class="clearfix"></div>
+		  </div>
+		 </div>
+		   <div class="success_pop tagStyles" id="addContractTagAlert">
+				<i class="fa fa-check-circle"></i>
+		   		<span></span>
+		   </div>
+		   <div class="remove_pop tagStyles" id="deleteContractTagAlert">
+				<i class="fa fa-times"></i>
+		   		<span></span>
+		   </div>
+		   
+		   
+    
     <div class="content-area content-new clearfix">
     
      <div class="quickviewTabs viewontracts">
@@ -98,6 +120,133 @@ $(document).ready(function(){
      </div>
      <!-- Content Area Ends--> 
 </section>
+
+
+
+
+<!--  ============================= Contract tags related scripts written by Laxman Start ================================ -->
+<script>
+var select, chosen;
+select = $("#contractTagName");
+select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosen = select.data('chosen');
+chosen.search_field.on('keyup', function(e)
+{
+	var anyKeyword = this.value.replace(",","");
+    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+    {
+    	
+    	var par = this.parent;
+        var option = $("<option>").val(anyKeyword).text(anyKeyword);
+        select.append(option);
+        select.find(option).prop('selected', true);
+        $("#contractTagName option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#contractTagName").trigger("chosen:updated");
+		saveContractTags("add");
+    }
+});
+
+$('.chosen-select').chosen().on('change', function(evt, params) {
+	if (params.selected && params.selected != undefined) {
+		saveContractTags("add");
+	}
+	if (params.deselected && params.deselected != undefined) {
+		saveContractTags("delete");
+	}
+	
+});
+$("#contractTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+</script>
+<script>
+function getContractTagsList(){
+	var contractUUID ='${contractUUID}';
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getContractTags?"+tokenParamName+"="+tokenValue+"&contractUUID="+contractUUID,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.contractTags != null && json.contractTags != 'undefined' && json.contractTags != '') {
+	                var res = [];
+	                res = json.contractTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            $("#contractTagName").empty();
+            $("#contractTagName").append(result);
+            $("#contractTagName").chosen().trigger("chosen:updated")
+
+        },
+	});
+}
+</script>
+<script>
+function saveContractTags(type){
+	 var contractUUID ='${contractUUID}';
+	 var tagName = $("#contractTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByContractUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&contractUUID="+contractUUID+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByContractUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&contractUUID="+contractUUID+"&tagName="+""
+	 }
+	
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+        	$("#editRoleLoading").removeAttr('style');
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup("Tags added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tags deleted successfully");
+        		}
+        		
+        		getContractTagsList(contractUUID);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+function showSuccessStatusPopup(status) {
+	$("#addContractTagAlert").css("display","block");
+	$("#addContractTagAlert span").html(status);
+    $('#addContractTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteContractTagAlert").css("display","block");
+	$("#deleteContractTagAlert span").html(status);
+    $('#deleteContractTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+<!--  ============================= Contract tags related scripts written by Laxman Ends ================================ -->
+
+
+
+
+
+
 
 <script>
    function viewContractCommentRemoveSpaces() {
@@ -259,7 +408,12 @@ function displyContract(stage){
     	    var result = '';
     	    var json = JSON.parse(data);
 			result = result +	'<div class="contPopupHead clearfix">';
-			result = result +	'<h4>'+json.contractTitle+'</h4>';
+			if(json.autoGenId != null && '' != json.autoGenId && 'undefined' != json.autoGenId){
+				result = result +	'<h4>'+json.autoGenId+' - '+json.contractTitle+'</h4>';
+			}else{
+				result = result +	'<h4>'+json.contractTitle+'</h4>';
+			}
+			
 			result = result +	'<span>';
 			
 			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED' || json.templateSubmissionStatus == 'WAITING_FOR_APPROVER'){
@@ -353,7 +507,15 @@ function displyContract(stage){
 			if(null != json.ownerName && "" != json.ownerName && 'undefined' != json.ownerName){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Signing Authority</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.ownerName+'</div>';
+				
+				if(json.templateSubmissionStatus == "WAITING_TO_BE_SIGNED" && json.isParentContract == "N"){
+					result = result +	'<div class="col-md-8 col-sm-8 popRela" id="contactUserDiv"><span id="contactUserSpan">: '+json.ownerName+'</span> <i class="fa fa-pencil popEdCo"  onclick="editContact();"></i>';
+					result = result +	'<div class="editSignature"><div class="col-md-10 padding_left"><select class="chosen-select form-control sel" id="editSigner" name="clientContact"><option>Hi</option></select></div><div class="col-md-2 paddingLeft paddingRight"><i class="fa fa-floppy-o" onclick="saveContractSigner();"></i></div></div>';
+				}
+				else{
+					result = result +	'<div class="col-md-8 col-sm-8 popRela" id="contactUserDiv">: '+json.ownerName+'</div>';	
+				}
+				result = result +	'	</div>';
 				result = result +	'	</div>';
 			}
 			
@@ -402,7 +564,7 @@ function displyContract(stage){
 			
 			if(null != json.initiatorType && "Client" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
 				'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\',\'ROLE_VIEW_EDIT_VENDOR\')">';
 				result = result +	'		<div class="col-md-8 col-sm-8">: <a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+json.orgRelationUUID+'" title="'+json.contractWith+'">'+json.contractWith+'</a></div>';
 				'</sec:authorize>';
@@ -416,19 +578,19 @@ function displyContract(stage){
 			
 			if(null != json.initiatorType && "Vendor" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
 				'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-				result = result +	'		<div class="col-md-8 col-sm-8">:<a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+json.contractWith+'"> '+json.contractWith+'</a></div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: <a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+json.contractWith+'"> '+json.contractWith+'</a></div>';
 				'</sec:authorize>';
 				 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-	  	            result = result + '<div class="col-md-8 col-sm-8">:'+json.contractWith+'</div>';
+	  	            result = result + '<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
 	  	         '</sec:authorize>';
 				result = result +	'	</div>';
 			}
 			if(json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Contact</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contactUserName+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8 popRela">: '+json.contactUserName+'</div>';	
 				result = result +	'	</div>';
 			}
 			
@@ -578,15 +740,20 @@ function displyContract(stage){
 		}
 			result = result +	'<h4>History</h4>';
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Created On</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdDateStr+'</div>';
-			result = result +	'	</div>';
+			if(null != json.createdDateStr && 'undefined' != json.createdDateStr && json.createdDateStr != ''){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Created On</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdDateStr+'</div>';
+				result = result +	'	</div>';
+			}
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Created By</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdByName+'</div>';
-			result = result +	'	</div>';
+			if(null != json.createdByName && 'undefined' != json.createdByName && json.createdByName != ''){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Created By</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdByName+'</div>';
+				result = result +	'	</div>';
+			}
+			
 			if(null != json.updatedDateStr && 'undefined' != json.updatedDateStr && json.updatedDateStr != json.createdDateStr){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Updated On</div>';
@@ -618,10 +785,23 @@ function displyContract(stage){
 	              }); 
             }
 			
-			
-			
 			$("#viewPopupDiv").empty();
 			$("#viewPopupDiv").append(result);
+			
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+			});
        },
 	  }); 
 }
@@ -703,6 +883,44 @@ function editClo(contractId,startDate){
 	    },
 	}); 
 	}
+}
+
+function editContact(){
+	$(".editSignature").show();
+	var result = "";
+	<c:forEach var="user" items="${userList}">
+		var name = "";
+		if("${user.lastName}" != null && "${user.lastName}" != '' && "${user.lastName}" != 'undefined'){
+			name += "${user.firstName}" +" "+ "${user.lastName}";
+		}else{
+			name += "${user.firstName}";
+		}
+		result += '<option value="${user.id}">'+name+'</option>';
+	</c:forEach>
+	$("#editSigner").empty();
+	$("#editSigner").append(result);
+	$('#editSigner').trigger("chosen:updated");
+}
+
+function saveContractSigner(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var contractUUID ='${contractUUID}';
+	var clientContact = $("#editSigner").val();
+	 $.ajax({
+		    type : "POST",
+		     url: sourceleadUrl+"/updateContractSigner?contractUUID="+contractUUID+"&clientContact="+clientContact,       
+		     success :function(data) {
+		    	 if (data.response === "SUCCESS") {
+		    		 var opt = data.object;
+		    		 $("#contactUserSpan").html(" : "+opt.ownerName);
+		    		 $(".editSignature").hide();
+		    	 }else if (response.indexOf('Sign In') !== -1) {
+		 			location.replace(sourceleadUrl);
+		 	    } else if (response.response === "AWKWARD") {
+		 		    location.href = "/errorPage";
+		 	    }
+		    },
+		}); 
 }
 </script>
 

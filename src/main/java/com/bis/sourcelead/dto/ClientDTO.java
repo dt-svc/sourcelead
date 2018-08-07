@@ -78,6 +78,10 @@ public class ClientDTO {
 	
 	private String isMailSent;
 	
+	private String invoiceOrBillSent;
+	
+	private String apOrArSent;
+	
 	private String userRoleText;
 	
 	private String roleTypeId;
@@ -105,6 +109,10 @@ public class ClientDTO {
 	private AddUserDTO addUserDTO;
 	
 	private CandidateDTO candidateDTO;
+	
+	private String isLawFirm;
+	
+	private String isAccountingFirm;
 	
 	public String getClientSaveFromType()
 	{
@@ -415,5 +423,30 @@ public class ClientDTO {
 	public void setType(String type) {
 		this.type = type;
 	}
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+	public String getInvoiceOrBillSent() {
+		return invoiceOrBillSent;
+	}
+	public void setInvoiceOrBillSent(String invoiceOrBillSent) {
+		this.invoiceOrBillSent = invoiceOrBillSent;
+	}
+	public String getApOrArSent() {
+		return apOrArSent;
+	}
+	public void setApOrArSent(String apOrArSent) {
+		this.apOrArSent = apOrArSent;
+	}
+	
 	
 }

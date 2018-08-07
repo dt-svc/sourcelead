@@ -570,6 +570,15 @@
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
+        
+        <!-- Added STE Custom Jar -->
+        <dependency>
+    		 <groupId>com.symmetry.ste</groupId>
+    		 <artifactId>ste</artifactId>
+   			  <version>1.0</version>
+		</dependency>
+        
+        <!-- END OF STE JAR -->
 
 
         <!-- https://mvnrepository.com/artifact/net.sourceforge.javacsv/javacsv -->
@@ -761,7 +770,7 @@
             </plugin>
 
             <!-- For to create zip -->
-            <plugin>
+           <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.5.3</version>
                 <executions>
@@ -777,7 +786,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> 
             <!-- For to create zip -->
 
         </plugins>

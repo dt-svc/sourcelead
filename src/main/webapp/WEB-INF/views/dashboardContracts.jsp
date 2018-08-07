@@ -1,6 +1,8 @@
 
-<div class="content-dashboard clearfix" id="contractListDiv" style="display: none;"> 
-      <div class="clearfix dashboard-widget mb col-md-12" >
+
+
+<div class="mb col-md-12 clearfix" id="contractListDiv" style="display: none;"> 
+      <div class="dashboard-widget col-md-12" >
         <h4 class="clearfix">Contracts</h4>
         <div class="clearfix require_wrap_table dashboard-data filter_position"> 
         		 <div id="contractList"></div>

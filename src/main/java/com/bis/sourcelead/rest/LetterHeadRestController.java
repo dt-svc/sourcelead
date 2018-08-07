@@ -1,12 +1,8 @@
 package com.bis.sourcelead.rest;
 
-import java.io.ByteArrayOutputStream;
-
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,25 +18,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LetterHeadDao;
 import com.bis.sourcelead.dto.LetterHeadDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.html.WebColors;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfName;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 
 @RestController
 @RequestMapping("/app")
@@ -51,10 +33,10 @@ public class LetterHeadRestController {
 private String staticPath;
 	
 @Autowired
-LetterHeadService letterHeadService;
+private LetterHeadService letterHeadService;
 
 @Autowired
-LetterHeadDao letterHeadDao;
+private LetterHeadDao letterHeadDao;
 	
 private static final Logger logger = LoggerFactory.getLogger(LetterHeadRestController.class);
 	
@@ -71,6 +53,24 @@ public @ResponseBody String saveLetterheadData(LetterHeadDTO letterHeadDTO,HttpS
 	return status;
 }
 
+@RequestMapping(value = "/validateletterHeadName",  method = RequestMethod.GET)
+public @ResponseBody Boolean validateletterHeadName(@RequestParam(value="letterHeadName", required=false) String letterHeadName, 
+		@RequestParam(value="letterHeadId", required=false) Long letterHeadId,HttpServletRequest request) throws Exception {
+       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+      
+       boolean flag = false;
+       
+       LetterHead letterHead = null;
+       if(letterHeadId != null){
+    	   letterHead = letterHeadService.validateNameInEdit(letterHeadName,letterHeadId,orgLocation.getId());
+		}
+       
+       if(letterHead == null){
+		   flag = letterHeadService.validateLetterHeadName(letterHeadName,orgLocation);
+       }
+       return flag;
+      
+    }
 
 @RequestMapping(value = "/getAllLetterHeadList", method = RequestMethod.GET)
 public ResponseList<LetterHeadDTO> getAllLetterHeadList(LetterHeadDTO letterHeadDTO, HttpServletRequest request,HttpServletResponse response) throws Exception {

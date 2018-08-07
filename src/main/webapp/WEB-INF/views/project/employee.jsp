@@ -51,7 +51,7 @@ left: 115px !important;
 	 var postedOrgLocationId = '${postedOrgLocationId}';
 	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 	 var projectClientUUID = '${projectClientUUID}';
-	 	 
+	 var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
 	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
  	 
 	   var resourceRequestsCount = '${resourceRequestsCount}';
@@ -69,7 +69,7 @@ left: 115px !important;
 	/* Dont delete this commented code. Functionality is in progress '+projectBudgetCount+' */
 	 result = result + '<li class="current"><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; 
 	
-	 if(postedOrgLocationId == loginOrgLocationId){
+	 if((postedOrgLocationId == loginOrgLocationId) || (postedSharedProjectOrgLocationId == loginOrgLocationId)){
 		result = result + '<li class=""><a href="#tab-c" id="budgetRequestsTab" onclick="budgetRequests();">Budget Requests ';
 		result = result + '(<b class="countClose">'+projectBudgetCount+'</b><input class="countShow" type="text" id="projectBudgetCount" readonly/>)';
 		result = result + '</a></li>';
@@ -162,6 +162,10 @@ function resourceRequestsTab(){
 	 var projectUUID = '${projectUUID}';
 	 var projectClientUUID = '${projectClientUUID}';
 	 
+	 var postedOrgLocationId = '${postedOrgLocationId}';
+	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
+	 
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  resourceReqListDate = 'YYYY-MM-DD';
@@ -190,6 +194,8 @@ function resourceRequestsTab(){
 	    		result = result + '	<div class="timesheet_head anchorTag-black">';
 	    		result = result + '	<ul>';
 	    		
+	    		if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){  
+	    			+	    
 	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_RESOURCE_REQUEST\')">';
 		    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Associate Request</a></li>';
@@ -199,6 +205,7 @@ function resourceRequestsTab(){
 		    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
 	    		 '</sec:authorize>';
+	    		}
 		    		 
 	    		result = result + '	</ul>';
 	    		result = result + '	       </div>';
@@ -207,7 +214,6 @@ function resourceRequestsTab(){
 	    		result = result + '	    <thead>';
 	    		result = result + '	     	<tr>';
 	    		result = result + '	         	<th>Request Id</th>';
-	    		result = result + '	             <th>Approver</th>';
 	    		result = result + '	             <th>Req. Resources</th>';
 	    		result = result + '	             <th>Allocated Resource</th>';
 	    		result = result + '	             <th>Estimated Hours<br></th>';
@@ -248,7 +254,6 @@ function resourceRequestsTab(){
 						}
 	    				
 	    			}
-	    			result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.approverName+'</div></td>';
 		    		result = result + '	             <td><div>'+report.requestedResources+'</div></td>';
 		    		result = result + '	             <td><div>'+report.allocatedResources+'</div></td>';
 		    		result = result + '	             <td><div>'+report.estimatedHours+' hrs</div></td>';

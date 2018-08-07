@@ -88,8 +88,7 @@ window.onload = function () {
 	var requirementInterviewid = '${requirementInterviewid}';
 	var previousInterviewId = '${afterRequirementInterviewid}';
 	var feedbackStatus = '${feedbackStatus}';
-	
-	if(parseInt(requirementInterviewid) == parseInt(previousInterviewId)){
+	if(requirementInterviewid == previousInterviewId){
 		if(feedbackStatus == "N"){
 			viewTemplateNo();
 		}else{
@@ -217,7 +216,7 @@ $('body').on('blur', '#cancelFunction_form', function() {
 		$("#interviewTemplateFormDiv").hide();
 		$.ajax({
 	    	type: "GET",
-	    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
+	    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 		        	if(json.comment != null && json.comment != '' && json.comment != 'undefined'){
@@ -268,7 +267,7 @@ function interviewTemplateForm(){
 	$("#remove_user_pop").slideUp(200);
 	$(".project_inn_mask").hide();
 	$("#interviewTemplateFormDiv").show();
-	if(requirementInterviewid = previousInterviewId){
+	if(requirementInterviewid == previousInterviewId){
 		viewTemplate()
 	}else{
 		generateInterviewFeedbackForm1(sourceleadUrl,templateId)
@@ -315,7 +314,6 @@ function saveInterviewTemplate(){
 	      var frm = $('#interviewTemplate_form').serializeFormJSON();
 	      var templateId = '${templateId}';
 	  	  var requirementInterviewid = '${requirementInterviewid}';
-	  	 var requirementInterviewid = '${requirementInterviewid}';
 	      var sourceleadUrl ='${sourceleadUrl}';
 	      var frm = $('#interviewTemplate_form').serializeFormJSON();
 	      var jsonData = JSON.stringify(frm);
@@ -534,6 +532,8 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
             	 
             	 var datavalidation = '';	
             	 var novalidation = '';
+            	 var onBlurEvent = '';
+            	 var placeHolder = '';
             	 
         		 if(required == 1){
         			 
@@ -559,15 +559,17 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
             	 else{
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 }
-                
+            	 
+            	 if(label == 'Rating'){
+            		 options = '<option value="">--Select Rating--</option>';
+        		 }
 
                  switch (fieldType) {
-
                      case 'text':
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation+'  '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':
@@ -581,7 +583,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
                              '<label for="select-' + uniqueID + '"></label>' +
-                             '<select id="select-' + uniqueID + '" '+datavalidation+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select"></select>' +
+                             '<select id="select-' + uniqueID + '" '+datavalidation+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select">'+options+'</select>' +
                              '</div>';
 
                      case 'radio':
@@ -618,7 +620,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 		$("#interviewTemplateFormDiv").hide();
 		$.ajax({
 	    	type: "GET",
-	    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
+	    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	 var submissionDetails = "";
@@ -667,7 +669,7 @@ function generateViewpublicpage(sourceleadUrl,templateId) {
     $("#interviewsjfb-fields").empty();
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId, 
+        url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 

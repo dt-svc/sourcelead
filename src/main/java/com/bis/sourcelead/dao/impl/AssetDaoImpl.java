@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -276,16 +277,30 @@ public class AssetDaoImpl implements AssetDao{
 			 }
 					
 		}
+		
+		List<String> tagsList = new ArrayList<>();
+		if(assetDTO.getTags() != null && !assetDTO.getTags().isEmpty()) {
+			String[] tags = assetDTO.getTags().split(",");
+			for(int i=0; i<tags.length; i++){
+				tagsList.add(tags[i]);
+			}
+		}else {
+			tagsList.add("");
+		}
+		
+		String tagsQuery = " and ((:varString  IN (:tagsList)) OR (:varString NOT IN (:tagsList) and asset.id IN (select st.entityId from SourceleadTags st where st.tagName IN (:tagsList) and st.status ='1' ))) ";
+
+		
 		String subQuery = "";
 		if(StringUtils.isNotEmpty(assetDTO.getShiftIds())) {
 			subQuery = " and asset.id NOT IN ( select aa.asset.id from AssetAssign aa where aa.shift.id IN("+assetDTO.getShiftIds()+"))";
 		}
-		String query = "from Asset asset  where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subQuery+subquery1+" "+subquery2+" "+query1+" "+sortingQry+""; 
-		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		String query = "from Asset asset  where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subQuery+subquery1+" "+subquery2+" "+query1+" "+tagsQuery+" "+sortingQry+""; 
+		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("varString", "").setParameterList("tagsList", tagsList).setFirstResult(assetDTO.getStart()).setMaxResults(assetDTO.getLength()).list();
 		
-		String queryStrForCount = "Select count (*) from Asset asset   where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subQuery+subquery1+" "+subquery2+" " ;
-		countlist = session.createQuery(queryStrForCount.toString()).setLong("orgLocationId", orgLocationId).list();
-		
+		String queryStrForCount = "Select count (*) from Asset asset   where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subQuery+subquery1+" "+subquery2+" "+tagsQuery+" "+query1+"" ;
+		countlist = session.createQuery(queryStrForCount.toString()).setLong("orgLocationId", orgLocationId).setString("varString", "").setParameterList("tagsList", tagsList).list();
+		filterCount = countlist.iterator().next().intValue();
 		int totalCount = 0;
 		if (assetDTO != null) {
 			if(countlist != null && !countlist.isEmpty()) {

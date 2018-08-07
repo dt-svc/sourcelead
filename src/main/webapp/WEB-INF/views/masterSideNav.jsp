@@ -117,8 +117,8 @@
 							        <%-- <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
 							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="My TimeSheets">TimeSheet Approval</a></li> --%>
 							  	     
-							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>" title="TimeSheet Approval">Approval</a></li>
+							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>" title="My TimeSheets">Self</a></li>
+									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>" title="TimeSheet Approval">Employees</a></li>
 							  </ul>
 							  </c:if>
 							  <c:if test="${sessionData.nav != 'TimeSheet' || sessionData.nav != 'TimeSheetApproval'}">
@@ -126,8 +126,8 @@
 							  <ul class="collapses" style="display: none">
 							 		<%-- <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
 							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/newTimesheetApproval'/>" title="My TimeSheets">TimeSheet Approval</a></li> --%>
-							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>" title="My TimeSheets">TimeSheets</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>" title="TimeSheet Approval">Approval</a></li> 
+							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>" title="My TimeSheets">Self</a></li>
+									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>" title="TimeSheet Approval">Employees</a></li> 
 							  </ul>
 							  </c:if>
 						  </li>
@@ -135,12 +135,12 @@
 	                 </c:if>
 	                 <c:if test="${userTabs.tabName == 'My Timesheets'}">
 	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')">
-	                       <li class="${sessionData.nav == 'TimeSheet' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>"><span><i class="fa fa-clock-o"></i></span><i class="subMenu">TimeSheet</i></a></li>
+	                       <li class="${sessionData.nav == 'TimeSheet' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>"><span><i class="fa fa-clock-o"></i></span><i class="subMenu">TimeSheets</i></a></li>
 	                 </sec:authorize>
 	                 </c:if>
 	                 <c:if test="${userTabs.tabName == 'Timesheet Approval'}">
 	                 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS') && hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')">
-	                       <li class="${sessionData.nav == 'TimeSheetApproval' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>"><span><i class="fa fa-clock-o"></i></span><i class="subMenu">TimeSheet</i></a></li>
+	                       <li class="${sessionData.nav == 'TimeSheetApproval' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>"><span><i class="fa fa-clock-o"></i></span><i class="subMenu">TimeSheets</i></a></li>
 	                 </sec:authorize>
 	                 </c:if>
 	                 
@@ -268,15 +268,15 @@
 						   
 						   <c:if test="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval'}">
                               <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses">My Expenses</a></li>
-                                  <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval">Expenses Approval</a></li>
+                                  <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses">Self</a></li>
+                                  <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval">Employees</a></li>
                               </ul>
                            </c:if>
                               
                            <c:if test="${sessionData.nav != 'My Expenses' || sessionData.nav != 'Expenses Approval'}">
                            <ul class="collapses" style="display: none">
-                               <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses">My Expenses</a></li>
-                               <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval">Expenses Approval</a></li>
+                               <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses">Self</a></li>
+                               <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval">Employees</a></li>
                            </ul>
                            </c:if>
                               
@@ -284,7 +284,7 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'My Expenses'}">
-	                   <li class="${sessionData.nav == 'My Expenses' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses"><span><i class="fa fa-calculator"></i></span><i class="subMenu">My Expenses</i></a></li>
+	                   <li class="${sessionData.nav == 'My Expenses' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses"><span><i class="fa fa-calculator"></i></span><i class="subMenu">Expenses</i></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'Expenses Approval'}">
@@ -346,15 +346,67 @@
 			         </c:if>
             	   
 		       	   <c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_USER'}">
-		             <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
+		       	   <sec:authorize access="hasAnyRole('ROLE_US_GENERATE_PAYROLL','ROLE_US_MY_PAYROLL')"> 
+		             <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}">
+		             	<a href="#" class="expencesLi" title="Payroll">
+		             		<span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i> 
+		             		<i class="fa fa-fw fa-caret-down"></i></a>
+		             			<ul class="collapses" style="display: none">
+								
+								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
+								
+								<li><a	href="#" title="My Payroll">My Payroll</a></li>
+									
+								</ul>
+		             		
+		             		</li>
+		          	</sec:authorize>
 		          	</c:if>	
 		          	
 		          	<c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_ADMIN'}">
 		              <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
 		          	</c:if>	
+					<c:if test="${userTabs.tabName == 'Immigrations'}">
+					 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION','ROLE_VIEW_MY_PETITION')"> 
+					
 
+							<li class="${sessionData.nav == 'Immigrations' || sessionData.nav == 'MyImmigration' ? 'side-nav-active' : ''}">
+							<a href="#" class="expencesLi" title="Immigration">
+									<span><i class="fa fa-plane"></i></span> <i class="subMenu">Immigration</i>
+									<i class="fa fa-fw fa-caret-down"></i>
+							</a>
+
+								<ul class="collapses" style="display: none">
+								
+								<li class="${sessionData.nav == 'Immigrations' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/immigration/viewImmigrationList'/>" title="Immigrations">Immigrations</a></li>
+								
+								<li class="${sessionData.nav == 'MyImmigration' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/immigration/myImmigration'/>" title="My Immigration">My Immigration</a></li>
+									
+								</ul>
+								
+								</li>
+								</sec:authorize>
+						</c:if>
+				    <c:if test="${userTabs.tabName == 'Leave Management'}">
+		             <li class="${sessionData.nav == 'Leave Management' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management"><span><i class="fa fa-calendar"></i></span><i class="subMenu">Leave Management</i></a></li>
+		          	</c:if>	
           </c:forEach>
-            
+          
+          			
+	            	<li class="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables' ? 'side-nav-active' : ''}">
+						<a href="#" class="billingLi" title="Finance">
+							<span><i class="fa fa-money"></i></span>
+							<i class="subMenu">Payroll</i> <i class="fa fa-fw fa-caret-down"></i>
+						</a>
+                        <ul class="collapses" style="display: none">
+                        	<%-- <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/itDeclaration'/>" title="IT Declaration">IT Declaration</a></li> --%>
+                        	<li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/forms/list'/>" title="Forms">Forms</a></li>
+                        	<li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayroll/pays'/>" title="My Payroll">My Payroll</a></li>
+						</ul>
+					</li>
+	         
+	         <%-- <li class=""><a href="<c:url value='${appPath}/forms/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Payroll</i></a></li> --%>        
+             <li class="${sessionData.nav == 'Taxes' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/stateTax/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Taxes</i></a></li>
           	
 <%--            	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
 			
@@ -386,8 +438,6 @@
 		 
 			</sec:authorize> --%>
 			
-          				
-	
           	
         </ul>
       </div>

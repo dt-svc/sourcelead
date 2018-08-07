@@ -94,6 +94,7 @@ public class ExpensesController {
 		}catch(Exception e){
 			  model.addObject("AWKWARD", true);
 			  model.setViewName("expenses/myExpensesList");
+			  e.printStackTrace();
 		}
 		return model;
 	}
@@ -111,8 +112,10 @@ public class ExpensesController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		sessionData.setNav(Constants.MY_EXPENSES);
 		request.getSession().setAttribute("sessionData", sessionData);
+		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		if(StringUtils.isNotEmpty(expenseId)&& StringUtils.isNotEmpty(expenseLocationCode)){
 			ExpensesListUtilDTO elDTO = new ExpensesListUtilDTO();
 			elDTO.setUserId(loginUser.getId());
@@ -127,7 +130,7 @@ public class ExpensesController {
 				 
 			     String type = request.getParameter("type");
 			 	 Boolean isEditable = false;
-			 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.DRAFT.getValue()) || submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue())){
+			 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.DRAFT.getValue()) || submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue()) || submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REOPENED.getValue())){
 			 		isEditable = true;
 			 	 }
 			 	 if(StringUtils.isEmpty(type) || (StringUtils.isNotEmpty(type) && type.equalsIgnoreCase("edit") && !isEditable)){
@@ -146,10 +149,11 @@ public class ExpensesController {
 			}
 			model.addObject("expenseApproverHierarchy", rejectedReason);
 		}
-		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		eedDTO.setExpenseId(expenseId);
+		eedDTO.setExpenseLocationCode(expenseLocationCode);
+		eedDTO.setIsGlobalUser(isGlobalAccess);
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		expEntryDTO.setLoginCurrencyCode(currencyCode);
 		model.addObject("expEntry", expEntryDTO);
@@ -158,6 +162,7 @@ public class ExpensesController {
 	  }catch(Exception e){
 			 model.addObject("AWKWARD", true);
 			  model.setViewName("expenses/addExpense");
+			  e.printStackTrace();
 		 }
 		return model;
 		
@@ -181,6 +186,7 @@ public class ExpensesController {
 		}catch(Exception e){
 			 model.addObject("AWKWARD", true);
 			  model.setViewName("expenses/expenses");
+			  e.printStackTrace();
 		}
 		return model;
 	}
@@ -199,6 +205,7 @@ public class ExpensesController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		sessionData.setNav(Constants.MY_EXPENSES);
 		
 		if(StringUtils.isNotEmpty(expenseId)&& StringUtils.isNotEmpty(expenseLocationCode)){
@@ -207,10 +214,11 @@ public class ExpensesController {
 			elDTO.setLocationCode(orgLoc.getLocationCode());
 			elDTO.setExpenseLocationCode(expenseLocationCode);
 			elDTO.setExpenseId(expenseId);
+			elDTO.setIsGlobalAccess(isGlobalAccess);
 			ExpensesDTO expensesDTO = expensesRestController.getExpenseDetailsByExpenseId(elDTO);
 			model.addObject("expenses", expensesDTO);
 			
-			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expensesDTO.getId(),orgLoc.getId());
+			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expensesDTO.getId(),orgLoc.getId(),isGlobalAccess);
 		    Submission_Status submissionStatus = eah.getExpenseStatus();
 		 	model.addObject("submissionStatus", submissionStatus);
 		 	model.addObject("eah", eah);
@@ -220,13 +228,13 @@ public class ExpensesController {
 			 model.addObject("isExpenseTotallyApproved", isExpenseTotallyApproved);	
 			 
 			 
-			 Boolean isReopenButtonVisible = expensesApprovalService.isReopenButtonVisibleForLoginOrg(expensesDTO.getId(),orgLoc.getId());
+			 Boolean isReopenButtonVisible = expensesApprovalService.isReopenButtonVisibleForLoginOrg(expensesDTO.getId(),orgLoc.getId(),isGlobalAccess);
 			 model.addObject("isReopenButtonVisible", isReopenButtonVisible);
 			 
 			 String type = request.getParameter("type");
 		 	
 		 	 Boolean isEditable = false;
-		 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) ||submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue())){
+		 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) ||submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue()) ||submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REOPENED.getValue())){
 		 		isEditable = true;
 		 	 }
 		 	
@@ -254,13 +262,15 @@ public class ExpensesController {
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		eedDTO.setExpenseId(expenseId);
 		eedDTO.setExpenseFrom("approver");
-		
+		eedDTO.setExpenseLocationCode(expenseLocationCode);
+		eedDTO.setIsGlobalUser(isGlobalAccess);
 		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		expEntryDTO.setLoginCurrencyCode(currencyCode);
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addApprovalExpense");
 		}catch(Exception e){
+			  e.printStackTrace();
 			  model.addObject("AWKWARD", true);
 			  model.setViewName("expenses/addApprovalExpense");
 		}

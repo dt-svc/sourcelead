@@ -97,7 +97,69 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 					       
 		    	         }
 	    	});
-	}
+	}else if(type =="tags"){
+		
+		var select, chosen;
+		    select = $("#"+id);
+		    select.chosen({ no_results_text: noResultText });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keydown keyup', function(e)
+				    {
+					    	if(this.value === placeholderName) {
+					    		this.placeholder = this.value;
+					    		this.value = "";
+					    	} else {
+					    		this.placeholder = "";
+					    	}
+						    	
+				    	   var tagsArray = this.value.split(",");
+					    	 if(tagsArray.length > 1){
+				        		 for (var i=0; i < tagsArray.length; i++) {
+				        			 var option = $("<option>").val(tagsArray[i].replace(",","")).text(tagsArray[i].replace(",",""));
+				        			 select.append(option);
+				 		             select.find(option).prop('selected', true);
+				 		             select.find(option).siblings("[value='"+ tagsArray[i].replace(",","")+"']").remove();
+				 	        		 $("#"+id).trigger("chosen:updated");
+				                 }
+					    	 }else{
+					    		var focussedTags = $("ul.chosen-results").find("li.active-result.highlighted");
+				    			var newTag = this.value.replace(","," ");
+				    			 if ((newTag != null  && newTag != '' && newTag != 'undefined') && window[func](e))
+				                 {
+				    				 preventTabkey(e);
+				                   // below code manually enter tag are taken
+				    				  
+				                   var isNewTag = true;
+									 $("#"+id+" option:selected").each(function(){
+										 if(this.value.toUpperCase() === newTag.toUpperCase() && this.value.toLowerCase() === newTag.toLowerCase()){
+											 isNewTag = false;
+											 return false;
+										 }
+				                    
+				                   });
+									
+										if(focussedTags.length > 0){
+											var tagOption  = $("<option>").val(focussedTags.first().text()).text(focussedTags.first().text());
+											select.append(tagOption);
+											select.find(tagOption).prop('selected',true);
+											select.find(tagOption).siblings("[value='"+ focussedTags.first().text()+"']").remove();
+											$("#"+id).trigger("chosen:updated");
+									   }
+									   else{
+										   if(isNewTag){
+											var option = $("<option>").val(newTag).text(newTag);
+											select.append(option);
+											select.find(option).prop('selected', true);
+										   }
+									   }
+									
+					               $("#"+id).trigger("chosen:updated"); 
+				                   
+				                }
+						       
+			    	         }
+		    	});
+		}
 	
 }
 
@@ -251,11 +313,10 @@ var rFlag = false;
 function showMessage(message, type, redirectFlag) {
     rFlag = redirectFlag ? redirectFlag : false;
     $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger") + " span").html(message);
-    $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).show();
+    $(".alert").show();
     $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).addClass('bounceInUp animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
         $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).removeClass('bounceInUp animated');
     });
-     $(".mask").fadeIn(400);
 }
 
 function hideMessage(type) {
@@ -263,7 +324,6 @@ function hideMessage(type) {
          $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).removeClass('bounceOutDown animated');
          $(".alert" + (type === 1 ? ".alert-success" : ".alert-danger")).hide();
     });
-    $(".mask").fadeOut(400);
     if(rFlag) {
         location.href = "/";
     }
@@ -322,7 +382,7 @@ function saveUserProfileImage(formId,data){
                 success: function(result) {
                     if(result)
                         $("img[data-id=orgLogoImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-                    //location.reload();
+                    location.reload();
                   },  
               });
         }

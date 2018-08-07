@@ -38,6 +38,7 @@ import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
@@ -87,11 +88,13 @@ public class InterviewFeedbackRestController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = "/getPublicInterviewFeedbackTemplate" , method = RequestMethod.GET)
-	   public String getPublicInterviewFeedbackTemplate(@RequestParam(value="templateId", required=false) Long templateId,
-			   @RequestParam(value="requirementInterviewid", required=false) Long requirementInterviewid) throws Exception {
+	@RequestMapping(value = "/ws/getPublicInterviewFeedbackTemplate" , method = RequestMethod.GET)
+	   public String getPublicInterviewFeedbackTemplate(@RequestParam(value="templateId", required=false) String templateId,
+			   @RequestParam(value="requirementInterviewid", required=false) String requirementInterviewid) throws Exception {
 		    String resultJson = null;
-		    InterviewFeedbackTemplate interviewFeedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateByTemplateIdAndRequirementInterviewId(templateId,requirementInterviewid);
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateByUUID(templateId);
+		    RequirementInterviewer requirementInterviewer = requirementInterviewerService.getRequirementInterviewerByUUID(requirementInterviewid);
+		    InterviewFeedbackTemplate interviewFeedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateByTemplateIdAndRequirementInterviewId(submissionTemplate.getId(),requirementInterviewer.getId());
 		    resultJson = toJSON(interviewFeedbackTemplate);
 			 return resultJson;
 	   }
@@ -110,13 +113,13 @@ public class InterviewFeedbackRestController {
 	@RequestMapping(value = "/ws/savePublicInterviewFeddbackTemlateReason" , method = RequestMethod.GET)
 	   public String savePublicInterviewFeddbackTemlateReason(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="templateId", required=false) String templateId,
-			   @RequestParam(value="requirementInterviewid", required=false) Long requirementInterviewerId,
+			   @RequestParam(value="requirementInterviewid", required=false) String requirementInterviewerId,
 			   @RequestParam(value="jsonStringData", required=false) String jsonStringData,HttpServletRequest request) throws Exception {
 		       String json1 = "{" + json + "}";
 		       
 			   JSONObject jsonObj = new JSONObject(json1);
-	           SubmissionTemplate sub =  submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
-		       RequirementInterviewer rqr = requirementInterviewerService.getInterviwerstByInterviewId(requirementInterviewerId);
+	           SubmissionTemplate sub =  submissionTemplateService.getSubmissionTemplateByUUID(templateId);
+		       RequirementInterviewer rqr = requirementInterviewerService.getRequirementInterviewerByUUID(requirementInterviewerId);
 		       User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		       
 			   InterviewFeedbackTemplate ift = new InterviewFeedbackTemplate();
@@ -173,6 +176,7 @@ public class InterviewFeedbackRestController {
 					   submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
 					}else{
 						submissionTemplate = new SubmissionTemplate();
+						submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 					}
 				   submissionTemplate.setTemplateType("Feedback");
 				   submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());
@@ -208,13 +212,13 @@ public class InterviewFeedbackRestController {
        @RequestMapping(value = "/ws/savePublicInterviewFeddbackTemlate" , method = RequestMethod.POST)
 	   public String savePublicInterviewFeddbackTemlate(
 			   @RequestParam(value="templateId", required=false) String templateId,
-			   @RequestParam(value="requirementInterviewid", required=false) Long requirementInterviewerId,
+			   @RequestParam(value="requirementInterviewid", required=false) String requirementInterviewerId,
 			  HttpServletRequest request) throws Exception {
     	       String json1 = request.getParameter("jsonData");
     	       String jsonStringData = request.getParameter("jsonStringData");
 			   JSONObject jsonObj = new JSONObject(json1);
-	           SubmissionTemplate sub =  submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
-	           RequirementInterviewer rqr = requirementInterviewerService.getInterviwerstByInterviewId(requirementInterviewerId);
+	           SubmissionTemplate sub =  submissionTemplateService.getSubmissionTemplateByUUID(templateId);
+	           RequirementInterviewer rqr = requirementInterviewerService.getRequirementInterviewerByUUID(requirementInterviewerId);
 		       User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		       
 			   InterviewFeedbackTemplate ift = new InterviewFeedbackTemplate();
@@ -251,23 +255,53 @@ public class InterviewFeedbackRestController {
     @RequestMapping(value = "/getInterviewFeedbackTemplatesList", method = RequestMethod.POST)
  	@ResponseBody ResponseList<SubmissionTemplate> getInterviewFeedbackTemplatesList(HttpServletRequest request) throws Exception {
     	ResponseList<SubmissionTemplate> response = new ResponseList<>();
-    	try {
- 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
- 	 		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getInterviewFeedbackTemplatesByOrgLocationId(orgLocations.getId());
- 	 		response.setData(submissiontTemplateList);
- 	 		response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
- 		}catch (Exception e) {
- 			response.setResponse(Result.AWKWARD.name());
-			response.setResponseMessage(Result.AWKWARD.getValue());
-		}
+    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	if(user != null) {
+    		try {
+     			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+     	 		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getInterviewFeedbackTemplatesByOrgLocationId(orgLocations.getId());
+     	 		response.setData(submissiontTemplateList);
+     	 		response.setResponse(Result.SUCCESS.name());
+    			response.setResponseMessage(Result.SUCCESS.getValue());
+     		}catch (Exception e) {
+     			e.printStackTrace();
+     			response.setResponse(Result.AWKWARD.name());
+    			response.setResponseMessage(Result.AWKWARD.getValue());
+    		}
+    	}else {
+    		response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+    	}
+ 		return response;
+ 	}
+    
+    
+    @RequestMapping(value = "/getInterviewerAndRatingListByInterviewId", method = RequestMethod.POST)
+ 	@ResponseBody ResponseList<InterviewFeedbackTemplate> getInterviewerAndRatingListByInterviewId(@RequestParam(value="interviewId", required=false) Long interviewId, HttpServletRequest request) throws Exception {
+    	ResponseList<InterviewFeedbackTemplate> response = new ResponseList<>();
+    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	if(user != null) {
+	    	try {
+	 	 		List<InterviewFeedbackTemplate> interviewFeedbackTemplateList  = interviewFeedbackTemplateService.getInterviewerAndRatingListByInterviewId(interviewId);
+	 	 		response.setData(interviewFeedbackTemplateList);
+	 	 		response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+	 		}catch (Exception e) {
+	 			response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+    	}else {
+    		response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+    	}
  		return response;
  	}
     
     
     
     @RequestMapping(value = "/getInterviewrsFeedbackList" , method = RequestMethod.GET)
-	   public List<RequirementInterviewerDTO> getInterviewrsFeedbackList(@RequestParam(value="interviewId", required=false) Long interviewId,@RequestParam(value="locationId", required=false) Long locationId) throws Exception {
+	   public List<RequirementInterviewerDTO> getInterviewrsFeedbackList(@RequestParam(value="interviewId", required=false) Long interviewId,
+			   @RequestParam(value="locationId", required=false) Long locationId,@RequestParam(value="submissionId", required=false) Long submissionId) throws Exception {
 						List<RequirementInterviewerDTO> interviewers = requirementInterviewerService.getInterviwersListByInterviewIdFromDTO(interviewId);
 						OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 						for(RequirementInterviewerDTO interviewer: interviewers){

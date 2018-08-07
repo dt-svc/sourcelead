@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
@@ -57,6 +59,7 @@ import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
@@ -167,8 +170,12 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 	
 	@Autowired
 	OrgLicenseSubscriptionHistoryDao orgLicenseSubscriptionHistoryDao;
+	
 	@Value("${static.path}")
     private String staticPath;
+	
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -219,8 +226,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			if(orgLocations.getUser() != null) {
 				 user =  orgLocations.getUser();
 				UserRole userRole = userRoleDao.getLoginUserPrimaryRole(user.getId());
-				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 if(userRole == null || (null != userRole && userRole.getUserState().equals(Status.NOT_LOGGEDIN))) {
+					 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 					 user.setPassword(sourceleadPasswordEncoder.encode(password));
 				 }
 				 
@@ -258,10 +265,11 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 		    saveOrgRoleHierarchy(orgLocations,user);
 			saveOrgBasedRoles(orgLicenseSubscription.getOrg(),orgLocations,user,orgLicenseSubscriptionDTO.getRegisteredModules());
 			
-			
+			Shift shift = commonUtil.saveDefaultGenaeralShift(orgLocations, user, Constants.GENERAL_SHIFT);
 			//For saving the User Role (At registration user will have Admin Role)
 			UserRole userRole = getUserRoleDetails(user,orgLocations);
 			try {
+				userRole.setShift(shift);
 				userRoleDao.addUserRole(userRole);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -355,7 +363,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			projects.setProjectMode("Finished");
 			projects.setCreatedDate(new Date());
 			projects.setUpdatedDate(new Date());
-			
+			projects.setIsProjectForTimeSheets(Constants.YES);
+			projects.setIsProjectForExpenses(Constants.YES);
 			Countries countires = countriesDao.getCountriesByCountryName(orgLocations.getCountry());
 			if(countires != null) {
 				projects.setCurrency(countires.getCurrency());
@@ -390,7 +399,23 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			pah.setApproverUserId(approverUser);
 			pah.setLevel(1);
 			pah.setStatus("1");
+			pah.setCreatedDate(new Date());
+			pah.setCreatedBy(approverUser.getUserCode());
 			projectApproverHierarchyList.add(pah);
+			
+			
+			//prepare ProjectApproverHierarchy
+			Set<ExpenseProjectApproverHierarchy> projectExpenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+			ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+			eah.setProjectId(projects);
+			eah.setProjectClientsId(projectClients);
+			eah.setApproverUserId(approverUser);
+			eah.setLevel(1);
+			eah.setStatus("1");
+			eah.setCreatedDate(new Date());
+			eah.setCreatedBy(approverUser.getUserCode());
+			projectExpenseApproverHierarchyList.add(eah);
+			projectClients.setExpenseProjectApproverHierarchyList(projectExpenseApproverHierarchyList);
 			
 			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
 	    	projectClientsSet.add(projectClients);
@@ -415,6 +440,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 		 submissionTemplate.setUpdatedDate(new Date());
 		 submissionTemplate.setCreatedBy(user.getUserCode());
 		 submissionTemplate.setCreatedDate(new Date());
+		 submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 		 
 	 }
@@ -437,6 +463,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 		 submissionTemplate.setIsDefault(Constants.YES);
 		 submissionTemplate.setCreatedBy(user.getUserCode());
 		 submissionTemplate.setCreatedDate(new Date());
+		 submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 		 
 	 }
@@ -540,9 +567,12 @@ private Candidate getCandidateDetails(User user, OrgLocations orgLocations,Maste
 				
 				List<Long> roleActonsList = new ArrayList<Long>();
 				if(null != roles.getActionId()){
-					for (String s : roles.getActionId().split(",")){
+					/*for (String s : roles.getActionId().split(",")){
 						 roleActonsList.add(Long.parseLong(s));
-					 }
+					 }*/
+					for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+		    			 roleActonsList.add(Long.parseLong(s));
+		        	 }
 				}
 				
 				
@@ -630,7 +660,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		 
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("Info@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -783,9 +813,12 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 					
 					List<Long> roleActonsList = new ArrayList<Long>();
 					if(null != roles.getActionId()){
-						for (String s : roles.getActionId().split(",")){
+						/*for (String s : roles.getActionId().split(",")){
 							 roleActonsList.add(Long.parseLong(s));
-						 }
+						 }*/
+						for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+			    			 roleActonsList.add(Long.parseLong(s));
+			        	 }
 					}
 					
 					roleActonsList.retainAll(sourceLeadActionsIdsList);
