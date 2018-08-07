@@ -4,6 +4,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 
 public interface PayrollDeductionService {
@@ -16,7 +17,7 @@ public interface PayrollDeductionService {
 	
 	PayrollDeduction findPayrollDeductionByUUID(String deductionUUID);
 	
-	boolean deleteDeductionById(Long deductionId);
+	boolean deleteDeductionById(Long deductionId, String changeStatus);
 
 	boolean isValidDeductionType(String payrollDeductionType, OrgLocations orgLocation);
 

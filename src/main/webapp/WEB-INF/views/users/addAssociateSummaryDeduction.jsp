@@ -71,9 +71,9 @@ getDeductionType();
               
                 
                <div class="minHeightcol5 mt">
-               <div class="col-md-5">
+               <div class="col-md-5" id="dedTypeDiv">
                <label class="clearfix">Type</label>
-                      <select class="sel" id="dedType" name="dedType" data-validation="required" field-name="Deduction Type" onchange="getDeductionAmount();">
+                      <select class="sel" id="dedType" name="dedType" data-validation="required" field-name="Deduction Type" onchange="getDeductionAmount();" onblur="validateDuplicateDeductions();">
                       </select>
                   </div>
                   
@@ -139,6 +139,7 @@ getDeductionType();
 <script type="text/javascript">
 function validateForm(){
 	  if ($('#associate_deduction_form').validate(false, validationSettings)){  
+		  validateDuplicateDeductions();
 		 /*  saveAssociateDeduction(); */
 	       return true; 
 	   }else{
@@ -181,7 +182,6 @@ $('body').on('blur', '#associate_deduction_form', function() {
 	                    $("#associate_deduction_save_button").addClass('button').val('Save');
 	                    showError("Operation failed, please try again");
 	                }
-					 
 			},
 		});	
 	}else{
@@ -224,9 +224,10 @@ function deductionPopup(){
 			var opt = json[i];
 			/* if(orgRelationId == opt.id){ */
 				/* var selected = 'selected'; */
-			/* 	output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
+			/* 	output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.payrollDeductionType+"</option>";
+			    output = output + "<option value='" +opt.payrollDeductionTypeName+ "'"+selected+">"+opt.payrollDeductionType+"</option>";
 			}else{ */
-				output = output + "<option value='" +opt.id+ "'>"+opt.payrollDeductionType+"</option>";
+				output = output + "<option value="+opt.id+">"+opt.payrollDeductionType+"</option>";
 			/* } */
 			
 			}
@@ -242,14 +243,38 @@ function deductionPopup(){
  <script>
  function getDeductionAmount(){
 	 var dedType = $("#dedType").val();
-	 $.ajax({
-			type : "POST",
-			url: sourceleadUrl+"/getDeductionAmount?"+tokenParamName+"="+tokenValue+"&dedType="+dedType,
-			success :function(data) {
-				$("#mthd").val(data.payrollDeductionMethod);
-				$("#amt").val(data.deductionAmount); 
-		},
-		});
+	 if(dedType != null && dedType != '' && dedType != 'undefined'){
+		 $.ajax({
+				type : "POST",
+				url: sourceleadUrl+"/getDeductionAmount?"+tokenParamName+"="+tokenValue+"&dedType="+dedType,
+				success :function(data) {
+					$("#mthd").val(data.payrollDeductionMethod);
+					$("#amt").val(data.deductionAmount); 
+			},
+			});
+	 }
+ }
+ </script>
+ 
+ <script>
+ function validateDuplicateDeductions(){
+	 var dedType = $("#dedType").val();
+	 if(dedType != null && dedType != '' && dedType != 'undefined'){
+		 $.ajax({
+				type : "GET",
+				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType,
+				success :function(data) {
+					if(data == true){
+						$("#dedType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
+						document.getElementById("associate_deduction_save_button").disabled = true;
+					}else{
+						$('#dedType').find('p.jquery_form_error_message').remove();
+						document.getElementById("associate_deduction_save_button").disabled = false;
+					}
+					
+			 },
+			});
+	 }
  }
  </script>
  
