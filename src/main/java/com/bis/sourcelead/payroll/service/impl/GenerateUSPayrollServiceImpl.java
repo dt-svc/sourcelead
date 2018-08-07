@@ -18,12 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -133,6 +135,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	@Autowired
 	DeductionHistoryService deductionHistoryService;
 	
+	@Autowired
+	private AssociateSalaryDao associateSalaryDao;
+	
 	
 	 
 	@Override
@@ -229,6 +234,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				BigDecimal postTax = dedTaxes[1];
 				BigDecimal preContriSum = contributionTaxes[0];
 				BigDecimal postContriSum = contributionTaxes[1];
+				
+				getPayItemSum(orgLocation,assoSal.getAssociatePayItem(),paySheetFreq,freqStartDate, freqEndDate);
+				
 				employeePayroll.setPreTaxDeduction(preTax);
 				employeePayroll.setPostTaxDeduction(postTax);
 				employeePayroll.setPreTaxContribution(postContriSum);
@@ -271,6 +279,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		
 	}
 	
+
 
 
 	/**
@@ -420,6 +429,46 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		return dedDto;
 	}
 
+	
+    /**
+     * 
+     * @param orgLocation
+     * @param associatePayItem
+     * @param paySheetFreq
+     * @param freqStartDate
+     * @param freqEndDate
+     * @return
+     */
+	private BigDecimal getPayItemSum(OrgLocations orgLocation, Set<AssociatePayItem> associatePayItem,PaysheetFrequency paySheet, Date freqStartDate, Date freqEndDate) {
+		
+		BigDecimal payItemSum = BigDecimal.ZERO;
+		for(AssociatePayItem payItem : associatePayItem) {
+			boolean schedulePay = payrollUtil.findPayItemSchedulePay(payItem, paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
+			if(!schedulePay) {
+				payItemSum = payItem.getPayItemAmount();
+				
+				Date[] payItemDate = null;
+				if(StringUtils.isNotBlank(payItem.getPayitemStatus()) && !PayrollConstant.EVERY_PAY.equalsIgnoreCase(payItem.getPayItemSchedule())) {
+					payItemDate = payrollUtil.getDeductionDates(payItem.getPayitemEndDate(), payItem.getPayItemSchedule());
+				}else {
+					payItem.setPayitemStatus("ADDED");
+					payItemDate = payrollUtil.getDeductionDates(paySheet.getFrequencyStartDate(), payItem.getPayItemSchedule());
+				}
+				payItem.setPayitemStartDate(payItemDate[0]);
+				if(payItemDate[0] != null) {
+					payItem.setPayitemEndDate(payItemDate[1]);
+				}else {
+					payItem.setPayitemEndDate(paySheet.getFrequencyEndDate());
+				}
+				
+				AssociatePayItem assPayItem = associateSalaryDao.saveUpdatedPayItem(payItem);
+			}
+		}
+		return null;
+		
+		
+		
+	}
 	/**
 	 * populating deduction histroy
 	 * 
