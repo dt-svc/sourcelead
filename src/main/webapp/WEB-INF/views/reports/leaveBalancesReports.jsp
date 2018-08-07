@@ -178,6 +178,7 @@ $(document).ready(function(){
   </div>
       </div>
     </div>
+    <div id="loading"></div>
   </section>
 
 <!-- <script>
@@ -218,7 +219,7 @@ var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 		leaveType.push($(this).val());
      });
 	var url = sourceleadUrl+"/getLeaveBalanceReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType;
-$("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.get(url,function(response) {
 							if (response.response === "AWKWARD") {
 								location.href = "/errorPage";
@@ -277,9 +278,9 @@ $("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; heig
 								
 								result = result + '  </tbody>                                                                                                        ';
 								result = result + '</table> ';
-							
 							$("#balanceLeaveReportsList").empty();
 							$("#balanceLeaveReportsList").append(result);
+							$("#loading").removeAttr("style");
 							$("#balanceLeavesTableSearch").removeAttr('style');
 							listTypePagination();
 							$(".proj_show").click(
@@ -312,7 +313,9 @@ $("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; heig
 			"oLanguage" : {
 				"sSearch" : "",
 				"sZeroRecords" : "",
-				"sEmptyTable" : ""
+				"sEmptyTable" : "",
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+
 			}
 		});
 		$("#dynamicBalanceLeaveReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");

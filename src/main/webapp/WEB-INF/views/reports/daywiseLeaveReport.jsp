@@ -21,7 +21,7 @@ $(document).ready(function(){
      <div class="timesheet_out">
       <div class="vendor_wrap">
         <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();" oncontextmenu="return false"></a></span>
          
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
@@ -35,10 +35,10 @@ $(document).ready(function(){
           </div>
 		   </li>
 <!-- 			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')">  -->
-				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();" oncontextmenu="return false"></a></li>
 <!-- 			</sec:authorize> -->
 				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();" oncontextmenu="return false"></a>
 					<div class="newActPop">
 						<span>
 <!-- 						<sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')">  -->
@@ -60,6 +60,7 @@ $(document).ready(function(){
           </div>
       </div>
     </div>
+     <div id="popUp"></div>
   </section>
 
 
@@ -85,10 +86,15 @@ function getDaywiseLeaveReportList(){
 		    {
 		leaveTypeNames.push($(this).val());
      });
+	var leaveTypeBillable = [];
+	$('input:checkbox[name=leaveTypeBillable]:checked').each(function() 
+		    {
+		leaveTypeBillable.push($(this).val());
+     });
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames;
+	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
 	prepareAllDaywiseLeaveReportList(url);
 }
 </script>	
@@ -118,6 +124,7 @@ function prepareAllDaywiseLeaveReportList(url){
 		result = result	+ '</div>';
 		$("#daywiseLeaveReportsList").empty();
 		$("#daywiseLeaveReportsList").append(result);
+		$("#noReports").val(result.length)
 		daywiseLeaveReportsListPagination(url);
 }
 </script>
@@ -359,6 +366,12 @@ $("#daywiseReportDataTableSearch").keydown(function(e) {
 	   }
 	});
 </script>
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 <script>
 function myRolesFunction() {
     var input, filter, ul, li, a, i;
@@ -437,7 +450,7 @@ function closeAssetFilterPop(){
 </script>
 
  <div class="advancedsearch-mask"></div>
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="dayWiseFilterId">
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="dayWiseFilterId" oncontextmenu="return false">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeAssetFilterPop()"><i
 						class="fa fa-close"></i></a>
@@ -457,7 +470,21 @@ function closeAssetFilterPop(){
 								</ul>
 							 </div> 
 						</div>
-						
+								<div class="col-md-2">
+						<div class="row">
+							 
+							 <div class="col-md-12 mb">
+								<label><strong>Leave Type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="employmentTypeFilter">
+			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable"  value ="Billable"><label>&nbsp;Billable</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable"  value ="Non Billable" ><label>&nbsp;Non Billable</label></li>
+			                        </ul>
+								 </div>
+							 </div> 
+							 
+						  </div>
+						</div>
 						<c:if test="${departmentListSize > 0}">
 						<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
@@ -515,16 +542,7 @@ function closeAssetFilterPop(){
 						</div>
 					</div>
 				</div>
-<script>
-function viewCompleteTemplate(temp){
-	var templateUUID = $("#empTemplateId").val();
-	var toAddress = $("#toAddress").val();
-	var employeeId = $("#hiddenUserId").val();
-	var winPrint = window.open(sourceleadUrl+'/previewCompleteTemplateByTemplateUUID?&templateUUID='+templateUUID+'&toAddress='+toAddress+'&employeeId='+employeeId,'_newtab');
-	if(temp == 'print')
-		winPrint.print();
-}
-</script> 
+
 
 
 <script>
@@ -621,7 +639,7 @@ function exportUserData(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(ReportsListEmpty != 'noReports'){
+	if(ReportsListEmpty > 0){
 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
 	}else{
 		 var result = "";
@@ -649,7 +667,7 @@ function exportToPdf(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(ReportsListEmpty != 'noReports'){
+	if(ReportsListEmpty > 0){
 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
 	}else{
 		 var result = "";
