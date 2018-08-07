@@ -221,7 +221,7 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 		AssociateTaxDTO associateTaxDTO = new AssociateTaxDTO();
 		if(associateTax != null) {
 			associateTaxDTO.setId(associateTax.getId());
-			associateTaxDTO.setFederaltaxFillingStatus(associateTax.getResidenceTaxFilliingStatus());
+			associateTaxDTO.setFederaltaxFillingStatus(associateTax.getFederalTaxFilliingStatus());
 			associateTaxDTO.setFederaltaxAllowances(associateTax.getFederalTaxAllowances());
 			associateTaxDTO.setFederaltaxAdditionalWithHolding(associateTax.getFederalTaxAdditionnalWithHolding());
 			associateTaxDTO.setStateTaxFillingStatus(associateTax.getStateTaxFilliingStatus());
@@ -234,6 +234,8 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 			associateTaxDTO.setResidenceLocationSupplementType(associateTax.getSupplementType());
 			associateTaxDTO.setLocalTax(associateTax.getLocalTax());
 			associateTaxDTO.setLocalTaxState(associateTax.getLocalTaxState());
+			
+			
 			if(associateTax.getFederalExempt()) {
 				associateTaxDTO.setFederalExempt("YES");
 			}else {
@@ -260,6 +262,15 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 				associateTaxDTO.setSutaExempt("NO");
 			}
 		}
+		
+		StringBuilder sb = new StringBuilder();
+		if(orgLocation.getCity() != null && orgLocation.getState() != null) {
+			sb.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).append(",").append(orgLocation.getCity());
+		}else {
+			sb.append(orgLocation.getCountry());
+		}
+		
+		associateTaxDTO.setLocation(sb.toString());
 		
 		return associateTaxDTO;
 	}

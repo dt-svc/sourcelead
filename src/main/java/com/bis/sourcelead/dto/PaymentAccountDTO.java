@@ -26,6 +26,7 @@ public class PaymentAccountDTO {
     private long orgLocationId;
     private String orgLocationName;
     private long orgId;
+    private long associateUserId;
     @Required(desc = "bankName", dependsOn = "accountType", parentValue = {"SAVINGS", "ROUTING"})
     private String bankName;
     
@@ -284,6 +285,14 @@ public class PaymentAccountDTO {
 
 	public void setMicrCode(String micrCode) {
 		this.micrCode = micrCode;
+	}
+
+	public long getAssociateUserId() {
+		return associateUserId;
+	}
+
+	public void setAssociateUserId(long associateUserId) {
+		this.associateUserId = associateUserId;
 	}
      
 }

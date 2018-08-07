@@ -220,49 +220,58 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	@Override
 	public AssociateSalaryDTO findAssociateSalaryByUserId(Long userId,OrgLocations orgLocation)
 	{
-		    AssociateSalary asal = associateSalaryDao.findAssociateSalaryByUserId(userId);
-			AssociateSalaryDTO associateSalaryDTO = new AssociateSalaryDTO();
-			associateSalaryDTO.setId(String.valueOf(asal.getId()));
-			associateSalaryDTO.setPayType(asal.getPayType());
-			associateSalaryDTO.setPayFrequency(asal.getPayFrequency());
-			associateSalaryDTO.setStandardHours(asal.getStandardHours());
-			associateSalaryDTO.setAnnualSal(String.valueOf(asal.getAnnualSalary()));
-			associateSalaryDTO.setPerPaySal(String.valueOf(asal.getGrossSalary()));
-			associateSalaryDTO.setHourlyRate(String.valueOf(asal.getHourlyRate()));
-			associateSalaryDTO.setAssociateSalUUID(asal.getAssociateSalaryUuid());
-			associateSalaryDTO.setPayGroupUUID(asal.getGroupId().getGroupUUID());
-			associateSalaryDTO.setPayGroup(asal.getGroupId().getGroupName());
+		AssociateSalaryDTO associateSalaryDTO = null;
+		try {
+			 AssociateSalary asal = associateSalaryDao.findAssociateSalaryByUserId(userId);
+			    if(asal != null) {
+			    	 associateSalaryDTO = new AssociateSalaryDTO();
+					associateSalaryDTO.setId(String.valueOf(asal.getId()));
+					associateSalaryDTO.setPayType(asal.getPayType());
+					associateSalaryDTO.setPayFrequency(asal.getPayFrequency());
+					associateSalaryDTO.setStandardHours(asal.getStandardHours());
+					associateSalaryDTO.setAnnualSal(String.valueOf(asal.getAnnualSalary()));
+					associateSalaryDTO.setPerPaySal(String.valueOf(asal.getGrossSalary()));
+					associateSalaryDTO.setHourlyRate(String.valueOf(asal.getHourlyRate()));
+					associateSalaryDTO.setAssociateSalUUID(asal.getAssociateSalaryUuid());
+					associateSalaryDTO.setPayGroupUUID(asal.getGroupId().getGroupUUID());
+					associateSalaryDTO.setPayGroup(asal.getGroupId().getGroupName());
+					
+					Set<AssociatePayItem> payItemList = asal.getAssociatePayItem();
+					List<AssociatePayItemDTO> list = new ArrayList<>();
+					if(payItemList != null && payItemList.size() > 0) {
+						payItemList.forEach(pi->{
+							AssociatePayItemDTO associatePayItemDTO = new AssociatePayItemDTO();
+							associatePayItemDTO.setId(String.valueOf(pi.getId()));
+							associatePayItemDTO.setPayItemName(pi.getPayItemName());
+							associatePayItemDTO.setPayItemSchedule(pi.getPayItemSchedule());
+							if(pi.getOverRide() != null && !"".equalsIgnoreCase(pi.getOverRide())) {
+								associatePayItemDTO.setOverRide(pi.getOverRide());
+							}else {
+								associatePayItemDTO.setOverRide("--");
+							}
+							if(pi.getEffectiveDate() != null) {
+								associatePayItemDTO.setEffectiveDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pi.getEffectiveDate()));
+							}else {
+								associatePayItemDTO.setEffectiveDate("--");
+							}
+							if(pi.getEndDate() !=null) {
+								associatePayItemDTO.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pi.getEndDate()));
+							}else {
+								associatePayItemDTO.setEndDate("--");
+							}
+							associatePayItemDTO.setPayItemAmount(String.valueOf(pi.getPayItemAmount()));
+							if(pi.getStatus() == 1)
+							list.add(associatePayItemDTO);
+						});
+						
+					}
+					associateSalaryDTO.setAssociatePayItemDto(list);
+			    }	
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		   
 			
-			Set<AssociatePayItem> payItemList = asal.getAssociatePayItem();
-			List<AssociatePayItemDTO> list = new ArrayList<>();
-			if(payItemList != null && payItemList.size() > 0) {
-				payItemList.forEach(pi->{
-					AssociatePayItemDTO associatePayItemDTO = new AssociatePayItemDTO();
-					associatePayItemDTO.setId(String.valueOf(pi.getId()));
-					associatePayItemDTO.setPayItemName(pi.getPayItemName());
-					associatePayItemDTO.setPayItemSchedule(pi.getPayItemSchedule());
-					if(pi.getOverRide() != null && !"".equalsIgnoreCase(pi.getOverRide())) {
-						associatePayItemDTO.setOverRide(pi.getOverRide());
-					}else {
-						associatePayItemDTO.setOverRide("--");
-					}
-					if(pi.getEffectiveDate() != null) {
-						associatePayItemDTO.setEffectiveDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pi.getEffectiveDate()));
-					}else {
-						associatePayItemDTO.setEffectiveDate("--");
-					}
-					if(pi.getEndDate() !=null) {
-						associatePayItemDTO.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pi.getEndDate()));
-					}else {
-						associatePayItemDTO.setEndDate("--");
-					}
-					associatePayItemDTO.setPayItemAmount(String.valueOf(pi.getPayItemAmount()));
-					if(pi.getStatus() == 1)
-					list.add(associatePayItemDTO);
-				});
-				
-			}
-			associateSalaryDTO.setAssociatePayItemDto(list);
 			
 		return associateSalaryDTO;
 	}
