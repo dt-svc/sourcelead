@@ -83,7 +83,9 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 				associateSalary.setStandardHours(associateSalaryDTO.getStandardHours());
 				associateSalary.setAnnualSalary(new BigDecimal(associateSalaryDTO.getAnnualSal()));
 				associateSalary.setGrossSalary(new BigDecimal(associateSalaryDTO.getPerPaySal()));
-				associateSalary.setHourlyRate(new BigDecimal(associateSalaryDTO.getHourlyRate()));
+				if(StringUtils.isNotBlank(associateSalaryDTO.getHourlyRate())) {
+					associateSalary.setHourlyRate(new BigDecimal(associateSalaryDTO.getHourlyRate()));
+				}
 				associateSalary.setAllowOverTimePay(associateSalaryDTO.getAllowOverTimePay());
 				associateSalary.setOrgLocations(orgLocation);
 				associateSalary.setCreatedDate(new Date());
