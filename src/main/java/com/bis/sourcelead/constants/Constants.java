@@ -1167,7 +1167,6 @@ public class Constants {
     public static final String LOCAL_TAX_YES = "YES";
     public static final String LOCAL_TAX_NO = "NO";
     
-    public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";
