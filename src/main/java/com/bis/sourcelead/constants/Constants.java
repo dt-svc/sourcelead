@@ -474,6 +474,9 @@ public class Constants {
 	public static final String Payables = "Payables";
 	public static final String PAYROLL = "Payroll";
 	public static final String PAY = "Pay"; 
+	public static final String TAXES = "Taxes";
+	public static final String FORMS = "Forms";
+	public static final String MYPAYROLL = "MyPayroll";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
