@@ -31,10 +31,16 @@ public class ImmigrationConstants {
 	
 	public static final String LCA_STATUS_EXPIRED= "Expired";
 	
+	public static final String LCA_STATUS_EXPIRED_IN_DAYS= "Expired In Days";
+	
 	public static final String IMMIGRATION_UPLOAD ="immigrationUpload";
 	public static final String LCA_UPLOAD ="lcaUpload";
 	
 	public static final String SOC_TYPE = "SocDetails";
+	
+	public static final String EMAIL_TO_LCA_MANAGER_EXPIRED = "EmailToLcaManagerExpired";
+	
+	
 	
 	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name","Beneficiary Last Name",
             "Beneficiary Email", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",    
