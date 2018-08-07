@@ -87,8 +87,8 @@ private static final Logger logger = LoggerFactory.getLogger(PayrollContribution
 				qry = " order by payrollContribution." + payrollContributionDTO.getSortColumn() + " "
 						+ payrollContributionDTO.getSortOrder();
 			}
-			String query = "from PayrollContribution payrollContribution where payrollContribution.deductionTypeId.orgLocationId.id =:orgLocationId and payrollContribution.status = 1";
-			String countQuery = "from PayrollContribution payrollContribution where payrollContribution.deductionTypeId.orgLocationId.id =:orgLocationId and payrollContribution.status = 1";
+			String query = "from PayrollContribution payrollContribution where payrollContribution.deductionTypeId.orgLocationId.id =:orgLocationId";
+			String countQuery = "from PayrollContribution payrollContribution where payrollContribution.deductionTypeId.orgLocationId.id =:orgLocationId";
 			StringBuilder searchQuery = new StringBuilder();
 			if (StringUtils.isNoneBlank(payrollContributionDTO.getSearchValue())) {
 				searchQuery.append(" and payrollContribution.payrollContributionMethod like '%"
@@ -170,8 +170,9 @@ private static final Logger logger = LoggerFactory.getLogger(PayrollContribution
 	public List<PayrollContribution> getAllContributionTypeByLocationId(OrgLocations orgLocation)
 	{
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from PayrollContribution payrollCon where payrollCon.orgLocationId.id =:orgLocationId";
+			String query = "from PayrollContribution payrollCon where payrollCon.orgLocationId.id =:orgLocationId and payrollCon.status = 1";
 			List<PayrollContribution> payrollContributionList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
 			return payrollContributionList;
 	}
+
 }

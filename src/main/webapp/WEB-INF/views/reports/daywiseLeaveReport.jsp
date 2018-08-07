@@ -27,11 +27,11 @@ $(document).ready(function(){
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		   <li>
 		   <div class="pull-left mr">
+		   <span id="fromDateDiv" class="colorRed small mr10 pull-left mt10"></span>
             <div class="pull-left mr5 width150px">
               <input value="${fromDate}" name="fromDate" id="fromDate" placeholder="Date" class="form-control calendar margin-top0" type="text">
-            <p id="fromDateDiv" class="ReError"></p>
             </div>
-            <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-search" onclick="searchThroughDates();"></i></button>
+            <button type="button" class="btn btn-primary" onclick="searchThroughDates();"><i class="glyphicon glyphicon-search"></i></button>
           </div>
 		   </li>
 <!-- 			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')">  -->

@@ -12,6 +12,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -214,6 +215,8 @@ public interface UserService  {
 
 	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
 
+	User getUserbyConsultantUserId(Long consultantUserId);
+
 	List<User> getGlobalUsersByOrgId(Long roleId,Long orgId,Long tabId) throws Exception;
 	
 	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgLocationId,Long orgId,Long tabId) throws Exception;
@@ -243,7 +246,7 @@ public interface UserService  {
 
 	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 
-	User getUserbyConsultantUserId(Long consultantUserId);
+	 List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception;
 
 }	
 		
