@@ -106,24 +106,24 @@
                         </tr>
                         <tr>
                           <td>Federal Withholding</td>
-                          <td><span id="federal">0</span></td>
+                          <td><span id="federalWT">0</span></td>
                         </tr>
                         <tr>
                           <td>Medicare</td>
-                           <td><span id="medicare">0</span></td>
+                           <td><span id="medicareWT">0</span></td>
                         </tr>
                         <tr>
                           <td>FICA</td>
-                           <td><span id="fica">0</span></td>
+                           <td><span id="ficaWT">0</span></td>
                         </tr>
                       
                         <tr>
                           <td>State Withholding</td>
-                          <td><span id="stateWithHolding">0</span></td>
+                          <td><span id="stateWithHoldingWT">0</span></td>
                         </tr>
                           <tr>
                           <td>Advanced Earned Income Credit</td>
-                           <td><span id="aeic">0</span></td>
+                           <td><span id="aeicWT">0</span></td>
                         </tr>
                         
                       </tbody>
@@ -199,7 +199,7 @@
                           <th colspan="2">Net Pay Disctibution</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody>json.federal
                         <tr>
                           <th>Advice#1006795</th>
                           <td>2,062.53</td>
@@ -245,12 +245,12 @@
 		            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
 		            $("#totalHours").text(json.totalHours.toFixed(2));
 		            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
-		        	alert(json.federal);
-		            $("#federal").text(json.federal);
-		            $("#medicare").text(json.medicare);
-		            $("#fica").text(json.fica);
-		            $("#stateWithHolding").text(json.stateWithHolding);
-		            $("#aeic").text(json.aeic);
+		            
+		            $("#federalWT").text(json.federal);
+		            $("#medicareWT").text(json.medicare);
+		            $("#ficaWT").text(json.fica);
+		            $("#stateWithHoldingWT").text(json.stateWithHolding);
+		            $("#aeicWT").text(json.aeic);
 		            $("#taxes").text(json.taxes);
 		            
 		            $("#gross").text(json.grossPay);
