@@ -104,7 +104,9 @@ $(function(){
 				  <li class="actLi"><span>1</span><b>Welcome</b><i class="line"></i></li>
 				  <li><span>2</span><b>Step two</b><i class="line"></i></li>
 				  <li><span>3</span><b>Step three</b><i class="line"></i></li>
-				  <li><span>4</span><b>Finish</b><i class="line"></i></li>
+				  <li><span>4</span><b>Step four</b><i class="line"></i></li>
+				  <li><span>5</span><b>Step five</b><i class="line"></i></li>
+				  <li><span>6</span><b>Finish</b><i class="line"></i></li>
 				  <div class="clearfix"></div>
 			  </ul>
 			  <div class="clearfix"></div>

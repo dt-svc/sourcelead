@@ -32,6 +32,16 @@ public class PayrollConstant {
 	public static final String SEMI_ANNUALLY = "SEMI_ANNUALLY";
 	public static final String ANNUALLY = "ANNUALLY";
 	public static final String MONTHLY = "MONTHLY";
+	
+	public static final String DEDUCTED = "DEDUCTED";
+	public static final String CONTRIBUTED = "CONTRIBUTED";
+	
+	public static final String HOURLY_RATE = "HourlyRate";
+	public static final String SALARY = "Salary";
+	
+	public static final BigDecimal ONE_MIN_SEC = new BigDecimal(60);
+	
+	 
 	  
 	
   

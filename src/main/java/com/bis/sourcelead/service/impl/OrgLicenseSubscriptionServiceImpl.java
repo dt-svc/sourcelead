@@ -552,6 +552,7 @@ private Candidate getCandidateDetails(User user, OrgLocations orgLocations,Maste
 		
 		List<SourceleadRoles> rolesList = sourceleadRolesDao.getSourceleadRoles();
 		List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsDao.getAllSourceleadActionsByTabsList(tabsIds);
+		Countries countires = countriesDao.getCountriesByCountryName(orgLocations.getCountry());
 		
 		if(null != rolesList){
 			for(SourceleadRoles roles : rolesList){
@@ -567,18 +568,20 @@ private Candidate getCandidateDetails(User user, OrgLocations orgLocations,Maste
 				
 				List<Long> roleActonsList = new ArrayList<Long>();
 				if(null != roles.getActionId()){
-					/*for (String s : roles.getActionId().split(",")){
-						 roleActonsList.add(Long.parseLong(s));
-					 }*/
 					for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 		    			 roleActonsList.add(Long.parseLong(s));
 		        	 }
 				}
 				
-				
 				for(SourceleadActions actions : sourceLeadActionsList){
 					if(roleActonsList.contains(actions.getId())){
-						 strbul.append(actions.getId()).append(",");
+						if(actions.getLoctionCode() == null) {
+							strbul.append(actions.getId()).append(",");
+						}else if(actions.getLoctionCode() != null) {
+							if(actions.getLoctionCode().equalsIgnoreCase(countires.getCode2())) {
+								strbul.append(actions.getId()).append(",");
+							}
+						}
 					}
 				}
 				
@@ -803,7 +806,15 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 			}
 		}
 		
-		List<Long> sourceLeadActionsIdsList =  sourceleadActionsDao.getAllSourceleadActionsIdsByTabsList(tabsIds);
+		List<Long> sourceLeadActionsIdsList =  new ArrayList<>();;
+		List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsDao.getAllSourceleadActionsByTabsList(tabsIds);
+		Countries countires = countriesDao.getCountriesByCountryName(orgLicenseSubscriptionDTO.getCountry());
+		for(SourceleadActions actions : sourceLeadActionsList) {
+			if(actions.getLoctionCode() == null || (actions.getLoctionCode() != null && actions.getLoctionCode().equalsIgnoreCase(countires.getCode2()))) {
+				sourceLeadActionsIdsList.add(actions.getId());
+			}
+		}
+		
 		
 		List<Long> orgLocationsIdsList = orgLocationsDao.getOrgLocationsIdsListByOrgIdAndCountry(orgId, orgLicenseSubscriptionDTO.getCountry());
 		if(orgLocationsIdsList != null && !orgLocationsIdsList.isEmpty()) {
@@ -813,9 +824,6 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 					
 					List<Long> roleActonsList = new ArrayList<Long>();
 					if(null != roles.getActionId()){
-						/*for (String s : roles.getActionId().split(",")){
-							 roleActonsList.add(Long.parseLong(s));
-						 }*/
 						for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 			    			 roleActonsList.add(Long.parseLong(s));
 			        	 }

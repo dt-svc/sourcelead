@@ -820,6 +820,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 				
 				List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
 				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActionsByTabsList(tabsIds);
+				Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry()); 
 				
 				if(null != rolesList){
 					for(SourceleadRoles roles : rolesList){
@@ -835,18 +836,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 						
 						List<Long> roleActonsList = new ArrayList<Long>();
 						if(null != roles.getActionId()){
-							/*for (String s : roles.getActionId().split(",")){
-								 roleActonsList.add(Long.parseLong(s));
-							 }*/
 							for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 				    			 roleActonsList.add(Long.parseLong(s));
 				        	 }
 						}
 						
-						
 						for(SourceleadActions actions : sourceLeadActionsList){
 							if(roleActonsList.contains(actions.getId())){
-								 strbul.append(actions.getId()).append(",");
+								if(actions.getLoctionCode() == null) {
+									strbul.append(actions.getId()).append(",");
+								}else if(actions.getLoctionCode() != null) {
+									if(actions.getLoctionCode().equalsIgnoreCase(countires.getCode2())) {
+										strbul.append(actions.getId()).append(",");
+									}
+								}
 							}
 						}
 						

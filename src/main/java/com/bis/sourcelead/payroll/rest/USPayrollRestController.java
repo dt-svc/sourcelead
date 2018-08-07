@@ -321,12 +321,12 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = { "/deleteContributionType","/rest/deleteContributionType" }, method = RequestMethod.POST)
 	@ResponseBody
-	public boolean deleteSelectedContributionType(PayrollContributionDTO payrollContributionDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public boolean deleteSelectedContributionType(@RequestParam(value = "contributionId", required = false)Long contributionId,@RequestParam(value = "changeStatus", required = false)String changeStatus, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		if (payrollContributionDTO.getContributionId() !=0 ) {
-			return payrollContributionService.deleteContributionById(payrollContributionDTO.getContributionId());
-		}
-		return false;
+//		if (payrollContributionDTO.getContributionId() !=0 ) {
+			return payrollContributionService.deleteContributionById(contributionId,changeStatus);
+//		}
+//		return false;
 	}
 	
 	/**
@@ -340,12 +340,10 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = { "/deleteDeductionType","/rest/deleteDeductionType" }, method = RequestMethod.POST)
 	@ResponseBody
-	public boolean deleteSelectedContributionType(PayrollDeduction payrollDeduction, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public boolean deleteSelectedDeductionType(@RequestParam(value = "id", required = false)Long deductionId,@RequestParam(value = "changeStatus", required = false)String changeStatus, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		if (payrollDeduction.getId() !=0 ) {
-			return payrollDeductionService.deleteDeductionById(payrollDeduction.getId());
-		}
-		return false;
+		
+			return payrollDeductionService.deleteDeductionById(deductionId,changeStatus);
 	}
 	
 	
@@ -770,8 +768,30 @@ public class USPayrollRestController {
 			int year = now.get(Calendar.YEAR);
 			int month = now.get(Calendar.MONTH);
 			listDates = getNumberOfWeeks(year, month, orgLocation);
+		}else if("Monthly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+			Calendar now = Calendar.getInstance(); // Gets the current date and
+			int month = now.get(Calendar.MONTH);
+			listDates = getStartDateAndEndDateOfMonths(month, orgLocation);
+			
+			
 		}
 		return listDates;
+	}
+	/**
+	 * Get start date and end date of months
+	 * @param month
+	 * @param orgLocation
+	 * @return
+	 */
+	private List<String> getStartDateAndEndDateOfMonths(int month, OrgLocations orgLocation)
+	{
+		List<String> dateList = new ArrayList<>();
+		for (int i = 0; i <month; i++) {
+			java.util.Date[] datesss = commonUtil.getMonthStartDateEndDateByMonth(i);
+			StringBuilder sb = new StringBuilder();
+			dateList.add(sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),datesss[0])).append(",").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),datesss[1])).toString());
+		}
+		return dateList;
 	}
 		
 		
@@ -1335,6 +1355,34 @@ public class USPayrollRestController {
 
 	}
 	
+
+	@RequestMapping(value = "/validateDeduction", method = RequestMethod.GET)
+	@ResponseBody
+	public boolean validateDeduction(@RequestParam(value = "dedType",required = false)Long deductionTypeId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		boolean bol = false;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		AssociateDeduction  validateDed = associateDeductionService.getValidateDeduction(deductionTypeId,orgLocation);	
+		if(validateDed != null) {
+			bol = true;
+		}
+		return bol;
+	}
+	
+	@RequestMapping(value = "/validateContribution", method = RequestMethod.GET)
+	@ResponseBody
+	public boolean validateContribution(@RequestParam(value = "contriType",required = false)Long contriTypId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		boolean bol = false;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		AssociateContribution  validateCon = associateContributionService.getValidateContribution(contriTypId,orgLocation);	
+		if(validateCon != null) {
+			bol = true;
+		}
+		return bol;
+	}
+	
+
 	@RequestMapping(value = { "/getPayGroupsByPayFrequency","/rest/getPayGroupsByPayFrequency" })
 	@ResponseBody
 	public List<UserGroup> getPayGroupsByPayFrequency(UserGroupDTO userGroupDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -1347,4 +1395,5 @@ public class USPayrollRestController {
 		filteredGroupList = groupList.stream().filter(i->i.getPayFrequency().equalsIgnoreCase(userGroupDTO.getPayFrequency())).collect(Collectors.toList());
 		return filteredGroupList;
 	}
+
 }

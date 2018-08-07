@@ -53,9 +53,9 @@ public class USPayrollDTO {
      
     private BigDecimal aeic;
     
-    private List<DeductionDTO> preDed;
+    private List<DeductionHistoryDTO> preDed;
     
-    private List<DeductionDTO> postDed;
+    private List<DeductionHistoryDTO> postDed;
     
     private BigDecimal preDedTotal;
     
@@ -63,7 +63,7 @@ public class USPayrollDTO {
     
     private BigDecimal contributionTotal;
     
-    private List<ContributionDTO> contribution;
+    private List<ContributionHistoryDTO> contribution;
     
     private List<AssociatePayItemDTO> payItem; 
     
@@ -85,11 +85,11 @@ public class USPayrollDTO {
 	{
 		this.isExcept = isExcept;
 	}
-	public List<ContributionDTO> getContribution()
+	public List<ContributionHistoryDTO> getContribution()
 	{
 		return contribution;
 	}
-	public void setContribution(List<ContributionDTO> contribution)
+	public void setContribution(List<ContributionHistoryDTO> contribution)
 	{
 		this.contribution = contribution;
 	}
@@ -275,22 +275,7 @@ public class USPayrollDTO {
 	{
 		this.aeic = aeic;
 	}
-	public List<DeductionDTO> getPreDed()
-	{
-		return preDed;
-	}
-	public List<DeductionDTO> getPostDed()
-	{
-		return postDed;
-	}
-	public void setPreDed(List<DeductionDTO> preDed)
-	{
-		this.preDed = preDed;
-	}
-	public void setPostDed(List<DeductionDTO> postDed)
-	{
-		this.postDed = postDed;
-	}
+	
 	public BigDecimal getPreDedTotal()
 	{
 		return preDedTotal;
@@ -362,6 +347,22 @@ public class USPayrollDTO {
 	public void setPayItemId(String payItemId)
 	{
 		this.payItemId = payItemId;
+	}
+	public List<DeductionHistoryDTO> getPreDed()
+	{
+		return preDed;
+	}
+	public List<DeductionHistoryDTO> getPostDed()
+	{
+		return postDed;
+	}
+	public void setPreDed(List<DeductionHistoryDTO> preDed)
+	{
+		this.preDed = preDed;
+	}
+	public void setPostDed(List<DeductionHistoryDTO> postDed)
+	{
+		this.postDed = postDed;
 	}
 	
 	

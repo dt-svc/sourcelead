@@ -56,6 +56,8 @@ public class AssociateTaxDTO {
 	
 	private String supplementType;
 	
+	private String location;
+	
 	
 	public long getId()
 	{
@@ -285,6 +287,14 @@ public class AssociateTaxDTO {
 	public void setLocalTaxState(String localTaxState)
 	{
 		this.localTaxState = localTaxState;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	
 	

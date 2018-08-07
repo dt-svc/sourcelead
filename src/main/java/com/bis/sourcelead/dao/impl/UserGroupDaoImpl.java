@@ -202,7 +202,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			.append(" AND   projmem.MASTER_CANDIDATE_ID = timesheet.MASTER_CANDIDATE_ID")
 			.append (" AND   projmem.PROJECT_ID = timesheet.PROJECT_ID")
 			.append(" AND user.ID = :userId and timesheet.START_DATE = :startDate and timesheet.END_DATE = :endDate ");
-				 System.out.println(qry.toString());
+//				 System.out.println(qry.toString());
 			        
 					Query queryString = session.createSQLQuery(qry.toString());
 					queryString.setParameter("userId", userId).setDate("startDate", startDate).setDate("endDate",endDate);
@@ -213,4 +213,6 @@ public class UserGroupDaoImpl implements UserGroupDao{
 		}
 		return totalHoursDTO;
 	}
+	
+	
 }

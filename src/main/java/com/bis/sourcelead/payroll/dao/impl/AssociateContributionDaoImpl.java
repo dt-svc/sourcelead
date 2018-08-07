@@ -45,7 +45,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 	public List<AssociateContribution> findAllContributionSummaryByUserId(Long userId, OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.userId.id=:userId and contri.orgLocationId.id= :orgLocationId and contri.status = 1" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+		List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.userId.id=:userId and contri.orgLocationId.id= :orgLocationId" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
 		return associateContributionList;
 	}
 
@@ -61,4 +61,36 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 		}
 		return associateContribution;
 	}
+
+	@Override
+	@Transactional
+	public AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateContribution assContribution where assContribution.contributionTypeId.id =:contriTypeId and assContribution.orgLocationId.id =:orgLocationId";
+		List<AssociateContribution> assContribution = session.createQuery(query).setLong("contriTypeId", contriTypId).setLong("orgLocationId", orgLocation.getId()).list();
+		if(assContribution.size() > 0) {
+			return assContribution.get(0);
+		}else {
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional
+	public AssociateContribution findContributionByUserIdContributionId(Long userId, Long contributionId)
+	{
+		AssociateContribution associateContribution = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.id=:contributionId and userId.id =:userId").setLong("contributionId", contributionId).setLong("userId", userId).list();
+			if(associateContributionList != null && associateContributionList.size() >0) {
+				associateContribution = associateContributionList.get(0);
+			}
+		}catch (Exception e) {
+         e.printStackTrace();
+		}
+		
+		return associateContribution;
+	}
+
 }

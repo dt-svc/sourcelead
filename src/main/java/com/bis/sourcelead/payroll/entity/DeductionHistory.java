@@ -25,41 +25,44 @@ public class DeductionHistory {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@Column(name = "USER_ID", nullable = false)
+	@Column(name = "USER_ID")
 	private Long userId;
 	
-	@Column(name = "DEDUCTION_ID", nullable = false)
+	@Column(name = "DEDUCTION_ID")
 	private Long deductionId;
 	
+	@Column(name = "CONTRIBUTION_ID")
+	private Long contributionId;
+	
 	@ManyToOne
-	@JoinColumn(name = "PAYROLL_ID",nullable = false)
+	@JoinColumn(name = "PAYROLL_ID")
 	private EmployeePayroll payroll;
 	
-	@Column(name = "FREQUENCY_START_DATE", nullable = false)
+	@Column(name = "FREQUENCY_START_DATE")
 	private Date frequencyStartDate;
 	
-	@Column(name = "FREQUENCY_END_DATE", nullable = false)
+	@Column(name = "FREQUENCY_END_DATE")
 	private Date frequencyEndDate;
 	
-	@Column(name = "PAY_CHECK_DATE", nullable = false)
+	@Column(name = "PAY_CHECK_DATE")
 	private Date payCheckDate;
 	
 	@Column(name = "US_EMP_DEDUCTION_HIS_UUID")
 	private String deductionHisUUID;
 	
-	@Column(name = "DEDUCTION_DATE", nullable = false)
+	@Column(name = "DEDUCTION_DATE")
 	private Date deductionDate;
 	
-	@Column(name = "CREATED_DATE", nullable = false)
+	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@Column(name = "CREATED_BY", nullable = false)
+	@Column(name = "CREATED_BY")
 	private Long createdBy;
 	
-	@Column(name = "UPDATED_DATE", nullable = false)
+	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	@Column(name = "UPDATED_BY", nullable = false)
+	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
 
 	public static long getSerialversionuid()
@@ -197,6 +200,16 @@ public class DeductionHistory {
 	public void setPayroll(EmployeePayroll payroll)
 	{
 		this.payroll = payroll;
+	}
+
+	public Long getContributionId()
+	{
+		return contributionId;
+	}
+
+	public void setContributionId(Long contributionId)
+	{
+		this.contributionId = contributionId;
 	}
 
 	
