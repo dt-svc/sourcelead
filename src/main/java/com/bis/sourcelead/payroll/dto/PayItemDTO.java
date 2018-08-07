@@ -1,8 +1,11 @@
 package com.bis.sourcelead.payroll.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.payroll.entity.PayitemHistory;
 
 public class PayItemDTO {
 	
@@ -24,6 +27,10 @@ public class PayItemDTO {
 	private String payItemUUID;
 	
 	private String associateEmpType;
+	
+	private BigDecimal payItemSum;
+	
+	private Set<PayitemHistory> payitemHistory;
 	
 	public Long getId()
 	{
@@ -96,6 +103,22 @@ public class PayItemDTO {
 	public void setAssociateEmpType(String associateEmpType)
 	{
 		this.associateEmpType = associateEmpType;
+	}
+	public BigDecimal getPayItemSum()
+	{
+		return payItemSum;
+	}
+	public Set<PayitemHistory> getPayitemHistory()
+	{
+		return payitemHistory;
+	}
+	public void setPayItemSum(BigDecimal payItemSum)
+	{
+		this.payItemSum = payItemSum;
+	}
+	public void setPayitemHistory(Set<PayitemHistory> payitemHistory)
+	{
+		this.payitemHistory = payitemHistory;
 	}
 	
 	
