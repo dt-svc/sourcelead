@@ -345,27 +345,48 @@
                          <li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns"><span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i></a></li>			  
 			         </c:if>
             	   
-		       	   <c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_USER'}">
-		       	   <sec:authorize access="hasAnyRole('ROLE_US_GENERATE_PAYROLL','ROLE_US_MY_PAYROLL')"> 
-		             <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}">
-		             	<a href="#" class="expencesLi" title="Payroll">
-		             		<span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i> 
-		             		<i class="fa fa-fw fa-caret-down"></i></a>
-		             			<ul class="collapses" style="display: none">
-								
-								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
-								
-								<li><a	href="#" title="My Payroll">My Payroll</a></li>
-									
-								</ul>
-		             		
-		             		</li>
-		          	</sec:authorize>
-		          	</c:if>	
-		          	
-		          	<c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_ADMIN'}">
-		              <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
-		          	</c:if>	
+					
+					 <c:if test="${SourceLeadWeb_paryrollTabCount == 2 && userTabs.tabName == 'Run Payroll'}">
+	                   <li class="${sessionData.nav == 'Run Payroll' || sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}">
+														  
+							  <a href="#" class="payrollli" title="Pay Roll">
+								<span><i class="fa fa-usd"></i></span>
+							  <i class="subMenu">Pay Roll</i> <i class="fa fa-fw fa-caret-down"></i>
+							  </a>
+							  
+						   
+						   <c:if test="${sessionData.nav == 'Payroll' || sessionData.nav == 'My Payroll'}">
+                              <ul class="collapses" style="display: none">
+                                  <li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
+                                  <li><a href="#" title="My Payroll">My Payroll</a></li>
+                              </ul>
+                           </c:if>
+                              
+                           <c:if test="${sessionData.nav != 'Payroll' || sessionData.nav != 'My Payroll'}">
+                           <ul class="collapses" style="display: none">
+                               <li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll">Run Payroll</a></li>
+                               <li><a href="#" title="My Payroll">My Payroll</a></li>
+                           </ul>
+                           </c:if>
+                              
+						  </li>
+	                 </c:if>
+	                 
+	                 <c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'Run Payroll'}">
+	                   <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Run Payroll</i></a></li>
+	                 </c:if>
+	                 
+                     <c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'My Payroll'}">
+                      <li class="${sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}"><a href="#" title="My Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">My Payroll</i></a></li>
+	                 </c:if>
+					
+					
+					
+					
+					
+					
+					
+					
 					<c:if test="${userTabs.tabName == 'Immigrations'}">
 					 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION','ROLE_VIEW_MY_PETITION')"> 
 					
