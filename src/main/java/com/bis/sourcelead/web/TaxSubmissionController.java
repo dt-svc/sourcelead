@@ -329,7 +329,7 @@ public class TaxSubmissionController {
 	}
 
 	
-	@RequestMapping (value = "/itDeclartionSubmissionExport", method = RequestMethod.POST)
+	@RequestMapping (value = "/itDeclartionSubmissionExport")
 	@ResponseBody
 	public void exportItDeclarationSubmission(HttpServletRequest request,HttpServletResponse response,SourceleadTaxITDeclarationSubmissionDTO sourceleadTaxITDeclarationSubmissionDTO , String exportType,long formId) throws Exception
 	{
@@ -353,8 +353,7 @@ public class TaxSubmissionController {
 			}
 			response.setContentType(mimeType);
 			StringBuilder fileName = new StringBuilder();
-			response.setHeader("Content-Disposition",						
-					fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setHeader("Content-Disposition",fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());

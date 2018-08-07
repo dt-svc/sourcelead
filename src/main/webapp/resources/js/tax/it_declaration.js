@@ -328,15 +328,17 @@ function getItDeclarationSubmissionList(uuid, pageNo) {
 }
 function exportFormToPDF(formId) {
 	var exportType = "pdf";
-	$.ajax({
+	/*$.ajax({
 		type : "POST",
 		 url : sourceleadUrl+"/itDeclartionSubmissionExport?&formId="+formId+"&exportType="+exportType,
-	})
+	});*/
+	window.location.href = sourceleadUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
 }
 function exportFormToExel(formId) {
 	var exportType = "exel";
-	$.ajax({
+	/*$.ajax({
 		type : "POST",
 		 url : sourceleadUrl+"/itDeclartionSubmissionExport?&formId="+formId+"&exportType="+exportType,
-	})
+	})*/
+	window.location.href = sourceleadUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
 }
