@@ -3,12 +3,16 @@ package com.bis.sourcelead.payroll.entity;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "US_PAYITEM_HIS")
 public class PayitemHistory {
 	
 
@@ -24,7 +28,7 @@ public class PayitemHistory {
 	
 	@ManyToOne
 	@JoinColumn(name = "PAYROLL_ID")
-	private EmployeePayroll payroll;
+	private EmployeePayroll payrollId;
 	
 	@Column (name="FREQUENCY_START_DATE")
 	private Date frequencyStartDate;
@@ -161,14 +165,14 @@ public class PayitemHistory {
 		this.updatedBy = updatedBy;
 	}
 
-	public EmployeePayroll getPayroll()
+	public EmployeePayroll getPayrollId()
 	{
-		return payroll;
+		return payrollId;
 	}
 
-	public void setPayroll(EmployeePayroll payroll)
+	public void setPayrollId(EmployeePayroll payrollId)
 	{
-		this.payroll = payroll;
+		this.payrollId = payrollId;
 	}
 
 	public String getPayItemHisUUID()

@@ -223,9 +223,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				BigDecimal postTax = dedTaxes[1];
 				BigDecimal preContriSum = contributionTaxes[0];
 				BigDecimal postContriSum = contributionTaxes[1];
-				
-				BigDecimal payItemSum = getPayItemSum(orgLocation,assoSal.getAssociatePayItem(),paySheetFreq,employeePayroll,loginUser);
-				
+//				PayItemDTO payItemDTO = getPayItemSum(orgLocation,assoSal.getAssociatePayItem(),paySheetFreq,employeePayroll,loginUser);
+//				employeePayroll.setPayitemSum(payItemDTO.getPayItemSum());
+//				employeePayroll.setPayitemHistory(payItemDTO.getPayitemHistory());
 				employeePayroll.setPreTaxDeduction(preTax);
 				employeePayroll.setPostTaxDeduction(postTax);
 				employeePayroll.setPreTaxContribution(postContriSum);
@@ -430,7 +430,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	 * @param freqEndDate
 	 * @return BigDecimal
 	 */
-	private BigDecimal getPayItemSum(OrgLocations orgLocation, Set<AssociatePayItem> associatePayItem, PaysheetFrequency paySheet, EmployeePayroll payroll, User loginUser)
+	private PayItemDTO getPayItemSum(OrgLocations orgLocation, Set<AssociatePayItem> associatePayItem, PaysheetFrequency paySheet, EmployeePayroll payroll, User loginUser)
 	{
 		PayItemDTO payItemDTO = new PayItemDTO();
 		BigDecimal payItemSum = BigDecimal.ZERO;
@@ -463,8 +463,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					}
 				}
 			}
+			payItemDTO.setPayItemSum(payItemSum);
+			payItemDTO.setPayitemHistory(historySet);
 		}
-		return payItemSum;
+		return payItemDTO;
 	}
 	
 	/**
@@ -479,7 +481,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	private PayitemHistory populatePayHistory(EmployeePayroll payroll, AssociatePayItem payItem, Date[] payItemDate, PaysheetFrequency paySheet, User loginUser)
 	{
 		PayitemHistory payItemHistory = new PayitemHistory();
-		payItemHistory.setPayroll(payroll);
+		payItemHistory.setPayrollId(payroll);
 		payItemHistory.setFrequencyStartDate(payItemDate[0]);
 		if(payItemDate[1] != null) {
 		payItemHistory.setFrequencyEndDate(payItemDate[0]);
