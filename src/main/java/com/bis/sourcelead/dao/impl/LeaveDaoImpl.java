@@ -1020,6 +1020,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		String deptSubQuery = "";
 		String employmentTypeSubQuery = "";
 		String leaveTypeSubQuery = "";
+		String leaveTypeBillableTypeSubQuery = "";
 		if (dayWiseLeaveReportDTO.getUserRole() != null && !dayWiseLeaveReportDTO.getUserRole().isEmpty() ) {
 			userRoleSubQuery = " and leaveReport.roleId  IN (:userRoleList)";
 		}
@@ -1032,14 +1033,18 @@ public class LeaveDaoImpl implements LeaveDao{
 		if (dayWiseLeaveReportDTO.getLeaveTypeName() != null) {
 			leaveTypeSubQuery = " and leaveReport.leaveTypeId  IN (:leaveTypeNamesList)";
 		}
+		if (dayWiseLeaveReportDTO.getLeaveTypeBillable() != null && !dayWiseLeaveReportDTO.getLeaveTypeBillable().isEmpty()) {
+			leaveTypeBillableTypeSubQuery = " and leaveReport.leaveTypeBillable  IN (:leaveTypeBillableList)";
+		}
 		queryString = session.createQuery(query + query1.toString() + " " + userRoleSubQuery + " "
-				+ deptSubQuery + " " + employmentTypeSubQuery + " " + leaveTypeSubQuery + " "
+				+ deptSubQuery + " " + employmentTypeSubQuery + " " + leaveTypeSubQuery + " "+ leaveTypeBillableTypeSubQuery + " "
 				+ sortingQry);
 		
 		List<Long> userRoleList = new ArrayList<>();
 		List<Long> departmentsList = new ArrayList<>();
 		List<Long> leaveTypeNamesList = new ArrayList<>();
 		List<String> employmentTypeList = new ArrayList<>();
+		List<String> leaveTypeBillableList = new ArrayList<>();
 		if(dayWiseLeaveReportDTO.getUserRole() != null && !dayWiseLeaveReportDTO.getUserRole().isEmpty()) {
 			String[] userRoles = dayWiseLeaveReportDTO.getUserRole().split(",");
 			for(int i=0; i < userRoles.length; i++) {
@@ -1065,6 +1070,13 @@ public class LeaveDaoImpl implements LeaveDao{
 			employmentTypeList.add(dayWiseLeaveReportDTO.getEmploymentType());
 		}
 			}
+		if(dayWiseLeaveReportDTO.getLeaveTypeBillable() !=null && !dayWiseLeaveReportDTO.getLeaveTypeBillable().isEmpty()){
+			String[] leaveType = dayWiseLeaveReportDTO.getLeaveTypeBillable().split(",");
+			for(int i=0; i < leaveType.length; i++) {
+				leaveTypeBillableList.add(leaveType[i]);
+				leaveTypeBillableList.add(dayWiseLeaveReportDTO.getLeaveTypeBillable());
+		}
+			}
 		if (!userRoleList.isEmpty()) {
 			queryString.setParameterList("userRoleList", userRoleList);
 		}
@@ -1076,6 +1088,9 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 		if (!leaveTypeNamesList.isEmpty()) {
 			queryString.setParameterList("leaveTypeNamesList", leaveTypeNamesList);
+		}
+		if (!leaveTypeBillableList.isEmpty()) {
+			queryString.setParameterList("leaveTypeBillableList", leaveTypeBillableList);
 		}
 		queryString.setLong("orgLocationId", orgLocationId);
 		queryString.setLong("orgId", orgId);
