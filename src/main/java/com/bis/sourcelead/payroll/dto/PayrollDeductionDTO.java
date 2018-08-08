@@ -41,6 +41,8 @@ public class PayrollDeductionDTO  extends SearchDTO{
 	
 	private String deductionUUID;
 	
+	private String taxType;
+	
 	public long getId()
 	{
 		return id;
@@ -160,6 +162,12 @@ public class PayrollDeductionDTO  extends SearchDTO{
 	public void setDeductionUUID(String deductionUUID)
 	{
 		this.deductionUUID = deductionUUID;
+	}
+	public String getTaxType() {
+		return taxType;
+	}
+	public void setTaxType(String taxType) {
+		this.taxType = taxType;
 	}
 	
 }
