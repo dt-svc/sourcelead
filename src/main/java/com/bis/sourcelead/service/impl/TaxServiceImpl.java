@@ -1549,14 +1549,12 @@ public class TaxServiceImpl implements TaxService {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return file;
 		}
 		return file;
 	}
 
 	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, JSONObject itemObject, User user)
 			throws JSONException {
-		String itemArray[] = new String[4];
 		writeRow.createCell(0).setCellValue(itemObject.getString("name"));
 		writeRow.createCell(1).setCellValue(itemObject.getString("description"));
 		writeRow.createCell(2).setCellValue(itemObject.getDouble("maxLimit"));
