@@ -204,11 +204,17 @@ public class PayrollUtil {
 	 * @param eDate
 	 * @return boolean
 	 */
-	private boolean isDateInBetweenIncludingEndPoints(Date min, Date max, Date date, Date cDate)
+	private boolean isDateInBetweenIncludingEndPoints(Date minDate, Date maxDate, Date date, Date cDate)
 	{
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(minDate);
+		Date min = cal.getTime();
+		cal.setTime(maxDate);
+		Date max = cal.getTime();
+		
 		boolean match = false;
 		try {
-			if ((date.before(min) || date.after(max)) && (cDate.before(min) || cDate.after(max))) {
+			if (((date.after(min) && date.before(max)) || (date.equals(min) || date.equals(max))) && ((cDate.after(min) && cDate.before(max)) || (cDate.equals(max) || cDate.equals(min)))) {
 				match = true;
 			}
 		} catch (Exception e) {
@@ -217,6 +223,35 @@ public class PayrollUtil {
 		return match;
 	}
 
+	
+	/**
+	 * Check Date avaialbiltity
+	 * @param minDate
+	 * @param maxDate
+	 * @param sdate
+	 * @param eDate
+	 * @return boolean
+	 */
+	private boolean isDateBetweenEffectiveDate(Date min, Date max, Date effectiveSDate, Date effectiveEDate)
+	{
+		boolean match = false;
+		try {
+			if (effectiveSDate != null && effectiveEDate != null) {
+				if ((effectiveSDate.before(min) || effectiveSDate.after(max))
+						&& (effectiveEDate.before(min) || effectiveEDate.after(max))) {
+					match = true;
+				}
+			}
+			else {
+				if (effectiveSDate.before(min) || effectiveSDate.after(max)) {
+					match = true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return match;
+	}
 
 	public Date[] getDeductionDates(Date currentDate, String schedule)
 	{
