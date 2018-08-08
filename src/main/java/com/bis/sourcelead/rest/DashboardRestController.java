@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -580,7 +581,6 @@ public class DashboardRestController {
 	 public Response<DashboardCounts>  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,HttpServletRequest request) throws Exception {
 		 Response<DashboardCounts> response = new Response<>();
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
 		DashboardCounts dc= new DashboardCounts();
 		Timezone timezone = null;
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -603,53 +603,27 @@ public class DashboardRestController {
 					 String endDate = outputFormatter1.print(zoned);
 					 Date endDateString = TZ_DF_TS.parse(endDate);
 					 endUTCDate = endDateString;
-					 	/*old logic*/
-					/* DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-					 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-					 String startDate = outputFormatter.print(zoned);
-					 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-					 startUTCDate = TZ_DF_TS.parse(startDateString);
-					 String endDate = outputFormatter1.print(zoned);
-					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-					 endUTCDate = TZ_DF_TS.parse(endDateString);*/
+					  
 				}else{
 					 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 					 String customStartTimeStr = outputFormatter.print(zoned);
 					 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-					 /*old logic*/
-					 /*DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-					 String startDate = outputFormatter.print(zoned);
-					 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-					 startUTCDate = TZ_DF_TS.parse(startDateString);*/
+					 
 				}
 				
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 					userType = Constants.ADMIN;
 				} 
 				
-				int toDayReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMIT_TO_CLIENT",daterange,userType,user,startUTCDate,endUTCDate);
-				//int previousReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
+				 Integer[] requirementSubmissionHistoryCounts = requirementSubmissionService.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),daterange, userType, user, startUTCDate, endUTCDate);
 				
-				int toDayReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange,userType,user,startUTCDate,endUTCDate);
-				//int previousReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
-			   
-				int toDayReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW",daterange,userType,user,startUTCDate,endUTCDate);
-			    //  int previousReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW","previous");
-			   
-			    int toDayReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE",daterange,userType,user,startUTCDate,endUTCDate);
-			    // int previousReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE","previous");
-				
-			    dc.setSubmissionCount(toDayReqSubmissionscount);
-			    //dc.setSubmissionCount(previousReqSubmissionscount);
+			    dc.setSubmissionCount(requirementSubmissionHistoryCounts[0]);
 			    
-			    dc.setApplicantsCount(toDayReqApplicantscount);
-			   // dc.setApplicantsCount(previousReqApplicantscount);
+			    dc.setApplicantsCount(requirementSubmissionHistoryCounts[1]);
 			    
-			    dc.setInterviewsCount(toDayReqInterviewscount);
-			   // dc.setInterviewsCount(previousReqInterviewscount);
+			    dc.setInterviewsCount(requirementSubmissionHistoryCounts[2]);
 			    
-			    dc.setOffersCount(toDayReqOfferscount);
-			   // dc.setOffersCount(previousReqOfferscount);
+			    dc.setOffersCount(requirementSubmissionHistoryCounts[3]);
 			   
 			    response.setObject(dc);
 			    response.setResponse(Result.SUCCESS.name());
@@ -662,6 +636,7 @@ public class DashboardRestController {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());
 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
+	    
 		return response;
 	   }
 

@@ -60,6 +60,7 @@ $(document).ready(function(){
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
 <script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
  

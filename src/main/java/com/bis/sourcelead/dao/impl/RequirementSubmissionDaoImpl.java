@@ -423,38 +423,30 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         
         String submissionStages = "";
         if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
-			 /*submissionStages = "and (rs.submissionStatus = 'SUBMISSION' or rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
-					+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
         	submissionStages = " and rsh.toStage = 'SUBMISSION'";
 		}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
-			 /*submissionStages = "and( rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
-					+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
 			submissionStages = " and rsh.toStage = 'SUBMIT_TO_CLIENT'";
 		}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
-			/*submissionStages = "and ((rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
-					+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
 			submissionStages = " and (rsh.toStage = 'INTERVIEW' or rsh.toStage = 'CLIENT_INTERVIEW')";
 		}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
 			submissionStages = "and (rsh.toStage = 'OFFERMADE' OR rsh.toStage = 'OFFERACCEPTED' OR rsh.toStage = 'OFFERREJECTED' "
 					+ " OR rsh.toStage = 'CLIENT_OFFERMADE' OR rsh.toStage = 'CLIENT_OFFERACCEPTED' OR rsh.toStage = 'CLIENT_OFFERREJECTED') ";
-			//submissionStages = " and rsh.toStage = 'OFFERMADE'";
 		}
         
         if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
         	Map<String, Object> params = new HashMap<String,Object>();
-    		
     		String from = " from RequirementSubmissionHistory rsh  ";
-    		
     		//login user as created by
     		String subQuery1 = "rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:userId)";
     		params.put("userId",user.getId());
     		
     		//login user as a approver for this requirement  or  assigned to.
-    		String subQuery2 = "rsh.submissionId.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) ) or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and rsh.submissionId.createdBy =:usercode)";
+    		String subQuery2 = "rsh.submissionId.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  "
+    				+ "or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) ) "
+    				+ "or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and rsh.submissionId.createdBy =:usercode)";
     		params.put("approverUserId",user.getId());
     		params.put("userId",user.getId());
     		params.put("usercode",user.getUserCode());
-    		
     		
     		//login user as a  manager for this job.
     		String subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
@@ -473,7 +465,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     			params.put("orgLocationsId",orgLocationsId);
     			params.put("startDate",startUTCDate);
     			params.put("endDate",endUTCDate);
-    			//params.put("submissionStatus",submissionStatus);
     		}
     		String whereCondition = subQuery;
     		Query query =  session.createQuery("select distinct rsh.submissionId "+ from +" "+whereCondition+" ");
@@ -485,9 +476,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     			}else{
     				query.setParameter( str, params.get( str ) );
     			}
-            	
             }
-    		
     		List<Long> reqSubmsCount  = query.list();
     		Integer count = 0;
 			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
@@ -505,17 +494,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
      			query ="select distinct rsh.submissionId from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate < :startDate";
      			 reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).list();
      		}
-        	
-        	//List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setDate("startDate",startUTCDate).setDate("endDate",endUTCDate).list();
 			Integer count = 0;
 			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
 					count = reqSubmsCount.size();
 			}
 			return count;
-        	
         }
-		
-		
 		    
 	}
 	
@@ -3178,5 +3162,119 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 				
 				return flag;
+		}
+		
+		
+		
+	@Override
+	@Transactional
+	public Integer []  getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(
+				Long orgLocationsId, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate) {
+//		List reqSubmsList  = null;
+		Integer []  counts = null;
+		try {
+	        Session session = this.sessionFactory.getCurrentSession();
+	        if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
+	        	Map<String, Object> params = new HashMap<String,Object>();
+	    		String from = " from RequirementSubmissionHistory rsh  ";
+	    		//login user as created by
+	    		String subQuery1 = "rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:userId)";
+	    		params.put("userId",user.getId());
+	    		
+	    		//login user as a approver for this requirement  or  assigned to.
+	    		String subQuery2 = "rsh.submissionId.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) ) or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and rsh.submissionId.createdBy =:usercode)";
+	    		params.put("approverUserId",user.getId());
+	    		params.put("userId",user.getId());
+	    		params.put("usercode",user.getUserCode());
+	    		
+	    		//login user as a  manager for this job.
+	    		String subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
+	    		params.put("managerUserId",user.getId());
+	    		
+	    		String subQuery4 = " rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' and  rsh.submissionId.createdBy =:usercode";
+	    		params.put("usercode",user.getUserCode());
+	    		
+	    		String subQuery = "";
+	    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
+	    			if(dateRange != null && "today".equals(dateRange)){
+	    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId  and rsh.submissionId.status = 1 and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
+	    			}else if(dateRange != null && "previous".equals(dateRange)){
+	    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId  and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and rsh.submissionId.requirement IS NOT NULL and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
+	    			}
+	    			params.put("orgLocationsId",orgLocationsId);
+	    			params.put("startDate",startUTCDate);
+	    			params.put("endDate",endUTCDate);
+	    		}
+	    		String whereCondition = subQuery;
+	    		Query query =  session.createQuery(from +" "+whereCondition+"");
+	    		
+	    		for (String str : query.getNamedParameters())
+	            {
+	    			if(str.equalsIgnoreCase("orgLocationsId")  || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
+	    				query.setLong(str, (long) params.get( str ));
+	    			}else{
+	    				query.setParameter( str, params.get( str ) );
+	    			}
+	            }
+//	    		reqSubmsList  = query.list();
+				
+	        }else{
+	        	String dateQury;
+     			String  startDate =commonUtil.elkDateFormatter(startUTCDate);
+     	 	    String  endDate  = commonUtil.elkDateFormatter(endUTCDate);
+     	 	    
+     			if(dateRange != null && "today".equals(dateRange)){
+     				dateQury = " and DATE_FORMAT(rsh.UPDATED_DATE,'%Y-%m-%d') BETWEEN  '"+startDate +"' and '"+endDate+"'";
+     			}else {
+     				dateQury = " and DATE_FORMAT(rsh.UPDATED_DATE,'%Y-%m-%d')  < '"+startDate+"'";
+     			}
+     			 
+//     			Object []  counts;
+     			String query1 = "select SUM(CASE "+
+     			        " WHEN UPPER(rsh.TO_STAGE) = 'SUBMISSION' THEN 1 "+
+     			        " ELSE 0 "+
+     			    " END) AS APPLICANT_COUNT, "+
+     			    " SUM(CASE "+
+     			        " WHEN UPPER(rsh.TO_STAGE) = 'INTERVIEW' THEN 1 "+
+     			        " WHEN UPPER(rsh.TO_STAGE) = 'CLIENT_INTERVIEW' THEN 1 "+
+     			        " ELSE 0 "+
+     			    " END) AS CLIENT_INTERVIEW_COUNT, "+
+     			     " SUM(CASE "+
+     			        " WHEN UPPER(rsh.TO_STAGE) = 'SUBMIT_TO_CLIENT' THEN 1 "+
+     			        " ELSE 0 "+
+     			    " END) AS SUBMISSION_COUNT,"+
+     			    " SUM(CASE"+
+     			       " WHEN UPPER(rsh.TO_STAGE) = 'OFFERMADE' THEN 1 "+
+     			       " WHEN UPPER(rsh.TO_STAGE) = 'OFFERACCEPTED' THEN 1 "+
+     				   " WHEN UPPER(rsh.TO_STAGE) = 'OFFERREJECTED' THEN 1 "+
+     			       " WHEN UPPER(rsh.TO_STAGE) = 'CLIENT_OFFERMADE' THEN 1 "+
+     			       " WHEN UPPER(rsh.TO_STAGE) = 'CLIENT_OFFERACCEPTED' THEN 1 "+
+     			       " WHEN UPPER(rsh.TO_STAGE) = 'CLIENT_OFFERREJECTED' THEN 1 "+
+     			       " ELSE 0 "+
+     			    " END) AS OFFER_COUNT "+
+     			    
+     			" FROM REQUIREMENT_SUBMISSION_HISTORY rsh, "+ 
+     			" REQUIREMENT_SUBMISSION rs, "+
+     			" REQUIREMENT req, "+
+     			" ORG_LOCATIONS ol "+
+     			" where rsh.REQUIREMENT_SUBMISSION_ID = rs.ID and "+
+     			          " rs.ORG_LOCATION_ID = ol.ID "+
+     					  " and rs.ORG_LOCATION_ID = "+orgLocationsId+
+     			          " and rsh.TO_STAGE IN('SUBMISSION','INTERVIEW','SUBMIT_TO_CLIENT','CLIENT_INTERVIEW','OFFERMADE','OFFERACCEPTED','OFFERREJECTED','CLIENT_OFFERMADE','CLIENT_OFFERACCEPTED','CLIENT_OFFERREJECTED')"+
+     					  " and rs.STATUS = 1 "+
+     					  " and rs.REQUIREMENT_ID = req.ID "+
+     					  " and rs.REQUIREMENT_ID IS not NULL "+ dateQury ;
+     					 
+     			counts =   (Integer [])session.createSQLQuery(query1).uniqueResult();
+     			for (int i = 0; i < counts.length; i++) {
+					Object object = counts[i];
+					 if(object == null) counts[i] =0;
+				  }
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return counts;
+		
 		}
 }
