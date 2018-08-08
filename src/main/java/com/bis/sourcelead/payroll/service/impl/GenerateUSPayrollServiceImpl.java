@@ -223,9 +223,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				BigDecimal postTax = dedTaxes[1];
 				BigDecimal preContriSum = contributionTaxes[0];
 				BigDecimal postContriSum = contributionTaxes[1];
-//				PayItemDTO payItemDTO = getPayItemSum(orgLocation,assoSal.getAssociatePayItem(),paySheetFreq,employeePayroll,loginUser);
-//				employeePayroll.setPayitemSum(payItemDTO.getPayItemSum());
-//				employeePayroll.setPayitemHistory(payItemDTO.getPayitemHistory());
+				PayItemDTO payItemDTO = getPayItemSum(orgLocation,assoSal.getAssociatePayItem(),paySheetFreq,employeePayroll,loginUser);
+				employeePayroll.setPayitemSum(payItemDTO.getPayItemSum());
+				employeePayroll.setPayitemHistory(payItemDTO.getPayitemHistory());
 				employeePayroll.setPreTaxDeduction(preTax);
 				employeePayroll.setPostTaxDeduction(postTax);
 				employeePayroll.setPreTaxContribution(postContriSum);
@@ -444,7 +444,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	 * @param orgLocation
 	 * @param associatePayItem
 	 * @param paySheet
-	 * @param loginUser 
+	 * @param loginUser
 	 * @param freqStartDate
 	 * @param freqEndDate
 	 * @return BigDecimal
@@ -456,30 +456,32 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		Set<PayitemHistory> historySet = new HashSet<>();
 		if (associatePayItem != null && associatePayItem.size() > 0) {
 			for (AssociatePayItem payItem : associatePayItem) {
-//				boolean match = payrollUtil.isDateBetweenEffectiveDate()
-				boolean schedulePay = payrollUtil.findPayItemSchedulePay(payItem, paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
-				if (!schedulePay) {
-					payItemSum = payItem.getPayItemAmount();
-					Date[] payItemDate = null;
-					if (StringUtils.isNotBlank(payItem.getPayitemStatus())
-							&& !PayrollConstant.EVERY_PAY.equalsIgnoreCase(payItem.getPayItemSchedule())) {
-						payItemDate = payrollUtil.getDeductionDates(payItem.getPayitemEndDate(), payItem.getPayItemSchedule());
-					}
-					else {
-						payItem.setPayitemStatus(PayrollConstant.ADDED);
-						payItemDate = payrollUtil.getDeductionDates(paySheet.getFrequencyStartDate(), payItem.getPayItemSchedule());
-					}
-					payItem.setPayitemStartDate(payItemDate[0]);
-					if (payItemDate[0] != null) {
-						payItem.setPayitemEndDate(payItemDate[1]);
-					}
-					else {
-						payItem.setPayitemEndDate(paySheet.getFrequencyEndDate());
-					}
-					AssociatePayItem assPayItem = associateSalaryDao.saveUpdatedPayItem(payItem);
-					if (assPayItem != null) {
-						PayitemHistory payHis = populatePayHistory(payroll, payItem, payItemDate, paySheet, loginUser);
-						historySet.add(payHis);
+				boolean match = payrollUtil.isDateBetweenEffectiveDate(payItem.getEffectiveDate(), payItem.getEndDate(), paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
+				if (!match) {
+					boolean schedulePay = payrollUtil.findPayItemSchedulePay(payItem, paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
+					if (!schedulePay) {
+						payItemSum = payItem.getPayItemAmount();
+						Date[] payItemDate = null;
+						if (StringUtils.isNotBlank(payItem.getPayitemStatus())
+								&& !PayrollConstant.EVERY_PAY.equalsIgnoreCase(payItem.getPayItemSchedule())) {
+							payItemDate = payrollUtil.getDeductionDates(payItem.getPayitemEndDate(), payItem.getPayItemSchedule());
+						}
+						else {
+							payItem.setPayitemStatus(PayrollConstant.ADDED);
+							payItemDate = payrollUtil.getDeductionDates(paySheet.getFrequencyStartDate(), payItem.getPayItemSchedule());
+						}
+						payItem.setPayitemStartDate(payItemDate[0]);
+						if (payItemDate[0] != null) {
+							payItem.setPayitemEndDate(payItemDate[1]);
+						}
+						else {
+							payItem.setPayitemEndDate(paySheet.getFrequencyEndDate());
+						}
+						AssociatePayItem assPayItem = associateSalaryDao.saveUpdatedPayItem(payItem);
+						if (assPayItem != null) {
+							PayitemHistory payHis = populatePayHistory(payroll, payItem, payItemDate, paySheet, loginUser);
+							historySet.add(payHis);
+						}
 					}
 				}
 			}

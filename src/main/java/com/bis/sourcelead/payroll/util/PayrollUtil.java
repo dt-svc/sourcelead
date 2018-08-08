@@ -211,10 +211,11 @@ public class PayrollUtil {
 		Date min = cal.getTime();
 		cal.setTime(maxDate);
 		Date max = cal.getTime();
-		
 		boolean match = false;
 		try {
-			if (((date.after(min) && date.before(max)) || (date.equals(min) || date.equals(max))) && ((cDate.after(min) && cDate.before(max)) || (cDate.equals(max) || cDate.equals(min)))) {
+			if (((date.after(min) && date.before(max)) || (date.equals(min) || date.equals(max)))
+					&& ((cDate.after(min) && cDate.before(max))
+							|| (cDate.equals(max) || cDate.equals(min)))) {
 				match = true;
 			}
 		} catch (Exception e) {
@@ -226,24 +227,33 @@ public class PayrollUtil {
 	
 	/**
 	 * Check Date avaialbiltity
+	 * 
 	 * @param minDate
 	 * @param maxDate
 	 * @param sdate
 	 * @param eDate
 	 * @return boolean
 	 */
-	private boolean isDateBetweenEffectiveDate(Date min, Date max, Date effectiveSDate, Date effectiveEDate)
+	public boolean isDateBetweenEffectiveDate(Date minDate, Date maxDate, Date effectiveSDate, Date effectiveEDate)
 	{
 		boolean match = false;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(minDate);
+		Date min = cal.getTime();
+		cal.setTime(maxDate);
+		Date max = cal.getTime();
 		try {
 			if (effectiveSDate != null && effectiveEDate != null) {
-				if ((effectiveSDate.before(min) || effectiveSDate.after(max))
-						&& (effectiveEDate.before(min) || effectiveEDate.after(max))) {
+				if (((effectiveSDate.after(min) && effectiveSDate.before(max))
+						|| (effectiveSDate.equals(min) || effectiveSDate.equals(max)))
+						&& ((effectiveEDate.after(min) && effectiveEDate.before(max))
+								|| (effectiveEDate.equals(max) || effectiveEDate.equals(min)))) {
 					match = true;
 				}
 			}
 			else {
-				if (effectiveSDate.before(min) || effectiveSDate.after(max)) {
+				if ((effectiveSDate.after(min) && effectiveSDate.before(max))
+						|| (effectiveSDate.equals(min) || effectiveSDate.equals(max))) {
 					match = true;
 				}
 			}
