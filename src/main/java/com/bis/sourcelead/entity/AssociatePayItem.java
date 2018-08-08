@@ -47,7 +47,6 @@ private static final long serialVersionUID = 1L;
     @Column( name ="PAY_ITEM_AMOUNT")
     private BigDecimal payItemAmount;
     
-	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -62,7 +61,16 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
-
+	
+	@Column(name = "PAYITEM_STATUS")
+	private String payitemStatus;
+	
+	@Column(name = "PAYITEM_START_DATE")
+	private Date payitemStartDate;
+	
+	@Column(name = "PAYITEM_END_DATE")
+	private Date payitemEndDate;
+	
 	public Long getId()
 	{
 		return id;
@@ -192,7 +200,29 @@ private static final long serialVersionUID = 1L;
 	{
 		this.updatedBy = updatedBy;
 	}
-    
-    
+
+	public String getPayitemStatus() {
+		return payitemStatus;
+	}
+
+	public void setPayitemStatus(String payitemStatus) {
+		this.payitemStatus = payitemStatus;
+	}
+
+	public Date getPayitemStartDate() {
+		return payitemStartDate;
+	}
+
+	public void setPayitemStartDate(Date payitemStartDate) {
+		this.payitemStartDate = payitemStartDate;
+	}
+
+	public Date getPayitemEndDate() {
+		return payitemEndDate;
+	}
+
+	public void setPayitemEndDate(Date payitemEndDate) {
+		this.payitemEndDate = payitemEndDate;
+	}
     
 }
