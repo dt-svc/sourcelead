@@ -28,6 +28,7 @@ function associateContributionSummary(userId){
             result = result + '<th>Type</th>';
             result = result + '<th>Description</th>';
             result = result + '<th>Method</th>';
+            result = result + '<th>Tax Type</th>';
             result = result + '<th>Amount</th>';
             result = result + '<th>Contribution<br>Amount</th>';
             result = result + '<th>Action</th>';
@@ -50,6 +51,12 @@ function associateContributionSummary(userId){
             	  
                    result = result + '<td><div  class="tblminwidth-100">'+opt.contributionMethod+'</div></td>';
                    
+                   
+                   if(opt.taxType != null && opt.taxType != '' && opt.taxType != 'undefined'){
+                    	 result = result + '<td><div  class="tblminwidth-100">'+opt.taxType+'</div></td>';
+                     }else{
+                    	 result = result + '<td><div  class="tblminwidth-100">--</div></td>';
+                     }
                    
                    if(opt.contributionAmount !=null && opt.contributionAmount !='' && opt.contributionAmount !='undefined'){
 						result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.contributionAmount.toFixed(2)+'<small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+','+opt.contributionAmount+')"></small></div>';

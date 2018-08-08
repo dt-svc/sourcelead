@@ -79,7 +79,7 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 		map.put("Simple IRA", "pretax");
 		map.put("HSA-Single Limit", "pretax");
 		map.put("HSA-Family Limit", "pretax");
-		map.put("FSA-medical", "pretax");
+		map.put("FSA-Medical", "pretax");
 		map.put("FSA-Dependent Care", "pretax");
 		return map.get(deductionType);
 	}

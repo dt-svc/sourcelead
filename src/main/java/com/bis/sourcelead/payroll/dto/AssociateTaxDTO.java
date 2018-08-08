@@ -4,7 +4,7 @@ import com.bis.sourcelead.annotations.Required;
 
 public class AssociateTaxDTO {
 	
-	private long id;
+	private Long id;
 	
 	@Required(desc = "Federal Tax Filling Status")
 	private String federaltaxFillingStatus;
@@ -52,19 +52,19 @@ public class AssociateTaxDTO {
 	
 	private String city;
 	
-	private long userId;
+	private Long userId;
 	
 	private String supplementType;
 	
 	private String location;
 	
 	
-	public long getId()
+	public Long getId()
 	{
 		return id;
 	}
 
-	public void setId(long id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -259,12 +259,12 @@ public class AssociateTaxDTO {
 		this.city = city;
 	}
 
-	public long getUserId()
+	public Long getUserId()
 	{
 		return userId;
 	}
 
-	public void setUserId(long userId)
+	public void setUserId(Long userId)
 	{
 		this.userId = userId;
 	}
