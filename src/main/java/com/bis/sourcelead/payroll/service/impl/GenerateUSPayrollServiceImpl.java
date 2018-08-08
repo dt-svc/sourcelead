@@ -320,7 +320,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							deductionDates = payrollUtil.getDeductionDates(paySheet.getFrequencyStartDate(), assoDeduction.getDeductionTypeId().getPayrollScheduled());
 						}
 						assoDeduction.setDedStartDate(deductionDates[0]);
-						assoDeduction.setDedEndDate(deductionDates[1]);
+						if(deductionDates[1] != null) {
+							assoDeduction.setDedEndDate(deductionDates[1]);
+						}else {
+							assoDeduction.setDedEndDate(paySheet.getFrequencyEndDate());
+						}
+					
 						associateDeductionDao.saveAssociateDeduction(assoDeduction);
 						
 						Long contributionId = null;
@@ -340,7 +345,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								}
 								assContribution.setContributionStatus("CONTRIBUTED");
 								assContribution.setContributionStartDate(deductionDates[0]);
-								assContribution.setContributionEndDate(deductionDates[1]);
+								if(deductionDates[1] != null) {
+									assContribution.setContributionEndDate(deductionDates[1]);	
+								}else {
+									assContribution.setContributionEndDate(paySheet.getFrequencyEndDate());
+								}
+								
 								associateContributionDao.saveAssociateContribution(assContribution);
 								contributionId = assContribution.getId();
 							}
@@ -374,7 +384,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							 deductionDates = payrollUtil.getDeductionDates(paySheet.getFrequencyStartDate(), assoDeduction.getDeductionTypeId().getPayrollScheduled());
 						}
 						assoDeduction.setDedStartDate(deductionDates[0]);
-						assoDeduction.setDedEndDate(deductionDates[1]);
+						if(deductionDates[1] != null) {
+							assoDeduction.setDedEndDate(deductionDates[1]);
+						}else {
+							assoDeduction.setDedEndDate(paySheet.getFrequencyEndDate());
+						}
+						
 						associateDeductionDao.saveAssociateDeduction(assoDeduction);
 						
 						
@@ -395,7 +410,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								}
 								assContribution.setContributionStatus(PayrollConstant.CONTRIBUTED);
 								assContribution.setContributionStartDate(deductionDates[0]);
-								assContribution.setContributionEndDate(deductionDates[1]);
+								if(deductionDates[1] != null) {
+									assContribution.setContributionEndDate(deductionDates[1]);
+								}else {
+									assContribution.setContributionEndDate(paySheet.getFrequencyEndDate());
+								}
 								associateContributionDao.saveAssociateContribution(assContribution);
 								contributionId = assContribution.getId();
 							}
@@ -437,6 +456,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		Set<PayitemHistory> historySet = new HashSet<>();
 		if (associatePayItem != null && associatePayItem.size() > 0) {
 			for (AssociatePayItem payItem : associatePayItem) {
+//				boolean match = payrollUtil.isDateBetweenEffectiveDate()
 				boolean schedulePay = payrollUtil.findPayItemSchedulePay(payItem, paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
 				if (!schedulePay) {
 					payItemSum = payItem.getPayItemAmount();
