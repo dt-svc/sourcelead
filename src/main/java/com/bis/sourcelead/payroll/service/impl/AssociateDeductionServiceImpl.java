@@ -105,7 +105,7 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 				DeductionDTO deductionDTO = new DeductionDTO();
 				deductionDTO.setId(String.valueOf(ad.getId()));
 				deductionDTO.setDeductionType(ad.getDeductionTypeId().getPayrollDeductionType());
-				deductionDTO.setDedSchedule(ad.getDeductionTypeId().getPayrollDeductionType());
+				deductionDTO.setDedSchedule(ad.getDeductionTypeId().getPayrollScheduled());
 				deductionDTO.setMethod(ad.getDeductionMethod());
 				deductionDTO.setAmount(ad.getDeductionAmount());
 				deductionDTO.setDedAmount(ad.getDeductionAmount().doubleValue());

@@ -57,7 +57,7 @@ $(document).ready(function(){
              <div class="form-group col-md-5">
               <label class="col-md-12">Amount per pay<span class="text-danger paddingLeft">&nbsp;*</span></label>
               <div class="col-md-12" id="deductionAmountDiv">
-                <input type="text" class="form-control" value="${payrollDeduction.deductionAmount }" id="deductionAmount" name="deductionAmount" data-validation="required validate_int" onblur="validateDeductionMethodType();" field-name="Amount">
+                <input type="text" class="form-control" value="${payrollDeduction.deductionAmount }" id="deductionAmount" name="deductionAmount" data-validation="required validate_float" onblur="validateDeductionMethodType();" field-name="Amount">
               </div>
             </div>
              <div class="form-group col-md-5">
@@ -146,8 +146,20 @@ function validateDeductionMethodType() {
 				return false; 
 		 	 }
 	  }if(selectedMethod =='Fixed'){
-		  if(!nameErrorDiv)
-			  $("#save_deductionType").removeAttr("disabled", "disabled");
+		  var floatNum = /^(\d{0,10}(\.\d{0,10})?|100)$/
+			  if(enteredValue.match(floatNum)){
+				  if(!nameErrorDiv){
+					  $("#save_deductionType").removeAttr("disabled", "disabled");
+				  }
+				  return true;
+			  }		  
+			 else{
+					$("#deductionAmountDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+					$("#save_deductionType").attr("disabled", "disabled");
+					return false; 
+			 	 }
+// 		  if(!nameErrorDiv)
+// 			  $("#save_deductionType").removeAttr("disabled", "disabled");
 		  }		  
 }
 </script>

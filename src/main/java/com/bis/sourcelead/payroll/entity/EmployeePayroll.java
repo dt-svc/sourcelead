@@ -93,6 +93,9 @@ public class EmployeePayroll {
 	@Column (name = "POST_TAX_CONTRIBUTION")
 	private BigDecimal postTaxContribution;
 	
+	@Column (name = "PAYITEM_SUM")
+	private BigDecimal payitemSum;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -121,6 +124,9 @@ public class EmployeePayroll {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
 	private Set<DeductionHistory> deductionHistory;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollId")
+	private Set<PayitemHistory> payitemHistory;
 	
 	public String getSubmitForAproverStatus()
 	{
@@ -430,6 +436,26 @@ public class EmployeePayroll {
 	public void setDeductionHistory(Set<DeductionHistory> deductionHistory)
 	{
 		this.deductionHistory = deductionHistory;
+	}
+
+	public BigDecimal getPayitemSum()
+	{
+		return payitemSum;
+	}
+
+	public void setPayitemSum(BigDecimal payitemSum)
+	{
+		this.payitemSum = payitemSum;
+	}
+
+	public Set<PayitemHistory> getPayitemHistory()
+	{
+		return payitemHistory;
+	}
+
+	public void setPayitemHistory(Set<PayitemHistory> payitemHistory)
+	{
+		this.payitemHistory = payitemHistory;
 	}
 	
 	
