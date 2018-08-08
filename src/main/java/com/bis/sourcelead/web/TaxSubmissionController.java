@@ -315,48 +315,46 @@ public class TaxSubmissionController {
 	}
 
 	
-	@RequestMapping (value = "/itDeclartionSubmissionExport")
+	@RequestMapping(value = "/itDeclartionSubmissionExport")
 	@ResponseBody
-	public void exportItDeclarationSubmission(HttpServletRequest request,HttpServletResponse response,SourceleadTaxITDeclarationSubmissionDTO sourceleadTaxITDeclarationSubmissionDTO , String exportType,long formId) throws Exception
-	{
+	public void exportItDeclarationSubmission(HttpServletRequest request, HttpServletResponse response,
+			SourceleadTaxITDeclarationSubmissionDTO sourceleadTaxITDeclarationSubmissionDTO, String exportType,
+			long formId) throws Exception {
 		try {
 			File file = null;
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails = taxService.getITDeclarationSubmissionDetails(formId);
+			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails = taxService
+					.getITDeclarationSubmissionDetails(formId);
 			User user = taxService.getEmployeeDetails(sourceleadTaxITDeclarationSubmissionDetails.getUser().getId());
-			if (sourceleadTaxITDeclarationSubmissionDetails != null){
-			if (exportType.equalsIgnoreCase("exel")) {
-					file = taxService.exportItDeclarationSubmissionExcel(sourceleadTaxITDeclarationSubmissionDetails,loginUser,orgLoc,user);
-			}else{
-				file = taxService.exportItDeclarationSubmissionPdf(sourceleadTaxITDeclarationSubmissionDetails,loginUser,orgLoc,user);
-			 }
+			if (sourceleadTaxITDeclarationSubmissionDetails != null) {
+				if (exportType.equalsIgnoreCase("excel")) {
+					file = taxService.exportItDeclarationSubmissionExcel(sourceleadTaxITDeclarationSubmissionDetails,
+							loginUser, orgLoc, user);
+				} else {
+					file = taxService.exportItDeclarationSubmissionPdf(sourceleadTaxITDeclarationSubmissionDetails,
+							loginUser, orgLoc, user);
+				}
 			}
-			
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";
 			}
 			response.setContentType(mimeType);
 			StringBuilder fileName = new StringBuilder();
-			response.setHeader("Content-Disposition",fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setHeader("Content-Disposition",
+					fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
 			inputStream.close();
 			response.getOutputStream().close();
 			response.getOutputStream().flush();
-			
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		
-		
-		
-		
 	}
-	
 	
 }

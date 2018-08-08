@@ -281,13 +281,9 @@ function getItDeclarationSubmissionList(uuid, pageNo) {
 					text += "	<td><div>" + formList[e].statusText + "</div></td>";
 					text += "	<td>";
 					text += "		<ul class='list-unstyled list-inline mb0'>";
-
 			    //	text += "			<li><a href='viewForm?uuid=${uuid}&formUUID=" + formList[e].uuid + "' title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
-					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportPDF' onclick='exportFormToPDF(" + formList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
-					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportEXEL' onclick='exportFormToExel(" + formList[e].id + ")'><i class='fa fa-file-excel-o'></i></a></li>";
-
-					text += "			<li><a href='javascript:void()' class='text-danger' title='Export' onclick='exportFormToPDF(" + formList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
-
+					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportToPDF' onclick='exportFormToPDF(" + formList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
+					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportToEXCEL' onclick='exportFormToExcel(" + formList[e].id + ")'><i class='fa fa-file-excel-o'></i></a></li>";
 					if(formList[e].status === 0) {
 						text += "				<li><a href='editForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						text += "				<li><a href='javascript:void()' title='Approve' onclick='approveOrRejectForm(" + formList[e].id + ", 1)'><i class='fa fa-check'></i></a></li>";
@@ -335,8 +331,8 @@ function exportFormToPDF(formId) {
 	});*/
 	window.location.href = sourceleadUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
 }
-function exportFormToExel(formId) {
-	var exportType = "exel";
+function exportFormToExcel(formId) {
+	var exportType = "excel";
 	/*$.ajax({
 		type : "POST",
 		 url : sourceleadUrl+"/itDeclartionSubmissionExport?&formId="+formId+"&exportType="+exportType,
