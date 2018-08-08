@@ -71,7 +71,7 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 					updatedBy = associateSalary.getUpdatedBy();
 				}else {
 					associateSalary  = new AssociateSalary();
-					User user = userService.getUserById(Long.parseLong(associateSalaryDTO.getUserId()));
+					User user = userService.getUserById(associateSalaryDTO.getUserId());
 					associateSalary.setUserId(user);
 					Set<AssociatePayItem> assoPayItemSet = getAssociatePayItemSet(associateSalary,associateSalaryDTO,orgLocation,loginUser);
 					associateSalary.setAssociatePayItem(assoPayItemSet);
