@@ -204,11 +204,18 @@ public class PayrollUtil {
 	 * @param eDate
 	 * @return boolean
 	 */
-	private boolean isDateInBetweenIncludingEndPoints(Date min, Date max, Date date, Date cDate)
+	private boolean isDateInBetweenIncludingEndPoints(Date minDate, Date maxDate, Date date, Date cDate)
 	{
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(minDate);
+		Date min = cal.getTime();
+		cal.setTime(maxDate);
+		Date max = cal.getTime();
 		boolean match = false;
 		try {
-			if ((date.before(min) || date.after(max)) && (cDate.before(min) || cDate.after(max))) {
+			if (((date.after(min) && date.before(max)) || (date.equals(min) || date.equals(max)))
+					&& ((cDate.after(min) && cDate.before(max))
+							|| (cDate.equals(max) || cDate.equals(min)))) {
 				match = true;
 			}
 		} catch (Exception e) {
@@ -217,6 +224,44 @@ public class PayrollUtil {
 		return match;
 	}
 
+	
+	/**
+	 * Check Date avaialbiltity
+	 * 
+	 * @param minDate
+	 * @param maxDate
+	 * @param sdate
+	 * @param eDate
+	 * @return boolean
+	 */
+	public boolean isDateBetweenEffectiveDate(Date minDate, Date maxDate, Date effectiveSDate, Date effectiveEDate)
+	{
+		boolean match = false;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(minDate);
+		Date min = cal.getTime();
+		cal.setTime(maxDate);
+		Date max = cal.getTime();
+		try {
+			if (effectiveSDate != null && effectiveEDate != null) {
+				if (((effectiveSDate.after(min) && effectiveSDate.before(max))
+						|| (effectiveSDate.equals(min) || effectiveSDate.equals(max)))
+						&& ((effectiveEDate.after(min) && effectiveEDate.before(max))
+								|| (effectiveEDate.equals(max) || effectiveEDate.equals(min)))) {
+					match = true;
+				}
+			}
+			else {
+				if ((effectiveSDate.after(min) && effectiveSDate.before(max))
+						|| (effectiveSDate.equals(min) || effectiveSDate.equals(max))) {
+					match = true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return match;
+	}
 
 	public Date[] getDeductionDates(Date currentDate, String schedule)
 	{

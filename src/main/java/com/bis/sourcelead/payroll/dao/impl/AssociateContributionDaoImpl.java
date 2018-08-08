@@ -66,7 +66,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 	@Transactional
 	public AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AssociateContribution assContribution where assContribution.contributionTypeId.id =:contriTypeId and assContribution.orgLocationId.id =:orgLocationId";
+		String query = "from AssociateContribution assContribution where assContribution.contributionTypeId.id =:contriTypeId and assContribution.orgLocationId.id =:orgLocationId and assContribution.status = 1";
 		List<AssociateContribution> assContribution = session.createQuery(query).setLong("contriTypeId", contriTypId).setLong("orgLocationId", orgLocation.getId()).list();
 		if(assContribution.size() > 0) {
 			return assContribution.get(0);
