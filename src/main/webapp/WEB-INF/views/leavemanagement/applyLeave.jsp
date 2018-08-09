@@ -215,7 +215,7 @@ window.onload = function() {
 <%--             </c:if> --%>
 
 		<div class="clearfix"></div>
-		 <sec:authorize access="hasAnyRole('LEAVE_NOTIFY_TO_OTHTERS')"> 
+		 <sec:authorize access="hasAnyRole('ROLE_LEAVE_NOTIFY_TO_OTHTERS')"> 
 			<c:if test="${!empty leave.notifyToOthers}">
 	         <div class="form-group" id="notifyToOthersDiv">
 					<div class="ml">
