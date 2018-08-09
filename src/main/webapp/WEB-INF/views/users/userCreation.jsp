@@ -49,8 +49,7 @@
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
-        <input type="hidden" id="associateId" name="associateId">
-        <input type="hidden" id="empType" name="empType">
+        
         <!--New theme-->
         <div class="user_summ_wrap contentareaInner-styles">
         
@@ -87,7 +86,8 @@
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
           <input type="hidden" id="actionId" value="${actionId}">
-          <input type="hidden" id="associateId" />
+          <input type="hidden" id="associateId" name="associateId">
+          <input type="hidden" id="empType" name="empType">
             <div class="row clearfix minHeightcol5">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
