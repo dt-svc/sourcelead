@@ -2520,9 +2520,9 @@ public File getLeaveBalancePdfFile(Response<LeaveBalanceReportDTO> LeaveBalanceR
 }
 
 @Override
-public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId)throws Exception
+public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId,String loginUserRole)throws Exception
 {
-	return leaveDao.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgId,orgLocationId);
+	return leaveDao.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgId,orgLocationId,loginUserRole);
 }
 
 @Override

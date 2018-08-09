@@ -74,6 +74,8 @@ function prepareAllDeductionTypeList(url){
         result = result + '<tr>';
 		result = result + '<th>Type</th>';
 		result = result + '<th>Description</th>';
+		result = result + '<th>Tax Type</th>';
+		result = result + '<th>Schedule Type</th>';
 		result = result + '<th>Method</th>';
 		result = result + '<th>Amount</th>';
 		result = result + '<th>Action</th>';
@@ -103,6 +105,8 @@ function deductionTypepagination(url){
         "columns": [
             { "data": "payrollDeductionType" },
             { "data": "description"},
+            { "data": "taxType"},
+            { "data": "scheduleType"},
             { "data": "payrollDeductionMethod"},
             { "data": "deductionAmount" },
             { "data": "Action"}
@@ -117,20 +121,48 @@ function deductionTypepagination(url){
 		                     return result;
 	    	  	}
 	      },{
-	    	  "targets": colIndex++,
-              "data": "description",
-              "sortable": false,
-              "render": function ( data, type, opt, meta ) {
-            	  var result = "";
-            	  if(opt.description !=null && opt.description !='' && opt.description !='undefined'){
-						result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.description+'</div></td>';
-					}else{
-						result = result + ' <td><div>--</div></td>';
-					}
-	              return result;
-              		
-              }
-	          },{
+			    	  "targets": colIndex++,
+		              "data": "description",
+		              "sortable": false,
+		              "render": function ( data, type, opt, meta ) {
+		            	  var result = "";
+		            	  if(opt.description !=null && opt.description !='' && opt.description !='undefined'){
+								result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.description+'</div></td>';
+							}else{
+								result = result + ' <td><div>--</div></td>';
+							}
+			              return result;
+		              		
+		              }
+			          },{
+				    	  "targets": colIndex++,
+			              "data": "taxType",
+			              "sortable": false,
+			              "render": function ( data, type, opt, meta ) {
+			            	  var result = "";
+			            	  if(opt.taxType !=null && opt.taxType !='' && opt.taxType !='undefined'){
+									result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.taxType+'</div></td>';
+								}else{
+									result = result + ' <td><div>--</div></td>';
+								}
+				              return result;
+			              		
+			              }
+				          },{
+					    	  "targets": colIndex++,
+				              "data": "scheduleType",
+				              "sortable": false,
+				              "render": function ( data, type, opt, meta ) {
+				            	  var result = "";
+				            	  if(opt.payrollScheduled !=null && opt.payrollScheduled !='' && opt.payrollScheduled !='undefined'){
+										result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.payrollScheduled+'</div></td>';
+									}else{
+										result = result + ' <td><div>--</div></td>';
+									}
+					              return result;
+				              		
+				              }
+					          },{
             "targets": colIndex++,
             "data": "payrollDeductionMethod",
             "render": function ( data, type, opt, meta ) { 
