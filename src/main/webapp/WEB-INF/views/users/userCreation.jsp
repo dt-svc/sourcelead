@@ -63,7 +63,7 @@
           </c:if> --%>
            
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-         		 <li class=""><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails()">Banking Details</a></li>
+         		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
           </c:if>
           
             <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
@@ -493,9 +493,9 @@
 	       <jsp:include page="associateContribution.jsp" />
         </c:if>
         
-         <%-- <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+          <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
               <jsp:include page="associateIndiaBankingDetails.jsp" />
-         </c:if> --%>
+         </c:if> 
         
       </section>
       <!-- Content Area Ends--> 
@@ -717,23 +717,16 @@ function getEmployeementType(designationType){
 						showError("Invalid data");
 						$("#loading").removeAttr('style');
 					} 
-					else if(loginCurrencyCode != 'USD') {
-						$("#associateId").val(result.object.userId);
-						var associateLeaveType = document.getElementById("associateLeaveType");
-						document.getElementById("associateLeaveType").removeAttribute("class"); 
-						associateLeaveType.href="#tab-7"; 
-						$("#tab-1").removeAttr("href");
-						$("#associateLeaveType").click();
-						getAllLeaveType();
-					}else if(loginLocationCountry == 'India'){
+					else if(loginLocationCountry == 'India'){
 						    $("#associateId").val(result.object.userId);
 							$("#empType").val(result.object.designationType);
-							var indBankingDetails = document.getElementById("indBankingDetails");
-							document.getElementById("indBankingDetails").removeAttribute("class"); 
-							indBankingDetails.href="#tab-2"; 
-							$("#indBankingDetails").click();
+							 var indBankingDetails = document.getElementById("indBankingDetails");
+							 document.getElementById("indBankingDetails").removeAttribute("class");
+							 indBankingDetails.href="#tab-b";
+							 $("#indBankingDetails").click();
 					}
-					   $("#associateId").val(result.object.userId);
+					else{
+						$("#associateId").val(result.object.userId);
 						$("#empType").val(result.object.designationType);
 						var associateSalary = document.getElementById("associateSalary");
 						document.getElementById("associateSalary").removeAttribute("class"); 
@@ -741,7 +734,7 @@ function getEmployeementType(designationType){
 						$("#associateSalary").click();
 						 getPayItemList();
 					}
-				},
+				}
 			});
             
 	        return true;
