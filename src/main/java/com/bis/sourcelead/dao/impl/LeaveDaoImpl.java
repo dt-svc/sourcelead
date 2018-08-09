@@ -856,7 +856,7 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Transactional
 	public List<Leave> getAllLeave() {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Leave leave";
+		String query = "from Leave leave  left join fetch leave.orgLocations orgLoc";
 		List<Leave> leaveList = session.createQuery(query).list();
 		return leaveList;
 	}

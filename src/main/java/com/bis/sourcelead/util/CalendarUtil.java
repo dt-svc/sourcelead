@@ -352,7 +352,7 @@ public  class CalendarUtil {
   }
 	
 	
-	protected static int getDayOffset(String day_Of_Week){
+	public static int getDayOffset(String day_Of_Week){
 		int day_offset = 0;
 		switch (day_Of_Week) {
 		case "MON":  day_offset = Calendar.MONDAY;

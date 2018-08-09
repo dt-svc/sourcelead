@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -374,26 +375,32 @@ public class LeaveServiceImpl implements LeaveService{
 			 Calendar cal = Calendar.getInstance();
 			List<Date> dateList = leaveManagementUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
 			dateList.forEach(d -> {
+				
+				 String[] strArray = orgLocations.getWeekOffDays().split(",");
+			     List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
+			 	 SimpleDateFormat sf = new SimpleDateFormat("E");
 				AppliedLeaveDate appliedLeaveDate = new AppliedLeaveDate();
 				appliedLeaveDate.setApplyLeaveDate(d);
-				float fromMinutes = 0;
-				if(leave.getFromDate().equals(d)){
-					if(Constants.STATUS_YES.equalsIgnoreCase(leave.getFromHalfDay())){
-						fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
-//						fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
-					}else{
-						fromMinutes = orgLocations.getAverageWorkingHours() * 60;
-					}
-				}else if(leave.getToDate().equals(d)){
-					if(Constants.STATUS_YES.equalsIgnoreCase(leave.getToHalfDay())){
-						fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(leave.getToDateFromHalfTime(), leave.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
-//						fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(), leave.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
-					}else{
-						fromMinutes = orgLocations.getAverageWorkingHours() * 60;
-					}
-				}else{
-					fromMinutes = orgLocations.getAverageWorkingHours() * 60;
-				}
+				 float fromMinutes = 0;
+				 if(!weekOffs.contains(sf.format(d))) {
+					 if(leave.getFromDate().equals(d)){
+							if(Constants.STATUS_YES.equalsIgnoreCase(leave.getFromHalfDay())){
+								fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+//								fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+							}else{
+								fromMinutes = orgLocations.getAverageWorkingHours() * 60;
+							}
+						}else if(leave.getToDate().equals(d)){
+							if(Constants.STATUS_YES.equalsIgnoreCase(leave.getToHalfDay())){
+								fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(leave.getToDateFromHalfTime(), leave.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+//								fromHours = (float) leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(), leave.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
+							}else{
+								fromMinutes = orgLocations.getAverageWorkingHours() * 60;
+							}
+						}else{
+							fromMinutes = orgLocations.getAverageWorkingHours() * 60;
+						}
+				 }
 				appliedLeaveDate.setAppliedHours(CommonUtil.getTimeFormat(null, fromMinutes));
 				appliedLeaveDate.setApplyMonthName(getMonthName(d).toUpperCase());
 				appliedLeaveDate.setLeave(leave);
