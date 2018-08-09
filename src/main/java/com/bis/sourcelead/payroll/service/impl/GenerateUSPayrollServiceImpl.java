@@ -455,40 +455,44 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		PayItemDTO payItemDTO = new PayItemDTO();
 		BigDecimal payItemSum = BigDecimal.ZERO;
 		Set<PayitemHistory> historySet = new HashSet<>();
-		if (associatePayItem != null && associatePayItem.size() > 0) {
-			for (AssociatePayItem payItem : associatePayItem) {
-				boolean match = payrollUtil.isDateBetweenEffectiveDate(payItem.getEffectiveDate(), payItem.getEndDate(), paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
-				if (!match) {
-					boolean schedulePay = payrollUtil.findPayItemSchedulePay(payItem, paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
-					if (!schedulePay) {
-						payItemSum = payItem.getPayItemAmount();
-						Date[] payItemDate = null;
-						if (StringUtils.isNotBlank(payItem.getPayitemStatus())
-								&& !PayrollConstant.EVERY_PAY.equalsIgnoreCase(payItem.getPayItemSchedule())) {
-							payItemDate = payrollUtil.getDeductionDates(payItem.getPayitemEndDate(), payItem.getPayItemSchedule());
-						}
-						else {
-							payItem.setPayitemStatus(PayrollConstant.ADDED);
-							payItemDate = payrollUtil.getDeductionDates(paySheet.getFrequencyStartDate(), payItem.getPayItemSchedule());
-						}
-						payItem.setPayitemStartDate(payItemDate[0]);
-						if (payItemDate[0] != null) {
-							payItem.setPayitemEndDate(payItemDate[1]);
-						}
-						else {
-							payItem.setPayitemEndDate(paySheet.getFrequencyEndDate());
-						}
-						AssociatePayItem assPayItem = associateSalaryDao.saveUpdatedPayItem(payItem);
-						if (assPayItem != null) {
-							PayitemHistory payHis = populatePayHistory(payroll, payItem, payItemDate, paySheet, loginUser);
-							historySet.add(payHis);
+		try {
+			if (associatePayItem != null && associatePayItem.size() > 0) {
+				for (AssociatePayItem payItem : associatePayItem) {
+					boolean match = payrollUtil.isDateBetweenEffectiveDate(payItem.getEffectiveDate(), payItem.getEndDate(), paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
+					if (match) {
+						boolean schedulePay = payrollUtil.findPayItemSchedulePay(payItem, paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
+						if (!schedulePay) {
+							payItemSum = payItem.getPayItemAmount();
+							Date[] payItemDate = null;
+							if (StringUtils.isNotBlank(payItem.getPayitemStatus()) && !PayrollConstant.EVERY_PAY.equalsIgnoreCase(payItem.getPayItemSchedule())) {
+								payItemDate = payrollUtil.getDeductionDates(payItem.getPayitemEndDate(), payItem.getPayItemSchedule());
+							}
+							else {
+								payItem.setPayitemStatus(PayrollConstant.ADDED);
+								payItemDate = payrollUtil.getDeductionDates(paySheet.getFrequencyStartDate(), payItem.getPayItemSchedule());
+							}
+							payItem.setPayitemStartDate(payItemDate[0]);
+							if (payItemDate[1] != null) {
+								payItem.setPayitemEndDate(payItemDate[1]);
+							}
+							else {
+								payItem.setPayitemEndDate(paySheet.getFrequencyEndDate());
+							}
+							AssociatePayItem assPayItem = associateSalaryDao.saveUpdatedPayItem(payItem);
+							if (assPayItem != null) {
+								PayitemHistory payHis = populatePayHistory(payroll, payItem, payItemDate, paySheet, loginUser);
+								historySet.add(payHis);
+							}
 						}
 					}
 				}
-			}
+			}	
 			payItemDTO.setPayItemSum(payItemSum);
 			payItemDTO.setPayitemHistory(historySet);
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
+		
 		return payItemDTO;
 	}
 	
