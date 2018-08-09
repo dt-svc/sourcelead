@@ -722,7 +722,7 @@ function getEmployeementType(designationType){
 							$("#empType").val(result.object.designationType);
 							 var indBankingDetails = document.getElementById("indBankingDetails");
 							 document.getElementById("indBankingDetails").removeAttribute("class");
-							 indBankingDetails.href="#tab-b";
+							 indBankingDetails.href="#tab-2";
 							 $("#indBankingDetails").click();
 					}
 					else{
@@ -1380,17 +1380,11 @@ function clearDateofJoin(){
 <script>
 var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 
-var associateLeaveType = document.getElementById("associateLeaveType");
+               var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateLeaveType){
 					associateLeaveType.href = "#";
 					associateLeaveType.className = "disabledLink";
 				}
-				
-				var associates = document.getElementById("associates");
-				if(associates){
-					associates.href = "#";
-					associates.className = "disabledLink";
-				} 
 				
 		if(loginLocationCountry == 'United States'){		
 				
