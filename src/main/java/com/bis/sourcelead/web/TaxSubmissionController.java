@@ -1,24 +1,33 @@
 package com.bis.sourcelead.web;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.mockito.internal.stubbing.answers.ThrowsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
@@ -26,11 +35,13 @@ import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -49,22 +60,11 @@ public class TaxSubmissionController {
 
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	// forms tab org/user
-
-//	private void setYears(ModelAndView modelAndView, int selectedYear) {
-//		Map<String, Boolean> yearList = new LinkedHashMap<>();
-//		Calendar c = Calendar.getInstance();
-//		c.roll(Calendar.YEAR, -2);
-//		for (int i = 0; i < 4; i++) {
-//			Calendar c1 = Calendar.getInstance();
-//			boolean isCurrent = selectedYear > 0 ? selectedYear == c.get(Calendar.YEAR)
-//					: c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
-//			yearList.put(c.get(Calendar.YEAR) + "", isCurrent);
-//			c.roll(Calendar.YEAR, 1);
-//		}
-//		modelAndView.addObject("yearList", yearList);
-//	}
 
 	@RequestMapping(value = "/forms/list")
 	public ModelAndView getForms(HttpServletRequest request, @RequestParam(defaultValue = "") String financialYear,
@@ -72,6 +72,7 @@ public class TaxSubmissionController {
 		ModelAndView modelAndView = new ModelAndView();
 		
 		try {
+			commonUtil.highLightMenu(Constants.FORMS, request);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
@@ -86,7 +87,6 @@ public class TaxSubmissionController {
 						modelAndView.setViewName("payroll_india/org/form_list_by_formType");
 					}
 				} else {
-					// setYears(modelAndView, year);
 					TaxAdminController.setYears(modelAndView, financialYear);
 					String year = "";
 					if (financialYear.isEmpty()) {
@@ -149,7 +149,6 @@ public class TaxSubmissionController {
 			if (user != null) {
 				SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
 				if (sourceleadTaxFormDTO != null) {
-					// setYears(modelAndView, 0);
 					TaxAdminController.setYears(modelAndView, null);
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 							"orgLocations");
@@ -168,8 +167,6 @@ public class TaxSubmissionController {
 								"payroll_india/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_")
 										+ "_submitted_form");
 					} else {
-						// modelAndView.addObject("activeFormTabUUID", uuid);
-						// setYears(modelAndView, 0);
 						modelAndView.addObject("form", sourceleadTaxFormDTO);
 						modelAndView.setViewName("payroll_india/org/"
 								+ sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
@@ -228,8 +225,6 @@ public class TaxSubmissionController {
 			if (user != null) {
 				itDeclarationSubmissionDTO.setStatus(1);
 				response = taxService.submitITDeclaration(itDeclarationSubmissionDTO, user, orgLocations);
-				// response.setObject(1L);
-//				response.setResponse(Result.SUCCESS.name());
 				if (response.getResponse().equals(Result.SUCCESS.name())) {
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -318,4 +313,48 @@ public class TaxSubmissionController {
 		}
 		return response;
 	}
+
+	
+	@RequestMapping(value = "/itDeclartionSubmissionExport")
+	@ResponseBody
+	public void exportItDeclarationSubmission(HttpServletRequest request, HttpServletResponse response,
+			SourceleadTaxITDeclarationSubmissionDTO sourceleadTaxITDeclarationSubmissionDTO, String exportType,
+			long formId) throws Exception {
+		try {
+			File file = null;
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails = taxService
+					.getITDeclarationSubmissionDetails(formId);
+			User user = taxService.getEmployeeDetails(sourceleadTaxITDeclarationSubmissionDetails.getUser().getId());
+			if (sourceleadTaxITDeclarationSubmissionDetails != null) {
+				if (exportType.equalsIgnoreCase("excel")) {
+					file = taxService.exportItDeclarationSubmissionExcel(sourceleadTaxITDeclarationSubmissionDetails,
+							loginUser, orgLoc, user);
+				} else {
+					file = taxService.exportItDeclarationSubmissionPdf(sourceleadTaxITDeclarationSubmissionDetails,
+							loginUser, orgLoc, user);
+				}
+			}
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition",
+					fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+	
 }

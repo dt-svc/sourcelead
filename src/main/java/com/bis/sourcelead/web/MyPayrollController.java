@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadTaxSubmissionMasterDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.TaxService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -35,11 +37,15 @@ public class MyPayrollController {
 
 	@Autowired
 	private TaxService taxService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@RequestMapping(value = "/pays")
 	public ModelAndView paySlips(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
+			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
 			modelAndView.addObject("activeTaxTab", "pays");
 			modelAndView.setViewName("payroll_india/my_payroll/pays");
 		} catch (Exception e) {

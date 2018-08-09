@@ -32,7 +32,7 @@
 	<b>
 	<c:choose>
 		<c:when test="${activeTaxTab == 'forms'}">
-			<c:if test="${viewPage == 'tax/addForm'}">
+			<c:if test="${viewPage == 'payroll_india/addForm'}">
 				<input id='confirmId' type='button' value='Ok' onclick='tax.changeFormSectionStatus()'>
 			</c:if>
 			<c:if test="${viewPage == 'payroll_india/form_list'}">

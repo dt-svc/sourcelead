@@ -58,11 +58,16 @@
         <div class="tabsMenu">
         <ul class="list-unstyled">
           <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
-          <c:if test="${SourceLeadWeb_currencyCode != 'USD'}">
+         <%--  <c:if test="${SourceLeadWeb_currencyCode != 'USD'}">
           <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
+          </c:if> --%>
+           
+          <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+         		 <li class=""><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails()">Banking Details</a></li>
           </c:if>
-          <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
-            <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
+          
+            <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+              <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
 	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
@@ -478,12 +483,20 @@
           </div>
           </div>
         </div>
-        <jsp:include page="associateLeaveType.jsp" />
-          <jsp:include page="associateSalary.jsp" />
-       <jsp:include page="associateBankData.jsp" />
-       <jsp:include page="associateTax.jsp" />
-       <jsp:include page="associateDeduction.jsp" />
-        <jsp:include page="associateContribution.jsp" />
+       
+       <jsp:include page="associateLeaveType.jsp" />
+        <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+	       <jsp:include page="associateSalary.jsp" />
+	       <jsp:include page="associateBankData.jsp" />
+	       <jsp:include page="associateTax.jsp" />
+	       <jsp:include page="associateDeduction.jsp" />
+	       <jsp:include page="associateContribution.jsp" />
+        </c:if>
+        
+         <%-- <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+              <jsp:include page="associateIndiaBankingDetails.jsp" />
+         </c:if> --%>
+        
       </section>
       <!-- Content Area Ends--> 
 
@@ -665,6 +678,8 @@ function getEmployeementType(designationType){
  function createUser() {
 	 
 	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}'; 
+	 var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
+	 
 	 	var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){
 			$('#Rate').removeAttr('data-validation-optional');
@@ -710,9 +725,15 @@ function getEmployeementType(designationType){
 						$("#tab-1").removeAttr("href");
 						$("#associateLeaveType").click();
 						getAllLeaveType();
-						/* location.replace(sourceleadUrl+"/usersList"); */
-					}else{
-					$("#associateId").val(result.object.userId);
+					}else if(loginLocationCountry == 'India'){
+						    $("#associateId").val(result.object.userId);
+							$("#empType").val(result.object.designationType);
+							var indBankingDetails = document.getElementById("indBankingDetails");
+							document.getElementById("indBankingDetails").removeAttribute("class"); 
+							indBankingDetails.href="#tab-2"; 
+							$("#indBankingDetails").click();
+					}
+					   $("#associateId").val(result.object.userId);
 						$("#empType").val(result.object.designationType);
 						var associateSalary = document.getElementById("associateSalary");
 						document.getElementById("associateSalary").removeAttribute("class"); 
@@ -1364,7 +1385,7 @@ function clearDateofJoin(){
 </script>
 
 <script>
-// project side bar tabs
+var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 
 var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateLeaveType){
@@ -1377,6 +1398,9 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 					associates.href = "#";
 					associates.className = "disabledLink";
 				} 
+				
+		if(loginLocationCountry == 'United States'){		
+				
 				var associateBanking = document.getElementById("associateBanking");
 				if(associateBanking){
 					associateBanking.href = "#";
@@ -1412,9 +1436,16 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 					associateSalary.className = "disabledLink";
 				} 
 				
-				
+		}		
 
- 
+		if(loginLocationCountry == 'India'){
+			var indBankingDetails = document.getElementById("indBankingDetails");
+			if(indBankingDetails){
+				indBankingDetails.href = "#";
+				indBankingDetails.className = "disabledLink";
+			} 
+			
+		}
 
 
 $(document).ready(function() {

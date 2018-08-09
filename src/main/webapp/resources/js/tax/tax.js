@@ -595,7 +595,7 @@ function Tax() {
 						result += "<td>";
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
-						result += "<li><a href='view?uuid=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
+						result += "<li><a href='view?uuid=" + formList[e].uuid + "' title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
 						result += "<li " + (formList[e].active ? "" : "class='disableBtn'") + "><a href='create?uuid=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						if(formList[e].active) {
 							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + formList[e].id + ", 1, 1)' title='Make InActive' class='text-danger'><i class='fa fa-trash'></i></a></li>";

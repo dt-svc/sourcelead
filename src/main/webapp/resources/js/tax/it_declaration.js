@@ -102,7 +102,6 @@ function fileUploadEvent(ele) {
 					text += "<input name='documentList[" + $(attachmentDiv).data('index') + "].attachmentList[" + e + "].contentType' type='hidden' value='" + data[e].contentType + "'>";
 					$(attachmentDiv).append(text);
 				}
-//				var docName = $(ele).parents("tr").find("input[data-name='documentName']").val();
 				var uploadedFilesDiv = $(parentDiv).find(".uploadedFiles");
 				uploadedFilesDiv.html(filesText);
 				enableDisableRefresh(ele);
@@ -194,7 +193,6 @@ function removeDocumentRow(ele) {
 		$(this).attr("id", "uploadBtn" + (uploadCount++));
 		document.getElementById($(this).attr("id")).value = "";
 	});
-	
 	var documentId = $(parentDiv).find("input[data-name='documentId']").val();
 	if(documentId && documentId > 0) {
 		var documentRemoveIds = $("#documentRemoveIds").val();
@@ -280,12 +278,12 @@ function getItDeclarationSubmissionList(uuid, pageNo) {
 					text += "	</td>";
 					text += "	<td><div class='tbldata-dotdot-verybig'>" + formList[e].financialYear + "</div></td>";
 					text += "	<td>" + formList[e].submittedAmount + "</td>";
-					/*text += "	<td>" + formList[e].taxAmount + "</td>";*/
 					text += "	<td><div>" + formList[e].statusText + "</div></td>";
 					text += "	<td>";
 					text += "		<ul class='list-unstyled list-inline mb0'>";
-//					text += "			<li><a href='viewForm?uuid=${uuid}&formUUID=" + formList[e].uuid + "' title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
-					text += "			<li><a href='javascript:void()' class='text-danger' title='Export' onclick='exportFormToPDF(" + formList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
+			    //	text += "			<li><a href='viewForm?uuid=${uuid}&formUUID=" + formList[e].uuid + "' title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
+					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportToPDF' onclick='exportFormToPDF(" + formList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
+					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportToEXCEL' onclick='exportFormToExcel(" + formList[e].id + ")'><i class='fa fa-file-excel-o'></i></a></li>";
 					if(formList[e].status === 0) {
 						text += "				<li><a href='editForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						text += "				<li><a href='javascript:void()' title='Approve' onclick='approveOrRejectForm(" + formList[e].id + ", 1)'><i class='fa fa-check'></i></a></li>";
@@ -326,5 +324,18 @@ function getItDeclarationSubmissionList(uuid, pageNo) {
 	});
 }
 function exportFormToPDF(formId) {
-	alert("Form Id " + formId);
+	var exportType = "pdf";
+	/*$.ajax({
+		type : "POST",
+		 url : sourceleadUrl+"/itDeclartionSubmissionExport?&formId="+formId+"&exportType="+exportType,
+	});*/
+	window.location.href = sourceleadUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
+}
+function exportFormToExcel(formId) {
+	var exportType = "excel";
+	/*$.ajax({
+		type : "POST",
+		 url : sourceleadUrl+"/itDeclartionSubmissionExport?&formId="+formId+"&exportType="+exportType,
+	})*/
+	window.location.href = sourceleadUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
 }
