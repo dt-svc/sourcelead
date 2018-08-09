@@ -109,6 +109,8 @@ public class PayrollContributionServiceImpl implements PayrollContributionServic
 					dto.setContributionAmount(contribution.getContributionAmount());
 					dto.setContributionUUID(contribution.getContributionUUID());
 					dto.setStatus(contribution.getStatus());
+					dto.setTaxType(contribution.getDeductionTypeId().getTaxType());
+					dto.setScheduleType(contribution.getDeductionTypeId().getPayrollScheduled());
 					list.add(dto);
 				});
 				response.setData(list);
