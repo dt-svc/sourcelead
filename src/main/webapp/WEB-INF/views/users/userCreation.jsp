@@ -182,7 +182,7 @@
                    	<select class="form-control chosen-select" id="workLocation" name="workLocation" field-name="Work Location" data-validation="required" >
                         <option value="">--Select Location--</option>
                         <c:forEach var="option" items="${locationList}">
-							<option value="${option.id}">${option.orgLocationAddress}</option>
+							<option value="${option.id}">${option.orgLocationAddress != '' ? option.orgLocationAddress : option.registeredLocation}</option>
 						</c:forEach>
               		</select>
                   </div>
