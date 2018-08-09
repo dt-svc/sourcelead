@@ -193,12 +193,10 @@
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
 				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
-				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-				<li><a href="daywiseLeaveReport">Daywise Leave Report</a></li>
-				</sec:authorize>
-				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-				<li><a href="leaveBalancesReport">Leave Balances Report</a></li>
-				</sec:authorize>
+				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
+				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
+				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
+				
 				<!-- <li><a href="#">Employment Verficication</a></li>
 				<li><a href="#">Wage and Tax</a></li>
 				<li><a href="#">Associate Onboard</a></li>
@@ -399,6 +397,9 @@
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
 				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
+				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
+				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
+				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 

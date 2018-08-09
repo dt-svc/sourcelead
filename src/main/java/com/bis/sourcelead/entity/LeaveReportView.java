@@ -26,6 +26,13 @@ public class LeaveReportView {
 	private String name;
 	@Column(name = "ORGLOCATION_ID", nullable = false)
 	private Long orglocationId;
+	
+	@Column(name = "REPORTING_MANAGER_ID", nullable = false)
+	private Long reportingManagerId;
+	
+	@Column(name = "Employee_ID", nullable = false)
+	private Long employeeId;
+	
 	@Column(name = "REASON",columnDefinition = "TEXT default NULL")
 	private String reason;
 	@Column(name = "FROM_DATE")
@@ -38,8 +45,9 @@ public class LeaveReportView {
 	private Long leaveTypeId;
 	@Column(name = "LEAVE_TYPE_NAME")
 	private String leaveTypeName;
-	@Column(name = "APPROVER_NAME", columnDefinition = "TEXT default NULL")
-	private String approver;
+
+	@Column(name = "APPROVER_NAME" , columnDefinition = "TEXT default NULL")
+    private String approver;
 	@Column(name = "LEAVE_TYPE_BILLABLE", columnDefinition = "TEXT default NULL")
 	private String leaveTypeBillable;
 	@Column(name = "DURATION", columnDefinition = "TEXT default NULL")
@@ -63,8 +71,10 @@ public class LeaveReportView {
 	private Date appliedOn;
 	
 	@Column(name = "UPDATED_DATE")
-	private Date approvedOn;
+	private Date approvedOn; 
 	
+	@Column(name = "REPORTING_MANAGER")
+	private String ReportingManager;
 	@Transient
 	private List<Map<String, String>> order;
 	@Transient
@@ -367,6 +377,36 @@ public class LeaveReportView {
 	public void setApprovedOnDateStr(String approvedOnDateStr)
 	{
 		this.approvedOnDateStr = approvedOnDateStr;
+	}
+
+	public Long getEmployeeId()
+	{
+		return employeeId;
+	}
+
+	public void setEmployeeId(Long employeeId)
+	{
+		this.employeeId = employeeId;
+	}
+
+	public Long getReportingManagerId()
+	{
+		return reportingManagerId;
+	}
+
+	public void setReportingManagerId(Long reportingManagerId)
+	{
+		this.reportingManagerId = reportingManagerId;
+	}
+
+	public String getReportingManager()
+	{
+		return ReportingManager;
+	}
+
+	public void setReportingManager(String reportingManager)
+	{
+		ReportingManager = reportingManager;
 	}
 	
 	
