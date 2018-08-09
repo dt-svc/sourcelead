@@ -909,6 +909,7 @@ $('button').click(function (event) {
 	 var flag = document.getElementById("newEmployment").checked;
 	 if(flag == true){
 		 $("#newEmployment").val('0'); 
+		 $("#newEmploymentCount").val('');
 	 }else{
 		 $("#newEmployment").val('1'); 
 	 } 
@@ -917,6 +918,7 @@ $('button').click(function (event) {
 	 var flag = document.getElementById("concurrentEmployment").checked;
 	 if(flag == true){
 		 $("#concurrentEmployment").val('0'); 
+		 $("#concurrentEmploymentCount").val('');
 	 }else{
 		 $("#concurrentEmployment").val('1'); 
 	 } 
@@ -925,6 +927,7 @@ $('button').click(function (event) {
 	 var flag = document.getElementById("extention").checked;
 	 if(flag == true){
 		 $("#extention").val('0'); 
+		 $("#extentionCount").val('');
 	 }else{
 		 $("#extention").val('1'); 
 	 } 
@@ -932,7 +935,8 @@ $('button').click(function (event) {
  function changEmployer(){
 	 var flag = document.getElementById("changeEmployer").checked;
 	 if(flag == true){
-		 $("#changeEmployer").val('0'); 
+		 $("#changeEmployer").val('0');
+		 $("#changeInEmployerCount").val('');
 	 }else{
 		 $("#changeEmployer").val('1'); 
 	 } 
@@ -941,6 +945,8 @@ $('button').click(function (event) {
 	 var flag = document.getElementById("changeEmployerPrevious").checked;
 	 if(flag == true){
 		 $("#changeEmployerPrevious").val('0'); 
+		 $("#changeEmployerPreviousCount").val('');
+		 
 	 }else{
 		 $("#changeEmployerPrevious").val('1'); 
 	 } 
@@ -951,6 +957,7 @@ $('button').click(function (event) {
 	 var flag = document.getElementById("amendment").checked;
 	 if(flag == true){
 		 $("#amendment").val('0'); 
+		 $("#amendmentCount").val('');
 	 }else{
 		 $("#amendment").val('1'); 
 	 } 
