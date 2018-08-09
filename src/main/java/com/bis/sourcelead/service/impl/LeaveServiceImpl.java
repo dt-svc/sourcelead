@@ -1072,6 +1072,15 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 			
 			leaveDto.setCreatedDate(ConversionUtil.getDateAsString(leave.getCreatedDate()));
+			
+			if(StringUtils.isNotBlank(leave.getRejectedReason())){
+				leaveDto.setRejectedReason(leave.getRejectedReason());
+			}
+			
+			if(StringUtils.isNotBlank(leave.getWithdrawReason())){
+				leaveDto.setWithdrawReason(leave.getWithdrawReason());
+			}
+			
 			if(leave.getUpdatedDate() != null)
 			leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
 			leaveDto.setLeaveUUID(leave.getLeaveUUID());

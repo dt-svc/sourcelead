@@ -490,7 +490,19 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 								} 
 							}
 						}
-						totalBal += leaveType.getNoOfDaysPerPeriod();
+						
+						if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+							totalBal += leaveType.getNoOfDaysPerPeriod();
+						}else {
+							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+							String expType = leaveManagementUtil.test(leaveType, emp, user);
+							if("EXP".equalsIgnoreCase(expType)){
+								totalBal += leaveType.getExperiencedPerPeriod();
+							}else if("FRESHER".equalsIgnoreCase(expType)){
+								totalBal += leaveType.getNewJoinPerPeriod();
+							}
+						}
+						
 					}else if(Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())){
 						if(Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
 							totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
@@ -526,12 +538,24 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					 float associateBalanceLeaves = getTotalLeavesCountByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocations.getId(),orgLocations.getOrg().getId());
 //					 float totalBal = associateBalanceLeaves + leaveType.getNoOfDaysPerPeriod();
 					 float totalBal = 0;
+					 float periodDays = 0;
+					 if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+						 periodDays += leaveType.getNoOfDaysPerPeriod();
+						}else {
+							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+							String expType = leaveManagementUtil.test(leaveType, emp, user);
+							if("EXP".equalsIgnoreCase(expType)){
+								periodDays += leaveType.getExperiencedPerPeriod();
+							}else if("FRESHER".equalsIgnoreCase(expType)){
+								periodDays += leaveType.getNewJoinPerPeriod();
+							}
+						}
 					if (Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
 						if (Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
-							totalBal += leaveType.getNoOfDaysPerPeriod();
+							totalBal += periodDays;
 						}
 						else if (Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
-							totalBal = associateBalanceLeaves + leaveType.getNoOfDaysPerPeriod();
+							totalBal = associateBalanceLeaves + periodDays;
 						}
 					}
 					else if (Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
@@ -704,8 +728,12 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				String userType = "";
 				Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), leaveType.getOrgLocations().getId());
 				try {
-					userType = leaveManagementUtil.test(leaveType, emp, user);
 					if(!"All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+						if(emp != null){
+							userType = leaveManagementUtil.test(leaveType, emp, user);
+						}else{
+							userType = "EXP";
+						}
 						if("EXP".equalsIgnoreCase(userType)){
 							if("ADD".equalsIgnoreCase(actionExpType)){
 								allowedLeaves = assoBalLeaves + diffExpLeaves;

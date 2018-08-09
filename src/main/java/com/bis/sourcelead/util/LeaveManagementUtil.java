@@ -523,7 +523,7 @@ public class LeaveManagementUtil {
 			al.setToHalfToTime(leave.getToDateToHalfTime());
 		}
 		appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(orgLocations.getId(), l.getId(), leave.getFromDate(), leave.getToDate(), leave.getUser().getId(),leaveStatus,orgLocations.getOrg().getId());
-		List<AppliedLeaveDateView> unique = appliedLeaves.stream().filter(distinctByKey(p -> p.getApplyLeaveDate())).collect(Collectors.toList());
+		//List<AppliedLeaveDateView> unique = appliedLeaves.stream().filter(distinctByKey(p -> p.getApplyLeaveDate())).collect(Collectors.toList());
 		float appliedLeavesCount = (float) getExcludeHolidayLeaveCount(appliedLeaves, orgLocations, al, leave.getFromDate(), leave.getToDate(),l);
 		return appliedLeavesCount;
 	}

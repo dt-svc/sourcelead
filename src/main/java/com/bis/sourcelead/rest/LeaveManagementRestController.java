@@ -1857,7 +1857,7 @@ public class LeaveManagementRestController {
 	public @ResponseBody ResponseList<LeaveDTO> getEmployeeRequestedLeaves(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
-		ResponseList<LeaveDTO> responseList = null;
+		ResponseList<LeaveDTO> responseList = new ResponseList<>();
 		try {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
