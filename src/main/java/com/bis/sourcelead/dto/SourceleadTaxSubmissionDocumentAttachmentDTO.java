@@ -13,6 +13,8 @@ public class SourceleadTaxSubmissionDocumentAttachmentDTO implements Serializabl
 	private String attachment;
 	private boolean active;
 	private long taxSubmissionDocumentId;
+	private String fileURL;
+	private String contentType;
 
 	public long getId() {
 		return id;
@@ -56,6 +58,22 @@ public class SourceleadTaxSubmissionDocumentAttachmentDTO implements Serializabl
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getFileURL() {
+		return fileURL;
+	}
+
+	public void setFileURL(String attachmentPath) {
+		this.fileURL = attachmentPath;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 }

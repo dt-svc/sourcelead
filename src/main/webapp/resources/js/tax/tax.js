@@ -586,14 +586,16 @@ function Tax() {
 						result += "</div>";
 						result += "</td>";
 						var sectionNames = "";
-						for(var i=0; i < formList[e].sourceleadTaxSectionList.length; i++){
-							sectionNames += formList[e].sourceleadTaxSectionList[i].name + (i < (formList[e].sourceleadTaxSectionList.length - 1) ? ",<br>" : "");
+						if(formList[e].sourceleadTaxSectionList != null) {
+							for(var i=0; i < formList[e].sourceleadTaxSectionList.length; i++){
+								sectionNames += formList[e].sourceleadTaxSectionList[i].name + (i < (formList[e].sourceleadTaxSectionList.length - 1) ? ",<br>" : "");
+							}
 						}
 						result += "<td><div>" + (sectionNames === "" ? "--------" : sectionNames) + "</div></td>";
 						result += "<td>";
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
-						result += "<li><a href='view?uuid=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
+						result += "<li><a href='view?uuid=" + formList[e].uuid + "' title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
 						result += "<li " + (formList[e].active ? "" : "class='disableBtn'") + "><a href='create?uuid=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						if(formList[e].active) {
 							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + formList[e].id + ", 1, 1)' title='Make InActive' class='text-danger'><i class='fa fa-trash'></i></a></li>";
@@ -690,7 +692,7 @@ function addSection() {
 	$(".comMask, .section").fadeIn();
 }
 function modalClose() {
-	$(".comMask, .section, .addSectionItemPopup").fadeOut();
+	$(".comMask, .section, .addSectionItemPopup, .addSectionChallanItemPopup").fadeOut();
 }
 function addSectionItem(sectionId, sectionName){
 	$(".addSectionItemPopup").data("sectionId", sectionId);
@@ -794,6 +796,15 @@ function addITChallanSection() {
 	}
 }
 
+function editITChallanSection(taxFormId, sectionId, name, description){
+	$(".comMask, .section").fadeIn();
+	$("#taxFormId").val(taxFormId);
+	$("#sectionId").val(sectionId);
+	$("#sectionName").val(name);
+	$("#sectionDescription").val(description);
+}
+
+
 
 function callAddITChallanSectionRestService(formData, type) {
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
@@ -894,19 +905,15 @@ function flushPopupData(){
 	
 	
 }
-function modalClose() {
-	$(".comMask, .section, .addSectionChallanItemPopup").fadeOut();
-}
 
 function addChallaItem(sectionId, sectionName){
 	$(".addSectionChallanItemPopup").data("sectionId", sectionId);
 	$(".addSectionChallanItemPopup").find("h4").html(sectionName);
-	$("#taxSectionId").val(sectionId);
+	$("#taxChallanId").val(sectionId);
 	$(".comMask, .addSectionChallanItemPopup").fadeIn();
 }
 
 function editItemDetails(itemRowId){
-//	alert(itemRowId);
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl+"/form/editChallanItem?&itemRowId="+itemRowId,
@@ -915,5 +922,63 @@ function editItemDetails(itemRowId){
 			$("#itChallanCustomPopup").append(data);
 		}
 	})
+	
+}
+
+function changeChallanItemStatus(itemId){
+       $.ajax({
+           type : "POST",
+           url : sourceleadUrl+"/form/changeChallanItemStatus?&itemId="+itemId,
+           success : function(response) {
+        	   
+        	   if (response.response === "AWKWARD") {
+           	    location.href = "/errorPage";
+           	} else if (response.response === "SUCCESS") {
+   				$(".success_pop").css("display","block");
+           		$(".success_pop span").html("Updated successfully");
+           		setTimeout(function() {
+           		    location.reload();
+		 		},100);
+           	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
+           		showError(response.responseMessage);
+           	} else if (response.indexOf('Sign In') !== -1) {
+           		location.replace(sourceleadUrl);
+           	} else {
+           	    showError("Operation failed, please try again");
+           	}
+        	
+   		}
+   })
+	
+}
+
+
+function changeChallanSectionStatus(sectionId){
+	$.ajax({
+		 type : "POST",
+		 url : sourceleadUrl+"/form/changeChallanSectionStatus?&sectionId="+sectionId,
+         success : function(response) {
+        	 
+        	   if (response.response === "AWKWARD") {
+              	    location.href = "/errorPage";
+              	} else if (response.response === "SUCCESS") {
+      				$(".success_pop").css("display","block");
+              		$(".success_pop span").html("Updated successfully");
+              		setTimeout(function() {
+              		    location.reload();
+   		 		  },100);
+              	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
+              		showError(response.responseMessage);
+              	} else if (response.indexOf('Sign In') !== -1) {
+              		location.replace(sourceleadUrl);
+              	} else {
+              	    showError("Operation failed, please try again");
+              	}
+           	
+      		}
+	})
+	
+	
+	
 	
 }

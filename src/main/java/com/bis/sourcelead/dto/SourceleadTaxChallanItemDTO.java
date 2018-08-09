@@ -33,8 +33,18 @@ public class SourceleadTaxChallanItemDTO implements Serializable {
 	private Date updatedDate;
 	private Long taxChallanId;
 	private String helpText;
+	private Boolean active;
 	private List<SourceleadTaxChallanItemSubFormFieldDTO> optionData;
 	
+	
+	
+	
+	public Boolean getActive() {
+		return active;
+	}
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 	public String getHelpText() {
 		return helpText;
 	}

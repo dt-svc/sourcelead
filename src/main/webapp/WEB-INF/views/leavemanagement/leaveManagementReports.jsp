@@ -86,7 +86,7 @@ background-color: #fcfcfc;
 						        					
 						        					
 						        					<div class="col-md-12">
-						        					<div class="uploadTempalte">
+						        					<div class="uploadTempalte" id="validation">
 						        					<input type="file" class="margin-top0" id="leaveInputFileId" name="file" data-validation="required validate_importFile" field-name="File">
 						        					</div>
 						        					</div>
@@ -307,12 +307,12 @@ background-color: #fcfcfc;
                         </div>
                         <div class="clearfix col-md-6 pull-right">
                         
-							<ul class="col-md-5 empUlAli">
+							<ul class="col-md-5 empUlAli mb0 mt5">
 	                            <li id="filterDepartmentPop"><i class="fa fa-filter"></i> <span>Department</span><i class="fa fa-caret-down"></i>
 	                            <div class="statusFiler-1">
 	                            <ul>
 		                            <c:forEach var="report" items="${departmentList}">
-		                            	<li><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();"><label class="tbldata-dotdot_140" title="${report.departmentName}">${report.departmentName}</label></li>
+		                            	<li class="clearfix mb5"><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();" class="pull-left"><label class="tbldata-dotdot-vsm pull-left mt5" title="${report.departmentName}">${report.departmentName}</label></li>
 		                            </c:forEach>
 	                            </ul>
 	                            </div>
@@ -340,11 +340,9 @@ background-color: #fcfcfc;
                                 <input type="text" name="Date" placeholder="To" id="empCustToDate" class="form-control calendar input-sm">
                                 </div>
                                 <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
-                                    </div>
                                 </div>
-                                
                                 </div>
-                                
+                                </div>
                         </div>
                     </div>
                     <div class="clearfix ptagmrng-none">
@@ -1578,6 +1576,7 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
 <script>
 function resetUpload(){
 	$("#leaveInputFileId").val("");
+	$("#validation").find('p.jquery_form_error_message').remove();
 }
 </script>
 

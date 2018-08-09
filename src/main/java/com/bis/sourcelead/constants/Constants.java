@@ -221,7 +221,7 @@ public class Constants {
 	public static final TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	public static final String loginUserAsAdmin = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers. projectClientsId.orgLocationsId.id and userRole.userState = 'ACTIVE')";
 	public static final String loginUserAsAdminWithMaxHeirarchyLevelForTs = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id and userRole.userState = 'ACTIVE') and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))";
-	public static final String loginUserAsAdminWithMaxHeirarchyLevelForExp = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pc.orgLocationsId.id and userRole.userState = 'ACTIVE') and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pc.id and pah.status != '0' ))";
+	public static final String loginUserAsAdminWithMaxHeirarchyLevelForExp = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pc.orgLocationsId.id and userRole.userState = 'ACTIVE') and  sah.hierarchyId.level IN(select MAX(pah.level) from ExpenseProjectApproverHierarchy pah where pah.projectClientsId.id = pc.id and pah.status != '0' ))";
 	public static final String loginUserAsAdminForProjects = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id and userRole.userState = 'ACTIVE')";
 	public static final String IMMIGRATION_NOTIFICATION_TO_BENEFICIARY = "notificationToImmigrationBeneficiary";
 	/** projectMember constants **/
@@ -443,6 +443,7 @@ public class Constants {
 	public static final int TAB_PROJECTS = 3;
 	public static final int TAB_CONTRACTS = 16;
 	public static final int TAB_IMMIGRATION = 33;
+	public static final int TAB_RUN_PAYROLL = 37;
 	public static final String Dashboard = "Dashboard";
 	public static final String Users = "Users";
 	public static final String Immigration = "Immigration";
@@ -474,6 +475,9 @@ public class Constants {
 	public static final String Payables = "Payables";
 	public static final String PAYROLL = "Payroll";
 	public static final String PAY = "Pay"; 
+	public static final String TAXES = "Taxes";
+	public static final String FORMS = "Forms";
+	public static final String MYPAYROLL = "MyPayroll";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
@@ -576,6 +580,12 @@ public class Constants {
 	public static final String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name",
 			"Email-id", "Phone Number", "Date Of Join", "Rate", "Role", "Manager",
 			"status" };
+	public static final String[] DAILY_WISE_LEAVE_REPORT_HEADERS = { "Emp Name", "Emp Type", "Departement",
+			"Role", "Leave Type", "Type", "Duration", "From Date",
+			"To Date", "Applied On", "Reason", "Status", "Approver", "Approved On" };
+	public static final String[] LEAVE_REPORT_HEADERS = { "Employee Id", "Emp Name", "Departement", "Leave Type",
+			"Reason", "Type", "From Date", "To Date", "Applied On",
+			"Status", "Approver", "Approved On" };
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",
 			"Rate", "Vendor", "Vendor Contact", "Is Favourite"};
@@ -790,6 +800,7 @@ public class Constants {
 	public static final String ONE_YEAR = "oneyear";
 	public static final String INVOICE_ACCEPETED = "Accepted";
 	public static final String INVOICE_REJECTED = "Rejected";
+	public static final String INVOICE_BILL_VOID = "Void";
 	public static final String INVOICE_RECEIVED = "Received";
 	public static final String INVOICE_STATUS_UNPAID = "Unpaid";
 	public static final String INVOICE_STATUS_PAID = "Paid";
@@ -966,6 +977,8 @@ public class Constants {
 	
 	public static final String MANUAL_CANDIDATE = "manual";
 	public static final String IMPORT_CANDIDATE = "import";
+	public static final String INVOICE_ENTITY_SHORTCODE = "INV";
+	public static final String BILL_ENTITY_SHORTCODE = "BIL";
 	public static final String CANDIDATE_ADDED_MANUALLY = "added manually";
 	public static final String CANDIDATE_ADDED_BY_IMPORTING = "imported";
 	public static final String CANDIDATE_EDITTED = "updated profile";
@@ -1106,6 +1119,10 @@ public class Constants {
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
 	public static final String LEAVE_DATA =  "Leaves";
 	
+	public static final String IT_DECLARATION_FORM =  "It_Declaration_Submission_form";
+	public static final String IT_DECLARATION_FORM_PARAGRAPHDATA =  "I hereby declare that the following investment will be made by me during the financial year";
+	
+	
 	public static final String[] USERS_USAGE_REPORT_EXPORT = { "Users", "Email", "User Type", "Org", "No.of Activities", "Multiple Ips", "Created On", "Last Activity On"};
 
 	public static final String ORG_REQUEST_FILTER_TODAY = "Today";
@@ -1119,8 +1136,7 @@ public class Constants {
 	public static final String[] UNSUBSCRIPTION_TABID_LISTED = {"3","4","8","16","20","23","30" };
 
 
-	
-	
+	public static final String PAYROLL_CATEGORY = "Payroll_Deduction";
 	public static final String ID_TYPE_SSN = "SSN";
 	public static final String ID_TYPE_LCA = "LCA";
 	public static final String RELATION_TYPE_SPOUSE = "Spouse";
@@ -1154,6 +1170,10 @@ public class Constants {
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
 	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
 	
+    public static final String BOOLEAN_TRUE = "true";
+    public static final String LOCAL_TAX_YES = "YES";
+    public static final String LOCAL_TAX_NO = "NO";
+    
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";
@@ -1168,9 +1188,15 @@ public class Constants {
 	public static final String HALFYEARLY = "HalfYearly";
 	public static final String QUARTERLY = "Quarterly";
 	
+
 	public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
+	
+	public static final String[] IT_DECLARATION_SUBMISSION_FORM = { "Item Name", "Particulars" ,"Eligibility(Rs.)","Amount"};
 	
 //	Annually   
 
+
+	public static final String PAYROLL_DELETE = "Delete";
+	public static final String REACTIVE = "Reactive";
 
 }

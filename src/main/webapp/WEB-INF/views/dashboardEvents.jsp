@@ -253,8 +253,8 @@ function getSelectedDateFromCalendar(selectedDate) {
 						 result = result + '                          <div class="feedBack"> ';
 						
 						 
-						  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
-	                    	  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
+						  if(report.interviewerUUID != null  &&  report.interviewerUUID !='' && report.interviewerUUID !='undefined' && report.interviewTemplateUUId != null && report.interviewTemplateUUId != '' && report.interviewTemplateUUId != 'undefined'){
+	                    	  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateUUId+'&requirementInterviewid='+report.interviewerUUID+'" >';
 							  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
 	                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
 							  }else{
@@ -621,9 +621,9 @@ function interviewTemplate(){
 			 			{
 			 	        		var opt = json[i];
 			 	        		if(opt.isDefault == "Y"){
-			 	        			output = output + "<option value='" +opt.id+ "' selected>"+opt.templateName+"</option>";
+			 	        			output = output + "<option value='" +opt.uuid+ "' selected>"+opt.templateName+"</option>";
 			 	        		}else{
-				 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+				 	        		output = output + "<option value='" +opt.uuid+ "'>"+opt.templateName+"</option>";
 			 	        		} 
 			 			}
 			         	$("#interviewSubmissionTemplate").empty();

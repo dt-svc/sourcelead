@@ -1,6 +1,11 @@
 <jsp:include page="../../masterHeader.jsp" />
 <jsp:include page="../../masterSideNav.jsp" />
+<script src="/resources/js/jquery.simplePagination.js"></script>
+<script type="text/javascript" src="/resources/js/tax/it_declaration.js"></script>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<div class="success_pop">
+  <i class="fa fa-check-circle"></i><span>Operation executed successfully...</span>
+</div>
 <section class="content-wraper contentWraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
@@ -30,55 +35,73 @@
 			</div>
 			<div id="ResultsDiv" ${formList.size() > 0 ? "" : "style='display:none;'"}>			
 				<div class="styleTables">
-					<table>
+					<table id="form_table">
 						<thead>
 							<tr>
-								<th>Payslip Name</th>
+								<th>Employee Id</th>
+								<th>Employee Name</th>
 								<th>Year</th>
+								<th>Submitted Amount</th>
+								<!-- <th>Tax Amount</th> -->
 								<th>Status</th>
 								<th>Action</th>
 							</tr>
 						</thead>
-						<tbody>
-							<c:forEach items="${formList}" var="form">
-								<tr>
-									<td>
-										<div class="tblminwidth proj_show">
-											<span>${form.userName}</span> <i class="fa fa-binoculars"></i>
-										</div>
-									</td>
-									<td><div class="tbldata-dotdot-verybig">${form.financialYear}</div></td>
-									<td><div>${form.statusText}</div></td>
-									<td>
-										<ul class="list-unstyled list-inline mb0">
-											<li><a href="viewForm?uuid=${uuid}&formUUID=${form.uuid}" title="View"
-												class="anchor-black"><i class="fa fa-eye-slash"></i></a></li>
-											<li><a href="editForm?uuid=${uuid}&formUUID=${form.uuid}" title="Edit"
-												class="anchor-black"><i class="fa fa-pencil"></i></a></li>
-											<li><a href="javascript:void()" title="Delete"
-												class="text-danger"><i class="fa fa-trash"></i></a></li>
-										</ul>
-	
-									</td>
-								</tr>
-							</c:forEach>
+						<tbody id="formList">
 						</tbody>
 					</table>
 				</div>
-				<nav>
-					<ul id="paging" class="pagination pull-right mr">
-						<li><a href="#">Previous</a></li>
-						<li><a href="#">2</a></li>
-						<li><a href="#">3</a></li>
-						<li><a href="#">4</a></li>
-						<li><a href="#">5</a></li>
-						<li class="disabled"><a href="#">6</a></li>
-						<li data-page="last"><a href="#">Next</a></li>
+				
+				<div id="paginationDiv" class="clearfix">
+				<div class="col-md-6">
+					<div class="pull-left mt5">
+						<label class="pull-left">
+						<span class="pull-left mt10 mr5">Show</span>
+							<div class="dropdown-select pull-left mr5 tblminwidth-50">
+								<select id="pageSize" onchange="getItDeclarationSubmissionList('${uuid}', 0);">
+									<option value="5">5</option>
+									<option value="10">10</option>
+									<option value="15">15</option>
+									<option value="20">20</option>
+								</select>
+							</div>
+						<span class="pull-left mt10">entries</span>
+						</label>
+						<span class="pull-left mt10 ml" id="pageMsg"></span>
+					</div>
+				</div>
+				<div id="paginationholder" class="col-md-6 pagiPad">
+					<ul id="pagination-demo"
+						class="pagination-sm pull-right pagination light-theme simple-pagination">
+						<li class="disabled"><span class="current prev">Prev</span></li>
+						<li class="active"><span class="current">1</span></li>
+						<li class="disabled"><span class="current next">Next</span></li>
 					</ul>
-					<div class="clearfix"></div>
-				</nav>
+				</div>
+			</div>
+				
 			</div>
 			<div id="emptyRecordsDiv" class="dataTables_empty" ${formList.size() > 0 ? "style='display:none;'" : ""}></div>
 		</div>
 	</div>
 </section>
+
+<div class='project_inn_mask'></div>
+<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>
+	<p>You are choosing to delete the Tax</p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b>
+		<input id='confirmId' type='button' value='Ok' onclick='changeFormStatus()'>
+		<input class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup()'>
+	</b>
+</div>
+
+<script type="text/javascript">
+	var taxFormName = "${taxForm.name}";
+	$(document).ready(function () {
+		if(taxFormName === "IT Declaration") {
+			getItDeclarationSubmissionList('${uuid}',0);
+		}
+	})
+	/* $('#form_table').DataTable(); */
+</script>

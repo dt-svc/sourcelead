@@ -44,24 +44,27 @@
 		</div>
 		
             <div  id="selectFieldDiv" ${form.fieldType == 'dropDown' || form.fieldType == 'checkBox' || form.fieldType == 'radioButton' ? "" : "style='display:none;'"}>
+				<c:forEach var="options" items="${form.optionData}" varStatus="optionStatus">
 				<div class="col-sm-12 noPad mt clearfix">
 					   <div class="col-md-3 noPad labHeight"><p>Options</p></div>
 						<c:if test="${not empty form.optionData}">
 							<div class="col-md-6">
-							<c:forEach var="options" items="${form.optionData}" varStatus="optionStatus">
+							
 								<input name="optionData[${optionStatus.index}].id" value="${options.id}" type="hidden">
 								<input name="optionData[${optionStatus.index}].labelName" value="${options.labelName}" field-name="Data" class="field-label form-control input-sm mb" type="text" data-validation="required">
-							</c:forEach>
-							 </div>	
+							
+							 </div>
+							 <div class="col-md-3 lblHeight"><span class="OpRemove"><i onclick="removeOption(9)" class="fa fa-close"></i></span></div>
 						</c:if>
 						<c:if test="${empty form.optionData}">
+						   
 							<div class="col-md-6"><input name="optionData[0].labelName" field-name="Data" value="" class="field-label form-control input-sm" type="text" data-validation="required"> </div>
 						</c:if>
 						<div class="col-md-3 lblHeight"><span>&nbsp;</span>
 					</div>
 				</div>
-				
-				<input type="hidden" id="optionCounter" value=""/>
+				</c:forEach>
+				<input type="hidden" id="optionCounter" value="${fn:length(form.optionData)}"/>
 				<div id="optionsDiv"></div>	
 				 <div class="col-sm-12 noPad mt clearfix">
 				  <div class="col-md-3 noPad labHeight">&nbsp;</div>
@@ -108,21 +111,9 @@
 		</div>
 		
 		<div class="col-sm-12 noPad mt clearfix">
-			  <div class="col-md-3 noPad clearfix">Status <span class="pull-right">:</span></div>
-			  <div class="col-md-6 dropdown-select">
-              <select name="status" data-placeholder="Select status " class="form-control input-sm" id="status" field-name="status" data-validation="required">
-						  	<option value="1" ${form.status == '1' ? "selected" : ""}>Active</option>
-						  	<option value="0" ${form.status == '0' ? "selected" : ""}>InActive</option>
-					  </select>
-
-			  </div>
-			</div>
-		
-	
-		<div class="col-sm-12 noPad mt clearfix">
 			<div class="col-md-3 noPad labHeight">Help text:</div>
 			<div class="col-md-6">
-				<textarea class="form-control input-sm" name="helpText"></textarea>
+				<input class="form-control input-sm" type = "text" name="helpText" id = "helptext" value="${form.helpText}" >
 			</div>
 		</div>
 		    </form>

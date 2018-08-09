@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
@@ -20,6 +21,8 @@ public interface UserDao {
 	User findByUserName(String username);
 	
 	public User addUser(User user) throws Exception;
+	
+	public void deleteUser(User user) throws Exception;
 	
 	User getUserById(Long Id) throws Exception;
 	
@@ -166,6 +169,8 @@ public interface UserDao {
 	
 	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
 
+	User getUserbyConsultantUserId(Long consultantUserId);
+
 	List<User> getUsersListForSignatoryByOrglocationId(Long locationId);
 
 	List<User> getGlobalUsersByOrgId(Long roleId,Long orgId,Long tabId) throws Exception;
@@ -191,5 +196,7 @@ public interface UserDao {
 
 	public long saveDashboardItems(DashboardItems dashboardItems);
 
+
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception;
 
 }

@@ -10,4 +10,6 @@ public interface StatesService {
 
 	States getStateById(long stateId);
 
+	String getStateCodeByCountryCodeAndState(String countryCode, String state);
+	
 }

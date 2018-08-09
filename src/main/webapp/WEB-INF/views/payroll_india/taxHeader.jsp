@@ -8,17 +8,17 @@
 </div>
 <section class="content-header clearfix">
 	<div class="pull-left" >
-		<h2> ${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'State Tax' : 'Central Tax'}</h2>
+		<h2> ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : 'Forms'}</h2>
 	</div>
-	<div class="pull-right brud-crum">Home &raquo; ${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'State Tax' : 'Central Tax'}</div>
+	<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : 'Forms'}</div>
 </section>
 
 <div class="tabsMenu">
 	<ul class="list-unstyled">
-		<li class="${activeTaxTab == 'state' ? 'current' : ''}"><a
-			href="${appPath}/stateTax/list" class="${activeTaxTab == 'state' ? 'active' : ''}">State</a></li>
+		<li class="${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'current' : ''}"><a
+			href="${appPath}/stateTax/list" class="${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'active' : ''}">State</a></li>
 		<li class="${activeTaxTab == 'central' || activeTaxTab == 'createCentralTax' ? 'current' : ''}"><a
-			href="${appPath}/centralTax/list" class="${activeTaxTab == 'central' ? 'active' : ''}">Central</a></li>
+			href="${appPath}/centralTax/list" class="${activeTaxTab == 'central' || activeTaxTab =='createCentralTax' ? 'active' : ''}">Central</a></li>
 		<li class="${activeTaxTab == 'forms' ? 'current' : ''}"><a
 			href="${appPath}/form/list" class="${activeTaxTab == 'forms' ? 'active' : ''}">Forms</a></li>	
 	</ul>
@@ -32,10 +32,10 @@
 	<b>
 	<c:choose>
 		<c:when test="${activeTaxTab == 'forms'}">
-			<c:if test="${viewPage == 'tax/addForm'}">
+			<c:if test="${viewPage == 'payroll_india/addForm'}">
 				<input id='confirmId' type='button' value='Ok' onclick='tax.changeFormSectionStatus()'>
 			</c:if>
-			<c:if test="${viewPage == 'tax/form_list'}">
+			<c:if test="${viewPage == 'payroll_india/form_list'}">
 				<input id='confirmId' type='button' value='Ok' onclick='tax.changeFormStatus()'>
 			</c:if>
 		</c:when>

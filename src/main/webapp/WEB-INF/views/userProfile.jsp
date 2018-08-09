@@ -123,25 +123,21 @@ function getLinkAccounts(){
       </c:if>
     
     </section>
-    <div class="content-area clearfix">
-      <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-        <div id="loading"></div> 
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		    <!-- Tab for Profile setting-area -->
-		  <div class="accountsettings-tab">
-		  <ul class="nav nav-tabs">
+    
+    <div class="project_wrap clearfix">
+      <div class="clearfix form-area form-horizontal customedTabStyles">
+        	<div id="loading"></div> 
+		  <ul class="nav nav-tabs newTabs">
 			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Details</a></li>
 			<li onclick="resetProfile();"><a data-toggle="tab" href="#updatepassword">Password</a></li>
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
 			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li>
 			<li onclick="getLinkAccounts();"><a data-toggle="tab" href="#myLinkaccounts">Accounts</a></li>
-		  </ul>
+		  </ul>        
+<div class="accountsettings-tab noMar">
 
-		  <div class="tab-content panel-body">
-			<div id="profile" class="tab-pane fade in active">
-		
-			  
+		  <div class="tab-content noBor">
+			<div id="profile" class="tab-pane panel-body fade in active">
 			  <div class="col-xs-12 col-sm-3 col-md-3">
 			  
 			  <form:form class="login-form clearfix"  id="profileImage_form"  name="profileImage_form" method="post" >
@@ -171,7 +167,7 @@ function getLinkAccounts(){
 			  
 		   <div class="col-xs-12 col-sm-9 col-md-9">
 		   <form:form class="login-form clearfix"  id="profileSettings_form"  name="profileSettings_form" method="post" >
-			   <div class="row mt">
+			   <div class="row">
 				<div class="col-md-6">
 					<div class="form-group" id="firstNameDiv">
 					<label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
@@ -263,20 +259,17 @@ function getLinkAccounts(){
 			 </div>
 			 </form:form>	
 			</div>
-			
-	
-	
-	
 			</div>
-			<div id="updatepassword" class="tab-pane fade">
-			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
-				  <div class="password-icon mt mb text-center">
+			
+			
+			<div id="updatepassword" class="tab-pane panel-body fade">
+			  <div class="col-xs-12 col-sm-3 col-md-3">
+				  <div class="password-icon mb text-center well">
 				    <i class="fa fa-lock" aria-hidden="true"></i>
 				  </div>
 			  </div>
 			<div class="col-xs-12 col-sm-9 col-md-9">
-				  <div class="row mt">
-					
+				  <div class="row">
 					<form:form class="login-form clearfix"  id="passwordSettings_form"  name="passwordSettings_form" method="post" >
 					<div class="col-md-8">
 					 <div id=passwordDiv>	
@@ -323,45 +316,32 @@ function getLinkAccounts(){
 			</div>
 			</div>
 			
-			
-			<div id="configure" class="tab-pane fade">
-			  <div class="tab-content panel-body">
-                  <div class="clearfix mb">
-                      <div class="pull-left">
-                          <h4>Login Security</h4>
-                      </div>
-                  </div>
-			<div class="col-xs-12 col-sm-9 col-md-9">
-				<div class="form-group">
-					<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>
-					<div class="col-md-7 toggle-button">
-						<label class="switch">
-						<c:if test="${SourceLeadWeb_user.loginSecurity == 'Y'}">
-						<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
-						</c:if>
-						<c:if test="${SourceLeadWeb_user.loginSecurity == 'N'}">
-						<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
-						</c:if>	
-						<c:if test="${empty SourceLeadWeb_user.loginSecurity}">
-						<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
-						</c:if>	
-							<div class="slider round"></div>
-						</label>
+			<div id="configure" class="tab-pane panel-body fade">
+				<div class="col-xs-12 col-sm-9 col-md-12">
+					<div class="popHeadTwo mb10">Login Security</div>
+					<div class="form-group">
+						<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>
+						<div class="col-md-7 toggle-button">
+							<label class="switch">
+							<c:if test="${SourceLeadWeb_user.loginSecurity == 'Y'}">
+							<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
+							</c:if>
+							<c:if test="${SourceLeadWeb_user.loginSecurity == 'N'}">
+							<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+							</c:if>	
+							<c:if test="${empty SourceLeadWeb_user.loginSecurity}">
+							<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+							</c:if>	
+								<div class="slider round"></div>
+							</label>
+						</div>
 					</div>
-					
-			</div>
-			</div>
-			</div>
+				</div>
 		   </div>
 		   
-		   <div id="unsubscribe" class="tab-pane fade">
-			  <div class="tab-content panel-body">
-                  <div class="clearfix mb">
-                      <div class="pull-left">
-                          <h4>Unsubscribe</h4>
-                      </div>
-                  </div>
-					<div class="col-xs-12 col-sm-9 col-md-9">
+		   <div id="unsubscribe" class="tab-pane panel-body fade">
+					<div class="col-xs-12 col-sm-9 col-md-12">
+					<div class="popHeadTwo mb10">Unsubscribe</div>
 						<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 							<c:if test="${userTabs.tabName == 'Jobs' || userTabs.tabName == 'Projects' || userTabs.tabName == 'Contracts' || userTabs.tabName == 'Campaigns'}">
 								<div class="form-group">
@@ -452,7 +432,6 @@ function getLinkAccounts(){
 								</label>
 							</div>
 						</div>
-					</div>
 				</div>
 		   </div>
 		   
@@ -460,8 +439,9 @@ function getLinkAccounts(){
 		   
 		</div>
 			<!-- Tab for Profile setting-area ends -->
-		  </div>
-		  </div>
+		  </div>        
+        
+        
 		  </div>
 		  </div>
   </section>

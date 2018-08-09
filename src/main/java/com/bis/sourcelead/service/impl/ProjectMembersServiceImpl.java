@@ -1832,7 +1832,12 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	
 		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
-	
+
+	@Override
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(Long locationsId, Date startDate, Date endDate, int start, int length)
+	{
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(locationsId, startDate, endDate, start, length);
+	}
 
 	@Override
 	public List<ProjectMembers> getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception {
@@ -2104,8 +2109,6 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		projects.setIsProjectMembersFilled(Constants.YES);
 		projectsService.saveProject(projects);
 		
-		
-	
 		
 	}
 

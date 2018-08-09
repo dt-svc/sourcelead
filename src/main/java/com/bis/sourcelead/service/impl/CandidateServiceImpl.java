@@ -2088,6 +2088,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    					userRole.setUserType(roles.getDisplayName());
 	    					User managerUser = userService.getUserById(associateDTO.getAssociateManager());
 	    					userRole.setReportingManager(managerUser);
+	    					userRole.setResourceManager(managerUser);
 	    					userRole.setIsPrimary(0);
 	    					userRole.setOrgId(org);
 	    					userRole.setOrgLocations(orgLocations);

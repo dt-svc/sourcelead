@@ -38,6 +38,10 @@ public class SourceleadTaxITDeclarationSubmission implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORG_LOCATION_ID", referencedColumnName = "ID")
+	private OrgLocations orgLocations;
+
 	@Column(name = "STATUS")
 	private int status;
 
@@ -62,7 +66,7 @@ public class SourceleadTaxITDeclarationSubmission implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SOURCELEAD_TAX_FORM_ID", nullable = false)
 	private SourceleadTaxForm sourceleadTaxForm;
-	
+
 	/*
 	 * @OneToMany(mappedBy = "sourceleadTaxITDeclarationSubmission", fetch =
 	 * FetchType.LAZY, cascade = CascadeType.ALL) private
@@ -99,6 +103,14 @@ public class SourceleadTaxITDeclarationSubmission implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
 	}
 
 	public int getStatus() {

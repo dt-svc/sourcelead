@@ -96,7 +96,18 @@ public class ProjectClients implements Serializable{
 	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
 	@JsonBackReference
+    private Set<ExpenseProjectApproverHierarchy> expenseProjectApproverHierarchyList;
+	
+	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
     private Set<ProjectApproverHierarchy> sharedClientProjectApproverHierarchyList;
+	
+	
+	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+    private Set<ExpenseProjectApproverHierarchy> sharedClientProjectExpenseApproverHierarchyList;
 	
 	@Transient
 	@JsonProperty
@@ -247,6 +258,24 @@ public class ProjectClients implements Serializable{
 	public void setSharedClientProjectApproverHierarchyList(
 			Set<ProjectApproverHierarchy> sharedClientProjectApproverHierarchyList) {
 		this.sharedClientProjectApproverHierarchyList = sharedClientProjectApproverHierarchyList;
+	}
+
+	public Set<ExpenseProjectApproverHierarchy> getExpenseProjectApproverHierarchyList() {
+		return expenseProjectApproverHierarchyList;
+	}
+
+	public void setExpenseProjectApproverHierarchyList(
+			Set<ExpenseProjectApproverHierarchy> expenseProjectApproverHierarchyList) {
+		this.expenseProjectApproverHierarchyList = expenseProjectApproverHierarchyList;
+	}
+
+	public Set<ExpenseProjectApproverHierarchy> getSharedClientProjectExpenseApproverHierarchyList() {
+		return sharedClientProjectExpenseApproverHierarchyList;
+	}
+
+	public void setSharedClientProjectExpenseApproverHierarchyList(
+			Set<ExpenseProjectApproverHierarchy> sharedClientProjectExpenseApproverHierarchyList) {
+		this.sharedClientProjectExpenseApproverHierarchyList = sharedClientProjectExpenseApproverHierarchyList;
 	}
 
 }

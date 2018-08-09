@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
@@ -29,7 +28,10 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 	private Date updatedDate;
 	private String updatedBy;
 	private List<JSONObject> submissionItems;
-
+	private String submittedAmount;
+	private String taxAmount;
+	private String documentRemoveIds;
+	private String attachmentRemoveIds;
 	private List<SourceleadTaxITDeclarationSubmissionItemDTO> submissionItemList;
 
 	private List<SourceleadTaxITDeclarationSubmissionSectionDTO> submittedSectionList;
@@ -139,11 +141,11 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
+
 	public List<JSONObject> getSubmissionItems() {
 		return submissionItems;
 	}
-	
+
 	public void setSubmissionItems(List<JSONObject> submissionItems) {
 		this.submissionItems = submissionItems;
 	}
@@ -154,6 +156,22 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 
 	public void setSubmissionItemList(List<SourceleadTaxITDeclarationSubmissionItemDTO> submissionItemList) {
 		this.submissionItemList = submissionItemList;
+	}
+
+	public String getSubmittedAmount() {
+		return submittedAmount;
+	}
+
+	public void setSubmittedAmount(String submittedAmount) {
+		this.submittedAmount = submittedAmount;
+	}
+
+	public String getTaxAmount() {
+		return taxAmount;
+	}
+
+	public void setTaxAmount(String taxAmount) {
+		this.taxAmount = taxAmount;
 	}
 
 	public static long getSerialversionuid() {
@@ -198,6 +216,22 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 
 	public void setDocumentList(List<SourceleadTaxSubmissionDocumentDTO> documentList) {
 		this.documentList = documentList;
+	}
+
+	public String getDocumentRemoveIds() {
+		return documentRemoveIds;
+	}
+
+	public void setDocumentRemoveIds(String documentRemoveIds) {
+		this.documentRemoveIds = documentRemoveIds;
+	}
+
+	public String getAttachmentRemoveIds() {
+		return attachmentRemoveIds;
+	}
+
+	public void setAttachmentRemoveIds(String attachmentRemoveIds) {
+		this.attachmentRemoveIds = attachmentRemoveIds;
 	}
 
 }

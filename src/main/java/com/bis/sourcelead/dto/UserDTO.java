@@ -91,6 +91,7 @@ public class UserDTO extends SearchDTO implements Serializable {
 
     private BigInteger userId;
 
+    private String tags;
 	
 	public String getUnSubscribeTabIds()
 	{
@@ -619,5 +620,12 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.isGlobalUser = isGlobalUser;
 	}
 
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
 
 }

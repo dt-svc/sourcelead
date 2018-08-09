@@ -69,6 +69,9 @@ public class SubmissionTemplate implements Serializable{
 	@Column(name = "IS_DEFAULT")
 	private String isDefault;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	
 
 	public Long getId() {
@@ -173,5 +176,13 @@ public class SubmissionTemplate implements Serializable{
 
 	public void setTemplateType(String templateType) {
 		this.templateType = templateType;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 }

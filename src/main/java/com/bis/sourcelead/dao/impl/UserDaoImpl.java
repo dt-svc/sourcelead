@@ -35,6 +35,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -1579,6 +1580,20 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional
+	public User getUserbyConsultantUserId(Long consultantUserId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = null;
+		String query = "from User user where user.id = :userId";
+		List<User> userList = session.createQuery(query).setLong( "userId", consultantUserId ).list();
+		if (userList.size() > 0) {
+			user = userList.get(0);
+		}
+		return user;
+	}
+
+	@Override
+	@Transactional
 	public List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception {
 		// TODO Auto-generated method stub
 		
@@ -1646,9 +1661,8 @@ public class UserDaoImpl implements UserDao {
 		String query = "select user.id from User user where user.linkUserId.id = :userId " ;
 	    List<Long> userIds = session.createQuery(query).setLong( "userId", userId).list();
         return userIds;
-        
 	}
-
+	
 	@Override
 	@Transactional
 	public List<User> getUsersListForSignatoryByOrglocationId(Long locationId) {
@@ -2221,6 +2235,49 @@ public class UserDaoImpl implements UserDao {
 		}
 		return -1;
 	}
+	@Override
+	@Transactional
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LeaveBalanceReportDTO> userNameAndType = new ArrayList<LeaveBalanceReportDTO>();
+		String subQuery4="";
+		if(userRole !=null && userRole.size() > 0)
+			subQuery4 = " and ur.ROLE_ID IN (:userRole)";
+		String subQuery3=" ";
+		if(orgDepartmentsList !=null && orgDepartmentsList.size() > 0)
+			subQuery3 = " and e.DEPARTMENT_ID IN (:orgDepartmentsList)";
 	
+		String query ="select CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e where u.ID=ur.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID =:orgLocationId"+subQuery4+subQuery3;
+		//Query queryString = (Query) session.createSQLQuery(query).setLong("orgLocationId",orgLocationId).setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class)).list();
+		Query queryString = session.createSQLQuery(query);
+		queryString.setParameter("orgLocationId", orgLocationId);
+		if(userRole !=null && userRole.size() > 0) {
+		queryString.setParameterList("userRole", userRole);
+		}
+		if(orgDepartmentsList !=null && orgDepartmentsList.size() > 0) {
+			queryString.setParameterList("orgDepartmentsList", orgDepartmentsList);
+			}
+		queryString.setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class));
+		userNameAndType = queryString.list();
+		
+		return userNameAndType;
+		
+	}
+
+	@Override
+	@Transactional
+	public void deleteUser(User user) throws Exception {
+		logger.debug("Adding User");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (user != null) {
+				session.delete(user);
+			}
+			logger.debug("User Deleted Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"USER"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+	}
 
 }

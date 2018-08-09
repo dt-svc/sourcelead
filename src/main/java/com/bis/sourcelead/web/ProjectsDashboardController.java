@@ -6,6 +6,10 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,11 +30,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -38,11 +43,10 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-
-
 
 @Controller
 @RequestMapping("/app")
@@ -76,6 +80,8 @@ public class ProjectsDashboardController {
 	 @Autowired
 	 UserRoleService userRoleService;
 	 
+	 @Autowired
+	 private SourceleadTagsService sourceleadTagsService;
 	 /**
 	 * This method for redirect projectDashboard
 	 * @param request
@@ -130,52 +136,9 @@ public class ProjectsDashboardController {
         List<User> projectManagersList = userRoleService.getAllProjectManagersAssignedToProjects(loginOrgLocations.getId());
         model.addObject("projectManagersList", projectManagersList);
         model.addObject("projectManagersListSize", projectManagersList.size());
-        
-       /* List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());
-        
-
-        if(null != projectIds && !projectIds.isEmpty()){
-
-        	List<ProjectApproverHierarchy> projectManagersList = projectApproverHierarchyService.getAllApproverUsersByProjectIdList(projectIds);
-            for(ProjectApproverHierarchy projectManager:projectManagersList){
-            	if(null != projectManager.getApproverUserId() && null != projectManager.getApproverUserId().getLastName()){
-            		projectManager.setFullName(projectManager.getApproverUserId().getFirstName()+" "+projectManager.getApproverUserId().getLastName());
-            	}else{
-            		projectManager.setFullName(projectManager.getApproverUserId().getFirstName());
-            	}
-            }
-            model.addObject("add_projectManagersList", projectManagersList);
-            
-            if(null != projectIds  && !projectIds.isEmpty()){
-            	  List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdsList(projectIds);
-                  for(ProjectMembers projectMembers:projectMembersList){
-                  	if(null != projectMembers.getEmployee() && null != projectMembers.getEmployee().getUser() && null != projectMembers.getEmployee().getUser().getLastName()){
-                  		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName());
-                  	}else{
-                  		projectMembers.setEmpName(projectMembers.getEmployee().getUser().getFirstName());
-                  	}
-                  	projectMembers.setEmpEmail(projectMembers.getEmployee().getUser().getEmail());
-                  }
-                  model.addObject("add_projectMembersList", projectMembersList);
-                  
-            }
-          
-        }*/
-        
-        
-        /*List<Long> projectIds = projectApproverHierarchyService.getProjectIdsByLoginUserId(user.getId());
-        
-        if(!projectIds.isEmpty()){
-        List<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
-        for(Projects projects: projectsList){
-            if(projects.getOrgRelationId()!=null) {
-                projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrgLocationName());
-                
-            }
-        }
-		model.addObject(projectsList);
-        }*/
-		
+       
+        List<String> prjectTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.PROJECTS.toString(), loginOrgLocations.getId());
+        model.addObject("prjectTagsList", prjectTagsList);
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "projectCreateMsg");
 		if(!isNullOrEmpty(msg)){
 			model.addObject("msg", msg);
@@ -186,6 +149,12 @@ public class ProjectsDashboardController {
 
 		return model;
 		
+    }
+	 
+	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
+    {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 	/**	 
 	 * checks if string is null or empty
