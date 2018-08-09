@@ -433,21 +433,21 @@
              <div class="form-group">
               <label class="col-md-4">I-94 Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" value="${immigrationDTO.i_94_number}" placeholder="XXXXXXXXX-XX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" value="${immigrationDTO.i_94_number}" placeholder="XXXXXXXXX-XX" data-validation=" validate_Space validate_length length12" data-validation-optional="true">
               </div>
             </div>
            
              <div class="form-group">
               <label class="col-md-4">I-20 SEVIS Number If Student</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="i_20_number"  id="i_20_number" value="${immigrationDTO.i_20_number}" placeholder="N-XXXXXXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+					<input type="text" class="form-control" name="i_20_number"   placeholder="N-XXXXXXXXXX" id="i_20_number" value="${immigrationDTO.i_20_number}" data-validation="" data-validation-optional="true">
               </div>
             </div>
                          
             <div class="form-group">
               <label class="col-md-4">EAD Number If Student</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="eadNumber" id="eadNumber" value="${immigrationDTO.eadNumber}" placeholder="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+                <input type="text" class="form-control" name="eadNumber" placeholder="000-000-000"  id="eadNumber" value="${immigrationDTO.eadNumber}" placeholder="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
             <div class="form-group">
@@ -1471,4 +1471,89 @@ function  removeValidationAttorneyContact() {
 		    });
 		});
 	 </script>
-	
+	 
+<script>
+ $(document).ready(function(){
+ $('[id$=ssnNumber]').keyup(function(){
+var val = this.value.replace(/\D/g, '');
+ var newVal = '';
+if(val.length > 4) {
+this.value = val;
+ }
+if((val.length > 3) && (val.length < 6)) {
+newVal += val.substr(0, 3) + '-';
+val = val.substr(3);
+}
+if (val.length > 5) {
+newVal += val.substr(0, 3) + '-';
+newVal += val.substr(3, 2) + '-';
+val = val.substr(5);
+}
+newVal += val;
+this.value = newVal.substring(0, 11);
+});
+ });
+</script>
+
+<script>
+ $(document).ready(function(){
+// $('#i_20_number').inputmask("mask", {"mask": "^N{1}[0-9]{10}"});
+ $('[id$=i_94_number]').keyup(function(){
+var val = this.value.replace(/\D/g, '');
+ var newVal = '';
+if(val.length > 9) {
+this.value = val;
+ }
+if((val.length > 9) && (val.length < 13)) {
+newVal += val.substr(0, 9) + '-';
+val = val.substr(9);
+}
+if (val.length > 9) {
+newVal += val.substr(0, 9) + '-';
+val = val.substr(2);
+}
+newVal += val;
+this.value = newVal.substring(0, 12);
+});
+ });
+</script>
+
+<script type="text/javascript">
+$('#i_20_number').mask('N-9999999999', {
+    translation: {
+        '#': {
+            pattern: "/N{1}[0-9]{10}/", optional: true
+        }
+    },
+ placeholder: ""
+});
+
+$('#prevLcaNumber').mask('I-999-99999-999999', {
+    translation: {
+        '9': {
+            pattern: "/I{1}[0-9]{14}/", optional: true
+        }
+    },
+   placeholder: ""
+});
+
+$('#eadNumber').mask('999-999-999', {
+    translation: {
+        '9': {
+            pattern: "/[0-9]{9}/", optional: true
+        }
+    },
+   placeholder: ""
+});
+
+$('#lcaNumber').mask('I-999-99999-999999', {
+    translation: {
+        '9': {
+            pattern: "/I{1}[0-9]{14}/", optional: true
+        }
+    },
+   placeholder: ""
+});
+
+</script>
+
