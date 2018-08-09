@@ -415,8 +415,13 @@ function leaveReportsListPagination(url,formData){
 		          	result = result + ' <td>';
 		          	if(user.approver !=null && user.approver !='' && user.approver !='undefined'){
 						 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.approver+'">'+user.approver+'</div>';
-		          }else{
-						result = result + '<div class="tbldata-dotdot-vsm">--</div>';
+		          }
+		          	else if(user.approver == null && user.reportingManager !=null && user.reportingManager !='' && user.reportingManager !='undefined'){
+						 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.reportingManager+'">'+user.reportingManager+'</div>';
+
+			          }
+		          	else{
+						result = result + '<div class="tbldata-dotdot-vsm">System Approver</div>';
 					}
 		          	result = result + ' </td>';
 		          	return result;

@@ -279,7 +279,7 @@ function calculateHourlyRateSal(){
 							result = result +'</td>';
 							result = result +'<td>';
 							result = result +'	<div class="tblminwidth-50">';
-							result = result +'		<input class="form-control calendar" placeholder="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text">';
+							result = result +'		<input class="form-control calendar" placeholder="Effective Date" data-validation="required" field-name="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text">';
 							result = result +'	</div>';
 							result = result +'</td>';
 							result = result +'<td>';
@@ -320,7 +320,7 @@ function calculateHourlyRateSal(){
 						 dateFormat: finalDateFormat,
 						 changeMonth: true,
 						  	  changeYear: true,
-						  	minDate: 0
+// 						  	minDate: 0
 						 });
 						 $("#"+i+"endDate").datepicker({
 							 dateFormat: finalDateFormat,

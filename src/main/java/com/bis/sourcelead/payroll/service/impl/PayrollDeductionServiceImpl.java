@@ -101,6 +101,7 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 				payrollDTO.setDeductionUUID(pDed.getDeductionUUID());
 				payrollDTO.setDescription(pDed.getDescription());
 				payrollDTO.setStatus(pDed.getStatus());
+				payrollDTO.setTaxType(pDed.getTaxType());
 				dtoList.add(payrollDTO);
 			});
 			payrollResponse.setData(dtoList);

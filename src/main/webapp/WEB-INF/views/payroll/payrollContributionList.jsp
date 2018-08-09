@@ -70,6 +70,8 @@ function prepareAllContributionTypeList(url){
         result = result + '<tr>';
 		result = result + '<th>Deduction Type</th>';
 		result = result + '<th>Description</th>';
+		result = result + '<th>taxType</th>';
+		result = result + '<th>scheduleType</th>';
 		result = result + '<th>Method</th>';
 		result = result + '<th>Amount</th>';
 		result = result + '<th>Action</th>';
@@ -99,6 +101,8 @@ function contributionTypepagination(url){
         "columns": [
             { "data": "deductionType" },
             { "data": "description"},
+            { "data": "taxType"},
+            { "data": "scheduleType"},
             { "data": "payrollContributionMethod"},
             { "data": "contributionAmount" },
             { "data": "Action"}
@@ -127,6 +131,34 @@ function contributionTypepagination(url){
               		
               }
 	          },{
+		    	  "targets": colIndex++,
+	              "data": "taxType",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.taxType !=null && opt.taxType !='' && opt.taxType !='undefined'){
+							result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.taxType+'</div></td>';
+						}else{
+							result = result + ' <td><div>--</div></td>';
+						}
+		              return result;
+	              		
+	              }
+		          },{
+			    	  "targets": colIndex++,
+		              "data": "scheduleType",
+		              "sortable": false,
+		              "render": function ( data, type, opt, meta ) {
+		            	  var result = "";
+		            	  if(opt.scheduleType !=null && opt.scheduleType !='' && opt.scheduleType !='undefined'){
+								result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.scheduleType+'</div></td>';
+							}else{
+								result = result + ' <td><div>--</div></td>';
+							}
+			              return result;
+		              		
+		              }
+			          },{
             "targets": colIndex++,
             "data": "payrollContributionMethod",
             "render": function ( data, type, opt, meta ) { 

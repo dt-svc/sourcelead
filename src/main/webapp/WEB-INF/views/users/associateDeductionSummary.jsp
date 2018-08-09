@@ -28,6 +28,7 @@ function associateDeductionSummary(userId){
             result = result + '<th>Description</th>';
             result = result + '<th>Method</th>';
             result = result + '<th>Tax Type</th>';
+            result = result + '<th>Schedule Type</th>';
             result = result + '<th>Amount</th>';
             result = result + '<th>Deducted<br>Amount</th>';
             result = result + '<th>Action</th>';
@@ -52,6 +53,12 @@ function associateDeductionSummary(userId){
                    }else{
                   	 result = result + '<td><div  class="tblminwidth-100">--</div></td>';
                    }
+                   
+                   if(opt.dedSchedule != null && opt.dedSchedule != '' && opt.dedSchedule != 'undefined'){
+                    	 result = result + '<td><div  class="tblminwidth-100">'+opt.dedSchedule+'</div></td>';
+                     }else{
+                    	 result = result + '<td><div  class="tblminwidth-100">--</div></td>';
+                     }
                    
                    if(opt.amount !=null && opt.amount !='' && opt.amount !='undefined'){
 						result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.amount.toFixed(2)+'<small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+','+opt.amount+')"></small></div>';
