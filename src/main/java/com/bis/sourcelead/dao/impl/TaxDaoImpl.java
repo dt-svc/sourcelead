@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.SourceleadTaxSubmissionMaster;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
+import com.bis.sourcelead.entity.User;
 
 @Repository
 @Transactional
@@ -776,6 +777,30 @@ public class TaxDaoImpl implements TaxDao {
 		return -1;
 	}
 
+	@Override
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionDetails(long formId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			SourceleadTaxITDeclarationSubmission itDeclarationSubmissionDetails = session.get(SourceleadTaxITDeclarationSubmission.class, formId);
+			return itDeclarationSubmissionDetails;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+	@Override
+	public User getEmployeeDetails(Long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			User userDetails = session.get(User.class, id);
+			return userDetails;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SourceleadTaxSubmissionMaster> getTaxSubmissionMasterList(Long userId, String financialYear,
@@ -819,5 +844,6 @@ public class TaxDaoImpl implements TaxDao {
 			e.printStackTrace();
 		}
 	}
+
 
 }

@@ -570,15 +570,6 @@
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
-        
-        <!-- Added STE Custom Jar -->
-        <dependency>
-    		 <groupId>com.symmetry.ste</groupId>
-    		 <artifactId>ste</artifactId>
-   			  <version>1.0</version>
-		</dependency>
-        
-        <!-- END OF STE JAR -->
 
 
         <!-- https://mvnrepository.com/artifact/net.sourceforge.javacsv/javacsv -->
