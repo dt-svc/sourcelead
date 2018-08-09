@@ -621,7 +621,7 @@ public class LeaveManagementUtil {
 		int appLeaves = 0;
 		double actualLeaves = 0;
 		
-		if ("Duration".equalsIgnoreCase(l.getPeriod())) {
+		/*if ("Duration".equalsIgnoreCase(l.getPeriod())) {
 			if (appliedLeaves.stream().anyMatch(al -> al.getApplyLeaveDate().equals(startDate))) {
 				if (Constants.STATUS_YES.equalsIgnoreCase(l.getFromHalfDay())) {
 					appLeaves += 1;
@@ -647,8 +647,8 @@ public class LeaveManagementUtil {
 				}
 			}
 			actualLeaves = (appliedLeaves.size() - appLeaves) + (fromHours + toHours);
-		}
-		
+		}*/
+		actualLeaves = appliedLeaves.size();
 		return actualLeaves;
 	}
 
