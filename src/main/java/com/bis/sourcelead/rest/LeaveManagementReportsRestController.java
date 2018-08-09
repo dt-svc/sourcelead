@@ -213,7 +213,8 @@ public class LeaveManagementReportsRestController {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		LeaveReportView leaveReportView = new LeaveReportView();
-		
+	    String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
 		ResponseList<LeaveReportView> leaveReportsList=null;
 		try{
 		String[] tableColumns = {"name", "userDeptName", "employmentType", "userRoleName","leaveTypeName", "leaveTypeBillable", "duration", "fromDate", "toDate","reason","approver","status"};
@@ -228,7 +229,7 @@ public class LeaveManagementReportsRestController {
 				dayWiseLeaveReportDTO.setSortOrder(sortColumnOrder);
 			
 				
-		leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId());
+		leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
 		List<LeaveReportView> list = leaveReportsList.getData();
         for(LeaveReportView lrv : list){
         	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
@@ -401,12 +402,13 @@ public class LeaveManagementReportsRestController {
 	 	        List<Long> userRoleList = new ArrayList<>();
 	 	         Workbook createExcelworkbook =  new XSSFWorkbook();
 	 	         StringBuilder excelSB = new StringBuilder();
-	 	         
+	 		    String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+ 
 	 	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	         Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	 	         Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("dailyWiseLeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
-	 	            ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId());
+	 	            ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId(),loginUserRole);
 
 	 	        leaveReportsList.getData().stream().forEach(u -> {
 	 	                   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getFromDate()));
