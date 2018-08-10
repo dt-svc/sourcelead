@@ -234,6 +234,8 @@ public class InvoiceServiceImpl implements InvoiceService{
         }else{
         	invoice = new Invoice();
         	invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+        	invoice.setCreatedBy(user.getUserCode());
+        	invoice.setCreatedDate(commonUtil.currentDate());
         }
         String generatedId = null;
 		OrgLocations vendorOrgLocation = null;;
@@ -365,11 +367,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 		
 	    invoice.setCurrencyCode(loginOrgCurrencyCode);
-		invoice.setCreatedBy(user.getUserCode());
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoice.setInvoiceStatus(saveType);
 		invoice.setUpdatedBy(user.getUserCode());
-		invoice.setCreatedDate(commonUtil.currentDate());
+		invoice.setUpdatedDate(commonUtil.currentDate());
 	
 		List<String> submissionApproverHierarchyIds = new ArrayList<>();
 		List<TimesheetSubmissionsDocuments> docusList = new ArrayList<TimesheetSubmissionsDocuments>();
@@ -1535,6 +1536,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  						invoice.setInvoiceStatus(Constants.DRAFT);
   	  						invoice.setUpdatedBy(user.getUserCode());
   	  						invoice.setCreatedDate(commonUtil.currentDate());
+  	  						invoice.setUpdatedDate(commonUtil.currentDate());
   	  						invoice.setPaymentStatus("Unpaid");
   	  						invoice.setProjectID(project);
   	  						invoice.setDiscountType(Constants.PERCENTAGE);
@@ -2456,10 +2458,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	{
 		boolean result = false;
 		Invoice invoice = invoiceDao.getInvoicetByInvoiceUUID(invoiceUUID);
-		
+		Date date = new Date();
 		if(invoice.getProjectID() != null){
 				invoice.setRejectReason(reason);
 				invoice.setStatus(Constants.MEMBER_IN_ACTIVE);
+				invoice.setUpdatedDate(date);
 				invoiceDao.updateInvoice(invoice);
 						 try {
 							 if(invoice.getSubmissionApproverHierarchyId() !=null){
@@ -2476,6 +2479,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		}else{
 			invoice.setRejectReason(reason);
 			invoice.setStatus(Constants.MEMBER_IN_ACTIVE);
+			invoice.setUpdatedDate(date);
 			Invoice invoiceData = invoiceDao.updateInvoice(invoice);
 			if (invoiceData != null) {
 				result = true;
@@ -2496,6 +2500,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		} else {
 			invoice = new Invoice();
 			invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			invoice.setCreatedDate(commonUtil.currentDate());
+			invoice.setCreatedBy(user.getUserCode());
 		}
 
 		OrgLocations vendorOrgLocation = null;
@@ -2647,11 +2653,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		}
 
 		invoice.setCurrencyCode(loginOrgCurrencyCode);
-		invoice.setCreatedBy(user.getUserCode());
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoice.setInvoiceStatus(saveType);
 		invoice.setUpdatedBy(user.getUserCode());
-		invoice.setCreatedDate(commonUtil.currentDate());
+		invoice.setUpdatedDate(commonUtil.currentDate());
+		
 
 		List<String> submissionApproverHierarchyIds = new ArrayList<>();
 		List<TimesheetSubmissionsDocuments> docusList = new ArrayList<TimesheetSubmissionsDocuments>();
