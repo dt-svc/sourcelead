@@ -27,6 +27,9 @@ public class LeaveReportView {
 	@Column(name = "ORGLOCATION_ID", nullable = false)
 	private Long orglocationId;
 	
+	@Column(name = "REPORTING_MANAGER_ID", nullable = false)
+	private Long reportingManagerId;
+	
 	@Column(name = "Employee_ID", nullable = false)
 	private Long employeeId;
 	
@@ -68,8 +71,10 @@ public class LeaveReportView {
 	private Date appliedOn;
 	
 	@Column(name = "UPDATED_DATE")
-	private Date approvedOn;
+	private Date approvedOn; 
 	
+	@Column(name = "REPORTING_MANAGER")
+	private String ReportingManager;
 	@Transient
 	private List<Map<String, String>> order;
 	@Transient
@@ -382,6 +387,26 @@ public class LeaveReportView {
 	public void setEmployeeId(Long employeeId)
 	{
 		this.employeeId = employeeId;
+	}
+
+	public Long getReportingManagerId()
+	{
+		return reportingManagerId;
+	}
+
+	public void setReportingManagerId(Long reportingManagerId)
+	{
+		this.reportingManagerId = reportingManagerId;
+	}
+
+	public String getReportingManager()
+	{
+		return ReportingManager;
+	}
+
+	public void setReportingManager(String reportingManager)
+	{
+		ReportingManager = reportingManager;
 	}
 	
 	
