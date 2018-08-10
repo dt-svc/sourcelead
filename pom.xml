@@ -40,6 +40,13 @@
     </repositories>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
+		<dependency>
+		    <groupId>net.sf.ehcache</groupId>
+		    <artifactId>ehcache</artifactId>
+		    <version>1.5.0</version>
+		</dependency>
+        
         <!-- https://mvnrepository.com/artifact/com.itextpdf.tool/xmlworker -->
         <dependency>
             <groupId>com.itextpdf.tool</groupId>
