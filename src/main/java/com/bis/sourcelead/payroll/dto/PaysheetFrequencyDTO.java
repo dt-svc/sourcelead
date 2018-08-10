@@ -1,10 +1,10 @@
 package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.SearchDTO;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 
 public class PaysheetFrequencyDTO  extends SearchDTO{
 	
@@ -26,6 +26,9 @@ public class PaysheetFrequencyDTO  extends SearchDTO{
 	private String approverStatus;
 	private Integer payPeriodNum;
 	private String groupName;
+	private Long paySheetFrequencyId;
+	
+	private PaysheetFrequency paySheetFrequency;
 	
 
 	private List<USPayrollDTO> payrollDTO;
@@ -137,6 +140,18 @@ public class PaysheetFrequencyDTO  extends SearchDTO{
 	}
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
+	}
+	public Long getPaySheetFrequencyId() {
+		return paySheetFrequencyId;
+	}
+	public void setPaySheetFrequencyId(Long paySheetFrequencyId) {
+		this.paySheetFrequencyId = paySheetFrequencyId;
+	}
+	public PaysheetFrequency getPaySheetFrequency() {
+		return paySheetFrequency;
+	}
+	public void setPaySheetFrequency(PaysheetFrequency paySheetFrequency) {
+		this.paySheetFrequency = paySheetFrequency;
 	}
 	
 }
