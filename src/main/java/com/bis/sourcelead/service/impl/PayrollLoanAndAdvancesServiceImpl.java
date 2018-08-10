@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +33,11 @@ public class PayrollLoanAndAdvancesServiceImpl implements PayrollLoanAndAdvances
 	@Override
 	public PayrollLoanAndAdvances getPayrollLoanAndAdvancesByUUID(String uuid) throws Exception {
 		return payrollLoanAndAdvancesDao.getPayrollLoanAndAdvancesByUUID(uuid);
+	}
+
+	@Override
+	public List<PayrollLoanAndAdvances> getPayrollLoanAndAdvancesByTypeAndOrgLocationId(String type,Long orgLocationId)
+			throws Exception {
+		return payrollLoanAndAdvancesDao.getPayrollLoanAndAdvancesByTypeAndOrgLocationId(type, orgLocationId);
 	}
 }

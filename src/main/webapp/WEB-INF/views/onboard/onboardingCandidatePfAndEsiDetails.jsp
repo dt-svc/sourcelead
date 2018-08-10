@@ -389,7 +389,7 @@ function pfFunction() {
     if (checkBox.checked == true){
         pfel.style.display = "block";
         $("#pfUan").attr("data-validation", "required validate_int validate_length length1-12");
-        $("#pfNumber").attr("data-validation", "required validate_int validate_length length1-19");
+        $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length1-19");
         $("#pf").val('pf');
     } else {
        pfel.style.display = "none";

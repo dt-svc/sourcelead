@@ -39,7 +39,7 @@
 		                  <div class="col-md-5">
 		                    <label>Enrolled Date</label>
 		                    <div>
-		                       <input type="text" class="form-control calendar" name="enroleDate"  id="enrolledDate" >
+		                       <input type="text" class="form-control calendar" name="enroleDate"  id="enrolledDate" readonly="readonly">
 		                    </div>
 		                  </div>
 		                  </div>
@@ -151,7 +151,7 @@
 		        			  $("#pfNumber").val(json.firstName);
 		        			  $("input[name=enroleDate]").val(json.enroleDate);
 		        			  $("#pfUan").attr("data-validation", "required validate_int validate_length length1-12");
-		        		      $("#pfNumber").attr("data-validation", "required validate_int validate_length length1-19");
+		        		      $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length1-19");
 		        			 
 		        		}else{
 		        			  pfel.style.display = "none";
@@ -172,12 +172,14 @@
 		        			 document.getElementById("esi").checked = true;
 		        			 $("#esi").val('Y');
 		        			 $("#esinumber").val(json.esinumber);
+		        			 $("#esiNumber").attr("data-validation", "validate_int validate_length length1-17");
 		        			
 		        		}else{
 		        			 esiEl.style.display = "none";
 		        			 document.getElementById("esi").checked = false;
 		        			 $("#esi").val('');
 		        			 $("#esinumber").val('');
+		        			 $('#esiNumber').removeAttr('data-validation');
 		        		}
 		        	}
 		        	
@@ -195,7 +197,7 @@ function pfFunction() {
     if (checkBox.checked == true){
         pfel.style.display = "block";
         $("#pfUan").attr("data-validation", "required validate_int validate_length length1-12");
-        $("#pfNumber").attr("data-validation", "required validate_int validate_length length1-19");
+        $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length1-19");
         $("#pf").val('Y');
     } else {
        pfel.style.display = "none";
@@ -215,9 +217,11 @@ function esiFunction() {
     if (checkBox.checked == true){
        esiEl.style.display = "block";
        $("#esi").val('Y');
+       $("#esiNumber").attr("data-validation", "validate_int validate_length length1-17");
     } else {
        esiEl.style.display = "none";
        $("#esiNumber").val('');
+       $('#esiNumber').removeAttr('data-validation');
     }
 }
 </script>

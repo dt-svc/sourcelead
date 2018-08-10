@@ -1,7 +1,11 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,16 +16,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
+import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
+import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.PaymentAccountService;
+import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.rometools.rome.io.SyndFeedOutput;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -35,6 +43,9 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	AssociatePfEsiService associatePfEsiService;
+	
+	@Autowired
+	PayrollLoanAndAdvancesService payrollLoanAndAdvancesService;
 	
     @RequestMapping(value = "/app/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
@@ -105,8 +116,66 @@ public class IndianPayrollRestController {
 			 e.printStackTrace();
 		}
 		 return pfesiDTO;
-    }  
+    } 
     
     
+    @RequestMapping(value = "/app/validateLoandAndAdvanceName", method = RequestMethod.POST)
+   	public String validateLoandAndAdvanceName(HttpServletRequest request,
+   			@RequestParam(value="loanAdvType", required=true) String loanAdvType,
+   			@RequestParam(value="loanAdvName", required=true) String loanAdvName,
+   			@RequestParam(value="uuid", required=false) String uuid){
+   		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+   		 String result = "false";
+   		 try {
+   			
+   			 if(StringUtils.isNotBlank(uuid)) {
+   				PayrollLoanAndAdvances padv = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesByUUID(uuid);
+   				if(!padv.getName().equalsIgnoreCase(loanAdvName)) {
+   					List<PayrollLoanAndAdvances> padvList = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesByTypeAndOrgLocationId(loanAdvType, orgLocation.getId()); 
+   	   				if(padvList != null && !padvList.isEmpty()) {
+   	   					boolean flag = padvList.stream().anyMatch(p->p.getName().equalsIgnoreCase(loanAdvName.trim()));
+   	   					if(flag == true) {
+   	   						result = "true";
+   	   					}
+   	   				}
+   				}
+   			 }else {
+   				List<PayrollLoanAndAdvances> padvList = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesByTypeAndOrgLocationId(loanAdvType, orgLocation.getId()); 
+   				if(padvList != null && !padvList.isEmpty()) {
+   					boolean flag = padvList.stream().anyMatch(p->p.getName().equalsIgnoreCase(loanAdvName.trim()));
+   					if(flag == true) {
+   						result = "true";
+   					}
+   				}
+   			 }
+   			
+   		
+   		 }catch (Exception e) {
+   			 e.printStackTrace();
+   		}
+   		 return result;
+       }  
+    
+    @RequestMapping(value = "/app/getNamesByLoanAndAdvanceType", method = RequestMethod.POST)
+ 	public List<PayrollLoanAndAdvancesDTO> getNamesByLoanAndAdvanceType(HttpServletRequest request,
+ 			@RequestParam(value="loanAndAdvType", required=true) String loanAndAdvType){
+ 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+ 		List<PayrollLoanAndAdvancesDTO> padvDTOList = new ArrayList<>();
+ 		 try {
+ 			List<PayrollLoanAndAdvances> padvList = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesByTypeAndOrgLocationId(loanAndAdvType, orgLocation.getId()); 
+ 			if(padvList != null && !padvList.isEmpty()) {
+ 				for(PayrollLoanAndAdvances padv : padvList) {
+ 					PayrollLoanAndAdvancesDTO padvDTO = new PayrollLoanAndAdvancesDTO();
+ 	 				padvDTO.setId(padv.getId());
+ 	 				padvDTO.setName(padv.getName());
+ 	 				padvDTOList.add(padvDTO);
+ 				}
+ 				
+ 			}
+ 		 }catch (Exception e) {
+ 			 e.printStackTrace();
+ 		}
+ 		 return padvDTOList;
+     } 
     
 }

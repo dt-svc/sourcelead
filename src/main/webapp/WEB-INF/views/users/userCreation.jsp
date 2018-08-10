@@ -65,6 +65,7 @@
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
          		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
        		     <li><a href="#tab-3" data-toggle="tab" id="indInformationDetails" onclick="getIndAssociateInformationDetails();">Information</a></li>
+       		     <li><a href="#tab-4" data-toggle="tab" id="indLoanAndAdvancesDetails" onclick="getIndAssociateLoanAndAdvancesDetails();">Loan & Advances</a></li>
           </c:if>
           
             <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
@@ -497,6 +498,7 @@
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
               <jsp:include page="associateIndiaBankingDetails.jsp" />
               <jsp:include page="associateIndiaInformationDetails.jsp" />
+               <jsp:include page="associateIndiaLoanAndAdvancesDetails.jsp" />
          </c:if> 
         
       </section>
@@ -1440,6 +1442,12 @@ var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 				indInformationDetails.href = "#";
 				indInformationDetails.className = "disabledLink";
 			} 
+			
+			/* var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
+			if(indLoanAndAdvancesDetails){
+				indLoanAndAdvancesDetails.href = "#";
+				indLoanAndAdvancesDetails.className = "disabledLink";
+			}  */
 			
 			
 		}

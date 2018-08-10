@@ -35,7 +35,7 @@
               <label class="clearfix">Type<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix">
                  <div class="clearfix dropdown-select">
-							<select name="type" id="type" data-validation="required"  field-name="Type">
+							<select name="type" id="loanAdvType" data-validation="required"  field-name="Type" onchange="validateName();">
 							  <option selected value=''>Select Type</option>
 							  <option  ${loanAndAdv.type  == 'Loan' ? 'selected' : ''}>Loan</option>
 							  <option  ${loanAndAdv.type  == 'Advance' ? 'selected' : ''}>Advance</option>
@@ -44,10 +44,10 @@
               </div>
             </div>
             
-            <div class="col-md-5 mt10">
+            <div class="col-md-5 mt10" id="loandAndAdvNameDiv">
               <label class="clearfix">Name<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix">
-                 <input type="text" class="form-control"  name="name" value="${loanAndAdv.name}" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250" field-name="Name" id="name">
+                 <input type="text" class="form-control"  name="name" value="${loanAndAdv.name}" onblur="validateName();" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250" field-name="Name" id="loanAdvName">
               </div>
             </div>
             
@@ -151,7 +151,7 @@
       <div class="form-footer clearfix mt">
 				<div class="col-lg-12">
 					<div class="pull-right">
-						<input type="submit" value="Save"  class="btn btn-primary"> 
+						<input type="submit" value="Save" id="loan_adv"  class="btn btn-primary"> 
 						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollLoanAndAdvancesList'/>'" class="btn btn-default ml">
 					</div>
 				</div>
@@ -161,7 +161,41 @@
       
 </section>
 
-
+<script>
+function validateName(){
+	var loanAdvType = $("#loanAdvType").val();
+	var loanAdvName = $("#loanAdvName").val();
+	if(loanAdvType && loanAdvName){
+		var uuid = '';
+		if('${uuid}' != null && '${uuid}' != '' && '${uuid}' != 'undefined'){
+			uuid = '${uuid}'
+		}
+		 $("#loan_adv").attr("disabled", "disabled");
+		$('#loandAndAdvNameDiv').find('p.jquery_form_error_message').remove();
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateLoandAndAdvanceName?loanAdvType="+loanAdvType+"&loanAdvName="+loanAdvName+"&uuid="+uuid, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#loandAndAdvNameDiv').find('p.jquery_form_error_message').remove();
+						  $("input#loanAdvName").after("<p class='jquery_form_error_message'>"+loanAdvName+" is Already Existed</span>");
+						  document.getElementById("loanAdvName").setAttribute('record-exist','yes');
+						  document.getElementById("loanAdvName").setAttribute('record-exist-errorMsg',loanAdvName+' is Already Existed'); 
+						  $("#loading").removeAttr('style');
+		        	}
+		        	else{
+		        		 $('input#loanAdvName').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#loandAndAdvNameDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#loading").removeAttr('style');
+		        		 $("#loan_adv").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	}
+	
+}
+</script>
 
 <script>
 function applicableType(){

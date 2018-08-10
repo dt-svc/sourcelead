@@ -51,6 +51,8 @@ public class PayrollLoanAndAdvancesDTO implements Serializable{
 	 private String sortColumn;
 		
 	 private String sortOrder;
+	 
+	 private long id;
 
 	 
 	 
@@ -196,5 +198,13 @@ public class PayrollLoanAndAdvancesDTO implements Serializable{
 
 	public void setExperienceMonths(String experienceMonths) {
 		this.experienceMonths = experienceMonths;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 }

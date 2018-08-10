@@ -21,6 +21,7 @@ import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -179,5 +180,19 @@ public class PayrollLoanAndAdvancesDaoImpl implements PayrollLoanAndAdvancesDao{
 			payrollLoanAndAdvances = (PayrollLoanAndAdvances) payrollLoanAndAdvancesList.iterator().next();
 		}
 		return payrollLoanAndAdvances;
+	}
+
+	@Override
+	@Transactional
+	public List<PayrollLoanAndAdvances> getPayrollLoanAndAdvancesByTypeAndOrgLocationId(String type, Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+
+	    String query = "from PayrollLoanAndAdvances loanAndAdv where loanAndAdv.type = :type  "
+	    		+ " and loanAndAdv.orgLocationId.id = :orgLocationId and loanAndAdv.status = '1' ";
+
+	    List<PayrollLoanAndAdvances> payrollLoanAndAdvancesList = session.createQuery(query.toString()).setString("type", type).setLong( "orgLocationId", orgLocationId).list();
+        return payrollLoanAndAdvancesList;
 	}
 }
