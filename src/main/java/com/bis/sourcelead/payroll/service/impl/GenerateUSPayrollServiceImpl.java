@@ -193,7 +193,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			for (AssociateSalary assoSal : assoSalList) {
 			    EmployeePayroll employeePayroll = new EmployeePayroll();
 			    employeePayroll.setPaysheetFrequency(paySheetFreq);
-			    TotalHoursDTO totalHoursDto = userGroupDao.getTotalHoursByUserId(assoSal.getUserId().getId(),freqStartDate,freqEndDate);
+			    TotalHoursDTO totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
 			    AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(assoSal.getUserId().getId(), orgLocation);
 				float totalHours = 0;
 				BigDecimal payRate = BigDecimal.ZERO;
@@ -209,8 +209,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				}
 				employeePayroll.setRegularHours(String.valueOf(totalHours));
 				employeePayroll.setEmpPayRate(payRate);
-				User user = userService.getUserById(assoSal.getUserId().getId());
-				employeePayroll.setUser(user);
+//				User user = userService.getUserById(assoSal.getUserId().getId());
+				employeePayroll.setCandidate(assoSal.getCandidate());
 				int invoiceFrequency = getProjectInvoiceFrequency(userGroup.getPayFrequency());
 				employeePayroll.setFrequency(invoiceFrequency);
 				employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
