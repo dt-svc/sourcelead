@@ -40,9 +40,11 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		if((projectId!= null && !projectId.isEmpty()) || (projectMemberIds != null && !projectMemberIds.isEmpty())) {
 		java.sql.Date startDateSql = new java.sql.Date(startDate.getTime());
 		java.sql.Date endDateSql = new java.sql.Date(endDate.getTime());
-		
-		 String[] strArray = orgloc.getWeekOffDays().split(",");
-		 String weekOffs ="(";
+		String weekOffs ="(";
+		String[] strArray = null;
+		if(StringUtils.isNotEmpty(orgloc.getWeekOffDays())) {
+			strArray = orgloc.getWeekOffDays().split(",");
+		}
 		 if(strArray != null && strArray.length > 0) {
 			 int count = 0;
 			 for(String day :strArray) {
@@ -54,7 +56,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				 count++;
 			 }
 		 }else {
-			 weekOffs =weekOffs+"1,7"; 
+			 weekOffs =weekOffs+"0"; 
 		 }
 		 weekOffs =weekOffs+")";
 		//StringBuilder searchQuery = new StringBuilder("");
