@@ -128,6 +128,9 @@ $(document).ready(function(){
 			 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
 			 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
 		 }
+		 if(loginCurrencyCode == 'IND'){
+		 	result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
+		 }
 
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
@@ -3771,7 +3774,22 @@ function profileDetails(candidateId){
 </script>
 
 
-
+<script>
+function assocSalarySummary(candidateId){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&orgLocationId="+locationCode,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
+			});
+	}
+</script>
 
 
 <%-- 

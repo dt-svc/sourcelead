@@ -248,22 +248,8 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		return payrollPayheadSalarySetup;
 	}
 	
-
-	@Override
-	@Transactional
-	public PayrollPayheadSalarySetup getPayrollPayheadSalarySetupByUUID(String uuid) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from PayrollPayheadSalarySetup ppss where ppss.uuid = :uuid and ppss.status = '1' ";  
-		List<PayrollPayheadSalarySetup> payrollPayheadSalarySetupList =  session.createQuery(query).setString("uuid", uuid).list();
-		PayrollPayheadSalarySetup payrollPayheadSalarySetup = null;
-		if (payrollPayheadSalarySetupList != null && payrollPayheadSalarySetupList.size() > 0) {
-			payrollPayheadSalarySetup = (PayrollPayheadSalarySetup) payrollPayheadSalarySetupList.iterator().next();
-		}
-		return payrollPayheadSalarySetup;
-	}
 	
-	
-	@Override
+	/*@Override
 	@Transactional
 	public ResponseList<PayrollPayheadSalarySetupDTO> getPayrollPayheadSalarySetupListByPayheadUuidAndLocationId(String uuid, OrgLocations orgLocations) throws Exception {
 		ResponseList<PayrollPayheadSalarySetupDTO> payrollPayheadSalarySetupDTOList = new ResponseList<>();
@@ -275,9 +261,9 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		
 		payrollPayheadSalarySetupDTOList.setData(setPayrollPayheadSalarySetupList(payrollPayheadSalarySetupList, orgLocations));
 		return payrollPayheadSalarySetupDTOList;
-	}
+	}*/
 	
-	private List<PayrollPayheadSalarySetupDTO> setPayrollPayheadSalarySetupList(List<PayrollPayheadSalarySetup> payrollPayheadSalarySetupList, OrgLocations orgLocations) throws Exception {
+	/*private List<PayrollPayheadSalarySetupDTO> setPayrollPayheadSalarySetupList(List<PayrollPayheadSalarySetup> payrollPayheadSalarySetupList, OrgLocations orgLocations) throws Exception {
 		List<PayrollPayheadSalarySetupDTO> payrollPayheadSalarySetupDTOList = new ArrayList<>();
 		if(payrollPayheadSalarySetupList != null && !payrollPayheadSalarySetupList.isEmpty()) {
 			for(PayrollPayheadSalarySetup payrollPayheadSalarySetup : payrollPayheadSalarySetupList) {
@@ -293,5 +279,5 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 			}
 		}
 		return payrollPayheadSalarySetupDTOList;
-	}
+	}*/
 }

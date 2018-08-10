@@ -13,15 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 @Entity
-@Table(name = "PAYROLL_PAYHEAD_SALARY_SETUP")
+@Table(name = "PAYROLL_PAYHEAD_SALARY_SETUP_HISTORY")
 public class PayrollPayheadSalarySetup {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,31 +25,29 @@ public class PayrollPayheadSalarySetup {
     @JoinColumn(name="PAYHEAD")        
     private PayrollPayhead payhead;
 	
-	@Column(name = "FORMULA_PERCENTAGE")
-	private Integer formulaPercentage;
+	@Column(name="PAYHEAD_NAME")        
+    private String payheadName;
 	
-	@ManyToOne
-	@JoinColumn(name = "FORMULA_PAYHEAD")
-    private PayrollPayhead formulaPayhead;
+	@Column(name = "METHOD")
+	private String method;
 	
-	@Column(name = "UUID")
-	private String uuid;
-	
-	@Column(name = "STATUS")
-	private Integer status;
+	@Column(name = "FORMULA", columnDefinition = "TEXT default NULL")
+	private String formula;
     
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
     
-	@ManyToOne(fetch = FetchType.LAZY)
-   	@JoinColumn(name = "UPDATED_BY")
-  	private User updatedBy;
-    
     @Column(name = "CREATED_DATE")
   	private Date createdDate;
     
-    @Column(name = "UPDATED_DATE")
+    @Transient
+    private User updatedBy;
+
+    @Transient
+	private Integer status;
+    
+    @Transient
    	private Date updatedDate;
 
 	public Long getId() {
@@ -75,28 +66,28 @@ public class PayrollPayheadSalarySetup {
 		this.payhead = payhead;
 	}
 
-	public Integer getFormulaPercentage() {
-		return formulaPercentage;
+	public String getPayheadName() {
+		return payheadName;
 	}
 
-	public void setFormulaPercentage(Integer formulaPercentage) {
-		this.formulaPercentage = formulaPercentage;
+	public void setPayheadName(String payheadName) {
+		this.payheadName = payheadName;
 	}
 
-	public PayrollPayhead getFormulaPayhead() {
-		return formulaPayhead;
+	public String getMethod() {
+		return method;
 	}
 
-	public void setFormulaPayhead(PayrollPayhead formulaPayhead) {
-		this.formulaPayhead = formulaPayhead;
+	public void setMethod(String method) {
+		this.method = method;
 	}
 
-	public String getUuid() {
-		return uuid;
+	public String getFormula() {
+		return formula;
 	}
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
+	public void setFormula(String formula) {
+		this.formula = formula;
 	}
 
 	public Integer getStatus() {
@@ -138,4 +129,5 @@ public class PayrollPayheadSalarySetup {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
+   	
 }
