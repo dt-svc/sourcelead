@@ -219,12 +219,6 @@ $('#paymentDate').datepicker({
          		result = result +'         <th>Payment</th>                ';
          		result = result +'           </tr>';
          		result = result +'           </thead>';
-         		result = result +'           <tfoot>';
-         		result = result +'           <tr>';
-     			result = result +'           <td colspan="8"><div class="pull-right">Total</div></td>';
-     			result = result +'           <td colspan="1"><span id="grandTotalAmount"></span></td>';
-         		result = result +'           </tr>';
-         		result = result +'           </tfoot>';
                 result = result +"<tbody>"; 
                 
 	        	if(json.data != null && json.data != 'undefined' && json.data != "" && json.data != '[]'){
@@ -250,6 +244,12 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
+	                     result = result +'           <tfoot>';
+	             		result = result +'           <tr>';
+	         			result = result +'           <td colspan="8"><div class="pull-right">Total</div></td>';
+	         			result = result +'           <td colspan="1"><div id="grandTotalAmount"></div></td>';
+	             		result = result +'           </tr>';
+	             		result = result +'           </tfoot>';
 	                     result = result +"</table>"; 
 	                     result = result +'     </div>'; 
 	                 	 result = result +'     <div class="clearfix">';

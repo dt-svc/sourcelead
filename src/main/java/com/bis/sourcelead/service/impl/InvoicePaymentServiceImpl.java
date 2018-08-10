@@ -120,6 +120,8 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 			if (Constants.INVOICE_SENT.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 				invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 			}
+			invoice.setUpdatedBy(user.getUserCode());
+			invoice.setUpdatedDate(commonUtil.currentDate());
 			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
 
 			Invoice parentInvoice = null;
@@ -140,6 +142,8 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 							invoicePayment.setPaymentAmount(invoicePaymentDTO.getTotalAmount());
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 							parentInvoice.setDueAmount("00.00");
+							parentInvoice.setUpdatedBy(user.getUserCode());
+							parentInvoice.setUpdatedDate(commonUtil.currentDate());
 						}
 					}
 					if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("custom")) {
@@ -176,6 +180,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								}else {
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 								}
+								
 							}
 
 							if (receivedAmount != null) {
@@ -189,6 +194,8 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					if (Constants.INVOICE_RECEIVED.equalsIgnoreCase(parentInvoice.getInvoiceStatus())) {
 						parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 					}
+					parentInvoice.setUpdatedBy(user.getUserCode());
+					parentInvoice.setUpdatedDate(commonUtil.currentDate());
 					invoiceDao.saveInvoce(parentInvoice);
 				}
 
@@ -225,6 +232,8 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		invoicePayment.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoicePayment.setCreatedBy(user.getUserCode());
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
+		invoicePayment.setUpdatedBy(user.getUserCode());
+		invoicePayment.setUpdatedDate(commonUtil.currentDate());
 		return invoicePaymentDao.saveInvoicePayment(invoicePayment);
 	}
 	
@@ -274,6 +283,8 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 			if (Constants.INVOICE_SENT.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 				invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 			}
+			invoice.setUpdatedBy(user.getUserCode());
+			invoice.setUpdatedDate(commonUtil.currentDate());
 			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
 
 			Invoice parentInvoice = null;
@@ -306,6 +317,8 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					if (Constants.INVOICE_RECEIVED.equalsIgnoreCase(parentInvoice.getInvoiceStatus())) {
 						parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 					}
+					parentInvoice.setUpdatedBy(user.getUserCode());
+					parentInvoice.setUpdatedDate(commonUtil.currentDate());
 					invoiceDao.saveInvoce(parentInvoice);
 				}
 
@@ -335,6 +348,8 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		invoicePayment.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoicePayment.setCreatedBy(user.getUserCode());
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
+		invoicePayment.setUpdatedBy(user.getUserCode());
+		invoicePayment.setUpdatedDate(commonUtil.currentDate());
 		invoicePaymentDao.saveInvoicePayment(invoicePayment);
 		 }
 		 // this for moving file to folder after setting values (same information set to selected invoices)
