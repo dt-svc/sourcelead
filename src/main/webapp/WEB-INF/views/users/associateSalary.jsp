@@ -316,17 +316,16 @@ function calculateHourlyRateSal(){
 				var finalDateFormat = getJSDateFormat(locationDate);
 				 for (var i=0; i<response.data.length; i++)
 					{
-					 $("#"+i+"effectiveDate").datepicker({
+					  $("#"+i+"effectiveDate").datepicker({
 						 dateFormat: finalDateFormat,
 						 changeMonth: true,
-						  	  changeYear: true,
-// 						  	minDate: 0
+						  changeYear: true
 						 });
 						 $("#"+i+"endDate").datepicker({
 							 dateFormat: finalDateFormat,
 							 changeMonth: true,
 						  	  changeYear: true,
-						 });
+						 });  
 						 
 						}
 				 
