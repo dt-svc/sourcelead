@@ -80,6 +80,7 @@ public class PayrollPayheadDTO implements Serializable{
 		
 		private List<PayrollPayheadSalarySetupDTO> salarySetup;
 		
+		private Long candidateId;
 
 		public Long getId() {
 			return id;
@@ -335,6 +336,14 @@ public class PayrollPayheadDTO implements Serializable{
 
 		public void setSalarySetup(List<PayrollPayheadSalarySetupDTO> salarySetup) {
 			this.salarySetup = salarySetup;
+		}
+
+		public Long getCandidateId() {
+			return candidateId;
+		}
+
+		public void setCandidateId(Long candidateId) {
+			this.candidateId = candidateId;
 		}
 		
 }
