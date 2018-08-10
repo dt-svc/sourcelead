@@ -45,12 +45,12 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 
 	@Override
 	@Transactional
-	public AssociateSalary findAssociateSalaryByUserId(Long userId)
+	public AssociateSalary findAssociateSalaryByCandidateId(Long candidateId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateSalary associateSalary = null;
 		try {
-			List<AssociateSalary> associateSalaryList = session.createQuery("from AssociateSalary associateSalary where associateSalary.userId.id=:userId and associateSalary.status = 1" ).setLong("userId", userId).list();
+			List<AssociateSalary> associateSalaryList = session.createQuery("from AssociateSalary associateSalary where associateSalary.candidate.id=:candidateId and associateSalary.status = 1" ).setLong("candidateId", candidateId).list();
 		 if(associateSalaryList !=null && associateSalaryList.size() >0) {
 			 associateSalary =  associateSalaryList.get(0);
 		 }

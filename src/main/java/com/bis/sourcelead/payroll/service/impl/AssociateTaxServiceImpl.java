@@ -219,12 +219,11 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 	}
 
 	@Override
-	public AssociateTaxDTO findAssociateTaxSummaryByUserId(Long userId, OrgLocations orgLocation)
+	public AssociateTaxDTO findAssociateTaxSummaryByCandidateId(Long candidateId, OrgLocations orgLocation)
 	{
 		AssociateTaxDTO associateTaxDTO = new AssociateTaxDTO();
 		try {
-			Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
-			AssociateTax associateTax = associateTaxDao.findAssociateTaxSummaryByUserId(candidate.getId(),orgLocation);
+			AssociateTax associateTax = associateTaxDao.findAssociateTaxSummaryByCandidateId(candidateId,orgLocation);
 			if(associateTax != null) {
 				associateTaxDTO.setId(associateTax.getId());
 				associateTaxDTO.setFederaltaxFillingStatus(associateTax.getFederalTaxFilliingStatus());
@@ -286,9 +285,9 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 	}
 
 	@Override
-	public AssociateTaxDedContriView findUserTaxDeatails(Long userId, OrgLocations orgLocation)
+	public AssociateTaxDedContriView findUserTaxDeatails(Long candidateId, OrgLocations orgLocation)
 	{
-		return associateTaxDao.findUserTaxDeatails(userId,orgLocation);
+		return associateTaxDao.findUserTaxDeatails(candidateId,orgLocation);
 	}
 
 }

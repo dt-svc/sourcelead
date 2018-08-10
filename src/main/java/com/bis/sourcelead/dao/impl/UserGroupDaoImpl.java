@@ -170,7 +170,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 
 	@Override
 	@Transactional
-	public TotalHoursDTO getTotalHoursByUserId(Long userId,Date sDate,Date eDate)
+	public TotalHoursDTO getTotalHoursByCandidateId(Long candidateId,Date sDate,Date eDate)
 	{
 		TotalHoursDTO totalHoursDTO = null;
 		try {

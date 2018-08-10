@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.AssociateSalaryHistoryDTO;
@@ -34,6 +35,7 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
@@ -167,6 +169,9 @@ public class USPayrollRestController {
 	@Autowired
 	private USPayPeriodService usPayPeriodService;
 	
+	
+	@Autowired
+	CandidateDao candidateDao;
 	/**
 	 * find all deduction types from lookup_data table 
 	 * @param request
@@ -556,7 +561,8 @@ public class USPayrollRestController {
 		public AssociateTaxDTO findAssociateTaxSummaryByUserId(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			AssociateTaxDTO  associateTaxDTO = associateTaxService.findAssociateTaxSummaryByUserId(userId,orgLocation);	
+			Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
+			AssociateTaxDTO  associateTaxDTO = associateTaxService.findAssociateTaxSummaryByCandidateId(candidate.getId(),orgLocation);	
 			return associateTaxDTO;
 		}
 		
@@ -592,7 +598,8 @@ public class USPayrollRestController {
 		public ResponseList<ContributionDTO> findAllContributionSummaryByUserId(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			ResponseList<ContributionDTO>  res = associateContributionService.findAllContributionSummaryByUserId(userId,orgLocation);	
+			Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
+			ResponseList<ContributionDTO>  res = associateContributionService.findAllContributionSummaryByCandidateId(candidate.getId(),orgLocation);	
 			return res;
 		}
 		
@@ -928,7 +935,8 @@ public class USPayrollRestController {
 	public AssociateSalaryDTO findAssociateSalary(@RequestParam(value = "userId",required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		AssociateSalaryDTO  associateSalaryDTO = associateSalaryService.findAssociateSalaryByUserId(userId,orgLocation);
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
+		AssociateSalaryDTO  associateSalaryDTO = associateSalaryService.findAssociateSalaryByCandidateId(candidate.getId(),orgLocation);
 		return associateSalaryDTO;
 	}
 	
