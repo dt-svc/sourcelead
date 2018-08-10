@@ -15,6 +15,6 @@ public interface AssociateTaxService {
 
 	AssociateTaxDTO findAssociateTaxSummaryByCandidateId(Long candidateId, OrgLocations orgLocation);
 
-	AssociateTaxDedContriView findUserTaxDeatails(Long userId, OrgLocations orgLocation);
+	AssociateTaxDedContriView findUserTaxDeatails(Long candidateId, OrgLocations orgLocation);
 
 }
