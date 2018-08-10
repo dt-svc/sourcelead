@@ -1,6 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.util.CalendarUtil;
 
 @Repository
 public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
@@ -36,6 +40,25 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		if((projectId!= null && !projectId.isEmpty()) || (projectMemberIds != null && !projectMemberIds.isEmpty())) {
 		java.sql.Date startDateSql = new java.sql.Date(startDate.getTime());
 		java.sql.Date endDateSql = new java.sql.Date(endDate.getTime());
+		String weekOffs ="(";
+		String[] strArray = null;
+		if(StringUtils.isNotEmpty(orgloc.getWeekOffDays())) {
+			strArray = orgloc.getWeekOffDays().split(",");
+		}
+		 if(strArray != null && strArray.length > 0) {
+			 int count = 0;
+			 for(String day :strArray) {
+				 if(count >0) {
+					 weekOffs = weekOffs+","+CalendarUtil.getDayOffsetByWeekName(day.toUpperCase());
+				 }else {
+					 weekOffs = weekOffs+CalendarUtil.getDayOffsetByWeekName(day.toUpperCase());
+				 }
+				 count++;
+			 }
+		 }else {
+			 weekOffs =weekOffs+"0"; 
+		 }
+		 weekOffs =weekOffs+")";
 		//StringBuilder searchQuery = new StringBuilder("");
 	/*	if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
 		 searchQuery.append(" timeEntryId like '%" + searchValue + "%' ")
@@ -167,13 +190,15 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   HRD.DAY AS timesheetDate,"
 				+ "   NULL AS timeEntryId,"
 				+ "   (  CASE" 
-				+ "        WHEN HD.BILLABLE_TYPE ='Billable'  THEN HD.ORG_AVG_HRS " 
+				/*+ "        WHEN HD.BILLABLE_TYPE ='Billable'  THEN HD.ORG_AVG_HRS " */
+				+ "        WHEN HD.BILLABLE_TYPE ='Billable'  THEN (CASE  WHEN DAYOFWEEK(HRD.DAY) IN "+weekOffs+" THEN '00:00' ELSE HD.ORG_AVG_HRS END) " 
 			    + "        ELSE ''"
 				+ "      END "
 				+ "     ) AS  billableHrs, "
 				+ "   NULL AS ticketNo,"
 				+ "   (  CASE" 
-				+ "        WHEN HD.BILLABLE_TYPE !='Billable' THEN HD.ORG_AVG_HRS " 
+				/*+ "        WHEN HD.BILLABLE_TYPE !='Billable' THEN HD.ORG_AVG_HRS "*/ 
+				+ "        WHEN HD.BILLABLE_TYPE !='Billable' THEN (CASE  WHEN DAYOFWEEK(HRD.DAY) IN "+weekOffs+" THEN '00:00' ELSE HD.ORG_AVG_HRS END)"
                 + "        ELSE ''"
 				+ "      END "
 				+ "     ) AS  nonBillableHrs, "
@@ -208,7 +233,6 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		
 		Query result = session.createSQLQuery(query).setFirstResult(start).setMaxResults(length);
 		List<DayWiseTimesheetReoprtsListDTO> reportList  = result.setResultTransformer(Transformers.aliasToBean(DayWiseTimesheetReoprtsListDTO.class)).list();
-		
 		String  countQuery = "SELECT COUNT(*) AS TOTAL FROM (" + query +")Q2;" ;
 		countlist = session.createSQLQuery(countQuery).list();
 		
