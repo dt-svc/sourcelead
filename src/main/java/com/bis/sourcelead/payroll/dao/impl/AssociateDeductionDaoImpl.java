@@ -82,12 +82,12 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 	@Override
 	@Transactional
-	public AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId)
+	public AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long candidateId)
 	{
 		AssociateDeduction associateDeduction = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			associateDeduction = (AssociateDeduction) session.createQuery("from AssociateDeduction ded where ded.id=:deductionId and ded.userId.id=:userId").setLong("deductionId", deductionId).setLong("userId", userId).uniqueResult();
+			associateDeduction = (AssociateDeduction) session.createQuery("from AssociateDeduction ded where ded.id=:deductionId and ded.candidate.id=:candidateId").setLong("deductionId", deductionId).setLong("candidateId", candidateId).uniqueResult();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
