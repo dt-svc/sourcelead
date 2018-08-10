@@ -12,5 +12,5 @@ public interface AssociateTaxDao {
 
 	AssociateTax findAssociateTaxById(long associateTaxId);
 
-	AssociateTaxDedContriView findUserTaxDeatails(Long userId, OrgLocations orgLocation);
+	AssociateTaxDedContriView findUserTaxDeatails(Long candidateId, OrgLocations orgLocation);
 }

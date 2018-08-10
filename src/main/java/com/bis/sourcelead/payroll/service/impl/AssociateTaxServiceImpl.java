@@ -285,9 +285,9 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 	}
 
 	@Override
-	public AssociateTaxDedContriView findUserTaxDeatails(Long userId, OrgLocations orgLocation)
+	public AssociateTaxDedContriView findUserTaxDeatails(Long candidateId, OrgLocations orgLocation)
 	{
-		return associateTaxDao.findUserTaxDeatails(userId,orgLocation);
+		return associateTaxDao.findUserTaxDeatails(candidateId,orgLocation);
 	}
 
 }

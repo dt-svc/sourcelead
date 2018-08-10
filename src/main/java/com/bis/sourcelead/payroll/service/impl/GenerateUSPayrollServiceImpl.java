@@ -27,6 +27,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -194,7 +195,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			    EmployeePayroll employeePayroll = new EmployeePayroll();
 			    employeePayroll.setPaysheetFrequency(paySheetFreq);
 			    TotalHoursDTO totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
-			    AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(assoSal.getUserId().getId(), orgLocation);
+			    AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(assoSal.getCandidate().getId(), orgLocation);
 				float totalHours = 0;
 				BigDecimal payRate = BigDecimal.ZERO;
 				BigDecimal amount = BigDecimal.ZERO;
@@ -216,7 +217,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
 				
 				employeePayroll.setRehularHoursAmount(amount);
-				DeductionDTO dedDTO = getDeductionAmount(user,orgLocation,amount,loginUser,paySheetFreq,employeePayroll);
+				DeductionDTO dedDTO = getDeductionAmount(assoSal.getCandidate(),orgLocation,amount,loginUser,paySheetFreq,employeePayroll);
 				BigDecimal[] dedTaxes = dedDTO.getDedTaxes();
 				BigDecimal[] contributionTaxes = dedDTO.getContributionTaxes();
 				BigDecimal preTax = dedTaxes[0];
@@ -283,14 +284,14 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	 * @param employeePayroll
 	 * @return DeductionDTO
 	 */
-	private DeductionDTO getDeductionAmount(User user, OrgLocations orgLocation,BigDecimal amount, User logonUser,PaysheetFrequency paySheet, EmployeePayroll employeePayroll)
+	private DeductionDTO getDeductionAmount(Candidate candidate, OrgLocations orgLocation,BigDecimal amount, User logonUser,PaysheetFrequency paySheet, EmployeePayroll employeePayroll)
 	{
 		BigDecimal deductions[] = new BigDecimal[2];
 	    BigDecimal[] contriTaxes = new BigDecimal[2];
 		DeductionDTO dedDto = new DeductionDTO();
 		Set<DeductionHistory> dedHis = new HashSet<>();
 		try {
-			ResponseList<DeductionDTO> res = associateDeductionService.findAllDeductionSummaryByUserId(user.getId(), orgLocation);
+			ResponseList<DeductionDTO> res = associateDeductionService.findAllDeductionSummaryByUserId(candidate.getId(), orgLocation);
 			List<AssociateContribution> contributions = associateContributionDao.findAllContributionSummaryByUserId(user.getId(), orgLocation);
 			if (res.getData() != null) {
 				BigDecimal preTax = BigDecimal.ZERO;
