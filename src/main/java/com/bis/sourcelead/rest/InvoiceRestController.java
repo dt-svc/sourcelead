@@ -1570,11 +1570,13 @@ public class InvoiceRestController {
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		if(orgRelationId != null){
 		CurrencyConversionResponse currencyConversionResponse = invoiceService.getExchangeCurrency(loginOrgCurrencyCode, orgLocation, orgRelationId, grandTotal);
 		if (null != currencyConversionResponse) {
 //			resultJson = commonUtil.toJSON(currencyConversionResponse);
 			response.setObject(currencyConversionResponse);
 		}
+	}
 		return response;
 	}
 	
