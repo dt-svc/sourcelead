@@ -45,6 +45,7 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 				}else {
 					associateBankData = new AssociateBankData();
 					User user = userService.getUserById(Long.parseLong(associateBankDataDTO.getUserId()));
+					
 					associateBankData.setUserId(user);
 				}
 				associateBankData.setAccountType(associateBankDataDTO.getAccountType());

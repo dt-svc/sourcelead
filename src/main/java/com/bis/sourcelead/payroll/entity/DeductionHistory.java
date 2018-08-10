@@ -25,8 +25,8 @@ public class DeductionHistory {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@Column(name = "USER_ID")
-	private Long userId;
+	@Column(name = "CANDIDATE_ID")
+	private Long candidateId;
 	
 	@Column(name = "DEDUCTION_ID")
 	private Long deductionId;
@@ -75,10 +75,6 @@ public class DeductionHistory {
 		return id;
 	}
 
-	public Long getUserId()
-	{
-		return userId;
-	}
 
 	public Long getDeductionId()
 	{
@@ -122,10 +118,6 @@ public class DeductionHistory {
 		this.id = id;
 	}
 
-	public void setUserId(Long userId)
-	{
-		this.userId = userId;
-	}
 
 	public void setDeductionId(Long deductionId)
 	{
@@ -210,6 +202,16 @@ public class DeductionHistory {
 	public void setContributionId(Long contributionId)
 	{
 		this.contributionId = contributionId;
+	}
+
+	public Long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId)
+	{
+		this.candidateId = candidateId;
 	}
 
 	

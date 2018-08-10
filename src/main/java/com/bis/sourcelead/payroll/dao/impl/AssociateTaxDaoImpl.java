@@ -42,12 +42,12 @@ public class AssociateTaxDaoImpl implements AssociateTaxDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public AssociateTax findAssociateTaxSummaryByUserId(Long userId, OrgLocations orgLocation)
+	public AssociateTax findAssociateTaxSummaryByUserId(Long candidateId, OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateTax associateTax = null;
 		try {
-			List<AssociateTax> associateTaxTaxList = session.createQuery("from AssociateTax aTax where aTax.userId.id=:userId and aTax.orgLocationId.id= :orgLocationId").setLong("userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+			List<AssociateTax> associateTaxTaxList = session.createQuery("from AssociateTax aTax where aTax.candidate.id=:candidateId and aTax.orgLocationId.id= :orgLocationId").setLong("candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).list();
 			if (associateTaxTaxList != null && associateTaxTaxList.size() > 0) {
 				associateTax = associateTaxTaxList.get(0);
 			}
