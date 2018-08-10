@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -38,6 +40,9 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 	@Autowired
 	AssociateTaxDao associateTaxDao;
 	
+	@Autowired
+	CandidateDao candidateDao;
+	
 	
 	@Override
 	public Response<AssociateTaxDTO> saveAssociateTax(AssociateTaxDTO associateTaxDTO, OrgLocations orgLocation, User loginUser)
@@ -50,8 +55,8 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 					associateTax = associateTaxDao.findAssociateTaxById(associateTaxDTO.getId());
 				}else {
 					associateTax = new AssociateTax();
-					User user = userService.getUserById(associateTaxDTO.getUserId());
-					associateTax.setUserId(user);
+					Candidate candidate = candidateDao.getCandidateByConsultantUserId(associateTaxDTO.getUserId(),orgLocation.getId());
+					associateTax.setCandidate(candidate);
 				}
 				associateTax.setFederalTaxFilliingStatus(associateTaxDTO.getFederaltaxFillingStatus());
 				associateTax.setFederalTaxAllowances(associateTaxDTO.getFederaltaxAllowances());
@@ -216,61 +221,66 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 	@Override
 	public AssociateTaxDTO findAssociateTaxSummaryByUserId(Long userId, OrgLocations orgLocation)
 	{
-		
-		AssociateTax associateTax = associateTaxDao.findAssociateTaxSummaryByUserId(userId,orgLocation);
 		AssociateTaxDTO associateTaxDTO = new AssociateTaxDTO();
-		if(associateTax != null) {
-			associateTaxDTO.setId(associateTax.getId());
-			associateTaxDTO.setFederaltaxFillingStatus(associateTax.getFederalTaxFilliingStatus());
-			associateTaxDTO.setFederaltaxAllowances(associateTax.getFederalTaxAllowances());
-			associateTaxDTO.setFederaltaxAdditionalWithHolding(associateTax.getFederalTaxAdditionnalWithHolding());
-			associateTaxDTO.setStateTaxFillingStatus(associateTax.getStateTaxFilliingStatus());
-			associateTaxDTO.setStateTaxAllowances(associateTax.getStateTaxAllowances());
-			associateTaxDTO.setStateTaxAdditionalWithHolding(associateTax.getStateTaxAdditionnalWithHolding());
-			associateTaxDTO.setResidenceLocationFillingStatus(associateTax.getResidenceTaxFilliingStatus());
-			associateTaxDTO.setResidenceLocationAllowances(associateTax.getResidenceTaxAllowances());
-			associateTaxDTO.setResidenceLocationAdditionalWithHolding(associateTax.getResidenceTaxAdditionnalWithHolding());
-			associateTaxDTO.setSupplementType(associateTax.getSupplementType());
-			associateTaxDTO.setResidenceLocationSupplementType(associateTax.getSupplementType());
-			associateTaxDTO.setLocalTax(associateTax.getLocalTax());
-			associateTaxDTO.setLocalTaxState(associateTax.getLocalTaxState());
+		try {
+			Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
+			AssociateTax associateTax = associateTaxDao.findAssociateTaxSummaryByUserId(candidate.getId(),orgLocation);
+			if(associateTax != null) {
+				associateTaxDTO.setId(associateTax.getId());
+				associateTaxDTO.setFederaltaxFillingStatus(associateTax.getFederalTaxFilliingStatus());
+				associateTaxDTO.setFederaltaxAllowances(associateTax.getFederalTaxAllowances());
+				associateTaxDTO.setFederaltaxAdditionalWithHolding(associateTax.getFederalTaxAdditionnalWithHolding());
+				associateTaxDTO.setStateTaxFillingStatus(associateTax.getStateTaxFilliingStatus());
+				associateTaxDTO.setStateTaxAllowances(associateTax.getStateTaxAllowances());
+				associateTaxDTO.setStateTaxAdditionalWithHolding(associateTax.getStateTaxAdditionnalWithHolding());
+				associateTaxDTO.setResidenceLocationFillingStatus(associateTax.getResidenceTaxFilliingStatus());
+				associateTaxDTO.setResidenceLocationAllowances(associateTax.getResidenceTaxAllowances());
+				associateTaxDTO.setResidenceLocationAdditionalWithHolding(associateTax.getResidenceTaxAdditionnalWithHolding());
+				associateTaxDTO.setSupplementType(associateTax.getSupplementType());
+				associateTaxDTO.setResidenceLocationSupplementType(associateTax.getSupplementType());
+				associateTaxDTO.setLocalTax(associateTax.getLocalTax());
+				associateTaxDTO.setLocalTaxState(associateTax.getLocalTaxState());
+				
+				
+				if(associateTax.getFederalExempt()) {
+					associateTaxDTO.setFederalExempt("YES");
+				}else {
+					associateTaxDTO.setFederalExempt("NO");
+				}
+				if(associateTax.getMediacareExempt()) {
+					associateTaxDTO.setMedicareExempt("YES");
+				}else {
+					associateTaxDTO.setMedicareExempt("NO");
+				}
+				if(associateTax.getFutaExempt()) {
+					associateTaxDTO.setFutaExempt("YES");
+				}else {
+					associateTaxDTO.setFutaExempt("NO");
+				}
+				if(associateTax.getSocialSecurityExempt()) {
+					associateTaxDTO.setSocailSecurityExempt("YES");
+				}else{
+					associateTaxDTO.setSocailSecurityExempt("NO");
+				}
+				if(associateTax.getSutaExempt()) {
+					associateTaxDTO.setSutaExempt("YES");
+				}else {
+					associateTaxDTO.setSutaExempt("NO");
+				}
+			}
 			
+			StringBuilder sb = new StringBuilder();
+			if(orgLocation.getCity() != null && orgLocation.getState() != null) {
+				sb.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).append(",").append(orgLocation.getCity());
+			}else {
+				sb.append(orgLocation.getCountry());
+			}
 			
-			if(associateTax.getFederalExempt()) {
-				associateTaxDTO.setFederalExempt("YES");
-			}else {
-				associateTaxDTO.setFederalExempt("NO");
-			}
-			if(associateTax.getMediacareExempt()) {
-				associateTaxDTO.setMedicareExempt("YES");
-			}else {
-				associateTaxDTO.setMedicareExempt("NO");
-			}
-			if(associateTax.getFutaExempt()) {
-				associateTaxDTO.setFutaExempt("YES");
-			}else {
-				associateTaxDTO.setFutaExempt("NO");
-			}
-			if(associateTax.getSocialSecurityExempt()) {
-				associateTaxDTO.setSocailSecurityExempt("YES");
-			}else{
-				associateTaxDTO.setSocailSecurityExempt("NO");
-			}
-			if(associateTax.getSutaExempt()) {
-				associateTaxDTO.setSutaExempt("YES");
-			}else {
-				associateTaxDTO.setSutaExempt("NO");
-			}
+			associateTaxDTO.setLocation(sb.toString());
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		StringBuilder sb = new StringBuilder();
-		if(orgLocation.getCity() != null && orgLocation.getState() != null) {
-			sb.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).append(",").append(orgLocation.getCity());
-		}else {
-			sb.append(orgLocation.getCountry());
-		}
-		
-		associateTaxDTO.setLocation(sb.toString());
 		
 		return associateTaxDTO;
 	}
