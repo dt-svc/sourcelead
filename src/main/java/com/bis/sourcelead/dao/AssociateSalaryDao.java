@@ -11,7 +11,7 @@ public interface AssociateSalaryDao {
 
 	AssociateSalary addAssociateSal(AssociateSalary associateSalary);
 
-	AssociateSalary findAssociateSalaryByUserId(Long userId);
+	AssociateSalary findAssociateSalaryByCandidateId(Long candidateId);
 
 	AssociateSalary findAssociateSalaryById(String id);
 

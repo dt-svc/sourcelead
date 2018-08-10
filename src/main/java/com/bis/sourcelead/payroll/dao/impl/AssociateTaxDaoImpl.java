@@ -42,7 +42,7 @@ public class AssociateTaxDaoImpl implements AssociateTaxDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public AssociateTax findAssociateTaxSummaryByUserId(Long candidateId, OrgLocations orgLocation)
+	public AssociateTax findAssociateTaxSummaryByCandidateId(Long candidateId, OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateTax associateTax = null;
