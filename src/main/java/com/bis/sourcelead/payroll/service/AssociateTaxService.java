@@ -13,7 +13,7 @@ public interface AssociateTaxService {
 
 	Response<AssociateTaxDTO> isLocalTaxYes(AssociateTaxDTO associateTaxDTO, OrgLocations orgLocation, User loginUser);
 
-	AssociateTaxDTO findAssociateTaxSummaryByUserId(Long userId, OrgLocations orgLocation);
+	AssociateTaxDTO findAssociateTaxSummaryByCandidateId(Long candidateId, OrgLocations orgLocation);
 
 	AssociateTaxDedContriView findUserTaxDeatails(Long userId, OrgLocations orgLocation);
 
