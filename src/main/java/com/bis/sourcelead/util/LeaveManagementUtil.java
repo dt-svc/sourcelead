@@ -624,17 +624,28 @@ public class LeaveManagementUtil {
 		if ("Duration".equalsIgnoreCase(l.getPeriod())) {
 			if (appliedLeaves.stream().anyMatch(al -> al.getApplyLeaveDate().equals(startDate))) {
 				if (Constants.STATUS_YES.equalsIgnoreCase(l.getFromHalfDay())) {
-					appLeaves += 1;
-					fromHours = calculateActualHoursForHalfDay(l.getFromHalfFromTime(), l.getFromHalfToTime(), orgLocations.getAverageWorkingHours(), leaveType);
+					if(StringUtils.isNotBlank(l.getFromHalfFromTime()) && StringUtils.isNotBlank(l.getFromHalfToTime())){
+						appLeaves += 1;
+						fromHours = calculateActualHoursForHalfDay(l.getFromHalfFromTime(), l.getFromHalfToTime(), orgLocations.getAverageWorkingHours(), leaveType);
+					}
 				}
 			}
 			if (appliedLeaves.stream().anyMatch(al -> al.getApplyLeaveDate().equals(endDate))) {
 				if (Constants.STATUS_YES.equalsIgnoreCase(l.getToHalfDay())) {
-					appLeaves += 1;
-					toHours = calculateActualHoursForHalfDay(l.getToHalfFromTime(), l.getToHalfToTime(), orgLocations.getAverageWorkingHours(), leaveType);
+					if(StringUtils.isNotBlank(l.getToHalfFromTime()) && StringUtils.isNotBlank(l.getToHalfToTime())){
+						appLeaves += 1;
+						toHours = calculateActualHoursForHalfDay(l.getToHalfFromTime(), l.getToHalfToTime(), orgLocations.getAverageWorkingHours(), leaveType);
+					}
 				}
 			}
-			actualLeaves = (appliedLeaves.size() - appLeaves) + (fromHours + toHours);
+			int orgHours = 0;
+			if("Half Day".equalsIgnoreCase(leaveType.getDuration())){
+				orgHours = orgLocations.getAverageWorkingHours() / 2;
+			}else{
+				orgHours = orgLocations.getAverageWorkingHours();
+			}
+			float hourDays = (float) ((fromHours + toHours) / orgHours);
+			actualLeaves = (appliedLeaves.size() - appLeaves) + hourDays;
 		}else{
 			for(AppliedLeaveDateView ald : appliedLeaves){
 				if (Constants.STATUS_YES.equalsIgnoreCase(ald.getFromHalfDay()) && ald.getFromDate().equals(ald.getApplyLeaveDate())) {
@@ -646,7 +657,14 @@ public class LeaveManagementUtil {
 					toHours += calculateActualHoursForHalfDay(ald.getToDateFromHalfTime(), ald.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leaveType);
 				}
 			}
-			actualLeaves = (appliedLeaves.size() - appLeaves) + (fromHours + toHours);
+			int orgHours = 0;
+			if("Half Day".equalsIgnoreCase(leaveType.getDuration())){
+				orgHours = orgLocations.getAverageWorkingHours() / 2;
+			}else{
+				orgHours = orgLocations.getAverageWorkingHours();
+			}
+			float hourDays = (float) ((fromHours + toHours) / orgHours);
+			actualLeaves = (appliedLeaves.size() - appLeaves) + hourDays;
 		}
 		
 		return actualLeaves;
@@ -796,11 +814,12 @@ public class LeaveManagementUtil {
                 }
                 
                 if(Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod())){
-                	double oneHr = leaveType.getNoOfDaysPerPeriod() / workingHours;
+                	double oneHr = workingHours;
                 	double oneHrMin = oneHr / 60;
-                	actualAppliedLeave = oneHrMin * fromMinutes;
+                	actualAppliedLeave = fromMinutes / 60;
+//                	actualAppliedLeave = oneHrMin * fromMinutes;
                 }else if(Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())){
-                	double oneHr = leaveType.getNoOfDaysPerPeriod() / workingHours;
+                	double oneHr =  workingHours;
                 	double oneHrMin = oneHr / 60;
                 	actualAppliedLeave = oneHrMin * fromMinutes;
                 }else if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
