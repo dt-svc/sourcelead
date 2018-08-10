@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -30,8 +32,14 @@ public class AssociatePfEsiDetails implements Serializable{
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", nullable = false)
+	@JoinColumn(name = "USER_ID")
 	private User userId;
+	
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CANDIDATE_ID", nullable = false)
+    private Candidate candidateId;
+	
 	 
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
@@ -169,5 +177,13 @@ public class AssociatePfEsiDetails implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Candidate getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Candidate candidateId) {
+		this.candidateId = candidateId;
 	}
 }
