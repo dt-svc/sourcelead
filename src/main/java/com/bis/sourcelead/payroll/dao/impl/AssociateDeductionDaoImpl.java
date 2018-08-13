@@ -44,10 +44,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 
 	@Override
 	@Transactional
-	public List<AssociateDeduction> findAllDeductionSummaryByUserId(Long userId, OrgLocations orgLocation)
+	public List<AssociateDeduction> findAllDeductionSummaryByCandidateId(Long candidateId, OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<AssociateDeduction>  associateDeductionList = session.createQuery("from AssociateDeduction ded where ded.userId.id=:userId and ded.orgLocationId.id= :orgLocationId and ded.status = 1" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+		List<AssociateDeduction>  associateDeductionList = session.createQuery("from AssociateDeduction ded where ded.candidate.id=:candidateId and ded.orgLocationId.id= :orgLocationId and ded.status = 1" ).setLong( "candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).list();
 		return associateDeductionList;
 	}
 
@@ -82,12 +82,12 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 	@Override
 	@Transactional
-	public AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId)
+	public AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long candidateId)
 	{
 		AssociateDeduction associateDeduction = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			associateDeduction = (AssociateDeduction) session.createQuery("from AssociateDeduction ded where ded.id=:deductionId and ded.userId.id=:userId").setLong("deductionId", deductionId).setLong("userId", userId).uniqueResult();
+			associateDeduction = (AssociateDeduction) session.createQuery("from AssociateDeduction ded where ded.id=:deductionId and ded.candidate.id=:candidateId").setLong("deductionId", deductionId).setLong("candidateId", candidateId).uniqueResult();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
