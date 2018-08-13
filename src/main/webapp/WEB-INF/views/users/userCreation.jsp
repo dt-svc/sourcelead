@@ -49,8 +49,7 @@
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
-        <input type="hidden" id="associateId" name="associateId">
-        <input type="hidden" id="empType" name="empType">
+        
         <!--New theme-->
         <div class="user_summ_wrap contentareaInner-styles">
         
@@ -59,16 +58,16 @@
         <div class="tabsMenu">
         <ul class="list-unstyled">
           <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
-          <c:if test="${SourceLeadWeb_currencyCode != 'USD'}">
+          <c:if test="${SourceLeadWeb_country != 'United States'}">
           <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
           </c:if>
-          <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+          <c:if test="${SourceLeadWeb_country == 'United States'}">
             <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
 	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
 	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
-	          </c:if>
+	      </c:if>
           <div class="clearfix"></div>
         </ul>
 		</div>
@@ -87,7 +86,8 @@
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
           <input type="hidden" id="actionId" value="${actionId}">
-          <input type="hidden" id="associateId" />
+          <input type="hidden" id="associateId" name="associateId">
+          <input type="hidden" id="empType" name="empType">
             <div class="row clearfix minHeightcol5">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               

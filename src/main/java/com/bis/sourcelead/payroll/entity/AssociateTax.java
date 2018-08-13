@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -31,8 +32,8 @@ public class AssociateTax implements Serializable {
 	
 	
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", nullable = false)
-	private User userId;
+	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	private Candidate candidate;
 	
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
@@ -118,14 +119,20 @@ public class AssociateTax implements Serializable {
 	}
 
 
-	public User getUserId()
+
+	public static long getSerialversionuid()
 	{
-		return userId;
+		return serialVersionUID;
 	}
 
-	public void setUserId(User userId)
+	public Candidate getCandidate()
 	{
-		this.userId = userId;
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate)
+	{
+		this.candidate = candidate;
 	}
 
 	public OrgLocations getOrgLocationId()

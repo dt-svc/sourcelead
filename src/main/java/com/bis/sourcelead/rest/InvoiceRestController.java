@@ -1227,15 +1227,15 @@ public class InvoiceRestController {
 					if (invoice != null) {
 						
 						invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
-						invoice.setCreatedBy(user.getUserCode());
-						invoice.setCreatedDate(commonUtil.currentDate());
+						invoice.setUpdatedBy(user.getUserCode());
+						invoice.setUpdatedDate(commonUtil.currentDate());
 						Invoice childInvoice = invoiceDao.saveInvoce(invoice);
 						if (null != childInvoice) {
 							if (null != invoice.getParentInvoiceId()) {
 								Invoice parentInvoice = invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
 								parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
-								invoice.setCreatedBy(user.getUserCode());
-								parentInvoice.setCreatedDate(commonUtil.currentDate());
+								parentInvoice.setUpdatedBy(user.getUserCode());
+								parentInvoice.setUpdatedDate(commonUtil.currentDate());
 								invoiceDao.saveInvoce(parentInvoice);
 							}
 						}
@@ -1570,11 +1570,13 @@ public class InvoiceRestController {
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		if(orgRelationId != null){
 		CurrencyConversionResponse currencyConversionResponse = invoiceService.getExchangeCurrency(loginOrgCurrencyCode, orgLocation, orgRelationId, grandTotal);
 		if (null != currencyConversionResponse) {
 //			resultJson = commonUtil.toJSON(currencyConversionResponse);
 			response.setObject(currencyConversionResponse);
 		}
+	}
 		return response;
 	}
 	
@@ -1831,24 +1833,31 @@ public class InvoiceRestController {
 		Response<Invoice> response = new Response<>();
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Invoice masterInvoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 		Invoice invoice = invoiceService.getInvoicetById(id);
 		invoice.setLinkInvoiceReferenceId(masterInvoice.getId());
 		invoice.setLinkInvoiceRefInvoiceId(masterInvoice.getInvoiceId());
 		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
 		invoice.setInvoiceStatus(Constants.LINKED_STATUS);
+		invoice.setUpdatedDate(commonUtil.currentDate());
+		invoice.setUpdatedBy(user.getUserCode());
 		invoiceService.linkInvoice(invoice);
 		if (masterInvoice.getId() != null) {
 			Invoice childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
 			if (childInvoice != null) {
 				childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
 				childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				childInvoice.setUpdatedDate(commonUtil.currentDate());
+				childInvoice.setUpdatedBy(user.getUserCode());
 				invoiceService.linkInvoice(childInvoice);
 			}
 			else {
 				Invoice parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
 				parentInvoice.setPreviousInvoiceStatus(parentInvoice.getInvoiceStatus());
 				parentInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				parentInvoice.setUpdatedDate(commonUtil.currentDate());
+				parentInvoice.setUpdatedBy(user.getUserCode());
 				invoiceService.linkInvoice(parentInvoice);
 			}
 		}
