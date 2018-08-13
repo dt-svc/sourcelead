@@ -3,7 +3,7 @@
 
 <div id="tab-4" class="tabsMenu_tabs_inn clearfix">
   <div id="loanAndAdvancesDetailsLoading"></div>
-    <form:form id="associate_informationDetails_form" name="associate_informationDetails_form" method="post">
+    <form:form id="associate_loanAndAdvance_form" name="associate_loanAndAdvance_form" method="post">
 	 	  <input type="hidden" name="associateUserId" id="loanAndAdvAssociateUserId"/>
 	      <input type="hidden" name="loanAndAdvId" id="loanAndAdvId"/>
 	      <input type="hidden" id="loanAndAdvMaxAmount"/>
@@ -49,10 +49,11 @@
             <div class="clearfix">
 	         
 	         <div class="clearfix col-md-10 noPad mb">
-	           <div class="clearfix" id="requestTypeDiv" style="display: none;">
+	         
+	           <div class="clearfix" id="statusTypeDiv" style="display: none;">
 			         <div class="col-md-4 mb">
-		                  <label>Requested Amount<span class="text-danger">&nbsp;*</span></label>
-		                   <input type="text" class="form-control" name="requestedAmount" id="requestedAmount"  onblur="getDetuctAmountDetails();" field-name="Requested Amount">
+		                  <label>Amount<span class="text-danger">&nbsp;*</span></label>
+		                   <input type="text" class="form-control" name="loanAmount" id="requestedAmount"  onblur="getDetuctAmountDetails();" field-name="Amount">
 		              </div>
 		              
 		               <div class="col-md-4 mb">
@@ -68,16 +69,30 @@
 		                  </div>
 		              </div>
 		              
-		              <div class="col-md-4 mb">
+		              <div class="col-md-4 mb" id="effectiveDateDiv">
 		                  <label>Effective Date<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control calendar" name="effectiveDate"  id="effectiveDate" field-name="Effective Date"  readonly="readonly" >
 		              </div>
-		            
 		              
-	                  <div class="col-md-4 mb">
+		               <div class="col-md-4 mb" id="issuedOnDiv" style="display: none;">
+		                  <label>Issued On<span class="text-danger">&nbsp;*</span></label>
+		                   <input type="text" class="form-control calendar" name="issuedDate"  id="issuedDate" field-name="Issued On"  readonly="readonly" >
+		               </div>
+		               
+		               <div class="col-md-4 mb" id="paidAmountDiv" style="display: none;">
+		                  <label>Paid Amount<span class="text-danger">&nbsp;*</span></label>
+		                  <input type="text" class="form-control" name="paidAmount" id="paidAmount" onblur="getDetuctAmountDetails();" field-name="Paid Amount">
+		               </div>
+		               
+		               <div class="col-md-4 mb">
 		                  <label>No Of Schedules<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control" name="noOfSchedules" id="noOfSchedules" onblur="getDetuctAmountDetails();" field-name="No Of Schedules">
 		              </div>
+		               
+		               <div class="col-md-4 mb" id="pendingAmountDiv" style="display: none;">
+		                  <label>Pending Amount<span class="text-danger">&nbsp;*</span></label>
+		                  <input type="text" class="form-control" name="pendingAmount" id="pendingAmount" field-name="Pending Amount">
+		               </div>
 		              
 		               <div class="col-md-4 mb">
 		                  <label>End Date<span class="text-danger">&nbsp;*</span></label>
@@ -103,9 +118,9 @@
 									data-validation=" validate_length length2-5000"
 									data-validation-optional="true"></textarea>
 		              </div>
-             </div>
              
               </div>
+        </div>      
               </div>
               
 	      </div>
@@ -127,6 +142,54 @@
      </form:form>
   
 </div>
+
+
+
+<script>
+ function saveLoanAndAdvanceDetails(){
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+	 
+	 if ($('#associate_loanAndAdvance_form').validate(false, validationSettings)){ 
+	        var formData = getFormData("associate_informationDetails_form");
+	      /*   $("#loanAndAdvancesDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	         $.ajax({
+		    	type: "POST",
+		    	data: formData,
+		    	 url: sourceleadUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
+		        success: function(response) {
+		        	$("#informationDetailsLoading").removeAttr('style');
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+      	    		    showError(response.responseMessage);
+      	    		}
+		        	else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		 var esipf = response.object;
+	                	 $("#pfesiId").val(esipf.id);
+		        		
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
+		        },
+		    });  */ 
+	        return true;
+	  } else {
+		return false;
+	  }
+ }
+ 
+ $('body').on('blur', '#associate_loanAndAdvance_form', function() {
+		$("#associate_loanAndAdvance_form").showHelpOnFocus();
+		$("#associate_loanAndAdvance_form").validateOnBlur(false, validationSettings);  
+	});
+ </script>
 
 <script>
 function getLoanAndAdvNames(){
@@ -238,6 +301,11 @@ function getDetuctAmountDetails(){
 			var interstRate = eval(loanAndAdvInterstRate / 100);
 			var interestAmount = (requestedAmount * interstRate);
 			var totalAmount = parseInt(requestedAmount) + parseInt(interestAmount);
+			var paidAmount = $("#paidAmount").val();
+			if(paidAmount != null && paidAmount != '' && paidAmount != 'undefined'){
+				totalAmount =  parseInt(totalAmount) - paidAmount;
+				$("#pendingAmount").val(totalAmount.toFixed(3));
+			}
 			var detuctAmount = eval(totalAmount / noOfSchedules);
 			$("#deductAmount").val(detuctAmount.toFixed(3));
 			
@@ -278,40 +346,81 @@ function getIndAssociateLoanAndAdvancesDetails(){
 <script>
 function getLoanAndAdvStatus(){
 	var loanAndAdvStatus = document.getElementById("loanAndAdvStatus").value;
-	if(loanAndAdvStatus == 'Requested'){
-	    var requestedDiv = document.getElementById("requestTypeDiv");
-	    requestedDiv.style.display = "block";	
-	    $("#requestedAmount").attr("data-validation", "required validate_int validate_length length1-12");
+	if(loanAndAdvStatus){
+		 var statusTypeDiv = document.getElementById("statusTypeDiv");
+		 statusTypeDiv.style.display = "block";	
+		 clearLoanAndAdvances();
+		$("#requestedAmount").attr("data-validation", "required validate_float validate_length length1-12");
 	    $("#scheduler").attr("data-validation", "required");
 	    $("#effectiveDate").attr("data-validation", "required");
-	    $("#deductAmount").attr("data-validation", "required validate_int validate_length length1-12");
+	    $("#deductAmount").attr("data-validation", "required");
 	    $("#noOfSchedules").attr("data-validation", "required validate_int validate_length length1-5");
 	    $("#endDate").attr("data-validation", "required");
 	    $("#loanAndAdvApprover").attr("data-validation", "required");
 	    
+	    if(loanAndAdvStatus == 'Outstanding'){
+		    var paidAmountDiv = document.getElementById("paidAmountDiv");
+		    paidAmountDiv.style.display = "block";	
+		    $("#paidAmount").attr("data-validation", "required  validate_float validate_length length1-12");
+		    
+		    var pendingAmountDiv = document.getElementById("pendingAmountDiv");
+		    pendingAmountDiv.style.display = "block";	
+		    $("#pendingAmount").attr("data-validation", "required  validate_float validate_length length1-12");
+	    }else{
+		    var paidAmountDiv = document.getElementById("paidAmountDiv");
+		    paidAmountDiv.style.display = "none";	
+		    $("#paidAmount").removeAttr("data-validation");
+		    
+		    var pendingAmountDiv = document.getElementById("pendingAmountDiv");
+		    pendingAmountDiv.style.display = "none";	
+		    $("#pendingAmount").removeAttr("data-validation");
+	    }
 	    
+	    if(loanAndAdvStatus == 'Completed' || loanAndAdvStatus == 'Outstanding'){
+	    	
+	    	var issuedOnDiv = document.getElementById("issuedOnDiv");
+	    	issuedOnDiv.style.display = "block";	
+		    $("#issuedDate").attr("data-validation", "required");
+		    
+	    }else{
+	    	var issuedOnDiv = document.getElementById("issuedOnDiv");
+	    	issuedOnDiv.style.display = "none";	
+		    $("#issuedDate").removeAttr("data-validation");
+	    }
+	
 	}else{
-		var requestedDiv = document.getElementById("requestTypeDiv");
-		requestedDiv.style.display = "none";	
-	    $("#requestedAmount").removeAttr("data-validation");
-	    $("#scheduler").removeAttr("data-validation");
-	    $("#effectiveDate").removeAttr("data-validation");
-	    $("#deductAmount").removeAttr("data-validation");
-	    $("#noOfSchedules").removeAttr("data-validation");
-	    $("#endDate").removeAttr("data-validation");
-	    $("#loanAndAdvApprover").removeAttr("data-validation");
-	    
-	    $("#requestedAmount").val("");
-	    $("#scheduler").val("");
-	    $("#effectiveDate").val("");
-	    $("#deductAmount").val("");
-	    $("#noOfSchedules").val("");
-	    $("#endDate").val("");
-	    $("#description").val("");
-	    $("#loanAndAdvApprover").val("");
-	    $("#loanAndAdvApprover").trigger("chosen:updated");
-	    
+	    var statusTypeDiv = document.getElementById("statusTypeDiv");
+	    statusTypeDiv.style.display = "none";
+		clearLoanAndAdvances();
 	}
+	
+	function clearLoanAndAdvances(){
+		 	
+		   $("#requestedAmount").removeAttr("data-validation");
+		    $("#scheduler").removeAttr("data-validation");
+		    $("#effectiveDate").removeAttr("data-validation");
+		    $("#deductAmount").removeAttr("data-validation");
+		    $("#noOfSchedules").removeAttr("data-validation");
+		    $("#endDate").removeAttr("data-validation");
+		    $("#loanAndAdvApprover").removeAttr("data-validation");
+		    $("#issuedDate").removeAttr("data-validation");
+		    $("#paidAmount").removeAttr("data-validation");
+		    $("#pendingAmount").removeAttr("data-validation");
+		    
+		    $("#requestedAmount").val("");
+		    $("#scheduler").val("");
+		    $("#effectiveDate").val("");
+		    $("#deductAmount").val("");
+		    $("#noOfSchedules").val("");
+		    $("#endDate").val("");
+		    $("#description").val("");
+		    $("#issuedDate").val("");
+		    $("#paidAmount").val("");
+		    $("#pendingAmount").val("");
+		    $("#loanAndAdvApprover").val("");
+		    $("#loanAndAdvApprover").trigger("chosen:updated");
+	}
+	
 }
 </script>
 
@@ -336,10 +445,27 @@ $(function() {
 		    onClose : function(selected) {
 	        	var dt = $(this).datepicker('getDate', '+1d');
 	        	getDetuctAmountDetails();
+	        	clearDateValidations();
 			}
 			 
 		});
 	  
+	  $('#issuedDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+		    onClose : function(selected) {
+	        	var dt = $(this).datepicker('getDate', '+1d');
+	        	clearDateValidations();
+			}
+			 
+		});
 	
 });
+
+
+function clearDateValidations(){
+	$('#effectiveDateDiv').find('p.jquery_form_error_message').remove();
+	$('#issuedOnDiv').find('p.jquery_form_error_message').remove();
+}
 </script>
