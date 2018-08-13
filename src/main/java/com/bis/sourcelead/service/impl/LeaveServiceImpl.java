@@ -84,6 +84,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.rest.TimesheetRestController;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
@@ -2706,5 +2707,126 @@ public class LeaveServiceImpl implements LeaveService{
 	{
 		return leaveDao.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgId,orgLocationId,loginUserRole);
 	}
+
+	@Override
+	public List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId ) {
+		return leaveDao.getLeaveTypeNamesByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList) {
+		return leaveDao.getLeaveNamesByOrgLocationId(orgLocationId,userleaveTypeList,leaveTypesList);
+	}
+
+	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId ) throws Exception {
+		return leaveDao.getDepartmentTypeNamesByOrgLocationIdAndUserId(userId);
+	}
+
+	@Override
+	public Sheet getLeaveBalanceExcelFile(Sheet createExcelsheet,Workbook createExcelworkbook,Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation) throws Exception{
+		Row writeRow = null;
+        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,LeaveBalanceReport,orgLocation);
+        List<LeaveBalanceReportDTO> list = (List<LeaveBalanceReportDTO>) LeaveBalanceReport.getObject().getUsers();
+        int column=0;
+        for(LeaveBalanceReportDTO lBR : list) {
+       	 writeRow = createExcelsheet.createRow(column+1);
+       	createExcelsheet = createXlsBalanceSheet(createExcelsheet,writeRow,column,lBR,LeaveBalanceReport);
+       	 column++;
+        }
+		return createExcelsheet;
+	}
+	
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation) {
+
+		CellStyle style = createExcelworkbook.createCellStyle();
+	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	     org.apache.poi.ss.usermodel.Font font = createExcelworkbook.createFont();
+        font.setColor(IndexedColors.BLACK.getIndex());
+         style.setFont(font);
+         List<String> headers = new ArrayList<String>();
+ 		headers.add("Employee Name");
+ 		headers.add("Employee Type");
+ 		headers.add("Department");
+ 		headers.add("Role");
+ 		for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
+ 		{
+ 		headers.add(str);
+ 		}
+ 		headers.add("TotalBalanceLeaves");
+		 writeRow = createExcelsheet.createRow(0);
+		 createExcelsheet.setColumnWidth(0, 10000);
+		 createExcelsheet.setColumnWidth(1, 10000);
+		 createExcelsheet.setColumnWidth(2, 10000);
+		 createExcelsheet.setColumnWidth(3, 10000);
+		 for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
+		 {
+			 int i=4;
+			 createExcelsheet.setColumnWidth(i, 5000); 
+			 i++;
+		 }
+		 createExcelsheet.setColumnWidth(headers.size(),5000);
+
+		 
+		return createExcelsheet = commonUtil.setExcelHeader(createExcelsheet,style,headers,0);
+	}
+
+private Sheet createXlsBalanceSheet(Sheet createExcelsheet, Row writeRow, int column,LeaveBalanceReportDTO leaveBalanceReportDTO,Response<LeaveBalanceReportDTO> LeaveBalanceReport) throws Exception {
+	
+	if(leaveBalanceReportDTO.getEmpName() !=null){
+		 writeRow.createCell(0).setCellValue(leaveBalanceReportDTO.getEmpName()); 
+	 }
+	else{
+		   writeRow.createCell(0).setCellValue("--");   
+	   }
+	   if(leaveBalanceReportDTO.getEmpType() !=null){
+		   writeRow.createCell(1).setCellValue(leaveBalanceReportDTO.getEmpType());
+	   }
+	   else{
+		   writeRow.createCell(1).setCellValue("--");   
+	   }
+	   
+	   if(LeaveBalanceReport.getObject().getDepart().entrySet() != null) {
+		   for(Map.Entry<Long, String> k: LeaveBalanceReport.getObject().getDepart().entrySet()){
+				Long ltv =   k.getKey();
+				String lti = k.getValue();
+				if(ltv == leaveBalanceReportDTO.getUserId().longValue()){
+				  
+			   writeRow.createCell(2).setCellValue(lti);
+		   }
+		   }
+	   }else{
+		   writeRow.createCell(2).setCellValue("--");   
+	   }
+	
+	   if(leaveBalanceReportDTO.getRole() !=null){
+		   writeRow.createCell(3).setCellValue(leaveBalanceReportDTO.getRole());
+	   }
+	   else{
+		   writeRow.createCell(3).setCellValue("--");   
+	   }
+	   float lo =0;
+	   int i=4;
+	   float l=0;
+	   for (String str :LeaveBalanceReport.getObject().getLeaveTypeNames()) {
+			for(Map.Entry<String, Float> k: LeaveBalanceReport.getObject().getMap().entrySet()){
+				String[] ltName =   k.getKey().split("-");
+				if((Long.parseLong(ltName[1]) == leaveBalanceReportDTO.getUserId().longValue()) && (ltName[0].equalsIgnoreCase(str))){
+					 l = k.getValue();
+					 writeRow.createCell(i).setCellValue(l);
+				       lo = lo+l;
+					 }else if(ltName[0] == null &&str == null)
+						writeRow.createCell(i).setCellValue("--");		
+			          }
+		i++;} 
+	   writeRow.createCell(i).setCellValue(lo);
+	   return createExcelsheet;
+}
+
+@Override
+public File getLeaveBalancePdfFile(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation) throws Exception
+{
+	return pdfUtil.creategetLeaveBalancePdfTable(LeaveBalanceReport,orgLocation);
+}
 
 }

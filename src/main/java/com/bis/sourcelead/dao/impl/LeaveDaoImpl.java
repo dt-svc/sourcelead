@@ -18,6 +18,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -1306,5 +1308,82 @@ public class LeaveDaoImpl implements LeaveDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 		return response;
+	}
+
+
+	@Override
+	@Transactional
+	public List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId){
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select lt.NAME from LEAVE_TYPE lt where lt.STATUS =1 and lt.ORGLOCATION_ID =:orgLocationId and lt.VISIBLE_IN_BALANCE_LEAVES='Y'";
+		Query queryString = session.createSQLQuery(query);
+		queryString.setLong("orgLocationId",orgLocationId);
+		List<String> leaveTypeNames = queryString.list(); 
+		return leaveTypeNames;
+		
+	}
+
+
+	@Override
+	@Transactional
+	public Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList){
+		HashMap<String,List<LeaveBalanceReportDTO>> resultMap = new HashMap<>();
+		try {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery1 ="";
+		if(userleaveTypeList !=null && userleaveTypeList.size() > 0)
+			subQuery1 = " and lt.ID IN (:userleaveTypeList)";
+		String subQuery3 ="";
+		if(leaveTypesList !=null && leaveTypesList.size() > 0)
+			subQuery3 = " and lt.LEAVE_TYPE IN (:leaveTypesList)";
+		
+		String query = "select lt.NAME AS name,lt.ID AS id from LEAVE_TYPE lt where  lt.STATUS =1 and lt.VISIBLE_IN_BALANCE_LEAVES='Y' and lt.ORGLOCATION_ID =:orgLocationId"+subQuery1+subQuery3;
+		String query1 ="select d.DEPARTMENT_NAME AS deparmentNames,d.ID AS departmentId from DEPARTMENT d where d.ORG_LOCATION_ID =:orgLocationId";
+		Query queryString1 = session.createSQLQuery(query1);
+		queryString1.setLong("orgLocationId",orgLocationId);
+		Query queryString = session.createSQLQuery(query);
+		if(userleaveTypeList !=null && userleaveTypeList.size() > 0)
+		queryString.setParameterList("userleaveTypeList",userleaveTypeList);
+		if(leaveTypesList !=null && leaveTypesList.size() > 0)
+		queryString.setParameterList("leaveTypesList",leaveTypesList);
+		queryString.setLong("orgLocationId",orgLocationId);
+		queryString.setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class));
+		queryString1.setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class));
+		List<LeaveBalanceReportDTO> departments = (List<LeaveBalanceReportDTO>) queryString1.list();
+		if(departments !=null && departments.size() > 0)
+		resultMap.put("DEPARMENTS", departments);
+		resultMap.put("LEAVETYPES", queryString.list());
+		return resultMap;
+	}catch (Exception e) {
+		logger.error("Leave and Department List Loading Failed Due to "
+				+ e.getLocalizedMessage());
+	}
+	return resultMap;
+
+	}
+
+
+	@Override
+	@Transactional
+	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId)  {
+		String depart =new String();
+		try {
+			LeaveBalanceReportDTO depar = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query="select d.DEPARTMENT_NAME As department  from DEPARTMENT d,EMPLOYEE e where e.DEPARTMENT_ID=d.ID and e.USER_ID =:userId ";
+		Query department=session.createSQLQuery(query);
+		department.setLong("userId", userId);
+	    department.setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class));
+		List<LeaveBalanceReportDTO> dep=department.list();
+		if(dep !=null && dep.size() > 0) {
+		 depar =dep.get(0);
+		 String departk = depar.getDepartment();
+		return departk;
+	}}catch (Exception e) {
+		logger.error("Leave and Department List Loading Failed Due to "
+				+ e.getLocalizedMessage());
+}
+		return depart;
 	}
 }
