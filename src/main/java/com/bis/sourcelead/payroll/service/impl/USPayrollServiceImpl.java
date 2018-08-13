@@ -143,12 +143,12 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			
 			for(EmployeePayroll payroll : payrollList) {
 				// Deductions
-				ResponseList<DeductionDTO> dedRes = associateDeductionService.findAllDeductionSummaryByUserId(payroll.getUser().getId(), orgLocation);
+				ResponseList<DeductionDTO> dedRes = associateDeductionService.findAllDeductionSummaryByCandidateId(payroll.getCandidate().getId(), orgLocation);
 				if(dedRes.getData() != null) {
 					dedList.addAll(dedRes.getData());
 				}
 				// Contributions
-				ResponseList<ContributionDTO> contributionRes = associateContributionService.findAllContributionSummaryByUserId(payroll.getUser().getId(), orgLocation);
+				ResponseList<ContributionDTO> contributionRes = associateContributionService.findAllContributionSummaryByCandidateId(payroll.getCandidate().getId(), orgLocation);
 				if(contributionRes.getData() != null) {
 					contriList.addAll(contributionRes.getData());
 				}
