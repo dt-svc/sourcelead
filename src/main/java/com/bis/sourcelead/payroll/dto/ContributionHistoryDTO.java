@@ -8,7 +8,7 @@ public class ContributionHistoryDTO {
 	
 	private BigInteger id;
 	
-	private BigInteger userId;
+	private BigInteger candidateId;
 	
 	private BigInteger contributionId;
 	
@@ -28,10 +28,6 @@ public class ContributionHistoryDTO {
 		return id;
 	}
 
-	public BigInteger getUserId()
-	{
-		return userId;
-	}
 
 	public BigInteger getContributionId()
 	{
@@ -64,10 +60,6 @@ public class ContributionHistoryDTO {
 		this.id = id;
 	}
 
-	public void setUserId(BigInteger userId)
-	{
-		this.userId = userId;
-	}
 
 	public void setContributionId(BigInteger contributionId)
 	{
@@ -103,6 +95,18 @@ public class ContributionHistoryDTO {
 	public void setAmount(BigDecimal amount)
 	{
 		this.amount = amount;
+	}
+
+
+	public BigInteger getCandidateId()
+	{
+		return candidateId;
+	}
+
+
+	public void setCandidateId(BigInteger candidateId)
+	{
+		this.candidateId = candidateId;
 	}
 
 

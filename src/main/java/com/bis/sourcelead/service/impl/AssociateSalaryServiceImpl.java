@@ -300,4 +300,10 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 		List<AssociateSalary> list = associateSalaryDao.getAssociateSalaryListByGroupId(orgLocation,groupId);
 		return list;
 	}
+
+	@Override
+	public List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId)
+	{
+		return associateSalaryDao.findAssociatePayItemByPayrollId(payrollId);
+	}
 }
