@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 public interface UserService  {
 
 	User findByUserName(String username);
@@ -244,6 +245,8 @@ public interface UserService  {
 	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId);
 
 	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
+	
+	 List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception;
 
 
 }	
