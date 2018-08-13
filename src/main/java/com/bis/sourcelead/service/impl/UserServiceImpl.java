@@ -274,20 +274,6 @@ public class UserServiceImpl implements UserService {
 	    	user.setWorkLocation(orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation())));
 	    }
 	    
-	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
-	    	user.setResidenceAddress(addUserDTO.getResidenceAddress());
-	    	user.setResidenceCountry(addUserDTO.getResidenceCountry());
-	    	user.setResidenceState(addUserDTO.getResidenceState());
-	    	user.setResidenceCity(addUserDTO.getResidenceCity());
-	    	user.setResidenceLatitude(addUserDTO.getResidenceLatitude());
-	    	user.setResidenceLongitude(addUserDTO.getResidenceLongitude());
-	    	user.setResidenceZipCode(addUserDTO.getResidenceZipCode());
-	    	user.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
-	    	
-	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
-	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
-	    	user.setResidenceStateCode(stateCode);
-	    }
 	    
        //For saving the User Role 
 	  
@@ -413,6 +399,21 @@ public class UserServiceImpl implements UserService {
 				if(StringUtils.isNotBlank(addUserDTO.getDesignationOtherType())){
 					candidate.setDesignationOtherType(addUserDTO.getDesignationOtherType());
 				}
+				
+				   if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+					   candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
+					   candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
+					   candidate.setResidenceState(addUserDTO.getResidenceState());
+					   candidate.setResidenceCity(addUserDTO.getResidenceCity());
+					   candidate.setResidenceLatitude(addUserDTO.getResidenceLatitude());
+					   candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
+					   candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
+					   candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+				    	
+				    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+				    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+				    	candidate.setResidenceStateCode(stateCode);
+				    }
 				
 				MasterCandidate masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 				if(null == masterCandidate){
