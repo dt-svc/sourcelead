@@ -556,6 +556,7 @@
 		result = result + '<th>WC Cost</th>';
 		result = result + '<th>Admin Fee</th>';
 		result = result + '<th>Total ER Cost</th>';
+		result = result + '<th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 		result = result + "</table>";
@@ -607,7 +608,9 @@
 								"data" : "adminFee"
 							}, {
 								"data" : "totalErCost"
-							} ],
+							}, {
+								"data" : "action"
+							}],
 							"columnDefs" : [
 									{
 										"targets" : colIndex++,
@@ -802,6 +805,15 @@
 													+ '</div></td>';
 											return result;
 										}
+									},
+									{
+										"targets" : colIndex++,
+										"data" : "action",
+										"render" : function(data, type, opt, meta) {
+											var result = "";
+											result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'EmployeePayrollCost\')"></i></div></td>';
+											return result;
+										}
 									} ],
 							"scrollCollapse" : false,
 							"lengthMenu" : [ [ 10, 15, 20 ], [ 10, 15, 20 ] ],
@@ -829,6 +841,25 @@
 	function employeeDataSearch(){
 		loadEmployeePayrollCost();
 	}
+	
+function deletePayrollEntity(uuid,entityType){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.get(sourceleadUrl+"/deletePayrollEntitiesByUUIDAndEntityType?"+tokenParamName+"="+tokenValue+"&uuid="+uuid+"&entityType="+entityType,  function(result) {
+		if(entityType == "EmployeePayrollCost"){
+			loadEmployeePayrollCost();
+		}else if(entityType == "WageTaxSummary"){
+			wagesAndTaxList();
+		}else if(entityType == "AccountDeductions"){
+			accountDeductionsList();
+		}else if(entityType == "HrDeductions"){
+			hrDeductionsList();
+		}else if(entityType == "Checks"){
+			bisChecksList();
+		}else if(entityType == "InvoiceData"){
+			getInvoiceDetails();
+		}
+	}); 
+}
 </script>
 
 

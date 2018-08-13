@@ -52,6 +52,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostService {
@@ -208,6 +209,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							employerPayrollCost.setUpdatedBy(user.getUserCode());
 							employerPayrollCost.setUpdatedDate(new Date());
 							employerPayrollCost.setOrgLocationId(orgLocation);
+							employerPayrollCost.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 							EmployerPayrollCost empPayrollCost = saveEmpPayrollCost(employerPayrollCost);
 							if(empPayrollCost != null){
 								count++;
@@ -235,7 +237,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	 * @return EmployerPayrollCost
 	 * @throws Exception 
 	 */
-	private EmployerPayrollCost saveEmpPayrollCost(EmployerPayrollCost employerPayrollCost) throws Exception {
+	public EmployerPayrollCost saveEmpPayrollCost(EmployerPayrollCost employerPayrollCost) throws Exception {
 		return employerPayrollCostDao.saveEmployerPayrollCost(employerPayrollCost);
 	}
 
@@ -436,6 +438,13 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 		  
 		  
 		return responseList; 
+	}
+
+
+	@Override
+	public List<EmployerPayrollCost> getEmployerPayrollCostByLocationId(Long locationId)
+	{
+		return employerPayrollCostDao.getEmployerPayrollCostByLocationId(locationId);
 	}
 
 }

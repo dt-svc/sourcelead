@@ -19,10 +19,16 @@ window.onload = function () {
     </section>
 
 <div class="project_side_wrap_inn_tabs clearfix">
-	<ul class="project-tabs-menu clearfix">
+	<ul class="project-tabs-menu pull-left">
 		<li class="current"><a href="#tab-1" onclick="getUserPayrollList();">My Payroll</a></li>
 		<li><a href="#tab-2" onclick="getInvoiceData();">Invoice Data</a></li>
+<!-- 		<li><a href="#tab-3" onclick="getBalanceReport();">Balance report</a></li> -->
 	</ul>
+	<%-- <div class="pull-left tabBt">
+		<a href="${appPath}/payrollReport?&fromType=Employee">Balance report</a>
+	</div>	 --%>
+	<div class="clearfix"></div>
+	
 	<div class="project_tabs">
 		<div id="tab-1" class="project_tabs_inn" style="display: block;">
 <div class="clearfix"></div>
@@ -49,6 +55,14 @@ window.onload = function () {
 				<div id="invoiceDataDiv"></div>
 			</div>
 		</div>
+		
+		<!-- <div id="tab-3" class="project_tabs_inn">
+			<div class="timesheet_head minHeight"></div>
+				<div class="project_wrap_table datatable_filter">
+				<div id="">sdffsdf</div>
+				<div id="balanceReportDiv"></div>
+			</div>
+		</div> -->
 	</div>
 	</div>
       <!-- Content Area Ends--> 

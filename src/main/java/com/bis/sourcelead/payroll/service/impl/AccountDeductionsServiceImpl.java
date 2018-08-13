@@ -50,6 +50,7 @@ import com.bis.sourcelead.payroll.service.InvoiceDataService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class AccountDeductionsServiceImpl implements AccountDeductionsService{
@@ -249,6 +250,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 									accountDeductions.setBatchNumber(jsonObj.getString("batchNumber"));
 								}
 							}
+							accountDeductions.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 							accountDeductions.setCreatedBy(user.getUserCode());
 							accountDeductions.setCreatedDate(new Date());
 							accountDeductions.setUpdatedBy(user.getUserCode());

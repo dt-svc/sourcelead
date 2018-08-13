@@ -29,4 +29,8 @@ public interface EmployerPayrollCostService {
 
 	ResponseList<PayrollBalance> getAllPayrollBalanceSheetByOrgLocationId(OrgLocations orgLocation,PayrollBalance payrollBalance)	throws Exception;
 
+	List<EmployerPayrollCost> getEmployerPayrollCostByLocationId(Long locationId);
+	
+	EmployerPayrollCost saveEmpPayrollCost(EmployerPayrollCost employerPayrollCost) throws Exception;
+
 }
