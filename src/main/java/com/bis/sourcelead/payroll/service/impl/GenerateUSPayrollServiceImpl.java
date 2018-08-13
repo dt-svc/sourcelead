@@ -158,7 +158,14 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
 		
 		if (assSallist != null && assSallist.size() >0) {
-			PaysheetFrequency paySheetFreq = new PaysheetFrequency();
+			PaysheetFrequency paySheetFreq = null;
+			if(existedData != null) {
+				 paySheetFreq = new PaysheetFrequency();
+				 paySheetFreq.setId(existedData.getPaySheetFrequencyId());
+			}else {
+				 paySheetFreq = new PaysheetFrequency();
+			}
+			
 			paySheetFreq.setUserGroup(userGroup);
 			paySheetFreq.setOrgLocation(orgLocation);
 			String[] payPeriod = generateUSPayrollDTO.getPayPeriod().split(",");
