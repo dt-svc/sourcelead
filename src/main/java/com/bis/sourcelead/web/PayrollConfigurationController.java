@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 
+import java.util.Calendar;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,17 +16,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.PayrollPaytypeDTO;
+import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollBonus;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.PayrollBonusService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollPaytypeService;
+import com.bis.sourcelead.service.PayrollTaxService;
+import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -52,6 +60,9 @@ public class PayrollConfigurationController {
 	
 	@Autowired
 	PayrollPayheadService payrollPayheadService;
+	
+	@Autowired
+	private PayrollTaxService payrollTaxService;
 	
 	
 	@RequestMapping(value = "/indPayrollConfiguration")
@@ -209,6 +220,45 @@ public class PayrollConfigurationController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	
+	@RequestMapping(value = "/payrollTaxConfiguration")
+	public ModelAndView taxConfiguration(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				// commonUtil.highLightMenu(Constants.OrgSettings, request);
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
+				String financialStartMonth = orgLocations.getStartMonth();
+				String financialEndMonth = orgLocations.getEndMonth();
+
+				Calendar c = Calendar.getInstance();
+				String fromYear = c.get(Calendar.YEAR) + "";
+				c.roll(Calendar.YEAR, 1);
+				String toYear = c.get(Calendar.YEAR) + "";
+//				String financialYear = fromYear + "-" + toYear;
+				
+				PayrollTaxDTO payrollTaxDTO = null;
+				if(financialStartMonth == null || financialStartMonth.isEmpty() || financialEndMonth == null || financialEndMonth.isEmpty()) {
+					payrollTaxDTO = payrollTaxService.getPayrollTaxConfigurationForOrgLocation(orgLocations.getState(), (fromYear + "-" + toYear), "Income Tax");
+				} else {
+					payrollTaxDTO = payrollTaxService.getPayrollTaxConfigurationByOrgLocationId(orgLocations.getId(), (financialStartMonth + "_" + fromYear) + "-" + (financialEndMonth + "_" + toYear));
+				}
+				if (payrollTaxDTO == null) {
+					payrollTaxDTO = payrollTaxService.getPayrollTaxConfigurationForOrgLocation(orgLocations.getState(), (fromYear + "-" + toYear), "Income Tax");
+				}
+				modelAndView.addObject("tax", payrollTaxDTO);
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+				modelAndView.addObject("orgLocations", orgLocations);
+				modelAndView.setViewName("indPayroll/taxConfiguration");
+			} else {
+				modelAndView.setViewName("login");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
 
 }

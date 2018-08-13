@@ -7620,6 +7620,7 @@ padding: 5px 10px;
 .chosen-disabled {
   opacity: 0.95 !important;
 }
+.chosen-disabled a { cursor: no-drop !important;}
 .text-danger {
 color: #a94442 !important;
 }

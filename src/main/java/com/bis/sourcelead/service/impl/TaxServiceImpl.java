@@ -30,8 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.PayrollTaxDao;
 import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
+import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
@@ -51,6 +53,7 @@ import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PayrollTax;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxChallan;
 import com.bis.sourcelead.entity.SourceleadTaxChallanItem;
@@ -98,6 +101,9 @@ public class TaxServiceImpl implements TaxService {
 
 	@Autowired
 	private TaxDao taxDao;
+	
+	@Autowired
+	private PayrollTaxDao payrollTaxDao;
 
 	@Autowired
 	private StatesService statesService;
@@ -159,10 +165,38 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
+	public StateTaxDTO getStateTaxByStateNameAndFinancialYear(String stateName, String financialYear) {
+		StateTaxDTO stateTaxDTO = new StateTaxDTO();
+		try {
+			StateTax stateTax = taxDao.getStateTaxByStateNameAndFinancialYear(stateName, financialYear);
+			if (stateTax != null) {
+				stateTaxDTO = getStateTaxDTO(stateTax, true);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return stateTaxDTO;
+	}
+
+	@Override
 	public CentralTaxDTO getCentralTax(String centraltaxuuid) {
 		CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
 		try {
 			CentralTax centralTax = taxDao.getCentralTax(centraltaxuuid);
+			if (centralTax != null) {
+				centralTaxDTO = getCentralTaxDTO(centralTax, true);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return centralTaxDTO;
+	}
+
+	@Override
+	public CentralTaxDTO getCentralTaxByTaxType(String taxType) {
+		CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
+		try {
+			CentralTax centralTax = taxDao.getCentralTaxByTaxType(taxType);
 			if (centralTax != null) {
 				centralTaxDTO = getCentralTaxDTO(centralTax, true);
 			}
@@ -1672,6 +1706,7 @@ public class TaxServiceImpl implements TaxService {
 		}
 		return taxSubmissionMasterDTOList;
 	}
+
 	
 }
 

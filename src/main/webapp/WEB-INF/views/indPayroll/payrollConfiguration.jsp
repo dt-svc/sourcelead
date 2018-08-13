@@ -79,7 +79,7 @@
 		<h2 class="text-warning">Taxes</h2>
 		<p>Manage your taxes</p>
 		<span>
-			<a  class="btn btn-info btn-sm mr10" href="#">Configure</a> 
+			<a  class="btn btn-info btn-sm mr10" href="${appPath}/payrollTaxConfiguration">Configure</a> 
 		</span>
 		</div>
 	</div>
