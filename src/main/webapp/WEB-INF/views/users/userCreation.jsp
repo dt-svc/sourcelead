@@ -1443,11 +1443,11 @@ var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 				indInformationDetails.className = "disabledLink";
 			} 
 			
-			/* var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
+			 var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
 			if(indLoanAndAdvancesDetails){
 				indLoanAndAdvancesDetails.href = "#";
 				indLoanAndAdvancesDetails.className = "disabledLink";
-			}  */
+			}  
 			
 			
 		}

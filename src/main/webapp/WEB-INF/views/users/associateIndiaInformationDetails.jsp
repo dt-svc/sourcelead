@@ -70,7 +70,7 @@
 	                 <div class="col-md-6">
 	                   <div class="pull-right">
 	                    <button type="button" class="btn btn-success btnSuccess" id="savePaymentButton" onclick="saveOnboardingCandidatePfEsiDetails();" >Save & Continue</button>
-                        <input value="Cancel" class="btn btn-default ml10" type="button">
+                          <button type="button" class="btn btn-default ml10" onclick="skipToLoanAndAdvTab();" >Skip</button>
 	                    </div>
 	                 </div>
                 </div>
@@ -110,6 +110,10 @@
 		        	} else if (response.response === "SUCCESS") {
 		        		 var esipf = response.object;
 	                	 $("#pfesiId").val(esipf.id);
+	                	 var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
+						 document.getElementById("indLoanAndAdvancesDetails").removeAttribute("class");
+						 indInformationDetails.href="#tab-4";
+						 $("#indLoanAndAdvancesDetails").click();
 		        		
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
@@ -128,6 +132,15 @@
 		$("#associate_informationDetails_form").showHelpOnFocus();
 		$("#associate_informationDetails_form").validateOnBlur(false, validationSettings);  
 	});
+ </script>
+ 
+ <script>
+ function skipToLoanAndAdvTab(){
+	 var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
+	 document.getElementById("indLoanAndAdvancesDetails").removeAttribute("class");
+	 indInformationDetails.href="#tab-4";
+	 $("#indLoanAndAdvancesDetails").click();
+ }
  </script>
  
  

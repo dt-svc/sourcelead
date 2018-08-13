@@ -38,8 +38,8 @@
                     <select class="form-control" data-placeholder="Select Type" id="loanAndAdvStatus" onchange="getLoanAndAdvStatus();getLoanAndAdvDetails();" name="loanAndAdvStatus" data-validation="required" field-name="Status">
                       <option value="">-- Select Status --</option>
                       <option value="Requested">Requested</option>
-                      <option value="Completed">Completed</option>
                       <option value="Outstanding">Outstanding</option>
+                      <option value="Completed">Completed</option>
                     </select>
                   </div>
               </div>
@@ -51,12 +51,12 @@
 	         <div class="clearfix col-md-10 noPad mb">
 	         
 	           <div class="clearfix" id="statusTypeDiv" style="display: none;">
-			         <div class="col-md-4 mb">
+			         <div class="col-md-4 minHeight">
 		                  <label>Amount<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control" name="loanAmount" id="requestedAmount"  onblur="getDetuctAmountDetails();" field-name="Amount">
 		              </div>
 		              
-		               <div class="col-md-4 mb">
+		               <div class="col-md-4 minHeight">
 		                  <label>Scheduler<span class="text-danger">&nbsp;*</span></label>
 		                  <div class="dropdown-select">
 		                    <select class="form-control" data-placeholder="Select Type" id="scheduler" onchange="getDetuctAmountDetails();" name="scheduler"  field-name="Scheduler">
@@ -69,49 +69,49 @@
 		                  </div>
 		              </div>
 		              
-		              <div class="col-md-4 mb" id="effectiveDateDiv">
+		              <div class="col-md-4 minHeight" id="effectiveDateDiv">
 		                  <label>Effective Date<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control calendar" name="effectiveDate"  id="effectiveDate" field-name="Effective Date"  readonly="readonly" >
 		              </div>
 		              
-		               <div class="col-md-4 mb" id="issuedOnDiv" style="display: none;">
+		               <div class="col-md-4 minHeight" id="issuedOnDiv" style="display: none;">
 		                  <label>Issued On<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control calendar" name="issuedDate"  id="issuedDate" field-name="Issued On"  readonly="readonly" >
 		               </div>
 		               
-		               <div class="col-md-4 mb" id="paidAmountDiv" style="display: none;">
+		               <div class="col-md-4 minHeight" id="paidAmountDiv" style="display: none;">
 		                  <label>Paid Amount<span class="text-danger">&nbsp;*</span></label>
 		                  <input type="text" class="form-control" name="paidAmount" id="paidAmount" onblur="getDetuctAmountDetails();" field-name="Paid Amount">
 		               </div>
 		               
-		               <div class="col-md-4 mb">
+		               <div class="col-md-4 minHeight">
 		                  <label>No Of Schedules<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control" name="noOfSchedules" id="noOfSchedules" onblur="getDetuctAmountDetails();" field-name="No Of Schedules">
 		              </div>
 		               
-		               <div class="col-md-4 mb" id="pendingAmountDiv" style="display: none;">
+		               <div class="col-md-4 minHeight" id="pendingAmountDiv" style="display: none;">
 		                  <label>Pending Amount<span class="text-danger">&nbsp;*</span></label>
 		                  <input type="text" class="form-control" name="pendingAmount" id="pendingAmount" field-name="Pending Amount">
 		               </div>
 		              
-		               <div class="col-md-4 mb">
+		               <div class="col-md-4 minHeight">
 		                  <label>End Date<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control calendar" name="endDate"  id="endDate" field-name="End Date"  readonly="readonly" >
 		              </div>
 		              
-		              <div class="col-md-4 mb">
+		              <div class="col-md-4 minHeight">
 		                  <label>Deduct Amount<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control" name="deductAmount" id="deductAmount" readonly="readonly" field-name="Deduct Amount">
 		              </div>
 		              
-		              <div class="col-md-4 mb">
+		              <div class="col-md-4 minHeight">
 		                  <label>Approver<span class="text-danger">&nbsp;*</span></label>
 		                   <select class="form-control chosen-select" name="loanAndAdvApprover" id="loanAndAdvApprover"  field-name="Approver" field-name="Approver">
                         		<option value="">-- Select Approver --</option>
                    		   </select>
 		              </div>
 		              
-		               <div class="col-md-8 mb">
+		               <div class="col-md-8 minHeight">
 		                  <label>Description</label>
 		                  <textarea rows="4" class="form-control" id="description"
 									name="description" field-name="Description"
@@ -155,14 +155,14 @@
 	         }; 
 	 
 	 if ($('#associate_loanAndAdvance_form').validate(false, validationSettings)){ 
-	        var formData = getFormData("associate_informationDetails_form");
-	      /*   $("#loanAndAdvancesDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        var formData = getFormData("associate_loanAndAdvance_form");
+	        $("#loanAndAdvancesDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
+		    	 url: sourceleadUrl+"/saveAssociateLoanAndAdvanceDetails?",
 		        success: function(response) {
-		        	$("#informationDetailsLoading").removeAttr('style');
+		        	$("#loanAndAdvancesDetailsLoading").removeAttr('style');
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
       	    		    showError(response.responseMessage);
       	    		}
@@ -178,7 +178,7 @@
 		        	    showError("Operation failed, please try again");
 		        	}
 		        },
-		    });  */ 
+		    });  
 	        return true;
 	  } else {
 		return false;
