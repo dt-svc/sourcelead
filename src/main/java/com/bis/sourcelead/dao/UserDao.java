@@ -195,6 +195,5 @@ public interface UserDao {
 	public long saveDashboardItems(DashboardItems dashboardItems);
 
 
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception;
 
 }

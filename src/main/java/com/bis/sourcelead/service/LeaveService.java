@@ -113,28 +113,6 @@ public interface LeaveService {
 
 	//ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(Long orgId, Long orgLocationId, String fromDate,String searchValue)throws Exception;
 
-	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId,String loginUserRole)throws Exception;
-	
-	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromDateToDate(HrLeaveReportDTO rLeaveReportDTO,Long orgId, Long orgLocationId)throws Exception;
-
-	
 	void updateBalanceLeaves(Leave leave, User user, OrgLocations orgLocations);
-
-	List<String> getLeaveTypeNamesByOrgLocationId(Long OrgLocationId);
-	
-	Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList);
-	
-	String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId ) throws Exception ;
-	
-    Sheet getLeaveBalanceExcelFile(Sheet createExcelsheet,Workbook createExcelworkbook,Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation)throws Exception;
-    File getLeaveBalancePdfFile(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation) throws Exception;
-	
-	public Sheet getDailyWiseLeaveExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<LeaveReportView>  leaveReportsList,OrgLocations orgLocations) throws Exception;
-	
-	public Sheet getLeaveReportExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<LeaveReportView>  leaveReportsList,OrgLocations orgLocations) throws Exception;
-
-	public File getDailyWiseLeavePdfFile(ResponseList<LeaveReportView>  leaveReportsList,OrgLocations orgLocations) throws Exception;
-	
-	public File getLeaveReportPdfFile(ResponseList<LeaveReportView>  leaveReportsList,OrgLocations orgLocations) throws Exception;
 
 }

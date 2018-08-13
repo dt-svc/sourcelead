@@ -246,7 +246,6 @@ public interface UserService  {
 
 	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 
-	 List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception;
 
 }	
 		

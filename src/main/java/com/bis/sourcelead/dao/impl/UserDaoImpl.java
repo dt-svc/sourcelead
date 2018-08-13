@@ -2235,33 +2235,5 @@ public class UserDaoImpl implements UserDao {
 		}
 		return -1;
 	}
-	@Override
-	@Transactional
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception{
-		Session session = this.sessionFactory.getCurrentSession();
-		List<LeaveBalanceReportDTO> userNameAndType = new ArrayList<LeaveBalanceReportDTO>();
-		String subQuery4="";
-		if(userRole !=null && userRole.size() > 0)
-			subQuery4 = " and ur.ROLE_ID IN (:userRole)";
-		String subQuery3=" ";
-		if(orgDepartmentsList !=null && orgDepartmentsList.size() > 0)
-			subQuery3 = " and e.DEPARTMENT_ID IN (:orgDepartmentsList)";
-	
-		String query ="select CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e where u.ID=ur.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID =:orgLocationId"+subQuery4+subQuery3;
-		//Query queryString = (Query) session.createSQLQuery(query).setLong("orgLocationId",orgLocationId).setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class)).list();
-		Query queryString = session.createSQLQuery(query);
-		queryString.setParameter("orgLocationId", orgLocationId);
-		if(userRole !=null && userRole.size() > 0) {
-		queryString.setParameterList("userRole", userRole);
-		}
-		if(orgDepartmentsList !=null && orgDepartmentsList.size() > 0) {
-			queryString.setParameterList("orgDepartmentsList", orgDepartmentsList);
-			}
-		queryString.setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class));
-		userNameAndType = queryString.list();
-		
-		return userNameAndType;
-		
-	}
 
 }

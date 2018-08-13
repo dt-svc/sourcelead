@@ -90,15 +90,4 @@ public interface LeaveDao {
 	
 //	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(Long orgId, Long orgLocationId, String fromDate,String searchValue) throws Exception;
 	
-	List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId);
-	
-	Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList) ;
-
-	String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId);
-
-	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId,String loginUserRole)throws Exception;
-
-	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(HrLeaveReportDTO hrLeaveReportDTO,Long orgId, Long orgLocationId)throws Exception;
-
-
 }

@@ -1755,8 +1755,4 @@ public class UserServiceImpl implements UserService {
 		return response;
 	}
 	
-	@Override
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception {
-		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList);
-	 }
 }
