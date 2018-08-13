@@ -7,7 +7,7 @@ public class DeductionHistoryDTO {
 	
 	private BigInteger id;
 	
-	private BigInteger userId;
+	private BigInteger candidateId;
 	
 	private BigInteger deductionId;
 	
@@ -26,10 +26,6 @@ public class DeductionHistoryDTO {
 		return id;
 	}
 
-	public BigInteger getUserId()
-	{
-		return userId;
-	}
 
 	public BigInteger getDeductionId()
 	{
@@ -61,10 +57,6 @@ public class DeductionHistoryDTO {
 		this.id = id;
 	}
 
-	public void setUserId(BigInteger userId)
-	{
-		this.userId = userId;
-	}
 
 	public void setDeductionId(BigInteger deductionId)
 	{
@@ -99,6 +91,18 @@ public class DeductionHistoryDTO {
 	public void setDeductionType(String deductionType)
 	{
 		this.deductionType = deductionType;
+	}
+
+
+	public BigInteger getCandidateId()
+	{
+		return candidateId;
+	}
+
+
+	public void setCandidateId(BigInteger candidateId)
+	{
+		this.candidateId = candidateId;
 	}
 
 	
