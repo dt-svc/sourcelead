@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.AssociatePayItem;
@@ -20,5 +21,7 @@ public interface AssociateSalaryService {
 	AssociatePayItem saveUpdatedPayItem(AssociatePayItem associatePayItem);
 
 	List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId);
+
+	List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId);
 	
 }
