@@ -580,7 +580,8 @@ public class USPayrollRestController {
 		public ResponseList<DeductionDTO> findAllDeductionSummaryByUserId(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			ResponseList<DeductionDTO>  res = associateDeductionService.findAllDeductionSummaryByUserId(userId,orgLocation);	
+			Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId, orgLocation.getId());
+			ResponseList<DeductionDTO>  res = associateDeductionService.findAllDeductionSummaryByCandidateId(candidate.getId(),orgLocation);	
 			return res;
 		}
 		

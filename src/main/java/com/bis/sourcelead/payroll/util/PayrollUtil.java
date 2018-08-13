@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.entity.AssociatePayItem;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
@@ -66,11 +67,11 @@ public class PayrollUtil {
 		return payPeriod;
 	}
 
-	public static boolean getEmployeeResident(User user)
+	public static boolean getEmployeeResident(Candidate candidate)
 	{
 		boolean isResident = false;
 		
-		String employeeState = user.getResidenceState();
+		String employeeState = candidate.getResidenceState();
 		switch (employeeState) {
 			case PayrollConstant.ALABAMA :
 				isResident = true;

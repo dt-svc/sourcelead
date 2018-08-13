@@ -102,12 +102,11 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 	}
 
 	@Override
-	public ResponseList<DeductionDTO> findAllDeductionSummaryByUserId(Long userId, OrgLocations orgLocation)
+	public ResponseList<DeductionDTO> findAllDeductionSummaryByCandidateId(Long candidate, OrgLocations orgLocation)
 	{
 		ResponseList<DeductionDTO>  res = new ResponseList<>();
 		try {
-			Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocation.getId());
-			List<AssociateDeduction> associateDedList = associateDeductionDao.findAllDeductionSummaryByCandidateId(candidate.getId(),orgLocation);
+			List<AssociateDeduction> associateDedList = associateDeductionDao.findAllDeductionSummaryByCandidateId(candidate,orgLocation);
 			List<DeductionDTO> list = new ArrayList<>();
 			if(associateDedList != null) {
 				associateDedList.forEach(ad->{
@@ -145,8 +144,8 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 	}
 	
 	@Override
-	public AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId)
+	public AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long candidateId)
 	{
-		return associateDeductionDao.getAsociateDedByUserIdDeductionId(deductionId,userId);
+		return associateDeductionDao.getAsociateDedByUserIdDeductionId(deductionId,candidateId);
 	}
 }
