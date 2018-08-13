@@ -88,7 +88,6 @@
 				<label class="input-group-btn"> <span class="btn btn-primary" onchange="getFleInformation();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
 				</label> 
 				<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document" field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true">
-					<div class="clearUpload"></div>
 				</div>
 			</div>
 		</div>
