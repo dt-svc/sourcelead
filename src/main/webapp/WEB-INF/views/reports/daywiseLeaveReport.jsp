@@ -91,10 +91,11 @@ function getDaywiseLeaveReportList(){
 		    {
 		leaveTypeBillable.push($(this).val());
      });
+	var loginUserId = '${SourceLeadWeb_userId}';
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
+	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable+"&loginUserId="+loginUserId;
 	prepareAllDaywiseLeaveReportList(url);
 }
 </script>	
@@ -322,8 +323,13 @@ function daywiseLeaveReportsListPagination(url){
 		          	result = result + ' <td>';
 		          	if(user.approver !=null && user.approver !='' && user.approver !='undefined'){
 						 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.approver+'">'+user.approver+'</div>';
-		          }else{
-						result = result + '<div class="tbldata-dotdot-vsm">--</div>';
+		          }
+		          	else if(user.approver == null && user.reportingManager !=null && user.reportingManager !='' && user.reportingManager !='undefined'){
+						 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.reportingManager+'">'+user.reportingManager+'</div>';
+ 
+			          }
+		          	else{
+						result = result + '<div class="tbldata-dotdot-vsm">System Approver</div>';
 					}
 		          	result = result + ' </td>';
 		          	return result;
@@ -477,7 +483,7 @@ function closeAssetFilterPop(){
 								<label><strong>Leave Type</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="employmentTypeFilter">
-			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable"  value ="Billable"><label>&nbsp;Billable</label></li>
+			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable" checked="checked"  value ="Billable"><label>&nbsp;Billable</label></li>
 										<li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable"  value ="Non Billable" ><label>&nbsp;Non Billable</label></li>
 			                        </ul>
 								 </div>

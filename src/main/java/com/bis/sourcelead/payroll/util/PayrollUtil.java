@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -194,16 +196,72 @@ public class PayrollUtil {
 		return deduction;
 	}
 	
-	
-	  private boolean isDateInBetweenIncludingEndPoints( Date min,  Date max, Date date,Date cDate){
-	        return !(date.before(min) || date.after(max) && cDate.before(min) || cDate.after(max));
-	    }
-	/*public static void main(String[] args)
+	/**
+	 * Check Date avaialbiltity
+	 * @param minDate
+	 * @param maxDate
+	 * @param sdate
+	 * @param eDate
+	 * @return boolean
+	 */
+	private boolean isDateInBetweenIncludingEndPoints(Date minDate, Date maxDate, Date date, Date cDate)
 	{
-		User user = new User();
-		user.setResidenceState("Alabama");
-		System.out.println(getEmployeeResident(user));
-	}*/
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(minDate);
+		Date min = cal.getTime();
+		cal.setTime(maxDate);
+		Date max = cal.getTime();
+		boolean match = false;
+		try {
+			if (((date.after(min) && date.before(max)) || (date.equals(min) || date.equals(max)))
+					&& ((cDate.after(min) && cDate.before(max))
+							|| (cDate.equals(max) || cDate.equals(min)))) {
+				match = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return match;
+	}
+
+	
+	/**
+	 * Check Date avaialbiltity
+	 * 
+	 * @param minDate
+	 * @param maxDate
+	 * @param sdate
+	 * @param eDate
+	 * @return boolean
+	 */
+	public boolean isDateBetweenEffectiveDate(Date minDate, Date maxDate, Date effectiveSDate, Date effectiveEDate)
+	{
+		boolean match = false;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(minDate);
+		Date min = cal.getTime();
+		cal.setTime(maxDate);
+		Date max = cal.getTime();
+		try {
+			if (effectiveSDate != null && effectiveEDate != null) {
+				if (((effectiveSDate.after(min) && effectiveSDate.before(max))
+						|| (effectiveSDate.equals(min) || effectiveSDate.equals(max)))
+						&& ((effectiveEDate.after(min) && effectiveEDate.before(max))
+								|| (effectiveEDate.equals(max) || effectiveEDate.equals(min)))) {
+					match = true;
+				}
+			}
+			else {
+				if ((effectiveSDate.after(min) && effectiveSDate.before(max))
+						|| (effectiveSDate.equals(min) || effectiveSDate.equals(max))) {
+					match = true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return match;
+	}
 
 	public Date[] getDeductionDates(Date currentDate, String schedule)
 	{

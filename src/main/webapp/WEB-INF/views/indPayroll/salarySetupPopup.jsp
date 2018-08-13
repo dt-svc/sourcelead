@@ -64,7 +64,7 @@
 								<option value="">Select</option>
 		                			<c:forEach var="list" items="${payheadList}">
 			                			<c:if test="${payrollPayhead.id != list.id}">
-			                				<option value="${list.shortCode}">${list.name} (${list.shortCode})</option>
+			                				<option value="(${list.shortCode})">${list.name} (${list.shortCode})</option>
 			                			</c:if>
 									</c:forEach>
 							</select>
@@ -81,8 +81,8 @@
 		                  <option>&#45;</option>
 		                  <option>&#61;</option>
 		                  <option>&#37;</option>
-		                  <option>&#40;</option>
-		                  <option>&#41;</option>
+		                  <%--<option>&#40;</option>
+		                  <option>&#41;</option> --%>
 		                  <option>&#91;</option>
 		                  <option>&#93;</option>
 		                  <option>&#123;</option>

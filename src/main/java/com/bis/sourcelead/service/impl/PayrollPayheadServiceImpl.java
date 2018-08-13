@@ -201,15 +201,10 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 		return payrollPayheadDao.savePayrollPayheadSalarySetup(payrollPayheadSalarySetup);
 	}
 
-	@Override
-	public PayrollPayheadSalarySetup getPayrollPayheadSalarySetupByUUID(String uuid) throws Exception {
-		return payrollPayheadDao.getPayrollPayheadSalarySetupByUUID(uuid);
-	}
-
-	@Override
+	/*@Override
 	public ResponseList<PayrollPayheadSalarySetupDTO> getPayrollPayheadSalarySetupListByPayheadUuidAndLocationId(String uuid,
 			OrgLocations orgLocations) throws Exception {
 		return payrollPayheadDao. getPayrollPayheadSalarySetupListByPayheadUuidAndLocationId(uuid, orgLocations);
-	}
+	}*/
 
 }

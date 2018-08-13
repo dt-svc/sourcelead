@@ -61,7 +61,7 @@ $(document).ready(function(){
 			<div class="col-md-5">
               <label class="clearfix">Amount<span class="text-danger paddingLeft">&nbsp;*</span></label>
               <div class="clearfix" id="contributionAmountDiv">
-                <input type="text" class="form-control" value="${payrollContribution.contributionAmount}" id="contributionAmount" name="contributionAmount" data-validation="required validate_int" onblur="validateContributionMethodType();" field-name="Amount">
+                <input type="text" class="form-control" value="${payrollContribution.contributionAmount}" id="contributionAmount" name="contributionAmount" data-validation="required validate_float" onblur="validateContributionMethodType();" field-name="Amount">
               </div>
             </div>
             

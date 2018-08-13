@@ -49,8 +49,7 @@
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
-        <input type="hidden" id="associateId" name="associateId">
-        <input type="hidden" id="empType" name="empType">
+        
         <!--New theme-->
         <div class="user_summ_wrap contentareaInner-styles">
         
@@ -59,11 +58,16 @@
         <div class="tabsMenu">
         <ul class="list-unstyled">
           <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
-          <c:if test="${SourceLeadWeb_currencyCode != 'USD'}">
+         <%--  <c:if test="${SourceLeadWeb_currencyCode != 'USD'}">
           <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
+          </c:if> --%>
+           
+          <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+         		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
           </c:if>
-          <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
-            <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
+          
+            <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+              <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
 	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
@@ -87,7 +91,8 @@
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
           <input type="hidden" id="actionId" value="${actionId}">
-          <input type="hidden" id="associateId" />
+          <input type="hidden" id="associateId" name="associateId">
+          <input type="hidden" id="empType" name="empType">
             <div class="row clearfix minHeightcol5">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
@@ -182,7 +187,7 @@
                    	<select class="form-control chosen-select" id="workLocation" name="workLocation" field-name="Work Location" data-validation="required" >
                         <option value="">--Select Location--</option>
                         <c:forEach var="option" items="${locationList}">
-							<option value="${option.id}">${option.orgLocationAddress}</option>
+							<option value="${option.id}">${option.orgLocationAddress != '' ? option.orgLocationAddress : option.registeredLocation}</option>
 						</c:forEach>
               		</select>
                   </div>
@@ -478,12 +483,20 @@
           </div>
           </div>
         </div>
-        <jsp:include page="associateLeaveType.jsp" />
-          <jsp:include page="associateSalary.jsp" />
-       <jsp:include page="associateBankData.jsp" />
-       <jsp:include page="associateTax.jsp" />
-       <jsp:include page="associateDeduction.jsp" />
-        <jsp:include page="associateContribution.jsp" />
+       
+       <jsp:include page="associateLeaveType.jsp" />
+        <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+	       <jsp:include page="associateSalary.jsp" />
+	       <jsp:include page="associateBankData.jsp" />
+	       <jsp:include page="associateTax.jsp" />
+	       <jsp:include page="associateDeduction.jsp" />
+	       <jsp:include page="associateContribution.jsp" />
+        </c:if>
+        
+          <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+              <jsp:include page="associateIndiaBankingDetails.jsp" />
+         </c:if> 
+        
       </section>
       <!-- Content Area Ends--> 
 
@@ -665,6 +678,8 @@ function getEmployeementType(designationType){
  function createUser() {
 	 
 	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}'; 
+	 var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
+	 
 	 	var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){
 			$('#Rate').removeAttr('data-validation-optional');
@@ -702,17 +717,16 @@ function getEmployeementType(designationType){
 						showError("Invalid data");
 						$("#loading").removeAttr('style');
 					} 
-					else if(loginCurrencyCode != 'USD') {
+					else if(loginLocationCountry == 'India'){
+						    $("#associateId").val(result.object.userId);
+							$("#empType").val(result.object.designationType);
+							 var indBankingDetails = document.getElementById("indBankingDetails");
+							 document.getElementById("indBankingDetails").removeAttribute("class");
+							 indBankingDetails.href="#tab-2";
+							 $("#indBankingDetails").click();
+					}
+					else{
 						$("#associateId").val(result.object.userId);
-						var associateLeaveType = document.getElementById("associateLeaveType");
-						document.getElementById("associateLeaveType").removeAttribute("class"); 
-						associateLeaveType.href="#tab-7"; 
-						$("#tab-1").removeAttr("href");
-						$("#associateLeaveType").click();
-						getAllLeaveType();
-						/* location.replace(sourceleadUrl+"/usersList"); */
-					}else{
-					$("#associateId").val(result.object.userId);
 						$("#empType").val(result.object.designationType);
 						var associateSalary = document.getElementById("associateSalary");
 						document.getElementById("associateSalary").removeAttribute("class"); 
@@ -720,7 +734,7 @@ function getEmployeementType(designationType){
 						$("#associateSalary").click();
 						 getPayItemList();
 					}
-				},
+				}
 			});
             
 	        return true;
@@ -1364,19 +1378,16 @@ function clearDateofJoin(){
 </script>
 
 <script>
-// project side bar tabs
+var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 
-var associateLeaveType = document.getElementById("associateLeaveType");
+               var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateLeaveType){
 					associateLeaveType.href = "#";
 					associateLeaveType.className = "disabledLink";
 				}
 				
-				var associates = document.getElementById("associates");
-				if(associates){
-					associates.href = "#";
-					associates.className = "disabledLink";
-				} 
+		if(loginLocationCountry == 'United States'){		
+				
 				var associateBanking = document.getElementById("associateBanking");
 				if(associateBanking){
 					associateBanking.href = "#";
@@ -1412,9 +1423,16 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 					associateSalary.className = "disabledLink";
 				} 
 				
-				
+		}		
 
- 
+		if(loginLocationCountry == 'India'){
+			var indBankingDetails = document.getElementById("indBankingDetails");
+			if(indBankingDetails){
+				indBankingDetails.href = "#";
+				indBankingDetails.className = "disabledLink";
+			} 
+			
+		}
 
 
 $(document).ready(function() {

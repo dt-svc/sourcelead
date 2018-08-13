@@ -266,6 +266,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 						BigDecimal receivedDecimal = (new BigDecimal(received));
 						remainAmount = dueDecimal.subtract(receivedDecimal);
 						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+						invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 						invoice.setDueAmount(remainAmount.toString());
 					}
 				}
@@ -297,6 +298,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								BigDecimal receivedDecimal = (new BigDecimal(received));
 								remainAmount = dueDecimal.subtract(receivedDecimal);
 								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+								invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 								invoice.setDueAmount(remainAmount.toString());
 							}
 						}
