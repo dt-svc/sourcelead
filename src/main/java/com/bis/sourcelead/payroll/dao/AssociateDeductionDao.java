@@ -15,6 +15,6 @@ public interface AssociateDeductionDao {
 
 	AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation);
 
-	AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId);
+	AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long candidateId);
 
 }
