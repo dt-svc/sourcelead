@@ -44,10 +44,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 
 	@Override
 	@Transactional
-	public List<AssociateDeduction> findAllDeductionSummaryByUserId(Long userId, OrgLocations orgLocation)
+	public List<AssociateDeduction> findAllDeductionSummaryByCandidateId(Long candidateId, OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<AssociateDeduction>  associateDeductionList = session.createQuery("from AssociateDeduction ded where ded.userId.id=:userId and ded.orgLocationId.id= :orgLocationId and ded.status = 1" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+		List<AssociateDeduction>  associateDeductionList = session.createQuery("from AssociateDeduction ded where ded.candidate.id=:candidateId and ded.orgLocationId.id= :orgLocationId and ded.status = 1" ).setLong( "candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).list();
 		return associateDeductionList;
 	}
 
