@@ -666,7 +666,6 @@ public class LeaveManagementUtil {
 			float hourDays = (float) ((fromHours + toHours) / orgHours);
 			actualLeaves = (appliedLeaves.size() - appLeaves) + hourDays;
 		}
-		
 		return actualLeaves;
 	}
 
