@@ -251,7 +251,7 @@ $(function() {
 
 <script>
 function shiftToAssociateBankingTab(){
-	var indBankingDetails = document.getElementById("indBankingDetails");
+	 var indBankingDetails = document.getElementById("indBankingDetails");
 	 document.getElementById("indBankingDetails").removeAttribute("class");
 	 indBankingDetails.href="#tab-2";
 	 $("#indBankingDetails").click();

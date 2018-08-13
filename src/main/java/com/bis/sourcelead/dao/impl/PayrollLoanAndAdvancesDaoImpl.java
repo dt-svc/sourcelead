@@ -195,4 +195,18 @@ public class PayrollLoanAndAdvancesDaoImpl implements PayrollLoanAndAdvancesDao{
 	    List<PayrollLoanAndAdvances> payrollLoanAndAdvancesList = session.createQuery(query.toString()).setString("type", type).setLong( "orgLocationId", orgLocationId).list();
         return payrollLoanAndAdvancesList;
 	}
+
+	@Override
+	@Transactional
+	public PayrollLoanAndAdvances getPayrollLoanAndAdvancesById(Long id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from PayrollLoanAndAdvances pld where pld.id = :id ";  
+		List<PayrollLoanAndAdvances> payrollLoanAndAdvancesList =  session.createQuery(query).setLong("id", id).list();
+		PayrollLoanAndAdvances payrollLoanAndAdvances = null;
+		if (payrollLoanAndAdvancesList != null && payrollLoanAndAdvancesList.size() > 0) {
+			payrollLoanAndAdvances = (PayrollLoanAndAdvances) payrollLoanAndAdvancesList.iterator().next();
+		}
+		return payrollLoanAndAdvances;
+	}
 }

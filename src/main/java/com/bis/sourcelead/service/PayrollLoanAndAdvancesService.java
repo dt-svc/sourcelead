@@ -16,4 +16,6 @@ public interface PayrollLoanAndAdvancesService {
 	PayrollLoanAndAdvances getPayrollLoanAndAdvancesByUUID(String uuid) throws Exception;
 	
 	List<PayrollLoanAndAdvances> getPayrollLoanAndAdvancesByTypeAndOrgLocationId(String type,Long orgLocationId) throws Exception;
+	
+	PayrollLoanAndAdvances getPayrollLoanAndAdvancesById(Long id) throws Exception;
 }

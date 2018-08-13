@@ -40,4 +40,9 @@ public class PayrollLoanAndAdvancesServiceImpl implements PayrollLoanAndAdvances
 			throws Exception {
 		return payrollLoanAndAdvancesDao.getPayrollLoanAndAdvancesByTypeAndOrgLocationId(type, orgLocationId);
 	}
+
+	@Override
+	public PayrollLoanAndAdvances getPayrollLoanAndAdvancesById(Long id) throws Exception {
+		return payrollLoanAndAdvancesDao.getPayrollLoanAndAdvancesById(id);
+	}
 }

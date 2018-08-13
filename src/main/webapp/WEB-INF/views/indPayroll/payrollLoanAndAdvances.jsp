@@ -71,9 +71,9 @@
             </div>
             
             <div class="col-md-5">
-              <label class="clearfix">Interest Rate (%)</label>
+              <label class="clearfix">Interest Rate (%)<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix">
-                 <input type="text" class="form-control"  name="interestRate" value="${loanAndAdv.interestRate}" data-validation-optional="true" onblur="validateInterestRate();" data-validation="validate_Space validate_float" field-name="Interest Rate" id="interestRate">
+                 <input type="text" class="form-control"  name="interestRate" value="${loanAndAdv.interestRate}" onblur="validateInterestRate();" data-validation="required validate_Space validate_float" field-name="Interest Rate" id="interestRate">
               </div>
               <div class="row mxrateerror" id="interestRateValidateId">
                   <input type="hidden" name="interestRateValidation" id="interestRateValidation">
@@ -113,7 +113,7 @@
 			
 			
 			<div class="col-md-5" style="display: none" id="experienceDiv">
-              <label class="clearfix">Experience</label>
+              <label class="clearfix">Experience<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix">
                <div class="row">
 				   <div class="col-md-6" id="experienceYearsDiv">
@@ -311,7 +311,7 @@ function minMaxRate(){
     var maxRate = ($('#maxAmount').val());
     var minRate = ($('#minAmount').val());
     
-    if (parseFloat(maxRate) <= parseFloat(minRate)){
+    if (parseFloat(maxRate) < parseFloat(minRate)){
         $('#rateValidateId').find('p.jquery_form_error_message').remove(); 
 		$('input#rateValidation').attr('class','error signin_fild');
 		$("input#rateValidation").after("<p class='jquery_form_error_message'>Max Amount should be greater than Min Rate</p>");

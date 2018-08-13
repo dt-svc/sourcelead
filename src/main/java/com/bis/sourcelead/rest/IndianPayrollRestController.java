@@ -1,6 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,19 +19,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.rometools.rome.io.SyndFeedOutput;
 
@@ -46,6 +56,12 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	PayrollLoanAndAdvancesService payrollLoanAndAdvancesService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
     @RequestMapping(value = "/app/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
@@ -177,5 +193,95 @@ public class IndianPayrollRestController {
  		}
  		 return padvDTOList;
      } 
+    
+    
+    @RequestMapping(value = "/app/getLoanAndAdvanceApprovers", method = RequestMethod.POST)
+ 	public List<UserDTO> getLoanAndAdvanceApprovers(HttpServletRequest request){
+ 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+ 		List<UserDTO> userDTOList = new ArrayList<>();
+ 		 try {
+ 			List<User> usersList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(), Long.valueOf(Constants.TAB_RUN_PAYROLL));
+ 			if(usersList != null && !usersList.isEmpty()) {
+ 				for(User user : usersList) {
+ 					UserDTO userDTO = new UserDTO();
+ 					userDTO.setId(user.getId());
+ 					userDTO.setUserName(user.getFullName());
+ 					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
+ 					userDTO.setRole(userRole.getRoles().getDisplayName());
+ 					userDTOList.add(userDTO);
+ 				}
+ 				
+ 			}
+ 		 }catch (Exception e) {
+ 			 e.printStackTrace();
+ 		}
+ 		 return userDTOList;
+     }  
+    
+    
+    @RequestMapping(value = "/app/getLoanAndAdvanceDetailsByLoanAndAdvanceId", method = RequestMethod.POST)
+ 	public PayrollLoanAndAdvancesDTO getLoanAndAdvanceDetailsByLoanAndAdvanceId(HttpServletRequest request,
+ 			@RequestParam(value="loanAndAdvId", required=true) Long loanAndAdvId){
+    	
+ 		  PayrollLoanAndAdvancesDTO payrollLoanAndAdvancesDTO = new PayrollLoanAndAdvancesDTO();
+ 		 try {
+ 			PayrollLoanAndAdvances padv = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesById(loanAndAdvId);
+ 			if(padv != null) {
+ 				
+ 				if(padv.getMinAmount() != null) {
+ 					payrollLoanAndAdvancesDTO.setMinAmount(String.valueOf(padv.getMinAmount()));
+ 				}
+ 				
+ 				if(padv.getMaxAmount() != null) {
+ 					payrollLoanAndAdvancesDTO.setMaxAmount(String.valueOf(padv.getMaxAmount()));
+ 				}
+ 				
+ 				if(padv.getInterestRate() != null) {
+ 					payrollLoanAndAdvancesDTO.setInterestRate(String.valueOf(padv.getInterestRate()));
+ 				}
+ 				
+ 			}
+ 				
+ 		 }catch (Exception e) {
+ 			 e.printStackTrace();
+ 		}
+ 		 return payrollLoanAndAdvancesDTO;
+     }  
+    
+    
+	@RequestMapping(value = "/app/getLoanAndAdvanceEndDateByEffectiveDate", method = RequestMethod.GET)
+	public @ResponseBody String getLoanAndAdvanceEndDateByEffectiveDate(@RequestParam(value = "effectiveDate", required = true) String effectiveDate, 
+			@RequestParam(value = "noOfSchedules", required = false) String noOfSchedules,
+			@RequestParam(value = "scheduler", required = false) String scheduler,HttpServletRequest request) throws Exception
+	{
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
+		String endDateStr = null;
+		try {
+			
+			Integer schedulerMonths = 0;
+			if(scheduler.equalsIgnoreCase("Every Pay")) {
+				schedulerMonths = (Integer.parseInt(noOfSchedules)*1);
+			}else if(scheduler.equalsIgnoreCase("Every Quarter")) {
+				schedulerMonths = (Integer.parseInt(noOfSchedules)*3);
+			}else if(scheduler.equalsIgnoreCase("Half Yearly")) {
+				schedulerMonths = (Integer.parseInt(noOfSchedules)*6);
+			}else if(scheduler.equalsIgnoreCase("Annually")) {
+				schedulerMonths = (Integer.parseInt(noOfSchedules)*12);
+			}
+			
+			Date date = formatter.parse(effectiveDate);
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			c.add(Calendar.MONTH, schedulerMonths);
+			endDateStr = formatter.format(c.getTime());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return endDateStr;
+	}
+	
+    
     
 }
