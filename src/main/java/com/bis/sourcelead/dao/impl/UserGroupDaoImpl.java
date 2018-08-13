@@ -135,7 +135,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 	public List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId ";
+		String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId and userGroup.status = 1";
 		List<UserGroup> userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).list();
 		return userGroupList;
 	}
