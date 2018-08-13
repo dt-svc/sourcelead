@@ -84,6 +84,19 @@
 		</div>
 	</div>
 	
+	    <div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-plus-circle fa-2x text-muted"></i> </div>
+        <div class="pull-left">
+          <h4 class="text-muted">Create Batch</h4>
+          <small class="text-muted">Configure Batch</small>
+          <div class="mt10">
+          <a href="<c:url value='${appPath}/userGroupList'/>"class="btn btn-primary btn-sm" title="View">View</a> </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+	
+	
+	
 	
 	<div class="clearfix"></div>
 </section>
