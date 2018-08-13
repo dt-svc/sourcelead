@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
@@ -14,6 +13,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 
 public interface UserDao {
 
@@ -194,6 +194,8 @@ public interface UserDao {
 	public DashboardItems getDashboardItemsByDashboardId(long dashboardItemId);
 
 	public long saveDashboardItems(DashboardItems dashboardItems);
+	
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception;
 
 
 

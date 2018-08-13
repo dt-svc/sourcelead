@@ -5,6 +5,10 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
+import com.bis.sourcelead.dto.HrLeaveReportDTO;
+
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
@@ -17,6 +21,7 @@ import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 
 public interface LeaveDao {
 
@@ -83,7 +88,17 @@ public interface LeaveDao {
 	List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate);
 
 	int deleteApproversByLeaveId(Long leaveId);
+
 	
-//	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(Long orgId, Long orgLocationId, String fromDate,String searchValue) throws Exception;
+	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(HrLeaveReportDTO hrLeaveReportDTO,Long orgId, Long orgLocationId)throws Exception;
+	
+	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId,String loginUserRole)throws Exception;
+	
+	List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId);
+	
+	Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList) ;
+	
+	String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId);
+
 	
 }
