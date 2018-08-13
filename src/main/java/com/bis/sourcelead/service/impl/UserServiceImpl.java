@@ -270,9 +270,9 @@ public class UserServiceImpl implements UserService {
 	 		user.setUserType("Employee");
 	    } 
 		
-	    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+	    /*if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
 	    	user.setWorkLocation(orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation())));
-	    }
+	    }*/	
 	    
 	    
        //For saving the User Role 
