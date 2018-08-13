@@ -181,4 +181,8 @@ public interface ImmigrationCommonService {
     public Lca getLcaDetailsByLcaTitleAndId(String lcaTitle, Long lcaId) throws Exception;
     
     public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception;
+    
+    List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String statusLca);
+    
+    public Lca getLcaByLcaId(Long lcaId) throws Exception;
 }

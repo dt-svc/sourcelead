@@ -2222,6 +2222,13 @@ public class ImmigrationRestController {
 		return candidateService.getCandidateByCandidateId(id);
 	}
 	
+	// to auto populate  lca start date and end date with LCA number in petition Details
+	@RequestMapping(value = { "/getLcaByLcaId" })
+	public @ResponseBody Lca getLcaByLcaId(
+			@RequestParam(value = "id", required = false) Long id,  HttpServletRequest request) throws Exception {
+		return immigrationCommonService.getLcaByLcaId(id);
+	}
+	
 	/*
 	 * LCA Code Starts Here
 	 */
@@ -2230,16 +2237,6 @@ public class ImmigrationRestController {
 	public ModelAndView loadNewLCA(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		
-		/*List<LookUpData> socDetailsList = immigrationTemplateService
-				.getLookupDataByType(ImmigrationConstants.EMPLOYMENT_TYPE);
-		
-		
-        List<Map<String, String>> socDetailsTypeList = null;
-		
-		socDetailsTypeList = immigrationCommonService.getSocCodeWithSOCOccupationTitleList(socCode, socOccupationTitle);
-		 
-		
-		model.addObject("socDetailsTypeList", socDetailsTypeList);*/
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/newLca");
 		return model;
@@ -2368,6 +2365,15 @@ public class ImmigrationRestController {
 		socDetailsTypeList = immigrationCommonService.getSocCodeWithSOCOccupationTitleList(name,ImmigrationConstants.SOC_TYPE,socType);
 		
 		return socDetailsTypeList;
+	}
+	
+	@RequestMapping(value = "/getLcaNumbersList", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, String>> getLcaNumbersList(HttpServletRequest request,@RequestParam(value = "lcaNum", required = false) String lcaNum,@RequestParam(value = "expiryStatus", required = false) String expiryStatus) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Map<String, String>> lcaNumbersList = null;
+		lcaNumbersList = immigrationCommonService.getLcaNumbersList(lcaNum,orgLocations.getId().toString(),expiryStatus);
+		return lcaNumbersList;
 	}
 
 	@RequestMapping(value = { "/getOesSocCodeById" })

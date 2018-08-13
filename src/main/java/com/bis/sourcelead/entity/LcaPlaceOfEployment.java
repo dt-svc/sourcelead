@@ -26,7 +26,7 @@ public class LcaPlaceOfEployment implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne() 
+	@ManyToOne 
 	@JoinColumn(name = "LCA_ID")
 	private Lca lcaId;
 	

@@ -27,9 +27,11 @@
 			<input type = "hidden" id="editMode" name = "editMode" value = "true">
 			</c:if>
           <div class="col-md-12 col-lg-12 myForm margin-top0">
-          	<input type="hidden" name="immigrationId" value="${immigrationDTO.immigrationId}">
+          	<input type="hidden" name="immigrationId" id="immigrationId" value="${immigrationDTO.immigrationId}">
           	<input type="hidden" name="candidateId" value="${immigrationDTO.candidateId}">
           	<input type="hidden" name="templateId" value="${immigrationDTO.templateId}">
+          	<input type="hidden" name="lcaId" id="currLcaId" value="${immigrationDTO.lcaId}">
+          	
             <h4 class="col-md-12 mb clearfix">1. Petition detail</h4>
             <div class="clearfix"></div>         
          	<div class="form-group">
@@ -461,7 +463,7 @@
               <label class="col-md-4">Previous LCA Start Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" readonly='true' id="prevLcaStartDate" name="prevLcaStartDate" value="${immigrationDTO.prevLcaStartDate}" placeholder="Previous LCA Start Dates" type="text">
+                <input class="form-control calendar"  id="prevLcaStartDate" name="prevLcaStartDate" value="${immigrationDTO.prevLcaStartDate}" placeholder="Previous LCA Start Dates" type="text">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaStartDate');"></i></span>
             </div>
               </div>
@@ -471,7 +473,7 @@
               <label class="col-md-4">Previous LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" readonly='true' id="prevLcaEndDate" name="prevLcaEndDate" value="${immigrationDTO.prevLcaEndDate}" placeholder="Previous LCA End date" type="text">
+                <input class="form-control calendar"  id="prevLcaEndDate" name="prevLcaEndDate" value="${immigrationDTO.prevLcaEndDate}" placeholder="Previous LCA End date" type="text">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaEndDate');"></i></span>
             </div>
               </div>
@@ -636,7 +638,7 @@
              <div class="form-group">
               <label class="col-md-4">LCA Number</label>
               <div class="col-md-8">
-                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
           </div>
             
@@ -644,7 +646,7 @@
               <label class="col-md-4">LCA Start date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" readonly='true' id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start dates">
+                <input type="text" class="form-control calendar" id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start dates">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaStartDate');"></i></span>
             </div>
               </div>
@@ -653,7 +655,7 @@
               <label class="col-md-4">LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" readonly='true' value="${immigrationDTO.lcaEndDate}" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
+                <input type="text" class="form-control calendar"  value="${immigrationDTO.lcaEndDate}" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaEndDate');"></i></span>
             </div>
               </div>
@@ -976,6 +978,8 @@ function deleteResumeDoc(){
 	$("#documentName").html("");
 	$("#downloadBrowseFile").attr("href","");
 }
+
+
 // to get the resume details for the candidate.
 function getCandidatesResumeDetailsById(candidateId){
 	 console.log(" before getCandidatesResumeDetailsById function calling ---->"+candidateId);
@@ -1285,7 +1289,7 @@ $("#experienceValue").change(function () {
 		  	  maxDate:0  
 		  })
 		  
-		  
+		 
 // previou lca start and end date 
 		  $('#prevLcaStartDate').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
@@ -1339,7 +1343,7 @@ $("#experienceValue").change(function () {
 		  $('#lcaStartDate').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
-		  	  changeYear: true, 
+		  	  changeYear: true,
 		  	  maxDate:0  
 		  });
 		  
@@ -1528,14 +1532,14 @@ $('#i_20_number').mask('N-9999999999', {
  placeholder: ""
 });
 
-$('#prevLcaNumber').mask('I-999-99999-999999', {
+/* $('#prevLcaNumber').mask('I-999-99999-999999', {
     translation: {
         '9': {
             pattern: "/I{1}[0-9]{14}/", optional: true
         }
     },
    placeholder: ""
-});
+}); */
 
 $('#eadNumber').mask('999-999-999', {
     translation: {
@@ -1546,14 +1550,138 @@ $('#eadNumber').mask('999-999-999', {
    placeholder: ""
 });
 
-$('#lcaNumber').mask('I-999-99999-999999', {
-    translation: {
-        '9': {
-            pattern: "/I{1}[0-9]{14}/", optional: true
-        }
-    },
-   placeholder: ""
-});
-
 </script>
+<!-- LcaNumber AutoPopulate Ui script -->
+<script type="text/javascript">
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormatOrg = getOrgDateFormat(locationDate);
+ $("#lcaNumber").autocomplete({ 
+	 minLength: 2, 
+	 source : function(request, response) {
+		 $.ajax({
+			 url :sourceleadUrl+immiModulePath+ "/getLcaNumbersList",
+			 type : "GET",
+			 data : {
+				 lcaNum : request.term,
+				 expiryStatus:'1'
+			 	},
+			 dataType : "json",
+			 success : function(data) {
+			 	response(data);
+			 }
+		 });
+	 },
+	   select: function(event, ui ) {
+		    $("#lcaNumber").val(ui.item.label);
+		 	$("#currLcaId").val(ui.item.value);//currentLcaId for LcaHistory
+		 	$("#lcaNumber").attr("selecedVal", ui.item.label);
+			 $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
+			        success: function(data) {
+			    		// setting the startDate,endDate for current Lca.
+			    		 if(data.startDate != null && typeof  data.startDate != 'undefined' && data.startDate!=''){
+			    			var lcaStartDate =  moment(data.startDate).format(finalDateFormatOrg);
+			    		   $("#lcaStartDate").val(lcaStartDate);
+			    		   $("#lcaStartDate").datepicker('disable');
+			    		}
+			    		
+			    		if(data.endDate != null && typeof  data.endDate != 'undefined' && data.endDate!=''){
+			    			var lcaEndDate =  moment(data.endDate).format(finalDateFormatOrg);
+			    		   $("#lcaEndDate").val(lcaEndDate);
+			    		   $("#lcaEndDate").datepicker('disable');
+			    		} 
+			        }
+			 });
+		 	return false;
+		 },
+	 focus: function(event, ui){
+	          return false;
+	    }
+	 });
+ 
+ $("input[id='lcaNumber']").focusout(function(){
+	 var seletedVal= $("#lcaNumber").attr("selecedVal")
+	  if(typeof seletedVal =='undefined') {
+		  resetLcaDetails();
+	  }else if (typeof seletedVal !='undefined' && $("#lcaNumber").attr("selecedVal")!=$("#lcaNumber").val().trim()){
+		  resetLcaDetails();
+	  }
+ });
+ 
+ 
+ 
+ function resetLcaDetails(){
+		$("#lcaNumber").val("");
+		$("#lcaStartDate").val("");
+		$("#lcaEndDate").val("");
+		
+	}
+ 
+</script> 
 
+<script type="text/javascript">
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormatOrg = getOrgDateFormat(locationDate);
+ $("#prevLcaNumber").autocomplete({ 
+	 minLength: 2, 
+	 source : function(request, response) {
+		 $.ajax({
+			 url :sourceleadUrl+immiModulePath+ "/getLcaNumbersList",
+			 type : "GET",
+			 data : {
+				 lcaNum : request.term,
+				 expiryStatus:'0'
+			 	},
+			 dataType : "json",
+			 success : function(data) {
+			 	response(data);
+			 }
+		 });
+	 },
+	   select: function(event, ui ) {
+		    $("#prevLcaNumber").val(ui.item.label);
+		 	$("#currLcaId").val(ui.item.value);//currentLcaId for LcaHistory
+		 	$("#prevLcaNumber").attr("selecedVal", ui.item.label);
+			 $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
+			        success: function(data) {
+			    		// setting the startDate,endDate for current Lca.
+			    		 if(data.startDate != null && typeof  data.startDate != 'undefined' && data.startDate!=''){
+			    			var prevLcaStartDate =  moment(data.startDate).format(finalDateFormatOrg);
+			    		   $("#prevLcaStartDate").val(prevLcaStartDate);
+			    		   $("#prevLcaStartDate").datepicker('disable');
+			    		}
+			    		
+			    		if(data.endDate != null && typeof  data.endDate != 'undefined' && data.endDate!=''){
+			    			var prevLcaEndDate =  moment(data.endDate).format(finalDateFormatOrg);
+			    		   $("#prevLcaEndDate").val(prevLcaEndDate);
+			    		   $("#prevLcaEndDate").datepicker('disable');
+			    		} 
+			        }
+			 });
+		 	return false;
+		 },
+	 focus: function(event, ui){
+	          return false;
+	    }
+	 });
+ 
+ $("input[id='prevLcaNumber']").focusout(function(){
+	 var seletedVal= $("#prevLcaNumber").attr("selecedVal")
+	  if(typeof seletedVal =='undefined') {
+		  resetPreLcaDetails();
+	  }else if (typeof seletedVal !='undefined' && $("#prevLcaNumber").attr("selecedVal")!=$("#prevLcaNumber").val().trim()){
+		  resetPreLcaDetails();
+	  }
+ });
+ 
+ function resetPreLcaDetails(){
+		$("#prevLcaNumber").val("");
+		$("#prevLcaStartDate").val("");
+		$("#prevLcaEndDate").val("");
+		
+	} 
+ 
+</script> 
