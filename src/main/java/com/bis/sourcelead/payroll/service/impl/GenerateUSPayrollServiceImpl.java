@@ -22,6 +22,7 @@ import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserGroupDao;
+import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -826,7 +827,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			
 			List<DeductionHistoryDTO> dedContrbutionHistory = deductionHistoryService.getDeductionsByPayrollId(payroll.getId());
 			List<ContributionHistoryDTO> contributionHistory = deductionHistoryService.getContributionsByPayrollId(payroll.getId());
-			AssociateSalaryDTO assoSal = associateSalaryService.findAssociateSalaryByCandidateId(payroll.getCandidate().getId(), orgLocation);
+			List<AssociatePayItemDTO> payItem = associateSalaryService.findAssociatePayItemByPayrollId(payroll.getId());
 			if(dedContrbutionHistory != null) {
 				List<DeductionHistoryDTO>  preDedList = dedContrbutionHistory
 						.stream()
@@ -850,9 +851,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				payrollDTO.setContributionTotal(BigDecimal.valueOf(contributionTotal));
 			}
 			BigDecimal piTotal = BigDecimal.ZERO;
-			if(assoSal.getAssociatePayItemDto() != null && assoSal.getAssociatePayItemDto().size() >0) {
-				payrollDTO.setPayItem(assoSal.getAssociatePayItemDto());
-				double payItemTotal = assoSal.getAssociatePayItemDto().stream().mapToDouble(pitem->Double.parseDouble(pitem.getPayItemAmount())).sum();
+			if(payItem != null && payItem.size() >0) {
+				payrollDTO.setPayItem(payItem);
+				double payItemTotal = payItem.stream().mapToDouble(pitem->pitem.getAmount().doubleValue()).sum();
 				piTotal = BigDecimal.valueOf(payItemTotal);
 				payrollDTO.setPayItemTotal(piTotal);
 			}
