@@ -5,8 +5,6 @@ import java.util.Date;
 
 public class TotalHoursDTO {
 	
-	private BigInteger userId;
-    
 	private BigInteger candidateID;
     
 	private BigInteger projectMemId;
@@ -146,20 +144,12 @@ public class TotalHoursDTO {
 		this.nonBillableHours = nonBillableHours;
 	}
 
-	public BigInteger getUserId()
-	{
-		return userId;
-	}
 
 	public BigInteger getCandidateID()
 	{
 		return candidateID;
 	}
 
-	public void setUserId(BigInteger userId)
-	{
-		this.userId = userId;
-	}
 
 	public void setCandidateID(BigInteger candidateID)
 	{

@@ -1,8 +1,12 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public class AssociatePayItemDTO {
 	
 	private String id;
+	private BigInteger payItemId;
 	private String associateSalaryId;
 	private String payItemName;
 	private String payItemSchedule;
@@ -10,6 +14,7 @@ public class AssociatePayItemDTO {
 	private String effectiveDate;
     private String endDate;
     private String payItemAmount;
+    private BigDecimal amount;
 	private String status;
 	private String createdDate;
 	private String createdBy;
@@ -127,6 +132,22 @@ public class AssociatePayItemDTO {
 	public void setPayItemCheck(String payItemCheck)
 	{
 		this.payItemCheck = payItemCheck;
+	}
+	public BigInteger getPayItemId()
+	{
+		return payItemId;
+	}
+	public void setPayItemId(BigInteger payItemId)
+	{
+		this.payItemId = payItemId;
+	}
+	public BigDecimal getAmount()
+	{
+		return amount;
+	}
+	public void setAmount(BigDecimal amount)
+	{
+		this.amount = amount;
 	}
 	
 	
