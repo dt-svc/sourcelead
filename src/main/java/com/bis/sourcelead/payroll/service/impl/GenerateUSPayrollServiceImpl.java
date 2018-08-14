@@ -803,7 +803,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	public Response<USPayrollDTO> getEmployeePayrollByUUID(String payrollUUID,OrgLocations orgLocation)
 	{
 		EmployeePayroll payroll = generateUSPayrollDao.getEmployeePayrollByUUID(payrollUUID);
-		
+		BigDecimal totalDeduction = BigDecimal.ZERO;
 		Response<USPayrollDTO> res = new Response<>();
 		if(payroll != null ) {
 			USPayrollDTO payrollDTO = new USPayrollDTO();
@@ -877,6 +877,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				payrollDTO.setPreDed(preDedList);
 				payrollDTO.setPreDedTotal(BigDecimal.valueOf(preDedTotal));
 				payrollDTO.setPostDedTotal(BigDecimal.valueOf(postDedTotal));
+				totalDeduction = totalDeduction.add(payrollDTO.getPreDedTotal()).add(payrollDTO.getPostDedTotal());
+				payrollDTO.setTotalDeduction(totalDeduction);
 			} 
 			if(contributionHistory != null) {
 				payrollDTO.setContribution(contributionHistory);

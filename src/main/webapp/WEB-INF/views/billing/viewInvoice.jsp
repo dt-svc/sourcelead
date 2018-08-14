@@ -4,7 +4,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<style>
+#scheduleDateValidation {
+	padding: 0px 0px 0px 0px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500; text-align: center;
+}
+</style>
 <script type="text/javascript">
     var invoiceType = '${invoiceType}';
 $(document).ready(function(){
@@ -111,6 +115,12 @@ $(document).ready(function(){
               </a>
             </li>
             
+            <!--  <li class="">
+              <a href="#invoiceTimeline" data-toggle="tab" title="Notes" aria-expanded="false" onclick="timelineHistoryFunction('', 'desc', null, null);">
+                <h5>Timeline</h5>
+              </a>
+            </li> -->           
+            
           </ul>
           <div class="tab-content"> 
             
@@ -133,8 +143,50 @@ $(document).ready(function(){
               </div>
             </div>
             
+            <div class="tab-pane fade positionRelative" id="invoiceTimeline">
+				<div class="appliWrap">
+				<div class="timelineOut">
+					<div class="clearfix">
+						 <div class="headActions">
+							<ul class="clearfix">
+								<li><input type="button" value="Reset" id="clear_search"
+								onclick="restTimelineFileter();" class="btn btn-sm btn-primary" /></li>
+								<li><a href="javascript:void(0)"><i class="filtIcon" onclick="newActions();"></i></a>
+										<div class="" style="display: block;">
+											<span>
+												<div class="clearfix newSort mb">
+													<a class="active" id="descAnchor" onclick="sortTimelineHistory('desc')"><i class="fa fa-sort"></i> Top to Bottom</a>
+													<a id="ascAnchor" onclick="sortTimelineHistory('asc')"><i class="fa fa-sort"></i> Bottom to Top</a>
+												</div>
+												<div class="clearfix mb10">
+													<input type="text" id="timelineFromDate" class="form-control calendar mb10" placeholder="from date">
+													<input type="text" id="timelineToDate" class="form-control calendar mb10" placeholder="to date">
+													<button type="button" class="btn btn-primary btn-sm" onclick="timelineDateSubmit();"><i class="fa fa-search"></i></button>
+												</div>
+												<div class="clearfix">
+													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Accepted" type="checkbox"> Accepted</label>
+													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Rejected" type="checkbox"> Rejected</label>
+													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Sent" type="checkbox"> Sent</label>
+													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Received" type="checkbox"> Received</label>
+													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Updated" type="checkbox"> Updated</label>
+													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Linked" type="checkbox"> Linked</label>
+													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Paid" type="checkbox"> Paid</label>
+													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Reminder" type="checkbox"> Reminder</label>
+													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Deleted" type="checkbox"> Deleted</label>
+												</div>
+											</span>
+										</div>									
+								</li>							
+								<li><input class="innSeaFld" id="invoiceTimelineSearch" placeholder="Search" type="text"></li>	
+							</ul>
+						</div> 
+					</div>
+					<div id="dynamicTimelineHistoryAppend" class="timelineWrap">
+					</div>
+				</div>
+				</div>
+				</div>
           </div>
-          <!-- STYLED IN FORMS.CSS --> 
         </div>
       </div>
     </div>
@@ -236,6 +288,188 @@ function initPaymentOnline(invoiceId, dueAmount) {
     $("#recvPymntpopOnline").fadeIn(200);
     $('.modal-backdrop').fadeIn(200).addClass('in');
 }
+
+function timelineDateSubmit(){
+	var fromDate = $("#timelineFromDate").val();
+	var toDate = $("#timelineToDate").val();
+	var dateRange = []; 
+	dateRange[0] = fromDate;
+	dateRange[1] = toDate;
+	timelineHistoryFunction('','desc',dateRange, null);
+}
+
+$("#invoiceTimelineSearch").keypress(function(e) {
+    if(e.which == 13) {
+    	timelineHistoryFunction($("#invoiceTimelineSearch").val(),'desc',null, null);
+    }
+});
+function checkTimelineStatus(){
+	var checkedStatus = [];
+	$('input[name="timelineStatusCheck"]:checked').each(function() {
+		   checkedStatus.push(this.value);
+	});
+	timelineHistoryFunction("","desc",null, checkedStatus);
+}
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+
+$(function() {
+	$('#timelineFromDate').datetimepicker({
+		//dateFormat: finalDateFormatPetitionSave,
+		//inline: true, sideBySide: true,
+		//minDate: new Date()
+		 maxDate: moment()
+	});/* .val('').on('dp.change', function (e) {
+		startDateTime = e.date;
+	}); */
+	 
+	$('#timelineToDate').datetimepicker({
+		//dateFormat: finalDateFormatPetitionSave,
+		//minDate: new Date()
+	//	 maxDate: moment()
+	});/* .val('').on('dp.change', function (e) {
+		endDateTime = e.date;
+	}); */
+}); 
+
+function restTimelineFileter(){
+	$('#timelineFromDate, #timelineToDate').val("");
+	$('input[name="timelineStatusCheck"]:checkbox').attr('checked',false);
+	timelineHistoryFunction('', 'desc', null, null);
+	$("#ascAnchor").removeClass("active");
+	$("#descAnchor").addClass("active");
+}
+
+/* $('#timelineFromDate, #timelineToDate').datepicker({
+    dateFormat: finalDateFormatPetitionSave,
+    changeMonth: true,
+	changeYear: true 
+	//maxDate:0  
+    
+}); */
+
+function sortTimelineHistory(order){
+	if(order == 'desc'){
+		$("#ascAnchor").removeClass("active");
+		$("#descAnchor").addClass("active");
+	}else if(order == 'asc'){
+		$("#descAnchor").removeClass("active");
+		$("#ascAnchor").addClass("active");
+	}
+	timelineHistoryFunction("", order,null, null);	
+}
+
+
+function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus){
+	var invoiceUUID ='${invoiceUUID}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	console.log(dateRange);
+	$.ajax({
+	  	type: "GET",
+	    url: sourceleadUrl+"/getInvoiceTimelineHistory?"+tokenParamName+"="+tokenValue+"&locationId="+locationId+"&invoiceUUID="+invoiceUUID+"&searchVal="+searchVal+"&orderVal="+order+"&dateRange="+dateRange+"&checkedStatus="+checkedStatus,
+	    success: function(json) {
+			var resultDiv = "";
+			$("#dynamicTimelineHistoryAppend").empty();
+			if(json.length != 0){
+				$("#dynamicTimelineHistoryAppend").empty();
+				for(var i = 0;i<json.length;i++){
+					var dayVal = json[i].dateValue;
+					for(var j = i; j<json.length; j++,i++){
+						var statusClass = (json[i].status == 'Draft' ? 'textWarning' : json[i].status == 'Sent' ? 'text-primary' : json[i].status == 'Received' ? 'textWarning' : json[i].status == 'Updated' ? 'text-primary' : json[i].status == 'Accepted' ? 'textSuccess' : json[i].status == 'Rejected' ? 'colorRed' : '');
+						if(j==0){
+							resultDiv = resultDiv + '<ul><div class="timeLiDate">'+json[i].dateValue+'</div>';
+						}
+						if(dayVal != json[j].dateValue){
+							resultDiv = resultDiv + '</ul>';
+							resultDiv = resultDiv + '<ul><div class="timeLiDate">'+json[i].dateValue+'</div>';
+							dayVal = json[j].dateValue;
+						}
+				    	resultDiv = resultDiv + '<li>';
+				    	resultDiv = resultDiv + '<div class="pull-left timeLiHead">';
+				    	if(json[j].invoiceUUID != null){
+				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+' <a href="<c:url value="/app/viewInvoice?invoiceUUID='+json[j].invoiceUUID+'&invoiceType=Receivable"/>" title="'+json[j].invoiceId+'"> '+json[j].invoiceId+'</a> by '+'</span><span>'+json[j].ownerName+'</span>';
+				    	}else if(json[j].status == "Deleted"){
+				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusValue+'</span>';
+				    		resultDiv = resultDiv + '<p> Reason :'+json[j].reason+'</p>';
+				    	}else if(json[j].status == "Rejected"){
+				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusValue+'</span>';
+				    		resultDiv = resultDiv + '<p> Reason : '+json[j].reason+'</p>';
+				    	}else{
+				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusValue+'</span>';
+				    	}
+				    	resultDiv = resultDiv + '</div>';
+				    	resultDiv = resultDiv + '<div class="timeLeft">'+json[j].timeValue+'</div>';
+				    	alert(json[j].invoicePaymentReminderStatus);
+				    	if(json[j].invoicePaymentReminderStatus != null || json[j].status == 'Sent'){
+				    		alert("inside arrow");
+				    		resultDiv = resultDiv + '<div class="timeLibtn pull-right clearfix" id="timeLineBtn">';
+				    		if(json[j].invoicePaymentReminderStatus == "Paid" || json[j].invoicePaymentReminderStatus == "Reminder"){
+				    			if(json[j].emailAttachment != null){
+				    				alert("inside attachment");
+				    				resultDiv = resultDiv + '<i class="attaIcon pull-left"></i>';		
+				    			}
+				    		}
+				    		resultDiv = resultDiv + '<i class="arrDn pull-left ml5"></i>';
+				    		resultDiv = resultDiv + '</div>';
+				    		resultDiv = resultDiv + '<div class="clearfix"></div>';
+				    		if(json[j].invoicePaymentReminderStatus == "Paid"){
+				    			resultDiv = resultDiv + '<div class="timelineInn">';
+				    			resultDiv = resultDiv + '<div class="mesText">';
+				    			resultDiv = resultDiv + '<p>Payment Reference Number : '+json[j].paymentReferenceNum+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment On : '+json[j].paymentDate+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Method : '+json[j].paymentMethod+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Amount : '+json[j].paymentCurrency+' '+json[j].paymentAmount+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Memo : '+(json[j].paymentComment != null ? json[j].paymentComment : "---")+'</p>';
+				    			resultDiv = resultDiv + '</div>';
+				    			if(json[j].emailAttachment != null){
+					    			resultDiv = resultDiv + '<div class="attaWrap">';
+					    			resultDiv = resultDiv + '<h2>Attachment</h2>';
+					    			resultDiv = resultDiv + '<p class="pull-left" title="'+json[j].emailAttachment.name+'">'+json[j].emailAttachment.name+'</p>';
+					    			resultDiv = resultDiv + "<span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\'"+json[j].emailAttachment.fileUrl+"\' title='download' download></a><a class='fa fa-eye ml10' onClick='viewFile(\""+json[j].emailAttachment.fileUrl+"\",\""+json[j].emailAttachment.name+"\",\""+json[j].emailAttachment.content+"\");'title='preview'></a></i>";
+					    			resultDiv = resultDiv + '</div>';
+				    			}
+				    			resultDiv = resultDiv + '</div>';
+				    		}
+				    		if(json[j].invoicePaymentReminderStatus == "Reminder"){
+				    			resultDiv = resultDiv + '<div class="timelineInn">';
+				    			resultDiv = resultDiv + '<div class="mesText">';
+				    			resultDiv = resultDiv + '<p> To : '+json[j].invoiceReminderEmailTo+'</p>';
+				    			resultDiv = resultDiv + '<p> From : '+json[j].invoiceReminderEmailFrom+'</p>';
+				    			resultDiv = resultDiv + '<p> Subject : '+json[j].invoiceReminderEmailSubject+'</p>';
+				    			resultDiv = resultDiv + '<p>'+json[j].invoiceReminderEmailBody+'</p>';
+				    			resultDiv = resultDiv + '</div>';
+				    			if(json[j].emailAttachment != null){
+					    			resultDiv = resultDiv + '<div class="attaWrap">';
+					    			resultDiv = resultDiv + '<h2>Attachment</h2>';
+					    			resultDiv = resultDiv + '<p class="pull-left" title="'+json[j].emailAttachment.name+'">'+json[j].emailAttachment.name+'</p>';
+					    			resultDiv = resultDiv + "<span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\'"+json[j].emailAttachment.fileUrl+"\' title='download' download></a><a class='fa fa-eye ml10' onClick='viewFile(\""+json[j].emailAttachment.fileUrl+"\",\""+json[j].emailAttachment.name+"\",\""+json[j].emailAttachment.content+"\");'title='preview'></a></i>";
+					    			resultDiv = resultDiv + '</div>';
+				    			}
+				    			resultDiv = resultDiv + '</div>';
+				    		}
+				    		if(json[j].status == "Sent"){
+				    			resultDiv = resultDiv + '<div class="timelineInn">';
+				    			resultDiv = resultDiv + '<div class="mesText">';
+				    			resultDiv = resultDiv + '<p> To : '+json[j].invoiceReminderEmailTo+'</p>';
+				    			resultDiv = resultDiv + '<p> From : '+json[j].invoiceReminderEmailFrom+'</p>';
+				    			resultDiv = resultDiv + '<p> Subject : '+json[j].invoiceReminderEmailSubject+'</p>';
+				    			resultDiv = resultDiv + '<p>'+json[j].invoiceReminderEmailBody+'</p>';
+				    			resultDiv = resultDiv + '</div>';
+				    			resultDiv = resultDiv + '</div>';
+				    		}
+				    	}
+				    	resultDiv = resultDiv + '<div class="clearfix"></div>';
+				    	resultDiv = resultDiv + '</div>';
+						resultDiv = resultDiv + '</li>';
+					}
+				}
+				resultDiv = resultDiv + '</ul>';
+				$("#dynamicTimelineHistoryAppend").append(resultDiv);	
+			}
+	      }
+	});
+}
+
 function removeMask(){
 	 $("#customeAmountOnline").removeAttr("readonly");
 	/*  $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
@@ -884,6 +1118,7 @@ function invoiceNotesList(){
     invoiceNotes();
     
 }
+
 </script>
 <script>
 function invoiceNotes(){
@@ -1150,6 +1385,26 @@ function paymentHistoryPagination(){
 }
 </script>
 
+<script>
+
+
+$(document).ready(function(){
+	$(document).on("click","#timeLineBtn",function() {	
+		$(this).parent().find(".timelineInn").slideToggle(100);
+	});	
+});	
+
+
+/* $(document).ready(function(){
+	$("#timeLineBtn").click(function(){
+		$(".timelineInn").slideUp(100); 
+ 		alert("fdfsd");
+		$(this).parents().find(".timelineInn").slideToggle(100);
+	});	
+}); */
+
+</script>
+
 <script type="text/javascript" src="https://www.wepay.com/min/js/iframe.wepay.js">
 
 
@@ -1393,6 +1648,18 @@ function showDeleteStatusPopup(status) {
 </script>
 <!--  ============================= Bills tags related scripts written by Laxman Ends ================================ -->
 
+
+<script>
+function newActions(){
+	$(".newActPop").slideToggle(100);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(100);
+});
+$(".filtIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+</script>
 
 
 
