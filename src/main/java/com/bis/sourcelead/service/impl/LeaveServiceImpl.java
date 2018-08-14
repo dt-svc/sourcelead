@@ -2843,9 +2843,9 @@ public Float getTakenLeavesByOrgLocationIdAndUserId(Long leaveId,Long userId,Lon
 }
 
 @Override
-public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromDateToDate(HrLeaveReportDTO hrLeaveReportDTO, Long orgId, Long orgLocationId) throws Exception
+public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromDateToDate(HrLeaveReportDTO hrLeaveReportDTO, Long orgId, Long orgLocationId,String loginUserRole) throws Exception
 {
-	return leaveDao.getLeaveReportsOrglocationIdAndFromToDate(hrLeaveReportDTO,orgId,orgLocationId);
+	return leaveDao.getLeaveReportsOrglocationIdAndFromToDate(hrLeaveReportDTO,orgId,orgLocationId,loginUserRole);
 }
 
 
