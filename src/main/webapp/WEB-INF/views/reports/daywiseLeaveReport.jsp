@@ -118,6 +118,7 @@ function prepareAllDaywiseLeaveReportList(url){
 		result = result	+ '</div>';
 		$("#daywiseLeaveReportsList").empty();
 		$("#daywiseLeaveReportsList").append(result);
+		$("#noReports").val(result.length);
 		daywiseLeaveReportsListPagination(url);
 }
 </script>
@@ -621,7 +622,7 @@ function exportUserData(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(ReportsListEmpty != 'noReports'){
+	if(ReportsListEmpty > 0){
 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
 	}else{
 		 var result = "";
@@ -649,7 +650,7 @@ function exportToPdf(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(ReportsListEmpty != 'noReports'){
+	if(ReportsListEmpty > 0){
 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
 	}else{
 		 var result = "";
@@ -666,5 +667,10 @@ function exportToPdf(){
 	
 }
 </script>
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
+</script>
 <jsp:include page="../masterFooter.jsp" />

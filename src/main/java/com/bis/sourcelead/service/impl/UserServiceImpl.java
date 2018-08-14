@@ -75,6 +75,7 @@ import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -1721,4 +1722,8 @@ public class UserServiceImpl implements UserService {
 		return response;
 	}
 
+	@Override
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception {
+		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList);
+	 }
 }
