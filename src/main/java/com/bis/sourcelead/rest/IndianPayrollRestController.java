@@ -299,7 +299,7 @@ public class IndianPayrollRestController {
 		 try {
 			 if(Validator.validate(loanAndAdvanceDTO)){
 			 AssociateLoanAndAdvances loanAndAdvances = associateLoanAndAdvancesService.storeAssociateLoanAndAdvances(loanAndAdvanceDTO, orgLocation,user);
-			 loanAndAdvanceDTO.setLoanAndAdvId(String.valueOf(loanAndAdvances.getId()));
+			 loanAndAdvanceDTO.setId(loanAndAdvances.getId());
 			 resObj.setObject(loanAndAdvanceDTO);
 			 resObj.setResponse(Result.SUCCESS.name());
 			 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -315,5 +315,22 @@ public class IndianPayrollRestController {
 		}
 		 return resObj;
 }
+    
+    
+    
+    @RequestMapping(value = "/app/getAssociateLoanAndAdvanceDetails", method = RequestMethod.POST)
+	public AssociateLoanAndAdvancesDTO getAssociateLoanAndAdvanceDetails(HttpServletRequest request,
+			@RequestParam(value="userId", required=false) Long userId){
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 AssociateLoanAndAdvancesDTO loanAndAdvDTO = null;
+		 try {
+			 Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocation.getId());
+			 loanAndAdvDTO = associateLoanAndAdvancesService.getAssociateLoanAndAssociateDetails(candidate.getId(), orgLocation);
+		
+		 }catch (Exception e) {
+			 e.printStackTrace();
+		}
+		 return loanAndAdvDTO;
+    } 
     
 }

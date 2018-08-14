@@ -15,7 +15,7 @@
 	         <div class="col-md-4">
                   <label>Type<span class="text-danger">&nbsp;*</span></label>
                   <div class="dropdown-select">
-                    <select class="form-control" data-placeholder="Select Type" id="loanAndAdvType" onchange="getLoanAndAdvNames();" name="loanAndAdvType" data-validation="required" field-name="Type">
+                    <select class="form-control" data-placeholder="Select Type" id="loanAndAdvType" onchange="getLoanAndAdvNames();getDetuctAmountDetails();" name="loanAndAdvType" data-validation="required" field-name="Type">
                       <option value="">-- Select Type --</option>
                       <option value="Loan">Loan</option>
                       <option value="Amount">Amount</option>
@@ -26,7 +26,7 @@
                <div class="col-md-4">
                   <label>Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="dropdown-select">
-                    <select class="form-control chosen-select" name="loanAndAdvName" id="loanAndAdvName" onchange="getLoanAndAdvDetails();" field-name="Name" data-validation="required" field-name="Name">
+                    <select class="form-control chosen-select" name="loanAndAdvName" id="loanAndAdvName" onchange="getLoanAndAdvDetails();getDetuctAmountDetails();" field-name="Name" data-validation="required" field-name="Name">
                         <option value="">-- Select Name --</option>
                       </select>
                   </div>
@@ -35,7 +35,7 @@
               <div class="col-md-4">
                   <label>Status<span class="text-danger">&nbsp;*</span></label>
                   <div class="dropdown-select">
-                    <select class="form-control" data-placeholder="Select Type" id="loanAndAdvStatus" onchange="getLoanAndAdvStatus();getLoanAndAdvDetails();" name="loanAndAdvStatus" data-validation="required" field-name="Status">
+                    <select class="form-control" data-placeholder="Select Type" id="loanAndAdvStatus" onchange="getLoanAndAdvStatus();getLoanAndAdvDetails();getDetuctAmountDetails();" name="loanAndAdvStatus" data-validation="required" field-name="Status">
                       <option value="">-- Select Status --</option>
                       <option value="Requested">Requested</option>
                       <option value="Outstanding">Outstanding</option>
@@ -91,7 +91,7 @@
 		               
 		               <div class="col-md-4 minHeight" id="pendingAmountDiv" style="display: none;">
 		                  <label>Pending Amount<span class="text-danger">&nbsp;*</span></label>
-		                  <input type="text" class="form-control" name="pendingAmount" id="pendingAmount" field-name="Pending Amount">
+		                  <input type="text" class="form-control" name="pendingAmount" id="pendingAmount" field-name="Pending Amount" readonly="readonly">
 		               </div>
 		              
 		               <div class="col-md-4 minHeight">
@@ -169,8 +169,8 @@
 		        	else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		 var esipf = response.object;
-	                	 $("#pfesiId").val(esipf.id);
+		        		 var loanAndAdv = response.object;
+	                	 $("#loanAndAdvId").val(loanAndAdv.id);
 		        		
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
@@ -192,7 +192,7 @@
  </script>
 
 <script>
-function getLoanAndAdvNames(){
+function getLoanAndAdvNames(loanAndAdvId){
 	 var loanAndAdvType = document.getElementById("loanAndAdvType").value; 
 	 if(loanAndAdvType != null && loanAndAdvType != "" && loanAndAdvType != 'undefined'){
 		 $("#loanAndAdvancesDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -204,8 +204,12 @@ function getLoanAndAdvNames(){
 		        	output = output + "<option value=''>-- Select Name --</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
+		        		var selected = "";
 		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+		        		if(loanAndAdvId != null && loanAndAdvId != 'undefined' && loanAndAdvId != '' && loanAndAdvId == opt.id){
+		        			selected = "selected";
+		        		}
+		        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.name+"</option>";
 			        		
 					}
 		        	$("#loanAndAdvName").empty();
@@ -263,7 +267,7 @@ function getLoanAndAdvDetails(){
 
 
 <script>
-function getLoanAndAdvApprovers(){
+function getLoanAndAdvApprovers(userId){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getLoanAndAdvanceApprovers?", 
@@ -273,7 +277,11 @@ function getLoanAndAdvApprovers(){
 		        	for (var i=0; i<json.length; i++)
 					{
 		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.id+ "'>"+opt.userName+"&nbsp;("+opt.role+")</option>";
+		        		var selected = '';
+		        		if(userId != null && userId != 'undefined' && userId != '' && userId == opt.id){
+		        			selected = "selected";
+		        		}
+		        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.userName+"&nbsp;("+opt.role+")</option>";
 			        		
 					}
 		        	$("#loanAndAdvApprover").empty();
@@ -301,10 +309,14 @@ function getDetuctAmountDetails(){
 			var interstRate = eval(loanAndAdvInterstRate / 100);
 			var interestAmount = (requestedAmount * interstRate);
 			var totalAmount = parseInt(requestedAmount) + parseInt(interestAmount);
-			var paidAmount = $("#paidAmount").val();
-			if(paidAmount != null && paidAmount != '' && paidAmount != 'undefined'){
-				totalAmount =  parseInt(totalAmount) - paidAmount;
-				$("#pendingAmount").val(totalAmount.toFixed(3));
+		
+			var loanAndAdvStatus = document.getElementById("loanAndAdvStatus").value;
+			if(loanAndAdvStatus == 'Outstanding'){
+				var paidAmount = $("#paidAmount").val();
+				if(paidAmount != null && paidAmount != '' && paidAmount != 'undefined'){
+					totalAmount =  parseInt(totalAmount) - paidAmount;
+					$("#pendingAmount").val(totalAmount.toFixed(3));
+				}
 			}
 			var detuctAmount = eval(totalAmount / noOfSchedules);
 			$("#deductAmount").val(detuctAmount.toFixed(3));
@@ -337,8 +349,49 @@ function shiftToInformationTab(){
 <script>
 function getIndAssociateLoanAndAdvancesDetails(){
 	 var userId = $("#associateId").val();
-     $("#loanAndAdvAssociateUserId").val(userId);
-     getLoanAndAdvApprovers();
+   if(userId != null && userId != 'undefined' && userId != ''){        
+	 $("#loanAndAdvAssociateUserId").val(userId);
+     $.ajax({
+	    	type: "POST",
+	    	url: sourceleadUrl+"/getAssociateLoanAndAdvanceDetails?userId="+userId,
+	        success: function(json) {
+	        	if(json != null && json.id != '0'){
+	        		 $("#loanAndAdvId").val(json.id);
+	        		 $("#loanAndAdvType").val(json.loanAndAdvType);
+	        		 getLoanAndAdvNames(json.loanAndAdvName);
+	        		 $("#loanAndAdvStatus").val(json.loanAndAdvStatus);
+	        		 getLoanAndAdvStatus();
+	        		 $("#requestedAmount").val(json.loanAmount);
+	        		 $("select[name=scheduler]").val(json.scheduler);
+	        		 
+	        		 if(json.issuedDate != null && json.issuedDate != '' && json.issuedDate != 'undefined'){
+	        			 $("input[name=issuedDate]").val(json.issuedDate);
+	        		 }
+	        		 
+	        		 if(json.paidAmount != null && json.paidAmount != '' && json.paidAmount != 'undefined'){
+	        			 $("#paidAmount").val(jon.paidAmount);
+	        		 }
+	        		
+	        		 $("#noOfSchedules").val(jon.noOfSchedules);
+	        		
+	        		 if(jon.pendingAmount != null && jon.pendingAmount != '' && jon.pendingAmount != 'undefined'){
+	        			 $("#pendingAmount").val(jon.pendingAmount); 
+	        		 }
+	        		
+	        		 $("input[name=endDate]").val(json.endDate);
+	        		 $("#deductAmount").val(json.deductAmount);
+	        		 
+	        		 $("input[name=effectiveDate]").val(json.effectiveDate);
+	        		 getLoanAndAdvApprovers(json.loanAndAdvApprover);
+	        		 getLoanAndAdvDetails();
+	        		 
+	        	}else{
+	        		 getLoanAndAdvApprovers();
+	        	}
+	        	
+	        },
+	    });
+   }
 }
 </script>
 
@@ -349,7 +402,11 @@ function getLoanAndAdvStatus(){
 	if(loanAndAdvStatus){
 		 var statusTypeDiv = document.getElementById("statusTypeDiv");
 		 statusTypeDiv.style.display = "block";	
-		 clearLoanAndAdvances();
+		 var loanAndAdvId = $("#loanAndAdvId").val();
+		 if(loanAndAdvId == null || loanAndAdvId == '' || loanAndAdvId == 'undefined'){
+			 clearLoanAndAdvances();
+		 }
+		
 		$("#requestedAmount").attr("data-validation", "required validate_float validate_length length1-12");
 	    $("#scheduler").attr("data-validation", "required");
 	    $("#effectiveDate").attr("data-validation", "required");

@@ -161,27 +161,29 @@ function skipToInfomationTab(){
   <script>
 	  function getIndAssociateBankingDetails(){
 	     var userId = $("#associateId").val();
-	     $("#associateUserId").val(userId);
-	     
-		 $.ajax({
-		    	type: "POST",
-		    	url: sourceleadUrl+"/getIndAssociatePaymentAccountDetails?userId="+userId,
-		        success: function(json) {
-		        	
-		        	if(json != null){
-		        		$("#paymentAccountId").val(json.paymentAccountId);
-			        	$("select[name=accountType]").val(json.accountType);
-			        	$("#firstName").val(json.firstName);
-			        	$("#lastName").val(json.lastName);
-			        	$("#bankName").val(json.bankName);
-			        	$("#accountNumber").val(json.accountNumber);
-			        	$("#bsrNumber").val(json.bsrNumber);
-			        	$("#micrCode").val(json.micrCode);
-			        	$("#routingNumber").val(json.routingNumber);
-		        	}
-		        	
-		        },
-		    });
+	   
+	     if(userId != null && userId != 'undefined' && userId != ''){
+		     $("#associateUserId").val(userId);
+			 $.ajax({
+			    	type: "POST",
+			    	url: sourceleadUrl+"/getIndAssociatePaymentAccountDetails?userId="+userId,
+			        success: function(json) {
+			        	
+			        	if(json != null){
+			        		$("#paymentAccountId").val(json.paymentAccountId);
+				        	$("select[name=accountType]").val(json.accountType);
+				        	$("#firstName").val(json.firstName);
+				        	$("#lastName").val(json.lastName);
+				        	$("#bankName").val(json.bankName);
+				        	$("#accountNumber").val(json.accountNumber);
+				        	$("#bsrNumber").val(json.bsrNumber);
+				        	$("#micrCode").val(json.micrCode);
+				        	$("#routingNumber").val(json.routingNumber);
+			        	}
+			        	
+			        },
+			    });
+	     }
 	     
 	  }
   </script>

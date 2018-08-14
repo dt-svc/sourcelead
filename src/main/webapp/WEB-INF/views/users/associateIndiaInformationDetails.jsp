@@ -70,7 +70,7 @@
 	                 <div class="col-md-6">
 	                   <div class="pull-right">
 	                    <button type="button" class="btn btn-success btnSuccess" id="savePaymentButton" onclick="saveOnboardingCandidatePfEsiDetails();" >Save & Continue</button>
-                          <button type="button" class="btn btn-default ml10" onclick="skipToLoanAndAdvTab();" >Skip</button>
+                          <button type="button" class="btn btn-default ml10" onclick="skipToLoanAndAdvancesTab();" >Skip</button>
 	                    </div>
 	                 </div>
                 </div>
@@ -112,7 +112,7 @@
 	                	 $("#pfesiId").val(esipf.id);
 	                	 var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
 						 document.getElementById("indLoanAndAdvancesDetails").removeAttribute("class");
-						 indInformationDetails.href="#tab-4";
+						 indLoanAndAdvancesDetails.href="#tab-4";
 						 $("#indLoanAndAdvancesDetails").click();
 		        		
 		        	} else if (response.indexOf('Sign In') !== -1) {
@@ -135,10 +135,10 @@
  </script>
  
  <script>
- function skipToLoanAndAdvTab(){
+ function skipToLoanAndAdvancesTab(){
 	 var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
 	 document.getElementById("indLoanAndAdvancesDetails").removeAttribute("class");
-	 indInformationDetails.href="#tab-4";
+	 indLoanAndAdvancesDetails.href="#tab-4";
 	 $("#indLoanAndAdvancesDetails").click();
  }
  </script>
@@ -147,57 +147,59 @@
  <script>
 	  function getIndAssociateInformationDetails(){
 		  var userId = $("#associateId").val();
-	      $("#pfassociateUserId").val(userId);
-	 	  
-	      $.ajax({
-		    	type: "POST",
-		    	url: sourceleadUrl+"/getIndAssociatePFESIAccountDetails?userId="+userId,
-		        success: function(json) {
-		        	
-		        	if(json != null){
-		        		$("#pfesiId").val(json.pfesiId);
-		        		if(json.eligibleForPf == 'Y'){
-		        			  pfel.style.display = "block";
-		        			  document.getElementById("pf").checked = true;
-		        			  $("#pf").val('Y');
-		        			  $("#pfUan").val(json.firstName);
-		        			  $("#pfNumber").val(json.firstName);
-		        			  $("input[name=enroleDate]").val(json.enroleDate);
-		        			  $("#pfUan").attr("data-validation", "required validate_int validate_length length1-12");
-		        		      $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length1-19");
-		        			 
-		        		}else{
-		        			  pfel.style.display = "none";
-		        			  document.getElementById("pf").checked = false;
-		        			  $("#pf").val('');
-		        			  $("#pfUan").val('');
-		        			  $("#pfNumber").val('');
-		        			  $("input[name=enroleDate]").val('');
-		        			  $('#pfUan').removeAttr('data-validation');
-	        		    	  $('#pfNumber').removeAttr('data-validation');
-	        		    	  $("#uanError").find("p.jquery_form_error_message").remove();
-	        		    	  $("#pfError").find("p.jquery_form_error_message").remove();
-		        			 
-		        		}
-		        		
-		        		if(json.eligibleForEsi == 'Y'){
-		        			 esiEl.style.display = "block";
-		        			 document.getElementById("esi").checked = true;
-		        			 $("#esi").val('Y');
-		        			 $("#esinumber").val(json.esinumber);
-		        			 $("#esiNumber").attr("data-validation", "validate_int validate_length length1-17");
-		        			
-		        		}else{
-		        			 esiEl.style.display = "none";
-		        			 document.getElementById("esi").checked = false;
-		        			 $("#esi").val('');
-		        			 $("#esinumber").val('');
-		        			 $('#esiNumber').removeAttr('data-validation');
-		        		}
-		        	}
-		        	
-		        },
-		    });
+		  if(userId != null && userId != 'undefined' && userId != ''){    
+			  $("#pfassociateUserId").val(userId);
+		      $.ajax({
+			    	type: "POST",
+			    	url: sourceleadUrl+"/getIndAssociatePFESIAccountDetails?userId="+userId,
+			        success: function(json) {
+			        	
+			        	if(json != null){
+			        		$("#pfesiId").val(json.pfesiId);
+			        		if(json.eligibleForPf == 'Y'){
+			        			  pfel.style.display = "block";
+			        			  document.getElementById("pf").checked = true;
+			        			  $("#pf").val('Y');
+			        			  $("#pfUan").val(json.firstName);
+			        			  $("#pfNumber").val(json.firstName);
+			        			  $("input[name=enroleDate]").val(json.enroleDate);
+			        			  $("#pfUan").attr("data-validation", "required validate_int validate_length length1-12");
+			        		      $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length1-19");
+			        			 
+			        		}else{
+			        			  pfel.style.display = "none";
+			        			  document.getElementById("pf").checked = false;
+			        			  $("#pf").val('');
+			        			  $("#pfUan").val('');
+			        			  $("#pfNumber").val('');
+			        			  $("input[name=enroleDate]").val('');
+			        			  $('#pfUan').removeAttr('data-validation');
+		        		    	  $('#pfNumber').removeAttr('data-validation');
+		        		    	  $("#uanError").find("p.jquery_form_error_message").remove();
+		        		    	  $("#pfError").find("p.jquery_form_error_message").remove();
+			        			 
+			        		}
+			        		
+			        		if(json.eligibleForEsi == 'Y'){
+			        			 esiEl.style.display = "block";
+			        			 document.getElementById("esi").checked = true;
+			        			 $("#esi").val('Y');
+			        			 $("#esinumber").val(json.esinumber);
+			        			 $("#esiNumber").attr("data-validation", "validate_int validate_length length1-17");
+			        			
+			        		}else{
+			        			 esiEl.style.display = "none";
+			        			 document.getElementById("esi").checked = false;
+			        			 $("#esi").val('');
+			        			 $("#esinumber").val('');
+			        			 $('#esiNumber').removeAttr('data-validation');
+			        		}
+			        	}
+			        	
+			        },
+			    });
+		  }
+	      
 	  }
  </script>
  

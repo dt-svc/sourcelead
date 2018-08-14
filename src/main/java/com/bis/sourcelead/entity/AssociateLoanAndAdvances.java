@@ -79,6 +79,9 @@ public class AssociateLoanAndAdvances implements Serializable{
 	@Column(name = "UUID")
 	private String uuid;
 	
+	@Column(name = "STATUS")
+	private Integer status;
+	
     @Column(name = "CREATED_DATE")
 	private Date createdDate;
    
@@ -270,5 +273,13 @@ public class AssociateLoanAndAdvances implements Serializable{
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 }

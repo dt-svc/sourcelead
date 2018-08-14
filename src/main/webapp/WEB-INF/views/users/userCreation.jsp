@@ -498,7 +498,7 @@
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
               <jsp:include page="associateIndiaBankingDetails.jsp" />
               <jsp:include page="associateIndiaInformationDetails.jsp" />
-               <jsp:include page="associateIndiaLoanAndAdvancesDetails.jsp" />
+              <jsp:include page="associateIndiaLoanAndAdvancesDetails.jsp" />
          </c:if> 
         
       </section>
@@ -1443,7 +1443,7 @@ var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 				indInformationDetails.className = "disabledLink";
 			} 
 			
-			 var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
+			var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
 			if(indLoanAndAdvancesDetails){
 				indLoanAndAdvancesDetails.href = "#";
 				indLoanAndAdvancesDetails.className = "disabledLink";

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.AssociateLoanAndAdvancesDao;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -73,6 +74,34 @@ public class AssociateLoanAndAdvancesDaoImpl implements AssociateLoanAndAdvances
 			associateLoanAndAdvances = (AssociateLoanAndAdvances) associateLoanAndAdvancesList.iterator().next();
 		}
 		return associateLoanAndAdvances;
+	}
+
+	@Override
+	@Transactional
+	public AssociateLoanAndAdvances getAssociateLoanAndAdvancesDetailsByCandidateId(Long candidateId,
+			Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateLoanAndAdvances lad left join fetch lad.payrollLoanAndAdvanceId left join fetch lad.approverUser "
+				+ " where lad.candidateId.id = :candidateId and lad.orgLocationId.id = :orgLocationId and lad.status = '1' ";  
+		List<AssociateLoanAndAdvances> associateLoanAndAdvancesList =  session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
+		AssociateLoanAndAdvances associateLoanAndAdvances = null;
+		if (associateLoanAndAdvancesList != null && associateLoanAndAdvancesList.size() > 0) {
+			associateLoanAndAdvances = (AssociateLoanAndAdvances) associateLoanAndAdvancesList.iterator().next();
+		}
+		return associateLoanAndAdvances;
+	}
+
+	@Override
+	@Transactional
+	public List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateId(Long candidateId,
+			Long orgLocationId) throws Exception {
+
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String query = "from AssociateLoanAndAdvances lad left join fetch lad.payrollLoanAndAdvanceId left join fetch lad.approverUser where "
+		 		+ " lad.candidateId.id = :candidateId and lad.orgLocationId.id = :orgLocationId and lad.status = '1'  ";  
+	     List<AssociateLoanAndAdvances> loanAndAdvList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
+	     return loanAndAdvList;
 	}
 
 }
