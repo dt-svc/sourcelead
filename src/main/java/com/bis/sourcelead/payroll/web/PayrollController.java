@@ -138,6 +138,13 @@ public class PayrollController {
 				sessionData = new SessionMaintainanceData();
 			}
 			sessionData.setNav(Constants.PAY);
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			try {
+				String empId =  wageTaxSummaryService.getWagesAndTaxEmployeeId(candidateId);
+				 model.addObject("employeeId", empId);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			request.getSession().setAttribute("sessionData",sessionData);
 			
 	       return model;

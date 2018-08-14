@@ -419,7 +419,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 
 
 	@Override
-	public ResponseList<PayrollBalance> getAllPayrollBalanceSheetByOrgLocationId(OrgLocations orgLocation,PayrollBalance payrollBalance) throws Exception {
+	public ResponseList<PayrollBalance> getAllPayrollBalanceSheetByOrgLocationId(OrgLocations orgLocation,PayrollBalance payrollBalance,String loginUserRole) throws Exception {
 		
 //		  List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
 		  ResponseList<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationIdAndPagination(orgLocation,payrollBalance);
@@ -427,7 +427,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 		 List<PayrollBalance> balanceList = new ArrayList<>();
 		  if(wageTaxSummaryList !=null) {
 			 for(WageTaxSummary WageTaxSummary : wageTaxSummaryList.getData()) {
-				 PayrollBalance balance = accountDeductionsService.getBalance(Long.parseLong(WageTaxSummary.getEmployeeId()), orgLocation);
+				 PayrollBalance balance = accountDeductionsService.getBalance(Long.parseLong(WageTaxSummary.getEmployeeId()), orgLocation,loginUserRole);
 				 balance.setEmpName(WageTaxSummary.getEmployeeName());
 				 balanceList.add(balance);
 			 }

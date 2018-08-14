@@ -692,10 +692,10 @@ public class EmployeePayrollRestController {
 	@RequestMapping(value = { "/getfinalBalanceByEmpId", "/rest/getfinalBalanceByEmpId" }, method = RequestMethod.GET)
 	public PayrollBalance getfinalBalanceByEmpId(
 			@RequestParam(value = "empId", required = false) Long empId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		
-		PayrollBalance payrollBalance = accountDeductionsService.getBalance(empId, orgLocations);
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
+		PayrollBalance payrollBalance = accountDeductionsService.getBalance(empId, orgLocations,loginUserRole);
 		return payrollBalance;
 	}
 	
@@ -722,7 +722,8 @@ public class EmployeePayrollRestController {
 	public @ResponseBody  ResponseList<PayrollBalance> getAllPayrollBalanceReport(PayrollBalance payrollBalance,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(payrollBalance.getOrgLocationId()));
-		ResponseList<PayrollBalance> list = employerPayrollCostService.getAllPayrollBalanceSheetByOrgLocationId(orgLocation,payrollBalance);
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
+		ResponseList<PayrollBalance> list = employerPayrollCostService.getAllPayrollBalanceSheetByOrgLocationId(orgLocation,payrollBalance,loginUserRole);
 		return list;
 	}
 	

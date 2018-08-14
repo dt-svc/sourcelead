@@ -27,7 +27,7 @@ public interface EmployerPayrollCostService {
 	
 	int getEmployerPayrollCostVersionByLocationId(Long locationId);
 
-	ResponseList<PayrollBalance> getAllPayrollBalanceSheetByOrgLocationId(OrgLocations orgLocation,PayrollBalance payrollBalance)	throws Exception;
+	ResponseList<PayrollBalance> getAllPayrollBalanceSheetByOrgLocationId(OrgLocations orgLocation,PayrollBalance payrollBalance, String loginUserRole)	throws Exception;
 
 	List<EmployerPayrollCost> getEmployerPayrollCostByLocationId(Long locationId);
 	

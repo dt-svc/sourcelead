@@ -396,11 +396,12 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 
 
 	@Override
-	public PayrollBalance getBalance(Long empId, OrgLocations orgLocations) throws Exception {
+	public PayrollBalance getBalance(Long empId, OrgLocations orgLocations,String loginUserRole) throws Exception {
 		DecimalFormat df = new DecimalFormat("#0.00");
 		
 		
-		double income = 0; 
+		double billRateIncome = 0; 
+		double payRateIncome = 0;
 		double due = 0; 
 		double directDepositGross = 0; // A
 		double directDepositNet = 0; // B 
@@ -419,7 +420,11 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		if(empId !=null){
 			 List<InvoiceData> invoiceDataList = invoiceDataService.getInvoiceDetailsByEmpId(empId, orgLocations);
 			 if(invoiceDataList !=null && invoiceDataList.size() >0){
-				 income = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Paid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
+				 if("Employee".equalsIgnoreCase(loginUserRole)){
+					 payRateIncome = invoiceDataList.stream().filter(i->i.getPayRate() !=null && "Paid".equalsIgnoreCase(i.getArPaid())).mapToDouble(i->Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
+				 }else{
+					 billRateIncome = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Paid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
+				 }
 				 due = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Unpaid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
 			 }
 			 
@@ -463,7 +468,11 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 //			}
 			
 		}
-		payrollBalance.setIncome(df.format(income));
+		 if("Employee".equalsIgnoreCase(loginUserRole)){
+			 payrollBalance.setIncome(df.format(payRateIncome));
+		 }else{
+			 payrollBalance.setIncome(df.format(billRateIncome));
+		 }
 		payrollBalance.setDirectDepositGross(df.format(directDepositGross));
 		payrollBalance.setDirectDepositNet(df.format(directDepositNet));
 		payrollBalance.setProcessedWithCheckOptionGross(df.format(processedWithCheckOptionGross));
@@ -478,9 +487,21 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		payrollBalance.setDirectDepositDeductionPositive(df.format(directDepositDeductionPositive));
 		payrollBalance.setDue(df.format(due));
 		double deductionTotal = directDepositGross + actualChecksDepositedNet + manualAdvance + generalExpenses + vendorPayment + healthcareInsurance + immigration + directDepositAdvanceNegetive;
-		double total = income + directDepositDeductionPositive;
+		//
+		double total =0;
+		 if("Employee".equalsIgnoreCase(loginUserRole)){
+			 total = payRateIncome + directDepositDeductionPositive;
+		 }else{
+			 total = billRateIncome + directDepositDeductionPositive;
+		 }
 		double balance = total - deductionTotal;
-		double billed = income + due;
+		//
+		double billed = 0;
+		if("Employee".equalsIgnoreCase(loginUserRole)){
+			billed = payRateIncome + due;
+		}else{
+			billed = billRateIncome + due;
+		}
 		payrollBalance.setBalance(String.valueOf(Math.round(balance * 100D) / 100D));
 		payrollBalance.setBilled(String.valueOf(Math.round(billed * 100D) / 100D));
 		return payrollBalance;
