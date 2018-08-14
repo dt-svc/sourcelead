@@ -67,7 +67,7 @@
     	 				<label class="col-md-3 paddingRight">Amount Received<span class="text-danger paddingLeft">*</span></label>
 	    	 			<div class="clearfix">
 	    	 			<div class="col-md-6">
-	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" onkeyup="validateNumber(this);" data-validation="required validate_length length2-250" field-name ="Amount Received">
+	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" data-validation="required validate_length length2-250" field-name ="Amount Received">
 	    	 			</div>
 	    	 			<div class="col-md-3">
 	    	 				<input type="text" class="form-control" id="currencyType" name = "currencyType" readonly="readonly">
@@ -88,7 +88,6 @@
 				<label class="input-group-btn"> <span class="btn btn-primary" onchange="getFleInformation();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
 				</label> 
 				<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document" field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true">
-					<div class="clearUpload"></div>
 				</div>
 			</div>
 		</div>
@@ -219,12 +218,6 @@ $('#paymentDate').datepicker({
          		result = result +'         <th>Payment</th>                ';
          		result = result +'           </tr>';
          		result = result +'           </thead>';
-         		result = result +'           <tfoot>';
-         		result = result +'           <tr>';
-     			result = result +'           <td colspan="8"><div class="pull-right">Total</div></td>';
-     			result = result +'           <td colspan="1"><span id="grandTotalAmount"></span></td>';
-         		result = result +'           </tr>';
-         		result = result +'           </tfoot>';
                 result = result +"<tbody>"; 
                 
 	        	if(json.data != null && json.data != 'undefined' && json.data != "" && json.data != '[]'){
@@ -250,6 +243,12 @@ $('#paymentDate').datepicker({
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
+	                     result = result +'           <tfoot>';
+	             		result = result +'           <tr>';
+	         			result = result +'           <td colspan="8"><div class="pull-right">Total</div></td>';
+	         			result = result +'           <td colspan="1"><div id="grandTotalAmount"></div></td>';
+	             		result = result +'           </tr>';
+	             		result = result +'           </tfoot>';
 	                     result = result +"</table>"; 
 	                     result = result +'     </div>'; 
 	                 	 result = result +'     <div class="clearfix">';
@@ -339,6 +338,15 @@ $('#paymentDate').datepicker({
 	});
 </script>
   <script>
+  
+//allow only number
+  $("#totalAmount").on("keypress keyup blur",function (event) {
+	$(this).val($(this).val().replace(/[^0-9\.]/g,''));
+      if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+          event.preventDefault();
+      }
+  });
+  
   function validateNumber(object){ 
 	   object.value = object.value.replace(/[^0-9\.]/g,'');
 	}
@@ -397,8 +405,9 @@ $('#paymentDate').datepicker({
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
 		  }else{
+			  var inputAmount = $("#totalAmountRow"+id).val();
 			  $("#totalAmountRow"+id).val('');
-			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
+			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(inputAmount);
 		  }
 		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
 		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
@@ -411,7 +420,7 @@ function ListPagination(){
 	
 	 $("#invoiceListTable").DataTable( { 
 		 	"scrollY":"350px",	
-		 	"scrollCollapse": false,
+		 	"scrollCollapse": true,
 		 	"paging": false,
 	    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
 	    	"bLengthChange": false,

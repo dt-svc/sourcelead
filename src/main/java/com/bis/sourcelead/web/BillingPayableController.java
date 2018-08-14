@@ -25,11 +25,13 @@ import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -68,11 +70,14 @@ public class BillingPayableController {
     @Autowired
     InvoiceDocumentsService invoiceDocumentsService;
 	
+    @Autowired
+    private SourceleadTagsService sourceleadTagsService;
 	
 	
 	@RequestMapping(value = "/payablesList")
 	public ModelAndView billingPayablesList(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
-		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
 		ModelAndView model = new ModelAndView();
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -85,6 +90,10 @@ public class BillingPayableController {
 			model.addObject("msg", msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "payableInvoiceCreateMsg");
 		}
+		
+		List<String> billsTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.BILLS.toString(), orgLocations.getId());
+        model.addObject("billsTagsList", billsTagsList);
+        
 		model.setViewName("billing/payablesList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Payables);

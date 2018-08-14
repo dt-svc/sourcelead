@@ -12,6 +12,8 @@ private String feedbackDate;
 
 private String FeedbackStatus;
 
+private String uuid;
+
 private List<UserProfileDTO> interviewerUser;
 
 public Long getId() {
@@ -52,6 +54,14 @@ public List<UserProfileDTO> getInterviewerUser() {
 
 public void setInterviewerUser(List<UserProfileDTO> interviewerUser) {
 	this.interviewerUser = interviewerUser;
+}
+
+public String getUuid() {
+	return uuid;
+}
+
+public void setUuid(String uuid) {
+	this.uuid = uuid;
 }
 
 

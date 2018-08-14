@@ -16,6 +16,7 @@
 </script>  -->
 <script type="text/javascript">
 		window.onload = function () {
+			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','');
 			getDesignationType();
 			getDepartmentsList();
 			getResourceManagers();
@@ -23,8 +24,9 @@
 			editMe(this);
 		 };
 	</script>
-<script>
+<script>	
 	$(document).ready(function() {
+		var location = "${location}";
 		document.getElementById("createUser_form").reset();
 		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		  var sectionId = '${section.id}';
@@ -47,7 +49,8 @@
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
-        <!-- <div class="content-area clearfix"> -->
+        
+        <!--New theme-->
         <div class="user_summ_wrap contentareaInner-styles">
         
         
@@ -55,7 +58,16 @@
         <div class="tabsMenu">
         <ul class="list-unstyled">
           <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
-            <li class=""><a href="#tab-2" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
+          <c:if test="${SourceLeadWeb_country != 'United States'}">
+          <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
+          </c:if>
+          <c:if test="${SourceLeadWeb_country == 'United States'}">
+            <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
+	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
+	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
+	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
+	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
+	      </c:if>
           <div class="clearfix"></div>
         </ul>
 		</div>
@@ -65,7 +77,7 @@
           <div id="tab-1" class="tabsMenu_tabs_inn" style="display: block;">
             <div class="project_tabs_inn_table">
         
-        
+        <div class="clearfix">
         <div id="loading"></div> 
         <div id="candidatesLoading"></div>
         
@@ -74,8 +86,9 @@
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
           <input type="hidden" id="actionId" value="${actionId}">
-          <input type="hidden" id="associateId" />
-            <div class="row">
+          <input type="hidden" id="associateId" name="associateId">
+          <input type="hidden" id="empType" name="empType">
+            <div class="row clearfix minHeightcol5">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
 		        <div class="col-md-12 clearfix">
@@ -104,7 +117,6 @@
 		           </select>
 		          </div> </div>
 		          </div>
-		           <input type="hidden" id="associateId" name="associateId"/>
 		          </div>
 		        </div>  
               
@@ -135,6 +147,12 @@
 	                  </div>
                   </div>
                   </div>
+                  <div class="form-group" id="EmailIdDiv">
+                  <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" id="ssn" name="SSN" field-name="First Name" data-validation="required validate_Space validate_int validate_length length9-9">
+                  </div>
+                  </div>
                   
                 <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
@@ -158,7 +176,32 @@
                   </div>
                 </div>
                 
-               
+               <div class="form-group">
+                  <label class="col-md-3">Work Location<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9">
+                   	<select class="form-control chosen-select" id="workLocation" name="workLocation" field-name="Work Location" data-validation="required" >
+                        <option value="">--Select Location--</option>
+                        <c:forEach var="option" items="${locationList}">
+							<option value="${option.id}">${option.orgLocationAddress}</option>
+						</c:forEach>
+              		</select>
+                  </div>
+                </div>
+                 
+                 <div class="form-group">
+                  <label class="col-md-3">Residence Location<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9 positionRelative">
+                    <input type="text" class="form-control" id="residenceLocation" name="residenceAddress" field-name="Residence Location" data-validation="required">
+                     <input type="hidden" id="residenceCountry" name="residenceCountry" />
+                     <input type="hidden" id="residenceState" name="residenceState" />
+                     <input type="hidden" id="residenceCity" name="residenceCity" />
+                     <input type="hidden" id="residenceZipCode" name="residenceZipCode" />
+                     <input type="hidden" id="residenceLatitude" name="residenceLatitude" />
+                     <input type="hidden" id="residenceLongitude" name="residenceLongitude" />
+                  <i class="fa fa-refresh btn btn-primary refresh-icon bg-blue" title="Refresh" onClick="refreshGoogleApiLocation('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','');"></i>
+                  </div>
+                </div>
+                  
                  <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
@@ -209,10 +252,10 @@
                   </div>
                   
                <div class="form-group">
-                  <label class="col-md-3">Department </label>
+                  <label class="col-md-3">Department <span class="text-danger">*</span></label>
                   <div class="col-md-9 chooRadius" id="chosen-role">
                    <div class="input-group col-md-10 pull-left">
-                         <select class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation-optional="true" >
+                         <select class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation="required" >
 			              </select>
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="getDepartmentsList();"><i class="fa fa-refresh "></i></span>
                   </div>
@@ -434,12 +477,13 @@
           
           </div>
           </div>
-            <jsp:include page="associateLeaveType.jsp" />
-          
-         
-          
-          
         </div>
+        <jsp:include page="associateLeaveType.jsp" />
+          <jsp:include page="associateSalary.jsp" />
+       <jsp:include page="associateBankData.jsp" />
+       <jsp:include page="associateTax.jsp" />
+       <jsp:include page="associateDeduction.jsp" />
+        <jsp:include page="associateContribution.jsp" />
       </section>
       <!-- Content Area Ends--> 
 
@@ -620,6 +664,7 @@ function getEmployeementType(designationType){
 <script type="text/javascript">
  function createUser() {
 	 
+	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}'; 
 	 	var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){
 			$('#Rate').removeAttr('data-validation-optional');
@@ -657,15 +702,23 @@ function getEmployeementType(designationType){
 						showError("Invalid data");
 						$("#loading").removeAttr('style');
 					} 
-					else {
+					else if(loginCurrencyCode != 'USD') {
 						$("#associateId").val(result.object.userId);
 						var associateLeaveType = document.getElementById("associateLeaveType");
 						document.getElementById("associateLeaveType").removeAttribute("class"); 
-						associateLeaveType.href="#tab-2"; 
+						associateLeaveType.href="#tab-7"; 
 						$("#tab-1").removeAttr("href");
 						$("#associateLeaveType").click();
 						getAllLeaveType();
 						/* location.replace(sourceleadUrl+"/usersList"); */
+					}else{
+					$("#associateId").val(result.object.userId);
+						$("#empType").val(result.object.designationType);
+						var associateSalary = document.getElementById("associateSalary");
+						document.getElementById("associateSalary").removeAttribute("class"); 
+						associateSalary.href="#tab-6"; 
+						$("#associateSalary").click();
+						 getPayItemList();
 					}
 				},
 			});
@@ -1318,6 +1371,47 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 					associateLeaveType.href = "#";
 					associateLeaveType.className = "disabledLink";
 				}
+				
+				var associates = document.getElementById("associates");
+				if(associates){
+					associates.href = "#";
+					associates.className = "disabledLink";
+				} 
+				var associateBanking = document.getElementById("associateBanking");
+				if(associateBanking){
+					associateBanking.href = "#";
+					associateBanking.className = "disabledLink";
+				}
+				var associateTax = document.getElementById("associateTax");
+				if(associateTax){
+					associateTax.href = "#";
+					associateTax.className = "disabledLink";
+				}
+				
+				var associateDeduction = document.getElementById("associateDeduction");
+				if(associateDeduction){
+					associateDeduction.href = "#";
+					associateDeduction.className = "disabledLink";
+				} 
+				
+				var associateContribution = document.getElementById("associateContribution");
+				if(associateContribution){
+					associateContribution.href = "#";
+					associateContribution.className = "disabledLink";
+				} 
+				
+				var associateAdvances = document.getElementById("associateAdvances");
+				if(associateAdvances){
+					associateAdvances.href = "#";
+					associateAdvances.className = "disabledLink";
+				} 
+				
+				var associateSalary = document.getElementById("associateSalary");
+				if(associateSalary){
+					associateSalary.href = "#";
+					associateSalary.className = "disabledLink";
+				} 
+				
 				
 
  

@@ -369,4 +369,19 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		return employee;
 	}
 
+	@Override
+	@Transactional
+	public Employees getEmployeeByUserAndOrgLocationId(Long userId, Long orgLocationId)
+	{
+		Employees employee = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Query employeesListQuery= session.createQuery("from Employees emp where emp.user.id = :userId and  emp.orgLocations.id= :orgLocationId");
+			employee = (Employees) employeesListQuery.setLong("userId", userId).setLong("orgLocationId", orgLocationId).uniqueResult();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return employee;
+	}
+
 }

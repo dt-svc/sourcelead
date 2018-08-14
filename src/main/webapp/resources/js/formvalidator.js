@@ -1023,6 +1023,11 @@ jQueryFormUtils.validateAlphaNumber = function(val) {
 	return val.trim().match(/^[A-Za-z][A-Z a-z 0-9]*$/) !== null;
 };
 
+//******************Validate Allow at least one numeric,alphabet******
+jQueryFormUtils.validateAtleastOneNumericAlphabet = function(val) {
+	return val.trim().match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) !== null;
+};
+
 //**** validate Alphanumeric value must start with Alphabet and contains numeric and SpecialChar
 jQueryFormUtils.validateAlphaNumericSpecialChar = function(val) {
 	return val.trim().match(/^[a-zA-Z][a-zA-Z0-9 .,$;@#]*$/) !== null;
@@ -1317,6 +1322,10 @@ jQueryFormUtils.validateName = function(val) {
         else if (validationRules.indexOf('validate_AlphaNumber') > -1 && !jQueryFormUtils.validateAlphaNumber(value)) {
             return validationErrorMsg || language.badAlphaNumber;
       }
+     // Validate Allow at least one numeric,alphabet
+        else if (validationRules.indexOf('validate_AtLeastOneAlphaNumber') > -1 && !jQueryFormUtils.validateAtleastOneNumericAlphabet(value)) {
+            return validationErrorMsg || language.badAtLeastOneAlphaNumber;
+      }
      // Validate if  Must start with Alphabet - Alphanumeric and special characters allowed       
         else if(validationRules.indexOf('validate_AlphaNumeric_SpecialChar') > -1 && !jQueryFormUtils.validateAlphaNumericSpecialChar(value)) {
             return validationErrorMsg || language.badAlphaNumericSpecialChar;
@@ -1427,6 +1436,7 @@ jQueryFormUtils.LANG =  {
 	badNumberAlphabet:'Allows Only Alphanumeric and must start with a Number',
 	badNumberAndAlphabet:'Allows Only Alphanumeric',
 	badAlphaNumber:'Allows Only Alphanumeric and must start with an Alphabet',
+	badAtLeastOneAlphaNumber:'Allow Only Alphanumeric and at Least One Alphabet and Number',
 	badAlphaNumericSpecialChar:'Allows Alphanumeric and Special Characters and must start with an Alphabet',
 	badImage:'Invalid Image Format Use .jpeg,jpg,gif,png formats only',
 	badDoc:'doc,docx,pdf,txt formats allowed',

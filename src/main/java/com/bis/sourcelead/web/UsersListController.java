@@ -43,10 +43,12 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -83,6 +85,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@Autowired
 	DepartmentService departmentService;
 	
+	@Autowired
+	 private SourceleadTagsService sourceleadTagsService;
 	
 	/**
 	 * To forward users List jsp page
@@ -153,6 +157,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
         model.addObject("departmentList", departmentList);
         model.addObject("departmentListSize", departmentList.size());
 		
+        List<String> associateTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.ASSOCIATES.toString(), orgLocations.getId());
+        model.addObject("associateTagsList", associateTagsList);
+        
 		return model;
 
 	}
