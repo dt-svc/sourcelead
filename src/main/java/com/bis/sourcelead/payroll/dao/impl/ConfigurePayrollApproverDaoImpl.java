@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.util.List;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.ConfigurePayrollApproverDao;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
+import com.bis.sourcelead.payroll.entity.PayrollApprover;
 
 @Repository
 public class ConfigurePayrollApproverDaoImpl implements ConfigurePayrollApproverDao{
@@ -69,6 +72,20 @@ public class ConfigurePayrollApproverDaoImpl implements ConfigurePayrollApprover
 			return isDeleted;
 
 		
+	}
+
+	@Override
+	@Transactional
+	public List<PayrollApprover> getPayrollApproversByCPAID(Long configurePayrollApproverId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PayrollApprover> payrollApprover = null;
+		try {
+			String query = "from PayrollApprover pa where pa.configurePayrollApprover.id =:configurePayrollApproverId";
+			payrollApprover = session.createQuery(query).setLong("configurePayrollApproverId", configurePayrollApproverId).list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return payrollApprover;
 	}
 	
 }

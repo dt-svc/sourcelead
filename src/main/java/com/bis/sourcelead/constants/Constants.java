@@ -1184,4 +1184,5 @@ public class Constants {
 	
 	public static final String PAYROLL_DELETE = "Delete";
 	public static final String REACTIVE = "Reactive";
+	public static final String REQUEST_FOR_APPROVING_PAYROLL = "RequestForApprovingPayroll";
 }

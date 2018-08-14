@@ -1332,7 +1332,8 @@ public class USPayrollRestController {
 	public Response<PayrollApproverDTO> sendPayrollForApprover(PayrollApproverDTO payrollApproverDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Response<PayrollApproverDTO> res = paysheetFrequencyService.sendPayrollForApprover(payrollApproverDTO,orgLocation);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<PayrollApproverDTO> res = paysheetFrequencyService.sendPayrollForApprover(payrollApproverDTO,orgLocation,loginUser);
 		return res;
 	}
 	
