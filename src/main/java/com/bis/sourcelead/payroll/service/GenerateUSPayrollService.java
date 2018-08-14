@@ -11,7 +11,7 @@ import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 
 public interface GenerateUSPayrollService {
 
-	PaysheetFrequencyDTO generateUSPayroll(OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO, User loginUser) throws Exception;
+	PaysheetFrequencyDTO generateUSPayroll(PaysheetFrequencyDTO existedData, OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO, User loginUser) throws Exception;
 
 	PaysheetFrequencyDTO getPayrollData(GenerateUSPayrollDTO generateUSPayrollDTO, OrgLocations orgLocation, User loginUser);
 

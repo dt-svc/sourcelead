@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.User;
 
@@ -34,8 +35,8 @@ public class EmployeePayroll {
 	private Employees employee;
 
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", nullable = false)
-	private User user;
+	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	private Candidate candidate;
 	
 	@ManyToOne
 	@JoinColumn(name = "PAY_SHEET_FREQUENCY_ID", nullable = false)
@@ -343,9 +344,15 @@ public class EmployeePayroll {
 		return employee;
 	}
 
-	public User getUser()
+
+	public Candidate getCandidate()
 	{
-		return user;
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate)
+	{
+		this.candidate = candidate;
 	}
 
 	public void setEmployee(Employees employee)
@@ -353,11 +360,7 @@ public class EmployeePayroll {
 		this.employee = employee;
 	}
 
-	public void setUser(User user)
-	{
-		this.user = user;
-	}
-
+	
 	public String getOverTimeHours()
 	{
 		return overTimeHours;

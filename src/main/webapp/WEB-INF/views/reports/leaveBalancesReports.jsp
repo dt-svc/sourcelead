@@ -181,7 +181,7 @@ $(document).ready(function(){
   <div id="loading"></div>
   </section>
 
-<!-- <script>
+<script>
 function getBalanceLeaveReportList(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#employeeDataTableSearch").val();
@@ -191,7 +191,7 @@ function getBalanceLeaveReportList(){
 	prepareBalanceLeaveReportList(url);
 	
 }
-</script>	 -->
+</script>	
 
 <script>
 function getBalanceLeaveReportList(){

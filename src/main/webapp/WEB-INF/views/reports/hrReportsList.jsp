@@ -81,8 +81,8 @@
 	</div>	
 	</a>
 	</sec:authorize>
-	
-	<a href="${appPath}/daywiseLeaveReport">
+
+			<a href="${appPath}/daywiseLeaveReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-check-square-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -90,8 +90,7 @@
 		</div>
 	</div>	
 	</a>
-	
-		<a href="${appPath}/leaveReport">
+	<a href="${appPath}/leaveReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-check-square-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -99,14 +98,14 @@
 		</div>
 	</div>	
 	</a>
-	
-		<a href="${appPath}/leaveBalancesReport">
+	<a href="${appPath}/leaveBalancesReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-check-square-o"></i></span>
 		<div class="repDashCtaWrap">
 		<h2>Leave Balance Report</h2><b>View</b>
 		</div>
 	</div>	
+
 	</a>
 	
 	<a href="${appPath}/topLeaveTakenReports">
@@ -117,7 +116,6 @@
 		</div>
 	</div>	
 	</a>
-				
 	<div class="clearfix"></div>	
 </div>
     

@@ -27,8 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
+
 import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.HrLeaveReportDTO;
+
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveHolidayHoursDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -130,8 +132,8 @@ public class LeaveDaoImpl implements LeaveDao{
 				query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave "
 					      + " left join fetch leave.leaveType  leaveType"
 					      + " left join fetch leave.user user"
-					      + " where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and (laph.approverUserId.id= :userId or leave.user.id in (select uRole.user.id from UserRole uRole from uRole.reportingManager.id = :userId)) and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
-				countQuery ="from Leave leave where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and (laph.approverUserId.id= :userId or leave.user.id in (select uRole.user.id from UserRole uRole from uRole.reportingManager.id = :userId)) and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
+					      + " where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and (laph.approverUserId.id= :userId or user.id in (select urole.user.id from UserRole urole where urole.reportingManager.id = :userId)) and leave.status =  '"+leaveDTO.getLeaveStatus()+"'";
+				countQuery ="from Leave leave where (leave.orgLocations.id = :orgLocationId or leave.orgLocations.org.id =:orgId) and (laph.approverUserId.id= :userId or user.id in (select urole.user.id from UserRole urole where urole.reportingManager.id = :userId)) and leave.status = '"+leaveDTO.getLeaveStatus()+"'";
 			}
 			
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
@@ -860,7 +862,7 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Transactional
 	public List<Leave> getAllLeave() {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Leave leave";
+		String query = "from Leave leave  left join fetch leave.orgLocations orgLoc";
 		List<Leave> leaveList = session.createQuery(query).list();
 		return leaveList;
 	}
@@ -1300,7 +1302,8 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 		return response;
 	}
-	
+
+
 	@Override
 	@Transactional
 	public List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId,String topleave){
@@ -1316,9 +1319,11 @@ public class LeaveDaoImpl implements LeaveDao{
 		Query queryString = session.createSQLQuery(query);
 		queryString.setLong("orgLocationId",orgLocationId);
 		List<String> leaveTypeNames = queryString.list(); 
+
 		return leaveTypeNames;	
 	
 	}
+
 	@Override
 	@Transactional
 	public Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList,String topleave){
@@ -1361,7 +1366,8 @@ public class LeaveDaoImpl implements LeaveDao{
 	return resultMap;
 
 	}
-	
+
+
 	@Override
 	@Transactional
 	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId)  {
@@ -1384,6 +1390,7 @@ public class LeaveDaoImpl implements LeaveDao{
 }
 		return depart;
 	}
+
 	@Override
 	@Transactional
 	public Float getTakenLeavesByOrgLocationIdAndUserId(Long leaveId,Long userId,Long orglocationId)throws Exception {
@@ -1402,4 +1409,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			  departk = taken.getLeaveTaken();			
 	        }return departk;
 		}
+}
+
+
 }

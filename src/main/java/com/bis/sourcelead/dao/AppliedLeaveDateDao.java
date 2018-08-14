@@ -23,6 +23,8 @@ public interface AppliedLeaveDateDao {
 	AppliedLeaveDate saveAppliedLeaveDates(AppliedLeaveDate appliedLeaveDate);
 
 	boolean checkForExistedLeave(Leave leave);
+	
+    AppliedLeaveDate getAppliedLeaveDateByleaveIdAndAppliedLeaveDate(Date date,Long leaveId);
 
 	List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate, Long userId, String leaveStatus, Long orgId);
 

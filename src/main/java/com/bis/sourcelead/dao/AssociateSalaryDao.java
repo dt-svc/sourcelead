@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
@@ -11,7 +12,7 @@ public interface AssociateSalaryDao {
 
 	AssociateSalary addAssociateSal(AssociateSalary associateSalary);
 
-	AssociateSalary findAssociateSalaryByUserId(Long userId);
+	AssociateSalary findAssociateSalaryByCandidateId(Long candidateId);
 
 	AssociateSalary findAssociateSalaryById(String id);
 
@@ -22,4 +23,6 @@ public interface AssociateSalaryDao {
 	AssociatePayItem saveUpdatedPayItem(AssociatePayItem associatePayItem);
 
 	List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId);
+
+	List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId);
 }
