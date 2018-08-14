@@ -2445,8 +2445,8 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 
   
   
-  public void sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName,List<EmailAttachment> attachmentList){
-	  
+  public Map<String, String> sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName,List<EmailAttachment> attachmentList){
+	  Map<String, String> returnMap = new HashMap<>();
 	  try{
 		//setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -2473,6 +2473,9 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 
+			 returnMap.put("emailBody", body);
+			 returnMap.put("emailSubject", subject);
 			 String signature = null;
 			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
 				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
@@ -2486,9 +2489,11 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
+			
 	  }catch (Exception e) {
 		  e.printStackTrace();
 	}
+	  return returnMap;
 	  
   }
 
@@ -2623,6 +2628,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		str = ("" + d).lastIndexOf(".") == ("" + d).length() - 2 ? d + "0" : d + "";
 		return str;
 	}
+
 	/**
 	 * @author:Vikram Reddy 
 	 * @param createExcelsheet
@@ -2631,6 +2637,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		 * @param rowCount 
 		 * @return sheet
 	 */
+
 	public Sheet setExcelHeader(Sheet createExcelsheet, CellStyle style, List<String> headers, int rowCount) {
 		Row excelHeader = createExcelsheet.createRow(rowCount);
 		int i=0;
@@ -2642,4 +2649,6 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		}
 		return createExcelsheet;
 	}
-	}
+
+}
+

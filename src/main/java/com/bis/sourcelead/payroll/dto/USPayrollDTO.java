@@ -81,6 +81,10 @@ public class USPayrollDTO {
 	
 	private Long paySheetFrequencyId;
 	
+	private Long candidateId;
+	
+	private BigDecimal totalDeduction;
+	
 	public String getIsExcept()
 	{
 		return isExcept;
@@ -380,5 +384,20 @@ public class USPayrollDTO {
 	public void setPaySheetFrequencyId(Long paySheetFrequencyId) {
 		this.paySheetFrequencyId = paySheetFrequencyId;
 	}
+	public Long getCandidateId() {
+		return candidateId;
+	}
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+	public BigDecimal getTotalDeduction()
+	{
+		return totalDeduction;
+	}
+	public void setTotalDeduction(BigDecimal totalDeduction)
+	{
+		this.totalDeduction = totalDeduction;
+	}
+	
 	
 }

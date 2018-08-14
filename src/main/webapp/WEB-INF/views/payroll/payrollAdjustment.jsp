@@ -29,12 +29,12 @@
             </div>
           </div>
           
-          <div class="col-md-2 text-center">
+      <!--     <div class="col-md-2 text-center">
             <label class="clearfix"><strong>No. Leaves</strong></label>
             <div class="clearfix">
               <p class="mt5 mb0">30</p>
             </div>
-          </div>
+          </div> -->
         
         </div>
       </div>
@@ -257,7 +257,7 @@
 		            $("#federalGross").text(json.federal);
 		            $("#ficaGross").text(json.fica);
 		            $("#totalTaxes").text(json.taxes);
-		            $("#dedTotal").text(9999);
+		            $("#dedTotal").text(json.totalDeduction);
 		            $("#netpay").text(json.netPay);
 		            $("#payRate").val(json.payRate);
 		            $("#payrollId").val(json.payrollId);
@@ -346,7 +346,7 @@
 					            	output = output + '<tr>';
 					            	output = output + '<input type="hidden" name="contribution['+i+'].taxtType" value='+ot.taxtType+' id="taxtType"/>';
 					            	output = output + '<td>'+ot.contributionType+'</td>';
-					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmount+' class="formControl" readOnly></td>';
+					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.amount+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
 		                  }
@@ -386,8 +386,8 @@
 						            	var pi = json.payItem[i];
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
-						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].id"/>';
-						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmount+'></td>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.payItemId+' id="id" name="payItem['+i+'].id"/>';
+						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.amount+'></td>';
 						            	payItem = payItem +' <td>';
 						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
 						            	payItem = payItem +' <input id="cashTips" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';

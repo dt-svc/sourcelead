@@ -716,11 +716,11 @@ public class USPayrollRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
-			if(existedData.getPayrollFrequencyUUID() != null) {
-				return existedData;
-			}else {
-				return generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO,loginUser);
-			}
+//			if(existedData.getPayrollFrequencyUUID() != null) {
+//				return existedData;
+//			}else {
+				return generateUSPayrollService.generateUSPayroll(existedData,orgLocation,generateUSPayrollDTO,loginUser);
+//			}
 		}
 		
 		

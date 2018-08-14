@@ -127,7 +127,10 @@ function validateDayEntriesReport(){
 	var templateType = "";
 	
 	if((projectIds == null || projectIds =='' || projectIds=='undefined') && (projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined')){
-	    projectIds = $('#projectList option').map(function() { return $(this).val(); });
+
+		//projectIds = $("#projectList option[name='all']").val();
+		 projectIds = $('#projectList option').map(function() { return $(this).val(); });
+
 		$('#projectList').val(projectIds);
 	}
 	var startDate = $('#fromDate').val();

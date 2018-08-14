@@ -39,7 +39,6 @@ import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
-import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
@@ -77,6 +76,7 @@ import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -240,22 +240,73 @@ public class UserServiceImpl implements UserService {
 	public User storeUser(AddUserDTO addUserDTO,CandidateDTO candidateDTO,User loginuser,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg) throws Exception {
 	   User user1 = null;
 	   User user = null;
-	   String password =  SourceLeadRandomCodeHelper.generateRandomPassword();;
+	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
 	   boolean associateBalance = false;
-	   String userEmail = null;
 	   user = userDao.findByUserName(addUserDTO.getEmail());
-	   
-	   if(addUserDTO.getAssociateId() != null && !addUserDTO.getAssociateId().isEmpty()) {
-		   User userAssociate = userDao.getUserById(Long.valueOf(addUserDTO.getAssociateId()));
-		   userEmail = userAssociate.getEmail();
+	   if(null != user){
+		  isUserActive = userRoleService.isUserActive(user.getId());
+		 
+		  if(StringUtils.isNotBlank(addUserDTO.getFirstName())) {
+			  user.setFirstName(addUserDTO.getFirstName());
+		  }
+		 
+		  if(StringUtils.isNotBlank(addUserDTO.getLastName())) {
+			  user.setLastName(addUserDTO.getLastName());
+		  }
+		
+		  if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())) {
+			  user.setMobilePhone(addUserDTO.getPhoneNumber());
+		  }
+		  
+			  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+				  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+			  }
+		  
+		     if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
+		    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
+		     }
+		     if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
+			  user.setMiddelName(addUserDTO.getMiddleName());
+			  }else{
+			  user.setMiddelName(null);
+			  }
+
+			  if(StringUtils.isNotBlank(addUserDTO.getGender())) {
+			  user.setGender(addUserDTO.getGender());
+			  }else{
+			  user.setGender(null);
+			  }
+
+			  if(StringUtils.isNotBlank(addUserDTO.getMaritalStatus())) {
+			  user.setMaritalStatus(addUserDTO.getMaritalStatus());
+			  }else{
+			  user.setMaritalStatus(null);
+			  }
+
+			  if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
+			  try {
+			  user.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));
+
+			  } catch (Exception e) {
+			  e.printStackTrace();
+			  }
+			  }
 	   }
 	   
-	   user = getUserDetails(addUserDTO,loginuser.getUserCode(),user,password);
-	   
-	    if(null == user){
+	   if(null == user){
+		   user = getUserDetails(addUserDTO,loginuser.getUserCode());
+		   password = SourceLeadRandomCodeHelper.generateRandomPassword();
+ 		   user.setPassword(sourceleadPasswordEncoder.encode(password));
+ 		   
+ 		  user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+ 		  user.setUrlSentTime(new Date());
+ 		  user.setIsVerified(Constants.NO);
  		 associateBalance  = true;
+		}else if(isUserActive == false){
+			password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			user.setPassword(sourceleadPasswordEncoder.encode(password));
 		}
 	   
 	    if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())){
@@ -270,21 +321,15 @@ public class UserServiceImpl implements UserService {
 	 		user.setUserType("Employee");
 	    } 
 		
-	    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+	    /*if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
 	    	user.setWorkLocation(orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation())));
-	    }
+	    }*/	
 	    
 	    
        //For saving the User Role 
-	  
-	    if(addUserDTO.getAssociateId() != null && !addUserDTO.getAssociateId().isEmpty()) {
-	    	userRole = userRoleService.getUserDetailsByUserIdAndLocationId(Long.valueOf(addUserDTO.getAssociateId()),orgLocations.getId());
-	    }else {
-	    	userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
-	    }
-	   
-		   
-	    userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId(),userRole);
+	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
+	   if(userRole == null){
+		   userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
 		   
 		   if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
 				 userRole.setDesignation(addUserDTO.getDesignation());
@@ -303,7 +348,7 @@ public class UserServiceImpl implements UserService {
 				  userRole.setIsPrimary(0);
 			  }
 			}
-		   
+	   }else {
 		   userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
 			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
 				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
@@ -312,7 +357,7 @@ public class UserServiceImpl implements UserService {
 		 if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
 				 userRole.setDesignation(addUserDTO.getDesignation());
 		    }
-		 
+	   }
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
 		if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess())) {
 			userRole.setIsGlobal(Constants.YES);
@@ -333,11 +378,12 @@ public class UserServiceImpl implements UserService {
 		if(null != user && null != user.getId()){
 			employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
 		}
-		
-		employee = getEmployeeDetails(user,addUserDTO,orgLocations.getId(),loginuser.getUserCode(),employee);
-		HashSet<Employees> employeeList = new HashSet<Employees>();
-		employeeList.add(employee);
-		user.setEmployee(employeeList);
+		if(null == employee){
+			employee = getEmployeeDetails(user,addUserDTO,orgLocations.getId(),loginuser.getUserCode());
+			HashSet<Employees> employeeList = new HashSet<Employees>();
+			employeeList.add(employee);
+			user.setEmployee(employeeList);
+		}
 		
 		 //For saving the User  
 		try {
@@ -365,19 +411,16 @@ public class UserServiceImpl implements UserService {
 			}	
 		}
 		
+		
+		
 		//for updating cosultantUserId in candidate
 		if(StringUtils.isNotBlank(candidateDTO.getAssociateId())){
-			Candidate candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(candidateDTO.getAssociateId()),orgLocations.getId());
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDTO.getAssociateId()));
 			if(null != candidate){
 				candidate.setConsultantUser(user1);
 				candidate.setUpdatedBy(loginuser.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setIsAssociate(Constants.YES);
-				candidate.setEmail(user1.getEmail());
-				candidate.setFirstName(addUserDTO.getFirstName());
-				candidate.setLastName(addUserDTO.getLastName());
-				candidate.setMiddelName(addUserDTO.getMiddleName());
-				candidate.setGender(addUserDTO.getGender());
 				
 				if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 					OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
@@ -400,7 +443,7 @@ public class UserServiceImpl implements UserService {
 					candidate.setDesignationOtherType(addUserDTO.getDesignationOtherType());
 				}
 				
-				   if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+                       if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
 					   candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
 					   candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
 					   candidate.setResidenceState(addUserDTO.getResidenceState());
@@ -490,15 +533,6 @@ public class UserServiceImpl implements UserService {
 			
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
 			user1.setTempPwd(password);
-			
-			if(StringUtils.isNotBlank(userEmail)) {
-				Candidate candidate = candidateService.getCandidateByEmail(userEmail);
-				if (candidate == null) {
-					User existeduser = userDao.getUserByEmail(userEmail);
-					userDao.deleteUser(existeduser);
-				}
-			}
-			
         return user1;
 				
 		
@@ -559,27 +593,8 @@ public class UserServiceImpl implements UserService {
 		 
 	}
 	
-	private User getUserDetails(AddUserDTO addUserDTO,String userCode,User user,String password) throws JSONException {
-		if(user == null) {
-			user = new User();
-			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
-			user.setCreatedBy(userCode);
-			user.setCreatedDate(commonUtil.currentDate());
-			user.setPassword(sourceleadPasswordEncoder.encode(password));
- 		    user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
- 		    user.setUrlSentTime(new Date());
- 		    user.setIsVerified(Constants.NO);
-		}else {
-			try {
-				boolean isUserActive = userRoleService.isUserActive(user.getId());
-				if(isUserActive == false){
-					user.setPassword(sourceleadPasswordEncoder.encode(password));
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
+	private User getUserDetails(AddUserDTO addUserDTO,String userCode) throws JSONException {
+		User user = new User();
 		
 		if(StringUtils.isNotBlank(addUserDTO.getFirstName())){
 			user.setFirstName(addUserDTO.getFirstName());
@@ -632,15 +647,14 @@ public class UserServiceImpl implements UserService {
 				}
 		}
 		
-		
+		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		user.setCreatedBy(userCode);
+		user.setCreatedDate(commonUtil.currentDate());
 		return user;
 	}
 	
-	private UserRole getUserRoleDetails(AddUserDTO addUserDTO,User user,String userCode, Long orgLocationsId,UserRole userRole) throws Exception {
-		
-		if(userRole == null) {
-			userRole = new UserRole();
-		}
+	private UserRole getUserRoleDetails(AddUserDTO addUserDTO,User user,String userCode, Long orgLocationsId) throws Exception {
+		UserRole userRole = new UserRole();
 		userRole.setUser(user);
 		
 		OrgLocations orgLocations = new OrgLocations();
@@ -723,11 +737,8 @@ public class UserServiceImpl implements UserService {
 		return userRole;
 	}
 	
-	private Employees getEmployeeDetails(User user,AddUserDTO addUserDTO, Long orgLocationsId,String userCode,Employees employees) throws NumberFormatException, Exception {
-		if(employees == null) {
-			employees = new Employees();
-		}
-		
+	private Employees getEmployeeDetails(User user,AddUserDTO addUserDTO, Long orgLocationsId,String userCode) throws NumberFormatException, Exception {
+		Employees employees = new Employees();
 		employees.setUser(user);
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(orgLocationsId);
@@ -1749,9 +1760,12 @@ public class UserServiceImpl implements UserService {
 		}
 		return response;
 	}
-	
+
 	@Override
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception {
-		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList);
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception {
+		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList,topleave,MonthStart,MonthEnd);
 	 }
+
+
 }
+
