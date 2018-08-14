@@ -35,7 +35,6 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
-import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -51,6 +50,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
@@ -2235,6 +2235,23 @@ public class UserDaoImpl implements UserDao {
 		}
 		return -1;
 	}
+
+	@Override
+	@Transactional
+	public void deleteUser(User user) throws Exception {
+		logger.debug("Adding User");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (user != null) {
+				session.delete(user);
+			}
+			logger.debug("User Deleted Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"USER"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+	}
+
 	@Override
 	@Transactional
 	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception{
@@ -2264,20 +2281,5 @@ public class UserDaoImpl implements UserDao {
 		
 	}
 
-	@Override
-	@Transactional
-	public void deleteUser(User user) throws Exception {
-		logger.debug("Adding User");
-		Session session = this.sessionFactory.getCurrentSession();
-		try {
-			if (user != null) {
-				session.delete(user);
-			}
-			logger.debug("User Deleted Successfully");
-		} catch (Exception exception) {
-			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"USER"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
-		}
-	}
 
 }

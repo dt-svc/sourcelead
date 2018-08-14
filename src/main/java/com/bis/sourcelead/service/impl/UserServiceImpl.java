@@ -39,7 +39,6 @@ import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
-import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
@@ -77,6 +76,7 @@ import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -270,9 +270,9 @@ public class UserServiceImpl implements UserService {
 	 		user.setUserType("Employee");
 	    } 
 		
-	    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+	    /*if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
 	    	user.setWorkLocation(orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation())));
-	    }
+	    }*/	
 	    
 	    
        //For saving the User Role 
@@ -1749,9 +1749,10 @@ public class UserServiceImpl implements UserService {
 		}
 		return response;
 	}
-	
+
 	@Override
 	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception {
 		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList);
 	 }
+
 }

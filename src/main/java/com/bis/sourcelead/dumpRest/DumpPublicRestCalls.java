@@ -3,6 +3,7 @@ package com.bis.sourcelead.dumpRest;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -106,6 +108,44 @@ public class DumpPublicRestCalls {
 		
 	}
 	
+	
+	@RequestMapping(value = "/ws/updateAllAppliedLeaveDatesDataForWeekOffs", method = RequestMethod.GET)
+	@ResponseBody
+	public List<AppliedLeaveDate> updateAllAppliedLeaveDatesDataForWeekOffs() {
+		
+		logger.info("Start Time"+java.time.LocalDateTime.now());
+		List<AppliedLeaveDate> list = new ArrayList<>();
+		List<Leave> leavesList = leaveService.getAllLeave();
+		leavesList.forEach(leave -> {
+			boolean existed = appliedLeaveDateDao.checkForExistedLeave(leave);
+			if(existed) {
+				  list.add(getAppliedLeaveDateSetForWeekOffs(leave.getOrgLocations(),leave));
+			}
+		});
+		logger.info("End Time"+java.time.LocalDateTime.now());
+		return list;
+	}
+	private AppliedLeaveDate getAppliedLeaveDateSetForWeekOffs(OrgLocations orgLocations,Leave leave)
+	{
+		   try {
+			     String[] strArray = orgLocations.getWeekOffDays().split(",");
+			     List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
+			 	 SimpleDateFormat sf = new SimpleDateFormat("E");
+				 List<Date> dateList = leaveManagementUtil.getDaysBetweenLeaveDates(leave.getFromDate(), leave.getToDate());
+				 for(Date d : dateList) {
+					 if(weekOffs.contains(sf.format(d))) {
+						 AppliedLeaveDate ald = appliedLeaveDateDao.getAppliedLeaveDateByleaveIdAndAppliedLeaveDate(d, leave.getId());
+						 ald.setAppliedHours(CommonUtil.getTimeFormat(null, 0f));
+						 appliedLeaveDateDao.saveAppliedLeaveDates(ald);
+					 }else {
+						 continue;
+					 }
+				 }
+		    }
+			catch(Exception e) {}
+		
+		return null;
+	}
 	private AppliedLeaveDate getAppliedLeaveDateSet(Leave leave)
 	{
 		Set<AppliedLeaveDate> set = new HashSet<>();
