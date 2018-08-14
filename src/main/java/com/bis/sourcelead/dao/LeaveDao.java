@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.HrLeaveReportDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
@@ -90,15 +92,15 @@ public interface LeaveDao {
 	
 //	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(Long orgId, Long orgLocationId, String fromDate,String searchValue) throws Exception;
 	
-	List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId);
+	List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId,String topleave);
 	
-	Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList) ;
+	Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList,String topleave) ;
 
 	String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId);
 
 	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId,String loginUserRole)throws Exception;
 
 	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(HrLeaveReportDTO hrLeaveReportDTO,Long orgId, Long orgLocationId)throws Exception;
-
-
+	
+	 Float getTakenLeavesByOrgLocationIdAndUserId(Long leaveId,Long userId,Long orglocationId)throws Exception;
 }

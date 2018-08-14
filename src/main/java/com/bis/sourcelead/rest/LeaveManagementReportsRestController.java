@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -21,6 +23,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +36,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.HrLeaveReportDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveReportView;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
@@ -163,6 +169,31 @@ public class LeaveManagementReportsRestController {
 		return model;
 	}
 
+	@RequestMapping(value = "/topLeaveTakenReports")
+	public ModelAndView topLeaveTakenReports(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);	
+		model.setViewName("reports/topLeaveTakenReports");
+		 List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocation.getId());
+		    model.addObject("departmentList", departmentList);
+		    model.addObject("departmentListSize", departmentList.size());
+			Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+			Collection<Roles> rolesList = null;
+			try {
+				rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocation.getId(),roleHierarchyId);
+			} catch (Exception e) {
+				logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+			}
+			
+			model.addObject("rolesList", rolesList);
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			model.addObject("leaveTypeList", leaveTypeList);
+		return model;
+	}
+
 	
 	@RequestMapping(value="/leaveReportsList",method= RequestMethod.POST)
 	@ResponseBody
@@ -213,8 +244,7 @@ public class LeaveManagementReportsRestController {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		LeaveReportView leaveReportView = new LeaveReportView();
-	    String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		ResponseList<LeaveReportView> leaveReportsList=null;
 		try{
 		String[] tableColumns = {"name", "userDeptName", "employmentType", "userRoleName","leaveTypeName", "leaveTypeBillable", "duration", "fromDate", "toDate","reason","approver","status"};
@@ -229,7 +259,7 @@ public class LeaveManagementReportsRestController {
 				dayWiseLeaveReportDTO.setSortOrder(sortColumnOrder);
 			
 				
-		leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
+				leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
 		List<LeaveReportView> list = leaveReportsList.getData();
         for(LeaveReportView lrv : list){
         	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
@@ -256,17 +286,18 @@ public class LeaveManagementReportsRestController {
 	
 	@RequestMapping(value="/getLeaveBalanceReportList",method = RequestMethod.GET)
 	@ResponseBody
-	public Response<LeaveBalanceReportDTO> getLeaveBalanceReportList(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,HttpServletRequest request, HttpServletResponse response) throws Exception{
+	public Response<LeaveBalanceReportDTO> getLeaveBalanceReportList(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="topleave", required=false) String topleave,@RequestParam(value="MonthStartDate", required=false) String MonthStartDate,@RequestParam(value="MonthEndDate", required=false) String MonthEndDate,HttpServletRequest request, HttpServletResponse response) throws Exception{
 		Response<LeaveBalanceReportDTO> res = new Response<>();
 		LeaveBalanceReportDTO leaveBalanceReportDto = new LeaveBalanceReportDTO();
 		try {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if(orgLocation != null) {
 		//List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
-		List<Long>userRolesList = new ArrayList<>();
-		List<Long>userleaveTypeList = new ArrayList<>();
-		List<Long>orgDepartmentsList = new ArrayList<>();
-		List<String>leaveTypesList = new ArrayList<>();
+		List<Long> userRolesList = new ArrayList<>();
+		List<Long> userleaveTypeList = new ArrayList<>();
+		List<Long> orgDepartmentsList = new ArrayList<>();
+		List<String> leaveTypesList = new ArrayList<>();
+
 		if(userRole != null && !userRole.isEmpty()) {
 			String[] userRoles = userRole.split(",");
 			for(int i=0; i < userRoles.length; i++) {
@@ -291,19 +322,43 @@ public class LeaveManagementReportsRestController {
 				leaveTypesList.add(leaveTyp[i]);
 			}
 		}
-		List<LeaveBalanceReportDTO> users =  userService.getUserNameAndTypeByOrgLocationId(orgLocation.getId(),userRolesList,orgDepartmentsList);
+		SimpleDateFormat format = new SimpleDateFormat(orgLocation.getDateFormat());
+		Date MonthStart = null;
+		Date MonthEnd = null;
+		if((MonthStartDate!=null&&MonthStartDate!="")||(MonthEndDate!=null&&MonthEndDate!="")) {
+		MonthStart=format.parse(MonthStartDate);
+		MonthEnd=format.parse(MonthEndDate);
+		MonthStart = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), MonthStart);
+		MonthEnd = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), MonthEnd);
+		}
+		List<LeaveBalanceReportDTO> users =  userService.getUserNameAndTypeByOrgLocationId(orgLocation.getId(),userRolesList,orgDepartmentsList,topleave,MonthStart,MonthEnd);
 		
 		
-		List<String> leaveTypeNames = leaveService.getLeaveTypeNamesByOrgLocationId(orgLocation.getId());
+		List<String> leaveTypeNames = leaveService.getLeaveTypeNamesByOrgLocationId(orgLocation.getId(),topleave);
 		
 		
-		Map<String,List<LeaveBalanceReportDTO>>resultMap = leaveService.getLeaveNamesByOrgLocationId(orgLocation.getId(),userleaveTypeList,leaveTypesList);
-		
+		Map<String,List<LeaveBalanceReportDTO>>resultMap = leaveService.getLeaveNamesByOrgLocationId(orgLocation.getId(),userleaveTypeList,leaveTypesList,topleave);
 				
 		List<LeaveBalanceReportDTO> leaveTypeList = resultMap.get("LEAVETYPES");
-		List<LeaveBalanceReportDTO> departmentList = resultMap.get("DEPARMENTS"); 
+		List<LeaveBalanceReportDTO> departmentList = resultMap.get("DEPARMENTS");
 		Map<String,Float> map = new HashMap<>();
-		Map<Long,String> depart = new HashMap<>(); 
+		Map<Long,String> depart = new HashMap<>();
+		int viki;
+		if ("yes".equalsIgnoreCase(topleave)) {
+			for(LeaveBalanceReportDTO ltDto : users) {
+				float total =0;
+				for(LeaveBalanceReportDTO lt : leaveTypeList) {
+			float Leavestaken = leaveService.getTakenLeavesByOrgLocationIdAndUserId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId());
+			StringBuilder sb = new StringBuilder();
+			sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
+			map.put(sb.toString(), Leavestaken);
+			total = total +Leavestaken;
+			}for(LeaveBalanceReportDTO d:departmentList) {
+
+				String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue());
+				depart.put(ltDto.getUserId().longValue(),Departments );
+			}
+			}}else {
 		for(LeaveBalanceReportDTO ltDto : users) {
 			for(LeaveBalanceReportDTO lt : leaveTypeList) {
 				float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrg().getId());
@@ -317,13 +372,14 @@ public class LeaveManagementReportsRestController {
 				depart.put(ltDto.getUserId().longValue(),Departments );
 			}
 		}
+			}
+		
+	
 		leaveBalanceReportDto.setLeaveTypeNames(leaveTypeNames);
 		leaveBalanceReportDto.setMap(map);
 		leaveBalanceReportDto.setDepart(depart);
 		if(users != null) 
 		leaveBalanceReportDto.setUsers(users);
-		//leaveBalanceReportDto.setUsers(departmentList);
-		//leaveBalanceReportDto.setUsers(leaveTypeList);
 		res.setObject(leaveBalanceReportDto);
 		res.setResponse(Result.SUCCESS.name());
 		res.setResponseMessage(Result.SUCCESS.getValue());
@@ -337,23 +393,33 @@ public class LeaveManagementReportsRestController {
 		}	
 		return res;
 	}
+	
+	
+	@RequestMapping(value = "/gettopleavetakenReportList", method = RequestMethod.GET)
+	@ResponseBody
+	public Response<LeaveBalanceReportDTO> gettopleavetakenReportList(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="topleave", required=false) String topleave,@RequestParam(value="MonthStartDate", required=false) String MonthStartDate,@RequestParam(value="MonthEndDate", required=false) String MonthEndDate,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		
+		Response<LeaveBalanceReportDTO> topLeave = getLeaveBalanceReportList( userRole, orgDepartments, userleaveType, leaveType,topleave,MonthStartDate,MonthEndDate, request, response);
+		
+		return topLeave;
+	}
 
 	@RequestMapping(value = "/getExportReports", method = RequestMethod.GET)
 	@ResponseBody
 	public void getExportReports(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
-		// StringBuilder excelSB = new StringBuilder();
          
         OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
- 		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
- 		//Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		 Sheet createExcelsheet = createExcelworkbook.createSheet("LeaveBalanceReport");
-		 Response<LeaveBalanceReportDTO> LeaveBalanceReport=  getLeaveBalanceReportList(  userRole,  orgDepartments,  userleaveType, leaveType, request,  response);
-			
+		 Sheet createExcelsheet = createExcelworkbook.createSheet("LeaveBalanceReport"); 
+		 String topleave = null;
+		 String MonthStartDate= null;
+		 String MonthEndDate= null;
+		Response<LeaveBalanceReportDTO> LeaveBalanceReport=  getLeaveBalanceReportList(  userRole,  orgDepartments,  userleaveType, leaveType,topleave,MonthStartDate,MonthEndDate,request,  response);
 			File file = null;
 	 		if(!"pdf".equalsIgnoreCase(exportType)){
-	 			createExcelsheet = leaveService.getLeaveBalanceExcelFile(createExcelsheet,createExcelworkbook,LeaveBalanceReport,orgLocation);
+	 			createExcelsheet = leaveService.getLeaveBalanceExcelFile(createExcelsheet,createExcelworkbook,LeaveBalanceReport,orgLocation,topleave);
 	 			  StringBuilder templateSB = new StringBuilder();
 	 	 		  file = File.createTempFile(templateSB.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
 	 	 		 file.setReadable(true);
@@ -366,7 +432,7 @@ public class LeaveManagementReportsRestController {
                      e.printStackTrace();
                  }         
              }else{
-                 file = leaveService.getLeaveBalancePdfFile(LeaveBalanceReport, orgLocation);
+                 file = leaveService.getLeaveBalancePdfFile(LeaveBalanceReport, orgLocation,topleave);
              
              }
               String mimeType = URLConnection.guessContentTypeFromName(file.getName());
@@ -387,7 +453,50 @@ public class LeaveManagementReportsRestController {
                 }
     }
 		
-		
+	@RequestMapping(value = "/getExportTopReports", method = RequestMethod.GET)
+	@ResponseBody
+	public void getExportTopReports(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="exportType", required=false) String exportType,@RequestParam(value="topleave", required=false) String topleave,@RequestParam(value="MonthStartDate", required=false) String MonthStartDate,@RequestParam(value="MonthEndDate", required=false) String MonthEndDate,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		 Workbook createExcelworkbook =  new XSSFWorkbook();
+        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Sheet createExcelsheet = createExcelworkbook.createSheet("TopLeaveTakenReport");
+		 Response<LeaveBalanceReportDTO> LeaveBalanceReport=  getLeaveBalanceReportList(  userRole,  orgDepartments,  userleaveType, leaveType,topleave,MonthStartDate,MonthEndDate ,request,  response);
+			File file = null;
+	 		if(!"pdf".equalsIgnoreCase(exportType)){
+	 			createExcelsheet = leaveService.getLeaveBalanceExcelFile(createExcelsheet,createExcelworkbook,LeaveBalanceReport,orgLocation,topleave);
+	 			  StringBuilder templateSB = new StringBuilder();
+	 	 		  file = File.createTempFile(templateSB.append("Top_Leave_Taken_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
+	 	 		 file.setReadable(true);
+                  
+                  FileOutputStream fos = new FileOutputStream(file);
+                  try {
+                     createExcelworkbook.write(fos);
+                     fos.close();
+                 } catch (IOException e) {
+                     e.printStackTrace();
+                 }         
+             }else{
+            	 file = leaveService.getLeaveBalancePdfFile(LeaveBalanceReport, orgLocation,topleave);
+             
+             }
+              String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+                if (mimeType == null) {
+                    mimeType = "application/octet-stream";
+                }
+                response.setContentType(mimeType);
+                StringBuilder fileNameSB = new StringBuilder();
+                response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+                response.setContentLength((int) file.length());
+                InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+                FileCopyUtils.copy(inputStream, response.getOutputStream());
+                inputStream.close();
+                response.getOutputStream().close();
+                response.getOutputStream().flush();    
+                if(file!= null){
+                    file.delete();
+                }
+    }
+			
 
 	
 	
@@ -402,13 +511,12 @@ public class LeaveManagementReportsRestController {
 	 	        List<Long> userRoleList = new ArrayList<>();
 	 	         Workbook createExcelworkbook =  new XSSFWorkbook();
 	 	         StringBuilder excelSB = new StringBuilder();
-	 		    String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
- 
+	 	         
 	 	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	         Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	 	         Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("dailyWiseLeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
-	 	            ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId(),loginUserRole);
+	 	            ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId());
 
 	 	        leaveReportsList.getData().stream().forEach(u -> {
 	 	                   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getFromDate()));
@@ -519,4 +627,3 @@ public class LeaveManagementReportsRestController {
 				}
 	}
 }
-

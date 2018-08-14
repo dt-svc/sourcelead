@@ -1348,7 +1348,7 @@ public class PdfUtil {
 		return projectTaskArray;
 	}
 
-public File creategetLeaveBalancePdfTable(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation) throws Exception{
+public File creategetLeaveBalancePdfTable(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave) throws Exception{
 	
 	 java.util.List<String> headers = new ArrayList<String>();
 		headers.add("Employee Name");
@@ -1362,10 +1362,19 @@ public File creategetLeaveBalancePdfTable(Response<LeaveBalanceReportDTO> LeaveB
 		headers.add("TotalBalanceLeaves");
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    StringBuilder sbUser =  new StringBuilder();
+	    if(topleave ==null) {
 	    sbUser.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date()));
+	    }else {
+	    	sbUser.append("Top_Leave_Taken_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date()));
+	    }
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+	    File file =null;
+	    if(topleave ==null) {
+	     file = File.createTempFile(fileSB.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+	    }else {
+	    	 file = File.createTempFile(fileSB.append("Top_Leave_Taken_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+	    }
 	    System.out.println("***************************************"+file.getAbsolutePath());
 	    file.setReadable(true);
 	    
@@ -1792,5 +1801,11 @@ public File creategetLeaveBalancePdfTable(Response<LeaveBalanceReportDTO> LeaveB
 		
 	
 	}
+	
+	
+	
+	
+	
+	
 	}
 	

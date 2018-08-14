@@ -2400,34 +2400,36 @@ public class LeaveServiceImpl implements LeaveService{
 
 
 	@Override
-	public List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId ) {
-		return leaveDao.getLeaveTypeNamesByOrgLocationId(orgLocationId);
+	public List<String> getLeaveTypeNamesByOrgLocationId(Long orgLocationId,String topleave) {
+		return leaveDao.getLeaveTypeNamesByOrgLocationId(orgLocationId,topleave);
 	}
 	
 	@Override
-	public Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList) {
-		return leaveDao.getLeaveNamesByOrgLocationId(orgLocationId,userleaveTypeList,leaveTypesList);
+	public Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList,String topleave) {
+		return leaveDao.getLeaveNamesByOrgLocationId(orgLocationId,userleaveTypeList,leaveTypesList,topleave);
 	}
 	
 	public String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId ) throws Exception {
 		return leaveDao.getDepartmentTypeNamesByOrgLocationIdAndUserId(userId);
 	}
+	///
 	
+
 	@Override
-	public Sheet getLeaveBalanceExcelFile(Sheet createExcelsheet,Workbook createExcelworkbook,Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation) throws Exception{
+	public Sheet getLeaveBalanceExcelFile(Sheet createExcelsheet,Workbook createExcelworkbook,Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave) throws Exception{
 		Row writeRow = null;
-        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,LeaveBalanceReport,orgLocation);
+        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,LeaveBalanceReport,orgLocation,topleave);
         List<LeaveBalanceReportDTO> list = (List<LeaveBalanceReportDTO>) LeaveBalanceReport.getObject().getUsers();
         int column=0;
         for(LeaveBalanceReportDTO lBR : list) {
        	 writeRow = createExcelsheet.createRow(column+1);
-       	createExcelsheet = createXlsBalanceSheet(createExcelsheet,writeRow,column,lBR,LeaveBalanceReport);
+       	createExcelsheet = createXlsBalanceSheet(createExcelsheet,writeRow,column,lBR,LeaveBalanceReport,topleave);
        	 column++;
         }
 		return createExcelsheet;
 	}
 	
-private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation) {
+private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave) {
 
 		CellStyle style = createExcelworkbook.createCellStyle();
 	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -2439,6 +2441,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
  		headers.add("Employee Name");
  		headers.add("Employee Type");
  		headers.add("Department");
+ 		if (topleave == null) 
  		headers.add("Role");
  		for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
  		{
@@ -2462,7 +2465,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		return createExcelsheet = commonUtil.setExcelHeader(createExcelsheet,style,headers,0);
 	}
 
-private Sheet createXlsBalanceSheet(Sheet createExcelsheet, Row writeRow, int column,LeaveBalanceReportDTO leaveBalanceReportDTO,Response<LeaveBalanceReportDTO> LeaveBalanceReport) throws Exception {
+private Sheet createXlsBalanceSheet(Sheet createExcelsheet, Row writeRow, int column,LeaveBalanceReportDTO leaveBalanceReportDTO,Response<LeaveBalanceReportDTO> LeaveBalanceReport,String topleave) throws Exception {
 	
 	if(leaveBalanceReportDTO.getEmpName() !=null){
 		 writeRow.createCell(0).setCellValue(leaveBalanceReportDTO.getEmpName()); 
@@ -2514,10 +2517,11 @@ private Sheet createXlsBalanceSheet(Sheet createExcelsheet, Row writeRow, int co
 	   return createExcelsheet;
 }
 @Override
-public File getLeaveBalancePdfFile(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation) throws Exception
+public File getLeaveBalancePdfFile(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave) throws Exception
 {
-	return pdfUtil.creategetLeaveBalancePdfTable(LeaveBalanceReport,orgLocation);
+	return pdfUtil.creategetLeaveBalancePdfTable(LeaveBalanceReport,orgLocation,topleave);
 }
+
 
 @Override
 public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId,String loginUserRole)throws Exception
@@ -2809,4 +2813,15 @@ public File getLeaveReportPdfFile(ResponseList<LeaveReportView> leaveReportsList
 {
 	return pdfUtil.createLeaveReportPdfTable(leaveReportsList,orgLocations);
 }
+@Override
+public Float getTakenLeavesByOrgLocationIdAndUserId(Long leaveId,Long userId,Long orglocationId)throws Exception {
+	return leaveDao.getTakenLeavesByOrgLocationIdAndUserId(leaveId,userId,orglocationId);
 }
+
+}
+
+
+
+
+
+

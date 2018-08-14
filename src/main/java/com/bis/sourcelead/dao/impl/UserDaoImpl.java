@@ -2237,17 +2237,39 @@ public class UserDaoImpl implements UserDao {
 	}
 	@Override
 	@Transactional
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception{
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) {
+		try {
+		java.sql.Date startDateSqlDate = null;
+		java.sql.Date endDateSqlDate = null;
+		
+		if((MonthStart!=null)||(MonthEnd!=null))
+		{
+		startDateSqlDate = new java.sql.Date(MonthStart.getTime());
+		endDateSqlDate = new java.sql.Date(MonthEnd.getTime());
+		}
 		Session session = this.sessionFactory.getCurrentSession();
-		List<LeaveBalanceReportDTO> userNameAndType = new ArrayList<LeaveBalanceReportDTO>();
+		List<LeaveBalanceReportDTO> userNameAndType = null;
 		String subQuery4="";
 		if(userRole !=null && userRole.size() > 0)
 			subQuery4 = " and ur.ROLE_ID IN (:userRole)";
 		String subQuery3=" ";
 		if(orgDepartmentsList !=null && orgDepartmentsList.size() > 0)
 			subQuery3 = " and e.DEPARTMENT_ID IN (:orgDepartmentsList)";
+		String subQuery5 =" ";
+		String subQuery6 =" ";
+		String subQuery7 =" ";
+		if("yes".equalsIgnoreCase(topleave)) {
+
+			if(startDateSqlDate !=null) {
+				subQuery5="and ul.USER_ID=u.ID";
+				subQuery6=" and ul.FROM_DATE >=:startDateSqlDate";
+			}
+			if(endDateSqlDate !=null) {
+				subQuery7=" and ul.TO_DATE <=:endDateSqlDate";
+			}
+		}
 	
-		String query ="select CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e where u.ID=ur.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID =:orgLocationId"+subQuery4+subQuery3;
+		String query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e,USER_LEAVE ul where u.ID=ur.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
 		//Query queryString = (Query) session.createSQLQuery(query).setLong("orgLocationId",orgLocationId).setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class)).list();
 		Query queryString = session.createSQLQuery(query);
 		queryString.setParameter("orgLocationId", orgLocationId);
@@ -2257,13 +2279,26 @@ public class UserDaoImpl implements UserDao {
 		if(orgDepartmentsList !=null && orgDepartmentsList.size() > 0) {
 			queryString.setParameterList("orgDepartmentsList", orgDepartmentsList);
 			}
+		if("yes".equalsIgnoreCase(topleave)) {
+			if(startDateSqlDate !=null) {
+				queryString.setParameter("startDateSqlDate", startDateSqlDate);
+			}
+			if(endDateSqlDate !=null) {
+				queryString.setParameter("endDateSqlDate", endDateSqlDate);
+			}
+		}
 		queryString.setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class));
 		userNameAndType = queryString.list();
 		
 		return userNameAndType;
+	  }catch(Exception e) {
+			e.printStackTrace();
+		  
+	  }List<LeaveBalanceReportDTO>userName =null;
 		
+		return userName;
 	}
-
+	
 	@Override
 	@Transactional
 	public void deleteUser(User user) throws Exception {

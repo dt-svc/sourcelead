@@ -196,6 +196,8 @@
 				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
 				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
 				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
+				<li><a href="${appPath}/topLeaveTakenReports">Top Leave Taken Report</a></li>
+				
 <!-- 				<li><a href="leaveBalancesReport">Leave Balances Report</a></li> -->
 				<!-- <li><a href="#">Employment Verficication</a></li>
 				<li><a href="#">Wage and Tax</a></li>
@@ -402,6 +404,8 @@
 				
 				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
 				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
+				<li><a href="${appPath}/topLeaveTakenReports">Top Leave Taken Report</a></li>
+				
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 
