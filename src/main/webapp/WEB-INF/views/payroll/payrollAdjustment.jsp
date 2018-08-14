@@ -257,7 +257,7 @@
 		            $("#federalGross").text(json.federal);
 		            $("#ficaGross").text(json.fica);
 		            $("#totalTaxes").text(json.taxes);
-		            $("#dedTotal").text(9999);
+		            $("#dedTotal").text(json.totalDeduction);
 		            $("#netpay").text(json.netPay);
 		            $("#payRate").val(json.payRate);
 		            $("#payrollId").val(json.payrollId);
@@ -346,7 +346,7 @@
 					            	output = output + '<tr>';
 					            	output = output + '<input type="hidden" name="contribution['+i+'].taxtType" value='+ot.taxtType+' id="taxtType"/>';
 					            	output = output + '<td>'+ot.contributionType+'</td>';
-					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmount+' class="formControl" readOnly></td>';
+					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.amount+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
 		                  }
