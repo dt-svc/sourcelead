@@ -1347,8 +1347,7 @@ public class PdfUtil {
 		return projectTaskArray;
 	}
 
-<<<<<<< HEAD
-public File creategetLeaveBalancePdfTable(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave) throws Exception{
+	public File creategetLeaveBalancePdfTable(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave) throws Exception{
 	
 	 java.util.List<String> headers = new ArrayList<String>();
 		headers.add("Employee Name");
@@ -1450,8 +1449,7 @@ public File creategetLeaveBalancePdfTable(Response<LeaveBalanceReportDTO> LeaveB
 		return file;
 		
 	}
-=======
->>>>>>> f1e2042d0e250436a18aa113c8353d239496a370
+
 
 	
 public File createLeaveReportPdfTable(ResponseList<LeaveReportView> leaveReportsList,OrgLocations orgLocations) throws Exception{
