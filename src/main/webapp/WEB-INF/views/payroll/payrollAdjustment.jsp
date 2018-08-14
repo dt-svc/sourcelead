@@ -29,12 +29,12 @@
             </div>
           </div>
           
-          <div class="col-md-2 text-center">
+      <!--     <div class="col-md-2 text-center">
             <label class="clearfix"><strong>No. Leaves</strong></label>
             <div class="clearfix">
               <p class="mt5 mb0">30</p>
             </div>
-          </div>
+          </div> -->
         
         </div>
       </div>
