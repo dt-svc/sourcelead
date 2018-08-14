@@ -9,7 +9,7 @@ public interface AssociateContributionDao {
 
 	AssociateContribution saveAssociateContribution(AssociateContribution associateContribution);
 
-	List<AssociateContribution> findAllContributionSummaryByUserId(Long userId, OrgLocations orgLocation);
+	List<AssociateContribution> findAllContributionSummaryByCandidateId(Long candidateId, OrgLocations orgLocation);
 
 	AssociateContribution findAssociateContributionById(Long assContriId);
 

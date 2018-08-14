@@ -77,6 +77,12 @@ public class USPayrollDTO {
 	
 	private String isExcept;
 	
+	private Long userId;
+	
+	private Long paySheetFrequencyId;
+	
+	private Long candidateId;
+	
 	public String getIsExcept()
 	{
 		return isExcept;
@@ -364,7 +370,22 @@ public class USPayrollDTO {
 	{
 		this.postDed = postDed;
 	}
-	
-	
-	
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public Long getPaySheetFrequencyId() {
+		return paySheetFrequencyId;
+	}
+	public void setPaySheetFrequencyId(Long paySheetFrequencyId) {
+		this.paySheetFrequencyId = paySheetFrequencyId;
+	}
+	public Long getCandidateId() {
+		return candidateId;
+	}
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
 }

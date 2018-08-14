@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -18,7 +19,7 @@ import com.bis.sourcelead.payroll.dao.AssociateBankDataDao;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
-import com.bis.sourcelead.rest.CandidateRestController;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -33,6 +34,9 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	@Autowired
 	AssociateBankDataDao associateBankDataDao;
 	
+	@Autowired
+	CandidateService candidateService;
+	
 	@Override
 	public Response<AssociateBankDataDTO> saveAssociateBankData(AssociateBankDataDTO associateBankDataDTO, OrgLocations orgLocation, User loginUser)
 	{
@@ -44,8 +48,9 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 					associateBankData = associateBankDataDao.findAssociateBankDataById(associateBankDataDTO.getId());
 				}else {
 					associateBankData = new AssociateBankData();
-					User user = userService.getUserById(Long.parseLong(associateBankDataDTO.getUserId()));
-					associateBankData.setUserId(user);
+//					User user = userService.getUserById(Long.parseLong(associateBankDataDTO.getUserId()));
+					Candidate candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()), orgLocation.getId());
+					associateBankData.setCandidate(candidate);
 				}
 				associateBankData.setAccountType(associateBankDataDTO.getAccountType());
 				if(StringUtils.isNotBlank(associateBankDataDTO.getBankName()))
@@ -84,18 +89,24 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	@Override
 	public AssociateBankDataDTO findAssociateBankDataByUserId(Long userId, OrgLocations orgLocation)
 	{
-		AssociateBankData associateBankData =  associateBankDataDao.findAssociateBankDataByUserId(userId,orgLocation);
-		if(associateBankData != null){
-			AssociateBankDataDTO associateBankDataDTO = new AssociateBankDataDTO();
-			associateBankDataDTO.setId(associateBankData.getId());
-			associateBankDataDTO.setAccountType(associateBankData.getAccountType());
-			associateBankDataDTO.setBankName(associateBankData.getBankName());
-			associateBankDataDTO.setRoutingNumber(associateBankData.getRoutingNumber());
-			associateBankDataDTO.setAssociateBankDataUUID(associateBankData.getAssociateBankUuid());
-			associateBankDataDTO.setAccountNumber(associateBankData.getAccountNumber());
-			return associateBankDataDTO;
-		}else{
-			return null;
+		AssociateBankDataDTO associateBankDataDTO = null;
+		try {
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocation.getId());
+			AssociateBankData associateBankData =  associateBankDataDao.findAssociateBankDataByCandidateId(candidate.getId(),orgLocation);
+			if(associateBankData != null){
+				associateBankDataDTO = new AssociateBankDataDTO();
+				associateBankDataDTO.setId(associateBankData.getId());
+				associateBankDataDTO.setAccountType(associateBankData.getAccountType());
+				associateBankDataDTO.setBankName(associateBankData.getBankName());
+				associateBankDataDTO.setRoutingNumber(associateBankData.getRoutingNumber());
+				associateBankDataDTO.setAssociateBankDataUUID(associateBankData.getAssociateBankUuid());
+				associateBankDataDTO.setAccountNumber(associateBankData.getAccountNumber());
+				return associateBankDataDTO;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return associateBankDataDTO;
 	}
 }
