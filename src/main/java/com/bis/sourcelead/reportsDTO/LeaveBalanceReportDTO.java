@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.dto.SearchDTO;
+import com.bis.sourcelead.entity.LeaveType;
 
 public class LeaveBalanceReportDTO extends SearchDTO implements Serializable  {
 	
@@ -21,11 +22,18 @@ public class LeaveBalanceReportDTO extends SearchDTO implements Serializable  {
 	private String role;
 	private Map<String, Float> map;
 	private Map<Long,String> depart;
-	
 	private String deparmentNames;
 	private BigInteger departmentId;
-		
+	private float leaveTaken;
+	
+	
 
+	public float getLeaveTaken() {
+		return leaveTaken;
+	}
+	public void setLeaveTaken(float leaveTaken) {
+		this.leaveTaken = leaveTaken;
+	}
 	public Map<Long, String> getDepart() {
 		return depart;
 	}
