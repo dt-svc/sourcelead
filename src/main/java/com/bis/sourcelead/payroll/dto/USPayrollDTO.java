@@ -83,6 +83,8 @@ public class USPayrollDTO {
 	
 	private Long candidateId;
 	
+	private BigDecimal totalDeduction;
+	
 	public String getIsExcept()
 	{
 		return isExcept;
@@ -388,4 +390,14 @@ public class USPayrollDTO {
 	public void setCandidateId(Long candidateId) {
 		this.candidateId = candidateId;
 	}
+	public BigDecimal getTotalDeduction()
+	{
+		return totalDeduction;
+	}
+	public void setTotalDeduction(BigDecimal totalDeduction)
+	{
+		this.totalDeduction = totalDeduction;
+	}
+	
+	
 }

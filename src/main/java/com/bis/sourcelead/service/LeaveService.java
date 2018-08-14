@@ -126,15 +126,29 @@ public interface LeaveService {
 
 	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId,String loginUserRole)throws Exception;
 
-	List<String> getLeaveTypeNamesByOrgLocationId(Long OrgLocationId);
+	List<String> getLeaveTypeNamesByOrgLocationId(Long OrgLocationId,String topleave);
 	
-	Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList);
-
+<<<<<<< HEAD
+	Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList,String topleave);
+	
 	String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId ) throws Exception ;
 	
-	 Sheet getLeaveBalanceExcelFile(Sheet createExcelsheet,Workbook createExcelworkbook,Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation)throws Exception;
+    Sheet getLeaveBalanceExcelFile(Sheet createExcelsheet,Workbook createExcelworkbook,Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave)throws Exception;
+    File getLeaveBalancePdfFile(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave) throws Exception;
 	
-	    File getLeaveBalancePdfFile(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation) throws Exception;
-	    public Sheet getDailyWiseLeaveExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<LeaveReportView>  leaveReportsList,OrgLocations orgLocations) throws Exception;
+	public Sheet getDailyWiseLeaveExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<LeaveReportView>  leaveReportsList,OrgLocations orgLocations) throws Exception;
+	
+	public Sheet getLeaveReportExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<LeaveReportView>  leaveReportsList,OrgLocations orgLocations) throws Exception;
+
+	public File getDailyWiseLeavePdfFile(ResponseList<LeaveReportView>  leaveReportsList,OrgLocations orgLocations) throws Exception;
+	
+	public File getLeaveReportPdfFile(ResponseList<LeaveReportView>  leaveReportsList,OrgLocations orgLocations) throws Exception;
+	
+    Float getTakenLeavesByOrgLocationIdAndUserId(Long leaveId,Long userId,Long orglocationId)throws Exception;
+    
+    
+}
+
 
 }
+
