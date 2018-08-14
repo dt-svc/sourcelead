@@ -2316,21 +2316,5 @@ public class UserDaoImpl implements UserDao {
 		return userName;
 	}
 
-	@Override
-	@Transactional
-	public void deleteUser(User user) throws Exception {
-		logger.debug("Adding User");
-		Session session = this.sessionFactory.getCurrentSession();
-		try {
-			if (user != null) {
-				session.delete(user);
-			}
-			logger.debug("User Deleted Successfully");
-		} catch (Exception exception) {
-			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"USER"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
-		}
-	}
-
 
 }

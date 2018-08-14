@@ -103,13 +103,8 @@ public interface LeaveDao {
 
 	String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId);
 
-	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(DayWiseLeaveReportDTO dayWiseLeaveReportDTO,Long orgId, Long orgLocationId,String loginUserRole)throws Exception;
-
-	
 	 Float getTakenLeavesByOrgLocationIdAndUserId(Long leaveId,Long userId,Long orglocationId)throws Exception;
 }
 
 
-	
-}
 
