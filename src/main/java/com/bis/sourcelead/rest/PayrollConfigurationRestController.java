@@ -1,7 +1,7 @@
 package com.bis.sourcelead.rest;
 
-import java.util.Calendar;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.PayrollBonusDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
@@ -28,7 +29,9 @@ import com.bis.sourcelead.dto.PayrollPaytypeDTO;
 import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollBonus;
@@ -39,6 +42,7 @@ import com.bis.sourcelead.entity.PayrollPaytype;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.PayrollBonusService;
@@ -49,6 +53,7 @@ import com.bis.sourcelead.service.PayrollTaxService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -90,6 +95,12 @@ public class PayrollConfigurationRestController {
 	@Autowired
 	EmployeesService employeesService;
 
+	
+	@Autowired
+	ConversionUtil conversionUtil;
+	
+	@Autowired
+	CountriesService countriesService;
 	
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
@@ -826,55 +837,67 @@ public class PayrollConfigurationRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			ResponseList<PayrollPayheadDTO> response = payrollPayheadService.getPayrollPayheadList(orgLocations);
 			model.addObject("payrollPayheadList", response.getData());
-			Candidate candidate = candidateService.getCandidateByCandidateId(payrollPayheadDTO.getCandidateId());
-			if(candidate != null && candidate.getExpectedRate() != null) {
-				BigDecimal averageWorkingHoursPerDay;
-				
-				
-				Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
-				
-				if(emp != null && StringUtils.isNotEmpty(emp.getDailyHours())) {
-					try {
-						String [] hrsArray = emp.getDailyHours().split(":");
-						int dayHrs = Integer.parseInt(hrsArray[0]);
-						if(Integer.parseInt(hrsArray[1]) > 30) {
-							dayHrs = dayHrs + 1;
+			
+			
+			
+			AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByCandidateId(payrollPayheadDTO.getCandidateId());
+			if(associateSalaryInd != null) {
+				model.addObject("candidateCTCPerYear", associateSalaryInd.getCtc());
+				model.addObject("fbp", associateSalaryInd.getFbp());
+				model.addObject("variablePay", associateSalaryInd.getVariablePay());
+				model.addObject("candidate", associateSalaryInd.getCandidate());
+				model.addObject("associateSalaryPayheadIndList", associateSalaryInd.getAssociateSalaryPayheadIndList());
+				model.addObject("uuid", associateSalaryInd.getUuid());
+			}else {
+				Candidate candidate = candidateService.getCandidateByCandidateId(payrollPayheadDTO.getCandidateId());
+				if(candidate != null && candidate.getExpectedRate() != null) {
+					BigDecimal averageWorkingHoursPerDay;
+					
+					Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+					if(emp != null && StringUtils.isNotEmpty(emp.getDailyHours())) {
+						try {
+							String [] hrsArray = emp.getDailyHours().split(":");
+							int dayHrs = Integer.parseInt(hrsArray[0]);
+							if(Integer.parseInt(hrsArray[1]) > 30) {
+								dayHrs = dayHrs + 1;
+							}
+							averageWorkingHoursPerDay = BigDecimal.valueOf(dayHrs);
+						}catch (Exception e) {
+							averageWorkingHoursPerDay = BigDecimal.valueOf(orgLocations.getAverageWorkingHours());
 						}
-						averageWorkingHoursPerDay = BigDecimal.valueOf(dayHrs);
-					}catch (Exception e) {
+					}else {
 						averageWorkingHoursPerDay = BigDecimal.valueOf(orgLocations.getAverageWorkingHours());
 					}
-				}else {
-					averageWorkingHoursPerDay = BigDecimal.valueOf(orgLocations.getAverageWorkingHours());
+					
+					BigDecimal candidateCTCPerYear = BigDecimal.valueOf(0);
+			        switch (candidate.getRateType()) 
+			        {
+			            case "Hourly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(365)).multiply(averageWorkingHoursPerDay);
+			                     break;
+			            case "Weekly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(365/7)).multiply(averageWorkingHoursPerDay);
+			                     break;
+			            case "Bi-weekly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(365/14)).multiply(averageWorkingHoursPerDay);
+			                     break;
+			            case "Semi-Monthly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(24));
+			                     break;
+			            case "Monthly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(12));
+			                     break;
+			            case "Bi-Monthly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(6));
+			                     break;
+			            case "Yearly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate());
+			                     break;
+			            default: candidateCTCPerYear = BigDecimal.valueOf(0);
+			                     break;
+			        }
+			        
+			        Countries country = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			        Float amount = conversionUtil.convert(candidate.getExpectedRateCurrencey(), country.getCurrency(), candidateCTCPerYear);
+					model.addObject("candidateCTCPerYear", new BigDecimal(amount));
+			        
+			        model.addObject("candidateCTCPerYear", candidateCTCPerYear);
+					model.addObject("candidate", candidate);
 				}
-				
-				//BigDecimal averageWorkingHoursPerWeek = BigDecimal.valueOf(orgLocations.getWorkingDaysPerWeek()).multiply(averageWorkingHoursPerDay);
-				
-				BigDecimal candidateCTCPerYear = BigDecimal.valueOf(0);
-		        switch (candidate.getRateType()) 
-		        {
-		            case "Hourly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(365)).multiply(averageWorkingHoursPerDay);
-		                     break;
-		            case "Weekly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(365/7)).multiply(averageWorkingHoursPerDay);
-		                     break;
-		            case "Bi-weekly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(365/14)).multiply(averageWorkingHoursPerDay);
-		                     break;
-		            case "Semi-Monthly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(24));
-		                     break;
-		            case "Monthly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(12));
-		                     break;
-		            case "Bi-Monthly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(6));
-		                     break;
-		            case "Yearly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate());
-		                     break;
-		            default: candidateCTCPerYear = BigDecimal.valueOf(0);
-		                     break;
-		        }
-		        
-				model.addObject("candidateCTCPerYear", candidateCTCPerYear);
 			}
-			
-			
 			model.setViewName("indPayroll/associateSalary");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
@@ -892,4 +915,29 @@ public class PayrollConfigurationRestController {
 			payrollPayheadSalarySetup = payrollPayheadService.savePayrollPayheadSalarySetup(payrollPayheadSalarySetup);
 			return payrollPayheadSalarySetup;
 	 }
+	 
+	 
+	@RequestMapping(value = "/saveAssociateSalaryInd" , method = RequestMethod.POST)
+	public Response<AssociateSalaryIndDTO> saveAssociateSalaryInd(AssociateSalaryIndDTO associateSalaryIndDTO, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<AssociateSalaryIndDTO> response = new Response<>();
+		if (user != null) {
+				try {
+						AssociateSalaryInd associateSalaryInd = payrollPayheadService.saveAssociateSalaryInd(associateSalaryIndDTO, user, orgLocations);
+						
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+				} catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
 }
