@@ -1488,9 +1488,6 @@ function indAssociateSalarySummary(){
 			  type: "GET",
 			    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&orgLocationId="+locationCode,
 			     success :function(response) {
-			    	 	$("#tab-18").empty();  
-			    	    $("#tab-19").empty();
-			    	    $("#tab-17").empty();
 			    	    $("#candidateSideDiv").empty();  
 			    	    $("#candidateSideDiv").append(response);
 					},
