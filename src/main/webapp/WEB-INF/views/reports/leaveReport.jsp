@@ -644,6 +644,9 @@ function clearDate(requestFrom){
 
  <script>
 function resetFilter(){
+	var fromDate = $("#fromDate").val();
+   var toDate = $("#toDate").val();
+   leaveReport(fromDate,toDate);
 	$("#leaveReportDataTableSearch").val('');
 	$("#fromDate").val('');
 	$("#toDate").val('');
@@ -658,8 +661,6 @@ function resetFilter(){
 	$('#associateList').trigger("chosen:updated");
 	$('#leaveTypeList').trigger("chosen:updated");
 	$("#leaveTypeList").val('');
-
-	leaveReport();
 }
 function reportCollapse() {
 	$("#reportCollapse").slideToggle(300);

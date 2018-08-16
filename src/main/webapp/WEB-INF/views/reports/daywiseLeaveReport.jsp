@@ -8,7 +8,7 @@ $(document).ready(function(){
 	getDaywiseLeaveReportList();
 });
 </script>
-<input type="hidden" id="noReports" name="noReports"/>
+<input type="hidden" id="noReports" name="noReports" value="0"/>
 
 <!-- Content Area -->
   <section class="content-wraper">
@@ -17,6 +17,7 @@ $(document).ready(function(){
           <h2>Day Wise Report </h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>">HR Reports</a> &raquo; DayWise Leave Report</div>
+     <div id="popUp"></div>
     </section>
      <div class="timesheet_out">
       <div class="vendor_wrap">
@@ -31,7 +32,7 @@ $(document).ready(function(){
               <input value="${fromDate}" name="fromDate" id="fromDate" placeholder="Date" class="form-control calendar margin-top0" type="text">
             <p id="fromDateDiv" class="ReError"></p>
             </div>
-            <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-search" onclick="searchThroughDates();"></i></button>
+            <button type="button" class="btn btn-primary" onclick="searchThroughDates();"><i class="glyphicon glyphicon-search"></i></button>
           </div>
 		   </li>
 <!-- 			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')">  -->
@@ -123,7 +124,6 @@ function prepareAllDaywiseLeaveReportList(url){
 		result = result	+ '</div>';
 		$("#daywiseLeaveReportsList").empty();
 		$("#daywiseLeaveReportsList").append(result);
-		$("#noReports").val(result.length);
 		daywiseLeaveReportsListPagination(url);
 }
 </script>
@@ -160,7 +160,8 @@ function daywiseLeaveReportsListPagination(url){
 		    	  	"targets": colIndex++,
 		    	  	"data": "name",
 		    	  	"render": function(data, type, user, meta) {
-			        	  var result = '';
+			        $("#noReports").val("1");
+		    	  		var result = '';
 			        	  result = result + ' <td>';
 				          if(user.name !=null && user.name !='' && user.name !='undefined'){
 								 result = result +'<div class="tbldata-dotdot" title="'+user.name+'">'+user.name+'</div>';
@@ -659,15 +660,13 @@ function exportToPdf(){
 	var ReportsListEmpty = $("#noReports").val();
 	var exportType = "pdf";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    
-	
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	if(ReportsListEmpty > 0){
 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
 	}else{
-		 var result = "";
+		var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>DailyWise Leave Report List is Empty</p>";
