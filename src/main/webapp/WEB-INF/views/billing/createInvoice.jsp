@@ -1214,9 +1214,6 @@ function pagination(){
 	 var invoiceId = document.getElementById("invoiceId").value; 
 	
 	 if(invoiceId != null && invoiceId != ""){
-		 $("#saveButtonId").attr("disabled", "disabled");
-		 $("#sendButtonId").attr("disabled", "disabled");
-		
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
@@ -1227,6 +1224,8 @@ function pagination(){
 						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
 						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
 						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+						  $("#saveButtonId").attr("disabled", "disabled");
+						  $("#sendButtonId").attr("disabled", "disabled");
 		        	}
 		        	else{
 		        		 $('input#invoiceId').removeAttr( "record-exist record-exist-errormsg");
