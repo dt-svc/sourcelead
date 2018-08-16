@@ -288,11 +288,6 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		boolean isExisted = false;
 		if(existedData != null) {
 		for (USPayrollDTO uSPayrollDTO : existedData.getPayrollDTO()) {
-			System.out.println("Existed ==="+existedData.getPaySheetFrequencyId().longValue() );
-			System.out.println("User == "+uSPayrollDTO.getPaySheetFrequencyId().longValue());
-			
-			System.out.println("Existed User ID ==="+uSPayrollDTO.getCandidateId().longValue() );
-			System.out.println("Running User ID == "+assoSal.getCandidate().getId().longValue());
 			if((uSPayrollDTO.getCandidateId().longValue() == assoSal.getCandidate().getId().longValue()) && (existedData.getPaySheetFrequencyId().longValue() == uSPayrollDTO.getPaySheetFrequencyId().longValue())) {
 				return true;
 			}

@@ -1,6 +1,5 @@
 package com.bis.sourcelead.payroll.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class PayItem {
 		@Column(name = "ID", nullable = false)
 		private Long id;
 
-		@ManyToOne(fetch = FetchType.LAZY)
+		@ManyToOne
 		@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 		private OrgLocations orgLocationId;
 
