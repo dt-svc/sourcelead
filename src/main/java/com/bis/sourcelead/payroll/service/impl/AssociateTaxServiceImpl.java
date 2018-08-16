@@ -61,6 +61,8 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 						associateTax = new AssociateTax();
 //						Candidate candidate = candidateDao.getCandidateByConsultantUserId(associateTaxDTO.getUserId(),orgLocation.getId());
 						associateTax.setCandidate(candidate);
+						associateTax.setCreatedBy(loginUser.getUserCode());
+						associateTax.setCreatedDate(new Date());
 					}
 				}
 				associateTax.setFederalTaxFilliingStatus(associateTaxDTO.getFederaltaxFillingStatus());
@@ -113,8 +115,8 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 				}
 				associateTax.setStatus(1);
 				associateTax.setOrgLocationId(orgLocation);
-				associateTax.setCreatedBy(loginUser.getUserCode());
-				associateTax.setCreatedDate(new Date());
+//				associateTax.setCreatedBy(loginUser.getUserCode());
+//				associateTax.setCreatedDate(new Date());
 //				associateTax.setUpdatedBy(loginUser.getUserCode());
 //				associateTax.setUpdatedDate(new Date());
 				associateTax.setSupplementType(associateTaxDTO.getResidenceLocationSupplementType());
