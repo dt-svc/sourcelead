@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -37,6 +38,9 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	@Autowired
 	CandidateService candidateService;
 	
+	@Autowired
+	private CandidateDao candidateDao;
+	
 	@Override
 	public Response<AssociateBankDataDTO> saveAssociateBankData(AssociateBankDataDTO associateBankDataDTO, OrgLocations orgLocation, User loginUser)
 	{
@@ -44,13 +48,21 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 		Response<AssociateBankDataDTO> resObj = new Response<>();
 		try {
 			if (Validator.validate(associateBankDataDTO)) {
-				if(associateBankDataDTO.getId() != null && associateBankDataDTO.getId() != 0){
-					associateBankData = associateBankDataDao.findAssociateBankDataById(associateBankDataDTO.getId());
-				}else {
-					associateBankData = new AssociateBankData();
-//					User user = userService.getUserById(Long.parseLong(associateBankDataDTO.getUserId()));
-					Candidate candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()), orgLocation.getId());
-					associateBankData.setCandidate(candidate);
+				if(associateBankDataDTO.getUserId() != null){
+					Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.valueOf(associateBankDataDTO.getUserId()),orgLocation.getId());
+					associateBankData = associateBankDataDao.findAssociateBankDataByCandidateId(candidate.getId(),orgLocation);
+					if(associateBankData != null) {
+						associateBankData.setUpdatedBy(loginUser.getUserCode());
+						associateBankData.setUpdatedDate(new Date());
+					}else {
+						associateBankData = new AssociateBankData();
+//						User user = userService.getUserById(Long.parseLong(associateBankDataDTO.getUserId()));
+//						candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()), orgLocation.getId());
+						associateBankData.setCandidate(candidate);
+						associateBankData.setCreatedDate(new Date());
+						associateBankData.setCreatedBy(loginUser.getUserCode());
+					}
+				
 				}
 				associateBankData.setAccountType(associateBankDataDTO.getAccountType());
 				if(StringUtils.isNotBlank(associateBankDataDTO.getBankName()))
@@ -62,10 +74,10 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 				associateBankData.setOrgLocationId(orgLocation);
 				associateBankData.setStatus(1);
 				associateBankData.setAssociateBankUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-				associateBankData.setCreatedBy(loginUser.getUserCode());
-				associateBankData.setUpdatedBy(loginUser.getUserCode());
-				associateBankData.setCreatedDate(new Date());
-				associateBankData.setUpdatedDate(new Date());
+//				associateBankData.setCreatedBy(loginUser.getUserCode());
+//				associateBankData.setUpdatedBy(loginUser.getUserCode());
+//				associateBankData.setCreatedDate(new Date());
+//				associateBankData.setUpdatedDate(new Date());
 				AssociateBankData bankData = associateBankDataDao.saveAssociateBankData(associateBankData);
 				if (bankData != null) {
 					resObj.setResponse(Result.SUCCESS.name());

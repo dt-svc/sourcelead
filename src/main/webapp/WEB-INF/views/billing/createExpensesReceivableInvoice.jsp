@@ -1267,8 +1267,6 @@ function calculateTaxDiscount(){
 	 var invoiceId = document.getElementById("invoiceId").value; 
 	
 	 if(invoiceId != null && invoiceId != ""){
-		 $("#saveButtonId").attr("disabled", "disabled");
-		 $("#sendButtonId").attr("disabled", "disabled");
 		
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
@@ -1276,7 +1274,9 @@ function calculateTaxDiscount(){
 		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=Receivable", 
 		        success: function(data) {
 		        	 if(data == true){
-		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
+		        		 $("#saveButtonId").attr("disabled", "disabled");
+						 $("#sendButtonId").attr("disabled", "disabled");
+		        		 $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
 						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
 						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
 						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
