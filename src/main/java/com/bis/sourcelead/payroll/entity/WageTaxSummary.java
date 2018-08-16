@@ -105,6 +105,9 @@ public class WageTaxSummary implements Serializable {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Transient
 	@JsonProperty
 	private String fromDateStr;
@@ -358,5 +361,14 @@ public class WageTaxSummary implements Serializable {
 	{
 		this.version = version;
 	}
-	
+
+	public String getUuid()
+	{
+		return uuid;
+	}
+
+	public void setUuid(String uuid)
+	{
+		this.uuid = uuid;
+	}
 }
