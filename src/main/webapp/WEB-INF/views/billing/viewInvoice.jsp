@@ -115,11 +115,11 @@ $(document).ready(function(){
               </a>
             </li>
             
-            <!--  <li class="">
-              <a href="#invoiceTimeline" data-toggle="tab" title="Notes" aria-expanded="false" onclick="timelineHistoryFunction('', 'desc', null, null);">
+            <!-- <li class="">
+              <a href="#invoiceTimeline" data-toggle="tab" title="Notes" aria-expanded="false" onclick="timelineHistoryFunction('', 'desc', null, null, null);">
                 <h5>Timeline</h5>
               </a>
-            </li> -->           
+            </li>  -->        
             
           </ul>
           <div class="tab-content"> 
@@ -173,6 +173,9 @@ $(document).ready(function(){
 													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Paid" type="checkbox"> Paid</label>
 													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Reminder" type="checkbox"> Reminder</label>
 													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Deleted" type="checkbox"> Deleted</label>
+													<label class="col-md-6 paddingLeft mb5"><input name="timelineStatusCheck" onclick="checkTimelineStatus();" value="Draft" type="checkbox"> Created</label>
+												</div>
+												<div id="userNameDiv">
 												</div>
 											</span>
 										</div>									
@@ -295,12 +298,12 @@ function timelineDateSubmit(){
 	var dateRange = []; 
 	dateRange[0] = fromDate;
 	dateRange[1] = toDate;
-	timelineHistoryFunction('','desc',dateRange, null);
+	timelineHistoryFunction('','desc',dateRange, null, null);
 }
 
 $("#invoiceTimelineSearch").keypress(function(e) {
     if(e.which == 13) {
-    	timelineHistoryFunction($("#invoiceTimelineSearch").val(),'desc',null, null);
+    	timelineHistoryFunction($("#invoiceTimelineSearch").val(),'desc',null, null, null);
     }
 });
 function checkTimelineStatus(){
@@ -308,7 +311,7 @@ function checkTimelineStatus(){
 	$('input[name="timelineStatusCheck"]:checked').each(function() {
 		   checkedStatus.push(this.value);
 	});
-	timelineHistoryFunction("","desc",null, checkedStatus);
+	timelineHistoryFunction("","desc",null, checkedStatus,null);
 }
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
@@ -335,7 +338,7 @@ $(function() {
 function restTimelineFileter(){
 	$('#timelineFromDate, #timelineToDate').val("");
 	$('input[name="timelineStatusCheck"]:checkbox').attr('checked',false);
-	timelineHistoryFunction('', 'desc', null, null);
+	timelineHistoryFunction('', 'desc', null, null,null);
 	$("#ascAnchor").removeClass("active");
 	$("#descAnchor").addClass("active");
 }
@@ -356,21 +359,22 @@ function sortTimelineHistory(order){
 		$("#descAnchor").removeClass("active");
 		$("#ascAnchor").addClass("active");
 	}
-	timelineHistoryFunction("", order,null, null);	
+	timelineHistoryFunction("", order,null, null,null);	
 }
 
 
-function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus){
+function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesStatus){
 	var invoiceUUID ='${invoiceUUID}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	console.log(dateRange);
 	$.ajax({
 	  	type: "GET",
-	    url: sourceleadUrl+"/getInvoiceTimelineHistory?"+tokenParamName+"="+tokenValue+"&locationId="+locationId+"&invoiceUUID="+invoiceUUID+"&searchVal="+searchVal+"&orderVal="+order+"&dateRange="+dateRange+"&checkedStatus="+checkedStatus,
+	    url: sourceleadUrl+"/getInvoiceTimelineHistory?"+tokenParamName+"="+tokenValue+"&locationId="+locationId+"&invoiceUUID="+invoiceUUID+"&searchVal="+searchVal+"&orderVal="+order+"&dateRange="+dateRange+"&checkedStatus="+checkedStatus+"&namesStatus="+namesStatus,
 	    success: function(json) {
 			var resultDiv = "";
 			$("#dynamicTimelineHistoryAppend").empty();
 			if(json.length != 0){
+				var ownerNames = [];
 				$("#dynamicTimelineHistoryAppend").empty();
 				for(var i = 0;i<json.length;i++){
 					var dayVal = json[i].dateValue;
@@ -389,23 +393,20 @@ function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus){
 				    	if(json[j].invoiceUUID != null){
 				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+' <a href="<c:url value="/app/viewInvoice?invoiceUUID='+json[j].invoiceUUID+'&invoiceType=Receivable"/>" title="'+json[j].invoiceId+'"> '+json[j].invoiceId+'</a> by '+'</span><span>'+json[j].ownerName+'</span>';
 				    	}else if(json[j].status == "Deleted"){
-				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusValue+'</span>';
+				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusBy+'</span><span>'+json[j].statusValue+'</span>';
 				    		resultDiv = resultDiv + '<p> Reason :'+json[j].reason+'</p>';
 				    	}else if(json[j].status == "Rejected"){
-				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusValue+'</span>';
+				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusBy+'</span><span>'+json[j].statusValue+'</span>';
 				    		resultDiv = resultDiv + '<p> Reason : '+json[j].reason+'</p>';
 				    	}else{
-				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusValue+'</span>';
+				    		resultDiv = resultDiv + '<span class="'+statusClass+'">'+json[j].status+'</span><span>'+json[j].statusBy+'</span><span>'+json[j].statusValue+'</span>';
 				    	}
 				    	resultDiv = resultDiv + '</div>';
 				    	resultDiv = resultDiv + '<div class="timeLeft">'+json[j].timeValue+'</div>';
-				    	alert(json[j].invoicePaymentReminderStatus);
 				    	if(json[j].invoicePaymentReminderStatus != null || json[j].status == 'Sent'){
-				    		alert("inside arrow");
 				    		resultDiv = resultDiv + '<div class="timeLibtn pull-right clearfix" id="timeLineBtn">';
 				    		if(json[j].invoicePaymentReminderStatus == "Paid" || json[j].invoicePaymentReminderStatus == "Reminder"){
 				    			if(json[j].emailAttachment != null){
-				    				alert("inside attachment");
 				    				resultDiv = resultDiv + '<i class="attaIcon pull-left"></i>';		
 				    			}
 				    		}
@@ -461,13 +462,35 @@ function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus){
 				    	resultDiv = resultDiv + '<div class="clearfix"></div>';
 				    	resultDiv = resultDiv + '</div>';
 						resultDiv = resultDiv + '</li>';
+						ownerNames.push(json[j].statusValue);
 					}
 				}
 				resultDiv = resultDiv + '</ul>';
-				$("#dynamicTimelineHistoryAppend").append(resultDiv);	
+				$("#dynamicTimelineHistoryAppend").append(resultDiv);
+				var uniqueNames = [];
+				var userNameValue = "";
+				if(searchVal=='' && order=='desc' && dateRange == null && checkedStatus == null && namesStatus == null){
+					$.each(ownerNames, function(i, el){
+					    if($.inArray(el, uniqueNames) === -1){
+					    	 uniqueNames.push(el);
+					    	 userNameValue = userNameValue + '<label class="col-md-6 paddingLeft mb5"><input name="userNameCheck" onclick="checkUserNames();" value="'+el+'" type="checkbox">'+el+'</label>';
+					    }
+					});
+					$("#userNameDiv").empty().append(userNameValue);
+				}
 			}
 	      }
 	});
+}
+
+function checkUserNames(){
+	var checkedStatus = [];
+	$('input[name="userNameCheck"]:checked').each(function() {
+		   checkedStatus.push(this.value);
+	});
+	//alert(checkedStatus);
+	//$("#userNameDiv").empty();
+	timelineHistoryFunction("","desc",null, null,checkedStatus);
 }
 
 function removeMask(){

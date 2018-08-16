@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -59,7 +58,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
-import com.bis.sourcelead.dao.InvoicePaymentDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
@@ -68,7 +66,6 @@ import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -117,8 +114,8 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -3068,7 +3065,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public List<InvoiceTimelineDTO> getInvoiceTimelineHistoryList(Long id, User user, String searchVal, String orderVal, Date[] datesRange, String[] checkedStatus) throws Exception {
+	public List<InvoiceTimelineDTO> getInvoiceTimelineHistoryList(Long id, User user, String searchVal, String orderVal, Date[] datesRange, String[] checkedStatus, String[] namesStatus) throws Exception {
 		List<InvoiceTimelineDTO> timelineDTOs = new ArrayList<>();
 		List<InvoiceTimelineHistory> timelineHistories = invoiceDao.getInvoiceTimelineHistoryList(id, searchVal, orderVal, datesRange, checkedStatus);
 		for (InvoiceTimelineHistory timelineHistory : timelineHistories) {
@@ -3097,6 +3094,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			timelineDTO.setStatus(status);
 			String statusValue = null;
 			String statusVal = null;
+			String statusBy = null;
 			if (timelineHistory.getLinkedChildinvoice() != null) {
 				statusVal = "Linked to ";
 				timelineDTO.setInvoiceId(timelineHistory.getLinkedChildinvoice().getInvoiceId());
@@ -3125,11 +3123,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 						}
 						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
 							statusVal = "Payment updated";
-							statusValue = " by " + timelineHistory.getCreatedBy().getFullName();
+							statusBy = " by ";
+							statusValue =timelineHistory.getCreatedBy().getFullName();
 						} else if (!timelineHistory.getCreatedBy().getId()
 								.equals(timelineHistory.getOwnerUser().getId())) {
 							statusVal = "Payment updated";
-							statusValue = " by " + timelineHistory.getCreatedBy().getFullName();
+							statusBy = " by ";
+							statusValue = timelineHistory.getCreatedBy().getFullName();
 						}
 					} else if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase("Reminder")) {
 
@@ -3140,8 +3140,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 								timelineHistory.getInvoicePaymentReminderEmailSubject());
 						timelineDTO.setInvoicePaymentReminderStatus(timelineHistory.getInvoicePaymentReminderStatus());
 						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Reminder ";
-							statusValue = " to " + timelineHistory.getInvoice().getContactUser().getFullName();
+							statusVal = "Reminder";
+							statusBy = " to ";
+							statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
 							EmailAttachment emailAttachment = null;
 							String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
 							if (StringUtils.isNotBlank(invoiceFileUrl)) {
@@ -3153,8 +3154,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 							timelineDTO.setEmailAttachment(emailAttachment);
 						}
 						if (!timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Reminder ";
-							statusValue = " from " + timelineHistory.getInvoice().getContactUser().getFullName();
+							statusVal = "Reminder";
+							statusBy = " from ";
+							statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
 							EmailAttachment emailAttachment = null;
 							String invoiceFileUrl = timelineHistory.getInvoice().getFileUrl();
 							if (StringUtils.isNotBlank(invoiceFileUrl)) {
@@ -3169,10 +3171,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 				} else {
 					if (status.equalsIgnoreCase("Draft")) {
 						statusVal = "Created";
-						statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						statusBy = " by ";
+						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					} else if (status.equalsIgnoreCase("Sent")) {
 						statusVal = "Sent";
-						statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						statusBy = " by ";
+						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
 						timelineDTO.setInvoiceReminderEmailTo(timelineHistory.getInvoicePaymentReminderEmailTo());
 						timelineDTO.setInvoiceReminderEmailFrom(timelineHistory.getInvoicePaymentReminderEmailFrom());
@@ -3180,41 +3184,61 @@ public class InvoiceServiceImpl implements InvoiceService {
 								timelineHistory.getInvoicePaymentReminderEmailSubject());
 					} else if (status.equalsIgnoreCase("Received")) {
 						statusVal = "Received";
-						statusValue = " from " + timelineHistory.getInvoice().getContactUser().getFullName();
+						statusBy = " from ";
+						statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
 					} else if (status.equalsIgnoreCase("Accepted")) {
 						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
 							statusVal = "Accepted";
-							statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
+							statusBy = " by ";
+							statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 						} else if (!timelineHistory.getCreatedBy().getId()
 								.equals(timelineHistory.getOwnerUser().getId())) {
 							statusVal = "Accepted";
-							statusValue = " by " + timelineHistory.getInvoice().getContactUser().getFullName();
+							statusBy = " by ";
+							statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
 						}
 					} else if (status.equalsIgnoreCase("Rejected")) {
 						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
 							statusVal = "Rejected";
-							statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
+							statusBy = " by ";
+							statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 							timelineDTO.setReason(timelineHistory.getRejectReason());
 						} else if (!timelineHistory.getCreatedBy().getId()
 								.equals(timelineHistory.getOwnerUser().getId())) {
 							statusVal = "Rejected";
-							statusValue = " by " + timelineHistory.getInvoice().getContactUser().getFullName();
+							statusBy = " by ";
+							statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
 							timelineDTO.setReason(timelineHistory.getRejectReason());
 
 						}
 					} else if (status.equalsIgnoreCase("Updated")) {
 						statusVal = "Updated";
-						statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						statusBy = " by ";
+						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					} else if (status.equalsIgnoreCase("Deleted")) {
 						statusVal = "Deleted";
+						statusBy = " by ";
 						timelineDTO.setReason(timelineHistory.getRejectReason());
-						statusValue = " by " + timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
 					}
 				}
 			}
 			timelineDTO.setStatus(statusVal);
 			timelineDTO.setStatusValue(statusValue);
+			timelineDTO.setStatusBy(statusBy);
 			timelineDTOs.add(timelineDTO);
+		}
+		
+		if(namesStatus.length != 0 ) {
+			if( namesStatus[0] != null && !namesStatus[0].equals("null")) {
+				List<InvoiceTimelineDTO> filterList = new ArrayList<>();
+				for(String name: namesStatus){
+					List<InvoiceTimelineDTO> timelineList = timelineDTOs.stream()
+						    .filter(p -> p.getStatusValue().equalsIgnoreCase(name)).collect(Collectors.toList());
+					filterList.addAll(timelineList);
+				}
+				return filterList;
+			}
 		}
 		return timelineDTOs;
 	}

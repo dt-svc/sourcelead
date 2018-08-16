@@ -2159,6 +2159,7 @@ public class InvoiceRestController {
 			@RequestParam(value = "searchVal", required = false) String searchVal,@RequestParam(value = "orderVal", required = false) String orderVal,
 			@RequestParam(value = "locationId", required = false) String locationId,
 			@RequestParam(value = "checkedStatus") String[] checkedStatus,
+			@RequestParam(value = "namesStatus") String[] namesStatus,
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -2174,8 +2175,10 @@ public class InvoiceRestController {
 			datesRange[0] = fromDate;
 			datesRange[1] = toDate;
 		}
-		
-		timelineHistories = invoiceService.getInvoiceTimelineHistoryList(invoice.getId(), user, searchVal, orderVal, datesRange, checkedStatus);
+		if(searchVal.equalsIgnoreCase("Created")){
+			searchVal = "Draft";
+		}
+		timelineHistories = invoiceService.getInvoiceTimelineHistoryList(invoice.getId(), user, searchVal, orderVal, datesRange, checkedStatus,namesStatus);
 		return timelineHistories;
 	}
 }
