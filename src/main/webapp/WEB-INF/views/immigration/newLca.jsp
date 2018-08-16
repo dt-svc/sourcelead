@@ -37,8 +37,8 @@
          <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaNoDiv">
             <label class="col-md-4">LCA No<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
-                <input type="text" name="lcaNo"  id="lcaNo" class="form-control" value="${lcaDTO.lcaNo}" placeholder="LCA No" field-name="LCA NO"
-								data-validation="required validate_AlphaNumber validate_length length1-20" onkeyup="validateLcaNumber();">
+                <input type="text" name="lcaNo"  id="lcaNo" class="form-control" value="${lcaDTO.lcaNo}" placeholder="I-XXX-XXXXX-XXXXXX" field-name="LCA NO"
+								data-validation="requiredx" onkeyup="validateLcaNumber();">
           	</div>
           </div>
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaTitleDiv">
@@ -1128,5 +1128,14 @@ function validateLcaTitle() {
    function validateNumber(object){ 
 	   object.value = object.value.replace(/[^0-9\.]/g,'');
 	}
+   
+   $('#lcaNo').mask('I-999-99999-999999', {
+	    translation: {
+	        '9': {
+	            pattern: "/I{1}[0-9]{14}/", optional: true
+	        }
+	    },
+	   placeholder:""
+	}); 
  </script>
  
