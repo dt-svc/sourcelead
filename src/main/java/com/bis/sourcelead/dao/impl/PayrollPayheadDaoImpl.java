@@ -20,8 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
-import com.bis.sourcelead.dto.PayrollPayheadSalarySetupDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
@@ -280,4 +281,62 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		}
 		return payrollPayheadSalarySetupDTOList;
 	}*/
+	
+	@Override
+	@Transactional
+	public AssociateSalaryInd saveAssociateSalaryInd(AssociateSalaryInd associateSalaryInd) throws Exception {
+		logger.debug("Adding AssociateSalaryInd");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (associateSalaryInd != null) {
+				session.saveOrUpdate(associateSalaryInd);
+			}
+			logger.debug("associateSalaryInd Added Successfully");
+		} catch (ConstraintViolationException exception) {
+			StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"ASSOCIATE_SALARY_IND"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return associateSalaryInd;
+	}
+	
+	
+	@Override
+	@Transactional
+	public AssociateSalaryInd getAssociateSalaryIndByUUID(String uuid) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateSalaryInd salary where salary.uuid = :uuid and salary.status = '1' ";  
+		List<AssociateSalaryInd> associateSalaryIndList =  session.createQuery(query).setString("uuid", uuid).list();
+		AssociateSalaryInd associateSalaryInd = null;
+		if (associateSalaryIndList != null && associateSalaryIndList.size() > 0) {
+			associateSalaryInd = (AssociateSalaryInd) associateSalaryIndList.iterator().next();
+		}
+		return associateSalaryInd;
+	}
+	
+	@Override
+	@Transactional
+	public AssociateSalaryInd getAssociateSalaryIndByCandidateId(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateSalaryInd salary where salary.candidate.id = :id and salary.status = '1' ";  
+		List<AssociateSalaryInd> associateSalaryIndList =  session.createQuery(query).setLong("id", id).list();
+		AssociateSalaryInd associateSalaryInd = null;
+		if (associateSalaryIndList != null && associateSalaryIndList.size() > 0) {
+			associateSalaryInd = (AssociateSalaryInd) associateSalaryIndList.iterator().next();
+		}
+		return associateSalaryInd;
+	}
+	
+	
+	@Override
+	@Transactional
+	public AssociateSalaryPayheadInd getAssociateSalaryPayheadIndById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateSalaryPayheadInd payhead where payhead.id = :id and payhead.status = '1' ";  
+		List<AssociateSalaryPayheadInd> associateSalaryPayheadIndList =  session.createQuery(query).setLong("id", id).list();
+		AssociateSalaryPayheadInd associateSalaryPayheadInd = null;
+		if (associateSalaryPayheadIndList != null && associateSalaryPayheadIndList.size() > 0) {
+			associateSalaryPayheadInd = (AssociateSalaryPayheadInd) associateSalaryPayheadIndList.iterator().next();
+		}
+		return associateSalaryPayheadInd;
+	}
 }

@@ -128,9 +128,7 @@ $(document).ready(function(){
 			 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
 			 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
 		 }
-		 if(loginCurrencyCode == 'IND'){
-		 	result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
-		 }
+		 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
 
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
