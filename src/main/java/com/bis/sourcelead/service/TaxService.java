@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.bis.sourcelead.dto.CentralTaxDTO;
+import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
 import com.bis.sourcelead.dto.SourceleadTaxChallanItemDTO;
@@ -35,6 +36,8 @@ public interface TaxService {
 	long saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations);
 
 	StateTaxDTO getStateTax(String statetaxuuid);
+	
+	StateTaxDTO getStateTaxByStateNameAndFinancialYear(String stateName, String financialYear);
 
 	long addStateTax(StateTaxDTO stateTaxDTO);
 
@@ -43,6 +46,8 @@ public interface TaxService {
 	List<CentralTaxDTO> getCentralTaxList(String yearFrequency);
 
 	CentralTaxDTO getCentralTax(String centraltaxuuid);
+	
+	CentralTaxDTO getCentralTaxByTaxType(String taxType);
 
 	Response<String> changeStateTaxStatus(long stateTaxId);
 

@@ -680,12 +680,6 @@
 		    <scope>provided</scope>
 		</dependency>
         <!-- Docusign dependency end -->
-        
-        <dependency>
-    		 <groupId>com.symmetry.ste</groupId>
-    		 <artifactId>ste</artifactId>
-   			  <version>1.0</version>
-		</dependency>
 
     </dependencies>
 

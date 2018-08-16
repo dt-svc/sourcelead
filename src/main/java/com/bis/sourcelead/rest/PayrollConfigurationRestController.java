@@ -1,14 +1,13 @@
 package com.bis.sourcelead.rest;
 
+import java.util.Calendar;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.org.eclipse.jdt.core.dom.SwitchCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,8 +24,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PayrollBonusDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
-import com.bis.sourcelead.dto.PayrollPayheadSalarySetupDTO;
 import com.bis.sourcelead.dto.PayrollPaytypeDTO;
+import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -45,6 +45,7 @@ import com.bis.sourcelead.service.PayrollBonusService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollPaytypeService;
+import com.bis.sourcelead.service.PayrollTaxService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -81,10 +82,14 @@ public class PayrollConfigurationRestController {
 	PayrollPaytypeService payrollPaytypeService;
 	
 	@Autowired
+	PayrollTaxService payrollTaxService;
+
+	@Autowired
 	CandidateService candidateService;
 	
 	@Autowired
 	EmployeesService employeesService;
+
 	
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
@@ -770,6 +775,48 @@ public class PayrollConfigurationRestController {
 					return response;
 				}
 			 
+
+	@RequestMapping(value = "/savePayrollTax")
+	@ResponseBody
+	public Response<Long> saveITDeclarationForm(HttpServletRequest request, PayrollTaxDTO payrollTaxDTO) {
+		Response<Long> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				if(payrollTaxDTO.getId() == 0) {
+					Calendar c = Calendar.getInstance();
+					String fromYear = c.get(Calendar.YEAR) + "";
+					c.roll(Calendar.YEAR, 1);
+					String toYear = c.get(Calendar.YEAR) + "";
+					String financialStartMonth = orgLocations.getStartMonth() != null && !orgLocations.getStartMonth().isEmpty() 
+							? orgLocations.getStartMonth()
+							: payrollTaxDTO.getFinancialStartMonth();
+					String financialEndMonth = orgLocations.getEndMonth() != null && !orgLocations.getEndMonth().isEmpty() 
+							? orgLocations.getEndMonth()
+							: payrollTaxDTO.getFinancialEndMonth();
+					payrollTaxDTO.setFinancialYear((financialStartMonth + "_" + fromYear) + "-" + (financialEndMonth + "_" + toYear));
+				}
+				response = payrollTaxService.savePayrollTaxConfiguration(payrollTaxDTO, user, orgLocations);
+				if (payrollTaxDTO.getFinancialStartMonth() != null && !payrollTaxDTO.getFinancialStartMonth().isEmpty()
+						&& payrollTaxDTO.getFinancialEndMonth() != null && !payrollTaxDTO.getFinancialEndMonth().isEmpty()) {
+					orgLocations.setStartMonth(payrollTaxDTO.getFinancialStartMonth());
+					orgLocations.setEndMonth(payrollTaxDTO.getFinancialEndMonth());
+					orgLocationService.updateOrgLocations(orgLocations);
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
 			 
 	 @RequestMapping(value = "/getAssociateSalaryDataByOrgLocation", method = RequestMethod.GET)
 		public ModelAndView getAssociateSalaryDataByOrgLocation(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request) throws Exception
