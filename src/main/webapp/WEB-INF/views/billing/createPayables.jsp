@@ -1943,16 +1943,15 @@ function getPaymentTerms(){
 	 var invoiceId = document.getElementById("invoiceId").value; 
 	
 	 if(invoiceId != null && invoiceId != ""){
-		 $("#saveInvoiceId").attr("disabled", "disabled");
-		 $("#sendInvoiceId").attr("disabled", "disabled");
-		
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=payables", 
 		        success: function(data) {
 		        	 if(data == true){
-		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
+		        		 $("#saveInvoiceId").attr("disabled", "disabled");
+					   	 $("#sendInvoiceId").attr("disabled", "disabled");
+		        		 $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
 						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
 						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
 						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
