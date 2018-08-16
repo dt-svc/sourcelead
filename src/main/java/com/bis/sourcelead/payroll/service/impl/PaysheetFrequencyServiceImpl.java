@@ -157,13 +157,15 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		
 		StringBuilder sbb = new StringBuilder();
 		if(savedPF.getFrequencyEndDate() != null) {
-			globalVarsMap.put("frequency", sbb.append(dateFormat.format(savedPF.getFrequencyStartDate())).append("to").append(dateFormat.format(savedPF.getFrequencyEndDate())).toString());
+			globalVarsMap.put("frequency", sbb.append(dateFormat.format(savedPF.getFrequencyStartDate())).append(" to ").append(dateFormat.format(savedPF.getFrequencyEndDate())).toString());
 		}else {
 			globalVarsMap.put("frequency", dateFormat.format(savedPF.getFrequencyStartDate()).toString());	
 		}
 		
 		double amount = savedPF.getEmployeepayroll().stream().mapToDouble(p->p.getNetPay().doubleValue()).sum();
 		globalVarsMap.put("amount", String.valueOf(amount));
+		
+		globalVarsMap.put("loginOrg", orgLocation.getOrgLocationName());
 		
 		StringBuilder stringBuilderLoginname = new StringBuilder();
 		globalVarsMap.put("loginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -204,7 +206,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		emailScenerioUtil.sendNotification(null, loginUser, null, orgLocation, notificationScenario,new HashMap<String,String>());
+		emailScenerioUtil.sendNotification(null, loginUser, payrollApprover.getUser(), orgLocation, notificationScenario,new HashMap<String,String>());
 		
 		
 	}

@@ -1,8 +1,11 @@
 package com.bis.sourcelead.payroll.service;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
 
 public interface USPayPeriodService {
@@ -14,4 +17,6 @@ public interface USPayPeriodService {
 	ResponseList<PaysheetFrequencyDTO> getPayPeriodListByOrgLocationId(OrgLocations orgLocation,PaysheetFrequencyDTO paysheetFrequencyDTO) throws Exception;
 
 	int updatedPayperiod(String payPeriodNum);
+	
+	List<USPayPeriod> getPaySheetFrequencyIdAndOrglocationId(OrgLocations orgLocation, Long payfrequencyId);
 }

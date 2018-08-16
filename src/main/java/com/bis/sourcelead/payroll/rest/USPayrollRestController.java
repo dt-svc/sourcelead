@@ -1360,7 +1360,8 @@ public class USPayrollRestController {
 	public Response<ConfirmPayTotalSumDTO> approvePayroll(ConfirmPayTotalSumDTO confirmPayTotalSumDto ,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Response<ConfirmPayTotalSumDTO> res = uSPayrollService.approvePayroll(confirmPayTotalSumDto,orgLocation);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<ConfirmPayTotalSumDTO> res = uSPayrollService.approvePayroll(confirmPayTotalSumDto,orgLocation,loginUser);
 		return res;
 
 	}
