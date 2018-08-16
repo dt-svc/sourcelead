@@ -38,11 +38,12 @@ public class AssociatePfEsiDaoImpl implements AssociatePfEsiDao{
 	}
 
 	@Override
-	public AssociatePfEsiDetails findAssociatePfEsiByUserId(Long userId, OrgLocations orgLocation) {
+	public AssociatePfEsiDetails findAssociatePfEsiByCandidateId(Long candidateId, OrgLocations orgLocation) {
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociatePfEsiDetails associatePfEsi = null;
 		try {
-			List<AssociatePfEsiDetails>  associatePfEsiList = session.createQuery("from AssociatePfEsiDetails ape where ape.userId.id=:userId and ape.orgLocationId.id= :orgLocationId" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+			List<AssociatePfEsiDetails>  associatePfEsiList = session.createQuery("from AssociatePfEsiDetails ape left join fetch ape.candidateId where "
+					+ "ape.candidateId.id = :candidateId and ape.orgLocationId.id= :orgLocationId" ).setLong( "candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).list();
 		    if(associatePfEsiList !=null && associatePfEsiList.size() >0) {
 		    	associatePfEsi = associatePfEsiList.get(0);
 		    }
