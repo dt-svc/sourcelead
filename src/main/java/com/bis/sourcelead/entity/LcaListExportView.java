@@ -24,7 +24,7 @@ public class LcaListExportView implements Serializable {
 	@Column(name = "ORG_LOCATION_ID")
 	private Long orgLocationId;
 
-	@Column(name = "LCAT_NO")
+	@Column(name = "LCA_NO")
 	private String lcaNo;
 	
 	@Column(name = "LCA_Title")

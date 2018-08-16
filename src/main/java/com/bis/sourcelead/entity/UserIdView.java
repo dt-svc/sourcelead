@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "USER_ID_VIEW", schema = "SOURCELEAD")
+@Table(name = "USER_ID_VIEW")
 public class UserIdView {
 	
 	private static final long serialVersionUID = 1L;

@@ -19,7 +19,7 @@ import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "CANDIDATE_RESIDENCE", schema = "SOURCELEAD")
+@Table(name = "CANDIDATE_RESIDENCE")
 public class CandidateResidence implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -19,7 +19,7 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "LCA", schema = "SOURCELEAD")
+@Table(name = "LCA")
 public class Lca implements Serializable {
 
 	private static final long serialVersionUID = 1L;
