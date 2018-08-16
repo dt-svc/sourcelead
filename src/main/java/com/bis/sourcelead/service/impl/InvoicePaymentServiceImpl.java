@@ -67,13 +67,17 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	InvoiceService invoiceService;
 
 	@Override
 	public InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,
 			MultipartFile multiFile, Long invoiceId) throws Exception {
 
+		
 		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);
-
+		Invoice parentInvoice = null;
 		InvoicePayment invoicePayment = new InvoicePayment();
 		/*String pattern = "dd-MM-yyyy";
 		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
@@ -123,8 +127,6 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 			invoice.setUpdatedBy(user.getUserCode());
 			invoice.setUpdatedDate(commonUtil.currentDate());
 			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
-
-			Invoice parentInvoice = null;
 			if (null != childInvoice) {
 				if (null != childInvoice.getId()) {
 					parentInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(childInvoice.getId());
@@ -197,6 +199,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					parentInvoice.setUpdatedBy(user.getUserCode());
 					parentInvoice.setUpdatedDate(commonUtil.currentDate());
 					invoiceDao.saveInvoce(parentInvoice);
+					
 				}
 
 			}
@@ -234,7 +237,10 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
 		invoicePayment.setUpdatedBy(user.getUserCode());
 		invoicePayment.setUpdatedDate(commonUtil.currentDate());
-		return invoicePaymentDao.saveInvoicePayment(invoicePayment);
+		InvoicePayment invoicePaymentObject =invoicePaymentDao.saveInvoicePayment(invoicePayment); 
+		invoiceService.saveInvoiceTimelineHistory(parentInvoice, user, null, null, invoicePaymentObject.getId(), null);
+		invoiceService.saveInvoiceTimelineHistory(invoice, user, null, null, invoicePaymentObject.getId(), null);
+		return invoicePaymentObject;
 	}
 	
 	
@@ -310,7 +316,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								remainAmount = dueDecimal.subtract(receivedDecimal);
 								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 								invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
-								invoice.setDueAmount(remainAmount.toString());
+								parentInvoice.setDueAmount(remainAmount.toString());
 							}
 						}
 					
