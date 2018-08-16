@@ -443,6 +443,17 @@ public class DashboardRestController {
 	}
 	
 	
+	@RequestMapping(value = "/dashboardPipelineJobsCount" , method = RequestMethod.GET)
+	 public @ResponseBody RequirementSubmissionsCountDTO dashboardPipelineJobsCount(@RequestParam(value = "requirementId", required = true) Long requirementId,@RequestParam(value = "submissionType", required = false) String submissionType, HttpServletRequest request) throws Exception {
+			
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirementId, user, orgLocation, "ALL");
+		     return rsCount;
+	}
+	
+	
+	
 	 /**
 	   * @author sarath kumar
 	   * @since  aug 30 2016
@@ -487,20 +498,17 @@ public class DashboardRestController {
 					dayString = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(c.getTime());
 					selectedDayString = new SimpleDateFormat("EEEE (dd/MM/yyyy)", Locale.ENGLISH).format(c.getTime());
 				}
+			
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 					userType = Constants.ADMIN;
-					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
 					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
 				}else{
-					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
 					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
 				}
-				
-				//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+				// your code here...
+				 
 				for(Requirement requirement : requirementList){
-					/*if(requirement.getClientId() != null){
-						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
-					}*/
+					 
 					//changed ny prasad salina
 					if(requirement.getClientId() != null){
 						if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -515,23 +523,8 @@ public class DashboardRestController {
 					
 					Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
 		    		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
+
 		    		
-		    		
-		    		RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, loginOrgLocation, "ALL");
-					
-					/*int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
-					int shortlistedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SHORTLISTED");
-					int submittedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SUBMITTED");
-					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "INTERVIEWED");
-					int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "OFFERED");
-					int joinedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "JOINED");
-					*/
-					requirement.setNoOfApplicants(String.valueOf(rsCount.getApplicantsCount()));
-					requirement.setNoOfShortlistedApplicants(String.valueOf(rsCount.getShortlistCount()));
-					requirement.setNoOfSubmittedApplicants(String.valueOf(rsCount.getSubmitToClientCount()));
-					requirement.setNoOfInterviewedApplicants(String.valueOf(rsCount.getInterviewCount()));
-					requirement.setNoOfOfferedApplicants(String.valueOf(rsCount.getOffersCount()));
-					requirement.setNoOfJoinedApplicants(String.valueOf(rsCount.getJoinedCount()));
 					
 					if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
 						List<Long> userId = new ArrayList<Long>();
@@ -550,8 +543,10 @@ public class DashboardRestController {
 		         			requirement.setIsRequirementReleasedByuser("Y");
 		         		}
 					}
+					
 				}
 				response.setData(requirementList);
+				
 			    response.setResponse(Result.SUCCESS.name());
 			    if(isWalkIn)
 			    	response.setResponseMessage(Result.SUCCESS.getValue() + ":" + selectedDay +":"+selectedDayString);
@@ -580,11 +575,11 @@ public class DashboardRestController {
 	 @RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
 	 public Response<DashboardCounts>  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,HttpServletRequest request) throws Exception {
 		 Response<DashboardCounts> response = new Response<>();
-	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		DashboardCounts dc= new DashboardCounts();
-		Timezone timezone = null;
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			DashboardCounts dc= new DashboardCounts();
+			Timezone timezone = null;
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
 			try {
 				if(loginOrgLocations.getTimezone() != null){
@@ -615,15 +610,18 @@ public class DashboardRestController {
 					userType = Constants.ADMIN;
 				} 
 				
+				long start = System.currentTimeMillis();
 				 Integer[] requirementSubmissionHistoryCounts = requirementSubmissionService.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),daterange, userType, user, startUTCDate, endUTCDate);
+				long end = System.currentTimeMillis();
+				System.out.println("final time >> "+(end - start ));
 				
-			    dc.setSubmissionCount(requirementSubmissionHistoryCounts[0]);
+			    dc.setApplicantsCount(requirementSubmissionHistoryCounts[0]); //0 index is applicant count as per QueryResult
 			    
-			    dc.setApplicantsCount(requirementSubmissionHistoryCounts[1]);
+			    dc.setInterviewsCount(requirementSubmissionHistoryCounts[1]); //1 index is interview count as per QueryResult
 			    
-			    dc.setInterviewsCount(requirementSubmissionHistoryCounts[2]);
-			    
-			    dc.setOffersCount(requirementSubmissionHistoryCounts[3]);
+			    dc.setSubmissionCount(requirementSubmissionHistoryCounts[2]); //2 index is  submission count as per QueryResult
+
+			    dc.setOffersCount(requirementSubmissionHistoryCounts[3]); //3 index is offer count as per QueryResult
 			   
 			    response.setObject(dc);
 			    response.setResponse(Result.SUCCESS.name());
@@ -636,7 +634,7 @@ public class DashboardRestController {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());
 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-	    
+	    System.out.println(response.getResponse());
 		return response;
 	   }
 

@@ -31,6 +31,7 @@ import com.bis.sourcelead.dto.OnBoardingTemplateDocumentsDTO;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.OnboardingCandidateDocsStep3DTO;
 import com.bis.sourcelead.dto.OnboardingCandidateSetp2DTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionsView;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
@@ -1871,41 +1873,15 @@ public class CandidateOnBoardRestController {
 		try {
 			String resultJson;
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<RequirementSubmission> submissionList = requirementSubmissionService
-					.getOfferAcceptedCandidatesListByOrgLocationId(loginOrgLocation.getId());
-			List<RequirementSubmission> requirementSubmissionList = new ArrayList<RequirementSubmission>();
-			// SimpleDateFormat simpleDateFormat =
-			// loginOrgLocation.getLocFullFormDateFormatter();
+			List<RequirementSubmissionsView> submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(loginOrgLocation.getId());
+			List<RequirementSubmissionsView> requirementSubmissionList = new ArrayList<RequirementSubmissionsView>();
+			
 			if (null != submissionList && submissionList.size() > 0) {
-				for (RequirementSubmission submission : submissionList) {
-					StringBuilder candidateName = new StringBuilder();
-					if (!isNullOrEmpty(submission.getCandidate().getLastName())) {
-						submission.setCandidateName(candidateName.append(submission.getCandidate().getFirstName()).append(" ")
-								.append(submission.getCandidate().getLastName()).toString());
-					} else {
-						submission.setCandidateName(candidateName.append(submission.getCandidate().getFirstName()).toString());
-					}
-					submission.setCandidateEmail(submission.getCandidate().getEmail());
-					submission.setRequirementName(submission.getRequirement().getJobTitle());
-					submission.setCandidateUUID(submission.getCandidate().getCandidateUUID());
-					submission.setRequirementUUID(submission.getRequirement().getRequirementUUID());
-					if (submission.getRequirement().getManagerUserId() != null) {
-						submission.setReqManagerId(submission.getRequirement().getManagerUserId().getId());
-					}
-					if (submission.getRequirement().getReleaseJobToAllUsers() != null) {
-						submission.setReqReleaseAllJobUserStatus(submission.getRequirement().getReleaseJobToAllUsers());
-					}
-					RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submission.getId());
-					submission.setOfferJoinDate(
-							commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), requirementOffers.getDateOfJoining()));
-					submission.setPositionType(requirementOffers.getPositionType());
-					submission.setRate(requirementOffers.getAmount());
-					submission.setRateType(requirementOffers.getPaymentMode());
-					submission.setPaymentType(requirementOffers.getPaymentType());
-					submission.setOfferUUID(requirementOffers.getOfferUUID());
+				for (RequirementSubmissionsView submission : submissionList) {
+					Date date1=new SimpleDateFormat("dd MM yyyy").parse(submission.getOfferJoinDate());  
+					submission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), date1));
 					requirementSubmissionList.add(submission);
-					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService
-							.getCandidateOnBoardingByCandidateIdAndOfferId(submission.getCandidate().getId(), requirementOffers.getId());
+					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndOfferId(submission.getCandidateId(), submission.getOfferId());
 					if (null != candidateOnBoarding) {
 						submission.setOnboardUUId(candidateOnBoarding.getOnboardCandidateUUID());
 						submission.setOnboardStatus(candidateOnBoarding.getCandidateOnBoardStatus());

@@ -14,38 +14,6 @@
  
  <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  
- <script> 
-	$(document).ready(function(){
-		getNewProjectResourceReqestsListCount();
-		newResourceRequestList("Waiting For Approval");
-	});
-</script>
- 
- 
-      <div class="mb col-md-12 clearfix"> 
-      	  <div class="dashboard-widget col-md-12">
-      	    <h4>New Resource Requests</h4>
-      	    
-      	    <div class="project_side_wrap_inn_tabs">
-      	    <div id="resourceRequestsDivLoading"></div>
-			    <ul class="project-tabs-menu tabnewStyles">
-			        <li class="current" id="newReqWaiting"><a data-toggle="tab" href="javascript:void(0)" onclick="newResourceRequestList('Waiting For Approval')">Waiting (<span id="newWaitingCount"></span>)</a></li>
-			        <li id="newRequestApproved"><a data-toggle="tab" href="javascript:void(0)"  onclick="newResourceRequestList('Approved')">Approved (<span id="newApprovedCount"></span>)</a></li>
-			        <li id="newRequestRejected"><a data-toggle="tab" href="javascript:void(0)" onclick="newResourceRequestList('Rejected')">Rejected (<span id="newRejectedCount"></span>)</a></li>
-			        <li id="newRequestOnhold"><a data-toggle="tab" href="javascript:void(0)" onclick="newResourceRequestList('On hold')">On hold (<span id="newOnholdCount"></span>)</a></li>
-			        <div class="clearfix"></div>
-			    </ul>
-			    <div class="clearfix mb10"></div>
-			    <div id="newResourceRequestList"></div>
-			    <div class="vendor_wrap_mask"></div>
-   				<div id="requestedNewAssociatesDivLoading"></div>
-   				<div id="newRequestOnHoldReasonDiv"></div>
-   				<div id="resourceRejectedReasonDiv"></div>
-           </div>
-      	  </div>
-      </div>
-    
- 
  <script>
  function getNewProjectResourceReqestsListCount(){
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -68,10 +36,16 @@
  
  <script>
 function newResourceRequestList(requestType){
-	  
+	getNewProjectResourceReqestsListCount();
+	  $('#newResourceRequestTabDiv').show();
+	  $('#assocaiteRequestsTabDiv').hide();
+	  $("#budgetTabDiv").hide();
+	  $("#associateDiv").removeClass("current");
+	  $("#newResourceDiv").addClass("current");
+	  $("#budgetDiv").removeClass("current");
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
-	 	result = result +" <input type='text' placeholder='Search' id='newRequestAssociatesTableSearch'/>";
+	 	result = result +" <input type='text' placeholder='New Resource search' id='newRequestAssociatesTableSearch'/>";
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix popupFilter mt5">';
@@ -115,31 +89,31 @@ function newRequestAssociatesDataTableList(requestType){
 	 newResourceRequestPagination(url,requestType,sourceleadUrl);
 	 
 	   if(requestType == 'Waiting For Approval'){
-	    	 $("#newReqWaiting").addClass("current");
-	    	 $("#newRequestApproved").removeClass("current");
-	    	 $("#newRequestRejected").removeClass("current");
-	    	 $("#newRequestOnhold").removeClass("current");
+	    	 $("#newReqWaiting").addClass("activeIcon");
+	    	 $("#newRequestApproved").removeClass("activeIcon");
+	    	 $("#newRequestRejected").removeClass("activeIcon");
+	    	 $("#newRequestOnhold").removeClass("activeIcon");
 	    }
 	   
 	    else if(requestType == 'Approved'){
-	    	 $("#newRequestApproved").addClass("current");
-	    	 $("#newReqWaiting").removeClass("current");
-	    	 $("#newRequestRejected").removeClass("current");
-	    	 $("#newRequestOnhold").removeClass("current");
+	    	 $("#newRequestApproved").addClass("activeIcon");
+	    	 $("#newReqWaiting").removeClass("activeIcon");
+	    	 $("#newRequestRejected").removeClass("activeIcon");
+	    	 $("#newRequestOnhold").removeClass("activeIcon");
 	    }
 	    
 	    else if(requestType == 'Rejected'){
-	    	 $("#newRequestRejected").addClass("current");
-	    	 $("#newReqWaiting").removeClass("current");
-	    	 $("#newRequestApproved").removeClass("current");
-	    	 $("#newRequestOnhold").removeClass("current");
+	    	 $("#newRequestRejected").addClass("activeIcon");
+	    	 $("#newReqWaiting").removeClass("activeIcon");
+	    	 $("#newRequestApproved").removeClass("activeIcon");
+	    	 $("#newRequestOnhold").removeClass("activeIcon");
 	    }
 	    
 	    else if(requestType == 'On hold'){
-	    	 $("#newRequestOnhold").addClass("current");
-	    	 $("#newReqWaiting").removeClass("current");
-	    	 $("#newRequestApproved").removeClass("current");
-	    	 $("#newRequestRejected").removeClass("current");
+	    	 $("#newRequestOnhold").addClass("activeIcon");
+	    	 $("#newReqWaiting").removeClass("activeIcon");
+	    	 $("#newRequestApproved").removeClass("activeIcon");
+	    	 $("#newRequestRejected").removeClass("activeIcon");
 	    	
 	    }
 	    

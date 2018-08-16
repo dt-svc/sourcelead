@@ -9091,6 +9091,15 @@ float: right; cursor: pointer; padding-left: 15px;color: #f5b1b1;
 .tagslist li i.fa-times:hover {
 color: #fd0505;
 }
+ .activeIcon a {
+ color: #0084bf !important;
+ }
+ .tabnew-styles li {
+ border-right: 1px solid #ddd !important;
+ }
+ .tabnew-styles li:last-child {
+ border-right:none;
+ }
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
