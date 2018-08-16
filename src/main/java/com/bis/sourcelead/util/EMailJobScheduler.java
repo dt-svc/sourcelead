@@ -2916,7 +2916,7 @@ public class EMailJobScheduler {
 	 * this cron will run at 04:00 AM (UTC)
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "0 0 4 1/1 * ?")
+	//@Scheduled(cron = "0 0 4 1/1 * ?")
 	@Async
 	public void updateLeaveStatus() throws Exception
 	{

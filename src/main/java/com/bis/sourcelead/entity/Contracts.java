@@ -408,6 +408,14 @@ public class Contracts {
 	@JsonProperty
 	private String isParentContract;
 	
+	@Transient
+    @JsonProperty
+    private String contractTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
 	public List<ContractRequestDocuments> getContractRequestDocumentsList()
 	{
 		return contractRequestDocumentsList;
@@ -1273,5 +1281,21 @@ public class Contracts {
 	public void setParallelOwnerId(List<Long> parallelOwnerId)
 	{
 		this.parallelOwnerId = parallelOwnerId;
+	}
+
+	public String getContractTags() {
+		return contractTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setContractTags(String contractTags) {
+		this.contractTags = contractTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
 	}
 }

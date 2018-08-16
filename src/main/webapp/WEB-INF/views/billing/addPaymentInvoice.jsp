@@ -66,7 +66,7 @@
     	 				<label class="col-md-3 paddingRight">Amount Received<span class="text-danger paddingLeft">*</span></label>
 	    	 			<div class="clearfix">
 	    	 			<div class="col-md-6">
-	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" onkeyup="validateNumber(this);" data-validation="required validate_length length2-250" field-name ="Amount Received">
+	    	 				<input type="text" value="" placeholder="Total Due" class="form-control" id="totalAmount" name="totalAmount" data-validation="required validate_length length2-250" field-name ="Amount Received">
 	    	 			</div>
 	    	 			<div class="col-md-3">
 	    	 				<input type="text" class="form-control" id="currencyType" name = "currencyType" readonly="readonly">
@@ -87,7 +87,6 @@
 						<label class="input-group-btn"> <span class="btn btn-primary" onchange="getFleInformation();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn"	class="upload"> </span>
 						</label> 
 					<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File" field-name="Upload File" data-validation="validatedoc" data-validation-optional="true">
-						<div class="clearUpload"></div>
 					</div>
 			</div>
 			</div>
@@ -228,9 +227,17 @@ $('#paymentDate').datepicker({
   </script>
   <script type="text/javascript">
   
-   function validateNumber(object){ 
+  // allow only number
+  $("#totalAmount").on("keypress keyup blur",function (event) {
+	$(this).val($(this).val().replace(/[^0-9\.]/g,''));
+      if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+          event.preventDefault();
+      }
+  });
+  
+    function validateNumber(object){ 
 	   object.value = object.value.replace(/[^0-9\.]/g,'');
-	}
+	} 
   
 function addInvoice(){
 	// check if dueamount is valid or not
@@ -399,8 +406,9 @@ function showCheckBoxDivPopup(){
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
 		  }else{
+			  var inputAmount = $("#totalAmountRow"+id).val();
 			  $("#totalAmountRow"+id).val('');
-			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
+			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(inputAmount);
 		  }
 		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
 		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit

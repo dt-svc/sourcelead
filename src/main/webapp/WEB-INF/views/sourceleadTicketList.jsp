@@ -89,11 +89,9 @@ function getTicketCustomDates(){
       <div class="pull-left">
         <h2>Issues List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Issues List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Issues List</div>
     </section>
-		    <div class="content-area content-new clearfix">
-		      <div class="clearfix form-horizontal">
-		
+    
 			<div class="project_wrap">
 						
 			 <div class="positionRelative reportHead clearfix">
@@ -155,8 +153,6 @@ function getTicketCustomDates(){
                 </div>    
 				</div>     
 		      
-		    </div>
-		</div>
  <div class="sideMask"></div>
  <div id="ticketcommentPopup"></div>
   </section>

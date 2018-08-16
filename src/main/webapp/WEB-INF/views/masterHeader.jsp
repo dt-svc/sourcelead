@@ -47,6 +47,7 @@ $(document).ready(function(){
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <!-- <link href="/resources/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"> -->
 <link href="/resources/css/buttons.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/fixedColumns.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
@@ -155,6 +156,7 @@ $(document).ready(function(){
 
 <!--  Data tables script files -->
 <!-- <script src="/resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="/resources/js/dataTables.fixedColumns.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <script src="/resources/js/dataTables.buttons.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 
@@ -719,7 +721,14 @@ function preventTabkey(e){
 								</div>
 							 </li> 	
 						   </sec:authorize>
+					
+					   <c:if test="${SourceLeadWeb_isAdmin == true}">
+					  	<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
+                        </c:if>
 
+                         
+                       <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Tags</a></li>
+					  
 					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" ><i class="fa fa-key" aria-hidden="true"></i>Guest Action Roles</a></li>
                        </sec:authorize>
@@ -729,6 +738,7 @@ function preventTabkey(e){
                         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 					       <li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i>Invite Company</a></li>
 	                   </c:if>
+	                    
 	              </ul>
 	            </div>
 	          </li>
@@ -782,7 +792,7 @@ function preventTabkey(e){
   
   <!--  Alert message for Switching Locaction -->
   <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
-    <a href="#" class="loc-alertclose close">&times;</a>
+    <a href="#" class="loc-alertclose closeAlt">&times;</a>
     <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
   </div>
  <!--  Alert message for Switching Locaction -->
@@ -1031,8 +1041,8 @@ function preventTabkey(e){
 <div class="addtAsk_popmask"></div>
 </sec:authorize>
 
-<!--  Theme Switcher div -->
-  <sec:authorize access="hasRole('ROLE_COLOUR_THEME')"> 
+<!--  Theme Switcher div  Commented By Mahesh  -->
+<%--   <sec:authorize access="hasRole('ROLE_COLOUR_THEME')"> 
   <div class="theme-color">
       <span class="icon-theme theme-styels" title="click here">
           <figure class="rotate">
@@ -1048,8 +1058,8 @@ function preventTabkey(e){
       <li class="hidden"><a href="#" class="" id="btn6"><span class="hdr-grey"></span><span class="sidenav-red"></span></a></li>
     </ul>
   </div>
-  </sec:authorize>
-<!--  Theme Swithcer div ends  -->
+  </sec:authorize> --%>
+<!--  Theme Swithcer div ends Commented By Mahesh -->
 
 <!--  Support div -->
  <sec:authorize access="hasRole('ROLE_SUPPORT')"> 
@@ -1763,8 +1773,8 @@ $("#searchType").selectpicker('refresh');
   </div> --%>
   
   
-  <div class="mask"></div>
-  
+ <div class="mask"></div>
+ <div class="maskTwo"></div>
   
   <script>
   
@@ -1944,9 +1954,11 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
   if(type == "invite"){
 	  getTimezonesList();
   }
+
   if(type != "editAssociate"){
     zipcodeMask(address.country,zipCodeId);	
   }
+
 });
 }
 function geolocate(latitudeId,longtitudeId) {
@@ -2021,7 +2033,7 @@ function verifyEmail2() {
 document.onkeydown = function(evt) {
     evt = evt || window.event;
     if (evt.keyCode == 27) {
-        $(".mask, .advancedsearch-mask").hide();
+        $(".mask, .maskTwo, .advancedsearch-mask, .location-alert, .impConPop").hide();
         $(".popupWrap, .popupWrapMid, div.cand-advsrch-popup, .remove_user_pop").fadeOut(100);
     }
 };

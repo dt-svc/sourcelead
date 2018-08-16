@@ -69,7 +69,8 @@ function userAssetManagement(userId){
                 $("#tab-18").empty(); 
                 $("#tab-17").empty(); 
                 $("#tab-19").empty(); 
-                $("#tab-20").empty(); 
+                $("#tab-20").empty();
+                $("#tab-25").empty(); 
                 $("#candidateSideDiv").empty(); 
                 $("#tab-20").append(result);  
                 assetmentPagination(); 

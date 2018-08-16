@@ -102,11 +102,12 @@ function prepareAssignedProjectsData(data){
    	}
 	result = result +"</td>";
 	
+	
 	result = result +"<td>";
-	if(opt.projectEndDateStr != '' && opt.projectEndDateStr != null && opt.projectEndDateStr != 'undefined'){
-   		result = result +"	    <div><input type='text' value='"+opt.projectEndDateStr+"' class='project_inline_field project_inline_field_enddate' id='endDate"+opt.id+"' name='endDate'  readonly='readonly'></div>";
+   	if(opt.projectEndDateStr != '' && opt.projectEndDateStr != null && opt.projectEndDateStr != 'undefined'){
+	   	result = result +"<div class='tblminwidth-75' title='"+opt.projectEndDateStr+"'>"+opt.projectEndDateStr+"</span></div>";
    	}else{
-   		result = result +"<div>-----</div>";
+   		result = result +"<div>-----</div>"; 
    	}
 	result = result +"</td>";
 	
@@ -154,7 +155,8 @@ function prepareAssignedProjectsData(data){
     $("#candidateSideDiv").empty();
     $("#tab-18").empty(); 
     $("#tab-17").empty(); 
-    $("#tab-19").empty(); 
+    $("#tab-19").empty();
+    $("#tab-25").empty();
     $("#tab-19").append(result);  
     pagination(); 
 
