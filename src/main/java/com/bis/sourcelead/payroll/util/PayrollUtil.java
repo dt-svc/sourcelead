@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.entity.AssociatePayItem;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
@@ -66,11 +67,11 @@ public class PayrollUtil {
 		return payPeriod;
 	}
 
-	public static boolean getEmployeeResident(User user)
+	public static boolean getEmployeeResident(Candidate candidate)
 	{
 		boolean isResident = false;
 		
-		String employeeState = user.getResidenceState();
+		String employeeState = candidate.getResidenceState();
 		switch (employeeState) {
 			case PayrollConstant.ALABAMA :
 				isResident = true;
@@ -171,22 +172,22 @@ public class PayrollUtil {
 			deduction = false;
 			break;
 		case PayrollConstant.SEMI_ANNUALLY:
-			if (StringUtils.isNotBlank(associatePayItem.getPayItemSchedule())) {
+			if (StringUtils.isNotBlank(associatePayItem.getPayitemStatus())) {
 				deduction = isDateInBetweenIncludingEndPoints(associatePayItem.getPayitemStartDate(), associatePayItem.getPayitemEndDate(), freqStartDate, freqEndDate);
 			}
 			break;
 		case PayrollConstant.MONTHLY:
-			if (StringUtils.isNotBlank(associatePayItem.getPayItemSchedule())) {
+			if (StringUtils.isNotBlank(associatePayItem.getPayitemStatus())) {
 				deduction = isDateInBetweenIncludingEndPoints(associatePayItem.getPayitemStartDate(), associatePayItem.getPayitemEndDate(), freqStartDate, freqEndDate);
 			}
 			break;
 		case PayrollConstant.QUARTERLY:
-			if (StringUtils.isNotBlank(associatePayItem.getPayItemSchedule())) {
+			if (StringUtils.isNotBlank(associatePayItem.getPayitemStatus())) {
 				deduction = isDateInBetweenIncludingEndPoints(associatePayItem.getPayitemStartDate(), associatePayItem.getPayitemEndDate(), freqStartDate, freqEndDate);
 			}
 			break;
 		case PayrollConstant.ANNUALLY:
-			if (StringUtils.isNotBlank(associatePayItem.getPayItemSchedule())) {
+			if (StringUtils.isNotBlank(associatePayItem.getPayitemStatus())) {
 				deduction = isDateInBetweenIncludingEndPoints(associatePayItem.getPayitemStartDate(), associatePayItem.getPayitemEndDate(), freqStartDate, freqEndDate);
 			}
 			break;
@@ -234,26 +235,26 @@ public class PayrollUtil {
 	 * @param eDate
 	 * @return boolean
 	 */
-	public boolean isDateBetweenEffectiveDate(Date minDate, Date maxDate, Date effectiveSDate, Date effectiveEDate)
+	public boolean isDateBetweenEffectiveDate(Date minDate, Date maxDate, Date ferquenctStarDate, Date frequencyEndDate)
 	{
 		boolean match = false;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(minDate);
 		Date min = cal.getTime();
-		cal.setTime(maxDate);
-		Date max = cal.getTime();
+		
 		try {
-			if (effectiveSDate != null && effectiveEDate != null) {
-				if (((effectiveSDate.after(min) && effectiveSDate.before(max))
-						|| (effectiveSDate.equals(min) || effectiveSDate.equals(max)))
-						&& ((effectiveEDate.after(min) && effectiveEDate.before(max))
-								|| (effectiveEDate.equals(max) || effectiveEDate.equals(min)))) {
+			if (maxDate != null && maxDate != null) {
+				cal.setTime(maxDate);
+				Date max = cal.getTime();
+				if (((ferquenctStarDate.after(min) && ferquenctStarDate.before(max))
+						|| (ferquenctStarDate.equals(min) || ferquenctStarDate.equals(max)))
+						&& ((frequencyEndDate.after(min) && frequencyEndDate.before(max))
+								|| (frequencyEndDate.equals(max) || frequencyEndDate.equals(min)))) {
 					match = true;
 				}
 			}
 			else {
-				if ((effectiveSDate.after(min) && effectiveSDate.before(max))
-						|| (effectiveSDate.equals(min) || effectiveSDate.equals(max))) {
+				if (ferquenctStarDate.after(min) || (ferquenctStarDate.equals(min) )) {
 					match = true;
 				}
 			}

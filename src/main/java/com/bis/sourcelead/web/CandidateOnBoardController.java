@@ -95,6 +95,9 @@ public class CandidateOnBoardController {
 	@Autowired
 	 private OrgService orgService;
 	
+	@Autowired
+	private CandidateService candidateService;
+	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -161,7 +164,8 @@ public class CandidateOnBoardController {
 			 }
 			 model.setViewName("onboard/onboardingCandidatePfAndEsiDetails");
 		 }else {
-			 AssociateTaxDTO taxDeatails = associateTaxService.findAssociateTaxSummaryByUserId(user.getId(), orgLocations);
+			 Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+			 AssociateTaxDTO taxDeatails = associateTaxService.findAssociateTaxSummaryByCandidateId(candidate.getId(), orgLocations);
 				if(taxDeatails != null) {
 					model.addObject("taxDeatails",taxDeatails);
 				}

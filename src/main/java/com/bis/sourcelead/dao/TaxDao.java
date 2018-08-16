@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.CentralTax;
+import com.bis.sourcelead.entity.PayrollTax;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxChallan;
 import com.bis.sourcelead.entity.SourceleadTaxChallanItem;
@@ -30,6 +31,10 @@ public interface TaxDao {
 	public long storeCentralTax(CentralTax centralTax);
 
 	public StateTax getStateTax(String statetaxuuid);
+	
+	public StateTax getStateTaxById(long stateTaxId);
+	
+	public StateTax getStateTaxByStateNameAndFinancialYear(String stateName, String financialYear);
 
 	public long addStateTax(StateTax stateTax);
 
@@ -42,7 +47,9 @@ public interface TaxDao {
 	public List<CentralTax> getCentralTaxList(String yearFrequency, long taxTypeId);
 
 	public CentralTax getCentralTax(String centraltaxuuid);
-
+	
+	public CentralTax getCentralTaxByTaxType(String taxType);
+	
 	public long changeStateTaxStatus(long stateTaxId);
 
 	/* Forms */
@@ -129,6 +136,9 @@ public interface TaxDao {
 			Paginator paginator);
 
 	public void saveTaxSubmissionMaster(SourceleadTaxSubmissionMaster sourceleadTaxSubmissionMaster);
+
+	
+
 
 
 

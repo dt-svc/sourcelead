@@ -58,23 +58,24 @@
         <div class="tabsMenu">
         <ul class="list-unstyled">
           <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
-         <%--  <c:if test="${SourceLeadWeb_currencyCode != 'USD'}">
+
+          <c:if test="${SourceLeadWeb_country != 'United States'}">
           <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
-          </c:if> --%>
+          </c:if> 
            
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
          		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
        		     <li><a href="#tab-3" data-toggle="tab" id="indInformationDetails" onclick="getIndAssociateInformationDetails();">Information</a></li>
        		     <li><a href="#tab-4" data-toggle="tab" id="indLoanAndAdvancesDetails" onclick="getIndAssociateLoanAndAdvancesDetails();">Loan & Advances</a></li>
           </c:if>
-          
-            <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
-              <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
+
+          <c:if test="${SourceLeadWeb_country == 'United States'}">
+            <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
 	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
 	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
-	          </c:if>
+	      </c:if>
           <div class="clearfix"></div>
         </ul>
 		</div>

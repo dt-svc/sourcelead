@@ -137,6 +137,37 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
+	@Override
+	public StateTax getStateTaxById(long stateTaxId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			StateTax stateTax = session.get(StateTax.class, stateTaxId);
+			return stateTax;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public StateTax getStateTaxByStateNameAndFinancialYear(String stateName, String financialYear) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from StateTax st";
+			query += " where st.states.stateName = :stateName and st.financialYear = :financialYear and st.active = :active";
+			Query queryObj = session.createQuery(query).setString("stateName", stateName)
+					.setString("financialYear", financialYear).setBoolean("active", true);
+			List<StateTax> stateTaxList = queryObj.list();
+			if (stateTaxList != null && !stateTaxList.isEmpty()) {
+				return stateTaxList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public CentralTax getCentralTax(String centraltaxuuid) {
@@ -148,6 +179,23 @@ public class TaxDaoImpl implements TaxDao {
 			List<CentralTax> centralTaxUUIDList = queryObj.list();
 			if (centralTaxUUIDList != null && !centralTaxUUIDList.isEmpty()) {
 				return centralTaxUUIDList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public CentralTax getCentralTaxByTaxType(String taxType) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CentralTax ct where ct.sourceleadTaxType.description = :taxType";
+			Query queryObj = session.createQuery(query).setString("taxType", taxType);
+			List<CentralTax> centralTaxList = queryObj.list();
+			if (centralTaxList != null && !centralTaxList.isEmpty()) {
+				return centralTaxList.get(0);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

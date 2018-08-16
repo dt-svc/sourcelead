@@ -1,7 +1,8 @@
 package com.bis.sourcelead.rest;
 
+import java.util.Calendar;
+import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,10 +24,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PayrollBonusDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
-import com.bis.sourcelead.dto.PayrollPayheadSalarySetupDTO;
 import com.bis.sourcelead.dto.PayrollPaytypeDTO;
+import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollBonus;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
@@ -34,11 +38,14 @@ import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.PayrollBonusService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollPaytypeService;
+import com.bis.sourcelead.service.PayrollTaxService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -73,6 +80,16 @@ public class PayrollConfigurationRestController {
 	
 	@Autowired
 	PayrollPaytypeService payrollPaytypeService;
+	
+	@Autowired
+	PayrollTaxService payrollTaxService;
+
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	EmployeesService employeesService;
+
 	
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
@@ -591,8 +608,8 @@ public class PayrollConfigurationRestController {
 					
 					model.addObject("payrollPayhead", payrollPayhead);
 					
-					ResponseList<PayrollPayheadSalarySetupDTO> ppssList = payrollPayheadService.getPayrollPayheadSalarySetupListByPayheadUuidAndLocationId(payrollPayhead.getUuid(), orgLocations);
-					model.addObject("salarySetupList",ppssList.getData());
+					/*ResponseList<PayrollPayheadSalarySetupDTO> ppssList = payrollPayheadService.getPayrollPayheadSalarySetupListByPayheadUuidAndLocationId(payrollPayhead.getUuid(), orgLocations);
+					model.addObject("salarySetupList",ppssList.getData());*/
 					
 					ResponseList<PayrollPayheadDTO> responsePayheadList;
 					try {
@@ -616,7 +633,6 @@ public class PayrollConfigurationRestController {
 					if (user != null) {
 							try {
 								if(StringUtils.isNotBlank(payrollPayheadDTO.getUuid())) {
-									PayrollPayheadSalarySetup payrollPayheadSalarySetup = null;
 									PayrollPayhead payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(payrollPayheadDTO.getUuid());
 									if(payrollPayhead != null) {
 										if(!payrollPayheadDTO.getMethod().equalsIgnoreCase(payrollPayhead.getMethod()) || !payrollPayheadDTO.getFormula().equalsIgnoreCase(payrollPayhead.getFormula())) {
@@ -736,42 +752,10 @@ public class PayrollConfigurationRestController {
 											}
 											
 											payrollPayhead = payrollPayheadService.savePayrollPayhead(payrollPayheadDTO, user, orgLocations);
+											
+											savePayrollPayheadSalarySetupHistory(payrollPayhead, user);
 										}
 									}
-									/*if (payrollPayheadDTO.getSalarySetup() != null && payrollPayheadDTO.getSalarySetup().size() > 0) {
-										for (PayrollPayheadSalarySetupDTO ppss : payrollPayheadDTO.getSalarySetup()) {
-											
-											if(StringUtils.isNotBlank(ppss.getUuid())) {
-												payrollPayheadSalarySetup = payrollPayheadService.getPayrollPayheadSalarySetupByUUID(ppss.getUuid());
-												payrollPayheadSalarySetup.setUpdatedDate(new Date());
-												payrollPayheadSalarySetup.setUpdatedBy(user);
-											}else {
-												payrollPayheadSalarySetup = new PayrollPayheadSalarySetup();
-												payrollPayheadSalarySetup.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-												payrollPayheadSalarySetup.setCreatedDate(new Date());
-												payrollPayheadSalarySetup.setCreatedBy(user);
-											}
-											
-											payrollPayheadSalarySetup.setPayhead(payrollPayhead);
-											payrollPayheadSalarySetup.setStatus(Constants.RECORD_ACTIVE);
-											
-											if(ppss.getFormulaPercentage() != null) {
-												payrollPayheadSalarySetup.setFormulaPercentage(ppss.getFormulaPercentage());
-											}else {
-												payrollPayheadSalarySetup.setFormulaPercentage(null);
-											}
-											
-											if(ppss.getFormulaPayhead() != null) {
-												PayrollPayhead pph = new PayrollPayhead();
-												pph.setId(ppss.getFormulaPayhead());
-												payrollPayheadSalarySetup.setFormulaPayhead(pph);
-											}else {
-												payrollPayheadSalarySetup.setFormulaPayhead(null);
-											}
-											
-											payrollPayheadSalarySetup = payrollPayheadService.savePayrollPayheadSalarySetup(payrollPayheadSalarySetup);
-										}
-									}*/
 									response.setResponse(Result.SUCCESS.name());
 									response.setResponseMessage(Result.SUCCESS.getValue());
 								} else{
@@ -790,4 +774,122 @@ public class PayrollConfigurationRestController {
 					}
 					return response;
 				}
+			 
+
+	@RequestMapping(value = "/savePayrollTax")
+	@ResponseBody
+	public Response<Long> saveITDeclarationForm(HttpServletRequest request, PayrollTaxDTO payrollTaxDTO) {
+		Response<Long> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				if(payrollTaxDTO.getId() == 0) {
+					Calendar c = Calendar.getInstance();
+					String fromYear = c.get(Calendar.YEAR) + "";
+					c.roll(Calendar.YEAR, 1);
+					String toYear = c.get(Calendar.YEAR) + "";
+					String financialStartMonth = orgLocations.getStartMonth() != null && !orgLocations.getStartMonth().isEmpty() 
+							? orgLocations.getStartMonth()
+							: payrollTaxDTO.getFinancialStartMonth();
+					String financialEndMonth = orgLocations.getEndMonth() != null && !orgLocations.getEndMonth().isEmpty() 
+							? orgLocations.getEndMonth()
+							: payrollTaxDTO.getFinancialEndMonth();
+					payrollTaxDTO.setFinancialYear((financialStartMonth + "_" + fromYear) + "-" + (financialEndMonth + "_" + toYear));
+				}
+				response = payrollTaxService.savePayrollTaxConfiguration(payrollTaxDTO, user, orgLocations);
+				if (payrollTaxDTO.getFinancialStartMonth() != null && !payrollTaxDTO.getFinancialStartMonth().isEmpty()
+						&& payrollTaxDTO.getFinancialEndMonth() != null && !payrollTaxDTO.getFinancialEndMonth().isEmpty()) {
+					orgLocations.setStartMonth(payrollTaxDTO.getFinancialStartMonth());
+					orgLocations.setEndMonth(payrollTaxDTO.getFinancialEndMonth());
+					orgLocationService.updateOrgLocations(orgLocations);
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+			 
+	 @RequestMapping(value = "/getAssociateSalaryDataByOrgLocation", method = RequestMethod.GET)
+		public ModelAndView getAssociateSalaryDataByOrgLocation(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request) throws Exception
+		{
+		 	ModelAndView model = new ModelAndView();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			ResponseList<PayrollPayheadDTO> response = payrollPayheadService.getPayrollPayheadList(orgLocations);
+			model.addObject("payrollPayheadList", response.getData());
+			Candidate candidate = candidateService.getCandidateByCandidateId(payrollPayheadDTO.getCandidateId());
+			if(candidate != null && candidate.getExpectedRate() != null) {
+				BigDecimal averageWorkingHoursPerDay;
+				
+				
+				Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+				
+				if(emp != null && StringUtils.isNotEmpty(emp.getDailyHours())) {
+					try {
+						String [] hrsArray = emp.getDailyHours().split(":");
+						int dayHrs = Integer.parseInt(hrsArray[0]);
+						if(Integer.parseInt(hrsArray[1]) > 30) {
+							dayHrs = dayHrs + 1;
+						}
+						averageWorkingHoursPerDay = BigDecimal.valueOf(dayHrs);
+					}catch (Exception e) {
+						averageWorkingHoursPerDay = BigDecimal.valueOf(orgLocations.getAverageWorkingHours());
+					}
+				}else {
+					averageWorkingHoursPerDay = BigDecimal.valueOf(orgLocations.getAverageWorkingHours());
+				}
+				
+				//BigDecimal averageWorkingHoursPerWeek = BigDecimal.valueOf(orgLocations.getWorkingDaysPerWeek()).multiply(averageWorkingHoursPerDay);
+				
+				BigDecimal candidateCTCPerYear = BigDecimal.valueOf(0);
+		        switch (candidate.getRateType()) 
+		        {
+		            case "Hourly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(365)).multiply(averageWorkingHoursPerDay);
+		                     break;
+		            case "Weekly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(365/7)).multiply(averageWorkingHoursPerDay);
+		                     break;
+		            case "Bi-weekly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(365/14)).multiply(averageWorkingHoursPerDay);
+		                     break;
+		            case "Semi-Monthly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(24));
+		                     break;
+		            case "Monthly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(12));
+		                     break;
+		            case "Bi-Monthly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate()).multiply(BigDecimal.valueOf(6));
+		                     break;
+		            case "Yearly":  candidateCTCPerYear = new BigDecimal(candidate.getExpectedRate());
+		                     break;
+		            default: candidateCTCPerYear = BigDecimal.valueOf(0);
+		                     break;
+		        }
+		        
+				model.addObject("candidateCTCPerYear", candidateCTCPerYear);
+			}
+			
+			
+			model.setViewName("indPayroll/associateSalary");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
+	 
+	 
+	 private PayrollPayheadSalarySetup savePayrollPayheadSalarySetupHistory(PayrollPayhead payrollPayhead, User user) throws Exception{
+		 	PayrollPayheadSalarySetup payrollPayheadSalarySetup = new PayrollPayheadSalarySetup();
+			payrollPayheadSalarySetup.setPayhead(payrollPayhead);
+			payrollPayheadSalarySetup.setPayheadName(payrollPayhead.getName());
+			payrollPayheadSalarySetup.setMethod(payrollPayhead.getMethod());
+			payrollPayheadSalarySetup.setFormula(payrollPayhead.getFormula());
+			payrollPayheadSalarySetup.setCreatedDate(new Date());
+			payrollPayheadSalarySetup.setCreatedBy(user);
+			payrollPayheadSalarySetup = payrollPayheadService.savePayrollPayheadSalarySetup(payrollPayheadSalarySetup);
+			return payrollPayheadSalarySetup;
+	 }
 }

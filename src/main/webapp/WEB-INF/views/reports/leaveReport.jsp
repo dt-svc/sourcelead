@@ -522,6 +522,7 @@ function resetValues(){
 	$('#projectList').trigger("chosen:updated");
 	$('#associateList').trigger("chosen:updated");
 	$('#designationType').trigger("chosen:updated");
+	window.location.href =sourceleadUrl+"/reportsDashboard"
 }
 </script>
 

@@ -9,12 +9,12 @@ public interface AssociateDeductionDao {
 
 	AssociateDeduction saveAssociateDeduction(AssociateDeduction associateDeduction);
 
-	List<AssociateDeduction> findAllDeductionSummaryByUserId(Long userId, OrgLocations orgLocation);
+	List<AssociateDeduction> findAllDeductionSummaryByCandidateId(Long candidateId, OrgLocations orgLocation);
 
 	AssociateDeduction findAssociateDeductionById(Long associateDeductionId);
 
 	AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation);
 
-	AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId);
+	AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long candidateId);
 
 }
