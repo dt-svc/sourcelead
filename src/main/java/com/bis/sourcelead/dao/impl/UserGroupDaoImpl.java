@@ -135,7 +135,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 	public List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId ";
+		String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId and userGroup.status = 1";
 		List<UserGroup> userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).list();
 		return userGroupList;
 	}
@@ -170,7 +170,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 
 	@Override
 	@Transactional
-	public TotalHoursDTO getTotalHoursByUserId(Long userId,Date sDate,Date eDate)
+	public TotalHoursDTO getTotalHoursByCandidateId(Long candidateId,Date sDate,Date eDate)
 	{
 		TotalHoursDTO totalHoursDTO = null;
 		try {
@@ -178,8 +178,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			java.sql.Date endDate = new java.sql.Date(eDate.getTime());
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder qry = new StringBuilder(); 
-			qry.append("select distinct user.ID as userId,")
-			.append("can.ID as candidateID,")
+			qry.append("select distinct can.ID as candidateID,")
 			.append("projmem.ID as projectMemId,")
 			.append("projmem.PAY_RATE as payRate,")
 			.append(" projmem.PAY_RATE_CURRENCY as payRateCurrency,")
@@ -197,15 +196,14 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			.append(" CANDIDATE can,")
 			.append(" PROJECT_MEMBERS projmem,")
 			.append(" TIMESHEET_SUBMISSIONS timesheet")
-			.append(" where user.ID = can.CONSULTANT_USER_ID")
-			.append(" AND   can.ID  = projmem.CANDIDATE_ID")
+			.append(" where can.ID  = projmem.CANDIDATE_ID")
 			.append(" AND   projmem.MASTER_CANDIDATE_ID = timesheet.MASTER_CANDIDATE_ID")
 			.append (" AND   projmem.PROJECT_ID = timesheet.PROJECT_ID")
-			.append(" AND user.ID = :userId and timesheet.START_DATE = :startDate and timesheet.END_DATE = :endDate ");
+			.append(" AND can.ID = :candidateId and timesheet.START_DATE = :startDate and timesheet.END_DATE = :endDate ");
 //				 System.out.println(qry.toString());
 			        
 					Query queryString = session.createSQLQuery(qry.toString());
-					queryString.setParameter("userId", userId).setDate("startDate", startDate).setDate("endDate",endDate);
+					queryString.setParameter("candidateId", candidateId).setDate("startDate", startDate).setDate("endDate",endDate);
 					queryString.setResultTransformer(Transformers.aliasToBean(TotalHoursDTO.class));
 					totalHoursDTO  = (TotalHoursDTO) queryString.uniqueResult();
 		}catch (Exception e) {

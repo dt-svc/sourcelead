@@ -21,24 +21,24 @@ $(document).ready(function(){
      <div class="timesheet_out">
       <div class="vendor_wrap">
         <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();" oncontextmenu="return false"></a></span>
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
          
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		   <li>
 		   <div class="pull-left mr">
-		   <span id="fromDateDiv" class="colorRed small mr10 pull-left mt10"></span>
             <div class="pull-left mr5 width150px">
               <input value="${fromDate}" name="fromDate" id="fromDate" placeholder="Date" class="form-control calendar margin-top0" type="text">
+            <p id="fromDateDiv" class="ReError"></p>
             </div>
-            <button type="button" class="btn btn-primary" onclick="searchThroughDates();"><i class="glyphicon glyphicon-search"></i></button>
+            <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-search" onclick="searchThroughDates();"></i></button>
           </div>
 		   </li>
 <!-- 			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')">  -->
-				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();" oncontextmenu="return false"></a></li>
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
 <!-- 			</sec:authorize> -->
 				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();" oncontextmenu="return false"></a>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
 <!-- 						<sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')">  -->
@@ -60,7 +60,6 @@ $(document).ready(function(){
           </div>
       </div>
     </div>
-     <div id="popUp"></div>
   </section>
 
 
@@ -91,11 +90,10 @@ function getDaywiseLeaveReportList(){
 		    {
 		leaveTypeBillable.push($(this).val());
      });
-	var loginUserId = '${SourceLeadWeb_userId}';
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable+"&loginUserId="+loginUserId;
+	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
 	prepareAllDaywiseLeaveReportList(url);
 }
 </script>	
@@ -125,7 +123,7 @@ function prepareAllDaywiseLeaveReportList(url){
 		result = result	+ '</div>';
 		$("#daywiseLeaveReportsList").empty();
 		$("#daywiseLeaveReportsList").append(result);
-		$("#noReports").val(result.length)
+		$("#noReports").val(result.length);
 		daywiseLeaveReportsListPagination(url);
 }
 </script>
@@ -323,13 +321,8 @@ function daywiseLeaveReportsListPagination(url){
 		          	result = result + ' <td>';
 		          	if(user.approver !=null && user.approver !='' && user.approver !='undefined'){
 						 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.approver+'">'+user.approver+'</div>';
-		          }
-		          	else if(user.approver == null && user.reportingManager !=null && user.reportingManager !='' && user.reportingManager !='undefined'){
-						 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.reportingManager+'">'+user.reportingManager+'</div>';
- 
-			          }
-		          	else{
-						result = result + '<div class="tbldata-dotdot-vsm">System Approver</div>';
+		          }else{
+						result = result + '<div class="tbldata-dotdot-vsm">--</div>';
 					}
 		          	result = result + ' </td>';
 		          	return result;
@@ -371,12 +364,6 @@ $("#daywiseReportDataTableSearch").keydown(function(e) {
 		   getDaywiseLeaveReportList();
 	   }
 	});
-</script>
-<script type="text/javascript">
-function cancel(){
-	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
 </script>
 <script>
 function myRolesFunction() {
@@ -456,7 +443,7 @@ function closeAssetFilterPop(){
 </script>
 
  <div class="advancedsearch-mask"></div>
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="dayWiseFilterId" oncontextmenu="return false">
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="dayWiseFilterId">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeAssetFilterPop()"><i
 						class="fa fa-close"></i></a>
@@ -476,21 +463,7 @@ function closeAssetFilterPop(){
 								</ul>
 							 </div> 
 						</div>
-								<div class="col-md-2">
-						<div class="row">
-							 
-							 <div class="col-md-12 mb">
-								<label><strong>Leave Type</strong></label>
-								 <div class="clearfix">
-									<ul class="list-unstyled" id="employmentTypeFilter">
-			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable" checked="checked"  value ="Billable"><label>&nbsp;Billable</label></li>
-										<li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable"  value ="Non Billable" ><label>&nbsp;Non Billable</label></li>
-			                        </ul>
-								 </div>
-							 </div> 
-							 
-						  </div>
-						</div>
+						
 						<c:if test="${departmentListSize > 0}">
 						<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
@@ -522,6 +495,15 @@ function closeAssetFilterPop(){
 			                        </ul>
 								 </div>
 							 </div> 
+							 	   	 <div class="col-md-3 mb">
+								<label><strong>Leave Type</strong></label>
+								 <div class="clearfix">
+							<ul class="list-unstyled" id="employmentTypeFilter">
+			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable" checked="checked" value ="Billable"><label>&nbsp;Billable</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable"  value ="Non Billable" ><label>&nbsp;Non Billable</label></li>
+			                        </ul>
+								 </div>
+							 </div> 
 					 	<c:if test="${!empty leaveTypeNamesList}">
 						<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
@@ -548,7 +530,16 @@ function closeAssetFilterPop(){
 						</div>
 					</div>
 				</div>
-
+<script>
+function viewCompleteTemplate(temp){
+	var templateUUID = $("#empTemplateId").val();
+	var toAddress = $("#toAddress").val();
+	var employeeId = $("#hiddenUserId").val();
+	var winPrint = window.open(sourceleadUrl+'/previewCompleteTemplateByTemplateUUID?&templateUUID='+templateUUID+'&toAddress='+toAddress+'&employeeId='+employeeId,'_newtab');
+	if(temp == 'print')
+		winPrint.print();
+}
+</script> 
 
 
 <script>
@@ -690,5 +681,10 @@ function exportToPdf(){
 	
 }
 </script>
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
+</script>
 <jsp:include page="../masterFooter.jsp" />

@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -35,8 +36,8 @@ public class AssociateDeduction implements Serializable{
 	private PayrollDeduction deductionTypeId;
 	
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", nullable = false)
-	private User userId;
+	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	private Candidate candidate;
 	 
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
@@ -95,14 +96,15 @@ public class AssociateDeduction implements Serializable{
 		this.deductionTypeId = deductionTypeId;
 	}
 
-	public User getUserId()
+
+	public Candidate getCandidate()
 	{
-		return userId;
+		return candidate;
 	}
 
-	public void setUserId(User userId)
+	public void setCandidate(Candidate candidate)
 	{
-		this.userId = userId;
+		this.candidate = candidate;
 	}
 
 	public static long getSerialversionuid()

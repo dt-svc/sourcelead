@@ -42,10 +42,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<AssociateContribution> findAllContributionSummaryByUserId(Long userId, OrgLocations orgLocation)
+	public List<AssociateContribution> findAllContributionSummaryByCandidateId(Long candidateId, OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.userId.id=:userId and contri.orgLocationId.id= :orgLocationId" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+		List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.candidate.id=:candidateId and contri.orgLocationId.id= :orgLocationId and contri.status = 1" ).setLong( "candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).list();
 		return associateContributionList;
 	}
 
