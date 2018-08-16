@@ -1879,10 +1879,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			Session session = this.sessionFactory.getCurrentSession(); // below query is used for auto populate in UI.
 			String query = null;
 			if(statusLca.equals("1")) {
-				query = "SELECT LCAT_NO as label, CONVERT(ID, CHAR) as value from LCA lca where lca.LCAT_NO like :lcaNo and lca.ORG_LOCATION_ID =:orgLocationId  and lca.END_DATE >= CURDATE()"; 
+				query = "SELECT LCA_NO as label, CONVERT(ID, CHAR) as value from LCA lca where lca.LCA_NO like :lcaNo and lca.ORG_LOCATION_ID =:orgLocationId  and lca.END_DATE >= CURDATE()"; 
 				return session.createSQLQuery(query).setString("lcaNo", lcaNo+"%").setString("orgLocationId", orgLocationId+"%").setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 	        }else {
-	        	query = "SELECT LCAT_NO as label, CONVERT(ID, CHAR) as value from LCA lca where lca.LCAT_NO like :lcaNo and lca.ORG_LOCATION_ID =:orgLocationId and lca.END_DATE < CURDATE()"; 
+	        	query = "SELECT LCA_NO as label, CONVERT(ID, CHAR) as value from LCA lca where lca.LCA_NO like :lcaNo and lca.ORG_LOCATION_ID =:orgLocationId and lca.END_DATE < CURDATE()"; 
 				return session.createSQLQuery(query).setString("lcaNo", lcaNo+"%").setString("orgLocationId", orgLocationId+"%").setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 	        }
 	}
@@ -2082,7 +2082,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			Session session = this.sessionFactory.getCurrentSession();
 		
 			String queryString = "SELECT " + 
-					" l.LCAT_NO as lcaNo, " + 
+					" l.LCA_NO as lcaNo, " + 
 					"l.LCA_TITLE as lcaTitle, " + 
 					"lpe.LOCATION as location, " + 
 					"l.PREVAILING_WAGE as prevailingWage, " + 
