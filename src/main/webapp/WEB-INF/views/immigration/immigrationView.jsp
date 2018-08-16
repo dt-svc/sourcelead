@@ -86,6 +86,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
               <li class="current"><a href="#detailsTab"><i class="fa fa-check-circle-o"></i>Details</a></li>
               <li><a href="#passportsTab"><i id ="passportfilled" class="fa fa-check-circle-o"></i>Passport</a></li>
               <li><a href="#visasTab"  id="visaInfoTab" class="${visaOnLoadCount==null?'disabledLink':''}"><i id ="visafilled" class="fa fa-check-circle-o"></i>Visa</a></li>
+              <li><a href="#lcaTab"  id="lcaInfoTab" ><i id ="lcafilled" class="fa fa-check-circle-o"></i>LCA</a></li>
               <li><a href="#employersTab" id="employersInfoTab" class="${empOnLoadCount==null?'disabledLink':''}"><i id ="employersfilled" class="fa fa-check-circle-o"></i>Employers</a></li>
               <li><a href="#educationsTab" id="educationInfoTab" class="${eduOnLoadCount==null?'disabledLink':''}"><i id ="educationfilled" class="fa fa-check-circle-o"></i>Educations</a></li>
               <li><a href="#residencesTab" id="residenceInfoTab" class="${resiOnLoadCount==null?'disabledLink':''}"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
@@ -162,6 +163,12 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 	  <div id="tasksTab" class="immigraTabs_inn">
 	  <div id="immigrationLoadingTasksTab"></div>
 		<jsp:include page="taskDetailsTab.jsp" />
+	  </div>
+	  
+	  <div id="lcaTab" class="immigraTabs_inn">
+	  <div id="lcaLoadingTab"></div>
+		<jsp:include page="lcaDetailsTab.jsp" />	
+		
 	  </div>
 
 	</section>
@@ -241,6 +248,10 @@ $(document).ready(function() {
         }else if(tab=='#visasTab'){
         showLoading("immigrationLoadingVisasTab");
         immigration.displayVisaDetails(candidateId,'Visa');
+        }else if(tab=='#lcaTab'){
+        	//LCA
+        	showLoading("lcaLoadingTab");
+        	immigration.getLcaDetailsInfo(immigrationId);
         }else if(tab=='#docsTab'){
         	showLoading("immigrationLoadingDocsTab");
         	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");

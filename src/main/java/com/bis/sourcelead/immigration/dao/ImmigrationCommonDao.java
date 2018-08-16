@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -51,6 +52,8 @@ public interface ImmigrationCommonDao {
 	ImmigrationCandidateDocuments getImmigrationCandidateDocsById(Long id, Long candidateId,Long immigrationId) throws Exception;
 
 	CandidateLcaI94Summary getCandidateLCADetails(Long id, String yes);
+	
+	LcaHistory getLcaHistoryDetails(Long id, String yes);
 
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetails familyDetails) throws Exception;
 
@@ -67,6 +70,8 @@ public interface ImmigrationCommonDao {
  	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId,String searchValue);
 
 	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType,String searchValue);
+	
+	List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId);
 	
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 

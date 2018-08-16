@@ -33,7 +33,7 @@ public class Lca implements Serializable {
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocationId;
 	
-	@Column(name = "LCAT_NO")
+	@Column(name = "LCA_NO")
 	private String lcaNo;
 	
 	@Column(name = "LCA_Title")

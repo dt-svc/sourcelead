@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -1807,8 +1808,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	        	target.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),source.getStartDate()));
 	        	target.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),source.getEndDate()));
 	        	
-	        	target.setLocationsList(Arrays.asList(source.getLocation().split("\n")));
-	        	target.setLocation(source.getLocation().replaceAll("\n", ""));
+	        	target.setLocationsList(Arrays.asList(source.getLocation().split("")));
+	        	target.setLocation(source.getLocation().replaceAll("", ""));
 	        	target.setLcaUuid(source.getLcaUuid());
 	        	if(source.getStatus() == 1) {
 	        		target.setStatus(1);
@@ -1868,6 +1869,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		
 	}
 	
+	
+	//LCA Number An Previous LCA Number Auto Completes In Petition Details Jsp.
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -2059,6 +2062,43 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			lca = (Lca) lcaList.iterator().next();
 		}
 		return lca;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public LcaHistory getLcaHistoryDetails(Long immigrationId, String yes) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LcaHistory lh  left join fetch lh.lcaId where lh.immigrationId.id = :immigrationId and lh.isCurrent = :yes";
+		LcaHistory lh = (LcaHistory) session.createQuery(query).setLong("immigrationId", immigrationId).setString("yes", yes).uniqueResult();
+		return lh;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId) {
+			
+		    List<LcaDTO> lcaList = new ArrayList<LcaDTO>();
+			logger.debug("Getting  LcaHistoryDetails --->  ");
+			Session session = this.sessionFactory.getCurrentSession();
+		
+			String queryString = "SELECT " + 
+					" l.LCAT_NO as lcaNo, " + 
+					"l.LCA_TITLE as lcaTitle, " + 
+					"lpe.LOCATION as location, " + 
+					"l.PREVAILING_WAGE as prevailingWage, " + 
+					"l.LCA_STATUS as lcaStatus, " + 
+					"CAST(l.STATUS AS CHAR(1))as status, " + 
+					"DATE_FORMAT(l.START_DATE, '%Y-%m-%d') as startDate, " + 
+					"DATE_FORMAT(l.END_DATE, '%Y-%m-%d') as endDate " + 
+					"FROM " + 
+					" lca l, " + 
+					" lca_history lh, " + 
+					" lca_place_of_employment lpe " + 
+					" WHERE " + 
+					"    l.id = lh.LCA_ID AND l.id = lpe.LCA_ID " + 
+					" AND lh.IMMIGRATION_ID = :immigrationId";
+			lcaList = session.createSQLQuery(queryString).setParameter("immigrationId", immigrationId).setResultTransformer(Transformers.aliasToBean(LcaDTO.class)).list();
+		    return lcaList;
 	}
 
 	

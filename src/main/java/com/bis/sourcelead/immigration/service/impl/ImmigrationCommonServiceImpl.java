@@ -1467,12 +1467,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			 */
 			CandidateLcaI94Summary lcaSummaryCurr = immigrationCommonDao
 					.getCandidateLCADetails(immigration.getCandidate().getId(), Constants.YES);
-			immigrationDTO.setLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			/*immigrationDTO.setLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					lcaSummaryCurr.getStartDate()));
 			immigrationDTO.setLcaEndDate(
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lcaSummaryCurr.getEndDate()));
 			immigrationDTO.setLcaNumber(lcaSummaryCurr.getIdNumber());
-			immigrationDTO.setIsCurrResidence(lcaSummaryCurr.getIsCurrent());
+			immigrationDTO.setIsCurrResidence(lcaSummaryCurr.getIsCurrent());*/
 			immigrationDTO.setEmploymentLevel(lcaSummaryCurr.getEmploymentLevel());
 			immigrationDTO.setEmployer(lcaSummaryCurr.getEmployerName());
 			immigrationDTO.setJobLocation(lcaSummaryCurr.getEmployerLocation());
@@ -1490,6 +1490,18 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigrationDTO.setPrevLcaEndDate(
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lcaSummaryPrev.getEndDate()));
 			immigrationDTO.setPrevLcaNumber(lcaSummaryPrev.getIdNumber());
+			
+			/*
+			 * LCA Details from LCA History Table
+			 */
+			LcaHistory lh=immigrationCommonDao.getLcaHistoryDetails(immigration.getId(), Constants.YES);
+			
+			if(lh != null) {
+				
+				immigrationDTO.setLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getLcaId().getStartDate()));
+				immigrationDTO.setLcaEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getLcaId().getEndDate()));
+				immigrationDTO.setLcaNumber(lh.getLcaId().getLcaNo());
+			}
 			/*
 			 * ==============================from CandidateResumes
 			 * Table==================================
@@ -2600,6 +2612,11 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	@Override
 	public Lca getLcaByLcaId(Long lcaId) throws Exception {
 		return immigrationCommonDao.getLcaByLcaId(lcaId);
+	}
+
+	@Override
+	public List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId) {
+		return immigrationCommonDao.getLcaHistoryDetailsInfo(immigrationId);
 	}
 
 	

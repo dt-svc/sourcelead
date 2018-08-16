@@ -79,6 +79,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1603,6 +1604,27 @@ public class ImmigrationRestController {
 			model.addObject("visaList", visaList);
 			model.setViewName("/immigration/visaDetailsTab");
 		}
+		return model;
+	}
+	
+	@RequestMapping(value = { "/getLcaDetails" })
+	public ModelAndView getLcaDetails(
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		logger.debug(" inisde getLcaDetails controller test -->");
+		    List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(immigrationId);
+		   /* for(LcaDTO lh: lcaList) {
+		    	lh.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getStartDate().toString()));
+		    	lh.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getEndDate()));
+		    	if(lh.getLcaId() != null && lh.getLcaId().getLocationsList() != null) {
+		    	lh.setLcaLocations(lh.getLcaId().getLocationsList());
+		    	}
+		    }*/
+			
+		    model.addObject("lcaList", lcaList);
+			model.setViewName("/immigration/lcaDetailsTab");
 		return model;
 	}
 
