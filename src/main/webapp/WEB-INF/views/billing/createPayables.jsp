@@ -81,7 +81,7 @@ function errRemoveVendorContact(){
 								</select>
 								  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();createpayablesEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 							</div>
-							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
 			                         <a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			              </sec:authorize>
 							<input type="hidden" name="savedInvoiceId" id="savedInvoiceId">

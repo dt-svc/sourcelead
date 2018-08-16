@@ -1347,6 +1347,109 @@ public class PdfUtil {
 		return projectTaskArray;
 	}
 
+	public File creategetLeaveBalancePdfTable(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation,String topleave) throws Exception{
+	
+	 java.util.List<String> headers = new ArrayList<String>();
+		headers.add("Employee Name");
+		headers.add("Employee Type");
+		headers.add("Department");
+		headers.add("Role");
+		for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
+		{
+		headers.add(str);
+		}
+		headers.add("TotalBalanceLeaves");
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    StringBuilder sbUser =  new StringBuilder();
+	    if(topleave ==null) {
+	    sbUser.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date()));
+	    }else {
+	    	sbUser.append("Top_Leave_Taken_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date()));
+	    }
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file =null;
+	    if(topleave ==null) {
+	     file = File.createTempFile(fileSB.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+	    }else {
+	    	 file = File.createTempFile(fileSB.append("Top_Leave_Taken_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+	    }
+	    System.out.println("***************************************"+file.getAbsolutePath());
+	    file.setReadable(true);
+	    
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(orgLocation.getOrgLocationName()).append(" ").append("Balance_Leave_Report");
+          
+
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgLocation.getOrgLocationName()).toString());
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	      
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.size());
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(headers.size());
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+//	        for (int i = 0; i<headers.size(); i++) {
+//	        	table.setWidths(new int [] {5});
+//	        }
+	        //table.setWidths(new int[]{5, 5, 5,5});
+	        //for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
+			 //{
+				// int i=4;
+				 //table.setWidths(new int[] {5}); 
+				 //i++;
+			 //}
+            table.addCell(cell1);
+	        for (String head:headers) {
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(head.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> lrvList = new ArrayList<>();
+	        java.util.List<LeaveBalanceReportDTO> list =  LeaveBalanceReport.getObject().getUsers();
+	        for(LeaveBalanceReportDTO leaveBalanceReportDTO : list){
+	        	lrvList.add(prepareLeaveBalanceReportStringArray(leaveBalanceReportDTO,LeaveBalanceReport,headers));
+	        }
+	        for (String[] userArray: lrvList) {
+                for (int i = 0; i < userArray.length; i++) {
+                    String datum = userArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        document.addTitle("BalanceLeaves Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+		
+	}
+
 
 	
 public File createLeaveReportPdfTable(ResponseList<LeaveReportView> leaveReportsList,OrgLocations orgLocations) throws Exception{
@@ -1494,100 +1597,6 @@ private String[] prepareLeaveReportStringArray(LeaveReportView lrv, String[] hea
 	
 
 }
-
-public File creategetLeaveBalancePdfTable(Response<LeaveBalanceReportDTO> LeaveBalanceReport,OrgLocations orgLocation) throws Exception{
-	
-	 java.util.List<String> headers = new ArrayList<String>();
-		headers.add("Employee Name");
-		headers.add("Employee Type");
-		headers.add("Department");
-		headers.add("Role");
-		for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
-		{
-		headers.add(str);
-		}
-		headers.add("TotalBalanceLeaves");
-	    Document document = new Document(PageSize.LETTER.rotate());
-	    StringBuilder sbUser =  new StringBuilder();
-	    sbUser.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date()));
-
-	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append("Balance_Leave_Report").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
-	    System.out.println("***************************************"+file.getAbsolutePath());
-	    file.setReadable(true);
-	    
-	    try {
-	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
-	        PdfWriter.getInstance(document, new FileOutputStream(file));
-	        document.open();
-
-	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-	        BaseColor myColor = WebColors.getRGBColor("#000000");
-	        boldFont.setColor(myColor);
-	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLocation.getOrgLocationName()).append(" ").append("Balance_Leave_Report");
-         
-
-	        StringBuilder orgNameSB = new StringBuilder();
-           Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgLocation.getOrgLocationName()).toString());
-           para.setAlignment(Element.ALIGN_CENTER);
-           document.add(para);
-	      
-	        // Create an instance of PdfPTable. After that we transform the header and
-	        PdfPTable table = new PdfPTable(headers.size());
-	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
-	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(headers.size());
-	        headerCellStyle(cell1);
-	        table.setWidthPercentage(100);
-//	        for (int i = 0; i<headers.size(); i++) {
-//	        	table.setWidths(new int [] {5});
-//	        }
-	        //table.setWidths(new int[]{5, 5, 5,5});
-	        //for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
-			 //{
-				// int i=4;
-				 //table.setWidths(new int[] {5}); 
-				 //i++;
-			 //}
-           table.addCell(cell1);
-	        for (String head:headers) {
-	            PdfPCell cell = new PdfPCell();
-	            cell.setGrayFill(0.9f);
-	            cell.setPhrase(new Phrase(head.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
-	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
-	            cell.setBackgroundColor(myBorderColor);
-	            table.addCell(cell);
-	        }
-	        table.completeRow();
-	        java.util.List<String[]> lrvList = new ArrayList<>();
-	        java.util.List<LeaveBalanceReportDTO> list =  LeaveBalanceReport.getObject().getUsers();
-	        for(LeaveBalanceReportDTO leaveBalanceReportDTO : list){
-	        	lrvList.add(prepareLeaveBalanceReportStringArray(leaveBalanceReportDTO,LeaveBalanceReport,headers));
-	        }
-	        for (String[] userArray: lrvList) {
-               for (int i = 0; i < userArray.length; i++) {
-                   String datum = userArray[i];
-                   PdfPCell cell = new PdfPCell();
-                   cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
-                   table.addCell(cell);
-               }
-               table.completeRow();
-           }
-	        document.addTitle("BalanceLeaves Table");
-	        table.setSpacingBefore(15f);
-	        document.add(table);
-	        logger.info("Pdf table created !!");
-	    } catch (DocumentException e) {
-	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-	    } catch (FileNotFoundException e) {
-	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-	    } finally {
-	        document.close();
-	    }
-		return file;
-		
-	}
 
 private String[] prepareLeaveBalanceReportStringArray(LeaveBalanceReportDTO leaveBalanceReportDTO,Response<LeaveBalanceReportDTO> LeaveBalanceReport, java.util.List<String> headers) throws Exception {
 	String userArray[] = new String[headers.size()];
@@ -1794,4 +1803,3 @@ private String[] prepareDailyWiseLeaveReportStringArray(LeaveReportView lrv, Str
 
 }
 	}
-
