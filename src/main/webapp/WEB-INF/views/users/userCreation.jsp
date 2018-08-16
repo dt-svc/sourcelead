@@ -59,9 +59,9 @@
         <ul class="list-unstyled">
           <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
 
-          <c:if test="${SourceLeadWeb_country != 'United States'}">
+         <%--  <c:if test="${SourceLeadWeb_country != 'United States'}">
           <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
-          </c:if> 
+          </c:if>  --%>
            
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
          		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
