@@ -25,7 +25,29 @@ import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
 
-public  class CalendarUtil {
+public  class CalendarUtil {	
+	public static double getCombinedHours(double hours1,double hours2){
+		double cthHours = hours1;
+		double cthHoursValue = (int) cthHours;
+		double cthMinutesValue = cthHours - cthHoursValue;
+		double totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+		double wthHours = hours2;
+		double wthHoursValue = (int) wthHours;
+		double wthMinutesValue = wthHours - wthHoursValue;
+		double totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+		double totalMinutes = totalCthMinutes+totalWthMinutes;
+
+		double actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+		double actualMinutes = (totalMinutes % 60)/100;
+
+		String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
+		
+		
+		return Double.parseDouble(actualTimeString);
+	}
+
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -352,7 +374,7 @@ public  class CalendarUtil {
   }
 	
 	
-	protected static int getDayOffset(String day_Of_Week){
+	private static int getDayOffset(String day_Of_Week){
 		int day_offset = 0;
 		switch (day_Of_Week) {
 		case "MON":  day_offset = Calendar.MONDAY;
@@ -368,6 +390,29 @@ public  class CalendarUtil {
 		case "SAT":  day_offset = Calendar.SATURDAY;
 		break;
 		case "SUN":  day_offset = Calendar.SATURDAY+1;
+		break;
+		default:   day_offset = Calendar.SUNDAY;
+		break;
+		}
+		return day_offset;
+	}
+	
+	public static int getDayOffsetByWeekName(String day_Of_Week){
+		int day_offset = 0;
+		switch (day_Of_Week) {
+		case "MON":  day_offset = Calendar.MONDAY;
+		break;
+		case "TUE":  day_offset = Calendar.TUESDAY;
+		break;
+		case "WED":  day_offset = Calendar.WEDNESDAY;
+		break;
+		case "THU":  day_offset = Calendar.THURSDAY;
+		break;
+		case "FRI":  day_offset = Calendar.FRIDAY;
+		break;
+		case "SAT":  day_offset = Calendar.SATURDAY;
+		break;
+		case "SUN":  day_offset = Calendar.SUNDAY;
 		break;
 		default:   day_offset = Calendar.SUNDAY;
 		break;

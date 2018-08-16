@@ -85,10 +85,15 @@ function getDaywiseLeaveReportList(){
 		    {
 		leaveTypeNames.push($(this).val());
      });
+	var leaveTypeBillable = [];
+	$('input:checkbox[name=leaveTypeBillable]:checked').each(function() 
+		    {
+		leaveTypeBillable.push($(this).val());
+     });
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames;
+	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
 	prepareAllDaywiseLeaveReportList(url);
 }
 </script>	
@@ -118,6 +123,7 @@ function prepareAllDaywiseLeaveReportList(url){
 		result = result	+ '</div>';
 		$("#daywiseLeaveReportsList").empty();
 		$("#daywiseLeaveReportsList").append(result);
+		$("#noReports").val(result.length);
 		daywiseLeaveReportsListPagination(url);
 }
 </script>
@@ -489,6 +495,15 @@ function closeAssetFilterPop(){
 			                        </ul>
 								 </div>
 							 </div> 
+							 	   	 <div class="col-md-3 mb">
+								<label><strong>Leave Type</strong></label>
+								 <div class="clearfix">
+							<ul class="list-unstyled" id="employmentTypeFilter">
+			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable" checked="checked" value ="Billable"><label>&nbsp;Billable</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable"  value ="Non Billable" ><label>&nbsp;Non Billable</label></li>
+			                        </ul>
+								 </div>
+							 </div> 
 					 	<c:if test="${!empty leaveTypeNamesList}">
 						<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
@@ -621,7 +636,7 @@ function exportUserData(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(ReportsListEmpty != 'noReports'){
+	if(ReportsListEmpty > 0){
 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
 	}else{
 		 var result = "";
@@ -649,7 +664,7 @@ function exportToPdf(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(ReportsListEmpty != 'noReports'){
+	if(ReportsListEmpty > 0){
 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
 	}else{
 		 var result = "";
@@ -666,5 +681,10 @@ function exportToPdf(){
 	
 }
 </script>
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
+</script>
 <jsp:include page="../masterFooter.jsp" />

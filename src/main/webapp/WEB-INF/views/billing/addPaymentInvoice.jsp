@@ -87,7 +87,6 @@
 						<label class="input-group-btn"> <span class="btn btn-primary" onchange="getFleInformation();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn"	class="upload"> </span>
 						</label> 
 					<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File" field-name="Upload File" data-validation="validatedoc" data-validation-optional="true">
-						<div class="clearUpload"></div>
 					</div>
 			</div>
 			</div>
@@ -407,8 +406,9 @@ function showCheckBoxDivPopup(){
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
 		  }else{
+			  var inputAmount = $("#totalAmountRow"+id).val();
 			  $("#totalAmountRow"+id).val('');
-			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(amount);
+			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(inputAmount);
 		  }
 		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
 		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit

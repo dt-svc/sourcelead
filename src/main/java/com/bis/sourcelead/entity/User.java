@@ -3,7 +3,6 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -22,15 +21,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
-import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -107,7 +101,6 @@ public class User implements Serializable{
 	@Column(name = "LOCATION")
 	@Type(type="text")
 	private String location;
-	
 	
 	@Column(name = "LINKEDIN")
 	@Type(type="text")

@@ -47,6 +47,7 @@ $(document).ready(function(){
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <!-- <link href="/resources/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"> -->
 <link href="/resources/css/buttons.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/fixedColumns.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
@@ -155,6 +156,7 @@ $(document).ready(function(){
 
 <!--  Data tables script files -->
 <!-- <script src="/resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="/resources/js/dataTables.fixedColumns.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <script src="/resources/js/dataTables.buttons.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 
@@ -719,6 +721,11 @@ function preventTabkey(e){
 								</div>
 							 </li> 	
 						   </sec:authorize>
+					
+					   <c:if test="${SourceLeadWeb_isAdmin == true}">
+					  	<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
+                        </c:if>
+
                          
                        <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Tags</a></li>
 					  
@@ -1766,8 +1773,8 @@ $("#searchType").selectpicker('refresh');
   </div> --%>
   
   
-  <div class="mask"></div>
-  
+ <div class="mask"></div>
+ <div class="maskTwo"></div>
   
   <script>
   
@@ -1947,9 +1954,11 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
   if(type == "invite"){
 	  getTimezonesList();
   }
+
   if(type != "editAssociate"){
     zipcodeMask(address.country,zipCodeId);	
   }
+
 });
 }
 function geolocate(latitudeId,longtitudeId) {
@@ -2024,7 +2033,7 @@ function verifyEmail2() {
 document.onkeydown = function(evt) {
     evt = evt || window.event;
     if (evt.keyCode == 27) {
-        $(".mask, .advancedsearch-mask, .location-alert").hide();
+        $(".mask, .maskTwo, .advancedsearch-mask, .location-alert, .impConPop").hide();
         $(".popupWrap, .popupWrapMid, div.cand-advsrch-popup, .remove_user_pop").fadeOut(100);
     }
 };

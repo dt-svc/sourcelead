@@ -44,6 +44,7 @@ import com.bis.sourcelead.dto.BillingDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
+import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTax;
+import com.bis.sourcelead.entity.InvoiceTimelineHistory;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -600,8 +602,6 @@ public class InvoiceRestController {
 	public @ResponseBody Response<String> saveInvoiceBulkPayment(InvoicePaymentDTO invoicePaymentDTO,  @RequestParam(value = "invoiceIds", required = false) List<String> invoiceIds, HttpServletRequest request) throws Exception
 	{
 		Response<String> response = new Response<>();
-		System.out.println(" invoiceJsonString ");
-	     System.out.println(invoiceIds);
 	     HashMap<Long, String> invoiceMap = new HashMap<Long, String>();
 	     for(String obj: invoiceIds){
 	    	 String [] arr = obj.split("_");
@@ -650,15 +650,10 @@ public class InvoiceRestController {
 		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		Integer draftCount = 0;
 		Integer paidCount = 0;
-		Integer overDueInvoiceCount = 0;
-		Integer openInvoiceCount = 0;
 		Float draftTotalAmount = 0f;
 		Float paidTotalAmount = 0f;
-		Float dueAfterInvoiceAmount = 0f;
-		Float dueBeforeInvoiceAmount = 0f;
 		for (Invoice invoice : invoiceFilterList) {
 		BillingDTO billingDto = new BillingDTO();
-		boolean isInvoiceDueDate = false;
                     if(invoice.getPaymentAccount() != null) {
 			invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
 		}
@@ -743,32 +738,7 @@ public class InvoiceRestController {
 				paidTotalAmount = paidTotalAmount + paidAmount;
 				billingDto.setPaidInvoiceAmount(String.format("%.2f", paidTotalAmount));
 			}
-			if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
-					&& !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
-					&& (Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())
-							|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
-							|| Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus()))) {
-				
-				String dueDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), invoice.getDueDate());
-				Date invoiceDueDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), dueDate);
-				Float dueAmount = Float.parseFloat(invoice.getDueAmount());
-				/*if (dueAmount > 0) {
-					
-					if (todayDate.after(invoiceDueDate)) {
-						overDueInvoiceCount = overDueInvoiceCount + 1;
-						dueAfterInvoiceAmount = dueAfterInvoiceAmount
-								+ Float.parseFloat(invoice.getDueAmount());
-						billingDto.setDueAfterInvoiceAmount(String.format("%.2f", dueAfterInvoiceAmount));
-						isInvoiceDueDate = true;
-					}
-					else {
-						openInvoiceCount = openInvoiceCount + 1;
-						dueBeforeInvoiceAmount = dueBeforeInvoiceAmount
-								+ Float.parseFloat(invoice.getDueAmount());
-						billingDto.setDueBeforeInvoiceAmount(String.format("%.2f", dueBeforeInvoiceAmount));
-					}
-				}*/
-			}
+			
 		}
 		if (null != invoice.getParentInvoiceId()) {
 			billingDto.setInvoiceParentId(invoice.getParentInvoiceId().getId());
@@ -1259,16 +1229,18 @@ public class InvoiceRestController {
 					if (invoice != null) {
 						
 						invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
-						invoice.setCreatedBy(user.getUserCode());
-						invoice.setCreatedDate(commonUtil.currentDate());
+						invoice.setUpdatedBy(user.getUserCode());
+						invoice.setUpdatedDate(commonUtil.currentDate());
 						Invoice childInvoice = invoiceDao.saveInvoce(invoice);
+						invoiceService.saveInvoiceTimelineHistory(invoice, user, null, null, null, null);
 						if (null != childInvoice) {
 							if (null != invoice.getParentInvoiceId()) {
 								Invoice parentInvoice = invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
 								parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
-								invoice.setCreatedBy(user.getUserCode());
-								parentInvoice.setCreatedDate(commonUtil.currentDate());
+								parentInvoice.setUpdatedBy(user.getUserCode());
+								parentInvoice.setUpdatedDate(commonUtil.currentDate());
 								invoiceDao.saveInvoce(parentInvoice);
+								invoiceService.saveInvoiceTimelineHistory(parentInvoice, user, null, null, null, null);
 							}
 						}
 						// Accept invoice/bill mail
@@ -1376,21 +1348,77 @@ public class InvoiceRestController {
 					if (invoice != null) {
 						invoice.setInvoiceStatus(Constants.INVOICE_REJECTED);
 						invoice.setRejectReason(reason);
-						invoice.setCreatedBy(user.getUserCode());
-						invoice.setCreatedDate(commonUtil.currentDate());
+						invoice.setUpdatedBy(user.getUserCode());
+						invoice.setUpdatedDate(commonUtil.currentDate());
 						Invoice childInvoice = invoiceDao.saveInvoce(invoice);
+						invoiceService.saveInvoiceTimelineHistory(invoice, user, null, null, null, null);
 						if (null != childInvoice) {
 							if (null != invoice.getParentInvoiceId()) {
 								Invoice parentInvoice = invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
 								parentInvoice.setInvoiceStatus(Constants.INVOICE_REJECTED);
 								parentInvoice.setRejectReason(reason);
-								invoice.setCreatedBy(user.getUserCode());
-								parentInvoice.setCreatedDate(commonUtil.currentDate());
+								parentInvoice.setUpdatedBy(user.getUserCode());
+								parentInvoice.setUpdatedDate(commonUtil.currentDate());
 								invoiceDao.saveInvoce(parentInvoice);
+								invoiceService.saveInvoiceTimelineHistory(parentInvoice, user, null, null, null, null);
 							}
 						}
 						// Reject invoice/bill mail
 						invoiceRejectMailtoVendor(user, invoice, orgLocation, invoice.getInvoiceType());
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/voidInvoiceOrBill", method = RequestMethod.POST)
+	public @ResponseBody Response<String> voidInvoiceOrBill(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID, HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (invoiceUUID != null) {
+//					Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceUUID));
+					Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+					if (invoice != null) {
+						// update child/parent invoice
+						invoice.setInvoiceStatus(Constants.INVOICE_BILL_VOID);
+						invoice.setUpdatedBy(user.getUserCode());
+						invoice.setDueAmount("0.0");
+						invoice.setUpdatedDate(commonUtil.currentDate());
+						Invoice childOrParentInvoice = invoiceDao.saveInvoce(invoice);
+						if (null != childOrParentInvoice) {
+							if (null != invoice.getParentInvoiceId()) {
+								// parent invoice update
+								Invoice parentInvoice = invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+								parentInvoice.setInvoiceStatus(Constants.INVOICE_BILL_VOID);
+								parentInvoice.setDueAmount("0.0");
+								parentInvoice.setUpdatedBy(user.getUserCode());
+								parentInvoice.setUpdatedDate(commonUtil.currentDate());
+								invoiceDao.saveInvoce(parentInvoice);
+							}else{
+								// update child invoice
+								Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
+								childInvoice.setInvoiceStatus(Constants.INVOICE_BILL_VOID);
+								childInvoice.setDueAmount("0.0");
+								childInvoice.setUpdatedBy(user.getUserCode());
+								childInvoice.setUpdatedDate(commonUtil.currentDate());
+								invoiceDao.saveInvoce(childInvoice);
+							}
+						}
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
 					}
@@ -1548,11 +1576,13 @@ public class InvoiceRestController {
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		if(orgRelationId != null){
 		CurrencyConversionResponse currencyConversionResponse = invoiceService.getExchangeCurrency(loginOrgCurrencyCode, orgLocation, orgRelationId, grandTotal);
 		if (null != currencyConversionResponse) {
 //			resultJson = commonUtil.toJSON(currencyConversionResponse);
 			response.setObject(currencyConversionResponse);
 		}
+	}
 		return response;
 	}
 	
@@ -1808,6 +1838,7 @@ public class InvoiceRestController {
 	{
 		Response<Invoice> response = new Response<>();
 //		String resultJson = "";
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Invoice masterInvoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 		Invoice invoice = invoiceService.getInvoicetById(id);
@@ -1815,18 +1846,25 @@ public class InvoiceRestController {
 		invoice.setLinkInvoiceRefInvoiceId(masterInvoice.getInvoiceId());
 		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
 		invoice.setInvoiceStatus(Constants.LINKED_STATUS);
+		invoice.setUpdatedDate(commonUtil.currentDate());
+		invoice.setUpdatedBy(user.getUserCode());
 		invoiceService.linkInvoice(invoice);
+		invoiceService.saveInvoiceTimelineHistory(masterInvoice, user, invoice, null, null, null);
 		if (masterInvoice.getId() != null) {
 			Invoice childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
 			if (childInvoice != null) {
 				childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
 				childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				childInvoice.setUpdatedDate(commonUtil.currentDate());
+				childInvoice.setUpdatedBy(user.getUserCode());
 				invoiceService.linkInvoice(childInvoice);
 			}
 			else {
 				Invoice parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
 				parentInvoice.setPreviousInvoiceStatus(parentInvoice.getInvoiceStatus());
 				parentInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				parentInvoice.setUpdatedDate(commonUtil.currentDate());
+				parentInvoice.setUpdatedBy(user.getUserCode());
 				invoiceService.linkInvoice(parentInvoice);
 			}
 		}
@@ -1911,9 +1949,11 @@ public class InvoiceRestController {
 	 */
 	@RequestMapping(value = "/deleteInvoice", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean deleteInvoice(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID, @RequestParam(value = "reason", required = false) String reason, @RequestParam(value = "invoiceType", required = false) String invoiceType) throws Exception
+	public boolean deleteInvoice(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID, @RequestParam(value = "reason", required = false) String reason, @RequestParam(value = "invoiceType", required = false) String invoiceType, HttpServletRequest request) throws Exception
 	{
-		boolean isDeleted = invoiceService.deleteInvoice(invoiceUUID, reason, invoiceType);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		boolean isDeleted = invoiceService.deleteInvoice(invoiceUUID, reason, invoiceType, user);
+		
 		return isDeleted;
 	}
 	
@@ -2112,5 +2152,30 @@ public class InvoiceRestController {
 		OrgRelations orgRealation =  orgRelationsService.getOrgRelationById(orgRelationId); 
 		List<PaymentAccountDTO> paymentAccountList = orgService.getPaymentAccountList(orgRealation.getResponderLocationId().getOrg().getId(), orgRealation.getResponderLocationId().getId(),true);
 		return paymentAccountList;
+	}
+	
+	@RequestMapping(value = "/getInvoiceTimelineHistory", method = RequestMethod.GET)
+	public @ResponseBody List<InvoiceTimelineDTO> getInvoiceTimelineHistory(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID,@RequestParam(value = "dateRange", required = false) String[] dateRange, 
+			@RequestParam(value = "searchVal", required = false) String searchVal,@RequestParam(value = "orderVal", required = false) String orderVal,
+			@RequestParam(value = "locationId", required = false) String locationId,
+			@RequestParam(value = "checkedStatus") String[] checkedStatus,
+			HttpServletRequest request, HttpServletResponse response) throws Exception{
+		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<InvoiceTimelineDTO> timelineHistories = new ArrayList<>();
+		Date datesRange[] = new Date[2];
+		if(dateRange[0] != null && !dateRange[0].equals("null")) {
+			OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(locationId));
+			DateFormat dateFormat = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
+			Date fromDate = dateFormat.parse(dateRange[0]);
+			Date toDate = dateFormat.parse(dateRange[1]);
+			//Date fromDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[0]);
+			//Date toDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[1]);
+			datesRange[0] = fromDate;
+			datesRange[1] = toDate;
+		}
+		
+		timelineHistories = invoiceService.getInvoiceTimelineHistoryList(invoice.getId(), user, searchVal, orderVal, datesRange, checkedStatus);
+		return timelineHistories;
 	}
 }
