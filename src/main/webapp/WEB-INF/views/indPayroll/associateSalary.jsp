@@ -6,7 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 
-	<div id="tab-5" class="tabsMenu_tabs_inn" style="display: block;">
+	<div id="tab-5" class="tabsMenu_tabs_inn clearfix">
 			<form:form id="associateSalary_form" name="associateSalary_form">
                 <div class="clearfix row minHeightcol5">
                  <div class="col-md-4">

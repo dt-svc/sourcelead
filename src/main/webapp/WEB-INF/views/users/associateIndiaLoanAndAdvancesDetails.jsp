@@ -134,7 +134,7 @@
 	                 <div class="col-md-6">
 	                   <div class="pull-right">
 	                    <button type="button" class="btn btn-success btnSuccess" id="saveLoan&AdvButton" onclick="saveLoanAndAdvanceDetails();" >Save & Continue</button>
-                        <input value="Cancel" class="btn btn-default ml10" type="button">
+                        <button type="button" class="btn btn-default ml10" onclick="skipToSalaryTab();" >Skip</button>
 	                    </div>
 	                 </div>
                 </div>
@@ -142,6 +142,15 @@
      </form:form>
   
 </div>
+
+<script>
+function skipToSalaryTab(){
+	var indSalaryDetails = document.getElementById("indSalaryDetails");
+	 document.getElementById("indSalaryDetails").removeAttribute("class");
+	 indSalaryDetails.href="#tab-5";
+	 $("#indSalaryDetails").click();
+}
+</script>
 
 
 
@@ -171,7 +180,10 @@
 		        	} else if (response.response === "SUCCESS") {
 		        		 var loanAndAdv = response.object;
 	                	 $("#loanAndAdvId").val(loanAndAdv.id);
-		        		
+	                	 var indSalaryDetails = document.getElementById("indSalaryDetails");
+						 document.getElementById("indSalaryDetails").removeAttribute("class");
+						 indSalaryDetails.href="#tab-5";
+						 $("#indSalaryDetails").click();
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {
