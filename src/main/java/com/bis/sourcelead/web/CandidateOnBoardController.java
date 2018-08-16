@@ -95,6 +95,9 @@ public class CandidateOnBoardController {
 	@Autowired
 	 private OrgService orgService;
 	
+	@Autowired
+	private CandidateService candidateService;
+	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -130,7 +133,9 @@ public class CandidateOnBoardController {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("userId", user.getId());
-		 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountListByUserId(user.getId(), false);
+		 Candidate candidate = CandidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+		 model.addObject("candidateId", candidate.getId());
+		 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountListByCandidateId(candidate.getId(), false);
 		 model.addObject("paymentList", paymentList);
 		 model.addObject("paymentListSize", paymentList.size());
 		 
@@ -149,7 +154,8 @@ public class CandidateOnBoardController {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		 if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
-			 AssociatePfEsiDetails aped = associatePfEsiService.findAssociatePfEsiByUserId(user.getId(), orgLocations);
+			 Candidate candidate = CandidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+			 AssociatePfEsiDetails aped = associatePfEsiService.findAssociatePfEsiByCandidateId(candidate.getId(), orgLocations);
 			 if(aped != null) {
 				 if(aped.getEnroleDate() != null) {
 					 model.addObject("enrolledDate",commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), aped.getEnroleDate()));
@@ -158,7 +164,8 @@ public class CandidateOnBoardController {
 			 }
 			 model.setViewName("onboard/onboardingCandidatePfAndEsiDetails");
 		 }else {
-			 AssociateTaxDTO taxDeatails = associateTaxService.findAssociateTaxSummaryByUserId(user.getId(), orgLocations);
+			 Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+			 AssociateTaxDTO taxDeatails = associateTaxService.findAssociateTaxSummaryByCandidateId(candidate.getId(), orgLocations);
 				if(taxDeatails != null) {
 					model.addObject("taxDeatails",taxDeatails);
 				}

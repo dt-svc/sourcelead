@@ -42,12 +42,12 @@ public class AssociateTaxDaoImpl implements AssociateTaxDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public AssociateTax findAssociateTaxSummaryByUserId(Long userId, OrgLocations orgLocation)
+	public AssociateTax findAssociateTaxSummaryByCandidateId(Long candidateId, OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateTax associateTax = null;
 		try {
-			List<AssociateTax> associateTaxTaxList = session.createQuery("from AssociateTax aTax where aTax.userId.id=:userId and aTax.orgLocationId.id= :orgLocationId").setLong("userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+			List<AssociateTax> associateTaxTaxList = session.createQuery("from AssociateTax aTax where aTax.candidate.id=:candidateId and aTax.orgLocationId.id= :orgLocationId").setLong("candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).list();
 			if (associateTaxTaxList != null && associateTaxTaxList.size() > 0) {
 				associateTax = associateTaxTaxList.get(0);
 			}
@@ -75,13 +75,13 @@ public class AssociateTaxDaoImpl implements AssociateTaxDao {
 
 	@Override
 	@Transactional
-	public AssociateTaxDedContriView findUserTaxDeatails(Long userId, OrgLocations orgLocation)
+	public AssociateTaxDedContriView findUserTaxDeatails(Long candidateId, OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateTaxDedContriView associateTax = new AssociateTaxDedContriView();
 		try {
 			@SuppressWarnings("unchecked")
-			List<AssociateTaxDedContriView> associateTaxTaxList = session.createQuery("from AssociateTaxDedContriView aTax where aTax.userId=:userId and aTax.taxLocationId = :taxLocationId").setLong("userId", userId).setLong("taxLocationId", orgLocation.getId()).list();
+			List<AssociateTaxDedContriView> associateTaxTaxList = session.createQuery("from AssociateTaxDedContriView aTax where aTax.candidateId=:candidateId and aTax.taxLocationId = :taxLocationId").setLong("candidateId", candidateId).setLong("taxLocationId", orgLocation.getId()).list();
 			if (associateTaxTaxList != null && associateTaxTaxList.size() > 0) {
 				associateTax = associateTaxTaxList.get(0);
 			}
