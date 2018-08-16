@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "LCA_LIST_VIEW", schema = "SOURCELEAD")
+@Table(name = "LCA_LIST_VIEW")
 public class LcaListView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -21,7 +21,7 @@ public class LcaListView implements Serializable {
 	@Column(name = "ORG_LOCATION_ID")
 	private Long orgLocationId;
 
-	@Column(name = "LCAT_NO")
+	@Column(name = "LCA_NO")
 	private String lcaNo;
 	
 	@Column(name = "LCA_Title")

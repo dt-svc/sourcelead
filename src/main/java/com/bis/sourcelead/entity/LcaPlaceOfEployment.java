@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "LCA_PLACE_OF_EMPLOYMENT", schema = "SOURCELEAD")
+@Table(name = "LCA_PLACE_OF_EMPLOYMENT")
 public class LcaPlaceOfEployment implements Serializable {
 
 	private static final long serialVersionUID = 1L;

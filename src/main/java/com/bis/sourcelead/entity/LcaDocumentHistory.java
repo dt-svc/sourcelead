@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "LCA_DOCUMENT_HISTORY", schema = "SOURCELEAD")
+@Table(name = "LCA_DOCUMENT_HISTORY")
 public class LcaDocumentHistory implements Serializable {
 
 	private static final long serialVersionUID = 1L;

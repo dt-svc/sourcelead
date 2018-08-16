@@ -316,7 +316,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								remainAmount = dueDecimal.subtract(receivedDecimal);
 								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 								invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
-								invoice.setDueAmount(remainAmount.toString());
+								parentInvoice.setDueAmount(remainAmount.toString());
 							}
 						}
 					
