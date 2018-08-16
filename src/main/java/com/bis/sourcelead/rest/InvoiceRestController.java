@@ -2165,8 +2165,8 @@ public class InvoiceRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<InvoiceTimelineDTO> timelineHistories = new ArrayList<>();
 		Date datesRange[] = new Date[2];
-		if(dateRange[0] != null && !dateRange[0].equals("null")) {
-			OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(locationId));
+		if(dateRange[0] != null && !dateRange[0].equals("null") && !dateRange[0].equalsIgnoreCase("") && !dateRange[1].equalsIgnoreCase("")) {
+				OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(locationId));
 			DateFormat dateFormat = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
 			Date fromDate = dateFormat.parse(dateRange[0]);
 			Date toDate = dateFormat.parse(dateRange[1]);
