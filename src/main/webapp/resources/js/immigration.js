@@ -557,7 +557,16 @@ function Immigration() {
    }	
 
    
-   
+   this.getLcaDetailsInfo=function(immigrationId){
+  		$.ajax({
+          url: sourceleadUrl + immiModulePath +"/getLcaDetails?immigrationId="+immigrationId,
+          type: "GET",
+          success: function (result) {
+              $("#lcaTab").html(result);
+             
+          }
+      });
+  }	
 
     this.saveCandidateFamilyDetails= function(relationType) {
     	var formId= "";

@@ -1,6 +1,5 @@
 package com.bis.sourcelead.immigration.dao;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +27,10 @@ import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LcaDocumentHistory;
+import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.LcaListExportView;
 import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.LcaVisaClarifications;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
@@ -53,6 +52,8 @@ public interface ImmigrationCommonDao {
 	ImmigrationCandidateDocuments getImmigrationCandidateDocsById(Long id, Long candidateId,Long immigrationId) throws Exception;
 
 	CandidateLcaI94Summary getCandidateLCADetails(Long id, String yes);
+	
+	LcaHistory getLcaHistoryDetails(Long id, String yes);
 
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetails familyDetails) throws Exception;
 
@@ -69,6 +70,8 @@ public interface ImmigrationCommonDao {
  	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId,String searchValue);
 
 	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType,String searchValue);
+	
+	List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId);
 	
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
@@ -207,5 +210,11 @@ public interface ImmigrationCommonDao {
 	List<Lca> getAllLcaList(Date currentDate);
 
 	String updateLcaStatusWithExpired(Long lcaId);
-
+	
+	List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String lcaStatus);
+	
+	LcaHistory saveLcaHistory(LcaHistory lcaHistory);
+	
+	public Lca getLcaByLcaId(Long lcaId) throws Exception;
+	
 }

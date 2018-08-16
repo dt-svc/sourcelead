@@ -4,27 +4,35 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script type="text/javascript" src="/resources/js/immigration.js"></script>
-<script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
+<jsp:include page="../masterSideNav.jsp" /> 
+
+
+<!-- Tabs -->
+
+
+<!-- END Tabs -->
+
 
 <title>Insert title here</title>
     <section class="content-wraper">
    
     <section class="content-header clearfix">
-      <div class="pull-left"><h2>LCA list</h2></div>
+      <div class="pull-left"><h2>LCA</h2></div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigration List</a> &raquo; LCA List</div>
 	<div class="clearfix"></div>
-    </section>    
-    <div class="immigrationWrap noPad">
+    </section>
+    
+     <div class="project_side_wrap_inn_tabs clearfix">
+	    <ul class="project-tabs-menu">
+		    <li><a href="${appPath}/immigration/viewImmigrationList" >Immigration List</a></li>
+		    <li class="current"><a href="${appPath}/immigration/viewLCAList" >LCA List</a></li>
+	    </ul>
+    </div>
+        
+    <div class="immigrationWrap noPad clearfix mt5">
    
 		<div class="immigraInnWrap">
 		<!-- Filter For Lca -->
-		
-		
-		
 <div class="positionRelative reportHead clearfix">
       <ul class="pull-right list-unstyled list-inline">
       
@@ -373,7 +381,7 @@
                  "data": "typeStandard",
                  "render": function (data, type, opt, meta) {
                      var result = "";
-                     result = result + '<td><div><a href=/app/immigration/editLcaDetails?lcaUuid='+opt.lcaUuid+'><i id="edit' + opt.lcaUuid + '" class="glyphicon glyphicon-pencil" title="Edit"></i></a>';
+                     result = result + '<td><div><a href=/app/immigration/editLcaDetails?lcaUuid='+opt.lcaUuid+'><i id="edit' + opt.lcaUuid + '" class="glyphicon glyphicon-edit" title="Edit"></i></a>';
                      if(opt.status  ==  1){
                      result = result + '<i id="delete'+opt.lcaUuid+'" onclick="deleteLcaListId(\''+opt.lcaUuid+'\');" class="glyphicon glyphicon-trash ml10" title="Delete"></i></div></td>';
                      }else{

@@ -37,8 +37,8 @@
          <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaNoDiv">
             <label class="col-md-4">LCA No<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
-                <input type="text" name="lcaNo"  id="lcaNo" class="form-control" value="${lcaDTO.lcaNo}" placeholder="LCA No" field-name="LCA NO"
-								data-validation="required validate_AlphaNumber validate_length length1-20" onkeyup="validateLcaNumber();">
+                <input type="text" name="lcaNo"  id="lcaNo" class="form-control" value="${lcaDTO.lcaNo}" placeholder="I-XXX-XXXXX-XXXXXX" field-name="LCA NO"
+								data-validation="requiredx" onkeyup="validateLcaNumber();">
           	</div>
           </div>
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaTitleDiv">
@@ -909,6 +909,7 @@ $('button').click(function (event) {
 	 var flag = document.getElementById("newEmployment").checked;
 	 if(flag == true){
 		 $("#newEmployment").val('0'); 
+		 $("#newEmploymentCount").val('');
 	 }else{
 		 $("#newEmployment").val('1'); 
 	 } 
@@ -917,6 +918,7 @@ $('button').click(function (event) {
 	 var flag = document.getElementById("concurrentEmployment").checked;
 	 if(flag == true){
 		 $("#concurrentEmployment").val('0'); 
+		 $("#concurrentEmploymentCount").val('');
 	 }else{
 		 $("#concurrentEmployment").val('1'); 
 	 } 
@@ -925,6 +927,7 @@ $('button').click(function (event) {
 	 var flag = document.getElementById("extention").checked;
 	 if(flag == true){
 		 $("#extention").val('0'); 
+		 $("#extentionCount").val('');
 	 }else{
 		 $("#extention").val('1'); 
 	 } 
@@ -932,7 +935,8 @@ $('button').click(function (event) {
  function changEmployer(){
 	 var flag = document.getElementById("changeEmployer").checked;
 	 if(flag == true){
-		 $("#changeEmployer").val('0'); 
+		 $("#changeEmployer").val('0');
+		 $("#changeInEmployerCount").val('');
 	 }else{
 		 $("#changeEmployer").val('1'); 
 	 } 
@@ -941,6 +945,8 @@ $('button').click(function (event) {
 	 var flag = document.getElementById("changeEmployerPrevious").checked;
 	 if(flag == true){
 		 $("#changeEmployerPrevious").val('0'); 
+		 $("#changeEmployerPreviousCount").val('');
+		 
 	 }else{
 		 $("#changeEmployerPrevious").val('1'); 
 	 } 
@@ -951,6 +957,7 @@ $('button').click(function (event) {
 	 var flag = document.getElementById("amendment").checked;
 	 if(flag == true){
 		 $("#amendment").val('0'); 
+		 $("#amendmentCount").val('');
 	 }else{
 		 $("#amendment").val('1'); 
 	 } 
@@ -1121,5 +1128,14 @@ function validateLcaTitle() {
    function validateNumber(object){ 
 	   object.value = object.value.replace(/[^0-9\.]/g,'');
 	}
+   
+   $('#lcaNo').mask('I-999-99999-999999', {
+	    translation: {
+	        '9': {
+	            pattern: "/I{1}[0-9]{14}/", optional: true
+	        }
+	    },
+	   placeholder:""
+	}); 
  </script>
  

@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -181,4 +182,10 @@ public interface ImmigrationCommonService {
     public Lca getLcaDetailsByLcaTitleAndId(String lcaTitle, Long lcaId) throws Exception;
     
     public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception;
+    
+    List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String statusLca);
+    
+    public Lca getLcaByLcaId(Long lcaId) throws Exception;
+    
+    List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId);
 }

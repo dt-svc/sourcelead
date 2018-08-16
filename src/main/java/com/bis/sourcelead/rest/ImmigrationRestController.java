@@ -80,6 +80,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1615,6 +1616,27 @@ public class ImmigrationRestController {
 		}
 		return model;
 	}
+	
+	@RequestMapping(value = { "/getLcaDetails" })
+	public ModelAndView getLcaDetails(
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		logger.debug(" inisde getLcaDetails controller test -->");
+		    List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(immigrationId);
+		   /* for(LcaDTO lh: lcaList) {
+		    	lh.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getStartDate().toString()));
+		    	lh.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getEndDate()));
+		    	if(lh.getLcaId() != null && lh.getLcaId().getLocationsList() != null) {
+		    	lh.setLcaLocations(lh.getLcaId().getLocationsList());
+		    	}
+		    }*/
+			
+		    model.addObject("lcaList", lcaList);
+			model.setViewName("/immigration/lcaDetailsTab");
+		return model;
+	}
 
 	@RequestMapping(value = { "/updateImmigrationStatus" })
 	public String checkDataAndUpdateImmigrationStatus(@RequestParam(value = "id", required = true) Long immigrationId,
@@ -2232,6 +2254,13 @@ public class ImmigrationRestController {
 		return candidateService.getCandidateByCandidateId(id);
 	}
 	
+	// to auto populate  lca start date and end date with LCA number in petition Details
+	@RequestMapping(value = { "/getLcaByLcaId" })
+	public @ResponseBody Lca getLcaByLcaId(
+			@RequestParam(value = "id", required = false) Long id,  HttpServletRequest request) throws Exception {
+		return immigrationCommonService.getLcaByLcaId(id);
+	}
+	
 	/*
 	 * LCA Code Starts Here
 	 */
@@ -2240,16 +2269,6 @@ public class ImmigrationRestController {
 	public ModelAndView loadNewLCA(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		
-		/*List<LookUpData> socDetailsList = immigrationTemplateService
-				.getLookupDataByType(ImmigrationConstants.EMPLOYMENT_TYPE);
-		
-		
-        List<Map<String, String>> socDetailsTypeList = null;
-		
-		socDetailsTypeList = immigrationCommonService.getSocCodeWithSOCOccupationTitleList(socCode, socOccupationTitle);
-		 
-		
-		model.addObject("socDetailsTypeList", socDetailsTypeList);*/
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/newLca");
 		return model;
@@ -2378,6 +2397,15 @@ public class ImmigrationRestController {
 		socDetailsTypeList = immigrationCommonService.getSocCodeWithSOCOccupationTitleList(name,ImmigrationConstants.SOC_TYPE,socType);
 		
 		return socDetailsTypeList;
+	}
+	
+	@RequestMapping(value = "/getLcaNumbersList", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, String>> getLcaNumbersList(HttpServletRequest request,@RequestParam(value = "lcaNum", required = false) String lcaNum,@RequestParam(value = "expiryStatus", required = false) String expiryStatus) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Map<String, String>> lcaNumbersList = null;
+		lcaNumbersList = immigrationCommonService.getLcaNumbersList(lcaNum,orgLocations.getId().toString(),expiryStatus);
+		return lcaNumbersList;
 	}
 
 	@RequestMapping(value = { "/getOesSocCodeById" })
