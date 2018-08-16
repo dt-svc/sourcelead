@@ -610,10 +610,7 @@ public class DashboardRestController {
 					userType = Constants.ADMIN;
 				} 
 				
-				long start = System.currentTimeMillis();
-				 Integer[] requirementSubmissionHistoryCounts = requirementSubmissionService.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),daterange, userType, user, startUTCDate, endUTCDate);
-				long end = System.currentTimeMillis();
-				System.out.println("final time >> "+(end - start ));
+				Integer[] requirementSubmissionHistoryCounts = requirementSubmissionService.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),daterange, userType, user, startUTCDate, endUTCDate);
 				
 			    dc.setApplicantsCount(requirementSubmissionHistoryCounts[0]); //0 index is applicant count as per QueryResult
 			    
@@ -634,7 +631,6 @@ public class DashboardRestController {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());
 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-	    System.out.println(response.getResponse());
 		return response;
 	   }
 
