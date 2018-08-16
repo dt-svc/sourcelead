@@ -293,6 +293,9 @@ public class User implements Serializable{
 	private Long userId;
 	
 	@Transient
+	private Long candidateId;
+	
+	@Transient
     @JsonProperty
     private String associateTags;
 	
@@ -936,5 +939,13 @@ public class User implements Serializable{
 
 	public void setTagsList(Set<String> tagsList) {
 		this.tagsList = tagsList;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
 	}
 }

@@ -67,6 +67,7 @@
          		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
        		     <li><a href="#tab-3" data-toggle="tab" id="indInformationDetails" onclick="getIndAssociateInformationDetails();">Information</a></li>
        		     <li><a href="#tab-4" data-toggle="tab" id="indLoanAndAdvancesDetails" onclick="getIndAssociateLoanAndAdvancesDetails();">Loan & Advances</a></li>
+       		     <li><a href="#tab-5" data-toggle="tab" id="indSalaryDetails" onClick="indAssociateSalarySummary();">Salary</a></li>
           </c:if>
 
           <c:if test="${SourceLeadWeb_country == 'United States'}">
@@ -95,6 +96,7 @@
           <form:form id="createUser_form"  name="createUser_form" method="post">
           <input type="hidden" id="actionId" value="${actionId}">
           <input type="hidden" id="associateId" name="associateId">
+          <input type="hidden" id="associateCandidateId" >
           <input type="hidden" id="empType" name="empType">
             <div class="row clearfix minHeightcol5">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -500,6 +502,7 @@
               <jsp:include page="associateIndiaBankingDetails.jsp" />
               <jsp:include page="associateIndiaInformationDetails.jsp" />
               <jsp:include page="associateIndiaLoanAndAdvancesDetails.jsp" />
+               <jsp:include page="../indPayroll/associateSalary.jsp" />
          </c:if> 
         
       </section>
@@ -508,7 +511,8 @@
       <!-- Footer Area -->
       <jsp:include page="../masterFooter.jsp" />
       <!-- Footer Area -->
-
+ 
+ <div id="candidateSalaryDiv"></div> 
 
 <script>
 function getCustomDependentField(sectionId){
@@ -708,7 +712,7 @@ function getEmployeementType(designationType){
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
 		    var formData = getFormData("createUser_form");
 			$("#create_user").attr("disabled", "disabled");
-			$("#loading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:180%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $( "#create_user" ).addClass('button').val('Processing..');
             
             $.ajax({
@@ -724,6 +728,7 @@ function getEmployeementType(designationType){
 					} 
 					else if(loginLocationCountry == 'India'){
 						    $("#associateId").val(result.object.userId);
+						    $("#associateCandidateId").val(result.object.candidateId); 
 							$("#empType").val(result.object.designationType);
 							 var indBankingDetails = document.getElementById("indBankingDetails");
 							 document.getElementById("indBankingDetails").removeAttribute("class");
@@ -1450,6 +1455,11 @@ var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 				indLoanAndAdvancesDetails.className = "disabledLink";
 			}  
 			
+			var indSalaryDetails =  document.getElementById("indSalaryDetails");
+			if(indSalaryDetails){
+				indSalaryDetails.href = "#";
+				indSalaryDetails.className = "disabledLink";
+			}   
 			
 		}
 
@@ -1467,6 +1477,27 @@ $(document).ready(function() {
     });
 });
 </script> 
+
+
+<script>
+function indAssociateSalarySummary(){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	var candidateId =  $("#associateCandidateId").val();
+	if(candidateId != null && candidateId != '' && candidateId != 'undefined'){
+		$.ajax({
+			  type: "GET",
+			    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&orgLocationId="+locationCode,
+			     success :function(response) {
+			    	 	$("#tab-18").empty();  
+			    	    $("#tab-19").empty();
+			    	    $("#tab-17").empty();
+			    	    $("#candidateSideDiv").empty();  
+			    	    $("#candidateSideDiv").append(response);
+					},
+				});
+	}
+}
+</script>
 
 
 
