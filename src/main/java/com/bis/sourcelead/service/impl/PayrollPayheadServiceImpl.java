@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
+import java.util.HashSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,13 +9,18 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
+import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
+import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
-import com.bis.sourcelead.dto.PayrollPayheadSalarySetupDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -206,5 +212,101 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 			OrgLocations orgLocations) throws Exception {
 		return payrollPayheadDao. getPayrollPayheadSalarySetupListByPayheadUuidAndLocationId(uuid, orgLocations);
 	}*/
-
+	
+	
+	@Override
+	public AssociateSalaryInd saveAssociateSalaryInd(AssociateSalaryIndDTO associateSalaryIndDTO, User user, OrgLocations orgLocations) throws Exception {
+		AssociateSalaryInd associateSalaryInd = null;
+		if(StringUtils.isNotBlank(associateSalaryIndDTO.getUuid())) {
+			associateSalaryInd = getAssociateSalaryIndByUUID(associateSalaryIndDTO.getUuid());
+			associateSalaryInd.setUpdatedDate(new Date());
+			associateSalaryInd.setUpdatedBy(user);
+		}else {
+			associateSalaryInd = new AssociateSalaryInd();
+			associateSalaryInd.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			associateSalaryInd.setCreatedDate(new Date());
+			associateSalaryInd.setCreatedBy(user);
+		}
+		
+		if(associateSalaryIndDTO.getCandidateId() != null) {
+			Candidate can = new Candidate();
+			can.setId(associateSalaryIndDTO.getCandidateId());
+			associateSalaryInd.setCandidate(can);
+		}else {
+			associateSalaryInd.setCandidate(null);
+		}
+		
+		if(associateSalaryIndDTO.getCtc() != null) {
+			associateSalaryInd.setCtc(associateSalaryIndDTO.getCtc());
+		}else {
+			associateSalaryInd.setCtc(null);
+		}
+		
+		if(associateSalaryIndDTO.getFbp() != null) {
+			associateSalaryInd.setFbp(associateSalaryIndDTO.getFbp());
+		}else {
+			associateSalaryInd.setFbp(null);
+		}
+		
+		if(associateSalaryIndDTO.getVariablePay() != null) {
+			associateSalaryInd.setVariablePay(associateSalaryIndDTO.getVariablePay());
+		}else {
+			associateSalaryInd.setVariablePay(null);
+		}
+		
+		associateSalaryInd.setStatus(Constants.RECORD_ACTIVE);
+		
+		
+		HashSet<AssociateSalaryPayheadInd> associateSalaryPayheadIndList = new HashSet<AssociateSalaryPayheadInd>();
+		if (associateSalaryIndDTO.getAssociateSalaryPayheadIndList() != null && !associateSalaryIndDTO.getAssociateSalaryPayheadIndList().isEmpty()) {
+			for (AssociateSalaryPayheadIndDTO associateSalaryPayheadIndDTO : associateSalaryIndDTO.getAssociateSalaryPayheadIndList()) {
+				 if(associateSalaryPayheadIndDTO.getChecked() != null && associateSalaryPayheadIndDTO.getChecked()) {
+					 AssociateSalaryPayheadInd associateSalaryPayheadInd = new AssociateSalaryPayheadInd();
+						if(associateSalaryPayheadIndDTO.getId() != null && associateSalaryPayheadIndDTO.getId()>0) {
+							associateSalaryPayheadInd.setId(associateSalaryPayheadIndDTO.getId());
+							associateSalaryPayheadInd.setUpdatedDate(new Date());
+							associateSalaryPayheadInd.setUpdatedBy(user);
+						}
+						associateSalaryPayheadInd.setAssociateSalaryInd(associateSalaryInd);
+						if (associateSalaryPayheadIndDTO.getPayrollPayheadId() != null) {
+							PayrollPayhead payrollPayhead = new PayrollPayhead();
+							payrollPayhead.setId(associateSalaryPayheadIndDTO.getPayrollPayheadId());
+							associateSalaryPayheadInd.setPayrollPayhead(payrollPayhead);
+						}
+						if (associateSalaryPayheadIndDTO.getMonthly() != null) {
+							associateSalaryPayheadInd.setMonthly(associateSalaryPayheadIndDTO.getMonthly());
+						}
+						if (associateSalaryPayheadIndDTO.getAnnualy() != null) {
+							associateSalaryPayheadInd.setAnnualy(associateSalaryPayheadIndDTO.getAnnualy());
+						}
+						associateSalaryPayheadInd.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+						associateSalaryPayheadInd.setStatus(Constants.RECORD_ACTIVE);
+						associateSalaryPayheadInd.setCreatedDate(new Date());
+						associateSalaryPayheadInd.setCreatedBy(user);
+						associateSalaryPayheadIndList.add(associateSalaryPayheadInd);
+				 }else if((associateSalaryPayheadIndDTO.getChecked() == null || !associateSalaryPayheadIndDTO.getChecked()) && (associateSalaryPayheadIndDTO.getId() != null && associateSalaryPayheadIndDTO.getId()>0)) {
+					 	AssociateSalaryPayheadInd associateSalaryPayheadInd = payrollPayheadDao.getAssociateSalaryPayheadIndById(associateSalaryPayheadIndDTO.getId());
+						associateSalaryPayheadInd.setStatus(Constants.RECORD_INACTIVE);
+						associateSalaryPayheadInd.setUpdatedDate(new Date());
+						associateSalaryPayheadInd.setUpdatedBy(user);
+						associateSalaryPayheadIndList.add(associateSalaryPayheadInd);
+				 }
+				 
+			}
+		}
+		associateSalaryInd.setAssociateSalaryPayheadIndList(associateSalaryPayheadIndList);
+		
+		
+		return payrollPayheadDao.saveAssociateSalaryInd(associateSalaryInd);
+	}
+	
+	@Override
+	public AssociateSalaryInd getAssociateSalaryIndByUUID(String uuid) throws Exception {
+		return payrollPayheadDao.getAssociateSalaryIndByUUID(uuid);
+	}
+	
+	@Override
+	public AssociateSalaryInd getAssociateSalaryIndByCandidateId(Long id) throws Exception {
+		return payrollPayheadDao.getAssociateSalaryIndByCandidateId(id);
+	}
 }
