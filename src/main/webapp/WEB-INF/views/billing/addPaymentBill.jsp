@@ -38,7 +38,7 @@
     	 	</div>
     	 	
     	 	<div class="row">
-    	 		<div class="col-md-6 minHeight50 mb">
+    	 		<div class="col-md-6 minHeight50 mb" id= "paymentDateDiv">
     	 			<label class="col-md-3">Payment Date<span class="text-danger paddingLeft">*</span></label>
     	 			<div class="col-md-9">
     	 				<input class="form-control calendar" placeholder="Payment Date" type="text" id="paymentDate" name="paymentDate" data-validation="required" field-name="Payment Date" readonly>
@@ -117,6 +117,15 @@ $(document).ready(function() {
 </script>
 
 <script type="text/javascript">
+function validDateClass(){
+	 var paymentDateVal = document.getElementById("paymentDate").value;
+	 if(paymentDateVal){
+		 $('#paymentDateDiv').find('p.jquery_form_error_message').remove(); 
+	 }
+}
+
+
+
 function showAmountWarningPopup(){ // multiWarnMsg populated when validated form and docs required upload docs info.
 	$("#validateErrorMsgDivId").val('');
 	$(".project_inn_mask").remove();
@@ -189,7 +198,10 @@ $('#paymentDate').datepicker({
     dateFormat: finalDateFormat,
     changeMonth: true,
 	  changeYear: true, 
-	  minDate:0
+	  minDate:0,
+	  onSelect : function(selected) {
+			 validDateClass();
+		}
     //minDate: 0  this line for to restrict selection of previous dates
 });
 </script>

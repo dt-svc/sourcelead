@@ -38,8 +38,8 @@
     	 	<div class="row">
     	 		<div class="col-md-6 minHeight50 mb">
     	 			<label class="col-md-3">Payment Date<span class="text-danger paddingLeft">*</span></label>
-    	 			<div class="col-md-9">
-    	 				<input class="form-control calendar" placeholder="Payment Date" type="text" id="paymentDate" name="paymentDate" data-validation="required" field-name="Payment Date" readonly>
+    	 			<div class="col-md-9" id= "paymentDateDiv">
+    	 				<input class="form-control calendar" placeholder="Payment Date" type="text" value = "" id="paymentDate" name="paymentDate" data-validation="required" field-name="Payment Date" readonly>
     	 			</div>
     	 		</div>
     	 		<div class="col-md-6 minHeight50 mb">
@@ -117,6 +117,14 @@ $(document).ready(function() {
 </script>
 
 <script type="text/javascript">
+
+function validDateClass(){
+	 var paymentDateVal = document.getElementById("paymentDate").value;
+	 if(paymentDateVal){
+		 $('#paymentDateDiv').find('p.jquery_form_error_message').remove(); 
+	 }
+}
+
     function getFleInformation() {
     	fileUpload("uploadBtn", "incoiceDocuments", "paymentForm");	
 	}
@@ -136,7 +144,11 @@ $('#paymentDate').datepicker({
     dateFormat: finalDateFormat,
     changeMonth: true,
 	  changeYear: true, 
-	  minDate:0
+	  minDate:0,
+	  onSelect : function(selected) {
+			 validDateClass();
+		}
+	 
     //minDate: 0  this line for to restrict selection of previous dates
 });
 </script>
