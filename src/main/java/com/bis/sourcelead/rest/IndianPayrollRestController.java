@@ -90,6 +90,7 @@ public class IndianPayrollRestController {
 				
 	    	 }
 		 }catch (Exception e) {
+			 e.printStackTrace();
 			 resObj.setResponse(Result.AWKWARD.name());
 			 resObj.setResponseMessage(Result.AWKWARD.getValue());
 		}

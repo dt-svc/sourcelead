@@ -35,6 +35,12 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 			pay = paymentAccountDao.getPaymentAccountById(Long.valueOf(account.getPaymentAccountId()));
 		}else {
 			pay = new PaymentAccount();
+			Candidate candidate = candidateDao.getCandidateByConsultantUserId(account.getAssociateUserId(), orgLocations.getId());
+		    pay.setCandidateId(candidate);
+		    boolean flag = paymentAccountDao.getisActivePaymentAccountExistedByCandidateId(candidate.getId());
+		    if(flag == false) {
+		    	pay.setDefaultAccount(true);
+		    }
 		}
         pay.setAccountId(account.getAccountId());
         pay.setAccountType(account.getAccountType());
@@ -46,9 +52,6 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
         pay.setMicrCode(account.getMicrCode());
         pay.setAccountNumber(account.getAccountNumber());
         pay.setRoutingNumber(account.getRoutingNumber());
-        Candidate candidate = candidateDao.getCandidateByConsultantUserId(account.getAssociateUserId(), orgLocations.getId());
-    	pay.setCandidateId(candidate);
-        pay.setDefaultAccount(true);
         pay.setDisabled(false);
         PaymentAccount paymentAccount = savePaymentAccount(pay);
 		return paymentAccount;
