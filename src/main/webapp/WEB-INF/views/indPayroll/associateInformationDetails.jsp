@@ -4,24 +4,23 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<div class="tabsMenu_tabs_inn" style="display: block;">
+<div class="tabsMenu_tabs_inn project_wrap" style="display: block;">
  <form:form id="associate_informationDetails_form" name="associate_informationDetails_form" method="post">
 	 	 <div id="informationDetailsLoading"></div>
 	 	  <input type="hidden" name="associateUserId" value='${userId}' id="pfassociateUserId"/>
 	      <input type="hidden" name="pfesiId" value="${pfesiDTO.pfesiId}" id="pfesiId"/>
 	      
+	      
 	      <div class="clearfix row minHeightcol5">
-	      	<div class="clearfix"></div>
               <div class="col-md-12 mb">
-                <div class="clearfix row">
-              	     <h4 class="col-md-12">PF</h4>
-		                  <div class="col-md-6 mb checkbox-new">
+              	     <h4 class="col-md-12 noPad">PF</h4>
+		                  <div class="mb checkbox-new clearfix">
 							<input id="pf" class="checkbox-custom" type="checkbox" name="eligibleForPf"  ${pfesiDTO.eligibleForPf == 'Y' ? 'checked' : ''}   onClick="associatePfFunction()">
 							<label for="pf" class="checkbox-custom-label"><span class="ml10">Eligible for PF</span></label>
 		                    <div>
 		                    </div>
-		                  </div>
-		                  
+		                  </div>              
+                <div class="clearfix row mt">
 		                  <div class="clearfix"></div>
 		                  <div  id="pfEligible" ${pfesiDTO.eligibleForPf == 'Y' ? '' : 'style="display: none;"'} >
 		                   <div class="col-md-5">
@@ -44,17 +43,17 @@
 		                    </div>
 		                  </div>
 		                  </div>
-		                  
-		                  
-                 <div class="clearfix mt10"></div>
-                 <h4 class="col-md-12">ESI</h4>
-                   <div class="col-md-6 mb checkbox-new">
+		        </div>  
+		                 
+                 <div class="clearfix mt"></div>
+                 <h4 class="col-md-12 noPad">ESI</h4>
+                   <div class="mb checkbox-new clearfix">
 					<input id="esi" class="checkbox-custom" name="eligibleForEsi" type="checkbox" ${pfesiDTO.eligibleForEsi == 'Y' ? 'checked' : ''} onClick="associateEsiFunction()">
 					<label for="esi" class="checkbox-custom-label"><span class="ml10">Eligible for ESI</span></label>
                     <div>
                     </div>
                   </div>
-                  <div class="clearfix"></div>
+                  <div class="clearfix row">
                   
                   <div class="col-md-5" id="esiEligible" ${pfesiDTO.eligibleForEsi == 'Y' ? '' : 'style="display: none;"'}>
                     <label>ESI Number</label>
@@ -62,7 +61,7 @@
                       <input type="text" class="form-control" name="esinumber"  id="esiNumber" value="${pfesiDTO.esinumber}" data-validation="validate_int validate_length length1-17" data-validation-optional="true" field-name="ESI Number">
                     </div>
                   </div>
-                </div>
+               </div>
               </div>
 	      </div>
 	      
