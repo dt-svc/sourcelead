@@ -1652,6 +1652,7 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  						float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.valueOf(invoice.getTotal()));
   	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1f);
   	  		  		      	float roundAmount = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
+  	  		  		      	exchangeRate = roundAmount *Float.valueOf(invoice.getTotal());
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
   	  		  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
