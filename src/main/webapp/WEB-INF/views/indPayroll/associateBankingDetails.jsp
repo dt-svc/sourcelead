@@ -5,11 +5,13 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 
-<div id="tab-6" class="tabsMenu_tabs_inn" style="display: block;">
-<div class="row clearfix">
-<a  onclick="showIndiaPaymentAccountPopup();"  class="pull-left ml mt2"><i class="fa fa-plus paddingLeft"></i>Add</a>
+<div id="tab-6" class="tabsMenu_tabs_inn project_wrap noPad" style="display: block;">
+<div class="reportHead clearfix">
+	<ul class="pull-right list-unstyled list-inline">
+		<li><a  onclick="showIndiaPaymentAccountPopup();"  class="newAdBtn mr5">+ Add</a></li>
+	</ul>
 </div>
-<div class="clearfix styleTables mt overflow_Auto">
+<div class="clearfix project_tabs_inn_table overflow_Auto">
 	<table width="100%">
 		<thead>
 			<tr>

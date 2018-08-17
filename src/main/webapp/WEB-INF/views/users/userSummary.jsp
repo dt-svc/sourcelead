@@ -134,7 +134,7 @@ $(document).ready(function(){
 		 if(country == 'India'){
 			 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
 			 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
-			 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">Loan / Advances</a></li>';
+			 result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
 			 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
 		 }
 		
@@ -3831,6 +3831,21 @@ function associateInformationDetails(candidateId){
 			});
 	
 }	
+
+function associateLoanAndAdvanceDetails(candidateId){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+		    	    loanAdv.getLoanAndAdvApprovers();
+				},
+			});
+}
 </script>
 
 

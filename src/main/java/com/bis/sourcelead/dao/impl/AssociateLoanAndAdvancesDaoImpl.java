@@ -98,7 +98,7 @@ public class AssociateLoanAndAdvancesDaoImpl implements AssociateLoanAndAdvances
 			Long orgLocationId) throws Exception {
 
 		 Session session = this.sessionFactory.getCurrentSession();
-		 String query = "from AssociateLoanAndAdvances lad left join fetch lad.payrollLoanAndAdvanceId left join fetch lad.approverUser where "
+		 String query = "from AssociateLoanAndAdvances lad left join fetch lad.payrollLoanAndAdvanceId left join fetch lad.approverUser left join fetch lad.candidateId where "
 		 		+ " lad.candidateId.id = :candidateId and lad.orgLocationId.id = :orgLocationId and lad.status = '1'  ";  
 	     List<AssociateLoanAndAdvances> loanAndAdvList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
 	     return loanAndAdvList;

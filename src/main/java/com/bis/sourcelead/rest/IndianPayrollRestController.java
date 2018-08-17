@@ -334,4 +334,34 @@ public class IndianPayrollRestController {
 		 return loanAndAdvDTO;
     } 
     
+    
+    @RequestMapping(value = "/app/getAssociateLoanAndAdvanceDetailsById", method = RequestMethod.POST)
+	public AssociateLoanAndAdvancesDTO getAssociateLoanAndAdvanceDetailsById(HttpServletRequest request,
+			@RequestParam(value="loanAdvId", required=false) Long loanAdvId){
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 AssociateLoanAndAdvancesDTO loanAndAdvDTO = null;
+		 try {
+			 loanAndAdvDTO = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesDetailsById(loanAdvId, orgLocation);
+		
+		 }catch (Exception e) {
+			 e.printStackTrace();
+		}
+		 return loanAndAdvDTO;
+    } 
+    
+    @RequestMapping(value = "/app/deleteAssociateLoanAndAdvanceDetailsById", method = RequestMethod.POST)
+	public String deleteAssociateLoanAndAdvanceDetailsById(HttpServletRequest request,
+			@RequestParam(value="loanAdvId", required=false) Long loanAdvId){
+		 try {
+			 AssociateLoanAndAdvances loanAndAdv = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesById(loanAdvId);
+			 loanAndAdv.setStatus(0);
+			 associateLoanAndAdvancesService.saveAssociateLoanAndAdvances(loanAndAdv);
+		
+		 }catch (Exception e) {
+			 e.printStackTrace();
+		}
+		 return "success";
+    } 
+    
+    
 }

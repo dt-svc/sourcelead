@@ -31,6 +31,7 @@ import com.bis.sourcelead.dto.PayrollPaytypeDTO;
 import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
+import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -112,6 +114,9 @@ public class PayrollConfigurationRestController {
 	
 	@Autowired
 	AssociatePfEsiService associatePfEsiService;
+	
+	@Autowired
+	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
 	
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
@@ -855,6 +860,24 @@ public class PayrollConfigurationRestController {
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	
+	@RequestMapping(value = "/getAssociateLoanAndAdvanceDetailsByCandidateId")
+	public ModelAndView getAssociateLoanAndAdvanceDetailsByCandidateId(@RequestParam(value="candidateId", required=false) Long candidateId,
+			HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		 List<AssociateLoanAndAdvances> loanAdvList = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByCandidateId(candidateId,orgLocation.getId());
+		 model.addObject("loanAdvList", loanAdvList);
+		 model.addObject("candidateId", candidateId);
+		 model.addObject("loanAdvListSize", loanAdvList.size());
+		 model.addObject("userId",candidate.getConsultantUser().getId());
+		 model.setViewName("indPayroll/associateLoanAndAdvances");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
 	
 	
 	
