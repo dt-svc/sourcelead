@@ -1690,7 +1690,7 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 <script>
 
 function  selectBeneficiary() {
-	    if(( $('#candidateNameEmail').val() == '0' || $('#candidateNameEmail').val() == '' || $('#candidateNameEmail').val() == 'undefined' || $('#candidateNameEmail').val() == null )){
+	    if(($('#candidateNameEmail').val() == '' || $('#candidateNameEmail').val() == 'undefined' || $('#candidateNameEmail').val() == null )){
 	    	alert("Please Enter Your Beneficiary ");
 	    }      
 }
