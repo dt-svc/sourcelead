@@ -509,6 +509,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,
 						Float.parseFloat(invoice.getTotal()));
 				float convertedAmount1 = (float) (Math.round(convertedAmount * 100.0) / 100.0);
+				convertedAmount1 = convertedAmount1 * Float.valueOf(invoice.getTotal());
 				parentInvoice.setCurrencyCode(vendorCurrencyCode);
 				parentInvoice.setTotal(String.valueOf(convertedAmount1));
 				parentInvoice.setDueAmount(String.valueOf(convertedAmount1));
@@ -1345,6 +1346,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 						Float.parseFloat(grandTotal));
 				float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
 				float exchangeCurrency = (float) (Math.round(convertedAmount * 100.0) / 100.0);
+				exchangeRate = exchangeCurrency * Float.valueOf(grandTotal);
 				currencyConversionResponse.setExchangeRate(exchangeRate);
 				currencyConversionResponse.setExchangeCurrency(exchangeCurrency);
 				currencyConversionResponse.setVendorCurrencyCode(vendorCurrencyCode);
