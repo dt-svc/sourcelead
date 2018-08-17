@@ -77,6 +77,30 @@ public class LeaveReportView {
 	private String ReportingManager;
 	@Transient
 	private List<Map<String, String>> order;
+	
+	@Column(name = "FROM_HALF_DAY")
+	private String fromHalfDay;
+
+	@Column(name = "TO_HALF_DAY")
+	private String toHalfDay;
+
+	@Column(name = "FROM_DATE_FROM_TIME")
+	private String fromDateFromHalfTime;
+	
+	@Column(name = "FROM_DATE_TO_TIME")
+	private String fromDateToHalfTime;
+	
+	@Column(name = "TO_DATE_FROM_TIME")
+	private String toDateFromHalfTime;
+	
+	@Column(name = "TO_DATE_TO_TIME")
+	private String toDateToHalfTime;
+	
+	@Column(name = "INCLUDE_HOLIDAYS")
+	private String includeHolidays;
+	
+	@Column(name = "INCLUDE_WEEKOFF")
+	private String includeWeekoff;
 	@Transient
 	private String sortColumn;
 	@Transient
@@ -97,6 +121,10 @@ public class LeaveReportView {
 	@Transient
 	@JsonProperty
 	private String approvedOnDateStr;
+	
+	@Transient
+	@JsonProperty
+	private float noOfDays;
 	
 	public Long getId()
 	{
@@ -407,6 +435,96 @@ public class LeaveReportView {
 	public void setReportingManager(String reportingManager)
 	{
 		ReportingManager = reportingManager;
+	}
+
+	public String getFromHalfDay()
+	{
+		return fromHalfDay;
+	}
+
+	public void setFromHalfDay(String fromHalfDay)
+	{
+		this.fromHalfDay = fromHalfDay;
+	}
+
+	public String getToHalfDay()
+	{
+		return toHalfDay;
+	}
+
+	public void setToHalfDay(String toHalfDay)
+	{
+		this.toHalfDay = toHalfDay;
+	}
+
+	public String getFromDateFromHalfTime()
+	{
+		return fromDateFromHalfTime;
+	}
+
+	public void setFromDateFromHalfTime(String fromDateFromHalfTime)
+	{
+		this.fromDateFromHalfTime = fromDateFromHalfTime;
+	}
+
+	public String getFromDateToHalfTime()
+	{
+		return fromDateToHalfTime;
+	}
+
+	public void setFromDateToHalfTime(String fromDateToHalfTime)
+	{
+		this.fromDateToHalfTime = fromDateToHalfTime;
+	}
+
+	public String getToDateFromHalfTime()
+	{
+		return toDateFromHalfTime;
+	}
+
+	public void setToDateFromHalfTime(String toDateFromHalfTime)
+	{
+		this.toDateFromHalfTime = toDateFromHalfTime;
+	}
+
+	public String getToDateToHalfTime()
+	{
+		return toDateToHalfTime;
+	}
+
+	public void setToDateToHalfTime(String toDateToHalfTime)
+	{
+		this.toDateToHalfTime = toDateToHalfTime;
+	}
+
+	public String getIncludeHolidays()
+	{
+		return includeHolidays;
+	}
+
+	public void setIncludeHolidays(String includeHolidays)
+	{
+		this.includeHolidays = includeHolidays;
+	}
+
+	public String getIncludeWeekoff()
+	{
+		return includeWeekoff;
+	}
+
+	public void setIncludeWeekoff(String includeWeekoff)
+	{
+		this.includeWeekoff = includeWeekoff;
+	}
+
+	public float getNoOfDays()
+	{
+		return noOfDays;
+	}
+
+	public void setNoOfDays(float noOfDays)
+	{
+		this.noOfDays = noOfDays;
 	}
 	
 	
