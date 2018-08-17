@@ -1,7 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-
-		
 	  	<div class="immigraTable overflow_Auto">
 		  <table id ="visaTbl">
 			<tbody>
@@ -15,10 +13,8 @@
 				<th>LCA Status</th>
 				<th>Status</th>
 			  </tr>
-			 
 			  <c:forEach var="lcadetails" items="${lcaList}" varStatus="rows">
 			  <tr>
-			  
 				<td><div class="tbldata-dotdot-sm" title = "${lcadetails.lcaNo}"></div>${lcadetails.lcaNo}</td>
 				<td><div class="tbldata-dotdot-sm" title = "${lcadetails.lcaTitle}"></div>${lcadetails.lcaTitle}</td>
 				<td><div class="tbldata-dotdot-sm" title = "${lcadetails.location}"></div>${lcadetails.location}</td>
@@ -30,14 +26,10 @@
 				 <td><div class="tbldata-dotdot-sm" title = "${lcadetails.status}"></div>Active</td>
 				</c:if>
 				<c:if test="${lcadetails.status == '0'}">
-				 <td><div class="tbldata-dotdot-sm" title = "${lcadetails.status}"></div>Active</td>
+				 <td><div class="tbldata-dotdot-sm" title = "${lcadetails.status}"></div>In-Active</td>
 				</c:if>
-			  </tr>
-			   </c:forEach>
-			  </tbody>
-		  </table>
-		</div>
-			 
-		
-	
-	
+			 </tr>
+			</c:forEach>
+		</tbody>
+		</table>
+</div>
