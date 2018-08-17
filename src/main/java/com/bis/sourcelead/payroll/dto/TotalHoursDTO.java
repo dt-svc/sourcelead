@@ -19,6 +19,7 @@ public class TotalHoursDTO {
     
 	private String payRateType;
 	
+    private BigInteger submissinId;
     
 	private Date startDate;
     
@@ -164,6 +165,16 @@ public class TotalHoursDTO {
 	public void setProjectMemId(BigInteger projectMemId)
 	{
 		this.projectMemId = projectMemId;
+	}
+
+	public BigInteger getSubmissinId()
+	{
+		return submissinId;
+	}
+
+	public void setSubmissinId(BigInteger submissinId)
+	{
+		this.submissinId = submissinId;
 	}
 
 

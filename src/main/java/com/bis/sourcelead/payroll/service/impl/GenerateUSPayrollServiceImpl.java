@@ -201,6 +201,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		return paysheetFrequencyDTO;
 	}
 
+	@SuppressWarnings("static-access")
 	private Set<EmployeePayroll> calculatePayroll(PaysheetFrequencyDTO existedData, PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalary> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
 	{
 		Set<EmployeePayroll> set = new HashSet<>();
@@ -209,18 +210,19 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				
 				boolean isExisted = isPayrollRunForSameFrequency(existedData,assoSal);
 				if(!isExisted) {
-					
 					 EmployeePayroll employeePayroll = new EmployeePayroll();
 					    employeePayroll.setPaysheetFrequency(paySheetFreq);
-					    TotalHoursDTO totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
+					    List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
 					    AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(assoSal.getCandidate().getId(), orgLocation);
-						float totalHours = 0;
+						double totalHours = 0;
 						BigDecimal payRate = BigDecimal.ZERO;
 						BigDecimal amount = BigDecimal.ZERO;
 						if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
 							payRate = assoSal.getHourlyRate();
-							if(totalHoursDto !=null && StringUtils.isNotBlank(totalHoursDto.getTotalHours())) {
-								totalHours = Float.parseFloat(totalHoursDto.getTotalHours());
+							if(totalHoursDto !=null ) {
+								for(TotalHoursDTO totalHoursDTO : totalHoursDto) {
+									totalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getTotalHours()),totalHours);
+								}
 							}
 							amount = getTotalAmount(totalHours,payRate);
 						}else if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
@@ -732,7 +734,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	 * @param payRate
 	 * @return double
 	 */
-	private BigDecimal getTotalAmount(float totalHours, BigDecimal payRate)
+	private BigDecimal getTotalAmount(double totalHours, BigDecimal payRate)
 	{
 		String pRate = String.valueOf(totalHours);
 		String[] rate = pRate.split("\\.");
