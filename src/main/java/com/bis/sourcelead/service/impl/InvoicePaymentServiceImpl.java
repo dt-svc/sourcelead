@@ -313,7 +313,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 							parentInvoice.setDueAmount("00.00");
 							}else{
 								// partial amount paid
-								String due = invoice.getDueAmount();
+								String due = parentInvoice.getDueAmount();
 								BigDecimal dueDecimal = (new BigDecimal(due));
 								String received = invoiceIdsMap.get(invoice.getId());
 								BigDecimal receivedDecimal = (new BigDecimal(received));
@@ -336,7 +336,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 							parentInvoice.setDueAmount("00.00");
 						}else{
 							// partial amount paid
-							String due = invoice.getDueAmount();
+							String due = parentInvoice.getDueAmount();
 							float amountPaid = convertedAmount1 *Float.valueOf(due);
 							BigDecimal dueDecimal = (new BigDecimal(amountPaid));
 							String received = invoiceIdsMap.get(invoice.getId());
