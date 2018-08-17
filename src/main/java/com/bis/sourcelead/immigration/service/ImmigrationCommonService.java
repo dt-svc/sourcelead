@@ -183,7 +183,7 @@ public interface ImmigrationCommonService {
     
     public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception;
     
-    List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String statusLca);
+    List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String statusLca,String candidateId);
     
     public Lca getLcaByLcaId(Long lcaId) throws Exception;
     

@@ -1874,16 +1874,16 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Map<String, String>> getLcaNumbersList(String lcaNo,String orgLocationId,String statusLca) {
+	public List<Map<String, String>> getLcaNumbersList(String lcaNo,String orgLocationId,String statusLca,String candidateId) {
 		
-			Session session = this.sessionFactory.getCurrentSession(); // below query is used for auto populate in UI.
+ 			Session session = this.sessionFactory.getCurrentSession(); // below query is used for auto populate in UI.
 			String query = null;
 			if(statusLca.equals("1")) {
-				query = "SELECT LCA_NO as label, CONVERT(ID, CHAR) as value from LCA lca where (lca.ID NOT IN (SELECT LCA_ID FROM LCA_HISTORY)) and lca.LCA_NO like :lcaNo and lca.ORG_LOCATION_ID =:orgLocationId  and lca.END_DATE >= CURDATE()"; 
-				return session.createSQLQuery(query).setString("lcaNo", lcaNo+"%").setString("orgLocationId", orgLocationId+"%").setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+				query = "SELECT LCA_NO as label, CONVERT(ID, CHAR) as value from LCA lca where (lca.ID NOT IN (SELECT LCA_ID FROM LCA_HISTORY where CANDIDATE_ID =:candidateId)) and lca.LCA_NO like :lcaNo and lca.ORG_LOCATION_ID =:orgLocationId  and lca.END_DATE >= CURDATE()"; 
+				return session.createSQLQuery(query).setString("lcaNo", lcaNo+"%").setString("orgLocationId", orgLocationId).setString("candidateId", candidateId).setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 	        }else {
 	        	query = "SELECT LCA_NO as label, CONVERT(ID, CHAR) as value from LCA lca where lca.LCA_NO like :lcaNo and lca.ORG_LOCATION_ID =:orgLocationId and lca.END_DATE < CURDATE()"; 
-				return session.createSQLQuery(query).setString("lcaNo", lcaNo+"%").setString("orgLocationId", orgLocationId+"%").setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+				return session.createSQLQuery(query).setString("lcaNo", lcaNo+"%").setString("orgLocationId", orgLocationId).setString("candidateId", candidateId).setMaxResults(10).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 	        }
 	}
 	
