@@ -2669,8 +2669,12 @@ public class LeaveServiceImpl implements LeaveService{
 			 else{
 				   writeRow.createCell(8).setCellValue("--");   
 			   }
+			 if(leaveReportDTO.getNoOfDays() != null){
 			 writeRow.createCell(9).setCellValue(leaveReportDTO.getNoOfDays());
-			 
+			 }
+			 else{
+				   writeRow.createCell(9).setCellValue("0.0");   
+			   }
 			 if(leaveReportDTO.getStatus() != null){
 				   writeRow.createCell(10).setCellValue(leaveReportDTO.getStatus());
 			   }

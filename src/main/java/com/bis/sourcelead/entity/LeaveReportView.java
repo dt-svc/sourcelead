@@ -124,7 +124,7 @@ public class LeaveReportView {
 	
 	@Transient
 	@JsonProperty
-	private float noOfDays;
+	private String noOfDays;
 	
 	public Long getId()
 	{
@@ -517,15 +517,17 @@ public class LeaveReportView {
 		this.includeWeekoff = includeWeekoff;
 	}
 
-	public float getNoOfDays()
+	public String getNoOfDays()
 	{
 		return noOfDays;
 	}
 
-	public void setNoOfDays(float noOfDays)
+	public void setNoOfDays(String noOfDays)
 	{
 		this.noOfDays = noOfDays;
 	}
+
+
 	
 	
 }
