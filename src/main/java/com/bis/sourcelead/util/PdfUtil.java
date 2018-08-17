@@ -1628,9 +1628,12 @@ private String[] prepareLeaveReportStringArray(LeaveReportView lrv, String[] hea
 	   }else{
 		   userArray[8] = "--";
 	   }
-	   float fvar = lrv.getNoOfDays();
-	   String noOfDays = String.valueOf(fvar);
-	   userArray[9] = noOfDays;
+	   if(lrv.getNoOfDays() !=null){
+	   userArray[9] = lrv.getNoOfDays();
+	   }
+	   else{
+		   userArray[9] = "0.0";
+	   }
 	   if(lrv.getStatus() !=null){
 		   userArray[10] = lrv.getStatus();
    }else{
