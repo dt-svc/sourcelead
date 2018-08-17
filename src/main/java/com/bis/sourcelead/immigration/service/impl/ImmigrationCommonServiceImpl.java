@@ -2605,8 +2605,8 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	}
 
 	@Override
-	public List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String statusLca) {
-		return immigrationCommonDao.getLcaNumbersList(lcaNum,orgLocationId,statusLca);
+	public List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String statusLca,String candidateId) {
+		return immigrationCommonDao.getLcaNumbersList(lcaNum,orgLocationId,statusLca,candidateId);
 	}
 
 	@Override

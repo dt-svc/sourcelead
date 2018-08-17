@@ -2401,10 +2401,13 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value = "/getLcaNumbersList", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Map<String, String>> getLcaNumbersList(HttpServletRequest request,@RequestParam(value = "lcaNum", required = false) String lcaNum,@RequestParam(value = "expiryStatus", required = false) String expiryStatus) throws Exception {
+	public List<Map<String, String>> getLcaNumbersList(HttpServletRequest request,@RequestParam(value = "lcaNum", required = false) String lcaNum,
+			@RequestParam(value = "expiryStatus", required = false) String expiryStatus,
+			@RequestParam(value = "candidateId", required = false) String candidateId) throws Exception {
+		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Map<String, String>> lcaNumbersList = null;
-		lcaNumbersList = immigrationCommonService.getLcaNumbersList(lcaNum,orgLocations.getId().toString(),expiryStatus);
+		lcaNumbersList = immigrationCommonService.getLcaNumbersList(lcaNum,orgLocations.getId().toString(),expiryStatus,candidateId);
 		return lcaNumbersList;
 	}
 

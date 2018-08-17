@@ -211,7 +211,7 @@ public interface ImmigrationCommonDao {
 
 	String updateLcaStatusWithExpired(Long lcaId);
 	
-	List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String lcaStatus);
+	List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String lcaStatus,String candidateId);
 	
 	LcaHistory saveLcaHistory(LcaHistory lcaHistory);
 	

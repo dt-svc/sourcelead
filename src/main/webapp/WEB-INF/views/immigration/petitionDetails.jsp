@@ -28,7 +28,7 @@
 			</c:if>
           <div class="col-md-12 col-lg-12 myForm margin-top0">
           	<input type="hidden" name="immigrationId" id="immigrationId" value="${immigrationDTO.immigrationId}">
-          	<input type="hidden" name="candidateId" value="${immigrationDTO.candidateId}">
+          	<input type="hidden" name="candidateId"  value="${immigrationDTO.candidateId}">
           	<input type="hidden" name="templateId" value="${immigrationDTO.templateId}">
           	<input type="hidden" name="lcaId" id="currLcaId" value="${immigrationDTO.lcaId}">
           	
@@ -455,7 +455,7 @@
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" >
               </div>
             </div>
             
@@ -638,7 +638,7 @@
              <div class="form-group">
               <label class="col-md-4">LCA Number</label>
               <div class="col-md-8">
-                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" onkeypress="selectBeneficiary();">
               </div>
           </div>
             
@@ -963,6 +963,7 @@ function resetBeneficiaryDetails(){
 				    			var dateOfBirth =  moment(candidateObj.dateOfBirth).format(finalDateFormatOrg);
 				    		   $("#birthDate").val(dateOfBirth);
 				    		}
+				   
 				        }
 				 });
 				return false;
@@ -1563,7 +1564,8 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 			 type : "GET",
 			 data : {
 				 lcaNum : request.term,
-				 expiryStatus:'1'
+				 expiryStatus:'1',
+				 candidateId :$("#candidateId").val()
 			 	},
 			 dataType : "json",
 			 success : function(data) {
@@ -1685,3 +1687,12 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 	} 
  
 </script> 
+<script>
+
+function  selectBeneficiary() {
+	    if(( $('#candidateNameEmail').val() == '0' || $('#candidateNameEmail').val() == '' || $('#candidateNameEmail').val() == 'undefined' || $('#candidateNameEmail').val() == null )){
+	    	alert("Please Enter Your Beneficiary ");
+	    }      
+}
+
+</script>
