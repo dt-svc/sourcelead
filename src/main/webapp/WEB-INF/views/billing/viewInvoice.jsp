@@ -341,6 +341,7 @@ function restTimelineFileter(){
 	timelineHistoryFunction('', 'desc', null, null,null);
 	$("#ascAnchor").removeClass("active");
 	$("#descAnchor").addClass("active");
+	$('input[name="userNameCheck"]:checkbox').attr('checked',false);
 }
 
 /* $('#timelineFromDate, #timelineToDate').datepicker({
