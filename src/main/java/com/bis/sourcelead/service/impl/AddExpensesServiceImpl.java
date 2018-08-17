@@ -217,7 +217,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	BigDecimal bd = new BigDecimal(Double.toString(totalAmount));
 	bd = bd.setScale(2,BigDecimal.ROUND_UP);
 	expenses.setTotalAmount(bd.floatValue());
-	HashMap<Long,User> managers = new HashMap<>() ;
+	HashMap<Integer,User> managers = new HashMap<>() ;
 	if(projMembers != null){
 		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
 		if (expensesDTO.getId() != null){
@@ -234,7 +234,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 					}
 					eaHierarchy.setUpdatedDate(expenses.getUpdatedDate());
 					eaHierarchy.setUpdatedBy(expenses.getUpdatedBy());
-					managers.put(eaHierarchy.getHierarchyId().getApproverUserId().getId(),eaHierarchy.getHierarchyId().getApproverUserId());
+				    managers.put(eaHierarchy.getHierarchyId().getLevel(),eaHierarchy.getHierarchyId().getApproverUserId());
 					eaHierarchyList.add(eaHierarchy);
 			   }
 		   }
@@ -262,7 +262,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 							eaHierarchy.setUpdatedDate(expenses.getUpdatedDate());
 							eaHierarchy.setUpdatedBy(expenses.getUpdatedBy());
 							eaHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
-							managers.put(hierarchy.getApproverUserId().getId(),hierarchy.getApproverUserId());
+							managers.put(hierarchy.getLevel(),hierarchy.getApproverUserId());
 							eaHierarchyList.add(eaHierarchy);
 						}
 				}
@@ -293,17 +293,25 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 				   &&  projMembers.getProjectMemberCandidteId().getConsultantUser()!= null && projMembers.getProjectMemberCandidteId().getOrgLocationId() != null) {
 			   UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(projMembers.getProjectMemberCandidteId().getConsultantUser().getId(), projMembers.getProjectMemberCandidteId().getOrgLocationId().getId());
 			   if(userRole != null && userRole.getReportingManager() != null) {
-				   managers.put(userRole.getReportingManager().getId(),userRole.getReportingManager());
+				   managers.put(1,userRole.getReportingManager());
 			   }
 		   }
 	   }
-	  if(managers != null && !managers.isEmpty()){
-			expenses.setProjectManagerUserList(new ArrayList(managers.values()));
-		}
+	     
 	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
+		 if(managers != null && !managers.isEmpty()){
+				expenses.setProjectManagerUserList(new ArrayList(managers.values()));
+	     }
 		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "",orgLoc);
 	 }
+	 
+	 
+	 
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+		 managers.remove(2);
+		 if(managers != null && !managers.isEmpty()){
+				expenses.setProjectManagerUserList(new ArrayList(managers.values()));
+		 }
 		 sendExpensesEmailToManager(loginUser,expenses,orgLoc,currencyCode);
 	 }
 }

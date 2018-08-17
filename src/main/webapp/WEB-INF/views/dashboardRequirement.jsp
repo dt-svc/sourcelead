@@ -5,7 +5,17 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script> 
 $(document).ready(function(){
-	requirementSubmissionsCount("today");
+	var jsondata = sessionStorage.getItem('jobsCount');
+     if(jsondata!= null){
+		 jsondata =jsondata.split(","); 
+		 $("#submissionsCount").text(jsondata[0]);
+		 $("#applicantsCount").text(jsondata[1]);
+		 $("#interviewsCount").text(jsondata[2]);
+		 $("#offersCount").text(jsondata[3]);
+		 sessionStorage.clear(); 
+	 }else{
+		 	requirementSubmissionsCount("today");
+	 }
 });
 </script>
 <div class="col-md-6 mb">
@@ -98,9 +108,11 @@ function requirementSubmissionsCount(daterange){
 	$("#dateActiveTab").val(daterange);
 	$("#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
     var sourceleadUrl ='${sourceleadUrl}';
+    var userId =  '${SourceLeadWeb_user.id}';
+    var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getRequirementSubmissionsCount?${_csrf.parameterName}=${_csrf.token}&daterange="+daterange, 
+		        url: sourceleadUrl+"/getRequirementSubmissionsCount?${_csrf.parameterName}=${_csrf.token}&daterange="+daterange+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);

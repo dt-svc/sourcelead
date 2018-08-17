@@ -28,7 +28,7 @@ public class ContributionDTO {
 	
 	private String preContributionType;
 	
-	private String preContributionAmt;
+	private BigDecimal preContributionAmt;
 
 	
 	public String getId()
@@ -144,7 +144,7 @@ public class ContributionDTO {
 		return preContributionType;
 	}
 
-	public String getPreContributionAmt()
+	public BigDecimal getPreContributionAmt()
 	{
 		return preContributionAmt;
 	}
@@ -154,7 +154,7 @@ public class ContributionDTO {
 		this.preContributionType = preContributionType;
 	}
 
-	public void setPreContributionAmt(String preContributionAmt)
+	public void setPreContributionAmt(BigDecimal preContributionAmt)
 	{
 		this.preContributionAmt = preContributionAmt;
 	}

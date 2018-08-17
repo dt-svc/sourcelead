@@ -40,6 +40,7 @@ import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class BisUserMappingServiceImpl implements BisUserMappingService {
@@ -297,6 +298,7 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 							String checkNumber = getCellValueAsString(row.getCell(15), fileName);
 							checks.setCheckNo(checkNumber.split("\\.")[0]);
 						}
+						checks.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 						checks.setCreatedBy(user.getUserCode());
 						checks.setCreatedDate(new Date());
 						checks.setUpdatedBy(user.getUserCode());

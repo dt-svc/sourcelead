@@ -300,16 +300,20 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					if (parentInvoice == null) {
 						parentInvoice = invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
 					}
-					
+					String childCurrencyCode = invoice.getCurrencyCode();
+					String parentCurrencyCode = parentInvoice.getCurrencyCode();
 					// float totalAmount = 0;
 					// float customAmount = 0;
+					if(childCurrencyCode.equalsIgnoreCase(parentCurrencyCode)){
 						if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
 							if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+								// total amount paid
 							invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 							parentInvoice.setDueAmount("00.00");
 							}else{
-								String due = invoice.getDueAmount();
+								// partial amount paid
+								String due = parentInvoice.getDueAmount();
 								BigDecimal dueDecimal = (new BigDecimal(due));
 								String received = invoiceIdsMap.get(invoice.getId());
 								BigDecimal receivedDecimal = (new BigDecimal(received));
@@ -319,7 +323,31 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								parentInvoice.setDueAmount(remainAmount.toString());
 							}
 						}
-					
+					}else{
+						// currency conversion code start
+						float conAmount = conversionUtil.convert(childCurrencyCode, parentCurrencyCode,1);
+						float convertedAmount1 = (float) (Math.round(conAmount * 100.0) / 100.0);
+						// currency conversion code ends
+						if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
+							// total amount paid
+							float amountPaid = convertedAmount1 *Float.valueOf((invoiceIdsMap.get(invoice.getId())));
+							invoicePayment.setPaymentAmount(String.valueOf(amountPaid));
+							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
+							parentInvoice.setDueAmount("00.00");
+						}else{
+							// partial amount paid
+							String due = parentInvoice.getDueAmount();
+							float amountPaid = convertedAmount1 *Float.valueOf(due);
+							BigDecimal dueDecimal = (new BigDecimal(amountPaid));
+							String received = invoiceIdsMap.get(invoice.getId());
+							float amountreceived = convertedAmount1 *Float.valueOf(received);
+							BigDecimal receivedDecimal = (new BigDecimal(amountreceived));
+							remainAmount = dueDecimal.subtract(receivedDecimal);
+							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+							invoicePayment.setPaymentAmount(String.valueOf(amountreceived));
+							parentInvoice.setDueAmount(remainAmount.toString());
+						}
+					}
 					if (Constants.INVOICE_RECEIVED.equalsIgnoreCase(parentInvoice.getInvoiceStatus())) {
 						parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 					}
