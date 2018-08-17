@@ -68,7 +68,7 @@ $(document).ready(function(){
                   <div class="col-md-5">
                     <label class="clearfix">contributionAmount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_int" field-name="Amount">
+                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_int" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
