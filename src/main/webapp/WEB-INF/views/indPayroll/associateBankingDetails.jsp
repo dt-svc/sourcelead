@@ -67,7 +67,7 @@
         <div class="modal-body minHeightcol5">
 		   <input type="hidden" name="paymentAccountId" id="paymentAccountId"/>
 		   <div class="clearfix row minHeightcol5">
-		 		<div class="col-md-5">
+		 		<div class="col-md-5" id="accountTypeDiv">
 		                <label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
 		                <div>
 		                  <select class="form-control chosen-select" id="accountType" name="accountType" data-validation="required" field-name="Payment Mode">
@@ -78,49 +78,49 @@
 		                </div>
 		         </div>
 		         
-		         <div class="col-md-5">
+		         <div class="col-md-5" id="bankNameDiv">
 		                  <label>Bank Name<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
 		                   <input type="text" id="bankName" name="bankName"  class="form-control" data-validation="required validate_Space validate_length length1-50" field-name="Bank Name"/>
 		                  </div>
 		          </div>
 		          
-		          <div class="col-md-5">
+		          <div class="col-md-5" id="accountNumberDiv">
 		                  <label>Account Number<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
 		                   <input type="text" id="accountNumber"  field-name="Account Number"  name="accountNumber" class="form-control" data-validation="required validate_Space validate_int validate_length length9-15"/>
 		                  </div>
 		          </div>
 		          
-		          <div class="col-md-5">
+		          <div class="col-md-5" id="bsrNumberDiv">
 		                  <label>BSR Number<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
 		                   <input type="text" id="bsrNumber"  field-name="BSR Number"  name="bsrNumber" class="form-control" data-validation="required validate_Space validate_length length9-15"/>
 		                  </div>
 		          </div>
 		          
-		          <div class="col-md-5">
+		          <div class="col-md-5" id="micrCodeDiv">
 		                  <label>MICR Code<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
 		                  <input type="text" id="micrCode"  field-name="MICR Code" name="micrCode" class="form-control" data-validation="required validate_Space validate_length length9-15"/>
 		                  </div>
 		          </div>
 		          
-		          <div class="col-md-5">
+		          <div class="col-md-5" id="routingNumberDiv">
 		                  <label>IFSC Code<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
 		                  <input type="text" id="routingNumber" field-name="IFSC Code" name="routingNumber" class="form-control" data-validation="required validate_Space validate_length length9-9" />
 		                  </div>
 		          </div>
 		          
-		          <div class="col-md-5">
+		          <div class="col-md-5" id="firstNameDiv">
 		                  <label>First Name<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
 		                  <input type="text" id="firstName" name="firstName" pattern="[A-Za-z\s]*" field-name="First Name" class="form-control" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>
 		                  </div>
 		          </div>
 		          
-		          <div class="col-md-5">
+		          <div class="col-md-5" id="lastNameDiv">
 		                  <label>Last Name<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
 		                  <input type="text" id="lastName" name="lastName" pattern="[A-Za-z\s]*" field-name="Last Name" class="form-control" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>
@@ -184,6 +184,44 @@
 </script>
 
 <script>
+function editPaymentAccount(type, id, locationId, firstName, lastName, accountNumber, routingNumber, bankName,bsrNumber,micrCode) {
+	$(".modal.paymentaccount-modal").fadeIn();
+	$(".comMask").fadeIn();
+	$("#paymentAccountId").val(id);
+	$("select[name=accountType]").val(type);
+	$("#firstName").val(firstName);
+	$("#lastName").val(lastName);
+	$("#bankName").val(bankName);
+	$("#accountNumber").val(accountNumber);
+	$("#bsrNumber").val(bsrNumber);
+	$("#micrCode").val(micrCode);
+	$("#routingNumber").val(routingNumber);
+}
+
+function clearPaymentAccount() {
+	$("#paymentAccountId").val('');
+	$("select[name=accountType]").val('');
+	$("#firstName").val('');
+	$("#lastName").val('');
+	$("#bankName").val('');
+	$("#accountNumber").val('');
+	$("#bsrNumber").val('');
+	$("#micrCode").val('');
+	$("#routingNumber").val('');
+	
+	$('#accountTypeDiv').find('p.jquery_form_error_message').remove();
+	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
+	$('#lastNameDiv').find('p.jquery_form_error_message').remove();
+	$('#bankNameDiv').find('p.jquery_form_error_message').remove();
+	$('#accountNumberDiv').find('p.jquery_form_error_message').remove();
+	$('#bsrNumberDiv').find('p.jquery_form_error_message').remove();
+	$('#micrCodeDiv').find('p.jquery_form_error_message').remove();
+	$('#routingNumberDiv').find('p.jquery_form_error_message').remove();
+}
+
+</script>
+
+<script>
 function changeDefaultPaymentAccount(ele, id) {
     $.post(sourceleadUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
     	 var candidateId = '${candidateId}';
@@ -212,6 +250,6 @@ function showIndiaPaymentAccountPopup() {
 function closePaymentAccountPopup() {
     $(".modal.paymentaccount-modal").fadeOut();
     $(".comMask").fadeOut();
-  
+    clearPaymentAccount();
 }
 </script>
