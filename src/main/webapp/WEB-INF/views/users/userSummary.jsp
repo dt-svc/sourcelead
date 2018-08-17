@@ -133,6 +133,7 @@ $(document).ready(function(){
 		
 		 if(country == 'India'){
 			 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
+			 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">Information</a></li>';
 			 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
 		 }
 		
@@ -3802,7 +3803,7 @@ function associateBankingDetails(candidateId){
 	var locationCode = '${SourceLeadWeb_locationCode}';
 	$.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getAssociateBankingDetailsByOrgLocation?candidateId="+candidateId+"&orgLocationId="+locationCode,
+		    url: sourceleadUrl+"/getAssociateBankingDetailsByOrgLocation?candidateId="+candidateId,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
@@ -3812,6 +3813,23 @@ function associateBankingDetails(candidateId){
 				},
 			});
 	}
+	
+	
+function associateInformationDetails(candidateId){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateInformationDetailsByOrgLocation?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
+			});
+	
+}	
 </script>
 
 

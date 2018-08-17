@@ -43,6 +43,8 @@ import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
+import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -107,6 +109,9 @@ public class PayrollConfigurationRestController {
 	
 	@Autowired
 	OrgService orgService;
+	
+	@Autowired
+	AssociatePfEsiService associatePfEsiService;
 	
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
@@ -837,7 +842,7 @@ public class PayrollConfigurationRestController {
 	
 	@RequestMapping(value = "/getAssociateBankingDetailsByOrgLocation")
 	public ModelAndView getAssociateBankingDetailsByOrgLocation(@RequestParam(value="candidateId", required=false) Long candidateId,
-			@RequestParam(value="reportType", required=false) String reportType,HttpServletRequest request) throws Exception{
+			HttpServletRequest request) throws Exception{
 		ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
@@ -847,6 +852,25 @@ public class PayrollConfigurationRestController {
 		 model.addObject("paymentListSize", paymentList.size());
 		 model.addObject("userId",candidate.getConsultantUser().getId());
 		 model.setViewName("indPayroll/associateBankingDetails");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	
+	@RequestMapping(value = "/getAssociateInformationDetailsByOrgLocation")
+	public ModelAndView getAssociateInformationDetailsByOrgLocation(@RequestParam(value="candidateId", required=false) Long candidateId,
+			HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 AssociatePfEsiDetailsDTO pfesiDTO = null;
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 pfesiDTO = associatePfEsiService.getAssociatePfEsiDetailsDTOByCandidateId(candidateId, orgLocation);
+		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		 model.addObject("pfesiDTO", pfesiDTO);
+		 model.addObject("candidateId", candidateId);
+		 model.addObject("userId",candidate.getConsultantUser().getId());
+		 model.setViewName("indPayroll/associateInformationDetails");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
