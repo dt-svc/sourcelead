@@ -82,9 +82,13 @@ public class USPayPeriodServiceImpl implements USPayPeriodService{
 		return isUpdated;
 	}
 	@Override
-	public List<USPayPeriod> getPaySheetFrequencyIdAndOrglocationId(OrgLocations orgLocation,
+	public USPayPeriod getPaySheetFrequencyIdAndOrglocationId(OrgLocations orgLocation,
 			Long payfrequencyId) {
 		return uSPayPeriodDao.getPaySheetFrequencyIdAndOrglocationId(orgLocation, payfrequencyId);
+	}
+	@Override
+	public List<EmployeePayroll> getEmployeePayrollListByPayperiodNum(Integer payPeriodNum) {
+		return uSPayPeriodDao.getEmployeePayrollListByPayperiodNum(payPeriodNum);
 	}
 	
 }

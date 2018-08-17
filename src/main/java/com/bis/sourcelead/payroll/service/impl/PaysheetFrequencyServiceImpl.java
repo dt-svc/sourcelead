@@ -110,11 +110,8 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				
 				
 				ConfigurePayrollApprover cpa = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
-				
-//				List<String> list = new ArrayList<>();
 				List<PayrollApprover> pa = configurePayrollApproverService.getPayrollApproversByCPAID(cpa.getId());
 				for (PayrollApprover payrollApprover : pa) {
-//					list.add(payrollApprover.getUser().getEmail());
 					sendMailToPayrollApprover(orgLocation,loginUser,payrollApprover,savedPF);
 				}
 				
@@ -129,6 +126,16 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	}
 
 	private void sendMailToPayrollApprover(OrgLocations orgLocation, User loginUser, PayrollApprover payrollApprover, PaysheetFrequency savedPF) throws Exception {
+		
+		
+		int sentSize = 0;
+		USPayPeriod uSPayPeriodw = uSPayPeriodService.getPaySheetFrequencyIdAndOrglocationId(orgLocation, savedPF.getId());
+        	 List<EmployeePayroll> empList = uSPayPeriodService.getEmployeePayrollListByPayperiodNum(uSPayPeriodw.getPayPeriodNum());
+        	 for (EmployeePayroll employeePayroll : empList) {
+        		 if(employeePayroll.getSubmitForAproverStatus().equalsIgnoreCase(Constants.SENT)){
+        			 sentSize += 1;
+      			}
+			}
 		
 		
 		EmailMessage emailMessage = new EmailMessage();
@@ -153,7 +160,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		}
 		
 		globalVarsMap.put("batchName", savedPF.getUserGroup().getGroupName());
-		globalVarsMap.put("noOfAssociates", String.valueOf(savedPF.getEmployeepayroll().size()));
+		globalVarsMap.put("noOfAssociates", String.valueOf(sentSize));
 		
 		StringBuilder sbb = new StringBuilder();
 		if(savedPF.getFrequencyEndDate() != null) {

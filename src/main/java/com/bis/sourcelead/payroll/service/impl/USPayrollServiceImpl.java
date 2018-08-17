@@ -316,14 +316,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				res.setResponseMessage(Result.SUCCESS.getValue());
 				res.setObject(confirmPaySumDto);
 				
-				
-//                 ConfigurePayrollApprover cpa = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
-//				
-//				List<String> list = new ArrayList<>();
-//				List<PayrollApprover> pa = configurePayrollApproverService.getPayrollApproversByCPAID(cpa.getId());
-//				for (PayrollApprover payrollApprover : pa) {
-					sendMailApprovedMailToRequestedUser(orgLocation,savedPF,loginUser);
-//				}
+				sendMailApprovedMailToRequestedUser(orgLocation,savedPF,loginUser);
                  
 			}
 		} catch (Exception e) {
@@ -338,14 +331,15 @@ public class USPayrollServiceImpl  implements USPayrollService{
 	private void sendMailApprovedMailToRequestedUser(OrgLocations orgLocation,PaysheetFrequency savedPF,User loginUser) throws Exception {
 		
 		User user = null;
-		String approvedSize = "";
-		List<USPayPeriod> uSPayPeriodw = uSPayPeriodService.getPaySheetFrequencyIdAndOrglocationId(orgLocation, savedPF.getId());
-        for (USPayPeriod usPayPeriod2 : uSPayPeriodw) {
-        	 user = userService.getUserById(usPayPeriod2.getPaysheetFrequency().getCreatedBy());
-        	 if(usPayPeriod2.getApproverStatus().equalsIgnoreCase(Constants.APPROVED)){
- 				approvedSize = usPayPeriod2.getApproverStatus();
- 			}
-		}
+		int approvedSize = 0;
+		USPayPeriod uSPayPeriodw = uSPayPeriodService.getPaySheetFrequencyIdAndOrglocationId(orgLocation, savedPF.getId());
+        	 user = userService.getUserById(uSPayPeriodw.getPaysheetFrequency().getCreatedBy());
+        	 List<EmployeePayroll> empList = uSPayPeriodService.getEmployeePayrollListByPayperiodNum(uSPayPeriodw.getPayPeriodNum());
+        	 for (EmployeePayroll employeePayroll : empList) {
+        		 if(employeePayroll.getSubmitForAproverStatus().equalsIgnoreCase(Constants.APPROVED)){
+      				approvedSize += 1;
+      			}
+			}
 		
 		
 		EmailMessage emailMessage = new EmailMessage();
