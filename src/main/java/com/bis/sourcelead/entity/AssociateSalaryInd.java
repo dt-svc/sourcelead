@@ -3,7 +3,6 @@ package com.bis.sourcelead.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,14 +16,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ASSOCIATE_SALARY_IND")
@@ -35,17 +31,58 @@ public class AssociateSalaryInd {
     private Long id;
 	
 	@ManyToOne
-    @JoinColumn(name="CANDIDATE")        
-    private Candidate candidate;
+	@JoinColumn(name = "ORG_LOCATION_ID")
+	private OrgLocations orgLocations;
 	
-	@Column(name = "CTC")
+	@ManyToOne
+	@JoinColumn(name = "CANDIDATE_ID")
+	private Candidate candidate;
+	
+	@ManyToOne
+	@JoinColumn(name = "GROUP_ID")
+	private UserGroup groupId;
+	
+	@Column(name = "PAY_TYPE")
+	private String payType;
+	
+	@Column(name = "PAY_FREQUENCY")
+	private String payFrequency;
+	
+	@Column(name = "STANDARD_HOURS")
+	private String standardHours;
+	
+	@Column(name = "ANNUAL_SALARY")
+	private BigDecimal annualSalary;
+	
+	@Column(name = "GROSS_SALARY")
+	private BigDecimal grossSalary;
+	
+	@Column(name = "HOURLY_RATE")
+	private BigDecimal hourlyRate;
+	
+	@Column( name ="ALLOW_OVER_TIME_PAY")
+	private String allowOverTimePay;
+	
+	@Column( name ="INCREMENT_PERCENTAGE")
+	private String incrementPercentage;
+	
+	@Column( name ="EFFECTIVE_DATE")
+	private Date effectiveDate;
+	
+	@Column( name ="CHANGE_REASON",columnDefinition = "TEXT default NULL")
+	private String changeReason;
+
+	@Column( name ="SALARY_TYPE")
+	private String salaryType;
+	
+	/*@Column(name = "CTC")
 	private BigDecimal ctc;
 	
 	@Column(name = "FBP")
 	private BigDecimal fbp;
 	
 	@Column(name = "VARIABLE_PAY")
-	private BigDecimal variablePay;
+	private BigDecimal variablePay;*/
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -80,6 +117,14 @@ public class AssociateSalaryInd {
 		this.id = id;
 	}
 
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
+	}
+
 	public Candidate getCandidate() {
 		return candidate;
 	}
@@ -88,28 +133,100 @@ public class AssociateSalaryInd {
 		this.candidate = candidate;
 	}
 
-	public BigDecimal getCtc() {
-		return ctc;
+	public UserGroup getGroupId() {
+		return groupId;
 	}
 
-	public void setCtc(BigDecimal ctc) {
-		this.ctc = ctc;
+	public void setGroupId(UserGroup groupId) {
+		this.groupId = groupId;
 	}
 
-	public BigDecimal getFbp() {
-		return fbp;
+	public String getPayType() {
+		return payType;
 	}
 
-	public void setFbp(BigDecimal fbp) {
-		this.fbp = fbp;
+	public void setPayType(String payType) {
+		this.payType = payType;
 	}
 
-	public BigDecimal getVariablePay() {
-		return variablePay;
+	public String getPayFrequency() {
+		return payFrequency;
 	}
 
-	public void setVariablePay(BigDecimal variablePay) {
-		this.variablePay = variablePay;
+	public void setPayFrequency(String payFrequency) {
+		this.payFrequency = payFrequency;
+	}
+
+	public String getStandardHours() {
+		return standardHours;
+	}
+
+	public void setStandardHours(String standardHours) {
+		this.standardHours = standardHours;
+	}
+
+	public BigDecimal getAnnualSalary() {
+		return annualSalary;
+	}
+
+	public void setAnnualSalary(BigDecimal annualSalary) {
+		this.annualSalary = annualSalary;
+	}
+
+	public BigDecimal getGrossSalary() {
+		return grossSalary;
+	}
+
+	public void setGrossSalary(BigDecimal grossSalary) {
+		this.grossSalary = grossSalary;
+	}
+
+	public BigDecimal getHourlyRate() {
+		return hourlyRate;
+	}
+
+	public void setHourlyRate(BigDecimal hourlyRate) {
+		this.hourlyRate = hourlyRate;
+	}
+
+	public String getAllowOverTimePay() {
+		return allowOverTimePay;
+	}
+
+	public void setAllowOverTimePay(String allowOverTimePay) {
+		this.allowOverTimePay = allowOverTimePay;
+	}
+
+	public String getIncrementPercentage() {
+		return incrementPercentage;
+	}
+
+	public void setIncrementPercentage(String incrementPercentage) {
+		this.incrementPercentage = incrementPercentage;
+	}
+
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(Date effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	public String getChangeReason() {
+		return changeReason;
+	}
+
+	public void setChangeReason(String changeReason) {
+		this.changeReason = changeReason;
+	}
+
+	public String getSalaryType() {
+		return salaryType;
+	}
+
+	public void setSalaryType(String salaryType) {
+		this.salaryType = salaryType;
 	}
 
 	public Integer getStatus() {

@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -843,9 +842,10 @@ public class PayrollConfigurationRestController {
 			
 			AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByCandidateId(payrollPayheadDTO.getCandidateId());
 			if(associateSalaryInd != null) {
-				model.addObject("candidateCTCPerYear", associateSalaryInd.getCtc());
+				/*model.addObject("candidateCTCPerYear", associateSalaryInd.getCtc());
 				model.addObject("fbp", associateSalaryInd.getFbp());
-				model.addObject("variablePay", associateSalaryInd.getVariablePay());
+				model.addObject("variablePay", associateSalaryInd.getVariablePay());*/
+				model.addObject("associateSalaryInd", associateSalaryInd);
 				model.addObject("candidate", associateSalaryInd.getCandidate());
 				model.addObject("associateSalaryPayheadIndList", associateSalaryInd.getAssociateSalaryPayheadIndList());
 				model.addObject("uuid", associateSalaryInd.getUuid());

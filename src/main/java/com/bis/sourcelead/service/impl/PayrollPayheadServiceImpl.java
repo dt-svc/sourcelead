@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
@@ -20,8 +22,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
-import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -34,6 +36,9 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	UserGroupDao userGroupDao;
 
 	@Override
 	public PayrollPayhead savePayrollPayhead(PayrollPayheadDTO payrollPayheadDTO, User user, OrgLocations orgLocations) throws Exception {
@@ -228,6 +233,31 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 			associateSalaryInd.setCreatedBy(user);
 		}
 		
+		UserGroup uesrgroup = userGroupDao.findUserGroupById(associateSalaryIndDTO.getPayGroup());
+		associateSalaryInd.setGroupId(uesrgroup);
+		associateSalaryInd.setPayType(associateSalaryIndDTO.getPayType());
+		associateSalaryInd.setPayFrequency(associateSalaryIndDTO.getPayFrequency());
+		associateSalaryInd.setStandardHours(associateSalaryIndDTO.getStandardHours());
+		associateSalaryInd.setAnnualSalary(new BigDecimal(associateSalaryIndDTO.getAnnualSal()));
+		associateSalaryInd.setGrossSalary(new BigDecimal(associateSalaryIndDTO.getPerPaySal()));
+		if(StringUtils.isNotBlank(associateSalaryIndDTO.getHourlyRate())) {
+			associateSalaryInd.setHourlyRate(new BigDecimal(associateSalaryIndDTO.getHourlyRate()));
+		}
+		associateSalaryInd.setAllowOverTimePay(associateSalaryIndDTO.getAllowOverTimePay());
+		associateSalaryInd.setOrgLocations(orgLocations);
+		if(associateSalaryIndDTO.getIncreasePer() != null) {
+			associateSalaryInd.setIncrementPercentage(associateSalaryIndDTO.getIncreasePer());
+		}
+		if(associateSalaryIndDTO.getEffectiveDate() != null && !"".equalsIgnoreCase(associateSalaryIndDTO.getEffectiveDate())) {
+			associateSalaryInd.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), associateSalaryIndDTO.getEffectiveDate()));
+		}
+		if(associateSalaryIndDTO.getChangeReason() != null) {
+			associateSalaryInd.setChangeReason(associateSalaryIndDTO.getChangeReason());
+		}
+		if(associateSalaryIndDTO.getSalaryType() != null) {
+			associateSalaryInd.setSalaryType(associateSalaryIndDTO.getSalaryType());
+		}
+		
 		if(associateSalaryIndDTO.getCandidateId() != null) {
 			Candidate can = new Candidate();
 			can.setId(associateSalaryIndDTO.getCandidateId());
@@ -236,7 +266,7 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 			associateSalaryInd.setCandidate(null);
 		}
 		
-		if(associateSalaryIndDTO.getCtc() != null) {
+		/*if(associateSalaryIndDTO.getCtc() != null) {
 			associateSalaryInd.setCtc(associateSalaryIndDTO.getCtc());
 		}else {
 			associateSalaryInd.setCtc(null);
@@ -252,7 +282,7 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 			associateSalaryInd.setVariablePay(associateSalaryIndDTO.getVariablePay());
 		}else {
 			associateSalaryInd.setVariablePay(null);
-		}
+		}*/
 		
 		associateSalaryInd.setStatus(Constants.RECORD_ACTIVE);
 		
