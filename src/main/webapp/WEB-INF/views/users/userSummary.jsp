@@ -133,7 +133,8 @@ $(document).ready(function(){
 		
 		 if(country == 'India'){
 			 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
-			 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">Information</a></li>';
+			 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
+			 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">Loan / Advances</a></li>';
 			 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
 		 }
 		
