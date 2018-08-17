@@ -337,8 +337,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 						}else{
 							// partial amount paid
 							String due = parentInvoice.getDueAmount();
-							float amountPaid = convertedAmount1 *Float.valueOf(due);
-							BigDecimal dueDecimal = (new BigDecimal(amountPaid));
+							BigDecimal dueDecimal = (new BigDecimal(due));
 							String received = invoiceIdsMap.get(invoice.getId());
 							float amountreceived = convertedAmount1 *Float.valueOf(received);
 							BigDecimal receivedDecimal = (new BigDecimal(amountreceived));
