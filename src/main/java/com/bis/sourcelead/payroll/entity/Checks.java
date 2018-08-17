@@ -101,6 +101,9 @@ public class Checks implements Serializable {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Transient
 	@JsonProperty
 	private String dateStr;
@@ -375,7 +378,14 @@ public class Checks implements Serializable {
 	public void setImmigration(String immigration) {
 		this.immigration = immigration;
 	}
-	
-	
-	
+
+	public String getUuid()
+	{
+		return uuid;
+	}
+
+	public void setUuid(String uuid)
+	{
+		this.uuid = uuid;
+	}
 }

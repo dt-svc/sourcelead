@@ -179,4 +179,9 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 		}
 		return res;
 	}
+
+	@Override
+	public List<PayrollApprover> getPayrollApproversByCPAID(Long configurePayrollApproverId) {
+		return configurePayrollApproverDao.getPayrollApproversByCPAID(configurePayrollApproverId);
+	}
 }

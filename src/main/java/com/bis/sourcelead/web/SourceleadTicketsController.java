@@ -46,7 +46,7 @@ public class SourceleadTicketsController {
 		return (str == null || "".equals(str.trim()));
 	 }
 
-	 @PreAuthorize("hasRole('ROLE_SUPPORT')")
+//	 @PreAuthorize("hasRole('ROLE_SUPPORT')")
 	 @RequestMapping(value = "/sourceleadTicketList")
    	 public ModelAndView sourceleadTicketList( HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();
