@@ -346,7 +346,7 @@ function calculateHourlyRateSal(){
  <script type="text/javascript">
  function saveAssocioateSal() {
 	 var userId = $("#associateId").val();
-	var empType = $("#empType").val(); 
+	 var empType = $("#empType").val(); 
 
 	 if ($('#associate_salary_form').validate(false, validationSettings)){ 
 			   var formData = $($('#associate_salary_form')[0]).serialize();

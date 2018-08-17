@@ -51,12 +51,19 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 		try {
 			AssociateTax associateTax = null;
 			if (Validator.validate(associateTaxDTO)) {
-				if(associateTaxDTO.getId() != null && associateTaxDTO.getId() != 0) {
-					associateTax = associateTaxDao.findAssociateTaxById(associateTaxDTO.getId());
-				}else {
-					associateTax = new AssociateTax();
-					Candidate candidate = candidateDao.getCandidateByConsultantUserId(associateTaxDTO.getUserId(),orgLocation.getId());
-					associateTax.setCandidate(candidate);
+				if(associateTaxDTO.getUserId() != null) {
+					Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.valueOf(associateTaxDTO.getUserId()),orgLocation.getId());
+					associateTax = associateTaxDao.findAssociateTaxSummaryByCandidateId(candidate.getId(),orgLocation);
+					if(associateTax != null) {
+						associateTax.setUpdatedBy(loginUser.getUserCode());
+						associateTax.setUpdatedDate(new Date());
+					}else {
+						associateTax = new AssociateTax();
+//						Candidate candidate = candidateDao.getCandidateByConsultantUserId(associateTaxDTO.getUserId(),orgLocation.getId());
+						associateTax.setCandidate(candidate);
+						associateTax.setCreatedBy(loginUser.getUserCode());
+						associateTax.setCreatedDate(new Date());
+					}
 				}
 				associateTax.setFederalTaxFilliingStatus(associateTaxDTO.getFederaltaxFillingStatus());
 				associateTax.setFederalTaxAllowances(associateTaxDTO.getFederaltaxAllowances());
@@ -108,10 +115,10 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 				}
 				associateTax.setStatus(1);
 				associateTax.setOrgLocationId(orgLocation);
-				associateTax.setCreatedBy(loginUser.getUserCode());
-				associateTax.setCreatedDate(new Date());
-				associateTax.setUpdatedBy(loginUser.getUserCode());
-				associateTax.setUpdatedDate(new Date());
+//				associateTax.setCreatedBy(loginUser.getUserCode());
+//				associateTax.setCreatedDate(new Date());
+//				associateTax.setUpdatedBy(loginUser.getUserCode());
+//				associateTax.setUpdatedDate(new Date());
 				associateTax.setSupplementType(associateTaxDTO.getResidenceLocationSupplementType());
 				AssociateTax savedAssociateTax = associateTaxDao.saveAssociateTax(associateTax);
 				if (savedAssociateTax != null) {

@@ -48,12 +48,16 @@ import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollTax;
+import com.bis.sourcelead.payroll.entity.PayAdjustmentDedHistory;
+import com.bis.sourcelead.payroll.entity.PayAdjustmentHistory;
+import com.bis.sourcelead.payroll.entity.PayAdjustmentPayItemHistory;
 import com.bis.sourcelead.payroll.entity.PayitemHistory;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
@@ -61,6 +65,7 @@ import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.payroll.service.DeductionHistoryService;
 import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
+import com.bis.sourcelead.payroll.service.PayAdjustmentHistoryService;
 import com.bis.sourcelead.payroll.service.PayrollAdjustmentService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.payroll.symmetry.PayrollCalculatorDTO;
@@ -142,6 +147,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	@Autowired
 	private AssociateSalaryDao associateSalaryDao;
 	
+	@Autowired
+	PayAdjustmentHistoryService payAdjustmentHistoryService;
+	
 	
 	 
 	@Override
@@ -186,10 +194,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			Set<EmployeePayroll> payrollList = calculatePayroll(existedData,paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
 			paySheetFreq.setEmployeepayroll(payrollList);
 			if(payrollList !=null && payrollList.size() > 0) {
-				PaysheetFrequency savedPaysheetFrequency = uSPaysheetService.addPaysheetFrequency(paySheetFreq);
+				uSPaysheetService.addPaysheetFrequency(paySheetFreq);
 			}
-				
 				paysheetFrequencyDTO = getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
+				List<USPayrollDTO> draftPayroll = paysheetFrequencyDTO.getPayrollDTO().stream().filter(p->PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus())).collect(Collectors.toList());
+				paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
 		}
 		return paysheetFrequencyDTO;
 	}
@@ -288,11 +297,6 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		boolean isExisted = false;
 		if(existedData != null) {
 		for (USPayrollDTO uSPayrollDTO : existedData.getPayrollDTO()) {
-			System.out.println("Existed ==="+existedData.getPaySheetFrequencyId().longValue() );
-			System.out.println("User == "+uSPayrollDTO.getPaySheetFrequencyId().longValue());
-			
-			System.out.println("Existed User ID ==="+uSPayrollDTO.getCandidateId().longValue() );
-			System.out.println("Running User ID == "+assoSal.getCandidate().getId().longValue());
 			if((uSPayrollDTO.getCandidateId().longValue() == assoSal.getCandidate().getId().longValue()) && (existedData.getPaySheetFrequencyId().longValue() == uSPayrollDTO.getPaySheetFrequencyId().longValue())) {
 				return true;
 			}
@@ -775,7 +779,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					payrollDTO.setPayRate(pay.getEmpPayRate());
 					payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
 					payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());
-					payrollDTO.setRegularHours(Float.parseFloat(pay.getRegularHours()));
+					float regHrs = 0;
+					if(StringUtils.isNotBlank(pay.getRegularHours())) {
+						regHrs = Float.parseFloat(pay.getRegularHours());
+					}
+					payrollDTO.setRegularHours(regHrs);
 					payrollDTO.setTaxes(pay.getTaxes());
 					payrollDTO.setOtHoursTotalAmt(pay.getOverTimeAmount());
 					payrollDTO.setCandidateId(pay.getCandidate().getId());
@@ -785,9 +793,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
 					}
 					payrollDTO.setOvertimeHours(overTimeHours);
-					if(PayrollConstant.DRAFT.equalsIgnoreCase(pay.getSubmitForAproverStatus())) {
+					payrollDTO.setApproverStatus(pay.getSubmitForAproverStatus());
+//					if(PayrollConstant.DRAFT.equalsIgnoreCase(pay.getSubmitForAproverStatus())) {
 						list.add(payrollDTO);	
-					}
+//					}
 					
 				}
 				paysheetFrequencyDTO.setPayrollDTO(list);
@@ -810,7 +819,14 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setPayrollId(String.valueOf(payroll.getId()));
 			payrollDTO.setPayrollUUID(payroll.getUsEmpPayrollUUID());
 			double totalHours = 0;
-			
+			double regHrs = 0;
+			double otHrs = 0;
+			if(StringUtils.isNoneBlank(payroll.getRegularHours())) {
+				regHrs = Double.parseDouble(payroll.getRegularHours());
+			}
+			if(StringUtils.isNoneBlank(payroll.getOverTimeHours())) {
+				otHrs = Double.parseDouble(payroll.getOverTimeHours());
+			}
 			payrollDTO.setEmpId(payroll.getEmployee().getEmployeeId());
 			StringBuilder sb = new StringBuilder();
 			if (StringUtils.isNoneBlank(payroll.getCandidate().getLastName())) {
@@ -828,15 +844,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setPayRate(payroll.getEmpPayRate());
 			payrollDTO.setPostTaxDeduction(payroll.getPostTaxDeduction());
 			payrollDTO.setPreTaxDeduction(payroll.getPreTaxDeduction());
-			payrollDTO.setRegularHours(Float.parseFloat(payroll.getRegularHours()));
+			payrollDTO.setRegularHours(regHrs);
 			payrollDTO.setTaxes(payroll.getTaxes());
-			double overTimeHours = 0;
-			if(StringUtils.isNotBlank(payroll.getOverTimeHours())) {
-				payrollDTO.setOvertimeHours(Double.parseDouble(payroll.getOverTimeHours()));	
-				overTimeHours = Double.parseDouble(payroll.getOverTimeHours());
-			}
-			payrollDTO.setOvertimeHours(overTimeHours);
-			totalHours = CommonUtil.getTotalRegularOverTimeHours(Double.parseDouble(payroll.getRegularHours()), overTimeHours);
+			payrollDTO.setOvertimeHours(otHrs);
+			totalHours = CommonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
 			payrollDTO.setTotalHours(totalHours);
 			BigDecimal overTimeAmount = BigDecimal.ZERO;
 			if(payroll.getOverTimeAmount() != null) {
@@ -903,8 +914,27 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	{
 		Response<PayAdjustmentDTO> res = new Response<>();
 		try {
-			float totalHours = Float.parseFloat(payAdjustmentDTO.getRegularHours()) + Float.parseFloat(payAdjustmentDTO.getOverTimeHours());
-			double amount = Double.parseDouble(payAdjustmentDTO.getRegularHoursAmt()) + Double.parseDouble(payAdjustmentDTO.getOverTimeHoursAmt());
+			PayAdjustmentHistory payAdjHistory = new PayAdjustmentHistory();
+			double regHrs = 0;
+			double otHrs = 0;
+			double regHrsAmt = 0;
+			double otHrsAmt = 0;
+			if(StringUtils.isNotBlank(payAdjustmentDTO.getRegularHours())) {
+				regHrs = Double.parseDouble(payAdjustmentDTO.getRegularHours());
+			}
+			if(StringUtils.isNotBlank(payAdjustmentDTO.getOverTimeHours())) {
+				otHrs = Double.parseDouble(payAdjustmentDTO.getOverTimeHours());
+			}
+			
+			if(StringUtils.isNotBlank(payAdjustmentDTO.getRegularHoursAmt())) {
+				regHrsAmt = Double.parseDouble(payAdjustmentDTO.getRegularHoursAmt());
+			}
+			
+			if(StringUtils.isNotBlank(payAdjustmentDTO.getOverTimeHoursAmt())) {
+				otHrsAmt = Double.parseDouble(payAdjustmentDTO.getOverTimeHoursAmt());
+			}
+			double totalHours = CommonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
+			double amount =  regHrsAmt+ otHrsAmt;
 			double preTax = 0;
 			double postTax = 0;
 			if(payAdjustmentDTO.getPreDeduction() != null && payAdjustmentDTO.getPreDeduction().size() >0) {
@@ -913,6 +943,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			if(payAdjustmentDTO.getPostDeduction() != null && payAdjustmentDTO.getPostDeduction().size() >0) {
 				 postTax = payAdjustmentDTO.getPostDeduction().stream().mapToDouble(pre->pre.getAmount().doubleValue()).sum();	
 			}
+			payAdjHistory.setRegularHours(String.valueOf(regHrs));
+			payAdjHistory.setOvertimeHours(String.valueOf(otHrs));
+			payAdjHistory.setRegularHoursAmt(new BigDecimal(regHrsAmt));
+			payAdjHistory.setOvertimeHoursAmt(new BigDecimal(otHrsAmt));
 			double preTaxContriSum = 0;
 			double postTaxContriSum = 0;
 			if(payAdjustmentDTO.getContribution() != null && payAdjustmentDTO.getContribution().size()>0) {
@@ -948,6 +982,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payroll.setUpdatedDate(new Date());
 			EmployeePayroll updatedPayroll = payrollAdjustmentService.updateEmployeePayroll(payroll);
 			if (updatedPayroll != null) {
+				updatePayAdjustmentHistory(payAdjHistory,updatedPayroll,payAdjustmentDTO,loginUser);
 				res.setResponse(Result.SUCCESS.name());
 				res.setResponseMessage(Result.SUCCESS.getValue());
 				res.setObject(payAdjustmentDTO);
@@ -958,6 +993,112 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return res;
+	}
+
+	private void updatePayAdjustmentHistory(PayAdjustmentHistory payAdjHistory, EmployeePayroll updatedPayroll, PayAdjustmentDTO payAdjustmentDTO, User loginUser)
+	{
+		float preRegHrs = 0;
+		float preOtHrs = 0;
+		BigDecimal preRegHrsAmt = BigDecimal.ZERO;
+		BigDecimal preOtHrsAmt = BigDecimal.ZERO;
+		payAdjHistory.setPayrollId(updatedPayroll);
+		if(StringUtils.isNotBlank(payAdjustmentDTO.getPreRregularHours())) {
+			preRegHrs = Float.parseFloat(payAdjustmentDTO.getPreRregularHours());
+		}
+		if(StringUtils.isNotBlank(payAdjustmentDTO.getPreOverTimeHours())) {
+			preOtHrs = Float.parseFloat(payAdjustmentDTO.getPreOverTimeHours());
+		}
+		if(StringUtils.isNotBlank(payAdjustmentDTO.getPreRegularHoursAmt())) {
+			preRegHrsAmt = new BigDecimal(payAdjustmentDTO.getPreRegularHoursAmt());
+		}
+		if(StringUtils.isNotBlank(payAdjustmentDTO.getPreOverTimeHoursAmt())) {
+			preOtHrsAmt = new BigDecimal(payAdjustmentDTO.getPreOverTimeHoursAmt());
+		}
+		payAdjHistory.setPreRegularHours(String.valueOf(preRegHrs));
+		payAdjHistory.setOvertimeHours(String.valueOf(preOtHrs));
+		payAdjHistory.setPreRegularHoursAmt(preRegHrsAmt);
+		payAdjHistory.setPreOvertimeHoursAmt(preOtHrsAmt);
+		Set<PayAdjustmentDedHistory> payAdjDedHisSet = new HashSet<>();
+		payAdjDedHisSet.addAll(getPayAdjDedHis(payAdjustmentDTO.getPreDeduction(),payAdjHistory));
+		payAdjDedHisSet.addAll(getPayAdjDedHis(payAdjustmentDTO.getPostDeduction(),payAdjHistory));
+		payAdjDedHisSet.addAll(getContributionHis(payAdjustmentDTO.getContribution(),payAdjHistory));
+		payAdjHistory.setPayAdjustmentDedHistory(payAdjDedHisSet);	
+		
+		if(payAdjustmentDTO.getPayItem() !=null) {
+			Set<PayAdjustmentPayItemHistory> set = new HashSet<>();
+			for(AssociatePayItemDTO dto : payAdjustmentDTO.getPayItem()) {
+				PayAdjustmentPayItemHistory  payItemHis = new PayAdjustmentPayItemHistory();
+				payItemHis.setPayitemId(dto.getPayItemId().longValue());
+				payItemHis.setPrePayItemAmt(new BigDecimal(dto.getPrePayItemAmt()));
+				payItemHis.setPrePayItemName(dto.getPrePayItemName());
+				payItemHis.setPayItemAmt(new BigDecimal(dto.getPayItemAmount()));
+				payItemHis.setPayItemName(dto.getPrePayItemName());
+				payItemHis.setPayAdjustmentHistory(payAdjHistory);
+				if(dto.getPayItemCheck() != null) {
+					payItemHis.setPayItemBlock("BLOCKED");
+				}else {
+					payItemHis.setPrePayItemBlock("NO");
+				}
+				set.add(payItemHis);
+			}
+			payAdjHistory.setPayAdjustmentPayItemHistory(set);
+		}
+		payAdjHistory.setCreatedDate(new Date());
+		payAdjHistory.setUpdatedDate(new Date());
+		payAdjHistory.setCreatedBy(loginUser.getId());
+		payAdjHistory.setUpdatedBy(loginUser.getId());
+		payAdjHistory.setStatus(1);
+		payAdjustmentHistoryService.savePayAdjustmentHistory(payAdjHistory);
+	}
+
+	/**
+	 * populate contribution history
+	 * 
+	 * @param contribution
+	 * @param payAdjHistory 
+	 * @return Set<PayAdjustmentDedHistory>
+	 */
+	private Set<PayAdjustmentDedHistory> getContributionHis(List<ContributionDTO> contribution, PayAdjustmentHistory payAdjHistory)
+	{
+		Set<PayAdjustmentDedHistory> payAdjDedHisSet = new HashSet<>();
+		if (contribution != null && contribution.size() > 0) {
+			for (ContributionDTO dto : contribution) {
+				PayAdjustmentDedHistory payDedHis = new PayAdjustmentDedHistory();
+				payDedHis.setContributionId(Long.parseLong(dto.getId()));
+				payDedHis.setPreContributionType(dto.getPreContributionType());
+				payDedHis.setPreContributionAmt(dto.getPreContributionAmt());
+				payDedHis.setContributionType(dto.getPreContributionType());
+				payDedHis.setContributionAmt(new BigDecimal(dto.getAmount()));
+				payDedHis.setPayAdjustmentHistory(payAdjHistory);
+				payAdjDedHisSet.add(payDedHis);
+			}
+		}
+		return payAdjDedHisSet;
+	}
+
+	/**
+	 * populate deduction history
+	 * 
+	 * @param preded
+	 * @param payAdjHistory 
+	 * @return Set<PayAdjustmentDedHistory>
+	 */
+	private Set<PayAdjustmentDedHistory> getPayAdjDedHis(List<DeductionDTO> preded, PayAdjustmentHistory payAdjHistory)
+	{
+		Set<PayAdjustmentDedHistory> payAdjDedHisSet = new HashSet<>();
+		if (preded != null && preded.size() > 0) {
+			for (DeductionDTO preDed : preded) {
+				PayAdjustmentDedHistory payDedHis = new PayAdjustmentDedHistory();
+				payDedHis.setPreDeductionType(preDed.getPreDeductionType());
+				payDedHis.setPreDeductionAmt(new BigDecimal(preDed.getPreDeductionAmt()));
+				payDedHis.setDeductionId(Long.parseLong(preDed.getId()));
+				payDedHis.setDeductionType(preDed.getPreDeductionType());
+				payDedHis.setDeductionAmt(preDed.getAmount());
+				payDedHis.setPayAdjustmentHistory(payAdjHistory);
+				payAdjDedHisSet.add(payDedHis);
+			}
+		}
+		return payAdjDedHisSet;
 	}
 	
 }

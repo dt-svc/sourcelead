@@ -21,6 +21,11 @@ public class AssociatePayItemDTO {
 	private String updatedDate;
 	private String updatedBy;
 	private String payItemCheck;
+	private String prePayItemName;
+	private String prePayItemBlock;
+	private String prePayItemAmt;
+	
+	
 	public String getId()
 	{
 		return id;
@@ -148,6 +153,30 @@ public class AssociatePayItemDTO {
 	public void setAmount(BigDecimal amount)
 	{
 		this.amount = amount;
+	}
+	public String getPrePayItemName()
+	{
+		return prePayItemName;
+	}
+	public String getPrePayItemBlock()
+	{
+		return prePayItemBlock;
+	}
+	public String getPrePayItemAmt()
+	{
+		return prePayItemAmt;
+	}
+	public void setPrePayItemName(String prePayItemName)
+	{
+		this.prePayItemName = prePayItemName;
+	}
+	public void setPrePayItemBlock(String prePayItemBlock)
+	{
+		this.prePayItemBlock = prePayItemBlock;
+	}
+	public void setPrePayItemAmt(String prePayItemAmt)
+	{
+		this.prePayItemAmt = prePayItemAmt;
 	}
 	
 	

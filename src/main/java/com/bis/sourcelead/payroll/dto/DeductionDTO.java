@@ -25,6 +25,10 @@ public class DeductionDTO {
 	
 	private BigDecimal[] contributionTaxes;
 	
+	private String preDeductionType;
+	
+	private String preDeductionAmt;
+	
 	public double getDedAmount()
 	{
 		return dedAmount;
@@ -149,6 +153,26 @@ public class DeductionDTO {
 	public void setContributionTaxes(BigDecimal[] contributionTaxes)
 	{
 		this.contributionTaxes = contributionTaxes;
+	}
+
+	public String getPreDeductionType()
+	{
+		return preDeductionType;
+	}
+
+	public String getPreDeductionAmt()
+	{
+		return preDeductionAmt;
+	}
+
+	public void setPreDeductionType(String preDeductionType)
+	{
+		this.preDeductionType = preDeductionType;
+	}
+
+	public void setPreDeductionAmt(String preDeductionAmt)
+	{
+		this.preDeductionAmt = preDeductionAmt;
 	}
 	
 	
