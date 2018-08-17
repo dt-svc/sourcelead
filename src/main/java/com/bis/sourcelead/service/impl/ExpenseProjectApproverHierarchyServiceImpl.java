@@ -40,4 +40,11 @@ public class ExpenseProjectApproverHierarchyServiceImpl implements ExpenseProjec
 	}
 	
 	
+	@Override
+	public ExpenseProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId, Long projectClientId)
+			throws Exception{
+		return expenseProjectApproverHierarchyDao.getApproverUsersByProjectIdAndProjectClientId(projectId, projectClientId);
+	}
+	
+	
 }
