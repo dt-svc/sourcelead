@@ -2049,10 +2049,10 @@ public class InvoiceRestController {
 		if (invoice != null && invoice.getExpensesId() != null) {
 			invoiceService.updateExpensesForinvoice(invoice, invoiceType);
 		}
-		if (Constants.PAYABLES.equals(invoiceType) && Constants.DRAFT.equals(saveType)) {
+		if (Constants.PAYABLE.equals(invoiceType) && Constants.DRAFT.equals(saveType)) {
 			SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have created a Bill");
 		}
-		if (Constants.PAYABLES.equals(invoiceType) && Constants.INVOICE_SENT.equals(saveType)) {
+		if (Constants.PAYABLE.equals(invoiceType) && Constants.INVOICE_SENT.equals(saveType)) {
 			SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have sent a Bill");
 		}
 		if (Constants.RECEIVABLE.equals(invoiceType) && Constants.DRAFT.equals(saveType)) {
