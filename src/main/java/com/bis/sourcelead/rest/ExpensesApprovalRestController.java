@@ -220,20 +220,40 @@ public class ExpensesApprovalRestController {
 	 			    DateFormat TZ_DF_TS = new SimpleDateFormat (orgLoc.getDateFormat());
 	 	            String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getStartDate());
 	 	            String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate());
-	 			    //For Employee
+	 	            
+	 	            //For Employee
 			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
-			 		 
-			 		//For Approvers of EndClient
-			 		 List<ExpenseProjectApproverHierarchy> approverList =  expenseProjectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
-			 		 if(approverList != null && !approverList.isEmpty()){
+			 		
+			 		if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 2 && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
+			 			//For Approvers of EndClient
+				 		 List<ExpenseProjectApproverHierarchy> approverList =  expenseProjectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
+				 		 if(approverList != null && !approverList.isEmpty()){
 
-			 			 for(ExpenseProjectApproverHierarchy  approver : approverList){
-			 				if(!user.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())){
-			 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
-			 				}
-			 			 }
-			 		 }
-			 		sendEmailToVendorAtExpensesApprovalStatus(eah.getExpenseId().getTotalAmount(),projectMembers,user,orgLoc,startDate, endDate,rejectedReason,currencyCode,approvalStatus);
+				 			 for(ExpenseProjectApproverHierarchy  approver : approverList){
+				 				if(!user.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())){
+				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
+				 				}
+				 			 }
+				 		 }
+				 		sendEmailToVendorAtExpensesApprovalStatus(eah.getExpenseId().getTotalAmount(),projectMembers,user,orgLoc,startDate, endDate,rejectedReason,currencyCode,approvalStatus);
+			 		}
+			 		
+		 	   }else  if(StringUtils.isNotEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())) {
+		 		    ProjectMembers projectMembers = projectMembersService.getProjectMemberById(eah.getExpenseId().getProjectMembers().getId());
+	 			    DateFormat TZ_DF_TS = new SimpleDateFormat (orgLoc.getDateFormat());
+	 	            String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getStartDate());
+	 	            String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate());
+	 	            if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 1 && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())){
+			 			//For Approvers of EndClient
+				 		 List<ExpenseProjectApproverHierarchy> approverList =  expenseProjectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
+				 		 if(approverList != null && !approverList.isEmpty()){
+				 			 for(ExpenseProjectApproverHierarchy  approver : approverList){
+				 				if(approver.getLevel() != null && approver.getLevel() != 1){
+				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
+				 				}
+				 			 }
+				 		 }
+			 		}
 		 	   }
 	 	}
 		 	reponse.setResponse(Result.SUCCESS.name());

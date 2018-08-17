@@ -238,6 +238,7 @@ function prepareAllLeaveReportList(url,formData){
 		result = result + '<th>From Date</th>';
 		result = result + '<th>To Date</th>';
 		result = result + '<th>Applied on</th>';
+		result = result + '<th>No Of Days</th>';
 		result = result + '<th>Status</th>';
 		result = result + '<th>Approver</th>';
 		result = result + '<th>Approved on</th>';
@@ -275,6 +276,7 @@ function leaveReportsListPagination(url,formData){
 	            { "data": "fromDate"},
 	            { "data": "toDate"},
 	            { "data": "appliedOn"},
+	            { "data": "noOfDays"},
 	            { "data": "status"},
 	            { "data": "approver"},
 	            { "data": "approvedOn"},
@@ -389,6 +391,20 @@ function leaveReportsListPagination(url,formData){
 						 result = result + '<div class="tblminwidth-75">'+user.appliedOnDateStr+'</div>';
 		          }else{
 						result = result + '<div class="tblminwidth-75">--</div>';
+					}
+		          	result = result + ' </td>';
+			        return result;
+			          }
+	      },{
+	    	  	"targets": colIndex++,
+	    	  	"data":"noOfDays",
+	    	  	"render": function(data, type, user, meta) {
+	    	  		var result = '';
+		        	result = result + ' <td>';
+		          	if(user.noOfDays !=null && user.noOfDays !='' && user.noOfDays !='undefined'){
+						 result = result + '<div class="tblminwidth-75">'+user.noOfDays+'</div>';
+		          }else{
+						result = result + '<div class="tblminwidth-75">0</div>';
 					}
 		          	result = result + ' </td>';
 			        return result;
@@ -644,6 +660,9 @@ function clearDate(requestFrom){
 
  <script>
 function resetFilter(){
+	var fromDate = $("#fromDate").val();
+    var toDate = $("#toDate").val();
+	leaveReport(fromDate,toDate);
 	$("#leaveReportDataTableSearch").val('');
 	$("#fromDate").val('');
 	$("#toDate").val('');
@@ -658,7 +677,6 @@ function resetFilter(){
 	$('#associateList').trigger("chosen:updated");
 	$('#leaveTypeList').trigger("chosen:updated");
 	$("#leaveTypeList").val('');
-	leaveReport();
 }
 function reportCollapse() {
 	$("#reportCollapse").slideToggle(300);

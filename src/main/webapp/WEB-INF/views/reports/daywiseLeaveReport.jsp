@@ -8,8 +8,7 @@ $(document).ready(function(){
 	getDaywiseLeaveReportList();
 });
 </script>
-<input type="hidden" id="noReports" name="noReports"/>
-
+<input type="hidden" id="noReports" name="noReports" value="0"/>
 <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -17,6 +16,7 @@ $(document).ready(function(){
           <h2>Day Wise Report </h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>">HR Reports</a> &raquo; DayWise Leave Report</div>
+    <div id="popUp"></div>
     </section>
      <div class="timesheet_out">
       <div class="vendor_wrap">
@@ -160,7 +160,9 @@ function daywiseLeaveReportsListPagination(url){
 		    	  	"targets": colIndex++,
 		    	  	"data": "name",
 		    	  	"render": function(data, type, user, meta) {
-		    	  		var result = '';
+        	  var result = '';
+			        	  $("#noReports").val("1");
+
 			        	  result = result + ' <td>';
 				          if(user.name !=null && user.name !='' && user.name !='undefined'){
 								 result = result +'<div class="tbldata-dotdot" title="'+user.name+'">'+user.name+'</div>';
