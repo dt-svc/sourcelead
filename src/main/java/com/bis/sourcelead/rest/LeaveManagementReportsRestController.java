@@ -204,8 +204,8 @@ public class LeaveManagementReportsRestController {
 				}
 				float noOfDays = 0f;
 				noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocation,leaveType,leave,"Duration");
-	 		   
-	 		   u.setNoOfDays(noOfDays);
+				 String noOfDays1 = String.valueOf(noOfDays);
+	 		   u.setNoOfDays(noOfDays1);
 	 		   
 	 	   });
 	    	
@@ -388,8 +388,8 @@ public class LeaveManagementReportsRestController {
 	 				}
 	 				float noOfDays = 0f;
 	 				noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocations,leaveType,leave,"");
-	 	 		   
-	 	 		   u.setNoOfDays(noOfDays);
+	 				 String noOfDays1 = String.valueOf(noOfDays);
+	 	 		   u.setNoOfDays(noOfDays1);
 		
 		});
 			
