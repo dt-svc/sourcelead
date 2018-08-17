@@ -48,6 +48,7 @@ import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
@@ -186,10 +187,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			Set<EmployeePayroll> payrollList = calculatePayroll(existedData,paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
 			paySheetFreq.setEmployeepayroll(payrollList);
 			if(payrollList !=null && payrollList.size() > 0) {
-				PaysheetFrequency savedPaysheetFrequency = uSPaysheetService.addPaysheetFrequency(paySheetFreq);
+				uSPaysheetService.addPaysheetFrequency(paySheetFreq);
 			}
-				
 				paysheetFrequencyDTO = getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
+				List<USPayrollDTO> draftPayroll = paysheetFrequencyDTO.getPayrollDTO().stream().filter(p->PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus())).collect(Collectors.toList());
+				paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
 		}
 		return paysheetFrequencyDTO;
 	}
@@ -780,9 +782,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
 					}
 					payrollDTO.setOvertimeHours(overTimeHours);
-					if(PayrollConstant.DRAFT.equalsIgnoreCase(pay.getSubmitForAproverStatus())) {
+					payrollDTO.setApproverStatus(pay.getSubmitForAproverStatus());
+//					if(PayrollConstant.DRAFT.equalsIgnoreCase(pay.getSubmitForAproverStatus())) {
 						list.add(payrollDTO);	
-					}
+//					}
 					
 				}
 				paysheetFrequencyDTO.setPayrollDTO(list);
