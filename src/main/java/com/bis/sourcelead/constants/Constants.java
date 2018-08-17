@@ -67,6 +67,12 @@ public class Constants {
 	public static final String PAYMENT_TERMS = "PaymentTerms";
 	public static final String INVOICE_RECEIVABLE = "Receivable";
 	public static final String INVOICE_PAYABLES = "Payables";
+
+	public static final String[] LEAVE_REPORT_HEADERS = { "Employee Id", "Emp Name", "Departement", "Leave Type",
+			"Reason", "Type", "From Date", "To Date", "Applied On", "No Of Days",
+			"Status", "Approver", "Approved On" };
+	
+
 	public static final String country = "Country";
 	public static final String TASK_BILLABLE = "Billable";
 	public static final String TASK_NON_BILLABLE = "Non-Billable";
