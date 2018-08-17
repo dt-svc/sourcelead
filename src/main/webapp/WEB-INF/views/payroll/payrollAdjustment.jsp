@@ -26,6 +26,12 @@
               <input type="hidden" id="payRate" name="payRate"/>
                <input type="hidden" id="payrollId" name="payrollId"/>
                 <input type="hidden" id="payrollUUID" name="payrollUUID"/>
+                 <input type="hidden" id="preRegularHours" name="regularHours"/>
+                <input type="hidden" id="preRgularHoursAmt" name="preRegularHoursAmt"/>
+                 <input type="hidden" id="preOverTimeHours" name="preOverTimeHours"/>
+                <input type="hidden" id="preOverTimeHoursAmt" name="preOverTimeHoursAmt"/>
+                 
+              
             </div>
           </div>
           
@@ -246,6 +252,11 @@
 		            $("#totalHours").text(json.totalHours.toFixed(2));
 		            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
 		            
+		            $("#preRegularHours").val(json.regularHours.toFixed(2));
+		            $("#preRegularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
+		            $("#preOverTimeHours").val(json.overtimeHours.toFixed(2));
+		            $("#preOverTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
+		            
 		            $("#federalWT").text(json.federal);
 		            $("#medicareWT").text(json.medicare);
 		            $("#ficaWT").text(json.fica);
@@ -280,7 +291,11 @@
 					            	var ded = json.postDed[i];
 				        			postDed = postDed + '<tr>';
 				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
-				        			postDed = postDed + ' <td><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.amount+' class="formControl" readOnly></td>';
+				        			postDed = postDed + ' <td>';
+				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+ded.deductionId+'>';
+				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionType" value='+ded.deductionType+'>';
+				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+ded.amount+' > ';
+				        			postDed = postDed + '<input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.amount+' class="formControl" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
 			            }
@@ -312,7 +327,11 @@
 				            	var preded = json.preDed[i];
 				            	preDed = preDed + '<tr>';
 				            	preDed = preDed + ' <td>'+preded.deductionType+'</td>';
-				            	preDed = preDed + ' <td><input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.amount+' class="formControl" readOnly></td>';
+				            	preDed = preDed + ' <td>';
+				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+preded.deductionId+'>';
+				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionType" value='+preded.deductionType+'>';
+				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+preded.amount+' >'; 
+				            	preDed = preDed + ' <input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.amount+' class="formControl" readOnly></td>';
 				            	preDed = preDed + ' </tr>';
 				            }
 	                        }
@@ -339,14 +358,18 @@
 		                  output = output + ' <tr>';
 		                  output = output + '  <th>Description</th>';
 		                  output = output + '  <th>Current</th>';
-		                  output = output + ' </tr>';
+		                  output = output + ' </tr>';  
 		                  if(json.contribution != null && json.contribution.length > 0){
 		                	  for (var i=0; i< json.contribution.length; i++){
 					            	var ot = json.contribution[i];
 					            	output = output + '<tr>';
 					            	output = output + '<input type="hidden" name="contribution['+i+'].taxtType" value='+ot.taxtType+' id="taxtType"/>';
 					            	output = output + '<td>'+ot.contributionType+'</td>';
-					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.amount+' class="formControl" readOnly></td>';
+					            	output = output + '<td>';
+					            	output = output + ' <input type="hidden"  name="contribution['+i+'].id" value='+ot.contributionId+'>';
+					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionType" value='+ot.contributionType+'>';
+					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionAmt" value='+ot.amount+' >'; 
+					            	output = output + '<input type="text" name="contribution['+i+'].contributionAmount" value='+ot.amount+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
 		                  }
@@ -385,8 +408,10 @@
 			                	  for (var i=0; i< json.payItem.length; i++){
 						            	var pi = json.payItem[i];
 						            	payItem = payItem +' <tr>';
-						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';
-						            	payItem = payItem +'<input type="hidden" value='+pi.payItemId+' id="id" name="payItem['+i+'].id"/>';
+						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';	
+						            	payItem = payItem +'<input type="hidden" value='+pi.payItemId+' id="id" name="payItem['+i+'].payItemId"/>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.payItemName+' id="id" name="payItem['+i+'].prePayItemName"/>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.amount+' id="id" name="payItem['+i+'].prePayItemAmt"/>';
 						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.amount+'></td>';
 						            	payItem = payItem +' <td>';
 						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';

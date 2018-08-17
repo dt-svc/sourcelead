@@ -22,4 +22,8 @@ public interface UserPayrollService {
 	List<Checks> getChecksListByEmployeeId(Long empId, OrgLocations orgLocations)throws Exception;
 
 	Checks getUniqueChecksListByEmployeeId(String empId, Long orgLocationId, ChecksDTO checksDTO)throws Exception;
+
+	Object deletePayrollEntitiesByUUIDAndEntityType(Object obj);
+
+	Object getPayrollEntitiesByUUIDAndEntityType(String uuid, String entityType);
 }
