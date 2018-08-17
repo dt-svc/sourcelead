@@ -294,7 +294,8 @@ $('#paymentDate').datepicker({
 	  if ($('#paymentForm').validate(false, validationSettings)) {
 			 var grandDueTotal = $("#grandTotalAmount").text();
 			 var grandTotalReceived = $("#totalAmount").val();
-			 if(grandDueTotal == grandTotalReceived){
+			 var finalAmountReceived =parseFloat(grandTotalReceived);
+			 if(grandDueTotal == finalAmountReceived.toFixed(2)){
 			 var invoiceIds= []
 			 var amount = "";
 			 $('input:checkbox[name=invoices]:checked').each(function() {
