@@ -67,8 +67,8 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 			qry = " order by ind."+ invoiceDetailsDTO.getSortColumn() +" "+invoiceDetailsDTO.getSortOrder();
 		}
 		
-		String query = "from InvoiceData ind  left join fetch ind.orgLocationId where ind.orgLocationId.id =:orgLocationId";
-		String countQuery = "from InvoiceData ind  where ind.orgLocationId.id =:orgLocationId";
+		String query = "from InvoiceData ind  left join fetch ind.orgLocationId where ind.orgLocationId.id =:orgLocationId and (ind.status IS NULL or ind.status <> '0')";
+		String countQuery = "from InvoiceData ind  where ind.orgLocationId.id =:orgLocationId and (ind.status IS NULL or ind.status <> '0')";
 		
 		if(invoiceDetailsDTO.getSearchValue().contains("/") || invoiceDetailsDTO.getSearchValue().contains("-")){
 			String convertedDate=invoiceDetailsDTO.getSearchValue();
@@ -81,7 +81,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
             String newDate = parsedDate.format(f2);
             Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
             java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-            String queryDate = "from InvoiceData ind where ind.orgLocationId.id =:orgLocationId and ( ind.date =:sqlDate or ind.dueDate =:sqlDate)";
+            String queryDate = "from InvoiceData ind where ind.orgLocationId.id =:orgLocationId and (ind.status IS NULL or ind.status <> '0') and ( ind.date =:sqlDate or ind.dueDate =:sqlDate)";
             Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
             List<InvoiceData> temp = queryObjDate.list();
             for(InvoiceData invoiceData : temp)
@@ -178,10 +178,19 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 	public List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<InvoiceData> invoiceDataList = null;
-		String query = "from InvoiceData iData  left join fetch iData.orgLocationId where iData.orgLocationId.id =:orgLocationId and iData.sku=:empId";
-		invoiceDataList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
-		if (invoiceDataList != null && invoiceDataList.size() > 0) {
-			return invoiceDataList;
+		String query = "";
+		if(empId != null){
+			query = "from InvoiceData iData  left join fetch iData.orgLocationId where iData.orgLocationId.id =:orgLocationId and iData.sku=:empId";
+			invoiceDataList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
+			if (invoiceDataList != null && invoiceDataList.size() > 0) {
+				return invoiceDataList;
+			}
+		}else{
+			query = "from InvoiceData iData  left join fetch iData.orgLocationId where iData.orgLocationId.id =:orgLocationId";
+			invoiceDataList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).list();
+			if (invoiceDataList != null && invoiceDataList.size() > 0) {
+				return invoiceDataList;
+			}
 		}
 		return invoiceDataList;
 	}

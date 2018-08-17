@@ -20,7 +20,11 @@ import com.bis.sourcelead.dto.ChecksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.UserPayrollDao;
+import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.Checks;
+import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.HrDeductions;
+import com.bis.sourcelead.payroll.entity.InvoiceData;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
@@ -112,8 +116,8 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 			qry = " order by checks."+ checksDTO.getSortColumn() +" "+checksDTO.getSortOrder();
 		}
 		
-		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";
-		String countQuery = "from Checks checks  where checks.orgLocationId.id =:orgLocationId";
+		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId and (checks.status IS NULL or checks.status <> '0')";
+		String countQuery = "from Checks checks  where checks.orgLocationId.id =:orgLocationId and (checks.status IS NULL or checks.status <> '0')";
 		
 		StringBuilder query1 = new StringBuilder("");
 			if(checksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(checksDTO.getSearchValue())) {
@@ -176,11 +180,21 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 	public List<Checks> getChecksListByEmployeeId(Long empId, OrgLocations orgLocations) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Checks> checkslList = null;
-		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId and checks.empId = :empId";
-		checkslList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
-		if (checkslList != null && checkslList.size() > 0) {
-			return checkslList;
+		String query = "";
+		if(empId != null){
+			query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId and checks.empId = :empId";
+			checkslList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
+			if (checkslList != null && checkslList.size() > 0) {
+				return checkslList;
+			}
+		}else{
+			query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";
+			checkslList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).list();
+			if (checkslList != null && checkslList.size() > 0) {
+				return checkslList;
+			}
 		}
+		
 		return checkslList;
 	}
 
@@ -195,6 +209,60 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 			checks =  checkslList.get(0);
 		}
 		return checks;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Object deletePayrollEntitiesByUUIDAndEntityType(Object obj)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		if(obj instanceof EmployerPayrollCost){
+			EmployerPayrollCost empCost = (EmployerPayrollCost) obj;
+		}else if(obj instanceof InvoiceData){
+			InvoiceData invData = (InvoiceData) obj;
+		}else if(obj instanceof WageTaxSummary){
+			WageTaxSummary wts = (WageTaxSummary) obj;
+		}else if(obj instanceof Checks){
+			Checks cks = (Checks) obj;
+		}else if(obj instanceof HrDeductions){
+			HrDeductions hrd = (HrDeductions) obj;
+		}else if(obj instanceof AccountDeductions){
+			AccountDeductions acd = (AccountDeductions) obj;
+		}
+		try {
+			session.saveOrUpdate(obj);
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return obj;
+	}
+
+	@Override
+	@Transactional
+	public Object getPayrollEntitiesByUUIDAndEntityType(String uuid, String entityType)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Object obj = null;
+		String subQuery = "";
+		if("EmployeePayrollCost".equalsIgnoreCase(entityType)){
+			subQuery = "from EmployerPayrollCost ";
+		}else if("InvoiceData".equalsIgnoreCase(entityType)){
+			subQuery = "from InvoiceData ";
+		}else if("WageTaxSummary".equalsIgnoreCase(entityType)){
+			subQuery = "from WageTaxSummary ";
+		}else if("Checks".equalsIgnoreCase(entityType)){
+			subQuery = "from Checks checks";
+		}else if("HrDeductions".equalsIgnoreCase(entityType)){
+			subQuery = "from HrDeductions ";
+		}else if("AccountDeductions".equalsIgnoreCase(entityType)){
+			subQuery = "from AccountDeductions ";
+		}
+		String query = subQuery + "ent where ent.uuid =:uuid";
+		List<Object> objList = session.createQuery(query).setString("uuid", uuid).list();
+		if (objList != null && objList.size() > 0) {
+			obj =  objList.get(0);
+		}
+		return obj;
 	}
 
 	

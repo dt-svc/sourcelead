@@ -102,18 +102,28 @@ public class PayrollController {
 	 * @return
 	 */
 	@RequestMapping(value = "/userPay")
-	public ModelAndView getUserPayroll(HttpServletRequest request)
-	{
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("payroll/userPayroll");
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
-		if (sessionData == null) {
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.PAY);
-		request.getSession().setAttribute("sessionData", sessionData);
-		return model;
+	public ModelAndView getUserPayroll(HttpServletRequest request) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("payroll/userPayroll");
+		   
+		   SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.PAY);
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			try {
+				String empId =  wageTaxSummaryService.getWagesAndTaxEmployeeId(candidateId);
+				 model.addObject("employeeId", empId);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			request.getSession().setAttribute("sessionData",sessionData);
+			
+	       return model;
+
 	}
 	
 	@RequestMapping(value = "/payrollReport")
