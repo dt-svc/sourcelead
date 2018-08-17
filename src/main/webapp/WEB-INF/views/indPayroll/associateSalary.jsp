@@ -6,9 +6,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 
-	<div id="tab-5" class="tabsMenu_tabs_inn clearfix">
+	<!-- <div id="tab-5" class="tabsMenu_tabs_inn clearfix" > -->
 			<form:form id="associateSalary_form" name="associateSalary_form">
-                <div class="clearfix row minHeightcol5">
+                <div class="clearfix minHeightcol5 mt">
+                <div class="clearfix mb">
+                	<a class="pull-right mr anchorBlack" style="display:none"><i class="glyphicon glyphicon-pencil paddingRight"></i>Edit</a>
+                </div>
                  <div class="col-md-4">
                   <label>CTC <small>(Annual)</small><span class="text-danger paddingLeft">*</span></label>
                   <div>
@@ -30,7 +33,7 @@
                 </div>
                  <div class="clearfix"></div>
                  </div>
-         <div class="clearfix styleTables tableStyles-textLeft">
+         <div class="clearfix clients_wrap_table">
               <div class="clearfix mb mt">
               </div>
                <table>
@@ -72,8 +75,9 @@
 	               		</tbody>
                		</table>
                 
-                <input type="text" style="display:none" name="candidateId" value="${candidate.id}">
+                <input type="text" style="display:none" name="candidateId" id="assocandidateId" value="${candidate.id}">
                 <input type="text" style="display:none" name="uuid" value="${uuid}">
+                <%-- <input type="text" style="display:none" id="userCode" value="${userCode}"> --%>
                   
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
@@ -87,7 +91,7 @@
                 </div>
             </div>
          </form:form>
-      </div>
+      <!-- </div> -->
 
 <script type="text/javascript">
         var validationSettings = {
@@ -168,8 +172,17 @@ function saveAssociateSalaryInd(){
 		     contentType:false, 
 			 url : sourceleadUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
+				 
+			  		/* var userCode = $("#userCode").val();
+			  		alert(userCode); */
 			  		
 			  		
+			  		$('#associateSalary_form input').attr('disabled','true');
+			  		
+			  		
+			  		if(userCode == null || userCode == '' || userCode == 'undefined'){
+			  			location.replace(sourceleadUrl+"/usersList");
+			  		}
 			 }
 		});
 	}
