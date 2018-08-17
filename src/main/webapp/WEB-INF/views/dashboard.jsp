@@ -5,6 +5,7 @@
 <!-- <link href="/resources/css/jquery-ui.css" rel="stylesheet"> -->
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+     <script src="/resources/js/sourcelead.common.js"></script> 
 
 <style>
 .dashboard-widget {

@@ -573,14 +573,16 @@ public class DashboardRestController {
 	  */
 	
 	 @RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
-	 public Response<DashboardCounts>  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,HttpServletRequest request) throws Exception {
+	 public Response<DashboardCounts>  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,@RequestParam(value="orgLocationId", required=false) Long orgLocationId,@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
 		 Response<DashboardCounts> response = new Response<>();
-		 OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 OrgLocations loginOrgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			DashboardCounts dc= new DashboardCounts();
 			Timezone timezone = null;
-			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(user != null) {
+			
+			UserRole userRole = userRoleService.getUserByUserId(userId);
+//			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+//			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(userRole != null) {
 			try {
 				if(loginOrgLocations.getTimezone() != null){
 					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
@@ -606,11 +608,11 @@ public class DashboardRestController {
 					 
 				}
 				
-				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole.getUserType()) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole.getUserType())){
 					userType = Constants.ADMIN;
 				} 
 				
-				Integer[] requirementSubmissionHistoryCounts = requirementSubmissionService.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),daterange, userType, user, startUTCDate, endUTCDate);
+				Integer[] requirementSubmissionHistoryCounts = requirementSubmissionService.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),daterange, userRole.getUserType(), userRole.getUser(), startUTCDate, endUTCDate);
 				
 			    dc.setApplicantsCount(requirementSubmissionHistoryCounts[0]); //0 index is applicant count as per QueryResult
 			    

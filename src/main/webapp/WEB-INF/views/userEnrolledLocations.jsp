@@ -19,7 +19,7 @@
 	<div class="orgInn">
 	<div id="whiteListerrDiv" class="orgErrorMes"></div>
 	<c:forEach var="userRole" items="${roleList}">
-	<a onclick="selectLoc(${userRole.id});">
+	<a onclick="selectLoc(${userRole.id},${userRole.orgLocations.id},${userRole.user.id});">
 	   <input type="hidden" id="isTwoStepEnabled${userRole.id}" name="isTwoStepEnabled${userRole.id}" value="${userRole.orgLocations.loginSecurity}"/>
 		<div class="orgCta clearfix">
 		<input type="hidden" value="${userRole.user.loginSecurity}" id="userLoginSecurity"/>
@@ -132,13 +132,52 @@ function validateTwoStepAuth() {
 }
 
 
-function selectLoc(id){
+function selectLoc(id,orgLocationId,userId){
 	$("div.raBtnActive").children().removeAttr("checked");
  	$(".orgCta").parent().find('div.raBtnActive').removeClass('raBtnActive');
  	$("#locDiv"+id).addClass("raBtnActive");
  	$("#userRoleId"+id).prop('checked', true);
  	validateWhiteListIp();
+ 	requirementSubmissionsCount("today",userId,orgLocationId);
 }
+</script>
+<script type="text/javascript">
+function requirementSubmissionsCount(daterange,userId,orgLocationId){
+	$("#dateActiveTab").val(daterange);
+	$("#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+    var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getRequirementSubmissionsCount?${_csrf.parameterName}=${_csrf.token}&daterange="+daterange+"&userId="+userId+"&orgLocationId="+orgLocationId, 
+		        success: function(data) {
+		        	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			        	var json = data.object;
+			        	$("#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading").removeAttr("style");
+			        	 var  submissionsCount = json.submissionCount;
+			        	 var  applicantsCount =json.applicantsCount;
+			        	 var  interviewsCount =json.interviewsCount;
+			        	 var  offersCount = json.offersCount; 
+			        	  sessionStorage.clear();
+			        	  var jobCounts = [];
+			        	  jobCounts.push(submissionsCount);
+			        	  jobCounts.push(applicantsCount);
+			        	  jobCounts.push(interviewsCount);
+			        	  jobCounts.push(offersCount);
+			        	  sessionStorage.setItem('jobsCount',jobCounts);
+			        	  
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
+		 		}
+		  });
+		 
+	}
 
 </script>
 

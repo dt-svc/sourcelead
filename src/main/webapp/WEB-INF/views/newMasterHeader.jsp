@@ -42,6 +42,7 @@ $(document).ready(function(){
 <title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link rel="stylesheet" href="/resources/reports/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all" />
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
 <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
  
