@@ -79,7 +79,7 @@ $(document).ready(function(){
 </script>
 		
 		<div id="projectSideDiv"></div>
-		<div id="candidateSideDiv"></div> 
+		<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
 		
 		
 		 

@@ -260,7 +260,7 @@ public class UserController {
 				model.setViewName("registration/persmissionDenied");
 			}
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			
+			model.addObject("userCode",userCode);
 		
 		return model;
 
