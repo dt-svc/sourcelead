@@ -2167,16 +2167,22 @@ public class InvoiceRestController {
 		Date datesRange[] = new Date[2];
 		if(dateRange[0] != null && !dateRange[0].equals("null") && !dateRange[0].equalsIgnoreCase("") && !dateRange[1].equalsIgnoreCase("")) {
 				OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(locationId));
-			DateFormat dateFormat = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
-			Date fromDate = dateFormat.parse(dateRange[0]);
-			Date toDate = dateFormat.parse(dateRange[1]);
-			//Date fromDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[0]);
-			//Date toDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[1]);
+				Date fromDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[0]);
+				Date toDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[1]);
+				/*Calendar cal = Calendar.getInstance();
+			    cal.setTime(fromDate);
+			    cal.add(Calendar.DATE, 1);
+			    cal.add(Calendar.SECOND, -1);
+			    cal.getTime();*/
+			    Calendar cal1 = Calendar.getInstance();
+			    cal1.setTime(toDate);
+			    cal1.add(Calendar.DATE, 1);
+			    cal1.add(Calendar.SECOND, -1);
+			    cal1.getTime();
+			System.out.println("from date : "+fromDate);
+			System.out.println("to date : "+cal1.getTime());
 			datesRange[0] = fromDate;
-			datesRange[1] = toDate;
-		}
-		if(searchVal.equalsIgnoreCase("Created")){
-			searchVal = "Draft";
+			datesRange[1] = cal1.getTime();
 		}
 		timelineHistories = invoiceService.getInvoiceTimelineHistoryList(invoice.getId(), user, searchVal, orderVal, datesRange, checkedStatus,namesStatus);
 		return timelineHistories;

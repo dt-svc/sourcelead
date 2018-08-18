@@ -678,17 +678,6 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		String resultQuery = "";
 		String checkedStatusQuery = "";
 		
-		/*if(checkedStatus.length != 0) {
-			if (checkedStatus[0] != null && !checkedStatus[0].equals("null")) {
-				if(Arrays.asList(checkedStatus).contains("Paid") || Arrays.asList(checkedStatus).contains("Reminder")) {
-					checkedStatusQuery += " or (ith.invoicePaymentReminderStatus IN (:checkedStatus))";
-				}else {
-					checkedStatusQuery += " or (ith.invoiceStatus IN ( :checkedStatus ) and ith.linkedChildinvoice = null and ith.invoicePaymentReminderId = null) ";
-				}	
-				//checkedStatusQuery += ")";
-			}
-			
-		}*/
 		if (orderVal.equalsIgnoreCase("desc")) {
 			queryOrder = " order by ith.createdDate desc";
 		} else if (orderVal.equalsIgnoreCase("asc")) {
@@ -700,7 +689,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			}
 		}
 		if (!searchVal.isEmpty()) {
-			searchValQuery = " and ith.invoiceStatus like :searchVal ";
+			searchValQuery = " and (ith.invoiceStatus like :searchVal or ith.rejectReason like :searchVal)";
 		}
 		
 		if (dateRange[0] != null) {
@@ -710,7 +699,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				.concat(queryOrder);
 		Query hqlQuery = session.createQuery(resultQuery).setParameter("invoiceId", id);
 		if (!searchVal.isEmpty()) {
-			hqlQuery.setString("searchVal", "%" + searchVal + "%");
+			hqlQuery.setString("searchVal", "%"+searchVal+"%");
 		}
 		if(checkedStatus.length != 0 ) {
 			if( checkedStatus[0] != null && !checkedStatus[0].equals("null")) {

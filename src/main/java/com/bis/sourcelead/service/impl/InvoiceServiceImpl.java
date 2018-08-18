@@ -3023,7 +3023,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 		timelineHistory.setOwnerUser(invoice.getOwnerUserId());
 		timelineHistory.setCreatedBy(user);
 		String invoiceStatus = null;
-		if ((savedInvoiceId != null && invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT"))
+		if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT")){
+			invoice.setInvoiceStatus(Constants.INVOICE_TIMELINE_STATUS_CREATED);
+		}
+		if ((savedInvoiceId != null && invoice.getInvoiceStatus().equalsIgnoreCase(Constants.INVOICE_TIMELINE_STATUS_CREATED))
 				|| (savedInvoiceId != null && invoice.getInvoiceStatus().equalsIgnoreCase("Rejected"))) {
 			invoiceStatus = "Updated";
 		} else if (invoice.getInvoiceStatus().equalsIgnoreCase("Sent")) {
@@ -3052,7 +3055,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if (invoice.getPaymentStatus().equalsIgnoreCase("Paid")) {
 			timelineHistory.setInvoicePaymentReminderId(invoicePaymentId);
 			timelineHistory.setInvoicePaymentReminderStatus(invoice.getPaymentStatus());
-			timelineHistory.setInvoiceStatus(invoice.getPaymentStatus());
+			timelineHistory.setInvoiceStatus(Constants.INVOICE_TIMELINE_STATUS_PAID);
 		} else if (invoice.getTimelineHistoryReminder() != null) {
 			timelineHistory.setInvoicePaymentReminderEmailBody(returnMap.get("emailBody"));
 			timelineHistory.setInvoicePaymentReminderEmailFrom(returnMap.get("fromEmail"));
@@ -3099,12 +3102,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 				statusVal = "Linked to ";
 				timelineDTO.setInvoiceId(timelineHistory.getLinkedChildinvoice().getInvoiceId());
 				timelineDTO.setInvoiceUUID(timelineHistory.getLinkedChildinvoice().getInvoiceUUID());
-				timelineDTO.setOwnerName(timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName());
+				statusValue = timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName();
 				//statusValue = " to " + timelineHistory.getLinkedChildinvoice().getInvoiceId()+" by "+timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName();
 			} else {
 				if (timelineHistory.getInvoicePaymentReminderStatus() != null) {
 					timelineDTO.setInvoicePaymentReminderStatus(timelineHistory.getInvoicePaymentReminderStatus());
-					if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase("Paid")) {
+					if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase(Constants.INVOICE_TIMELINE_STATUS_PAID)) {
 						InvoicePayment invoicePayment = invoicePaymentService
 								.invoicePaymentById(timelineHistory.getInvoicePaymentReminderId());
 						timelineDTO.setPaymentAmount(invoicePayment.getPaymentAmount());
@@ -3169,7 +3172,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 						}
 					}
 				} else {
-					if (status.equalsIgnoreCase("Draft")) {
+					if (status.equalsIgnoreCase(Constants.INVOICE_TIMELINE_STATUS_CREATED)) {
 						statusVal = "Created";
 						statusBy = " by ";
 						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();

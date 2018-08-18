@@ -799,6 +799,8 @@ public class Constants {
 	public static final String INVOICE_RECEIVED = "Received";
 	public static final String INVOICE_STATUS_UNPAID = "Unpaid";
 	public static final String INVOICE_STATUS_PAID = "Paid";
+	public static final String INVOICE_TIMELINE_STATUS_PAID = "Payment";
+	public static final String INVOICE_TIMELINE_STATUS_CREATED = "Created";
 	public static final String INVOICE_STATUS_PARTIAL_PAID = "Partial Paid";
 	public static final String INVOICE_SENT = "SENT";
 	public static final Long CANDIATE_RESUME_IN_ACTIVE = 0L;
