@@ -26,6 +26,6 @@ public interface UserGroupDao {
 
 	UserGroup getUserGroupByGroupId(long id);
 
-	TotalHoursDTO getTotalHoursByCandidateId(Long candidateId, Date actualStartDate, Date actualEndDate);
+	List<TotalHoursDTO> getTotalHoursByCandidateId(Long candidateId, Date actualStartDate, Date actualEndDate);
 
 }
