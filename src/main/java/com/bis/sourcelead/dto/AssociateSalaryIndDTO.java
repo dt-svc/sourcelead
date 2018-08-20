@@ -26,8 +26,6 @@ public class AssociateSalaryIndDTO extends CommonDTO {
 	
 	private String hourlyRate;
 	
-	private String allowOverTimePay;
-	
 	private Long userId;
 	
 	private String previousPayType;
@@ -134,14 +132,6 @@ public class AssociateSalaryIndDTO extends CommonDTO {
 
 	public void setHourlyRate(String hourlyRate) {
 		this.hourlyRate = hourlyRate;
-	}
-
-	public String getAllowOverTimePay() {
-		return allowOverTimePay;
-	}
-
-	public void setAllowOverTimePay(String allowOverTimePay) {
-		this.allowOverTimePay = allowOverTimePay;
 	}
 
 	public Long getUserId() {

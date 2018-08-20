@@ -6,6 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 
+	<!-- <div id="tab-5" class="tabsMenu_tabs_inn clearfix" > -->
 			<form:form id="associateSalary_form" name="associateSalary_form">
                 <div class="clearfix minHeightcol5 mt">
                 <div class="clearfix mb">
@@ -17,9 +18,9 @@
                     <div>
                       <select class="sel" id="payType" name="payType" id="payType" data-validation="required" field-name="Pay Type">
                         <option value="">--Select--</option>
-                        <option value="HourlyRate">Hourly Rate</option>
-                        <option value = "Salary">Salary</option>
-                        <option value= "Commission Only">Commission Only</option>
+                        <option ${associateSalaryInd.payType == "HourlyRate" ? "selected" : ""} value="HourlyRate">Hourly Rate</option>
+                        <option ${associateSalaryInd.payType == "Salary" ? "selected" : ""} value = "Salary">Salary</option>
+                        <option ${associateSalaryInd.payType == "CommissionOnly" ? "selected" : ""} value= "CommissionOnly">Commission Only</option>
                       </select>
                     </div>
                   </div>
@@ -28,10 +29,10 @@
                     <div>
                       <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayFreqHours();getPayGroups();" data-validation="required" field-name="Pay Frequency">
                         <option value="">--Select--</option>
-                        <option value="Annual">Annually</option>
-                        <option value="Monthly">Monthly</option>
-                        <option value="Bi-Weekly">Bi-Weekly</option>
-                        <option value="Weekly">Weekly</option>
+                        <option ${associateSalaryInd.payFrequency == "Annual" ? "selected" : ""} value="Annual">Annually</option>
+                        <option ${associateSalaryInd.payFrequency == "Monthly" ? "selected" : ""} value="Monthly">Monthly</option>
+                        <option ${associateSalaryInd.payFrequency == "Bi-Weekly" ? "selected" : ""} value="Bi-Weekly">Bi-Weekly</option>
+                        <option ${associateSalaryInd.payFrequency == "Weekly" ? "selected" : ""} value="Weekly">Weekly</option>
                       </select>
                     </div>
                   </div>
@@ -39,40 +40,35 @@
                     <label>Pay Group<span class="text-danger paddingLeft">*</span></label>
                     <div>
                       <select class="sel" id="payGroupId" name="payGroup" data-validation="required" field-name="Pay Group">
+	                      <option value="">--Select--</option>
+	                      <c:forEach var="userGroup" items="${userGroupList}">
+				               	<option ${userGroup.id == associateSalaryInd.groupId.id ? "selected" : ""} value='${userGroup.groupUUID}'>${userGroup.groupName}</option>
+			              </c:forEach>
                       </select>
                     </div>
                   </div>
                   <div class="col-md-5">
                     <label>Standard Hours<span class="text-danger paddingLeft">*</span></label>
                     <div>
-                      <input type="text" class="form-control"  id="standardHours" name="standardHours" data-validation="required validate_float" field-name="Standard Hours" onblur="calculateSal();">
+                      <input type="text" class="form-control"  id="standardHours" name="standardHours" value="${associateSalaryInd.standardHours}" data-validation="required validate_float" field-name="Standard Hours" onblur="calculateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
                     <label>Annual Salary<span class="text-danger paddingLeft">*</span></label>
                     <div>
-                      <input type="text" class="form-control" id="annualSal" name="annualSal" value="${candidateCTCPerYear}" data-validation="required validate_float" field-name="Annual Salary" onblur="calculateSal();">
+                      <input type="text" class="form-control" id="annualSal" name="annualSal" value="${associateSalaryInd.annualSalary != '' ? associateSalaryInd.annualSalary : candidateCTCPerYear }" data-validation="required validate_float" field-name="Annual Salary" onblur="calculateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
                     <label>Pay Per Salary<span class="text-danger paddingLeft">*</span></label>
                     <div>
-                      <input type="text" class="form-control" id="perPaySal" name="perPaySal" data-validation="required validate_float" field-name="Pay Per Salary" onblur = "calculatePayPerSal();">
+                      <input type="text" class="form-control" id="perPaySal" name="perPaySal" value="${associateSalaryInd.grossSalary}" data-validation="required validate_float" field-name="Pay Per Salary" onblur = "calculatePayPerSal();">
                     </div>
                   </div>  
                    <div class="col-md-5">
                     <label>Hourly Rate<span class="text-danger paddingLeft">*</span></label>
                     <div>
-                      <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" data-validation="required validate_float" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
-                    </div>
-                  </div>
-                   <div class="col-md-5">
-                    <label>&nbsp;</label>
-                    <div>
-						<div class="checkbox-new pull-left">
-							<input id="overtimePay" class="checkbox-custom" name="allowOverTimePay" id="allowOverTimePay" value="YES" type="checkbox">
-							<label for="overtimePay" class="checkbox-custom-label"><span class="ml10">Allow Overtime Pay</span></label>
-						</div>
+                      <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" value="${associateSalaryInd.hourlyRate}" data-validation="required validate_float" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                     </div>
                   </div>
                 
@@ -399,3 +395,4 @@ function calculateHourlyRateSal(){
 	}
 }
 </script>
+

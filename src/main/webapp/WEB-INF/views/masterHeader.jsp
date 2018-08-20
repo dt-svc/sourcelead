@@ -625,6 +625,10 @@ function preventTabkey(e){
 								</div>
 							 </li> 	
 						   </sec:authorize>
+						   
+					   <c:if test="${SourceLeadWeb_isAdmin == true}">
+					  	<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
+                       </c:if>
                          
                        <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Tags</a></li>
 					  
