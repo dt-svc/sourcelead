@@ -243,7 +243,6 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 		if(StringUtils.isNotBlank(associateSalaryIndDTO.getHourlyRate())) {
 			associateSalaryInd.setHourlyRate(new BigDecimal(associateSalaryIndDTO.getHourlyRate()));
 		}
-		associateSalaryInd.setAllowOverTimePay(associateSalaryIndDTO.getAllowOverTimePay());
 		associateSalaryInd.setOrgLocations(orgLocations);
 		if(associateSalaryIndDTO.getIncreasePer() != null) {
 			associateSalaryInd.setIncrementPercentage(associateSalaryIndDTO.getIncreasePer());
