@@ -1408,9 +1408,13 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateSalary){
 					associateSalary.href = "#";
 					associateSalary.className = "disabledLink";
+				}  
+				
+				var associateLeaveType = document.getElementById("associateLeaveType");
+				if(associateLeaveType){
+					associateLeaveType.href = "#";
+					associateLeaveType.className = "disabledLink";
 				} 
-				
-				
 
  
 
