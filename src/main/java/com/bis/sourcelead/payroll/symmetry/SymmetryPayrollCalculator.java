@@ -43,7 +43,7 @@ public class SymmetryPayrollCalculator {
 	@Value("${symmetry.jniHome}")
 	private String jniHome;
 	
-	public PayrollCalculatorDTO runUSPayroll(Candidate candidate, float totalHours, BigDecimal grossAamount, int invoiceFrequency, AssociateTaxDedContriView associateTaxView,Date checkDate)
+	public PayrollCalculatorDTO runUSPayroll(Candidate candidate, double totalHours, BigDecimal grossAamount, int invoiceFrequency, AssociateTaxDedContriView associateTaxView,Date checkDate)
 	{
 		PayrollCalculatorDTO payrollCalculatorDTO = new PayrollCalculatorDTO();
 //		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";
@@ -310,7 +310,7 @@ public class SymmetryPayrollCalculator {
 	 * @param empState 
 	 * @return
 	 */
-	private STEPayrollCalculator calculateEmployerSDI(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE, String empState)
+	private STEPayrollCalculator calculateEmployerSDI(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE, String empState)
 	{
 		Money zero = Money.zero();
 		try {
@@ -337,7 +337,7 @@ public class SymmetryPayrollCalculator {
 	 * @param fEDERAL_LOCATION_CODE
 	 * @return
 	 */
-	private STEPayrollCalculator calculateEmployerSUTASurchargeTaxes(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateEmployerSUTASurchargeTaxes(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();
@@ -359,7 +359,7 @@ public class SymmetryPayrollCalculator {
 	 * @param fEDERAL_LOCATION_CODE
 	 * @return STEPayrollCalculator
 	 */
-	private void calculateEmployerHeadTaxes(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private void calculateEmployerHeadTaxes(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			STE.setHeadTax(locationCode, 23, false);
@@ -381,7 +381,7 @@ public class SymmetryPayrollCalculator {
 	 * @param fEDERAL_LOCATION_CODE
 	 * @return
 	 */
-	private STEPayrollCalculator calculateMCTMT(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateMCTMT(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			STE.setPercentTotalPayrollTax(locationCode, PercentOfPayrollTax.NEW_YORK_MCTMT, new Money(amount), false);
@@ -403,7 +403,7 @@ public class SymmetryPayrollCalculator {
 	 * @param fEDERAL_LOCATION_CODE
 	 * @return STEPayrollCalculator
 	 */
-	private STEPayrollCalculator calculateEMACSupplemental(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateEMACSupplemental(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();
@@ -425,7 +425,7 @@ public class SymmetryPayrollCalculator {
 	 * @param fEDERAL_LOCATION_CODE
 	 * @return STEPayrollCalculator
 	 */
-	private STEPayrollCalculator calculateEMAC(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateEMAC(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();
@@ -449,7 +449,7 @@ public class SymmetryPayrollCalculator {
 	 * @param netPay
 	 * @return STEPayrollCalculator
 	 */
-	private STEPayrollCalculator calcuUHITax(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calcuUHITax(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();
@@ -495,7 +495,7 @@ public class SymmetryPayrollCalculator {
 	 * @param FEDERAL_LOCATION_CODE
 	 * @return
 	 */
-	private STEPayrollCalculator calculateEmployerRUIA(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String FEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateEmployerRUIA(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String FEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();
@@ -516,7 +516,7 @@ public class SymmetryPayrollCalculator {
 	 * @param amount
 	 * @param FEDERAL_LOCATION_CODE
 	 */
-	private STEPayrollCalculator calculateEmployerFUTASUTA(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String FEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateEmployerFUTASUTA(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String FEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();

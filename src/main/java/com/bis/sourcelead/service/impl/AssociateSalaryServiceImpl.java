@@ -68,20 +68,33 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 			Long updatedBy = null;
 			if (Validator.validate(associateSalaryDTO)) {
 				AssociateSalary associateSalary = null;
-				if(StringUtils.isNotBlank(associateSalaryDTO.getId())) {
-					associateSalary = associateSalaryDao.findAssociateSalaryById(associateSalaryDTO.getId());
-					createdDate = associateSalary.getCreatedDate();
-					updatedDate = associateSalary.getUpdatedDate();
-					createdBy = associateSalary.getCreatedBy();
-					updatedBy = associateSalary.getUpdatedBy();
-				}else {
+				if(associateSalaryDTO.getUserId() != null) {
+					Candidate candidate = null;
+//					associateSalary = associateSalaryDao.findAssociateSalaryById(associateSalaryDTO.getId());
+					candidate = candidateDao.getCandidateByConsultantUserId(associateSalaryDTO.getUserId(),orgLocation.getId());
+					associateSalary = associateSalaryDao.findAssociateSalaryByCandidateId(candidate.getId());
+					if(associateSalary != null) {
+						associateSalary.setUpdatedDate(new Date());
+						associateSalary.setUpdatedBy(loginUser.getId());
+					}else {
+						associateSalary  = new AssociateSalary();
+//						User user = userService.getUserById(associateSalaryDTO.getUserId());
+//						 candidate = candidateDao.getCandidateByConsultantUserId(associateSalaryDTO.getUserId(),orgLocation.getId());
+						associateSalary.setCandidate(candidate);
+						Set<AssociatePayItem> assoPayItemSet = getAssociatePayItemSet(associateSalary,associateSalaryDTO,orgLocation,loginUser);
+						associateSalary.setAssociatePayItem(assoPayItemSet);
+						associateSalary.setCreatedDate(new Date());
+						associateSalary.setCreatedBy(loginUser.getId());
+					}
+				}
+				/*else {
 					associateSalary  = new AssociateSalary();
 //					User user = userService.getUserById(associateSalaryDTO.getUserId());
 					Candidate candidate = candidateDao.getCandidateByConsultantUserId(associateSalaryDTO.getUserId(),orgLocation.getId());
 					associateSalary.setCandidate(candidate);
 					Set<AssociatePayItem> assoPayItemSet = getAssociatePayItemSet(associateSalary,associateSalaryDTO,orgLocation,loginUser);
 					associateSalary.setAssociatePayItem(assoPayItemSet);
-				}
+				}*/
 				UserGroup uesrgroup = userGroupDao.findUserGroupById(associateSalaryDTO.getPayGroup());
 				associateSalary.setGroupId(uesrgroup);
 				associateSalary.setPayType(associateSalaryDTO.getPayType());
@@ -94,10 +107,10 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 				}
 				associateSalary.setAllowOverTimePay(associateSalaryDTO.getAllowOverTimePay());
 				associateSalary.setOrgLocations(orgLocation);
-				associateSalary.setCreatedDate(new Date());
-				associateSalary.setUpdatedDate(new Date());
-				associateSalary.setCreatedBy(loginUser.getId());
-				associateSalary.setUpdatedBy(loginUser.getId());
+//				associateSalary.setCreatedDate(new Date());
+//				associateSalary.setUpdatedDate(new Date());
+//				associateSalary.setCreatedBy(loginUser.getId());
+//				associateSalary.setUpdatedBy(loginUser.getId());
 				associateSalary.setStatus(1);
 				associateSalary.setAssociateSalaryUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				if(associateSalaryDTO.getIncreasePer() != null) {

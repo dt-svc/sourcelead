@@ -74,8 +74,8 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 			qry = " order by acd."+ accountDeductionsDTO.getSortColumn() +" "+accountDeductionsDTO.getSortOrder();
 		}
 		
-		String query = "from AccountDeductions acd  left join fetch acd.orgLocationId where acd.orgLocationId.id =:orgLocationId";
-		String countQuery = "from AccountDeductions acd  where acd.orgLocationId.id =:orgLocationId";
+		String query = "from AccountDeductions acd  left join fetch acd.orgLocationId where acd.orgLocationId.id =:orgLocationId and (acd.status IS NULL or acd.status <> '0')";
+		String countQuery = "from AccountDeductions acd  where acd.orgLocationId.id =:orgLocationId and (acd.status IS NULL or acd.status <> '0')";
 		
 		
 		if(accountDeductionsDTO.getSearchValue().contains("/") || accountDeductionsDTO.getSearchValue().contains("-")){
@@ -89,7 +89,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
             String newDate = parsedDate.format(f2);
             Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
             java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-            String queryDate = "from AccountDeductions acd where acd.orgLocationId.id =:orgLocationId and ( acd.fromDate =:sqlDate or acd.toDate =:sqlDate)";
+            String queryDate = "from AccountDeductions acd where acd.orgLocationId.id =:orgLocationId and (acd.status IS NULL or acd.status <> '0') and ( acd.fromDate =:sqlDate or acd.toDate =:sqlDate)";
             Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
             List<AccountDeductions> temp = queryObjDate.list();
             for(AccountDeductions accountDeductions : temp)
@@ -205,12 +205,23 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<AccountDeductions> accountDeductionslist = null;
-		String query = "from AccountDeductions ad left join fetch ad.orgLocationId where ad.orgLocationId.id =:orgLocationId and ad.employeeId = :empId";
-		accountDeductionslist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
-		if(accountDeductionslist != null && accountDeductionslist.size() >0)
-		{
-			return accountDeductionslist;
+		String query = "";
+		if(empId != null){
+			query = "from AccountDeductions ad left join fetch ad.orgLocationId where ad.orgLocationId.id =:orgLocationId and ad.employeeId = :empId";
+			accountDeductionslist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
+			if(accountDeductionslist != null && accountDeductionslist.size() >0)
+			{
+				return accountDeductionslist;
+			}
+		}else{
+			query = "from AccountDeductions ad left join fetch ad.orgLocationId where ad.orgLocationId.id =:orgLocationId";
+			accountDeductionslist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).list();
+			if(accountDeductionslist != null && accountDeductionslist.size() >0)
+			{
+				return accountDeductionslist;
+			}
 		}
+		
 		return accountDeductionslist;
 	}
 

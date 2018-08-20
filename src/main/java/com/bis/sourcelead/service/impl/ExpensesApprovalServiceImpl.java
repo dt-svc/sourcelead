@@ -308,11 +308,12 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		 
 		expensesApproverHierarchyDto.setTotalAmount(totalAmountRoundOff);
 		expensesApproverHierarchyDto.setTdSpanLength("9");
-		if(expensesApproverHierarchy.getActionbyorglocid()!= null) {
-		 OrgLocations actionPerformedBy = orgLocationService.getOrgLocations(expensesApproverHierarchy.getActionbyorglocid());
-		 	expensesApproverHierarchyDto.setActionPerformedBy(actionPerformedBy.getOrgLocationName());
-		}else {
+		//if(expensesApproverHierarchy.getActionbyorglocid()!= null) {
+		if(StringUtils.isNotEmpty(expensesApproverHierarchy.getActionPerformedBy())) {
 			expensesApproverHierarchyDto.setActionPerformedBy(expensesApproverHierarchy.getActionPerformedBy());
+		}else if(expensesApproverHierarchy.getActionbyorglocid()!= null){
+			 OrgLocations actionPerformedBy = orgLocationService.getOrgLocations(expensesApproverHierarchy.getActionbyorglocid());
+			 expensesApproverHierarchyDto.setActionPerformedBy(actionPerformedBy.getOrgLocationName());
 		}
 		expensesApproverHierarchyDto.setNoOfExpenses(expensesApproverHierarchy.getExpenseId().getNoOfExpenses());
 		expensesApproverHierarchyDto.setExpId(expensesApproverHierarchy.getExpenseId().getId());

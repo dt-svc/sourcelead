@@ -194,6 +194,7 @@ $(document).ready(function(){
   </div>
       </div>
     </div>
+    <div id="loading"></div>
   </section>
 
 <!-- <script>
@@ -262,7 +263,7 @@ var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	var MonthStartDate =$("#filterStartDate").val();
 	var MonthEndDate = $("#filterEndDate").val();
 	var url = sourceleadUrl+"/gettopleavetakenReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate;
-$("#balancesLeaveTableSearch").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.get(url,function(response) {
 							if (response.response === "AWKWARD") {
 								location.href = "/errorPage";
@@ -339,7 +340,7 @@ $("#balancesLeaveTableSearch").attr('style','position:absolute; width:100%; heig
 							
 							$("#topLeaveTakenReportsList").empty();
 							$("#topLeaveTakenReportsList").append(result);
-							$("#topLeavesTableSearch").removeAttr('style');
+							$("#loading").removeAttr('style');
 							listTypePagination();
 							$(".proj_show").click(
 									function() {

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.dao;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -14,5 +16,7 @@ public interface EmployerPayrollCostDao {
 	EmployerPayrollCost getEmployeePayrollCostById(String EmpId);
 
 	int getEmployerPayrollCostVersionByLocationId(Long locationId);
+
+	List<EmployerPayrollCost> getEmployerPayrollCostByLocationId(Long locationId);
 
 }

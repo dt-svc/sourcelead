@@ -25,6 +25,10 @@ public class ContributionDTO {
 	private int status;
 
 	private String contributionSchedule;
+	
+	private String preContributionType;
+	
+	private BigDecimal preContributionAmt;
 
 	
 	public String getId()
@@ -133,6 +137,26 @@ public class ContributionDTO {
 	public void setContributionSchedule(String contributionSchedule)
 	{
 		this.contributionSchedule = contributionSchedule;
+	}
+
+	public String getPreContributionType()
+	{
+		return preContributionType;
+	}
+
+	public BigDecimal getPreContributionAmt()
+	{
+		return preContributionAmt;
+	}
+
+	public void setPreContributionType(String preContributionType)
+	{
+		this.preContributionType = preContributionType;
+	}
+
+	public void setPreContributionAmt(BigDecimal preContributionAmt)
+	{
+		this.preContributionAmt = preContributionAmt;
 	}
 	
 	
