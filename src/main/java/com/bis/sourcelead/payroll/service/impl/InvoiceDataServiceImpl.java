@@ -141,6 +141,8 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 						if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
 							String payRate = getCellValueAsString(row.getCell(13), fileName);
 							invoiceData.setPayRate(payRate);
+						}else {
+							invoiceData.setPayRate("0");
 						}
 						invoiceData.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 						invoiceData.setCreatedBy(user.getUserCode());
