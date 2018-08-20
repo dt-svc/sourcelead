@@ -1416,7 +1416,7 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateLeaveType){
 					associateLeaveType.href = "#";
 					associateLeaveType.className = "disabledLink";
-				} 
+				}  
 
  
 
