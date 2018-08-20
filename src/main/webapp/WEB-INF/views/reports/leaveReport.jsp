@@ -128,7 +128,7 @@ $( document ).ready(function() {
               <div class="clearfix">
                 <select class="form-control chosen-select" id="status" name="status" data-placeholder="Status" multiple field-name="Status" >
 	                 <option value="PENDING">PENDING</option>
-	                 <option value="APPROVED">APPROVED</option>
+	                 <option value="APPROVED" selected>APPROVED</option>
 	                 <option value="REJECTED">REJECTED</option>
 	                 <option value="CANCELLED">CANCELLED</option>
                 </select>
