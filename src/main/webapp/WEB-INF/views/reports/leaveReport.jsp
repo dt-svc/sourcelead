@@ -122,6 +122,18 @@ $( document ).ready(function() {
                 <select id="leaveTypeList" name="leaveTypeIds"  class="form-control chosen-select" field-name="Leave Type" data-placeholder="Select LeaveType" multiple></select>
               </div>
             </div>
+            
+                    <div class="col-md-5">
+              <label class="clearfix">Status</label>
+              <div class="clearfix">
+                <select class="form-control chosen-select" id="status" name="status" data-placeholder="Status" multiple field-name="Status" >
+	                 <option value="PENDING">PENDING</option>
+	                 <option value="APPROVED">APPROVED</option>
+	                 <option value="REJECTED">REJECTED</option>
+	                 <option value="CANCELLED">CANCELLED</option>
+                </select>
+              </div>
+            </div>
 
         <div class="clearfix"></div>
       </div>
@@ -289,8 +301,8 @@ function leaveReportsListPagination(url,formData){
 	    	  	"render": function(data, type, user, meta) {
 	    	  	  var result = '';
 	        	  result = result + ' <td>';
-		          if(user.employeeId !=null && user.employeeId !='' && user.employeeId !='undefined'){
-						 result = result +'<div class="tblminwidth-75" title="'+user.employeeId+'">'+user.employeeId+'</div>';
+		          if(user.eid !=null && user.eid !='' && user.eid !='undefined'){
+						 result = result +'<div class="tblminwidth-75" title="'+user.eid+'">'+user.eid+'</div>';
 		          }else{
 						result = result + ' <div class="tblminwidth-75">--</div>';
 					}

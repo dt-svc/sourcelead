@@ -67,6 +67,10 @@ public class HrLeaveReportDTO extends SearchDTO {
 	private float noOfDays;
 	
 	private Long userId;
+	
+	private String eid;
+	
+	private List<String> status;
 
 	public String getStartDate()
 	{
@@ -358,6 +362,27 @@ public class HrLeaveReportDTO extends SearchDTO {
 		this.userId = userId;
 	}
 
+	public String getEid()
+	{
+		return eid;
+	}
+
+	public void setEid(String eid)
+	{
+		this.eid = eid;
+	}
+
+	public List<String> getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(List<String> status)
+	{
+		this.status = status;
+	}
+
 	
 	
+
 }
