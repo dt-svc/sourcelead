@@ -11,7 +11,7 @@
 	      <input type="hidden" name="pfesiId" value="${pfesiDTO.pfesiId}" id="pfesiId"/>
 	      
 	      
-	      <div class="clearfix row minHeightcol5">
+	      <div class="clearfix  minHeightcol5">
               <div class="col-md-12 mb">
               	     <h4 class="col-md-12 noPad">PF</h4>
 		                  <div class="mb checkbox-new clearfix">

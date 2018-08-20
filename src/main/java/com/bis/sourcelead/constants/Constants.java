@@ -1195,15 +1195,6 @@ public class Constants {
 	public static final String HALFYEARLY = "HalfYearly";
 	public static final String QUARTERLY = "Quarterly";
 
-	
-
-	public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
-	
-	public static final String[] IT_DECLARATION_SUBMISSION_FORM = { "Item Name", "Particulars" ,"Eligibility(Rs.)","Amount"};
-	
-
-	public static final String PAYROLL_DELETE = "Delete";
-	public static final String REACTIVE = "Reactive";
 
 
 	public static final String PAYROLL_DELETE = "Delete";
