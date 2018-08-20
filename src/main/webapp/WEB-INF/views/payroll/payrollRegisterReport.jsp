@@ -26,10 +26,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
-					<select class="form-control sel" id="payGroup" name="payGroup">
-					<option value="">Select Group</option>
-						<option>Monthly</option>
-						<option>Weekly</option>
+					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId();">
 					</select>
 				</div>
             </div>
@@ -48,11 +45,11 @@ $(document).ready(function(){
              <div class="form-group">
               <label class="col-md-12">Pay Period</label>
               <div class="col-md-12">
-                <select class="form-control sel">
-					    <option>Select Period</option>
+                <select class="form-control sel" id="payPeriod" name="payPeriod">
+					    <!-- <option>Select Period</option>
 						<option>01-02-2018 28-02-2018</option>
 						<option>01-03-2018 28-03-2018</option>
-						<option>01-02-2018 28-02-2018</option>
+						<option>01-02-2018 28-02-2018</option> -->
 					</select>
               </div>
             </div>
@@ -165,16 +162,40 @@ function getPayGroupList(){
 	        url: sourceleadUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(json) {
 	        var output = "";
+	        output = output + "<option value=''>Select Group</option>";
 			for (var i=0; i<json.length; i++)
 			{
-				var date = json[i].replace(",", " to ");
-				output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+				var opt = json[i];
+				output = output + "<option value='" +opt.id+ "'>"+opt.groupName+"</option>";
+			}
+			$("#payGroup").empty();
+			$("#payGroup").append(output);
+			$('#payGroup').trigger("chosen:updated"); 
+	        },
+	    });
+}
+</script>
+
+
+<script type="text/javascript">
+function getPayPeriodByGroupId(){
+	var groupId = $("#payGroup").val();
+	$.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getPayPeriodByGroupId?"+tokenParamName+"="+tokenValue+"&groupId="+groupId               , 
+	        success: function(json) {
+	        var output = "";
+	        output = output + "<option value=''>Select Pay Period</option>";
+			for (var i=0; i<json.length; i++)
+			{
+				var opt = json[i];
+				output = output + "<option value='" +opt.id+ "'>"+opt.groupName+"</option>";
 			}
 			$("#payPeriod").empty();
 			$("#payPeriod").append(output);
 			$('#payPeriod').trigger("chosen:updated"); 
 	        },
-	    });
+	    });	
 }
 </script>
   

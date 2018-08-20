@@ -301,7 +301,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				if (period != null) {
 					payPeriodNum = payPeriodNum + period.getPayPeriodNum();
 				}
-				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation);
+				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation,loginUser);
 			}else {
 				int isUpadted = uSPayPeriodService.updatedPayperiod(confirmPaySumDto.getPpn());
 			}
@@ -427,7 +427,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		
 	}
 
-	private USPayPeriod saevPayPeriodNumber(PaysheetFrequency pf, int payPeriodNum, OrgLocations orgLocation)
+	private USPayPeriod saevPayPeriodNumber(PaysheetFrequency pf, int payPeriodNum, OrgLocations orgLocation, User loginUser)
 	{
 		USPayPeriod  uSPayPeriod = new USPayPeriod();
 		uSPayPeriod.setPaysheetFrequency(pf);
@@ -437,6 +437,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		uSPayPeriod.setCreatedDate(new Date());
 		uSPayPeriod.setUpdatedDate(new Date());
 		uSPayPeriod.setApproverStatus(PayrollConstant.APPROVE);
+		uSPayPeriod.setCreatedBy(loginUser.getId());
+		uSPayPeriod.setUpdatedBy(loginUser.getId());
 		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
 	}
 }
