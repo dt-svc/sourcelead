@@ -1365,7 +1365,7 @@ function clearDateofJoin(){
 // project side bar tabs
 
 var associateLeaveType = document.getElementById("associateLeaveType");
-				/* if(associateLeaveType){
+				if(associateLeaveType){
 					associateLeaveType.href = "#";
 					associateLeaveType.className = "disabledLink";
 				}
@@ -1414,7 +1414,7 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateLeaveType){
 					associateLeaveType.href = "#";
 					associateLeaveType.className = "disabledLink";
-				}  */
+				}  
 
  
 
