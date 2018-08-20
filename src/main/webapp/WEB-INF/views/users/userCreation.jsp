@@ -502,6 +502,7 @@
               <jsp:include page="associateIndiaBankingDetails.jsp" />
               <jsp:include page="associateIndiaInformationDetails.jsp" />
               <jsp:include page="associateIndiaLoanAndAdvancesDetails.jsp" />
+              <jsp:include page="associateIndiaSalaryDetails.jsp" />
          </c:if> 
         
       </section>
@@ -1478,22 +1479,7 @@ $(document).ready(function() {
 </script> 
 
 
-<script>
-function indAssociateSalarySummary(){
-	var locationCode = '${SourceLeadWeb_locationCode}';
-	var candidateId =  $("#associateCandidateId").val();
-	if(candidateId != null && candidateId != '' && candidateId != 'undefined'){
-		$.ajax({
-			  type: "GET",
-			    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&orgLocationId="+locationCode,
-			     success :function(response) {
-			    	    $("#candidateSideDiv").empty();  
-			    	    $("#candidateSideDiv").append(response);
-					},
-				});
-	}
-}
-</script>
+
 
 
 

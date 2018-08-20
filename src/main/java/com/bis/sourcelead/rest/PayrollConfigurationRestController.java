@@ -911,9 +911,10 @@ public class PayrollConfigurationRestController {
 			
 			AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByCandidateId(payrollPayheadDTO.getCandidateId());
 			if(associateSalaryInd != null) {
-				model.addObject("candidateCTCPerYear", associateSalaryInd.getCtc());
+				/*model.addObject("candidateCTCPerYear", associateSalaryInd.getCtc());
 				model.addObject("fbp", associateSalaryInd.getFbp());
-				model.addObject("variablePay", associateSalaryInd.getVariablePay());
+				model.addObject("variablePay", associateSalaryInd.getVariablePay());*/
+				model.addObject("associateSalaryInd", associateSalaryInd);
 				model.addObject("candidate", associateSalaryInd.getCandidate());
 				model.addObject("associateSalaryPayheadIndList", associateSalaryInd.getAssociateSalaryPayheadIndList());
 				model.addObject("uuid", associateSalaryInd.getUuid());
