@@ -63,4 +63,97 @@ public class USPayrollReportRestController {
 		return model;
 	}
 	
+	/**
+	 * Returning US Payroll Register Report Jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/payrollRegisterReport")
+	public ModelAndView payrollRegisterReportJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/payrollRegisterReport");
+		return model;
+	}
+	
+	/**
+	 * Returning US Payroll Comparison Report Jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/payrollComparison")
+	public ModelAndView payrollComparisonJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/payrollRegisterReport");
+		return model;
+	}
+	
+	/**
+	 * Returning US Payroll Direct Deposit Report Jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/directDepositReport")
+	public ModelAndView directDepositReportJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/directDepositReport");
+		return model;
+	}
+	/**
+	 * Returning US Payroll List Summary Report Jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/payrollListSummaryReport")
+	public ModelAndView payrollListSummaryReportJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/payrollListSummaryReport");
+		return model;
+	}
+	/**
+	 * Returning US Employee Payroll Report Jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/employeePayrollReport")
+	public ModelAndView employeePayrollReportJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/employeePayrollReport");
+		return model;
+	}
+	
+	/**
+	 * Returning US Check Register Report Jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/checkRegisterReport")
+	public ModelAndView checkRegisterReportJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/checkRegisterReport");
+		return model;
+	}
 }

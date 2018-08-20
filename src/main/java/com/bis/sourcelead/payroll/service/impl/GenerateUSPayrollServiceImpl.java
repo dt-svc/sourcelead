@@ -212,12 +212,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				if(!isExisted) {
 					 EmployeePayroll employeePayroll = new EmployeePayroll();
 					    employeePayroll.setPaysheetFrequency(paySheetFreq);
-					    List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
 					    AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(assoSal.getCandidate().getId(), orgLocation);
 						double totalHours = 0;
 						BigDecimal payRate = BigDecimal.ZERO;
 						BigDecimal amount = BigDecimal.ZERO;
 						if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
+							 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
 							payRate = assoSal.getHourlyRate();
 							if(totalHoursDto !=null ) {
 								for(TotalHoursDTO totalHoursDTO : totalHoursDto) {

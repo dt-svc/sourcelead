@@ -20,17 +20,17 @@
 			<i class="fa fa-pie-chart fa-2x text-muted"></i>
            </div>
             <div class="pull-left">
-              <h4 class="text-muted"><a href="invoices-graph.html" class="anchorBlue">Payroll Register Reports</a></h4>
-              <small class="text-muted">Loremipsum Loremipsum</small>
-              <div class="clearfix mt10"> <a href="payrollRegister.html" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <h4 class="text-muted"><a href="invoices-graph.html" class="anchorBlue">Payroll Register</a></h4>
+              <small class="text-muted">Payroll Register Reports</small>
+              <div class="clearfix mt10"> <a href="${appPath}/payrollRegisterReport"  class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-exchange fa-2x text-muted"></i> </div>
             <div class="pull-left">
               <h4 class="text-muted">Comparsion</h4>
-              <small class="text-muted">Loremipsum Loremipsum</small>
-              <div class="clearfix mt10"> <a href="payrollComparisionReport.html" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <small class="text-muted">Payroll Comparsion</small>
+              <div class="clearfix mt10"> <a href="${appPath}/payrollComparison" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
 
@@ -38,16 +38,16 @@
             <div class="pull-left mr10"> <i class="fa fa-file-text-o fa-2x text-muted"></i> </div>
             <div class="pull-left">
               <h4 class="text-muted">Payroll Summary</h4>
-              <small class="text-muted">Loremipsum Loremipsum</small>
-              <div class="clearfix mt10"><a href="payrolllist-summary-us.html" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <small class="text-muted">Payroll Summary Report</small>
+              <div class="clearfix mt10"><a href="${appPath}/payrollListSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-check fa-2x text-primary"></i> </div>
             <div class="pull-left">
-              <h4 class="text-primary"><a href="araging-graph.html" class="anchorBlue">Check Register Report</a></h4>
-              <small class="text-muted">Loremipsum Loremipsum</small>
-              <div class="clearfix mt10"><a href="checkRegisterreport.html" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <h4 class="text-primary"><a href="araging-graph.html" class="anchorBlue">Check Register</a></h4>
+              <small class="text-muted">Check Register Report</small>
+              <div class="clearfix mt10"><a href="${appPath}/checkRegisterReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           
@@ -55,8 +55,8 @@
             <div class="pull-left mr10"> <i class="fa fa-line-chart fa-2x text-primary"></i> </div>
             <div class="pull-left">
               <h4 class="text-primary"><a href="apaging-graph.html" class="anchorBlue">Employee Report</a></h4>
-              <small class="text-muted">Loremipsum Loremipsum</small>
-              <div class="clearfix mt10"><a href="apaging-graph.html" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <small class="text-muted">Employee Payroll Report</small>
+              <div class="clearfix mt10"><a href="${appPath}/employeePayrollReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           <div class="col-md-3">
@@ -112,8 +112,8 @@
             <div class="pull-left mr10"> <i class="fa fa-arrow-circle-right fa-2x text-muted"></i> </div>
             <div class="pull-left">
               <h4 class="text-muted">Direct Deposit</h4>
-              <small class="text-muted">Loremipsum Loremipsum</small>
-              <div class="clearfix mt10"><a href="directdeposit.html" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <small class="text-muted">Direct Deposit Report</small>
+              <div class="clearfix mt10"><a href="${appPath}/directDepositReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
         </div>
