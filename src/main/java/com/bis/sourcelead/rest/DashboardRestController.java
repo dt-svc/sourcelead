@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -442,6 +443,17 @@ public class DashboardRestController {
 	}
 	
 	
+	@RequestMapping(value = "/dashboardPipelineJobsCount" , method = RequestMethod.GET)
+	 public @ResponseBody RequirementSubmissionsCountDTO dashboardPipelineJobsCount(@RequestParam(value = "requirementId", required = true) Long requirementId,@RequestParam(value = "submissionType", required = false) String submissionType, HttpServletRequest request) throws Exception {
+			
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirementId, user, orgLocation, "ALL");
+		     return rsCount;
+	}
+	
+	
+	
 	 /**
 	   * @author sarath kumar
 	   * @since  aug 30 2016
@@ -486,20 +498,17 @@ public class DashboardRestController {
 					dayString = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(c.getTime());
 					selectedDayString = new SimpleDateFormat("EEEE (dd/MM/yyyy)", Locale.ENGLISH).format(c.getTime());
 				}
+			
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 					userType = Constants.ADMIN;
-					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
 					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
 				}else{
-					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
 					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
 				}
-				
-				//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+				// your code here...
+				 
 				for(Requirement requirement : requirementList){
-					/*if(requirement.getClientId() != null){
-						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
-					}*/
+					 
 					//changed ny prasad salina
 					if(requirement.getClientId() != null){
 						if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -514,23 +523,8 @@ public class DashboardRestController {
 					
 					Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
 		    		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
+
 		    		
-		    		
-		    		RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, loginOrgLocation, "ALL");
-					
-					/*int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
-					int shortlistedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SHORTLISTED");
-					int submittedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SUBMITTED");
-					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "INTERVIEWED");
-					int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "OFFERED");
-					int joinedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "JOINED");
-					*/
-					requirement.setNoOfApplicants(String.valueOf(rsCount.getApplicantsCount()));
-					requirement.setNoOfShortlistedApplicants(String.valueOf(rsCount.getShortlistCount()));
-					requirement.setNoOfSubmittedApplicants(String.valueOf(rsCount.getSubmitToClientCount()));
-					requirement.setNoOfInterviewedApplicants(String.valueOf(rsCount.getInterviewCount()));
-					requirement.setNoOfOfferedApplicants(String.valueOf(rsCount.getOffersCount()));
-					requirement.setNoOfJoinedApplicants(String.valueOf(rsCount.getJoinedCount()));
 					
 					if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
 						List<Long> userId = new ArrayList<Long>();
@@ -549,8 +543,10 @@ public class DashboardRestController {
 		         			requirement.setIsRequirementReleasedByuser("Y");
 		         		}
 					}
+					
 				}
 				response.setData(requirementList);
+				
 			    response.setResponse(Result.SUCCESS.name());
 			    if(isWalkIn)
 			    	response.setResponseMessage(Result.SUCCESS.getValue() + ":" + selectedDay +":"+selectedDayString);
@@ -577,15 +573,16 @@ public class DashboardRestController {
 	  */
 	
 	 @RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
-	 public Response<DashboardCounts>  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,HttpServletRequest request) throws Exception {
+	 public Response<DashboardCounts>  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,@RequestParam(value="orgLocationId", required=false) Long orgLocationId,@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
 		 Response<DashboardCounts> response = new Response<>();
-	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
-		DashboardCounts dc= new DashboardCounts();
-		Timezone timezone = null;
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(user != null) {
+		 OrgLocations loginOrgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			DashboardCounts dc= new DashboardCounts();
+			Timezone timezone = null;
+			
+			UserRole userRole = userRoleService.getUserByUserId(userId);
+//			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+//			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(userRole != null) {
 			try {
 				if(loginOrgLocations.getTimezone() != null){
 					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
@@ -603,53 +600,27 @@ public class DashboardRestController {
 					 String endDate = outputFormatter1.print(zoned);
 					 Date endDateString = TZ_DF_TS.parse(endDate);
 					 endUTCDate = endDateString;
-					 	/*old logic*/
-					/* DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-					 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-					 String startDate = outputFormatter.print(zoned);
-					 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-					 startUTCDate = TZ_DF_TS.parse(startDateString);
-					 String endDate = outputFormatter1.print(zoned);
-					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-					 endUTCDate = TZ_DF_TS.parse(endDateString);*/
+					  
 				}else{
 					 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 					 String customStartTimeStr = outputFormatter.print(zoned);
 					 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-					 /*old logic*/
-					 /*DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-					 String startDate = outputFormatter.print(zoned);
-					 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-					 startUTCDate = TZ_DF_TS.parse(startDateString);*/
+					 
 				}
 				
-				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole.getUserType()) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole.getUserType())){
 					userType = Constants.ADMIN;
 				} 
 				
-				int toDayReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMIT_TO_CLIENT",daterange,userType,user,startUTCDate,endUTCDate);
-				//int previousReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
+				Integer[] requirementSubmissionHistoryCounts = requirementSubmissionService.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),daterange, userRole.getUserType(), userRole.getUser(), startUTCDate, endUTCDate);
 				
-				int toDayReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange,userType,user,startUTCDate,endUTCDate);
-				//int previousReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
-			   
-				int toDayReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW",daterange,userType,user,startUTCDate,endUTCDate);
-			    //  int previousReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW","previous");
-			   
-			    int toDayReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE",daterange,userType,user,startUTCDate,endUTCDate);
-			    // int previousReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE","previous");
-				
-			    dc.setSubmissionCount(toDayReqSubmissionscount);
-			    //dc.setSubmissionCount(previousReqSubmissionscount);
+			    dc.setApplicantsCount(requirementSubmissionHistoryCounts[0]); //0 index is applicant count as per QueryResult
 			    
-			    dc.setApplicantsCount(toDayReqApplicantscount);
-			   // dc.setApplicantsCount(previousReqApplicantscount);
+			    dc.setInterviewsCount(requirementSubmissionHistoryCounts[1]); //1 index is interview count as per QueryResult
 			    
-			    dc.setInterviewsCount(toDayReqInterviewscount);
-			   // dc.setInterviewsCount(previousReqInterviewscount);
-			    
-			    dc.setOffersCount(toDayReqOfferscount);
-			   // dc.setOffersCount(previousReqOfferscount);
+			    dc.setSubmissionCount(requirementSubmissionHistoryCounts[2]); //2 index is  submission count as per QueryResult
+
+			    dc.setOffersCount(requirementSubmissionHistoryCounts[3]); //3 index is offer count as per QueryResult
 			   
 			    response.setObject(dc);
 			    response.setResponse(Result.SUCCESS.name());

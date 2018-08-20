@@ -235,13 +235,13 @@ $(document).ready(function() {
         	immigration.displayFamilyDetails(candidateId);
         }else if(tab=='#educationsTab'){
         showLoading("immigrationLoadingEducationsTab");
-        getCandidateEducationList(candidateId);
+        immigration.getCandidateEducationList(candidateId);
         } else if(tab=='#employersTab'){
         showLoading("immigrationLoadingEmployersTab");
-        getCandidateEmployerList(candidateId);
+        immigration.getCandidateEmployerList(candidateId);
         }else if(tab=='#residencesTab'){
         	showLoading("immigrationLoadingResidencesTab");
-        	getCandidateResidenceList(candidateId);
+        immigration.getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
         showLoading("immigrationLoadingPassportsTab");
         immigration.displayPassportDetails(candidateId,'Passport');
@@ -254,19 +254,19 @@ $(document).ready(function() {
         	immigration.getLcaDetailsInfo(immigrationId);
         }else if(tab=='#docsTab'){
         	showLoading("immigrationLoadingDocsTab");
-        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
+        	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
         }else if(tab =='#notesTab'){
         	showLoading("immigrationLoadingNotesTab");
-        	getNotesListByImmigration(candidateId);
+        	immigration.getNotesListByImmigration(candidateId);
         } else if(tab=='#formsTab'){
         	showLoading("immigrationLoadingFormsTab");
         	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
         }else if(tab=='#activitiesTab'){
         	showLoading("immigrationLoadingActivitiesTab");
-        	getImmigrationActivies();
+        	immigration.getImmigrationActivies();
         }else if(tab=='#tasksTab'){
         	showLoading("immigrationLoadingTasksTab");
-        	getImmigrationTasks(immigrationId,"${myImmigrationPage}","");
+        	immigration.getImmigrationTasks(immigrationId,"${myImmigrationPage}","");
         }
         
        

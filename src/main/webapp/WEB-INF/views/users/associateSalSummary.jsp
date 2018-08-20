@@ -251,14 +251,14 @@ function associateSalSummary(userId){
               <div class="col-md-5">
                 <label>Standard Hours</label>
                 <div>
-                  <input class="form-control" id="standardHours" name="standardHours"  type="text" onblur="calculateSal();">
+                  <input class="form-control" id="standardHours" name="standardHours"  type="text" data-validation="required" field-name="Standard Hours" onblur="calculateSal();">
                   <input class="form-control" name="previousStandardHours" id="previousStandardHours" type="hidden">
                 </div>
               </div>
               <div class="col-md-5">
                 <label>Annual Salary</label>
                 <div>
-                  <input class="form-control" name="annualSal" id="annualSal" type="text" onblur = "calaculateIncDecPer();">
+                  <input class="form-control" name="annualSal" id="annualSal" type="text" data-validation="required" field-name="Annual Salary" onblur = "calaculateIncDecPer();">
                    <input class="form-control" name="previousAnnualSal" id="previousAnnualSal" type="hidden">
                    
                 </div>
@@ -266,14 +266,14 @@ function associateSalSummary(userId){
               <div class="col-md-5">
                 <label>Per Pay Salary</label>
                 <div>
-                  <input class="form-control" name="perPaySal" id="perPaySal" type="text" onblur = "calculatePayPerSal();">
+                  <input class="form-control" name="perPaySal" id="perPaySal" type="text" data-validation="required" field-name="Per Pay Salary" onblur = "calculatePayPerSal();">
                     <input class="form-control" name="previousPerPaySal" id="previousPerPaySal" type="hidden">
                 </div>
               </div>
               <div class="col-md-5">
                 <label>Hourly Rate</label>
                 <div>
-                  <input class="form-control" name="hourlyRate" id="hourlyRate" type="text" onblur = "calculateHourlyRateSal();">
+                  <input class="form-control" name="hourlyRate" id="hourlyRate" type="text" data-validation="required" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                    <input class="form-control" name="previousHourlyRate" id="previousHourlyRate" type="hidden">
                 </div>
               </div>

@@ -24,14 +24,15 @@
             </div>
             
             <div class="clearfix footerstyelsNew">
-                 <div class="col-md-6">
-                 <a class="anchorBlack" onclick="saveAssociateleave();">Skip & Finish</a>
+			      <div class="col-md-6">
+                 <input type="button" value="Previous" onclick="shiftTab();" class="btn btn-default">
 			     </div>
 			     <div class="col-md-6">
                    <div class="pull-right">
-                    <input value="Save &amp; Continue" class="btn btn-success btnSuccess mr" id="save_assoc_leave" type="button" onclick="saveAssociateleave();">
+                    <input value="Skip" class="btn btn-default mr10" onclick="saveAssociateleave();" type="button">
+                    <input value="Save &amp; Finish" class="btn btn-success btnSuccess mr" id="save_assoc_leave" type="button" onclick="saveAssociateleave();">
                    <!--  <input value="Cancel" class="btn btn-default ml10" type="button"> -->
-                    <input type="button" value="Previous" onclick="shiftToAssociateTab();" class="btn btn-default">
+                     <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
                     </div>
                   </div>
                 </div>
@@ -77,9 +78,9 @@
                 		
                 		$("#leaveDiv").empty();
                        	$("#leaveDiv").append(result);
-                	}else{
+                	}/* else{
                 		location.replace(sourceleadUrl+"/usersList");
-                	}
+                	} */
                 },
             });
  }
@@ -153,13 +154,24 @@ function saveAssociateleave() {
 
 
 <script>
-function shiftToAssociateTab(){
-var associates = document.getElementById("associates");
-document.getElementById("associates").removeAttribute("class");
-associates.href="#tab-1";
-$("#loading").removeAttr('style');
-$("#create_user" ).addClass('button').val('Save & Continue');
-$("#create_user").removeAttr("disabled");
-$("#associates").click();
+function shiftTab(){
+var loginCountry = '${SourceLeadWeb_country}';
+ if(loginCountry == 'United States'){
+	var associateContribution = document.getElementById("associateContribution");
+	document.getElementById("associateContribution").removeAttribute("class");
+	associateContribution.href="#tab-5";
+	$("#loading").removeAttr('style');
+	$("#contribution_save_button" ).addClass('button').val('Save & Continue');
+	$("#contribution_save_button").removeAttr("disabled");
+	$("#associateContribution").click();
+}else{
+	var associates = document.getElementById("associates");
+	document.getElementById("associates").removeAttribute("class");
+	associates.href="#tab-1";
+	$("#loading").removeAttr('style');
+	$("#create_user" ).addClass('button').val('Save & Continue');
+	$("#create_user").removeAttr("disabled");
+	$("#associates").click();
+} 
 }
 </script>
