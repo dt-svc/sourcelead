@@ -3,6 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+
+<script>
+$(document).ready(function(){
+   getPayGroupList();
+});
+</script>
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -20,8 +26,8 @@
             <div class="form-group">
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
-					<select class="form-control sel">
-					<option>Select Group</option>
+					<select class="form-control sel" id="payGroup" name="payGroup">
+					<option value="">Select Group</option>
 						<option>Monthly</option>
 						<option>Weekly</option>
 					</select>
@@ -148,6 +154,29 @@
     </div>
     
   </section>
+  
+  
+  
+  
+<script>
+function getPayGroupList(){
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue                 , 
+	        success: function(json) {
+	        var output = "";
+			for (var i=0; i<json.length; i++)
+			{
+				var date = json[i].replace(",", " to ");
+				output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+			}
+			$("#payPeriod").empty();
+			$("#payPeriod").append(output);
+			$('#payPeriod').trigger("chosen:updated"); 
+	        },
+	    });
+}
+</script>
   
   
   <script type="text/javascript">
