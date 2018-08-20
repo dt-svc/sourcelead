@@ -82,9 +82,8 @@
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
 	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
+	          <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
 	      </c:if>
-		  
-	      <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
           <div class="clearfix"></div>
         </ul>
 		</div>
@@ -497,13 +496,14 @@
           </div>
         </div>
        
-       <jsp:include page="associateLeaveType.jsp" />
+      
         <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 	       <jsp:include page="associateSalary.jsp" />
 	       <jsp:include page="associateBankData.jsp" />
 	       <jsp:include page="associateTax.jsp" />
 	       <jsp:include page="associateDeduction.jsp" />
 	       <jsp:include page="associateContribution.jsp" />
+	       <jsp:include page="associateLeaveType.jsp" />
         </c:if>
         
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
@@ -771,6 +771,82 @@ function getEmployeementType(designationType){
   
  
 </script>  
+
+
+
+<script type="text/javascript">
+ function createUser() {
+	 var country = '${SourceLeadWeb_loginCountryName}'; 
+	 	var RatePer = document.getElementById("RatePer").value; 
+		if(RatePer != null && RatePer != ""){
+			$('#Rate').removeAttr('data-validation-optional');
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+		}else{
+			$('#Rate').removeAttr('data-validation');
+			$('#Rate').attr("data-validation-optional","true"); 
+		}
+		 
+		var Rate = document.getElementById("Rate").value; 
+		if(Rate != null && Rate != ""){
+			$('#RatePer').removeAttr('data-validation-optional');
+			$('#RatePer').attr("data-validation","required");
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+		}else{
+			$('#RatePer').removeAttr('data-validation');
+			$('#RatePer').attr("data-validation-optional","true"); 
+		}
+	 
+	   if ($('#createUser_form').validate(false, validationSettings)){
+		    var formData = getFormData("createUser_form");
+			$("#create_user").attr("disabled", "disabled");
+			$("#loading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+            $( "#create_user" ).addClass('button').val('Processing..');
+            
+            $.ajax({
+				type : "POST",
+        	    data: formData,
+				url : sourceleadUrl+"/createUser?"+tokenParamName+"="+tokenValue+"",
+				success : function(result) {
+					if(result && result === "DataMissing") {
+						$("#create_user").removeAttr("disabled");
+						$("#create_user").removeAttr('button').val('Save');	
+						showError("Invalid data");
+						$("#loading").removeAttr('style');
+					} 
+					else if(country == 'India') {
+						  $("#associateId").val(result.object.userId);
+						    $("#associateCandidateId").val(result.object.candidateId); 
+							$("#empType").val(result.object.designationType);
+							 var indBankingDetails = document.getElementById("indBankingDetails");
+							 document.getElementById("indBankingDetails").removeAttribute("class");
+							 indBankingDetails.href="#tab-2";
+							 $("#indBankingDetails").click();
+					}else{
+					    $("#associateId").val(result.object.userId);
+						$("#empType").val(result.object.designationType);
+						var associateSalary = document.getElementById("associateSalary");
+						document.getElementById("associateSalary").removeAttribute("class"); 
+						associateSalary.href="#tab-6"; 
+						$("#associateSalary").click();
+						getPayItemList();
+					}
+				},
+			});
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+    }
+ 
+   $('body').on('blur', '#createUser_form', function() {
+		$("#createUser_form").showHelpOnFocus();
+		$("#createUser_form").validateOnBlur(false, validationSettings);  
+   });
+  
+ 
+</script>  
+
 
 <script type="text/javascript">
         var validationSettings = {
