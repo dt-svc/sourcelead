@@ -229,7 +229,7 @@ public class ExpensesApprovalRestController {
 	 	            //For Employee
 			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 			 		
-			 		if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 2 && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
+			 		if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 2 ){
 			 			//For Approvers of EndClient
 				 		 List<ExpenseProjectApproverHierarchy> approverList =  expenseProjectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
 				 		 if(approverList != null && !approverList.isEmpty()){
