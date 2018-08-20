@@ -462,6 +462,7 @@ public class LoginSessionController {
 					}
 					else{
 						model.setViewName("dashboard");
+//						model.setViewName("masterPage");
 					}
 					
 				}

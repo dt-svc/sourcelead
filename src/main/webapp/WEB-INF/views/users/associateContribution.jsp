@@ -68,7 +68,7 @@ $(document).ready(function(){
                   <div class="col-md-5">
                     <label class="clearfix">contributionAmount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_int" field-name="Amount">
+                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_int" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
@@ -115,8 +115,8 @@ $(document).ready(function(){
 			     </div> 
                   <div class="col-md-12">
                    <div class="pull-right">
-                   <input value="Skip &amp; Finish" class="btn btn-default mr10"  onclick="skipContributionJsp();" type="button">
-                    <input value="Save &amp; Finish" class="btn btn-success btnSuccess" type="button" id="contribution_save_button" onclick="saveAssociateContribution();">
+                   <input value="Skip" class="btn btn-default mr10"  onclick="skipContributionJsp();" type="button">
+                    <input value="Save &amp; Continue" class="btn btn-success btnSuccess" type="button" id="contribution_save_button" onclick="saveAssociateContribution();">
                     <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
                     </div>
                   </div>
@@ -165,12 +165,14 @@ $('body').on('blur', '#associate_contribution_form', function() {
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
-		                	location.replace(sourceleadUrl+"/usersList");
-		                	/* $("#associateId").val(result.object.userId);
-							var associateContribution = document.getElementById("associateContribution");
-							document.getElementById("associateContribution").removeAttribute("class"); 
-							associateDeduction.href="#tab-5"; 
-							$("#associateContribution").click(); */
+// 		                	location.replace(sourceleadUrl+"/usersList");
+		                	$("#associateId").val(result.object.userId);
+		            		var associateLeaveType = document.getElementById("associateLeaveType");
+							document.getElementById("associateLeaveType").removeAttribute("class"); 
+							associateLeaveType.href="#tab-7"; 
+							$("#tab-1").removeAttr("href");
+							$("#associateLeaveType").click();
+							getAllLeaveType();
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {
@@ -263,6 +265,9 @@ function contributionPopup(){
  
  <script>
  function skipContributionJsp(){
-	 location.replace(sourceleadUrl+"/usersList");
+	 	var associateLeaveType = document.getElementById("associateLeaveType");
+		document.getElementById("associateLeaveType").removeAttribute("class"); 
+		associateContribution.href="#tab-7"; 
+		$("#associateLeaveType").click();
  }
  </script>
