@@ -980,8 +980,16 @@ public class LeaveDaoImpl implements LeaveDao{
 			date = commonUtil.getOrgLocationCurrentDate(orgLoc.getDateFormat(), new Date());
 			sqlDate = new java.sql.Date(date.getTime());	
 		}
-		
-		String query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and ((:fromDate BETWEEN leaveReport.fromDate AND leaveReport.toDate) or (leaveReport.fromDate = :fromDate and leaveReport.toDate = :fromDate)) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
+		String query=null;
+		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+			query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and ((:fromDate BETWEEN leaveReport.fromDate AND leaveReport.toDate) or (leaveReport.fromDate = :fromDate and leaveReport.toDate = :fromDate)) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
+
+		}
+		else{
+			query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and leaveReport.reportingManagerId = :loginUserId and ((:fromDate BETWEEN leaveReport.fromDate AND leaveReport.toDate) or (leaveReport.fromDate = :fromDate and leaveReport.toDate = :fromDate)) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
+
+		}
+//		String query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and ((:fromDate BETWEEN leaveReport.fromDate AND leaveReport.toDate) or (leaveReport.fromDate = :fromDate and leaveReport.toDate = :fromDate)) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
 		StringBuilder query1 = new StringBuilder();
 		if (StringUtils.isNotBlank(dayWiseLeaveReportDTO.getSearchValue())) {
 			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
@@ -991,6 +999,9 @@ public class LeaveDaoImpl implements LeaveDao{
 					String replacedValue = dayWiseLeaveReportDTO.getSearchValue().replaceAll("/", "-");
 					Date date1 = format.parse(replacedValue);
 					sqlDate = new java.sql.Date(date1.getTime());
+				}
+				if (sqlDate != null) {
+					query1.append("OR (leaveReport.fromDate like '%" + sqlDate + "%' and leaveReport.toDate like '%" + sqlDate + "%'" + ") ");
 				}
 			}
 			query1.append(" and (leaveReport.name like '%" + dayWiseLeaveReportDTO.getSearchValue()
@@ -1004,9 +1015,7 @@ public class LeaveDaoImpl implements LeaveDao{
 															+ dayWiseLeaveReportDTO.getSearchValue()
 															+ "%' ").append("OR leaveReport.status like '%"
 																	+ dayWiseLeaveReportDTO.getSearchValue() + "%') ");
-			if (sqlDate != null) {
-				query1.append("OR (leaveReport.fromDate like '%" + sqlDate + "%' and leaveReport.toDate like '%" + sqlDate + "%'" + ") ");
-			}
+		
 		}
 		List<LeaveReportView> leaveReportList = null;
 		ResponseList<LeaveReportView> response = new ResponseList<>();
@@ -1119,6 +1128,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		response.setRecordsTotal(count);
 		if (leaveReportList != null) {
 			List<Long> filteredCountlist = null;
+			
 			if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
 				filteredCountlist = session.createQuery("select count(*) " + query
 						+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", sqlDate).setLong("loginUserId", dayWiseLeaveReportDTO.getLoginUserId()).list();
@@ -1139,7 +1149,7 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(HrLeaveReportDTO hrLeaveReportDTO, Long orgId, Long orgLocationId) throws Exception
+	public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromToDate(HrLeaveReportDTO hrLeaveReportDTO, Long orgId, Long orgLocationId,String loginUserRole) throws Exception
 	{
 		OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
 		SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
@@ -1156,8 +1166,15 @@ public class LeaveDaoImpl implements LeaveDao{
 		startDateSqlDate = new java.sql.Date(startDate.getTime());
 		endDateSqlDate = new java.sql.Date(endDate.getTime());
 	}
-		String query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
-		StringBuilder query1 = new StringBuilder();
+		String query=null;
+		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+			query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
+		}
+		else{
+		query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and leaveReport.reportingManagerId = :loginUserId and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
+
+
+		}		StringBuilder query1 = new StringBuilder();
 		if (StringUtils.isNotBlank(hrLeaveReportDTO.getSearchValue())) {
 			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
 			Matcher matcher = pattern.matcher(hrLeaveReportDTO.getSearchValue());
@@ -1277,12 +1294,20 @@ public class LeaveDaoImpl implements LeaveDao{
 		queryString.setLong("orgId", orgId);
 		queryString.setDate("fromDate", startDateSqlDate);
 		queryString.setDate("toDate", endDateSqlDate);
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+			queryString.setLong("loginUserId", hrLeaveReportDTO.getLoginUserId());
+	
+		}
 		leaveReportList = queryString.list();
 		countQueryString = session.createQuery(("select count(*) " + query));
 		countQueryString.setParameter("orgLocationId", orgLocationId);
 		countQueryString.setParameter("orgId", orgId);
 		countQueryString.setParameter("fromDate", startDateSqlDate);
 		countQueryString.setParameter("toDate", endDateSqlDate);
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+			countQueryString.setLong("loginUserId", hrLeaveReportDTO.getLoginUserId());
+	
+		}
 		countlist = countQueryString.list();
 		response.setData(leaveReportList);
 		int count = 0;
@@ -1295,6 +1320,17 @@ public class LeaveDaoImpl implements LeaveDao{
 			List<Long> filteredCountlist = null;
 			filteredCountlist = session.createQuery("select count(*) " + query
 					+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+				filteredCountlist = session.createQuery("select count(*) " + query
+						+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).setLong("loginUserId", hrLeaveReportDTO.getLoginUserId()).list();
+			}
+			else{
+				filteredCountlist = session.createQuery("select count(*) " + query
+						+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).list();
+			}
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
