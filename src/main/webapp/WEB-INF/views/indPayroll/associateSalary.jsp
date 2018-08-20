@@ -6,20 +6,11 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 
-
-	<div id="tab-5" class="tabsMenu_tabs_inn" style="display: block;">
-
 			<form:form id="associateSalary_form" name="associateSalary_form">
                 <div class="clearfix minHeightcol5 mt">
                 <div class="clearfix mb">
                 	<a class="pull-right mr anchorBlack" style="display:none"><i class="glyphicon glyphicon-pencil paddingRight"></i>Edit</a>
                 </div>
-                
-                
-                
-                
-                
-                
                 
                 <div class="col-md-5">
                     <label>Pay Type<span class="text-danger paddingLeft">*</span></label>
@@ -339,22 +330,22 @@ function calculateSal(){
 		if(payFrequency === 'Annual'){
 			var rate = parseFloat(annualSal) / 1;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); */
+			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		if(payFrequency === 'Monthly'){
 			var rate = parseFloat(annualSal) / 12;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); */
+			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		if(payFrequency === 'Bi-Weekly'){
 			var rate = parseFloat(annualSal) / 26;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); */
+			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		if(payFrequency === 'Weekly'){
 			var rate = parseFloat(annualSal) / 52;
 			$("#perPaySal").val(rate.toFixed(2));
-			$("#hourlyRate").val(hourRate.toFixed(2)); */
+			$("#hourlyRate").val(hourRate.toFixed(2)); 
 		}
 		var hourRate = rate/hours;
 		$("#hourlyRate").val(hourRate.toFixed(2));
@@ -408,4 +399,3 @@ function calculateHourlyRateSal(){
 	}
 }
 </script>
-
