@@ -409,6 +409,7 @@ public class ProjectPlanningRestController {
 	    		  UserDTO userDTO = new UserDTO();
 	    		  userDTO.setFirstName(user.getFirstName());
     			  userDTO.setLastName(user.getLastName());
+    			  userDTO.setFullName(user.getFullName());
     			  userDTO.setId(user.getId());
 	    		  if(userRole.getDesignation() != null && !userRole.getDesignation().isEmpty()) {
 	    			  userDTO.setUserType(userRole.getDesignation());
