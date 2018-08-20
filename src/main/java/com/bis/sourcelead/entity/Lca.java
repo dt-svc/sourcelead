@@ -118,6 +118,10 @@ public class Lca implements Serializable {
 	@Transient
 	@JsonProperty
 	private List<String> locationsList;
+	
+	@Transient
+	@JsonProperty
+	private String lcaLocation;
 
 	public List<String> getLocationsList() {
 		return locationsList;
@@ -354,6 +358,14 @@ public class Lca implements Serializable {
 
 	public void setOrgLocationId(OrgLocations orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+
+	public String getLcaLocation() {
+		return lcaLocation;
+	}
+
+	public void setLcaLocation(String lcaLocation) {
+		this.lcaLocation = lcaLocation;
 	}
 	
 	
