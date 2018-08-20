@@ -43,6 +43,7 @@ import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
@@ -58,6 +59,7 @@ import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollPaytypeService;
 import com.bis.sourcelead.service.PayrollTaxService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -111,6 +113,9 @@ public class PayrollConfigurationRestController {
 	
 	@Autowired
 	OrgService orgService;
+	
+	@Autowired
+	UserGroupService userGroupService;
 	
 	@Autowired
 	AssociatePfEsiService associatePfEsiService;
@@ -911,9 +916,9 @@ public class PayrollConfigurationRestController {
 			
 			AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByCandidateId(payrollPayheadDTO.getCandidateId());
 			if(associateSalaryInd != null) {
-				/*model.addObject("candidateCTCPerYear", associateSalaryInd.getCtc());
-				model.addObject("fbp", associateSalaryInd.getFbp());
-				model.addObject("variablePay", associateSalaryInd.getVariablePay());*/
+				
+				List<UserGroup> userGroupList =  userGroupService.getAllUserGroupsByLocationIdAndPayFrequency(orgLocations, associateSalaryInd.getPayFrequency());
+				model.addObject("userGroupList", userGroupList);
 				model.addObject("associateSalaryInd", associateSalaryInd);
 				model.addObject("candidate", associateSalaryInd.getCandidate());
 				model.addObject("associateSalaryPayheadIndList", associateSalaryInd.getAssociateSalaryPayheadIndList());

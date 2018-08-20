@@ -139,6 +139,13 @@ public class UserGroupServiceImpl implements UserGroupService{
 	{
 		return userGroupDao.getAllUserGroupsByLocationId(orgLocation);
 	}
+	
+	@Override
+	public List<UserGroup> getAllUserGroupsByLocationIdAndPayFrequency(OrgLocations orgLocation, String payFrequency)
+	{
+		return userGroupDao.getAllUserGroupsByLocationIdAndPayFrequency(orgLocation, payFrequency);
+	}
+	
 
 	@Override
 	public Response<UserGroupDTO> findUserGroupById(String groupUUID)

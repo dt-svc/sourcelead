@@ -60,9 +60,6 @@ public class AssociateSalaryInd {
 	@Column(name = "HOURLY_RATE")
 	private BigDecimal hourlyRate;
 	
-	@Column( name ="ALLOW_OVER_TIME_PAY")
-	private String allowOverTimePay;
-	
 	@Column( name ="INCREMENT_PERCENTAGE")
 	private String incrementPercentage;
 	
@@ -187,14 +184,6 @@ public class AssociateSalaryInd {
 
 	public void setHourlyRate(BigDecimal hourlyRate) {
 		this.hourlyRate = hourlyRate;
-	}
-
-	public String getAllowOverTimePay() {
-		return allowOverTimePay;
-	}
-
-	public void setAllowOverTimePay(String allowOverTimePay) {
-		this.allowOverTimePay = allowOverTimePay;
 	}
 
 	public String getIncrementPercentage() {
