@@ -184,7 +184,7 @@ function flushPayrollCycle(){
 
 function cancelUpload(){
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/payrollList";
+	window.location.href = sourceleadUrl + "/payrollImports";
 }
 
 </script>
@@ -419,7 +419,7 @@ $(".addcon-pop").click(function() {
 		    			$("#selector1").css("display", "block");
 		    			$("#msgDiv").html(result+" Records Imported Successfully.");
 						msgFadein();
-						location.replace(sourceleadUrl+'/payrollList');
+						location.replace(sourceleadUrl+'/payrollImports');
 					},
 				});
 		
@@ -463,7 +463,7 @@ $(".addcon-pop").click(function() {
 			    			$("#selector1").css("display", "block");
 			    			$("#msgDiv").html(result+" Records Imported Successfully.");
 							msgFadein();
-							location.replace(sourceleadUrl+'/payrollList');
+							location.replace(sourceleadUrl+'/payrollImports');
 							
 						}
 					},
