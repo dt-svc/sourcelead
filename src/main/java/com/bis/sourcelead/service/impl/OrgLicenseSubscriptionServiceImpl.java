@@ -575,10 +575,12 @@ private Candidate getCandidateDetails(User user, OrgLocations orgLocations,Maste
 				
 				for(SourceleadActions actions : sourceLeadActionsList){
 					if(roleActonsList.contains(actions.getId())){
-						if(actions.getLoctionCode() == null) {
+						
+						if(actions.getLocationCode() == null) {
 							strbul.append(actions.getId()).append(",");
-						}else if(actions.getLoctionCode() != null) {
-							if(actions.getLoctionCode().equalsIgnoreCase(countires.getCode2())) {
+						}
+						else if(actions.getLocationCode() != null) {
+							if(actions.getLocationCode().equalsIgnoreCase(countires.getCode2())) {
 								strbul.append(actions.getId()).append(",");
 							}
 						}
@@ -810,7 +812,7 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 		List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsDao.getAllSourceleadActionsByTabsList(tabsIds);
 		Countries countires = countriesDao.getCountriesByCountryName(orgLicenseSubscriptionDTO.getCountry());
 		for(SourceleadActions actions : sourceLeadActionsList) {
-			if(actions.getLoctionCode() == null || (actions.getLoctionCode() != null && actions.getLoctionCode().equalsIgnoreCase(countires.getCode2()))) {
+			if(actions.getLocationCode() == null || (actions.getLocationCode() != null && actions.getLocationCode().equalsIgnoreCase(countires.getCode2()))) {
 				sourceLeadActionsIdsList.add(actions.getId());
 			}
 		}
