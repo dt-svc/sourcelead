@@ -28,10 +28,12 @@
 	$(document).ready(function() {
 		var location = "${location}";
 		document.getElementById("createUser_form").reset();
-		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-		  var sectionId = '${section.id}';
-		  getCustomDependentField(sectionId);
-		 </c:forEach>
+			<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	   		  <c:if test="${sectionOrder.index == 0}">
+				  var sectionId = '${section.id}';
+				  getCustomDependentField(sectionId);
+			  </c:if>
+			 </c:forEach>
 	});
 </script>
 <style type="text/css">
