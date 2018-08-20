@@ -7,6 +7,7 @@
 
 
 <div  class="tabsMenu_tabs_inn project_wrap noPad" style="display: block;">
+ <div id="loanAndAdvChoicepopUp"></div>
 <div class="reportHead clearfix">
 	<ul class="pull-right list-unstyled list-inline">
 		<li><a  onclick="showAssociateLoanAndAdvancePopup();"  class="newAdBtn mr5">+ Add</a></li>
@@ -252,9 +253,29 @@ $('body').on('blur', '#associate_loanAndAdvance_form', function() {
 	});
 </script>
 
+<script type="text/javascript">
+function loanAndAdvAlertMessage(loanAdvId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure to delete?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSavedLoanAndAdvance("+loanAdvId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDeleteLoanAndAdvance();'></b>";
+	result = result +"	</div>";
+	$("#loanAndAdvChoicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
 <script>
 function deleteLoanAndAdvance(loanAdvId){
-	
+	loanAndAdvAlertMessage(loanAdvId);
+}
+
+
+function deleteSavedLoanAndAdvance(loanAdvId){
 	$.ajax({
     	type: "POST",
     	url: sourceleadUrl+"/deleteAssociateLoanAndAdvanceDetailsById?loanAdvId="+loanAdvId,
@@ -263,6 +284,11 @@ function deleteLoanAndAdvance(loanAdvId){
     		associateLoanAndAdvanceDetails(candidateId);
         },
     });
+}
+
+function cancelDeleteLoanAndAdvance(){
+	$("#loanAndAdvChoicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 
