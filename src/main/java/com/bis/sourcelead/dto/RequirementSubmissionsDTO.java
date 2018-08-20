@@ -1,22 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.bis.sourcelead.entity.OrgLocations;
+import java.math.BigInteger;
 
 public class RequirementSubmissionsDTO extends SearchDTO implements Serializable {
 
@@ -39,6 +24,25 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private String fileContentType;
 	private String fileName;
 	private String fileURL;
+	
+	
+  //Dashboard realated properties added on 13/08/2018
+	private String candidateName;
+	private String candidateEmail;
+	private String requirementName;
+	private String candidateUUID;
+	private String requirementUUID;
+	private BigInteger reqManagerId;
+	private String reqReleaseAllJobUserStatus;
+	private String offerJoinDate;
+	private String positionType;
+	private String rateType;
+	private String paymentType;
+	private String offerUUID;
+	private BigInteger candidateId;
+	private BigInteger offerId;
+	private String onboardUUId;
+	private String onboardStatus;
 		
 	public long getRequirementId()
 	{
@@ -191,5 +195,102 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	public void setFileURL(String fileURL)
 	{
 		this.fileURL = fileURL;
+	}
+	public String getCandidateName() {
+		return candidateName;
+	}
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+	public String getRequirementName() {
+		return requirementName;
+	}
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+	public String getReqReleaseAllJobUserStatus() {
+		return reqReleaseAllJobUserStatus;
+	}
+	public String getOfferJoinDate() {
+		return offerJoinDate;
+	}
+	public String getPositionType() {
+		return positionType;
+	}
+	public String getRateType() {
+		return rateType;
+	}
+	public String getPaymentType() {
+		return paymentType;
+	}
+	public String getOfferUUID() {
+		return offerUUID;
+	}
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
+	}
+	public void setRequirementName(String requirementName) {
+		this.requirementName = requirementName;
+	}
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
+	}
+	 
+	public void setReqReleaseAllJobUserStatus(String reqReleaseAllJobUserStatus) {
+		this.reqReleaseAllJobUserStatus = reqReleaseAllJobUserStatus;
+	}
+	public void setOfferJoinDate(String offerJoinDate) {
+		this.offerJoinDate = offerJoinDate;
+	}
+	public void setPositionType(String positionType) {
+		this.positionType = positionType;
+	}
+	public void setRateType(String rateType) {
+		this.rateType = rateType;
+	}
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
+	}
+	public void setOfferUUID(String offerUUID) {
+		this.offerUUID = offerUUID;
+	}
+	public BigInteger getReqManagerId() {
+		return reqManagerId;
+	}
+	public BigInteger getCandidateId() {
+		return candidateId;
+	}
+	public BigInteger getOfferId() {
+		return offerId;
+	}
+	public void setReqManagerId(BigInteger reqManagerId) {
+		this.reqManagerId = reqManagerId;
+	}
+	public void setCandidateId(BigInteger candidateId) {
+		this.candidateId = candidateId;
+	}
+	public void setOfferId(BigInteger offerId) {
+		this.offerId = offerId;
+	}
+	public String getOnboardUUId() {
+		return onboardUUId;
+	}
+	public String getOnboardStatus() {
+		return onboardStatus;
+	}
+	public void setOnboardUUId(String onboardUUId) {
+		this.onboardUUId = onboardUUId;
+	}
+	public void setOnboardStatus(String onboardStatus) {
+		this.onboardStatus = onboardStatus;
 	}
 }

@@ -847,13 +847,13 @@ function getSowRate(id){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(json) {
-					if(json.data !='' && json.data != 'undefined' && json.data != null){
+				success :function(response) {
+					if(response.object !='' && response.object != 'undefined' && response.object != null){
 // 						var json = JSON.parse(data);
-						$("#exchangeRate").html(json.exchangeRate);
-						$("#exchangeCurrency").html(json.exchangeCurrency);
-						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
-						$("#convertedCurrencyCode").html(currencyCode +' to '+ json.vendorCurrencyCode);
+						$("#exchangeRate").html(response.object.exchangeRate);
+						$("#exchangeCurrency").html(response.object.exchangeCurrency);
+						$("#vendorCurrencyCode").html(response.object.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ response.object.vendorCurrencyCode);
 					}
 				},
 				});   
