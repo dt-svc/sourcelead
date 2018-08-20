@@ -2594,7 +2594,7 @@ public class LeaveServiceImpl implements LeaveService{
 	     style.setFont(font);
 		 
 		 writeRow = createExcelsheet.createRow(0);
-		 createExcelsheet.setColumnWidth(0, 10000);
+		 createExcelsheet.setColumnWidth(0, 3000);
 		 createExcelsheet.setColumnWidth(1, 10000);
 		 createExcelsheet.setColumnWidth(2, 5000);
 		 createExcelsheet.setColumnWidth(3, 5000);

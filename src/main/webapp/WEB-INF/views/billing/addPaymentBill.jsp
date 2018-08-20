@@ -61,6 +61,7 @@
 	    	 		 <div class="col-md-9">
 	    	 		 	<input class="form-control" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required validate_length length2-250"  field-name="Reference No"> 
 	    	 		</div>
+	    	 		<input type="hidden" id = "paymentAmount" name = "paymentAmount" value ="total">
     	 		</div>
     	 		
     	 		<div class="col-md-6 minHeight50 mb">
