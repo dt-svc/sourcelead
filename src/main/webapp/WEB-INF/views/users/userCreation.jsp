@@ -28,10 +28,12 @@
 	$(document).ready(function() {
 		var location = "${location}";
 		document.getElementById("createUser_form").reset();
-		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-		  var sectionId = '${section.id}';
-		  getCustomDependentField(sectionId);
-		 </c:forEach>
+			<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	   		  <c:if test="${sectionOrder.index == 0}">
+				  var sectionId = '${section.id}';
+				  getCustomDependentField(sectionId);
+			  </c:if>
+			 </c:forEach>
 	});
 </script>
 <style type="text/css">
@@ -720,7 +722,7 @@ function getEmployeementType(designationType){
 	   if ($('#createUser_form').validate(false, validationSettings)){
 		    var formData = getFormData("createUser_form");
 			$("#create_user").attr("disabled", "disabled");
-			$("#loading").attr('style','position:absolute; width:100%; height:180%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $( "#create_user" ).addClass('button').val('Processing..');
             
             $.ajax({
@@ -799,7 +801,7 @@ function getEmployeementType(designationType){
 	   if ($('#createUser_form').validate(false, validationSettings)){
 		    var formData = getFormData("createUser_form");
 			$("#create_user").attr("disabled", "disabled");
-			$("#loading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $( "#create_user" ).addClass('button').val('Processing..');
             
             $.ajax({
@@ -925,7 +927,7 @@ function getEmployeementType(designationType){
  function getUserByUserEmail() {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 if(EmailId != null && EmailId != ""){
-		 $("#loading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
@@ -1183,7 +1185,7 @@ function getAssociateUserDetails(){
  function getDesignationType(){
 	 var employmentDesignationType = $("#employmentDesignationType").val();
 	 if(employmentDesignationType){
-	 $("#candidatesLoading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#candidatesLoading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employmentDesignationType,
@@ -1517,9 +1519,17 @@ var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 				if(associateSalary){
 					associateSalary.href = "#";
 					associateSalary.className = "disabledLink";
+
 				} 
+		
+		}  
 				
-		}		
+				var associateLeaveType = document.getElementById("associateLeaveType");
+				if(associateLeaveType){
+					associateLeaveType.href = "#";
+					associateLeaveType.className = "disabledLink";
+				}  
+
 
 		if(loginLocationCountry == 'India'){
 		    

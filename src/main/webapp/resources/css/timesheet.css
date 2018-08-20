@@ -8880,24 +8880,23 @@ max-width: 100% !important;
 	display: block;
 }
 .timelineWrap ul {
-	padding: 15px 0px 0px 40px; margin: 0px 0px 60px 38px; min-height: 300px; border-left: 1px solid #dedede;
-	position: relative;
+	padding: 15px 0px 0px 40px; margin: 0px 0px 45px 38px; border-left: 1px solid #dedede; position: relative;
 }
 .timelineWrap ul li {
 	list-style: none; position: relative; background-color: #f8f8f8; border: 1px solid #EEEEEE; padding: 10px 15px;
-	margin: 0px 0px 20px;
+	margin: 0px 0px 15px;
 }
 .timelineWrap ul li:after, .timelineWrap ul li:before {
 	right: 100%; top: 25px; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
 }
 .timelineWrap ul li:after {
-	border-color: rgba(136, 183, 213, 0); border-right-color: #f8f8f8; border-width: 8px; margin-top: -8px;
+	border-color: rgba(136, 183, 213, 0); border-right-color: #f8f8f8; border-width: 8px; margin-top: -14px;
 }
 .timelineWrap ul li:before {
-	border-color: rgba(194, 225, 245, 0); border-right-color: #EEEEEE; border-width: 9px; margin-top: -9px;
+	border-color: rgba(194, 225, 245, 0); border-right-color: #EEEEEE; border-width: 9px; margin-top: -15px;
 }
 .timeLeft {
-	position: absolute; left: -70px; top: 12px; color: #0084bf; font-size: 12px; font-weight: 600;
+	position: absolute; left: -70px; top: 8px; color: #0084bf; font-size: 12px; font-weight: 600;
 	padding: 5px 0px; background-color: #fff;
 }
 .timeLiDate {
@@ -8905,7 +8904,7 @@ max-width: 100% !important;
 	left: -35px; top: -25px; padding: 0px 15px; border-radius: 13px;
 }
 .timeLiHead {
-	width: 85%; padding: 0px 0px 0px 18px;
+	width: 85%; padding: 0px 0px 0px 5px;
 }
 .timeLiHead h2 {
 	padding: 0px 0px; margin: 0px 0px; color: #1C2637; font-size: 14px; font-weight: 600;
@@ -8915,7 +8914,7 @@ max-width: 100% !important;
 	white-space: nowrap;
 }
 .timeLibtn {
-	padding: 3px 0px 0px 0px;
+	padding: 0px;
 }
 .timelineInn {
 	border-top: 1px solid #eeeeee; margin: 10px 0px 0px 0px; padding: 15px 35px 0px; display: none;
@@ -9026,32 +9025,40 @@ max-width: 100% !important;
 	padding: 0px 10px !important; box-shadow: 0px 0px 0px #000 !important;
 }
 .addPayrollGroupWrap {
-	position: absolute; width: 550px; margin: 0px auto; left: 0px; right: 0px; top: 6%; background-color: #fff;
+	position: absolute;  margin: 0px auto; left: 0px; right: 0px; top: 6%; background-color: #fff;
 	z-index: 10005; display: none; width: 1000px;
 }
-
 .bttabHeighlite .nav-tabs .active {
 	background-color: #dedede !important;
 }
 .bttabHeighlite .nav-tabs .active a {
 	background-color: #dedede !important;
 }
-
-.newActFilter span {
-width: 300px; padding: 15px 15px;
+.expenselevel-second {
+transition: all ease-in-out 0.5s; display: none;
 }
-.newActFilter span:after {
-left:272px;
+.expenselevel-second.expenselevel-second-active {
+display: block;
 }
-.newActFilter span input {
-margin-top: 0px !important;
+.timeLibtn .attaIcon, .timeLibtn .arrDn {
+height: 20px;
 }
-.newSort {}
-.newSort a {
-display: block; width: 49%; float: left; margin: 0px 1px;
+.timRes {
+font-size: 13px !important; font-weight: 400 !important; color: #666 !important; padding: 6px 0px 0px 0px !important;
 }
-.newSort a.hover, .newSort a.active {
-background-color: #f1f1f1;
+.remincolor {
+color: #c86e33 !important;
 }
-
+.sentcolor {
+color: #1ba732 !important;
+}
+.updacolor {
+color: #1278d0 !important;
+}
+.creatcolor {
+color: #10c8b7 !important;
+}
+.newOver {
+overflow: visible !important;
+}
 
