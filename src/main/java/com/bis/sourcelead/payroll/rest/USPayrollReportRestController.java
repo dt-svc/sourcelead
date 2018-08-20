@@ -1,19 +1,36 @@
 package com.bis.sourcelead.payroll.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
+import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.service.UserGroupService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @RequestMapping("/app")
 public class USPayrollReportRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(USPayrollReportRestController.class);
+	
+	@Autowired
+	UserGroupService userGroupService;
 	
 	/**
 	 * Returning Us Payroll Jsp
@@ -155,5 +172,28 @@ public class USPayrollReportRestController {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("payroll/checkRegisterReport");
 		return model;
+	}
+	
+	/**
+	 * Pay Groups by orglocation Id
+	 * @param request
+	 * @param response
+	 * @return List<UserGroup> 
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getPayGroupList","/rest/getPayGroupList" }, method = RequestMethod.GET)
+	@ResponseBody
+	public List<UserGroup> findAllDeduction(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return userGroupService.getAllUserGroupsByLocationId(orgLocation);
+	}
+	
+	@RequestMapping(value = { "/getPayPeriodByGroupId","/rest/getPayPeriodByGroupId" }, method = RequestMethod.GET)
+	@ResponseBody
+	public List<PayPeriodDTO> getPayPeriodByGroupId(@RequestParam(value = "groupId",required = false) Long groupId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		System.out.println("===================================");
+		return null;
 	}
 }
