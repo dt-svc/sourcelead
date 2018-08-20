@@ -10,7 +10,7 @@
 			<form:form id="associateSalary_form" name="associateSalary_form">
                 <div class="clearfix minHeightcol5 mt">
                 <div class="clearfix mb">
-                	<a class="pull-right mr anchorBlack" style="display:none"><i class="glyphicon glyphicon-pencil paddingRight"></i>Edit</a>
+                	<a class="pull-right mr anchorBlack" id="editAssociateBtn" style="display:none" onclick=""><i class="glyphicon glyphicon-pencil paddingRight"></i>Edit</a>
                 </div>
                 
                 <div class="col-md-5">
@@ -150,15 +150,15 @@
                 
                 <input type="text" style="display:none" name="candidateId" id="assocandidateId" value="${candidate.id}">
                 <input type="text" style="display:none" name="uuid" value="${uuid}">
-                <%-- <input type="text" style="display:none" id="userCode" value="${userCode}"> --%>
+                <input type="text" style="display:none" id="status" value="">
                   
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
 			     </div>
                   <div class="col-md-6">
-                   <div class="pull-right">
-                    <input value="Save &amp; Continue" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
-                    <input value="Cancel" class="btn btn-default ml10" type="button">
+                   <div class="pull-right" id="saveAssociateBtnDiv">
+                    <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
+                    <input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">
                     </div>
                   </div>
                 </div>
@@ -238,6 +238,7 @@ function payHeadCalculation(id, shortCode, method, formula){
 function saveAssociateSalaryInd(){
 	if ($('#associateSalary_form').validate(false, validationSettings)) {
 		var formData = getFormData1("associateSalary_form");
+		var status = $("#status").val();
 		$.ajax({
 			 type : "POST",
 			 data: formData,
@@ -245,16 +246,13 @@ function saveAssociateSalaryInd(){
 		     contentType:false, 
 			 url : sourceleadUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
-				 
-			  		/* var userCode = $("#userCode").val();
-			  		alert(userCode); */
-			  		
-			  		
-			  		$('#associateSalary_form input').attr('disabled','true');
-			  		
-			  		
-			  		if(userCode == null || userCode == '' || userCode == 'undefined'){
+			  		if(status == 'NEW'){
 			  			location.replace(sourceleadUrl+"/usersList");
+			  		}else{
+			  			$('#editAssociateBtn').css('display','block');
+				  		$('#associateSalary_form input').attr('disabled','true');
+				  		$('#associateSalary_form select').prop('disabled', true);
+				  		$('#saveAssociateBtnDiv').css('display','none');
 			  		}
 			 }
 		});
@@ -265,6 +263,25 @@ $('body').on('blur', '#associateSalary_form', function() {
 	$("#associateSalary_form").validateOnBlur(false, validationSettings);
 });
 
+$('#editAssociateBtn').click(function() {
+	$('#editAssociateBtn').css('display','none');
+	$('#saveAssociateBtnDiv').css('display','block');
+	$('#associateSalary_form input').removeAttr('disabled');
+	$('#associateSalary_form select').removeAttr('disabled');
+	
+});
+
+$('#cancelAssociateSalaryIndBtn').click(function() {
+	var status = $("#status").val();
+	if(status == 'NEW'){
+		location.replace(sourceleadUrl+"/usersList");
+	}else{
+		$('#editAssociateBtn').css('display','block');
+		$('#associateSalary_form input').attr('disabled','true');
+		$('#associateSalary_form select').prop('disabled', true);
+		$('#saveAssociateBtnDiv').css('display','none');
+	}
+});
 
 
 $('.selectall').click(function() {

@@ -7,7 +7,7 @@
 </div>
 
 <script>
-function indAssociateSalarySummary(){
+function indAssociateSalarySummary(newAssociate){
 	var locationCode = '${SourceLeadWeb_locationCode}';
 	var candidateId =  $("#associateCandidateId").val();
 	
@@ -19,6 +19,7 @@ function indAssociateSalarySummary(){
 			    	    $("#indSalaryDetailsLoading").empty();  
 			    	    $("#indSalaryDetailsLoading").append(response);
 			    	    $("#assocandidateId").val(candidateId);
+			    	    $("#status").val('NEW');
 					},
 				});
 	}

@@ -3798,6 +3798,12 @@ function assocSalarySummary(candidateId){
 		    	    $("#candidateSideDiv").empty();  
 		    	    $("#candidateSideDiv").append(response);
 				},
+			    complete: function (response) {
+			    	$('#editAssociateBtn').css('display','block');
+			  		$('#associateSalary_form input').attr('disabled','true');
+			  		$('#associateSalary_form select').prop('disabled', true);
+			  		$('#saveAssociateBtnDiv').css('display','none');
+			       }
 			});
 	}
 </script>
