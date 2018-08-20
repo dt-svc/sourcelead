@@ -2059,6 +2059,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		Lca lca = null;
 		if(lcaList != null && !lcaList.isEmpty())
 		{
+			
 			lca = (Lca) lcaList.iterator().next();
 		}
 		return lca;

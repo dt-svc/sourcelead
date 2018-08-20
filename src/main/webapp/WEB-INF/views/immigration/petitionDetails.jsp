@@ -660,6 +660,20 @@
             </div>
               </div>
             </div>
+            
+            <div class="form-group">
+              <label class="col-md-4">LCA Current Location<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-8">
+                  <div class="positionRelative">
+								<input class="form-control positionRelative"
+									id="lcaCurrLocation" name="lcaCurrLocation" value="${immigrationDTO.lcaCurrLocation}" 
+									placeholder="Enter LCA Current Location" type="text" field-name="LCA Current Location" data-validation="required" ></input> <i
+									class="fa fa-refresh btn btn-primary refresh-icon"
+									title="Refresh"
+									></i>
+					</div>
+              </div>
+            </div>
 
            <div class="clearfix"></div>
            	<div class="col-md-12 mb margin-top0">
@@ -1373,9 +1387,6 @@ $("#experienceValue").change(function () {
 	   $("#"+id).val(""); 
    }
    </script>
-   
-
- 
  <script>
 function addCandiadateEmptyAttorneyContact(){
 	$("#attorneyContact").empty();
@@ -1533,15 +1544,6 @@ $('#i_20_number').mask('N-9999999999', {
  placeholder: ""
 });
 
-/* $('#prevLcaNumber').mask('I-999-99999-999999', {
-    translation: {
-        '9': {
-            pattern: "/I{1}[0-9]{14}/", optional: true
-        }
-    },
-   placeholder: ""
-}); */
-
 $('#eadNumber').mask('999-999-999', {
     translation: {
         '9': {
@@ -1587,12 +1589,20 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 			    		   $("#lcaStartDate").val(lcaStartDate);
 			    		   $("#lcaStartDate").datepicker('disable');
 			    		}
-			    		
 			    		if(data.endDate != null && typeof  data.endDate != 'undefined' && data.endDate!=''){
 			    			var lcaEndDate =  moment(data.endDate).format(finalDateFormatOrg);
 			    		   $("#lcaEndDate").val(lcaEndDate);
 			    		   $("#lcaEndDate").datepicker('disable');
 			    		} 
+			    		
+			    		if(data.lcaLocation != null && typeof data.lcaLocation != 'undefined' && data.lcaLocation !=''){
+			    			 $("#lcaCurrLocation").val(data.lcaLocation);
+			    		}
+			    		// Job And LCA Locations Are Equal Or Not Show Alert msg.
+			    		var jobLocation = $("#jobLocation").val();
+			    		if (jobLocation !== data.lcaLocation){
+			    			alert("Job And LCA Locations are not matched");
+			    		}
 			        }
 			 });
 		 	return false;
@@ -1611,13 +1621,11 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 	  }
  });
  
- 
- 
  function resetLcaDetails(){
 		$("#lcaNumber").val("");
 		$("#lcaStartDate").val("");
 		$("#lcaEndDate").val("");
-		
+		$("#lcaCurrLocation").val("");
 	}
  
 </script> 
@@ -1688,11 +1696,9 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
  
 </script> 
 <script>
-
 function  selectBeneficiary() {
-	    if(($('#candidateNameEmail').val() == '' || $('#candidateNameEmail').val() == 'undefined' || $('#candidateNameEmail').val() == null )){
-	    	alert("Please Enter Your Beneficiary ");
-	    }      
+    if(($('#candidateNameEmail').val() == '' || $('#candidateNameEmail').val() == 'undefined' || $('#candidateNameEmail').val() == null )){
+    	alert("Please Select Your Beneficiary ");
+    }      
 }
-
 </script>

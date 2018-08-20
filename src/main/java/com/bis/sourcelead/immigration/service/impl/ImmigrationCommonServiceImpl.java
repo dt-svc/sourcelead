@@ -2611,15 +2611,20 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 
 	@Override
 	public Lca getLcaByLcaId(Long lcaId) throws Exception {
-		return immigrationCommonDao.getLcaByLcaId(lcaId);
+		
+        Lca lca=immigrationCommonDao.getLcaByLcaId(lcaId);
+        // Set Location From LcaPlaceOfEployment table
+		List<LcaPlaceOfEployment> locList = immigrationCommonDao.getLcaPlaceOfEploymentListById(lcaId);
+		LcaPlaceOfEployment lcaPlaceOfEployment = locList.get(0);
+		lca.setLcaPlaceOfEployment(locList);
+		lca.setLcaLocation(lcaPlaceOfEployment.getLocation());
+		return lca;
 	}
 
 	@Override
 	public List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId) {
 		return immigrationCommonDao.getLcaHistoryDetailsInfo(immigrationId);
 	}
-
-	
 	
 	/*
 	 * LCA Code Ends Here
