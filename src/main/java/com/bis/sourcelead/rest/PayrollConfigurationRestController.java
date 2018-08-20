@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.PayrollBonusDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
@@ -29,6 +31,7 @@ import com.bis.sourcelead.dto.PayrollPaytypeDTO;
 import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
@@ -41,10 +44,14 @@ import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
+import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
+import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PayrollBonusService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
@@ -101,6 +108,15 @@ public class PayrollConfigurationRestController {
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	OrgService orgService;
+	
+	@Autowired
+	AssociatePfEsiService associatePfEsiService;
+	
+	@Autowired
+	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
 	
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
@@ -828,6 +844,59 @@ public class PayrollConfigurationRestController {
 		return response;
 	}
 
+	
+	@RequestMapping(value = "/getAssociateBankingDetailsByOrgLocation")
+	public ModelAndView getAssociateBankingDetailsByOrgLocation(@RequestParam(value="candidateId", required=false) Long candidateId,
+			HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountListByCandidateId(candidateId, false);
+		 model.addObject("paymentList", paymentList);
+		 model.addObject("candidateId", candidateId);
+		 model.addObject("paymentListSize", paymentList.size());
+		 model.addObject("userId",candidate.getConsultantUser().getId());
+		 model.setViewName("indPayroll/associateBankingDetails");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	@RequestMapping(value = "/getAssociateLoanAndAdvanceDetailsByCandidateId")
+	public ModelAndView getAssociateLoanAndAdvanceDetailsByCandidateId(@RequestParam(value="candidateId", required=false) Long candidateId,
+			HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		 List<AssociateLoanAndAdvances> loanAdvList = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByCandidateId(candidateId,orgLocation.getId());
+		 model.addObject("loanAdvList", loanAdvList);
+		 model.addObject("candidateId", candidateId);
+		 model.addObject("loanAdvListSize", loanAdvList.size());
+		 model.addObject("userId",candidate.getConsultantUser().getId());
+		 model.setViewName("indPayroll/associateLoanAndAdvances");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	
+	
+	@RequestMapping(value = "/getAssociateInformationDetailsByOrgLocation")
+	public ModelAndView getAssociateInformationDetailsByOrgLocation(@RequestParam(value="candidateId", required=false) Long candidateId,
+			HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 AssociatePfEsiDetailsDTO pfesiDTO = null;
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 pfesiDTO = associatePfEsiService.getAssociatePfEsiDetailsDTOByCandidateId(candidateId, orgLocation);
+		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		 model.addObject("pfesiDTO", pfesiDTO);
+		 model.addObject("candidateId", candidateId);
+		 model.addObject("userId",candidate.getConsultantUser().getId());
+		 model.setViewName("indPayroll/associateInformationDetails");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
 			 
 	 @RequestMapping(value = "/getAssociateSalaryDataByOrgLocation", method = RequestMethod.GET)
 		public ModelAndView getAssociateSalaryDataByOrgLocation(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request) throws Exception

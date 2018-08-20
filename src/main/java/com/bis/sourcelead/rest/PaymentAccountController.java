@@ -228,11 +228,11 @@ public class PaymentAccountController {
     public com.bis.sourcelead.dto.Response changeDefaultAccount(HttpServletRequest request, 
             long id, boolean defaultAccount) {
         com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
-        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         response.setResponse(Result.INVALID_DATA.name());
         response.setResponseMessage(Result.INVALID_DATA.getValue());
-        if (org != null) {
-            int flag = orgService.changeDefaultPaymentAccount(id, org.getId(), defaultAccount);
+        if (orgLocations != null) {
+            int flag = orgService.changeDefaultPaymentAccount(id, orgLocations.getId(), defaultAccount);
             if (flag > 0) {
                 response.setResponse(Result.SUCCESS.name());
                 response.setResponseMessage(Result.SUCCESS.getValue());
@@ -331,11 +331,11 @@ public class PaymentAccountController {
     @ResponseBody
     public com.bis.sourcelead.dto.Response changeActiveAccount(HttpServletRequest request,  long id) {
         com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
-        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         response.setResponse(Result.INVALID_DATA.name());
         response.setResponseMessage(Result.INVALID_DATA.getValue());
-        if (org != null) {
-            int flag = orgService.changePaymentAccountStatus(id, org.getId());
+        if (orgLocations != null) {
+            int flag = orgService.changePaymentAccountStatus(id, orgLocations.getId());
             if (flag > 0) {
                 response.setResponse(Result.SUCCESS.name());
                 response.setResponseMessage(Result.SUCCESS.getValue());
