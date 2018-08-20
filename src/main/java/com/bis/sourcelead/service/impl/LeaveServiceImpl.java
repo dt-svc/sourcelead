@@ -2594,7 +2594,7 @@ public class LeaveServiceImpl implements LeaveService{
 	     style.setFont(font);
 		 
 		 writeRow = createExcelsheet.createRow(0);
-		 createExcelsheet.setColumnWidth(0, 10000);
+		 createExcelsheet.setColumnWidth(0, 3000);
 		 createExcelsheet.setColumnWidth(1, 10000);
 		 createExcelsheet.setColumnWidth(2, 5000);
 		 createExcelsheet.setColumnWidth(3, 5000);
@@ -2606,7 +2606,7 @@ public class LeaveServiceImpl implements LeaveService{
 		 createExcelsheet.setColumnWidth(9, 5000);
 		 createExcelsheet.setColumnWidth(10, 5000);
 		 createExcelsheet.setColumnWidth(11, 5000);
-		
+		 createExcelsheet.setColumnWidth(12, 5000);
 		 
 		 String headers [] = Constants.LEAVE_REPORT_HEADERS;
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
@@ -2666,23 +2666,29 @@ public class LeaveServiceImpl implements LeaveService{
 			 else{
 				   writeRow.createCell(8).setCellValue("--");   
 			   }
-			 if(leaveReportDTO.getStatus() != null){
-				   writeRow.createCell(9).setCellValue(leaveReportDTO.getStatus());
-			   }
+			 if(leaveReportDTO.getNoOfDays() != null){
+			 writeRow.createCell(9).setCellValue(leaveReportDTO.getNoOfDays());
+			 }
 			 else{
-				   writeRow.createCell(9).setCellValue("--");   
+				   writeRow.createCell(9).setCellValue("0.0");   
 			   }
-			 if(leaveReportDTO.getApprover() != null){
-				   writeRow.createCell(10).setCellValue(leaveReportDTO.getApprover());
+			 if(leaveReportDTO.getStatus() != null){
+				   writeRow.createCell(10).setCellValue(leaveReportDTO.getStatus());
 			   }
 			 else{
 				   writeRow.createCell(10).setCellValue("--");   
 			   }
-			 if(leaveReportDTO.getApprovedOnDateStr() != null){
-				   writeRow.createCell(11).setCellValue(leaveReportDTO.getApprovedOnDateStr() );
+			 if(leaveReportDTO.getApprover() != null){
+				   writeRow.createCell(11).setCellValue(leaveReportDTO.getApprover());
 			   }
 			 else{
-				   writeRow.createCell(11).setCellValue("--");   
+				   writeRow.createCell(12).setCellValue("--");   
+			   }
+			 if(leaveReportDTO.getApprovedOnDateStr() != null){
+				   writeRow.createCell(13).setCellValue(leaveReportDTO.getApprovedOnDateStr() );
+			   }
+			 else{
+				   writeRow.createCell(14).setCellValue("--");   
 			   }
 			
 			

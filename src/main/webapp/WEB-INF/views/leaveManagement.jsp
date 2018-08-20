@@ -5,8 +5,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="/resources/amcharts/amcharts.js"></script>
-<script src="/resources/amcharts/pie.js"></script>
+<!-- <script src="/resources/amcharts/amcharts.js"></script> -->
+<!-- <script src="/resources/amcharts/pie.js"></script> -->
 
 <%-- <section class="content-wraper"> --%>
   <!-- <section class="content-header clearfix">
@@ -19,7 +19,6 @@
   
 <script type="text/javascript">
 $(document).ready(function(){
-	getEmployeeTotalCounts();
 	getSelfTotalCounts();
 });
 </script>
@@ -32,7 +31,7 @@ $(document).ready(function(){
           <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
             <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
-            	<li><a data-toggle="tab" href="#employee">Employees</a></li>
+            	<li><a data-toggle="tab" href="#employee" onclick="getEmployeeTotalCounts();">Employees</a></li>
             </sec:authorize>
           </ul>
           <div class="tab-content clearfix">

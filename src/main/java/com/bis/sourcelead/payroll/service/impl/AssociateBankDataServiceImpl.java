@@ -59,6 +59,8 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 //						User user = userService.getUserById(Long.parseLong(associateBankDataDTO.getUserId()));
 //						candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()), orgLocation.getId());
 						associateBankData.setCandidate(candidate);
+						associateBankData.setCreatedDate(new Date());
+						associateBankData.setCreatedBy(loginUser.getUserCode());
 					}
 				
 				}
@@ -72,9 +74,9 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 				associateBankData.setOrgLocationId(orgLocation);
 				associateBankData.setStatus(1);
 				associateBankData.setAssociateBankUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-				associateBankData.setCreatedBy(loginUser.getUserCode());
+//				associateBankData.setCreatedBy(loginUser.getUserCode());
 //				associateBankData.setUpdatedBy(loginUser.getUserCode());
-				associateBankData.setCreatedDate(new Date());
+//				associateBankData.setCreatedDate(new Date());
 //				associateBankData.setUpdatedDate(new Date());
 				AssociateBankData bankData = associateBankDataDao.saveAssociateBankData(associateBankData);
 				if (bankData != null) {

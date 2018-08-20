@@ -85,6 +85,15 @@ public class USPayrollDTO {
 	
 	private BigDecimal totalDeduction;
 	
+	private String approverStatus;
+	
+	
+	public String getApproverStatus() {
+		return approverStatus;
+	}
+	public void setApproverStatus(String approverStatus) {
+		this.approverStatus = approverStatus;
+	}
 	public String getIsExcept()
 	{
 		return isExcept;

@@ -1,13 +1,16 @@
 package com.bis.sourcelead.payroll.rest;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +32,14 @@ import com.bis.sourcelead.dto.EmployeeListDTO;
 import com.bis.sourcelead.dto.HrDeductionsDTO;
 import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
 import com.bis.sourcelead.dto.InvoiceDetailsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
+import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
@@ -685,10 +692,10 @@ public class EmployeePayrollRestController {
 	@RequestMapping(value = { "/getfinalBalanceByEmpId", "/rest/getfinalBalanceByEmpId" }, method = RequestMethod.GET)
 	public PayrollBalance getfinalBalanceByEmpId(
 			@RequestParam(value = "empId", required = false) Long empId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		
-		PayrollBalance payrollBalance = accountDeductionsService.getBalance(empId, orgLocations);
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
+		PayrollBalance payrollBalance = accountDeductionsService.getBalance(empId, orgLocations,loginUserRole);
 		return payrollBalance;
 	}
 	
@@ -715,7 +722,8 @@ public class EmployeePayrollRestController {
 	public @ResponseBody  ResponseList<PayrollBalance> getAllPayrollBalanceReport(PayrollBalance payrollBalance,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(payrollBalance.getOrgLocationId()));
-		ResponseList<PayrollBalance> list = employerPayrollCostService.getAllPayrollBalanceSheetByOrgLocationId(orgLocation,payrollBalance);
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
+		ResponseList<PayrollBalance> list = employerPayrollCostService.getAllPayrollBalanceSheetByOrgLocationId(orgLocation,payrollBalance,loginUserRole);
 		return list;
 	}
 	
@@ -726,5 +734,52 @@ public class EmployeePayrollRestController {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		ResponseList<InvoiceData> list = invoiceDataService.getAllEmployeeInvoiceDetailsByEmpIdAndOrgLocationId(orgLocation.getId(),userId);
 		return list;
+	}
+	
+	@RequestMapping(value = { "/deletePayrollEntitiesByUUIDAndEntityType","/rest/deletePayrollEntitiesByUUIDAndEntityType" }, method = RequestMethod.GET)
+	public @ResponseBody Response<String> deletePayrollEntitiesByUUIDAndEntityType(@RequestParam(value = "uuid", required = false) String uuid, @RequestParam(value = "entityType", required = false) String entityType, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response = new Response<>();
+		try {
+			if (orgLocation != null) {
+				Object obj = userPayrollService.getPayrollEntitiesByUUIDAndEntityType(uuid,entityType);
+				if(obj instanceof EmployerPayrollCost){
+					EmployerPayrollCost empCost = (EmployerPayrollCost) obj;
+					empCost.setStatus(String.valueOf(Constants.RECORD_INACTIVE));
+					obj = empCost;
+				}else if(obj instanceof InvoiceData){
+					InvoiceData invData = (InvoiceData) obj;
+					invData.setStatus(String.valueOf(Constants.RECORD_INACTIVE));
+					obj = invData;
+				}else if(obj instanceof WageTaxSummary){
+					WageTaxSummary wts = (WageTaxSummary) obj;
+					wts.setStatus(String.valueOf(Constants.RECORD_INACTIVE));
+					obj = wts;
+				}else if(obj instanceof Checks){
+					Checks cks = (Checks) obj;
+					cks.setStatus(String.valueOf(Constants.RECORD_INACTIVE));
+					obj = cks;
+				}else if(obj instanceof HrDeductions){
+					HrDeductions hrd = (HrDeductions) obj;
+					hrd.setStatus(String.valueOf(Constants.RECORD_INACTIVE));
+					obj = hrd;
+				}else if(obj instanceof AccountDeductions){
+					AccountDeductions acd = (AccountDeductions) obj;
+					acd.setStatus(String.valueOf(Constants.RECORD_INACTIVE));
+					obj = acd;
+				}
+				Object obj1 = userPayrollService.deletePayrollEntitiesByUUIDAndEntityType(obj);
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 }

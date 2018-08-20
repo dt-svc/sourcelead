@@ -9,6 +9,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
+import com.bis.sourcelead.payroll.entity.PayrollApprover;
 
 public interface ConfigurePayrollApproverService {
 
@@ -19,4 +20,6 @@ public interface ConfigurePayrollApproverService {
 	ConfigurePayrollApprover getConfigurePayrollApproverByLoc(OrgLocations orgLocation);
 
 	ResponseList<PayrollApproverDTO> getConfigurePayrollApprover(OrgLocations orgLocation);
+
+	List<PayrollApprover> getPayrollApproversByCPAID(Long configurePayrollApproverId);
 }

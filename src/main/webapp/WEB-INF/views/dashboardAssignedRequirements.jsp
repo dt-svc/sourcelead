@@ -208,24 +208,35 @@ function requirementList(isWalkIn, walkInDay){
 		                     }else{
 		                    	 result = result +"<td><div>---</div></td>";
 		                     }
-		                     if(opt.noOfApplicants != null && opt.noOfApplicants != '' && opt.noOfApplicants != 'undefined'){		                     
-	                    	 result = result +"<td><a href='<c:url value='/app/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfApplicants+"</div></a></td>";
-		                     }
-		                     if(opt.noOfShortlistedApplicants != null && opt.noOfShortlistedApplicants != '' && opt.noOfShortlistedApplicants != 'undefined'){
-		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfShortlistedApplicants+"</div></a></td>";
-		                     }
-		                     if(opt.noOfSubmittedApplicants != null && opt.noOfSubmittedApplicants != '' && opt.noOfSubmittedApplicants != 'undefined'){
-			                 result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfSubmittedApplicants+"</div></a></td>";
-		                     }
-		                     if(opt.noOfInterviewedApplicants != null && opt.noOfInterviewedApplicants != '' && opt.noOfInterviewedApplicants != 'undefined'){
-		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfInterviewedApplicants+"</div></a></td>";
-		                     }
-		                     if(opt.noOfOfferedApplicants != null && opt.noOfOfferedApplicants != '' && opt.noOfOfferedApplicants != 'undefined'){
-		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfOfferedApplicants+"</div></a></td>";
-		                     }
-		                     if(opt.noOfJoinedApplicants != null && opt.noOfJoinedApplicants != '' && opt.noOfJoinedApplicants != 'undefined'){
-			                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfJoinedApplicants+"</div></a></td>";
-			                     }
+		                     
+		                     
+// 		                     if(opt.noOfApplicants != null && opt.noOfApplicants != '' && opt.noOfApplicants != 'undefined'){
+	
+	                    	 result = result +"<td><input type='hidden' class='requirementDashboardCount'  id='"+opt.id+"' /><a href='<c:url value='/app/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"applicantCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+	                    	 
+// 		                     }
+// 		                     if(opt.noOfShortlistedApplicants != null && opt.noOfShortlistedApplicants != '' && opt.noOfShortlistedApplicants != 'undefined'){
+	
+		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"shortlistedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+		                     
+// 		                     }
+// 		                     if(opt.noOfSubmittedApplicants != null && opt.noOfSubmittedApplicants != '' && opt.noOfSubmittedApplicants != 'undefined'){
+	
+			                 result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"submittedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+			                 
+// 		                     }
+// 		                     if(opt.noOfInterviewedApplicants != null && opt.noOfInterviewedApplicants != '' && opt.noOfInterviewedApplicants != 'undefined'){
+		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"interviewedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+// 		                     }
+// 		                     if(opt.noOfOfferedApplicants != null && opt.noOfOfferedApplicants != '' && opt.noOfOfferedApplicants != 'undefined'){
+		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"offeredCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+// 		                     }
+// 		                     if(opt.noOfJoinedApplicants != null && opt.noOfJoinedApplicants != '' && opt.noOfJoinedApplicants != 'undefined'){
+			                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"joinedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+// 			                     }
+
+
+
 		                     if(opt.requirementSubmissionStatus!=null && opt.requirementSubmissionStatus !='' && opt.requirementSubmissionStatus !='undefined'){
 	                    		 result = result +"<td><div class=''><span title='"+opt.requirementSubmissionStatus+"'>"+opt.requirementSubmissionStatus+"</span></a></div></td>";
 	                    	 }
@@ -251,6 +262,7 @@ function requirementList(isWalkIn, walkInDay){
 	                    	 $("#requirementListActions").append(getDynamicDayActionsForWalkInJobs(parseInt(data.responseMessage.split(":")[1]) - 1, data.responseMessage.split(":")[2], parseInt(data.responseMessage.split(":")[1]) + 1));
 	                     }
 	                     $("#requirementList").append(result);
+	                     $("#requirementLoading").hide();
 	                     /* $("#requirementLoading").hide(); */
 	                     /* $("#assignedRequirementsDiv").css("display", "block"); */
 	                     
@@ -260,6 +272,7 @@ function requirementList(isWalkIn, walkInDay){
 								$("body").css('overflow-y', 'auto');
 						 });	
 	                     pagination(); 
+	                     getDashboardJobCounts();
                  	} else {
                  		$("#requirementList").empty();
                  		$("#requirementList").append("<table id='noResultsTable'><tr class='odd'><td colspan='7' class='dataTables_empty' valign='top'></td></tr></table>");
@@ -281,11 +294,47 @@ function requirementList(isWalkIn, walkInDay){
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
+            	
           },
             
        }); 
   } 
 </script>   
+
+<script>
+function getDashboardJobCounts(){
+	 $('.requirementDashboardCount').each(function() {
+		 var reqId = this.id;
+		 if(reqId != null &&  reqId !='undefined' && reqId != ''){
+			 $.ajax({
+		           type : "GET",
+		           url: sourceleadUrl+"/dashboardPipelineJobsCount?requirementId="+reqId,    
+		            success :function(data) {
+		            	  $("#"+reqId+"applicantCount").empty();
+		             	  $("#"+reqId+"applicantCount").html(data.applicantsCount);
+		             	  
+		             	  $("#"+reqId+"shortlistedCount").empty();
+		             	  $("#"+reqId+"shortlistedCount").html(data.shortlistCount);
+		             	  
+		             	  $("#"+reqId+"interviewedCount").empty();
+		             	  $("#"+reqId+"interviewedCount").html(data.interviewCount);
+		             	  
+		             	  $("#"+reqId+"submittedCount").empty();
+		             	  $("#"+reqId+"submittedCount").html(data.submitToClientCount);
+		             	  
+		             	  $("#"+reqId+"offeredCount").empty();
+		             	  $("#"+reqId+"offeredCount").html(data.offersCount);
+		             	  
+		             	  $("#"+reqId+"joinedCount").empty();
+		             	  $("#"+reqId+"joinedCount").html(data.joinedCount);
+		            }
+			    });
+		 }
+			
+   }); 
+}
+</script>
+
 
  <script>
 function getDynamicDayActionsForWalkInJobs(prevDay, selectedDay, nextDay){
