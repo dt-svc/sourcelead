@@ -87,4 +87,19 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 		}
    	}
 
+	@Override
+	@Transactional
+	public boolean getisActivePaymentAccountExistedByCandidateId(Long candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PaymentAccount> paymentAccount = new ArrayList<PaymentAccount>();
+		boolean  flag = false;
+		logger.debug("getisActivePaymentAccountExistedByCandidateId start");
+		paymentAccount = session.createQuery("from PaymentAccount pa left join fetch pa.candidateId where pa.candidateId.id = :candidateId and pa.defaultAccount = :flag " ).setLong( "candidateId", candidateId ).setBoolean("flag", true).list();
+		logger.debug("getisActivePaymentAccountExistedByCandidateId end");
+		if (paymentAccount.size() > 0) {
+			flag = true;
+		} 
+		return flag;
+   	}
+
 }

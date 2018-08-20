@@ -20,4 +20,6 @@ public interface AssociateLoanAndAdvancesService {
 	List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateId(Long candidateId,Long orgLocationId) throws Exception;
 	
 	AssociateLoanAndAdvancesDTO getAssociateLoanAndAssociateDetails(Long candidateId,OrgLocations orgLocations) throws Exception;
+	
+	AssociateLoanAndAdvancesDTO getAssociateLoanAndAdvancesDetailsById(Long id,OrgLocations orgLocations) throws Exception ;
 }

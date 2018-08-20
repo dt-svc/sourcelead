@@ -127,7 +127,7 @@ public interface LeaveService {
 
 	List<String> getLeaveTypeNamesByOrgLocationId(Long OrgLocationId,String topleave);
 	
-	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromDateToDate(HrLeaveReportDTO rLeaveReportDTO,Long orgId, Long orgLocationId)throws Exception;
+	ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromDateToDate(HrLeaveReportDTO rLeaveReportDTO,Long orgId, Long orgLocationId,String loginUserRole)throws Exception;
 
 	Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList,String topleave);
 	

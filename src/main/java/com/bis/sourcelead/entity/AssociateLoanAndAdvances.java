@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,6 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.bis.sourcelead.constants.Constants;
 
 @Entity
 @Table(name = "ASSOCIATE_LOAN_ADVANCES")
@@ -96,7 +102,11 @@ public class AssociateLoanAndAdvances implements Serializable{
 	@JoinColumn(name = "UPDATED_BY")
     private User updatedBy;
     
+    @Transient
+    private String approverName;
     
+    @Transient
+    private String effectiveDateStr;
     
 
 	public Long getId() {
@@ -281,5 +291,41 @@ public class AssociateLoanAndAdvances implements Serializable{
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getApproverName() {
+			if(StringUtils.isNotEmpty(approverUser.getFirstName()) && StringUtils.isEmpty(approverUser.getLastName()) && StringUtils.isEmpty(approverUser.getMiddelName())){
+				approverName = approverUser.getFirstName();
+			}else if(StringUtils.isNotEmpty(approverUser.getFirstName()) && StringUtils.isNotEmpty(approverUser.getLastName()) && StringUtils.isEmpty(approverUser.getMiddelName())){
+				approverName = approverUser.getFirstName() +" "+approverUser.getLastName();
+			}else if(StringUtils.isNotEmpty(approverUser.getFirstName()) && StringUtils.isEmpty(approverUser.getLastName()) && StringUtils.isNotEmpty(approverUser.getMiddelName())){
+				approverName = approverUser.getFirstName() +" "+approverUser.getMiddelName();
+			}else if(StringUtils.isNotEmpty(approverUser.getFirstName()) && StringUtils.isNotEmpty(approverUser.getLastName()) && StringUtils.isNotEmpty(approverUser.getMiddelName())){
+				approverName = approverUser.getFirstName()+" "+approverUser.getLastName()+" "+approverUser.getMiddelName();
+			}
+		return approverName;
+	}
+
+	public void setApproverName(String approverName) {
+		this.approverName = approverName;
+	}
+
+	public String getEffectiveDateStr() {
+		
+		if(effectiveDate != null) {
+			SimpleDateFormat dateFormat = null;
+			if(StringUtils.isNotBlank(orgLocationId.getDateFormat())) {
+				dateFormat = new SimpleDateFormat(orgLocationId.getDateFormat());
+			}else {
+				dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+			}
+			effectiveDateStr = dateFormat.format(effectiveDate);
+		}
+		
+		return effectiveDateStr;
+	}
+
+	public void setEffectiveDateStr(String effectiveDateStr) {
+		this.effectiveDateStr = effectiveDateStr;
 	}
 }

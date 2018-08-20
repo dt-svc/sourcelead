@@ -1214,9 +1214,6 @@ function pagination(){
 	 var invoiceId = document.getElementById("invoiceId").value; 
 	
 	 if(invoiceId != null && invoiceId != ""){
-		 $("#saveButtonId").attr("disabled", "disabled");
-		 $("#sendButtonId").attr("disabled", "disabled");
-		
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
@@ -1227,6 +1224,8 @@ function pagination(){
 						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
 						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
 						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+						  $("#saveButtonId").attr("disabled", "disabled");
+						  $("#sendButtonId").attr("disabled", "disabled");
 		        	}
 		        	else{
 		        		 $('input#invoiceId').removeAttr( "record-exist record-exist-errormsg");
@@ -1430,13 +1429,13 @@ function pagination(){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(json) {
-					if(json.data !='' && json.data != 'undefined' && json.data != null){
+				success :function(response) {
+					if(response.object !='' && response != 'undefined' && response != null){
 // 						var json = JSON.parse(data);
-						$("#exchangeRate").html(json.exchangeRate);
-						$("#exchangeCurrency").html(json.exchangeCurrency);
-						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
-						$("#convertedCurrencyCode").html(currencyCode +' to '+ json.vendorCurrencyCode);
+						$("#exchangeRate").html(response.object.exchangeRate);
+						$("#exchangeCurrency").html(response.object.exchangeCurrency);
+						$("#vendorCurrencyCode").html(response.object.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ response.object.vendorCurrencyCode);
 					}
 				},
 				});   

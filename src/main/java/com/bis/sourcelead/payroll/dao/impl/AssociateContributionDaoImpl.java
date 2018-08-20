@@ -53,11 +53,13 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 	@Transactional
 	public AssociateContribution findAssociateContributionById(Long assContriId)
 	{
-		Session session = this.sessionFactory.getCurrentSession();
 		AssociateContribution associateContribution = null;
-		List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.id=:assContriId").setLong("assContriId", assContriId).list();
-		if(associateContributionList != null && associateContributionList.size() >0) {
-			associateContribution = associateContributionList.get(0);
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			AssociateContribution associateContributionList = (AssociateContribution)session.createQuery("from AssociateContribution contri where contri.id=:assContriId").setLong("assContriId", assContriId).uniqueResult();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 		return associateContribution;
 	}

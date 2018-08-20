@@ -177,8 +177,8 @@ public class OrgServiceImpl implements OrgService {
     }
     
     @Override
-    public int changeDefaultPaymentAccount(long id, long orgId, boolean defaultAccount) {
-        return orgDao.changeDefaultPaymentAccount(id, orgId, defaultAccount);
+    public int changeDefaultPaymentAccount(long id, long orgLocationId, boolean defaultAccount) {
+        return orgDao.changeDefaultPaymentAccount(id, orgLocationId, defaultAccount);
     }
 
     @Override
@@ -187,8 +187,8 @@ public class OrgServiceImpl implements OrgService {
     }
 
 	@Override
-	public int changePaymentAccountStatus(long id, long orgId) {
-		return orgDao.changePaymentAccountStatus(id, orgId);
+	public int changePaymentAccountStatus(long id, long orgLocationId) {
+		return orgDao.changePaymentAccountStatus(id, orgLocationId);
 		
 	}
 

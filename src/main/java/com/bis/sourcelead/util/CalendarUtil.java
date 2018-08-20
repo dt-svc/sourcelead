@@ -25,6 +25,7 @@ import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
 
+
 public  class CalendarUtil {	
 	public static double getCombinedHours(double hours1,double hours2){
 		double cthHours = hours1;
@@ -47,6 +48,7 @@ public  class CalendarUtil {
 		
 		return Double.parseDouble(actualTimeString);
 	}
+
 
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());

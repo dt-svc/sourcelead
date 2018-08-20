@@ -83,6 +83,9 @@ public class HrDeductions implements Serializable {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "hrDeductions")
 	private Set<HrDeductionsDetails> hrDeductionsDetails;
 	
@@ -268,6 +271,13 @@ public class HrDeductions implements Serializable {
 		this.version = version;
 	}
 
+	public String getUuid()
+	{
+		return uuid;
+	}
+
+	public void setUuid(String uuid)
+	{
+		this.uuid = uuid;
+	}
 }
-
-

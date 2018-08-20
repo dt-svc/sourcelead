@@ -39,6 +39,7 @@ import com.bis.sourcelead.payroll.entity.InvoiceData;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.service.InvoiceDataService;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class InvoiceDataServiceImpl implements InvoiceDataService{
@@ -141,6 +142,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 							String payRate = getCellValueAsString(row.getCell(13), fileName);
 							invoiceData.setPayRate(payRate);
 						}
+						invoiceData.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 						invoiceData.setCreatedBy(user.getUserCode());
 						invoiceData.setCreatedDate(new Date());
 						invoiceData.setUpdatedBy(user.getUserCode());

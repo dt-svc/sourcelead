@@ -9,5 +9,7 @@ public interface PaymentAccountDao {
 	PaymentAccount getPaymentAccountById(Long id) throws Exception;
 	
 	PaymentAccount getPaymentAccountDetailsByCandidateId(Long candidateId) throws Exception;
+	
+	boolean getisActivePaymentAccountExistedByCandidateId(Long candidateId) throws Exception;
 }
 
