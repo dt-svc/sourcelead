@@ -1437,6 +1437,14 @@ public class USPayrollRestController {
 		return filteredGroupList;
 	}
 	
-//	/myPayroll
+	
+	@RequestMapping(value = "/myPayroll")
+	public ModelAndView myPayrollJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/myPayroll");
+		return model;
+	}
+	
 
 }
