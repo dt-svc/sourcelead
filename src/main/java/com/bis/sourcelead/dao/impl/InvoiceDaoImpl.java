@@ -113,6 +113,9 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		if (Arrays.asList(invoiceTokens).contains("REJECTED")) {
 			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Rejected' or ";
 		}
+		if (Arrays.asList(invoiceTokens).contains("VOID")) {
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Void' or ";
+		}
 		if (Arrays.asList(invoiceTokens).contains("LINKED")) {
 			subQuery = subQuery + "invoice.invoiceStatus = 'Linked' or ";
 		}
@@ -134,6 +137,13 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		if ((paymentTokens[0] != null && paymentTokens[0].length() > 0)) {
 			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
+		}
+		
+		String subQuery4 = "";
+		if (invoiceDTO.getInvoiceDeleteStatus().equals("ACTIVE")) {
+			subQuery4 = " and invoice.status = 1 ";
+		}else{
+			subQuery4 = " and invoice.status = 0 ";
 		}
 
 		String subQuery2 = "";
@@ -170,17 +180,17 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 
 		String query = "from Invoice invoice  left join fetch  invoice.orgRelationID left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
-				+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "
-				+ subQuery + " " + subQuery1 + " " + subQuery2 + " " + subQuery3 + " " + tagsQuery
+				+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId "
+				+ subQuery + " " + subQuery1 + " " + subQuery2 + " " +subQuery4 + " " + subQuery3 +" "+ tagsQuery
 				+ " and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		String countQuery = "";
 		if (invoiceDTO.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)) {
-			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' and invoice.status = '1' "
-					+ subQuery + " " + subQuery1 + " " + subQuery2 + " " + subQuery3 + " " + tagsQuery
+			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' "
+					+ subQuery + " " + subQuery1 + " " + subQuery2 + " " +subQuery4 + " " + subQuery3 + " " +subQuery4 + " " + tagsQuery
 					+ " and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		} else {
-			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' and invoice.status = '1' "
-					+ subQuery + " " + subQuery1 + " " + subQuery2 + " " + subQuery3 + " " + tagsQuery
+			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' "
+					+ subQuery + " " + subQuery1 + " " + subQuery2 + " " +subQuery4 + " " + subQuery3 + " " +subQuery4 + " " + tagsQuery
 					+ " and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}
 

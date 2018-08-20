@@ -482,6 +482,11 @@ function getInvoiceList(){
 		invoice.push($(this).val());
     });
 	
+	var invoieDeleteStatus = null;
+	
+	$('input:radio[name=invoiceStatusDelete]:checked').each(function() {
+		invoieDeleteStatus = $(this).val();
+	});
 	
 	
 	$('input:checkbox[name=paymentStatus]:checked').each(function() 
@@ -498,7 +503,7 @@ function getInvoiceList(){
 	
 	var searchValue = $("#invoiceDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags;
+	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags+"&invoiceDeleteStatus="+invoieDeleteStatus;
 	prepareInvoiceList(url,locationdateForList);
 }
 
@@ -887,7 +892,7 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 		 if(invoiceStatus == "Accepted"){
 			 if(paymentStatus != "Paid"){
 				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Invoice"></i>Received</a></li>';
-				 //result = result +' <li><a onclick="voidInvoice(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Invoice"></i>Void Invoice</a></li>';
+				 result = result +' <li><a onclick="voidInvoice(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Invoice"></i>Void Invoice</a></li>';
 
 			 }
 			 
@@ -895,7 +900,7 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 		 if(invoiceStatus == "SENT"){
 				 result = result +' <li><a onclick="receivePaymentPop1('+id+','+dueAmount+');"><i class="fa fa-money paddingRight paddingLeft" title="Accept Invoice"></i>Received</a></li>';
 
-				//result = result +' <li><a onclick="voidInvoice(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Invoice"></i>Void Invoice</a></li>';
+				result = result +' <li><a onclick="voidInvoice(\''+invoiceUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Void Invoice"></i>Void Invoice</a></li>';
 
 		 }
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
@@ -1813,6 +1818,21 @@ function resetInvoiceFilter(){
 	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="ACCEPTED" name="invoiceStatus"><label for="onboard2">Accepted</label></li>
 	                                <li class="checkBox positionRelative" ><input type="checkbox" value="REJECTED" name="invoiceStatus"><label for="onboard2">Rejected</label></li>
 	                                <li class="checkBox positionRelative" ><input type="checkbox" value="LINKED" name="invoiceStatus"><label for="onboard2">Linked</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="VOID" name="invoiceStatus"><label for="onboard2">Void</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						
+						<div class="col-md-4">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Active Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+                                    <li class="checkBox positionRelative" ><input type="radio" checked="checked" value="ACTIVE" name="invoiceStatusDelete"><label for="onboard2">Active</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" value="DELETED" name="invoiceStatusDelete"><label for="onboard2">Deleted</label></li>
 			                        </ul>
 							      </div>
 						     </div> 
