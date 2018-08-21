@@ -71,39 +71,29 @@
                       <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" value="${associateSalaryInd.hourlyRate}" data-validation="required validate_float" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                     </div>
                   </div>
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                 <%-- <div class="col-md-4">
-                  <label>CTC <small>(Annual)</small><span class="text-danger paddingLeft">*</span></label>
-                  <div>
-                    <input class="form-control" id="ctc" name="ctc" value="${candidateCTCPerYear}" type="text" field-name="CTC" data-validation="required validate_Space validate_length length1-20 validate_float">
-                  </div>
-                </div>
-               <div class="col-md-4">
-                  <label>FBP</label>
-                  <div>
-                    <input class="form-control" id="fbp" name="fbp" value="${fbp}" type="text" field-name="FBP" data-validation="validate_Space validate_length length1-20 validate_float" data-validation-optional="true">
-                  </div>
+                  
+                  <div id="editSectionDiv" style="display:none">
+	                  <div class="col-md-5">
+		                <label>Effective Date</label>
+		                <div class="input-group">
+		                  <input type="text" class="form-control calendar" id="effectiveDate" name="effectiveDate" value="${associateSalaryInd.effectiveDateStr}" field-name="Effective Date">
+						  <span class="input-group-addon" onClick="clearEffectiveDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+		                </div>
+		              </div>
+		              <div class="col-md-5">
+		                <label>% Increase</label>
+		                <div>
+		                  <input class="form-control " name="increasePer" id="increasePer" type="text" value="${associateSalaryInd.incrementPercentage}" data-validation="validate_float" data-validation-optional="true" onblur = "calculatePercentSal();">
+		                </div>
+		              </div>
+		              <div class="col-md-5">
+		                <label>Change Reason</label>
+		                <div>
+		                  <textarea class="form-control" rows="2" placeholder="Enter reason" name="changeReason" id="changeReason">${associateSalaryInd.changeReason}</textarea>
+		              	</div>
+		              </div>
                 </div>
                 
-                <div class="col-md-4">
-                  <label>Variable Pay</label>
-                  <div>
-                    <input class="form-control" id="variablePay" name="variablePay" value="${variablePay}" type="text" field-name="Variable Pay" data-validation="validate_Space validate_length length1-20 validate_float" data-validation-optional="true">
-                  </div>
-                </div> --%>
                  <div class="clearfix"></div>
                  </div>
          <div class="clearfix clients_wrap_table">
@@ -150,7 +140,7 @@
                 
                 <input type="text" style="display:none" name="candidateId" id="assocandidateId" value="${candidate.id}">
                 <input type="text" style="display:none" name="uuid" value="${uuid}">
-                <input type="text" style="display:none" id="status" value="">
+                <input type="text" style="display:none" id="status" value="${status}">
                   
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
@@ -253,6 +243,7 @@ function saveAssociateSalaryInd(){
 				  		$('#associateSalary_form input').attr('disabled','true');
 				  		$('#associateSalary_form select').prop('disabled', true);
 				  		$('#saveAssociateBtnDiv').css('display','none');
+				  		$('#editSectionDiv').css('display','none');
 			  		}
 			 }
 		});
@@ -268,7 +259,7 @@ $('#editAssociateBtn').click(function() {
 	$('#saveAssociateBtnDiv').css('display','block');
 	$('#associateSalary_form input').removeAttr('disabled');
 	$('#associateSalary_form select').removeAttr('disabled');
-	
+	$('#editSectionDiv').css('display','block');
 });
 
 $('#cancelAssociateSalaryIndBtn').click(function() {
@@ -280,6 +271,7 @@ $('#cancelAssociateSalaryIndBtn').click(function() {
 		$('#associateSalary_form input').attr('disabled','true');
 		$('#associateSalary_form select').prop('disabled', true);
 		$('#saveAssociateBtnDiv').css('display','none');
+		$('#editSectionDiv').css('display','none');
 	}
 });
 
@@ -330,10 +322,8 @@ function getPayFreqHours(){
 	}
 	calculateSal();
 }
-</script>
 
 
-<script>
 function calculateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var annualSal = $("#annualSal").val();
@@ -364,9 +354,8 @@ function calculateSal(){
 		$("#hourlyRate").val(hourRate.toFixed(2));
 	}
 }
-</script>
 
-<script>
+
 function calculatePayPerSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
@@ -396,9 +385,8 @@ function calculatePayPerSal(){
 		}
 	}
 }
-</script>
 
-<script>
+
 function calculateHourlyRateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
@@ -411,5 +399,37 @@ function calculateHourlyRateSal(){
 		calculatePayPerSal();
 	}
 }
+
+function calculatePercentSal(){
+	var percent = $("#increasePer").val();
+	var annualSal = ${associateSalaryInd.annualSalary};
+	var annualByPercentage = eval((annualSal * percent)/100);
+	$("#annualSal").val( eval(annualSal + annualByPercentage).toFixed(2));
+	calculateSal();
+}
 </script>
 
+<script>
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var jsDateFormat= '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  jsDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  jsDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  jsDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  jsDateFormat = 'yy-dd-mm'; 
+	  }
+	  $('#effectiveDate').datepicker({
+	      dateFormat: jsDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true,
+	  	  onSelect : function(selected) {
+	  	  }
+	  });
+	  
+	  function clearEffectiveDate(){
+			$("#effectiveDate").val("");
+	  }
+</script>
