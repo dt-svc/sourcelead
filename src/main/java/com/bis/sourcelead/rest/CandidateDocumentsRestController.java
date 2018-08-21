@@ -29,6 +29,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequestedDocuments;
 import com.bis.sourcelead.entity.User;
@@ -512,5 +513,15 @@ public class CandidateDocumentsRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = "/rest/candidateDocuments", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<LookUpData> candidateDocuments(HttpServletRequest request) throws Exception
+	{
+		ResponseList<LookUpData> responseList = new ResponseList<LookUpData>();
+		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		responseList.setData(documentsList);
+		return responseList;
 	}
 }

@@ -90,6 +90,7 @@ function approvePayrollDiv(){
  <div class="styleTables clearfix mt">
  <!-- <div id="USPayrollDiv"></div> -->
  <div id="payrollDataDiv"></div>
+ <div id="initiateLoading"></div>
 </div> 
 
 <div class="clearfix mt"></div>
@@ -258,6 +259,9 @@ function getGroupFrequency(){
 <script>
 function runUSPayroll(){
 	if ($('#generate_payroll_form').validate(false, validationSettings)){  
+		
+		$("#initiateLoading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 		var groupId = $("#groupId").val();
@@ -343,6 +347,7 @@ function runUSPayroll(){
 		        	$("#payrollDataDiv").empty();
 		        	$("#payrollDataDiv").append(result);
 		        	$("#submitButtonDiv").show();
+		        	$("#initiateLoading").removeAttr('style');
 		        },
 		    });
 		 
