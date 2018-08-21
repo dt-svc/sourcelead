@@ -16,7 +16,7 @@
 </script>  -->
 <script type="text/javascript">
 		window.onload = function () {
-			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','');
+			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','','address');
 			getDesignationType();
 			getDepartmentsList();
 			getResourceManagers();
@@ -198,12 +198,21 @@
                      <input type="hidden" id="residenceCountry" name="residenceCountry" />
                      <input type="hidden" id="residenceState" name="residenceState" />
                      <input type="hidden" id="residenceCity" name="residenceCity" />
-                     <input type="hidden" id="residenceZipCode" name="residenceZipCode" />
+<!--                      <input type="hidden" id="residenceZipCode" name="residenceZipCode" /> -->
                      <input type="hidden" id="residenceLatitude" name="residenceLatitude" />
                      <input type="hidden" id="residenceLongitude" name="residenceLongitude" />
                   <i class="fa fa-refresh btn btn-primary refresh-icon bg-blue" title="Refresh" onClick="refreshGoogleApiLocation('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','');"></i>
                   </div>
                 </div>
+                
+                
+                <div class="form-group">
+                  <label class="col-md-3">Zip Code<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9 positionRelative">
+						<input  class="form-control" id="residenceZipCode" name="residenceZipCode" placeholder="Enter Zip code" type="text">                    
+                  </div>
+                </div>
+                
                   
                  <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
@@ -1410,9 +1419,13 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateSalary){
 					associateSalary.href = "#";
 					associateSalary.className = "disabledLink";
-				} 
+				}  
 				
-				
+				var associateLeaveType = document.getElementById("associateLeaveType");
+				if(associateLeaveType){
+					associateLeaveType.href = "#";
+					associateLeaveType.className = "disabledLink";
+				}   
 
  
 

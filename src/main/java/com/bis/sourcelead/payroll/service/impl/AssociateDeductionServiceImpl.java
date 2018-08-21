@@ -5,12 +5,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -21,6 +23,7 @@ import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
@@ -52,6 +55,10 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 		Response<AssociateDeductionDTO> resObj = new Response<>();
 		try {
 			if (Validator.validate(associateDeductionDTO)) {
+				
+				Candidate candidate = candidateService.getCandidateByConsultantUserId(Long.valueOf(associateDeductionDTO.getUserId()), orgLocation.getId());
+				int assDed = associateDeductionDao.deleteAssociateDeductionByCandidateIdAndOrgLocationId(candidate.getId(),orgLocation.getId());
+				
 				List<DeductionDTO> deductionDTOList = associateDeductionDTO.getDeductionDTOList();
 				for (DeductionDTO ded : deductionDTOList) {
 					AssociateDeduction associateDeduction = new AssociateDeduction();
@@ -61,7 +68,7 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 					associateDeduction.setDeductionMethod(ded.getMethod());
 //					User user = userService.getUserById(Long.parseLong(associateDeductionDTO.getUserId()));
 //					associateDeduction.setUserId(user);
-					Candidate candidate = candidateService.getCandidateByConsultantUserId(Long.valueOf(associateDeductionDTO.getUserId()), orgLocation.getId());
+					
 					associateDeduction.setCandidate(candidate);
 					associateDeduction.setOrgLocationId(orgLocation);
 					associateDeduction.setAssociateDeductionUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -70,6 +77,7 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 					associateDeduction.setCreatedDate(new Date());
 					associateDeduction.setUpdatedDate(new Date());
 					associateDeduction.setStatus(1);
+					
 					AssociateDeduction saveAssociateDeduction = associateDeductionDao.saveAssociateDeduction(associateDeduction);
 					if (saveAssociateDeduction != null) {
 						resObj.setResponse(Result.SUCCESS.name());

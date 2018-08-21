@@ -1,246 +1,1103 @@
-<jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<!-- Content Area -->
-<section class="content-wraper contentWraper">
-<section class="content-header clearfix">
-<div class="pull-left">
-<h2>Employee Payroll</h2>
-</div>
-<div class="pull-right brud-crum">Home &raquo; Employee Payroll</div>
-</section>
+ <section class="content-wraper">
+    
+    <div class="modal modal_Expenses AccountDedu" id="one">
+  <div class="modal-dialog">
 
-<div class="contentareaInner-styles clearfix">
-
-<div class="clearfix minHeight">
-<div class="clearfix row">
-<div class="col-md-5">
-<div class="form-group">
-<label class="col-md-12 paddingRight">Select Employee</label>
-<div class="col-md-12">
-<select class="form-control chosen-select">
-<option>Select Employee</option>
-<option>Employee1</option>
-<option>Employee2</option>
-<option>Employee3</option>
-<option>Employee4</option>
-<option>Employee5</option>
-<option>Employee6</option>
-</select>
-</div>
-</div>
-<div class="form-group">
-<label class="col-md-12">From Date</label>
-<div class="col-md-12">
-<input type="text" class="form-control calendar">
-</div>
-</div>
-</div>
-<div class="col-md-5">
-<div class="form-group">
-<label class="col-md-12">Select Department</label>
-<div class="col-md-12">
-<select class="form-control chosen-select">
-<option>Select Type</option>
-<option>Regular</option>
-<option>Additional</option>
-</select>
-</div>
-</div>
-
-<div class="form-group">
-<label class="col-md-12">To Date</label>
-<div class="col-md-12">
-<input type="text" class="form-control calendar">
-</div>
-</div>
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" onClick="closeModalExpenses();">&times;</button>
+        <h4 class="modal-title" id="empName"></h4>
+      </div>
+      <div class="modal-body project_tabs_inn_table">
+        <div id="accountdeDuctiondetails"></div>
+      </div>
+    </div>
 
 </div>
 </div>
-<div class="clearfix footerstyelsNew">
-<div class="col-lg-12">
-<div class="pull-right">
-<input value="Run" class="btn btn-success btnSuccess" type="button" onClick="runPayrollregister();">
-<input value="Reset" class="btn btn-defualt ml10" type="button">
+
+<div class="modal modal_Expenses hrDedu" id="two">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" onClick="closeModalExpenseshr();">&times;</button>
+        <h4 class="modal-title" id="hrEmpName"></h4>
+      </div>
+      <div class="modal-body project_tabs_inn_table">
+        <div id="hrDeductiondetails"></div>
+      </div>
+    </div>
+
 </div>
 </div>
-</div> 
-</div>
+    
+  </section>
+  
 
-<div class="clearfix"></div>
-
-
-
-
-<div class="timesheet_out" id="payrollRegister" style="display: block;">
-
-<div class="clearfix">
-<div class="col-md-12">
-<div class="row">
-<label class="col-md-2">Total Employees:</label>
-<span class="col-md-5">10</span>
-</div>
-</div>
-<div class="col-md-12">
-<div class="row">
-<label class="col-md-2">Net Pay:</label>
-<span class="col-md-5">8</span>
-</div>
-</div>
-<div class="clearfix mb mt"></div>
-</div>
-
-<div class="clearfix">
-
-<div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
-<ul class="pull-right list-unstyled list-inline">
-<li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+ Associate</a></li>
-<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
-<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-<div class="newActPop" style="">
-<span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
-</li>
-<li class="">
-<input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-<span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
-</ul>
-</div>
-<div class="require_wrap_table tableFirstSecond clearfix">
-<table>
-<thead>
-<tr>
-<th>Employee ID</th>
-<th>Employee Name</th>
-<th>RagbatdXXXX</th>
-<th>Gross Pay</th>
-<th>Pre Tax Deduction</th>
-<th>Federal Tax</th>
-<th>With Holding</th>
-<th>Social Securities</th>
-<th>Medicare withholding</th>
-<th>State with holding</th>
-<th>Other</th>
-<th>SUI / SDI</th>
-<th>Post Tax</th>
-<th>Pay Items</th>
-<th>Net Pay</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><div class="tblminwidth-75">0001</div></td>
-<td><div class="tbldata-dotdot">Karan Kumar Sahoo</div></td>
-<td><div class="tbldata-dotdot-vsm">01/01/2018</div></td>
-<td><div class="tbldata-dotdot-vsm">4000</div></td>
-<td><div class="tblminwidth-50">Pretax</div></td>
-<td><div class="tblminwidth-50">Federal Tax</div></td>
-<td><div class="tblminwidth-50">Withholding</div></td>
-<td><div class="tblminwidth-50">Social Security</div></td>
-<td><div class="tblminwidth-50">Medicare withholding</div></td>
-<td><div class="tblminwidth-50">State withholding</div></td>
-<td><div class="tblminwidth-50">Other</div></td>
-<td><div class="tblminwidth-50">SUI/SDI</div></td>
-<td><div class="tblminwidth-50">Post Tax</div></td>
-<td><div class="tblminwidth-50">Pay Tax</div></td>
-<td><div class="tblminwidth-50">Net Pay</div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<nav>
-<ul id="paging" class="pagination">
-<li><a href="#">Previous</a></li>
-<li><a href="#">2</a></li>
-<li><a href="#">3</a></li>
-<li><a href="#">4</a></li>
-<li><a href="#">5</a></li>
-<li class="disabled"><a href="#">6</a></li>
-<li data-page="last"><a href="#">Next</a></li>
-</ul>
-<div class="clearfix"></div>
-</nav>
-</div>
-</div>
-
-
-<!-- Content Area Ends--> 
-</div>
-
-</section>
-
-<script type="text/javascript">
-$(function () {
-$('#datetimepicker3').datetimepicker({
-format: 'LT'
-});
-});
-</script>
-
-<script type="text/javascript">
-var config = {
-'.chosen-select' : {},
-'.chosen-select-deselect' : {allow_single_deselect:true},
-'.chosen-select-no-single' : {disable_search_threshold:10},
-'.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-'.chosen-select-width' : {width:"95%"}
-}
-for (var selector in config) {
-$(selector).chosen(config[selector]);
-}
-$('.chosen-select').each(function() {
-var $this = $(this);
-$this.next().css({'width': '100%'});
-})
-$(document).ready(function(){
-$("#cd").click(function(){
-$(".clientDetails").toggleClass('hidden', 500);
-});
-
-});
-</script>
-
-<script type="text/javascript">
-$(document).ready(function(e) {
-$("#savevendor").click(function(){
-$('#myform').validate({
-rules:{
-things:{
-required:true
-}
-}
-});
-});
-});
-$(function () {
-
-});
-</script>
+  <script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+				$(document).ready(function(){
+					$("#cd").click(function(){
+						$(".clientDetails").toggleClass('hidden', 500);
+					});
+	
+	});
+ 		</script>
 <script> 
-function getActions(){
-$(".action-pop").slideToggle(200);
-$(".newActPop").slideUp(200);
+function highlight(e) {
+    $(e).siblings().removeClass("active");
+    $(e).addClass("active");
 } 
-$("html").click(function(){
-$(".action-pop").slideUp(200);
-});
-$(".action, .action-pop").click(function(e){
-e.stopPropagation();
-}); 
-function newActions(){
-$(".newActPop").slideToggle(200);
-$(".action-pop").slideUp(200);
+
+function redirect() {
+	 $("#innertab-1").show();
+//   $(".project-tabs-menu a").click(function(event) {
+      event.preventDefault();
+      $("#menuli li").removeClass("current");
+      $("#wtsli").addClass("current");
+      
+//   });
 }
-$("html").click(function(){
-$(".newActPop").slideUp(200);
-});
-$(".overIcon, .newActPop").click(function(e){
-e.stopPropagation();
-});
-function runPayrollregister() {
-$("#payrollRegister").toggle();
+    </script>
+    
+    <script>
+    function getIncomeData(){
+    	var empId = $("#empId").val();
+    	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+    	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    		  var sourceleadUrl ='${sourceleadUrl}';
+    				  $.ajax({
+    				    	type: "GET",
+    				        url: sourceleadUrl+"/getInvoiceDetailsByEmpId?${_csrf.parameterName}=${_csrf.token}&empId="+empId+"&orgLocationId="+orgLocationId,
+    				        success: function(data) {
+    						 var result = "";				        	
+    						result = result + '<table id="incometable" class="display" cellspacing="0" width="100%" >';
+    						result = result + '<thead>';
+    						result = result + '<tr>';
+    						result = result + '<th>SKU</th>';
+    						result = result + '<th>Product/Service</th>';
+    						result = result + '<th>Name</th>';
+    						result = result + '<th>Num</th>';
+    						result = result + '<th>Memo/Description</th>';
+    						result = result + '<th>Date</th>';
+    						result = result + '<th>Last Modified</th>';
+    						result = result + '<th>Due Date</th>';
+    						result = result + '<th>Rate</th>';
+    						result = result + '<th>Qty</th>';
+    						result = result + '<th>Amount</th>';
+    						result = result + '<th>A/R Paid</th>';
+    						result = result + '<th>Old/New</th>';
+    						result = result + '</tr>';
+    						result = result + '</thead>	';
+    						result = result + '<tbody>';
+    						if(data != null && data != ''){
+    							 for (var i=0; i<data.length; i++)
+    	    						{
+    	    			        		 var opt = data[i];
+    	    			        		    result = result + ' <tr>';
+    	    			        		    
+    	    			        		    if(opt.sku !=null && opt.sku !='' && opt.sku !='undefined'){
+    	    			        		    	result = result + '<td><div class="tblminwidth-75">'+opt.sku+'</div></td>';
+    	    			        		    }else{
+    	    			        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+    	    			        		    }
+    	    			        		    
+    	    			        		    if(opt.productService !=null && opt.productService !='' && opt.productService !='undefined'){
+    	    			        		    	result = result + '<td><div>'+opt.productService+'</div></td>';
+    	    			        		    }else{
+    	    			        		    	result = result + '<td><div>---</div></td>';
+    	    			        		    }
+    	    			        		    
+    	    			        		    if(opt.empName !=null && opt.empName !='' && opt.empName !='undefined'){
+    	    									result = result + ' <td><div class="tblminwidth-75">'+opt.empName+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+    	    								}
+    	    			        		    
+    	    			        		    if(opt.number !=null && opt.number !='' && opt.number !='undefined'){
+    	    									result = result + ' <td><div class="tblminwidth-75">'+opt.number+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+    	    								}
+    	    								
+    	    								if(opt.memoDescription !=null && opt.memoDescription !='' && opt.memoDescription !='undefined'){
+    	    									result = result + ' <td><div class="tblminwidth-75">'+opt.memoDescription+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+    	    								}
+    	    								
+    	    								if(opt.dateStr !=null && opt.dateStr !='' && opt.dateStr !='undefined'){
+    	    									result = result + ' <td><div class="tblminwidth-75">'+opt.dateStr+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+    	    								}
+    	    								
+    	    								if(opt.lastModifiedStr !=null && opt.lastModifiedStr !='' && opt.lastModifiedStr !='undefined'){
+    	    									result = result + '<td><div class="tblminwidth-75">'+opt.lastModifiedStr+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+    	    								}
+    	    								
+    	    								if(opt.dueDateStr !=null && opt.dueDateStr !='' && opt.dueDateStr !='undefined'){
+    	    									result = result + '<td><div class="tblminwidth-75">'+opt.dueDateStr+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+    	    								}
+    	    								if(opt.rate !=null && opt.rate !='' && opt.rate !='undefined'){
+    	    									result = result + '<td><div class="tblminwidth-75">$ '+opt.rate+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">0.00</div></td>';
+    	    								}
+    	    								
+    	    								if(opt.qty !=null && opt.qty !='' && opt.qty !='undefined'){
+    	    									result = result + '<td><div class="tblminwidth-75">$ '+opt.qty+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">$ 0.00</div></td>';
+    	    								}
+    	    								
+    	    								if(opt.amount !=null && opt.amount !='' && opt.amount !='undefined'){
+    	    									result = result + '<td><div class="tblminwidth-75">$ '+opt.amount+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">$ 0.00</div></td>';
+    	    								}
+    	    								
+    	    								if(opt.arPaid !=null && opt.arPaid !='' && opt.arPaid !='undefined'){
+    	    									result = result + '<td><div class="tblminwidth-75">'+opt.arPaid+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+    	    								}
+    	    								
+    	    								if(opt.oldNew !=null && opt.oldNew !='' && opt.oldNew !='undefined'){
+    	    									result = result + '<td><div class="tblminwidth-75">'+opt.oldNew+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+    	    								}
+    	    								
+    	    								
+    	    								result = result + ' </tr>';
+    	    						}
+    						}
+    			        	 
+    						result = result + '  </tbody>';
+    						result = result + ' </table>';
+    						$("#innertab-1").hide();
+							$("#innertab-2").show();
+							$("#innertab-3").hide();
+							$("#innertab-4").hide();
+							$("#innertab-5").hide();
+							$("#innertab-6").hide();
+							$("#innertab-1").empty();
+							$("#innertab-3").empty();
+							$("#innertab-4").empty();
+							$("#innertab-5").empty();
+							$("#innertab-6").empty();
+    						$("#innertab-2").empty();
+    						$("#innertab-2").append(result);
+    						$("#loading").removeAttr("style");
+    						empInvoiceDetails(); 
+    				        	
+    				        },
+    				        
+    				    });
+    }
+    </script>
+    
+    
+  
+  <script>
+  function getChecks(){
+	     var empId = $("#empId").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			  var sourceleadUrl ='${sourceleadUrl}';
+					  $.ajax({
+					    	type: "GET",
+					        url: sourceleadUrl+"/getChecksListByEmployeeId?empId="+empId+"&orgLocationId="+orgLocationId,
+					        success: function(data) {
+							 var result = "";				        	
+							result = result + '<table id="empchecksListTable" class="display" cellspacing="0" width="100%" >';
+							result = result + '<thead>';
+							result = result + '<tr>';
+							result = result + '<th>Emp Id</th>';
+							result = result + '<th>Emp Name</th>';
+							result = result + '<th>Date</th>';
+							result = result + '<th>Type of Expense</th>';
+							result = result + '<th>Bank</th>';
+							result = result + '<th>Month</th>';
+							result = result + '<th>Legal Fees</th>';
+							result = result + '<th>Advance</th>';
+							result = result + '<th>General Expenses</th>';
+							result = result + '<th>Vendor Payments</th>';
+							result = result + '<th>Electronic Withdrawals</th>';
+							result = result + '<th>Payroll Chks</th>';
+							result = result + '<th>Amount</th>';
+							result = result + '<th>Check No</th>';
+							result = result + '</tr>';
+							result = result + '</thead>	';
+							result = result + '<tbody>';
+				        	if(data !=null && data !='' && data !='undefined'){
+				        		for (var i=0; i<data.length; i++)
+								{
+					        		 var opt = data[i];
+					        		    result = result + ' <tr>';
+					        		    
+					        		    if(opt.empId !=null && opt.empId !='' && opt.empId !='undefined'){
+					        		    	result = result + '<td><div class="tblminwidth-75">'+opt.empId+'</div></td>';
+					        		    }else{
+					        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+					        		    }
+					        		    
+					        		    if(opt.empName !=null && opt.empName !='' && opt.empName !='undefined'){
+					        		    	result = result + '<td><div><a>'+opt.empName+'</a></div></td>';
+					        		    }else{
+					        		    	result = result + '<td><div>---</div></td>';
+					        		    }
+					        		    
+					        		    if(opt.dateStr !=null && opt.dateStr !='' && opt.dateStr !='undefined'){
+											result = result + ' <td><div class="tblminwidth-75">'+opt.dateStr+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+					        		    
+					        		    if(opt.typeOfExpense !=null && opt.typeOfExpense !='' && opt.typeOfExpense !='undefined'){
+											result = result + ' <td><div class="tblminwidth-75">'+opt.typeOfExpense+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										if(opt.bankName !=null && opt.bankName !='' && opt.bankName !='undefined'){
+											result = result + ' <td><div class="tblminwidth-75">'+opt.bankName+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										if(opt.month !=null && opt.month !='' && opt.month !='undefined'){
+											result = result + ' <td><div class="tblminwidth-75">'+opt.month+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										if(opt.legalFees !=null && opt.legalFees !='' && opt.legalFees !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">'+opt.legalFees+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										if(opt.advanceStr !=null && opt.advanceStr !='' && opt.advanceStr !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">$ '+opt.advanceStr+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">$ 0.00</div></td>';
+										}
+										if(opt.generalExpensesStr !=null && opt.generalExpensesStr !='' && opt.generalExpensesStr !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">'+opt.generalExpensesStr+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">0.00</div></td>';
+										}
+										
+										if(opt.vendorPaymentsStr !=null && opt.vendorPaymentsStr !='' && opt.vendorPaymentsStr !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">$ '+opt.vendorPaymentsStr+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">$ 0.00</div></td>';
+										}
+										
+										if(opt.electronicWithdrawals !=null && opt.electronicWithdrawals !='' && opt.electronicWithdrawals !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">'+opt.electronicWithdrawals+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										if(opt.payrollChecksStr !=null && opt.payrollChecksStr !='' && opt.payrollChecksStr !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">$ '+opt.payrollChecksStr+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">$ 0.00</div></td>';
+										}
+										
+										if(opt.amountStr !=null && opt.amountStr !='' && opt.amountStr !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">$ '+opt.amountStr+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">$ 0.00</div></td>';
+										}
+										
+										if(opt.checkNo !=null && opt.checkNo !='' && opt.checkNo !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">'+opt.checkNo+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										result = result + ' </tr>';
+								} 
+				        	}
+							
+							result = result + '  </tbody>';
+							result = result + ' </table>';
+							$("#innertab-1").hide();
+							$("#innertab-2").hide();
+							$("#innertab-3").show();
+							$("#innertab-4").hide();
+							$("#innertab-5").hide();
+							$("#innertab-6").hide();
+							$("#innertab-1").empty();
+							$("#innertab-2").empty();
+							$("#innertab-3").empty();
+							$("#innertab-4").empty();
+							$("#innertab-5").empty();
+							$("#innertab-6").empty();
+							$("#innertab-3").append(result);
+							$("#loading").removeAttr("style");
+							empChecksListPagination(); 
+					        	
+					        },
+					        
+					    });
+  }
+  </script>
+    
+    <script>
+function empInvoiceDetails(){ 
+    $('#incometable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#incometable").wrap("<div class='overflow_Auto  width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
-<jsp:include page="../masterFooter.jsp" />
+<script>
+function empChecksListPagination(){ 
+    $('#empchecksListTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#empchecksListTable").wrap("<div class='overflow_Auto  width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
+}
+</script>
+
+
+
+
+<script>
+function getWagesTaxSummaryByEmpId(){
+	 var empId = $("#empId").val();
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			  var sourceleadUrl ='${sourceleadUrl}';
+					  $.ajax({
+					    	type: "GET",
+					    	url: sourceleadUrl+"/getWagesTaxSummaryByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
+					        success: function(data) {
+							var result = "";				        	
+							result = result + '<table id="WagesAndTaxEmpTable" class="display" cellspacing="0" width="100%" >';
+							result = result + '<thead>';
+							result = result + '<tr>';
+							result = result + '<th>From Date</th>';
+							result = result + '<th>To Date</th>';
+							result = result + '<th>Employee Id</th>';
+							result = result + '<th>Employee Name</th>';
+							result = result + '<th>SSN</th>';
+							result = result + '<th>Check Date</th>';
+							result = result + '<th>Check No</th>';
+							result = result + '<th>Gross</th>';
+							result = result + '<th>FWT</th>';
+							result = result + '<th>SSEC</th>';
+							result = result + '<th>MED</th>';
+							result = result + '<th>SWT Locals</th>';
+							result = result + '<th>SDI/SUI</th>';
+							result = result + '<th>local</th>';
+							result = result + '<th>DEDS</th>';
+							result = result + '<th>NET</th>';
+							result = result + '<th>Batch Number</th>';
+							result = result + '</tr>';
+							result = result + '</thead>	';
+							result = result + '<tbody>';
+							
+							if(data !=null && data !=''){
+								 for (var i=0; i<data.length; i++)
+									{
+						        		 var opt = data[i];
+						        		    result = result + ' <tr>';
+						        		    if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
+												result = result + ' <td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
+											}else{
+												result = result + ' <td><div>--</div></td>';
+											}
+						        		    
+						        		    if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
+												result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
+											}else{
+												result = result + ' <td><div>--</div></td>';
+											}
+											result = result + '<td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
+											result = result + '<td><div class="tbldata-dotdot-vsm">'+opt.employeeName+'</div></td>';
+											if(opt.ssnNumber !=null && opt.ssnNumber !='' && opt.ssnNumber !='undefined'){
+												result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.ssnNumber+'</div></td>';
+											}else{
+												result = result + ' <td><div>--</div></td>';
+											}
+											if(opt.checkDateStr !=null && opt.checkDateStr !='' && opt.checkDateStr !='undefined'){
+												result = result + '<td><div class="tblminwidth-50">'+opt.checkDateStr+'</div></td>';
+											}else{
+												result = result + ' <td><div>--</div></td>';
+											}
+											result = result + ' <td><div class="tblminwidth-75">'+opt.checkNo+'</div></td>';
+											result = result + '<td><div class="tblminwidth-75">'+opt.gross+'</div></td>';
+											result = result + '<td><div class="tblminwidth-75">'+opt.fwt+'</div></td>';
+											result = result + ' <td><div class="tblminwidth-75">'+opt.ssec+'</div></td>';
+											result = result + '<td><div class="tblminwidth-75">'+opt.med+'</div></td>';
+											result = result + ' <td><div class="tblminwidth-75">'+opt.swt+'</div></td>';
+											result = result + '<td><div class="tblminwidth-75">'+opt.sdiSui+'</div></td>';
+											result = result + '<td><div class="tblminwidth-75">'+opt.local+'</div></td>';
+											result = result + '<td><div class="deeds tblminwidth-125">'+opt.deds+'</div>';
+											result = result + '<div class="edit-input tblminwidth-125" style="display:none;"><input type="text" class="form-control input-sm tbldata-dotdot-100 pull-left" value="" id=""><small class="fa fa-floppy-o ml10 pull-right mt5"  onClick="saveEdit(this)"></small></div></td>';
+											
+											result = result + '<td><div class="tblminwidth-75">'+opt.net+'</div></td>';
+											if(opt.batchNumber !=null && opt.batchNumber !='' && opt.batchNumber !='undefined'){
+												result = result + ' <td><div class="tblminwidth-75">'+opt.batchNumber+'</div></td>';
+											}else{
+												result = result + ' <td><div>--</div></td>';
+											}
+											result = result + ' </tr>';
+									}
+							}
+				        	
+							result = result + '  </tbody>';
+							result = result + ' </table>';
+							$("#innertab-1").show();
+							$("#innertab-2").hide();
+							$("#innertab-3").hide();
+							$("#innertab-4").hide();
+							$("#innertab-5").hide();
+							$("#innertab-6").hide();
+							$("#innertab-2").empty();
+							$("#innertab-3").empty();
+							$("#innertab-4").empty();
+							$("#innertab-5").empty();
+							$("#innertab-6").empty();
+							$("#innertab-1").empty();
+							$("#innertab-1").append(result);
+							$("#loading").removeAttr("style");
+							wagesAndTaxEmpTablePagination();
+					        	
+					        },
+					        
+					    });
+}
+</script>
+
+<script>
+function wagesAndTaxEmpTablePagination(){ 
+    $('#WagesAndTaxEmpTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#WagesAndTaxEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
+}
+</script>
+
+<script>
+function getAccontDeductions(){
+	 var empId = $("#empId").val();
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		  var sourceleadUrl ='${sourceleadUrl}';
+				  $.ajax({
+				    	type: "GET",
+				    	url: sourceleadUrl+"/getAccontDeductionsByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
+				        success: function(data) {
+						var result = "";				        	
+						result = result + '<table id="accontDeductionsEmpTable" class="display" cellspacing="0" width="100%" >';
+						result = result + '<thead>';
+						result = result + '<tr>';
+						result = result + '<th>Employee Id</th>';
+						result = result + '<th>Employee Name</th>';
+						result = result + '<th>From Date</th>';
+						result = result + '<th>To Date</th>';
+						result = result + '<th>Ded. Amount</th>';
+						result = result + '<th>Batch Number</th>';
+						result = result + '<th>Request Sub.Date</th>';
+						result = result + '<th>Request Approved Date</th>';
+						result = result + '<th>Repaid Status</th>';
+						result = result + '</tr>';
+						result = result + '</thead>	';
+						result = result + '<tbody>';
+						if(data != null && data !=''){
+							 for (var i=0; i<data.length; i++)
+								{
+					        		 var opt = data[i];
+					        		    result = result + ' <tr>';
+					        		    
+					        		    if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
+					        		    	result = result + '<td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
+					        		    }else{
+					        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+					        		    }
+					        		    
+					        		    if(opt.employeeName !=null && opt.employeeName !='' && opt.employeeName !='undefined'){
+					        		    	result = result + '<td><div class="tblminwidth-75" onclick="getEmpAccountDeductionDetails('+opt.id+',\''+opt.employeeName+'\');"><a>'+opt.employeeName+'</a></div></td>';
+					        		    }else{
+					        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+					        		    }
+					        		    
+					        		    if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
+											result = result + ' <td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+					        		    
+					        		    if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
+											result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+					        		    if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
+						        		    //result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'">'+opt.dedAmount+'<small class="fa fa-pencil ml10 pull-right" onClick="showEdit('+opt.id+','+opt.dedAmount+')"></small></div>';
+											result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><small class="fa fa-dollar expenses_symbol text-muted"></small>'+opt.dedAmount+'</div>';
+						        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
+											result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"></div></td>';
+					        		    }
+					        		    else{
+					        		    	result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><small class="fa fa-dollar expenses_symbol text-muted"></small>0</div>';
+						        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
+											result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"></div></td>';
+										}
+										
+										if(opt.batchNumber !=null && opt.batchNumber !='' && opt.batchNumber !='undefined'){
+											result = result + ' <td><div class="tblminwidth-75">'+opt.batchNumber+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										if(opt.requestSubDate !=null && opt.requestSubDate !='' && opt.requestSubDate !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">'+opt.requestSubDate+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										if(opt.requestApprovedDate !=null && opt.requestApprovedDate !='' && opt.requestApprovedDate !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">'+opt.requestApprovedDate+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										if(opt.repaidStatus !=null && opt.repaidStatus !='' && opt.repaidStatus !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">'+opt.repaidStatus+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										result = result + ' </tr>';
+								} 	
+						}
+			        	
+						result = result + '  </tbody>';
+						result = result + ' </table>';
+						
+						$("#innertab-1").hide();
+						$("#innertab-2").hide();
+						$("#innertab-3").hide();
+						$("#innertab-4").show();
+						$("#innertab-5").hide();
+						$("#innertab-6").hide();
+						$("#innertab-1").empty();
+						$("#innertab-2").empty();
+						$("#innertab-3").empty();
+						$("#innertab-4").empty();
+						$("#innertab-5").empty();
+						$("#innertab-6").empty();
+						$("#innertab-4").append(result);
+						$("#loading").removeAttr("style");
+						accountDeductionsEmpTablePagination();
+				        	
+				        },
+				        
+				    });
+}
+</script>
+
+
+<script>
+function accountDeductionsEmpTablePagination(){ 
+    $('#accontDeductionsEmpTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#accontDeductionsEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
+}
+</script>
+
+<script>
+function getEmpAccountDeductionDetails(accountDedId,empName){
+	$(".sideMask").fadeIn("slow");
+	$(".AccountDedu").fadeIn("slow");
+	  var sourceleadUrl ='${sourceleadUrl}';
+			  $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
+			        success: function(data) {
+					var result = "";				        	
+					result = result + '<table id="employeeDeductionsListTable" class="display" cellspacing="0" width="100%" >';
+					result = result + '<thead>';
+					result = result + '<tr>';
+					result = result + '<th>Pay Cycle Name</th>';
+					result = result + '<th>Ded. Amount per Cycle</th>';
+					result = result + '<th>Paid Status</th>';
+					result = result + '</tr>';
+					result = result + '</thead>	';
+					result = result + '<tbody>';
+					var json = JSON.parse(data);
+		        	 for (var i=0; i<json.length; i++)
+					{
+		        		 var opt = json[i];
+		        		    result = result + ' <tr>';
+		        		    
+		        		    if(opt.payCycleName !=null && opt.payCycleName !='' && opt.payCycleName !='undefined'){
+		        		    	result = result + '<td><div>'+opt.payCycleName+'</div></td>';
+		        		    }else{
+		        		    	result = result + '<td><div>---</div></td>';
+		        		    }
+		        		    
+		        		    if(opt.dedAmountPerCycle !=null && opt.dedAmountPerCycle !='' && opt.dedAmountPerCycle !='undefined'){
+		        		    	result = result + '<td><div onclick="getEmpAccountDeductionDetails('+opt.id+');">'+opt.dedAmountPerCycle+'</div></td>';
+		        		    }else{
+		        		    	result = result + '<td><div>---</div></td>';
+		        		    }
+		        		    
+		        		    if(opt.paidStatus !=null && opt.paidStatus !='' && opt.paidStatus !='undefined'){
+								result = result + ' <td><div>'+opt.paidStatus+'</div></td>';
+							}else{
+								result = result + ' <td><div>--</div></td>';
+							}
+		        		    
+							result = result + ' </tr>';
+					} 
+					result = result + '  </tbody>';
+					result = result + ' </table>';
+					$("#accountdeDuctiondetails").empty();
+					$("#empName").html(empName);
+					$("#accountdeDuctiondetails").append(result);
+					employeeDeductionsListTablePagination();
+			        	
+			        },
+			        
+			    });
+			  
+}
+</script>
+
+<script>
+function employeeDeductionsListTablePagination(){ 
+    $('#employeeDeductionsListTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#employeeDeductionsListTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+}
+</script>
+
+
+<script>
+function closeModalExpenses(){
+	$(".sideMask").fadeOut("slow");
+	$("#one").fadeOut("slow");	
+}
+</script>
+
+<script>
+function getHRDeductions(){
+	 var empId = $("#empId").val();
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		  var sourceleadUrl ='${sourceleadUrl}';
+				  $.ajax({
+				    	type: "GET",
+				    	url: sourceleadUrl+"/getHRDeductionsByEmployeeId?empId="+empId+"&orgLocationId="+orgLocationId,
+				        success: function(data) {
+						var result = "";				        	
+						result = result + '<table id="hrDeductionsEmpTable" class="display" cellspacing="0" width="100%" >';
+						result = result + '<thead>';
+						result = result + '<tr>';
+						result = result + '<th>Employee Id</th>';
+						result = result + '<th>Employee Name</th>';
+						result = result + '<th>From Date</th>';
+						result = result + '<th>To Date</th>';
+						result = result + '<th>Ded. Amount</th>';
+						result = result + '<th>Batch Number</th>';
+						result = result + '<th>Request Sub.Date</th>';
+						result = result + '<th>Request Approved Date</th>';
+						result = result + '<th>Repaid Status</th>';
+						result = result + '</tr>';
+						result = result + '</thead>	';
+						result = result + '<tbody>';
+			        	if(data !=null && data !=''){
+			        		for (var i=0; i<data.length; i++)
+							{
+				        		 var opt = data[i];
+				        		    result = result + ' <tr>';
+				        		    
+				        		    if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
+				        		    	result = result + '<td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
+				        		    }else{
+				        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+				        		    }
+				        		    
+				        		    if(opt.employeeName !=null && opt.employeeName !='' && opt.employeeName !='undefined'){
+				        		    	result = result + '<td><div onclick="getHrDeductionDetails('+opt.id+',\''+opt.employeeName+'\');"><a>'+opt.employeeName+'</a></div></td>';
+				        		    }else{
+				        		    	result = result + '<td><div>---</div></td>';
+				        		    }
+				        		    
+				        		    if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
+										result = result + ' <td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+				        		    
+				        		    if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
+										result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
+										result = result + ' <td><div class="tblminwidth-75">'+opt.dedAmount+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									if(opt.batchNumber !=null && opt.batchNumber !='' && opt.batchNumber !='undefined'){
+										result = result + ' <td><div class="tblminwidth-75">'+opt.batchNumber+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									if(opt.requestSubDate !=null && opt.requestSubDate !='' && opt.requestSubDate !='undefined'){
+										result = result + '<td><div class="tblminwidth-75">'+opt.requestSubDate+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									if(opt.requestApprovedDate !=null && opt.requestApprovedDate !='' && opt.requestApprovedDate !='undefined'){
+										result = result + '<td><div class="tblminwidth-75">'+opt.requestApprovedDate+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									if(opt.repaidStatus !=null && opt.repaidStatus !='' && opt.repaidStatus !='undefined'){
+										result = result + '<td><div class="tblminwidth-75">'+opt.repaidStatus+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									result = result + ' </tr>';
+							} 	
+			        	}
+						
+						result = result + '  </tbody>';
+						result = result + ' </table>';
+						$("#innertab-1").hide();
+						$("#innertab-2").hide();
+						$("#innertab-3").hide();
+						$("#innertab-4").hide();
+						$("#innertab-5").show();
+						$("#innertab-6").hide();
+						$("#innertab-1").empty();
+						$("#innertab-2").empty();
+						$("#innertab-3").empty();
+						$("#innertab-4").empty();
+						$("#innertab-5").empty();
+						$("#innertab-6").empty();
+						$("#innertab-5").append(result);
+						$("#loading").removeAttr("style");
+						hrDeductionsEmpTablePagination();
+				        	
+				        },
+				        
+				    });
+}
+</script>
+
+<script>
+function hrDeductionsEmpTablePagination(){ 
+    $('#hrDeductionsEmpTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#hrDeductionsEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
+}
+</script>
+
+
+
+<script>
+function getHrDeductionDetails(hrDedId,empName){
+	$(".sideMask").fadeIn("slow");
+	$(".hrDedu").fadeIn("slow");
+	  var sourceleadUrl ='${sourceleadUrl}';
+			  $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,
+			        success: function(data) {
+					var result = "";				        	
+					result = result + '<table id="employeeHrDeductionsListTable" class="display" cellspacing="0" width="100%" >';
+					result = result + '<thead>';
+					result = result + '<tr>';
+					result = result + '<th>Pay Cycle Name</th>';
+					result = result + '<th>Ded. Amount per Cycle</th>';
+					result = result + '<th>Paid Status</th>';
+					result = result + '</tr>';
+					result = result + '</thead>	';
+					result = result + '<tbody>';
+					var json = JSON.parse(data);
+		        	 for (var i=0; i<json.length; i++)
+					{
+		        		 var opt = json[i];
+		        		    result = result + ' <tr>';
+		        		    
+		        		    if(opt.payCycleName !=null && opt.payCycleName !='' && opt.payCycleName !='undefined'){
+		        		    	result = result + '<td><div>'+opt.payCycleName+'</div></td>';
+		        		    }else{
+		        		    	result = result + '<td><div>---</div></td>';
+		        		    }
+		        		    
+		        		    if(opt.dedAmountPerCycle !=null && opt.dedAmountPerCycle !='' && opt.dedAmountPerCycle !='undefined'){
+		        		    	result = result + '<td><div onclick="getEmpAccountDeductionDetails('+opt.id+');">'+opt.dedAmountPerCycle+'</div></td>';
+		        		    }else{
+		        		    	result = result + '<td><div>---</div></td>';
+		        		    }
+		        		    
+		        		    if(opt.paidStatus !=null && opt.paidStatus !='' && opt.paidStatus !='undefined'){
+								result = result + ' <td><div>'+opt.paidStatus+'</div></td>';
+							}else{
+								result = result + ' <td><div>--</div></td>';
+							}
+		        		    
+							result = result + ' </tr>';
+					} 
+					result = result + '  </tbody>';
+					result = result + ' </table>';
+					$("#hrDeductiondetails").empty();
+					$("#hrEmpName").html(empName);
+					$("#hrDeductiondetails").append(result);
+					employeeHrDeductionsListTablePagination();
+			        	
+			        },
+			        
+			    });
+			  
+}
+function closeModalExpenseshr(){
+	$(".sideMask").fadeOut("slow");
+	$("#two").fadeOut("slow");	
+	
+	
+}
+</script>
+
+
+<script>
+function employeeHrDeductionsListTablePagination(){ 
+    $('#employeeHrDeductionsListTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#employeeHrDeductionsListTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+}
+</script>
+
+<script>
+function finalBalance(){
+	 var empId = $("#empId").val();
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var sourceleadUrl ='${sourceleadUrl}';
+			  $.ajax({
+			    	type: "GET",
+			    	url: sourceleadUrl+"/getfinalBalanceByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
+			        success: function(data) {
+			        	var result = "";
+			        	     result = result + ' <div class="clearfix col-md-10 col-md-offset-1">';
+			        	result = result + '  <div class="payrollinvoice-generate">';
+			        	result = result + '   <h4 class="clearfix text-center">Balance Sheet</h4>';
+			        	result = result + '  <div class="payrollinvoice-header">';
+			        	result = result + '<table style="width:100%" class="table-responsive table-bordered table-BLsheet mb">';
+			        	result = result + '<tr>';
+			        	result = result + '<th rowspan="2" class="bg-info">Income</th>';
+			        	result = result + '<th class="bg-orange">Billed</th>';
+			        	result = result + '<th class="bgGReen">Paid</th>';
+			        	result = result + '<th class="bg-red">Due</th>';
+			        	result = result + '</tr>';
+			        	result = result + '<tr>';
+			        	result = result + '<td class="bg-success">$ '+data.billed+'</td>';
+			        	result = result + '<td class="bg-success">$ '+data.income+'</td>';
+			        	result = result + '<td class="bg-success">$ '+data.due+'</td>';
+			        	result = result + '</tr>';
+			        	result = result + '</table>';
+			        	result = result + '  </div>';
+			        	
+			        	
+			        	
+			                result = result + '<div class="table-payroll">';
+			                result = result + '<table style="width:100%" class="table">';
+			                result = result + '<thead>';
+			                result = result + '<tr>';
+			                result = result + '<th>Name</th>';
+			                result = result + '<th class="text-center">Gross</th>';
+			                result = result + '<th class="text-center">Net</th>';
+			                result = result + '</tr>';
+			                result = result + '	</thead>';
+			                result = result + '<tbody>';
+			                result = result + ' <tr>';
+			                result = result + '  <th colspan="3">Payroll</th>';
+			                result = result + ' </tr>';
+			                result = result + '<tr> ';
+			                result = result + '    <th><span class="ml">Direct Deposit</span></th>';
+			                result = result + '  <td>$ '+data.directDepositGross+'</td>';
+			                result = result + '  <td>$ '+data.directDepositNet+'</td>';
+			                result = result + '</tr>';
+			                result = result + '<tr>';
+			                result = result + '   <th><span class="ml">Processed with Check Option</span></th>';
+			                result = result + '  <td>$ '+data.processedWithCheckOptionGross+'</td>';
+			                result = result + '   <td>$ '+data.processedWithCheckOptionNet+'</td>';
+			                result = result + ' </tr>';
+			                result = result + '   <tr>';
+			                result = result + '    <th><span class="ml">Actual Checks Deposited</span></th>';
+			                result = result + '  <td>$ '+data.actualChecksDepositedNet+'</td>';
+			                result = result + ' <td>$ 0.00</td>';
+			                result = result + '</tr>';
+			                result = result + '<tr>';
+			                result = result + ' <th>Manual Advance</th>';
+			                result = result + ' <td>$ '+data.manualAdvance+'</td>';
+			                result = result + ' <td>$ 0.00</td>';
+			                result = result + ' </tr> ';
+			                result = result + ' <tr>';
+			                result = result + '  <th>General Expenses</th>';
+			                result = result + ' <td>$ '+data.generalExpenses+'</td>';
+			                result = result + '  <td>$ 0.00</td>';
+			                result = result + ' </tr>';
+			                result = result + '<tr>';
+			                result = result + ' <th>Vendor Payment</th>';
+			                result = result + '  <td>$ '+data.vendorPayment+'</td> ';
+			                result = result + '  <td>$ 0.00</td>';
+			                result = result + '  </tr>';
+			                result = result + '  <tr>';
+			                result = result + '   <th>Healthcare/Insurance</th>';
+			                result = result + '   <td>$ '+data.healthcareInsurance+'</td>';
+			                result = result + '   <td>$ 0.00</td>';
+			                result = result + '</tr>';
+			                result = result + '  <tr>';
+			                result = result + '   <th>Immigration</th>';
+			                result = result + '   <td>$ '+data.immigration+'</td>';
+			                result = result + '   <td>$ 0.00</td>';
+			                result = result + '</tr>';
+			                result = result + '  <tr>';
+			                result = result + '   <th>Direct Deposit Advance</th>';
+			                result = result + '   <td>$ '+data.directDepositAdvanceNegetive+'</td>';
+			                result = result + '   <td>$ 0.00</td>';
+			                result = result + '</tr>';
+			                result = result + '  <tr>';
+			                result = result + '   <th>Direct Deposit Deduction</th>';
+			                result = result + '   <td>$ '+data.directDepositDeductionPositive+'</td>';
+			                result = result + '   <td>$ 0.00</td>';
+			                result = result + '</tr>';
+			                result = result + ' </tbody>';
+			                result = result + ' <tfoot>';
+			                result = result + '<tr>';
+			                result = result + ' <th>Balance</th>';
+			                result = result + ' <td colspan="2">$ '+data.balance+'</td>';
+			                result = result + '</tr>';
+			                result = result + ' </tfoot>';
+			                result = result + '</table>';
+			                result = result + '  </div>';
+			                result = result + ' </div>';
+			                result = result + '</div>';
+			        	
+			                $("#innertab-1").hide();
+							$("#innertab-2").hide();
+							$("#innertab-3").hide();
+							$("#innertab-4").hide();
+							$("#innertab-5").hide();
+							$("#innertab-6").show();
+							$("#innertab-1").empty();
+							$("#innertab-2").empty();
+							$("#innertab-3").empty();
+							$("#innertab-4").empty();
+							$("#innertab-5").empty();
+							$("#innertab-6").empty();;
+							$("#innertab-6").append(result);
+							$("#loading").removeAttr("style");
+			        },
+			        
+			    });
+}
+</script>
