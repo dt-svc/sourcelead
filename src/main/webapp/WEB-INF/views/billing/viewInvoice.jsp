@@ -150,7 +150,7 @@ $(document).ready(function(){
 						 <div class="headActions">
 							<ul class="clearfix">
 								<li><a href="javascript:void(0)"><i class="filtIcon" onclick="openPop();"></i></a>
-								<li><input class="innSeaFld" id="invoiceTimelineSearch" placeholder="Status" type="text"></li>	
+								<li><input class="innSeaFld" id="invoiceTimelineSearch" placeholder="Status/Reason" type="text"></li>	
 							</ul>
 						</div> 
 					</div>
@@ -198,14 +198,14 @@ $(document).ready(function(){
 									</div>
 									 <div class="clearfix filterSearch-ul">
 									<ul class="list-unstyled" id="timelineStatusFilter">
-										<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Draft" type="checkbox"> Created</label></li>
+										<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Created" type="checkbox"> Created</label></li>
 			                    	    <li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Accepted" type="checkbox"> Accepted</label></li>
 										<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Rejected" type="checkbox"> Rejected</label></li>
 										<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Sent" type="checkbox"> Sent</label></li>
 			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Received" type="checkbox"> Received</label></li>
 			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Updated" type="checkbox"> Updated</label></li>
 			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Linked" type="checkbox"> Linked</label></li>
-			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Paid" type="checkbox"> Paid</label></li>
+			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Payment" type="checkbox"> Paid</label></li>
 			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Reminder" type="checkbox"> Reminder</label></li>
 			               				<li class="checkBox positionRelative"><label class="paddingLeft mb5"><input name="timelineStatusCheck" value="Deleted" type="checkbox"> Deleted</label></li>
 			               				

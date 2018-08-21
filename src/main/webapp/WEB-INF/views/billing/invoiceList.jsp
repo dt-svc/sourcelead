@@ -24,6 +24,9 @@ z-index: 15000;
 .remove_user_pop.remove_user_pop_a {
 z-index: 18000;
 }
+.popCusDate{
+	right: 16px; bottom: -40px; top: inherit; background: #fff; border: none; padding: 8px 10px 8px 5px;
+}
 </style>
 
 <script type="text/javascript">
@@ -469,14 +472,16 @@ function getInvoiceList(){
 	}
 	var startDate = $("#billingStartDate").val();
 	var endDate = $("#billingEndDate").val();
-	
-	if(startDate == null || startDate == '' || startDate == 'undefined'){
-		$("#invoiceStartDate").empty().append("Start Date is Required") ; 
-	}
-	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		$("#invoiceEndDate").empty().append("End Date is Required") ; 
-	}
-	
+	/* if($('#customRadio').is(':checked')){
+		if(startDate == null || startDate == '' || startDate == 'undefined'){
+			$("#billingStartDate").empty().append("Start Date is Required");
+			return false;
+		}
+		if(endDate == null || endDate == '' || endDate == 'undefined'){
+			$("#billingEndDate").empty().append("End Date is Required") ;
+			return false;
+		}
+	} */
 	$('input:checkbox[name=invoiceStatus]:checked').each(function() 
     {
 		invoice.push($(this).val());
@@ -1207,13 +1212,82 @@ $(document).ready(function() {
         function customInvoiceList() {
             var selectVal = $('input[name=invoiceCustomDays]:checked').val();
             if (selectVal == "custom") {
+            	var result = '';
+            	result  = result + '<div class="col-md-6 paddingLeft" id="errStartDate">';                                                                       
+            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceStartDate();" id="billingStartDate" placeholder="Start Date"> ';
+            	result = result +'   </div> ';
+            	result = result +'   <div class="col-md-6 noPad" id="errEndDate">';
+            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceEndDate();" id="billingEndDate" placeholder="End Date">';
+            	result = result +'   </div>';
+                $(".custom_search").empty().append(result);
                 $(".custom_search").show();
-                customDate();
             }else {
-                $(".custom_search").hide();
+                $(".custom_search").empty().hide();
             }
         }
-       
+
+        
+   function showInvoiceStartDate(){
+    
+        var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+  	  var finalDateFormatClientInvoiceDate = '';
+  	  if(locationDate.match("yyyy-MM-dd")){
+  		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
+  	  }if(locationDate.match("dd-MM-yyyy")){
+  		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
+  	  }if(locationDate.match("MM-dd-yyyy")){
+  		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
+  	  }if(locationDate.match("yyyy-dd-MM")){
+  		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
+  	  }
+  	  
+  	
+  	$('#billingStartDate').datepicker({
+  		changeMonth: true,
+  		changeYear: true, 
+  		dateFormat : finalDateFormatClientInvoiceDate,
+  		onSelect : function(selected) {
+  			//var dt = new Date(selected);
+  			//var dt = toDate("#billingStartDate");
+  			 var dt = $(this).datepicker('getDate', '+1d');
+  	            dt.setDate(dt.getDate() + 1);
+  			$("#billingEndDate").datepicker("option", "minDate", dt);
+  			removeStartdateval();
+  		}
+  	}).datepicker('show');;
+   }
+  	
+   function showInvoiceEndDate(){
+	   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  	  var finalDateFormatClientInvoiceDate = '';
+	  	  if(locationDate.match("yyyy-MM-dd")){
+	  		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
+	  	  }if(locationDate.match("dd-MM-yyyy")){
+	  		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
+	  	  }if(locationDate.match("MM-dd-yyyy")){
+	  		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
+	  	  }if(locationDate.match("yyyy-dd-MM")){
+	  		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
+	  	  }
+	   
+	   
+  	$('#billingEndDate').datepicker({
+  		changeMonth: true,
+  		changeYear: true, 
+  		dateFormat : finalDateFormatClientInvoiceDate,
+  		beforeShow: function(){
+  	           this.value='';
+  	     },
+  		onSelect : function(selected) {
+//   			var dt = new Date(selected);
+//   			var dt = toDate("#billingEndDate");
+  			   var dt = $(this).datepicker('getDate', '-1d');
+  	            dt.setDate(dt.getDate() - 1);
+  			$("#billingStartDate").datepicker("option", "maxDate", dt);
+  			removeEnddateval();
+  		}
+  	}).datepicker('show');;
+   }
 </script>
 
 <script>
@@ -1229,7 +1303,7 @@ function closePopup() {
 </script>
 
 <script>
-function customDate(){
+/* function customDate(){
 	var result = "";                                                                                                                                  
 	result = result +'	<div class="clearfix row"> <span class="pull-left ml">Custom Search</span>                                                     ';
 	result = result +'   <div class="closeSearch pull-right mr" title="Close Div" onclick="closePopup();">X</div>                                      ';
@@ -1250,63 +1324,20 @@ function customDate(){
 	$("#customDateDivId").append(result);
 	
 	
-	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatClientInvoiceDate = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
-	  }
-	  
-	
-	$('#billingStartDate').datepicker({
-		changeMonth: true,
-		changeYear: true, 
-		dateFormat : finalDateFormatClientInvoiceDate,
-		onSelect : function(selected) {
-			//var dt = new Date(selected);
-			//var dt = toDate("#billingStartDate");
-			 var dt = $(this).datepicker('getDate', '+1d');
-	            dt.setDate(dt.getDate() + 1);
-			$("#billingEndDate").datepicker("option", "minDate", dt);
-			removeStartdateval();
-		}
-	
-	});
-	
-	$('#billingEndDate').datepicker({
-		changeMonth: true,
-		changeYear: true, 
-		dateFormat : finalDateFormatClientInvoiceDate,
-		beforeShow: function(){
-	           this.value='';
-	     },
-		onSelect : function(selected) {
-// 			var dt = new Date(selected);
-// 			var dt = toDate("#billingEndDate");
-			   var dt = $(this).datepicker('getDate', '-1d');
-	            dt.setDate(dt.getDate() - 1);
-			$("#billingStartDate").datepicker("option", "maxDate", dt);
-			removeEnddateval();
-		}
-	});
-}
+	 
+} */
 </script>
 <script>
-function removeStartdateval(){
+/* function removeStartdateval(){
 	$("#errStartDate").find('p.jquery_form_error_message').remove();
 }
 function removeEnddateval(){
 	$("#errEndDate").find('p.jquery_form_error_message').remove();
-}
+} */
 
 </script>
 <script>
-function searchResults(){
+/* function searchResults(){
 	$("#errStartDate").find('p.jquery_form_error_message').remove();
 	$("#errEndDate").find('p.jquery_form_error_message').remove();
 	var startDate =  $('#billingStartDate').val();
@@ -1324,7 +1355,7 @@ function searchResults(){
 		}
 	} 
 }
-
+ */
 </script>
 
 <script>
@@ -1778,6 +1809,8 @@ function resetInvoiceFilter(){
 	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myInvoiceUL > li input:checkbox").prop("checked",false);
+	document.getElementById("invoiceDateRadio").checked = true;
+	$(".custom_search").empty().hide();
 	getInvoiceList();
 	
 }
@@ -1805,6 +1838,18 @@ function resetInvoiceFilter(){
 			                        </ul>
 							      </div>
 						     </div> 
+						     
+						    <div class="col-md-12 mb">
+								<label><strong>Active Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+                                    <li class="checkBox positionRelative" ><input type="radio" checked="checked" value="ACTIVE" name="invoiceStatusDelete"><label for="onboard2">Active</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" value="DELETED" name="invoiceStatusDelete"><label for="onboard2">Deleted</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						     
+						     
 						  </div>
 						</div>
 						
@@ -1827,44 +1872,21 @@ function resetInvoiceFilter(){
 						  </div>
 						</div>
 						
-						<div class="col-md-4">
-						<div class="row">
-						    <div class="col-md-12 mb">
-								<label><strong>Active Status</strong></label>
-								 <div class="clearfix">
-									<ul class="list-unstyled" id="statusFilter">
-                                    <li class="checkBox positionRelative" ><input type="radio" checked="checked" value="ACTIVE" name="invoiceStatusDelete"><label for="onboard2">Active</label></li>
-	                                <li class="checkBox positionRelative" ><input type="radio" value="DELETED" name="invoiceStatusDelete"><label for="onboard2">Deleted</label></li>
-			                        </ul>
-							      </div>
-						     </div> 
-						  </div>
-						</div>
 						
 						<div class="col-md-4">
 						<div class="row">
 						    <div class="col-md-12 mb">
 								<label><strong>Active Status</strong></label>
-								 <div class="clearfix">
+								 <div class="clearfix positionRelative">
 									<ul class="list-unstyled" id="statusFilter">
-                                    <li class="checkBox positionRelative" ><input type="radio" checked="checked" value="month" name="invoiceCustomDays"><label for="onboard2">Last 30 days</label></li>
-	                                <li class="checkBox positionRelative" ><input type="radio" value="twomonths" name="invoiceCustomDays"><label for="onboard2">Last 60 Days</label></li>
-	                                <li class="checkBox positionRelative" ><input type="radio" value="threemonths" name="invoiceCustomDays"><label for="onboard2">Last 90 days</label></li>
-	                                <li class="checkBox positionRelative" ><input type="radio" value="sixmonths" name="invoiceCustomDays"><label for="onboard2">Last 180 days</label></li>
-	                                <li class="checkBox positionRelative" ><input type="radio" value="oneyear" name="invoiceCustomDays"><label for="onboard2">Last 365 days</label></li>
+                                    <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" checked="checked" id="invoiceDateRadio" value="month" name="invoiceCustomDays"><label for="onboard2">Last 30 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" value="twomonths" name="invoiceCustomDays"><label for="onboard2">Last 60 Days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" value="threemonths" name="invoiceCustomDays"><label for="onboard2">Last 90 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" value="sixmonths" name="invoiceCustomDays"><label for="onboard2">Last 180 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" value="oneyear" name="invoiceCustomDays"><label for="onboard2">Last 365 days</label></li>
 	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" value="custom" name="invoiceCustomDays"><label for="onboard2">Custom</label></li>
 			                        </ul>
-			                        <!-- <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
-						                <option value="month">Last 30 days</option>
-						                <option value="twomonths">Last 60 Days</option>
-						                <option value="threemonths">Last 90 days</option>
-						                <option value="sixmonths">Last 180 days</option>
-						                <option value="oneyear">Last 365 days</option>
-						                <option value="custom">Custom</option>
-						              </select> -->
-						              
-						              <div class="custom_search">
-						              <div id="customDateDivId"></div>
+						              <div class="custom_search popCusDate">
 						            </div>
 							      </div>
 						     </div> 

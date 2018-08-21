@@ -3110,7 +3110,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			} else {
 				if (timelineHistory.getInvoicePaymentReminderStatus() != null) {
 					timelineDTO.setInvoicePaymentReminderStatus(timelineHistory.getInvoicePaymentReminderStatus());
-					if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase(Constants.INVOICE_TIMELINE_STATUS_PAID)) {
+					if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PAID)) {
 						InvoicePayment invoicePayment = invoicePaymentService
 								.invoicePaymentById(timelineHistory.getInvoicePaymentReminderId());
 						timelineDTO.setPaymentAmount(invoicePayment.getPaymentAmount());
