@@ -28,10 +28,12 @@
 	$(document).ready(function() {
 		var location = "${location}";
 		document.getElementById("createUser_form").reset();
-		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-		  var sectionId = '${section.id}';
-		  getCustomDependentField(sectionId);
-		 </c:forEach>
+			<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	   		  <c:if test="${sectionOrder.index == 0}">
+				  var sectionId = '${section.id}';
+				  getCustomDependentField(sectionId);
+			  </c:if>
+			 </c:forEach>
 	});
 </script>
 <style type="text/css">
@@ -49,8 +51,7 @@
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
-        <input type="hidden" id="associateId" name="associateId">
-        <input type="hidden" id="empType" name="empType">
+        
         <!--New theme-->
         <div class="user_summ_wrap contentareaInner-styles">
         
@@ -59,16 +60,17 @@
         <div class="tabsMenu">
         <ul class="list-unstyled">
           <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
-          <c:if test="${SourceLeadWeb_currencyCode != 'USD'}">
+          <%-- <c:if test="${SourceLeadWeb_country != 'United States'}">
           <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
-          </c:if>
-          <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+          </c:if> --%>
+          <c:if test="${SourceLeadWeb_country == 'United States'}">
             <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
 	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
 	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
-	          </c:if>
+	      </c:if>
+	      <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
           <div class="clearfix"></div>
         </ul>
 		</div>
@@ -87,7 +89,8 @@
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
           <input type="hidden" id="actionId" value="${actionId}">
-          <input type="hidden" id="associateId" />
+          <input type="hidden" id="associateId" name="associateId">
+          <input type="hidden" id="empType" name="empType">
             <div class="row clearfix minHeightcol5">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
@@ -663,8 +666,7 @@ function getEmployeementType(designationType){
 
 <script type="text/javascript">
  function createUser() {
-	 
-	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}'; 
+	 var country = '${SourceLeadWeb_loginCountryName}'; 
 	 	var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){
 			$('#Rate').removeAttr('data-validation-optional');
@@ -684,8 +686,7 @@ function getEmployeementType(designationType){
 			$('#RatePer').attr("data-validation-optional","true"); 
 		}
 	 
-	 
-	   if ($('#createUser_form').validate(false, validationSettings)){ 
+	   if ($('#createUser_form').validate(false, validationSettings)){
 		    var formData = getFormData("createUser_form");
 			$("#create_user").attr("disabled", "disabled");
 			$("#loading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -702,7 +703,7 @@ function getEmployeementType(designationType){
 						showError("Invalid data");
 						$("#loading").removeAttr('style');
 					} 
-					else if(loginCurrencyCode != 'USD') {
+					else if(country != 'United States') {
 						$("#associateId").val(result.object.userId);
 						var associateLeaveType = document.getElementById("associateLeaveType");
 						document.getElementById("associateLeaveType").removeAttribute("class"); 
@@ -722,7 +723,6 @@ function getEmployeementType(designationType){
 					}
 				},
 			});
-            
 	        return true;
 		
 	  }else{
@@ -1410,9 +1410,13 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateSalary){
 					associateSalary.href = "#";
 					associateSalary.className = "disabledLink";
-				} 
+				}  
 				
-				
+				var associateLeaveType = document.getElementById("associateLeaveType");
+				if(associateLeaveType){
+					associateLeaveType.href = "#";
+					associateLeaveType.className = "disabledLink";
+				}  
 
  
 

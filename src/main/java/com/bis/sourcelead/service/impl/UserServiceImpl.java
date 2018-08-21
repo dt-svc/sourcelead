@@ -39,7 +39,6 @@ import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
-import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
@@ -77,6 +76,7 @@ import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -321,24 +321,10 @@ public class UserServiceImpl implements UserService {
 	 		user.setUserType("Employee");
 	    } 
 		
-	    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+	    /*if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
 	    	user.setWorkLocation(orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation())));
-	    }
+	    }*/	
 	    
-	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
-	    	user.setResidenceAddress(addUserDTO.getResidenceAddress());
-	    	user.setResidenceCountry(addUserDTO.getResidenceCountry());
-	    	user.setResidenceState(addUserDTO.getResidenceState());
-	    	user.setResidenceCity(addUserDTO.getResidenceCity());
-	    	user.setResidenceLatitude(addUserDTO.getResidenceLatitude());
-	    	user.setResidenceLongitude(addUserDTO.getResidenceLongitude());
-	    	user.setResidenceZipCode(addUserDTO.getResidenceZipCode());
-	    	user.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
-	    	
-	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
-	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
-	    	user.setResidenceStateCode(stateCode);
-	    }
 	    
        //For saving the User Role 
 	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
@@ -457,6 +443,26 @@ public class UserServiceImpl implements UserService {
 					candidate.setDesignationOtherType(addUserDTO.getDesignationOtherType());
 				}
 				
+                       if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+					   candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
+					   candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
+					   candidate.setResidenceState(addUserDTO.getResidenceState());
+					   candidate.setResidenceCity(addUserDTO.getResidenceCity());
+					   candidate.setResidenceLatitude(addUserDTO.getResidenceLatitude());
+					   candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
+					   candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
+					   candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+				    	
+				    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+				    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+				    	candidate.setResidenceStateCode(stateCode);
+				    }
+				
+				MasterCandidate masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
+				if(null == masterCandidate){
+					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
+				}
+				candidate.setMasterCandidateId(masterCandidate);
 				candidateService.saveOrUpdateCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}	
@@ -1754,9 +1760,12 @@ public class UserServiceImpl implements UserService {
 		}
 		return response;
 	}
-	
+
 	@Override
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList) throws Exception {
-		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList);
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception {
+		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList,topleave,MonthStart,MonthEnd);
 	 }
+
+
 }
+

@@ -304,7 +304,7 @@ public class UserController {
 			   if(StringUtils.isNotBlank(userGroupDto.getGroupUUID())){
 				   UserGroup userGroup = userGroupDao.findUserGroupById(userGroupDto.getGroupUUID());
 				   model.addObject("userGroup", userGroup);
-				   if(userGroup.getUserId() != null) {
+			/*	   if(userGroup.getUserId() != null) {
 					   String[] userIds = userGroup.getUserId().split(",");
 					   List<Long> userIdList = new ArrayList<>();
 					   for(int i=0;i<userIds.length;i++){
@@ -312,7 +312,7 @@ public class UserController {
 					   }
 					   List<UserRole> userList = userRoleService.getUserListByUserIdList(userIdList,loginOrgLocation.getId());
 					   model.addObject("selectedUserList", userList);
-				   }
+				   }*/
 			   }
 			   model.addObject("sourceleadUrl", sourceleadUrl);
 			   model.setViewName("users/addUserGroup");

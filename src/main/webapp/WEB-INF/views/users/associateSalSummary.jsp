@@ -13,54 +13,86 @@ function associateSalSummary(userId){
             	result = result + '<div class="clearfix mt minHeightcol5">';
             	result = result + '		<div class="col-md-3 col-md-offset-9">';
             	result = result + '	<ul class="list-inline list-unstyled pull-right mb0">';
-            	result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\',\''+json.payGroupUUID+'\');">Update</a></li>';
-            	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
+            	if(json.id != null && json.id != '' && json.id != 'undefined'){
+            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\',\''+json.payGroupUUID+'\');">Update</a></li>';
+                	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
+            	}else{
+            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="editSalaryDetails(\''+userId+'\');">Update</a></li>';
+            	}
             	result = result + '		</ul>';
             	result = result + '	</div>';
             	result = result + '	<div class="clearfix"></div>';
             	result = result + '   <div class="col-md-5">';
             	result = result + '  <label>Pay Type</label>';
             	result = result + '   <div>';
-            	result = result + '     <p class="form-control-static text-muted">'+json.payType+'</p>';
+            	if(json.payType != null && json.payType != '' && json.payType != 'undefined'){
+            		result = result + '     <p class="form-control-static text-muted">'+json.payType+'</p>';
+            	}else{
+            		result = result + '     <p class="form-control-static text-muted">--</p>';
+            	}
             	result = result + '   </div>';
             	result = result + ' </div>';
 
             	result = result + ' <div class="col-md-5">';
             	result = result + '   <label>Pay Frequency</label>';
             	result = result + '   <div>';
+            	if(json.payFrequency != null && json.payFrequency != '' && json.payFrequency != 'undefined'){
             	result = result + '     <p class="form-control-static text-muted">'+json.payFrequency+'</p>';
+            	}else{
+            		result = result + '     <p class="form-control-static text-muted">--</p>';
+            	}
             	result = result + '    </div>';
             	result = result + '  </div>';
             	
             	result = result + ' <div class="col-md-5">';
             	result = result + '   <label>Pay Group</label>';
             	result = result + '   <div>';
+            	if(json.payGroup != null && json.payGroup != '' && json.payGroup != 'undefined'){
             	result = result + '     <p class="form-control-static text-muted">'+json.payGroup+'</p>';
+            	}else{
+            		result = result + '     <p class="form-control-static text-muted">--</p>';
+            	}
             	result = result + '    </div>';
             	result = result + '  </div>';
                     
             	result = result + ' <div class="col-md-5">';
             	result = result + '    <label>Standard Hours</label>';
             	result = result + '   <div>';
+            	if(json.standardHours != null && json.standardHours != '' && json.standardHours != 'undefined'){
             	result = result + '     <p class="form-control-static text-muted">$ '+json.standardHours+'</p>';
+            	}else{
+            		result = result + '     <p class="form-control-static text-muted">--</p>';
+            	}
                 result = result + '   </div>';
                 result = result + ' </div>';
                 result = result + ' <div class="col-md-5">';
                 result = result + '  <label>Annual Salary</label>';
                 result = result + '  <div>';
+                if(json.annualSal != null && json.annualSal != '' && json.annualSal != 'undefined'){
                 result = result + '    <p class="form-control-static text-muted">$ '+json.annualSal+'</p>';
+                }else{
+                	result = result + '    <p class="form-control-static text-muted">--</p>';
+                }
                 result = result + ' </div>';
                 result = result + '   </div>';
                 result = result + '   <div class="col-md-5">';
                 result = result + '    <label>Per Pay Salary</label>';
                 result = result + '    <div>';
+                if(json.perPaySal != null && json.perPaySal != '' && json.perPaySal != 'undefined'){
                 result = result + '     <p class="form-control-static text-muted">$ '+json.perPaySal+'</p>';
+                }else{
+                	result = result + '     <p class="form-control-static text-muted">--</p>';
+                }
                 result = result + '    </div>';
                 result = result + '  </div>';
                 result = result + ' <div class="col-md-5">';
                 result = result + '   <label>Hourly</label>';
                 result = result + '   <div>';
+                if(json.hourlyRate != null && json.hourlyRate != '' && json.hourlyRate != 'undefined'){
                 result = result + '    <p class="form-control-static text-muted">$ '+json.hourlyRate+'</p>';
+                }else{
+                	result = result + '    <p class="form-control-static text-muted">--</p>';
+                }
                 result = result + '   </div>';
                 result = result + ' </div>';
                 result = result + ' </div>';
@@ -83,58 +115,58 @@ function associateSalSummary(userId){
                 result = result + '</tr>';
                 result = result + '</thead>';
                 result = result + '<tbody>';
-              for(var i=0;i<json.associatePayItemDto.length;i++){
-            	  
-            	  var opt = json.associatePayItemDto[i];
-            	  result = result + '<tr>';
-                  
-                  result = result + '<td>';
-                  result = result + '		<div class="tblminwidth-100 text-left">'+opt.payItemName+'</div>';
-                  result = result + '</td>';
-                  result = result + '<td>';
-                  result = result + '		<div class="tblminwidth-125">';
-                  result = result + '			<div>'+opt.payItemSchedule+'</div>';
-                  result = result + '		</div>';
-                  result = result + '</td>';
-                  result = result + '	<td>';
-                  result = result + '	<div class="tblminwidth-125">';
-                  result = result + '		<div>'+opt.overRide+'</div>';
-                  result = result + '		</div>';
-                  result = result + '	</td>';
-                  result = result + '<td>';
-                  result = result + '			<div class="width150px" id="effectiveDateDiv'+opt.id+'">';
-                  result = result + '			<div>'+opt.effectiveDate+'</div>';
-                  result = result + '			</div>';
-                  
-                  result = result + '<div class="edit-input width150px" id="editEffectiveDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEffective'+opt.id+'" onclick = "editEffectiveDate(this)" value="'+opt.effectiveDate+'" class="form-control calendar"></div></td>';
-                  
-                  result = result + '	</td>';
-                  result = result + '	<td>';
-                  result = result + '			<div class="width150px" id="endDateDiv'+opt.id+'">';
-                  result = result + '			<div>'+opt.endDate+'</div>';
-                  result = result + '			</div>';
-                  
-                  result = result + '<div class="edit-input width150px" id="editEndDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEnd'+opt.id+'" onclick = "editEndDate(this)" value="'+opt.endDate+'" class="form-control calendar"></div></td>';
-                  
-                  result = result + '	</td>';
-                  result = result + '	<td>';
-                  result = result + '		<div class="width150px" id="payItemAmountDiv'+opt.id+'">';
-                  result = result + '		<div>$ '+opt.payItemAmount+'</div>';
-                  result = result + '		</div>';
-                  
-                  result = result + '<div class="edit-input width150px" id="editpayItemAmountDiv'+opt.id+'" style="display:none;"><input type="text" id ="prePayAmount'+opt.id+'" value="'+opt.payItemAmount+'" class="form-control pull-left"></div></td>';
-                  result = result + '</td>';
-                  result = result + '	<td>';
-                  result = result + '		<div class="tblminwidth-50">';
-                  result = result + ' <a title="Edit"><i id="editDiv'+opt.id+'" class="glyphicon glyphicon-edit" onclick="editPayItem('+opt.id+')"></i><i id="saveDiv'+opt.id+'" class="fa fa-floppy-o" style="display:none;" onclick="updatePayItems('+opt.id+');"></i></a>';
-                  result = result + ' <a title="Delete"><i class="glyphicon glyphicon-trash text-danger ml" onclick="deletePayItem('+opt.id+','+userId+');"></i></a>';
-                  result = result + '		<div></div>';
-                  result = result + '		</div>';
-                  result = result + '</td>';
-                  result = result + '</tr>';
-              }
-               			
-               			
+                if(json.associatePayItemDto != null && json.associatePayItemDto != '' && json.associatePayItemDto != 'undefined'){
+                	for(var i=0;i<json.associatePayItemDto.length;i++){
+                  	  
+                  	  var opt = json.associatePayItemDto[i];
+                  	  result = result + '<tr>';
+                        
+                        result = result + '<td>';
+                        result = result + '		<div class="tblminwidth-100 text-left">'+opt.payItemName+'</div>';
+                        result = result + '</td>';
+                        result = result + '<td>';
+                        result = result + '		<div class="tblminwidth-125">';
+                        result = result + '			<div>'+opt.payItemSchedule+'</div>';
+                        result = result + '		</div>';
+                        result = result + '</td>';
+                        result = result + '	<td>';
+                        result = result + '	<div class="tblminwidth-125">';
+                        result = result + '		<div>'+opt.overRide+'</div>';
+                        result = result + '		</div>';
+                        result = result + '	</td>';
+                        result = result + '<td>';
+                        result = result + '			<div class="width150px" id="effectiveDateDiv'+opt.id+'">';
+                        result = result + '			<div>'+opt.effectiveDate+'</div>';
+                        result = result + '			</div>';
+                        
+                        result = result + '<div class="edit-input width150px" id="editEffectiveDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEffective'+opt.id+'" onclick = "editEffectiveDate(this)" value="'+opt.effectiveDate+'" class="form-control calendar"></div></td>';
+                        
+                        result = result + '	</td>';
+                        result = result + '	<td>';payType
+                        result = result + '			<div class="width150px" id="endDateDiv'+opt.id+'">';
+                        result = result + '			<div>'+opt.endDate+'</div>';
+                        result = result + '			</div>';
+                        
+                        result = result + '<div class="edit-input width150px" id="editEndDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEnd'+opt.id+'" onclick = "editEndDate(this)" value="'+opt.endDate+'" class="form-control calendar"></div></td>';
+                        
+                        result = result + '	</td>';
+                        result = result + '	<td>';
+                        result = result + '		<div class="width150px" id="payItemAmountDiv'+opt.id+'">';
+                        result = result + '		<div>$ '+opt.payItemAmount+'</div>';
+                        result = result + '		</div>';
+                        
+                        result = result + '<div class="edit-input width150px" id="editpayItemAmountDiv'+opt.id+'" style="display:none;"><input type="text" id ="prePayAmount'+opt.id+'" value="'+opt.payItemAmount+'" class="form-control pull-left"></div></td>';
+                        result = result + '</td>';
+                        result = result + '	<td>';
+                        result = result + '		<div class="tblminwidth-50">';
+                        result = result + ' <a title="Edit"><i id="editDiv'+opt.id+'" class="glyphicon glyphicon-edit" onclick="editPayItem('+opt.id+')"></i><i id="saveDiv'+opt.id+'" class="fa fa-floppy-o" style="display:none;" onclick="updatePayItems('+opt.id+');"></i></a>';
+                        result = result + ' <a title="Delete"><i class="glyphicon glyphicon-trash text-danger ml" onclick="deletePayItem('+opt.id+','+userId+');"></i></a>';
+                        result = result + '		<div></div>';
+                        result = result + '		</div>';
+                        result = result + '</td>';
+                        result = result + '</tr>';
+                    }
+                }
                 result = result + '	</tbody>';
                 result = result + '	</table>';
                 result = result + ' 	</div>';
@@ -219,14 +251,14 @@ function associateSalSummary(userId){
               <div class="col-md-5">
                 <label>Standard Hours</label>
                 <div>
-                  <input class="form-control" id="standardHours" name="standardHours"  type="text" onblur="calculateSal();">
+                  <input class="form-control" id="standardHours" name="standardHours"  type="text" data-validation="required" field-name="Standard Hours" onblur="calculateSal();">
                   <input class="form-control" name="previousStandardHours" id="previousStandardHours" type="hidden">
                 </div>
               </div>
               <div class="col-md-5">
                 <label>Annual Salary</label>
                 <div>
-                  <input class="form-control" name="annualSal" id="annualSal" type="text" onblur = "calaculateIncDecPer();">
+                  <input class="form-control" name="annualSal" id="annualSal" type="text" data-validation="required" field-name="Annual Salary" onblur = "calaculateIncDecPer();">
                    <input class="form-control" name="previousAnnualSal" id="previousAnnualSal" type="hidden">
                    
                 </div>
@@ -234,14 +266,14 @@ function associateSalSummary(userId){
               <div class="col-md-5">
                 <label>Per Pay Salary</label>
                 <div>
-                  <input class="form-control" name="perPaySal" id="perPaySal" type="text" onblur = "calculatePayPerSal();">
+                  <input class="form-control" name="perPaySal" id="perPaySal" type="text" data-validation="required" field-name="Per Pay Salary" onblur = "calculatePayPerSal();">
                     <input class="form-control" name="previousPerPaySal" id="previousPerPaySal" type="hidden">
                 </div>
               </div>
               <div class="col-md-5">
                 <label>Hourly Rate</label>
                 <div>
-                  <input class="form-control" name="hourlyRate" id="hourlyRate" type="text" onblur = "calculateHourlyRateSal();">
+                  <input class="form-control" name="hourlyRate" id="hourlyRate" type="text" data-validation="required" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                    <input class="form-control" name="previousHourlyRate" id="previousHourlyRate" type="hidden">
                 </div>
               </div>
@@ -411,30 +443,29 @@ function closeupdateSalaryDetails() {
 
 <script>
 function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,perPaySal,hourlyRate,userId,groupUUID) {
-	
 	 document.getElementById("update_associate_salary_form").reset(); 
-	$("#payType").val(payType);
-	$("#payFrequency").val(payFrequency);
-	$("#standardHours").val(standardHours);
-	$("#annualSal").val(annualSal);
-	$("#perPaySal").val(perPaySal);
-	$("#hourlyRate").val(hourlyRate);
-// 	$("#payGroupId").val(groupName);
-// 	$('#payGroupId').trigger("chosen:updated");
-	$(".updateSalaryDetails, .sideMask").fadeIn() 
-	
-	$("#id").val(id);
-	$("#previousPayType").val(payType);
-	$("#previousPayFrequency").val(payFrequency);
-	$("#previousStandardHours").val(standardHours);
-	$("#previousAnnualSal").val(annualSal);
-	$("#previousPerPaySal").val(perPaySal);
-	$("#previousHourlyRate").val(hourlyRate);
-	$("#userId").val(userId);
-	
-	getPayGroups(groupUUID);
-
-	 
+	 if(id != null && id != '' && id != 'undefined'){
+		 $("#payType").val(payType);
+			$("#payFrequency").val(payFrequency);
+			$("#standardHours").val(standardHours);
+			$("#annualSal").val(annualSal);
+			$("#perPaySal").val(perPaySal);
+			$("#hourlyRate").val(hourlyRate);
+//		 	$("#payGroupId").val(groupName);
+//		 	$('#payGroupId').trigger("chosen:updated");
+			
+			$("#id").val(id);
+			$("#previousPayType").val(payType);
+			$("#previousPayFrequency").val(payFrequency);
+			$("#previousStandardHours").val(standardHours);
+			$("#previousAnnualSal").val(annualSal);
+			$("#previousPerPaySal").val(perPaySal);
+			$("#previousHourlyRate").val(hourlyRate);
+			$("#userId").val(userId);
+			
+			getPayGroups(groupUUID);
+	 }
+	 $(".updateSalaryDetails, .sideMask").fadeIn();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	var finalDateFormat = getJSDateFormat(locationDate);
 	 $("#effectiveDate").datepicker({
@@ -444,6 +475,21 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 		  	minDate: 0
 		 });
 }
+
+function editSalaryDetails(userId){
+	$("#userId").val(userId);
+	
+	 $(".updateSalaryDetails, .sideMask").fadeIn();
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		var finalDateFormat = getJSDateFormat(locationDate);
+		 $("#effectiveDate").datepicker({
+			 dateFormat: finalDateFormat,
+			 changeMonth: true,
+			  	  changeYear: true,
+			  	minDate: 0
+			 });
+}
+
 </script>
 
 <script>
@@ -566,28 +612,33 @@ function calculatePercentSal(){
 function calaculateIncDecPer(){
 	var curAnnualSal = $("#annualSal").val();
 	var previousAnnualSal = $("#previousAnnualSal").val();
-	if(curAnnualSal > previousAnnualSal){
-		$("#salaryType").val('increment');
-		var diffSal = parseFloat(curAnnualSal) - parseFloat(previousAnnualSal);
-		var percent = diffSal / parseFloat(previousAnnualSal);
-		var icrementPer = percent * 100;
-		$("#increasePer").val(icrementPer.toFixed(2));
-		calculateSal();
+	if(previousAnnualSal != null && previousAnnualSal != '' && previousAnnualSal != 'undefined'){
+		if(curAnnualSal > previousAnnualSal){
+			$("#salaryType").val('increment');
+			var diffSal = parseFloat(curAnnualSal) - parseFloat(previousAnnualSal);
+			var percent = diffSal / parseFloat(previousAnnualSal);
+			var icrementPer = percent * 100;
+			$("#increasePer").val(icrementPer.toFixed(2));
+// 			calculateSal();
+		}
+		if(curAnnualSal < previousAnnualSal){
+			$("#salaryType").val('decrement');
+			var diffSal = parseFloat(previousAnnualSal) - parseFloat(curAnnualSal);
+			var percent = diffSal / parseFloat(previousAnnualSal);
+			var icrementPer = percent * 100;
+			$("#increasePer").val(icrementPer.toFixed(2));
+// 			calculateSal();
+		}
 	}
-	if(curAnnualSal < previousAnnualSal){
-		$("#salaryType").val('decrement');
-		var diffSal = parseFloat(previousAnnualSal) - parseFloat(curAnnualSal);
-		var percent = diffSal / parseFloat(previousAnnualSal);
-		var icrementPer = percent * 100;
-		$("#increasePer").val(icrementPer.toFixed(2));
-		calculateSal();
-	}
+	calculateSal();
+	
 }
 </script>
 
  <script type="text/javascript">
  function updateAssociateSal() {
 	var salaryType = $("#salaryType").val();
+	var userId = $("#userId").val();
 	   if ($('#update_associate_salary_form').validate(false, validationSettings)){ 
 			   var formData = $($('#update_associate_salary_form')[0]).serialize();
 				/* $("#update_associate_sal_button").attr("disabled", "disabled"); */
@@ -596,7 +647,7 @@ function calaculateIncDecPer(){
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/addAssociateSal?"+tokenParamName+"="+tokenValue+"",
+					url : sourceleadUrl+"/addAssociateSal?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 					success : function(result) {
 						 if (result && result.response === "INVALID_DATA") {
 			                    $("#update_associate_sal_button").removeAttr("disabled");

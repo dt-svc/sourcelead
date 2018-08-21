@@ -79,7 +79,7 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 		map.put("Simple IRA", "pretax");
 		map.put("HSA-Single Limit", "pretax");
 		map.put("HSA-Family Limit", "pretax");
-		map.put("FSA-medical", "pretax");
+		map.put("FSA-Medical", "pretax");
 		map.put("FSA-Dependent Care", "pretax");
 		return map.get(deductionType);
 	}
@@ -101,6 +101,7 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 				payrollDTO.setDeductionUUID(pDed.getDeductionUUID());
 				payrollDTO.setDescription(pDed.getDescription());
 				payrollDTO.setStatus(pDed.getStatus());
+				payrollDTO.setTaxType(pDed.getTaxType());
 				dtoList.add(payrollDTO);
 			});
 			payrollResponse.setData(dtoList);

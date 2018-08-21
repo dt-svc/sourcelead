@@ -3,12 +3,15 @@ package com.bis.sourcelead.dumpRest;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.elasticsearch.common.CheckedSupplier;
+import org.elasticsearch.index.cache.bitset.BitsetFilterCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,7 @@ import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -40,11 +44,27 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.payroll.dao.BisUserMappingDao;
+import com.bis.sourcelead.payroll.dao.InvoiceDataDao;
+import com.bis.sourcelead.payroll.entity.AccountDeductions;
+import com.bis.sourcelead.payroll.entity.Checks;
+import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.HrDeductions;
+import com.bis.sourcelead.payroll.entity.InvoiceData;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
+import com.bis.sourcelead.payroll.service.AccountDeductionsService;
+import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
+import com.bis.sourcelead.payroll.service.HrDeductionsService;
+import com.bis.sourcelead.payroll.service.InvoiceDataService;
+import com.bis.sourcelead.payroll.service.UserPayrollService;
+import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Component
 @RequestMapping("/app")
@@ -88,6 +108,30 @@ public class DumpPublicRestCalls {
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
 	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	WageTaxSummaryService wageTaxSummaryService;
+	
+	@Autowired
+	EmployerPayrollCostService employerPayrollCostService;
+	
+	@Autowired
+	AccountDeductionsService accountDeductionsService;
+	
+	@Autowired
+	HrDeductionsService hrDeductionsService;
+	
+	@Autowired
+	UserPayrollService userPayrollService;
+	
+	@Autowired
+	BisUserMappingDao bisUserMappingDao;
+	
+	@Autowired
+	InvoiceDataDao invoiceDataDao;
+	
 	@RequestMapping(value = "/ws/dumpAllAppliedLeaveDatesData", method = RequestMethod.GET)
 	@ResponseBody
 	public List<AppliedLeaveDate> dumpAllAppliedLeaveDatesData() {
@@ -106,6 +150,44 @@ public class DumpPublicRestCalls {
 		
 	}
 	
+	
+	@RequestMapping(value = "/ws/updateAllAppliedLeaveDatesDataForWeekOffs", method = RequestMethod.GET)
+	@ResponseBody
+	public List<AppliedLeaveDate> updateAllAppliedLeaveDatesDataForWeekOffs() {
+		
+		logger.info("Start Time"+java.time.LocalDateTime.now());
+		List<AppliedLeaveDate> list = new ArrayList<>();
+		List<Leave> leavesList = leaveService.getAllLeave();
+		leavesList.forEach(leave -> {
+			boolean existed = appliedLeaveDateDao.checkForExistedLeave(leave);
+			if(existed) {
+				  list.add(getAppliedLeaveDateSetForWeekOffs(leave.getOrgLocations(),leave));
+			}
+		});
+		logger.info("End Time"+java.time.LocalDateTime.now());
+		return list;
+	}
+	private AppliedLeaveDate getAppliedLeaveDateSetForWeekOffs(OrgLocations orgLocations,Leave leave)
+	{
+		   try {
+			     String[] strArray = orgLocations.getWeekOffDays().split(",");
+			     List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
+			 	 SimpleDateFormat sf = new SimpleDateFormat("E");
+				 List<Date> dateList = leaveManagementUtil.getDaysBetweenLeaveDates(leave.getFromDate(), leave.getToDate());
+				 for(Date d : dateList) {
+					 if(weekOffs.contains(sf.format(d))) {
+						 AppliedLeaveDate ald = appliedLeaveDateDao.getAppliedLeaveDateByleaveIdAndAppliedLeaveDate(d, leave.getId());
+						 ald.setAppliedHours(CommonUtil.getTimeFormat(null, 0f));
+						 appliedLeaveDateDao.saveAppliedLeaveDates(ald);
+					 }else {
+						 continue;
+					 }
+				 }
+		    }
+			catch(Exception e) {}
+		
+		return null;
+	}
 	private AppliedLeaveDate getAppliedLeaveDateSet(Leave leave)
 	{
 		Set<AppliedLeaveDate> set = new HashSet<>();
@@ -341,4 +423,56 @@ public class DumpPublicRestCalls {
 		return "success";
 	}
 
+	@RequestMapping(value = "/ws/dumpUUIdforPayrollEntities", method = RequestMethod.GET)
+	@ResponseBody
+	public void dumpUUIdforPayrollEntities() throws Exception {
+		logger.info("Start Time"+java.time.LocalDateTime.now());
+		
+		List<OrgLocations> orgLocList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLoc : orgLocList){
+			List<WageTaxSummary> wtsList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLoc, null);
+			for(WageTaxSummary wts : wtsList){
+				wts.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				wageTaxSummaryService.saveWageTaxSummary(wts);
+			}
+			logger.info("dumping uuid for WageTaxSummary completed");
+			
+			List<EmployerPayrollCost> payrollCostList = employerPayrollCostService.getEmployerPayrollCostByLocationId(orgLoc.getId());
+			for(EmployerPayrollCost emp : payrollCostList){
+				emp.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				employerPayrollCostService.saveEmpPayrollCost(emp);
+			}
+			logger.info("dumping uuid for EmployerPayrollCost completed");
+			
+			List<AccountDeductions> accountDeductions = accountDeductionsService.getAccountDeductionsByEmployeeId(orgLoc, null);
+			for(AccountDeductions ad : accountDeductions){
+				ad.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				accountDeductionsService.saveAccountDeductions(ad);
+			}
+			logger.info("dumping uuid for AccountDeductions completed");
+			
+			List<HrDeductions> hrdList = hrDeductionsService.getHrDeductionsByEmployeeId(orgLoc, null);
+			for(HrDeductions hrd : hrdList){
+				hrd.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				hrDeductionsService.saveHrDeductions(hrd);
+			}
+			logger.info("dumping uuid for HrDeductions completed");
+			
+			List<Checks> checkList = userPayrollService.getChecksListByEmployeeId(null, orgLoc);
+			for(Checks che : checkList){
+				che.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				bisUserMappingDao.saveChecks(che);
+			}
+			logger.info("dumping uuid for checks completed");
+			
+			List<InvoiceData> invoiceDataList = invoiceDataDao.getInvoiceDetailsByEmpId(null, orgLoc);
+			for(InvoiceData id : invoiceDataList){
+				id.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				invoiceDataDao.saveInvoiceData(id);
+			}
+			logger.info("dumping uuid for InvoiceData completed");
+		}
+		
+		logger.info("End Time"+java.time.LocalDateTime.now());
+	}
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.AssociateSalaryDao;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
@@ -24,6 +25,7 @@ import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
@@ -50,6 +52,9 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	CandidateDao candidateDao;
 
 	@Override
 	public Response<AssociateSalaryDTO> addAssociateSal(OrgLocations orgLocation, AssociateSalaryDTO associateSalaryDTO, User loginUser)
@@ -63,19 +68,33 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 			Long updatedBy = null;
 			if (Validator.validate(associateSalaryDTO)) {
 				AssociateSalary associateSalary = null;
-				if(StringUtils.isNotBlank(associateSalaryDTO.getId())) {
-					associateSalary = associateSalaryDao.findAssociateSalaryById(associateSalaryDTO.getId());
-					createdDate = associateSalary.getCreatedDate();
-					updatedDate = associateSalary.getUpdatedDate();
-					createdBy = associateSalary.getCreatedBy();
-					updatedBy = associateSalary.getUpdatedBy();
-				}else {
+				if(associateSalaryDTO.getUserId() != null) {
+					Candidate candidate = null;
+//					associateSalary = associateSalaryDao.findAssociateSalaryById(associateSalaryDTO.getId());
+					candidate = candidateDao.getCandidateByConsultantUserId(associateSalaryDTO.getUserId(),orgLocation.getId());
+					associateSalary = associateSalaryDao.findAssociateSalaryByCandidateId(candidate.getId());
+					if(associateSalary != null) {
+						associateSalary.setUpdatedDate(new Date());
+						associateSalary.setUpdatedBy(loginUser.getId());
+					}else {
+						associateSalary  = new AssociateSalary();
+//						User user = userService.getUserById(associateSalaryDTO.getUserId());
+//						 candidate = candidateDao.getCandidateByConsultantUserId(associateSalaryDTO.getUserId(),orgLocation.getId());
+						associateSalary.setCandidate(candidate);
+						Set<AssociatePayItem> assoPayItemSet = getAssociatePayItemSet(associateSalary,associateSalaryDTO,orgLocation,loginUser);
+						associateSalary.setAssociatePayItem(assoPayItemSet);
+						associateSalary.setCreatedDate(new Date());
+						associateSalary.setCreatedBy(loginUser.getId());
+					}
+				}
+				/*else {
 					associateSalary  = new AssociateSalary();
-					User user = userService.getUserById(Long.parseLong(associateSalaryDTO.getUserId()));
-					associateSalary.setUserId(user);
+//					User user = userService.getUserById(associateSalaryDTO.getUserId());
+					Candidate candidate = candidateDao.getCandidateByConsultantUserId(associateSalaryDTO.getUserId(),orgLocation.getId());
+					associateSalary.setCandidate(candidate);
 					Set<AssociatePayItem> assoPayItemSet = getAssociatePayItemSet(associateSalary,associateSalaryDTO,orgLocation,loginUser);
 					associateSalary.setAssociatePayItem(assoPayItemSet);
-				}
+				}*/
 				UserGroup uesrgroup = userGroupDao.findUserGroupById(associateSalaryDTO.getPayGroup());
 				associateSalary.setGroupId(uesrgroup);
 				associateSalary.setPayType(associateSalaryDTO.getPayType());
@@ -83,13 +102,15 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 				associateSalary.setStandardHours(associateSalaryDTO.getStandardHours());
 				associateSalary.setAnnualSalary(new BigDecimal(associateSalaryDTO.getAnnualSal()));
 				associateSalary.setGrossSalary(new BigDecimal(associateSalaryDTO.getPerPaySal()));
-				associateSalary.setHourlyRate(new BigDecimal(associateSalaryDTO.getHourlyRate()));
+				if(StringUtils.isNotBlank(associateSalaryDTO.getHourlyRate())) {
+					associateSalary.setHourlyRate(new BigDecimal(associateSalaryDTO.getHourlyRate()));
+				}
 				associateSalary.setAllowOverTimePay(associateSalaryDTO.getAllowOverTimePay());
 				associateSalary.setOrgLocations(orgLocation);
-				associateSalary.setCreatedDate(new Date());
-				associateSalary.setUpdatedDate(new Date());
-				associateSalary.setCreatedBy(loginUser.getId());
-				associateSalary.setUpdatedBy(loginUser.getId());
+//				associateSalary.setCreatedDate(new Date());
+//				associateSalary.setUpdatedDate(new Date());
+//				associateSalary.setCreatedBy(loginUser.getId());
+//				associateSalary.setUpdatedBy(loginUser.getId());
 				associateSalary.setStatus(1);
 				associateSalary.setAssociateSalaryUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				if(associateSalaryDTO.getIncreasePer() != null) {
@@ -218,11 +239,11 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	}
 
 	@Override
-	public AssociateSalaryDTO findAssociateSalaryByUserId(Long userId,OrgLocations orgLocation)
+	public AssociateSalaryDTO findAssociateSalaryByCandidateId(Long cndidateId,OrgLocations orgLocation)
 	{
 		AssociateSalaryDTO associateSalaryDTO = null;
 		try {
-			 AssociateSalary asal = associateSalaryDao.findAssociateSalaryByUserId(userId);
+			 AssociateSalary asal = associateSalaryDao.findAssociateSalaryByCandidateId(cndidateId);
 			    if(asal != null) {
 			    	 associateSalaryDTO = new AssociateSalaryDTO();
 					associateSalaryDTO.setId(String.valueOf(asal.getId()));
@@ -290,9 +311,12 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation,long groupId) {
 		
 		List<AssociateSalary> list = associateSalaryDao.getAssociateSalaryListByGroupId(orgLocation,groupId);
-		for(AssociateSalary sal : list) {
-			sal.setUser(sal.getUserId().getId());
-		}
 		return list;
+	}
+
+	@Override
+	public List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId)
+	{
+		return associateSalaryDao.findAssociatePayItemByPayrollId(payrollId);
 	}
 }

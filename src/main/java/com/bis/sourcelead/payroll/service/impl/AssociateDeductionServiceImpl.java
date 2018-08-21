@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -24,6 +25,7 @@ import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -41,6 +43,9 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 	@Autowired
 	AssociateDeductionDao associateDeductionDao;
 	
+	@Autowired
+	private CandidateService candidateService;
+	
 	@Override
 	public Response<AssociateDeductionDTO> saveAssociateDeduction(AssociateDeductionDTO associateDeductionDTO, OrgLocations orgLocation, User loginUser)
 	{
@@ -54,8 +59,10 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 					associateDeduction.setDeductionTypeId(deductionType);
 					associateDeduction.setDeductionAmount(ded.getAmount());
 					associateDeduction.setDeductionMethod(ded.getMethod());
-					User user = userService.getUserById(Long.parseLong(associateDeductionDTO.getUserId()));
-					associateDeduction.setUserId(user);
+//					User user = userService.getUserById(Long.parseLong(associateDeductionDTO.getUserId()));
+//					associateDeduction.setUserId(user);
+					Candidate candidate = candidateService.getCandidateByConsultantUserId(Long.valueOf(associateDeductionDTO.getUserId()), orgLocation.getId());
+					associateDeduction.setCandidate(candidate);
 					associateDeduction.setOrgLocationId(orgLocation);
 					associateDeduction.setAssociateDeductionUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 					associateDeduction.setCreatedBy(loginUser.getUserCode());
@@ -95,26 +102,31 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 	}
 
 	@Override
-	public ResponseList<DeductionDTO> findAllDeductionSummaryByUserId(Long userId, OrgLocations orgLocation)
+	public ResponseList<DeductionDTO> findAllDeductionSummaryByCandidateId(Long candidate, OrgLocations orgLocation)
 	{
 		ResponseList<DeductionDTO>  res = new ResponseList<>();
-		List<AssociateDeduction> associateDedList = associateDeductionDao.findAllDeductionSummaryByUserId(userId,orgLocation);
-		List<DeductionDTO> list = new ArrayList<>();
-		if(associateDedList != null) {
-			associateDedList.forEach(ad->{
-				DeductionDTO deductionDTO = new DeductionDTO();
-				deductionDTO.setId(String.valueOf(ad.getId()));
-				deductionDTO.setDeductionType(ad.getDeductionTypeId().getPayrollDeductionType());
-				deductionDTO.setDedSchedule(ad.getDeductionTypeId().getPayrollDeductionType());
-				deductionDTO.setMethod(ad.getDeductionMethod());
-				deductionDTO.setAmount(ad.getDeductionAmount());
-				deductionDTO.setDedAmount(ad.getDeductionAmount().doubleValue());
-				deductionDTO.setDescription(ad.getDeductionTypeId().getDescription());
-				deductionDTO.setAssociateDeductionUUID(ad.getAssociateDeductionUuid());
-				deductionDTO.setDedTaxType(ad.getDeductionTypeId().getTaxType());
-				list.add(deductionDTO);
-			});
-			res.setData(list);
+		try {
+			List<AssociateDeduction> associateDedList = associateDeductionDao.findAllDeductionSummaryByCandidateId(candidate,orgLocation);
+			List<DeductionDTO> list = new ArrayList<>();
+			if(associateDedList != null) {
+				associateDedList.forEach(ad->{
+					DeductionDTO deductionDTO = new DeductionDTO();
+					deductionDTO.setId(String.valueOf(ad.getId()));
+					deductionDTO.setDeductionType(ad.getDeductionTypeId().getPayrollDeductionType());
+					deductionDTO.setDedSchedule(ad.getDeductionTypeId().getPayrollScheduled());
+					deductionDTO.setMethod(ad.getDeductionMethod());
+					deductionDTO.setAmount(ad.getDeductionAmount());
+					deductionDTO.setDedAmount(ad.getDeductionAmount().doubleValue());
+					deductionDTO.setDescription(ad.getDeductionTypeId().getDescription());
+					deductionDTO.setAssociateDeductionUUID(ad.getAssociateDeductionUuid());
+					deductionDTO.setDedTaxType(ad.getDeductionTypeId().getTaxType());
+					list.add(deductionDTO);
+				});
+				res.setData(list);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return res;
 	}
@@ -132,8 +144,8 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 	}
 	
 	@Override
-	public AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId)
+	public AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long candidateId)
 	{
-		return associateDeductionDao.getAsociateDedByUserIdDeductionId(deductionId,userId);
+		return associateDeductionDao.getAsociateDedByUserIdDeductionId(deductionId,candidateId);
 	}
 }

@@ -202,6 +202,25 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 		}
 		return existed;
 	}
+	
+	
+	@Override
+	@Transactional
+	public AppliedLeaveDate getAppliedLeaveDateByleaveIdAndAppliedLeaveDate(Date date,Long leaveId) {
+		java.sql.Date applyLeaveDate = new java.sql.Date(date.getTime());
+		AppliedLeaveDate ald = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from AppliedLeaveDate ald where ald.applyLeaveDate = :applyLeaveDate and ald.leave.id = :leaveId and ald.status = '1'";
+			List<AppliedLeaveDate> leaveList = session.createQuery(query).setParameter("applyLeaveDate", applyLeaveDate).setLong("leaveId", leaveId).list();
+			if(leaveList != null && leaveList.size() > 0) {
+				ald = leaveList.iterator().next();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ald;
+	}
 
 	@Override
 	@Transactional

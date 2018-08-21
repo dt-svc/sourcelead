@@ -3,17 +3,18 @@ package com.bis.sourcelead.payroll.dto;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+
 public class ContributionHistoryDTO {
 	
 	private BigInteger id;
 	
-	private BigInteger userId;
+	private BigInteger candidateId;
 	
 	private BigInteger contributionId;
 	
 	private String contributionMethod;
 	
-	private BigDecimal contributionAmount;
+	private BigDecimal amount;
 	
 	private String scheduleType;
 	
@@ -21,15 +22,12 @@ public class ContributionHistoryDTO {
 	 
 	private String contributionType;
 
+	
 	public BigInteger getId()
 	{
 		return id;
 	}
 
-	public BigInteger getUserId()
-	{
-		return userId;
-	}
 
 	public BigInteger getContributionId()
 	{
@@ -62,10 +60,6 @@ public class ContributionHistoryDTO {
 		this.id = id;
 	}
 
-	public void setUserId(BigInteger userId)
-	{
-		this.userId = userId;
-	}
 
 	public void setContributionId(BigInteger contributionId)
 	{
@@ -93,14 +87,28 @@ public class ContributionHistoryDTO {
 		this.contributionType = contributionType;
 	}
 
-	public BigDecimal getContributionAmount()
+	public BigDecimal getAmount()
 	{
-		return contributionAmount;
+		return amount;
 	}
 
-	public void setContributionAmount(BigDecimal contributionAmount)
+	public void setAmount(BigDecimal amount)
 	{
-		this.contributionAmount = contributionAmount;
-	}  
+		this.amount = amount;
+	}
+
+
+	public BigInteger getCandidateId()
+	{
+		return candidateId;
+	}
+
+
+	public void setCandidateId(BigInteger candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+
 	
 }

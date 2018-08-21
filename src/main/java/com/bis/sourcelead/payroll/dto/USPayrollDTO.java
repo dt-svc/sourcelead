@@ -13,7 +13,7 @@ public class USPayrollDTO {
 	
 	private String empName;
 	
-	private float regularHours;	
+	private double regularHours;	
 	
 	private double overtimeHours;
 	
@@ -77,6 +77,23 @@ public class USPayrollDTO {
 	
 	private String isExcept;
 	
+	private Long userId;
+	
+	private Long paySheetFrequencyId;
+	
+	private Long candidateId;
+	
+	private BigDecimal totalDeduction;
+	
+	private String approverStatus;
+	
+	
+	public String getApproverStatus() {
+		return approverStatus;
+	}
+	public void setApproverStatus(String approverStatus) {
+		this.approverStatus = approverStatus;
+	}
 	public String getIsExcept()
 	{
 		return isExcept;
@@ -125,10 +142,7 @@ public class USPayrollDTO {
 	{
 		this.empName = empName;
 	}
-	public float getRegularHours()
-	{
-		return regularHours;
-	}
+	
 	public void setRegularHours(float regularHours)
 	{
 		this.regularHours = regularHours;
@@ -364,7 +378,40 @@ public class USPayrollDTO {
 	{
 		this.postDed = postDed;
 	}
-	
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public Long getPaySheetFrequencyId() {
+		return paySheetFrequencyId;
+	}
+	public void setPaySheetFrequencyId(Long paySheetFrequencyId) {
+		this.paySheetFrequencyId = paySheetFrequencyId;
+	}
+	public Long getCandidateId() {
+		return candidateId;
+	}
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+	public BigDecimal getTotalDeduction()
+	{
+		return totalDeduction;
+	}
+	public void setTotalDeduction(BigDecimal totalDeduction)
+	{
+		this.totalDeduction = totalDeduction;
+	}
+	public double getRegularHours()
+	{
+		return regularHours;
+	}
+	public void setRegularHours(double regularHours)
+	{
+		this.regularHours = regularHours;
+	}
 	
 	
 }

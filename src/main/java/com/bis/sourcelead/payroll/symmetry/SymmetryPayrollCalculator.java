@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.payroll.view.AssociateTaxDedContriView;
@@ -43,7 +43,7 @@ public class SymmetryPayrollCalculator {
 	@Value("${symmetry.jniHome}")
 	private String jniHome;
 	
-	public PayrollCalculatorDTO runUSPayroll(User user, float totalHours, BigDecimal grossAamount, int invoiceFrequency, AssociateTaxDedContriView associateTaxView,Date checkDate)
+	public PayrollCalculatorDTO runUSPayroll(Candidate candidate, double totalHours, BigDecimal grossAamount, int invoiceFrequency, AssociateTaxDedContriView associateTaxView,Date checkDate)
 	{
 		PayrollCalculatorDTO payrollCalculatorDTO = new PayrollCalculatorDTO();
 //		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";
@@ -56,7 +56,7 @@ public class SymmetryPayrollCalculator {
 		String FEDERAL_LOCATION_CODE = "00-000-0000";
 		try {
 			STEPayrollCalculator STE = new STEPayrollCalculator(jniHome, STEhome);
-			WebServiceLocationCodeV2 w = getLocationCode(STE,user);
+			WebServiceLocationCodeV2 w = getLocationCode(STE,candidate);
 			String locationCode = w.getLocationCode();
 //			Date today = new Date();
 			STE.setPayrollRunParameters(checkDate, invoiceFrequency, 0);
@@ -79,7 +79,7 @@ public class SymmetryPayrollCalculator {
 //			logger.info("----------------------------------++++++++++++++++++++++++++"+associateTaxView.getFederalExempt());
 //			boolean federalExempt = false;
 //			boolean medicareExempt = false;
-			boolean isResident = PayrollUtil.getEmployeeResident(user);
+			boolean isResident = PayrollUtil.getEmployeeResident(candidate);
 //			if(associateTaxView.getFederalExempt() != null) {
 //				federalExempt = associateTaxView.getFederalExempt();
 //			}
@@ -100,16 +100,16 @@ public class SymmetryPayrollCalculator {
 			STE.setWages(locationCode, WageType.REGULAR, new Hours(totalHours), new Money(grossAamount), zero, zero, zero);
 			
 			
-			if(PayrollConstant.KENTUCKY.equalsIgnoreCase(user.getResidenceState().trim())) {
+			if(PayrollConstant.KENTUCKY.equalsIgnoreCase(candidate.getResidenceState().trim())) {
 				STE.setKYCountyParameters(locationCode, CountyTax.KY_MENTAL_HEALTH, associateTaxView.getFederalExempt(), isResident,zero);
 			}
-			if(PayrollConstant.OREGON.equalsIgnoreCase(user.getResidenceState())) {
+			if(PayrollConstant.OREGON.equalsIgnoreCase(candidate.getResidenceState())) {
 				STE.setStateMiscellaneousParameters(locationCode, "FILINGSTATUS", "M");
 				STE.setStateMiscellaneousParameters(locationCode, "TOTALALLOWANCES", associateTaxView.getResidenceTaxAllowances());
 			}
 			
 			//TODO Need to explore
-			if(PayrollConstant.WASHINGTON.equalsIgnoreCase(user.getResidenceState())) {
+			if(PayrollConstant.WASHINGTON.equalsIgnoreCase(candidate.getResidenceState())) {
 				STE.setSDI(locationCode, new Money(0D), null, new Rate(0.1254), null);
 			}
 			
@@ -139,7 +139,7 @@ public class SymmetryPayrollCalculator {
 			STE = calculateEMACSupplemental(STE,locationCode,totalHours,grossAamount,FEDERAL_LOCATION_CODE);
 			
 			//New York Metropolitan Commuter Transportation Mobility Tax (MCTMT)
-			if("New York".equalsIgnoreCase(user.getResidenceState().trim())) {
+			if("New York".equalsIgnoreCase(candidate.getResidenceState().trim())) {
 				STE = calculateMCTMT(STE,locationCode,totalHours,grossAamount,FEDERAL_LOCATION_CODE);
 				STE.setStateMiscellaneousParameters(locationCode, "FILINGSTATUS", "M");
 				STE.setStateMiscellaneousParameters(locationCode, "TOTALALLOWANCESNYC",associateTaxView.getResidenceTaxAllowances());
@@ -153,8 +153,8 @@ public class SymmetryPayrollCalculator {
 			STE = calculateEmployerSUTASurchargeTaxes(STE,locationCode,totalHours,grossAamount,FEDERAL_LOCATION_CODE);
 			
 			//Employer SDI
-			if("Puerto Rico".equalsIgnoreCase(user.getResidenceState().trim().trim()) || "New Jersey".equalsIgnoreCase(user.getResidenceState().trim().trim())) {
-				STE = calculateEmployerSDI(STE,locationCode,totalHours,grossAamount,FEDERAL_LOCATION_CODE,user.getResidenceState().trim());	
+			if("Puerto Rico".equalsIgnoreCase(candidate.getResidenceState().trim().trim()) || "New Jersey".equalsIgnoreCase(candidate.getResidenceState().trim().trim())) {
+				STE = calculateEmployerSDI(STE,locationCode,totalHours,grossAamount,FEDERAL_LOCATION_CODE,candidate.getResidenceState().trim());	
 			}
 		
 			//Employer Head Taxes (EHT)
@@ -172,7 +172,7 @@ public class SymmetryPayrollCalculator {
 			
 		
 			String version = STE.getSTEVersion();
-			logger.info("User Name : " +user.getFirstName() + " Id is "+user.getId());
+			logger.info("candidate Name : " +candidate.getFirstName() + " Id is "+candidate.getId());
 			logger.info("STE Version: " + version);
 			logger.info("FICA Withholding:" + STE.getFICACalc());
 			logger.info("Medicare Withholding: " + STE.getMedicareCalc());
@@ -183,13 +183,13 @@ public class SymmetryPayrollCalculator {
 			logger.info("Advanced Earned Income Credit :"+STE.getEICCalc());
 			
 			logger.info("");
-			if(PayrollConstant.KENTUCKY.equalsIgnoreCase(user.getResidenceState().trim())) {
+			if(PayrollConstant.KENTUCKY.equalsIgnoreCase(candidate.getResidenceState().trim())) {
 				Money kentonCountyMentalHealth = STE.getKYCountyCalc (locationCode,CountyTax.KY_MENTAL_HEALTH);
 				Money florenceWithholding = STE.getCityCalc(locationCode);
 				logger.info("Kentucky County: " + kentonCountyMentalHealth);
 				logger.info("Kentucky City: " + florenceWithholding);
 			}
-			if(PayrollConstant.WASHINGTON.equalsIgnoreCase(user.getResidenceState())) {
+			if(PayrollConstant.WASHINGTON.equalsIgnoreCase(candidate.getResidenceState())) {
 				Money industrialInsuranceWithholding = STE.getSDICalc(locationCode);
 				logger.info("Washington Industrial Insurance: " + industrialInsuranceWithholding);
 			}
@@ -229,7 +229,7 @@ public class SymmetryPayrollCalculator {
 			logger.info("Massachusetts EMAC Supplemental: " +emacs.getCalculatedUITax());
 			logger.info("");
 			
-			if("New York".equalsIgnoreCase(user.getResidenceState().trim())) {
+			if("New York".equalsIgnoreCase(candidate.getResidenceState().trim())) {
 				logger.info("New York Metropolitan Commuter Transportation Mobility Tax (MCTMT) TAXES--------------------------");
 				Money mctmtWithholding = STE.getPercentTotalPayrollTax(locationCode, PercentOfPayrollTax.NEW_YORK_MCTMT);
 				payrollCalculatorDTO.setEmployerMetropolitanMCTMT(mctmtWithholding);
@@ -254,12 +254,12 @@ public class SymmetryPayrollCalculator {
 			logger.info("EMPLOYER SUTA Surcharge: " + surChargeTaxes.getCalculatedUITax());
 			
 			logger.info("Employer SDI Taxes--------------------------");
-			if("New Jersey".equalsIgnoreCase(user.getResidenceState().trim())) {
+			if("New Jersey".equalsIgnoreCase(candidate.getResidenceState().trim())) {
 				Money empNJSDICalc = STE.getSDIEmployerCalc(locationCode, SDITaxType.NEW_JERSEY_SDI);
 				logger.info("New Jersey Employer SDI: " + empNJSDICalc);
 				payrollCalculatorDTO.setEmployerSDI(empNJSDICalc);
 			}
-			if("Puerto Rico".equalsIgnoreCase(user.getResidenceState().trim())) {
+			if("Puerto Rico".equalsIgnoreCase(candidate.getResidenceState().trim())) {
 				Money ricoSDICalc = STE.getSDIEmployerCalc(locationCode, SDITaxType.PUERTO_RICO_SDI);
 				logger.info("Puerto Rico Employer SDI: " + ricoSDICalc);
 				payrollCalculatorDTO.setEmployerSDI(ricoSDICalc);
@@ -310,7 +310,7 @@ public class SymmetryPayrollCalculator {
 	 * @param empState 
 	 * @return
 	 */
-	private STEPayrollCalculator calculateEmployerSDI(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE, String empState)
+	private STEPayrollCalculator calculateEmployerSDI(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE, String empState)
 	{
 		Money zero = Money.zero();
 		try {
@@ -337,7 +337,7 @@ public class SymmetryPayrollCalculator {
 	 * @param fEDERAL_LOCATION_CODE
 	 * @return
 	 */
-	private STEPayrollCalculator calculateEmployerSUTASurchargeTaxes(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateEmployerSUTASurchargeTaxes(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();
@@ -359,7 +359,7 @@ public class SymmetryPayrollCalculator {
 	 * @param fEDERAL_LOCATION_CODE
 	 * @return STEPayrollCalculator
 	 */
-	private void calculateEmployerHeadTaxes(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private void calculateEmployerHeadTaxes(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			STE.setHeadTax(locationCode, 23, false);
@@ -381,7 +381,7 @@ public class SymmetryPayrollCalculator {
 	 * @param fEDERAL_LOCATION_CODE
 	 * @return
 	 */
-	private STEPayrollCalculator calculateMCTMT(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateMCTMT(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			STE.setPercentTotalPayrollTax(locationCode, PercentOfPayrollTax.NEW_YORK_MCTMT, new Money(amount), false);
@@ -403,7 +403,7 @@ public class SymmetryPayrollCalculator {
 	 * @param fEDERAL_LOCATION_CODE
 	 * @return STEPayrollCalculator
 	 */
-	private STEPayrollCalculator calculateEMACSupplemental(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateEMACSupplemental(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();
@@ -425,7 +425,7 @@ public class SymmetryPayrollCalculator {
 	 * @param fEDERAL_LOCATION_CODE
 	 * @return STEPayrollCalculator
 	 */
-	private STEPayrollCalculator calculateEMAC(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateEMAC(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();
@@ -449,7 +449,7 @@ public class SymmetryPayrollCalculator {
 	 * @param netPay
 	 * @return STEPayrollCalculator
 	 */
-	private STEPayrollCalculator calcuUHITax(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calcuUHITax(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String fEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();
@@ -495,7 +495,7 @@ public class SymmetryPayrollCalculator {
 	 * @param FEDERAL_LOCATION_CODE
 	 * @return
 	 */
-	private STEPayrollCalculator calculateEmployerRUIA(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String FEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateEmployerRUIA(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String FEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();
@@ -516,7 +516,7 @@ public class SymmetryPayrollCalculator {
 	 * @param amount
 	 * @param FEDERAL_LOCATION_CODE
 	 */
-	private STEPayrollCalculator calculateEmployerFUTASUTA(STEPayrollCalculator STE, String locationCode, float totalHours, BigDecimal amount, String FEDERAL_LOCATION_CODE)
+	private STEPayrollCalculator calculateEmployerFUTASUTA(STEPayrollCalculator STE, String locationCode, double totalHours, BigDecimal amount, String FEDERAL_LOCATION_CODE)
 	{
 		try {
 			Money zero = Money.zero();
@@ -536,17 +536,17 @@ public class SymmetryPayrollCalculator {
 	/**
 	 * Get location code
 	 * @param STE
-	 * @param user
+	 * @param candidate
 	 * @return WebServiceLocationCodeV2
 	 */
-	private WebServiceLocationCodeV2 getLocationCode(STEPayrollCalculator STE, User user)
+	private WebServiceLocationCodeV2 getLocationCode(STEPayrollCalculator STE, Candidate candidate)
 	{
 		// Calcualting Location Code
 		WebServiceLocationCodeV2 webServiceLocationCodeV2 = null;
 		try {
-			logger.info("User Residence State ====="+user.getResidenceState());
+			logger.info("candidate Residence State ====="+candidate.getResidenceState());
 			STE.setWebService(WebServiceType.STE_LOC_CODE, "http://lcs2.symmetry.com/", null, "sourcelead", "s290sdq", null);
-			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2(user.getResidenceAddress(), user.getResidenceStreetAddress().trim(), user.getResidenceCity().trim(), user.getResidenceState().trim(), user.getResidenceZipCode().trim(), null, null);
+			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2(candidate.getResidenceAddress(), candidate.getResidenceStreetAddress().trim(), candidate.getResidenceCity().trim(), candidate.getResidenceState().trim(), candidate.getResidenceZipCode().trim(), null, null);
 			logger.info("Country code     : " + webServiceLocationCodeV2.getCountyCode());
 			logger.info("City code        : " + webServiceLocationCodeV2.getCityCode());
 			logger.info("Location Code    : " + webServiceLocationCodeV2.getLocationCode());

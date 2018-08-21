@@ -37,6 +37,10 @@ public class PayrollContributionDTO extends SearchDTO{
 	
 	private String contributionType;
 	
+	private String taxType;
+	
+	private String scheduleType;
+	
 	public long getContributionId()
 	{
 		return contributionId;
@@ -167,7 +171,20 @@ public class PayrollContributionDTO extends SearchDTO{
 		this.contributionType = contributionType;
 	}
 
+	public String getTaxType() {
+		return taxType;
+	}
 
-	
-	
+	public void setTaxType(String taxType) {
+		this.taxType = taxType;
+	}
+
+	public String getScheduleType() {
+		return scheduleType;
+	}
+
+	public void setScheduleType(String scheduleType) {
+		this.scheduleType = scheduleType;
+	}
+
 }

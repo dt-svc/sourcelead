@@ -171,11 +171,11 @@ function showHideAccountTypes(){
 	}else{
 		$("#accountTypeChildDivs").show();
 		$("#bankName").removeAttr('data-validation-optional');
-		$('#bankName').attr('data-validation',"required");
+		$('#bankName').attr('data-validation',"required validate_Space validate_length length2-100");
 		$("#accountNumber").removeAttr('data-validation-optional');
-		$('#accountNumber').attr('data-validation',"required");
+		$('#accountNumber').attr('data-validation',"required validate_Space validate_int validate_length length2-100");
 		$("#routingNumber").removeAttr('data-validation-optional');
-		$('#routingNumber').attr('data-validation',"required");
+		$('#routingNumber').attr('data-validation',"required validate_space validate_int validate_length length9-9");
 	}
 }
 </script> 

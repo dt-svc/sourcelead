@@ -20,6 +20,15 @@ public class PayAdjustmentDTO {
 	
 	private String overTimeHoursAmt;
 	
+    private String preRregularHours;
+	
+	private String preRegularHoursAmt;
+	
+	private String preOverTimeHours;
+	
+	private String preOverTimeHoursAmt;
+
+	
 	private List<AssociatePayItemDTO> payItem;
 	
 	private List<DeductionDTO> preDeduction;
@@ -137,6 +146,46 @@ public class PayAdjustmentDTO {
 	public void setContribution(List<ContributionDTO> contribution)
 	{
 		this.contribution = contribution;
+	}
+
+	public String getPreRregularHours()
+	{
+		return preRregularHours;
+	}
+
+	public String getPreRegularHoursAmt()
+	{
+		return preRegularHoursAmt;
+	}
+
+	public String getPreOverTimeHours()
+	{
+		return preOverTimeHours;
+	}
+
+	public String getPreOverTimeHoursAmt()
+	{
+		return preOverTimeHoursAmt;
+	}
+
+	public void setPreRregularHours(String preRregularHours)
+	{
+		this.preRregularHours = preRregularHours;
+	}
+
+	public void setPreRegularHoursAmt(String preRegularHoursAmt)
+	{
+		this.preRegularHoursAmt = preRegularHoursAmt;
+	}
+
+	public void setPreOverTimeHours(String preOverTimeHours)
+	{
+		this.preOverTimeHours = preOverTimeHours;
+	}
+
+	public void setPreOverTimeHoursAmt(String preOverTimeHoursAmt)
+	{
+		this.preOverTimeHoursAmt = preOverTimeHoursAmt;
 	}
 	
 	

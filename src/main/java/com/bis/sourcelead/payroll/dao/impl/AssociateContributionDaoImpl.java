@@ -42,10 +42,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<AssociateContribution> findAllContributionSummaryByUserId(Long userId, OrgLocations orgLocation)
+	public List<AssociateContribution> findAllContributionSummaryByCandidateId(Long candidateId, OrgLocations orgLocation)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.userId.id=:userId and contri.orgLocationId.id= :orgLocationId" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+		List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.candidate.id=:candidateId and contri.orgLocationId.id= :orgLocationId and contri.status = 1" ).setLong( "candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).list();
 		return associateContributionList;
 	}
 
@@ -53,11 +53,13 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 	@Transactional
 	public AssociateContribution findAssociateContributionById(Long assContriId)
 	{
-		Session session = this.sessionFactory.getCurrentSession();
 		AssociateContribution associateContribution = null;
-		List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.id=:assContriId").setLong("assContriId", assContriId).list();
-		if(associateContributionList != null && associateContributionList.size() >0) {
-			associateContribution = associateContributionList.get(0);
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			AssociateContribution associateContributionList = (AssociateContribution)session.createQuery("from AssociateContribution contri where contri.id=:assContriId").setLong("assContriId", assContriId).uniqueResult();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 		return associateContribution;
 	}
@@ -66,7 +68,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 	@Transactional
 	public AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AssociateContribution assContribution where assContribution.contributionTypeId.id =:contriTypeId and assContribution.orgLocationId.id =:orgLocationId";
+		String query = "from AssociateContribution assContribution where assContribution.contributionTypeId.id =:contriTypeId and assContribution.orgLocationId.id =:orgLocationId and assContribution.status = 1";
 		List<AssociateContribution> assContribution = session.createQuery(query).setLong("contriTypeId", contriTypId).setLong("orgLocationId", orgLocation.getId()).list();
 		if(assContribution.size() > 0) {
 			return assContribution.get(0);

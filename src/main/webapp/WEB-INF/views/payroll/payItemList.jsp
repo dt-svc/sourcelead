@@ -91,14 +91,22 @@ $(document).ready(function(){
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-			        		 result = result + '   <div title="Calendaer month" class="tblminwidth-75">'+opt.paySchedule+'</div>';
+			        		 result = result + '   <div title="Calendaer month" class="tblminwidth-75">'+opt.description+'</div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + '   <div title="Leave Transfer" class="tbldata-dotdot-100">'+opt.empType+'</div>';
 			        		 result = result + '</td>';
 			        		 result = result + ' <td>';
 			        		 if(opt.paySchedule !=null && opt.paySchedule != 'undefined' && opt.paySchedule != ''){
-			        			 result = result + '     <div title="2" class="tblminwidth-75">'+opt.paySchedule+'</div>';	 
+			        			 if(opt.paySchedule == 'EVERY_PAY'){
+			        				 result = result + '     <div title="2" class="tblminwidth-75">Every Pay</div>';
+			        			 }else if(opt.paySchedule == 'MONTHLY'){
+			        				 result = result + '     <div title="2" class="tblminwidth-75">Monthly</div>';
+			        			 }else if(opt.paySchedule == 'QUARTERLY'){
+			        				 result = result + '     <div title="2" class="tblminwidth-75">Quarterly</div>';
+			        			 }else if(opt.paySchedule == 'ANNUALLY'){
+			        				 result = result + '     <div title="2" class="tblminwidth-75">Annually</div>';
+			        			 }
 			        		 }else{
 			        			 result = result + '     <div title="2" class="tblminwidth-75">--</div>';	
 			        		 }

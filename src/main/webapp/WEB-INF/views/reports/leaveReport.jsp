@@ -27,14 +27,15 @@ $( document ).ready(function() {
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>"> HR Reports
 </a> &raquo; Leave Report</div>
+ <div id="popUp"></div>
     </section>
       <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();" oncontextmenu="return false"></a></span>
          
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();" oncontextmenu="return false"></a>
 					<div class="newActPop">
 						<span>
 							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
@@ -164,10 +165,10 @@ function exportToPdf(){
 	var startDate = $('#fromDate').val();
 	var endDate = $('#toDate').val();
 	var searchValue = $("#leaveReportDataTableSearch").val();
-	if(ReportsListEmpty != 'noReports'){
+	if(ReportsListEmpty > 0){
 		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&type="+type;
 	}else{
-		 var result = "";
+		var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Leave Report List is Empty</p>";
@@ -190,7 +191,7 @@ function exportUserData(){
 	var endDate = $('#toDate').val();
 	var searchValue = $("#leaveReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(ReportsListEmpty != 'noReports'){
+	if(ReportsListEmpty > 0){
 		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue;
 	}else{
 		 var result = "";
@@ -237,6 +238,7 @@ function prepareAllLeaveReportList(url,formData){
 		result = result + '<th>From Date</th>';
 		result = result + '<th>To Date</th>';
 		result = result + '<th>Applied on</th>';
+		result = result + '<th>No Of Days</th>';
 		result = result + '<th>Status</th>';
 		result = result + '<th>Approver</th>';
 		result = result + '<th>Approved on</th>';
@@ -246,6 +248,7 @@ function prepareAllLeaveReportList(url,formData){
 		result = result	+ '</div>';
 		$("#leaveReportsList").empty();
 		$("#leaveReportsList").append(result);
+		$("#noReports").val(result.length);
 		leaveReportsListPagination(url,formData);
 }
 </script>
@@ -273,6 +276,7 @@ function leaveReportsListPagination(url,formData){
 	            { "data": "fromDate"},
 	            { "data": "toDate"},
 	            { "data": "appliedOn"},
+	            { "data": "noOfDays"},
 	            { "data": "status"},
 	            { "data": "approver"},
 	            { "data": "approvedOn"},
@@ -393,6 +397,20 @@ function leaveReportsListPagination(url,formData){
 			          }
 	      },{
 	    	  	"targets": colIndex++,
+	    	  	"data":"noOfDays",
+	    	  	"render": function(data, type, user, meta) {
+	    	  		var result = '';
+		        	result = result + ' <td>';
+		          	if(user.noOfDays !=null && user.noOfDays !='' && user.noOfDays !='undefined'){
+						 result = result + '<div class="tblminwidth-75">'+user.noOfDays+'</div>';
+		          }else{
+						result = result + '<div class="tblminwidth-75">0</div>';
+					}
+		          	result = result + ' </td>';
+			        return result;
+			          }
+	      },{
+	    	  	"targets": colIndex++,
 	    	  	"data": "status",
 	    	  	"render": function(data, type, user, meta) {
 	    	  		var result = '';
@@ -413,8 +431,13 @@ function leaveReportsListPagination(url,formData){
 		          	result = result + ' <td>';
 		          	if(user.approver !=null && user.approver !='' && user.approver !='undefined'){
 						 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.approver+'">'+user.approver+'</div>';
-		          }else{
-						result = result + '<div class="tbldata-dotdot-vsm">--</div>';
+		          }
+		          	else if(user.approver == null && user.reportingManager !=null && user.reportingManager !='' && user.reportingManager !='undefined'){
+						 result = result + '<div class="tbldata-dotdot-vsm" title="'+user.reportingManager+'">'+user.reportingManager+'</div>';
+
+			          }
+		          	else{
+						result = result + '<div class="tbldata-dotdot-vsm">System Approver</div>';
 					}
 		          	result = result + ' </td>';
 		          	return result;
@@ -499,7 +522,12 @@ function datePickeerTest(){
 			});
 }
 </script>
-
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 <script>
 function resetValues(){
 	$('#fromDate').val('');
@@ -510,6 +538,7 @@ function resetValues(){
 	$('#projectList').trigger("chosen:updated");
 	$('#associateList').trigger("chosen:updated");
 	$('#designationType').trigger("chosen:updated");
+	window.location.href =sourceleadUrl+"/reportsDashboard"
 }
 </script>
 
@@ -631,8 +660,23 @@ function clearDate(requestFrom){
 
  <script>
 function resetFilter(){
+	var fromDate = $("#fromDate").val();
+    var toDate = $("#toDate").val();
+	leaveReport(fromDate,toDate);
 	$("#leaveReportDataTableSearch").val('');
-	leaveReport();
+	$("#fromDate").val('');
+	$("#toDate").val('');
+	$("#departmentList").val('');
+	$("#reportRoles").val('');
+	$("#designationType").val('');
+	$("#associateList").val('');
+	$("#leaveTypeList").val('');
+	$('#departmentList').trigger("chosen:updated");
+	$('#reportRoles').trigger("chosen:updated");
+	$('#designationType').trigger("chosen:updated");
+	$('#associateList').trigger("chosen:updated");
+	$('#leaveTypeList').trigger("chosen:updated");
+	$("#leaveTypeList").val('');
 }
 function reportCollapse() {
 	$("#reportCollapse").slideToggle(300);
