@@ -43,6 +43,8 @@ public class SymmetryPayrollCalculator {
 	@Value("${symmetry.jniHome}")
 	private String jniHome;
 	
+	String FEDERAL_LOCATION_CODE = "00-000-0000";
+	
 	public PayrollCalculatorDTO runUSPayroll(Candidate candidate, double totalHours, BigDecimal grossAamount, int invoiceFrequency, AssociateTaxDedContriView associateTaxView,Date checkDate)
 	{
 		PayrollCalculatorDTO payrollCalculatorDTO = new PayrollCalculatorDTO();
@@ -53,7 +55,6 @@ public class SymmetryPayrollCalculator {
 			STEhome = "c:/STE/ste-root/";
 			jniHome = "c:/STE/ste-interface-files/java/";
 		}
-		String FEDERAL_LOCATION_CODE = "00-000-0000";
 		try {
 			STEPayrollCalculator STE = new STEPayrollCalculator(jniHome, STEhome);
 			WebServiceLocationCodeV2 w = getLocationCode(STE,candidate);
@@ -543,10 +544,14 @@ public class SymmetryPayrollCalculator {
 	{
 		// Calcualting Location Code
 		WebServiceLocationCodeV2 webServiceLocationCodeV2 = null;
+		String zipCode = null;
+		if(candidate.getResidenceZipCode() != null) {
+			zipCode = candidate.getResidenceZipCode();
+		}
 		try {
 			logger.info("candidate Residence State ====="+candidate.getResidenceState());
 			STE.setWebService(WebServiceType.STE_LOC_CODE, "http://lcs2.symmetry.com/", null, "sourcelead", "s290sdq", null);
-			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2(candidate.getResidenceAddress(), candidate.getResidenceStreetAddress().trim(), candidate.getResidenceCity().trim(), candidate.getResidenceState().trim(), candidate.getResidenceZipCode().trim(), null, null);
+			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2(candidate.getResidenceAddress(), candidate.getResidenceStreetAddress().trim(), candidate.getResidenceCity().trim(), candidate.getResidenceState().trim(), zipCode, null, null);
 			logger.info("Country code     : " + webServiceLocationCodeV2.getCountyCode());
 			logger.info("City code        : " + webServiceLocationCodeV2.getCityCode());
 			logger.info("Location Code    : " + webServiceLocationCodeV2.getLocationCode());

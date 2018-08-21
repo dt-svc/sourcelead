@@ -33,6 +33,9 @@ public class LeaveReportView {
 	@Column(name = "Employee_ID", nullable = false)
 	private Long employeeId;
 	
+	@Column(name = "Emp_ID", nullable = false)
+	private String eid;
+	
 	@Column(name = "REASON",columnDefinition = "TEXT default NULL")
 	private String reason;
 	@Column(name = "FROM_DATE")
@@ -527,7 +530,15 @@ public class LeaveReportView {
 		this.noOfDays = noOfDays;
 	}
 
+	public String getEid()
+	{
+		return eid;
+	}
 
-	
-	
+	public void setEid(String eid)
+	{
+		this.eid = eid;
+	}
+
+
 }

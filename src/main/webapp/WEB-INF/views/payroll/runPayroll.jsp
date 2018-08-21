@@ -65,7 +65,7 @@ function approvePayrollDiv(){
 			</div>
 		</div>
 		<div class="col-md-4 paddingLeft paddingRight">
-			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period" class="chosen-select">
+			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period" class="chosen-select" onchange="clearPayrollDiv();">
 			</select>
 		</div>
 		<div class="col-md-3 paddingRight">
@@ -90,6 +90,7 @@ function approvePayrollDiv(){
  <div class="styleTables clearfix mt">
  <!-- <div id="USPayrollDiv"></div> -->
  <div id="payrollDataDiv"></div>
+ <div id="initiateLoading"></div>
 </div> 
 
 <div class="clearfix mt"></div>
@@ -169,6 +170,7 @@ function getGroupFrequency(){
 	        url: sourceleadUrl+"/getGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
 	        success: function(json) {
 	        var output = "";
+	        output = output + "<option value=''>select ferquency</option>";
 			for (var i=0; i<json.length; i++)
 			{
 				var date = json[i].replace(",", " to ");
@@ -179,6 +181,9 @@ function getGroupFrequency(){
 			$('#payPeriod').trigger("chosen:updated"); 
 	        },
 	    });
+	 $("#payrollDataDiv").empty();
+	 $('#payrollPayDate').val("").datepicker("update");
+	 $("#submitButtonDiv").hide();
 }
 </script>
 <!-- New Code End Here -->
@@ -258,6 +263,9 @@ function getGroupFrequency(){
 <script>
 function runUSPayroll(){
 	if ($('#generate_payroll_form').validate(false, validationSettings)){  
+		
+		$("#initiateLoading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 		var groupId = $("#groupId").val();
@@ -343,6 +351,7 @@ function runUSPayroll(){
 		        	$("#payrollDataDiv").empty();
 		        	$("#payrollDataDiv").append(result);
 		        	$("#submitButtonDiv").show();
+		        	$("#initiateLoading").removeAttr('style');
 		        },
 		    });
 		 
@@ -969,6 +978,15 @@ function msgFadein() {
     $('#selector1').delay(2000).fadeOut('slow');
 }
 
+</script>
+
+<script>
+function clearPayrollDiv(){
+// 	$("#groupId").val('');
+	$("#payrollPayDate").val('');
+	$("#payrollDataDiv").empty();
+	$("#submitButtonDiv").hide();
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
