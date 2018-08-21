@@ -61,10 +61,16 @@ function associateDeductionSummary(userId){
                      }
                    
                    if(opt.amount !=null && opt.amount !='' && opt.amount !='undefined'){
-						result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.amount.toFixed(2)+'<small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+','+opt.amount+')"></small></div>';
+                	   if(opt.method == "Fixed"){
+						result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><i class="fa fa-dollar"></i> '+opt.amount.toFixed(2)+'<small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+','+opt.amount+')"></small></div>';
 	        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
-						result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5 cursorPointer"  onClick="editDedAmount('+opt.id+','+userId+')"></small></div></td>';
-       		    }
+						result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5 cursorPointer"  onClick="editDedAmount('+opt.id+','+userId+')" minlength="1" maxlength="10"></small></div></td>';
+                	   }else{
+                		result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'">'+opt.amount+' <i class="fa fa-percent"></i><small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+','+opt.amount+')"></small></div>';
+   	        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
+   						result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5 cursorPointer"  onClick="editDedAmount('+opt.id+','+userId+')"></small></div></td>';  
+                	   }
+                }
        		    else{
        		    	result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><small class="fa fa-dollar expenses_symbol text-muted"></small>0<small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+',0)"></small></div>';
 	        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
@@ -150,7 +156,7 @@ function associateDeductonListPagination(){
 			        success: function(data) {
 			        	document.getElementById("preDedDiv"+id).style.display="block";
 			   		 	document.getElementById("editDedDiv"+id).style.display="none";
-			   			 associateDeductionSummary(userId);
+			   			associateDeductionSummary(userId);
 			        },
 			    });
 		}

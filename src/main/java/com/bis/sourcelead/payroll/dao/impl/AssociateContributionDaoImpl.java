@@ -56,8 +56,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 		AssociateContribution associateContribution = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			AssociateContribution associateContributionList = (AssociateContribution)session.createQuery("from AssociateContribution contri where contri.id=:assContriId").setLong("assContriId", assContriId).uniqueResult();
-			
+			List<AssociateContribution> associateContributionList = session.createQuery("from AssociateContribution contri where contri.id=:assContriId").setLong("assContriId", assContriId).list();
+			if(associateContributionList !=null && associateContributionList.size() >0) {
+				associateContribution = associateContributionList.get(0);
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
