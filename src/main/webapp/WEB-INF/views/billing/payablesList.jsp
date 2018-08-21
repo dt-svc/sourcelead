@@ -41,6 +41,10 @@ $(document).ready(function(){
 .remove_user_pop.remove_user_pop_a {
 	z-index: 18000;
 }
+
+.popCusDate{
+	right: 16px; bottom: -40px; top: inherit; background: #fff; border: none; padding: 8px 10px 8px 5px;
+}
 </style>
 
 <input type="hidden" id="emptyPayableInvoiceId"
@@ -67,7 +71,7 @@ $(document).ready(function(){
 	<div class="content-area content-new clearfix">
 		<div class="billing_dashboard noPad">
 			<div class="tabbable positionRelative">
-				<div class="onboardcreateButtons">
+				<!-- <div class="onboardcreateButtons">
 					<div class="pull-right select-field mr mt">
 						<select class="form-control input-sm" id="dayWiseTypeId"
 							onchange="getPayableInvoiceList();customInvoiceList();">
@@ -85,7 +89,7 @@ $(document).ready(function(){
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 				<ul class="nav nav-tabs pad15 invoiCount" id="tab_bar">
 
 
@@ -521,6 +525,68 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 function cancelTermination(){
 	$("#remove_user_pop, .project_inn_mask").fadeOut();
 }
+
+function showInvoiceStartDate(){
+    
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatClientInvoiceDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
+	  }
+	  
+	
+	$('#billingStartDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		dateFormat : finalDateFormatClientInvoiceDate,
+		onSelect : function(selected) {
+			//var dt = new Date(selected);
+			//var dt = toDate("#billingStartDate");
+			 var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+			$("#billingEndDate").datepicker("option", "minDate", dt);
+			removeStartdateval();
+		}
+	}).datepicker('show');;
+}
+	
+function showInvoiceEndDate(){
+   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+  	  var finalDateFormatClientInvoiceDate = '';
+  	  if(locationDate.match("yyyy-MM-dd")){
+  		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
+  	  }if(locationDate.match("dd-MM-yyyy")){
+  		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
+  	  }if(locationDate.match("MM-dd-yyyy")){
+  		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
+  	  }if(locationDate.match("yyyy-dd-MM")){
+  		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
+  	  }
+   
+   
+	$('#billingEndDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		dateFormat : finalDateFormatClientInvoiceDate,
+		beforeShow: function(){
+	           this.value='';
+	     },
+		onSelect : function(selected) {
+//			var dt = new Date(selected);
+//			var dt = toDate("#billingEndDate");
+			   var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+			$("#billingStartDate").datepicker("option", "maxDate", dt);
+			removeEnddateval();
+		}
+	}).datepicker('show');;
+}
 </script>
 <!-- modal pop -->
 <script>
@@ -612,6 +678,12 @@ function getPayableInvoiceList(){
 		payment.push($(this).val());
 	 });
 	
+	var invoieDeleteStatus = null;
+	
+	$('input:radio[name=invoiceStatusDelete]:checked').each(function() {
+		invoieDeleteStatus = $(this).val();
+	});	
+	
 	var tags = [];
 	$('input:checkbox[name=tags]:checked').each(function() 
      {
@@ -620,7 +692,7 @@ function getPayableInvoiceList(){
 	
 	var searchValue = $("#payableDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags;
+	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags+"&invoiceDeleteStatus="+invoieDeleteStatus;
 	preparePayableList(url,orgLocationDate);
 }
 
@@ -1273,12 +1345,19 @@ $(document).ready(function() {
 <script>
     //search script
         function customInvoiceList() {
-            var selectVal = $("#dayWiseTypeId").val();
+        	var selectVal = $('input[name=invoiceCustomDays]:checked').val();
             if (selectVal == "custom") {
+            	var result = '';
+            	result  = result + '<div class="col-md-6 paddingLeft" id="errStartDate">';                                                                       
+            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceStartDate();" id="billingStartDate" placeholder="Start Date"> ';
+            	result = result +'   </div> ';
+            	result = result +'   <div class="col-md-6 noPad" id="errEndDate">';
+            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceEndDate();" id="billingEndDate" placeholder="End Date">';
+            	result = result +'   </div>';
+                $(".custom_search").empty().append(result);
                 $(".custom_search").show();
-                customDate();
             }else {
-                $(".custom_search").hide();
+                $(".custom_search").empty().hide();
             }
         }
        
@@ -1371,7 +1450,7 @@ function removeEnddateval(){
 
 </script>
 <script>
-function searchResults(){
+/* function searchResults(){
 	$("#errStartDate").find('p.jquery_form_error_message').remove();
 	$("#errEndDate").find('p.jquery_form_error_message').remove();
 	var startDate =  $('#billingStartDate').val();
@@ -1389,7 +1468,7 @@ function searchResults(){
 		}
 	} 
 }
-
+ */
 </script>
 
 <script>
@@ -1892,6 +1971,8 @@ function openBillsFilterPop(){
 function resetBillsFilter(){
 	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	document.getElementById("invoiceDateRadio").checked = true;
+	$(".custom_search").empty().hide();
 	getPayableInvoiceList();
 	
 }
@@ -1918,6 +1999,16 @@ function resetBillsFilter(){
 	                                <li class="checkBox positionRelative" ><input type="checkbox" value="Unpaid" name="paymentStatus"><label for="onboard1">Unpaid</label></li>
 			                        </ul>
 							      </div>
+						     </div>
+						     
+						    <div class="col-md-12 mb">
+								<label><strong>Active Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+                                    <li class="checkBox positionRelative" ><input type="radio" checked="checked" value="ACTIVE" name="invoiceStatusDelete"><label for="onboard2">Active</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" value="DELETED" name="invoiceStatusDelete"><label for="onboard2">Deleted</label></li>
+			                        </ul>
+							      </div>
 						     </div> 
 						  </div>
 						</div>
@@ -1934,11 +2025,33 @@ function resetBillsFilter(){
 	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="ACCEPTED" name="invoiceStatus"><label for="onboard2">Accepted</label></li>
 	                                <li class="checkBox positionRelative" ><input type="checkbox" value="REJECTED" name="invoiceStatus"><label for="onboard2">Rejected</label></li>
 	                                <li class="checkBox positionRelative" ><input type="checkbox" value="LINKED" name="invoiceStatus"><label for="onboard2">Linked</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="VOID" name="invoiceStatus"><label for="onboard2">Void</label></li>
 			                        </ul>
 							      </div>
 						     </div> 
 						  </div>
 						</div>
+						
+						<div class="col-md-4">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Active Status</strong></label>
+								 <div class="clearfix positionRelative">
+									<ul class="list-unstyled" id="statusFilter">
+                                    <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" checked="checked" id="invoiceDateRadio" value="month" name="invoiceCustomDays"><label for="onboard2">Last 30 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" value="twomonths" name="invoiceCustomDays"><label for="onboard2">Last 60 Days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" value="threemonths" name="invoiceCustomDays"><label for="onboard2">Last 90 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" value="sixmonths" name="invoiceCustomDays"><label for="onboard2">Last 180 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" value="oneyear" name="invoiceCustomDays"><label for="onboard2">Last 365 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" value="custom" id="customRadio" name="invoiceCustomDays"><label for="onboard2">Custom</label></li>
+			                        </ul>
+						              <div class="custom_search popCusDate">
+						            </div>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						
 						
 						<c:if test="${!empty billsTagsList}">
 						<div class="col-md-4 positionRelative mb">

@@ -95,7 +95,7 @@ public interface InvoiceService {
 
 	void saveInvoiceTimelineHistory(Invoice invoice, User user, Invoice invoiceObj, String savedInvoiceId, Long invoicePaymentId,  Map<String, String> returnMap);
 
-	List<InvoiceTimelineDTO> getInvoiceTimelineHistoryList(Long id, User user, String searchVal, String orderVal, Date[] datesRange, String[] checkedStatus) throws ParseException, Exception;
+	List<InvoiceTimelineDTO> getInvoiceTimelineHistoryList(Long id, User user, String searchVal, String orderVal, Date[] datesRange, String[] checkedStatus, String[] namesStatus) throws ParseException, Exception;
 	
 	public String getInvoiceOrBillGeneratedId(OrgLocations loginOrgLoc,OrgLocations orgLoc,String invoiceType);
 
