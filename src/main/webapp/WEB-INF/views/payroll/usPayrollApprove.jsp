@@ -299,7 +299,7 @@ function calculateTotalPay(formData,confirmType){
         <nav class="clearfix">
           <ul class="pull-right mr10 list-unstyled list-inline">
             <li><a href="javascript:void(0)" class="btn btn-primary btnSuccess" onClick="approvePayroll();">Approve</a></li>
-            <li><a href="javascript:void(0)" class="btn btn-default" onClick="rejectModal();">Cancel</a></li>
+            <li><a href="javascript:void(0)" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
           </ul>
           <div class="clearfix"></div>
         </nav>
