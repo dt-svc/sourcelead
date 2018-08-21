@@ -793,4 +793,25 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		return experience.split("[\\p{Punct}\\s]+");
 		
 	}
+
+	@Override
+	public List<SourceleadFormFields> getSubmissionTemplateFormFields(Long requirementId) throws Exception {
+		List<SourceleadFormFields> formFieldsList = new ArrayList<>();
+		Requirement requirement = requirementService.getRequirementDetailsById(requirementId);
+		String jsonString = null;
+		if(StringUtils.isNotBlank(requirement.getClientSubmissionTemplateJsonString())) {
+			jsonString = requirement.getClientSubmissionTemplateJsonString();
+		}else {
+			jsonString = requirement.getSubmissionTemplateJsonString();
+		}
+		 JSONArray jsonarray = new JSONArray(jsonString);
+		 for(int i=0; i<jsonarray.length(); i++){
+		        JSONObject obj = jsonarray.getJSONObject(i);
+		        SourceleadFormFields formFields = new SourceleadFormFields();
+		        formFields.setLabelName(obj.getString("label"));
+		        formFields.setIsFieldRequired(Integer.valueOf(obj.getString("req")));
+		        formFieldsList.add(formFields);
+		 }
+		return formFieldsList;
+	}
 }

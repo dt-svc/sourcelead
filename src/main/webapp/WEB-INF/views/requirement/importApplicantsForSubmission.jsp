@@ -1,8 +1,21 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+
+<style type="text/css">
+.center-div {
+	width: 300px;
+	height: 30px;
+	margin: 10px 220px 0;
+}
+
+.center-div input {
+	border: none;
+	background: transparent
+}
+</style>
 
 	<section class="content-header clearfix">
       <div class="pull-left">
@@ -29,12 +42,12 @@
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
 									<input type="button" class="btn btn-primary" id="upload_button"
-										name="upload_button" onclick="fetchFieldsWithMatchedColumn();"
+										name="upload_button" onclick="fetchFieldsWithMatchedColumn(${requirementId});"
 										value="Import">
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadCandidateForm'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadSubmissionTemplateForm'/>'">
 								</div>
 							</div>
 						</div>
@@ -59,7 +72,7 @@
 							<!-- <div class="center-div">
 								<input id="uploadFile" placeholder="" disabled="disabled"
 									style="width: 100%;" />
-							</div> -->
+							</div>  -->
 							 <p class="text-danger small" style="font-size: 12px; display: none;" id="errorImage" ><i class="fa fa-exclamation-triangle" ></i><b>&nbsp;Document size should be less than 10 MB</b></p>
 						</div>
 
@@ -96,4 +109,56 @@
 		</form:form>
 	</div>
 	<div id="dataFieldsDiv" style="display: none"></div>
-	<input type="hidden" id="inviteEmail" name="inviteEmail" value="N"/>
+	
+	
+	
+<script type="text/javascript">
+document.getElementById("uploadBtn").onchange = function () {
+	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
+	  if(sizeinbytes > 10485760){
+		  document.getElementById("errorImage").style.display="";
+		  $('#newUploadFile').text('');
+		  $("#upload_button").attr("disabled","disabled");
+		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
+	  }else{
+		  document.getElementById("errorImage").style.display="none";
+		  $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
+		  fileUpload("uploadBtn", "dataMigration");
+		  $("#upload_button").removeAttr("disabled");
+		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
+	  }
+	
+};
+</script>
+	
+<script type="text/javascript">
+function fetchFieldsWithMatchedColumn(requirementId){
+	var fileUrl = $("#dataFilePath").val();
+	var uploadType = "submmissionTemplateUpload";
+	var headerPosition = $("#headerPosition").val();
+        if (($('#upload_candidate_form').validate(false, validationSettings))){
+      	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+          	$.ajax({
+    			type: "POST",
+    		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition+"&requirementId="+requirementId, 
+    		    success: function(data) {
+    		    	$("#dataFileImportDiv").attr("style","display:none");
+    		    	$('#dataFieldsDiv').removeAttr("style");
+    		    	$('#dataFieldsDiv').append(data);
+    		    },
+    		});
+          	$('#loading').removeAttr("style");
+        }
+        else{
+      	  return false;	
+        }
+}
+
+$('body').on('blur', '#upload_candidate_form', function() {
+	$("#upload_candidate_form").showHelpOnFocus();
+	$("#upload_candidate_form").validateOnBlur(false, validationSettings);
+	
+});
+</script>
+
+
