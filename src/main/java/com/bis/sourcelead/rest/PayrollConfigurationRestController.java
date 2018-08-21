@@ -916,13 +916,16 @@ public class PayrollConfigurationRestController {
 			
 			AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByCandidateId(payrollPayheadDTO.getCandidateId());
 			if(associateSalaryInd != null) {
-				
+				if(associateSalaryInd.getEffectiveDate() != null) {
+					associateSalaryInd.setEffectiveDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),associateSalaryInd.getEffectiveDate()));
+				}
 				List<UserGroup> userGroupList =  userGroupService.getAllUserGroupsByLocationIdAndPayFrequency(orgLocations, associateSalaryInd.getPayFrequency());
 				model.addObject("userGroupList", userGroupList);
 				model.addObject("associateSalaryInd", associateSalaryInd);
 				model.addObject("candidate", associateSalaryInd.getCandidate());
 				model.addObject("associateSalaryPayheadIndList", associateSalaryInd.getAssociateSalaryPayheadIndList());
 				model.addObject("uuid", associateSalaryInd.getUuid());
+				model.addObject("status", "");
 			}else {
 				Candidate candidate = candidateService.getCandidateByCandidateId(payrollPayheadDTO.getCandidateId());
 				if(candidate != null && candidate.getExpectedRate() != null) {
@@ -972,6 +975,7 @@ public class PayrollConfigurationRestController {
 			        model.addObject("candidateCTCPerYear", candidateCTCPerYear);
 					model.addObject("candidate", candidate);
 				}
+				model.addObject("status", "NODATA");
 			}
 			model.setViewName("indPayroll/associateSalary");
 			model.addObject("sourceleadUrl", sourceleadUrl);

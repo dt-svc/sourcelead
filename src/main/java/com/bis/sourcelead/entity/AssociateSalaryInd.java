@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -105,6 +106,9 @@ public class AssociateSalaryInd {
 	@OneToMany(mappedBy = "associateSalaryInd", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<AssociateSalaryPayheadInd> associateSalaryPayheadIndList = new HashSet<AssociateSalaryPayheadInd>(0);
+    
+    @Transient
+    private String effectiveDateStr;
 
 	public Long getId() {
 		return id;
@@ -272,5 +276,13 @@ public class AssociateSalaryInd {
 
 	public void setAssociateSalaryPayheadIndList(Set<AssociateSalaryPayheadInd> associateSalaryPayheadIndList) {
 		this.associateSalaryPayheadIndList = associateSalaryPayheadIndList;
+	}
+
+	public String getEffectiveDateStr() {
+		return effectiveDateStr;
+	}
+
+	public void setEffectiveDateStr(String effectiveDateStr) {
+		this.effectiveDateStr = effectiveDateStr;
 	}
 }
