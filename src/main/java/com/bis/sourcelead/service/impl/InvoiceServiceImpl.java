@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -59,8 +58,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
-import com.bis.sourcelead.dao.InvoicePaymentDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
+import com.bis.sourcelead.dto.CreditDebitNoteDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteLineItemsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceExpensesDTO;
@@ -68,9 +68,10 @@ import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitLineItems;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -117,7 +118,6 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 @Service
@@ -3292,6 +3292,196 @@ public class InvoiceServiceImpl implements InvoiceService {
 			attachmentList.add(emailAttachment);
 		}
 		return attachmentList;
+	}
+
+	@Override
+	public CreditDebitNote saveCreditDebitNote(User user, OrgLocations orgLocation, String saveType, String noteType,
+			CreditDebitNoteDTO creditDebitNoteDTO) throws Exception {
+		
+		CreditDebitNote creditDebitNote = null;
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getSavedNoteId())){
+			
+		}else{
+			creditDebitNote = new CreditDebitNote();
+			creditDebitNote.setCreditDebitUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			creditDebitNote.setCreatedBy(user);
+			creditDebitNote.setCreatedDate(commonUtil.currentDate());
+			creditDebitNote.setStatus(Constants.RECORD_ACTIVE.toString());
+		}
+		
+		OrgLocations vendorOrgLocation = null;
+		creditDebitNote.setOrgLocations(orgLocation);
+		Invoice invoice = invoiceDao.getInvoicetById(Long.parseLong(creditDebitNoteDTO.getInvoceId()));
+		creditDebitNote.setInvoice(invoice);
+        if(Constants.CREDIT_NOTE.equalsIgnoreCase(noteType)){
+        	// client details
+        	if(StringUtils.isNotBlank(creditDebitNoteDTO.getOrgRelationId())){
+     			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(creditDebitNoteDTO.getOrgRelationId()));
+     			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+     				vendorOrgLocation = orgRelation.getLocationId();
+     				creditDebitNote.setResponderLocation(vendorOrgLocation);
+      			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getResponderLocationId();
+      				creditDebitNote.setResponderLocation(orgRelation.getResponderLocationId());
+      			}
+      			creditDebitNote.setOrgRelations(orgRelation);	
+     		}
+     		
+     		if(StringUtils.isNotBlank(creditDebitNoteDTO.getSpocUser())){
+     			User userContactName = userService.getUserById(Long.parseLong(creditDebitNoteDTO.getSpocUser()));
+     			creditDebitNote.setContactUser(userContactName);
+     		}
+     		creditDebitNote.setNoteType(Constants.CREDIT_NOTE);
+        }else{
+        	//vendor details
+        	if(StringUtils.isNotBlank(creditDebitNoteDTO.getOrgRelationId())){
+      			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(creditDebitNoteDTO.getOrgRelationId()));
+      			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getLocationId();
+      				creditDebitNote.setResponderLocation(vendorOrgLocation);
+      			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getResponderLocationId();
+      				creditDebitNote.setResponderLocation(orgRelation.getResponderLocationId());
+      			}
+      			creditDebitNote.setOrgRelations(orgRelation);	
+      		}
+        	creditDebitNote.setNoteStatus(saveType);
+      		if(StringUtils.isNotBlank(creditDebitNoteDTO.getSpocUser())){
+      			User contactUser = userService.getUserById(Long.parseLong(creditDebitNoteDTO.getSpocUser()));
+      			creditDebitNote.setContactUser(contactUser);
+      		}
+      		creditDebitNote.setNoteType(Constants.DEBIT_NOTE);
+        }
+        creditDebitNote.setOwnerUser(user);
+        OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(creditDebitNoteDTO.getSpocUser()));
+        creditDebitNote.setOrgSpoc(orgSpoc);
+        creditDebitNote.setNoteStatus(saveType);
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getBillingAddress())){
+			creditDebitNote.setBillingAddress(creditDebitNoteDTO.getBillingAddress());
+		}else{
+			creditDebitNote.setBillingAddress(null);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getShippingAddress())){
+			creditDebitNote.setShippingAddress(creditDebitNoteDTO.getShippingAddress());
+		}else{
+			creditDebitNote.setShippingAddress(null);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getReferenceNumber())){
+			creditDebitNote.setReferenceNumber(creditDebitNoteDTO.getReferenceNumber());
+		}else{
+			creditDebitNote.setReferenceNumber(null);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getReason())){
+			creditDebitNote.setReason(creditDebitNoteDTO.getReason());
+		}else{
+			creditDebitNote.setReason(null);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getCreditDebitNotedate())){
+			creditDebitNote.setCreditNoteDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), creditDebitNoteDTO.getCreditDebitNotedate()));
+		}else{
+			creditDebitNote.setCreditNoteDate(null);
+		}
+		if(StringUtils.isNotBlank(creditDebitNoteDTO.getApproverCheckBox()) && "Y".equalsIgnoreCase(creditDebitNoteDTO.getApproverCheckBox())){
+			creditDebitNote.setApproverCheckBox(Constants.YES);
+			creditDebitNote.setApprovers(creditDebitNoteDTO.getApprovers());
+		}else{
+			creditDebitNote.setApproverCheckBox(Constants.NO);
+			creditDebitNote.setApprovers(null);
+		}
+		creditDebitNote.setUpdatedBy(user);
+		creditDebitNote.setUpdatedDate(commonUtil.currentDate());
+		
+		// storing Credit or Debit line items
+		if (null != creditDebitNote.getId()) {
+			//invoiceLineItemsIdsList = invoiceLineItemDao.getInvoiceLineItemsIdsByInvoiceId(invoice.getId());
+		}
+		Set<CreditDebitLineItems> invoiceLineItemSet = getCreditDebitLineItems(user, orgLocation, creditDebitNote,creditDebitNoteDTO);
+		creditDebitNote.setCreditDebitLineItems(invoiceLineItemSet);
+
+		invoiceDao.saveCreditDebitNote(creditDebitNote);
+		// save child record
+		if(saveType.equalsIgnoreCase("Send") || saveType.equalsIgnoreCase("Submit")){
+			saveChildCreditDebitNote(creditDebitNote,user,vendorOrgLocation);
+		}
+		return creditDebitNote;
+	}
+
+	private CreditDebitNote saveChildCreditDebitNote(CreditDebitNote parentCreditDebitNote, User user, OrgLocations vendorOrgLocation) throws Exception {
+		CreditDebitNote childCreditDebitNote = null;
+		if(parentCreditDebitNote.getId() !=null){
+			childCreditDebitNote = null;	
+		}else{
+			childCreditDebitNote = new CreditDebitNote();
+		}
+		if(parentCreditDebitNote.getNoteType().equalsIgnoreCase(Constants.CREDIT_NOTE)){
+			childCreditDebitNote.setNoteType(Constants.DEBIT_NOTE);
+		}else{
+			childCreditDebitNote.setNoteType(Constants.CREDIT_NOTE);
+		}
+		childCreditDebitNote.setParentCreditDebitNote(parentCreditDebitNote);
+		childCreditDebitNote.setReferenceNumber(parentCreditDebitNote.getReferenceNumber());
+		childCreditDebitNote.setReason(parentCreditDebitNote.getReason());
+		childCreditDebitNote.setBillingAddress(parentCreditDebitNote.getBillingAddress());
+		childCreditDebitNote.setShippingAddress(parentCreditDebitNote.getShippingAddress());
+		childCreditDebitNote.setInvoice(parentCreditDebitNote.getInvoice());
+		childCreditDebitNote.setNoteStatus(parentCreditDebitNote.getNoteStatus());
+		childCreditDebitNote.setCreditDebitUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		childCreditDebitNote.setCreatedBy(user);
+		childCreditDebitNote.setUpdatedBy(user);
+		childCreditDebitNote.setCreatedDate(parentCreditDebitNote.getCreatedDate());
+		childCreditDebitNote.setUpdatedDate(parentCreditDebitNote.getUpdatedDate());
+		childCreditDebitNote.setSubTotal(parentCreditDebitNote.getSubTotal());
+		childCreditDebitNote.setTotal(parentCreditDebitNote.getTotal());
+		
+		invoiceDao.saveCreditDebitNote(childCreditDebitNote);
+		
+		return childCreditDebitNote;
+		
+	}
+
+	private Set<CreditDebitLineItems> getCreditDebitLineItems(User user, OrgLocations orgLocation,
+			CreditDebitNote creditDebitNote, CreditDebitNoteDTO creditDebitNoteDTO) {
+		Set<CreditDebitLineItems> creditDebitLineItemsList = new HashSet<CreditDebitLineItems>();
+		for(CreditDebitNoteLineItemsDTO creditDebitLineItemsDTO :creditDebitNoteDTO.getCreditDebitNoteLineItems())
+		{
+			CreditDebitLineItems creditDebitLineItems = new CreditDebitLineItems();
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getInlineDescription())){
+			creditDebitLineItems.setInlineDescription(creditDebitLineItemsDTO.getInlineDescription());
+			}else{
+				creditDebitLineItems.setInlineDescription(null);	
+			}
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getLineItemDate())){
+			creditDebitLineItems.setLineItemDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), creditDebitLineItemsDTO.getLineItemDate()));
+			}else{
+			creditDebitLineItems.setLineItemDate(null);	
+			}
+			creditDebitLineItems.setPrice(new BigDecimal(creditDebitLineItemsDTO.getPrice()));
+			creditDebitLineItems.setOrgLocation(orgLocation);
+			creditDebitLineItems.setAmount(new BigDecimal(creditDebitLineItemsDTO.getRowTotal()));
+			creditDebitLineItems.setTotalAmount(new BigDecimal(creditDebitLineItemsDTO.getRowTotalAmount()));
+			creditDebitLineItems.setQuantity(creditDebitLineItemsDTO.getQuantity());
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getTaxType())){
+			creditDebitLineItems.setTaxType(creditDebitLineItemsDTO.getTaxType());
+			}else{
+			creditDebitLineItems.setTaxType(null);	
+			}
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getTaxAmount())){
+			creditDebitLineItems.setTaxAmount(new BigDecimal(creditDebitLineItemsDTO.getTaxAmount()));
+			}else{
+			creditDebitLineItems.setTaxAmount(null);	
+			}
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getAssociates())){
+			creditDebitLineItems.setUser(user);	
+			}
+			creditDebitLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
+			creditDebitLineItems.setCreatedBy(user);
+			creditDebitLineItems.setUpdatedBy(user);
+			creditDebitLineItems.setCreatedDate(commonUtil.currentDate());
+			creditDebitLineItems.setUpdatedDate(commonUtil.currentDate());
+			creditDebitLineItems.setCreditDebitNote(creditDebitNote);
+			creditDebitLineItemsList.add(creditDebitLineItems);
+		}
+		return creditDebitLineItemsList;
 	}
 
 	/*public EmailAttachment zipFileReminderInvoiceAttachedDoc(List<EmailAttachment> docusList) throws MessagingException {

@@ -41,6 +41,7 @@ import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.BillingDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
@@ -61,7 +62,6 @@ import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTax;
-import com.bis.sourcelead.entity.InvoiceTimelineHistory;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -262,6 +262,41 @@ public class InvoiceRestController {
 		return response;
 	}
 	
+	@RequestMapping(value = "/saveCreditDebitNote", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveCreditDebitNote(CreditDebitNoteDTO creditDebitNoteDTO, 
+			@RequestParam(value = "saveType", required = false) String saveType, 
+			@RequestParam(value = "noteType", required = false) String noteType, HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (user != null) {
+				if (Validator.validate(creditDebitNoteDTO)) {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+					//Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					invoiceService.saveCreditDebitNote(user, orgLocation, saveType, noteType, creditDebitNoteDTO);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		
+		return response;
+	}
 	
 	@RequestMapping(value = "/validateInvoiceId",  method = RequestMethod.POST)
     public @ResponseBody Boolean validateInvoiceId(@RequestParam(value="invoiceId", required=false) String invoiceId, @RequestParam(value="invoiceType", required=false) String invoiceType,
@@ -1790,6 +1825,19 @@ public class InvoiceRestController {
 		// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
 		// Constants.UTC_TIMEZONE, yesterDayDate);
 		return TZ_DF_TS.parse(yesterDayDate);
+	}
+	
+	@RequestMapping(value = "/getInvoiceListForCreditDebitNote", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<Invoice> getInvoiceListForCreditDebitNote(@RequestParam(value = "orgRelationId", required = false) String orgRelationId, 
+			@RequestParam(value = "invoiceType", required = false) String invoiceType, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<Invoice> responseList = new ResponseList<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Invoice> invoiceList = invoiceService.getClientBasedInvoiceLists(Long.parseLong(orgRelationId), orgLocation.getId(), invoiceType);
+			responseList.setData(invoiceList);
+		return responseList;
 	}
 	
 	@RequestMapping(value = "/getClientBasedInvoiceList", method = RequestMethod.POST)

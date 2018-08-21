@@ -817,6 +817,8 @@ public class Constants {
 	public static final String TSNEW = "New";
 	public static final String SENT = "SENT";
 	public static final String PAYABLE = "payable";
+	public static final String CREDIT_NOTE = "Credit";
+	public static final String DEBIT_NOTE = "Debit";
 //	public static  String  COUNTRY_INDIA = "India";
 	public static final String COUNTRY_INDIA = "India";
 	public static final String COUNTRY_AUSTRALIA = "Australia";

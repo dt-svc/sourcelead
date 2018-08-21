@@ -11,11 +11,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
+import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceTimelineHistory;
@@ -39,6 +41,8 @@ public interface InvoiceService {
 	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType)throws Exception;
 
 	Invoice saveInvoice(User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, InvoiceDTO invoiceDTO)throws Exception;
+	
+	CreditDebitNote saveCreditDebitNote(User user, OrgLocations orgLocation, String saveType,String noteType, CreditDebitNoteDTO creditDebitNoteDTO)throws Exception;
 	
 	Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception;
 	
