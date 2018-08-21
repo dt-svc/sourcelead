@@ -931,8 +931,8 @@ function getLeaveDetails(finalDateFormatEndDate){
           			if(splitDuration[0] == "Full Day" && splitDuration[1] == "Half Day"){
     		    		$("#fromHalfDayDiv").show();
     		    		$("#toHalfDayDiv").show();
-    		    		$("#checkbox-2").removeAttr("checked");
-    		    		$("#checkbox-3").removeAttr("checked");
+//     		    		$("#checkbox-2").removeAttr("checked");
+//     		    		$("#checkbox-3").removeAttr("checked");
     		    		$("#toDate").attr('data-validation');
     		    		document.getElementById("halfDayHidingDiv").style.display = 'block';
     		    		$("#toDate").attr('data-validation',"required");

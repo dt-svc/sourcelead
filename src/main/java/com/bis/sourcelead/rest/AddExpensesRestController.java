@@ -201,7 +201,7 @@ public class AddExpensesRestController {
 			//DateFormat format = simpleDateFormat;
 			if(expenseId != null){
 				Expenses expenses = expensesService.getExpenseById(expenseId);
-				if(commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(expenses.getProjectMembers().getId(), loginUser,orgLoc)){
+				if(commonUtil.isSuperAdminForProjectMemberToReopenExpenseses(expenses.getProjectMembers().getId(), loginUser,orgLoc)){
 			    	isSuperUser = Constants.YES;
 			    }
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
@@ -492,7 +492,7 @@ public class AddExpensesRestController {
 				notificationScenario.setBody(notificationBody);
 				notificationScenario.setOrgCode(orgLoc.getOrg().getOrgCode());
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink,loginUser,orgLoc.getUser(), orgLoc, notificationScenario,new HashMap<String,String>()) ;
+				emailScenerioUtil.sendNotification(actionLink,loginUser,pah.getApproverUserId(), orgLoc, notificationScenario,new HashMap<String,String>()) ;
 		 	   
 			
 		}

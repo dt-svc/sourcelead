@@ -57,6 +57,7 @@ function prepareWagesAndTaxList(url){
 		result = result + '<th>DEDS</th>';
 		result = result + '<th>NET</th>';
 		result = result + '<th>Batch Number</th>';
+		result = result + '<th>Action</th>';
 		result = result + '</tr>';
       result = result +"</thead>";
       result = result +"<tbody>"; 
@@ -97,7 +98,8 @@ function wagesTaxpagination(url){
             { "data": "local"},
             { "data": "deds"},
             { "data": "net"},
-            { "data": "batchNumber" }
+            { "data": "batchNumber" },
+            { "data": "action" }
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -255,7 +257,16 @@ function wagesTaxpagination(url){
 							}
       	              return result;
                   }
-                } ],
+                } ,
+				{
+					"targets" : colIndex++,
+					"data" : "action",
+					"render" : function(data, type, opt, meta) {
+						var result = "";
+						result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'WageTaxSummary\')"></i></div></td>';
+						return result;
+					}
+				}],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[3,'desc']],

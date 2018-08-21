@@ -26,6 +26,11 @@ import org.joda.time.Weeks;
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
+	public static void main(String[] args) {
+		HashMap<Integer,Integer> h = new  HashMap<>();
+		h.put(1, 1);
+		System.out.println(h.remove(1));
+	}
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -352,7 +357,7 @@ public  class CalendarUtil {
   }
 	
 	
-	public static int getDayOffset(String day_Of_Week){
+	private static int getDayOffset(String day_Of_Week){
 		int day_offset = 0;
 		switch (day_Of_Week) {
 		case "MON":  day_offset = Calendar.MONDAY;
@@ -368,6 +373,29 @@ public  class CalendarUtil {
 		case "SAT":  day_offset = Calendar.SATURDAY;
 		break;
 		case "SUN":  day_offset = Calendar.SATURDAY+1;
+		break;
+		default:   day_offset = Calendar.SUNDAY;
+		break;
+		}
+		return day_offset;
+	}
+	
+	public static int getDayOffsetByWeekName(String day_Of_Week){
+		int day_offset = 0;
+		switch (day_Of_Week) {
+		case "MON":  day_offset = Calendar.MONDAY;
+		break;
+		case "TUE":  day_offset = Calendar.TUESDAY;
+		break;
+		case "WED":  day_offset = Calendar.WEDNESDAY;
+		break;
+		case "THU":  day_offset = Calendar.THURSDAY;
+		break;
+		case "FRI":  day_offset = Calendar.FRIDAY;
+		break;
+		case "SAT":  day_offset = Calendar.SATURDAY;
+		break;
+		case "SUN":  day_offset = Calendar.SUNDAY;
 		break;
 		default:   day_offset = Calendar.SUNDAY;
 		break;
