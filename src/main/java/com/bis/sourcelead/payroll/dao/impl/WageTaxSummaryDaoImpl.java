@@ -71,8 +71,8 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 			qry = " order by wts."+ wagesTaxSummaryDTO.getSortColumn() +" "+wagesTaxSummaryDTO.getSortOrder();
 		}
 		
-		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId ";
-		String countQuery = "from WageTaxSummary wts  where wts.orgLocationId.id =:orgLocationId";
+		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0')";
+		String countQuery = "from WageTaxSummary wts  where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0')";
 		
 		if(wagesTaxSummaryDTO.getSearchValue().contains("/") || wagesTaxSummaryDTO.getSearchValue().contains("-")){
 			String convertedDate=wagesTaxSummaryDTO.getSearchValue();
@@ -85,7 +85,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
             String newDate = parsedDate.format(f2);
             Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
             java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-            String queryDate = "from WageTaxSummary wts where wts.orgLocationId.id =:orgLocationId and ( wts.fromDate =:sqlDate or wts.toDate =:sqlDate or wts.checkDate =:sqlDate)";
+            String queryDate = "from WageTaxSummary wts where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0') and ( wts.fromDate =:sqlDate or wts.toDate =:sqlDate or wts.checkDate =:sqlDate)";
             Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
             response.setData(queryObjDate.list());
 
@@ -138,12 +138,22 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 	public List<WageTaxSummary> getWagesAndTaxListByEmployeeId(OrgLocations orgLocations, Long empId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<WageTaxSummary> wagesAndTaxlist = null;
-		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId and wts.employeeId = :empId";
-		wagesAndTaxlist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId())
-				.setLong("empId", empId).list();
-		if (wagesAndTaxlist != null && wagesAndTaxlist.size() > 0) {
-			return wagesAndTaxlist;
+		String query = "";
+		if(empId != null){
+			query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId and wts.employeeId = :empId";
+			wagesAndTaxlist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId())
+					.setLong("empId", empId).list();
+			if (wagesAndTaxlist != null && wagesAndTaxlist.size() > 0) {
+				return wagesAndTaxlist;
+			}
+		}else{
+			query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId";
+			wagesAndTaxlist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).list();
+			if (wagesAndTaxlist != null && wagesAndTaxlist.size() > 0) {
+				return wagesAndTaxlist;
+			}
 		}
+		
 		return wagesAndTaxlist;
 	}
 

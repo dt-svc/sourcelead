@@ -105,5 +105,9 @@ public class NotificationsServiceImpl implements NotificationsService{
 		return notificationDao.getDynamicAllNotificationsListByUserId(notificationDTO, userId, orgCode, locationCode, timezone);
 	}
 
+	public List<Notifications> getTopTenNotificationsListByUserId(Long userId, String orgCode, String locationCode) {
+		return notificationDao.getTopTenNotificationsListByUserId(userId, orgCode, locationCode);
+	}
+
 
 }

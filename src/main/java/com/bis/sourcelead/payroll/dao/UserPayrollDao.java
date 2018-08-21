@@ -23,4 +23,8 @@ public interface UserPayrollDao {
 
 	Checks getUniqueChecksListByEmployeeId(String empId, Long orgLocationId)throws Exception;
 
+	Object deletePayrollEntitiesByUUIDAndEntityType(Object obj);
+
+	Object getPayrollEntitiesByUUIDAndEntityType(String uuid, String entityType);
+
 }

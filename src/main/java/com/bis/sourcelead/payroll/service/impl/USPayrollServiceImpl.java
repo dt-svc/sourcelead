@@ -1,23 +1,36 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.USPayrollDao;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
@@ -27,18 +40,25 @@ import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollTax;
+import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
+import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
+import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @Service
 public class USPayrollServiceImpl  implements USPayrollService{
@@ -65,6 +85,22 @@ public class USPayrollServiceImpl  implements USPayrollService{
 	
 	@Autowired
 	USPaysheetDao uSPaysheetDao;
+	
+	@Autowired
+	ConfigurePayrollApproverService configurePayrollApproverService;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
+	
+	@Autowired
+	private UserService userService;
+	
 	
 	@Override
 	public ResponseList<PayrollDeductionDTO> findAllDeduction()
@@ -121,6 +157,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			PaysheetFrequency pf = uSPaysheetService.getPayFrequencyByUUID(payrollApproverDTO.getPayrollFrequencyUUID());
 			paySum.setPfUUID(pf.getPaySheetFrequencyUUID());
 			Set<EmployeePayroll> payrollList = pf.getEmployeepayroll();
+			List<Long> payrollIds = null;
+			if(!PayrollConstant.SENT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
 			for (EmployeePayroll payroll : payrollList) {
 				for (USPayrollDTO payrollDTO : payrollApproverDTO.getUspayroll()) {
 					if ((payrollDTO.getIsExcept() != null && "YES".equalsIgnoreCase(payrollDTO.getIsExcept())) && payrollDTO.getEmpPayrollId().longValue() == payroll.getId().longValue()) {
@@ -128,7 +166,12 @@ public class USPayrollServiceImpl  implements USPayrollService{
 					}
 				}
 			}
-			List<Long> payrollIds = payrollList.stream().map(p -> p.getId()).collect(Collectors.toList());
+			payrollIds = payrollList.stream().map(p -> p.getId()).collect(Collectors.toList());
+			}else {
+				List<EmployeePayroll> pidList = payrollList.stream().filter(ep->PayrollConstant.SENT.equalsIgnoreCase(ep.getSubmitForAproverStatus())).collect(Collectors.toList());
+				payrollIds = pidList.stream().map(p -> p.getId()).collect(Collectors.toList());
+			}
+			
 			paySum.setPid(payrollIds);
 			double regularHours = payrollList.stream().filter(p->p.getRegularHours() != null).mapToDouble(p->Double.parseDouble(p.getRegularHours())).sum();
 			double overTimeHours = payrollList.stream().filter(p->p.getOverTimeHours() !=null).mapToDouble(p->Double.parseDouble(p.getOverTimeHours())).sum();
@@ -245,7 +288,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 	}
 
 	@Override
-	public Response<ConfirmPayTotalSumDTO> approvePayroll(ConfirmPayTotalSumDTO confirmPaySumDto, OrgLocations orgLocation)
+	public Response<ConfirmPayTotalSumDTO> approvePayroll(ConfirmPayTotalSumDTO confirmPaySumDto, OrgLocations orgLocation,User loginUser)
 	{
 		Response<ConfirmPayTotalSumDTO> res = new Response<>();
 		try {
@@ -258,7 +301,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				if (period != null) {
 					payPeriodNum = payPeriodNum + period.getPayPeriodNum();
 				}
-				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation);
+				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation,loginUser);
 			}else {
 				int isUpadted = uSPayPeriodService.updatedPayperiod(confirmPaySumDto.getPpn());
 			}
@@ -279,6 +322,9 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				res.setResponse(Result.SUCCESS.name());
 				res.setResponseMessage(Result.SUCCESS.getValue());
 				res.setObject(confirmPaySumDto);
+				
+				sendMailApprovedMailToRequestedUser(orgLocation,savedPF,loginUser);
+                 
 			}
 		} catch (Exception e) {
 			res.setResponse(Result.AWKWARD.name());
@@ -288,8 +334,100 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		return res;
 	}
 	
-	
-	private USPayPeriod saevPayPeriodNumber(PaysheetFrequency pf, int payPeriodNum, OrgLocations orgLocation)
+
+	private void sendMailApprovedMailToRequestedUser(OrgLocations orgLocation,PaysheetFrequency savedPF,User loginUser) throws Exception {
+		
+		User user = null;
+		int approvedSize = 0;
+		USPayPeriod uSPayPeriodw = uSPayPeriodService.getPaySheetFrequencyIdAndOrglocationId(orgLocation, savedPF.getId());
+        	 user = userService.getUserById(uSPayPeriodw.getPaysheetFrequency().getCreatedBy());
+        	 List<EmployeePayroll> empList = uSPayPeriodService.getEmployeePayrollListByPayperiodNum(uSPayPeriodw.getPayPeriodNum());
+        	 for (EmployeePayroll employeePayroll : empList) {
+        		 if(employeePayroll.getSubmitForAproverStatus().equalsIgnoreCase(Constants.APPROVED)){
+      				approvedSize += 1;
+      			}
+			}
+		
+		
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(user.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		SimpleDateFormat dateFormat = orgLocation.getLocFullFormDateFormatter();
+		
+		
+		StringBuilder sb = new StringBuilder();
+		if(user.getLastName() != null) {
+			globalVarsMap.put("requestUserName", sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		}else {
+			globalVarsMap.put("requestUserName", user.getFirstName());
+		}
+		
+		globalVarsMap.put("batchName", savedPF.getUserGroup().getGroupName());
+		globalVarsMap.put("noOfAssociates", String.valueOf(approvedSize));
+		globalVarsMap.put("loginOrg", orgLocation.getOrgLocationName());
+		
+		StringBuilder sbb = new StringBuilder();
+		if(savedPF.getFrequencyEndDate() != null) {
+			globalVarsMap.put("frequency", sbb.append(dateFormat.format(savedPF.getFrequencyStartDate())).append(" to ").append(dateFormat.format(savedPF.getFrequencyEndDate())).toString());
+		}else {
+			globalVarsMap.put("frequency", dateFormat.format(savedPF.getFrequencyStartDate()).toString());	
+		}
+		
+		double amount = savedPF.getEmployeepayroll().stream().mapToDouble(p->p.getNetPay().doubleValue()).sum();
+		globalVarsMap.put("amount", String.valueOf(amount));
+		
+		StringBuilder stringBuilderLoginname = new StringBuilder();
+		globalVarsMap.put("approveLoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		StringBuilder stringBuildforLink = new StringBuilder();
+		globalVarsMap.put("payrollLink", stringBuildforLink.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVE_MAIL_TO_REQUEST_USER,Constants.ENTITY_TYPE_EMAIL);
+       
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVE_MAIL_TO_REQUEST_USER, Constants.ENTITY_TYPE_NOTIFICATION);
+
+
+        //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = null;
+		 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+			 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+		 }
+		 String url = sourceleadUrl;
+        
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getSubject(), globalVarsMap,emailScenario);
+        notificationScenario.setBody(notificationbody);
+
+
+        // construct HTML template using required data
+        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, orgLocation.getOrg(),orgLocation);
+        emailMessage.setSubject(subject);
+        emailMessage.setMessageBody(emailTemplate);
+
+
+		try {
+			
+        emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		}catch (MessagingException e) {
+			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
+		} catch (UnsupportedEncodingException e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		emailScenerioUtil.sendNotification(null, loginUser, user, orgLocation, notificationScenario,new HashMap<String,String>());
+		
+	}
+
+	private USPayPeriod saevPayPeriodNumber(PaysheetFrequency pf, int payPeriodNum, OrgLocations orgLocation, User loginUser)
 	{
 		USPayPeriod  uSPayPeriod = new USPayPeriod();
 		uSPayPeriod.setPaysheetFrequency(pf);
@@ -299,6 +437,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		uSPayPeriod.setCreatedDate(new Date());
 		uSPayPeriod.setUpdatedDate(new Date());
 		uSPayPeriod.setApproverStatus(PayrollConstant.APPROVE);
+		uSPayPeriod.setCreatedBy(loginUser.getId());
+		uSPayPeriod.setUpdatedBy(loginUser.getId());
 		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
 	}
 }
