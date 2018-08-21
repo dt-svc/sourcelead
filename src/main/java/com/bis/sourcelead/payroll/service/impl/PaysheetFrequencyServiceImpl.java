@@ -23,13 +23,16 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
+import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
@@ -74,6 +77,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	PaysheetFrequencyDao paysheetFrequencyDao;
 	
 	@Override
 	public Response<PayrollApproverDTO> sendPayrollForApprover(PayrollApproverDTO payrollApproverDTO, OrgLocations orgLocation,User loginUser)
@@ -229,5 +235,39 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		uSPayPeriod.setUpdatedDate(new Date());
 		uSPayPeriod.setApproverStatus(PayrollConstant.SENT);
 		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
+	}
+
+	@Override
+	public ResponseList<MyPayrollDTO> getMyPayrollListByCandidateId(Long candidateId, OrgLocations orgLocation)
+	{
+		ResponseList<MyPayrollDTO> response = new ResponseList<>();
+		try {
+			List<EmployeePayroll> empPayroll = paysheetFrequencyDao.getMyPayrollListByCandidateId(candidateId);
+			List<MyPayrollDTO> list = null;
+			if (empPayroll != null && empPayroll.size() > 0) {
+				list = new ArrayList<>();
+				for (EmployeePayroll payroll : empPayroll) {
+					MyPayrollDTO myPayrollDTO = new MyPayrollDTO();
+					StringBuilder sb = new StringBuilder();
+					String ferquencyStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payroll.getPaysheetFrequency().getFrequencyStartDate());
+					String ferquencyEndDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payroll.getPaysheetFrequency().getFrequencyEndDate());
+					sb.append(ferquencyStartDate).append("\n").append(ferquencyEndDate);
+					myPayrollDTO.setPayPeriod(sb.toString());
+					String payCheckDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payroll.getPayCheckDate());
+					myPayrollDTO.setPayDate(payCheckDate);
+					myPayrollDTO.setAccountType(payroll.getDepositType());
+					myPayrollDTO.setContribution(payroll.getPostTaxContribution().add(payroll.getPreTaxContribution()));
+					myPayrollDTO.setDeductions(payroll.getPreTaxDeduction().add(payroll.getPostTaxDeduction()));
+					myPayrollDTO.setGrossPay(payroll.getGrossPay());
+					myPayrollDTO.setNetPay(payroll.getNetPay());
+					myPayrollDTO.setTaxes(payroll.getTaxes());
+					list.add(myPayrollDTO);
+				}
+				response.setData(list);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
 	}
 }

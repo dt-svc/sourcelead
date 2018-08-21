@@ -8,6 +8,7 @@
 $(document).ready(function(){
 	$("#myPayrollFormDiv").hide();
 	$("#loansAdvancesDiv").hide();
+	getMyPayrollList();
 });
 </script>
 
@@ -297,7 +298,8 @@ function loansAdvances(){
                                                  
                  <div class="clearfix col-md-12 styleTables">
                  <div class="row">
-                 	<table>
+                 <div id="payrollDataDIV"></div>
+                 	<!-- <table>
                  		<thead>
                  			<tr>
                  				<th>Pay Period</th>
@@ -355,7 +357,7 @@ function loansAdvances(){
                  				</td>
                  			</tr>
                  		</tbody>
-                 	</table>
+                 	</table> -->
                  </div>
                  </div>					
                <div class="clearfix"></div>
@@ -400,5 +402,92 @@ function loansAdvances(){
 		$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 	})
 </script> 
+
+<script>
+function getMyPayrollList(){
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getMyPayrollList?"+tokenParamName+"="+tokenValue                 , 
+	        success: function(result) {
+	        var data = result.data;
+	        
+	        var result = "";
+	        result = result +'<table>';
+	        result = result +'<thead>';
+	        result = result +'<tr>';
+	        result = result +'<th>Pay Period</th>';
+	        result = result +'<th>Pay Date</th>';
+	        result = result +'<th>Account Type</th>';
+	        result = result +'<th>Gross Pay</th>';
+	        result = result +'<th>Taxes</th>';
+	        result = result +'<th>Deductions</th>';
+	        result = result +'<th>Net Pay</th>';
+	        result = result +'<th>Action</th>';
+	        result = result +'</tr>';
+	        result = result +'</thead>';
+	        result = result +'<tbody>';
+	        if(data != null && data.length >0){
+	        	for(var i =0 ; i<data.length;i++){
+	        	var json = data[i];
+	        	result = result +'<tr>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-100 text-center">';
+	 	        result = result +'<div class="clearfix">'+json.payPeriod+'</div>';
+	 	       /*  result = result +'<div class="clearfix">15/02/2018</div>'; */
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'	<div class="tblminwidth-125">';
+	 	        result = result +'<div class="clearfix">'+json.payDate+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-125">';
+	 	        if(json.accountType != null){
+	 	        	result = result +'<div>'+json.accountType+'</div>';	
+	 	        }else{
+	 	        	result = result +'<div>--</div>';
+	 	        }
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-50">';
+	 	        result = result +'<div>'+json.grossPay+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-50">';
+	 	        result = result +'<div>'+json.taxes+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-50">';
+	 	        result = result +'<div>'+json.deductions+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-50">';
+	 	        result = result +'<div>'+json.contribution+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-30">';
+	 	        result = result +'<div class="fa fa-eye"></div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'</tr>';
+	        	}
+	        }
+	        	
+	       
+	        result = result +'</tbody>';
+	        result = result +'</table>';	
+	        
+	        $("#payrollDataDIV").empty();
+	        $("#payrollDataDIV").append(result);
+	        },
+	    });
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
