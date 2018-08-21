@@ -1453,10 +1453,7 @@ public class USPayrollRestController {
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-		ResponseList<MyPayrollDTO> myPayrollDTO = paysheetFrequencyService.getMyPayrollListByCandidateId(candidateId,orgLocation);
-		
-		
-		return null;
+		return paysheetFrequencyService.getMyPayrollListByCandidateId(candidateId,orgLocation);
 	}
 
 }

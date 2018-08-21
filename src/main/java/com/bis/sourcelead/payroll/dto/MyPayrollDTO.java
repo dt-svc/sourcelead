@@ -16,7 +16,7 @@ public class MyPayrollDTO {
 	
 	private BigDecimal deductions;
 	
-	private BigDecimal contributio;
+	private BigDecimal contribution;
 	
 	private BigDecimal netPay;
 
@@ -50,10 +50,6 @@ public class MyPayrollDTO {
 		return deductions;
 	}
 
-	public BigDecimal getContributio()
-	{
-		return contributio;
-	}
 
 	public BigDecimal getNetPay()
 	{
@@ -90,14 +86,21 @@ public class MyPayrollDTO {
 		this.deductions = deductions;
 	}
 
-	public void setContributio(BigDecimal contributio)
-	{
-		this.contributio = contributio;
-	}
-
 	public void setNetPay(BigDecimal netPay)
 	{
 		this.netPay = netPay;
 	}
+
+	public BigDecimal getContribution()
+	{
+		return contribution;
+	}
+
+	public void setContribution(BigDecimal contribution)
+	{
+		this.contribution = contribution;
+	}
+	
+	
 	
 }

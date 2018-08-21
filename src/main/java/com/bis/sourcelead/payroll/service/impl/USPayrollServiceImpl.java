@@ -340,7 +340,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		User user = null;
 		int approvedSize = 0;
 		USPayPeriod uSPayPeriodw = uSPayPeriodService.getPaySheetFrequencyIdAndOrglocationId(orgLocation, savedPF.getId());
-        	 user = userService.getUserById(uSPayPeriodw.getPaysheetFrequency().getCreatedBy());
+        user = userService.getUserById(uSPayPeriodw.getPaysheetFrequency().getCreatedBy());
         	 List<EmployeePayroll> empList = uSPayPeriodService.getEmployeePayrollListByPayperiodNum(uSPayPeriodw.getPayPeriodNum());
         	 for (EmployeePayroll employeePayroll : empList) {
         		 if(employeePayroll.getSubmitForAproverStatus().equalsIgnoreCase(Constants.APPROVED)){
