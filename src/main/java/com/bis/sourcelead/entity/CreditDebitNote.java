@@ -1,0 +1,345 @@
+package com.bis.sourcelead.entity;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+/**
+ * @author Ajith Matta
+ *
+ */
+@Entity
+@Table(name = "CREDIT_DEBIT_NOTE")
+public class CreditDebitNote implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID", nullable = false)
+	private Long id;
+
+	
+	@ManyToOne
+	@JoinColumn(name = "INVOICE_BILL_ID", nullable = false)
+	private Invoice invoice;
+
+	@ManyToOne
+	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
+	private OrgLocations orgLocations;
+	
+	@ManyToOne
+    @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )     
+	private OrgLocations responderLocation;
+	
+	@ManyToOne
+    @JoinColumn(name="ORG_RELATION_ID", nullable=false )
+	private OrgRelations orgRelations;
+	
+	@ManyToOne
+	@JoinColumn(name = "CONTACT_USER_ID")
+	private User contactUser;
+	
+	@ManyToOne
+	@JoinColumn(name = "PARENT_NOTE_ID")
+	private CreditDebitNote parentCreditDebitNote;
+	
+	@ManyToOne
+    @JoinColumn(name="OWNER_USER_ID", nullable=false )     
+	private User ownerUser;
+	
+	@ManyToOne
+	@JoinColumn(name = "ORG_SPOC_ID")
+	private OrgSpoc orgSpoc;
+	
+	
+	@Column(name = "BILLING_ADDRESS")
+	private String billingAddress;
+	
+	@Column(name = "CREDIT_DEBIT_UUID")
+	private String creditDebitUUID;
+	
+	@Column(name = "APPROVER_CHECK_BOX")
+	private String approverCheckBox;
+	
+	@Column(name = "APPROVERS")
+	private String approvers;
+	
+	@Column(name = "SHIPPING_ADDRESS")
+	private String shippingAddress;
+	
+	@Column(name = "REFERENCE_NUMBER")
+	private String referenceNumber;
+	
+	@Column(name = "NOTE_TYPE")
+	private String noteType;
+	
+	@Column(name = "NOTE_STATUS")
+	private String noteStatus;
+		
+	@Column(name = "REASON", columnDefinition = "TEXT default NULL")
+	private String reason;
+	
+	@Column(name = "CREDIT_NOTE_DATE")
+	private Date creditNoteDate;
+	
+	@Column(name = "SUB_TOTAL")
+	private BigDecimal subTotal;
+	
+	@Column(name = "TOTAL")
+	private BigDecimal total;
+
+
+	@Column(name = "STATUS")
+	private String status;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+
+	@ManyToOne
+	@JoinColumn(name = "CREATED_BY")
+	private User createdBy;
+
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+
+	@ManyToOne
+	@JoinColumn(name = "UPDATED_BY")
+	private User updatedBy;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "creditDebitNote")
+	private Set<CreditDebitLineItems> creditDebitLineItems;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Invoice getInvoice() {
+		return invoice;
+	}
+
+	public void setInvoice(Invoice invoice) {
+		this.invoice = invoice;
+	}
+
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
+	}
+
+	public OrgRelations getOrgRelations() {
+		return orgRelations;
+	}
+
+	public void setOrgRelations(OrgRelations orgRelations) {
+		this.orgRelations = orgRelations;
+	}
+
+	public User getContactUser() {
+		return contactUser;
+	}
+
+	public void setContactUser(User contactUser) {
+		this.contactUser = contactUser;
+	}
+
+	
+
+	public CreditDebitNote getParentCreditDebitNote() {
+		return parentCreditDebitNote;
+	}
+
+	public void setParentCreditDebitNote(CreditDebitNote parentCreditDebitNote) {
+		this.parentCreditDebitNote = parentCreditDebitNote;
+	}
+
+	public User getOwnerUser() {
+		return ownerUser;
+	}
+
+	public void setOwnerUser(User ownerUser) {
+		this.ownerUser = ownerUser;
+	}
+
+	public OrgSpoc getOrgSpoc() {
+		return orgSpoc;
+	}
+
+	public void setOrgSpoc(OrgSpoc orgSpoc) {
+		this.orgSpoc = orgSpoc;
+	}
+
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
+	public String getCreditDebitUUID() {
+		return creditDebitUUID;
+	}
+
+	public void setCreditDebitUUID(String creditDebitUUID) {
+		this.creditDebitUUID = creditDebitUUID;
+	}
+
+	public String getApproverCheckBox() {
+		return approverCheckBox;
+	}
+
+	public void setApproverCheckBox(String approverCheckBox) {
+		this.approverCheckBox = approverCheckBox;
+	}
+
+	public String getApprovers() {
+		return approvers;
+	}
+
+	public void setApprovers(String approvers) {
+		this.approvers = approvers;
+	}
+
+	public String getShippingAddress() {
+		return shippingAddress;
+	}
+
+	public void setShippingAddress(String shippingAddress) {
+		this.shippingAddress = shippingAddress;
+	}
+
+	public String getReferenceNumber() {
+		return referenceNumber;
+	}
+
+	public void setReferenceNumber(String referenceNumber) {
+		this.referenceNumber = referenceNumber;
+	}
+
+	public String getNoteType() {
+		return noteType;
+	}
+
+	public void setNoteType(String noteType) {
+		this.noteType = noteType;
+	}
+
+	public String getNoteStatus() {
+		return noteStatus;
+	}
+
+	public void setNoteStatus(String noteStatus) {
+		this.noteStatus = noteStatus;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public Date getCreditNoteDate() {
+		return creditNoteDate;
+	}
+
+	public void setCreditNoteDate(Date creditNoteDate) {
+		this.creditNoteDate = creditNoteDate;
+	}
+
+	public BigDecimal getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(BigDecimal subTotal) {
+		this.subTotal = subTotal;
+	}
+
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public User getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(User updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Set<CreditDebitLineItems> getCreditDebitLineItems() {
+		return creditDebitLineItems;
+	}
+
+	public void setCreditDebitLineItems(Set<CreditDebitLineItems> creditDebitLineItems) {
+		this.creditDebitLineItems = creditDebitLineItems;
+	}
+
+	public OrgLocations getResponderLocation() {
+		return responderLocation;
+	}
+
+	public void setResponderLocation(OrgLocations responderLocation) {
+		this.responderLocation = responderLocation;
+	}
+
+
+}

@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.SourceleadTagsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -76,6 +78,9 @@ public class InvoiceController {
 	
 	@Autowired
 	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private SourceleadTagsService sourceleadTagsService;
@@ -137,6 +142,29 @@ public class InvoiceController {
 			
 		}
 		model.addObject("clientsList", orgClientList);
+		return model;
+		
+	}
+	
+	@RequestMapping(value = "/addCreditNote")
+	public ModelAndView addCreditNote(HttpServletRequest request) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("billing/addCreditNote");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+		List<User> approversList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		orgClientList.forEach(vendors->{
+			if(vendors.getLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
+			}
+			if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
+				vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
+			}
+		});
+		model.addObject("clientsList", orgClientList);
+		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+		model.addObject("approversList",approversList);
 		return model;
 		
 	}

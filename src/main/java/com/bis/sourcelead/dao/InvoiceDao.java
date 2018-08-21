@@ -7,6 +7,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTimelineHistory;
@@ -16,6 +17,8 @@ import com.bis.sourcelead.entity.OrgRelations;
 public interface InvoiceDao{
 
 	Invoice saveInvoce(Invoice invoice)throws Exception;
+	
+	CreditDebitNote saveCreditDebitNote(CreditDebitNote creditDebitNote)throws Exception;
 	
 	ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 	

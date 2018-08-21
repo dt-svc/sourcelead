@@ -32,6 +32,7 @@ import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTimelineHistory;
@@ -47,6 +48,20 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Value("${jdbc.schema}")
 	private String schema;
 
+	@Override
+	@Transactional
+	public CreditDebitNote saveCreditDebitNote(CreditDebitNote creditDebitNote) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (creditDebitNote != null) {
+				session.saveOrUpdate(creditDebitNote);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return creditDebitNote;
+	}
+	
 	@Override
 	@Transactional
 	public Invoice saveInvoce(Invoice invoice) throws Exception {
