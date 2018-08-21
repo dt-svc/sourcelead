@@ -106,6 +106,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private List<String> otherApproverUser;
 	private String notifyToOthers;
 	private String loginUserRole;
+	private String type;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -739,5 +740,13 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setLoginUserRole(String loginUserRole)
 	{
 		this.loginUserRole = loginUserRole;
+	}
+	public String getType()
+	{
+		return type;
+	}
+	public void setType(String type)
+	{
+		this.type = type;
 	}
 }
