@@ -52,7 +52,7 @@ $(document).ready(function(){
     
     <div class="content-area content-new clearfix">
       <div class="billing_dashboard noPad">
-        <div class="tabbable positionRelative">
+        <!-- <div class="tabbable positionRelative">
           <div class="onboardcreateButtons">
             <div class="pull-right select-field mr mt">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
@@ -69,7 +69,7 @@ $(document).ready(function(){
             </div>
           </div>
             </div>
-          </div>
+          </div>-->
          
          <ul class="nav nav-tabs pad15 invoiCount" id="tab_bar">
             
@@ -1202,8 +1202,10 @@ $(document).ready(function() {
 
 <script>
     //search script
+    
+    
         function customInvoiceList() {
-            var selectVal = $("#dayWiseTypeId").val();
+            var selectVal = $('input[name=invoiceCustomDays]:checked').val();
             if (selectVal == "custom") {
                 $(".custom_search").show();
                 customDate();
@@ -1230,17 +1232,17 @@ function closePopup() {
 function customDate(){
 	var result = "";                                                                                                                                  
 	result = result +'	<div class="clearfix row"> <span class="pull-left ml">Custom Search</span>                                                     ';
-	result = result +'   <div class="closeSearch pull-right mr" title="Close Div" onclick="closePopup();">X</div>                                                              ';
+	result = result +'   <div class="closeSearch pull-right mr" title="Close Div" onclick="closePopup();">X</div>                                      ';
 	result = result +'   <div class="clearfix mt10"></div>                                                                                             ';
-	result = result +'   <div class="col-md-5 paddingRight" id="errStartDate">                                                                                           ';
+	result = result +'   <div class="col-md-5 paddingRight" id="errStartDate">                                                                         ';
 	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingStartDate" placeholder="Start Date">                   ';
 	result = result +'                                                                                                                                 ';
 	result = result +'   </div>                                                                                                                        ';
-	result = result +'   <div class="col-md-5 paddingLeft paddingRight" id="errEndDate">                                                                                            ';
+	result = result +'   <div class="col-md-5 paddingLeft paddingRight" id="errEndDate">                                                               ';
 	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingEndDate" placeholder="End Date">                       ';
 	result = result +'                                                                                                                                 ';
 	result = result +'   </div>                                                                                                                        ';
-	result = result +'   <div class="col-md-2 paddingLeft" onclick="searchResults();">                                                                ';
+	result = result +'   <div class="col-md-2 paddingLeft" onclick="searchResults();">                                                                 ';
 	result = result +'     <button type="submit" class="btn btn-sm btn-primary btn-block"><i class="fa fa-search paddingRight"></i></button>           ';
 	result = result +'   </div>                                                                                                                        ';
 	result = result +' </div>                                                                                                                          ';
@@ -1347,7 +1349,7 @@ function exportToReceivablePdf(){
 			tags.push($(this).val());
 		 });
 		var emptyExport = $('#emptyInvoiceId').val();
-		var durationType = $('#dayWiseTypeId').val();
+		var durationType = $('input[name=invoiceCustomDays]:checked').val();
 		
 		var exportStartDate = $("#billingStartDate").val();
 		var exportEndDate = $("#billingEndDate").val();
@@ -1390,7 +1392,7 @@ function exportToReceivableExcel(){
 		   tags.push($(this).val());
 	    });
 		var emptyExport = $('#emptyInvoiceId').val();
-		var durationType = $('#dayWiseTypeId').val();
+		var durationType = $('input[name=invoiceCustomDays]:checked').val();
 		
 		var exportStartDate = $("#billingStartDate").val();
 		var exportEndDate = $("#billingEndDate").val();
@@ -1834,6 +1836,36 @@ function resetInvoiceFilter(){
                                     <li class="checkBox positionRelative" ><input type="radio" checked="checked" value="ACTIVE" name="invoiceStatusDelete"><label for="onboard2">Active</label></li>
 	                                <li class="checkBox positionRelative" ><input type="radio" value="DELETED" name="invoiceStatusDelete"><label for="onboard2">Deleted</label></li>
 			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						
+						<div class="col-md-4">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Active Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+                                    <li class="checkBox positionRelative" ><input type="radio" checked="checked" value="month" name="invoiceCustomDays"><label for="onboard2">Last 30 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" value="twomonths" name="invoiceCustomDays"><label for="onboard2">Last 60 Days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" value="threemonths" name="invoiceCustomDays"><label for="onboard2">Last 90 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" value="sixmonths" name="invoiceCustomDays"><label for="onboard2">Last 180 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" value="oneyear" name="invoiceCustomDays"><label for="onboard2">Last 365 days</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" value="custom" name="invoiceCustomDays"><label for="onboard2">Custom</label></li>
+			                        </ul>
+			                        <!-- <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
+						                <option value="month">Last 30 days</option>
+						                <option value="twomonths">Last 60 Days</option>
+						                <option value="threemonths">Last 90 days</option>
+						                <option value="sixmonths">Last 180 days</option>
+						                <option value="oneyear">Last 365 days</option>
+						                <option value="custom">Custom</option>
+						              </select> -->
+						              
+						              <div class="custom_search">
+						              <div id="customDateDivId"></div>
+						            </div>
 							      </div>
 						     </div> 
 						  </div>

@@ -115,11 +115,11 @@ $(document).ready(function(){
               </a>
             </li>
             
-            <!-- <li class="">
+             <li class="">
               <a href="#invoiceTimeline" data-toggle="tab" title="Notes" aria-expanded="false" onclick="timelineHistoryFunction('', 'desc', null, null, null);">
                 <h5>Timeline</h5>
               </a>
-            </li>  -->        
+            </li>        
             
           </ul>
           <div class="tab-content"> 

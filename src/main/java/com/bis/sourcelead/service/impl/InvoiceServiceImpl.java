@@ -3226,6 +3226,17 @@ public class InvoiceServiceImpl implements InvoiceService {
 						statusBy = " by ";
 						timelineDTO.setReason(timelineHistory.getRejectReason());
 						statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+					} else if (status.equalsIgnoreCase("Void")) {
+						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
+							statusVal = "Void";
+							statusBy = " by ";
+							statusValue = timelineHistory.getInvoice().getOwnerUserId().getFullName();
+						} else if (!timelineHistory.getCreatedBy().getId()
+								.equals(timelineHistory.getOwnerUser().getId())) {
+							statusVal = "Void";
+							statusBy = " by ";
+							statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+						}
 					}
 				}
 			}

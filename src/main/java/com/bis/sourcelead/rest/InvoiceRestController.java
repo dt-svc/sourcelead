@@ -1400,6 +1400,7 @@ public class InvoiceRestController {
 						invoice.setDueAmount("0.0");
 						invoice.setUpdatedDate(commonUtil.currentDate());
 						Invoice childOrParentInvoice = invoiceDao.saveInvoce(invoice);
+						invoiceService.saveInvoiceTimelineHistory(invoice, user, null, null, null, null);
 						if (null != childOrParentInvoice) {
 							if (null != invoice.getParentInvoiceId()) {
 								// parent invoice update
@@ -1409,6 +1410,7 @@ public class InvoiceRestController {
 								parentInvoice.setUpdatedBy(user.getUserCode());
 								parentInvoice.setUpdatedDate(commonUtil.currentDate());
 								invoiceDao.saveInvoce(parentInvoice);
+								invoiceService.saveInvoiceTimelineHistory(parentInvoice, user, null, null, null, null);
 							}else{
 								// update child invoice
 								Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
@@ -1417,6 +1419,7 @@ public class InvoiceRestController {
 								childInvoice.setUpdatedBy(user.getUserCode());
 								childInvoice.setUpdatedDate(commonUtil.currentDate());
 								invoiceDao.saveInvoce(childInvoice);
+								invoiceService.saveInvoiceTimelineHistory(childInvoice, user, null, null, null, null);
 							}
 						}
 						response.setResponse(Result.SUCCESS.name());

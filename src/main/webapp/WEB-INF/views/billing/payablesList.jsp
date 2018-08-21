@@ -612,6 +612,12 @@ function getPayableInvoiceList(){
 		payment.push($(this).val());
 	 });
 	
+	var invoieDeleteStatus = null;
+	
+	$('input:radio[name=invoiceStatusDelete]:checked').each(function() {
+		invoieDeleteStatus = $(this).val();
+	});	
+	
 	var tags = [];
 	$('input:checkbox[name=tags]:checked').each(function() 
      {
@@ -620,7 +626,7 @@ function getPayableInvoiceList(){
 	
 	var searchValue = $("#payableDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags;
+	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags+"&invoiceDeleteStatus="+invoieDeleteStatus;
 	preparePayableList(url,orgLocationDate);
 }
 
@@ -1934,6 +1940,21 @@ function resetBillsFilter(){
 	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="ACCEPTED" name="invoiceStatus"><label for="onboard2">Accepted</label></li>
 	                                <li class="checkBox positionRelative" ><input type="checkbox" value="REJECTED" name="invoiceStatus"><label for="onboard2">Rejected</label></li>
 	                                <li class="checkBox positionRelative" ><input type="checkbox" value="LINKED" name="invoiceStatus"><label for="onboard2">Linked</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="VOID" name="invoiceStatus"><label for="onboard2">Void</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						
+						<div class="col-md-4">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Active Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+                                    <li class="checkBox positionRelative" ><input type="radio" checked="checked" value="ACTIVE" name="invoiceStatusDelete"><label for="onboard2">Active</label></li>
+	                                <li class="checkBox positionRelative" ><input type="radio" value="DELETED" name="invoiceStatusDelete"><label for="onboard2">Deleted</label></li>
 			                        </ul>
 							      </div>
 						     </div> 
