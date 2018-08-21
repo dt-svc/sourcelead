@@ -248,12 +248,11 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				list = new ArrayList<>();
 				for (EmployeePayroll payroll : empPayroll) {
 					MyPayrollDTO myPayrollDTO = new MyPayrollDTO();
-					StringBuilder sb = new StringBuilder();
 					String ferquencyStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payroll.getPaysheetFrequency().getFrequencyStartDate());
 					String ferquencyEndDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payroll.getPaysheetFrequency().getFrequencyEndDate());
-					sb.append(ferquencyStartDate).append("\n").append(ferquencyEndDate);
-					myPayrollDTO.setPayPeriod(sb.toString());
 					String payCheckDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payroll.getPayCheckDate());
+					myPayrollDTO.setPayPeriodStartDate(ferquencyStartDate);
+					myPayrollDTO.setPayPeriodEndDate(ferquencyEndDate);
 					myPayrollDTO.setPayDate(payCheckDate);
 					myPayrollDTO.setAccountType(payroll.getDepositType());
 					myPayrollDTO.setContribution(payroll.getPostTaxContribution().add(payroll.getPreTaxContribution()));
