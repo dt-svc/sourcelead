@@ -127,7 +127,7 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public USPayPeriod getPaySheetFrequencyIdAndOrglocationId(OrgLocations orgLocation,Long payfrequencyId) {
+	public USPayPeriod getPayPeriodByOrglocationId(OrgLocations orgLocation,Long payfrequencyId) {
 		
 		USPayPeriod payPeriod = null;
 		try {
@@ -137,7 +137,6 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		
 		return payPeriod;
 	}
 
