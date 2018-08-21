@@ -339,7 +339,7 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 					payrollDTO.setEmpPayrollUUID(pay.getUsEmpPayrollUUID());
 					payrollDTO.setGrossPay(pay.getGrossPay());
 					payrollDTO.setNetPay(pay.getNetPay());
-					payrollDTO.setRegularHrsTotalAmt(pay.getRehularHoursAmount());
+					payrollDTO.setRegularHrsTotalAmt(pay.getRegularHoursAmount());
 					payrollDTO.setPayRate(pay.getEmpPayRate());
 					payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
 					payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());

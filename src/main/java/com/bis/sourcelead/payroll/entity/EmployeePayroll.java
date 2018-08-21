@@ -49,7 +49,7 @@ public class EmployeePayroll {
 	private String regularHours;
 	
 	@Column(name = "REGULAR_HOURS_AMOUNT")
-	private BigDecimal rehularHoursAmount;
+	private BigDecimal regularHoursAmount;
 	
 	@Column(name = "OVER_TIME_AMOUNT")
 	private BigDecimal overTimeAmount;
@@ -166,10 +166,6 @@ public class EmployeePayroll {
 		return regularHours;
 	}
 
-	public BigDecimal getRehularHoursAmount()
-	{
-		return rehularHoursAmount;
-	}
 
 	public BigDecimal getOverTimeAmount()
 	{
@@ -248,9 +244,15 @@ public class EmployeePayroll {
 		this.regularHours = regularHours;
 	}
 
-	public void setRehularHoursAmount(BigDecimal rehularHoursAmount)
+
+	public BigDecimal getRegularHoursAmount()
 	{
-		this.rehularHoursAmount = rehularHoursAmount;
+		return regularHoursAmount;
+	}
+
+	public void setRegularHoursAmount(BigDecimal regularHoursAmount)
+	{
+		this.regularHoursAmount = regularHoursAmount;
 	}
 
 	public void setOverTimeAmount(BigDecimal overTimeAmount)

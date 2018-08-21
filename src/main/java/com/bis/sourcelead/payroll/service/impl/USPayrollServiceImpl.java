@@ -175,7 +175,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			paySum.setPid(payrollIds);
 			double regularHours = payrollList.stream().filter(p->p.getRegularHours() != null).mapToDouble(p->Double.parseDouble(p.getRegularHours())).sum();
 			double overTimeHours = payrollList.stream().filter(p->p.getOverTimeHours() !=null).mapToDouble(p->Double.parseDouble(p.getOverTimeHours())).sum();
-			double regularTimeEarnings = payrollList.stream().mapToDouble(p->p.getRehularHoursAmount().doubleValue()).sum();
+			double regularTimeEarnings = payrollList.stream().mapToDouble(p->p.getRegularHoursAmount().doubleValue()).sum();
 			double overTimeEarnings = payrollList.stream().filter(p->p.getOverTimeAmount() != null).mapToDouble(p->p.getOverTimeAmount().doubleValue()).sum();
 			double grossPay = payrollList.stream().mapToDouble(p->p.getGrossPay().doubleValue()).sum();
 			double netPay = payrollList.stream().mapToDouble(p->p.getNetPay().doubleValue()).sum();
