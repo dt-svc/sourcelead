@@ -251,7 +251,7 @@ function calculateHourlyRateSal(){
 			        		result = result +' <tr>';
 			        		result = result +' <td>';
 			        		result = result +' 	<div class="checkbox-new">';
-			        		result = result +' 	<input class="checkbox-custom" id="'+i+'payItemCheck" name="associatePayItemDto['+i+'].payItemCheck" type="checkbox">';
+			        		result = result +' 	<input class="checkbox-custom" id="'+i+'payItemCheck" name="associatePayItemDto['+i+'].payItemCheck" type="checkbox" onclick="selectCheckBox('+i+');">';
 			        		result = result +' 	<label for="'+i+'payItemCheck" class="checkbox-custom-label"></label>';
 			        		result = result +' </div>';
 			        		result = result +' </td>';
@@ -279,7 +279,7 @@ function calculateHourlyRateSal(){
 							result = result +'</td>';
 							result = result +'<td>';
 							result = result +'	<div class="tblminwidth-50">';
-							result = result +'		<input class="form-control calendar" placeholder="Effective Date" data-validation="required" field-name="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text">';
+							result = result +'		<input class="form-control calendar" placeholder="Effective Date" field-name="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text">';
 							result = result +'	</div>';
 							result = result +'</td>';
 							result = result +'<td>';
@@ -410,6 +410,13 @@ function shiftToAssociateTab(){
 <script>
 function selectCheckBox(i){
 	var isChecked = $("#"+i+"payItemCheck").is(':checked');
+	if(isChecked){
+		$("#"+i+"effectiveDate").removeAttr('data-validation-optional');
+		$("#"+i+"effectiveDate").attr('data-validation', "required");
+	}else{
+		$("#"+i+"effectiveDate").removeAttr('data-validation');
+		$("#"+i+"effectiveDate").attr('data-validation-optional', "true");
+	}
 	$("#"+i+"payItemCheck").val(isChecked);
 }
 </script>  
