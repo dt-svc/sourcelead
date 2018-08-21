@@ -89,6 +89,7 @@ public class InvoiceDTO extends SearchDTO {
     private String invoiceUUID;
     private String count;
     private String tags;
+    private String invoiceDeleteStatus;
     
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
@@ -528,6 +529,14 @@ public class InvoiceDTO extends SearchDTO {
 
 	public void setOrgRelationId(String orgRelationId) {
 		this.orgRelationId = orgRelationId;
+	}
+
+	public String getInvoiceDeleteStatus() {
+		return invoiceDeleteStatus;
+	}
+
+	public void setInvoiceDeleteStatus(String invoiceDeleteStatus) {
+		this.invoiceDeleteStatus = invoiceDeleteStatus;
 	}
 	
 
