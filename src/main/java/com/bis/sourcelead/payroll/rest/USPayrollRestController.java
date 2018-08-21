@@ -1382,11 +1382,12 @@ public class USPayrollRestController {
 	
 	@RequestMapping(value = "/validateContribution", method = RequestMethod.GET)
 	@ResponseBody
-	public boolean validateContribution(@RequestParam(value = "contriType",required = false)Long contriTypId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public boolean validateContribution(@RequestParam(value = "contriType",required = false)Long contriTypId,@RequestParam(value = "userId",required = false)Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		boolean bol = false;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		AssociateContribution  validateCon = associateContributionService.getValidateContribution(contriTypId,orgLocation);	
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
+		AssociateContribution  validateCon = associateContributionService.getValidateContribution(candidate.getId(),contriTypId,orgLocation);	
 		if(validateCon != null) {
 			bol = true;
 		}
