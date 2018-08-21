@@ -519,21 +519,21 @@ function calculateSal(){
 	var annualSal = $("#annualSal").val();
 	var hours = $("#standardHours").val();
 	if(annualSal != null && annualSal != '' && annualSal != 'undefined' && hours != null && hours != '' && hours != 'undefined'){
-		
+		var rate = null;
 		if(payFrequency === 'Annual'){
-			var rate = parseFloat(annualSal) / 1;
+			rate = parseFloat(annualSal) / 1;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		if(payFrequency === 'Monthly'){
-			var rate = parseFloat(annualSal) / 12;
+			rate = parseFloat(annualSal) / 12;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		if(payFrequency === 'Bi-Weekly'){
-			var rate = parseFloat(annualSal) / 26;
+			rate = parseFloat(annualSal) / 26;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		if(payFrequency === 'Weekly'){
-			var rate = parseFloat(annualSal) / 52;
+			rate = parseFloat(annualSal) / 52;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		var hourRate = rate/hours;
@@ -566,10 +566,11 @@ function calculatePayPerSal(){
 			$("#annualSal").val(annualRate.toFixed(2));
 		}
 		
-		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+// 		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
 			var hourlyrate = parseFloat(perPaySal) / standardHours;
 			$("#hourlyRate").val(hourlyrate.toFixed(2));
-		}
+// 		}
+			calaculateIncDecPer();
 	}
 	
 	
@@ -584,10 +585,11 @@ function calculateHourlyRateSal(){
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	var annualSal = $("#annualSal").val();
-	if(annualSal != null && annualSal != '' && annualSal != 'undefined'){
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
 		var perPaySal = parseFloat(hourlyRate) * standardHours;
 		$("#perPaySal").val(perPaySal.toFixed(2));
 		calculatePayPerSal();
+		calaculateIncDecPer();
 	}
 }
 </script>
@@ -597,14 +599,16 @@ function calculateHourlyRateSal(){
 function calculatePercentSal(){
 	
 	var increasePer  = $("#increasePer").val();
-	var annualSal = $("#previousAnnualSal").val();
-	var percentValue = increasePer/100;
+	if(increasePer != null && increasePer != '' && increasePer != 'undefined'){
+		var annualSal = $("#previousAnnualSal").val();
+		var percentValue = increasePer/100;
 
-	var percentMulValue =  percentValue * parseFloat(annualSal);
-	var incrementAnnualSal = parseFloat(percentMulValue)  + parseFloat(annualSal) ;
-	$("#annualSal").val(incrementAnnualSal);
-	$("#salaryType").val('increment');
-	calculateSal();
+		var percentMulValue =  percentValue * parseFloat(annualSal);
+		var incrementAnnualSal = parseFloat(percentMulValue)  + parseFloat(annualSal) ;
+		$("#annualSal").val(incrementAnnualSal);
+		$("#salaryType").val('increment');
+		calculateSal();
+	}
 }
 </script>
 
@@ -612,7 +616,7 @@ function calculatePercentSal(){
 function calaculateIncDecPer(){
 	var curAnnualSal = $("#annualSal").val();
 	var previousAnnualSal = $("#previousAnnualSal").val();
-	if(previousAnnualSal != null && previousAnnualSal != '' && previousAnnualSal != 'undefined'){
+	if(previousAnnualSal != null && previousAnnualSal != '' && previousAnnualSal != 'undefined' && curAnnualSal != null && curAnnualSal != '' && curAnnualSal != 'undefined'){
 		if(curAnnualSal > previousAnnualSal){
 			$("#salaryType").val('increment');
 			var diffSal = parseFloat(curAnnualSal) - parseFloat(previousAnnualSal);
@@ -629,8 +633,9 @@ function calaculateIncDecPer(){
 			$("#increasePer").val(icrementPer.toFixed(2));
 // 			calculateSal();
 		}
+		calculateSal();
 	}
-	calculateSal();
+	
 	
 }
 </script>
