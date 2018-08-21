@@ -1534,26 +1534,7 @@ this.value = newVal.substring(0, 12);
  });
 </script>
 
-<script type="text/javascript">
-$('#i_20_number').mask('N-9999999999', {
-    translation: {
-        '#': {
-            pattern: "/N{1}[0-9]{10}/", optional: true
-        }
-    },
- placeholder: ""
-});
 
-$('#eadNumber').mask('999-999-999', {
-    translation: {
-        '9': {
-            pattern: "/[0-9]{9}/", optional: true
-        }
-    },
-   placeholder: ""
-});
-
-</script>
 <!-- LcaNumber AutoPopulate Ui script -->
 <script type="text/javascript">
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -1583,19 +1564,8 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 			    	type: "GET",
 			        url: sourceleadUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
 			        success: function(data) {
-			    		// setting the startDate,endDate for current Lca.
-			    		 if(data.startDate != null && typeof  data.startDate != 'undefined' && data.startDate!=''){
-			    			var lcaStartDate =  moment(data.startDate).format(finalDateFormatOrg);
-			    		   $("#lcaStartDate").val(lcaStartDate);
-			    		   $("#lcaStartDate").datepicker('disable');
-			    		}
-			    		if(data.endDate != null && typeof  data.endDate != 'undefined' && data.endDate!=''){
-			    			var lcaEndDate =  moment(data.endDate).format(finalDateFormatOrg);
-			    		   $("#lcaEndDate").val(lcaEndDate);
-			    		   $("#lcaEndDate").datepicker('disable');
-			    		} 
-			    		
-			    		if(data.lcaLocation != null && typeof data.lcaLocation != 'undefined' && data.lcaLocation !=''){
+			        	
+			        	if(data.lcaLocation != null && typeof data.lcaLocation != 'undefined' && data.lcaLocation !=''){
 			    			 $("#lcaCurrLocation").val(data.lcaLocation);
 			    		}
 			    		// Job And LCA Locations Are Equal Or Not Show Alert msg.
@@ -1603,6 +1573,21 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 			    		if (jobLocation !== data.lcaLocation){
 			    			alert("Job And LCA Locations are not matched");
 			    		}
+			    		
+			    		// setting the startDate,endDate for current Lca.
+			    		
+			    		 if(data.lcaStartDateStr != null && typeof  data.lcaStartDateStr != 'undefined' && data.lcaStartDateStr!=''){
+			    			//var startDateStr =  moment(data.lcaStartDateStr).format(finalDateFormatOrg);
+			    		   $("#lcaStartDate").val(data.lcaStartDateStr);
+			    		   $("#lcaStartDate").datepicker('disable');
+			    		}
+			    		if(data.lcaEndDateStr != null && typeof  data.lcaEndDateStr != 'undefined' && data.lcaEndDateStr!=''){
+			    		//	var lcaEndDateStr =  moment(data.lcaEndDateStr).format(finalDateFormatOrg);
+			    		   $("#lcaEndDate").val(data.lcaEndDateStr);
+			    		   $("#lcaEndDate").datepicker('disable');
+			    		} 
+			    		
+			    		
 			        }
 			 });
 		 	return false;
@@ -1658,15 +1643,15 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 			        url: sourceleadUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
 			        success: function(data) {
 			    		// setting the startDate,endDate for current Lca.
-			    		 if(data.startDate != null && typeof  data.startDate != 'undefined' && data.startDate!=''){
-			    			var prevLcaStartDate =  moment(data.startDate).format(finalDateFormatOrg);
-			    		   $("#prevLcaStartDate").val(prevLcaStartDate);
+			    		 if(data.lcaStartDateStr != null && typeof  data.lcaStartDateStr != 'undefined' && data.lcaStartDateStr!=''){
+			    		//	var prevLcaStartDate =  moment(data.startDate).format(finalDateFormatOrg);
+			    		   $("#prevLcaStartDate").val(data.lcaStartDateStr);
 			    		   $("#prevLcaStartDate").datepicker('disable');
 			    		}
 			    		
-			    		if(data.endDate != null && typeof  data.endDate != 'undefined' && data.endDate!=''){
-			    			var prevLcaEndDate =  moment(data.endDate).format(finalDateFormatOrg);
-			    		   $("#prevLcaEndDate").val(prevLcaEndDate);
+			    		if(data.lcaEndDateStr != null && typeof  data.lcaEndDateStr != 'undefined' && data.lcaEndDateStr!=''){
+			    			//var prevLcaEndDate =  moment(data.endDate).format(finalDateFormatOrg);
+			    		   $("#prevLcaEndDate").val(data.lcaEndDateStr);
 			    		   $("#prevLcaEndDate").datepicker('disable');
 			    		} 
 			        }
@@ -1701,4 +1686,24 @@ function  selectBeneficiary() {
     	alert("Please Select Your Beneficiary ");
     }      
 }
+</script>
+
+<script type="text/javascript">
+$('#i_20_number').mask('N-9999999999', {
+    translation: {
+        '#': {
+            pattern: "/N{1}[0-9]{10}/", optional: true
+        }
+    },
+ placeholder: ""
+});
+
+$('#eadNumber').mask('999-999-999', {
+    translation: {
+        '9': {
+            pattern: "/[0-9]{9}/", optional: true
+        }
+    },
+   placeholder: ""
+});
 </script>
