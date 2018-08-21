@@ -147,6 +147,7 @@ function addbatches(groupUUID){
 }
 
 function deleteUserGroup(groupUUID){
+	$("#popUp").empty();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -165,6 +166,7 @@ function confirmDeleteUserGroup(groupUUID){
              location.href = "/errorPage";
          } else if (result.response === "SUCCESS") {
         	 $("#remove_user_pop, .project_inn_mask").fadeOut();
+        	 $("#popUp").empty();
         	 hub();
          }
 	});
@@ -172,6 +174,7 @@ function confirmDeleteUserGroup(groupUUID){
 
 function cancelDelete(){
 	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#popUp").empty();
 }
 </script>
 
@@ -301,7 +304,7 @@ function userGroupPaginationFun(url){
                 "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
-                		result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil mr" onclick="addbatches(\''+opt.groupUUID+'\');"></i><i class="glyphicon glyphicon-trash" onclick="deleteUserGroup(\''+opt.groupUUID+'\');"></i>';
+                		result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil mr cursorPointer" onclick="addbatches(\''+opt.groupUUID+'\');"></i><i class="glyphicon glyphicon-trash" onclick="deleteUserGroup(\''+opt.groupUUID+'\');"></i>';
                 		result = result + '</div>';
                 		result = result + '</td>';
     	              return result;

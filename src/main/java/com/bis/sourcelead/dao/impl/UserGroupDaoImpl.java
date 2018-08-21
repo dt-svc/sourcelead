@@ -170,9 +170,9 @@ public class UserGroupDaoImpl implements UserGroupDao{
 
 	@Override
 	@Transactional
-	public TotalHoursDTO getTotalHoursByCandidateId(Long candidateId,Date sDate,Date eDate)
+	public List<TotalHoursDTO> getTotalHoursByCandidateId(Long candidateId,Date sDate,Date eDate)
 	{
-		TotalHoursDTO totalHoursDTO = null;
+		List<TotalHoursDTO> totalHoursDTO = null;
 		try {
 			java.sql.Date startDate = new java.sql.Date(sDate.getTime());
 			java.sql.Date endDate = new java.sql.Date(eDate.getTime());
@@ -185,27 +185,29 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			.append(" projmem.CURRENT_BILL_RATE as currentBillRate,")
 			.append(" projmem.BILL_RATE_CURRENCY as billRateCurrency,")
 			.append(" projmem.PAY_RATE_TYPE as payRateType,")
-			.append(" timesheet.START_DATE as startDate,")
-			.append(" timesheet.END_DATE as endDate,")
-			.append(" timesheet.BILLABLE_HOURS as billableHours,")
-			.append(" timesheet.TOTAL_HOURS as totalHours,")
-			.append(" timesheet.ESTIMATED_HOURS as estimatedHours,")
-			.append(" timesheet.NON_BILLABLE_HOURS as nonBillableHours")
+			.append(" sah.FREQUENCY_START_DATE as startDate,")
+			.append(" sah.FREQUENCY_END_DATE as endDate,")
+			.append(" ts.ID as submissinId,")
+			.append(" ts.BILLABLE_HOURS as billableHours,")
+			.append(" ts.TOTAL_HOURS as totalHours,")
+			.append(" ts.ESTIMATED_HOURS as estimatedHours,")
+			.append(" ts.NON_BILLABLE_HOURS as nonBillableHours")
 			.append(" from ")
 			.append(" USER user,")
 			.append(" CANDIDATE can,")
 			.append(" PROJECT_MEMBERS projmem,")
-			.append(" TIMESHEET_SUBMISSIONS timesheet")
+			.append("SUBMISSION_APPROVER_HIERARCHY sah,")
+			.append(" TIMESHEET_SUBMISSIONS ts")
 			.append(" where can.ID  = projmem.CANDIDATE_ID")
-			.append(" AND   projmem.MASTER_CANDIDATE_ID = timesheet.MASTER_CANDIDATE_ID")
-			.append (" AND   projmem.PROJECT_ID = timesheet.PROJECT_ID")
-			.append(" AND can.ID = :candidateId and timesheet.START_DATE = :startDate and timesheet.END_DATE = :endDate ");
+			.append(" AND   projmem.MASTER_CANDIDATE_ID = ts.MASTER_CANDIDATE_ID")
+			.append (" AND   projmem.PROJECT_ID = ts.PROJECT_ID")
+			.append(" AND can.ID = :candidateId and sah.FREQUENCY_START_DATE = :startDate and sah.FREQUENCY_END_DATE = :endDate ");
 //				 System.out.println(qry.toString());
 			        
 					Query queryString = session.createSQLQuery(qry.toString());
 					queryString.setParameter("candidateId", candidateId).setDate("startDate", startDate).setDate("endDate",endDate);
 					queryString.setResultTransformer(Transformers.aliasToBean(TotalHoursDTO.class));
-					totalHoursDTO  = (TotalHoursDTO) queryString.uniqueResult();
+					totalHoursDTO  =  queryString.list();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
