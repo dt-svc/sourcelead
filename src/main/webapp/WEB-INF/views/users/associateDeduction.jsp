@@ -3,17 +3,21 @@
  
  <script type="text/javascript">
     $(document).ready(function(){
+    	var value = [];
     	$(".add-row").click(function(){
             var i = $("#index").val();
         	var deductionType = $("#dedType").val();
         	var deductionTypeValue = $('#dedType :selected').text();
         	var amount = $("#amt").val();
+        	if(!value.includes(deductionTypeValue)){
+        		value.push(deductionTypeValue);
         	if(deductionType != null && deductionType != '' && deductionType != 'undefined' && amount != null && amount != '' && amount != 'undefined'){
                   var method = $("#mthd").val();
                   var markup = "<tr><td><input type='checkbox' name='record'></td><td><input type='hidden' id='deductionType' name='deductionDTOList["+i+"].deductionType' value='"+deductionType+"'/>" + deductionTypeValue + "</td><td><input type='hidden' id='method' name='deductionDTOList["+i+"].method' value='"+method+"' />" + method + "</td><td><input type='hidden' id='amount' name='deductionDTOList["+i+"].amount' value='"+amount+"'/>" + amount + "</td><td><a onclick='deleteRow();'><i class='fa fa-remove text-danger'></i></a></td></tr>";
                   $("#deductionTrAdd").append(markup);
                   i++;
-                  $("#index").val(i);	
+                  $("#index").val(i);
+                          	}
         	}
           
         });

@@ -50,6 +50,7 @@ import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
@@ -1405,11 +1406,12 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = "/validateContribution", method = RequestMethod.GET)
 	@ResponseBody
-	public boolean validateContribution(@RequestParam(value = "contriType",required = false)Long contriTypId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public boolean validateContribution(@RequestParam(value = "contriType",required = false)Long contriTypId,@RequestParam(value = "userId",required = false)Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		boolean bol = false;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		AssociateContribution  validateCon = associateContributionService.getValidateContribution(contriTypId,orgLocation);	
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
+		AssociateContribution  validateCon = associateContributionService.getValidateContribution(candidate.getId(),contriTypId,orgLocation);	
 		if(validateCon != null) {
 			bol = true;
 		}
@@ -1437,6 +1439,22 @@ public class USPayrollRestController {
 		return filteredGroupList;
 	}
 	
-//	/myPayroll
+	
+	@RequestMapping(value = "/myPayroll")
+	public ModelAndView myPayrollJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/myPayroll");
+		return model;
+	}
+	
+	@RequestMapping(value = {"/getMyPayrollList","/rest/getMyPayrollList"}, method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<MyPayrollDTO> getMyPayrollList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		return paysheetFrequencyService.getMyPayrollListByCandidateId(candidateId,orgLocation);
+	}
 
 }

@@ -68,10 +68,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 
 	@Override
 	@Transactional
-	public AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation) {
+	public AssociateContribution getValidateContribution(Long candidateId,Long contriTypId, OrgLocations orgLocation) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AssociateContribution assContribution where assContribution.contributionTypeId.id =:contriTypeId and assContribution.orgLocationId.id =:orgLocationId and assContribution.status = 1";
-		List<AssociateContribution> assContribution = session.createQuery(query).setLong("contriTypeId", contriTypId).setLong("orgLocationId", orgLocation.getId()).list();
+		String query = "from AssociateContribution assContribution where assContribution.candidate.id =:candidateId and assContribution.contributionTypeId.id =:contriTypeId and assContribution.orgLocationId.id =:orgLocationId and assContribution.status = 1";
+		List<AssociateContribution> assContribution = session.createQuery(query).setLong("candidateId",candidateId).setLong("contriTypeId", contriTypId).setLong("orgLocationId", orgLocation.getId()).list();
 		if(assContribution.size() > 0) {
 			return assContribution.get(0);
 		}else {
@@ -95,6 +95,15 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 		}
 		
 		return associateContribution;
+	}
+
+	@Override
+	@Transactional
+	public int deleteAssociateContributionByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "update AssociateContribution assContribution set assContribution.status = 0 where assContribution.orgLocationId.id =:orgLocationId and assContribution.candidate.id = :candidateId";
+		return session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).executeUpdate();
+		
 	}
 
 }

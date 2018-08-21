@@ -131,27 +131,27 @@ function calculateSal(){
 	var annualSal = $("#annualSal").val();
 	var hours = $("#standardHours").val();
 	if(annualSal != null && annualSal != '' && annualSal != 'undefined' && hours != null && hours != '' && hours != 'undefined'){
-		
+		var rate = "";
 		if(payFrequency === 'Annual'){
-			var rate = parseFloat(annualSal) / 1;
+			rate = parseFloat(annualSal) / 1;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
 		}
 		if(payFrequency === 'Monthly'){
-			var rate = parseFloat(annualSal) / 12;
+			rate = parseFloat(annualSal) / 12;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
 		}
 		if(payFrequency === 'Bi-Weekly'){
-			var rate = parseFloat(annualSal) / 26;
+			rate = parseFloat(annualSal) / 26;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
 		}
 		if(payFrequency === 'Weekly'){
-			var rate = parseFloat(annualSal) / 52;
+			rate = parseFloat(annualSal) / 52;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
@@ -166,7 +166,7 @@ function calculateSal(){
 function calculatePayPerSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
-	var hourlyRate = $("#hourlyRate").val();
+// 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	if(perPaySal !='' && perPaySal != 'undefined'){
 		if(payFrequency === 'Annual'){
@@ -186,10 +186,10 @@ function calculatePayPerSal(){
 			$("#annualSal").val(annualRate.toFixed(2));
 		}
 		
-		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+// 		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
 			var hourlyrate = parseFloat(perPaySal) / standardHours;
 			$("#hourlyRate").val(hourlyrate.toFixed(2));
-		}
+// 		}
 	}
 	
 	
@@ -204,7 +204,7 @@ function calculateHourlyRateSal(){
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	var annualSal = $("#annualSal").val();
-	if(annualSal != null && annualSal != '' && annualSal != 'undefined'){
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
 		var perPaySal = parseFloat(hourlyRate) * standardHours;
 		$("#perPaySal").val(perPaySal.toFixed(2));
 		calculatePayPerSal();
