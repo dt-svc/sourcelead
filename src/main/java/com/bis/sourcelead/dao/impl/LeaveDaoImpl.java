@@ -27,12 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
-
 import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.HrLeaveReportDTO;
-
 import com.bis.sourcelead.dto.LeaveDTO;
-import com.bis.sourcelead.dto.LeaveHolidayHoursDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
@@ -1157,6 +1154,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		Date endDate = null;
 		java.sql.Date startDateSqlDate = null;
 		java.sql.Date endDateSqlDate = null;
+		String query=null;
 		Session session = this.sessionFactory.getCurrentSession();
 		if(hrLeaveReportDTO.getStartDate() != null && StringUtils.isNotEmpty(hrLeaveReportDTO.getStartDate()) && hrLeaveReportDTO.getEndDate() != null && StringUtils.isNotEmpty(hrLeaveReportDTO.getEndDate())){
 		startDate=format.parse(hrLeaveReportDTO.getStartDate());
@@ -1166,15 +1164,16 @@ public class LeaveDaoImpl implements LeaveDao{
 		startDateSqlDate = new java.sql.Date(startDate.getTime());
 		endDateSqlDate = new java.sql.Date(endDate.getTime());
 	}
-		String query=null;
-		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
-			query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
+
+		if(hrLeaveReportDTO.getStatus() !=null){
+			query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and  leaveReport.status  IN (:leaveStatusList) ";
+
+		}else{
+			query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and leaveReport.status = 'APPROVED' ";
+
 		}
-		else{
-		query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and leaveReport.reportingManagerId = :loginUserId and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and (leaveReport.status = 'APPROVED' or leaveReport.status = 'PENDING')";
+		StringBuilder query1 = new StringBuilder();
 
-
-		}		StringBuilder query1 = new StringBuilder();
 		if (StringUtils.isNotBlank(hrLeaveReportDTO.getSearchValue())) {
 			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
 			Matcher matcher = pattern.matcher(hrLeaveReportDTO.getSearchValue());
@@ -1183,6 +1182,9 @@ public class LeaveDaoImpl implements LeaveDao{
 					String replacedValue = hrLeaveReportDTO.getSearchValue().replaceAll("/", "-");
 					Date date1 = format.parse(replacedValue);
 					startDateSqlDate = new java.sql.Date(date1.getTime());
+				}
+				if (startDateSqlDate != null) {
+					query1.append("OR (leaveReport.fromDate like '%" + startDateSqlDate + "%' and leaveReport.toDate like '%" + startDateSqlDate + "%'" + ") ");
 				}
 			}
 			
@@ -1208,6 +1210,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		String employmentTypeSubQuery = "";
 		String leaveTypeSubQuery= "";
 		String associateSubQuery= "";
+		String leaveStatusSubQuery="";
 		if (hrLeaveReportDTO.getReportRolesId() != null && !hrLeaveReportDTO.getReportRolesId().isEmpty() ) {
 			userRoleSubQuery = " and leaveReport.roleId  IN (:userRoleList)";
 		}
@@ -1223,6 +1226,9 @@ public class LeaveDaoImpl implements LeaveDao{
 		if (hrLeaveReportDTO.getAssociateListId() != null && !hrLeaveReportDTO.getAssociateListId().isEmpty()) {
 			associateSubQuery = " and leaveReport.userId  IN (:associateNamesList)";
 		}
+		if (hrLeaveReportDTO.getStatus() != null && !hrLeaveReportDTO.getStatus().isEmpty()) {
+			leaveStatusSubQuery = " and leaveReport.status  IN (:leaveStatusList)";
+		}
 		Query queryString = null;
 		Query countQueryString;
 		List<LeaveReportView> leaveReportList = null;
@@ -1236,45 +1242,55 @@ public class LeaveDaoImpl implements LeaveDao{
 					sortingQry = " order by leaveReport." + hrLeaveReportDTO.getSortColumn() + " "
 							+ hrLeaveReportDTO.getSortOrder();
 				}
-		queryString = session.createQuery(query+" "+query1.toString()+" "+deptSubQuery+" "+userRoleSubQuery+" "+employmentTypeSubQuery+" "+associateSubQuery+" "+leaveTypeSubQuery+" "+sortingQry);
+		queryString = session.createQuery(query+" "+query1.toString()+" "+deptSubQuery+" "+userRoleSubQuery+" "+employmentTypeSubQuery+" "+associateSubQuery+" "+leaveTypeSubQuery+" "+leaveStatusSubQuery+" "+sortingQry);
 		
 		List<Long> userRoleList = new ArrayList<>();
 		List<Long> departmentsList = new ArrayList<>();
 		List<Long> leaveTypeNamesList = new ArrayList<>();
 		List<String> employmentTypeList = new ArrayList<>();
 		List<Long> associateNamesList = new ArrayList<>();
+		List<String> leaveStatusList = new ArrayList<>();
 		if(hrLeaveReportDTO.getReportRolesId() != null && !hrLeaveReportDTO.getReportRolesId().isEmpty()) {
-			for(String role:hrLeaveReportDTO.getReportRolesId()){
-				userRoleList.add(Long.parseLong(role));
+			String[] userRoles = hrLeaveReportDTO.getReportRolesId().split(",");
+			for(int i=0; i < userRoles.length; i++) {
+				userRoleList.add(Long.parseLong(userRoles[i]));
 			}
 			 
 		}
 		if(hrLeaveReportDTO.getDepartmentIds() != null && !hrLeaveReportDTO.getDepartmentIds().isEmpty()) {
-			for(String dept:hrLeaveReportDTO.getDepartmentIds()){
-				departmentsList.add(Long.parseLong(dept));
+			String[] dept = hrLeaveReportDTO.getDepartmentIds().split(",");
+			for(int i=0; i < dept.length; i++) {
+				departmentsList.add(Long.parseLong(dept[i]));
 			}
 			 
 		}
 		if(hrLeaveReportDTO.getLeaveTypeIds() != null && !hrLeaveReportDTO.getLeaveTypeIds().isEmpty()) {
-			for(String leaveTypeID:hrLeaveReportDTO.getLeaveTypeIds()){
-				leaveTypeNamesList.add(Long.parseLong(leaveTypeID));
+			String[] leaveTypeID = hrLeaveReportDTO.getLeaveTypeIds().split(",");
+			for(int i=0; i < leaveTypeID.length; i++) {
+				leaveTypeNamesList.add(Long.parseLong(leaveTypeID[i]));
 			}
-			 
 		}
 	
-		if(hrLeaveReportDTO.getEmploymentType() != null && !hrLeaveReportDTO.getEmploymentType().isEmpty()) {
-			for(String empType:hrLeaveReportDTO.getEmploymentType()){
-				employmentTypeList.add(empType);
-			}
-			 
+		
+		if(hrLeaveReportDTO.getEmploymentType() !=null && !hrLeaveReportDTO.getEmploymentType().isEmpty()){
+			String[] empType = hrLeaveReportDTO.getEmploymentType().split(",");
+			for(int i=0; i < empType.length; i++) {
+				employmentTypeList.add(empType[i]);
 		}
-		if(hrLeaveReportDTO.getAssociateListId() != null && !hrLeaveReportDTO.getAssociateListId().isEmpty()) {
-			for(String associateId:hrLeaveReportDTO.getAssociateListId()){
-				associateNamesList.add(Long.parseLong(associateId));
 			}
-			 
+		if(hrLeaveReportDTO.getAssociateListId() != null && !hrLeaveReportDTO.getAssociateListId().isEmpty()) {
+			String[] associateId = hrLeaveReportDTO.getAssociateListId().split(",");
+			for(int i=0; i < associateId.length; i++) {
+				associateNamesList.add(Long.parseLong(associateId[i]));
+			}
 		}
 		
+		if(hrLeaveReportDTO.getStatus() !=null && !hrLeaveReportDTO.getStatus().isEmpty()){
+			String[] status = hrLeaveReportDTO.getStatus().split(",");
+			for(int i=0; i < status.length; i++) {
+				leaveStatusList.add(status[i]);
+		}
+			}
 		if (!userRoleList.isEmpty()) {
 			queryString.setParameterList("userRoleList", userRoleList);
 		}
@@ -1290,6 +1306,9 @@ public class LeaveDaoImpl implements LeaveDao{
 		if (!associateNamesList.isEmpty()) {
 			queryString.setParameterList("associateNamesList", associateNamesList);
 		}
+		if (!leaveStatusList.isEmpty()) {
+			queryString.setParameterList("leaveStatusList", leaveStatusList);
+		}
 		queryString.setLong("orgLocationId", orgLocationId);
 		queryString.setLong("orgId", orgId);
 		queryString.setDate("fromDate", startDateSqlDate);
@@ -1304,9 +1323,13 @@ public class LeaveDaoImpl implements LeaveDao{
 		countQueryString.setParameter("orgId", orgId);
 		countQueryString.setParameter("fromDate", startDateSqlDate);
 		countQueryString.setParameter("toDate", endDateSqlDate);
+
 		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
 			countQueryString.setLong("loginUserId", hrLeaveReportDTO.getLoginUserId());
-	
+
+		if (!leaveStatusList.isEmpty()) {
+		countQueryString.setParameterList("leaveStatusList", leaveStatusList);
+
 		}
 		countlist = countQueryString.list();
 		response.setData(leaveReportList);
@@ -1318,8 +1341,14 @@ public class LeaveDaoImpl implements LeaveDao{
 		response.setRecordsTotal(count);
 		if (leaveReportList != null) {
 			List<Long> filteredCountlist = null;
+			if (!leaveStatusList.isEmpty()) {
+				filteredCountlist = session.createQuery("select count(*) " + query
+						+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).setParameterList("leaveStatusList", leaveStatusList).list();
+			}
+			else{
 			filteredCountlist = session.createQuery("select count(*) " + query
 					+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).list();
+			}
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
@@ -1335,6 +1364,8 @@ public class LeaveDaoImpl implements LeaveDao{
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
 			response.setRecordsFiltered(filteredCount);
+		}
+		
 		}
 		return response;
 	}

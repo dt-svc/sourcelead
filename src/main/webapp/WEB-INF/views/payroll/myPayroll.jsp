@@ -59,7 +59,7 @@ function loansAdvances(){
                   	<div class="col-md-3">
                   		<div class="row">
                   			<label class="col-md-5"><strong>Total:</strong></label>
-                  			<span class="col-md-7"><strong onClick="totalCountFun();" class="cursorPointer" id="totalNet">60,0000 $</strong></span>
+                  			<span class="col-md-7"><strong onClick="totalCountFun();" class="cursorPointer" id="totalNet">$ 0</strong></span>
                   		</div>
                   	</div>
                   	<div class="col-md-3">
@@ -371,6 +371,8 @@ function getMyPayrollList(){
 	        if(data != null && data.length >0){
 	        	for(var i =0 ; i<data.length;i++){
 	        	var json = data[i];
+	        	/* totalNetPay = parseFlaot(totalNetPay) + parseFloat(json.netPay); */
+	        	totalNetPay = totalNetPay + json.netPay; 
 	        	result = result +'<tr>';
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-100 text-center">';
@@ -394,22 +396,22 @@ function getMyPayrollList(){
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-50">';
-	 	        result = result +'<div>'+json.grossPay+'</div>';
+	 	        result = result +'<div>$ '+json.grossPay+'</div>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-50">';
-	 	        result = result +'<div>'+json.taxes+'</div>';
+	 	        result = result +'<div>$ '+json.taxes+'</div>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-50">';
-	 	        result = result +'<div>'+json.deductions+'</div>';
+	 	        result = result +'<div>$ '+json.deductions+'</div>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-50">';
-	 	        result = result +'<div>'+json.netPay+'</div>';
+	 	        result = result +'<div>$ '+json.netPay+'</div>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
@@ -418,10 +420,10 @@ function getMyPayrollList(){
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'</tr>';
-	 	        totalNetPay = totalNetPay + json.netPay;
+	 	        
 	        	}
+	        	$("#totalNet").text('$ '+totalNetPay);
 	        }
-	        	
 	       
 	        result = result +'</tbody>';
 	        result = result +'</table>';	
@@ -430,6 +432,7 @@ function getMyPayrollList(){
 	        $("#payrollDataDIV").append(result);
 	        },
 	    });
+	
 }
 </script>
 
