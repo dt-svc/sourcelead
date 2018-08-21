@@ -59,7 +59,7 @@ function loansAdvances(){
                   	<div class="col-md-3">
                   		<div class="row">
                   			<label class="col-md-5"><strong>Total:</strong></label>
-                  			<span class="col-md-7"><strong onClick="totalCountFun();" class="cursorPointer">60,0000 $</strong></span>
+                  			<span class="col-md-7"><strong onClick="totalCountFun();" class="cursorPointer" id="totalNet">60,0000 $</strong></span>
                   		</div>
                   	</div>
                   	<div class="col-md-3">
@@ -299,71 +299,12 @@ function loansAdvances(){
                  <div class="clearfix col-md-12 styleTables">
                  <div class="row">
                  <div id="payrollDataDIV"></div>
-                 	<!-- <table>
-                 		<thead>
-                 			<tr>
-                 				<th>Pay Period</th>
-                 				<th>Pay Date</th>
-                 				<th>Account Type</th>
-                 				<th>Gross Pay</th>
-                 				<th>Taxes</th>
-                 				<th>Deductions</th>
-                 				<th>Net Pay</th>
-                 				<th>Action</th>
-                 			</tr>
-                 		</thead>
-                 		<tbody>
-                 			<tr>
-                 				<td>
-									<div class="tblminwidth-100 text-center">
-										<div class="clearfix">01/01/2018</div>
-										<div class="clearfix">15/02/2018</div>
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-125">
-										<div class="clearfix">15/02/2018</div>
-									</div>
-                 				</td>
-                 				<td>
-								<div class="tblminwidth-125">
-									<div>Direct Deposit</div>
-								</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-50">
-									<div>7000$</div>
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-50">
-										<div>500$</div>
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-50">
-										<div>200$</div>
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-50">
-										<div>6800$</div>
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-30">
-										<div class="fa fa-eye"></div>
-									</div>
-                 				</td>
-                 			</tr>
-                 		</tbody>
-                 	</table> -->
                  </div>
                  </div>					
                <div class="clearfix"></div>
                
                
-                <div class="clearfix"></div>
+               <!--  <div class="clearfix"></div>
                  <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
                  <a href="javascript:void(0)" class="anchorBlack">Skip</a>
@@ -374,7 +315,7 @@ function loansAdvances(){
                     <input value="Cancel" class="btn btn-default ml10" type="button">
                     </div>
                   </div>
-                </div>
+                </div> -->
               
             </div>
       </div>
@@ -405,7 +346,8 @@ function loansAdvances(){
 
 <script>
 function getMyPayrollList(){
-	 $.ajax({
+	var totalNetPay = 0;
+	$.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getMyPayrollList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(result) {
@@ -432,8 +374,8 @@ function getMyPayrollList(){
 	        	result = result +'<tr>';
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-100 text-center">';
-	 	        result = result +'<div class="clearfix">'+json.payPeriod+'</div>';
-	 	       /*  result = result +'<div class="clearfix">15/02/2018</div>'; */
+	 	        result = result +'<div class="clearfix">'+json.payPeriodStartDate+'</div>';
+	 	        result = result +'<div class="clearfix">'+json.payPeriodEndDate+'</div>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
@@ -467,7 +409,7 @@ function getMyPayrollList(){
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-50">';
-	 	        result = result +'<div>'+json.contribution+'</div>';
+	 	        result = result +'<div>'+json.netPay+'</div>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
@@ -476,6 +418,7 @@ function getMyPayrollList(){
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'</tr>';
+	 	        totalNetPay = totalNetPay + json.netPay;
 	        	}
 	        }
 	        	

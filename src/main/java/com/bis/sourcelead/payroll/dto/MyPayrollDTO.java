@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 
 public class MyPayrollDTO {
 	
-	private String payPeriod;
+	private String payPeriodStartDate;
+	
+	private String payPeriodEndDate;
 	
 	private String payDate;
 	
@@ -20,10 +22,6 @@ public class MyPayrollDTO {
 	
 	private BigDecimal netPay;
 
-	public String getPayPeriod()
-	{
-		return payPeriod;
-	}
 
 	public String getPayDate()
 	{
@@ -56,10 +54,6 @@ public class MyPayrollDTO {
 		return netPay;
 	}
 
-	public void setPayPeriod(String payPeriod)
-	{
-		this.payPeriod = payPeriod;
-	}
 
 	public void setPayDate(String payDate)
 	{
@@ -99,6 +93,26 @@ public class MyPayrollDTO {
 	public void setContribution(BigDecimal contribution)
 	{
 		this.contribution = contribution;
+	}
+
+	public String getPayPeriodStartDate()
+	{
+		return payPeriodStartDate;
+	}
+
+	public String getPayPeriodEndDate()
+	{
+		return payPeriodEndDate;
+	}
+
+	public void setPayPeriodStartDate(String payPeriodStartDate)
+	{
+		this.payPeriodStartDate = payPeriodStartDate;
+	}
+
+	public void setPayPeriodEndDate(String payPeriodEndDate)
+	{
+		this.payPeriodEndDate = payPeriodEndDate;
 	}
 	
 	
