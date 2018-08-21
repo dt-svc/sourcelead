@@ -1249,44 +1249,46 @@ public class LeaveDaoImpl implements LeaveDao{
 		List<Long> associateNamesList = new ArrayList<>();
 		List<String> leaveStatusList = new ArrayList<>();
 		if(hrLeaveReportDTO.getReportRolesId() != null && !hrLeaveReportDTO.getReportRolesId().isEmpty()) {
-			for(String role:hrLeaveReportDTO.getReportRolesId()){
-				userRoleList.add(Long.parseLong(role));
+			String[] userRoles = hrLeaveReportDTO.getReportRolesId().split(",");
+			for(int i=0; i < userRoles.length; i++) {
+				userRoleList.add(Long.parseLong(userRoles[i]));
 			}
 			 
 		}
 		if(hrLeaveReportDTO.getDepartmentIds() != null && !hrLeaveReportDTO.getDepartmentIds().isEmpty()) {
-			for(String dept:hrLeaveReportDTO.getDepartmentIds()){
-				departmentsList.add(Long.parseLong(dept));
+			String[] dept = hrLeaveReportDTO.getDepartmentIds().split(",");
+			for(int i=0; i < dept.length; i++) {
+				departmentsList.add(Long.parseLong(dept[i]));
 			}
 			 
 		}
 		if(hrLeaveReportDTO.getLeaveTypeIds() != null && !hrLeaveReportDTO.getLeaveTypeIds().isEmpty()) {
-			for(String leaveTypeID:hrLeaveReportDTO.getLeaveTypeIds()){
-				leaveTypeNamesList.add(Long.parseLong(leaveTypeID));
+			String[] leaveTypeID = hrLeaveReportDTO.getLeaveTypeIds().split(",");
+			for(int i=0; i < leaveTypeID.length; i++) {
+				leaveTypeNamesList.add(Long.parseLong(leaveTypeID[i]));
 			}
-			 
 		}
 	
-		if(hrLeaveReportDTO.getEmploymentType() != null && !hrLeaveReportDTO.getEmploymentType().isEmpty()) {
-			for(String empType:hrLeaveReportDTO.getEmploymentType()){
-				employmentTypeList.add(empType);
-			}
-			 
+		
+		if(hrLeaveReportDTO.getEmploymentType() !=null && !hrLeaveReportDTO.getEmploymentType().isEmpty()){
+			String[] empType = hrLeaveReportDTO.getEmploymentType().split(",");
+			for(int i=0; i < empType.length; i++) {
+				employmentTypeList.add(empType[i]);
 		}
+			}
 		if(hrLeaveReportDTO.getAssociateListId() != null && !hrLeaveReportDTO.getAssociateListId().isEmpty()) {
-			for(String associateId:hrLeaveReportDTO.getAssociateListId()){
-				associateNamesList.add(Long.parseLong(associateId));
+			String[] associateId = hrLeaveReportDTO.getAssociateListId().split(",");
+			for(int i=0; i < associateId.length; i++) {
+				associateNamesList.add(Long.parseLong(associateId[i]));
 			}
-			 
 		}
 		
-		if(hrLeaveReportDTO.getStatus() != null && !hrLeaveReportDTO.getStatus().isEmpty()) {
-			for(String status:hrLeaveReportDTO.getStatus()){
-				leaveStatusList.add(status);
-			}
-			 
+		if(hrLeaveReportDTO.getStatus() !=null && !hrLeaveReportDTO.getStatus().isEmpty()){
+			String[] status = hrLeaveReportDTO.getStatus().split(",");
+			for(int i=0; i < status.length; i++) {
+				leaveStatusList.add(status[i]);
 		}
-		
+			}
 		if (!userRoleList.isEmpty()) {
 			queryString.setParameterList("userRoleList", userRoleList);
 		}

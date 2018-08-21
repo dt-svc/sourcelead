@@ -2615,8 +2615,8 @@ public class LeaveServiceImpl implements LeaveService{
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 	}
 	private Sheet createLeaveReportXlsSheet(Sheet createExcelsheet, Row writeRow, int column,LeaveReportView leaveReportDTO) throws Exception {
-		if(leaveReportDTO.getEmployeeId() !=null){
-			 writeRow.createCell(0).setCellValue(leaveReportDTO.getEmployeeId()); 
+		if(leaveReportDTO.getEid() !=null && !leaveReportDTO.getEid().isEmpty()){
+			 writeRow.createCell(0).setCellValue(leaveReportDTO.getEid()); 
 		 }
 		else{
 			   writeRow.createCell(0).setCellValue("--");   
