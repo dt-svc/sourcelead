@@ -23,13 +23,16 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
+import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
@@ -74,6 +77,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	PaysheetFrequencyDao paysheetFrequencyDao;
 	
 	@Override
 	public Response<PayrollApproverDTO> sendPayrollForApprover(PayrollApproverDTO payrollApproverDTO, OrgLocations orgLocation,User loginUser)
@@ -229,5 +235,21 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		uSPayPeriod.setUpdatedDate(new Date());
 		uSPayPeriod.setApproverStatus(PayrollConstant.SENT);
 		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
+	}
+
+	@Override
+	public ResponseList<MyPayrollDTO> getMyPayrollListByCandidateId(Long candidateId,OrgLocations orgLocation)
+	{
+		
+		List<EmployeePayroll> empPayroll = paysheetFrequencyDao.getMyPayrollListByCandidateId(candidateId);
+		
+		for(EmployeePayroll payroll : empPayroll) {
+			MyPayrollDTO myPayrollDTO = new MyPayrollDTO();
+			StringBuilder sb = new StringBuilder();
+			String ferquencyStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payroll.getPaysheetFrequency().getFrequencyStartDate());
+			String ferquencyEndDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payroll.getPaysheetFrequency().getFrequencyEndDate());
+			
+		}
+		return null;
 	}
 }

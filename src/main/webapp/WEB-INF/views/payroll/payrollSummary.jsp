@@ -463,7 +463,7 @@ function paySummaryPagination(){
 					            	var ot = json.contribution[i];
 					            	output = output + '<tr>';
 					            	output = output + '<input type="hidden" name="contribution['+i+'].taxtType" value='+ot.taxtType+' id="taxtType"/>';
-					            	output = output + '<td>'+ot.contributionType+'</td>';
+					            	output = output + '<td>'+ot.amount+'</td>';
 					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmount+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }

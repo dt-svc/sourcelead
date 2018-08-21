@@ -201,6 +201,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			.append(" where can.ID  = projmem.CANDIDATE_ID")
 			.append(" AND   projmem.MASTER_CANDIDATE_ID = ts.MASTER_CANDIDATE_ID")
 			.append (" AND   projmem.PROJECT_ID = ts.PROJECT_ID")
+			.append (" AND   sah.SUBMISSION_ID = ts.ID")
 			.append(" AND can.ID = :candidateId and sah.FREQUENCY_START_DATE = :startDate and sah.FREQUENCY_END_DATE = :endDate ");
 //				 System.out.println(qry.toString());
 			        
