@@ -56,8 +56,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 		AssociateContribution associateContribution = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			AssociateContribution associateContributionList = (AssociateContribution)session.createQuery("from AssociateContribution contri where contri.id=:assContriId").setLong("assContriId", assContriId).uniqueResult();
-			
+			List<AssociateContribution> associateContributionList = session.createQuery("from AssociateContribution contri where contri.id=:assContriId").setLong("assContriId", assContriId).list();
+			if(associateContributionList !=null && associateContributionList.size() >0) {
+				associateContribution = associateContributionList.get(0);
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -66,10 +68,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 
 	@Override
 	@Transactional
-	public AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation) {
+	public AssociateContribution getValidateContribution(Long candidateId,Long contriTypId, OrgLocations orgLocation) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AssociateContribution assContribution where assContribution.contributionTypeId.id =:contriTypeId and assContribution.orgLocationId.id =:orgLocationId and assContribution.status = 1";
-		List<AssociateContribution> assContribution = session.createQuery(query).setLong("contriTypeId", contriTypId).setLong("orgLocationId", orgLocation.getId()).list();
+		String query = "from AssociateContribution assContribution where assContribution.candidate.id =:candidateId and assContribution.contributionTypeId.id =:contriTypeId and assContribution.orgLocationId.id =:orgLocationId and assContribution.status = 1";
+		List<AssociateContribution> assContribution = session.createQuery(query).setLong("candidateId",candidateId).setLong("contriTypeId", contriTypId).setLong("orgLocationId", orgLocation.getId()).list();
 		if(assContribution.size() > 0) {
 			return assContribution.get(0);
 		}else {

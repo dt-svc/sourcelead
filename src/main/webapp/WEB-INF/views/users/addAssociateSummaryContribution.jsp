@@ -266,9 +266,11 @@ function contributionPopup(){
  <script>
  function validateDuplicateContribution(){
 	 var contriType = $("#contriType").val();
+	 var userId = '${userId}'; 
+	 alert(userId);
 	 $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/validateContribution?"+tokenParamName+"="+tokenValue+"&contriType="+contriType,
+			url: sourceleadUrl+"/validateContribution?"+tokenParamName+"="+tokenValue+"&contriType="+contriType+"&userId="+userId,
 			success :function(data) {
 				if(data == true){
 					$("#contriType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");

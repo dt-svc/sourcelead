@@ -135,8 +135,8 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 	}
 
 	@Override
-	public AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation) {
-		AssociateContribution assContribution = associateContributionDao.getValidateContribution(contriTypId,orgLocation);
+	public AssociateContribution getValidateContribution(Long candidateId,Long contriTypId, OrgLocations orgLocation) {
+		AssociateContribution assContribution = associateContributionDao.getValidateContribution(candidateId,contriTypId,orgLocation);
 		return assContribution;
 	}
 
