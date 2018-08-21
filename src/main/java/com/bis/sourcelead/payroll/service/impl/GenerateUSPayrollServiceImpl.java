@@ -238,7 +238,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						employeePayroll.setFrequency(invoiceFrequency);
 						employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
 						
-						employeePayroll.setRehularHoursAmount(amount);
+						employeePayroll.setRegularHoursAmount(amount);
 						DeductionDTO dedDTO = getDeductionAmount(assoSal.getCandidate(),orgLocation,amount,loginUser,paySheetFreq,employeePayroll);
 						BigDecimal[] dedTaxes = dedDTO.getDedTaxes();
 						BigDecimal[] contributionTaxes = dedDTO.getContributionTaxes();
@@ -777,7 +777,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					payrollDTO.setEmpPayrollUUID(pay.getUsEmpPayrollUUID());
 					payrollDTO.setGrossPay(pay.getGrossPay());
 					payrollDTO.setNetPay(pay.getNetPay());
-					payrollDTO.setRegularHrsTotalAmt(pay.getRehularHoursAmount());
+					payrollDTO.setRegularHrsTotalAmt(pay.getRegularHoursAmount());
 					payrollDTO.setPayRate(pay.getEmpPayRate());
 					payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
 					payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());
@@ -842,7 +842,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setEmpPayrollUUID(payroll.getUsEmpPayrollUUID());
 			payrollDTO.setGrossPay(payroll.getGrossPay());
 			payrollDTO.setNetPay(payroll.getNetPay());
-			payrollDTO.setRegularHrsTotalAmt(payroll.getRehularHoursAmount());
+			payrollDTO.setRegularHrsTotalAmt(payroll.getRegularHoursAmount());
 			payrollDTO.setPayRate(payroll.getEmpPayRate());
 			payrollDTO.setPostTaxDeduction(payroll.getPostTaxDeduction());
 			payrollDTO.setPreTaxDeduction(payroll.getPreTaxDeduction());
@@ -858,7 +858,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			}else {
 				payrollDTO.setOtHoursTotalAmt(overTimeAmount);
 			}
-			BigDecimal totalEarnings = payroll.getRehularHoursAmount().add(overTimeAmount);
+			BigDecimal totalEarnings = payroll.getRegularHoursAmount().add(overTimeAmount);
 			payrollDTO.setTotalEarnings(totalEarnings);
 			payrollDTO.setEmployeeAddress(payroll.getCandidate().getResidenceAddress());
 			
@@ -961,7 +961,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payroll.setPreTaxContribution(BigDecimal.valueOf(preTaxContriSum));
 			payroll.setPostTaxContribution(BigDecimal.valueOf(postTaxContriSum));
 			payroll.setRegularHours(payAdjustmentDTO.getRegularHours());
-			payroll.setRehularHoursAmount(new BigDecimal(payAdjustmentDTO.getRegularHoursAmt()));
+			payroll.setRegularHoursAmount(new BigDecimal(payAdjustmentDTO.getRegularHoursAmt()));
 			payroll.setOverTimeHours(payAdjustmentDTO.getOverTimeHours());
 			payroll.setOverTimeAmount(new BigDecimal(payAdjustmentDTO.getOverTimeHoursAmt()));
 			payroll.setPostTaxDeduction(BigDecimal.valueOf(postTax));

@@ -27,12 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
-
 import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.HrLeaveReportDTO;
-
 import com.bis.sourcelead.dto.LeaveDTO;
-import com.bis.sourcelead.dto.LeaveHolidayHoursDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
@@ -1367,6 +1364,8 @@ public class LeaveDaoImpl implements LeaveDao{
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
 			response.setRecordsFiltered(filteredCount);
+		}
+		
 		}
 		return response;
 	}
