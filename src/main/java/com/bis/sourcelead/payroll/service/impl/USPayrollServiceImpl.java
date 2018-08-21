@@ -301,7 +301,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				if (period != null) {
 					payPeriodNum = payPeriodNum + period.getPayPeriodNum();
 				}
-				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation);
+				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation,loginUser);
 			}else {
 				int isUpadted = uSPayPeriodService.updatedPayperiod(confirmPaySumDto.getPpn());
 			}
@@ -339,8 +339,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		
 		User user = null;
 		int approvedSize = 0;
-		USPayPeriod uSPayPeriodw = uSPayPeriodService.getPaySheetFrequencyIdAndOrglocationId(orgLocation, savedPF.getId());
-        	 user = userService.getUserById(uSPayPeriodw.getPaysheetFrequency().getCreatedBy());
+		USPayPeriod uSPayPeriodw = uSPayPeriodService.getPayPeriodByOrglocationId(orgLocation, savedPF.getId());
+        user = userService.getUserById(uSPayPeriodw.getPaysheetFrequency().getCreatedBy());
         	 List<EmployeePayroll> empList = uSPayPeriodService.getEmployeePayrollListByPayperiodNum(uSPayPeriodw.getPayPeriodNum());
         	 for (EmployeePayroll employeePayroll : empList) {
         		 if(employeePayroll.getSubmitForAproverStatus().equalsIgnoreCase(Constants.APPROVED)){
@@ -427,7 +427,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		
 	}
 
-	private USPayPeriod saevPayPeriodNumber(PaysheetFrequency pf, int payPeriodNum, OrgLocations orgLocation)
+	private USPayPeriod saevPayPeriodNumber(PaysheetFrequency pf, int payPeriodNum, OrgLocations orgLocation, User loginUser)
 	{
 		USPayPeriod  uSPayPeriod = new USPayPeriod();
 		uSPayPeriod.setPaysheetFrequency(pf);
@@ -437,6 +437,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		uSPayPeriod.setCreatedDate(new Date());
 		uSPayPeriod.setUpdatedDate(new Date());
 		uSPayPeriod.setApproverStatus(PayrollConstant.APPROVE);
+		uSPayPeriod.setCreatedBy(loginUser.getId());
+		uSPayPeriod.setUpdatedBy(loginUser.getId());
 		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
 	}
 }

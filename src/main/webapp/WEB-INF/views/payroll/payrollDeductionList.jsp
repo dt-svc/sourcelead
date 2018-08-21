@@ -178,7 +178,13 @@ function deductionTypepagination(url){
               "targets": colIndex++,
               "data": "deductionAmount",
               "render": function ( data, type, opt, meta ) {
-            	  return ' <td><div  class="tblminwidth-100">$ '+opt.deductionAmount.toFixed(2)+'</div></td>';
+            	  var result = "";
+            	  if(opt.payrollDeductionMethod == "Fixed"){
+            		  result = result + ' <td><div  class="tblminwidth-100">$ '+opt.deductionAmount.toFixed(2)+'</div></td>';
+            	  }else{
+            		  result = result + ' <td><div  class="tblminwidth-100">'+opt.deductionAmount+' %</div></td>';
+            	  }
+            	  return result;
               }
             }, {
                 "targets": colIndex++,

@@ -1988,7 +1988,8 @@ public class LeaveManagementRestController {
 					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
 
 			leaveDto.setDuration(durationSb.toString());
-			leaveDto.setLeaveType(leave.getLeaveType().getLeaveType());
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
+			leaveDto.setType(leave.getLeaveType().getLeaveType());
 			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 			leaveDto.setStatus(leave.getStatus());
 			leaveDto.setLeaveName(leave.getLeaveType().getName());

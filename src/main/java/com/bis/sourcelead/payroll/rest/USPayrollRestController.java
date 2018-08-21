@@ -50,6 +50,7 @@ import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
@@ -1355,6 +1356,14 @@ public class USPayrollRestController {
 		return paySum;
 	}
 	
+	/**
+	 * Approve Payroll
+	 * @param confirmPayTotalSumDto
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = { "/approvePayroll","/rest/approvePayroll" }, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<ConfirmPayTotalSumDTO> approvePayroll(ConfirmPayTotalSumDTO confirmPayTotalSumDto ,HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -1366,7 +1375,14 @@ public class USPayrollRestController {
 
 	}
 	
-
+	/**
+	 * Validate Deduction
+	 * @param deductionTypeId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/validateDeduction", method = RequestMethod.GET)
 	@ResponseBody
 	public boolean validateDeduction(@RequestParam(value = "dedType",required = false)Long deductionTypeId, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -1380,6 +1396,14 @@ public class USPayrollRestController {
 		return bol;
 	}
 	
+	/**
+	 * Validate Contribution
+	 * @param contriTypId
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/validateContribution", method = RequestMethod.GET)
 	@ResponseBody
 	public boolean validateContribution(@RequestParam(value = "contriType",required = false)Long contriTypId,@RequestParam(value = "userId",required = false)Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -1394,7 +1418,14 @@ public class USPayrollRestController {
 		return bol;
 	}
 	
-
+	/**
+	 * Get Paygroup by Pay frequency
+	 * @param userGroupDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = { "/getPayGroupsByPayFrequency","/rest/getPayGroupsByPayFrequency" })
 	@ResponseBody
 	public List<UserGroup> getPayGroupsByPayFrequency(UserGroupDTO userGroupDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -1406,6 +1437,24 @@ public class USPayrollRestController {
 		if(groupList != null)
 		filteredGroupList = groupList.stream().filter(i->i.getPayFrequency().equalsIgnoreCase(userGroupDTO.getPayFrequency())).collect(Collectors.toList());
 		return filteredGroupList;
+	}
+	
+	
+	@RequestMapping(value = "/myPayroll")
+	public ModelAndView myPayrollJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/myPayroll");
+		return model;
+	}
+	
+	@RequestMapping(value = {"/getMyPayrollList","/rest/getMyPayrollList"}, method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<MyPayrollDTO> getMyPayrollList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		return paysheetFrequencyService.getMyPayrollListByCandidateId(candidateId,orgLocation);
 	}
 
 }
