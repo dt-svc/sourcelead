@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.dao.impl;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
+import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 
 @Repository
@@ -92,5 +94,14 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			e.printStackTrace();
 		}
 		return associateDeduction;
+	}
+
+
+	@Override
+	@Transactional
+	public int deleteAssociateDeductionByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "update AssociateDeduction assDed set assDed.status = '0' where assDed.orgLocationId.id =:orgLocationId and assDed.candidate.id = :candidateId";
+		return session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).executeUpdate();
 	}
 }
