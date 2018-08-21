@@ -2256,7 +2256,14 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/getLcaByLcaId" })
 	public @ResponseBody Lca getLcaByLcaId(
 			@RequestParam(value = "id", required = false) Long id,  HttpServletRequest request) throws Exception {
-		return immigrationCommonService.getLcaByLcaId(id);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		
+	   Lca lca=immigrationCommonService.getLcaByLcaId(id);
+	   lca.setLcaStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lca.getStartDate()));
+	   lca.setLcaEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lca.getEndDate()));
+		
+		return lca;
 	}
 	
 	/*

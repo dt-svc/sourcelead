@@ -122,6 +122,14 @@ public class Lca implements Serializable {
 	@Transient
 	@JsonProperty
 	private String lcaLocation;
+	
+	@Transient
+	@JsonProperty
+	private String lcaStartDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String lcaEndDateStr;
 
 	public List<String> getLocationsList() {
 		return locationsList;
@@ -366,6 +374,22 @@ public class Lca implements Serializable {
 
 	public void setLcaLocation(String lcaLocation) {
 		this.lcaLocation = lcaLocation;
+	}
+
+	public String getLcaStartDateStr() {
+		return lcaStartDateStr;
+	}
+
+	public void setLcaStartDateStr(String lcaStartDateStr) {
+		this.lcaStartDateStr = lcaStartDateStr;
+	}
+
+	public String getLcaEndDateStr() {
+		return lcaEndDateStr;
+	}
+
+	public void setLcaEndDateStr(String lcaEndDateStr) {
+		this.lcaEndDateStr = lcaEndDateStr;
 	}
 	
 	
