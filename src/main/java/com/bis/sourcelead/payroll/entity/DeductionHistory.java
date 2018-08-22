@@ -28,11 +28,13 @@ public class DeductionHistory {
 	@Column(name = "CANDIDATE_ID")
 	private Long candidateId;
 	
-	@Column(name = "DEDUCTION_ID")
-	private Long deductionId;
+	@ManyToOne
+	@JoinColumn(name = "DEDUCTION_ID")
+	private AssociateDeduction deductionId;
 	
-	@Column(name = "CONTRIBUTION_ID")
-	private Long contributionId;
+	@ManyToOne
+	@JoinColumn(name = "CONTRIBUTION_ID")
+	private AssociateContribution contributionId;
 	
 	@ManyToOne
 	@JoinColumn(name = "PAYROLL_ID")
@@ -76,10 +78,6 @@ public class DeductionHistory {
 	}
 
 
-	public Long getDeductionId()
-	{
-		return deductionId;
-	}
 
 	public Date getFrequencyStartDate()
 	{
@@ -118,11 +116,6 @@ public class DeductionHistory {
 		this.id = id;
 	}
 
-
-	public void setDeductionId(Long deductionId)
-	{
-		this.deductionId = deductionId;
-	}
 
 	public void setFrequencyStartDate(Date frequencyStartDate)
 	{
@@ -194,16 +187,6 @@ public class DeductionHistory {
 		this.payroll = payroll;
 	}
 
-	public Long getContributionId()
-	{
-		return contributionId;
-	}
-
-	public void setContributionId(Long contributionId)
-	{
-		this.contributionId = contributionId;
-	}
-
 	public Long getCandidateId()
 	{
 		return candidateId;
@@ -212,6 +195,26 @@ public class DeductionHistory {
 	public void setCandidateId(Long candidateId)
 	{
 		this.candidateId = candidateId;
+	}
+
+	public AssociateDeduction getDeductionId()
+	{
+		return deductionId;
+	}
+
+	public AssociateContribution getContributionId()
+	{
+		return contributionId;
+	}
+
+	public void setDeductionId(AssociateDeduction deductionId)
+	{
+		this.deductionId = deductionId;
+	}
+
+	public void setContributionId(AssociateContribution contributionId)
+	{
+		this.contributionId = contributionId;
 	}
 
 	
