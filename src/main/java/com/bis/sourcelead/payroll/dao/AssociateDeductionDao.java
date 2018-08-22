@@ -19,6 +19,6 @@ public interface AssociateDeductionDao {
 
 	AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long candidateId);
 
-	int deleteAssociateDeductionByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId);
+	void deleteAssociateDeductionByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId);
 
 }

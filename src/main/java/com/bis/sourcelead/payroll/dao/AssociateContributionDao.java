@@ -17,6 +17,6 @@ public interface AssociateContributionDao {
 
 	AssociateContribution findContributionByUserIdContributionId(Long userId, Long contributionId);
 
-	int deleteAssociateContributionByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId);
+	void deleteAssociateContributionByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId);
 
 }

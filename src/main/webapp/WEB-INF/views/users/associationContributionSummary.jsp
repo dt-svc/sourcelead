@@ -16,7 +16,7 @@ function associateContributionSummary(userId){
             result = result + '<div class="table-header clearfix">';
             result = result + '<h4 class="pull-left margin-top0">Contribution</h4>';
             result = result + '<ul class="list-unstyled list-inline pull-right">';
-            result = result + '<li><a href="<c:url value="${appPath}/addAssociateContribution?userId='+userId+'"/>" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
+            result = result + '<li><a href="<c:url value="${appPath}/addAssociateContribution?userId='+userId+'&saveType=edit"/>" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
             result = result + '<div class="clearfix"></div>';
             result = result + '</ul>';
             result = result + '</div>';
