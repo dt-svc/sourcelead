@@ -853,7 +853,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 if(jsonObj.has("currentCTCRateType") && !isNullOrEmpty(jsonObj.getString("currentCTCRateType"))){
 			 templateFields.setCurrentRateType(jsonObj.getString("currentCTCRateType"));
 		 }else {
-			 templateFields.setCurrentRateType("Monthly");
+			 if(countries != null) {
+					templateFields.setCurrentRateType(countries.getCurrency());
+				}
+			 
 		 }
 		 
 		 if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
@@ -863,24 +866,22 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 if(jsonObj.has("expectedCTCRateType") && !isNullOrEmpty(jsonObj.getString("expectedCTCRateType"))){
 			 templateFields.setExpectedRateType(jsonObj.getString("expectedCTCRateType"));
 		 }else {
-			 templateFields.setExpectedRateType("Monthly");
+			 if(countries != null) {
+					templateFields.setExpectedRateType(countries.getCurrency());
+				}
 		 }
 		 
 			
 		 if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
 			templateFields.setCurrentRatePer(jsonObj.getString("currentCTCRatePer"));
 		 }else {
-			 if(countries != null) {
-					templateFields.setCurrentRatePer(countries.getCurrency());
-				}
+			 templateFields.setCurrentRatePer("Monthly");
 		 }
 			
 		 if(jsonObj.has("expectedCTCRatePer") && !isNullOrEmpty(jsonObj.getString("expectedCTCRatePer"))){
 			 templateFields.setExpectedRatePer(jsonObj.getString("expectedCTCRatePer"));
 		 }else {
-			 if(countries != null) {
-					templateFields.setExpectedRatePer(countries.getCurrency());
-				}
+			 templateFields.setExpectedRatePer("Monthly");
 		 }
 		 
 		 if(jsonObj.has("NoticePeriod") && !isNullOrEmpty(jsonObj.getString("NoticePeriod"))){

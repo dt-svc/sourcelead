@@ -62,6 +62,7 @@ import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -76,6 +77,7 @@ import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DataMigrationService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -156,6 +158,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 	@Autowired
 	RequirementElkUtil requirementElkUtil;
+	
+	@Autowired
+	CountriesService countriesService;
 	
 	
 	@Override
@@ -535,10 +540,14 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		case "submmissionTemplateUpload":
 			
 			RequirementSubmission requirementSubmission = null;
+			Countries countries = null;
 			Candidate candidate = candidateService.findByCandidateEmail(dataMigrationDTOJsonCopy.getString("EmailId"),orgLocation.getId());
 			if(candidate != null) {
 				requirementSubmission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")), candidate.getId());
 			}
+			if(StringUtils.isNotBlank(orgLocation.getCountry())) {
+				 countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+			 }
 		
 			if(requirementSubmission == null) {
 				JSONObject labelItems = new JSONObject();
@@ -547,14 +556,21 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				while (keys.hasNext()) {
 					String k = (String) keys.next();
 					if(!k.equalsIgnoreCase("requirementId")) {
-						JSONObject firstNameItem = new JSONObject();
-						String[] labelName = k.split("(?<=.)(?=\\p{Lu})");
-						firstNameItem.put("label", StringUtils.join(labelName," "));
-						firstNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
-						firstNameItem.put("name", k);
-						firstNameItem.put("value", dataMigrationDTOJsonCopy.getString(k));
-						labelItems.put(k, dataMigrationDTOJsonCopy.getString(k));
-						array.put(firstNameItem);
+						if(!dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("undefined")) {
+							JSONObject firstNameItem = new JSONObject();
+							String[] labelName = k.split("(?<=.)(?=\\p{Lu})");
+							firstNameItem.put("label", StringUtils.join(labelName," "));
+							firstNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+							firstNameItem.put("name", k);
+							if(k.equalsIgnoreCase("CurrentCTC") || k.equalsIgnoreCase("ExpectedCTC")){
+								firstNameItem.put("value", countries.getCurrency()+" / "+dataMigrationDTOJsonCopy.getString(k)+" Monthly");
+							}else {
+								firstNameItem.put("value", dataMigrationDTOJsonCopy.getString(k));
+							}
+							
+							labelItems.put(k, dataMigrationDTOJsonCopy.getString(k));
+							array.put(firstNameItem);
+						}
 					}
 				}
 				
