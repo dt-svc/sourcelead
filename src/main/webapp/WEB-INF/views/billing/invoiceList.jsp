@@ -456,7 +456,6 @@ function getInvoiceList(){
 	var invoice = [];
 	var payment = [];
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var dayWisetype = $("#dayWiseTypeId").val();
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationdateForList = 'YYYY-MM-DD';
@@ -482,6 +481,13 @@ function getInvoiceList(){
 			return false;
 		}
 	} */
+	
+	var dayWisetype = null;
+	
+	$('input:radio[name=invoiceCustomDays]:checked').each(function() {
+		dayWisetype = $(this).val();
+	});
+	
 	$('input:checkbox[name=invoiceStatus]:checked').each(function() 
     {
 		invoice.push($(this).val());
