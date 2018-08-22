@@ -153,7 +153,7 @@
                   <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="ssn" name="SSN" field-name="First Name" data-validation="required validate_Space validate_int validate_length length9-9">
+                    <input type="text" class="form-control" id="ssn" name="SSN" field-name="SSN" data-validation="required validate_Space validate_int validate_length length9-9">
                   </div>
                   </div>
                   
@@ -209,7 +209,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Zip Code<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9 positionRelative">
-						<input  class="form-control" id="residenceZipCode" name="residenceZipCode" placeholder="Enter Zip code" type="text">                    
+						<input  class="form-control" id="residenceZipCode" name="residenceZipCode" placeholder="Enter Zip code" field-name="Zip Code" type="text" data-validation="required validate_Space validate_int validate_length length9-9">                    
                   </div>
                 </div>
                 
