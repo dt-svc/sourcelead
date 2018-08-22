@@ -33,7 +33,6 @@ function approvePayrollDiv(){
 <h2>Payroll</h2>
 </div>
 <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/payrollList'/>">payrollList</a> &raquo; Payroll</div>
-<a href="<c:url value='${appPath}/payrollList'/>">payrollList</a> &raquo; 
 
 </section>
 		<div class="success_pop" id="selector1" style="display: none;">
@@ -88,7 +87,7 @@ function approvePayrollDiv(){
   
  
 <div class="tableScroll">
-<form:form id="submit_for_approver" id="Submit" name="submit_for_approver" method="post">
+<form:form id="submit_for_approver"  name="submit_for_approver" method="post">
  <div class="styleTables clearfix mt">
  <!-- <div id="USPayrollDiv"></div> -->
  <div id="payrollDataDiv"></div>
@@ -352,13 +351,14 @@ function runUSPayroll(){
 					        	}
 					        	
 				        	}
+				        	result += '</tbody>';
+				        	
+				        	result += '</table>';
 				        	if(count==0){
 					    		result = result+'<tr><td align="top" colspan="11" class="tblminwidth-50 clearfix dataTables_empty"></td></tr>';	
 					    		$("#Submit").hide();
 					    		$("#Confirm").hide();
 					    	}
-				        	result += '</tbody>';
-				        	result += '</table>';
 				        	$("#payrollDataDiv").empty();
 				        	$("#payrollDataDiv").append(result);
 				        	$("#submitButtonDiv").show();
