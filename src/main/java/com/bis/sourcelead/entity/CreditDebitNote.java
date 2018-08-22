@@ -33,9 +33,8 @@ public class CreditDebitNote implements Serializable {
 	private Long id;
 
 	
-	@ManyToOne
-	@JoinColumn(name = "INVOICE_BILL_ID", nullable = false)
-	private Invoice invoice;
+	@Column(name = "INVOICE_BILL_ID")
+	private String invoice;
 
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
@@ -49,9 +48,8 @@ public class CreditDebitNote implements Serializable {
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )
 	private OrgRelations orgRelations;
 	
-	@ManyToOne
-	@JoinColumn(name = "CONTACT_USER_ID")
-	private User contactUser;
+	@Column(name = "CONTACT_USER_ID")
+	private String contactUser;
 	
 	@ManyToOne
 	@JoinColumn(name = "PARENT_NOTE_ID")
@@ -60,11 +58,6 @@ public class CreditDebitNote implements Serializable {
 	@ManyToOne
     @JoinColumn(name="OWNER_USER_ID", nullable=false )     
 	private User ownerUser;
-	
-	@ManyToOne
-	@JoinColumn(name = "ORG_SPOC_ID")
-	private OrgSpoc orgSpoc;
-	
 	
 	@Column(name = "BILLING_ADDRESS")
 	private String billingAddress;
@@ -131,11 +124,11 @@ public class CreditDebitNote implements Serializable {
 		this.id = id;
 	}
 
-	public Invoice getInvoice() {
+	public String getInvoice() {
 		return invoice;
 	}
 
-	public void setInvoice(Invoice invoice) {
+	public void setInvoice(String invoice) {
 		this.invoice = invoice;
 	}
 
@@ -147,6 +140,14 @@ public class CreditDebitNote implements Serializable {
 		this.orgLocations = orgLocations;
 	}
 
+	public OrgLocations getResponderLocation() {
+		return responderLocation;
+	}
+
+	public void setResponderLocation(OrgLocations responderLocation) {
+		this.responderLocation = responderLocation;
+	}
+
 	public OrgRelations getOrgRelations() {
 		return orgRelations;
 	}
@@ -155,15 +156,13 @@ public class CreditDebitNote implements Serializable {
 		this.orgRelations = orgRelations;
 	}
 
-	public User getContactUser() {
+	public String getContactUser() {
 		return contactUser;
 	}
 
-	public void setContactUser(User contactUser) {
+	public void setContactUser(String contactUser) {
 		this.contactUser = contactUser;
 	}
-
-	
 
 	public CreditDebitNote getParentCreditDebitNote() {
 		return parentCreditDebitNote;
@@ -179,14 +178,6 @@ public class CreditDebitNote implements Serializable {
 
 	public void setOwnerUser(User ownerUser) {
 		this.ownerUser = ownerUser;
-	}
-
-	public OrgSpoc getOrgSpoc() {
-		return orgSpoc;
-	}
-
-	public void setOrgSpoc(OrgSpoc orgSpoc) {
-		this.orgSpoc = orgSpoc;
 	}
 
 	public String getBillingAddress() {
@@ -332,14 +323,8 @@ public class CreditDebitNote implements Serializable {
 	public void setCreditDebitLineItems(Set<CreditDebitLineItems> creditDebitLineItems) {
 		this.creditDebitLineItems = creditDebitLineItems;
 	}
+	
+	
+	
 
-	public OrgLocations getResponderLocation() {
-		return responderLocation;
 	}
-
-	public void setResponderLocation(OrgLocations responderLocation) {
-		this.responderLocation = responderLocation;
-	}
-
-
-}

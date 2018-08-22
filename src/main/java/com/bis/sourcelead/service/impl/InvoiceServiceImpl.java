@@ -3353,8 +3353,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		OrgLocations vendorOrgLocation = null;
 		creditDebitNote.setOrgLocations(orgLocation);
-		Invoice invoice = invoiceDao.getInvoicetById(Long.parseLong(creditDebitNoteDTO.getInvoceId()));
-		creditDebitNote.setInvoice(invoice);
+		creditDebitNote.setInvoice(creditDebitNoteDTO.getInvoceId());
         if(Constants.CREDIT_NOTE.equalsIgnoreCase(noteType)){
         	// client details
         	if(StringUtils.isNotBlank(creditDebitNoteDTO.getOrgRelationId())){
@@ -3370,8 +3369,8 @@ public class InvoiceServiceImpl implements InvoiceService {
      		}
      		
      		if(StringUtils.isNotBlank(creditDebitNoteDTO.getSpocUser())){
-     			User userContactName = userService.getUserById(Long.parseLong(creditDebitNoteDTO.getSpocUser()));
-     			creditDebitNote.setContactUser(userContactName);
+     			//User userContactName = userService.getUserById(Long.parseLong(creditDebitNoteDTO.getSpocUser()));
+     			creditDebitNote.setContactUser(creditDebitNoteDTO.getSpocUser());
      		}
      		creditDebitNote.setNoteType(Constants.CREDIT_NOTE);
         }else{
@@ -3389,14 +3388,12 @@ public class InvoiceServiceImpl implements InvoiceService {
       		}
         	creditDebitNote.setNoteStatus(saveType);
       		if(StringUtils.isNotBlank(creditDebitNoteDTO.getSpocUser())){
-      			User contactUser = userService.getUserById(Long.parseLong(creditDebitNoteDTO.getSpocUser()));
-      			creditDebitNote.setContactUser(contactUser);
+      			//User contactUser = userService.getUserById(Long.parseLong(creditDebitNoteDTO.getSpocUser()));
+      			creditDebitNote.setContactUser(creditDebitNoteDTO.getSpocUser());
       		}
       		creditDebitNote.setNoteType(Constants.DEBIT_NOTE);
         }
         creditDebitNote.setOwnerUser(user);
-        OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(creditDebitNoteDTO.getSpocUser()));
-        creditDebitNote.setOrgSpoc(orgSpoc);
         creditDebitNote.setNoteStatus(saveType);
         creditDebitNote.setSubTotal(new BigDecimal(creditDebitNoteDTO.getSubTotalAmount()));
         creditDebitNote.setTotal(new BigDecimal(creditDebitNoteDTO.getGrandTotal()));
@@ -3444,7 +3441,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 		invoiceDao.saveCreditDebitNote(creditDebitNote);
 		// save child record
-		if(saveType.equalsIgnoreCase("Send") || saveType.equalsIgnoreCase("Submit")){
+		if(saveType.equalsIgnoreCase("Send")){
 			saveChildCreditDebitNote(creditDebitNote,user,vendorOrgLocation);
 		}
 		return creditDebitNote;
@@ -3453,7 +3450,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	private CreditDebitNote saveChildCreditDebitNote(CreditDebitNote parentCreditDebitNote, User user, OrgLocations vendorOrgLocation) throws Exception {
 		CreditDebitNote childCreditDebitNote = null;
 		if(parentCreditDebitNote.getId() !=null){
-			childCreditDebitNote = null;	
+			childCreditDebitNote = new CreditDebitNote();	
 		}else{
 			childCreditDebitNote = new CreditDebitNote();
 		}
@@ -3462,13 +3459,24 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}else{
 			childCreditDebitNote.setNoteType(Constants.CREDIT_NOTE);
 		}
+		childCreditDebitNote.setOrgRelations(parentCreditDebitNote.getOrgRelations());
+		childCreditDebitNote.setOrgLocations(parentCreditDebitNote.getResponderLocation());
+		childCreditDebitNote.setResponderLocation(parentCreditDebitNote.getOrgLocations());
+		String contactUser = parentCreditDebitNote.getContactUser();
+		String ss[] = contactUser.split(",");
+		String dd = ss[0];
+		User owner = userService.getUserById(Long.parseLong(dd));
+		childCreditDebitNote.setOwnerUser(owner);
+		childCreditDebitNote.setNoteStatus(Constants.INVOICE_RECEIVED);
+		childCreditDebitNote.setCreditNoteDate(parentCreditDebitNote.getCreditNoteDate());
+		childCreditDebitNote.setStatus(parentCreditDebitNote.getStatus());
+		childCreditDebitNote.setContactUser(parentCreditDebitNote.getOwnerUser().getId().toString());
 		childCreditDebitNote.setParentCreditDebitNote(parentCreditDebitNote);
 		childCreditDebitNote.setReferenceNumber(parentCreditDebitNote.getReferenceNumber());
 		childCreditDebitNote.setReason(parentCreditDebitNote.getReason());
 		childCreditDebitNote.setBillingAddress(parentCreditDebitNote.getBillingAddress());
 		childCreditDebitNote.setShippingAddress(parentCreditDebitNote.getShippingAddress());
 		childCreditDebitNote.setInvoice(parentCreditDebitNote.getInvoice());
-		childCreditDebitNote.setNoteStatus(parentCreditDebitNote.getNoteStatus());
 		childCreditDebitNote.setCreditDebitUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		childCreditDebitNote.setCreatedBy(user);
 		childCreditDebitNote.setUpdatedBy(user);

@@ -39,7 +39,15 @@
 		<div class="form-group row">
 		<label class="col-md-3">Contact<span class="text-danger">&nbsp;*</span></label>
 		<div class="col-md-9">
-		 <select class="chosen-select form-control" id="spocUser" name="spocUser" data-validation="required" field-name="Client Contact"></select>
+		 <select multiple="multiple" class="chosen-select form-control" id="spocUser" name="spocUser" data-validation="required" field-name="Client Contact"></select>
+		</div>
+		</div>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-md-6">
+		<div class="form-group row">
+		<label class="col-md-3 paddingRight">Ref. ID</label>
+		<div class="col-md-9">
+		<input type="text" class="form-control" value="" id="referenceNumber" name="referenceNumber" field-name="Ref. ID" data-validation-optional="true" placeholder="Ref. ID">
 		</div>
 		</div>
 		</div>
@@ -61,14 +69,6 @@
 		</div>
 		<div class="col-xs-12 col-sm-6 col-md-6">
 		<div class="form-group row">
-		<label class="col-md-3 paddingRight">Ref. ID</label>
-		<div class="col-md-9">
-		<input type="text" class="form-control" value="" id="referenceNumber" name="referenceNumber" field-name="Ref. ID" data-validation-optional="true" placeholder="Ref. ID">
-		</div>
-		</div>
-		</div>
-		<div class="col-xs-12 col-sm-6 col-md-6">
-		<div class="form-group row">
 		<label class="col-md-3 paddingRight">Credit Note Date</label>
 		<div class="col-md-9" id= "creditDebitNotedateDiv">
     	<input class="form-control calendar" placeholder="Credit Note Date" type="text" value = "" id="creditDebitNotedate" name="creditDebitNotedate" field-name="Credit Note Date" readonly>
@@ -79,7 +79,7 @@
 		<div class="form-group row">
 		<label class="col-md-3 paddingRight">Invoice<span class="text-danger">&nbsp;*</span></label>
 		<div class="col-md-9">
-		<select class="chosen-select form-control" id="invoceId" name="invoceId" data-validation="required" field-name="Invoice"></select>
+		<select multiple="multiple" class="chosen-select form-control" id="invoceId" name="invoceId" data-validation="required" field-name="Invoice"></select>
 		</div>
 		</div>
 		</div>
@@ -245,9 +245,9 @@
 		<div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Draft" onClick="saveCreditNote('DRAFT');" class="btn btn-warning" type="button">
-            <input value="Send" onClick="saveCreditNote('Send');" class="btn btn-success mr ml" type="button">
-            <input value="Submit" onClick="saveCreditNote('Submit');" class="btn btn-primary" type="button">
+          <input value="Draft" id="draftButtonId" onClick="saveCreditNote('DRAFT');" class="btn btn-warning" type="button">
+            <input value="Send" id="sendButtonId" onClick="saveCreditNote('Send');" class="btn btn-success mr ml" type="button">
+            <input value="Submit" id = "submitButtonId" onClick="saveCreditNote('Submit');" class="btn btn-primary" type="button">
             <input value="Cancel" class="btn btn-default ml" type="button">
           </div>
         </div>
@@ -263,10 +263,16 @@
 function saveCreditNote(saveType){
 	
 	if ($('#creditNote_form').validate(false, validationSettings)){  
-	 	    var formData = getFormData("creditNote_form");
+	 	    var formData = getFormData1("creditNote_form");
 	 	   
 	        	  $("#creditDebitLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	        	  $.post(sourceleadUrl+"/saveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&noteType=Credit", formData, function(result) {
+	        	  $.ajax({
+	                  url: sourceleadUrl+"/saveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&noteType=Credit",
+	                  type: "POST",
+	                  data: formData,
+	                  processData: false,
+	                  contentType: false,
+	                  success: function (result) {
 	        		  if (result && result.response === "INVALID_DATA") {
 	          		    showError(result.responseMessage);
 	          		} else if (result.response === "AWKWARD") {
@@ -288,7 +294,7 @@ function saveCreditNote(saveType){
 	          		    showError("Operation failed, please try again");
 	          		}
 	        		  $("#creditDebitLoading").hide();
-	        		  
+	        	  }  
 	  			   }); 
 	        	  
 	    	         return true; 
@@ -356,7 +362,7 @@ function prepareDynamicRoweDiv(rowId){
    rowDiv =rowDiv+ '  </td>';
    rowDiv =rowDiv+ '  <td>';
    rowDiv =rowDiv+ '    <div class="width100px">';
-   rowDiv =rowDiv+ '      <select class="form-control sel" id="taxType'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].taxType" onkeyup="taxCalculatedAmount('+rowId+');">';
+   rowDiv =rowDiv+ '      <select class="form-control sel" id="taxType'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].taxType" onchange="taxCalculatedAmount('+rowId+');">';
    rowDiv =rowDiv+ '        <option value="Percentage">Tax %</option>';
    rowDiv =rowDiv+ '        <option value="Flat">Tax Value</option>';
    rowDiv =rowDiv+ '      </select>';
@@ -383,74 +389,82 @@ function prepareDynamicRoweDiv(rowId){
 }
 //var removedResidenceIds = [];
 function removeDynamicRowDiv(id){
-    
+		
 	var rowAmount = $("#rowTotalAmount"+id).val();
-   var subAmount = $("#subTotalAmount").val();
-   var substractAmount =  subAmount - rowAmount;
-   $("#subTotalAmount").val(substractAmount.toFixed(2));
-   $("#grandTotal").val(substractAmount.toFixed(2));
+	   var subAmount = $("#subTotalAmount").val();
+	   if((rowAmount >0) && (subAmount > 0)){
+	   var substractAmount =  subAmount - rowAmount;
+	   $("#subTotalAmount").val(substractAmount.toFixed(2));
+	   $("#grandTotal").val(substractAmount.toFixed(2));
+	   }  
+	
+	$("#dynamicAddrowDiv"+id).remove();
    
-   $("#dynamicAddrowDiv"+id).remove();
- 
+   
    rowId--;// decrement rowid when deleted in UI.
 }
 
 </script>
 
 <script>
-function getSpocsList(){
-	var orgRelationId = $("#orgRelationId").val();
-	$("#spocUser").empty();
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-	success :function(json) {
-	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.data.length; i++)
-	{
-	var opt = json.data[i];
-	var selected = "";
-	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";
-	}
-	$("#spocUser").append(output);
-	$('#spocUser').trigger("chosen:updated");
-	},
-	});
+
+	function getSpocsList() {
+		var orgRelationId = $("#orgRelationId").val();
+		$("#spocUser").empty();
+		$.ajax({
+					type : "GET",
+					url : sourceleadUrl + "/getClientContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
+					success : function(json) {
+						var output = "";
+						output = output+ "<option value=''>Select Client Contact</option>";
+						for (var i = 0; i < json.data.length; i++) {
+							var opt = json.data[i];
+							var selected = "";
+							output = output	+ "<option value='" +opt.spocUserId+ "' "+selected+">"+ opt.ownerName + "(" + opt.spocName+ ")</option>";
+						}
+						$("#spocUser").append(output);
+						$('#spocUser').trigger("chosen:updated");
+					},
+				});
 	}
 </script>
 
 <script>
-function approverCheck(){
-	var checked = document.getElementById("approverCheckBox").checked
-	if(checked == true){
-		$("#approverCheckBox").val("Y");
-		$("#approversDivId").show();
-	}else{
-		$("#approverCheckBox").val("N");
-		$("#approversDivId").hide();
+	var checkVal = $("#approverCheckBox").val();
+	if(checkVal == "N"){
+		$("#submitButtonId").hide();	
 	}
-}
+	function approverCheck() {
+		var checked = document.getElementById("approverCheckBox").checked
+		if (checked == true) {
+			$("#approverCheckBox").val("Y");
+			$("#approversDivId").show();
+			$("#submitButtonId").show();
+		} else {
+			$("#approverCheckBox").val("N");
+			$("#approversDivId").hide();
+			$("#submitButtonId").hide();
+		}
+	}
 
-function getInvoiceList(){
-	var orgRelationId = $("#orgRelationId").val();
-	$("#invoceId").empty();
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getInvoiceListForCreditDebitNote?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&invoiceType=Receivable",
-	success :function(json) {
-	var output = "";
-	output = output + "<option value=''>Select Invoice</option>";
-	for (var i=0; i<json.data.length; i++)
-	{
-	var opt = json.data[i];
-	var selected = "";
-	output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.invoiceId+"</option>";
-	}
-	$("#invoceId").append(output);
-	$('#invoceId').trigger("chosen:updated");
-	},
-	});
+	function getInvoiceList() {
+		var orgRelationId = $("#orgRelationId").val();
+		$("#invoceId").empty();
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/getInvoiceListForCreditDebitNote?"+ tokenParamName + "=" + tokenValue + "&orgRelationId="+ orgRelationId + "&invoiceType=Receivable",
+			success : function(json) {
+				var output = "";
+				output = output + "<option value=''>Select Invoice</option>";
+				for (var i = 0; i < json.data.length; i++) {
+					var opt = json.data[i];
+					var selected = "";
+					output = output + "<option value='" +opt.id+ "' "+selected+">"+ opt.invoiceId + "</option>";
+				}
+				$("#invoceId").append(output);
+				$('#invoceId').trigger("chosen:updated");
+			},
+		});
 	}
 </script>
 
