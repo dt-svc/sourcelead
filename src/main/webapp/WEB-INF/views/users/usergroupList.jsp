@@ -299,7 +299,9 @@ function userGroupPaginationFun(url){
               "data": "payFrequency",
               "sortable": true,
               "render": function ( data, type, opt, meta ) {
-            	  return ' <td><div  class="tblminwidth-100">'+opt.payFrequency+'</div></td>';
+            	  var result = "";
+            	     result = result + '  <td><div  class="tblminwidth-100">'+opt.payFrequency+'</div></td>';
+            	  return result;
               }
             }, {
                 "targets": colIndex++,
