@@ -154,7 +154,30 @@ public class InvoiceController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
 		List<User> approversList = userService.getOwnersByOrgLocationId(orgLocations.getId());
-		orgClientList.forEach(vendors->{
+		orgClientList.forEach(clients->{
+			if(clients.getLocationId().getId().equals(orgLocations.getId())){
+				clients.setOrgName(clients.getResponderLocationId().getOrgLocationName());
+			}
+			if(clients.getResponderLocationId().getId().equals(orgLocations.getId())){
+				clients.setOrgName(clients.getLocationId().getOrgLocationName());
+			}
+		});
+		model.addObject("clientsList", orgClientList);
+		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+		model.addObject("approversList",approversList);
+		return model;
+		
+	}
+	
+	@RequestMapping(value = "/addDebitNote")
+	public ModelAndView addDebitNote(HttpServletRequest request) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("billing/addDebitNote");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		Collection<OrgRelations> orgVendorsList =orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId()); 
+		List<User> approversList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		orgVendorsList.forEach(vendors->{
 			if(vendors.getLocationId().getId().equals(orgLocations.getId())){
 				vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
 			}
@@ -162,7 +185,7 @@ public class InvoiceController {
 				vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
 			}
 		});
-		model.addObject("clientsList", orgClientList);
+		model.addObject("vendorsList", orgVendorsList);
 		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("approversList",approversList);
 		return model;
