@@ -3398,6 +3398,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(creditDebitNoteDTO.getSpocUser()));
         creditDebitNote.setOrgSpoc(orgSpoc);
         creditDebitNote.setNoteStatus(saveType);
+        creditDebitNote.setSubTotal(new BigDecimal(creditDebitNoteDTO.getSubTotalAmount()));
+        creditDebitNote.setTotal(new BigDecimal(creditDebitNoteDTO.getGrandTotal()));
 		if(StringUtils.isNotBlank(creditDebitNoteDTO.getBillingAddress())){
 			creditDebitNote.setBillingAddress(creditDebitNoteDTO.getBillingAddress());
 		}else{

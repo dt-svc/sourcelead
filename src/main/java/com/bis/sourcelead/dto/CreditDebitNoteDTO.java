@@ -16,8 +16,8 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	private String shippingAddress;
 	private String referenceNumber;
 	private String reason;
-	private String subTotal;
-	private String total;
+	private String subTotalAmount;
+	private String grandTotal;
 	private String creditDebitNotedate;
 	private String approverCheckBox;
 	private String approvers;
@@ -96,17 +96,18 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
-	public String getSubTotal() {
-		return subTotal;
+
+	public String getSubTotalAmount() {
+		return subTotalAmount;
 	}
-	public void setSubTotal(String subTotal) {
-		this.subTotal = subTotal;
+	public void setSubTotalAmount(String subTotalAmount) {
+		this.subTotalAmount = subTotalAmount;
 	}
-	public String getTotal() {
-		return total;
+	public String getGrandTotal() {
+		return grandTotal;
 	}
-	public void setTotal(String total) {
-		this.total = total;
+	public void setGrandTotal(String grandTotal) {
+		this.grandTotal = grandTotal;
 	}
 	public String getCreditDebitNotedate() {
 		return creditDebitNotedate;

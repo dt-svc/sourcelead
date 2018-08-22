@@ -131,6 +131,7 @@
             </thead>
             <tbody id="tableId">
               <tr>
+               <input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber0" value="0"/>
               <td>
                 	<div class="width150px">
                 	<input class="form-control calendar" placeholder="Date" type="text" value = "" id="lineItemDate0" name="creditDebitNoteLineItems[0].lineItemDate" onclick="datePickerFunction(0);" field-name="Date" readonly>
@@ -211,20 +212,20 @@
             <div class="form-horizontal">
               <div class="form-group">
                 <label class="control-label col-md-7"><strong>Sub Total</strong></label>
-                <div class="col-md-5 text-right" id="subTotal12">0.00</div>
+                <div class="col-md-5 text-right"><span class="pull-left"></span><input type="text" value = "00:00" id="subTotalAmount" name="subTotalAmount" class="ReadTextFli" readonly></div>
               </div>
               <!-- Discount UI Starts-->
               <div class="form-group">
                 <div class="col-md-7 select-field">
                   <div class="row">
                     <div class="col-md-7 paddingRight">
-                      <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDisCount();validateDiscount();">
+                      <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDisCount();">
                         <option value="Percentage">Discount %</option>
                         <option value="Flat">Discount Value</option>
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft" id="discountValueDiv">
-                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" placeholder="Flat / Discount" name="discountValue" type="text" onblur="calculateDisCount();" onkeyup="validateDiscount();">
+                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" placeholder="Flat / Discount" name="discountValue" type="text" onkeyup="calculateDisCount();">
                     </div>
                   </div>
                 </div>
@@ -314,6 +315,7 @@ function cloneRows(){
 function prepareDynamicRoweDiv(rowId){
 	var rowDiv ='';
    rowDiv =rowDiv+ '<tr id ="dynamicAddrowDiv'+rowId+'">';
+   rowDiv =rowDiv+ '<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber'+rowId+'" value="'+rowId+'"/>';
    rowDiv =rowDiv+ ' <td>';
    rowDiv =rowDiv+ '	<div class="width150px">';
    rowDiv =rowDiv+ '	<input class="form-control calendar" placeholder="Date" type="text" value = "" id="lineItemDate'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].lineItemDate" field-name="Date" readonly onclick="datePickerFunction('+rowId+');">';
@@ -381,54 +383,20 @@ function prepareDynamicRoweDiv(rowId){
 }
 //var removedResidenceIds = [];
 function removeDynamicRowDiv(id){
-   //removedResidenceIds.push(residenceId);
+    
+	var rowAmount = $("#rowTotalAmount"+id).val();
+   var subAmount = $("#subTotalAmount").val();
+   var substractAmount =  subAmount - rowAmount;
+   $("#subTotalAmount").val(substractAmount.toFixed(2));
+   $("#grandTotal").val(substractAmount.toFixed(2));
+   
    $("#dynamicAddrowDiv"+id).remove();
+ 
    rowId--;// decrement rowid when deleted in UI.
 }
 
 </script>
 
- <script type="text/javascript">
-function calculateDisCount(){
-	
-	var discountType = $("#disCount").val();
-	var subTotal = $("#subTotal12").val();
-	var discountValue = $("#discountValue").val();
-	var total ='';
-	if(discountType == 'Flat'){
-		if(discountValue && subTotal > 0){
-			total = subTotal-discountValue;
-			$("#discountTotal").val(discountValue);
-			$("#grandTotal").val(total);
-			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
-		}else{
-			$("#discountTotal").val("00.00");
-			$("#grandTotal").val(subTotal);
-			$("#conversionFrom").val(subTotal);
-			$("#afterDiscountTotal").val(subTotal);
-		}
-		
-	}
-	if(discountType == 'Percentage'){
-		if(discountValue && subTotal > 0){
-			var perCentValue = (subTotal * discountValue)/100;
-			total = subTotal - perCentValue;
-			$("#discountTotal").val(perCentValue.toFixed(2));
-			$("#grandTotal").val(total);
-			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
-		}else{
-			$("#discountTotal").val("00.00");
-			$("#conversionFrom").val(subTotal);
-			$("#grandTotal").val(subTotal);
-			$("#afterDiscountTotal").val(subTotal);
-		}
-		
-	}
-}
-</script>
-      
 <script>
 function getSpocsList(){
 	var orgRelationId = $("#orgRelationId").val();
@@ -520,8 +488,9 @@ function datePickerFunction(id){
 	  var totlalAmount = (price * quantity);
 	     $('#rowTotal'+rowId).empty().val(totlalAmount.toFixed(2));
 	     $('#rowTotalAmount'+rowId).empty().val(totlalAmount.toFixed(2));
-	     var vvv = $("#rowTotalAmount"+rowId).val();
-		 $("#subTotal12").empty().text(vvv);
+	     calculateSumSubTotal(rowId);
+	     /* var vvv = $("#rowTotalAmount"+rowId).val();
+		 $("#subTotal").empty().text(vvv); */
 	     //calculateSum();
 }
   
@@ -543,10 +512,60 @@ function datePickerFunction(id){
 			totlalValue = (rowTotalVal + perCentValue);  
 	  }
 	   $('#rowTotalAmount'+rowId).empty().val(totlalValue.toFixed(2));
-	   var vvv = $("#rowTotalAmount"+rowId).val();
-	   $("#subTotal12").empty().text(vvv);
+	   calculateSumSubTotal(rowId);
+	   /* var vvv = $("#rowTotalAmount"+rowId).val();
+	   $("#subTotal").empty().text(vvv); */
 		
 }
+  
+  
+  function calculateSumSubTotal(id){
+		 var maxRowNum = $("#invoiceExpMaxRowNumber"+id).val();
+		 var sum = 0;
+		  for(var i=0;i <= maxRowNum;i++){
+			  if(document.getElementById("rowTotalAmount"+i)){
+		    		 if(document.getElementById("rowTotalAmount"+i).value){
+		    			var rowAmount = $('#rowTotalAmount'+i).val();
+			 	    	sum = parseFloat(sum) + parseFloat(rowAmount);
+		    		 }
+		    		
+		    	 } 
+		 }  
+		  $("#subTotalAmount").val(sum.toFixed(2));
+		  $("#grandTotal").val(sum.toFixed(2));
+  }		  
+  
+  
+  function calculateDisCount(){
+		var discountType = $("#disCount").val();
+		var subTotal = $("#subTotalAmount").val();
+		var discountValue = $("#discountValue").val();
+		var total ='';
+		if(discountType == 'Flat'){
+			if(discountValue !=null && discountValue !='undefined'){
+				total = subTotal-discountValue;
+				$("#discountTotal").val(discountValue);
+				$("#grandTotal").val(total.toFixed(2));
+			}else{
+				$("#discountTotal").val("00.00");
+				$("#grandTotal").val(subTotal.toFixed(2));
+			}
+			
+		}
+		if(discountType == 'Percentage'){
+			if(discountValue !=null && discountValue !='undefined'){
+				var perCentValue = (subTotal * discountValue)/100;
+				total = subTotal - perCentValue;
+				$("#discountTotal").val(perCentValue.toFixed(2));
+				$("#grandTotal").val(total.toFixed(2));
+			}else{
+				$("#discountTotal").val("00.00");
+				$("#grandTotal").val(subTotal.toFixed(2));
+			}
+			
+		}
+	}
+  
   // allow only numbers
   function validateNumber(object){ 
 	   object.value = object.value.replace(/[^0-9\.]/g,'');
