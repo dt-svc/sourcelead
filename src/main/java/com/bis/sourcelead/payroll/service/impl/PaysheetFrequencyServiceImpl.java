@@ -297,7 +297,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 //					List<ContributionDTO> postConList = contributionHisList.stream().filter(con->"posttax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());
 //					Map<String, Double> preCList = preConList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getAmount)));
 //					response.setPreContribution(preCList);
-					Map<String, Double> contribution = contributionHisList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getPostContributionAmt)));
+					Map<String, Double> contribution = contributionHisList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getContributionAmt)));
 					response.setContribution(contribution);
 				}
 				response.setMyPayroll(list);
@@ -322,13 +322,20 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				for (DeductionHistory dedHis : hisList) {
 					double precontrAmt = 0;
 					double postcontrAmt = 0;
+					double amount = 0;
 					if (dedHis.getContributionId() != null) {
 						ContributionDTO contDTO = new ContributionDTO();
 						if (dedHis.getPreContributionAmount() != null) {
 							precontrAmt = dedHis.getPreContributionAmount().doubleValue();
+							if (dedHis.getPreContributionAmount().compareTo(BigDecimal.ZERO) !=  0) {
+								amount = dedHis.getPreContributionAmount().doubleValue();
+							}
 						}
 						if (dedHis.getPostContributionAmount() != null) {
 							postcontrAmt = dedHis.getPostContributionAmount().doubleValue();
+							if (dedHis.getPostContributionAmount().compareTo(BigDecimal.ZERO) !=  0 ) {
+								amount = dedHis.getPostContributionAmount().doubleValue();
+							}
 						}
 						contDTO.setAmount(precontrAmt);
 						contDTO.setPostContributionAmt(postcontrAmt);
@@ -336,6 +343,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 						contDTO.setContributionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
 						contDTO.setTaxType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getTaxType());
 						contDTO.setContributionAmount(dedHis.getContributionId().getContributionAmount());
+						contDTO.setContributionAmt(amount);
 						contributionList.add(contDTO);
 					}
 				}
