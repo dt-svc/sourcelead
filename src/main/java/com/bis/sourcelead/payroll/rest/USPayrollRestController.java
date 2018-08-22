@@ -1385,11 +1385,12 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = "/validateDeduction", method = RequestMethod.GET)
 	@ResponseBody
-	public boolean validateDeduction(@RequestParam(value = "dedType",required = false)Long deductionTypeId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public boolean validateDeduction(@RequestParam(value = "dedType",required = false)Long deductionTypeId, @RequestParam(value = "userId",required = false)Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		boolean bol = false;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		AssociateDeduction  validateDed = associateDeductionService.getValidateDeduction(deductionTypeId,orgLocation);	
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
+		AssociateDeduction  validateDed = associateDeductionService.getValidateDeduction(deductionTypeId,orgLocation,candidate.getId());	
 		if(validateDed != null) {
 			bol = true;
 		}

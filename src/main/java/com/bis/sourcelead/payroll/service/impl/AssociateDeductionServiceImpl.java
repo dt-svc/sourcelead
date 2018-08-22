@@ -146,8 +146,8 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 	}
 
 	@Override
-	public AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation) {
-		AssociateDeduction associateDeduction = associateDeductionDao.getValidateDeduction(deductionTypeId,orgLocation);
+	public AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation,Long candidateId) {
+		AssociateDeduction associateDeduction = associateDeductionDao.getValidateDeduction(deductionTypeId,orgLocation,candidateId);
 		return associateDeduction;
 	}
 	
