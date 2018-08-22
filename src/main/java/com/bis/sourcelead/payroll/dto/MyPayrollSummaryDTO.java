@@ -7,13 +7,15 @@ public class MyPayrollSummaryDTO {
 	
 	private List<MyPayrollDTO> myPayroll;
 	
-	Map<String, Double> preDed;
+	private Map<String, Double> preDed;
 	
-	Map<String, Double> postDed;
+	private Map<String, Double> postDed;
 	
-	Map<String, Double> preContribution;
+	private Map<String, Double> contribution;
 	
-	Map<String, Double> postContribution;
+	private double dedTotal;
+	
+	private double contriTotal;
 
 	public List<MyPayrollDTO> getMyPayroll()
 	{
@@ -35,15 +37,6 @@ public class MyPayrollSummaryDTO {
 		return postDed;
 	}
 
-	public Map<String, Double> getPreContribution()
-	{
-		return preContribution;
-	}
-
-	public Map<String, Double> getPostContribution()
-	{
-		return postContribution;
-	}
 
 	public void setPreDed(Map<String, Double> preDed)
 	{
@@ -55,14 +48,35 @@ public class MyPayrollSummaryDTO {
 		this.postDed = postDed;
 	}
 
-	public void setPreContribution(Map<String, Double> preContribution)
+
+	public double getDedTotal()
 	{
-		this.preContribution = preContribution;
+		return dedTotal;
 	}
 
-	public void setPostContribution(Map<String, Double> postContribution)
+	public double getContriTotal()
 	{
-		this.postContribution = postContribution;
+		return contriTotal;
+	}
+
+	public void setDedTotal(double dedTotal)
+	{
+		this.dedTotal = dedTotal;
+	}
+
+	public void setContriTotal(double contriTotal)
+	{
+		this.contriTotal = contriTotal;
+	}
+
+	public Map<String, Double> getContribution()
+	{
+		return contribution;
+	}
+
+	public void setContribution(Map<String, Double> contribution)
+	{
+		this.contribution = contribution;
 	}
 	
 	

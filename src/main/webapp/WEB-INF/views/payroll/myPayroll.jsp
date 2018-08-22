@@ -114,8 +114,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="preTaxDeductioDIV">
+               						<!-- <tr>
                							<td>Medical</td>
                							<td>50$</td>
                						</tr>
@@ -126,7 +126,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -141,8 +141,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="postTaxDeductioDIV">
+               						<!-- <tr>
                							<td>401(R)</td>
                							<td>50$</td>
                						</tr>
@@ -153,7 +153,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -196,7 +196,7 @@ function loansAdvances(){
                						</tr>
                					</thead>
                					<tbody>
-               						<tr>
+               						 <tr>
                							<td>401(R)</td>
                							<td>50$</td>
                						</tr>
@@ -207,7 +207,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> 
                					</tbody>
                				</table>
                		</div>
@@ -222,8 +222,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="contributionDIV">
+               						<!-- <tr>
                							<td>401(R)</td>
                							<td>50$</td>
                						</tr>
@@ -234,7 +234,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -347,11 +347,61 @@ function loansAdvances(){
 <script>
 function getMyPayrollList(){
 	var totalNetPay = 0;
+	var preDedTotal = 0;
+	var postDedTotal = 0;
+	var contrTotal = 0;
 	$.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getMyPayrollList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(result) {
 	        var data = result.myPayroll;
+	        // Pre Deductions
+	        var preDed = "";
+	        for(var e in result.preDed){
+	        	preDedTotal = preDedTotal + result.preDed[e];
+	 	        preDed = preDed + '<tr>';
+	 	        preDed = preDed + '<td>'+e+'</td>';
+	 	        preDed = preDed + '<td>$ '+result.preDed[e]+'</td>';
+	 	        preDed = preDed + '</tr>';
+	        }
+	        preDed = preDed + '<tr>';
+	        preDed = preDed + '<td><strong>Total</strong></td>';
+	        preDed = preDed + '<td>$ '+preDedTotal+'</td>';
+	        preDed = preDed + '</tr>';
+	        $("#preTaxDeductioDIV").empty();
+	        $("#preTaxDeductioDIV").append(preDed);
+	        
+	        // Post Deductions
+	        var postDed = "";
+	        for(var e in result.postDed){
+	        	postDedTotal = postDedTotal + result.postDed[e];
+	        	postDed = postDed + '<tr>';
+	        	postDed = postDed + '<td>'+e+'</td>';
+	        	postDed = postDed + '<td>$ '+result.postDed[e]+'</td>';
+	        	postDed = postDed + '</tr>';
+	        }
+	        postDed = postDed + '<tr>';
+	        postDed = postDed + '<td><strong>Total</strong></td>';
+	        postDed = postDed + '<td>$ '+postDedTotal+'</td>';
+	        postDed = postDed + '</tr>';
+	        $("#postTaxDeductioDIV").empty();
+	        $("#postTaxDeductioDIV").append(postDed);
+	        
+	        // Contributions
+	         var contr = "";
+	         for(var e in result.contribution){
+	        	 contrTotal = contrTotal + result.contribution[e];
+	        	 contr = contr + '<tr>';
+	        	 contr = contr + '<td>'+e+'</td>';
+	        	 contr = contr + '<td>$ '+result.contribution[e]+'</td>';
+	        	 contr = contr + '</tr>';
+	         }
+	         contr = contr + '<tr>';
+	         contr = contr + '<td><strong>Total</strong></td>';
+	         contr = contr + '<td>$ '+contrTotal+'</td>';
+	         contr = contr + '</tr>';
+	         $("#contributionDIV").empty();
+	         $("#contributionDIV").append(contr);
 	        
 	        var result = "";
 	        result = result +'<table id="myPayrollTableDiv" class="display" cellspacing="0" width="100%" >';
@@ -431,6 +481,10 @@ function getMyPayrollList(){
 	        $("#payrollDataDIV").empty();
 	        $("#payrollDataDIV").append(result);
 	        mayPayrollPagination();
+	        
+	        
+	       
+			
 	        },
 	    });
 	
