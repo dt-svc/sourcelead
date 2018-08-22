@@ -22,6 +22,7 @@ function formsDiv(){
 	$("#myPayrollFormDiv").show();
 	$("#myPayrollDiv").hide();
 	$("#loansAdvancesDiv").hide();
+	getUsMyPayrollForms();
 }
 
 function loansAdvances(){
@@ -388,17 +389,18 @@ function loansAdvances(){
 		$("#totalCount").toggle();
 	}
 	</script>
- <script type="text/javascript">
-	function uploaddocument() {
-		$(".uploaddocument, .sideMask").fadeIn();
-	}
-	function clsoerequestPop() {
-		$(".uploaddocument, .sideMask").fadeOut();
-	}
-		$("#uploadBtn").change(function () {
-			//var m = $(this).val();
-		$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-	})
-</script> 
-
+<script>
+//project side bar tabs
+$(document).ready(function() {
+	payDiv();
+    $(".list-unstyled a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+//         var tab = $(this).attr("href");
+//         $(".list-unstyled").not(tab).css("display", "none");
+//         $(tab).fadeIn();
+    });
+});
+</script>
 <jsp:include page="../masterFooter.jsp" />
