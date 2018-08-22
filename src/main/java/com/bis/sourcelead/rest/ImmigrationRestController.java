@@ -2249,7 +2249,11 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/getCandidateById" })
 	public @ResponseBody Candidate getCandidateById(
 			@RequestParam(value = "id", required = false) Long id,  HttpServletRequest request) throws Exception {
-		return candidateService.getCandidateByCandidateId(id);
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Candidate candidate = candidateService.getCandidateByCandidateId(id);
+		candidate.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidate.getDateOfBirth()));
+		return candidate;
 	}
 	
 	// to auto populate  lca start date and end date with LCA number in petition Details
