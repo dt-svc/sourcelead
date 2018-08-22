@@ -275,84 +275,90 @@ function runUSPayroll(){
 		    	type: "POST",
 		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate,                 
 		        success: function(data) {
-		            var json = data.payrollDTO;
-		        	var result = "";
-		        	result += '<table>';
-		        	result += '<thead>';
-		        	result += '<tr>';
-		         	/* result += '<th>';
-		        	result += '<div class="checkbox-new pull-left">';
-		        	result += '<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">';
-		        	result += '<label for="all" class="checkbox-custom-label"></label>';
-		        	result += '</div>';
-		        	result += '</th>'; */ 
-		        	result += '<th>Exclude</th>';
-		        	result += '<th>Emp ID</th>';
-		        	result += '<th>Emp Name</th>';
-		        	result += '<th>Regular<br>Hours</th>';
-		        	result += '<th>Payrate</th>';
-		        	result += '<th>OT<br>Hours</th>';
-		        	result += '<th>Gross<br>Pay</th>';
-		        	result += '<th>Pretax<br>Deduction</th>';
-		        	result += '<th>Post<br>Deduction</th>';
-		        	result += '<th>Taxes</th>';
-		        	result += '<th>Net<br>Pay</th>';
-		        	result += '</tr>';
-		        	result += '</thead>	';
-		        	result += '<tbody>';
-		        	result += '<input type="hidden" value='+data.id+' id="payrollFrequencyId" name="payrollFrequencyId" />';
-		        	result += '<input type="hidden" value='+data.payrollFrequencyUUID+' id="payrollFrequencyUUID" name="payrollFrequencyUUID" />';
-		        	if(json != null && json.length > 0){
-		        		for (var i=0; i<json.length; i++){
-		        			var opt = json[i];
-		        			result += '<tr>';
-				        	 result += '<td>';
-				        	result += '<div class="checkbox-new pull-left ml5">';
-				        	result += '<input id="'+i+'emp1" value="YES" class="checkbox-custom" name="uspayroll['+i+'].isExcept" type="checkbox">';
-				        	result += '<label for="'+i+'emp1" class="checkbox-custom-label"></label>';
+		        	if(data != null && data !='' && data !='undefined'){
+		        		 var json = data.payrollDTO;
+				        	var result = "";
+				        	result += '<table>';
+				        	result += '<thead>';
+				        	result += '<tr>';
+				         	/* result += '<th>';
+				        	result += '<div class="checkbox-new pull-left">';
+				        	result += '<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">';
+				        	result += '<label for="all" class="checkbox-custom-label"></label>';
 				        	result += '</div>';
-				        	result += '</td>'; 
-				        	result += '<input type="hidden" value='+opt.empPayrollId+' id="'+i+'empPayrollId" name="uspayroll['+i+'].empPayrollId" />';
-				        	if(opt.empId != null && opt.empId != 'undefined' && opt.empId != ''){
-				        		result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
-				        	}else{
-				        		result += '<td><div class="tblminwidth-50">--</div></td>';
+				        	result += '</th>'; */ 
+				        	result += '<th>Exclude</th>';
+				        	result += '<th>Emp ID</th>';
+				        	result += '<th>Emp Name</th>';
+				        	result += '<th>Regular<br>Hours</th>';
+				        	result += '<th>Payrate</th>';
+				        	result += '<th>OT<br>Hours</th>';
+				        	result += '<th>Gross<br>Pay</th>';
+				        	result += '<th>Pretax<br>Deduction</th>';
+				        	result += '<th>Post<br>Deduction</th>';
+				        	result += '<th>Taxes</th>';
+				        	result += '<th>Net<br>Pay</th>';
+				        	result += '</tr>';
+				        	result += '</thead>	';
+				        	result += '<tbody>';
+				        	result += '<input type="hidden" value='+data.id+' id="payrollFrequencyId" name="payrollFrequencyId" />';
+				        	result += '<input type="hidden" value='+data.payrollFrequencyUUID+' id="payrollFrequencyUUID" name="payrollFrequencyUUID" />';
+				        	if(json != null && json.length > 0){
+				        		for (var i=0; i<json.length; i++){
+				        			var opt = json[i];
+				        			result += '<tr>';
+						        	 result += '<td>';
+						        	result += '<div class="checkbox-new pull-left ml5">';
+						        	result += '<input id="'+i+'emp1" value="YES" class="checkbox-custom" name="uspayroll['+i+'].isExcept" type="checkbox">';
+						        	result += '<label for="'+i+'emp1" class="checkbox-custom-label"></label>';
+						        	result += '</div>';
+						        	result += '</td>'; 
+						        	result += '<input type="hidden" value='+opt.empPayrollId+' id="'+i+'empPayrollId" name="uspayroll['+i+'].empPayrollId" />';
+						        	if(opt.empId != null && opt.empId != 'undefined' && opt.empId != ''){
+						        		result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
+						        	}else{
+						        		result += '<td><div class="tblminwidth-50">--</div></td>';
+						        	}
+						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
+						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
+						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.payRate+'</div></td>';
+						        	
+						        	if(opt.overtimeHours != null && opt.overtimeHours != '' && opt.overtimeHours != 'undefined'){
+						        		result += '<td><div class="tblminwidth-50">'+opt.overtimeHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.otHoursTotalAmt.toFixed(2)+'</div></td>';
+						        	}else{
+						        		result += '<td><div class="tblminwidth-50">0.00</div><div class="tblminwidth-50 clearfix text-danger">$ 0.00</div></td>';
+						        	}
+						        	
+						        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
+						        	if(opt.preTaxDeduction != null && opt.preTaxDeduction != '' && opt.preTaxDeduction != 'undefined'){
+						        		result += '</td><td><div class="tblminwidth-50 clearfix">$ '+opt.preTaxDeduction.toFixed(2)+'</div></td>';
+						        	}else{
+						        		result += '</td><td><div class="tblminwidth-50 clearfix">$ 0.000</td>';
+						        	}
+						        	if(opt.postTaxDeduction != null && opt.postTaxDeduction != '' && opt.postTaxDeduction != 'undefined'){
+						        		result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.postTaxDeduction.toFixed(2)+'</div></td>';	
+						        	}else{
+						        		result += '<td><div class="tblminwidth-50 clearfix">$ 0.00</div></td>';
+						        	}
+						        	
+						        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
+						        	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
+						        	result += '</tr>';  
+					        	}
+					        	
 				        	}
-				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
-				        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
-				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.payRate+'</div></td>';
-				        	
-				        	if(opt.overtimeHours != null && opt.overtimeHours != '' && opt.overtimeHours != 'undefined'){
-				        		result += '<td><div class="tblminwidth-50">'+opt.overtimeHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.otHoursTotalAmt.toFixed(2)+'</div></td>';
-				        	}else{
-				        		result += '<td><div class="tblminwidth-50">0.00</div><div class="tblminwidth-50 clearfix text-danger">$ 0.00</div></td>';
-				        	}
-				        	
-				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
-				        	if(opt.preTaxDeduction != null && opt.preTaxDeduction != '' && opt.preTaxDeduction != 'undefined'){
-				        		result += '</td><td><div class="tblminwidth-50 clearfix">$ '+opt.preTaxDeduction.toFixed(2)+'</div></td>';
-				        	}else{
-				        		result += '</td><td><div class="tblminwidth-50 clearfix">$ 0.000</td>';
-				        	}
-				        	if(opt.postTaxDeduction != null && opt.postTaxDeduction != '' && opt.postTaxDeduction != 'undefined'){
-				        		result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.postTaxDeduction.toFixed(2)+'</div></td>';	
-				        	}else{
-				        		result += '<td><div class="tblminwidth-50 clearfix">$ 0.00</div></td>';
-				        	}
-				        	
-				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
-				        	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
-				        	result += '</tr>';  
-			        	}
-			        	
-		        	}
-		        	result += '</tbody>';
-		        	result += '</table>';
-		        	$("#payrollDataDiv").empty();
-		        	$("#payrollDataDiv").append(result);
-		        	$("#submitButtonDiv").show();
-		        	$("#initiateLoading").removeAttr('style');
-		        },
+				        	result += '</tbody>';
+				        	result += '</table>';
+				        	$("#payrollDataDiv").empty();
+				        	$("#payrollDataDiv").append(result);
+				        	$("#submitButtonDiv").show();
+				        	$("#initiateLoading").removeAttr('style');
+				        }else{
+				        	$("#submitButtonDiv").hide();
+				        }
+		        	    
+		        	},
+		           
 		    });
 		 
 		return true; 

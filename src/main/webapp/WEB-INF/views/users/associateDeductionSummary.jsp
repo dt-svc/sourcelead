@@ -110,7 +110,7 @@ function associateDeductionSummary(userId){
   } 
 </script>
  
- <script>
+  <script>
 function associateDeductonListPagination(){  
     $('#associateDeductonListTable').DataTable( { 
     	"scrollCollapse": false,
@@ -124,7 +124,7 @@ function associateDeductonListPagination(){
      	}
     } );
 }
-</script>
+</script> 
  
  <script>
  function showEdit(id,dedVal){
