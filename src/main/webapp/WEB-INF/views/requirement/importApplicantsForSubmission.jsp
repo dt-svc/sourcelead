@@ -22,6 +22,7 @@
         <h2>Import Applicants</h2>
       </div>
     </section>
+    	<div id="loading"></div>
 	<div class="content-area clearfix" id="dataFileImportDiv">
 		<form:form id="upload_candidate_form" name="upload_candidate_form" method="post" enctype="multipart/form-data">
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -113,22 +114,9 @@
 	
 	
 <script type="text/javascript">
-document.getElementById("uploadBtn").onchange = function () {
-	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
-	  if(sizeinbytes > 10485760){
-		  document.getElementById("errorImage").style.display="";
-		  $('#newUploadFile').text('');
-		  $("#upload_button").attr("disabled","disabled");
-		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
-	  }else{
-		  document.getElementById("errorImage").style.display="none";
-		  $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
-		  fileUpload("uploadBtn", "dataMigration");
-		  $("#upload_button").removeAttr("disabled");
-		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
-	  }
-	
-};
+function cancelFileImport(){
+	location.replace(sourceleadUrl+"/uploadCandidateForm");
+}
 </script>
 	
 <script type="text/javascript">
@@ -159,6 +147,32 @@ $('body').on('blur', '#upload_candidate_form', function() {
 	$("#upload_candidate_form").validateOnBlur(false, validationSettings);
 	
 });
+</script>
+
+<script type="text/javascript">
+document.getElementById("uploadBtn").onchange = function () {
+	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
+	  if(sizeinbytes > 10485760){
+		  document.getElementById("errorImage").style.display="";
+		  $('#newUploadFile').text('');
+		  $("#upload_button").attr("disabled","disabled");
+		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
+	  }else{
+		  document.getElementById("errorImage").style.display="none";
+		  $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
+		  fileUpload("uploadBtn", "dataMigration");
+		  $("#upload_button").removeAttr("disabled");
+		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
+	  }
+	
+};
+</script>
+
+<script type="text/javascript">
+function cancelFileImport(){
+	var requirementId = '${requirementId}';
+	importApplicantsToJob(requirementId);
+}
 </script>
 
 

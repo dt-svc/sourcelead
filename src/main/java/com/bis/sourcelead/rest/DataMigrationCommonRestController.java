@@ -124,6 +124,7 @@ public class DataMigrationCommonRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("dataWithCellId", dataWithCellId);
 		model.addObject("fields", formFields);
+		model.addObject("requirementId", dataMigrationCommonDTO.getRequirementId());
 		model.addObject("projectUUID", dataMigrationCommonDTO.getProjectUUID());
 		model.addObject("projectClientUUID", dataMigrationCommonDTO.getProjectClientUUID());
 		model.addObject("exportFilePath", dataMigrationCommonDTO.getFilePath());

@@ -58,13 +58,17 @@ import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
@@ -77,11 +81,14 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -138,6 +145,18 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	@Autowired
 	private UploadFileService uploadFileService;
 	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	@Autowired
+	RequirementElkUtil requirementElkUtil;
+	
 	
 	@Override
 	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception {
@@ -192,6 +211,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		String importStatus = null;
 		String finalImportStatus = null;
+		String jsonString = null;
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		FileInputStream inputStream = new FileInputStream(
 				new File(ac + dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
@@ -224,11 +244,31 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				HashMap<String, String> errorSet = new HashMap<String, String>();
 				Gson gson = new Gson();
 				String gsonOutput = gson.toJson(dataMigrationDTO);
-				JSONObject dataMigrationDTOJson = new JSONObject(gsonOutput);
+				JSONObject dataMigrationDTOJson = null;
 				DataMigrationDTO dataMigrationDTOCopy = new DataMigrationDTO();
-				JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
-				Iterator<?> keys = dataMigrationDTOJson.keys();
-
+				Iterator<?> keys = null;
+				JSONObject dataMigrationDTOJsonCopy = null;
+				
+				if(dataMigrationDTO.getUploadType().equalsIgnoreCase("submmissionTemplateUpload") && dataMigrationDTO.getRequirementId() != null) {
+					    String json1 = "{" + dataMigrationDTO.getJsonData() + "}";
+				     	dataMigrationDTOJson = new JSONObject(json1);
+						dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOJson);
+						dataMigrationDTOJsonCopy.put("requirementId", dataMigrationDTO.getRequirementId());
+						keys = dataMigrationDTOJson.keys();
+						
+						Requirement requirement = requirementService.getRequirementDetailsById(Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")));
+						if(StringUtils.isNotBlank(requirement.getClientSubmissionTemplateJsonString())) {
+							jsonString = requirement.getClientSubmissionTemplateJsonString();
+						}else {
+							jsonString = requirement.getSubmissionTemplateJsonString();
+						}
+					
+				}else {
+					 dataMigrationDTOJson = new JSONObject(gsonOutput);
+					 dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
+					 keys = dataMigrationDTOJson.keys();
+				}
+				
 				/*
 				 * this code is for assign projectUUI(in project Task upload) from
 				 * dataMigrationDTO to dataMigrationDTOJsonCopy json object
@@ -245,7 +285,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 						StringBuffer assertBuffer = new StringBuffer();
 						while (cellIterator.hasNext()) {
 							Cell cell = cellIterator.next();
-							if (dataMigrationDTOJson.get((String) k) != null) {
+							if (dataMigrationDTOJson.has((String) k) && dataMigrationDTOJson.get((String) k) != null) {
 
 								if (k.equalsIgnoreCase("assignAsset")) {
 									Gson converter = new Gson();
@@ -286,8 +326,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 									}
 
-									// dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, (String) k,
-									// objFormulaEvaluator, objDefaultFormat, user, orgLocation);
 								}
 							}
 						}
@@ -316,8 +354,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 						dataMigrationDTOJsonCopy.put((String) k, days);
 					}
 				}
-
-
+				
 				switch (dataMigrationDTO.getUploadType()) {
 				case "jobUpload":
 					dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user,
@@ -354,6 +391,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					dataMigrationCommonUtil.dataValidationForImmigration(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
 					break;
+					
+				case "submmissionTemplateUpload":
+					dataMigrationCommonUtil.dataValidationForRequirementSubmisssionTemplate(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation,jsonString);
+					break;
 
 				}
 
@@ -383,8 +425,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					// importStatus = dataMigrationDTO.getExportFilePath();
 					finalImportStatus = dataMigrationDTO.getExportFilePath();
 				}
+				
 			}
+			
 		}
+		
 		workbook.close();
 		inputStream.close();
 		if (isEmptyExcel) {
@@ -485,6 +530,60 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				candidateDTO.setCountry(orgLocation.getCountry());
 			}
 			candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
+			break;
+			
+		case "submmissionTemplateUpload":
+			
+			RequirementSubmission requirementSubmission = null;
+			Candidate candidate = candidateService.findByCandidateEmail(dataMigrationDTOJsonCopy.getString("EmailId"),orgLocation.getId());
+			if(candidate != null) {
+				requirementSubmission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")), candidate.getId());
+			}
+		
+			if(requirementSubmission == null) {
+				JSONObject labelItems = new JSONObject();
+				JSONArray array = new JSONArray();
+				Iterator<?> keys = dataMigrationDTOJsonCopy.keys();
+				while (keys.hasNext()) {
+					String k = (String) keys.next();
+					if(!k.equalsIgnoreCase("requirementId")) {
+						JSONObject firstNameItem = new JSONObject();
+						String[] labelName = k.split("(?<=.)(?=\\p{Lu})");
+						firstNameItem.put("label", StringUtils.join(labelName," "));
+						firstNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+						firstNameItem.put("name", k);
+						firstNameItem.put("value", dataMigrationDTOJsonCopy.getString(k));
+						labelItems.put(k, dataMigrationDTOJsonCopy.getString(k));
+						array.put(firstNameItem);
+					}
+				}
+				
+				String con = array.toString();
+				
+				requirementSubmission = requirementSubmissionService.saveRequirementSubmission(dataMigrationDTOJsonCopy,user, orgLocation, con, null);
+				
+				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+				requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+				requirementSubmissionHistory.setFromStage("NEW");
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				Requirement req = requirementSubmission.getRequirement();
+				if(null != req){
+					Integer totalApplicatsCountForRequirement = 0;
+				   //updating total number of applicants for requrement
+					totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(req.getOrgLocationId().getId(), req.getId());
+					if(totalApplicatsCountForRequirement > 0){
+						req.setTotalApplicants(totalApplicatsCountForRequirement); 
+						requirementService.updateRequirement(req);
+					}else{
+						req.setTotalApplicants(0); 
+					}
+					
+					// pass dto as parameter
+					RequirementDTO requirementDTO = commonUtil.getRequirementDTO(req);
+					requirementElkUtil.saveElkRequirement(req,requirementDTO);	
+				}
+			}
+			
 			break;
 
 		case "assetUpload":
@@ -810,6 +909,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		        SourceleadFormFields formFields = new SourceleadFormFields();
 		        formFields.setLabelName(obj.getString("label"));
 		        formFields.setIsFieldRequired(Integer.valueOf(obj.getString("req")));
+		        formFields.setFieldName(obj.getString("label").replaceAll("\\s+",""));
 		        formFieldsList.add(formFields);
 		 }
 		return formFieldsList;
