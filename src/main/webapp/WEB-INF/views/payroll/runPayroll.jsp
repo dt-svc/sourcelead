@@ -307,10 +307,12 @@ function runUSPayroll(){
 				        			var opt = json[i];
 				        			result += '<tr>';
 						        	 result += '<td>';
+						        	if(json.length > 1){
 						        	result += '<div class="checkbox-new pull-left ml5">';
 						        	result += '<input id="'+i+'emp1" value="YES" class="checkbox-custom" name="uspayroll['+i+'].isExcept" type="checkbox">';
 						        	result += '<label for="'+i+'emp1" class="checkbox-custom-label"></label>';
 						        	result += '</div>';
+				        			}
 						        	result += '</td>'; 
 						        	result += '<input type="hidden" value='+opt.empPayrollId+' id="'+i+'empPayrollId" name="uspayroll['+i+'].empPayrollId" />';
 						        	if(opt.empId != null && opt.empId != 'undefined' && opt.empId != ''){

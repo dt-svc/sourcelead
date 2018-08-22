@@ -21,6 +21,8 @@ public class AssociateDeductionDTO {
 
 	private String userId;
 	
+	private String saveType;
+	
 	public String getDedType()
 	{
 		return dedType;
@@ -79,6 +81,14 @@ public class AssociateDeductionDTO {
 	public void setId(String id)
 	{
 		this.id = id;
+	}
+
+	public String getSaveType() {
+		return saveType;
+	}
+
+	public void setSaveType(String saveType) {
+		this.saveType = saveType;
 	}
 	
 }

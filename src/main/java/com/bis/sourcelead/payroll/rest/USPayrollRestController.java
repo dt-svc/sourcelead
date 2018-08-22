@@ -979,21 +979,23 @@ public class USPayrollRestController {
 	}
 	
 	@RequestMapping(value = "/addAssociateDeduction")
-	public ModelAndView addAssociateDeduction(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId) throws Exception
+	public ModelAndView addAssociateDeduction(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("userId", userId);
+		model.addObject("saveType", saveType);
 		model.setViewName("users/addAssociateSummaryDeduction");
 		return model;
 	}
 	
 	@RequestMapping(value = "/addAssociateContribution")
-	public ModelAndView addAssociateContribution(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId) throws Exception
+	public ModelAndView addAssociateContribution(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("userId", userId);
+		model.addObject("saveType", saveType);
 		model.setViewName("users/addAssociateSummaryContribution");
 		return model;
 	}
