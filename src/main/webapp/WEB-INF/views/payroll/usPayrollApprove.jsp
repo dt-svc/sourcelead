@@ -181,7 +181,7 @@ function calculateTotalPay(formData,confirmType){
                							<td>$ <span id="localTax">0.00</span></td>
                						</tr>
                						<tr>
-               							<td><strong>Total Employee Tax	100$</strong></td>
+               							<td><strong>Total Employee Tax</strong></td>
                							<td>$ <span id="totalTax">0.00</span></td>
                						</tr>
                						<tr>
