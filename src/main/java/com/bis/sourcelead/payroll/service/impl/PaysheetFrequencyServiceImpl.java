@@ -293,12 +293,12 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				}
 				
 				if(contributionHisList.size() >0) {
-					List<ContributionDTO> preConList = contributionHisList.stream().filter(con->"pretax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());
-					List<ContributionDTO> postConList = contributionHisList.stream().filter(con->"posttax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());
-					Map<String, Double> preCList = preConList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getAmount)));
-					response.setPreContribution(preCList);
-					Map<String, Double> postCList = postConList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getPostContributionAmt)));
-					response.setPostContribution(postCList);
+//					List<ContributionDTO> preConList = contributionHisList.stream().filter(con->"pretax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());
+//					List<ContributionDTO> postConList = contributionHisList.stream().filter(con->"posttax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());
+//					Map<String, Double> preCList = preConList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getAmount)));
+//					response.setPreContribution(preCList);
+					Map<String, Double> contribution = contributionHisList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getPostContributionAmt)));
+					response.setContribution(contribution);
 				}
 				response.setMyPayroll(list);
 			}
