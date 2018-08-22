@@ -80,7 +80,7 @@ getDeductionType();
                   <div class="col-md-5">
                     <label class="clearfix">Amount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_int" field-name="Amount">
+                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_int" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
@@ -154,7 +154,8 @@ $('body').on('blur', '#associate_deduction_form', function() {
  <div id="deductionPopup"></div>
  <script>
  function saveAssociateDeduction(){
-	 var userId = '${userId}';  
+	 var userId = '${userId}';
+	 var saveType = '${saveType}';  
 	 var deductionType = $("#deductionType").val();
 	 if(deductionType != null && deductionType != '' && deductionType != "undefined"){
 		var formData = getFormData("associate_deduction_form");
@@ -165,7 +166,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
      $.ajax({
 			type : "POST",
  	    data: formData,
-			url : sourceleadUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+			url : sourceleadUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
 			success : function(result) {
 				 if (result && result.response === "INVALID_DATA") {
 	                    $("#associate_deduction_save_button").removeAttr("disabled");
@@ -259,10 +260,11 @@ function deductionPopup(){
  <script>
  function validateDuplicateDeductions(){
 	 var dedType = $("#dedType").val();
+	 var userId = '${userId}';
 	 if(dedType != null && dedType != '' && dedType != 'undefined'){
 		 $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType,
+				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType+"&userId="+userId,
 				success :function(data) {
 					if(data == true){
 						$("#dedType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");

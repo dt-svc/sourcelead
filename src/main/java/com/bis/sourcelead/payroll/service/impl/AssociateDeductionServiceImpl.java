@@ -57,7 +57,9 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 			if (Validator.validate(associateDeductionDTO)) {
 				
 				Candidate candidate = candidateService.getCandidateByConsultantUserId(Long.valueOf(associateDeductionDTO.getUserId()), orgLocation.getId());
-				int assDed = associateDeductionDao.deleteAssociateDeductionByCandidateIdAndOrgLocationId(candidate.getId(),orgLocation.getId());
+				
+				if(associateDeductionDTO.getSaveType().equalsIgnoreCase(Constants.NEW_TYPE))
+				associateDeductionDao.deleteAssociateDeductionByCandidateIdAndOrgLocationId(candidate.getId(),orgLocation.getId());
 				
 				List<DeductionDTO> deductionDTOList = associateDeductionDTO.getDeductionDTOList();
 				for (DeductionDTO ded : deductionDTOList) {
@@ -146,8 +148,8 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 	}
 
 	@Override
-	public AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation) {
-		AssociateDeduction associateDeduction = associateDeductionDao.getValidateDeduction(deductionTypeId,orgLocation);
+	public AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation,Long candidateId) {
+		AssociateDeduction associateDeduction = associateDeductionDao.getValidateDeduction(deductionTypeId,orgLocation,candidateId);
 		return associateDeduction;
 	}
 	

@@ -644,7 +644,6 @@ function getPayableInvoiceList(){
 	var invoice = [];
 	var payment = [];
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var dayWisetype = $("#dayWiseTypeId").val();
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  orgLocationDate = 'YYYY-MM-DD';
@@ -677,6 +676,12 @@ function getPayableInvoiceList(){
 	 {
 		payment.push($(this).val());
 	 });
+	
+	var dayWisetype = null;
+	
+	$('input:radio[name=invoiceCustomDays]:checked').each(function() {
+		dayWisetype = $(this).val();
+	});	
 	
 	var invoieDeleteStatus = null;
 	
