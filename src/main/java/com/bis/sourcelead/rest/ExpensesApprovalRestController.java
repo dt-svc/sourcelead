@@ -267,13 +267,18 @@ public class ExpensesApprovalRestController {
 	 	            if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 1 && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())){
 			 			//For Approvers of EndClient
 				 		 List<ExpenseProjectApproverHierarchy> approverList =  expenseProjectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
+				 		 if(approverList == null || approverList.isEmpty()) {
+				 			if(projectMembers.getProjectMemberCandidteId() != null && projectMembers.getProjectMemberCandidteId().getOrgLocationId() != null && projectMembers.getProjectMemberCandidteId().getOrgLocationId().getId() != null){
+					 			approverList =  expenseProjectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), projectMembers.getProjectMemberCandidteId().getOrgLocationId().getId());
+					 		 }
+				 		 }
 				 		 if(approverList != null && !approverList.isEmpty()){
 				 			 for(ExpenseProjectApproverHierarchy  approver : approverList){
 				 				if(approver.getLevel() != null && approver.getLevel() != 1){
 				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(),  orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
 				 				}
 				 			 }
-				 		 }
+				 		 } 
 			 		}
 		 	   }
 	 	}
