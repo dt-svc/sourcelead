@@ -973,9 +973,9 @@ function resetBeneficiaryDetails(){
 				    		$("#experienceMonths").val(candidateObj.experienceMonths);
 				    		
 				    		// setting the date for the date of birth field.
-				    		if(candidateObj.dateOfBirth != null && typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
-				    			var dateOfBirth =  moment(candidateObj.dateOfBirth).format(finalDateFormatOrg);
-				    		   $("#birthDate").val(dateOfBirth);
+				    		if(candidateObj.dateofBirthString != null && typeof  candidateObj.dateofBirthString != 'undefined' && candidateObj.dateofBirthString!=''){
+				    		//	var dateOfBirth =  moment(candidateObj.dateOfBirth).format(finalDateFormatOrg);
+				    		   $("#birthDate").val(candidateObj.dateofBirthString);
 				    		}
 				   
 				        }
