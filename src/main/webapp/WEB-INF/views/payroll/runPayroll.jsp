@@ -275,7 +275,6 @@ function runUSPayroll(){
 		    	type: "POST",
 		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate,                 
 		        success: function(data) {
-		        	if(data != null && data !='' && data !='undefined'){
 		        		 var json = data.payrollDTO;
 				        	var result = "";
 				        	result += '<table>';
@@ -353,9 +352,6 @@ function runUSPayroll(){
 				        	$("#payrollDataDiv").append(result);
 				        	$("#submitButtonDiv").show();
 				        	$("#initiateLoading").removeAttr('style');
-				        }else{
-				        	$("#submitButtonDiv").hide();
-				        }
 		        	    
 		        	},
 		           
