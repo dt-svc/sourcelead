@@ -65,6 +65,9 @@ public class DeductionHistory {
 	@Column(name = "POST_CONTRIBUTION_AMOUNT")
 	private BigDecimal postContributionAmount;
 	
+	
+	@Column(name = "CONTRIBUTION_AMOUNT")
+	private BigDecimal contributionAmount;
 	 
 	@Column(name = "DEDUCTION_DATE")
 	private Date deductionDate;
@@ -286,6 +289,21 @@ public class DeductionHistory {
 			this.postContributionAmount = postContributionAmount;	
 		}else {
 			this.postContributionAmount = BigDecimal.ZERO;
+		}
+		
+	}
+
+	public BigDecimal getContributionAmount()
+	{
+		return contributionAmount;
+	}
+
+	public void setContributionAmount(BigDecimal contributionAmount)
+	{
+		if(contributionAmount != null) {
+			this.contributionAmount = contributionAmount;
+		}else {
+			this.contributionAmount = BigDecimal.ZERO;
 		}
 		
 	}
