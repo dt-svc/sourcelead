@@ -1611,6 +1611,8 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 		$("#lcaStartDate").val("");
 		$("#lcaEndDate").val("");
 		$("#lcaCurrLocation").val("");
+		$("#lcaStartDate").datepicker('enable');
+		$("#lcaEndDate").datepicker('enable');
 	}
  
 </script> 
@@ -1676,6 +1678,8 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 		$("#prevLcaNumber").val("");
 		$("#prevLcaStartDate").val("");
 		$("#prevLcaEndDate").val("");
+		$("#prevLcaStartDate").datepicker('enable');
+		$("#prevLcaEndDate").datepicker('enable');
 		
 	} 
  
