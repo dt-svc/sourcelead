@@ -394,12 +394,13 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							}
 							
 						}
-						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,assoDeduction,logonUser,deductionDates,employeePayroll,savedAassContribution);
+						deductions[0] = preTax;
+						contriTaxes[0] = preContriTax;
+						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,assoDeduction,logonUser,deductionDates,employeePayroll,savedAassContribution,deductions,contriTaxes);
 						dedHis.add(dedHistory);
 					}
 				}
-				deductions[0] = preTax;
-				contriTaxes[0] = preContriTax;
+				
 				List<DeductionDTO> postDedList = res.getData().stream().filter(ded -> "posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
 				
 				for (DeductionDTO postDed : postDedList) {
@@ -457,13 +458,14 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							}
 							
 						}
-						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,assoDeduction,logonUser,deductionDates,employeePayroll,savedAssContribution);
+						deductions[1] = postTax;
+						contriTaxes[1] = postContriTax;
+						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,assoDeduction,logonUser,deductionDates,employeePayroll,savedAssContribution,deductions,contriTaxes);
 						dedHis.add(dedHistory);
 					}
 				
 				}
-				deductions[1] = postTax;
-				contriTaxes[1] = postContriTax;
+				
 				dedDto.setDedTaxes(deductions);
 				dedDto.setDedHis(dedHis);
 				dedDto.setContributionTaxes(contriTaxes);
@@ -570,9 +572,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	 * @param deductionDates
 	 * @param employeePayroll
 	 * @param savedAassContribution 
+	 * @param contriTaxes 
+	 * @param deductions 
 	 * @return DeductionHistory
 	 */
-	private DeductionHistory populateDeductionHistory(PaysheetFrequency paySheet, AssociateDeduction assoDeduction, User logonUser, Date[] deductionDates, EmployeePayroll employeePayroll, AssociateContribution savedAassContribution)
+	private DeductionHistory populateDeductionHistory(PaysheetFrequency paySheet, AssociateDeduction assoDeduction, User logonUser, Date[] deductionDates, EmployeePayroll employeePayroll, AssociateContribution savedAassContribution, BigDecimal[] deductions, BigDecimal[] contriTaxes)
 	{
 		DeductionHistory dedHistory = new DeductionHistory();
 		dedHistory.setDeductionId(assoDeduction);
@@ -595,6 +599,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			dedHistory.setContributionId(savedAassContribution);
 		}
 		dedHistory.setDeductionHisUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		dedHistory.setPreDeductionAmount(deductions[0]);
+		dedHistory.setPreContributionAmount(contriTaxes[0]);
+		dedHistory.setPostDeductionAmount(deductions[1]);
+		dedHistory.setPostContributionAmount(contriTaxes[1]);
 		return dedHistory;
 	}
 

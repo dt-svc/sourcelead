@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -15,6 +17,7 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +35,15 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
+import com.bis.sourcelead.payroll.dto.ContributionDTO;
+import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
+import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
@@ -48,6 +55,7 @@ import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.pay.Item;
 
 @Service
 public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
@@ -238,12 +246,14 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	}
 
 	@Override
-	public ResponseList<MyPayrollDTO> getMyPayrollListByCandidateId(Long candidateId, OrgLocations orgLocation)
+	public MyPayrollSummaryDTO getMyPayrollListByCandidateId(Long candidateId, OrgLocations orgLocation)
 	{
-		ResponseList<MyPayrollDTO> response = new ResponseList<>();
+		MyPayrollSummaryDTO response = new MyPayrollSummaryDTO();
 		try {
 			List<EmployeePayroll> empPayroll = paysheetFrequencyDao.getMyPayrollListByCandidateId(candidateId);
 			List<MyPayrollDTO> list = null;
+			List<DeductionDTO> dedHisList = new ArrayList<>();
+			List<ContributionDTO> contributionHisList = new ArrayList<>();
 			if (empPayroll != null && empPayroll.size() > 0) {
 				list = new ArrayList<>();
 				for (EmployeePayroll payroll : empPayroll) {
@@ -260,13 +270,114 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 					myPayrollDTO.setGrossPay(payroll.getGrossPay());
 					myPayrollDTO.setNetPay(payroll.getNetPay());
 					myPayrollDTO.setTaxes(payroll.getTaxes());
+					
+					List<DeductionDTO> dlist = getDeductionData(payroll);
+					dedHisList.addAll(dlist);
+					List<ContributionDTO> clist = getContributionData(payroll);
+					contributionHisList.addAll(clist);
+					
+//			        Map<String, Double> sum = s.stream().collect(Collectors.groupingBy(DeductionHistory::getName, Collectors.summingDouble(Item::getQty)));
+					
+					
+					
 					list.add(myPayrollDTO);
 				}
-				response.setData(list);
+				
+				if(dedHisList.size() >0) {
+					List<DeductionDTO> preDedList = dedHisList.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
+				    List<DeductionDTO> postDedList = dedHisList.stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
+				    Map<String, Double> preDList = preDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getDedAmount)));
+				    response.setPreDed(preDList);
+				    Map<String, Double> postDList = postDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPostDeductionAmt)));
+				    response.setPostDed(postDList);
+				}
+				
+				if(contributionHisList.size() >0) {
+					List<ContributionDTO> preConList = contributionHisList.stream().filter(con->"pretax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());
+					List<ContributionDTO> postConList = contributionHisList.stream().filter(con->"posttax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());
+					Map<String, Double> preCList = preConList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getAmount)));
+					response.setPreContribution(preCList);
+					Map<String, Double> postCList = postConList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getPostContributionAmt)));
+					response.setPostContribution(postCList);
+				}
+				response.setMyPayroll(list);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return response;
+	}
+
+	/**
+	 * Calculation Deduction of employee payroll
+	 * 
+	 * @param payroll
+	 */
+	private List<ContributionDTO> getContributionData(EmployeePayroll payroll)
+	{
+		List<ContributionDTO> contributionList = new ArrayList<>();
+		try {
+			Set<DeductionHistory> hisList = payroll.getDeductionHistory();
+			if (hisList != null && hisList.size() > 0) {
+				for (DeductionHistory dedHis : hisList) {
+					double precontrAmt = 0;
+					double postcontrAmt = 0;
+					if (dedHis.getContributionId() != null) {
+						ContributionDTO contDTO = new ContributionDTO();
+						if (dedHis.getPreContributionAmount() != null) {
+							precontrAmt = dedHis.getPreContributionAmount().doubleValue();
+						}
+						if (dedHis.getPostContributionAmount() != null) {
+							postcontrAmt = dedHis.getPostContributionAmount().doubleValue();
+						}
+						contDTO.setAmount(precontrAmt);
+						contDTO.setPostContributionAmt(postcontrAmt);
+						contDTO.setId(String.valueOf(dedHis.getContributionId().getId()));
+						contDTO.setContributionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
+						contDTO.setTaxType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getTaxType());
+						contDTO.setContributionAmount(dedHis.getContributionId().getContributionAmount());
+						contributionList.add(contDTO);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return contributionList;
+	}
+
+	/**
+	 * Calculation Deduction of employee payroll
+	 * @param payroll
+	 */
+	private List<DeductionDTO> getDeductionData(EmployeePayroll payroll)
+	{
+		List<DeductionDTO> dedList = new ArrayList<>();
+		try {
+			Set<DeductionHistory> hisList = payroll.getDeductionHistory();
+			if (hisList != null && hisList.size() > 0) {
+				for (DeductionHistory dedHis : hisList) {
+					DeductionDTO dedDTO = new DeductionDTO();
+					dedDTO.setId(String.valueOf(dedHis.getDeductionId().getId()));
+					dedDTO.setDeductionType(dedHis.getDeductionId().getDeductionTypeId().getPayrollDeductionType());
+					double preDedAmt = 0;
+					double postDedAmt = 0;
+					if (dedHis.getPreDeductionAmount() != null) {
+						preDedAmt = dedHis.getPreDeductionAmount().doubleValue();
+					}
+					if (dedHis.getPostDeductionAmount() != null) {
+						postDedAmt = dedHis.getPostDeductionAmount().doubleValue();
+					}
+					dedDTO.setDedAmount(preDedAmt);
+					dedDTO.setPostDeductionAmt(postDedAmt);
+					dedDTO.setDedTaxType(dedHis.getDeductionId().getDeductionTypeId().getTaxType());
+					dedDTO.setAmount(dedHis.getDeductionId().getDeductionAmount());
+					dedList.add(dedDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dedList;
 	}
 }

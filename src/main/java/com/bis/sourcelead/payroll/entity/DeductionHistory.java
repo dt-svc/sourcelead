@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -52,6 +53,19 @@ public class DeductionHistory {
 	@Column(name = "US_EMP_DEDUCTION_HIS_UUID")
 	private String deductionHisUUID;
 	
+	@Column(name = "PRE_DEDUCTION_AMOUNT")
+	private BigDecimal preDeductionAmount;
+	
+	@Column(name = "PRE_CONTRIBUTION_AMOUNT")
+	private BigDecimal preContributionAmount;
+	
+	@Column(name = "POST_DEDUCTION_AMOUNT")
+	private BigDecimal postDeductionAmount;
+	
+	@Column(name = "POST_CONTRIBUTION_AMOUNT")
+	private BigDecimal postContributionAmount;
+	
+	 
 	@Column(name = "DEDUCTION_DATE")
 	private Date deductionDate;
 	
@@ -217,6 +231,64 @@ public class DeductionHistory {
 		this.contributionId = contributionId;
 	}
 
+	public BigDecimal getPreDeductionAmount()
+	{
+		return preDeductionAmount;
+	}
+
+	public BigDecimal getPreContributionAmount()
+	{
+		return preContributionAmount;
+	}
+
+	public BigDecimal getPostDeductionAmount()
+	{
+		return postDeductionAmount;
+	}
+
+	public BigDecimal getPostContributionAmount()
+	{
+		return postContributionAmount;
+	}
+
+	public void setPreDeductionAmount(BigDecimal preDeductionAmount)
+	{
+		if(preDeductionAmount !=null) {
+			this.preDeductionAmount = preDeductionAmount;
+		}else{
+			this.preDeductionAmount = BigDecimal.ZERO;
+		}
+		
+	}
+
+	public void setPreContributionAmount(BigDecimal preContributionAmount)
+	{
+		if(preContributionAmount !=null) {
+			this.preContributionAmount = preContributionAmount;
+		}else{
+			this.preContributionAmount = BigDecimal.ZERO;
+		}
+	}
+
+	public void setPostDeductionAmount(BigDecimal postDeductionAmount)
+	{
+		if(postDeductionAmount != null) {
+			this.postDeductionAmount = postDeductionAmount;	
+		}else {
+			this.postDeductionAmount = BigDecimal.ZERO;	
+		}
+		
+	}
+
+	public void setPostContributionAmount(BigDecimal postContributionAmount)
+	{
+		if(postContributionAmount != null) {
+			this.postContributionAmount = postContributionAmount;	
+		}else {
+			this.postContributionAmount = BigDecimal.ZERO;
+		}
+		
+	}
 	
 	
 }
