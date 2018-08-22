@@ -15,20 +15,27 @@ public class LcaDTO extends SearchDTO {
 	
 	private String orgloationId;
 	
+	@Required(desc = "lcaNo")
 	private String lcaNo;
 	
+	@Required(desc = "lcaTitle")
 	private String lcaTitle;
 	
+	@Required(desc = "lcaStatus")
 	private String lcaStatus;
 	
+	@Required(desc = "status")
 	private String status;
 	
 	private String lcaUuid;
 	
+	@Required(desc = "startDate")
 	private String startDate;
 	
+	@Required(desc = "endDate")
 	private String endDate;
 	
+	@Required(desc = "wagesLevel")
 	private String wagesLevel;
 	
 	private String prevailingWage;
@@ -72,10 +79,13 @@ public class LcaDTO extends SearchDTO {
 	
 	private String amendmentCount;
 	
+	@Required(desc = "jobTitle")
 	private String jobTitle;
 	
+	@Required(desc = "socCode")
 	private String socCode;
 	
+	@Required(desc = "socOccupationTitle")
 	private String socOccupationTitle;
 	
 	private String offeredWage;
