@@ -227,7 +227,7 @@ public class ExpensesApprovalRestController {
 	 	            String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate());
 	 	            
 	 	            //For Employee
-			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
+			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, projectMembers.getProjectMemberCandidteId().getConsultantUser(), orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 			 		
 			 		if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 2 ){
 			 			//For Approvers of EndClient
@@ -236,7 +236,7 @@ public class ExpensesApprovalRestController {
 
 				 			 for(ExpenseProjectApproverHierarchy  approver : approverList){
 				 				if(!user.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())){
-				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
+				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(), orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 				 				}
 				 			 }
 				 			 
@@ -246,7 +246,7 @@ public class ExpensesApprovalRestController {
 				 						   &&  projectMembers.getProjectMemberCandidteId().getConsultantUser()!= null && projectMembers.getProjectMemberCandidteId().getOrgLocationId() != null) {
 				 					   UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(projectMembers.getProjectMemberCandidteId().getConsultantUser().getId(), projectMembers.getProjectMemberCandidteId().getOrgLocationId().getId());
 				 					   if(userRole != null && userRole.getReportingManager() != null) {
-				 						  sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,userRole.getReportingManager().getFirstName(), userRole.getReportingManager().getLastName(), userRole.getReportingManager().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
+				 						  sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,userRole.getReportingManager().getFirstName(), userRole.getReportingManager().getLastName(), userRole.getReportingManager().getEmail(), user,userRole.getReportingManager(),  orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 				 					   }
 				 				   }
 				 			   }
@@ -263,14 +263,14 @@ public class ExpensesApprovalRestController {
 	 	            String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getStartDate());
 	 	            String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate());
 	 	           //For Employee
-	 	            sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
+	 	            sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user,projectMembers.getProjectMemberCandidteId().getConsultantUser(), orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
 	 	            if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 1 && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())){
 			 			//For Approvers of EndClient
 				 		 List<ExpenseProjectApproverHierarchy> approverList =  expenseProjectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
 				 		 if(approverList != null && !approverList.isEmpty()){
 				 			 for(ExpenseProjectApproverHierarchy  approver : approverList){
 				 				if(approver.getLevel() != null && approver.getLevel() != 1){
-				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
+				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(),  orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
 				 				}
 				 			 }
 				 		 }
@@ -359,7 +359,7 @@ public class ExpensesApprovalRestController {
 		    }
 		}
 	}
-    private void sendEmailNotificationToEmployeeAndApproversOfEndClient(Expenses expenses,String currencyCode,String firstName,String lastName,String toEmail,User loginUser,OrgLocations loginOrgLocation,ProjectMembers projectMembers,String startDate, String endDate,String status,String rejectedReason) throws Exception{
+    private void sendEmailNotificationToEmployeeAndApproversOfEndClient(Expenses expenses,String currencyCode,String firstName,String lastName,String toEmail,User loginUser, User toUser,OrgLocations loginOrgLocation,ProjectMembers projectMembers,String startDate, String endDate,String status,String rejectedReason) throws Exception{
 		
     	EmailMessage emailMessage = new EmailMessage();
     	 emailMessage.setFirstName(firstName);
@@ -446,13 +446,15 @@ public class ExpensesApprovalRestController {
 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
-		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());  
-   }
+		//emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
+		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());  
+    }
 	
     @RequestMapping(value="/getExpenseAttachmentStatus")
     public String getExpenseAttachmentStatusByCategoryId(@RequestParam(value="categoryId" ,required=true)long categoryId) {
     	 String isAttachemtRequired = expensesCategoryService.getExpenseAttachmentStatusByCategoryId(categoryId);
     	return isAttachemtRequired;
+    	
     }
     
 	
