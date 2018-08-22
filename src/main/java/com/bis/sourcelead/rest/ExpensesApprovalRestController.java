@@ -454,6 +454,7 @@ public class ExpensesApprovalRestController {
     public String getExpenseAttachmentStatusByCategoryId(@RequestParam(value="categoryId" ,required=true)long categoryId) {
     	 String isAttachemtRequired = expensesCategoryService.getExpenseAttachmentStatusByCategoryId(categoryId);
     	return isAttachemtRequired;
+    	
     }
     
 	
