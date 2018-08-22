@@ -70,11 +70,11 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 
 	@Override
 	@Transactional
-	public AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation) {
+	public AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation,Long candidateId) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AssociateDeduction assDeduction where assDeduction.deductionTypeId.id =:dedTypeId and assDeduction.orgLocationId.id =:orgLocationId and assDeduction.status = 1";
-		List<AssociateDeduction> assDeduction = session.createQuery(query).setLong("dedTypeId", deductionTypeId).setLong("orgLocationId", orgLocation.getId()).list();
+		String query = "from AssociateDeduction assDeduction where assDeduction.deductionTypeId.id =:dedTypeId and assDeduction.orgLocationId.id =:orgLocationId and assDeduction.candidate.id =:candidateId and assDeduction.status = 1";
+		List<AssociateDeduction> assDeduction = session.createQuery(query).setLong("dedTypeId", deductionTypeId).setLong("orgLocationId", orgLocation.getId()).setLong("candidateId", candidateId).list();
 		if(assDeduction.size() > 0) {
 			return assDeduction.get(0);
 		}else {

@@ -259,10 +259,11 @@ function deductionPopup(){
  <script>
  function validateDuplicateDeductions(){
 	 var dedType = $("#dedType").val();
+	 var userId = '${userId}';
 	 if(dedType != null && dedType != '' && dedType != 'undefined'){
 		 $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType,
+				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType+"&userId="+userId,
 				success :function(data) {
 					if(data == true){
 						$("#dedType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
