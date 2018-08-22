@@ -215,7 +215,7 @@
           </div>
           
           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-            <label class="col-md-4 paddingRight">Offered Wage<span class="text-danger paddingLeft">*</span></label>
+            <label class="col-md-4 paddingRight">Offered Wage<!-- <span class="text-danger paddingLeft">*</span> --></label>
             <div class="col-md-8 ">
             <div class="input-group er ratetype">
                 <div class="input-group-btn">
@@ -355,7 +355,7 @@
           </div>
          
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-            <label class="col-md-4 paddingRight">Prevailing  Wage<span class="text-danger paddingLeft">*</span></label>
+            <label class="col-md-4 paddingRight">Prevailing  Wage<!-- <span class="text-danger paddingLeft">*</span> --></label>
             <div class="col-md-8">
             <div class="input-group er ratetype">
                 <div class="input-group-btn">
