@@ -278,7 +278,6 @@ function runUSPayroll(){
 		        success: function(data) {
 		        	   var count = 0;
 		        		 var json = data.payrollDTO;
-		        		  count++;
 				        	var result = "";
 				        	result += '<table>';
 				        	result += '<thead>';
@@ -308,6 +307,7 @@ function runUSPayroll(){
 				        	if(json != null && json.length > 0){
 				        		for (var i=0; i<json.length; i++){
 				        			var opt = json[i];
+				        			count++;
 				        			result += '<tr>';
 						        	 result += '<td>';
 						        	if(json.length > 1){
@@ -352,13 +352,12 @@ function runUSPayroll(){
 					        	
 				        	}
 				        	result += '</tbody>';
-				        	
-				        	result += '</table>';
-				        	if(count==0){
+				        	if(count== 0){
 					    		result = result+'<tr><td align="top" colspan="11" class="tblminwidth-50 clearfix dataTables_empty"></td></tr>';	
 					    		$("#Submit").hide();
 					    		$("#Confirm").hide();
 					    	}
+				        	result += '</table>';
 				        	$("#payrollDataDiv").empty();
 				        	$("#payrollDataDiv").append(result);
 				        	$("#submitButtonDiv").show();
