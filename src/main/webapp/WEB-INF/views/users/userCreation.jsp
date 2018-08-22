@@ -208,8 +208,8 @@
                 
                 <div class="form-group">
                   <label class="col-md-3">Zip Code<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9 positionRelative">
-						<input  class="form-control" id="residenceZipCode" name="residenceZipCode" placeholder="Enter Zip code" field-name="Zip Code" type="text" data-validation="required validate_Space validate_int validate_length length9-9">                    
+                  <div class="col-md-9 positionRelative" id="ZipCode">
+						<input  class="form-control" id="residenceZipCode" name="residenceZipCode" placeholder="Enter Zip code" field-name="Zip Code" type="text" data-validation="required">                    
                   </div>
                 </div>
                 
