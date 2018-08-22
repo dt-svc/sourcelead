@@ -1681,7 +1681,6 @@ $(document).ready(function(){
 		  var val = $("#folderPath").val().trim();
 		  $.post(sourceleadUrl+"/process-uploaded-files", {path: val}, function(data) {
 			  if(data && data.indexOf("Session timedout") !== -1) {
-				  alert(data);
 				  setTimedout('location.href=${sourceleadLoginUrl}', 3000);
 			  } else if(data) {
 				  $("#bulkImportStatus").html(data)
@@ -1847,6 +1846,7 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId,
 </script>
 <script>
 function zipcodeMask(country,zipCodeId){
+	
 	if(country == "India" || country == "Singapore"){
 		 $("#"+zipCodeId).mask("999999");
 	}else if(country == "United States" || country == "France"){
