@@ -1700,10 +1700,11 @@ $('#i_20_number').mask('N-9999999999', {
 
 $('#eadNumber').mask('999-999-999', {
     translation: {
-        '9': {
+        '#': {
             pattern: "/[0-9]{9}/", optional: true
         }
     },
    placeholder: ""
 });
+
 </script>

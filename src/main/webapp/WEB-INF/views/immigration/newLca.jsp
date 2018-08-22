@@ -1131,7 +1131,7 @@ function validateLcaTitle() {
    
    $('#lcaNo').mask('I-999-99999-999999', {
 	    translation: {
-	        '9': {
+	        '#': {
 	            pattern: "/I{1}[0-9]{14}/", optional: true
 	        }
 	    },
