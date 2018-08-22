@@ -44,9 +44,9 @@ $(document).ready(function(){
 				</div>
             </div>
             <div class="form-group col-md-5">
-              <label class="col-md-12">Method</label>
+              <label class="col-md-12">Method<span class="text-danger paddingLeft">&nbsp;*</span></label>
               <div class="col-md-12">
-                <select class="form-control sel" id="payrollDeductionMethod" name="payrollDeductionMethod" onChange="validateDeductionMethodType();">
+                <select class="form-control sel" id="payrollDeductionMethod" name="payrollDeductionMethod" data-validation="required" onChange="validateDeductionMethodType();" field-name="Method">
 					    <option value = "">Select Method</option>
 						 <option ${payrollDeduction.payrollDeductionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option>
 						  <option ${payrollDeduction.payrollDeductionMethod == 'Percent' ? 'selected' : ''} value = "Percent">Percent</option>
