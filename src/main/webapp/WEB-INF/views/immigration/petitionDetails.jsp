@@ -1571,9 +1571,9 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 			    		// Job And LCA Locations Are Equal Or Not Show Alert msg.
 			    		var jobLocation = $("#jobLocation").val();
 			    		if(jobLocation !=''){
-			    		if (jobLocation !== data.lcaLocation){
-			    			alert("Job And LCA Locations are not matched");
-			    		}
+				    		if (jobLocation !== data.lcaLocation){
+				    			alert("Job And LCA Locations are not matched");
+				    		}
 			    		}
 			    		// setting the startDate,endDate for current Lca.
 			    		
