@@ -3,6 +3,7 @@
 
 <script type="text/javascript">
 function calculateTotalPay(formData,confirmType){
+	          approvePayrollDiv();
 		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType, formData, function(json) {
 		    	  $("#totRegularHours").text(json.regularHours.toFixed(2));
 		    	  $("#totRegularEarningsAmt").text(json.regularHoursAmount.toFixed(2));
