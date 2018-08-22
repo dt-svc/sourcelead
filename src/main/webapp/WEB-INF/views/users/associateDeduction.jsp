@@ -148,6 +148,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
  <script>
  function saveAssociateDeduction(){
 	 var userId = $("#associateId").val();  
+	 var saveType = "New";
 	 var deductionType = $("#deductionType").val();
 	 if(deductionType != null && deductionType != '' && deductionType != "undefined"){
 		var formData = getFormData("associate_deduction_form");
@@ -157,7 +158,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
      $.ajax({
 			type : "POST",
  	    data: formData,
-			url : sourceleadUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+			url : sourceleadUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
 			success : function(result) {
 				 if (result && result.response === "INVALID_DATA") {
 	                    $("#associate_deduction_save_button").removeAttr("disabled");

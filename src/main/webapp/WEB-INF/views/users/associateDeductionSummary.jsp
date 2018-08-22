@@ -15,7 +15,7 @@ function associateDeductionSummary(userId){
             result = result + '<div class="table-header clearfix">';
             result = result + '<h4 class="pull-left margin-top0">Deductions</h4>';
             result = result + '<ul class="list-unstyled list-inline pull-right">';
-            result = result + '<li><a href="<c:url value="${appPath}/addAssociateDeduction?userId='+userId+'"/>" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
+            result = result + '<li><a href="<c:url value="${appPath}/addAssociateDeduction?userId='+userId+'&saveType=edit"/>" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
             result = result + '<div class="clearfix"></div>';
             result = result + '</ul>';
             result = result + '</div>';
@@ -110,7 +110,7 @@ function associateDeductionSummary(userId){
   } 
 </script>
  
- <script>
+  <script>
 function associateDeductonListPagination(){  
     $('#associateDeductonListTable').DataTable( { 
     	"scrollCollapse": false,
@@ -124,7 +124,7 @@ function associateDeductonListPagination(){
      	}
     } );
 }
-</script>
+</script> 
  
  <script>
  function showEdit(id,dedVal){

@@ -551,7 +551,7 @@ public class SymmetryPayrollCalculator {
 		try {
 			logger.info("candidate Residence State ====="+candidate.getResidenceState());
 			STE.setWebService(WebServiceType.STE_LOC_CODE, "http://lcs2.symmetry.com/", null, "sourcelead", "s290sdq", null);
-			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2(candidate.getResidenceAddress(), candidate.getResidenceStreetAddress().trim(), candidate.getResidenceCity().trim(), candidate.getResidenceState().trim(), zipCode, null, null);
+			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2(candidate.getResidenceAddress(), candidate.getResidenceStreetAddress().trim(), candidate.getResidenceCity().trim(), candidate.getResidenceState().trim(), zipCode, candidate.getResidenceLatitude(), candidate.getResidenceLongitude());
 			logger.info("Country code     : " + webServiceLocationCodeV2.getCountyCode());
 			logger.info("City code        : " + webServiceLocationCodeV2.getCityCode());
 			logger.info("Location Code    : " + webServiceLocationCodeV2.getLocationCode());

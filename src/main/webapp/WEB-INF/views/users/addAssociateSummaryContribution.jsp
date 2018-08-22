@@ -80,7 +80,7 @@ $(document).ready(function(){
                   <div class="col-md-5">
                     <label class="clearfix">contributionAmount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_int" field-name="Amount">
+                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_int" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
@@ -160,6 +160,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
  <script>
  function saveAssociateContribution(){
 	 var userId = '${userId}';  
+	 var saveType = '${saveType}';
 	 var contributionType = $("#contributionType").val();
 	 if(contributionType != null && contributionType != '' && contributionType != 'undefined'){
 		 var formData = getFormData("associate_contribution_form"); 
@@ -170,7 +171,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
       $.ajax({
 				type : "POST",
   	    data: formData,
-				url : sourceleadUrl+"/saveAssociateContribution?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+				url : sourceleadUrl+"/saveAssociateContribution?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
 				success : function(result) {
 					 if (result && result.response === "INVALID_DATA") {
 		                    $("#contribution_save_button").removeAttr("disabled");
