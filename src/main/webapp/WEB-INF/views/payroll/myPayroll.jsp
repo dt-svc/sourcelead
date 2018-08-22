@@ -298,7 +298,7 @@ function loansAdvances(){
                </div>
                                                  
                  <div class="clearfix col-md-12 styleTables">
-                 <div class="row">
+                 <div class="project_wrap_table datatable_filter">
                  <div id="payrollDataDIV"></div>
                  </div>
                  </div>					
@@ -355,10 +355,10 @@ function getMyPayrollList(){
 	    	type: "GET",
 	        url: sourceleadUrl+"/getMyPayrollList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(result) {
-	        var data = result.data;
+	        var data = result.myPayroll;
 	        
 	        var result = "";
-	        result = result +'<table>';
+	        result = result +'<table id="myPayrollTableDiv" class="display" cellspacing="0" width="100%" >';
 	        result = result +'<thead>';
 	        result = result +'<tr>';
 	        result = result +'<th>Pay Period</th>';
@@ -434,9 +434,29 @@ function getMyPayrollList(){
 	        
 	        $("#payrollDataDIV").empty();
 	        $("#payrollDataDIV").append(result);
+	        mayPayrollPagination();
 	        },
 	    });
 	
+}
+</script>
+
+
+<script>
+function mayPayrollPagination(){ 
+    $('#myPayrollTableDiv').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#myPayrollTableDiv").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 

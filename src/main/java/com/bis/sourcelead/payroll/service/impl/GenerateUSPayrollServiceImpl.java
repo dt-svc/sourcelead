@@ -367,7 +367,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					
 						associateDeductionDao.saveAssociateDeduction(assoDeduction);
 						
-						Long contributionId = null;
+						AssociateContribution savedAassContribution = null;
 						if(contributions != null) {
 							AssociateContribution assContribution = contributions
 									.stream()
@@ -390,17 +390,17 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 									assContribution.setContributionEndDate(paySheet.getFrequencyEndDate());
 								}
 								
-								associateContributionDao.saveAssociateContribution(assContribution);
-								contributionId = assContribution.getId();
+								savedAassContribution =  associateContributionDao.saveAssociateContribution(assContribution);
 							}
 							
 						}
-						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,ded,logonUser,deductionDates,employeePayroll,contributionId);
+						deductions[0] = preTax;
+						contriTaxes[0] = preContriTax;
+						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,assoDeduction,logonUser,deductionDates,employeePayroll,savedAassContribution,deductions,contriTaxes);
 						dedHis.add(dedHistory);
 					}
 				}
-				deductions[0] = preTax;
-				contriTaxes[0] = preContriTax;
+				
 				List<DeductionDTO> postDedList = res.getData().stream().filter(ded -> "posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
 				
 				for (DeductionDTO postDed : postDedList) {
@@ -432,7 +432,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						associateDeductionDao.saveAssociateDeduction(assoDeduction);
 						
 						
-						Long contributionId = null;
+						AssociateContribution savedAssContribution= null;
 						if(contributions != null) {
 							AssociateContribution assContribution = contributions
 									.stream()
@@ -454,18 +454,18 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								}else {
 									assContribution.setContributionEndDate(paySheet.getFrequencyEndDate());
 								}
-								associateContributionDao.saveAssociateContribution(assContribution);
-								contributionId = assContribution.getId();
+								savedAssContribution = associateContributionDao.saveAssociateContribution(assContribution);
 							}
 							
 						}
-						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,postDed,logonUser,deductionDates,employeePayroll,contributionId);
+						deductions[1] = postTax;
+						contriTaxes[1] = postContriTax;
+						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,assoDeduction,logonUser,deductionDates,employeePayroll,savedAssContribution,deductions,contriTaxes);
 						dedHis.add(dedHistory);
 					}
 				
 				}
-				deductions[1] = postTax;
-				contriTaxes[1] = postContriTax;
+				
 				dedDto.setDedTaxes(deductions);
 				dedDto.setDedHis(dedHis);
 				dedDto.setContributionTaxes(contriTaxes);
@@ -567,17 +567,19 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	 * populating deduction histroy
 	 * 
 	 * @param paySheet
-	 * @param ded
+	 * @param assoDeduction
 	 * @param logonUser
 	 * @param deductionDates
 	 * @param employeePayroll
-	 * @param contributionId 
+	 * @param savedAassContribution 
+	 * @param contriTaxes 
+	 * @param deductions 
 	 * @return DeductionHistory
 	 */
-	private DeductionHistory populateDeductionHistory(PaysheetFrequency paySheet, DeductionDTO ded, User logonUser, Date[] deductionDates, EmployeePayroll employeePayroll, Long contributionId)
+	private DeductionHistory populateDeductionHistory(PaysheetFrequency paySheet, AssociateDeduction assoDeduction, User logonUser, Date[] deductionDates, EmployeePayroll employeePayroll, AssociateContribution savedAassContribution, BigDecimal[] deductions, BigDecimal[] contriTaxes)
 	{
 		DeductionHistory dedHistory = new DeductionHistory();
-		dedHistory.setDeductionId(Long.parseLong(ded.getId()));
+		dedHistory.setDeductionId(assoDeduction);
 		dedHistory.setDeductionDate(new Date());
 		dedHistory.setFrequencyStartDate(deductionDates[0]);
 		if (deductionDates[1] != null) {
@@ -593,10 +595,14 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		dedHistory.setCreatedDate(new Date());
 		dedHistory.setUpdatedDate(new Date());
 		dedHistory.setPayroll(employeePayroll);
-		if(contributionId != null) {
-			dedHistory.setContributionId(contributionId);
+		if(savedAassContribution != null) {
+			dedHistory.setContributionId(savedAassContribution);
 		}
 		dedHistory.setDeductionHisUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		dedHistory.setPreDeductionAmount(deductions[0]);
+		dedHistory.setPreContributionAmount(contriTaxes[0]);
+		dedHistory.setPostDeductionAmount(deductions[1]);
+		dedHistory.setPostContributionAmount(contriTaxes[1]);
 		return dedHistory;
 	}
 
@@ -1067,9 +1073,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			for (ContributionDTO dto : contribution) {
 				PayAdjustmentDedHistory payDedHis = new PayAdjustmentDedHistory();
 				payDedHis.setContributionId(Long.parseLong(dto.getId()));
-				payDedHis.setPreContributionType(dto.getPreContributionType());
+				if(StringUtils.isNotBlank(dto.getPreContributionType())) {
+					payDedHis.setPreContributionType(dto.getPreContributionType());
+					payDedHis.setContributionType(dto.getPreContributionType());
+				}
 				payDedHis.setPreContributionAmt(dto.getPreContributionAmt());
-				payDedHis.setContributionType(dto.getPreContributionType());
 				payDedHis.setContributionAmt(new BigDecimal(dto.getAmount()));
 				payDedHis.setPayAdjustmentHistory(payAdjHistory);
 				payAdjDedHisSet.add(payDedHis);
@@ -1091,10 +1099,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		if (preded != null && preded.size() > 0) {
 			for (DeductionDTO preDed : preded) {
 				PayAdjustmentDedHistory payDedHis = new PayAdjustmentDedHistory();
-				payDedHis.setPreDeductionType(preDed.getPreDeductionType());
+				if(StringUtils.isNoneBlank(preDed.getPreDeductionType())) {
+					payDedHis.setPreDeductionType(preDed.getPreDeductionType());
+					payDedHis.setDeductionType(preDed.getPreDeductionType());
+				}
 				payDedHis.setPreDeductionAmt(new BigDecimal(preDed.getPreDeductionAmt()));
 				payDedHis.setDeductionId(Long.parseLong(preDed.getId()));
-				payDedHis.setDeductionType(preDed.getPreDeductionType());
 				payDedHis.setDeductionAmt(preDed.getAmount());
 				payDedHis.setPayAdjustmentHistory(payAdjHistory);
 				payAdjDedHisSet.add(payDedHis);
