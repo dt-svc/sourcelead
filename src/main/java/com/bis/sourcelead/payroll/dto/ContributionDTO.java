@@ -32,6 +32,8 @@ public class ContributionDTO {
 
 	private double postContributionAmt;
 	
+	private double contributionAmt;
+	
 	public String getId()
 	{
 		return id;
@@ -168,6 +170,16 @@ public class ContributionDTO {
 	public void setPostContributionAmt(double postContributionAmt)
 	{
 		this.postContributionAmt = postContributionAmt;
+	}
+
+	public double getContributionAmt()
+	{
+		return contributionAmt;
+	}
+
+	public void setContributionAmt(double contributionAmt)
+	{
+		this.contributionAmt = contributionAmt;
 	}
 	
 	
