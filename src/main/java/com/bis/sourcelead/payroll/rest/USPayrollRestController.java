@@ -1100,7 +1100,7 @@ public class USPayrollRestController {
 	{
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("payroll/payrollList");
+		model.setViewName("payroll/usPayrollDashboard");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
 			sessionData = new SessionMaintainanceData();
