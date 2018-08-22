@@ -18,7 +18,10 @@ $(document).ready(function(){
     <div class="pull-left">
       <h2>Batches</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Batches</div>
+     <div class="pull-right brud-crum">
+                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Batches
+      </div>
   </section>
   <div class="timesheet_out">
     <div class="tablelist-wrap backgroundWhite">
@@ -296,7 +299,9 @@ function userGroupPaginationFun(url){
               "data": "payFrequency",
               "sortable": true,
               "render": function ( data, type, opt, meta ) {
-            	  return ' <td><div  class="tblminwidth-100">'+opt.payFrequency+'</div></td>';
+            	  var result = "";
+            	     result = result + '  <td><div  class="tblminwidth-100">'+opt.payFrequency+'</div></td>';
+            	  return result;
               }
             }, {
                 "targets": colIndex++,

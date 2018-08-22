@@ -812,20 +812,20 @@ public class LeaveManagementUtil {
                 	workingHours = workingHours / 2;
                 }
                 
-                if(Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod())){
+//                if(Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod())){
                 	double oneHr = workingHours;
                 	double oneHrMin = oneHr / 60;
                 	actualAppliedLeave = fromMinutes / 60;
 //                	actualAppliedLeave = oneHrMin * fromMinutes;
-                }else if(Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())){
-                	double oneHr =  workingHours;
-                	double oneHrMin = oneHr / 60;
-                	actualAppliedLeave = oneHrMin * fromMinutes;
-                }else if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
-                	
-                }else if(Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod())){
-                	
-                }
+//                }else if(Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())){
+//                	double oneHr =  workingHours;
+//                	double oneHrMin = oneHr / 60;
+//                	actualAppliedLeave = oneHrMin * fromMinutes;
+//                }else if(Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod())){
+//                	
+//                }else if(Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod())){
+//                	
+//                }
         	}
             
          } catch (ParseException e) {

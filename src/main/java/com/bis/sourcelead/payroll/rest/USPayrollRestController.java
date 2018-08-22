@@ -55,6 +55,7 @@ import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
@@ -991,21 +992,23 @@ public class USPayrollRestController {
 	}
 	
 	@RequestMapping(value = "/addAssociateDeduction")
-	public ModelAndView addAssociateDeduction(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId) throws Exception
+	public ModelAndView addAssociateDeduction(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("userId", userId);
+		model.addObject("saveType", saveType);
 		model.setViewName("users/addAssociateSummaryDeduction");
 		return model;
 	}
 	
 	@RequestMapping(value = "/addAssociateContribution")
-	public ModelAndView addAssociateContribution(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId) throws Exception
+	public ModelAndView addAssociateContribution(HttpServletRequest request,@RequestParam(value = "userId",required = false) Long userId,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("userId", userId);
+		model.addObject("saveType", saveType);
 		model.setViewName("users/addAssociateSummaryContribution");
 		return model;
 	}
@@ -1397,11 +1400,12 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = "/validateDeduction", method = RequestMethod.GET)
 	@ResponseBody
-	public boolean validateDeduction(@RequestParam(value = "dedType",required = false)Long deductionTypeId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public boolean validateDeduction(@RequestParam(value = "dedType",required = false)Long deductionTypeId, @RequestParam(value = "userId",required = false)Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		boolean bol = false;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		AssociateDeduction  validateDed = associateDeductionService.getValidateDeduction(deductionTypeId,orgLocation);	
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
+		AssociateDeduction  validateDed = associateDeductionService.getValidateDeduction(deductionTypeId,orgLocation,candidate.getId());	
 		if(validateDed != null) {
 			bol = true;
 		}
@@ -1418,11 +1422,12 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = "/validateContribution", method = RequestMethod.GET)
 	@ResponseBody
-	public boolean validateContribution(@RequestParam(value = "contriType",required = false)Long contriTypId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public boolean validateContribution(@RequestParam(value = "contriType",required = false)Long contriTypId,@RequestParam(value = "userId",required = false)Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		boolean bol = false;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		AssociateContribution  validateCon = associateContributionService.getValidateContribution(contriTypId,orgLocation);	
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
+		AssociateContribution  validateCon = associateContributionService.getValidateContribution(candidate.getId(),contriTypId,orgLocation);	
 		if(validateCon != null) {
 			bol = true;
 		}
@@ -1555,4 +1560,14 @@ public class USPayrollRestController {
 		}
 		return res;
 	}
+
+	@RequestMapping(value = {"/getMyPayrollList","/rest/getMyPayrollList"}, method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<MyPayrollDTO> getMyPayrollList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		return paysheetFrequencyService.getMyPayrollListByCandidateId(candidateId,orgLocation);
+	}
+
 }

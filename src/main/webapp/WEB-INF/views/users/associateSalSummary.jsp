@@ -257,7 +257,7 @@ function associateSalSummary(userId){
               </div>
               <div class="col-md-5">
                 <label>Annual Salary</label>
-                <div>
+                <div id="AnnualSal">
                   <input class="form-control" name="annualSal" id="annualSal" type="text" data-validation="required" field-name="Annual Salary" onblur = "calaculateIncDecPer();">
                    <input class="form-control" name="previousAnnualSal" id="previousAnnualSal" type="hidden">
                    
@@ -265,14 +265,14 @@ function associateSalSummary(userId){
               </div>
               <div class="col-md-5">
                 <label>Per Pay Salary</label>
-                <div>
+                <div id="PerPaySal">
                   <input class="form-control" name="perPaySal" id="perPaySal" type="text" data-validation="required" field-name="Per Pay Salary" onblur = "calculatePayPerSal();">
                     <input class="form-control" name="previousPerPaySal" id="previousPerPaySal" type="hidden">
                 </div>
               </div>
               <div class="col-md-5">
                 <label>Hourly Rate</label>
-                <div>
+                <div id="HourlyRate">
                   <input class="form-control" name="hourlyRate" id="hourlyRate" type="text" data-validation="required" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                    <input class="form-control" name="previousHourlyRate" id="previousHourlyRate" type="hidden">
                 </div>
@@ -444,6 +444,7 @@ function closeupdateSalaryDetails() {
 <script>
 function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,perPaySal,hourlyRate,userId,groupUUID) {
 	 document.getElementById("update_associate_salary_form").reset(); 
+	
 	 if(id != null && id != '' && id != 'undefined'){
 		 $("#payType").val(payType);
 			$("#payFrequency").val(payFrequency);
@@ -517,23 +518,34 @@ function getPayFreqHours(){
 function calculateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var annualSal = $("#annualSal").val();
+	var hourlyRate = $("#hourlyRate").val();
+	 if(annualSal != null && annualSal != '' && annualSal != 'undefined')
+		{
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		}
+	
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
+	}
+
 	var hours = $("#standardHours").val();
 	if(annualSal != null && annualSal != '' && annualSal != 'undefined' && hours != null && hours != '' && hours != 'undefined'){
-		
+		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		var rate = null;
 		if(payFrequency === 'Annual'){
-			var rate = parseFloat(annualSal) / 1;
+			rate = parseFloat(annualSal) / 1;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		if(payFrequency === 'Monthly'){
-			var rate = parseFloat(annualSal) / 12;
+			rate = parseFloat(annualSal) / 12;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		if(payFrequency === 'Bi-Weekly'){
-			var rate = parseFloat(annualSal) / 26;
+			rate = parseFloat(annualSal) / 26;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		if(payFrequency === 'Weekly'){
-			var rate = parseFloat(annualSal) / 52;
+			rate = parseFloat(annualSal) / 52;
 			$("#perPaySal").val(rate.toFixed(2));
 		}
 		var hourRate = rate/hours;
@@ -548,6 +560,17 @@ function calculatePayPerSal(){
 	var perPaySal = $("#perPaySal").val();
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
+	var annualSal = $("#annualSal").val();
+	 if(annualSal != null && annualSal != '' && annualSal != 'undefined')
+		{
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		}
+		if(perPaySal != null && perPaySal != '' && perPaySal != 'undefined'){
+			$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		}
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
+	}
 	if(perPaySal !='' && perPaySal != 'undefined'){
 		if(payFrequency === 'Annual'){
 			var annualRate = parseFloat(perPaySal) * 1;
@@ -566,10 +589,11 @@ function calculatePayPerSal(){
 			$("#annualSal").val(annualRate.toFixed(2));
 		}
 		
-		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+// 		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
 			var hourlyrate = parseFloat(perPaySal) / standardHours;
 			$("#hourlyRate").val(hourlyrate.toFixed(2));
-		}
+// 		}
+			calaculateIncDecPer();
 	}
 	
 	
@@ -578,16 +602,26 @@ function calculatePayPerSal(){
 
 <script>
 function calculateHourlyRateSal(){
-	
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	var annualSal = $("#annualSal").val();
-	if(annualSal != null && annualSal != '' && annualSal != 'undefined'){
+	 if(annualSal != null && annualSal != '' && annualSal != 'undefined')
+		{
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		}
+		if(perPaySal != null && perPaySal != '' && perPaySal != 'undefined'){
+			$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		}
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
+	}
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){ 
 		var perPaySal = parseFloat(hourlyRate) * standardHours;
 		$("#perPaySal").val(perPaySal.toFixed(2));
 		calculatePayPerSal();
+		calaculateIncDecPer();
 	}
 }
 </script>
@@ -597,22 +631,36 @@ function calculateHourlyRateSal(){
 function calculatePercentSal(){
 	
 	var increasePer  = $("#increasePer").val();
-	var annualSal = $("#previousAnnualSal").val();
-	var percentValue = increasePer/100;
+	if(increasePer != null && increasePer != '' && increasePer != 'undefined'){
+		var annualSal = $("#previousAnnualSal").val();
+		var percentValue = increasePer/100;
 
-	var percentMulValue =  percentValue * parseFloat(annualSal);
-	var incrementAnnualSal = parseFloat(percentMulValue)  + parseFloat(annualSal) ;
-	$("#annualSal").val(incrementAnnualSal);
-	$("#salaryType").val('increment');
-	calculateSal();
+		var percentMulValue =  percentValue * parseFloat(annualSal);
+		var incrementAnnualSal = parseFloat(percentMulValue)  + parseFloat(annualSal) ;
+		$("#annualSal").val(incrementAnnualSal);
+		$("#salaryType").val('increment');
+		calculateSal();
+	}
 }
 </script>
 
 <script>
 function calaculateIncDecPer(){
 	var curAnnualSal = $("#annualSal").val();
+	var perPaySal = $("#perPaySal").val();
+	var HourlyRate = $("#HourlyRate").val();
 	var previousAnnualSal = $("#previousAnnualSal").val();
-	if(previousAnnualSal != null && previousAnnualSal != '' && previousAnnualSal != 'undefined'){
+	 if(annualSal != null && annualSal != '' && annualSal != 'undefined')
+		{
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		}
+		if(perPaySal != null && perPaySal != '' && perPaySal != 'undefined'){
+			$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		}
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
+	}
+	if(previousAnnualSal != null && previousAnnualSal != '' && previousAnnualSal != 'undefined' && curAnnualSal != null && curAnnualSal != '' && curAnnualSal != 'undefined'){
 		if(curAnnualSal > previousAnnualSal){
 			$("#salaryType").val('increment');
 			var diffSal = parseFloat(curAnnualSal) - parseFloat(previousAnnualSal);
@@ -629,8 +677,9 @@ function calaculateIncDecPer(){
 			$("#increasePer").val(icrementPer.toFixed(2));
 // 			calculateSal();
 		}
+		calculateSal();
 	}
-	calculateSal();
+	
 	
 }
 </script>

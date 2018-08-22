@@ -875,7 +875,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 emailMessage.setFromName(orgLoc.getUser().getFirstName());
 			 
-			 
+			 emailMessage.setCreatedBy(loginUser.getFullName());
 			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
 			 //ProjectMembers projectMembers = projectMembersDao.getgetProjectMemberById(expenseId);
@@ -885,7 +885,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 			 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
-			 globalVarsMap.put("reopenUser",orgLoc.getUser().getFirstName());
+			 globalVarsMap.put("reopenUser",loginUser.getFullName());
 			 globalVarsMap.put("projectName", projectName);
 			 globalVarsMap.put("clientName",expenses.getClientName());
 			 

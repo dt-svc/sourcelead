@@ -1,5 +1,11 @@
 package com.bis.sourcelead.payroll.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -781,5 +788,42 @@ public class EmployeePayrollRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = "/downloadPayrollTemplates")
+	public void downloadLeaveTemplate(@RequestParam(value = "templateType", required = false) String templateType,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		File file = null;
+		String fn = null;
+		if ("EMPLOYEE_PAYROLL".equalsIgnoreCase(templateType)) {
+			fn = "/templates/EmpPayroll_Template.xlsx";
+		}else if ("WAGE_TAX".equalsIgnoreCase(templateType)) {
+			fn = "/templates/Wage&TaxSummary_Template.xls";
+		}else if ("ACCOUNT_DEDUCTIONS".equalsIgnoreCase(templateType)) {
+			fn = "/templates/AccountDetails_Template.xlsx";
+		}else if ("HR_DEDUCTIONS".equalsIgnoreCase(templateType)) {
+			fn = "/templates/HrDeductions_Template.xlsx";
+		}else if ("BIS_CHECKS".equalsIgnoreCase(templateType)) {
+			fn = "/templates/Checks_Template.xlsx";
+		}else if ("INVOICE".equalsIgnoreCase(templateType)) {
+			fn = "/templates/InvoiceData_Template.xlsx";
+		}
+		
+		URL url = getClass().getResource(fn);
+		file = new File(url.toURI());
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
 	}
 }
