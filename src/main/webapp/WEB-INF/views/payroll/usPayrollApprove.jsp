@@ -156,7 +156,6 @@ function calculateTotalPay(formData,confirmType){
                							<td>$ <span id="federal">0.00</span><td>
                						</tr>
                						<tr>
-               						 
                							<td>Federal Insurance Contributions Act (FICA)</td>
                							<td><div class="tblminwidth-90">$ <span id="fica">0.00</span></div></td>
                						</tr>
