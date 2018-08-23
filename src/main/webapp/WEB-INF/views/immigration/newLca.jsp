@@ -253,7 +253,7 @@
           <h5 class="col-xs-8 col-sm-8 col-md-8">Place of Employment <span class="text-danger paddingLeft">*</span></h5>
           <div class="col-xs-4 col-sm-4 col-md-4">
          		<div class="pull-right">
-          		<button type="button" class="btn btn-primary btn-sm pull-right" onclick="appendDynamicPlaceofEmploymentDiv();"><i class="fa fa-plus paddingRight"></i>Add</button>
+          		<button type="button" class="btn btn-primary btn-sm pull-right"  id="placeEmployMntId" onclick="appendDynamicPlaceofEmploymentDiv();"><i class="fa fa-plus paddingRight"></i>Add</button>
           		<div class="clearfix"></div>
           		</div>
           </div>
@@ -700,11 +700,15 @@ $('#endDate').datepicker({
    }
 	
  //  var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
-  
+   var rowId =1;
    function appendDynamicPlaceofEmploymentDiv(){
-	   var rowId =1;
+	  
 	   console.log("rowId value is --->"+rowId);
 	   $("#dynamicPlaceofEmploymentDiv").append(prepareDynamicPlaceofEmploymentDiv(rowId++,"")); 
+	   if(rowId > 2){
+		   $("#placeEmployMntId").hide();
+	   }
+		  
    }
    //var deletedResicenceListIds = new Array();
    var removedPlsofEmpmtIds = [];
@@ -713,6 +717,9 @@ $('#endDate').datepicker({
 	   
 	   $("#dynamicPlsofEmpmtDiv"+id).remove();
 	   rowId--;// decrement rowid when deleted in UI.
+	   if(rowId <= 2){
+		   $("#placeEmployMntId").show();
+	   }
    } 
  </script>
  
