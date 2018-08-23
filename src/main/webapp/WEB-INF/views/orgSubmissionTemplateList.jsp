@@ -175,8 +175,8 @@ function templatepagination(){
 			        result = result + '<li><a id="add-select" data-type="select" onclick="scrollToBottom();"  href="javascript:void(0)">Select Box</a></li>';
 			        result = result + '<li><a id="add-radio" data-type="radio" onclick="scrollToBottom();"  href="javascript:void(0)">Radio Button</a></li>';
 			        result = result + ' <li><a id="add-checkbox" data-type="checkbox" onclick="scrollToBottom();"  href="javascript:void(0)">Check Box</a></li>';
-			        result = result + '<li><a id="calendar" data-type="calendar" onclick="scrollToBottom();"  href="javascript:void(0)">Calendar</a></li>';
-			        /* result = result + '<li><a id="add-autocomplete" data-type="autocomplete" href="javascript:void(0)">Auto Complete</a></li>'; */
+			        /*  result = result + '<li><a id="calendar" data-type="calendar" onclick="scrollToBottom();"  href="javascript:void(0)">Calendar</a></li>';
+			        result = result + '<li><a id="add-autocomplete" data-type="autocomplete" href="javascript:void(0)">Auto Complete</a></li>'; */
 		            result = result + '</ul>';
 			        result = result + '</div>';
 			        result = result + '</div>';
