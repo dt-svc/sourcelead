@@ -46,25 +46,25 @@ $(document).ready(function(){
                   <div class="col-md-5">
                     <label>Standard Hours</label>
                     <div>
-                      <input type="text" class="form-control"  id="standardHours" name="standardHours" onblur="calculateSal();">
+                      <input type="text" class="form-control"  id="standardHours" name="standardHours" data-validation="required validate_float" field-name="Standard Hours" onblur="calculateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
                     <label>Annual Salary</label>
-                    <div>
-                      <input type="text" class="form-control" id="annualSal" name="annualSal" onblur="calculateSal();">
+                    <div id="AnnualSal">
+                      <input type="text" class="form-control" id="annualSal" name="annualSal" data-validation="required validate_float" field-name="Annual Salary" onblur="calculateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
                     <label>Pay Per Salary</label>
-                    <div>
-                      <input type="text" class="form-control" id="perPaySal" name="perPaySal" onblur = "calculatePayPerSal();">
+                    <div id="PerPaySal">
+                      <input type="text" class="form-control" id="perPaySal" name="perPaySal" data-validation="required validate_float" field-name="Pay Per Salary" onblur = "calculatePayPerSal();">
                     </div>
                   </div>  
                    <div class="col-md-5">
                     <label>Hourly Rate</label>
-                    <div>
-                      <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" onblur = "calculateHourlyRateSal();">
+                    <div id="HourlyRate">
+                      <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" data-validation="required validate_float" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
@@ -130,28 +130,36 @@ function calculateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var annualSal = $("#annualSal").val();
 	var hours = $("#standardHours").val();
+	var hourlyRate = $("#hourlyRate").val();
+	 if(annualSal != null && annualSal != '' && annualSal != 'undefined')
+		{
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		}
+	
 	if(annualSal != null && annualSal != '' && annualSal != 'undefined' && hours != null && hours != '' && hours != 'undefined'){
-		
+		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		$('#HourlyRate').find('p.jquery_form_error_message').remove();
+		var rate = "";
 		if(payFrequency === 'Annual'){
-			var rate = parseFloat(annualSal) / 1;
+			rate = parseFloat(annualSal) / 1;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
 		}
 		if(payFrequency === 'Monthly'){
-			var rate = parseFloat(annualSal) / 12;
+			rate = parseFloat(annualSal) / 12;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
 		}
 		if(payFrequency === 'Bi-Weekly'){
-			var rate = parseFloat(annualSal) / 26;
+			rate = parseFloat(annualSal) / 26;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
 		}
 		if(payFrequency === 'Weekly'){
-			var rate = parseFloat(annualSal) / 52;
+			rate = parseFloat(annualSal) / 52;
 			$("#perPaySal").val(rate.toFixed(2));
 			/* var hourRate = rate/hours;
 			$("#hourlyRate").val(hourRate.toFixed(2)); */
@@ -166,9 +174,15 @@ function calculateSal(){
 function calculatePayPerSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
-	var hourlyRate = $("#hourlyRate").val();
+ 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
+	var annualSal = $("#annualSal").val();
+
 	if(perPaySal !='' && perPaySal != 'undefined'){
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove();
+		$('#HourlyRate').find('p.jquery_form_error_message').remove();
+		
 		if(payFrequency === 'Annual'){
 			var annualRate = parseFloat(perPaySal) * 1;
 			$("#annualSal").val(annualRate.toFixed(2));
@@ -186,10 +200,10 @@ function calculatePayPerSal(){
 			$("#annualSal").val(annualRate.toFixed(2));
 		}
 		
-		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+// 		if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
 			var hourlyrate = parseFloat(perPaySal) / standardHours;
 			$("#hourlyRate").val(hourlyrate.toFixed(2));
-		}
+// 		}
 	}
 	
 	
@@ -204,7 +218,11 @@ function calculateHourlyRateSal(){
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	var annualSal = $("#annualSal").val();
-	if(annualSal != null && annualSal != '' && annualSal != 'undefined'){
+	
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
 		var perPaySal = parseFloat(hourlyRate) * standardHours;
 		$("#perPaySal").val(perPaySal.toFixed(2));
 		calculatePayPerSal();
@@ -251,7 +269,7 @@ function calculateHourlyRateSal(){
 			        		result = result +' <tr>';
 			        		result = result +' <td>';
 			        		result = result +' 	<div class="checkbox-new">';
-			        		result = result +' 	<input class="checkbox-custom" id="'+i+'payItemCheck" name="associatePayItemDto['+i+'].payItemCheck" type="checkbox">';
+			        		result = result +' 	<input class="checkbox-custom" id="'+i+'payItemCheck" name="associatePayItemDto['+i+'].payItemCheck" type="checkbox" onclick="selectCheckBox('+i+');">';
 			        		result = result +' 	<label for="'+i+'payItemCheck" class="checkbox-custom-label"></label>';
 			        		result = result +' </div>';
 			        		result = result +' </td>';
@@ -279,7 +297,7 @@ function calculateHourlyRateSal(){
 							result = result +'</td>';
 							result = result +'<td>';
 							result = result +'	<div class="tblminwidth-50">';
-							result = result +'		<input class="form-control calendar" placeholder="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text">';
+							result = result +'		<input class="form-control calendar" placeholder="Effective Date" field-name="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text">';
 							result = result +'	</div>';
 							result = result +'</td>';
 							result = result +'<td>';
@@ -316,17 +334,16 @@ function calculateHourlyRateSal(){
 				var finalDateFormat = getJSDateFormat(locationDate);
 				 for (var i=0; i<response.data.length; i++)
 					{
-					 $("#"+i+"effectiveDate").datepicker({
+					  $("#"+i+"effectiveDate").datepicker({
 						 dateFormat: finalDateFormat,
 						 changeMonth: true,
-						  	  changeYear: true,
-						  	minDate: 0
+						  changeYear: true
 						 });
 						 $("#"+i+"endDate").datepicker({
 							 dateFormat: finalDateFormat,
 							 changeMonth: true,
 						  	  changeYear: true,
-						 });
+						 });  
 						 
 						}
 				 
@@ -347,7 +364,7 @@ function calculateHourlyRateSal(){
  <script type="text/javascript">
  function saveAssocioateSal() {
 	 var userId = $("#associateId").val();
-	var empType = $("#empType").val(); 
+	 var empType = $("#empType").val(); 
 
 	 if ($('#associate_salary_form').validate(false, validationSettings)){ 
 			   var formData = $($('#associate_salary_form')[0]).serialize();
@@ -411,6 +428,13 @@ function shiftToAssociateTab(){
 <script>
 function selectCheckBox(i){
 	var isChecked = $("#"+i+"payItemCheck").is(':checked');
+	if(isChecked){
+		$("#"+i+"effectiveDate").removeAttr('data-validation-optional');
+		$("#"+i+"effectiveDate").attr('data-validation', "required");
+	}else{
+		$("#"+i+"effectiveDate").removeAttr('data-validation');
+		$("#"+i+"effectiveDate").attr('data-validation-optional', "true");
+	}
 	$("#"+i+"payItemCheck").val(isChecked);
 }
 </script>  

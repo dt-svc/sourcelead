@@ -1,8 +1,12 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public class AssociatePayItemDTO {
 	
 	private String id;
+	private BigInteger payItemId;
 	private String associateSalaryId;
 	private String payItemName;
 	private String payItemSchedule;
@@ -10,12 +14,19 @@ public class AssociatePayItemDTO {
 	private String effectiveDate;
     private String endDate;
     private String payItemAmount;
+    private BigDecimal amount;
 	private String status;
 	private String createdDate;
 	private String createdBy;
 	private String updatedDate;
 	private String updatedBy;
 	private String payItemCheck;
+	private String prePayItemName;
+	private String prePayItemBlock;
+	private String prePayItemAmt;
+	private double payItemAmt;
+	
+	
 	public String getId()
 	{
 		return id;
@@ -127,6 +138,54 @@ public class AssociatePayItemDTO {
 	public void setPayItemCheck(String payItemCheck)
 	{
 		this.payItemCheck = payItemCheck;
+	}
+	public BigInteger getPayItemId()
+	{
+		return payItemId;
+	}
+	public void setPayItemId(BigInteger payItemId)
+	{
+		this.payItemId = payItemId;
+	}
+	public BigDecimal getAmount()
+	{
+		return amount;
+	}
+	public void setAmount(BigDecimal amount)
+	{
+		this.amount = amount;
+	}
+	public String getPrePayItemName()
+	{
+		return prePayItemName;
+	}
+	public String getPrePayItemBlock()
+	{
+		return prePayItemBlock;
+	}
+	public String getPrePayItemAmt()
+	{
+		return prePayItemAmt;
+	}
+	public void setPrePayItemName(String prePayItemName)
+	{
+		this.prePayItemName = prePayItemName;
+	}
+	public void setPrePayItemBlock(String prePayItemBlock)
+	{
+		this.prePayItemBlock = prePayItemBlock;
+	}
+	public void setPrePayItemAmt(String prePayItemAmt)
+	{
+		this.prePayItemAmt = prePayItemAmt;
+	}
+	public double getPayItemAmt()
+	{
+		return payItemAmt;
+	}
+	public void setPayItemAmt(double payItemAmt)
+	{
+		this.payItemAmt = payItemAmt;
 	}
 	
 	

@@ -12,7 +12,12 @@ public interface AssociateContributionService {
 
 	Response<AssociateContributionDTO> saveAssociateContribution(AssociateContributionDTO associateContributionDTO, OrgLocations orgLocation, User loginUser);
 
-	ResponseList<ContributionDTO> findAllContributionSummaryByUserId(Long userId, OrgLocations orgLocation);
+	ResponseList<ContributionDTO> findAllContributionSummaryByCandidateId(Long candidate, OrgLocations orgLocation);
 
 	AssociateContribution findAssociateContributionById(Long associateContributionId);
+
+	AssociateContribution getValidateContribution(Long candidateId,Long contriTypId, OrgLocations orgLocation);
+
+	AssociateContribution findContributionByUserIdContributionId(Long userId, Long contributionId);
+	
 }

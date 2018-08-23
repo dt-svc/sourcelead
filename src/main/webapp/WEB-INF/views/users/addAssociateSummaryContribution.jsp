@@ -73,14 +73,14 @@ $(document).ready(function(){
                <div class="minHeightcol5">
                <div class="col-md-5">
                <label class="clearfix">Type</label>
-                      <select class="sel" id="contriType" name="contriType" data-validation="required" field-name="Contribution Type" onchange="getContributionAmount();">
+                      <select class="sel" id="contriType" name="contriType" data-validation="required" field-name="Contribution Type" onchange="getContributionAmount();" onblur="validateDuplicateContribution();">
                       </select>
                   </div>
                   
                   <div class="col-md-5">
                     <label class="clearfix">contributionAmount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_int" field-name="Amount">
+                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_int" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
@@ -144,6 +144,7 @@ $(document).ready(function(){
  <script type="text/javascript">
 function validateContributionForm(){
 	  if ($('#associate_contribution_form').validate(false, validationSettings)){  
+		  validateDuplicateContribution();
 		 /*  saveAssociateContribution(); */
 	       return true; 
 	   }else{
@@ -159,6 +160,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
  <script>
  function saveAssociateContribution(){
 	 var userId = '${userId}';  
+	 var saveType = '${saveType}';
 	 var contributionType = $("#contributionType").val();
 	 if(contributionType != null && contributionType != '' && contributionType != 'undefined'){
 		 var formData = getFormData("associate_contribution_form"); 
@@ -169,7 +171,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
       $.ajax({
 				type : "POST",
   	    data: formData,
-				url : sourceleadUrl+"/saveAssociateContribution?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+				url : sourceleadUrl+"/saveAssociateContribution?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
 				success : function(result) {
 					 if (result && result.response === "INVALID_DATA") {
 		                    $("#contribution_save_button").removeAttr("disabled");
@@ -258,6 +260,28 @@ function contributionPopup(){
 				$("#contricontributionMethod").val(data.payrollContributionMethod);
 				$("#contriAmt").val(data.contributionAmount); 
 		},
+		});
+ }
+ </script>
+ 
+ <script>
+ function validateDuplicateContribution(){
+	 var contriType = $("#contriType").val();
+	 var userId = '${userId}'; 
+	 alert(userId);
+	 $.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/validateContribution?"+tokenParamName+"="+tokenValue+"&contriType="+contriType+"&userId="+userId,
+			success :function(data) {
+				if(data == true){
+					$("#contriType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
+					document.getElementById("contribution_save_button").disabled = true;
+				}else{
+					$('#contriType').find('p.jquery_form_error_message').remove();
+					document.getElementById("contribution_save_button").disabled = false;
+				}
+				
+		 },
 		});
  }
  </script>

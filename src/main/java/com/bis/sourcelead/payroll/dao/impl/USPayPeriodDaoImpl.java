@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.USPayPeriodDao;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
 
@@ -122,5 +123,33 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 		query.setInteger("payPeriodNum", Integer.parseInt(payPeriodNum));
 		int result = query.executeUpdate();
 		return result;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public USPayPeriod getPayPeriodByOrglocationId(OrgLocations orgLocation,Long payfrequencyId) {
+		
+		USPayPeriod payPeriod = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from USPayPeriod usPay where usPay.orgLocation.id =:orgLocationId and usPay.paysheetFrequency.id =:paysheetFrequencyId";
+			List<USPayPeriod> payPeriodList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setLong("paysheetFrequencyId", payfrequencyId).list();	
+			if(payPeriodList != null && payPeriodList.size() > 0) {
+				payPeriod = payPeriodList.get(0);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return payPeriod;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<EmployeePayroll> getEmployeePayrollListByPayperiodNum(Integer payPeriodNum) {
+		List<EmployeePayroll> empList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from EmployeePayroll emp where emp.payPeriodNum =:payPeriodNum";
+		empList = session.createQuery(query).setInteger("payPeriodNum", payPeriodNum).list();
+		return empList;
 	}
 }

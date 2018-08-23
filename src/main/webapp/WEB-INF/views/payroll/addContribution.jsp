@@ -26,7 +26,7 @@ $(document).ready(function(){
       
       <div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/payrollContribution'/>"> Payroll Contribution List</a>
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Add Contribution
 		</div>
       
       
@@ -48,10 +48,10 @@ $(document).ready(function(){
 			
 			
 			<div class="col-md-5">
-			<label class="clearfix">Method</label>
+			<label class="clearfix">Method<span class="text-danger paddingLeft">&nbsp;*</span></label>
 			<div class="clearfix dropdown-select">
-				<select class="form-control" id="payrollContributionMethod" name="payrollContributionMethod" onchange="validateContributionMethodType();">
-				<option>Select Method</option>
+				<select class="form-control" id="payrollContributionMethod" name="payrollContributionMethod" data-validation="required" onchange="validateContributionMethodType();" field-name="Method">
+				<option value = "">Select Method</option>
 				 <option ${payrollContribution.payrollContributionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option>
 				  <option ${payrollContribution.payrollContributionMethod == 'Percent' ? 'selected' : ''} value = "Percent">Percent</option>
 				</select>
@@ -61,12 +61,12 @@ $(document).ready(function(){
 			<div class="col-md-5">
               <label class="clearfix">Amount<span class="text-danger paddingLeft">&nbsp;*</span></label>
               <div class="clearfix" id="contributionAmountDiv">
-                <input type="text" class="form-control" value="${payrollContribution.contributionAmount}" id="contributionAmount" name="contributionAmount" data-validation="required validate_int" onblur="validateContributionMethodType();" field-name="Amount">
+                <input type="text" class="form-control" value="${payrollContribution.contributionAmount}" id="contributionAmount" name="contributionAmount" data-validation="required validate_float" onblur="validateContributionMethodType();" field-name="Amount">
               </div>
             </div>
             
 			<div class="col-md-5">
-			<label class="clearfix">Description</label>
+			<label class="clearfix">Description<span class="text-danger paddingLeft">&nbsp;*</span></label>
 			<div class="clearfix">
 			<textarea rows="2" class="form-control" id="description" name="description" data-validation="validate_length length1-250">${payrollContribution.description  }</textarea>
 			</div>

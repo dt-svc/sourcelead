@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -68,12 +69,18 @@ public class PayrollContributionServiceImpl implements PayrollContributionServic
 	}
 	
 	@Override
-	public boolean deleteContributionById(long contributionID)
+	public boolean deleteContributionById(long contributionID,String changeStatus)
 	{
 		boolean isDeleted = false;
 		try {
 			PayrollContribution payrollContribution = payrollContributionDao.findPayrollContributionByID(contributionID);
-			payrollContribution.setStatus(0);
+			
+			if(changeStatus.equalsIgnoreCase(Constants.PAYROLL_DELETE)) {
+				payrollContribution.setStatus(0);
+			}else if(changeStatus.equalsIgnoreCase(Constants.REACTIVE)){
+				payrollContribution.setStatus(1);
+			}
+			
 			PayrollContribution updatedPayrollContribution = payrollContributionDao.savePayrollContribution(payrollContribution);
 			if (updatedPayrollContribution != null) {
 				isDeleted = true;
@@ -101,6 +108,9 @@ public class PayrollContributionServiceImpl implements PayrollContributionServic
 					dto.setPayrollContributionMethod(contribution.getPayrollContributionMethod());
 					dto.setContributionAmount(contribution.getContributionAmount());
 					dto.setContributionUUID(contribution.getContributionUUID());
+					dto.setStatus(contribution.getStatus());
+					dto.setTaxType(contribution.getDeductionTypeId().getTaxType());
+					dto.setScheduleType(contribution.getDeductionTypeId().getPayrollScheduled());
 					list.add(dto);
 				});
 				response.setData(list);
@@ -160,6 +170,5 @@ public class PayrollContributionServiceImpl implements PayrollContributionServic
 		PayrollContributionDTO.setPayrollContributionMethod(payrollContribution.getPayrollContributionMethod());
 		return PayrollContributionDTO;
 	}
-
 
 }

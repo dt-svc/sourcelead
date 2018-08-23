@@ -15,10 +15,12 @@ public interface AssociateDeductionService {
 
 	PayrollDeductionDTO getDeductionAmount(long deductionTypeId);
 
-	ResponseList<DeductionDTO> findAllDeductionSummaryByUserId(Long userId, OrgLocations orgLocation);
+	ResponseList<DeductionDTO> findAllDeductionSummaryByCandidateId(Long candidateId, OrgLocations orgLocation);
 
 	AssociateDeduction findAssociateDeductionById(Long associateDeductionId);
 
-	AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long userId);
+	AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation, Long candidateId);
+
+	AssociateDeduction getAsociateDedByUserIdDeductionId(long deductionId, Long candidateId);
 
 }

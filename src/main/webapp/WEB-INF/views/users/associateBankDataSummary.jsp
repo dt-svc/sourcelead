@@ -83,7 +83,7 @@ function editAssociateBankDataFun(userId){
                result += ' <div class="clearfix">';
                result += '   <select class="form-control sel" id="accountType" name ="accountType" data-validation="required" onchange="showHideAccountTypes();" field-name="Account Type">';
               /*  <option ${payrollDeduction.payrollDeductionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option> */
-               result += '     <option value="">Bank Transfer</option>';
+               result += '     <option '+ (json.accountType == "Bank Transfer" ? "selected" : '') +' value="Bank Transfer">Bank Transfer</option>';
                result += '     <option '+ (json.accountType == "Direct Deposit" ? "selected" : '') +' value="Direct Deposit">Direct Deposit</option>';
                result += '     <option '+ (json.accountType == "Cheque" ? "selected" : '') +' value="Cheque">Cheque</option>';
                result += '     <option '+ (json.accountType == "Cash" ? "selected" : '') +' value="Cash">Cash</option>';
@@ -171,11 +171,11 @@ function showHideAccountTypes(){
 	}else{
 		$("#accountTypeChildDivs").show();
 		$("#bankName").removeAttr('data-validation-optional');
-		$('#bankName').attr('data-validation',"required");
+		$('#bankName').attr('data-validation',"required validate_Space validate_length length2-100");
 		$("#accountNumber").removeAttr('data-validation-optional');
-		$('#accountNumber').attr('data-validation',"required");
+		$('#accountNumber').attr('data-validation',"required validate_Space validate_int validate_length length2-100");
 		$("#routingNumber").removeAttr('data-validation-optional');
-		$('#routingNumber').attr('data-validation',"required");
+		$('#routingNumber').attr('data-validation',"required validate_space validate_int validate_length length9-9");
 	}
 }
 </script> 

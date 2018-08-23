@@ -1,6 +1,9 @@
 package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
+import java.util.Set;
+
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
 
 public class DeductionDTO {
 	
@@ -15,6 +18,19 @@ public class DeductionDTO {
 	private double dedAmount;
 	
 	private String dedSchedule;
+	
+	private BigDecimal[] dedTaxes;
+	
+	private Set<DeductionHistory> dedHis;
+	
+	private BigDecimal[] contributionTaxes;
+	
+	private String preDeductionType;
+	
+	private String preDeductionAmt;
+	
+	private double postDeductionAmt;
+	
 	
 	public double getDedAmount()
 	{
@@ -111,7 +127,68 @@ public class DeductionDTO {
 	{
 		this.dedSchedule = dedSchedule;
 	}
-	
+
+	public BigDecimal[] getDedTaxes()
+	{
+		return dedTaxes;
+	}
+
+	public Set<DeductionHistory> getDedHis()
+	{
+		return dedHis;
+	}
+
+	public void setDedTaxes(BigDecimal[] dedTaxes)
+	{
+		this.dedTaxes = dedTaxes;
+	}
+
+	public void setDedHis(Set<DeductionHistory> dedHis)
+	{
+		this.dedHis = dedHis;
+	}
+
+	public BigDecimal[] getContributionTaxes()
+	{
+		return contributionTaxes;
+	}
+
+	public void setContributionTaxes(BigDecimal[] contributionTaxes)
+	{
+		this.contributionTaxes = contributionTaxes;
+	}
+
+	public String getPreDeductionType()
+	{
+		return preDeductionType;
+	}
+
+	public String getPreDeductionAmt()
+	{
+		return preDeductionAmt;
+	}
+
+	public void setPreDeductionType(String preDeductionType)
+	{
+		this.preDeductionType = preDeductionType;
+	}
+
+	public void setPreDeductionAmt(String preDeductionAmt)
+	{
+		this.preDeductionAmt = preDeductionAmt;
+	}
+
+	public double getPostDeductionAmt()
+	{
+		return postDeductionAmt;
+	}
+
+
+	public void setPostDeductionAmt(double postDeductionAmt)
+	{
+		this.postDeductionAmt = postDeductionAmt;
+	}
+
 	
 	
 	

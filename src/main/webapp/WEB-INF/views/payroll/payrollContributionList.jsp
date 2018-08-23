@@ -19,7 +19,10 @@ $(document).ready(function(){
  <div class="success_pop" id="selector2" style="display: none;">
    <i class="fa fa-check-circle"></i><span id="contributeDeleteMsgDiv"></span>
  </div>
-  <div class="pull-right brud-crum">Home &raquo; Payroll Contribution</div>
+  <div class="pull-right brud-crum">
+                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Payroll Contribution
+  </div>
 </section>
  
 
@@ -67,6 +70,8 @@ function prepareAllContributionTypeList(url){
         result = result + '<tr>';
 		result = result + '<th>Deduction Type</th>';
 		result = result + '<th>Description</th>';
+		result = result + '<th>taxType</th>';
+		result = result + '<th>scheduleType</th>';
 		result = result + '<th>Method</th>';
 		result = result + '<th>Amount</th>';
 		result = result + '<th>Action</th>';
@@ -96,6 +101,8 @@ function contributionTypepagination(url){
         "columns": [
             { "data": "deductionType" },
             { "data": "description"},
+            { "data": "taxType"},
+            { "data": "scheduleType"},
             { "data": "payrollContributionMethod"},
             { "data": "contributionAmount" },
             { "data": "Action"}
@@ -124,6 +131,34 @@ function contributionTypepagination(url){
               		
               }
 	          },{
+		    	  "targets": colIndex++,
+	              "data": "taxType",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.taxType !=null && opt.taxType !='' && opt.taxType !='undefined'){
+							result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.taxType+'</div></td>';
+						}else{
+							result = result + ' <td><div>--</div></td>';
+						}
+		              return result;
+	              		
+	              }
+		          },{
+			    	  "targets": colIndex++,
+		              "data": "scheduleType",
+		              "sortable": false,
+		              "render": function ( data, type, opt, meta ) {
+		            	  var result = "";
+		            	  if(opt.scheduleType !=null && opt.scheduleType !='' && opt.scheduleType !='undefined'){
+								result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.scheduleType+'</div></td>';
+							}else{
+								result = result + ' <td><div>--</div></td>';
+							}
+			              return result;
+		              		
+		              }
+			          },{
             "targets": colIndex++,
             "data": "payrollContributionMethod",
             "render": function ( data, type, opt, meta ) { 
@@ -149,7 +184,12 @@ function contributionTypepagination(url){
                 		var result = "";
                 		result = result + '<td><div class="tbldata-dotdot_50">';
                 		result = result + '<a href="'+sourceleadUrl+'/editContributionType?contributionUUID='+opt.contributionUUID+'" class="text-primary"><i class="fa fa-pencil-square-o mr5"></i></a>';
-                		result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash" onclick="deleteContributionType('+opt.contributionId+');"></i></a>';
+                		if(opt.status == 1){
+                			result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash" onclick="deleteContributionType('+opt.contributionId+');"></i></a>';
+                		}else{
+                			result = result + '<span title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick = "reactiveContribution('+opt.contributionId+');"></i></span>';
+                		}
+                		
                 		result = result + '</div>';
                 		result = result + '</td>';
     	              return result;
@@ -208,14 +248,14 @@ function deleteContributionPopUp(){
 function deleteSelectedContributionType(contributionId){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/deleteContributionType?${_csrf.parameterName}=${_csrf.token}&contributionId="+contributionId, 	   
+	    url: sourceleadUrl+"/deleteContributionType?${_csrf.parameterName}=${_csrf.token}&contributionId="+contributionId+"&changeStatus=DELETE", 	   
 		    success: function(data) {
 		    	if(data == true){
 		    		getAllContributionType();
 		    		deleteContributionPopUp();
 		    		 $("#selector2").removeAttr("style");
 	     			 $("#selector2").css({ display: "block" });
-	     			 $("#contributeDeleteMsgDiv").html("Added Successfully");
+	     			 $("#contributeDeleteMsgDiv").html("Deleted Successfully");
 	     			contributeDeleteMsgFadein();
 		    	}
 		    },
@@ -228,5 +268,19 @@ function deleteSelectedContributionType(contributionId){
 		$("#selector2").fadeIn(200);
         $('#selector2').delay(2000).fadeOut('slow');
 	}
+</script>
+
+<script>
+function reactiveContribution(contributionId){
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/deleteContributionType?${_csrf.parameterName}=${_csrf.token}&contributionId="+contributionId+"&changeStatus=REACTIVE", 	   
+		    success: function(data) {
+		    	if(data == true){
+		    		getAllContributionType();
+		    	}
+		    },
+     });
+}
 </script>
 <jsp:include page="../masterFooter.jsp" />

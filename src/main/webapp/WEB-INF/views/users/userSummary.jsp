@@ -92,7 +92,7 @@ $(document).ready(function(){
 	 var candidateId = '${candidateId}';
 	 var timesheet = '${SourceLeadWeb_timesheet}';
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}'; 
-	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}';
+	 var loginCountry = '${SourceLeadWeb_country}';
 	 
 		 result = result + ' <div class="user_summ_wrap">';
 		 result = result + '<div class="project_side_wrap_inn_tabs">';
@@ -115,19 +115,17 @@ $(document).ready(function(){
 			 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
 		 '</sec:authorize>';
 
-		 if(loginCurrencyCode != 'USD'){
-		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
-		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
-		 '</sec:authorize>';
-		 }
-		 
-		 if(loginCurrencyCode == 'USD'){
+		 if(loginCountry == 'United States'){
 			 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
 			 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
 			 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
 			 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
 			 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
 		 }
+		 
+		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
+		 '</sec:authorize>';
 
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';

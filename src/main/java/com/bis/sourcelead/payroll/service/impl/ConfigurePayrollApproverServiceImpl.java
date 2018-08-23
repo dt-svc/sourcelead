@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -48,26 +49,22 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 	@Override
 	public List<UserDTO> getPayrollApprover(OrgLocations orgLocation, User loginUser)
 	{
-//		ResponseList<UserDTO> res = new ResponseList<>();
 		List<UserDTO> list = new ArrayList<>();
 		try {
-			List<UserRole> userList = userRoleService.getAllUsersBasedOrgLocationId(orgLocation.getId());
-			List<UserRole> filterList = userList.stream().filter(u -> u.getUser().getId().longValue() != loginUser.getId().longValue()).collect(Collectors.toList());
-			filterList.forEach(userRole -> {
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_RUN_PAYROLL));
+			userList.forEach(user -> {
 				UserDTO userDto = new UserDTO();
-				StringBuilder sb = new StringBuilder();
-				if (userRole.getUser().getLastName() != null) {
-					sb.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
+				userDto.setFullName(user.getFullName());
+				userDto.setId(user.getId());
+				UserRole userRole = null;
+				try {
+					userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocation.getId());
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				else {
-					sb.append(userRole.getUser().getFirstName());
-				}
-				userDto.setFullName(sb.toString());
-				userDto.setId(userRole.getUser().getId());
 				userDto.setRole(userRole.getRoles().getDisplayName());
 				list.add(userDto);
 			});
-//			res.setData(list);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -181,5 +178,10 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 			e.printStackTrace();
 		}
 		return res;
+	}
+
+	@Override
+	public List<PayrollApprover> getPayrollApproversByCPAID(Long configurePayrollApproverId) {
+		return configurePayrollApproverDao.getPayrollApproversByCPAID(configurePayrollApproverId);
 	}
 }

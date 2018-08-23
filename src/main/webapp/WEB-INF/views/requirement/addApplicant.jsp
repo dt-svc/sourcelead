@@ -541,7 +541,10 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	$(".sideMask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	
-	getSubmittedCandidateResumes(candidateId,resumeId);
+	if(resumeId != null && resumeId != '' && resumeId != 'undefined'){
+		getSubmittedCandidateResumes(candidateId,resumeId);
+	}
+	
 	$("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	setTimeout(function () {
 		       getSubmittedCandidateDetails(submissionId);

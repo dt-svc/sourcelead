@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.User;
 
@@ -34,8 +35,8 @@ public class EmployeePayroll {
 	private Employees employee;
 
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", nullable = false)
-	private User user;
+	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	private Candidate candidate;
 	
 	@ManyToOne
 	@JoinColumn(name = "PAY_SHEET_FREQUENCY_ID", nullable = false)
@@ -48,7 +49,7 @@ public class EmployeePayroll {
 	private String regularHours;
 	
 	@Column(name = "REGULAR_HOURS_AMOUNT")
-	private BigDecimal rehularHoursAmount;
+	private BigDecimal regularHoursAmount;
 	
 	@Column(name = "OVER_TIME_AMOUNT")
 	private BigDecimal overTimeAmount;
@@ -93,6 +94,9 @@ public class EmployeePayroll {
 	@Column (name = "POST_TAX_CONTRIBUTION")
 	private BigDecimal postTaxContribution;
 	
+	@Column (name = "PAYITEM_SUM")
+	private BigDecimal payitemSum;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -121,6 +125,9 @@ public class EmployeePayroll {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
 	private Set<DeductionHistory> deductionHistory;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollId")
+	private Set<PayitemHistory> payitemHistory;
 	
 	public String getSubmitForAproverStatus()
 	{
@@ -159,10 +166,6 @@ public class EmployeePayroll {
 		return regularHours;
 	}
 
-	public BigDecimal getRehularHoursAmount()
-	{
-		return rehularHoursAmount;
-	}
 
 	public BigDecimal getOverTimeAmount()
 	{
@@ -241,9 +244,15 @@ public class EmployeePayroll {
 		this.regularHours = regularHours;
 	}
 
-	public void setRehularHoursAmount(BigDecimal rehularHoursAmount)
+
+	public BigDecimal getRegularHoursAmount()
 	{
-		this.rehularHoursAmount = rehularHoursAmount;
+		return regularHoursAmount;
+	}
+
+	public void setRegularHoursAmount(BigDecimal regularHoursAmount)
+	{
+		this.regularHoursAmount = regularHoursAmount;
 	}
 
 	public void setOverTimeAmount(BigDecimal overTimeAmount)
@@ -337,9 +346,15 @@ public class EmployeePayroll {
 		return employee;
 	}
 
-	public User getUser()
+
+	public Candidate getCandidate()
 	{
-		return user;
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate)
+	{
+		this.candidate = candidate;
 	}
 
 	public void setEmployee(Employees employee)
@@ -347,11 +362,7 @@ public class EmployeePayroll {
 		this.employee = employee;
 	}
 
-	public void setUser(User user)
-	{
-		this.user = user;
-	}
-
+	
 	public String getOverTimeHours()
 	{
 		return overTimeHours;
@@ -430,6 +441,26 @@ public class EmployeePayroll {
 	public void setDeductionHistory(Set<DeductionHistory> deductionHistory)
 	{
 		this.deductionHistory = deductionHistory;
+	}
+
+	public BigDecimal getPayitemSum()
+	{
+		return payitemSum;
+	}
+
+	public void setPayitemSum(BigDecimal payitemSum)
+	{
+		this.payitemSum = payitemSum;
+	}
+
+	public Set<PayitemHistory> getPayitemHistory()
+	{
+		return payitemHistory;
+	}
+
+	public void setPayitemHistory(Set<PayitemHistory> payitemHistory)
+	{
+		this.payitemHistory = payitemHistory;
 	}
 	
 	

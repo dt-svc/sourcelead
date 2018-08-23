@@ -2,8 +2,10 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +13,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.AssociateSalaryDao;
+import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.impl.AssociateBankDataDaoImpl;
+import com.bis.sourcelead.payroll.dto.DeductionHistoryDTO;
 
 @Repository
 public class AssociateSalaryDaoImpl implements AssociateSalaryDao{
@@ -45,12 +49,12 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 
 	@Override
 	@Transactional
-	public AssociateSalary findAssociateSalaryByUserId(Long userId)
+	public AssociateSalary findAssociateSalaryByCandidateId(Long candidateId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateSalary associateSalary = null;
 		try {
-			List<AssociateSalary> associateSalaryList = session.createQuery("from AssociateSalary associateSalary where associateSalary.userId.id=:userId and associateSalary.status = 1" ).setLong("userId", userId).list();
+			List<AssociateSalary> associateSalaryList = session.createQuery("from AssociateSalary associateSalary where associateSalary.candidate.id=:candidateId and associateSalary.status = 1" ).setLong("candidateId", candidateId).list();
 		 if(associateSalaryList !=null && associateSalaryList.size() >0) {
 			 associateSalary =  associateSalaryList.get(0);
 		 }
@@ -137,5 +141,30 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			return assList;
 		else
 			return null;
+	}
+
+
+	@Override
+	@Transactional
+	public List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId)
+	{
+		List<AssociatePayItemDTO> payItemHis = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT  assoPayItem.ID as payItemId,")
+			.append("assoPayItem.PAY_ITEM_AMOUNT as amount,")
+			.append("assoPayItem.PAY_ITEM_NAME as payItemName")
+			.append(" FROM ASSOCIATE_PAY_ITEM assoPayItem,US_PAYITEM_HIS payItemHis")
+			.append( " where assoPayItem.ID = payItemHis.PAY_ITEM_ID")
+			.append(  " AND payItemHis.PAYROLL_ID = :payrollId");
+			Query queryObj = session.createSQLQuery(sb.toString());
+			queryObj.setLong("payrollId", payrollId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(AssociatePayItemDTO.class));
+			payItemHis = queryObj.list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return payItemHis;
 	}
 }

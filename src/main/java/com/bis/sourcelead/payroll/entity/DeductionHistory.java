@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -25,41 +26,62 @@ public class DeductionHistory {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@Column(name = "USER_ID", nullable = false)
-	private Long userId;
-	
-	@Column(name = "DEDUCTION_ID", nullable = false)
-	private Long deductionId;
+	@Column(name = "CANDIDATE_ID")
+	private Long candidateId;
 	
 	@ManyToOne
-	@JoinColumn(name = "PAYROLL_ID",nullable = false)
+	@JoinColumn(name = "DEDUCTION_ID")
+	private AssociateDeduction deductionId;
+	
+	@ManyToOne
+	@JoinColumn(name = "CONTRIBUTION_ID")
+	private AssociateContribution contributionId;
+	
+	@ManyToOne
+	@JoinColumn(name = "PAYROLL_ID")
 	private EmployeePayroll payroll;
 	
-	@Column(name = "FREQUENCY_START_DATE", nullable = false)
+	@Column(name = "FREQUENCY_START_DATE")
 	private Date frequencyStartDate;
 	
-	@Column(name = "FREQUENCY_END_DATE", nullable = false)
+	@Column(name = "FREQUENCY_END_DATE")
 	private Date frequencyEndDate;
 	
-	@Column(name = "PAY_CHECK_DATE", nullable = false)
+	@Column(name = "PAY_CHECK_DATE")
 	private Date payCheckDate;
 	
 	@Column(name = "US_EMP_DEDUCTION_HIS_UUID")
 	private String deductionHisUUID;
 	
-	@Column(name = "DEDUCTION_DATE", nullable = false)
+	@Column(name = "PRE_DEDUCTION_AMOUNT")
+	private BigDecimal preDeductionAmount;
+	
+	@Column(name = "PRE_CONTRIBUTION_AMOUNT")
+	private BigDecimal preContributionAmount;
+	
+	@Column(name = "POST_DEDUCTION_AMOUNT")
+	private BigDecimal postDeductionAmount;
+	
+	@Column(name = "POST_CONTRIBUTION_AMOUNT")
+	private BigDecimal postContributionAmount;
+	
+	
+	@Column(name = "CONTRIBUTION_AMOUNT")
+	private BigDecimal contributionAmount;
+	 
+	@Column(name = "DEDUCTION_DATE")
 	private Date deductionDate;
 	
-	@Column(name = "CREATED_DATE", nullable = false)
+	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@Column(name = "CREATED_BY", nullable = false)
+	@Column(name = "CREATED_BY")
 	private Long createdBy;
 	
-	@Column(name = "UPDATED_DATE", nullable = false)
+	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	@Column(name = "UPDATED_BY", nullable = false)
+	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
 
 	public static long getSerialversionuid()
@@ -72,15 +94,7 @@ public class DeductionHistory {
 		return id;
 	}
 
-	public Long getUserId()
-	{
-		return userId;
-	}
 
-	public Long getDeductionId()
-	{
-		return deductionId;
-	}
 
 	public Date getFrequencyStartDate()
 	{
@@ -119,15 +133,6 @@ public class DeductionHistory {
 		this.id = id;
 	}
 
-	public void setUserId(Long userId)
-	{
-		this.userId = userId;
-	}
-
-	public void setDeductionId(Long deductionId)
-	{
-		this.deductionId = deductionId;
-	}
 
 	public void setFrequencyStartDate(Date frequencyStartDate)
 	{
@@ -199,6 +204,109 @@ public class DeductionHistory {
 		this.payroll = payroll;
 	}
 
+	public Long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+	public AssociateDeduction getDeductionId()
+	{
+		return deductionId;
+	}
+
+	public AssociateContribution getContributionId()
+	{
+		return contributionId;
+	}
+
+	public void setDeductionId(AssociateDeduction deductionId)
+	{
+		this.deductionId = deductionId;
+	}
+
+	public void setContributionId(AssociateContribution contributionId)
+	{
+		this.contributionId = contributionId;
+	}
+
+	public BigDecimal getPreDeductionAmount()
+	{
+		return preDeductionAmount;
+	}
+
+	public BigDecimal getPreContributionAmount()
+	{
+		return preContributionAmount;
+	}
+
+	public BigDecimal getPostDeductionAmount()
+	{
+		return postDeductionAmount;
+	}
+
+	public BigDecimal getPostContributionAmount()
+	{
+		return postContributionAmount;
+	}
+
+	public void setPreDeductionAmount(BigDecimal preDeductionAmount)
+	{
+		if(preDeductionAmount !=null) {
+			this.preDeductionAmount = preDeductionAmount;
+		}else{
+			this.preDeductionAmount = BigDecimal.ZERO;
+		}
+		
+	}
+
+	public void setPreContributionAmount(BigDecimal preContributionAmount)
+	{
+		if(preContributionAmount !=null) {
+			this.preContributionAmount = preContributionAmount;
+		}else{
+			this.preContributionAmount = BigDecimal.ZERO;
+		}
+	}
+
+	public void setPostDeductionAmount(BigDecimal postDeductionAmount)
+	{
+		if(postDeductionAmount != null) {
+			this.postDeductionAmount = postDeductionAmount;	
+		}else {
+			this.postDeductionAmount = BigDecimal.ZERO;	
+		}
+		
+	}
+
+	public void setPostContributionAmount(BigDecimal postContributionAmount)
+	{
+		if(postContributionAmount != null) {
+			this.postContributionAmount = postContributionAmount;	
+		}else {
+			this.postContributionAmount = BigDecimal.ZERO;
+		}
+		
+	}
+
+	public BigDecimal getContributionAmount()
+	{
+		return contributionAmount;
+	}
+
+	public void setContributionAmount(BigDecimal contributionAmount)
+	{
+		if(contributionAmount != null) {
+			this.contributionAmount = contributionAmount;
+		}else {
+			this.contributionAmount = BigDecimal.ZERO;
+		}
+		
+	}
 	
 	
 }

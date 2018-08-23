@@ -23,7 +23,10 @@ $(document).ready(function(){
    <i class="fa fa-check-circle"></i><span id="deductionDeleteMsgDiv"></span>
  </div>
  
-  <div class="pull-right brud-crum">Home &raquo; Payroll Deduction</div>
+         <div class="pull-right brud-crum">
+                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Payroll Deduction
+				</div>
 </section>
  
 
@@ -71,6 +74,8 @@ function prepareAllDeductionTypeList(url){
         result = result + '<tr>';
 		result = result + '<th>Type</th>';
 		result = result + '<th>Description</th>';
+		result = result + '<th>Tax Type</th>';
+		result = result + '<th>Schedule Type</th>';
 		result = result + '<th>Method</th>';
 		result = result + '<th>Amount</th>';
 		result = result + '<th>Action</th>';
@@ -100,6 +105,8 @@ function deductionTypepagination(url){
         "columns": [
             { "data": "payrollDeductionType" },
             { "data": "description"},
+            { "data": "taxType"},
+            { "data": "scheduleType"},
             { "data": "payrollDeductionMethod"},
             { "data": "deductionAmount" },
             { "data": "Action"}
@@ -114,20 +121,48 @@ function deductionTypepagination(url){
 		                     return result;
 	    	  	}
 	      },{
-	    	  "targets": colIndex++,
-              "data": "description",
-              "sortable": false,
-              "render": function ( data, type, opt, meta ) {
-            	  var result = "";
-            	  if(opt.description !=null && opt.description !='' && opt.description !='undefined'){
-						result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.description+'</div></td>';
-					}else{
-						result = result + ' <td><div>--</div></td>';
-					}
-	              return result;
-              		
-              }
-	          },{
+			    	  "targets": colIndex++,
+		              "data": "description",
+		              "sortable": false,
+		              "render": function ( data, type, opt, meta ) {
+		            	  var result = "";
+		            	  if(opt.description !=null && opt.description !='' && opt.description !='undefined'){
+								result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.description+'</div></td>';
+							}else{
+								result = result + ' <td><div>--</div></td>';
+							}
+			              return result;
+		              		
+		              }
+			          },{
+				    	  "targets": colIndex++,
+			              "data": "taxType",
+			              "sortable": false,
+			              "render": function ( data, type, opt, meta ) {
+			            	  var result = "";
+			            	  if(opt.taxType !=null && opt.taxType !='' && opt.taxType !='undefined'){
+									result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.taxType+'</div></td>';
+								}else{
+									result = result + ' <td><div>--</div></td>';
+								}
+				              return result;
+			              		
+			              }
+				          },{
+					    	  "targets": colIndex++,
+				              "data": "scheduleType",
+				              "sortable": false,
+				              "render": function ( data, type, opt, meta ) {
+				            	  var result = "";
+				            	  if(opt.payrollScheduled !=null && opt.payrollScheduled !='' && opt.payrollScheduled !='undefined'){
+										result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.payrollScheduled+'</div></td>';
+									}else{
+										result = result + ' <td><div>--</div></td>';
+									}
+					              return result;
+				              		
+				              }
+					          },{
             "targets": colIndex++,
             "data": "payrollDeductionMethod",
             "render": function ( data, type, opt, meta ) { 
@@ -143,7 +178,13 @@ function deductionTypepagination(url){
               "targets": colIndex++,
               "data": "deductionAmount",
               "render": function ( data, type, opt, meta ) {
-            	  return ' <td><div  class="tblminwidth-100">$ '+opt.deductionAmount.toFixed(2)+'</div></td>';
+            	  var result = "";
+            	  if(opt.payrollDeductionMethod == "Fixed"){
+            		  result = result + ' <td><div  class="tblminwidth-100">$ '+opt.deductionAmount.toFixed(2)+'</div></td>';
+            	  }else{
+            		  result = result + ' <td><div  class="tblminwidth-100">'+opt.deductionAmount+' %</div></td>';
+            	  }
+            	  return result;
               }
             }, {
                 "targets": colIndex++,
@@ -153,7 +194,11 @@ function deductionTypepagination(url){
                 		var result = "";
                 		result = result + '<td><div class="tbldata-dotdot_50">';
                 		result = result + '<a href="'+sourceleadUrl+'/editDeductionType?deductionUUID='+opt.deductionUUID+'" class="text-primary"><i class="fa fa-pencil-square-o mr5"></i></a>';
-                		result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash" onclick="deleteDeductionType('+opt.id+');"></i></a>';
+                		if(opt.status == 1){
+                			result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash" onclick="deleteDeductionType('+opt.id+');"></i></a>';
+                		}else{
+                			result = result + '<span title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick = "reactiveDeduction('+opt.id+');"></i></span>';
+                		}
                 		result = result + '</div>';
                 		result = result + '</td>';
     	              return result;
@@ -211,7 +256,7 @@ function deleteDeductionPopUp(){
 function deleteSelectedDeductionType(id){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/deleteDeductionType?${_csrf.parameterName}=${_csrf.token}&id="+id, 	   
+	    url: sourceleadUrl+"/deleteDeductionType?${_csrf.parameterName}=${_csrf.token}&id="+id+"&changeStatus=DELETE", 	   
 		    success: function(data) {
 		    	if(data == true){
 		    		getAllDeductionType();
@@ -232,4 +277,18 @@ function deleteSelectedDeductionType(id){
         $('#selector2').delay(2000).fadeOut('slow');
 	}
 </script>
+
+ <script>
+function reactiveDeduction(id){
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/deleteDeductionType?${_csrf.parameterName}=${_csrf.token}&id="+id+"&changeStatus=REACTIVE", 	   
+		    success: function(data) {
+		    	if(data == true){
+		    		getAllDeductionType();
+		    	}
+		    },
+     });
+}
+</script> 
 <jsp:include page="../masterFooter.jsp" />

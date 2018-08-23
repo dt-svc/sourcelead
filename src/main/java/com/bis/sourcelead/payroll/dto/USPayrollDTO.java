@@ -13,7 +13,7 @@ public class USPayrollDTO {
 	
 	private String empName;
 	
-	private float regularHours;	
+	private double regularHours;	
 	
 	private double overtimeHours;
 	
@@ -53,9 +53,9 @@ public class USPayrollDTO {
      
     private BigDecimal aeic;
     
-    private List<DeductionDTO> preDed;
+    private List<DeductionHistoryDTO> preDed;
     
-    private List<DeductionDTO> postDed;
+    private List<DeductionHistoryDTO> postDed;
     
     private BigDecimal preDedTotal;
     
@@ -63,7 +63,7 @@ public class USPayrollDTO {
     
     private BigDecimal contributionTotal;
     
-    private List<ContributionDTO> contribution;
+    private List<ContributionHistoryDTO> contribution;
     
     private List<AssociatePayItemDTO> payItem; 
     
@@ -77,6 +77,23 @@ public class USPayrollDTO {
 	
 	private String isExcept;
 	
+	private Long userId;
+	
+	private Long paySheetFrequencyId;
+	
+	private Long candidateId;
+	
+	private BigDecimal totalDeduction;
+	
+	private String approverStatus;
+	
+	
+	public String getApproverStatus() {
+		return approverStatus;
+	}
+	public void setApproverStatus(String approverStatus) {
+		this.approverStatus = approverStatus;
+	}
 	public String getIsExcept()
 	{
 		return isExcept;
@@ -85,11 +102,11 @@ public class USPayrollDTO {
 	{
 		this.isExcept = isExcept;
 	}
-	public List<ContributionDTO> getContribution()
+	public List<ContributionHistoryDTO> getContribution()
 	{
 		return contribution;
 	}
-	public void setContribution(List<ContributionDTO> contribution)
+	public void setContribution(List<ContributionHistoryDTO> contribution)
 	{
 		this.contribution = contribution;
 	}
@@ -125,10 +142,7 @@ public class USPayrollDTO {
 	{
 		this.empName = empName;
 	}
-	public float getRegularHours()
-	{
-		return regularHours;
-	}
+	
 	public void setRegularHours(float regularHours)
 	{
 		this.regularHours = regularHours;
@@ -275,22 +289,7 @@ public class USPayrollDTO {
 	{
 		this.aeic = aeic;
 	}
-	public List<DeductionDTO> getPreDed()
-	{
-		return preDed;
-	}
-	public List<DeductionDTO> getPostDed()
-	{
-		return postDed;
-	}
-	public void setPreDed(List<DeductionDTO> preDed)
-	{
-		this.preDed = preDed;
-	}
-	public void setPostDed(List<DeductionDTO> postDed)
-	{
-		this.postDed = postDed;
-	}
+	
 	public BigDecimal getPreDedTotal()
 	{
 		return preDedTotal;
@@ -363,7 +362,56 @@ public class USPayrollDTO {
 	{
 		this.payItemId = payItemId;
 	}
-	
+	public List<DeductionHistoryDTO> getPreDed()
+	{
+		return preDed;
+	}
+	public List<DeductionHistoryDTO> getPostDed()
+	{
+		return postDed;
+	}
+	public void setPreDed(List<DeductionHistoryDTO> preDed)
+	{
+		this.preDed = preDed;
+	}
+	public void setPostDed(List<DeductionHistoryDTO> postDed)
+	{
+		this.postDed = postDed;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public Long getPaySheetFrequencyId() {
+		return paySheetFrequencyId;
+	}
+	public void setPaySheetFrequencyId(Long paySheetFrequencyId) {
+		this.paySheetFrequencyId = paySheetFrequencyId;
+	}
+	public Long getCandidateId() {
+		return candidateId;
+	}
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+	public BigDecimal getTotalDeduction()
+	{
+		return totalDeduction;
+	}
+	public void setTotalDeduction(BigDecimal totalDeduction)
+	{
+		this.totalDeduction = totalDeduction;
+	}
+	public double getRegularHours()
+	{
+		return regularHours;
+	}
+	public void setRegularHours(double regularHours)
+	{
+		this.regularHours = regularHours;
+	}
 	
 	
 }

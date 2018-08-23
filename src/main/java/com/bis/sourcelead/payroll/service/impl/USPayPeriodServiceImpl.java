@@ -15,6 +15,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.USPayPeriodDao;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -79,6 +80,14 @@ public class USPayPeriodServiceImpl implements USPayPeriodService{
 			e.printStackTrace();
 		}
 		return isUpdated;
+	}
+	@Override
+	public USPayPeriod getPayPeriodByOrglocationId(OrgLocations orgLocation,Long payfrequencyId) {
+		return uSPayPeriodDao.getPayPeriodByOrglocationId(orgLocation, payfrequencyId);
+	}
+	@Override
+	public List<EmployeePayroll> getEmployeePayrollListByPayperiodNum(Integer payPeriodNum) {
+		return uSPayPeriodDao.getEmployeePayrollListByPayperiodNum(payPeriodNum);
 	}
 	
 }

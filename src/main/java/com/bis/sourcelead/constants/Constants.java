@@ -67,8 +67,7 @@ public class Constants {
 	public static final String PAYMENT_TERMS = "PaymentTerms";
 	public static final String INVOICE_RECEIVABLE = "Receivable";
 	public static final String INVOICE_PAYABLES = "Payables";
-	
-	
+
 	public static final String country = "Country";
 	public static final String TASK_BILLABLE = "Billable";
 	public static final String TASK_NON_BILLABLE = "Non-Billable";
@@ -443,6 +442,7 @@ public class Constants {
 	public static final int TAB_PROJECTS = 3;
 	public static final int TAB_CONTRACTS = 16;
 	public static final int TAB_IMMIGRATION = 33;
+	public static final int TAB_RUN_PAYROLL = 37;
 	public static final String Dashboard = "Dashboard";
 	public static final String Users = "Users";
 	public static final String Immigration = "Immigration";
@@ -474,6 +474,9 @@ public class Constants {
 	public static final String Payables = "Payables";
 	public static final String PAYROLL = "Payroll";
 	public static final String PAY = "Pay"; 
+	public static final String TAXES = "Taxes";
+	public static final String FORMS = "Forms";
+	public static final String MYPAYROLL = "MyPayroll";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
@@ -579,6 +582,11 @@ public class Constants {
 	public static final String[] DAILY_WISE_LEAVE_REPORT_HEADERS = { "Emp Name", "Emp Type", "Departement",
 			"Role", "Leave Type", "Type", "Duration", "From Date",
 			"To Date", "Applied On", "Reason", "Status", "Approver", "Approved On" };
+	public static final String[] LEAVE_REPORT_HEADERS = { "Employee Id", "Emp Name", "Departement", "Leave Type",
+
+			"Reason", "Type", "From Date", "To Date", "Applied On", "No Of Days",
+
+			"Status", "Approver", "Approved On" };
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",
 			"Rate", "Vendor", "Vendor Contact", "Is Favourite"};
@@ -797,6 +805,8 @@ public class Constants {
 	public static final String INVOICE_RECEIVED = "Received";
 	public static final String INVOICE_STATUS_UNPAID = "Unpaid";
 	public static final String INVOICE_STATUS_PAID = "Paid";
+	public static final String INVOICE_TIMELINE_STATUS_PAID = "Payment";
+	public static final String INVOICE_TIMELINE_STATUS_CREATED = "Created";
 	public static final String INVOICE_STATUS_PARTIAL_PAID = "Partial Paid";
 	public static final String INVOICE_SENT = "SENT";
 	public static final Long CANDIATE_RESUME_IN_ACTIVE = 0L;
@@ -1112,6 +1122,10 @@ public class Constants {
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
 	public static final String LEAVE_DATA =  "Leaves";
 	
+	public static final String IT_DECLARATION_FORM =  "It_Declaration_Submission_form";
+	public static final String IT_DECLARATION_FORM_PARAGRAPHDATA =  "I hereby declare that the following investment will be made by me during the financial year";
+	
+	
 	public static final String[] USERS_USAGE_REPORT_EXPORT = { "Users", "Email", "User Type", "Org", "No.of Activities", "Multiple Ips", "Created On", "Last Activity On"};
 
 	public static final String ORG_REQUEST_FILTER_TODAY = "Today";
@@ -1162,8 +1176,9 @@ public class Constants {
     public static final String BOOLEAN_TRUE = "true";
     public static final String LOCAL_TAX_YES = "YES";
     public static final String LOCAL_TAX_NO = "NO";
-    
+
     public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
+
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";
@@ -1177,5 +1192,15 @@ public class Constants {
 	
 	public static final String HALFYEARLY = "HalfYearly";
 	public static final String QUARTERLY = "Quarterly";
+
+	public static final String PAYROLL_DELETE = "Delete";
+	public static final String REACTIVE = "Reactive";
+	public static final String REQUEST_FOR_APPROVING_PAYROLL = "RequestForApprovingPayroll";
+	public static final String APPROVE_MAIL_TO_REQUEST_USER = "ApproveMailToRequestUser";
+
 	
+	public static final String[] IT_DECLARATION_SUBMISSION_FORM = { "Item Name", "Particulars" ,"Eligibility(Rs.)","Amount"};
+	
+//	Annually   
+
 }

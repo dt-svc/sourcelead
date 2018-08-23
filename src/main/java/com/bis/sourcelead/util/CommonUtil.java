@@ -498,7 +498,7 @@ public class CommonUtil {
 	 * @author: Naresh Bolisetty
 	 * 
 	 */
-	public Boolean isSuperAdminForProjectMemberToReopenTimeOrExpenseses(Long projectMemberId,User loginUser,OrgLocations loginLocation) throws Exception{
+	public Boolean isSuperAdminForProjectMemberToReopenTimesheets(Long projectMemberId,User loginUser,OrgLocations loginLocation) throws Exception{
 		ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
 	    ProjectApproverHierarchy pah =  null;
 	    Boolean isSuperUser = false;
@@ -506,6 +506,36 @@ public class CommonUtil {
 	    {
 	    	UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), loginLocation.getId());
 	    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+		    if(     
+		    		//If the Login User As Location Admin Of Client
+		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+		    		  && clientProjectMember.getProjectClientsId().getOrgLocationsId().getId().longValue() == loginLocation.getId().longValue() && userRole != null && StringUtils.isNotEmpty(userRole.getUserType()) && userRole.getUserType().equalsIgnoreCase("Admin"))
+		    		||
+		    		//If the Login User As Top-Level(Level2) Approver Of Client
+		    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+		    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+		    		
+		      ){
+		    	isSuperUser = true;
+		     }
+	    }
+	    return isSuperUser;
+	}
+	
+	
+	/**
+	 * This method is used to Get the Approver User of Time or Expense Reopen Requests
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public Boolean isSuperAdminForProjectMemberToReopenExpenseses(Long projectMemberId,User loginUser,OrgLocations loginLocation) throws Exception{
+		ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
+	    ExpenseProjectApproverHierarchy pah =  null;
+	    Boolean isSuperUser = false;
+	    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+	    {
+	    	UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), loginLocation.getId());
+	    	pah =  expenseProjectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
 		    if(     
 		    		//If the Login User As Location Admin Of Client
 		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
@@ -2445,8 +2475,8 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 
   
   
-  public void sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName,List<EmailAttachment> attachmentList){
-	  
+  public Map<String, String> sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName,List<EmailAttachment> attachmentList){
+	  Map<String, String> returnMap = new HashMap<>();
 	  try{
 		//setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -2473,6 +2503,9 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 
+			 returnMap.put("emailBody", body);
+			 returnMap.put("emailSubject", subject);
 			 String signature = null;
 			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
 				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
@@ -2486,9 +2519,11 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
+			
 	  }catch (Exception e) {
 		  e.printStackTrace();
 	}
+	  return returnMap;
 	  
   }
 
@@ -2623,4 +2658,27 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		str = ("" + d).lastIndexOf(".") == ("" + d).length() - 2 ? d + "0" : d + "";
 		return str;
 	}
+
+	/**
+	 * @author:Vikram Reddy 
+	 * @param createExcelsheet
+		 * @param style
+		 * @param headers
+		 * @param rowCount 
+		 * @return sheet
+	 */
+
+	public Sheet setExcelHeader(Sheet createExcelsheet, CellStyle style, List<String> headers, int rowCount) {
+		Row excelHeader = createExcelsheet.createRow(rowCount);
+		int i=0;
+		for (String head:headers) {
+			Cell cell = excelHeader.createCell(i);
+			cell.setCellValue(head);
+			cell.setCellStyle(style);
+			i++;
+		}
+		return createExcelsheet;
+	}
+
 }
+

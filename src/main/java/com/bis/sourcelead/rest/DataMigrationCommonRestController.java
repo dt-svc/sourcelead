@@ -91,7 +91,8 @@ public class DataMigrationCommonRestController {
 	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;
 	    case "projectTasks": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(94l, 1);break;  
 	    case "associateUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(161l, 1);break;  
-	    case "candidatesUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(73l, 1);break;  
+	    case "candidatesUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(73l, 1);break;
+	    case "submmissionTemplateUpload": formFields = dataMigrationService.getSubmissionTemplateFormFields(dataMigrationCommonDTO.getRequirementId());break; 
 	    }
 		
 		if("timesheetUpload".equalsIgnoreCase(dataMigrationCommonDTO.getUploadType())) {
@@ -123,6 +124,7 @@ public class DataMigrationCommonRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("dataWithCellId", dataWithCellId);
 		model.addObject("fields", formFields);
+		model.addObject("requirementId", dataMigrationCommonDTO.getRequirementId());
 		model.addObject("projectUUID", dataMigrationCommonDTO.getProjectUUID());
 		model.addObject("projectClientUUID", dataMigrationCommonDTO.getProjectClientUUID());
 		model.addObject("exportFilePath", dataMigrationCommonDTO.getFilePath());

@@ -1,4 +1,4 @@
-<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../newMasterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -375,7 +375,7 @@ function statusvalidating(id){
 			 </div>
 		</div>
 		
-		<div class="col-md-12">
+		<div class="col-md-12 mb">
 			<label>Tags</label>
 				<div class="clearfix">
 					<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="jobsTags" name="jobsTags">
@@ -751,11 +751,11 @@ function getActions(){
 			$(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
+			 getSourceleadTags();
 			 $("#dataTableSearch").val('');
 			 $("div.cand-advsrch-popup").toggle();
 			 $(".advancedsearch-mask").fadeIn();
 			 $("#requirementFilterPopup").toggle();
-			 getSourceleadTags();
 		}
 		function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();

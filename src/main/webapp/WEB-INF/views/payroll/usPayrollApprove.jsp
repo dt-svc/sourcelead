@@ -36,7 +36,6 @@ function calculateTotalPay(formData,confirmType){
 				  $("#payrollIds").val(json.payrollIds);
 				  $("#pid").val(json.pid);
 				  $("#confirmType").val(json.confirmType); 
-				  alert(json.ppn);
 				  $("#ppn").val(json.ppn); 
 		    	  
 		    	  var dedJson = json.deduction;
@@ -44,7 +43,6 @@ function calculateTotalPay(formData,confirmType){
 		    	   if(dedJson != null && dedJson.length >0){ 
 		    		  for (var i=0; i<dedJson.length; i++){
 			    		  var ded = dedJson[i];
-			    		  alert(ded.deductionType);
 			    		  dedResult = dedResult + '<tr>';
 			    		  dedResult = dedResult + '<td>'+ded.deductionType+'</td>';
 			    		  dedResult = dedResult + '<td>$ '+ded.amount.toFixed(2)+'</td>';
@@ -64,7 +62,6 @@ function calculateTotalPay(formData,confirmType){
 		    	   if(contJson != null && contJson.length >0){ 
 		    		  for (var i=0; i<contJson.length; i++){
 			    		  var cont = contJson[i];
-			    		  alert(ded.deductionType);
 			    		  contResult = contResult + '<tr>';
 			    		  contResult = contResult + '<td>'+cont.contributionType+'</td>';
 			    		  contResult = contResult + '<td>$ '+cont.contributionAmount.toFixed(2)+'</td>';
@@ -158,7 +155,6 @@ function calculateTotalPay(formData,confirmType){
                							<td>$ <span id="federal">0.00</span><td>
                						</tr>
                						<tr>
-               						 
                							<td>Federal Insurance Contributions Act (FICA)</td>
                							<td><div class="tblminwidth-90">$ <span id="fica">0.00</span></div></td>
                						</tr>
@@ -183,7 +179,7 @@ function calculateTotalPay(formData,confirmType){
                							<td>$ <span id="localTax">0.00</span></td>
                						</tr>
                						<tr>
-               							<td><strong>Total Employee Tax	100$</strong></td>
+               							<td><strong>Total Employee Tax</strong></td>
                							<td>$ <span id="totalTax">0.00</span></td>
                						</tr>
                						<tr>
@@ -302,7 +298,7 @@ function calculateTotalPay(formData,confirmType){
         <nav class="clearfix">
           <ul class="pull-right mr10 list-unstyled list-inline">
             <li><a href="javascript:void(0)" class="btn btn-primary btnSuccess" onClick="approvePayroll();">Approve</a></li>
-            <li><a href="javascript:void(0)" class="btn btn-default" onClick="rejectModal();">Cancel</a></li>
+            <li><a href="javascript:void(0)" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
           </ul>
           <div class="clearfix"></div>
         </nav>
