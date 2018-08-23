@@ -16,6 +16,14 @@ public class MyPayrollSummaryDTO {
 	private double dedTotal;
 	
 	private double contriTotal;
+	
+	private ConfirmPayTotalSumDTO confirmPayTotalSum;
+	
+	private Map<String, Double> payItem;
+	
+//	private BigDecimal federalWithholding;
+//	private BigDecimal Federal Insurance Contributions Act (FICA) 
+//		 State Withholding  Medicare Advanced Earned Income Credit  Conty Withholding Local Tax
 
 	public List<MyPayrollDTO> getMyPayroll()
 	{
@@ -77,6 +85,26 @@ public class MyPayrollSummaryDTO {
 	public void setContribution(Map<String, Double> contribution)
 	{
 		this.contribution = contribution;
+	}
+
+	public ConfirmPayTotalSumDTO getConfirmPayTotalSum()
+	{
+		return confirmPayTotalSum;
+	}
+
+	public void setConfirmPayTotalSum(ConfirmPayTotalSumDTO confirmPayTotalSum)
+	{
+		this.confirmPayTotalSum = confirmPayTotalSum;
+	}
+
+	public Map<String, Double> getPayItem()
+	{
+		return payItem;
+	}
+
+	public void setPayItem(Map<String, Double> payItem)
+	{
+		this.payItem = payItem;
 	}
 	
 	
