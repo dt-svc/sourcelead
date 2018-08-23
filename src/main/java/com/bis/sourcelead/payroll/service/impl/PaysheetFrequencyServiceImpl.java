@@ -55,7 +55,6 @@ import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.pay.Item;
 
 @Service
 public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
