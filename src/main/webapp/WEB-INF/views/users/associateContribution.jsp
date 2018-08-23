@@ -2,20 +2,23 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
  <script type="text/javascript">
+ var value =[];
     $(document).ready(function(){
     	$(".add-contribution-row").click(function(){
     		var i = $("#index").val(); 
         	var contributionType = $("#contriType").val();
         	var contributionTypeValue = $('#contriType :selected').text();
         	var contributionAmount = $("#contriAmt").val();
+        	if(!value.includes(contributionTypeValue)){
+        		value.push(contributionTypeValue);
         	if(contributionType != null && contributionType != '' && contributionType != 'undefined' && contributionAmount != null && contributionAmount != '' && contributionAmount != 'undefined'){
                   var contributionMethod = $("#contricontributionMethod").val();
-                  var markuptr = "<tr><td><input type='checkbox' name='contributio-record'></td><td><input type='hidden' id='contributionType' name='contributionDTOList["+i+"].contributionType' value='"+contributionType+"'/>" + contributionTypeValue + "</td><td><input type='hidden' id='contributionMethod' name='contributionDTOList["+i+"].contributionMethod' value='"+contributionMethod+"' />" + contributionMethod + "</td><td><input type='hidden' id='contributionAmount' name='contributionDTOList["+i+"].contributionAmount' value='"+contributionAmount+"'/>" + contributionAmount + "</td><td><a onclick='deleteRowCont();'><i class='fa fa-remove text-danger'></i></a></td></tr>";
+                  var markuptr = "<tr><td><input type='checkbox' name='contributio-record'></td><td><input type='hidden' id='contributionType' name='contributionDTOList["+i+"].contributionType' value='"+contributionType+"'/>" + contributionTypeValue + "</td><td><input type='hidden' id='contributionMethod' name='contributionDTOList["+i+"].contributionMethod' value='"+contributionMethod+"' />" + contributionMethod + "</td><td><input type='hidden' id='contributionAmount' name='contributionDTOList["+i+"].contributionAmount' value='"+contributionAmount+"'/>" + contributionAmount + "</td><td><a onclick='deleteRowCont(\""+contributionTypeValue+"\");'><i class='fa fa-remove text-danger'></i></a></td></tr>";
                   $("#contribuionTrAdd").append(markuptr);
                   i++;
                   $("#index").val(i);	
         	}
-        	
+        	}
         });
         
         // Find and remove selected table rows
@@ -27,22 +30,22 @@
             });
         }); */
     });    
-</script>
 
-<script>
-
-function deleteRowCont(){
+function deleteRowCont(contributionTypeValue){
 	var i = $("#index").val(); 
 	$("#contribuionTrAdd").find('input[name="contributio-record"]').each(function(){
     	if($(this).is(":checked")){
             $(this).parents("tr").remove();
             i--;
             $("#index").val(i);	
+            var deleted = value.indexOf(contributionTypeValue);
+            value.splice(deleted,1);
         }
     });
 }
 
 </script>
+
 
 <script>
 $(document).ready(function(){
