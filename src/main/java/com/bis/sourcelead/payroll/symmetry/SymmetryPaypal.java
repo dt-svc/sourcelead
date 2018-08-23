@@ -94,7 +94,7 @@ public class SymmetryPaypal {
 		WebServiceLocationCodeV2 webServiceLocationCodeV2 = null;
 		try {
 			STE.setWebService(WebServiceType.STE_LOC_CODE, "http://lcs2.symmetry.com/", null, "sourcelead", "s290sdq", null);
-			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2("0 Pacific Coast Highway, Redondo Beach, CA, USA", "0 Pacific Coast Highway, Redondo Beach, CA, USA", "Redondo Beach", "California", "90278", null, null);
+			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2("4121 Broadway, New York, NY, USA", "4121 Broadway, New York, NY, USA", "New York", "New York", null, null, null);
 			System.out.println("Country code     : " + webServiceLocationCodeV2.getCountyCode());
 			System.out.println("City code**********        : " + webServiceLocationCodeV2.getCityCode());
 			System.out.println("Location Code *******   : " + webServiceLocationCodeV2.getLocationCode());

@@ -574,7 +574,8 @@
 					<span class="width175">
 							<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT')">
 							      <a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>
-							       <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Bulk Applicants</a>
+							      <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Bulk Applicants</a>
+							      <a href="javascript:void(0)" title="" onclick="importApplicantsToJob('${requirement.id}');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Import Bulk Applicants</a>
 							</sec:authorize>
 							<sec:authorize access="hasAnyRole('ROLE_SHORTLIST')">
 							      <a href="javascript:void(0)" title="" onclick="candidateShortList('${requirement.id}');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>
@@ -603,6 +604,36 @@
 	
 	<input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 </div>
+
+
+<div class="import_submission_side_wrap">
+	<div class="new_side_wrap_inn">
+		<div class="new_side_wrap_cta">
+		 <div class="dataFilterNew pdtop datatable_filter">
+		    <div id="importApplicantsSideDivDivLoading"></div>
+			<div id="importApplicantsSideDiv"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+function importApplicantsToJob(requirementId){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getRequirementSubmissionTemplateForBulkImprtApplicants?requirementId="+requirementId,
+		     success :function(response) {
+		    	    $("#importApplicantsSideDiv").empty();  
+		    	    $("#importApplicantsSideDiv").append(response);
+		    	    
+		    	    $('.action-pop').slideUp();
+		    	    $(".import_submission_side_wrap").addClass("import_submission_side_wrap_active");
+		    	    $(".side_mask").fadeIn(200);
+		    	    $("body").css('overflow-y', 'hidden');
+				},
+			});
+}
+</script>
 
 
 <script>

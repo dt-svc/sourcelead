@@ -23,27 +23,7 @@ $(document).ready(function(){
       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
-		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
-	                    
-                  <c:if test="${orgLocationsCount > 1}">
-		                    <li>
-								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
-								<div class="action-pop">
-									<span> 
-									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
-									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
-									</span>
-								</div>
-							</li>
-				</c:if>
-				
-				<c:if test="${orgLocationsCount == 1}">
-				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
-				</c:if>		
-	           
-						
-	       </sec:authorize>
-			
+		  
 			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')"> 
 				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
 			</sec:authorize>
