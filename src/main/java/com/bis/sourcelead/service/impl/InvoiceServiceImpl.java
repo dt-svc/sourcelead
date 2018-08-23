@@ -3397,6 +3397,12 @@ public class InvoiceServiceImpl implements InvoiceService {
         creditDebitNote.setNoteStatus(saveType);
         creditDebitNote.setSubTotal(new BigDecimal(creditDebitNoteDTO.getSubTotalAmount()));
         creditDebitNote.setTotal(new BigDecimal(creditDebitNoteDTO.getGrandTotal()));
+        
+        if(StringUtils.isNotBlank(creditDebitNoteDTO.getDiscountValue())){
+        	creditDebitNote.setDiscountType(creditDebitNoteDTO.getDiscountType());
+            creditDebitNote.setDiscountValue(new BigDecimal(creditDebitNoteDTO.getDiscountValue()));
+            creditDebitNote.setDiscountTotal(new BigDecimal(creditDebitNoteDTO.getDiscountTotal()));
+        }
 		if(StringUtils.isNotBlank(creditDebitNoteDTO.getBillingAddress())){
 			creditDebitNote.setBillingAddress(creditDebitNoteDTO.getBillingAddress());
 		}else{
@@ -3463,9 +3469,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 		childCreditDebitNote.setOrgLocations(parentCreditDebitNote.getResponderLocation());
 		childCreditDebitNote.setResponderLocation(parentCreditDebitNote.getOrgLocations());
 		String contactUser = parentCreditDebitNote.getContactUser();
-		String ss[] = contactUser.split(",");
-		String dd = ss[0];
-		User owner = userService.getUserById(Long.parseLong(dd));
+		String conuserStr[] = contactUser.split(",");
+		String conUserId = conuserStr[0];
+		User owner = userService.getUserById(Long.parseLong(conUserId));
 		childCreditDebitNote.setOwnerUser(owner);
 		childCreditDebitNote.setNoteStatus(Constants.INVOICE_RECEIVED);
 		childCreditDebitNote.setCreditNoteDate(parentCreditDebitNote.getCreditNoteDate());
@@ -3484,6 +3490,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 		childCreditDebitNote.setUpdatedDate(parentCreditDebitNote.getUpdatedDate());
 		childCreditDebitNote.setSubTotal(parentCreditDebitNote.getSubTotal());
 		childCreditDebitNote.setTotal(parentCreditDebitNote.getTotal());
+		childCreditDebitNote.setDiscountType(parentCreditDebitNote.getDiscountType());
+		childCreditDebitNote.setDiscountValue(parentCreditDebitNote.getDiscountValue());
+		childCreditDebitNote.setDiscountTotal(parentCreditDebitNote.getDiscountTotal());
 		
 		invoiceDao.saveCreditDebitNote(childCreditDebitNote);
 		

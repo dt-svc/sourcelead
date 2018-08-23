@@ -24,7 +24,7 @@
       <form id="creditNote_form" name ="creditNote_form" method="Post">
 		<div class="col-xs-12 col-sm-6 col-md-6">
 					<div class="form-group row">
-					  <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
+					  <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
 					  <div class="col-md-9">
     	 						<select class="form-control chosen-select" id="orgRelationId" name="orgRelationId" field-name="Client" onchange="getSpocsList();getInvoiceList();" data-validation="required" >
 		                        <option value="">-Select Vendor-</option>
@@ -219,7 +219,7 @@
                 <div class="col-md-7 select-field">
                   <div class="row">
                     <div class="col-md-7 paddingRight">
-                      <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDisCount();">
+                      <select class="form-control input-sm" id="disCount" name="discountType" onchange="calculateDisCount();">
                         <option value="Percentage">Discount %</option>
                         <option value="Flat">Discount Value</option>
                       </select>

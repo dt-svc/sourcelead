@@ -94,7 +94,15 @@ public class CreditDebitNote implements Serializable {
 	
 	@Column(name = "TOTAL")
 	private BigDecimal total;
+	
+	@Column(name = "DISCOUNT_VALUE")
+	private BigDecimal discountValue;
+	
+	@Column(name = "DISCOUNT_TOTAL")
+	private BigDecimal discountTotal;
 
+	@Column(name = "DISCOUNT_TYPE")
+	private String discountType;
 
 	@Column(name = "STATUS")
 	private String status;
@@ -322,6 +330,30 @@ public class CreditDebitNote implements Serializable {
 
 	public void setCreditDebitLineItems(Set<CreditDebitLineItems> creditDebitLineItems) {
 		this.creditDebitLineItems = creditDebitLineItems;
+	}
+
+	public BigDecimal getDiscountValue() {
+		return discountValue;
+	}
+
+	public void setDiscountValue(BigDecimal discountValue) {
+		this.discountValue = discountValue;
+	}
+
+	public BigDecimal getDiscountTotal() {
+		return discountTotal;
+	}
+
+	public void setDiscountTotal(BigDecimal discountTotal) {
+		this.discountTotal = discountTotal;
+	}
+
+	public String getDiscountType() {
+		return discountType;
+	}
+
+	public void setDiscountType(String discountType) {
+		this.discountType = discountType;
 	}
 	
 	

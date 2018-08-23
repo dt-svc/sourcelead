@@ -219,7 +219,7 @@
                 <div class="col-md-7 select-field">
                   <div class="row">
                     <div class="col-md-7 paddingRight">
-                      <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDisCount();">
+                      <select class="form-control input-sm" id="disCount" name="discountType" onchange="calculateDisCount();">
                         <option value="Percentage">Discount %</option>
                         <option value="Flat">Discount Value</option>
                       </select>

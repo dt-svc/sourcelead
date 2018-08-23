@@ -22,8 +22,11 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	private String approverCheckBox;
 	private String approvers;
 	private String savedNoteId;
+	private String discountTotal;
+	private String discountValue;
+	private String discountType;
 	
-	
+	 
 	public List<FileInfo> getFileInfo() {
 		return fileInfo;
 	}
@@ -132,6 +135,24 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	}
 	public void setSavedNoteId(String savedNoteId) {
 		this.savedNoteId = savedNoteId;
+	}
+	public String getDiscountTotal() {
+		return discountTotal;
+	}
+	public void setDiscountTotal(String discountTotal) {
+		this.discountTotal = discountTotal;
+	}
+	public String getDiscountValue() {
+		return discountValue;
+	}
+	public void setDiscountValue(String discountValue) {
+		this.discountValue = discountValue;
+	}
+	public String getDiscountType() {
+		return discountType;
+	}
+	public void setDiscountType(String discountType) {
+		this.discountType = discountType;
 	}
 
 	
