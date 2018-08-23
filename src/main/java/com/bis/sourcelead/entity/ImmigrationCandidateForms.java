@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "IMMIGRATION_CANDIDATE_FORMS", schema = "SOURCELEAD")
+@Table(name = "IMMIGRATION_CANDIDATE_FORMS")
 public class ImmigrationCandidateForms implements Serializable {
 
 	private static final long serialVersionUID = 1L;

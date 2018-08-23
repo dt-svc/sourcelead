@@ -94,8 +94,8 @@
 							<div class="tblminwidth-90">
 								<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 								<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
-								<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-								<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
+								<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editDocumentDetailsByRowId(${canDocList.id});"></i>
+								<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('immigration.deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
 							 </c:if>
 								</div>
 							</td>
@@ -110,8 +110,8 @@
 									<div class="tblminwidth-90">
 										<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 										<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
-										<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-										<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
+										<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editDocumentDetailsByRowId(${canDocList.id});"></i>
+										<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('immigration.deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
 									 </c:if>
 										</div>
 									</td>

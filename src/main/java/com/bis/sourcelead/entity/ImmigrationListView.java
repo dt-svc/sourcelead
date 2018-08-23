@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "IMMIGRATION_LIST_VIEW", schema = "SOURCELEAD")
+@Table(name = "IMMIGRATION_LIST_VIEW")
 public class ImmigrationListView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
