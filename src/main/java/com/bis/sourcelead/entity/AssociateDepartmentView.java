@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "ASSOCIATES_DEPARTMENT_VIEW", schema = "SOURCELEAD")
+@Table(name = "ASSOCIATES_DEPARTMENT_VIEW")
 public class AssociateDepartmentView {
 	
 	private static final long serialVersionUID = 1L;
