@@ -24,6 +24,7 @@ public class AssociatePayItemDTO {
 	private String prePayItemName;
 	private String prePayItemBlock;
 	private String prePayItemAmt;
+	private double payItemAmt;
 	
 	
 	public String getId()
@@ -177,6 +178,14 @@ public class AssociatePayItemDTO {
 	public void setPrePayItemAmt(String prePayItemAmt)
 	{
 		this.prePayItemAmt = prePayItemAmt;
+	}
+	public double getPayItemAmt()
+	{
+		return payItemAmt;
+	}
+	public void setPayItemAmt(double payItemAmt)
+	{
+		this.payItemAmt = payItemAmt;
 	}
 	
 	

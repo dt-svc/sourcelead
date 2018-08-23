@@ -155,7 +155,6 @@ function calculateTotalPay(formData,confirmType){
                							<td>$ <span id="federal">0.00</span><td>
                						</tr>
                						<tr>
-               						 
                							<td>Federal Insurance Contributions Act (FICA)</td>
                							<td><div class="tblminwidth-90">$ <span id="fica">0.00</span></div></td>
                						</tr>
@@ -180,7 +179,7 @@ function calculateTotalPay(formData,confirmType){
                							<td>$ <span id="localTax">0.00</span></td>
                						</tr>
                						<tr>
-               							<td><strong>Total Employee Tax	100$</strong></td>
+               							<td><strong>Total Employee Tax</strong></td>
                							<td>$ <span id="totalTax">0.00</span></td>
                						</tr>
                						<tr>

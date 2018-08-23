@@ -43,7 +43,7 @@ function loansAdvances(){
 </section>
  
    <div class="tabsMenu">
-   	<ul class="list-unstyled">
+   	<ul class="list-unstyled uspay-myforms">
 	   <li class="current"><a onclick="payDiv();" class="active">Pays</a></li>
 	   <li><a onclick="formsDiv();">Forms</a></li>
 	   <li><a onclick="loansAdvances();" class="active">Loans &amp; Advances</a></li>
@@ -171,16 +171,36 @@ function loansAdvances(){
                					</thead>
                					<tbody>
                						<tr>
-               							<td>401(R)</td>
-               							<td>50$</td>
+               							<td>federalWithholding</td>
+               							<td><span id="federal">$ 0</span></td>
                						</tr>
                						<tr>
-               							<td>Post Tax</td>
-               							<td>50$</td>
+               							<td>Federal Insurance Contributions Act (FICA)</td>
+               							<td><span id="fica">$ 0</span></td>
                						</tr>
+               						<tr>
+               							<td>State Withholding</td>
+               							<td><span id="stateWithHolding">$ 0</span></td>
+               						</tr>
+               						<tr>
+               							<td>Medicare </td>
+               							<td><span id="medicare">$ 0</span></td>
+               						</tr>
+               						 <tr>
+               							<td> Advanced Earned Income Credit </td>
+               							<td><span id="aeic">$ 0</span></td>
+               						</tr>
+               						<tr>
+               							<td>Conty Withholding</td>
+               							<td><span id="county">$ 0</span></td>
+               						</tr>
+               						<tr>
+               							<td>Local Tax</td>
+               							<td><span id="localTax">$ 0</span></td>
+               						</tr> 
                						<tr>
                							<td><strong>Total</strong></td>
-               							<td>100$</td>
+               							<td><span id="totalEmpTax">$ 0</span></td>
                						</tr>
                					</tbody>
                				</table>
@@ -198,17 +218,49 @@ function loansAdvances(){
                					</thead>
                					<tbody>
                						 <tr>
-               							<td>401(R)</td>
-               							<td>50$</td>
+									<td>Employer FICA </td>
+									<td><div class="tblminwidth-90">$ <span id="emplrFICA">0.00</span></div></td>
+									</tr>
+               						<tr>
+									<td>Employer Medicare</td>
+									<td>$ <span id="emplrMedicare">0.00</span></td>
+              						</tr>
+               						<tr>
+									<td>Employer FUTA</td>
+									<td>$ <span id="emplrFUTA">0.00</span></td>
+              						</tr>
+              						<tr>
+									<td>Employer SUTA</td>
+									<td>$ <span id="emplrSUTA">0.00</span></td>
+              						</tr>
+               						<tr>
+									<td>Employer Railroad Unemployment Insurance Authority (RUIA)</td>
+									<td>$ <span id="emplrRUIA">0.00</span></td>
+              						</tr>
+               						<tr>
+									<td>Employer SUTA Surcharge Taxes</td>
+									<td>$ <span id="emplrSurchargeSUTATax">0.00</span></td>
+              						</tr>
+               						<tr>
+									<td>Employer SDI</td>
+              						<td>$ <span id="emplrSDI">0.00</span></td>
                						</tr>
                						<tr>
-               							<td>Post Tax</td>
-               							<td>50$</td>
+									<td>Employer Transit Taxes</td>
+              						<td>$ <span id="emplrTransitTaxes">0.00</span></td>
                						</tr>
                						<tr>
-               							<td><strong>Total</strong></td>
-               							<td>100$</td>
-               						</tr> 
+									<td>Employer Wyoming Workers Compensation Tax (WC)</td>
+              						<td>$ <span id="emplrWyomingWC">0.00</span></td>
+              						</tr>
+               						<tr>
+               						<td>Employer Oregon Workers Compensation Tax WC)</td>
+              						<td>$ <span id="emplrOregonWC">0.00</span></td>
+               						</tr>
+               						<tr>
+               						<td>Employer Total Taxes</td>
+              						<td>$ <span id="emplrTotalTaxes">0.00</span></td>
+               						</tr>
                					</tbody>
                				</table>
                		</div>
@@ -337,7 +389,7 @@ function loansAdvances(){
 //project side bar tabs
 $(document).ready(function() {
 	payDiv();
-    $(".list-unstyled a").click(function(event) {
+    $(".uspay-myforms a").click(function(event) {
         event.preventDefault();
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");
@@ -359,6 +411,32 @@ function getMyPayrollList(){
 	        url: sourceleadUrl+"/getMyPayrollList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(result) {
 	        var data = result.myPayroll;
+	        
+	        // Employee Taxes
+	        		var json = result.confirmPayTotalSum;
+	              $("#federal").text(json.federalWithholding.toFixed(2));
+		    	  $("#fica").text(json.ficaWithholding.toFixed(2));
+		    	  $("#stateWithholding").text(json.stateWithholding.toFixed(2));
+		    	  $("#aeic").text(json.earnedIncCredit.toFixed(2));
+		    	  $("#medicare").text(json.medicareWithholding.toFixed(2));
+		    	  $("#county").text(json.countyWithholding.toFixed(2));
+		    	  $("#localTax").text(json.localTax.toFixed(2));
+		    	  $("#totalEmpTax").text(json.totalTax.toFixed(2));
+		    	  
+		   // Employer Taxes
+		   
+		      	  $("#emplrFICA").text(json.employerFICA.toFixed(2));
+		    	  $("#emplrMedicare").text(json.employerMedicare.toFixed(2))
+		    	  $("#emplrFUTA").text(json.employerFUTA.toFixed(2));
+		    	  $("#emplrSUTA").text(json.employerSUTA.toFixed(2));
+		    	  $("#emplrRUIA").text(json.employerRUIA.toFixed(2));
+		    	  $("#emplrSurchargeSUTATax").text(json.employerSutaSurchargeTax.toFixed(2));
+		    	  $("#emplrSDI").text(json.employerSDI.toFixed(2));
+		    	  $("#emplrTransitTaxes").text(json.employerTransitTaxes.toFixed(2));
+		    	  $("#emplrWyomingWC").text(json.employerWyomingWcTax.toFixed(2));
+		    	  $("#emplrOregonWC").text(json.employerOregonWcTax.toFixed(2));
+		    	  $("#emplrTotalTaxes").text(json.employerTotalPay.toFixed(2));
+	        
 	        // Pre Deductions
 	        var preDed = "";
 	        for(var e in result.preDed){
