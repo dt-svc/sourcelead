@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
@@ -40,13 +41,10 @@ import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
-import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
-import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollTax;
-import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
@@ -156,7 +154,9 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			
 			PaysheetFrequency pf = uSPaysheetService.getPayFrequencyByUUID(payrollApproverDTO.getPayrollFrequencyUUID());
 			paySum.setPfUUID(pf.getPaySheetFrequencyUUID());
-			Set<EmployeePayroll> payrollList = pf.getEmployeepayroll();
+			CopyOnWriteArraySet<EmployeePayroll> payrollList = new CopyOnWriteArraySet<EmployeePayroll>(pf.getEmployeepayroll());
+			List<Long> payrollIds = null;
+			if(!PayrollConstant.SENT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
 			for (EmployeePayroll payroll : payrollList) {
 				for (USPayrollDTO payrollDTO : payrollApproverDTO.getUspayroll()) {
 					if ((payrollDTO.getIsExcept() != null && "YES".equalsIgnoreCase(payrollDTO.getIsExcept())) && payrollDTO.getEmpPayrollId().longValue() == payroll.getId().longValue()) {
@@ -164,11 +164,16 @@ public class USPayrollServiceImpl  implements USPayrollService{
 					}
 				}
 			}
-			List<Long> payrollIds = payrollList.stream().map(p -> p.getId()).collect(Collectors.toList());
+			payrollIds = payrollList.stream().map(p -> p.getId()).collect(Collectors.toList());
+			}else {
+				List<EmployeePayroll> pidList = payrollList.stream().filter(ep->PayrollConstant.SENT.equalsIgnoreCase(ep.getSubmitForAproverStatus())).collect(Collectors.toList());
+				payrollIds = pidList.stream().map(p -> p.getId()).collect(Collectors.toList());
+			}
+			
 			paySum.setPid(payrollIds);
 			double regularHours = payrollList.stream().filter(p->p.getRegularHours() != null).mapToDouble(p->Double.parseDouble(p.getRegularHours())).sum();
 			double overTimeHours = payrollList.stream().filter(p->p.getOverTimeHours() !=null).mapToDouble(p->Double.parseDouble(p.getOverTimeHours())).sum();
-			double regularTimeEarnings = payrollList.stream().mapToDouble(p->p.getRehularHoursAmount().doubleValue()).sum();
+			double regularTimeEarnings = payrollList.stream().mapToDouble(p->p.getRegularHoursAmount().doubleValue()).sum();
 			double overTimeEarnings = payrollList.stream().filter(p->p.getOverTimeAmount() != null).mapToDouble(p->p.getOverTimeAmount().doubleValue()).sum();
 			double grossPay = payrollList.stream().mapToDouble(p->p.getGrossPay().doubleValue()).sum();
 			double netPay = payrollList.stream().mapToDouble(p->p.getNetPay().doubleValue()).sum();
@@ -294,7 +299,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				if (period != null) {
 					payPeriodNum = payPeriodNum + period.getPayPeriodNum();
 				}
-				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation);
+				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation,loginUser);
 			}else {
 				int isUpadted = uSPayPeriodService.updatedPayperiod(confirmPaySumDto.getPpn());
 			}
@@ -332,8 +337,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		
 		User user = null;
 		int approvedSize = 0;
-		USPayPeriod uSPayPeriodw = uSPayPeriodService.getPaySheetFrequencyIdAndOrglocationId(orgLocation, savedPF.getId());
-        	 user = userService.getUserById(uSPayPeriodw.getPaysheetFrequency().getCreatedBy());
+		USPayPeriod uSPayPeriodw = uSPayPeriodService.getPayPeriodByOrglocationId(orgLocation, savedPF.getId());
+        user = userService.getUserById(savedPF.getCreatedBy());
         	 List<EmployeePayroll> empList = uSPayPeriodService.getEmployeePayrollListByPayperiodNum(uSPayPeriodw.getPayPeriodNum());
         	 for (EmployeePayroll employeePayroll : empList) {
         		 if(employeePayroll.getSubmitForAproverStatus().equalsIgnoreCase(Constants.APPROVED)){
@@ -378,7 +383,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		globalVarsMap.put("amount", String.valueOf(amount));
 		
 		StringBuilder stringBuilderLoginname = new StringBuilder();
-		globalVarsMap.put("loginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		globalVarsMap.put("approveLoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		StringBuilder stringBuildforLink = new StringBuilder();
 		globalVarsMap.put("payrollLink", stringBuildforLink.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -420,7 +425,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		
 	}
 
-	private USPayPeriod saevPayPeriodNumber(PaysheetFrequency pf, int payPeriodNum, OrgLocations orgLocation)
+	private USPayPeriod saevPayPeriodNumber(PaysheetFrequency pf, int payPeriodNum, OrgLocations orgLocation, User loginUser)
 	{
 		USPayPeriod  uSPayPeriod = new USPayPeriod();
 		uSPayPeriod.setPaysheetFrequency(pf);
@@ -430,6 +435,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		uSPayPeriod.setCreatedDate(new Date());
 		uSPayPeriod.setUpdatedDate(new Date());
 		uSPayPeriod.setApproverStatus(PayrollConstant.APPROVE);
+		uSPayPeriod.setCreatedBy(loginUser.getId());
+		uSPayPeriod.setUpdatedBy(loginUser.getId());
 		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
 	}
 }

@@ -1533,8 +1533,8 @@ public File createLeaveReportPdfTable(ResponseList<LeaveReportView> leaveReports
 
 private String[] prepareLeaveReportStringArray(LeaveReportView lrv, String[] headers) throws Exception {
 	String userArray[] = new String[headers.length];
-		 if(lrv.getEmployeeId() !=null){
-			 userArray[0] = lrv.getEmployeeId().toString();
+		 if(lrv.getEid() != null && !lrv.getEid().isEmpty()){
+			 userArray[0] = lrv.getEid().toString();
 		 }else{
 			 userArray[0] = "--";
 		 }

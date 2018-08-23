@@ -75,8 +75,8 @@
 									<option value="">Selected</option>
 									<option value="Weekly" ${userGroup.payFrequency == 'Weekly' ? 'selected' : ''}>Weekly</option>
 									<option value="Bi-Weekly" ${userGroup.payFrequency == 'Bi-Weekly' ? 'selected' : ''}>Bi-Weekly</option>
-									<option value="Monthly" ${userGroup.payFrequency == '' ? 'Monthly' : ''}>Monthly</option>
-									<option value="Annually" ${userGroup.payFrequency == '' ? 'Annually' : ''}>Annually</option>
+									<option value="Monthly" ${userGroup.payFrequency == 'Monthly' ? 'selected' : ''}>Monthly</option>
+									<option value="Annually" ${userGroup.payFrequency == 'Annually' ? 'selected'  : ''}>Annually</option>
 								</select>
 						</div>
 						</div>

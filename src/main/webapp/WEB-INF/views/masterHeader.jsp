@@ -625,6 +625,10 @@ function preventTabkey(e){
 								</div>
 							 </li> 	
 						   </sec:authorize>
+						   
+					   <c:if test="${SourceLeadWeb_isAdmin == true}">
+					  	<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
+                       </c:if>
                          
                        <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Tags</a></li>
 					  
@@ -1677,7 +1681,6 @@ $(document).ready(function(){
 		  var val = $("#folderPath").val().trim();
 		  $.post(sourceleadUrl+"/process-uploaded-files", {path: val}, function(data) {
 			  if(data && data.indexOf("Session timedout") !== -1) {
-				  alert(data);
 				  setTimedout('location.href=${sourceleadLoginUrl}', 3000);
 			  } else if(data) {
 				  $("#bulkImportStatus").html(data)
@@ -1843,6 +1846,7 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId,
 </script>
 <script>
 function zipcodeMask(country,zipCodeId){
+	
 	if(country == "India" || country == "Singapore"){
 		 $("#"+zipCodeId).mask("999999");
 	}else if(country == "United States" || country == "France"){
