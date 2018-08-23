@@ -301,7 +301,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 					myPayrollDTO.setGrossPay(payroll.getGrossPay());
 					myPayrollDTO.setNetPay(payroll.getNetPay());
 					myPayrollDTO.setTaxes(payroll.getTaxes());
-					
+					myPayrollDTO.setPayrollUUID(payroll.getUsEmpPayrollUUID());
 					List<DeductionDTO> dlist = getDeductionData(payroll);
 					dedHisList.addAll(dlist);
 					List<ContributionDTO> clist = getContributionData(payroll);
@@ -357,6 +357,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				
 				if(payItemList.size() >0) {
 					Map<String, Double> payItem = payItemList.stream().collect(Collectors.groupingBy(AssociatePayItemDTO::getPayItemName,Collectors.summingDouble(AssociatePayItemDTO::getPayItemAmt)));
+					response.setPayItem(payItem);
 				}
 				
 				paySum.setFederalWithholding(federalWithholding);

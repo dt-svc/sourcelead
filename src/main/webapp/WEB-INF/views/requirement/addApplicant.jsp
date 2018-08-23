@@ -1941,6 +1941,34 @@ function getSubmittedCandidateDetails(submissionId){
 		        		 $("select[name=NoticePeriod]").val(''); 
 		        	 } 
 		        	 
+		        	 
+		        	 var details = eval(json.submissionJsonStringValue);
+			    	   $.each(details, function( k, v ) {
+		    			  if(v['name'] != 'FirstName' && v['name'] != 'LastName' && v['name'] != 'EmailId' && v['name'] != 'PhoneNumber'
+		    				  && v['name'] != 'Designation' && v['name'] != 'country' && v['name'] != 'state' && v['name'] != 'city'  
+		    					  && v['name'] != 'NoticePeriod' && v['name'] != 'WorkExperience' && v['name'] != 'ExpectedCTC'
+		    						  && v['name'] != 'CurrentCTC' && v['name'] != 'Education' && v['name'] != 'AlternateNumber' 
+		    						  && v['name'] != 'location' && v['name'] != 'zipcode' && v['name'] != 'DOB' 
+		    							  && v['name'] != 'Current/LastCompany'){
+		    				  
+		    				var attr = v['name'];
+		    				var attrVal = v['value'];
+		    				var attrValues = v['value'].split(',');
+		    				
+		    				if(attrValues.length == 1){
+		    					$("select[name='"+attr+"']").val(attrVal);
+			    				$("input[name='"+attr+"'][value='"+attrVal+"']").attr('checked', true);
+		    				    $('#'+attr+"radio").val(attrVal); 
+		    				}else{
+		    					for(var i=0; i<=attrValues.length; i++){
+		    						$("input[name='"+attr+"'][value='"+attrValues[i]+"']").attr('checked', true);
+		    					}
+		    					 $('#'+attr+"checkbox").val(attrVal); 
+		    				}
+		    				
+		    			  }
+		    				   
+			    	   });
 		        },
 		    });
 	 }else{
