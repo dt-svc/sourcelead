@@ -1957,6 +1957,7 @@ function getSubmittedCandidateDetails(submissionId){
 		    				
 		    				if(attrValues.length == 1){
 		    					$("select[name='"+attr+"']").val(attrVal);
+		    					$("input[name='"+v['name']+"']").val(v['value']);
 			    				$("input[name='"+attr+"'][value='"+attrVal+"']").attr('checked', true);
 		    				    $('#'+attr+"radio").val(attrVal); 
 		    				}else{
