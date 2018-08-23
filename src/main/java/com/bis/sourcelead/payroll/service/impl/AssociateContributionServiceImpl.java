@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.payroll.dao.PayrollContributionDao;
 import com.bis.sourcelead.payroll.dto.AssociateContributionDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
+import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.service.UserService;
@@ -51,6 +53,12 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 		Response<AssociateContributionDTO> resObj = new Response<>();
 		try {
 			if (Validator.validate(associateContributionDTO)) {
+				
+				Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.parseLong(associateContributionDTO.getUserId()),orgLocation.getId());
+				
+				if(associateContributionDTO.getSaveType().equalsIgnoreCase(Constants.NEW_TYPE))
+				associateContributionDao.deleteAssociateContributionByCandidateIdAndOrgLocationId(candidate.getId(),orgLocation.getId());
+				
 				List<ContributionDTO> contributionDTOList = associateContributionDTO.getContributionDTOList();
 				for (ContributionDTO contri : contributionDTOList) {
 					AssociateContribution associateContribution = new AssociateContribution();
@@ -59,7 +67,7 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 						associateContribution.setContributionTypeId(payrollContribution);
 						associateContribution.setContributionAmount(contri.getContributionAmount());
 						associateContribution.setContributionMethod(contri.getContributionMethod());
-						Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.parseLong(associateContributionDTO.getUserId()),orgLocation.getId());
+						
 						associateContribution.setCandidate(candidate);
 						associateContribution.setOrgLocationId(orgLocation);
 						associateContribution.setAssociateContributionUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -129,8 +137,8 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 	}
 
 	@Override
-	public AssociateContribution getValidateContribution(Long contriTypId, OrgLocations orgLocation) {
-		AssociateContribution assContribution = associateContributionDao.getValidateContribution(contriTypId,orgLocation);
+	public AssociateContribution getValidateContribution(Long candidateId,Long contriTypId, OrgLocations orgLocation) {
+		AssociateContribution assContribution = associateContributionDao.getValidateContribution(candidateId,contriTypId,orgLocation);
 		return assContribution;
 	}
 

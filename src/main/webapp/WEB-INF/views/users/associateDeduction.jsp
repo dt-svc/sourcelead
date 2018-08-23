@@ -3,17 +3,21 @@
  
  <script type="text/javascript">
     $(document).ready(function(){
+    	var value = [];
     	$(".add-row").click(function(){
             var i = $("#index").val();
         	var deductionType = $("#dedType").val();
         	var deductionTypeValue = $('#dedType :selected').text();
         	var amount = $("#amt").val();
+        	if(!value.includes(deductionTypeValue)){
+        		value.push(deductionTypeValue);
         	if(deductionType != null && deductionType != '' && deductionType != 'undefined' && amount != null && amount != '' && amount != 'undefined'){
                   var method = $("#mthd").val();
                   var markup = "<tr><td><input type='checkbox' name='record'></td><td><input type='hidden' id='deductionType' name='deductionDTOList["+i+"].deductionType' value='"+deductionType+"'/>" + deductionTypeValue + "</td><td><input type='hidden' id='method' name='deductionDTOList["+i+"].method' value='"+method+"' />" + method + "</td><td><input type='hidden' id='amount' name='deductionDTOList["+i+"].amount' value='"+amount+"'/>" + amount + "</td><td><a onclick='deleteRow();'><i class='fa fa-remove text-danger'></i></a></td></tr>";
                   $("#deductionTrAdd").append(markup);
                   i++;
-                  $("#index").val(i);	
+                  $("#index").val(i);
+                          	}
         	}
           
         });
@@ -68,7 +72,7 @@ getDeductionType();
                   <div class="col-md-5">
                     <label class="clearfix">Amount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_int" field-name="Amount">
+                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_int" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
@@ -144,17 +148,17 @@ $('body').on('blur', '#associate_deduction_form', function() {
  <script>
  function saveAssociateDeduction(){
 	 var userId = $("#associateId").val();  
+	 var saveType = "New";
 	 var deductionType = $("#deductionType").val();
 	 if(deductionType != null && deductionType != '' && deductionType != "undefined"){
 		var formData = getFormData("associate_deduction_form");
 		$("#associate_deduction_save_button").attr("disabled", "disabled");
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
      $( "#associate_deduction_save_button" ).addClass('button').val('Processing..');
-     
      $.ajax({
 			type : "POST",
  	    data: formData,
-			url : sourceleadUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+			url : sourceleadUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
 			success : function(result) {
 				 if (result && result.response === "INVALID_DATA") {
 	                    $("#associate_deduction_save_button").removeAttr("disabled");

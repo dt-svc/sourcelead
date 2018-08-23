@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.symmetry;
 
+import com.bis.sourcelead.entity.User;
 import com.symmetry.ste.*;
 
 import java.util.Date;
@@ -12,8 +13,8 @@ public class SymmetryPaypal {
 	
 	public void hello(String locationCode)
 	{
-		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";
-		String jniHome = "/home/rajashekar/Desktop/Tools/ste/ste-interface-files/java/";
+		String STEhome = "/home/rajasekhar/Desktop/Symmetry/ste-Linux64-1.14.5.0-2018-R4/ste-root";
+		String jniHome = "/home/rajasekhar/Desktop/Symmetry/ste-Linux64-1.14.5.0-2018-R4/ste-interface-files/java/";
 		String arch = System.getProperty("os.name", "");
 		if (arch.toLowerCase().contains("win")) {
 			STEhome = "c:/STE/ste-root/";
@@ -23,6 +24,7 @@ public class SymmetryPaypal {
 		try {
 			STEPayrollCalculator STE = new STEPayrollCalculator(jniHome, STEhome);
 			System.out.println(STE.toString());
+			getLocationCode(STE);
 			Date today = new Date();
 			STE.setPayrollRunParameters(today, 52, 13);
 			STE.clearPayrollCalculations();
@@ -84,5 +86,32 @@ public class SymmetryPaypal {
 			e.printStackTrace();
 		}
 		System.exit(0);
+	}
+	
+	private WebServiceLocationCodeV2 getLocationCode(STEPayrollCalculator STE)
+	{
+		// Calcualting Location Code
+		WebServiceLocationCodeV2 webServiceLocationCodeV2 = null;
+		try {
+			STE.setWebService(WebServiceType.STE_LOC_CODE, "http://lcs2.symmetry.com/", null, "sourcelead", "s290sdq", null);
+			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2("4121 Broadway, New York, NY, USA", "4121 Broadway, New York, NY, USA", "New York", "New York", null, null, null);
+			System.out.println("Country code     : " + webServiceLocationCodeV2.getCountyCode());
+			System.out.println("City code**********        : " + webServiceLocationCodeV2.getCityCode());
+			System.out.println("Location Code *******   : " + webServiceLocationCodeV2.getLocationCode());
+			System.out.println("MunicipalityCode : "+ webServiceLocationCodeV2.getMunicipalityCode());
+			System.out.println("SchoolCode       : " + webServiceLocationCodeV2);
+			System.out.println("");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return webServiceLocationCodeV2;
+	}
+	
+	public static void main(String[] args)
+	{
+		SymmetryPaypal client = new SymmetryPaypal();
+//		String locationCode = "18-097-452890";
+		String locationCode = "04-013-12233";       // Arizona Location Code 
+		client.hello("");
 	}
 }

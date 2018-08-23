@@ -246,10 +246,8 @@ public class PayrollUtil {
 			if (maxDate != null && maxDate != null) {
 				cal.setTime(maxDate);
 				Date max = cal.getTime();
-				if (((ferquenctStarDate.after(min) && ferquenctStarDate.before(max))
-						|| (ferquenctStarDate.equals(min) || ferquenctStarDate.equals(max)))
-						&& ((frequencyEndDate.after(min) && frequencyEndDate.before(max))
-								|| (frequencyEndDate.equals(max) || frequencyEndDate.equals(min)))) {
+				if (((ferquenctStarDate.after(min) && ferquenctStarDate.before(max)) || (ferquenctStarDate.equals(min) || ferquenctStarDate.equals(max)))
+						&& ((frequencyEndDate.after(min) && frequencyEndDate.before(max)) || (frequencyEndDate.equals(max) || frequencyEndDate.equals(min)))) {
 					match = true;
 				}
 			}

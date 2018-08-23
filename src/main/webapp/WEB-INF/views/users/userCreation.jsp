@@ -16,7 +16,7 @@
 </script>  -->
 <script type="text/javascript">
 		window.onload = function () {
-			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','');
+			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','','address');
 			getDesignationType();
 			getDepartmentsList();
 			getResourceManagers();
@@ -28,10 +28,12 @@
 	$(document).ready(function() {
 		var location = "${location}";
 		document.getElementById("createUser_form").reset();
-		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-		  var sectionId = '${section.id}';
-		  getCustomDependentField(sectionId);
-		 </c:forEach>
+			<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	   		  <c:if test="${sectionOrder.index == 0}">
+				  var sectionId = '${section.id}';
+				  getCustomDependentField(sectionId);
+			  </c:if>
+			 </c:forEach>
 	});
 </script>
 <style type="text/css">
@@ -151,7 +153,7 @@
                   <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="ssn" name="SSN" field-name="First Name" data-validation="required validate_Space validate_int validate_length length9-9">
+                    <input type="text" class="form-control" id="ssn" name="SSN" field-name="SSN" data-validation="required validate_Space validate_int validate_length length9-9">
                   </div>
                   </div>
                   
@@ -196,12 +198,21 @@
                      <input type="hidden" id="residenceCountry" name="residenceCountry" />
                      <input type="hidden" id="residenceState" name="residenceState" />
                      <input type="hidden" id="residenceCity" name="residenceCity" />
-                     <input type="hidden" id="residenceZipCode" name="residenceZipCode" />
+<!--                      <input type="hidden" id="residenceZipCode" name="residenceZipCode" /> -->
                      <input type="hidden" id="residenceLatitude" name="residenceLatitude" />
                      <input type="hidden" id="residenceLongitude" name="residenceLongitude" />
                   <i class="fa fa-refresh btn btn-primary refresh-icon bg-blue" title="Refresh" onClick="refreshGoogleApiLocation('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','');"></i>
                   </div>
                 </div>
+                
+                
+                <div class="form-group">
+                  <label class="col-md-3">Zip Code<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9 positionRelative" id="ZipCode">
+						<input  class="form-control" id="residenceZipCode" name="residenceZipCode" placeholder="Enter Zip code" field-name="Zip Code" type="text" data-validation="required">                    
+                  </div>
+                </div>
+                
                   
                  <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
@@ -1408,9 +1419,13 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateSalary){
 					associateSalary.href = "#";
 					associateSalary.className = "disabledLink";
-				} 
+				}  
 				
-				
+				var associateLeaveType = document.getElementById("associateLeaveType");
+				if(associateLeaveType){
+					associateLeaveType.href = "#";
+					associateLeaveType.className = "disabledLink";
+				}   
 
  
 

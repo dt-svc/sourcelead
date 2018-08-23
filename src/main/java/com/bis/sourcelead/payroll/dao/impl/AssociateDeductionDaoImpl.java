@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.dao.impl;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
+import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 
 @Repository
@@ -68,11 +70,11 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 
 	@Override
 	@Transactional
-	public AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation) {
+	public AssociateDeduction getValidateDeduction(Long deductionTypeId, OrgLocations orgLocation,Long candidateId) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AssociateDeduction assDeduction where assDeduction.deductionTypeId.id =:dedTypeId and assDeduction.orgLocationId.id =:orgLocationId and assDeduction.status = 1";
-		List<AssociateDeduction> assDeduction = session.createQuery(query).setLong("dedTypeId", deductionTypeId).setLong("orgLocationId", orgLocation.getId()).list();
+		String query = "from AssociateDeduction assDeduction where assDeduction.deductionTypeId.id =:dedTypeId and assDeduction.orgLocationId.id =:orgLocationId and assDeduction.candidate.id =:candidateId and assDeduction.status = 1";
+		List<AssociateDeduction> assDeduction = session.createQuery(query).setLong("dedTypeId", deductionTypeId).setLong("orgLocationId", orgLocation.getId()).setLong("candidateId", candidateId).list();
 		if(assDeduction.size() > 0) {
 			return assDeduction.get(0);
 		}else {
@@ -92,5 +94,18 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			e.printStackTrace();
 		}
 		return associateDeduction;
+	}
+
+
+	@Override
+	@Transactional
+	public void deleteAssociateDeductionByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "update AssociateDeduction assDed set assDed.status = 0 where assDed.orgLocationId.id =:orgLocationId and assDed.candidate.id = :candidateId";
+			session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).executeUpdate();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 }

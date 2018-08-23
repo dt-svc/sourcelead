@@ -343,6 +343,10 @@ $(document).ready(function() {
 		$(".submission_side_wrap").removeClass("submission_side_wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
+		
+		$(".import_submission_side_wrap").removeClass("import_submission_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
 	});	
 });
 

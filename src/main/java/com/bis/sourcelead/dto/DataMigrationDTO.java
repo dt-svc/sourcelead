@@ -457,6 +457,14 @@ private String beneficiaryFirstName;
     private String lcaStatus;
     
     private String newStatus;
+
+    // This for associate bulk import to job
+    private String jsonData;
+    
+    private String con;
+    
+    private Long requirementId;
+
     
     
 	public String getEmployeeId() {
@@ -2164,7 +2172,7 @@ private String beneficiaryFirstName;
 		this.inviteEmail = inviteEmail;
 	}
 
-	
+
 	// LCA FIELDS
 	
 	public String getNewLcaNumber() {
@@ -2313,8 +2321,29 @@ private String beneficiaryFirstName;
 		this.newStatus = newStatus;
 	}
 	
-	
-	
-	
+	public String getJsonData() {
+		return jsonData;
+	}
+
+	public void setJsonData(String jsonData) {
+		this.jsonData = jsonData;
+	}
+
+	public String getCon() {
+		return con;
+	}
+
+	public void setCon(String con) {
+		this.con = con;
+	}
+
+	public Long getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(Long requirementId) {
+		this.requirementId = requirementId;
+	}
+
 
 }
