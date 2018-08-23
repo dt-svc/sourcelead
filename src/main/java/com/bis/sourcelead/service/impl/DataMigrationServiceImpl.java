@@ -55,6 +55,8 @@ import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
+import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
@@ -396,10 +398,15 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					dataMigrationCommonUtil.dataValidationForImmigration(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
 					break;
+				case "lcaUpload":
+					dataMigrationCommonUtil.dataValidationForLCA(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation);
+					//System.out.println(" inside validateImportedFormData lcaUpload case ==========>");
 					
 				case "submmissionTemplateUpload":
 					dataMigrationCommonUtil.dataValidationForRequirementSubmisssionTemplate(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation,jsonString);
+
 					break;
 
 				}
@@ -663,6 +670,103 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			userImport = gson.fromJson(dataMigrationDTOJsonCopy.toString(), UsersImport.class);
 			uploadFileService.saveBulkAssociate(userImport, orgLocation, user);
 
+			break;
+		case "lcaUpload":
+			logger.debug("lcaUpload");
+			ObjectMapper lcaMapper = new ObjectMapper();
+			lcaMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			lcaMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			//userImport = gson.fromJson(dataMigrationDTOJsonCopy.toString(), lcaDTO.class);
+			System.out.println(" Need to Add code for save funtionality for LCA Imports=============>");
+			//uploadFileService.saveBulkAssociate(userImport, orgLocation, user);
+			
+			LcaDTO lcaDTO = new LcaDTO();
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("newLcaNumber")) && !"null".equals(dataMigrationDTOJsonCopy.getString("newLcaNumber"))) {
+				   lcaDTO.setLcaNo(dataMigrationDTOJsonCopy.getString("newLcaNumber"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("newLcaTitle")) && !"null".equals(dataMigrationDTOJsonCopy.getString("newLcaTitle"))) {
+				 lcaDTO.setLcaTitle(dataMigrationDTOJsonCopy.getString("newLcaTitle"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("noOfPos")) && !"null".equals(dataMigrationDTOJsonCopy.getString("noOfPos"))) {
+				 lcaDTO.setNoOfPositions(dataMigrationDTOJsonCopy.getString("noOfPos"));
+			}
+			
+			// LCAPLACE OF EMPLOYMENT TABLE SAVING
+			
+			LcaPlaceOfEmploymentDTO locDTO = null;
+			lcaDTO.setLcaPlaceOfEmploymentList(new ArrayList<LcaPlaceOfEmploymentDTO>()); // setting empty list
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("currClientLocation")) && !"null".equals(dataMigrationDTOJsonCopy.getString("currClientLocation"))) {
+
+			    locDTO= new LcaPlaceOfEmploymentDTO();
+				locDTO.setLocation(dataMigrationDTOJsonCopy.getString("currClientLocation"));
+				locDTO.setAddressLine1(dataMigrationDTOJsonCopy.getString("currClientLocation"));
+				lcaDTO.getLcaPlaceOfEmploymentList().add((LcaPlaceOfEmploymentDTO)locDTO);
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("curPrimrVenodorLocation")) && !"null".equals(dataMigrationDTOJsonCopy.getString("curPrimrVenodorLocation"))) {
+			        locDTO= new LcaPlaceOfEmploymentDTO();
+					locDTO.setLocation(dataMigrationDTOJsonCopy.getString("curPrimrVenodorLocation"));
+					locDTO.setAddressLine1(dataMigrationDTOJsonCopy.getString("curPrimrVenodorLocation"));
+					lcaDTO.getLcaPlaceOfEmploymentList().add((LcaPlaceOfEmploymentDTO)locDTO);
+			}else {
+				lcaDTO.setLocation("");
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("curVenodorLocation")) && !"null".equals(dataMigrationDTOJsonCopy.getString("curVenodorLocation"))) {
+				    locDTO= new LcaPlaceOfEmploymentDTO();
+					locDTO.setLocation(dataMigrationDTOJsonCopy.getString("curVenodorLocation"));
+					locDTO.setAddressLine1(dataMigrationDTOJsonCopy.getString("curVenodorLocation"));
+					lcaDTO.getLcaPlaceOfEmploymentList().add((LcaPlaceOfEmploymentDTO)locDTO);
+			}else {
+				lcaDTO.setLocation("");
+			}
+			
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("socCode")) && !"null".equals(dataMigrationDTOJsonCopy.getString("socCode"))) {
+				 lcaDTO.setSocCode(dataMigrationDTOJsonCopy.getString("socCode"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("socTitle")) && !"null".equals(dataMigrationDTOJsonCopy.getString("socTitle"))) {
+				 lcaDTO.setSocOccupationTitle(dataMigrationDTOJsonCopy.getString("socTitle"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("wageLevel")) && !"null".equals(dataMigrationDTOJsonCopy.getString("wageLevel"))) {
+				 lcaDTO.setWagesLevel(dataMigrationDTOJsonCopy.getString("wageLevel"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevailWageCurr")) && !"null".equals(dataMigrationDTOJsonCopy.getString("prevailWageCurr"))) {
+				 lcaDTO.setPrivilingWageCurrency(dataMigrationDTOJsonCopy.getString("prevailWageCurr"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevailWageRate")) && !"null".equals(dataMigrationDTOJsonCopy.getString("prevailWageRate"))) {
+				 lcaDTO.setPrevailingWage(dataMigrationDTOJsonCopy.getString("prevailWageRate"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("prevailWageRatePer")) && !"null".equals(dataMigrationDTOJsonCopy.getString("prevailWageRatePer"))) {
+				 lcaDTO.setPrivilingWageRateType(dataMigrationDTOJsonCopy.getString("prevailWageRatePer"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("newLcaStartDate")) && !"null".equals(dataMigrationDTOJsonCopy.getString("newLcaStartDate"))) {
+				 lcaDTO.setStartDate(dataMigrationDTOJsonCopy.getString("newLcaStartDate"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("newLcaEndDate")) && !"null".equals(dataMigrationDTOJsonCopy.getString("newLcaEndDate"))) {
+				 lcaDTO.setEndDate(dataMigrationDTOJsonCopy.getString("newLcaEndDate"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaStatus")) && !"null".equals(dataMigrationDTOJsonCopy.getString("lcaStatus"))) {
+				 lcaDTO.setLcaStatus(dataMigrationDTOJsonCopy.getString("lcaStatus"));
+			}
+			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("newStatus")) && !"null".equals(dataMigrationDTOJsonCopy.getString("newStatus"))) {
+				 lcaDTO.setStatus(dataMigrationDTOJsonCopy.getString("newStatus"));
+			}
+			
+			immigrationCommonService.saveLcaDetails(lcaDTO, user, orgLocation);
+			
 			break;
 		case "immigrationUpload":
 			logger.debug("inside Immigration uplod---->>>>>");

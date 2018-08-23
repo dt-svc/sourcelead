@@ -23,7 +23,7 @@ import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "IMMIGRATION", schema = "SOURCELEAD")
+@Table(name = "IMMIGRATION")
 public class Immigration implements Serializable {
 
 	private static final long serialVersionUID = 1L;
