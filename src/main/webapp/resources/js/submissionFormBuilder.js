@@ -256,10 +256,10 @@ function addChoice(labelValue) {
         '</label>' +
         
         
-        '<label class="col-md-2 lblClass"><div class="col-md-9 choice-padLeft lblHeight"> Selected? </div> ' +
+       /* '<label class="col-md-2 lblClass"><div class="col-md-9 choice-padLeft lblHeight"> Selected? </div> ' +
         '<div class="col-md-3 choicePadLeft lblHeight"> ' +
         '<input class="toggle-selected" type="checkbox">' +
-        '</div>' +
+        '</div>' +*/
         
         '</label>' +
         '<button type="button" class="delete pull-left choicebtn-delete"><i class="fa fa-times text-danger"></i></button>' +
