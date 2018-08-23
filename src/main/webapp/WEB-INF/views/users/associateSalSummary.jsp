@@ -519,18 +519,13 @@ function calculateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var annualSal = $("#annualSal").val();
 	var hourlyRate = $("#hourlyRate").val();
-	 if(annualSal != null && annualSal != '' && annualSal != 'undefined')
-		{
-		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
-		}
-	
-	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
-		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
-	}
-
 	var hours = $("#standardHours").val();
+	
+
 	if(annualSal != null && annualSal != '' && annualSal != 'undefined' && hours != null && hours != '' && hours != 'undefined'){
-		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove();
+		$('#HourlyRate').find('p.jquery_form_error_message').remove(); 
 		var rate = null;
 		if(payFrequency === 'Annual'){
 			rate = parseFloat(annualSal) / 1;
@@ -561,17 +556,11 @@ function calculatePayPerSal(){
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	var annualSal = $("#annualSal").val();
-	 if(annualSal != null && annualSal != '' && annualSal != 'undefined')
-		{
-		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
-		}
-		if(perPaySal != null && perPaySal != '' && perPaySal != 'undefined'){
-			$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
-		}
-	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
-		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
-	}
+	
 	if(perPaySal !='' && perPaySal != 'undefined'){
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
 		if(payFrequency === 'Annual'){
 			var annualRate = parseFloat(perPaySal) * 1;
 			$("#annualSal").val(annualRate.toFixed(2));
@@ -607,17 +596,11 @@ function calculateHourlyRateSal(){
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	var annualSal = $("#annualSal").val();
-	 if(annualSal != null && annualSal != '' && annualSal != 'undefined')
-		{
-		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
-		}
-		if(perPaySal != null && perPaySal != '' && perPaySal != 'undefined'){
-			$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
-		}
-	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
-		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
-	}
+
 	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){ 
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
 		var perPaySal = parseFloat(hourlyRate) * standardHours;
 		$("#perPaySal").val(perPaySal.toFixed(2));
 		calculatePayPerSal();

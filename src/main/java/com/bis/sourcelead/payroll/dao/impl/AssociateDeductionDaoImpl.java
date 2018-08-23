@@ -99,9 +99,13 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 
 	@Override
 	@Transactional
-	public int deleteAssociateDeductionByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "update AssociateDeduction assDed set assDed.status = '0' where assDed.orgLocationId.id =:orgLocationId and assDed.candidate.id = :candidateId";
-		return session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).executeUpdate();
+	public void deleteAssociateDeductionByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "update AssociateDeduction assDed set assDed.status = 0 where assDed.orgLocationId.id =:orgLocationId and assDed.candidate.id = :candidateId";
+			session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).executeUpdate();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 }

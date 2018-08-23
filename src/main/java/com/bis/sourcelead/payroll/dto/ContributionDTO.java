@@ -30,6 +30,9 @@ public class ContributionDTO {
 	
 	private BigDecimal preContributionAmt;
 
+	private double postContributionAmt;
+	
+	private double contributionAmt;
 	
 	public String getId()
 	{
@@ -157,6 +160,26 @@ public class ContributionDTO {
 	public void setPreContributionAmt(BigDecimal preContributionAmt)
 	{
 		this.preContributionAmt = preContributionAmt;
+	}
+
+	public double getPostContributionAmt()
+	{
+		return postContributionAmt;
+	}
+
+	public void setPostContributionAmt(double postContributionAmt)
+	{
+		this.postContributionAmt = postContributionAmt;
+	}
+
+	public double getContributionAmt()
+	{
+		return contributionAmt;
+	}
+
+	public void setContributionAmt(double contributionAmt)
+	{
+		this.contributionAmt = contributionAmt;
 	}
 	
 	

@@ -32,7 +32,8 @@ function approvePayrollDiv(){
 <div class="pull-left">
 <h2>Payroll</h2>
 </div>
-<div class="pull-right brud-crum">Home &raquo; Payroll</div>
+<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/payrollList'/>">payrollList</a> &raquo; Payroll</div>
+
 </section>
 		<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -86,7 +87,7 @@ function approvePayrollDiv(){
   
  
 <div class="tableScroll">
-<form:form id="submit_for_approver" name="submit_for_approver" method="post">
+<form:form id="submit_for_approver"  name="submit_for_approver" method="post">
  <div class="styleTables clearfix mt">
  <!-- <div id="USPayrollDiv"></div> -->
  <div id="payrollDataDiv"></div>
@@ -99,8 +100,8 @@ function approvePayrollDiv(){
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
 	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
-		<li><a href="#" class="btn btn-primary btnSuccess" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
-		<li><a href="#" class="btn btn-default ml mr" onclick="confirmPayroll();">Confirm</a></li>
+		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
+		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
 	</div>
@@ -275,7 +276,7 @@ function runUSPayroll(){
 		    	type: "POST",
 		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate,                 
 		        success: function(data) {
-		        	if(data != null && data !='' && data !='undefined'){
+		        	   var count = 0;
 		        		 var json = data.payrollDTO;
 				        	var result = "";
 				        	result += '<table>';
@@ -306,12 +307,15 @@ function runUSPayroll(){
 				        	if(json != null && json.length > 0){
 				        		for (var i=0; i<json.length; i++){
 				        			var opt = json[i];
+				        			count++;
 				        			result += '<tr>';
 						        	 result += '<td>';
+						        	if(json.length > 1){
 						        	result += '<div class="checkbox-new pull-left ml5">';
 						        	result += '<input id="'+i+'emp1" value="YES" class="checkbox-custom" name="uspayroll['+i+'].isExcept" type="checkbox">';
 						        	result += '<label for="'+i+'emp1" class="checkbox-custom-label"></label>';
 						        	result += '</div>';
+				        			}
 						        	result += '</td>'; 
 						        	result += '<input type="hidden" value='+opt.empPayrollId+' id="'+i+'empPayrollId" name="uspayroll['+i+'].empPayrollId" />';
 						        	if(opt.empId != null && opt.empId != 'undefined' && opt.empId != ''){
@@ -348,14 +352,16 @@ function runUSPayroll(){
 					        	
 				        	}
 				        	result += '</tbody>';
+				        	if(count== 0){
+					    		result = result+'<tr><td align="top" colspan="11" class="tblminwidth-50 clearfix dataTables_empty"></td></tr>';	
+					    		$("#Submit").hide();
+					    		$("#Confirm").hide();
+					    	}
 				        	result += '</table>';
 				        	$("#payrollDataDiv").empty();
 				        	$("#payrollDataDiv").append(result);
 				        	$("#submitButtonDiv").show();
 				        	$("#initiateLoading").removeAttr('style');
-				        }else{
-				        	$("#submitButtonDiv").hide();
-				        }
 		        	    
 		        	},
 		           

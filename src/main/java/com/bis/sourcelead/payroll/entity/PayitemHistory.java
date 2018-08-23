@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.AssociatePayItem;
+
 @Entity
 @Table(name = "US_PAYITEM_HIS")
 public class PayitemHistory {
@@ -23,8 +25,9 @@ public class PayitemHistory {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@Column (name="PAY_ITEM_ID")
-	private Long payItemId;
+	@ManyToOne
+	@JoinColumn (name="PAY_ITEM_ID")
+	private AssociatePayItem associatePayItem;
 	
 	@ManyToOne
 	@JoinColumn(name = "PAYROLL_ID")
@@ -68,10 +71,6 @@ public class PayitemHistory {
 		return id;
 	}
 
-	public Long getPayItemId()
-	{
-		return payItemId;
-	}
 
 	public Date getFrequencyStartDate()
 	{
@@ -120,10 +119,6 @@ public class PayitemHistory {
 		this.id = id;
 	}
 
-	public void setPayItemId(Long payItemId)
-	{
-		this.payItemId = payItemId;
-	}
 
 	public void setFrequencyStartDate(Date frequencyStartDate)
 	{
@@ -183,6 +178,16 @@ public class PayitemHistory {
 	public void setPayItemHisUUID(String payItemHisUUID)
 	{
 		this.payItemHisUUID = payItemHisUUID;
+	}
+
+	public AssociatePayItem getAssociatePayItem()
+	{
+		return associatePayItem;
+	}
+
+	public void setAssociatePayItem(AssociatePayItem associatePayItem)
+	{
+		this.associatePayItem = associatePayItem;
 	}
 	
 	

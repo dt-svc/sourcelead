@@ -55,7 +55,9 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 			if (Validator.validate(associateContributionDTO)) {
 				
 				Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.parseLong(associateContributionDTO.getUserId()),orgLocation.getId());
-				int assCont = associateContributionDao.deleteAssociateContributionByCandidateIdAndOrgLocationId(candidate.getId(),orgLocation.getId());
+				
+				if(associateContributionDTO.getSaveType().equalsIgnoreCase(Constants.NEW_TYPE))
+				associateContributionDao.deleteAssociateContributionByCandidateIdAndOrgLocationId(candidate.getId(),orgLocation.getId());
 				
 				List<ContributionDTO> contributionDTOList = associateContributionDTO.getContributionDTOList();
 				for (ContributionDTO contri : contributionDTOList) {
