@@ -654,18 +654,27 @@ function getPayableInvoiceList(){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  orgLocationDate = 'YYYY-DD-MM'; 
 	  } 
-	if(dayWisetype=="custom"){
-		dayWisetype = "";
-	}
-	var startDate = $("#billingStartDate").val();
-	var endDate = $("#billingEndDate").val();
-	
-	if(startDate == null || startDate == '' || startDate == 'undefined'){
-		$("#invoiceStartDate").empty().append("Start Date is Required") ; 
-	}
-	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		$("#invoiceEndDate").empty().append("End Date is Required") ; 
-	}
+	  var startDate = null;
+	var endDate = null;
+	var dayWisetype = null;
+	var returnStat = true;
+	$('input:radio[name=invoiceCustomDays]:checked').each(function() {
+		dayWisetype = $(this).val();
+		if(dayWisetype == 'custom'){
+			startDate = $("#billingStartDate").val();
+			endDate = $("#billingEndDate").val();
+			$("#errStartDate").find('p.jquery_form_error_message').remove();
+			$("#errEndDate").find('p.jquery_form_error_message').remove();
+			if(startDate == null || startDate == '' || startDate == 'undefined'){
+				$("input#billingStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+				returnStat =  false;
+			}
+			if(endDate == null || endDate == '' || endDate == 'undefined'){
+				$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+				returnStat =  false;
+			}
+		}
+	});
 	
 	$('input:checkbox[name=invoiceStatus]:checked').each(function() 
     {
@@ -677,11 +686,11 @@ function getPayableInvoiceList(){
 		payment.push($(this).val());
 	 });
 	
-	var dayWisetype = null;
+	/* var dayWisetype = null;
 	
 	$('input:radio[name=invoiceCustomDays]:checked').each(function() {
 		dayWisetype = $(this).val();
-	});	
+	});	 */
 	
 	var invoieDeleteStatus = null;
 	
@@ -697,8 +706,12 @@ function getPayableInvoiceList(){
 	
 	var searchValue = $("#payableDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags+"&invoiceDeleteStatus="+invoieDeleteStatus;
-	preparePayableList(url,orgLocationDate);
+	if(returnStat){
+		var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags+"&invoiceDeleteStatus="+invoieDeleteStatus;
+		preparePayableList(url,orgLocationDate);
+		closeBillsFilterPop();
+	}
+	return returnStat;
 }
 
 </script>
@@ -2080,7 +2093,7 @@ function resetBillsFilter(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="closeBillsFilterPop();getPayableInvoiceList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="getPayableInvoiceList();" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search" onclick="resetBillsFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
