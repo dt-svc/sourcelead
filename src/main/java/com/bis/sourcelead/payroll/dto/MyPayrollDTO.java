@@ -21,6 +21,8 @@ public class MyPayrollDTO {
 	private BigDecimal contribution;
 	
 	private BigDecimal netPay;
+	
+	private String payrollUUID;
 
 
 	public String getPayDate()
@@ -113,6 +115,16 @@ public class MyPayrollDTO {
 	public void setPayPeriodEndDate(String payPeriodEndDate)
 	{
 		this.payPeriodEndDate = payPeriodEndDate;
+	}
+
+	public String getPayrollUUID()
+	{
+		return payrollUUID;
+	}
+
+	public void setPayrollUUID(String payrollUUID)
+	{
+		this.payrollUUID = payrollUUID;
 	}
 	
 	
