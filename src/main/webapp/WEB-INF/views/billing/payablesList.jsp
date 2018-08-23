@@ -2053,7 +2053,7 @@ function resetBillsFilter(){
 						<div class="col-md-4">
 						<div class="row">
 						    <div class="col-md-12 mb">
-								<label><strong>Active Status</strong></label>
+								<label><strong>Updated Status</strong></label>
 								 <div class="clearfix positionRelative">
 									<ul class="list-unstyled" id="statusFilter">
                                     <li class="checkBox positionRelative" ><input type="radio" onclick="customInvoiceList();" checked="checked" id="invoiceDateRadio" value="month" name="invoiceCustomDays"><label for="onboard2">Last 30 days</label></li>
