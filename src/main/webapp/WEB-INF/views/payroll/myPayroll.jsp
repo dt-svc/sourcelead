@@ -23,6 +23,7 @@ function formsDiv(){
 	$("#myPayrollFormDiv").show();
 	$("#myPayrollDiv").hide();
 	$("#loansAdvancesDiv").hide();
+	getUsMyPayrollForms();
 }
 
 function loansAdvances(){
@@ -42,7 +43,7 @@ function loansAdvances(){
 </section>
  
    <div class="tabsMenu">
-   	<ul class="list-unstyled">
+   	<ul class="list-unstyled uspay-myforms">
 	   <li class="current"><a onclick="payDiv();" class="active">Pays</a></li>
 	   <li><a onclick="formsDiv();">Forms</a></li>
 	   <li><a onclick="loansAdvances();" class="active">Loans &amp; Advances</a></li>
@@ -114,8 +115,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="preTaxDeductioDIV">
+               						<!-- <tr>
                							<td>Medical</td>
                							<td>50$</td>
                						</tr>
@@ -126,7 +127,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -141,8 +142,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="postTaxDeductioDIV">
+               						<!-- <tr>
                							<td>401(R)</td>
                							<td>50$</td>
                						</tr>
@@ -153,7 +154,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -170,16 +171,36 @@ function loansAdvances(){
                					</thead>
                					<tbody>
                						<tr>
-               							<td>401(R)</td>
-               							<td>50$</td>
+               							<td>federalWithholding</td>
+               							<td><span id="federal">$ 0</span></td>
                						</tr>
                						<tr>
-               							<td>Post Tax</td>
-               							<td>50$</td>
+               							<td>Federal Insurance Contributions Act (FICA)</td>
+               							<td><span id="fica">$ 0</span></td>
                						</tr>
+               						<tr>
+               							<td>State Withholding</td>
+               							<td><span id="stateWithHolding">$ 0</span></td>
+               						</tr>
+               						<tr>
+               							<td>Medicare </td>
+               							<td><span id="medicare">$ 0</span></td>
+               						</tr>
+               						 <tr>
+               							<td> Advanced Earned Income Credit </td>
+               							<td><span id="aeic">$ 0</span></td>
+               						</tr>
+               						<tr>
+               							<td>Conty Withholding</td>
+               							<td><span id="county">$ 0</span></td>
+               						</tr>
+               						<tr>
+               							<td>Local Tax</td>
+               							<td><span id="localTax">$ 0</span></td>
+               						</tr> 
                						<tr>
                							<td><strong>Total</strong></td>
-               							<td>100$</td>
+               							<td><span id="totalEmpTax">$ 0</span></td>
                						</tr>
                					</tbody>
                				</table>
@@ -196,17 +217,49 @@ function loansAdvances(){
                						</tr>
                					</thead>
                					<tbody>
+               						 <tr>
+									<td>Employer FICA </td>
+									<td><div class="tblminwidth-90">$ <span id="emplrFICA">0.00</span></div></td>
+									</tr>
                						<tr>
-               							<td>401(R)</td>
-               							<td>50$</td>
+									<td>Employer Medicare</td>
+									<td>$ <span id="emplrMedicare">0.00</span></td>
+              						</tr>
+               						<tr>
+									<td>Employer FUTA</td>
+									<td>$ <span id="emplrFUTA">0.00</span></td>
+              						</tr>
+              						<tr>
+									<td>Employer SUTA</td>
+									<td>$ <span id="emplrSUTA">0.00</span></td>
+              						</tr>
+               						<tr>
+									<td>Employer Railroad Unemployment Insurance Authority (RUIA)</td>
+									<td>$ <span id="emplrRUIA">0.00</span></td>
+              						</tr>
+               						<tr>
+									<td>Employer SUTA Surcharge Taxes</td>
+									<td>$ <span id="emplrSurchargeSUTATax">0.00</span></td>
+              						</tr>
+               						<tr>
+									<td>Employer SDI</td>
+              						<td>$ <span id="emplrSDI">0.00</span></td>
                						</tr>
                						<tr>
-               							<td>Post Tax</td>
-               							<td>50$</td>
+									<td>Employer Transit Taxes</td>
+              						<td>$ <span id="emplrTransitTaxes">0.00</span></td>
                						</tr>
                						<tr>
-               							<td><strong>Total</strong></td>
-               							<td>100$</td>
+									<td>Employer Wyoming Workers Compensation Tax (WC)</td>
+              						<td>$ <span id="emplrWyomingWC">0.00</span></td>
+              						</tr>
+               						<tr>
+               						<td>Employer Oregon Workers Compensation Tax WC)</td>
+              						<td>$ <span id="emplrOregonWC">0.00</span></td>
+               						</tr>
+               						<tr>
+               						<td>Employer Total Taxes</td>
+              						<td>$ <span id="emplrTotalTaxes">0.00</span></td>
                						</tr>
                					</tbody>
                				</table>
@@ -222,8 +275,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="contributionDIV">
+               						<!-- <tr>
                							<td>401(R)</td>
                							<td>50$</td>
                						</tr>
@@ -234,7 +287,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -297,7 +350,7 @@ function loansAdvances(){
                </div>
                                                  
                  <div class="clearfix col-md-12 styleTables">
-                 <div class="row">
+                 <div class="project_wrap_table datatable_filter">
                  <div id="payrollDataDIV"></div>
                  </div>
                  </div>					
@@ -331,30 +384,109 @@ function loansAdvances(){
 		$("#totalCount").toggle();
 	}
 	</script>
- <script type="text/javascript">
-	function uploaddocument() {
-		$(".uploaddocument, .sideMask").fadeIn();
-	}
-	function clsoerequestPop() {
-		$(".uploaddocument, .sideMask").fadeOut();
-	}
-		$("#uploadBtn").change(function () {
-			//var m = $(this).val();
-		$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-	})
-</script> 
+
+<script>
+//project side bar tabs
+$(document).ready(function() {
+	payDiv();
+    $(".uspay-myforms a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+//         var tab = $(this).attr("href");
+//         $(".list-unstyled").not(tab).css("display", "none");
+//         $(tab).fadeIn();
+    });
+});
+</script>
 
 <script>
 function getMyPayrollList(){
 	var totalNetPay = 0;
+	var preDedTotal = 0;
+	var postDedTotal = 0;
+	var contrTotal = 0;
 	$.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getMyPayrollList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(result) {
-	        var data = result.data;
+	        var data = result.myPayroll;
+	        
+	        // Employee Taxes
+	        		var json = result.confirmPayTotalSum;
+	              $("#federal").text(json.federalWithholding.toFixed(2));
+		    	  $("#fica").text(json.ficaWithholding.toFixed(2));
+		    	  $("#stateWithholding").text(json.stateWithholding.toFixed(2));
+		    	  $("#aeic").text(json.earnedIncCredit.toFixed(2));
+		    	  $("#medicare").text(json.medicareWithholding.toFixed(2));
+		    	  $("#county").text(json.countyWithholding.toFixed(2));
+		    	  $("#localTax").text(json.localTax.toFixed(2));
+		    	  $("#totalEmpTax").text(json.totalTax.toFixed(2));
+		    	  
+		   // Employer Taxes
+		   
+		      	  $("#emplrFICA").text(json.employerFICA.toFixed(2));
+		    	  $("#emplrMedicare").text(json.employerMedicare.toFixed(2))
+		    	  $("#emplrFUTA").text(json.employerFUTA.toFixed(2));
+		    	  $("#emplrSUTA").text(json.employerSUTA.toFixed(2));
+		    	  $("#emplrRUIA").text(json.employerRUIA.toFixed(2));
+		    	  $("#emplrSurchargeSUTATax").text(json.employerSutaSurchargeTax.toFixed(2));
+		    	  $("#emplrSDI").text(json.employerSDI.toFixed(2));
+		    	  $("#emplrTransitTaxes").text(json.employerTransitTaxes.toFixed(2));
+		    	  $("#emplrWyomingWC").text(json.employerWyomingWcTax.toFixed(2));
+		    	  $("#emplrOregonWC").text(json.employerOregonWcTax.toFixed(2));
+		    	  $("#emplrTotalTaxes").text(json.employerTotalPay.toFixed(2));
+	        
+	        // Pre Deductions
+	        var preDed = "";
+	        for(var e in result.preDed){
+	        	preDedTotal = preDedTotal + result.preDed[e];
+	 	        preDed = preDed + '<tr>';
+	 	        preDed = preDed + '<td>'+e+'</td>';
+	 	        preDed = preDed + '<td>$ '+result.preDed[e]+'</td>';
+	 	        preDed = preDed + '</tr>';
+	        }
+	        preDed = preDed + '<tr>';
+	        preDed = preDed + '<td><strong>Total</strong></td>';
+	        preDed = preDed + '<td>$ '+preDedTotal+'</td>';
+	        preDed = preDed + '</tr>';
+	        $("#preTaxDeductioDIV").empty();
+	        $("#preTaxDeductioDIV").append(preDed);
+	        
+	        // Post Deductions
+	        var postDed = "";
+	        for(var e in result.postDed){
+	        	postDedTotal = postDedTotal + result.postDed[e];
+	        	postDed = postDed + '<tr>';
+	        	postDed = postDed + '<td>'+e+'</td>';
+	        	postDed = postDed + '<td>$ '+result.postDed[e]+'</td>';
+	        	postDed = postDed + '</tr>';
+	        }
+	        postDed = postDed + '<tr>';
+	        postDed = postDed + '<td><strong>Total</strong></td>';
+	        postDed = postDed + '<td>$ '+postDedTotal+'</td>';
+	        postDed = postDed + '</tr>';
+	        $("#postTaxDeductioDIV").empty();
+	        $("#postTaxDeductioDIV").append(postDed);
+	        
+	        // Contributions
+	         var contr = "";
+	         for(var e in result.contribution){
+	        	 contrTotal = contrTotal + result.contribution[e];
+	        	 contr = contr + '<tr>';
+	        	 contr = contr + '<td>'+e+'</td>';
+	        	 contr = contr + '<td>$ '+result.contribution[e]+'</td>';
+	        	 contr = contr + '</tr>';
+	         }
+	         contr = contr + '<tr>';
+	         contr = contr + '<td><strong>Total</strong></td>';
+	         contr = contr + '<td>$ '+contrTotal+'</td>';
+	         contr = contr + '</tr>';
+	         $("#contributionDIV").empty();
+	         $("#contributionDIV").append(contr);
 	        
 	        var result = "";
-	        result = result +'<table>';
+	        result = result +'<table id="myPayrollTableDiv" class="display" cellspacing="0" width="100%" >';
 	        result = result +'<thead>';
 	        result = result +'<tr>';
 	        result = result +'<th>Pay Period</th>';
@@ -430,9 +562,33 @@ function getMyPayrollList(){
 	        
 	        $("#payrollDataDIV").empty();
 	        $("#payrollDataDIV").append(result);
+	        mayPayrollPagination();
+	        
+	        
+	       
+			
 	        },
 	    });
 	
+}
+</script>
+
+
+<script>
+function mayPayrollPagination(){ 
+    $('#myPayrollTableDiv').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#myPayrollTableDiv").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 

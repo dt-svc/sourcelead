@@ -99,11 +99,15 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 
 	@Override
 	@Transactional
-	public int deleteAssociateContributionByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "update AssociateContribution assContribution set assContribution.status = 0 where assContribution.orgLocationId.id =:orgLocationId and assContribution.candidate.id = :candidateId";
-		return session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).executeUpdate();
+	public void deleteAssociateContributionByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) {
 		
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "update AssociateContribution assContribution set assContribution.status = 0 where assContribution.orgLocationId.id =:orgLocationId and assContribution.candidate.id = :candidateId";
+			session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();;
+		}
 	}
 
 }

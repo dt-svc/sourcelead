@@ -1324,11 +1324,10 @@ public class LeaveDaoImpl implements LeaveDao{
 		countQueryString.setParameter("fromDate", startDateSqlDate);
 		countQueryString.setParameter("toDate", endDateSqlDate);
 
-		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
-			countQueryString.setLong("loginUserId", hrLeaveReportDTO.getLoginUserId());
 
 		if (!leaveStatusList.isEmpty()) {
 		countQueryString.setParameterList("leaveStatusList", leaveStatusList);
+//		countQueryString.setLong("loginUserId", hrLeaveReportDTO.getLoginUserId());
 
 		}
 		countlist = countQueryString.list();
@@ -1354,11 +1353,11 @@ public class LeaveDaoImpl implements LeaveDao{
 			}
 			if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
 				filteredCountlist = session.createQuery("select count(*) " + query
-						+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).setLong("loginUserId", hrLeaveReportDTO.getLoginUserId()).list();
+						+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).list();
 			}
 			else{
 				filteredCountlist = session.createQuery("select count(*) " + query
-						+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).list();
+						+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).setParameterList("leaveStatusList", leaveStatusList).list();
 			}
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
@@ -1366,7 +1365,6 @@ public class LeaveDaoImpl implements LeaveDao{
 			response.setRecordsFiltered(filteredCount);
 		}
 		
-		}
 		return response;
 	}
 
