@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -51,6 +52,7 @@ import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -90,6 +92,9 @@ public class ExpensesApprovalRestController {
 	
 	@Autowired
 	private ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -224,7 +229,7 @@ public class ExpensesApprovalRestController {
 	 	            //For Employee
 			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 			 		
-			 		if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 2 && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
+			 		if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 2 ){
 			 			//For Approvers of EndClient
 				 		 List<ExpenseProjectApproverHierarchy> approverList =  expenseProjectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
 				 		 if(approverList != null && !approverList.isEmpty()){
@@ -234,15 +239,31 @@ public class ExpensesApprovalRestController {
 				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 				 				}
 				 			 }
+				 			 
+				 			 if(eah.getExpenseId() != null && eah.getExpenseId().getProjects() != null && StringUtils.isNotEmpty(eah.getExpenseId().getProjects().getIsReportingManagerAsApprover())
+				 					   &&  eah.getExpenseId().getProjects().getIsReportingManagerAsApprover().equalsIgnoreCase("Y")) {
+				 				   if(projectMembers != null && projectMembers.getProjectMemberCandidteId() != null &&  projectMembers.getProjectMemberCandidteId().getConsultantUser() != null
+				 						   &&  projectMembers.getProjectMemberCandidteId().getConsultantUser()!= null && projectMembers.getProjectMemberCandidteId().getOrgLocationId() != null) {
+				 					   UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(projectMembers.getProjectMemberCandidteId().getConsultantUser().getId(), projectMembers.getProjectMemberCandidteId().getOrgLocationId().getId());
+				 					   if(userRole != null && userRole.getReportingManager() != null) {
+				 						  sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,userRole.getReportingManager().getFirstName(), userRole.getReportingManager().getLastName(), userRole.getReportingManager().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
+				 					   }
+				 				   }
+				 			   }
 				 		 }
 				 		sendEmailToVendorAtExpensesApprovalStatus(eah.getExpenseId().getTotalAmount(),projectMembers,user,orgLoc,startDate, endDate,rejectedReason,currencyCode,approvalStatus);
 			 		}
 			 		
 		 	   }else  if(StringUtils.isNotEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())) {
+		 		   
+		 		   
 		 		    ProjectMembers projectMembers = projectMembersService.getProjectMemberById(eah.getExpenseId().getProjectMembers().getId());
+			 		
 	 			    DateFormat TZ_DF_TS = new SimpleDateFormat (orgLoc.getDateFormat());
 	 	            String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getStartDate());
 	 	            String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate());
+	 	           //For Employee
+	 	            sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
 	 	            if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 1 && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())){
 			 			//For Approvers of EndClient
 				 		 List<ExpenseProjectApproverHierarchy> approverList =  expenseProjectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());

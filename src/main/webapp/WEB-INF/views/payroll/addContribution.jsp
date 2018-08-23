@@ -48,10 +48,10 @@ $(document).ready(function(){
 			
 			
 			<div class="col-md-5">
-			<label class="clearfix">Method</label>
+			<label class="clearfix">Method<span class="text-danger paddingLeft">&nbsp;*</span></label>
 			<div class="clearfix dropdown-select">
-				<select class="form-control" id="payrollContributionMethod" name="payrollContributionMethod" onchange="validateContributionMethodType();">
-				<option>Select Method</option>
+				<select class="form-control" id="payrollContributionMethod" name="payrollContributionMethod" data-validation="required" onchange="validateContributionMethodType();" field-name="Method">
+				<option value = "">Select Method</option>
 				 <option ${payrollContribution.payrollContributionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option>
 				  <option ${payrollContribution.payrollContributionMethod == 'Percent' ? 'selected' : ''} value = "Percent">Percent</option>
 				</select>

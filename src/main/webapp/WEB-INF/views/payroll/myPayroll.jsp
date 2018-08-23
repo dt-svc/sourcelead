@@ -8,6 +8,7 @@
 $(document).ready(function(){
 	$("#myPayrollFormDiv").hide();
 	$("#loansAdvancesDiv").hide();
+	getMyPayrollList();
 });
 </script>
 
@@ -22,6 +23,7 @@ function formsDiv(){
 	$("#myPayrollFormDiv").show();
 	$("#myPayrollDiv").hide();
 	$("#loansAdvancesDiv").hide();
+	getUsMyPayrollForms();
 }
 
 function loansAdvances(){
@@ -58,7 +60,7 @@ function loansAdvances(){
                   	<div class="col-md-3">
                   		<div class="row">
                   			<label class="col-md-5"><strong>Total:</strong></label>
-                  			<span class="col-md-7"><strong onClick="totalCountFun();" class="cursorPointer">60,0000 $</strong></span>
+                  			<span class="col-md-7"><strong onClick="totalCountFun();" class="cursorPointer" id="totalNet">$ 0</strong></span>
                   		</div>
                   	</div>
                   	<div class="col-md-3">
@@ -113,8 +115,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="preTaxDeductioDIV">
+               						<!-- <tr>
                							<td>Medical</td>
                							<td>50$</td>
                						</tr>
@@ -125,7 +127,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -140,8 +142,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="postTaxDeductioDIV">
+               						<!-- <tr>
                							<td>401(R)</td>
                							<td>50$</td>
                						</tr>
@@ -152,7 +154,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -195,7 +197,7 @@ function loansAdvances(){
                						</tr>
                					</thead>
                					<tbody>
-               						<tr>
+               						 <tr>
                							<td>401(R)</td>
                							<td>50$</td>
                						</tr>
@@ -206,7 +208,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> 
                					</tbody>
                				</table>
                		</div>
@@ -221,8 +223,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="contributionDIV">
+               						<!-- <tr>
                							<td>401(R)</td>
                							<td>50$</td>
                						</tr>
@@ -233,7 +235,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -296,72 +298,14 @@ function loansAdvances(){
                </div>
                                                  
                  <div class="clearfix col-md-12 styleTables">
-                 <div class="row">
-                 	<table>
-                 		<thead>
-                 			<tr>
-                 				<th>Pay Period</th>
-                 				<th>Pay Date</th>
-                 				<th>Account Type</th>
-                 				<th>Gross Pay</th>
-                 				<th>Taxes</th>
-                 				<th>Deductions</th>
-                 				<th>Net Pay</th>
-                 				<th>Action</th>
-                 			</tr>
-                 		</thead>
-                 		<tbody>
-                 			<tr>
-                 				<td>
-									<div class="tblminwidth-100 text-center">
-										<div class="clearfix">01/01/2018</div>
-										<div class="clearfix">15/02/2018</div>
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-125">
-										<div class="clearfix">15/02/2018</div>
-									</div>
-                 				</td>
-                 				<td>
-								<div class="tblminwidth-125">
-									<div>Direct Deposit</div>
-								</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-50">
-									<div>7000$</div>
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-50">
-										<div>500$</div>
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-50">
-										<div>200$</div>
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-50">
-										<div>6800$</div>
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-30">
-										<div class="fa fa-eye"></div>
-									</div>
-                 				</td>
-                 			</tr>
-                 		</tbody>
-                 	</table>
+                 <div class="project_wrap_table datatable_filter">
+                 <div id="payrollDataDIV"></div>
                  </div>
                  </div>					
                <div class="clearfix"></div>
                
                
-                <div class="clearfix"></div>
+               <!--  <div class="clearfix"></div>
                  <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
                  <a href="javascript:void(0)" class="anchorBlack">Skip</a>
@@ -372,7 +316,7 @@ function loansAdvances(){
                     <input value="Cancel" class="btn btn-default ml10" type="button">
                     </div>
                   </div>
-                </div>
+                </div> -->
               
             </div>
       </div>
@@ -388,17 +332,186 @@ function loansAdvances(){
 		$("#totalCount").toggle();
 	}
 	</script>
- <script type="text/javascript">
-	function uploaddocument() {
-		$(".uploaddocument, .sideMask").fadeIn();
-	}
-	function clsoerequestPop() {
-		$(".uploaddocument, .sideMask").fadeOut();
-	}
-		$("#uploadBtn").change(function () {
-			//var m = $(this).val();
-		$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-	})
-</script> 
+
+<script>
+//project side bar tabs
+$(document).ready(function() {
+	payDiv();
+    $(".list-unstyled a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+//         var tab = $(this).attr("href");
+//         $(".list-unstyled").not(tab).css("display", "none");
+//         $(tab).fadeIn();
+    });
+});
+</script>
+
+<script>
+function getMyPayrollList(){
+	var totalNetPay = 0;
+	var preDedTotal = 0;
+	var postDedTotal = 0;
+	var contrTotal = 0;
+	$.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getMyPayrollList?"+tokenParamName+"="+tokenValue                 , 
+	        success: function(result) {
+	        var data = result.myPayroll;
+	        // Pre Deductions
+	        var preDed = "";
+	        for(var e in result.preDed){
+	        	preDedTotal = preDedTotal + result.preDed[e];
+	 	        preDed = preDed + '<tr>';
+	 	        preDed = preDed + '<td>'+e+'</td>';
+	 	        preDed = preDed + '<td>$ '+result.preDed[e]+'</td>';
+	 	        preDed = preDed + '</tr>';
+	        }
+	        preDed = preDed + '<tr>';
+	        preDed = preDed + '<td><strong>Total</strong></td>';
+	        preDed = preDed + '<td>$ '+preDedTotal+'</td>';
+	        preDed = preDed + '</tr>';
+	        $("#preTaxDeductioDIV").empty();
+	        $("#preTaxDeductioDIV").append(preDed);
+	        
+	        // Post Deductions
+	        var postDed = "";
+	        for(var e in result.postDed){
+	        	postDedTotal = postDedTotal + result.postDed[e];
+	        	postDed = postDed + '<tr>';
+	        	postDed = postDed + '<td>'+e+'</td>';
+	        	postDed = postDed + '<td>$ '+result.postDed[e]+'</td>';
+	        	postDed = postDed + '</tr>';
+	        }
+	        postDed = postDed + '<tr>';
+	        postDed = postDed + '<td><strong>Total</strong></td>';
+	        postDed = postDed + '<td>$ '+postDedTotal+'</td>';
+	        postDed = postDed + '</tr>';
+	        $("#postTaxDeductioDIV").empty();
+	        $("#postTaxDeductioDIV").append(postDed);
+	        
+	        // Contributions
+	         var contr = "";
+	         for(var e in result.contribution){
+	        	 contrTotal = contrTotal + result.contribution[e];
+	        	 contr = contr + '<tr>';
+	        	 contr = contr + '<td>'+e+'</td>';
+	        	 contr = contr + '<td>$ '+result.contribution[e]+'</td>';
+	        	 contr = contr + '</tr>';
+	         }
+	         contr = contr + '<tr>';
+	         contr = contr + '<td><strong>Total</strong></td>';
+	         contr = contr + '<td>$ '+contrTotal+'</td>';
+	         contr = contr + '</tr>';
+	         $("#contributionDIV").empty();
+	         $("#contributionDIV").append(contr);
+	        
+	        var result = "";
+	        result = result +'<table id="myPayrollTableDiv" class="display" cellspacing="0" width="100%" >';
+	        result = result +'<thead>';
+	        result = result +'<tr>';
+	        result = result +'<th>Pay Period</th>';
+	        result = result +'<th>Pay Date</th>';
+	        result = result +'<th>Account Type</th>';
+	        result = result +'<th>Gross Pay</th>';
+	        result = result +'<th>Taxes</th>';
+	        result = result +'<th>Deductions</th>';
+	        result = result +'<th>Net Pay</th>';
+	        result = result +'<th>Action</th>';
+	        result = result +'</tr>';
+	        result = result +'</thead>';
+	        result = result +'<tbody>';
+	        if(data != null && data.length >0){
+	        	for(var i =0 ; i<data.length;i++){
+	        	var json = data[i];
+	        	/* totalNetPay = parseFlaot(totalNetPay) + parseFloat(json.netPay); */
+	        	totalNetPay = totalNetPay + json.netPay; 
+	        	result = result +'<tr>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-100 text-center">';
+	 	        result = result +'<div class="clearfix">'+json.payPeriodStartDate+'</div>';
+	 	        result = result +'<div class="clearfix">'+json.payPeriodEndDate+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'	<div class="tblminwidth-125">';
+	 	        result = result +'<div class="clearfix">'+json.payDate+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-125">';
+	 	        if(json.accountType != null){
+	 	        	result = result +'<div>'+json.accountType+'</div>';	
+	 	        }else{
+	 	        	result = result +'<div>--</div>';
+	 	        }
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-50">';
+	 	        result = result +'<div>$ '+json.grossPay+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-50">';
+	 	        result = result +'<div>$ '+json.taxes+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-50">';
+	 	        result = result +'<div>$ '+json.deductions+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-50">';
+	 	        result = result +'<div>$ '+json.netPay+'</div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'<td>';
+	 	        result = result +'<div class="tblminwidth-30">';
+	 	        result = result +'<div class="fa fa-eye"></div>';
+	 	        result = result +'</div>';
+	 	        result = result +'</td>';
+	 	        result = result +'</tr>';
+	 	        
+	        	}
+	        	$("#totalNet").text('$ '+totalNetPay);
+	        }
+	       
+	        result = result +'</tbody>';
+	        result = result +'</table>';	
+	        
+	        $("#payrollDataDIV").empty();
+	        $("#payrollDataDIV").append(result);
+	        mayPayrollPagination();
+	        
+	        
+	       
+			
+	        },
+	    });
+	
+}
+</script>
+
+
+<script>
+function mayPayrollPagination(){ 
+    $('#myPayrollTableDiv').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#myPayrollTableDiv").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

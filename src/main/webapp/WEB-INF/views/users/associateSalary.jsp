@@ -51,19 +51,19 @@ $(document).ready(function(){
                   </div>
                    <div class="col-md-5">
                     <label>Annual Salary</label>
-                    <div>
+                    <div id="AnnualSal">
                       <input type="text" class="form-control" id="annualSal" name="annualSal" data-validation="required validate_float" field-name="Annual Salary" onblur="calculateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
                     <label>Pay Per Salary</label>
-                    <div>
+                    <div id="PerPaySal">
                       <input type="text" class="form-control" id="perPaySal" name="perPaySal" data-validation="required validate_float" field-name="Pay Per Salary" onblur = "calculatePayPerSal();">
                     </div>
                   </div>  
                    <div class="col-md-5">
                     <label>Hourly Rate</label>
-                    <div>
+                    <div id="HourlyRate">
                       <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" data-validation="required validate_float" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                     </div>
                   </div>
@@ -130,7 +130,15 @@ function calculateSal(){
 	var payFrequency = $("#payFrequency").val();
 	var annualSal = $("#annualSal").val();
 	var hours = $("#standardHours").val();
+	var hourlyRate = $("#hourlyRate").val();
+	 if(annualSal != null && annualSal != '' && annualSal != 'undefined')
+		{
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		}
+	
 	if(annualSal != null && annualSal != '' && annualSal != 'undefined' && hours != null && hours != '' && hours != 'undefined'){
+		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		$('#HourlyRate').find('p.jquery_form_error_message').remove();
 		var rate = "";
 		if(payFrequency === 'Annual'){
 			rate = parseFloat(annualSal) / 1;
@@ -166,9 +174,15 @@ function calculateSal(){
 function calculatePayPerSal(){
 	var payFrequency = $("#payFrequency").val();
 	var perPaySal = $("#perPaySal").val();
-// 	var hourlyRate = $("#hourlyRate").val();
+ 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
+	var annualSal = $("#annualSal").val();
+
 	if(perPaySal !='' && perPaySal != 'undefined'){
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove();
+		$('#HourlyRate').find('p.jquery_form_error_message').remove();
+		
 		if(payFrequency === 'Annual'){
 			var annualRate = parseFloat(perPaySal) * 1;
 			$("#annualSal").val(annualRate.toFixed(2));
@@ -204,7 +218,11 @@ function calculateHourlyRateSal(){
 	var hourlyRate = $("#hourlyRate").val();
 	var standardHours = $("#standardHours").val();
 	var annualSal = $("#annualSal").val();
-	if(annualSal != null && annualSal != '' && annualSal != 'undefined'){
+	
+	if(hourlyRate != null && hourlyRate != '' && hourlyRate != 'undefined'){
+		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
+		$('#PerPaySal').find('p.jquery_form_error_message').remove(); 
+		 $('#HourlyRate').find('p.jquery_form_error_message').remove(); 
 		var perPaySal = parseFloat(hourlyRate) * standardHours;
 		$("#perPaySal").val(perPaySal.toFixed(2));
 		calculatePayPerSal();
