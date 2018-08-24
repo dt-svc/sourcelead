@@ -1,9 +1,13 @@
 package com.bis.sourcelead.payroll.util;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,9 +18,12 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 
@@ -294,5 +301,95 @@ public class PayrollUtil {
 		 e.printStackTrace();
 		}
 		return dates;
+	}
+	
+
+	/**
+	 * Calculation Deduction of employee payroll
+	 * 
+	 * @param payroll
+	 */
+	public List<ContributionDTO> getContributionData(EmployeePayroll payroll)
+	{
+		List<ContributionDTO> contributionList = new ArrayList<>();
+		try {
+			Set<DeductionHistory> hisList = payroll.getDeductionHistory();
+			if (hisList != null && hisList.size() > 0) {
+				for (DeductionHistory dedHis : hisList) {
+					double precontrAmt = 0;
+					double postcontrAmt = 0;
+					double amount = 0;
+					if (dedHis.getContributionId() != null) {
+						ContributionDTO contDTO = new ContributionDTO();
+						if (dedHis.getPreContributionAmount() != null) {
+							precontrAmt = dedHis.getPreContributionAmount().doubleValue();
+							if (dedHis.getPreContributionAmount().compareTo(BigDecimal.ZERO) !=  0) {
+								amount = dedHis.getPreContributionAmount().doubleValue();
+							}
+						}
+						if (dedHis.getPostContributionAmount() != null) {
+							postcontrAmt = dedHis.getPostContributionAmount().doubleValue();
+							if (dedHis.getPostContributionAmount().compareTo(BigDecimal.ZERO) !=  0 ) {
+								amount = dedHis.getPostContributionAmount().doubleValue();
+							}
+						}
+						contDTO.setAmount(precontrAmt);
+						contDTO.setPostContributionAmt(postcontrAmt);
+						contDTO.setId(String.valueOf(dedHis.getContributionId().getId()));
+						contDTO.setContributionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
+						contDTO.setTaxType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getTaxType());
+						contDTO.setContributionAmount(dedHis.getContributionId().getContributionAmount());
+						contDTO.setContributionAmt(amount);
+						contributionList.add(contDTO);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return contributionList;
+	}
+
+	/**
+	 * Calculation Deduction of employee payroll
+	 * @param payroll
+	 */
+	public List<DeductionDTO> getDeductionData(EmployeePayroll payroll)
+	{
+		List<DeductionDTO> dedList = new ArrayList<>();
+		try {
+			Set<DeductionHistory> hisList = payroll.getDeductionHistory();
+			if (hisList != null && hisList.size() > 0) {
+				for (DeductionHistory dedHis : hisList) {
+					DeductionDTO dedDTO = new DeductionDTO();
+					dedDTO.setId(String.valueOf(dedHis.getDeductionId().getId()));
+					dedDTO.setDeductionType(dedHis.getDeductionId().getDeductionTypeId().getPayrollDeductionType());
+					double preDedAmt = 0;
+					double postDedAmt = 0;
+					double dedAmount = 0;
+					if (dedHis.getPreDeductionAmount() != null) {
+						preDedAmt = dedHis.getPreDeductionAmount().doubleValue();
+						if (dedHis.getPreDeductionAmount().compareTo(BigDecimal.ZERO) !=  0) {
+							dedAmount = dedHis.getPreDeductionAmount().doubleValue();
+						}
+					}
+					if (dedHis.getPostDeductionAmount() != null) {
+						postDedAmt = dedHis.getPostDeductionAmount().doubleValue();
+						if (dedHis.getPostDeductionAmount().compareTo(BigDecimal.ZERO) !=  0) {
+							dedAmount = dedHis.getPostDeductionAmount().doubleValue();
+						}
+					}
+					dedDTO.setDedAmount(dedAmount);
+					dedDTO.setPreDeductionAmount(preDedAmt);
+					dedDTO.setPostDeductionAmt(postDedAmt);
+					dedDTO.setDedTaxType(dedHis.getDeductionId().getDeductionTypeId().getTaxType());
+					dedDTO.setAmount(dedHis.getDeductionId().getDeductionAmount());
+					dedList.add(dedDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dedList;
 	}
 }
