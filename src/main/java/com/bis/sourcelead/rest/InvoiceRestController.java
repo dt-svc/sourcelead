@@ -393,31 +393,32 @@ public class InvoiceRestController {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 				}
 			}
-		}
-		else {
-			if (StringUtils.isNotBlank(invoiceDTO.getStartDate())
-					&& StringUtils.isNotBlank(invoiceDTO.getEndDate())
-					&& !"undefined".equalsIgnoreCase(invoiceDTO.getStartDate())
-					&& !"undefined".equalsIgnoreCase(invoiceDTO.getEndDate())) {
-				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
-				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");
-				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getStartDate());
-				Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getEndDate());
-				String customStartTimeStr = TZ_DF_CSD.format(startTime);
-				String customEndTimeStr = TZ_DF_CED.format(endTime);
-				// String startDateString =
-				// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-				// Constants.UTC_TIMEZONE, customStartTimeStr);
-				// String endDateString =
-				// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-				// Constants.UTC_TIMEZONE, customEndTimeStr);
-				startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
-				endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
-			}
 			else {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+				if (StringUtils.isNotBlank(invoiceDTO.getStartDate())
+						&& StringUtils.isNotBlank(invoiceDTO.getEndDate())
+						&& !"undefined".equalsIgnoreCase(invoiceDTO.getStartDate())
+						&& !"undefined".equalsIgnoreCase(invoiceDTO.getEndDate())) {
+					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
+					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");
+					Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getStartDate());
+					Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getEndDate());
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);
+					String customEndTimeStr = TZ_DF_CED.format(endTime);
+					// String startDateString =
+					// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
+					// Constants.UTC_TIMEZONE, customStartTimeStr);
+					// String endDateString =
+					// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
+					// Constants.UTC_TIMEZONE, customEndTimeStr);
+					startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+					endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+				}
+				else {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+				}
 			}
 		}
+		
 		ResponseList<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations, startDateUTC, endDateUTC, invoiceDTO);
 		Date todayDate = new Date();
 		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();

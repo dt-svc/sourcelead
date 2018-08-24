@@ -1622,17 +1622,19 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		logger.debug(" inisde getLcaDetails controller test -->");
-		    List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(immigrationId);
-		   /* for(LcaDTO lh: lcaList) {
-		    	lh.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getStartDate().toString()));
-		    	lh.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getEndDate()));
-		    	if(lh.getLcaId() != null && lh.getLcaId().getLocationsList() != null) {
-		    	lh.setLcaLocations(lh.getLcaId().getLocationsList());
-		    	}
-		    }*/
-			
-		    model.addObject("lcaList", lcaList);
-			model.setViewName("/immigration/lcaDetailsTab");
+		if(immigrationId != null) {
+			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(immigrationId);
+			   /* for(LcaDTO lh: lcaList) {
+			    	lh.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getStartDate().toString()));
+			    	lh.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getEndDate()));
+			    	if(lh.getLcaId() != null && lh.getLcaId().getLocationsList() != null) {
+			    	lh.setLcaLocations(lh.getLcaId().getLocationsList());
+			    	}
+			    }*/
+				
+			    model.addObject("lcaList", lcaList);
+		}
+		model.setViewName("/immigration/lcaDetailsTab");
 		return model;
 	}
 
