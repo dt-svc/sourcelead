@@ -567,7 +567,7 @@ function getMyPayrollList(){
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-30">';
-	 	        result = result +'<div class="fa fa-eye"></div>';
+	 	        result = result +'<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye" onclick="payAdjustment(\''+json.payrollUUID+'\');"></i></a>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'</tr>';
@@ -610,5 +610,5 @@ function mayPayrollPagination(){
     $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
-
+<jsp:include page="./viewPayRollSummary.jsp" /> 
 <jsp:include page="../masterFooter.jsp" />
