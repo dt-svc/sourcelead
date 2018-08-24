@@ -31,8 +31,8 @@ public class CreditDebitLineItems {
 	private String inlineDescription;
 	
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", nullable = false)
-	private User user;
+	@JoinColumn(name = "ASSOCIATE_ID", nullable = false)
+	private User associate;
 	
 	@ManyToOne
 	@JoinColumn(name = "CREDIT_DEBIT_NOTE_ID", nullable = false)
@@ -96,12 +96,14 @@ public class CreditDebitLineItems {
 		this.inlineDescription = inlineDescription;
 	}
 
-	public User getUser() {
-		return user;
+	
+
+	public User getAssociate() {
+		return associate;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setAssociate(User associate) {
+		this.associate = associate;
 	}
 
 	public CreditDebitNote getCreditDebitNote() {

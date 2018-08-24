@@ -3532,7 +3532,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitLineItems.setTaxAmount(null);	
 			}
 			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getAssociates())){
-			creditDebitLineItems.setUser(user);	
+				try {
+					User associate = userService.getUserById(Long.parseLong(creditDebitLineItemsDTO.getAssociates()));
+					creditDebitLineItems.setAssociate(associate);	
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			creditDebitLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
 			creditDebitLineItems.setCreatedBy(user);
