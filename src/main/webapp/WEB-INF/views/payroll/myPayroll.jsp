@@ -72,6 +72,7 @@ function loansAdvances(){
                   </div>
                  <div class="clearfix mb5"></div>
                  <div class="clearfix" id="totalCount" style="display:none;">
+                 <div class="tableEqualHeight-pay">
                		<div class="col-md-3 mb">
                			<h5>Hours &amp; Earnings</h5>
                			<div class="clearfix tableStyles">
@@ -265,6 +266,9 @@ function loansAdvances(){
                				</table>
                		</div>
                		</div>
+               		</div>
+               		
+               		<div class="tableEqualHeight-pay mt mb">
                		<div class="col-md-3 mb">
                			<h5>Employer Contributions</h5>
                			<div class="clearfix tableStyles">
@@ -350,7 +354,7 @@ function loansAdvances(){
                </div>
                                                  
                  <div class="clearfix col-md-12 styleTables">
-                 <div class="project_wrap_table datatable_filter">
+                 <div class="project_wrap_table datatable_filter mt40">
                  <div id="payrollDataDIV"></div>
                  </div>
                  </div>					
