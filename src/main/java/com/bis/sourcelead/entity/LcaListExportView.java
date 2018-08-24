@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "LCA_LIST_EXPORT_VIEW", schema = "SOURCELEAD")
+@Table(name = "LCA_LIST_EXPORT_VIEW")
 public class LcaListExportView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
