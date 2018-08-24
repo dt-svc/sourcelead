@@ -59,7 +59,7 @@ window.onload = function () {
 		
 		<div id="tab-3" class="project_tabs_inn">
 				<div class="backWhite">        
-					<div class="clearfix">
+					<div class="clearfix bttabHeighlite">
 				      <ul class="nav nav-tabs" id="menuli">
 					        <li class="active" id="wtsli" onclick="getWagesTaxSummaryByEmpId(); highlight(this);"><a href="#innertab-1" >Wages & Tax Summary</a></li>
 					        <li onclick="getIncomeData(); highlight(this);"><a href="#innertab-2" >Income</a></li>
