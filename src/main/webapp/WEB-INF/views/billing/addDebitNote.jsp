@@ -245,9 +245,9 @@
 		<div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-          <input value="Draft" id="draftButtonId" onClick="saveCreditNote('DRAFT');" class="btn btn-warning" type="button">
-            <input value="Send" id="sendButtonId" onClick="saveCreditNote('Send');" class="btn btn-success mr ml" type="button">
-            <input value="Submit" id = "submitButtonId" onClick="saveCreditNote('Submit');" class="btn btn-primary" type="button">
+          <input value="Draft" id="draftButtonId" onClick="saveDebitNote('DRAFT');" class="btn btn-warning" type="button">
+            <input value="Send" id="sendButtonId" onClick="saveDebitNote('Send');" class="btn btn-success mr ml" type="button">
+            <input value="Submit" id = "submitButtonId" onClick="saveDebitNote('Submit');" class="btn btn-primary" type="button">
             <input value="Cancel" class="btn btn-default ml" type="button">
           </div>
         </div>
@@ -260,7 +260,7 @@
       </div>
  
 <script type="text/javascript">
-function saveCreditNote(saveType){
+function saveDebitNote(saveType){
 	
 	if ($('#creditNote_form').validate(false, validationSettings)){  
 	 	    var formData = getFormData1("creditNote_form");
@@ -440,10 +440,12 @@ function removeDynamicRowDiv(id){
 			$("#approverCheckBox").val("Y");
 			$("#approversDivId").show();
 			$("#submitButtonId").show();
+			$("#sendButtonId").hide();
 		} else {
 			$("#approverCheckBox").val("N");
 			$("#approversDivId").hide();
 			$("#submitButtonId").hide();
+			$("#sendButtonId").show();
 		}
 	}
 

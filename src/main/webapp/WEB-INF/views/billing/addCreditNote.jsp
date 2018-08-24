@@ -440,10 +440,12 @@ function removeDynamicRowDiv(id){
 			$("#approverCheckBox").val("Y");
 			$("#approversDivId").show();
 			$("#submitButtonId").show();
+			$("#sendButtonId").hide();
 		} else {
 			$("#approverCheckBox").val("N");
 			$("#approversDivId").hide();
 			$("#submitButtonId").hide();
+			$("#sendButtonId").show();
 		}
 	}
 
