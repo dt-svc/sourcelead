@@ -857,6 +857,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setPreTaxDeduction(payroll.getPreTaxDeduction());
 			payrollDTO.setRegularHours(regHrs);
 			payrollDTO.setTaxes(payroll.getTaxes());
+			
 			payrollDTO.setOvertimeHours(otHrs);
 			totalHours = CommonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
 			payrollDTO.setTotalHours(totalHours);
@@ -877,6 +878,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				payrollDTO.setAeic(tax.getEarnedIncCredit());
 				payrollDTO.setMedicare(tax.getMedicareWithholding());
 				payrollDTO.setStateWithHolding(tax.getStateWithholding());
+				payrollDTO.setLocalTax(tax.getLocalTax());
 			}
 			payrollDTO.setTaxes(payroll.getTaxes());
 			
