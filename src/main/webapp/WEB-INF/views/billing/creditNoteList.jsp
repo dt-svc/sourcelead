@@ -194,7 +194,7 @@ function getCreditList(){
 		}
 	});
 	
-	$('input:checkbox[name=invoiceStatus]:checked').each(function() 
+	$('input:checkbox[name=creditNoteFilterStatus]:checked').each(function() 
     {
 		creditDebitNoteStatus.push($(this).val());
     });
@@ -280,7 +280,11 @@ function creditNotePagination(url){
 	    	  	"render": function(data, type, report, meta) {
 	    	  		var result = "";
 	    	  		result = result +'         <td>   ';
+	    	  		if(report.creditDebitNotedate != null && report.creditDebitNotedate !='' && report.creditDebitNotedate !='undefined'){
 				      result = result +'<div class="tbldata-dotdot-vsm" title="'+report.creditDebitNotedate+'">'+report.creditDebitNotedate+'</div>';
+	    	  		}else{
+	    	  			result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';	
+	    	  		}
 				      result = result +'         </td> ';
 		             return result;
 	    	  	}
@@ -339,7 +343,11 @@ function creditNotePagination(url){
 	    	  	"render": function(data, type, report, meta) {
 	    	  		var result = "";
 	    	  		result = result +'         <td> ';
+	    	  		if(report.invoceId !=null && report.invoceId !='' && report.invoceId !='undefined'){
 					result = result +'           <div class="tbldata-dotdot_80" title="'+report.invoceId+'">'+report.invoceId+'</div>';
+	    	  		}else{
+	    	  		 result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';
+	    	  		}
 					result = result +'         </td>';
   	              return result;
 	    	  	}
@@ -349,7 +357,11 @@ function creditNotePagination(url){
 	    	  	"render": function(data, type, report, meta) {
 	    	  		var result = "";
 	    	  		result = result +'         <td> ';
+	    	  		if(report.grandTotal !=null && report.grandTotal !='' && report.grandTotal !='undefined'){
 					result = result +'           <div class="tbldata-dotdot_80" title="'+report.grandTotal+'">'+report.grandTotal+'</div>';
+	    	  		}else{
+	    	  		result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';
+	    	  		}
 					result = result +'         </td>';
   	              return result;
 	    	  	}
@@ -359,7 +371,11 @@ function creditNotePagination(url){
 	    	  	"render": function(data, type, report, meta) {
 	    	  		var result = "";
 	    	  		result = result +'         <td> ';
-					result = result +'           <div class="tbldata-dotdot_80" title="'+report.total+'">'+report.total+'</div>';
+	    	  		if(report.grandTotal !=null && report.grandTotal !='' && report.grandTotal !='undefined'){
+					result = result +'           <div class="tbldata-dotdot_80" title="'+report.grandTotal+'">'+report.grandTotal+'</div>';
+	    	  		}else{
+	    	  		result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';	
+	    	  		}
 					result = result +'         </td>';
 	    	  		 return result;
 	    	  	}
@@ -820,13 +836,13 @@ function resetInvoiceFilter(){
 								<label><strong>Status</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="statusFilter">
-									<li class="checkBox positionRelative" ><input type="checkbox" value="DRAFT" name="invoiceStatus"><label for="onboard1">Draft</label></li>
-                                    <li class="checkBox positionRelative" ><input type="checkbox" value="SEND" name="invoiceStatus"><label for="onboard2">Send</label></li>
-                                    <li class="checkBox positionRelative" ><input type="checkbox" value="RECEIVED" name="invoiceStatus"><label for="onboard1">Received</label></li>
-	                               <!--  <li class="checkBox positionRelative" ><input type="checkbox"  value="ACCEPTED" name="invoiceStatus"><label for="onboard2">Accepted</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox" value="REJECTED" name="invoiceStatus"><label for="onboard2">Rejected</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox" value="LINKED" name="invoiceStatus"><label for="onboard2">Linked</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox" value="VOID" name="invoiceStatus"><label for="onboard2">Void</label></li> -->
+									<li class="checkBox positionRelative" ><input type="checkbox" value="Draft" name="creditNoteFilterStatus"><label for="onboard1">Draft</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" value="Send" name="creditNoteFilterStatus"><label for="onboard2">Send</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" value="Received" name="creditNoteFilterStatus"><label for="onboard1">Received</label></li>
+	                               <!--  <li class="checkBox positionRelative" ><input type="checkbox"  value="ACCEPTED" name="creditNoteFilterStatus"><label for="onboard2">Accepted</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="REJECTED" name="creditNoteFilterStatus"><label for="onboard2">Rejected</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="LINKED" name="creditNoteFilterStatus"><label for="onboard2">Linked</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="VOID" name="creditNoteFilterStatus"><label for="onboard2">Void</label></li> -->
 			                        </ul>
 							      </div>
 						     </div> 

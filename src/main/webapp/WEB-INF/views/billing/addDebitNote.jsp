@@ -245,7 +245,7 @@
 		<div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-          <input value="Draft" id="draftButtonId" onClick="saveDebitNote('DRAFT');" class="btn btn-warning" type="button">
+          <input value="Draft" id="draftButtonId" onClick="saveDebitNote('Draft');" class="btn btn-warning" type="button">
             <input value="Send" id="sendButtonId" onClick="saveDebitNote('Send');" class="btn btn-success mr ml" type="button">
             <input value="Submit" id = "submitButtonId" onClick="saveDebitNote('Submit');" class="btn btn-primary" type="button">
             <input value="Cancel" class="btn btn-default ml" type="button">

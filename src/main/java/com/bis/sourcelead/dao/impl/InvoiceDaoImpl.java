@@ -295,18 +295,18 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 		String subQuery = "";
 
-		if (Arrays.asList(noteTokens).contains("DRAFT")) {
-			subQuery = subQuery + "creditDebitNote.noteStatus = 'DRAFT' or ";
+		if (Arrays.asList(noteTokens).contains("Draft")) {
+			subQuery = subQuery + "creditDebitNote.noteStatus = 'Draft' or ";
 		}
-		if (Arrays.asList(noteTokens).contains("SEND")) {
-			subQuery = subQuery + "creditDebitNote.noteStatus = 'SEND' or ";
+		if (Arrays.asList(noteTokens).contains("Send")) {
+			subQuery = subQuery + "creditDebitNote.noteStatus = 'Send' or ";
 		}
-		if (Arrays.asList(noteTokens).contains("RECEIVED")) {
+		if (Arrays.asList(noteTokens).contains("Received")) {
 			subQuery = subQuery + "creditDebitNote.noteStatus = 'Received' or ";
 		}
 		
 		if ((noteTokens[0] != null && noteTokens[0].length() > 0)) {
-			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
+			subQuery = " and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
 		}
 
 		
@@ -358,7 +358,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			countQuery = "from CreditDebitNote creditDebitNote  where creditDebitNote.orgLocations.id =:orgLocationId and creditDebitNote.noteType='Debit'"
 					+ subQuery + " " + subQuery1 + " " + subQuery2+" and creditDebitNote.createdDate >= :startDateUTC and creditDebitNote.createdDate <= :endDateUTC";
 		}
-
+		
 		Query queryObj = session.createQuery(query + qry);
 		if (creditDebitNoteDTO != null && creditDebitNoteDTO.getLength() > 0) {
 			queryObj.setFirstResult(creditDebitNoteDTO.getStart());
