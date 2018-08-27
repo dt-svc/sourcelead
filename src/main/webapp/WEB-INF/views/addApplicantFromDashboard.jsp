@@ -634,6 +634,10 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     		 id = $this.find('select').attr('id');
      	      }
 	     	  
+	     	  if(name == null || name == '' || name == 'undefined'){
+	     		 name = $this.find('textarea').attr('name');
+     	      }
+	     	 
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
 	     		 if(inputValue != null && inputValue != 'undefined' && inputValue != ''){

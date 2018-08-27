@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -21,9 +22,19 @@ public class MyPayrollSummaryDTO {
 	
 	private Map<String, Double> payItem;
 	
-//	private BigDecimal federalWithholding;
-//	private BigDecimal Federal Insurance Contributions Act (FICA) 
-//		 State Withholding  Medicare Advanced Earned Income Credit  Conty Withholding Local Tax
+	
+	private EmployeeHoursDTO hours;
+	
+
+	public EmployeeHoursDTO getHours()
+	{
+		return hours;
+	}
+
+	public void setHours(EmployeeHoursDTO hours)
+	{
+		this.hours = hours;
+	}
 
 	public List<MyPayrollDTO> getMyPayroll()
 	{
