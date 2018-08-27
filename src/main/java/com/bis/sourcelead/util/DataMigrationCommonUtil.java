@@ -592,8 +592,9 @@ public class DataMigrationCommonUtil {
 				 for(int i=0; i<jsonarray.length(); i++){
 				        JSONObject obj = jsonarray.getJSONObject(i);
 				        if(obj.getString("req").equalsIgnoreCase("1")) {
-				        	if(dataMigrationDTOJsonCopy.getString(obj.getString("label").replaceAll("\\s+","")).equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString(obj.getString("label").replaceAll("\\s+","")))) {
-								errorSet.put(obj.getString("label").replaceAll("\\s+",""), obj.getString("label")+" field is missing");
+				        	String label = obj.getString("label").replaceAll("\\s+","");
+			        		if(!dataMigrationDTOJsonCopy.has(label)) {
+				        		errorSet.put(label, obj.getString("label")+" field is missing");
 							}
 				        }
 				 }
