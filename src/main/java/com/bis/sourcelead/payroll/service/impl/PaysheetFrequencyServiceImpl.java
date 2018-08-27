@@ -39,11 +39,14 @@ import com.bis.sourcelead.payroll.dao.USPaysheetDao;
 import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
+import com.bis.sourcelead.payroll.dto.EmployeeHoursDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
+import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
@@ -58,6 +61,7 @@ import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
+import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -94,6 +98,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	@Autowired
 	PaysheetFrequencyDao paysheetFrequencyDao;
 	
+	@Autowired
+	PayrollUtil payrollUtil;
+	
 	@Override
 	public Response<PayrollApproverDTO> sendPayrollForApprover(PayrollApproverDTO payrollApproverDTO, OrgLocations orgLocation,User loginUser)
 	{
@@ -129,9 +136,11 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				
 				
 				ConfigurePayrollApprover cpa = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
-				List<PayrollApprover> pa = configurePayrollApproverService.getPayrollApproversByCPAID(cpa.getId());
-				for (PayrollApprover payrollApprover : pa) {
-					sendMailToPayrollApprover(orgLocation,loginUser,payrollApprover,savedPF);
+				if(cpa != null) {
+					List<PayrollApprover> pa = configurePayrollApproverService.getPayrollApproversByCPAID(cpa.getId());
+					for (PayrollApprover payrollApprover : pa) {
+						sendMailToPayrollApprover(orgLocation,loginUser,payrollApprover,savedPF);
+					}
 				}
 				
 			}
@@ -250,6 +259,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public MyPayrollSummaryDTO getMyPayrollListByCandidateId(Long candidateId, OrgLocations orgLocation)
 	{
@@ -284,7 +294,12 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			BigDecimal emplrWyomingWC = BigDecimal.ZERO;
 			BigDecimal emplrOregonWC = BigDecimal.ZERO;
 			BigDecimal emplrTotalTax = BigDecimal.ZERO;
+			double regularTotalHrs = 0;
+			double otTotalHours = 0;
+			BigDecimal regTotalAmount = BigDecimal.ZERO;
+			BigDecimal otTotalAmount = BigDecimal.ZERO;
 			ConfirmPayTotalSumDTO paySum = new ConfirmPayTotalSumDTO();
+			Map<Double, BigDecimal> hrsMap = new HashMap<>();
 			if (empPayroll != null && empPayroll.size() > 0) {
 				list = new ArrayList<>();
 				for (EmployeePayroll payroll : empPayroll) {
@@ -302,9 +317,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 					myPayrollDTO.setNetPay(payroll.getNetPay());
 					myPayrollDTO.setTaxes(payroll.getTaxes());
 					myPayrollDTO.setPayrollUUID(payroll.getUsEmpPayrollUUID());
-					List<DeductionDTO> dlist = getDeductionData(payroll);
+					List<DeductionDTO> dlist = payrollUtil.getDeductionData(payroll);
 					dedHisList.addAll(dlist);
-					List<ContributionDTO> clist = getContributionData(payroll);
+					List<ContributionDTO> clist = payrollUtil.getContributionData(payroll);
 					contributionHisList.addAll(clist);
 					
 					List<AssociatePayItemDTO> pList = getPayItemData(payroll);
@@ -336,6 +351,16 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 					emplrWyomingWC = emplrWyomingWC.add(emplrTax.getEmployerWyomingWcTax());
 					emplrOregonWC = emplrOregonWC.add(emplrTax.getEmployerOregonWcTax());
 					
+					if(StringUtils.isNotBlank(payroll.getRegularHours())) {
+						regularTotalHrs  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(payroll.getRegularHours()),regularTotalHrs);
+						regTotalAmount = regTotalAmount.add(payroll.getRegularHoursAmount());
+					}
+					if(StringUtils.isNotBlank(payroll.getOverTimeHours())) {
+						otTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(payroll.getOverTimeHours()),otTotalHours);
+						otTotalAmount = otTotalAmount.add(payroll.getOverTimeAmount());
+					}
+					
+					
 					list.add(myPayrollDTO);
 				}
 				empTotalTax = empTotalTax.add(federalWithholding).add(fica).add(medicare).add(advancedEarnedIC).add(stateWithholding).add(countyWithholding).add(localTax);
@@ -344,7 +369,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				if(dedHisList.size() >0) {
 					List<DeductionDTO> preDedList = dedHisList.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
 				    List<DeductionDTO> postDedList = dedHisList.stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
-				    Map<String, Double> preDList = preDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getDedAmount)));
+				    Map<String, Double> preDList = preDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPreDeductionAmount)));
 				    response.setPreDed(preDList);
 				    Map<String, Double> postDList = postDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPostDeductionAmt)));
 				    response.setPostDed(postDList);
@@ -368,6 +393,13 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				paySum.setCountyWithholding(countyWithholding);
 				paySum.setLocalTax(localTax);
 				paySum.setTotalTax(empTotalTax);
+				
+				EmployeeHoursDTO hourDTO = new EmployeeHoursDTO();
+				hourDTO.setRegularHours(regularTotalHrs);
+				hourDTO.setRegularTimeAmount(regTotalAmount);
+				hourDTO.setOtHours(otTotalHours);
+				hourDTO.setOverTimeAmount(otTotalAmount);
+				response.setHours(hourDTO);
 //				paySum.setNetPay(BigDecimal.valueOf(netPay));
 				
 				//Setting Employer Taxes
@@ -411,6 +443,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		}
 		return list;
 	}
+
 
 	/**
 	 * Calculation Deduction of employee payroll
@@ -492,4 +525,33 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		}
 		return dedList;
 	}
+
+	@Override
+	public List<PaysheetFrequencyDTO> getPaysheetFrequencyDraftDataByOrgLocationId(OrgLocations orgLocation) {
+		
+		List<PaysheetFrequency> paySheetFreqList = paysheetFrequencyDao.getPaysheetFrequencyDraftDataByOrgLocationId(orgLocation.getId());
+		 
+		List<PaysheetFrequencyDTO> list = new ArrayList<>();
+		paySheetFreqList.forEach(pay -> {
+			List<String> statusList = new ArrayList<>();
+			PaysheetFrequencyDTO payFrequency = new PaysheetFrequencyDTO();
+			payFrequency.setPaySheetFrequencyuuid(pay.getPaySheetFrequencyUUID());
+			payFrequency.setGroupName(pay.getUserGroup().getGroupName());
+			StringBuilder str = new StringBuilder();
+			payFrequency.setPayFrequency(str.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyStartDate())).append(" - ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyEndDate())).toString());
+			payFrequency.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPayCheckDate()));
+			payFrequency.setApproverStatus(pay.getApproverStatus());
+			
+			
+			for (EmployeePayroll emp : pay.getEmployeepayroll()) {
+				statusList.add(emp.getSubmitForAproverStatus());
+			}
+
+			if(statusList.contains(Constants.DRAFT) && statusList.size() > 0)
+			list.add(payFrequency);
+		});
+		
+		return list;
+	}
+
 }
