@@ -133,7 +133,10 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from USPayPeriod usPay where usPay.orgLocation.id =:orgLocationId and usPay.paysheetFrequency.id =:paysheetFrequencyId";
-			 payPeriod = (USPayPeriod) session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setLong("paysheetFrequencyId", payfrequencyId).uniqueResult();	
+			List<USPayPeriod> payPeriodList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setLong("paysheetFrequencyId", payfrequencyId).list();	
+			if(payPeriodList != null && payPeriodList.size() > 0) {
+				payPeriod = payPeriodList.get(0);
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

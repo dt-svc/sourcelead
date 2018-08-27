@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -35,16 +36,21 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
+import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
+import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
+import com.bis.sourcelead.payroll.entity.EmployerPayrollTax;
+import com.bis.sourcelead.payroll.entity.PayitemHistory;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
@@ -55,7 +61,6 @@ import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.pay.Item;
 
 @Service
 public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
@@ -254,6 +259,32 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			List<MyPayrollDTO> list = null;
 			List<DeductionDTO> dedHisList = new ArrayList<>();
 			List<ContributionDTO> contributionHisList = new ArrayList<>();
+			List<AssociatePayItemDTO> payItemList = new ArrayList<>();
+			
+			// Emplyee Taxes
+			BigDecimal federalWithholding = BigDecimal.ZERO;
+			BigDecimal fica = BigDecimal.ZERO;
+			BigDecimal medicare = BigDecimal.ZERO;
+			BigDecimal advancedEarnedIC = BigDecimal.ZERO;
+			BigDecimal stateWithholding = BigDecimal.ZERO;
+			BigDecimal countyWithholding = BigDecimal.ZERO;
+			BigDecimal localTax = BigDecimal.ZERO;
+			BigDecimal empTotalTax = BigDecimal.ZERO;
+			
+			// Employer Taxes 
+			
+			BigDecimal emplrFICA = BigDecimal.ZERO;
+			BigDecimal emplrMedicare = BigDecimal.ZERO;
+			BigDecimal emplrFUTA = BigDecimal.ZERO;
+			BigDecimal emplrSUTA = BigDecimal.ZERO;
+			BigDecimal emplrRUIA = BigDecimal.ZERO;
+			BigDecimal emplrSUTASuracharge = BigDecimal.ZERO;
+			BigDecimal emplrSDI = BigDecimal.ZERO;
+			BigDecimal emplrTransitTaxes = BigDecimal.ZERO;
+			BigDecimal emplrWyomingWC = BigDecimal.ZERO;
+			BigDecimal emplrOregonWC = BigDecimal.ZERO;
+			BigDecimal emplrTotalTax = BigDecimal.ZERO;
+			ConfirmPayTotalSumDTO paySum = new ConfirmPayTotalSumDTO();
 			if (empPayroll != null && empPayroll.size() > 0) {
 				list = new ArrayList<>();
 				for (EmployeePayroll payroll : empPayroll) {
@@ -270,19 +301,46 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 					myPayrollDTO.setGrossPay(payroll.getGrossPay());
 					myPayrollDTO.setNetPay(payroll.getNetPay());
 					myPayrollDTO.setTaxes(payroll.getTaxes());
-					
+					myPayrollDTO.setPayrollUUID(payroll.getUsEmpPayrollUUID());
 					List<DeductionDTO> dlist = getDeductionData(payroll);
 					dedHisList.addAll(dlist);
 					List<ContributionDTO> clist = getContributionData(payroll);
 					contributionHisList.addAll(clist);
 					
-//			        Map<String, Double> sum = s.stream().collect(Collectors.groupingBy(DeductionHistory::getName, Collectors.summingDouble(Item::getQty)));
+					List<AssociatePayItemDTO> pList = getPayItemData(payroll);
+					payItemList.addAll(pList);
+					// Employee Taxes
+					Set<EmployeePayrollTax> payrollTax = payroll.getUsPayrollTax();
+					EmployeePayrollTax tax = payrollTax.iterator().next();
+					federalWithholding = federalWithholding.add(tax.getFederalWithholding());
+					fica = fica.add(tax.getFicaWithholding());
+					medicare = medicare.add(tax.getMedicareWithholding());
+					advancedEarnedIC = advancedEarnedIC.add(tax.getEarnedIncCredit());
+					stateWithholding = stateWithholding.add(tax.getStateWithholding());
+					countyWithholding = countyWithholding.add(tax.getCountyWithholding());
+					localTax = localTax.add(tax.getLocalTax());
 					
-					
+					// Employer Taxes
+					Set<EmployerPayrollTax> emplrPayrollTax = payroll.getEmployerpayrolltax();
+					EmployerPayrollTax emplrTax = emplrPayrollTax.iterator().next();
+					emplrFICA = emplrFICA.add(emplrTax.getEmployerFICA());
+					emplrMedicare = emplrMedicare.add(emplrTax.getEmployerMedicare());
+					emplrFUTA = emplrFUTA.add(emplrTax.getEmployerFUTA());
+					emplrSUTA = emplrSUTA.add(emplrTax.getEmployerSUTA());
+					emplrRUIA = emplrRUIA.add(emplrTax.getEmployerRUIA());
+					emplrSUTASuracharge = emplrSUTASuracharge.add(emplrTax.getEmployerSutaSurchargeTax());
+					if(emplrTax.getEmployerSDI() != null) {
+						emplrSDI = emplrSDI.add(emplrTax.getEmployerSDI());
+					}
+					emplrTransitTaxes = emplrTransitTaxes.add(emplrTax.getEmployerTransitTaxes());
+					emplrWyomingWC = emplrWyomingWC.add(emplrTax.getEmployerWyomingWcTax());
+					emplrOregonWC = emplrOregonWC.add(emplrTax.getEmployerOregonWcTax());
 					
 					list.add(myPayrollDTO);
 				}
-				
+				empTotalTax = empTotalTax.add(federalWithholding).add(fica).add(medicare).add(advancedEarnedIC).add(stateWithholding).add(countyWithholding).add(localTax);
+				emplrTotalTax = emplrTotalTax.add(emplrFUTA).add(emplrMedicare).add(emplrFUTA).add(emplrSUTA).add(emplrRUIA)
+				        .add(emplrSUTASuracharge).add(emplrSDI).add(emplrTransitTaxes).add(emplrWyomingWC).add(emplrOregonWC); 
 				if(dedHisList.size() >0) {
 					List<DeductionDTO> preDedList = dedHisList.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
 				    List<DeductionDTO> postDedList = dedHisList.stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
@@ -293,19 +351,65 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				}
 				
 				if(contributionHisList.size() >0) {
-//					List<ContributionDTO> preConList = contributionHisList.stream().filter(con->"pretax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());
-//					List<ContributionDTO> postConList = contributionHisList.stream().filter(con->"posttax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());
-//					Map<String, Double> preCList = preConList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getAmount)));
-//					response.setPreContribution(preCList);
 					Map<String, Double> contribution = contributionHisList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getContributionAmt)));
 					response.setContribution(contribution);
 				}
+				
+				if(payItemList.size() >0) {
+					Map<String, Double> payItem = payItemList.stream().collect(Collectors.groupingBy(AssociatePayItemDTO::getPayItemName,Collectors.summingDouble(AssociatePayItemDTO::getPayItemAmt)));
+					response.setPayItem(payItem);
+				}
+				
+				paySum.setFederalWithholding(federalWithholding);
+				paySum.setFicaWithholding(fica);
+				paySum.setMedicareWithholding(medicare);
+				paySum.setEarnedIncCredit(advancedEarnedIC);
+				paySum.setStateWithholding(stateWithholding);
+				paySum.setCountyWithholding(countyWithholding);
+				paySum.setLocalTax(localTax);
+				paySum.setTotalTax(empTotalTax);
+//				paySum.setNetPay(BigDecimal.valueOf(netPay));
+				
+				//Setting Employer Taxes
+				
+				paySum.setEmployerFICA(emplrFUTA);
+				paySum.setEmployerMedicare(emplrMedicare);
+				paySum.setEmployerFUTA(emplrFUTA);
+				paySum.setEmployerSUTA(emplrSUTA);
+				paySum.setEmployerRUIA(emplrRUIA);
+				paySum.setEmployerSutaSurchargeTax(emplrSUTASuracharge);
+				paySum.setEmployerSDI(emplrSDI);
+				paySum.setEmployerTransitTaxes(emplrTransitTaxes);
+				paySum.setEmployerWyomingWcTax(emplrWyomingWC);
+				paySum.setEmployerOregonWcTax(emplrOregonWC);
+				paySum.setEmployerTotalPay(emplrTotalTax);
+				
 				response.setMyPayroll(list);
+				response.setConfirmPayTotalSum(paySum);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return response;
+	}
+
+	/**
+	 * Calculating PayItem
+	 * @param payroll
+	 * @return List<AssociatePayItemDTO>
+	 */
+	private List<AssociatePayItemDTO> getPayItemData(EmployeePayroll payroll)
+	{
+		List<AssociatePayItemDTO> list = new ArrayList<>();
+		if (payroll.getPayitemHistory() != null) {
+			for (PayitemHistory his : payroll.getPayitemHistory()) {
+				AssociatePayItemDTO payItemDTO = new AssociatePayItemDTO();
+				payItemDTO.setPayItemName(his.getAssociatePayItem().getPayItemName());
+				payItemDTO.setPayItemAmt(his.getAssociatePayItem().getPayItemAmount().doubleValue());
+				list.add(payItemDTO);
+			}
+		}
+		return list;
 	}
 
 	/**

@@ -45,7 +45,7 @@
 		 </div>
 		 
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" id="notesSave_Button" onclick="saveNotesDatails('save');">
+            <input value="Save" class="" type="button" id="notesSave_Button" onclick="immigration.saveNotesDatails('save');">
             <input value="Cancel" class="popCan" type="button" onclick="refreshNotes();">
           </div>		
 	</div>	<!-- popcode end -->
