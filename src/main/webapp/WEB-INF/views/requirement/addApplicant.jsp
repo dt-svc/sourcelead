@@ -578,6 +578,15 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
       	  var fieldLabel = $this.find('label:first').text().replace("*","");
       	  var inputValue = $this.find('input[type="radio"]:checked').val();
       	  
+      	 var inputtype = $(this).find('input').attr('type');
+	   	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+	   		  if($(this).find('select').val() != null){
+	   			  inputtype = 'select';
+	   		  }else{
+	   			  inputtype = 'textarea';
+	   		  }
+	   	  }
+      	  
       	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
     		   inputValue = $this.find('input[type="checkbox"]:checked').val();
     		   if(inputValue != null){
@@ -624,6 +633,10 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
 	     		 id = $this.find('select').attr('id');
      	      }
 	     	  
+	     	 if(name == null || name == '' || name == 'undefined'){
+	     		 name = $this.find('textarea').attr('name');
+     	      }
+	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
 	     		  if(null != inputValue){
@@ -662,6 +675,7 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
 	     	  
       	  fields.push({
                 label: fieldLabel,
+                type:inputtype,
                 id :id,
                 name :name,
                 value: inputValue,
@@ -1048,7 +1062,11 @@ function addApplicantSubmission(){
 	     	  if(name == null || name == '' || name == 'undefined'){
 	     		 name = $this.find('select').attr('name');
 	     		 id = $this.find('select').attr('id');
-   	      }
+   	          }
+	     	  
+	     	  if(name == null || name == '' || name == 'undefined'){
+	     		 name = $this.find('textarea').attr('name');
+     	      }
 	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
@@ -1100,7 +1118,7 @@ function addApplicantSubmission(){
    
     
 		
-  /*    $("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     $("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
 	     $.ajax({
 	    	type: "POST",
@@ -1129,7 +1147,7 @@ function addApplicantSubmission(){
 						showError("Operation failed, please try again");
 					}
 	        },
-	    }); */ 
+	    }); 
     return true; 
   }
   else{
@@ -1219,6 +1237,10 @@ function addRequirementRecommendations(){
 		     	  if(name == null || name == '' || name == 'undefined'){
 		     		 name = $this.find('select').attr('name');
 		     		 id = $this.find('select').attr('id');
+	     	      }
+		     	  
+		     	 if(name == null || name == '' || name == 'undefined'){
+		     		 name = $this.find('textarea').attr('name');
 	     	      }
 		     	  
 		     	  if(name == "WorkExperience"){
