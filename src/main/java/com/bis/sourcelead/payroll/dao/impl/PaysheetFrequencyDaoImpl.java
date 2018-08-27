@@ -11,7 +11,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
+import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 
 @Repository
 public class PaysheetFrequencyDaoImpl implements PaysheetFrequencyDao{
@@ -31,5 +33,16 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 												   .setLong("candidateId", candidateId)
 												   .list();
 		return payrollList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<PaysheetFrequency> getPaysheetFrequencyDraftDataByOrgLocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PaysheetFrequency> paySheetFreqList = session.createQuery("from PaysheetFrequency pay where pay.orgLocation.id=:orgLocationId")
+				   .setLong("orgLocationId", orgLocationId)
+				   .list();
+		return paySheetFreqList;
 	}
 }

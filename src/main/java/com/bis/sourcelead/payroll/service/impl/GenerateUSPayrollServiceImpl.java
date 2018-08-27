@@ -197,8 +197,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				uSPaysheetService.addPaysheetFrequency(paySheetFreq);
 			}
 				paysheetFrequencyDTO = getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
-				List<USPayrollDTO> draftPayroll = paysheetFrequencyDTO.getPayrollDTO().stream().filter(p->PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus())).collect(Collectors.toList());
-				paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
+				if(paysheetFrequencyDTO.getPayrollDTO() != null) {
+					List<USPayrollDTO> draftPayroll = paysheetFrequencyDTO.getPayrollDTO().stream().filter(p->PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus())).collect(Collectors.toList());
+					paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
+				}
 		}
 		return paysheetFrequencyDTO;
 	}
