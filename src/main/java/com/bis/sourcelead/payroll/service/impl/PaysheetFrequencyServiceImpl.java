@@ -44,6 +44,8 @@ import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
+import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
@@ -129,9 +131,11 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				
 				
 				ConfigurePayrollApprover cpa = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
-				List<PayrollApprover> pa = configurePayrollApproverService.getPayrollApproversByCPAID(cpa.getId());
-				for (PayrollApprover payrollApprover : pa) {
-					sendMailToPayrollApprover(orgLocation,loginUser,payrollApprover,savedPF);
+				if(cpa != null) {
+					List<PayrollApprover> pa = configurePayrollApproverService.getPayrollApproversByCPAID(cpa.getId());
+					for (PayrollApprover payrollApprover : pa) {
+						sendMailToPayrollApprover(orgLocation,loginUser,payrollApprover,savedPF);
+					}
 				}
 				
 			}
@@ -491,5 +495,33 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			e.printStackTrace();
 		}
 		return dedList;
+	}
+
+	@Override
+	public List<PaysheetFrequencyDTO> getPaysheetFrequencyDraftDataByOrgLocationId(OrgLocations orgLocation) {
+		
+		List<PaysheetFrequency> paySheetFreqList = paysheetFrequencyDao.getPaysheetFrequencyDraftDataByOrgLocationId(orgLocation.getId());
+		 
+		List<PaysheetFrequencyDTO> list = new ArrayList<>();
+		paySheetFreqList.forEach(pay -> {
+			List<String> statusList = new ArrayList<>();
+			PaysheetFrequencyDTO payFrequency = new PaysheetFrequencyDTO();
+			payFrequency.setPaySheetFrequencyuuid(pay.getPaySheetFrequencyUUID());
+			payFrequency.setGroupName(pay.getUserGroup().getGroupName());
+			StringBuilder str = new StringBuilder();
+			payFrequency.setPayFrequency(str.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyStartDate())).append(" - ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyEndDate())).toString());
+			payFrequency.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPayCheckDate()));
+			payFrequency.setApproverStatus(pay.getApproverStatus());
+			
+			
+			for (EmployeePayroll emp : pay.getEmployeepayroll()) {
+				statusList.add(emp.getSubmitForAproverStatus());
+			}
+
+			if(statusList.contains(Constants.DRAFT) && statusList.size() > 0)
+			list.add(payFrequency);
+		});
+		
+		return list;
 	}
 }
