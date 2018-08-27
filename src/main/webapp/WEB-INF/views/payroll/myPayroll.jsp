@@ -302,8 +302,8 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
-               						<tr>
+               					<tbody id="payItemDIV">
+               					<!-- 	<tr>
                							<td>401(R)</td>
                							<td>50$</td>
                						</tr>
@@ -314,7 +314,7 @@ function loansAdvances(){
                						<tr>
                							<td><strong>Total</strong></td>
                							<td>100$</td>
-               						</tr>
+               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -332,15 +332,15 @@ function loansAdvances(){
                					<tbody>
                						<tr>
                							<td>401(R)</td>
-               							<td>50$</td>
+               							<td>999$</td>
                						</tr>
                						<tr>
                							<td>Post Tax</td>
-               							<td>50$</td>
+               							<td>999$</td>
                						</tr>
                						<tr>
                							<td><strong>Total</strong></td>
-               							<td>100$</td>
+               							<td>999$</td>
                						</tr>
                					</tbody>
                				</table>
@@ -406,6 +406,7 @@ function getMyPayrollList(){
 	var preDedTotal = 0;
 	var postDedTotal = 0;
 	var contrTotal = 0;
+	var payItemTotal = 0;
 	$.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getMyPayrollList?"+tokenParamName+"="+tokenValue                 , 
@@ -484,6 +485,24 @@ function getMyPayrollList(){
 	         contr = contr + '</tr>';
 	         $("#contributionDIV").empty();
 	         $("#contributionDIV").append(contr);
+	         
+	         // PayItem 
+	         
+	         var payItem = "";
+	         for(var e in result.payItem){
+	        	 payItemTotal = payItemTotal + result.payItem[e];
+	        	 payItem = payItem + '<tr>';
+	        	 payItem = payItem + '<td>'+e+'</td>';
+	        	 payItem = payItem + '<td>$ '+result.payItem[e]+'</td>';
+	        	 payItem = payItem + '</tr>';
+	         }
+	         payItem = payItem + '<tr>';
+	         payItem = payItem + '<td><strong>Total</strong></td>';
+	         payItem = payItem + '<td>$ '+payItemTotal+'</td>';
+	         payItem = payItem + '</tr>';
+	         $("#payItemDIV").empty();
+	         $("#payItemDIV").append(payItem);
+	         
 	        
 	        var result = "";
 	        result = result +'<table id="myPayrollTableDiv" class="display" cellspacing="0" width="100%" >';

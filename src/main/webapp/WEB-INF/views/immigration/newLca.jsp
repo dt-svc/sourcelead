@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script type="text/javascript" src="/resources/js/immigration.js"></script>
 <c:set var = "lcaDTO" scope = "page" value = '<%= session.getAttribute("lcaDTO")%>'/>
-
+s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index  rowindex starts from 0-->
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -32,7 +32,7 @@
 			
   	<input type="hidden" id="lcaId" name="lcaId" value="${lcaDTO.lcaId}">
   	<input type="hidden" name="lcaPlaceOfEmploymentList[0].plsempmntId" value="${lcaDTO.lcaPlaceOfEmploymentList[0].plsempmntId}">
-  	<input type="hidden" name="lcaDocumentList[0].docId" value="${lcaDTO.lcaDocumentList[0].docId}">
+  	<%-- <input type="hidden" name="lcaDocumentList[0].docId" value="${lcaDTO.lcaDocumentList[0].docId}"> --%>
     <div class="row clearfix mt" >
          <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb" id="errLcaNoDiv">
             <label class="col-md-4">LCA No<span class="text-danger paddingLeft">*</span></label>
@@ -413,7 +413,7 @@
           </div>
           </div>
           <div class="clearfix">
-          
+          <c:if test="${empty lcaDTO.lcaDocumentList}">
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Title</label>
         		<div class="col-md-12">
@@ -444,6 +444,54 @@
         	
         	</div>
         	  <div class="clearfix"></div>
+        	 </c:if> 
+          <c:if test="${!empty lcaDTO.lcaDocumentList}">
+          <c:forEach var='lcaAttachment' items="${lcaDTO.lcaDocumentList}" varStatus="rows">
+         	<input type="hidden" name="lcaDocumentList[${rows.count-1}].docId" value="${lcaDTO.lcaDocumentList[rows.count-1].docId}">
+          <c:set var="rowIndex" value="${rows.count-1}" scope="page"/>
+           <div id ='dynamicAttachmentDiv${rows.count-1}'>
+            <c:if test = "${rows.count >1}">
+        	  	  <div class="clearfix col-md-12">
+				<div class='pull-right col-md-6'>
+				 <button type='button' class='btn btn-default pull-right' onclick='removeDynamicAttachmentDiv(${rows.count-1})'>
+				 <i class ='fa fa-remove text-danger paddingRight'></i>Remove</button>
+				</div>
+				</div>
+			
+				</c:if>
+        	<div class="col-md-4 mb">
+        		<label class="col-md-12">Title</label>
+        		<div class="col-md-12">
+        			<input type="text" name="lcaDocumentList[${rows.count-1}].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[rows.count-1].documentTitle}" class="form-control" placeholder="Document Title">
+        		</div>
+        	</div>
+        	
+        	<div class="col-md-4 mb">
+        		<label class="col-md-12">Attachment</label>
+        		<div class="col-md-12">
+					<div class="input-group">
+					<label class="input-group-btn">
+						<span class="btn btn-primary" onchange="uploadLCADocs(${rows.count-1});"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+						<input type="file" style="display: none;" onchange="uploadBtnFile(${rows.count-1});"  id="uploadBtn${rows.count-1}" class="upload">
+						</span>
+					</label>
+					<input type="text" class="form-control" name="lcaDocumentList[${rows.count-1}].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[rows.count-1].fileName}" readonly id="uploadFile${rows.count-1}" placeholder="Files are not selected...">
+					</div>
+        		</div>
+        	</div>
+        	
+        	<div class="col-md-4 mb">
+        		<label class="col-md-12">Comment</label>
+        		<div class="col-md-12">
+					<textarea class="form-control" name="lcaDocumentList[${rows.count-1}].description"  id="description" placeholder="Comment" rows="2">${lcaDTO.lcaDocumentList[rows.count-1].description}</textarea>
+        		</div>
+        	</div>
+        	
+        	</div>
+        	 
+        	  </div>
+        	  </c:forEach>
+        	 </c:if> 
         	 <div id ="appendDynamicAttachmentDiv" ><!-- Attachment dynamic div start -->
           
              </div> <!--  Attachment dynamic div end -->
@@ -699,8 +747,9 @@ $('#endDate').datepicker({
 		return preparePlsofEmpmtdiv; 
    }
 	
- //  var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
-   var rowId =1;
+   var rowId ="${rowIndex+1}";// set the value for dyamic row when clicked on add button in UI.
+   console.log("rowId value is test --->"+rowId);
+   
    function appendDynamicPlaceofEmploymentDiv(){
 	  
 	   console.log("rowId value is --->"+rowId);
@@ -723,7 +772,7 @@ $('#endDate').datepicker({
    } 
  </script>
  
- <script type="text/javascript">
+<!--  <script type="text/javascript">
 	  $( document ).ready(function() {
 		  var sizeOfplsOfEmpmnt = "${fn:length(lcaDTO.lcaPlaceOfEmploymentList)}";
 		  if(sizeOfplsOfEmpmnt > 0){
@@ -746,7 +795,7 @@ $('#endDate').datepicker({
 		  	</c:forEach>
 		  }
  });
-</script>
+</script> -->
 
 <!-- <script type="text/javascript">
 $('button').click(function (event) {
@@ -771,25 +820,24 @@ $('button').click(function (event) {
  <script type="text/javascript">
    
     function prepareDynamicAttachmentDiv(rowId,attachmentVal){
-    	
        var prepareAttachmentdiv ='';
        prepareAttachmentdiv =prepareAttachmentdiv+ "<div id ='dynamicAttachmentDiv"+rowId+"'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   <div class='clearfix'></div>";
-       prepareAttachmentdiv =prepareAttachmentdiv+ "   <div class='col-xs-12 col-sm-12 col-md-12 mb'>";
+       prepareAttachmentdiv =prepareAttachmentdiv+ "   <div class='col-xs-12 col-sm-12 col-md-12 mb noPad'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   <h5 class='col-xs-8 col-sm-8 col-md-8'>Attachment<span class='text-danger paddingLeft'>*</span></h5> ";
        prepareAttachmentdiv =prepareAttachmentdiv+ "    <div class='col-xs-4 col-sm-4 col-md-4'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "    <div class='pull-right'>";
-       prepareAttachmentdiv =prepareAttachmentdiv+ "   <button type='button' class='btn btn-default pull-right' onclick='removeDynamicAttachmentDiv("+rowId+","+(typeof attachmentVal[0]==="undefined"?"":attachmentVal[0])+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove</button>";
-       prepareAttachmentdiv =prepareAttachmentdiv+ "   <input type='hidden' name='lcaDocumentList["+rowId+"].id' value='"+(typeof attachmentVal[0]==="undefined"?"":attachmentVal[0])+"'>";
+       prepareAttachmentdiv =prepareAttachmentdiv+ "   <button type='button' class='btn btn-default pull-right' onclick='removeDynamicAttachmentDiv("+rowId+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove</button>";
+       prepareAttachmentdiv =prepareAttachmentdiv+ "   <input type='hidden' name='lcaDocumentList["+rowId+"].id' value=''>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   <div class='clearfix'></div>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   </div>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   </div>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "   </div>";
-       prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-4 mb'>";
+       prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-4 mb pl0'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Title</label>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-12'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "  <input type='text' class='form-control' id='documentTitle"+rowId+"'";
-       prepareAttachmentdiv =prepareAttachmentdiv+ " 						name='lcaDocumentList["+rowId+"].documentTitle' value='"+(typeof attachmentVal[1]==="undefined"?"":attachmentVal[1])+"' field-name='documentTitle' placeholder='Document Title'";
+       prepareAttachmentdiv =prepareAttachmentdiv+ " 						name='lcaDocumentList["+rowId+"].documentTitle' value='' field-name='documentTitle' placeholder='Document Title'";
        prepareAttachmentdiv =prepareAttachmentdiv+ " 						data-validation='validate_Space validate_length length2-250'";
        prepareAttachmentdiv =prepareAttachmentdiv+ " 						data-validation-optional='true'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
@@ -805,17 +853,16 @@ $('button').click(function (event) {
        prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='file' style='display: none;' multiple onchange='uploadBtnFile("+rowId+");' id='uploadBtn" + rowId + "'  class='upload'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "</span>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</label>";
-	   prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='text' class='form-control' name='lcaDocumentList["+rowId+"].fileInfo[0].docFile' value='"+(typeof attachmentVal[2]==="undefined"?"":attachmentVal[2])+"' readonly id='uploadFile"+rowId+"' placeholder='Files are not selected...'>";
+	   prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='text' class='form-control' name='lcaDocumentList["+rowId+"].fileInfo[0].docFile' value='' readonly id='uploadFile"+rowId+"' placeholder='Files are not selected...'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
 	   
 	   
-	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-4 mb'>";
+	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-4 mb pr0'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Comment</label>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-12'>";
-	   prepareAttachmentdiv =prepareAttachmentdiv+ " <textarea class='form-control' name='lcaDocumentList["+rowId+"].description' id='description"+rowId+"' value='"+(typeof attachmentVal[3]==="undefined"?"":attachmentVal[3])+"' placeholder='Comment' rows='2'>";
-	   prepareAttachmentdiv =prepareAttachmentdiv+ ""+(typeof attachmentVal[3]==="undefined" ? " ":attachmentVal[3])+"";
+	   prepareAttachmentdiv =prepareAttachmentdiv+ " <textarea class='form-control' name='lcaDocumentList["+rowId+"].description' id='description"+rowId+"' value='' placeholder='Comment' rows='2'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</textarea>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
@@ -827,48 +874,43 @@ $('button').click(function (event) {
     }
     
     
-    var rowId =1;
+    var rowId ="${rowIndex+1}" // set the value for dyamic row when clicked on add button in UI.
     function appendDynamicAttachmentDiv(){
  	   console.log("rowId value is --->"+rowId);
  	   $("#appendDynamicAttachmentDiv").append(prepareDynamicAttachmentDiv(rowId++,"")); 
     }
     //var deletedResicenceListIds = new Array();
-    var removedAttachmentIds = [];
+  //  var removedAttachmentIds = [];
     function removeDynamicAttachmentDiv(id,attachmentId){
-    	removedAttachmentIds.push(attachmentId);
+    	//removedAttachmentIds.push(attachmentId);
  	   
  	   $("#dynamicAttachmentDiv"+id).remove();
+ 	  $("input[name='lcaDocumentList["+id+"].docId']").remove();// remove the deleted row for saving.
  	   rowId--;// decrement rowid when deleted in UI.
     } 
    
 </script>
 
- <script type="text/javascript">
+<!--  <script type="text/javascript">
 	  $( document ).ready(function() {
-		  var sizeOfAttachment = "${fn:length(lcaDTO.lcaDocumentList)}";
-			
-		  if(sizeOfAttachment > 0){
-			$("#appendDynamicAttachmentDiv").empty();
-		  	var count = 1;
-		  
 		  	var attachmentArr = [];
-		  	<c:forEach var='lcaAttachment' items="${lcaDTO.lcaDocumentList}">
+		  	<c:forEach var='lcaAttachment' items="${lcaDTO.lcaDocumentList}" varStatus="rows">
+		  	 	<c:if test="${rows.count > 1}">
+		  		alert("rows Count "+ "${rows.count}");
 			  		attachmentArr.push("${lcaAttachment.docId == 'undefined' ? '':lcaAttachment.docId}");
-		  		
 			  		attachmentArr.push("${lcaAttachment.documentTitle}");
 			  		attachmentArr.push("${lcaAttachment.fileName}");
 			  		attachmentArr.push("${lcaAttachment.description}");
 			  		$("#appendDynamicAttachmentDiv").empty();
-				  	$("#appendDynamicAttachmentDiv").append(prepareDynamicAttachmentDiv(count,attachmentArr));
+				  	$("#appendDynamicAttachmentDiv").append(prepareDynamicAttachmentDiv("${rows.count}-1" ,attachmentArr));
 				  	attachmentArr = [];
-			  		count++;
-			  		
+			  		//count++;
+			  	 </c:if>	
 		  	</c:forEach>
-		  	
-		  }
+			  		rowId ="${fn:length(lcaDTO.lcaDocumentList)}";
  });
 </script>
-
+ -->
 <script>
     function uploadLCADocs(id) {
         fileUpload("uploadBtn" + id + "", "LCADocuments", "lcaDetailsForm", "lcaDocumentList["+id+"].fileInfo");
