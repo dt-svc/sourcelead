@@ -3158,12 +3158,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 							timelineDTO.setEmailAttachment(emailAttachment);
 						}
 						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Partial Payment updated";
+							statusVal = "Partial Paid updated";
 							statusBy = " by ";
 							statusValue =timelineHistory.getCreatedBy().getFullName();
 						} else if (!timelineHistory.getCreatedBy().getId()
 								.equals(timelineHistory.getOwnerUser().getId())) {
-							statusVal = "Partial Payment updated";
+							statusVal = "Partial Paid updated";
 							statusBy = " by ";
 							statusValue = timelineHistory.getCreatedBy().getFullName();
 						}
