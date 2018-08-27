@@ -3058,6 +3058,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			timelineHistory.setInvoicePaymentReminderId(invoicePaymentId);
 			timelineHistory.setInvoicePaymentReminderStatus(invoice.getPaymentStatus());
 			timelineHistory.setInvoiceStatus(Constants.INVOICE_TIMELINE_STATUS_PAID);
+		}else if (invoice.getPaymentStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PARTIAL_PAID)) {
+			timelineHistory.setInvoicePaymentReminderId(invoicePaymentId);
+			timelineHistory.setInvoicePaymentReminderStatus(invoice.getPaymentStatus());
+			timelineHistory.setInvoiceStatus(invoice.getPaymentStatus());
 		} else if (invoice.getTimelineHistoryReminder() != null) {
 			timelineHistory.setInvoicePaymentReminderEmailBody(returnMap.get("emailBody"));
 			timelineHistory.setInvoicePaymentReminderEmailFrom(returnMap.get("fromEmail"));
@@ -3136,7 +3140,34 @@ public class InvoiceServiceImpl implements InvoiceService {
 							statusBy = " by ";
 							statusValue = timelineHistory.getCreatedBy().getFullName();
 						}
-					} else if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase("Reminder")) {
+					}else if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PARTIAL_PAID)) {
+						InvoicePayment invoicePayment = invoicePaymentService
+								.invoicePaymentById(timelineHistory.getInvoicePaymentReminderId());
+						timelineDTO.setPaymentAmount(invoicePayment.getPaymentAmount());
+						timelineDTO.setPaymentCurrency(invoicePayment.getCurrencyCode());
+						timelineDTO.setPaymentMethod(invoicePayment.getPaymentMethod());
+						timelineDTO.setPaymentReferenceNum(invoicePayment.getPaymentReferenceNumber());
+						timelineDTO.setPaymentDate(formatter.format(invoicePayment.getPaymentDate()));
+						timelineDTO.setPaymentComment(invoicePayment.getPaymentComment());
+						timelineDTO.setInvoicePaymentReminderStatus(timelineHistory.getInvoicePaymentReminderStatus());
+						if(invoicePayment.getFileName() != null) {
+							EmailAttachment emailAttachment = new EmailAttachment();
+							emailAttachment.setFileUrl(invoicePayment.getFileURL());
+							emailAttachment.setName(invoicePayment.getFileName());
+							emailAttachment.setContent(invoicePayment.getFileContentType());
+							timelineDTO.setEmailAttachment(emailAttachment);
+						}
+						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
+							statusVal = "Partial Payment updated";
+							statusBy = " by ";
+							statusValue =timelineHistory.getCreatedBy().getFullName();
+						} else if (!timelineHistory.getCreatedBy().getId()
+								.equals(timelineHistory.getOwnerUser().getId())) {
+							statusVal = "Partial Payment updated";
+							statusBy = " by ";
+							statusValue = timelineHistory.getCreatedBy().getFullName();
+						}
+					}else if (timelineHistory.getInvoicePaymentReminderStatus().equalsIgnoreCase("Reminder")) {
 
 						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
 						timelineDTO.setInvoiceReminderEmailTo(timelineHistory.getInvoicePaymentReminderEmailTo());
