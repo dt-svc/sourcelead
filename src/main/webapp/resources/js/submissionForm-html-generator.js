@@ -225,7 +225,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                              }
 
                              else if (fieldType == 'radio') {
-                                 var choiceHTML = '<label><input type="radio" name="'+label+'" onclick="getRadioValue(this,\''+label+'\');"  value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 var choiceHTML = '<label><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label+'\');"  value="' + v['label'] + '">' + v['label'] + '</label>';
                                  if(required == 1 && flag == 0){
                                 	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle+'radio" data-validation="required" field-name="'+labelTitle+'">';
                                  }
@@ -234,7 +234,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
 
                              else if (fieldType == 'checkbox') {
                                  var selected = v['sel'] ? ' checked' : 'checked';
-                                 var choiceHTML = '<label><input type="checkbox" name="'+label+'" onclick="getCheckBoxValue(this,\''+label+'\')"  value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 var choiceHTML = '<label><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label+'\')"  value="' + v['label'] + '">' + v['label'] + '</label>';
                                  if(required == 1 && flag == 0){
                                 	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
                                  }
