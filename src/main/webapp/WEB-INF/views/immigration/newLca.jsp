@@ -12,7 +12,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script type="text/javascript" src="/resources/js/immigration.js"></script>
 <c:set var = "lcaDTO" scope = "page" value = '<%= session.getAttribute("lcaDTO")%>'/>
-s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index  rowindex starts from 0-->
+<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index  rowindex starts from 0-->
+<c:set var="rowIndexPlempt" value="0" scope="page" />
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -70,7 +71,7 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
             <div class="col-md-8">
                <select class="form-control sel" name="status" id="status" field-name="Status" data-validation="required">
                  <option value=""> --Select-- </option>
-                <option ${lcaDTO.status == '1' ? 'selected': ''} value='Ative'>Ative</option>
+                <option ${lcaDTO.status == '1' ? 'selected': ''} value='Active'>Active</option>
                 <option ${lcaDTO.status == '0' ? 'selected': ''} value='In-active'>In-active</option>
               </select>
           	</div>
@@ -208,14 +209,14 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
           </div>
           
           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-            <label class="col-md-4 paddingRight">SOC <br> Occupation Title<span class="text-danger paddingLeft">*</span></label>
+            <label class="col-md-4 paddingRight">SOC Title<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
 				<input type="text" name="socOccupationTitle" value="${lcaDTO.socOccupationTitle}" id="socOccupationTitle" class="form-control" placeholder="SOC Occupation Title" field-name="SOC Occupation Title" data-validation="required">
           	</div>
           </div>
           
           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-            <label class="col-md-4 paddingRight">Offered Wage<!-- <span class="text-danger paddingLeft">*</span> --></label>
+            <label class="col-md-4 paddingRight">Offered Wage <span class="text-danger paddingLeft">*</span> </label>
             <div class="col-md-8 ">
             <div class="input-group er ratetype">
                 <div class="input-group-btn">
@@ -229,11 +230,11 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
 									</select>
                 </div>
                 <input type="text" id="offeredWage" name="offeredWage" value="${lcaDTO.offeredWage}" class="form-control" value="" field-name="Offered Wage"
-								data-validation="validate_Space validate_float validate_length length1-15"
-								data-validation-optional="true" placeholder="Wage Or Rate">
-                <div class="input-group-btn">
+								data-validation="required validate_Space validate_float validate_length length1-8"
+								 placeholder="Wage Or Rate">
+                <div class="input-group-btn ratetype">
                  <select class="selectpicker form-control" id="offeredWageRateType" name="offeredWageRateType" field-name="Rate Per" data-style="btn-primary">
-						 <option ${lcaDTO.offeredWageRateType == 'Rate Per' ? 'selected' : ''} value="Rate Per">Rate Per</option>
+						 <option value="">Rate Per</option>
 						<option ${lcaDTO.offeredWageRateType == 'Hourly' ? 'selected' : ''} value="Hourly">Hourly</option>
 						<option ${lcaDTO.offeredWageRateType == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
 						<option ${lcaDTO.offeredWageRateType == 'Bi-Weekly' ? 'selected' : ''} value="Bi-Weekly">Bi-Weekly</option>
@@ -261,7 +262,8 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
           <div class="clearfix"></div>
           
          <div class="clearfix">
-         
+          <c:if test="${empty lcaDTO.lcaPlaceOfEmploymentList}">
+          <input type="hidden" name="lcaPlaceOfEmploymentList[0].plsempmntId" value="">
 	          <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 	              <label class="col-md-4">Location<span class="text-danger paddingLeft">*</span></label>
 	              <div class="col-md-8">
@@ -326,6 +328,93 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
 					field-name="Zip Code" data-validation="validate_int validate_length length2-8" data-validation-optional="true">
 					</div>
 				</div>
+				</c:if>
+				
+		 <c:if test="${!empty lcaDTO.lcaPlaceOfEmploymentList}">
+          <c:forEach var='lcaPlaceOfEmployment' items="${lcaDTO.lcaPlaceOfEmploymentList}" varStatus="rows">
+          	<input type="hidden" name="lcaPlaceOfEmploymentList[${rows.count-1}].plsempmntId" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].plsempmntId}">
+          	<c:set var="rowIndexPlempt" value="${rows.count-1}" scope="page"/>
+          	<div id ='dynamicPlsofEmpmtDiv${rows.count-1}'>
+          	<c:if test = "${rows.count >1}">
+          	 <div class="clearfix col-md-12">
+				<div class='pull-right col-md-6'>
+				 <button type='button' class='btn btn-default pull-right' onclick='removeDynamicPlsofEmpmtDiv(${rows.count-1})'>
+				 <i class ='fa fa-remove text-danger paddingRight'></i>Remove</button>
+				</div>
+			</div>
+			</c:if>
+          	<!-- rows start -->
+          	
+          	 <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
+	              <label class="col-md-4">Location<span class="text-danger paddingLeft">*</span></label>
+	              <div class="col-md-8">
+	                  <div class="positionRelative">
+									<input class="form-control positionRelative"
+										id="location" name="lcaPlaceOfEmploymentList[${rows.count-1}].location" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].location}" onclick="initLocationAuto('location','country','state','city','zipCode','','','','addressLine1');"
+										placeholder="Enter Location" type="text" field-name="Location" data-validation="required"></input> <i
+										class="fa fa-refresh btn btn-primary refresh-icon"
+										title="Refresh"
+										onClick="refreshGoogleApiLocation('location','country','state','city','zipCode','addressLine1ss');"></i>
+						</div>
+	              </div>
+	            </div>
+         
+				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
+					<label class="col-md-4">Address Line 1</label>
+					<div class="col-md-8">
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].addressLine1" id="addressLine1"  value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].addressLine1}" class="form-control" placeholder="Address Line 1" field-name="Address Line1"
+								data-validation="validate_Space validate_length length1-250"
+								data-validation-optional="true">
+					</div>
+				</div>
+				
+				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
+					<label class="col-md-4">Address Line 2</label>
+					<div class="col-md-8">
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].addressLine2" id="addressLine2" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].addressLine2}" class="form-control" placeholder="Address Line 2" field-name="Address Line2"
+								data-validation="validate_Space validate_length length1-250"
+								data-validation-optional="true">
+					</div>
+				</div>
+				
+				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
+					<label class="col-md-4">City</label>
+					<div class="col-md-8">
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].city" id="city" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].city}" class="form-control" placeholder="City" field-name="City"
+								data-validation="required validate_length length2-100">
+					</div>
+				</div>
+				
+				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
+					<label class="col-md-4">State</label>
+					<div class="col-md-8">
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].state" id="state" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].state}" class="form-control" placeholder="State" field-name="State"
+								data-validation="required validate_length length2-100">
+					</div>
+				</div>
+				
+				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
+					<label class="col-md-4">Country</label>
+					<div class="col-md-8">
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].country" id="country" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country == null ? loginCountryName  : lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country}"  class="form-control" placeholder="Country" field-name="Country"
+								data-validation="required validate_length length2-100">
+					</div>
+				</div>
+				
+				
+				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
+					<label class="col-md-4">Zip Code</label>
+					<div class="col-md-8">
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].zipCode" id="zipCode" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].zipCode}" class="form-control" placeholder="Zip Code"
+					field-name="Zip Code" data-validation="validate_int validate_length length2-8" data-validation-optional="true">
+					</div>
+				</div>
+				<!-- rows end -->
+          	
+          	</div>
+          
+          </c:forEach>
+          </c:if>
          </div>
          
          
@@ -347,6 +436,8 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
                <option value=""> --Select-- </option>
                 <option ${lcaDTO.wagesLevel == 'Level 1' ? 'selected' : ''} value="Level 1">Level 1</option>
                 <option ${lcaDTO.wagesLevel == 'Level 2' ? 'selected' : ''} value="Level 2">Level 2</option>
+                <option ${lcaDTO.wagesLevel == 'Level 3' ? 'selected' : ''} value="Level 3">Level 3</option>
+                <option ${lcaDTO.wagesLevel == 'Level 4' ? 'selected' : ''} value="Level 4">Level 4</option>
               </select>
           	</div>
             <div class="col-md-4">
@@ -355,7 +446,7 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
           </div>
          
            <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-            <label class="col-md-4 paddingRight">Prevailing  Wage<!-- <span class="text-danger paddingLeft">*</span> --></label>
+            <label class="col-md-4 paddingRight">Prevailing  Wage <span class="text-danger paddingLeft">*</span> </label>
             <div class="col-md-8">
             <div class="input-group er ratetype">
                 <div class="input-group-btn">
@@ -369,11 +460,11 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
 					</select>
                 </div>
                 <input type="text" name="prevailingWage" id="prevailingWage" value="${lcaDTO.prevailingWage}" class="form-control" value="" field-name="Prevailing Wage"
-								data-validation="validate_Space validate_float validate_length length1-15"
-								data-validation-optional="true" placeholder="Wage Or Rate">
-                <div class="input-group-btn">
+								data-validation="required validate_Space validate_float validate_length length1-8"
+							    placeholder="Wage Or Rate">
+                <div class="input-group-btn ratetype">
                  <select class="selectpicker form-control" id="privilingWageRateType" name="privilingWageRateType" field-name="Rate Per" data-style="btn-primary">
-						 <option ${lcaDTO.privilingWageRateType == 'Rate Per' ? 'selected' : ''} value="Rate Per">Rate Per</option>
+						 <option  value="">Rate Per</option>
 						<option ${lcaDTO.privilingWageRateType == 'Hourly' ? 'selected' : ''} value="Hourly">Hourly</option>
 						<option ${lcaDTO.privilingWageRateType == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
 						<option ${lcaDTO.privilingWageRateType == 'Bi-Weekly' ? 'selected' : ''} value="Bi-Weekly">Bi-Weekly</option>
@@ -388,17 +479,7 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
           	</div>
           </div>
           
-         <%--  <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-            <label class="col-md-4">Select Employee</label>
-            <div class="col-md-8">
-              <select class="form-control chosen-select" name="employee" id="employee" multiple data-placeholder="Select Employee">
-                    <option value="">Select Employee</option>
-					<option ${lcaDTO.employee == 'Emploee 1' ? 'selected' : ''} value='Emploee 1'>Emploee 1</option>
-					<option ${lcaDTO.employee == 'Emploee 2' ? 'selected' : ''} value='Emploee 2'>Emploee 2</option>
-					<option ${lcaDTO.employee == 'Emploee 3' ? 'selected' : ''} value='Emploee 3'>Emploee 3</option>
-              </select>
-          	</div>
-          </div> --%>
+         
           
          <!-- Attachment Add Row  -->
          
@@ -414,6 +495,7 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
           </div>
           <div class="clearfix">
           <c:if test="${empty lcaDTO.lcaDocumentList}">
+          <input type="hidden" name="lcaDocumentList[0].docId" value="">
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Title</label>
         		<div class="col-md-12">
@@ -445,6 +527,7 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
         	</div>
         	  <div class="clearfix"></div>
         	 </c:if> 
+        	 
           <c:if test="${!empty lcaDTO.lcaDocumentList}">
           <c:forEach var='lcaAttachment' items="${lcaDTO.lcaDocumentList}" varStatus="rows">
          	<input type="hidden" name="lcaDocumentList[${rows.count-1}].docId" value="${lcaDTO.lcaDocumentList[rows.count-1].docId}">
@@ -489,7 +572,6 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
         	
         	</div>
         	 
-        	  </div>
         	  </c:forEach>
         	 </c:if> 
         	 <div id ="appendDynamicAttachmentDiv" ><!-- Attachment dynamic div start -->
@@ -523,6 +605,7 @@ s<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index 
   <script type="text/javascript">
 
   function saveLcaDetails(){
+	  privilingWageValidations();
        var validationSettings = {
             errorMessagePosition: 'element',
             borderColorOnError: '',
@@ -747,14 +830,14 @@ $('#endDate').datepicker({
 		return preparePlsofEmpmtdiv; 
    }
 	
-   var rowId ="${rowIndex+1}";// set the value for dyamic row when clicked on add button in UI.
-   console.log("rowId value is test --->"+rowId);
+   var rowIdPlempt ="${rowIndexPlempt+1}";// set the value for dyamic row when clicked on add button in UI.
+   console.log("rowId value is test --->"+rowIdPlempt);
    
    function appendDynamicPlaceofEmploymentDiv(){
 	  
-	   console.log("rowId value is --->"+rowId);
-	   $("#dynamicPlaceofEmploymentDiv").append(prepareDynamicPlaceofEmploymentDiv(rowId++,"")); 
-	   if(rowId > 2){
+	   console.log("rowId value is --->"+rowIdPlempt);
+	   $("#dynamicPlaceofEmploymentDiv").append(prepareDynamicPlaceofEmploymentDiv(rowIdPlempt++,"")); 
+	   if(rowIdPlempt > 2){
 		   $("#placeEmployMntId").hide();
 	   }
 		  
@@ -765,54 +848,15 @@ $('#endDate').datepicker({
 	   removedPlsofEmpmtIds.push(plsofEmpmtId);
 	   
 	   $("#dynamicPlsofEmpmtDiv"+id).remove();
-	   rowId--;// decrement rowid when deleted in UI.
-	   if(rowId <= 2){
+	   rowIdPlempt--;// decrement rowid when deleted in UI.
+	   if(rowIdPlempt <= 2){
 		   $("#placeEmployMntId").show();
 	   }
    } 
  </script>
  
-<!--  <script type="text/javascript">
-	  $( document ).ready(function() {
-		  var sizeOfplsOfEmpmnt = "${fn:length(lcaDTO.lcaPlaceOfEmploymentList)}";
-		  if(sizeOfplsOfEmpmnt > 0){
-		  	var count = 1;
-		  	var plsOfEmpmntArr = [];
-		  	/*  var th = $(this); */
-		  	<c:forEach var='plsOfEmpmnt' items="${lcaDTO.lcaPlaceOfEmploymentList}">
-			  		plsOfEmpmntArr.push("${plsOfEmpmnt.plsempmntId == 'undefined' ? '':plsOfEmpmnt.plsempmntId}");
-			  		plsOfEmpmntArr.push("${plsOfEmpmnt.location}");
-			  		plsOfEmpmntArr.push("${plsOfEmpmnt.addressLine1}");
-			  		plsOfEmpmntArr.push("${plsOfEmpmnt.addressLine2}");
-			  		plsOfEmpmntArr.push("${plsOfEmpmnt.city}");
-			  		plsOfEmpmntArr.push("${plsOfEmpmnt.state}");
-			  		plsOfEmpmntArr.push("${plsOfEmpmnt.country}");
-			  		plsOfEmpmntArr.push("${plsOfEmpmnt.zipCode}");
-			  		$("#dynamicPlaceofEmploymentDiv").empty();
-				  	$("#dynamicPlaceofEmploymentDiv").append(prepareDynamicPlaceofEmploymentDiv(count,plsOfEmpmntArr));
-				  	plsOfEmpmntArr = [];
-			  		count++;
-		  	</c:forEach>
-		  }
- });
-</script> -->
+ 
 
-<!-- <script type="text/javascript">
-$('button').click(function (event) {
-    $("#sourceTable tr:gt(0)").each(function(){
-        var th = $(this);
-        console.log("dfg")
-        if($(th).find("input[name='link-cbx']").is(":checked")){ //assuming ids are unique remove condition if you do notwant so
-            var id = $(th).find("td:eq(1)").text();
-            var name = $(th).find("td:eq(7)").text();
-            var type = "Type "+$("input[name='linkType']:checked").val();
-            if($("#targetTable:contains('"+id+"')").length < 1){            
-                $("#targetTable").append("<tr><td>"+id+"</td><td>"+name+"</td><td>"+type+"</td></tr>");
-            }
-        }
-    });
-});
-</script> -->
  <!-- Place of Employment Add Row Script END Here -->  	
  
  <!-- Attachment Add Row Script Start Here -->
@@ -891,26 +935,6 @@ $('button').click(function (event) {
    
 </script>
 
-<!--  <script type="text/javascript">
-	  $( document ).ready(function() {
-		  	var attachmentArr = [];
-		  	<c:forEach var='lcaAttachment' items="${lcaDTO.lcaDocumentList}" varStatus="rows">
-		  	 	<c:if test="${rows.count > 1}">
-		  		alert("rows Count "+ "${rows.count}");
-			  		attachmentArr.push("${lcaAttachment.docId == 'undefined' ? '':lcaAttachment.docId}");
-			  		attachmentArr.push("${lcaAttachment.documentTitle}");
-			  		attachmentArr.push("${lcaAttachment.fileName}");
-			  		attachmentArr.push("${lcaAttachment.description}");
-			  		$("#appendDynamicAttachmentDiv").empty();
-				  	$("#appendDynamicAttachmentDiv").append(prepareDynamicAttachmentDiv("${rows.count}-1" ,attachmentArr));
-				  	attachmentArr = [];
-			  		//count++;
-			  	 </c:if>	
-		  	</c:forEach>
-			  		rowId ="${fn:length(lcaDTO.lcaDocumentList)}";
- });
-</script>
- -->
 <script>
     function uploadLCADocs(id) {
         fileUpload("uploadBtn" + id + "", "LCADocuments", "lcaDetailsForm", "lcaDocumentList["+id+"].fileInfo");
@@ -1188,3 +1212,28 @@ function validateLcaTitle() {
 	}); 
  </script>
  
+<script>
+    function privilingWageValidations() {
+        var offeredWage = document.getElementById("offeredWage").value;
+        var offeredWageRateType = document.getElementById("offeredWageRateType").value;
+        if (offeredWage != null && offeredWage != "") {
+            $('#offeredWageRateType').removeAttr('data-validation-optional');
+            $('#offeredWageRateType').attr("data-validation", "required");
+            $('#offeredWage').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+        } else {
+            $('#offeredWageRateType').removeAttr('data-validation');
+            $('#offeredWageRateType').attr("data-validation-optional", "true");
+        }
+        
+        var prevailingWage = document.getElementById("prevailingWage").value;
+        var privilingWageRateType = document.getElementById("privilingWageRateType").value;
+        if (prevailingWage != null && prevailingWage != "") {
+            $('#privilingWageRateType').removeAttr('data-validation-optional');
+            $('#privilingWageRateType').attr("data-validation", "required");
+            $('#prevailingWage').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+        } else {
+            $('#privilingWageRateType').removeAttr('data-validation');
+            $('#privilingWageRateType').attr("data-validation-optional", "true");
+        }
+    }
+</script>

@@ -7,7 +7,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
 
  <section class="content-wraper content-wraperNew">
 	        <div class="success_pop" id="selector" >
@@ -15,7 +14,7 @@
 			</div>
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>LCA View Details</h2>
+        <h2>View LCA</h2>
       </div>
 	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewLCAList">LCA List</a> &raquo; LCA Summary</div>
 		<input type="hidden" id = "lcaUuid" value = "${lcaUuid}">
