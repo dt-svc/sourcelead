@@ -44,8 +44,9 @@ function approvePayrollDiv(){
 		   <li class="current"><a onclick="reviewPayrollDiv();">Review Payroll</a></li>
 		    <li class="current"><a onclick="approvePayrollDiv();">Approve Payroll</a></li>
 		   <li><a href="<c:url value='${appPath}/approvePayrollDiv'/>" >Approve Payroll</a></li>
+
 	   </ul>
-   </div>
+ </div>
 
 <div class="clearfix"></div>
 <div class="timesheet_out" id="reviewPayrollDiv">
