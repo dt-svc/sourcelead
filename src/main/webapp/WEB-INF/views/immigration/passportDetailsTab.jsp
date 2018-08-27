@@ -58,7 +58,7 @@
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteImmigrationRecord('deletePassportVisaDetails',${passportdetails.id},'${passportdetails.idType}');" 
+				 onclick="deleteImmigrationRecord('immigration.deletePassportVisaDetails',${passportdetails.id},'${passportdetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 				    </c:when>
 				    <c:otherwise>
@@ -66,7 +66,7 @@
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
 						       <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteImmigrationRecord('deletePassportVisaDetails',${passportdetails.id},'${passportdetails.idType}');" 
+				 onclick="deleteImmigrationRecord('immigration.deletePassportVisaDetails',${passportdetails.id},'${passportdetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>

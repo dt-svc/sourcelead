@@ -29,6 +29,9 @@ public class DeductionDTO {
 	
 	private String preDeductionAmt;
 	
+	private double postDeductionAmt;
+	
+	
 	public double getDedAmount()
 	{
 		return dedAmount;
@@ -174,7 +177,18 @@ public class DeductionDTO {
 	{
 		this.preDeductionAmt = preDeductionAmt;
 	}
-	
+
+	public double getPostDeductionAmt()
+	{
+		return postDeductionAmt;
+	}
+
+
+	public void setPostDeductionAmt(double postDeductionAmt)
+	{
+		this.postDeductionAmt = postDeductionAmt;
+	}
+
 	
 	
 	

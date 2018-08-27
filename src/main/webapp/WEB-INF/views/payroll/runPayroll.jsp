@@ -32,7 +32,8 @@ function approvePayrollDiv(){
 <div class="pull-left">
 <h2>Payroll</h2>
 </div>
-<div class="pull-right brud-crum">Home &raquo; Payroll</div>
+<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/payrollList'/>">payrollList</a> &raquo; Payroll</div>
+
 </section>
 		<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -41,7 +42,7 @@ function approvePayrollDiv(){
 <div class="tabsMenu clearfix">
    		<ul class="list-unstyled">
 		   <li class="current"><a onclick="reviewPayrollDiv();">Review Payroll</a></li>
-		    <li class="current"><a onclick="approvePayrollDiv();">Approve Payroll</a></li>
+		    <li class="current"><a>Approve Payroll</a></li>
 		  <%--  <li><a href="<c:url value='${appPath}/approvePayrollDiv'/>" >Approve Payroll</a></li> --%>
 	   </ul>
    </div>
@@ -86,7 +87,7 @@ function approvePayrollDiv(){
   
  
 <div class="tableScroll">
-<form:form id="submit_for_approver" name="submit_for_approver" method="post">
+<form:form id="submit_for_approver"  name="submit_for_approver" method="post">
  <div class="styleTables clearfix mt">
  <!-- <div id="USPayrollDiv"></div> -->
  <div id="payrollDataDiv"></div>
@@ -99,8 +100,8 @@ function approvePayrollDiv(){
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
 	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
-		<li><a href="#" class="btn btn-primary btnSuccess" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
-		<li><a href="#" class="btn btn-default ml mr" onclick="confirmPayroll();">Confirm</a></li>
+		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
+		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
 	</div>
@@ -275,6 +276,7 @@ function runUSPayroll(){
 		    	type: "POST",
 		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate,                 
 		        success: function(data) {
+		        	   var count = 0;
 		        		 var json = data.payrollDTO;
 				        	var result = "";
 				        	result += '<table>';
@@ -305,6 +307,7 @@ function runUSPayroll(){
 				        	if(json != null && json.length > 0){
 				        		for (var i=0; i<json.length; i++){
 				        			var opt = json[i];
+				        			count++;
 				        			result += '<tr>';
 						        	 result += '<td>';
 						        	if(json.length > 1){
@@ -349,6 +352,11 @@ function runUSPayroll(){
 					        	
 				        	}
 				        	result += '</tbody>';
+				        	if(count== 0){
+					    		result = result+'<tr><td align="top" colspan="11" class="tblminwidth-50 clearfix dataTables_empty"></td></tr>';	
+					    		$("#Submit").hide();
+					    		$("#Confirm").hide();
+					    	}
 				        	result += '</table>';
 				        	$("#payrollDataDiv").empty();
 				        	$("#payrollDataDiv").append(result);

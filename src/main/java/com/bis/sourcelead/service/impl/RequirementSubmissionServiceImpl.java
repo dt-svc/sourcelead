@@ -65,6 +65,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -90,6 +91,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -232,6 +234,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 	
+	@Autowired
+	CountriesService countiresService;
+	
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -276,6 +281,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 Date date = new Date();
 		 OrgLocations guestOrglocation=null;
 		 String submissionstatus=null;
+		 Countries countries = null;
+		 if(StringUtils.isNotBlank(orgLocations.getCountry())) {
+			 countries = countiresService.getCountriesByCountryName(orgLocations.getCountry());
+		 }
+		 
+		 
 		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(jsonObj.has("guestApplicant")){
 			 submissionstatus="guestApplicant";
@@ -359,6 +370,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 					if(jsonObj.has("currentCTCRateType") && !isNullOrEmpty(jsonObj.getString("currentCTCRateType"))){
 						candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
+					}else {
+						if(countries != null) {
+							candidate.setCurrentRateCurrency(countries.getCurrency());
+						}
 					}
 					
 					if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
@@ -367,11 +382,17 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 					if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
 						 candidate.setCurrentRateType(jsonObj.getString("currentCTCRatePer"));
+					}else {
+						candidate.setCurrentRateType("Monthly");
 					}
 					
 					if(jsonObj.has("expectedCTCRateType") && !isNullOrEmpty(jsonObj.getString("expectedCTCRateType"))){
 						 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
 						 
+					}else {
+						if(countries != null) {
+							candidate.setExpectedRateCurrencey(countries.getCurrency());
+						}
 					}
 					 
 					if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
@@ -381,6 +402,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 					if(jsonObj.has("expectedCTCRatePer") && !isNullOrEmpty(jsonObj.getString("expectedCTCRatePer"))){
 						 candidate.setRateType(jsonObj.getString("expectedCTCRatePer"));
+					}else {
+						candidate.setRateType("Monthly");
 					}
 					
 					if(jsonObj.has("NoticePeriod") && !isNullOrEmpty(jsonObj.getString("NoticePeriod"))){
@@ -829,6 +852,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("currentCTCRateType") && !isNullOrEmpty(jsonObj.getString("currentCTCRateType"))){
 			 templateFields.setCurrentRateType(jsonObj.getString("currentCTCRateType"));
+		 }else {
+			 if(countries != null) {
+					templateFields.setCurrentRateType(countries.getCurrency());
+				}
+			 
 		 }
 		 
 		 if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
@@ -837,15 +865,23 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("expectedCTCRateType") && !isNullOrEmpty(jsonObj.getString("expectedCTCRateType"))){
 			 templateFields.setExpectedRateType(jsonObj.getString("expectedCTCRateType"));
+		 }else {
+			 if(countries != null) {
+					templateFields.setExpectedRateType(countries.getCurrency());
+				}
 		 }
 		 
 			
 		 if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
 			templateFields.setCurrentRatePer(jsonObj.getString("currentCTCRatePer"));
+		 }else {
+			 templateFields.setCurrentRatePer("Monthly");
 		 }
 			
 		 if(jsonObj.has("expectedCTCRatePer") && !isNullOrEmpty(jsonObj.getString("expectedCTCRatePer"))){
 			 templateFields.setExpectedRatePer(jsonObj.getString("expectedCTCRatePer"));
+		 }else {
+			 templateFields.setExpectedRatePer("Monthly");
 		 }
 		 
 		 if(jsonObj.has("NoticePeriod") && !isNullOrEmpty(jsonObj.getString("NoticePeriod"))){
