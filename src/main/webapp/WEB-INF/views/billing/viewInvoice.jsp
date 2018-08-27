@@ -149,7 +149,8 @@ $(document).ready(function(){
 					<div class="clearfix">
 						 <div class="headActions">
 							<ul class="clearfix">
-								<li><a href="javascript:void(0)"><i class="filtIcon" onclick="openPop();"></i></a>
+								<li><a href="javascript:void(0)" class="sortIcon" id="sortTimeline"></a></li>
+								<li><a href="javascript:void(0)"><i class="filtIcon" onclick="openPop();"></i></a></li>
 								<li><input class="innSeaFld" id="invoiceTimelineSearch" placeholder="Status/Reason" type="text"></li>	
 							</ul>
 						</div> 
@@ -173,22 +174,6 @@ $(document).ready(function(){
 				<div class="addInner newOver">
 					<div class="row">
 							
-						<div class="col-md-2">
-						<div class="row">
-						<div class="col-md-12 mb">
-							<label><strong>Sorting</strong></label>
-							 <div class="clearfix">
-								<ul class="list-unstyled" id="statusFilter">
-		                    	    <li class="checkBox positionRelative"><input   type="radio" id="timelineRadioDesc" value="desc" name="orderTimelineRadio" checked="checked"><label>&nbsp;Top to Bottom</label></li>
-									<li class="checkBox positionRelative"><input   type="radio" id="timelineRadioAsc" value="asc" name="orderTimelineRadio"><label>&nbsp;Bottom to Top</label></li>
-		               				
-		                        </ul>
-							 </div>
-							 </div> 
-							 
-						  </div>
-						</div>
-						
 						<div class="col-md-7">
 						<div class="row">
 							 <div class="col-md-6 positionRelative mb">
@@ -383,13 +368,11 @@ function restTimelineFileter(){
 	$.datepicker._clearDate('#timelineFromDate');
 	$.datepicker._clearDate('#timelineToDate');
 	$('input[name="timelineStatusCheck"]:checkbox').attr('checked',false);
-	document.getElementById("timelineRadioDesc").checked = true;
 	timelineHistoryFunction('', 'desc', null, null,null);
 	$('input[name="userNameCheck"]:checkbox').attr('checked',false);
 }
 
 function submitFilterActions(){
-	var selectedOrderVal = $('input[name="orderTimelineRadio"]:checked').val();
 	var checkedStatus = [];
 	$('input[name="timelineStatusCheck"]:checked').each(function() {
 		   checkedStatus.push(this.value);
@@ -403,7 +386,7 @@ function submitFilterActions(){
 	$('input[name="userNameCheck"]:checked').each(function() {
 		checkedNames.push(this.value);
 	});
-	timelineHistoryFunction("",selectedOrderVal,dateRange, checkedStatus,checkedNames);
+	timelineHistoryFunction("",'desc',dateRange, checkedStatus,checkedNames);
 }
 
 function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesStatus){
@@ -1772,6 +1755,20 @@ $(".filtIcon, .newActFilter").click(function(e){
 		
 	</script>
 
+<script>
+function ascFunctionCall(){
+	timelineHistoryFunction('', 'asc', null, null, null);
+}
+
+function descFunctionCall(){
+	timelineHistoryFunction('', 'desc', null, null, null);
+}
+
+$('#sortTimeline').click(function(){
+	  $(this).toggleClass('sortUp');
+	  return $(this).hasClass('sortUp') ? ascFunctionCall() : descFunctionCall();
+});
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />	

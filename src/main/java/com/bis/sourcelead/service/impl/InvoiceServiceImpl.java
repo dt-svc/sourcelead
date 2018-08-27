@@ -3054,8 +3054,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if (linkedChildInvoice != null) {
 			timelineHistory.setLinkedChildinvoice(linkedChildInvoice);
 			timelineHistory.setInvoiceStatus(linkedChildInvoice.getInvoiceStatus());
-		}
-		if (invoice.getPaymentStatus().equalsIgnoreCase("Paid")) {
+		}else if (invoice.getPaymentStatus().equalsIgnoreCase("Paid")) {
 			timelineHistory.setInvoicePaymentReminderId(invoicePaymentId);
 			timelineHistory.setInvoicePaymentReminderStatus(invoice.getPaymentStatus());
 			timelineHistory.setInvoiceStatus(Constants.INVOICE_TIMELINE_STATUS_PAID);

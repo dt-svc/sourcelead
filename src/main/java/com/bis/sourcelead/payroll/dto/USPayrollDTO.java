@@ -87,7 +87,17 @@ public class USPayrollDTO {
 	
 	private String approverStatus;
 	
+	private BigDecimal localTax;
 	
+	
+	public BigDecimal getLocalTax()
+	{
+		return localTax;
+	}
+	public void setLocalTax(BigDecimal localTax)
+	{
+		this.localTax = localTax;
+	}
 	public String getApproverStatus() {
 		return approverStatus;
 	}

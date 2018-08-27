@@ -1,4 +1,4 @@
-<jsp:include page="../masterHeader.jsp" />
+<%-- <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -42,10 +42,11 @@ function approvePayrollDiv(){
 <div class="tabsMenu clearfix">
    		<ul class="list-unstyled">
 		   <li class="current"><a onclick="reviewPayrollDiv();">Review Payroll</a></li>
-		    <li class="current"><a>Approve Payroll</a></li>
-		  <%--  <li><a href="<c:url value='${appPath}/approvePayrollDiv'/>" >Approve Payroll</a></li> --%>
+		    <li class="current"><a onclick="approvePayrollDiv();">Approve Payroll</a></li>
+		   <li><a href="<c:url value='${appPath}/approvePayrollDiv'/>" >Approve Payroll</a></li>
+
 	   </ul>
-   </div>
+ </div>
 
 <div class="clearfix"></div>
 <div class="timesheet_out" id="reviewPayrollDiv">
@@ -573,7 +574,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
 
  <!-- Net Edit popup -->
 
-<%-- <div class="sideMask"></div>
+<div class="sideMask"></div>
 <div class="modal usRunpayroll" style="display: none;" id="usRunpayroll">
 <form:form id="payroll_adjustment_form" name="payroll_adjustment_form" method="post">
   <div class="modal-dialog modal-lg">
@@ -800,7 +801,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
   </div>
   </form:form>
 </div>
- --%>
+
 
 //Net payedit Script
 <!-- 	<script>
@@ -1001,4 +1002,4 @@ function clearPayrollDiv(){
 }
 </script>
 
-<jsp:include page="../masterFooter.jsp" />
+<jsp:include page="../masterFooter.jsp" /> --%>

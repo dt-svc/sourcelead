@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserGroupDao;
@@ -319,10 +320,17 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 		PaysheetFrequencyDTO pfDTO = new PaysheetFrequencyDTO(); 
 		pfDTO.setPayrollFrequencyUUID(pf.getPaySheetFrequencyUUID());
 		pfDTO.setId(String.valueOf(pf.getId()));
+		pfDTO.setPaySheetFrequencyId(pf.getId());
 		List<USPayrollDTO> list = new ArrayList<>();
 		try {
 			if (pf != null && pf.getEmployeepayroll() != null) {
-				Set<EmployeePayroll> set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum()).collect(Collectors.toSet());
+				Set<EmployeePayroll> set = null;
+				if(paysheetFrequencyDTO.getApproverStatus() != null && paysheetFrequencyDTO.getApproverStatus().equalsIgnoreCase(Constants.DRAFT)) {
+					set = pf.getEmployeepayroll().stream().filter(p->p.getPaysheetFrequency().getId() == pfDTO.getPaySheetFrequencyId() && p.getSubmitForAproverStatus().equalsIgnoreCase(Constants.DRAFT)).collect(Collectors.toSet());
+				}else {
+					set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum()).collect(Collectors.toSet());
+				}
+				
 				for(EmployeePayroll pay : set) {
 					USPayrollDTO payrollDTO = new USPayrollDTO();
 					payrollDTO.setEmpPayrollId(pay.getId());
@@ -351,7 +359,9 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
 					}
 					payrollDTO.setOvertimeHours(overTimeHours);
+					if(paysheetFrequencyDTO.getApproverStatus() != null && !paysheetFrequencyDTO.getApproverStatus().equalsIgnoreCase(Constants.DRAFT)) {
 					pfDTO.setPayPeriodNum(Integer.parseInt(pay.getPayPeriodNum()));
+					}
 					list.add(payrollDTO);
 				}
 				pfDTO.setPayrollDTO(list);
@@ -361,4 +371,5 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 		}
 		return pfDTO;
 	}
+
 }
