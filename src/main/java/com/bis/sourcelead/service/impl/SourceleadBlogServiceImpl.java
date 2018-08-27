@@ -69,6 +69,7 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 		}
 		
 		if(sourceleadBlogDTO.getDescription() != null) {
+	//	String formatedText = sourceleadBlogDTO.getDescription().replace("<.*?>", "").replaceAll("\\<.*?\\>", "").replaceAll("<style[\\w\\W]+?</style>", "");
 		sourceleadBlogs.setDescription(sourceleadBlogDTO.getDescription());
 		}
 		

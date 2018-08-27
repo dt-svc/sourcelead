@@ -995,6 +995,15 @@ function addApplicantSubmission(){
     	  var fieldLabel = $this.find('label:first').text().replace("*","");
     	  var inputValue = $this.find('input[type="radio"]:checked').val();
     	  
+    	  var inputtype = $(this).find('input').attr('type');
+    	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+    		  if($(this).find('select').val() != null){
+    			  inputtype = 'select';
+    		  }else{
+    			  inputtype = 'textarea';
+    		  }
+    	  }
+    	  
     	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
   		   inputValue = $this.find('input[type="checkbox"]:checked').val();
   		   if(inputValue != null){
@@ -1079,6 +1088,7 @@ function addApplicantSubmission(){
 	     	  
     	  fields.push({
               label: fieldLabel,
+              type : inputtype,
               id :id,
               name :name,
               value: inputValue,
@@ -1090,7 +1100,7 @@ function addApplicantSubmission(){
    
     
 		
-     $("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+  /*    $("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
 	     $.ajax({
 	    	type: "POST",
@@ -1119,7 +1129,7 @@ function addApplicantSubmission(){
 						showError("Operation failed, please try again");
 					}
 	        },
-	    }); 
+	    }); */ 
     return true; 
   }
   else{
@@ -1155,6 +1165,15 @@ function addRequirementRecommendations(){
 	      	  var divId = $(this).attr('id');  
 	      	  var fieldLabel = $this.find('label:first').text().replace("*","");
 	      	  var inputValue = $this.find('input[type="radio"]:checked').val();
+	      	  
+	      	  var inputtype = $(this).find('input').attr('type');
+	    	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+	    		  if($(this).find('select').val() != null){
+	    			  inputtype = 'select';
+	    		  }else{
+	    			  inputtype = 'textarea';
+	    		  }
+	    	  }
 	      	  
 	      	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
 	    		   inputValue = $this.find('input[type="checkbox"]:checked').val();
@@ -1240,6 +1259,7 @@ function addRequirementRecommendations(){
 		     	  
 	      	  fields.push({
 	                label: fieldLabel,
+	                type : inputtype,
 	                id :id,
 	                name :name,
 	                value: inputValue,
@@ -1941,6 +1961,46 @@ function getSubmittedCandidateDetails(submissionId){
 		        		 $("select[name=NoticePeriod]").val(''); 
 		        	 } 
 		        	 
+		        	 
+		        	 var details = eval(json.submissionJsonStringValue);
+			    	   $.each(details, function( k, v ) {
+		    			  if(v['name'] != 'FirstName' && v['name'] != 'LastName' && v['name'] != 'EmailId' && v['name'] != 'PhoneNumber'
+		    				  && v['name'] != 'Designation' && v['name'] != 'country' && v['name'] != 'state' && v['name'] != 'city'  
+		    					  && v['name'] != 'NoticePeriod' && v['name'] != 'WorkExperience' && v['name'] != 'ExpectedCTC'
+		    						  && v['name'] != 'CurrentCTC' && v['name'] != 'Education' && v['name'] != 'AlternateNumber' 
+		    						  && v['name'] != 'location' && v['name'] != 'zipcode' && v['name'] != 'DOB' 
+		    							  && v['name'] != 'Current/LastCompany'){
+		    				  
+		    				var attr = v['name'];
+		    				var attrVal = v['value'];
+		    				var attrValues = v['value'].split(',');
+		    				
+		    				if(attrValues.length == 1){
+		    							    					
+		    					if(v['type'] == 'select'){
+		    						$("select[name='"+attr+"']").val(attrVal);
+		    					}else if(v['type'] == 'checkbox'){
+		    						$("input[name='"+attr+"'][value='"+attrVal+"']").attr('checked', true);
+		    						$('#'+attr+"checkbox").val(attrVal); 
+		    					}else if(v['type'] == 'radio'){
+		    						$("input[name='"+attr+"'][value='"+attrVal+"']").attr('checked', true);
+		    						$('#'+attr+"radio").val(attrVal); 
+		    					}else if(v['type'] == 'textarea'){
+		    						$("textarea[name='"+attr+"']").text(attrVal);
+		    					}else{
+		    						$("input[name='"+v['name']+"']").val(v['value']);
+		    					}
+		    				   
+		    				}else{
+		    					for(var i=0; i<=attrValues.length; i++){
+		    						$("input[name='"+attr+"'][value='"+attrValues[i]+"']").attr('checked', true);
+		    					}
+		    					 $('#'+attr+"checkbox").val(attrVal); 
+		    				}
+		    				
+		    			  }
+		    				   
+			    	   });
 		        },
 		    });
 	 }else{
