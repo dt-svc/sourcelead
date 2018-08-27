@@ -476,18 +476,16 @@ function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 
 
 <script type="text/javascript">
  function deleteLcaDetailsByRowId(lcaUuid){
-	 
 	 var reason = $("#reasonForLca").val();
-	
      if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
      $("#reasonForLcaDiv").empty();
 		$.ajax({
-	        url: sourceleadUrl + immiModulePath + "/deleteLcaDetailsById?lcaUuid="+lcaUuid,
+	        url: sourceleadUrl+"/immigration/deleteLcaDetailsById?lcaUuid="+lcaUuid,
 	        type: "GET",
 	        success: function (result) {
 	        	$("#remove_lca_pop").fadeOut(200);
 	    		$(".project_inn_mask").fadeOut(200);
-	    		window.location.href = sourceleadUrl + immiModulePath + "/viewLCAList";
+	    		window.location.href = sourceleadUrl+"/immigration/viewLCAList";
 	        }
 		});
      }else if (reason.length >= 251){
@@ -533,7 +531,7 @@ function reActivateLca(candidateId){
 	var result = "";
 		var reactivate = '1';
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,{},function(result){
+		$.post(sourceleadUrl+"/immigration/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,{},function(result){
 			if (result && result.response === "INVALID_DATA") {
 			    $("#update_candidate").removeAttr("disabled");
 			    $("#update_candidate").removeAttr('button').val('Save');
@@ -554,10 +552,10 @@ function reActivateLca(candidateId){
 <script type="text/javascript">
  function reActivateLca(lcaUuid){
 		$.ajax({
-	        url: sourceleadUrl + immiModulePath + "/reActivateLca?lcaUuid="+lcaUuid,
+	        url: sourceleadUrl +"/immigration/reActivateLca?lcaUuid="+lcaUuid,
 	        type: "GET",
 	        success: function (result) {
-	    		window.location.href = sourceleadUrl + immiModulePath + "/viewLCAList";
+	    		window.location.href = sourceleadUrl+"/immigration/viewLCAList";
 	        }
 		});
 	}

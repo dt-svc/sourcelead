@@ -32,7 +32,14 @@
 				<li class="clearfix"><span>LCA No</span><p>: ${lcaDTO.lcaNo}</p></li>
 				<li class="clearfix"><span>LCA Title</span><p>: ${lcaDTO.lcaTitle}</p></li>
 				<li class="clearfix"><span>LCA Status</span><p>: ${lcaDTO.lcaStatus}</p></li>
-				<li class="clearfix"><span>Status</span><p>: ${lcaDTO.status}</p></li>
+				
+				<c:if test="${lcaDTO.status == '1'}">
+				<li class="clearfix"><span>Status</span><p>: Active</p></li>
+				</c:if>
+				<c:if test="${lcaDTO.status == '0'}">
+				<li class="clearfix"><span>Status</span><p>: In-active</p></li>
+				</c:if>
+				
 				<li class="clearfix"><span>Start Date</span><p>: ${lcaDTO.startDate}</p></li>
 				<li class="clearfix"><span>End Date</span><p>: ${lcaDTO.endDate}</p></li>
 				<li class="clearfix"><span>No.of Positions</span><p>: ${lcaDTO.noOfPositions}</p></li>
