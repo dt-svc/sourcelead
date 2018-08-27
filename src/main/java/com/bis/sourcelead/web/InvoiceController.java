@@ -330,6 +330,37 @@ public class InvoiceController {
 	return model;
 	}
 	
+	@RequestMapping(value = "/creditNoteList")
+	public ModelAndView creditNoteList(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "invoiceCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "invoiceCreateMsg");
+		}
+		model.setViewName("billing/creditNoteList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		List<String> invoiceTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.INVOICES.toString(), orgLocations.getId());
+        model.addObject("invoiceTagsList", invoiceTagsList);
+        
+		sessionData.setNav(Constants.Receivable);
+		request.getSession().setAttribute("sessionData",sessionData);
+	return model;
+	}
+	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_VIEW_CLIENT','ROLE_VIEW_EDIT_CLIENT','ROLE_CLIENT_BULK_IMPORTS','ROLE_CREATE_CLIENT_CONTACT','ROLE_VIEW_CLIENT_CONTACT','ROLE_VIEW_EDIT_CLIENT_CONTACT')")
 	@RequestMapping(value = "/getClientList", method = RequestMethod.GET)
 	public @ResponseBody ResponseList<OrgRelations> getClientList(HttpServletRequest request,HttpServletResponse response) throws Exception {

@@ -42,6 +42,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.BillingDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
@@ -349,6 +350,65 @@ public class InvoiceRestController {
 		responseList.setData(projectsList);
 		return responseList;
 	}
+	
+	
+@RequestMapping(value = { "/getCreDitNotesList","/rest/getCreDitNotesList" }, method = RequestMethod.POST)
+public ResponseList<CreditDebitNoteListDTO> getCreDitNotesList(CreditDebitNoteDTO creditDebitNoteDTO, HttpServletRequest request) throws Exception
+{
+
+OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(creditDebitNoteDTO.getOrglocationId()));
+String[] tableColumns = { "date", "id", "referenceNumber", "clientName","invoiceId", "total", "balance", "status"};
+
+int sortColumnIndex = 1; // by default sorting using invoice date
+String sortColumnOrder = "asc"; // by default descending order
+if (creditDebitNoteDTO.getOrder() != null && !creditDebitNoteDTO.getOrder().isEmpty()) {
+	sortColumnIndex = Integer.parseInt(creditDebitNoteDTO.getOrder().get(0).get("column"));
+	sortColumnOrder = creditDebitNoteDTO.getOrder().get(0).get("dir");
+}
+creditDebitNoteDTO.setSortColumn(tableColumns[sortColumnIndex]);
+creditDebitNoteDTO.setSortOrder(sortColumnOrder);
+
+Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+DateTime zoned = new DateTime();
+DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd");
+DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
+Date endDateUTC = null;
+Date startDateUTC = null;
+if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(creditDebitNoteDTO.getDayWiseType())	&& !"".equals(creditDebitNoteDTO.getDayWiseType())) {
+	String endDate = outputFormatter1.print(zoned);
+	endDateUTC = TZ_DF_TS.parse(endDate);
+}
+if (null != creditDebitNoteDTO.getDayWiseType() && !"".equals(creditDebitNoteDTO.getDayWiseType())) {
+	if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(creditDebitNoteDTO.getDayWiseType())) {
+		String startDate = outputFormatter.print(zoned);
+		// String startDateString =
+		// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
+		// Constants.UTC_TIMEZONE, startDate);
+		startDateUTC = TZ_DF_TS.parse(startDate);
+		if (Constants.ONE_MONTH.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+		}
+		else if (Constants.TWO_MONTHS.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+		}
+		else if (Constants.THREE_MONTHS.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 90);
+		}
+		else if (Constants.SIX_MONTHS.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 180);
+		}
+		else if (Constants.ONE_YEAR.equals(creditDebitNoteDTO.getDayWiseType())) {
+			startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
+		}
+	}
+	
+}
+
+ResponseList<CreditDebitNoteListDTO> responseList = invoiceService. creditDebtListByOrgLocationId(orgLocations, startDateUTC,endDateUTC,creditDebitNoteDTO);
+
+return responseList;
+}
 	
 	@RequestMapping(value = "/getSowcontractListByAssociateId", method = RequestMethod.GET)
 	public @ResponseBody ResponseList<Contracts> getSowcontractListByAssociateId(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request) throws Exception

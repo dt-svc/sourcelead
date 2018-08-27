@@ -6,24 +6,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
-import com.bis.sourcelead.entity.InvoiceTimelineHistory;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 
@@ -32,6 +27,9 @@ public interface InvoiceService {
 
 	ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC, Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 
+	ResponseList<CreditDebitNoteListDTO> creditDebtListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC, Date endDateUTC,CreditDebitNoteDTO creditDebitNoteDTO) throws Exception;
+
+	
 	ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(InvoiceDTO invoiceDTO,OrgLocations orgLocations,Long orgRelationId) throws Exception;
 
 	Invoice getInvoicetById(Long invoiceId) throws Exception;

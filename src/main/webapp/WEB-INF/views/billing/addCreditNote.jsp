@@ -279,7 +279,7 @@ function saveCreditNote(saveType){
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
 		  					$("#creditDebitLoading").removeAttr("style");
-    		     			//location.replace(sourceleadUrl+"/invoiceList");
+    		     			location.replace(sourceleadUrl+"/creditNoteList");
     		     			$("#selector1").removeAttr("style");
 				    		$("#selector1").css({ display: "block" });
 			    		if(saveType == 'SENT'){

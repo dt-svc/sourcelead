@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
@@ -22,6 +23,8 @@ public interface InvoiceDao{
 	
 	ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 	
+	ResponseList<CreditDebitNote> creditDebtListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,CreditDebitNoteDTO creditDebitNoteDTO) throws Exception;
+
 	ResponseList<Invoice> invoiceListByOrgLocationIdAndRelationId(InvoiceDTO invoiceDTO,OrgLocations orgLocations, Long orgRelationId) throws Exception;
 	
 	Invoice getInvoicetById(Long invoiceId) throws Exception;

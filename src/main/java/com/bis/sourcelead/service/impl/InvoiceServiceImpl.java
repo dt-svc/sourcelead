@@ -61,6 +61,7 @@ import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteLineItemsDTO;
+import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceExpensesDTO;
@@ -3548,6 +3549,39 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitLineItemsList.add(creditDebitLineItems);
 		}
 		return creditDebitLineItemsList;
+	}
+
+	@Override
+	public ResponseList<CreditDebitNoteListDTO> creditDebtListByOrgLocationId(OrgLocations orgLocations,
+			Date startDateUTC, Date endDateUTC, CreditDebitNoteDTO creditDebitNoteDTO) throws Exception {
+		
+		List<CreditDebitNoteListDTO> creditDebitList = new ArrayList<>();
+		ResponseList<CreditDebitNoteListDTO> creditDebitDTOList = new ResponseList<CreditDebitNoteListDTO>();
+		
+		ResponseList<CreditDebitNote> creditDebitNoteList = invoiceDao.creditDebtListByOrgLocationId(orgLocations, startDateUTC, endDateUTC, creditDebitNoteDTO);
+		List<CreditDebitNote> notesFilterList = creditDebitNoteList.getData();
+		for(CreditDebitNote creditDebitNote: notesFilterList){
+			CreditDebitNoteListDTO creditDebitNoteListDTO = new CreditDebitNoteListDTO();
+			creditDebitNoteListDTO.setReferenceNumber(creditDebitNote.getReferenceNumber());
+			creditDebitNoteListDTO.setGrandTotal(creditDebitNote.getTotal().toString());
+			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(creditDebitNote.getOrgRelations().getId());
+			if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+				creditDebitNoteListDTO.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+			}
+			if (orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+				creditDebitNoteListDTO.setClientName(orgRelations.getLocationId().getOrgLocationName());
+			}
+			creditDebitNoteListDTO.setGeneratedId(creditDebitNote.getReferenceNumber());
+			creditDebitNoteListDTO.setInvoceId(creditDebitNote.getInvoice());
+			creditDebitNoteListDTO.setCreditDebitNotedate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), creditDebitNote.getCreditNoteDate()));
+			creditDebitNoteListDTO.setCreditDebitNoteStatus(creditDebitNote.getNoteStatus());
+			creditDebitList.add(creditDebitNoteListDTO);	
+		}
+		
+		creditDebitDTOList.setData(creditDebitList);
+		creditDebitDTOList.setRecordsFiltered(creditDebitNoteList.getRecordsFiltered());
+		creditDebitDTOList.setRecordsTotal(creditDebitNoteList.getRecordsTotal());
+		return creditDebitDTOList;
 	}
 
 	/*public EmailAttachment zipFileReminderInvoiceAttachedDoc(List<EmailAttachment> docusList) throws MessagingException {

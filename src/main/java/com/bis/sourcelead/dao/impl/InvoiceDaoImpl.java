@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
+import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
@@ -274,6 +275,107 @@ public class InvoiceDaoImpl implements InvoiceDao {
 					.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC)
 					.setParameter("endDateUTC", endDateUTC).setString("varString", "")
 					.setParameterList("tagsList", tagsList).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		}
+		response.setData(invoiceList);
+		return response;
+
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<CreditDebitNote> creditDebtListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,CreditDebitNoteDTO creditDebitNoteDTO) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String[] noteTokens = creditDebitNoteDTO.getCreditDebitNoteStatus().split(",");
+
+		String subQuery = "";
+
+		if (Arrays.asList(noteTokens).contains("DRAFT")) {
+			subQuery = subQuery + "creditDebitNote.noteStatus = 'DRAFT' or ";
+		}
+		if (Arrays.asList(noteTokens).contains("SEND")) {
+			subQuery = subQuery + "creditDebitNote.noteStatus = 'SEND' or ";
+		}
+		if (Arrays.asList(noteTokens).contains("RECEIVED")) {
+			subQuery = subQuery + "creditDebitNote.noteStatus = 'Received' or ";
+		}
+		
+		if ((noteTokens[0] != null && noteTokens[0].length() > 0)) {
+			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
+		}
+
+		
+		String subQuery1 = "";
+		if (creditDebitNoteDTO.getStatus().equals("ACTIVE")) {
+			subQuery1 = " and creditDebitNote.status = 1 ";
+		}else{
+			subQuery1 = " and creditDebitNote.status = 0 ";
+		}
+
+		String subQuery2 = "";
+
+		if (creditDebitNoteDTO.getNoteType().equalsIgnoreCase(Constants.CREDIT_NOTE)) {
+			subQuery2 = " and creditDebitNote.noteType = 'Credit' ";
+		} else {
+			subQuery2 = " and creditDebitNote.noteType = 'Debit' ";
+		}
+
+
+		/*List<String> tagsList = new ArrayList<>();
+		if (creditDebitNoteDTO.getTags() != null && !creditDebitNoteDTO.getTags().isEmpty()) {
+			String[] tags = creditDebitNoteDTO.getTags().split(",");
+			for (int i = 0; i < tags.length; i++) {
+				tagsList.add(tags[i]);
+			}
+		} else {
+			tagsList.add("");
+		}*/
+		//String tagsQuery = " and ((:varString  IN (:tagsList)) OR (:varString NOT IN (:tagsList) and creditDebitNote.id IN (select st.entityId from SourceleadTags st where st.tagName IN (:tagsList) and st.status ='1' ))) ";
+
+		List<CreditDebitNote> invoiceList = null;
+		ResponseList<CreditDebitNote> response = new ResponseList<>();
+
+		String qry = "";
+		if (StringUtils.isNotBlank(creditDebitNoteDTO.getSortColumn())) {
+			qry = " order by creditDebitNote." + creditDebitNoteDTO.getSortColumn() + " " + creditDebitNoteDTO.getSortOrder();
+		}
+
+		String query = "from CreditDebitNote creditDebitNote  left join fetch  creditDebitNote.orgRelations left join fetch  creditDebitNote.orgRelations where  creditDebitNote.orgLocations.id =:orgLocationId"
+				+ subQuery + " " + subQuery1 + " " + subQuery2+ " and creditDebitNote.createdDate >= :startDateUTC and creditDebitNote.createdDate <= :endDateUTC";
+				
+				
+		
+		String countQuery = "";
+		if (creditDebitNoteDTO.getNoteType().equalsIgnoreCase(Constants.CREDIT_NOTE)) {
+			countQuery = "from CreditDebitNote creditDebitNote  where creditDebitNote.orgLocations.id =:orgLocationId and creditDebitNote.noteType='Credit' "
+					+ subQuery + " " + subQuery1 + " " + subQuery2+" and creditDebitNote.createdDate >= :startDateUTC and creditDebitNote.createdDate <= :endDateUTC";
+		} else {
+			countQuery = "from CreditDebitNote creditDebitNote  where creditDebitNote.orgLocations.id =:orgLocationId and creditDebitNote.noteType='Debit'"
+					+ subQuery + " " + subQuery1 + " " + subQuery2+" and creditDebitNote.createdDate >= :startDateUTC and creditDebitNote.createdDate <= :endDateUTC";
+		}
+
+		Query queryObj = session.createQuery(query + qry);
+		if (creditDebitNoteDTO != null && creditDebitNoteDTO.getLength() > 0) {
+			queryObj.setFirstResult(creditDebitNoteDTO.getStart());
+			queryObj.setMaxResults(creditDebitNoteDTO.getLength());
+		}
+		invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+		int count = 0;
+		int filteredCount = 0;
+
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery)	.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (creditDebitNoteDTO != null) {
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}

@@ -82,6 +82,9 @@ public class CreditDebitNote implements Serializable {
 	
 	@Column(name = "NOTE_STATUS")
 	private String noteStatus;
+	
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
 		
 	@Column(name = "REASON", columnDefinition = "TEXT default NULL")
 	private String reason;
@@ -354,6 +357,14 @@ public class CreditDebitNote implements Serializable {
 
 	public void setDiscountType(String discountType) {
 		this.discountType = discountType;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
 	}
 	
 	

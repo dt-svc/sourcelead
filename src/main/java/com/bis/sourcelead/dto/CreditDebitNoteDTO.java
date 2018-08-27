@@ -25,6 +25,11 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	private String discountTotal;
 	private String discountValue;
 	private String discountType;
+	private String noteType;
+	private String creditDebitNoteStatus;
+	private String status;
+	private String tags;
+	private String dayWiseType;
 	
 	 
 	public List<FileInfo> getFileInfo() {
@@ -153,6 +158,36 @@ public class CreditDebitNoteDTO extends SearchDTO {
 	}
 	public void setDiscountType(String discountType) {
 		this.discountType = discountType;
+	}
+	public String getNoteType() {
+		return noteType;
+	}
+	public void setNoteType(String noteType) {
+		this.noteType = noteType;
+	}
+	public String getCreditDebitNoteStatus() {
+		return creditDebitNoteStatus;
+	}
+	public void setCreditDebitNoteStatus(String creditDebitNoteStatus) {
+		this.creditDebitNoteStatus = creditDebitNoteStatus;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+	public String getDayWiseType() {
+		return dayWiseType;
+	}
+	public void setDayWiseType(String dayWiseType) {
+		this.dayWiseType = dayWiseType;
 	}
 
 	
