@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.slf4j.Logger;
@@ -64,28 +65,30 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 				List<DeductionDTO> deductionDTOList = associateDeductionDTO.getDeductionDTOList();
 				for (DeductionDTO ded : deductionDTOList) {
 					AssociateDeduction associateDeduction = new AssociateDeduction();
-					PayrollDeduction deductionType = payrollDeductionService.getPayrollDeductionTypeById(Long.parseLong(ded.getDeductionType()));
-					associateDeduction.setDeductionTypeId(deductionType);
-					associateDeduction.setDeductionAmount(ded.getAmount());
-					associateDeduction.setDeductionMethod(ded.getMethod());
-//					User user = userService.getUserById(Long.parseLong(associateDeductionDTO.getUserId()));
-//					associateDeduction.setUserId(user);
-					
-					associateDeduction.setCandidate(candidate);
-					associateDeduction.setOrgLocationId(orgLocation);
-					associateDeduction.setAssociateDeductionUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-					associateDeduction.setCreatedBy(loginUser.getUserCode());
-					associateDeduction.setUpdatedBy(loginUser.getUserCode());
-					associateDeduction.setCreatedDate(new Date());
-					associateDeduction.setUpdatedDate(new Date());
-					associateDeduction.setStatus(1);
-					
-					AssociateDeduction saveAssociateDeduction = associateDeductionDao.saveAssociateDeduction(associateDeduction);
-					if (saveAssociateDeduction != null) {
-						resObj.setResponse(Result.SUCCESS.name());
-						resObj.setResponseMessage(Result.SUCCESS.getValue());
-						associateDeductionDTO.setId(String.valueOf(saveAssociateDeduction.getId()));
-						resObj.setObject(associateDeductionDTO);
+					if(StringUtils.isNotBlank(ded.getDeductionType())) {
+						PayrollDeduction deductionType = payrollDeductionService.getPayrollDeductionTypeById(Long.parseLong(ded.getDeductionType()));
+						associateDeduction.setDeductionTypeId(deductionType);
+						associateDeduction.setDeductionAmount(ded.getAmount());
+						associateDeduction.setDeductionMethod(ded.getMethod());
+//						User user = userService.getUserById(Long.parseLong(associateDeductionDTO.getUserId()));
+//						associateDeduction.setUserId(user);
+						
+						associateDeduction.setCandidate(candidate);
+						associateDeduction.setOrgLocationId(orgLocation);
+						associateDeduction.setAssociateDeductionUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+						associateDeduction.setCreatedBy(loginUser.getUserCode());
+						associateDeduction.setUpdatedBy(loginUser.getUserCode());
+						associateDeduction.setCreatedDate(new Date());
+						associateDeduction.setUpdatedDate(new Date());
+						associateDeduction.setStatus(1);
+						
+						AssociateDeduction saveAssociateDeduction = associateDeductionDao.saveAssociateDeduction(associateDeduction);
+						if (saveAssociateDeduction != null) {
+							resObj.setResponse(Result.SUCCESS.name());
+							resObj.setResponseMessage(Result.SUCCESS.getValue());
+							associateDeductionDTO.setId(String.valueOf(saveAssociateDeduction.getId()));
+							resObj.setObject(associateDeductionDTO);
+						}
 					}
 				}
 			}

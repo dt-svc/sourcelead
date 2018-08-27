@@ -2209,9 +2209,14 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
 	     		  name = $this.find('input').attr('name');
 	     		  id = $this.find('input').attr('id');
 	     	  }
+	     	  
 	     	  if(name == null || name == '' || name == 'undefined'){
 	     		 name = $this.find('select').attr('name');
 	     		 id = $this.find('select').attr('id');
+     	      }
+	     	  
+	     	  if(name == null || name == '' || name == 'undefined'){
+	     		 name = $this.find('textarea').attr('name');
      	      }
 	     	  
 	     	  if(name == "WorkExperience"){

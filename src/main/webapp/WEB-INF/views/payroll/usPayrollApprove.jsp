@@ -3,7 +3,7 @@
 
 <script type="text/javascript">
 function calculateTotalPay(formData,confirmType){
-	          approvePayrollDiv();
+	          /* approvePayrollDiv(); */
 		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType, formData, function(json) {
 		    	  $("#totRegularHours").text(json.regularHours.toFixed(2));
 		    	  $("#totRegularEarningsAmt").text(json.regularHoursAmount.toFixed(2));
@@ -39,14 +39,12 @@ function calculateTotalPay(formData,confirmType){
 				  $("#confirmType").val(json.confirmType); 
 				  $("#ppn").val(json.ppn); 
 		    	  
-		    	  var dedJson = json.deduction;
 		    	  var dedResult = "";
-		    	   if(dedJson != null && dedJson.length >0){ 
-		    		  for (var i=0; i<dedJson.length; i++){
-			    		  var ded = dedJson[i];
+		    	   if(json.deduction != null){ 
+		    		   for(var e in json.deduction){
 			    		  dedResult = dedResult + '<tr>';
-			    		  dedResult = dedResult + '<td>'+ded.deductionType+'</td>';
-			    		  dedResult = dedResult + '<td>$ '+ded.amount.toFixed(2)+'</td>';
+			    		  dedResult = dedResult + '<td>'+e+'</td>';
+			    		  dedResult = dedResult + '<td>$ '+json.deduction[e].toFixed(2)+'</td>';
 			    		  dedResult = dedResult + '</tr>';
 			    	  }
 		    	  } else{
@@ -58,14 +56,12 @@ function calculateTotalPay(formData,confirmType){
 		    	$("#deductionDIV").empty();
 		    	$("#deductionDIV").append(dedResult);
 		    	
-		    	 var contJson = json.contribution;
 		    	  var contResult = "";
-		    	   if(contJson != null && contJson.length >0){ 
-		    		  for (var i=0; i<contJson.length; i++){
-			    		  var cont = contJson[i];
+		    	   if(json.contribution != null){ 
+		    		   for(var e in json.contribution){
 			    		  contResult = contResult + '<tr>';
-			    		  contResult = contResult + '<td>'+cont.contributionType+'</td>';
-			    		  contResult = contResult + '<td>$ '+cont.contributionAmount.toFixed(2)+'</td>';
+			    		  contResult = contResult + '<td>'+e+'</td>';
+			    		  contResult = contResult + '<td>$ '+json.contribution[e].toFixed(2)+'</td>';
 			    		  contResult = contResult + '</tr>';
 			    	  }
 		    	  } else{
