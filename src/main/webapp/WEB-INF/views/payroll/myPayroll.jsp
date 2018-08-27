@@ -72,6 +72,7 @@ function loansAdvances(){
                   </div>
                  <div class="clearfix mb5"></div>
                  <div class="clearfix" id="totalCount" style="display:none;">
+                 <div class="tableEqualHeight-pay">
                		<div class="col-md-3 mb">
                			<h5>Hours &amp; Earnings</h5>
                			<div class="clearfix tableStyles">
@@ -83,23 +84,23 @@ function loansAdvances(){
                						<th>Amount</th>
                						</tr>
                					</thead>
-               					<tbody>
+               					<tbody id="hoursDIV">
                						<tr>
                							<td>Regular</td>
-               							<td>200</td>
-               							<td>50,000</td>
+               							<td><span id="regularHours"></span></td>
+               							<td>$ <span id="regularAmount"> 0</span></td>
                						</tr>
                						<tr>
                							<td>Overtime</td>
-               							<td>50</td>
-               							<td>10,000</td>
+               							<td><span id="overTimeHours"></span></td>
+               							<td>$ <span id="overTimeHoursAmount">0</span></td>
                						</tr>
                					</tbody>
 								<tfoot>
-									<tr>
+									 <tr>
 										<td><strong>Total</strong></td>
 										<td>&nbsp;</td>
-										<td>60,000$</td>
+										<td>$ <span id="totalHorsAmount">0</span></td>
 									</tr>
 								</tfoot>
                				</table>
@@ -171,11 +172,11 @@ function loansAdvances(){
                					</thead>
                					<tbody>
                						<tr>
-               							<td>federalWithholding</td>
+               							<td>Federal Withholding</td>
                							<td><span id="federal">$ 0</span></td>
                						</tr>
                						<tr>
-               							<td>Federal Insurance Contributions Act (FICA)</td>
+               							<td><abbr title="Federal Insurance Contributions Act ">(FICA)</abbr></td>
                							<td><span id="fica">$ 0</span></td>
                						</tr>
                						<tr>
@@ -187,7 +188,7 @@ function loansAdvances(){
                							<td><span id="medicare">$ 0</span></td>
                						</tr>
                						 <tr>
-               							<td> Advanced Earned Income Credit </td>
+               							<td>Advanced Earned Income Credit </td>
                							<td><span id="aeic">$ 0</span></td>
                						</tr>
                						<tr>
@@ -218,53 +219,56 @@ function loansAdvances(){
                					</thead>
                					<tbody>
                						 <tr>
-									<td>Employer FICA </td>
+									<td>FICA</td>
 									<td><div class="tblminwidth-90">$ <span id="emplrFICA">0.00</span></div></td>
 									</tr>
                						<tr>
-									<td>Employer Medicare</td>
+									<td>Medicare</td>
 									<td>$ <span id="emplrMedicare">0.00</span></td>
               						</tr>
                						<tr>
-									<td>Employer FUTA</td>
+									<td>FUTA</td>
 									<td>$ <span id="emplrFUTA">0.00</span></td>
               						</tr>
               						<tr>
-									<td>Employer SUTA</td>
+									<td>SUTA</td>
 									<td>$ <span id="emplrSUTA">0.00</span></td>
               						</tr>
                						<tr>
-									<td>Employer Railroad Unemployment Insurance Authority (RUIA)</td>
+									<td><abbr title="Employer Railroad Unemployment Insurance Authority">RUIA</abbr></td>
 									<td>$ <span id="emplrRUIA">0.00</span></td>
               						</tr>
                						<tr>
-									<td>Employer SUTA Surcharge Taxes</td>
+									<td>SUTA Surcharge Taxes</td>
 									<td>$ <span id="emplrSurchargeSUTATax">0.00</span></td>
               						</tr>
                						<tr>
-									<td>Employer SDI</td>
+									<td>SDI</td>
               						<td>$ <span id="emplrSDI">0.00</span></td>
                						</tr>
                						<tr>
-									<td>Employer Transit Taxes</td>
+									<td>Transit Taxes</td>
               						<td>$ <span id="emplrTransitTaxes">0.00</span></td>
                						</tr>
                						<tr>
-									<td>Employer Wyoming Workers Compensation Tax (WC)</td>
+									<td>Workers Compensation Tax</td>
               						<td>$ <span id="emplrWyomingWC">0.00</span></td>
               						</tr>
                						<tr>
-               						<td>Employer Oregon Workers Compensation Tax WC)</td>
+               						<td>Oregon Workers Compensation Tax</td>
               						<td>$ <span id="emplrOregonWC">0.00</span></td>
                						</tr>
                						<tr>
-               						<td>Employer Total Taxes</td>
+               						<td>Total Taxes</td>
               						<td>$ <span id="emplrTotalTaxes">0.00</span></td>
                						</tr>
                					</tbody>
                				</table>
                		</div>
                		</div>
+               		</div>
+               		
+               		<div class="tableEqualHeight-pay mt mb">
                		<div class="col-md-3 mb">
                			<h5>Employer Contributions</h5>
                			<div class="clearfix tableStyles">
@@ -347,10 +351,10 @@ function loansAdvances(){
                		</div>
                		</div>
                	
-               </div>
+               </div></div>
                                                  
                  <div class="clearfix col-md-12 styleTables">
-                 <div class="project_wrap_table datatable_filter">
+                 <div class="project_wrap_table datatable_filter mt40">
                  <div id="payrollDataDIV"></div>
                  </div>
                  </div>					
@@ -407,11 +411,14 @@ function getMyPayrollList(){
 	var postDedTotal = 0;
 	var contrTotal = 0;
 	var payItemTotal = 0;
+	var hrsTotalAmount = 0;
 	$.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getMyPayrollList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(result) {
 	        var data = result.myPayroll;
+	        
+	        
 	        
 	        // Employee Taxes
 	        		var json = result.confirmPayTotalSum;
@@ -437,6 +444,13 @@ function getMyPayrollList(){
 		    	  $("#emplrWyomingWC").text(json.employerWyomingWcTax.toFixed(2));
 		    	  $("#emplrOregonWC").text(json.employerOregonWcTax.toFixed(2));
 		    	  $("#emplrTotalTaxes").text(json.employerTotalPay.toFixed(2));
+		    	  
+		   // Hours       
+		         
+		     $("#regularHours").text(result.hours.regularHours);
+		     $("#overTimeHours").text(result.hours.otHours);
+		     $("#regularAmount").text(result.hours.regularTimeAmount);
+		     $("#overTimeHoursAmount").text(result.hours.overTimeAmount);
 	        
 	        // Pre Deductions
 	        var preDed = "";
@@ -567,7 +581,7 @@ function getMyPayrollList(){
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-30">';
-	 	        result = result +'<div class="fa fa-eye"></div>';
+	 	        result = result +'<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye" onclick="payAdjustment(\''+json.payrollUUID+'\');"></i></a>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'</tr>';
@@ -578,7 +592,6 @@ function getMyPayrollList(){
 	       
 	        result = result +'</tbody>';
 	        result = result +'</table>';	
-	        
 	        $("#payrollDataDIV").empty();
 	        $("#payrollDataDIV").append(result);
 	        mayPayrollPagination();
@@ -610,5 +623,5 @@ function mayPayrollPagination(){
     $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
-
+<jsp:include page="./viewPayRollSummary.jsp" /> 
 <jsp:include page="../masterFooter.jsp" />

@@ -1112,8 +1112,11 @@ public class USPayrollRestController {
 	@RequestMapping(value = "/payrollList")
 	public ModelAndView getPayrollList(HttpServletRequest request, HttpServletResponse response)
 	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+		model.addObject("userGroupList",userGroupList);		
 		model.setViewName("payroll/usPayrollDashboard");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
@@ -1241,7 +1244,7 @@ public class USPayrollRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/viewPaySheetFrequencyData")
-	public ModelAndView viewPaySheetFrequencyData(@RequestParam(value = "paySheetFrequencyUUID",required = true) String paySheetFrequencyUUID,@RequestParam(value = "approverStatus",required = true) String approverStatus,@RequestParam(value = "payPeriodNum",required = true) Integer payPeriodNum,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ModelAndView viewPaySheetFrequencyData(@RequestParam(value = "paySheetFrequencyUUID",required = true) String paySheetFrequencyUUID,@RequestParam(value = "approverStatus",required = false) String approverStatus,@RequestParam(value = "payPeriodNum",required = false) Integer payPeriodNum,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -1251,6 +1254,8 @@ public class USPayrollRestController {
 			model.setViewName("payroll/reviewPayroll");
 		}else if(approverStatus.equalsIgnoreCase(Constants.APPROVED)){
 			model.setViewName("payroll/payrollSummary");
+		}else if(approverStatus.equalsIgnoreCase(Constants.DRAFT)) {
+			model.setViewName("payroll/payrollDraftSummary");
 		}
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
@@ -1569,6 +1574,14 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		return paysheetFrequencyService.getMyPayrollListByCandidateId(candidateId,orgLocation);
+	}
+	
+	@RequestMapping(value = {"/getPaysheetFrequencyDraftData","/rest/getPaysheetFrequencyDraftData"}, method = RequestMethod.GET)
+	@ResponseBody
+	public List<PaysheetFrequencyDTO> getPaysheetFrequencyDraftData(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return paysheetFrequencyService.getPaysheetFrequencyDraftDataByOrgLocationId(orgLocation);
 	}
 
 }

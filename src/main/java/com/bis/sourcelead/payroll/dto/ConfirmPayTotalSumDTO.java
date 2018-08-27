@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class ConfirmPayTotalSumDTO {
 	
@@ -73,9 +74,9 @@ public class ConfirmPayTotalSumDTO {
 	
 	private BigDecimal employerTotalPay;
 	
-	private List<DeductionDTO> deduction;
+	private Map<String, Double> deduction;
 	
-	private List<ContributionDTO> contribution;
+	private Map<String, Double> contribution;
 	
 	private List<Long> pid;
 	
@@ -84,6 +85,8 @@ public class ConfirmPayTotalSumDTO {
 	private String confirmType;
 	
 	private String ppn;
+	
+	
 
 	public double getTotalHours()
 	{
@@ -425,22 +428,22 @@ public class ConfirmPayTotalSumDTO {
 		this.employerTotalPay = employerTotalPay;
 	}
 
-	public List<DeductionDTO> getDeduction()
+	public Map<String, Double> getDeduction()
 	{
 		return deduction;
 	}
 
-	public void setDeduction(List<DeductionDTO> deduction)
+	public void setDeduction(Map<String, Double> deduction)
 	{
 		this.deduction = deduction;
 	}
 
-	public List<ContributionDTO> getContribution()
+	public Map<String, Double> getContribution()
 	{
 		return contribution;
 	}
 
-	public void setContribution(List<ContributionDTO> contribution)
+	public void setContribution(Map<String, Double> contribution)
 	{
 		this.contribution = contribution;
 	}

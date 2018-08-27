@@ -412,7 +412,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 
 				if (errorSet.isEmpty()) {
-					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType());
+					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString);
 					importStatus = "success";
 				} else {
 					int errorCount = 0;
@@ -456,7 +456,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 	@SuppressWarnings("unused")
 	private void mapToEntities(JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,
-			String uploadType) throws Exception {
+			String uploadType,String jsonString) throws Exception {
 		Gson gson = new Gson();
 		switch (uploadType) {
 		case "jobUpload":
@@ -564,19 +564,27 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					String k = (String) keys.next();
 					if(!k.equalsIgnoreCase("requirementId")) {
 						if(!dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("undefined")) {
-							JSONObject firstNameItem = new JSONObject();
-							String[] labelName = k.split("(?<=.)(?=\\p{Lu})");
-							firstNameItem.put("label", StringUtils.join(labelName," "));
-							firstNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
-							firstNameItem.put("name", k);
-							if(k.equalsIgnoreCase("CurrentCTC") || k.equalsIgnoreCase("ExpectedCTC")){
-								firstNameItem.put("value", countries.getCurrency()+" / "+dataMigrationDTOJsonCopy.getString(k)+" Monthly");
-							}else {
-								firstNameItem.put("value", dataMigrationDTOJsonCopy.getString(k));
-							}
+							 JSONArray jsonarray = new JSONArray(jsonString);
+							 for(int i=0; i<jsonarray.length(); i++){
+							        JSONObject obj = jsonarray.getJSONObject(i);
+							        if(obj.getString("label").replaceAll("\\s+","").equalsIgnoreCase(k)) {
+							        	JSONObject firstNameItem = new JSONObject();
+										String[] labelName = k.split("(?<=.)(?=\\p{Lu})");
+										firstNameItem.put("label", StringUtils.join(labelName," "));
+										firstNameItem.put("type", obj.getString("type"));
+										firstNameItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+										firstNameItem.put("name", k);
+										if(k.equalsIgnoreCase("CurrentCTC") || k.equalsIgnoreCase("ExpectedCTC")){
+											firstNameItem.put("value", countries.getCurrency()+" / "+dataMigrationDTOJsonCopy.getString(k)+" Monthly");
+										}else {
+											firstNameItem.put("value", dataMigrationDTOJsonCopy.getString(k));
+										}
+										
+										labelItems.put(k, dataMigrationDTOJsonCopy.getString(k));
+										array.put(firstNameItem);
+							        }
+							 }
 							
-							labelItems.put(k, dataMigrationDTOJsonCopy.getString(k));
-							array.put(firstNameItem);
 						}
 					}
 				}

@@ -131,6 +131,10 @@
                           <td>Advanced Earned Income Credit</td>
                            <td><span id="aeicWT">0</span></td>
                         </tr>
+                           <tr>
+                          <td>localTax</td>
+                           <td><span id="localTaxWT">0</span></td>
+                        </tr>
                         
                       </tbody>
                       <tfoot>
@@ -262,6 +266,7 @@
 		            $("#ficaWT").text(json.fica);
 		            $("#stateWithHoldingWT").text(json.stateWithHolding);
 		            $("#aeicWT").text(json.aeic);
+		            $("#localTaxWT").text(json.localTax);
 		            $("#taxes").text(json.taxes);
 		            
 		            $("#gross").text(json.grossPay);
