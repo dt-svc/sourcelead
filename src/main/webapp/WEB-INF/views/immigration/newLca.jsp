@@ -79,7 +79,7 @@
            <div class="form-group col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
             <label class="col-md-4">Start Date<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
-             <div class="input-group errorInptgroup">
+             <div class="input-group errorInptgroup" id="lcaStartDateDiv">
 				<input type="text" name="startDate" id="startDate" readonly='true' value="${lcaDTO.startDate}" class="form-control calendar" placeholder="Start Date" field-name="Start Date" data-validation="required">
 				 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearLcaDateValue('startDate');"></i></span>
           	</div>
@@ -89,7 +89,7 @@
            <div class="form-group col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
             <label class="col-md-4">End Date<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
-             <div class="input-group errorInptgroup">
+             <div class="input-group errorInptgroup" id="lcaEndDateDiv">
 				<input type="text" id="endDate" name="endDate" value="${lcaDTO.endDate}" readonly='true' class="form-control calendar" placeholder="End Date" field-name="End Date" data-validation="required">
 				<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearLcaDateValue('endDate');"></i></span>
 			</div>
@@ -716,20 +716,64 @@
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 var finalDateFormatLcaSave = getJSDateFormat(locationDate);
 
-//lca staert date and end date  
+function validDateClass(){
+	 var startDate = document.getElementById("startDate").value;
+	 if(startDate){
+		 $('#lcaStartDateDiv').find('p.jquery_form_error_message').remove(); 
+	 }
+	 
+	 var endDate = document.getElementById("endDate").value;
+	 if(endDate){
+		 $('#lcaEndDateDiv').find('p.jquery_form_error_message').remove(); 
+	 }
+}
+
 $('#startDate').datepicker({
     dateFormat: finalDateFormatLcaSave,
     changeMonth: true,
 	  changeYear: true, 
-	  maxDate:0  
+    onSelect: function (selected) {
+          //var dt = new Date(selected);
+          var dt = $(this).datepicker('getDate', '+1d');
+          dt.setDate(dt.getDate() + 1);
+          $("#endDate").datepicker("option", "minDate", dt);
+          validDateClass();
+      }
 });
 
 $('#endDate').datepicker({
     dateFormat: finalDateFormatLcaSave,
     changeMonth: true,
 	  changeYear: true, 
-	   minDate:1 
+      onSelect: function (selected) {
+          //var dt = new Date(selected);
+          var dt = $(this).datepicker('getDate', '-1d');
+          dt.setDate(dt.getDate() - 1);
+          $("#startDate").datepicker("option", "maxDate", dt);
+          validDateClass();
+      }
 });
+
+//lca staert date and end date  
+/* $('#startDate').datepicker({
+    dateFormat: finalDateFormatLcaSave,
+    changeMonth: true,
+	  changeYear: true, 
+	  maxDate:0,
+	  onSelect : function(selected) {
+			 validDateClass();
+		}
+});
+
+$('#endDate').datepicker({
+    dateFormat: finalDateFormatLcaSave,
+    changeMonth: true,
+	  changeYear: true, 
+	   minDate:1,
+	   onSelect : function(selected) {
+			 validDateClass();
+		}
+}); */
 ///
 
 </script>
