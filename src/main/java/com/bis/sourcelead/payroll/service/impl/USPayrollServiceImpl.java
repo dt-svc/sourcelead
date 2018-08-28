@@ -154,7 +154,11 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			
 			PaysheetFrequency pf = uSPaysheetService.getPayFrequencyByUUID(payrollApproverDTO.getPayrollFrequencyUUID());
 			paySum.setPfUUID(pf.getPaySheetFrequencyUUID());
-			CopyOnWriteArraySet<EmployeePayroll> payrollList = new CopyOnWriteArraySet<EmployeePayroll>(pf.getEmployeepayroll());
+			
+			
+//			CopyOnWriteArraySet<EmployeePayroll> payrollList = new CopyOnWriteArraySet<EmployeePayroll>(pf.getEmployeepayroll());
+			List<EmployeePayroll> payrollListt = pf.getEmployeepayroll().stream().filter(payy-> !Constants.APPROVED.equalsIgnoreCase(payy.getSubmitForAproverStatus())).collect(Collectors.toList());
+			CopyOnWriteArraySet<EmployeePayroll> payrollList = new CopyOnWriteArraySet<>(payrollListt);
 			List<Long> payrollIds = null;
 			if(!PayrollConstant.SENT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
 			for (EmployeePayroll payroll : payrollList) {
