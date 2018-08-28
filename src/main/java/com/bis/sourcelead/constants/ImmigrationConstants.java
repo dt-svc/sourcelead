@@ -55,13 +55,13 @@ public class ImmigrationConstants {
             "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Title","Previous LCA Location"};
    
    public static final String[] IMPORT_LCA_EXCEL_HEADERS = {"LCA Number","LCA Title",
-           "No. of positions", "Employee Name", "Employee Email", "Current Client Location (Address 1, City, State, Country, PIN)", "Current Prim Vendor Location (Address 1, City, State, Country, PIN)",
-           	"Current Vendor Location (Address 1, City, State, Country, PIN)", "SOC Code", "SOC Occupation Title" ,"Wage Level","Prevailing Wage Currency",
+           "No. of positions", "Current Client Location (Address 1, City, State, Country, PIN)", "Current Prim Vendor Location (Address 1, City, State, Country, PIN)",
+           	"Current Vendor Location (Address 1, City, State, Country, PIN)", "SOC Code", "SOC Occupation Title","Job Title","Wage Level","Prevailing Wage Currency",
            "Prevailing Wage Rate", "Prevailing Wage rate per", "LCA Start Date", "LCA End Date", "LCA Status","Status"};
    
-   public static final String[] IMPORT_DOWNLOAD_LCA_EXCEL_HEADERS = {"LCA Number*","LCA Title*", "No. of positions",  "Employee Name", "Employee Email",
+   public static final String[] IMPORT_DOWNLOAD_LCA_EXCEL_HEADERS = {"LCA Number*","LCA Title*", "No. of positions*",
             "Current Client Location* (Address 1, City, State, Country, PIN)", "Current Prim Vendor Location (Address 1, City, State, Country, PIN)",
-           	"Current Vendor Location (Address 1, City, State, Country, PIN)", "SOC Code*", "SOC Occupation Title*" ,"Wage Level*","Prevailing Wage Currency*",
+           	"Current Vendor Location (Address 1, City, State, Country, PIN)", "SOC Code*", "SOC Occupation Title*" ,"Job Title*","Wage Level*","Prevailing Wage Currency*",
            "Prevailing Wage Rate*", "Prevailing Wage rate per*", "LCA Start Date*", "LCA End Date*", "LCA Status*","Status*"};
    
    @SuppressWarnings("serial")
@@ -76,13 +76,13 @@ public class ImmigrationConstants {
    
    @SuppressWarnings("serial")
    public static final Map LCA_HEADERS_NAMES_MAP = new HashMap<Integer, String>(){{
-       put(1,"newLcaNumber");put(2,"newLcaTitle");put(3,"noOfPos");put(4,"empName");put(5,"empMail");put(6,"currClientLocation");put(7,"curPrimrVenodorLocation");
-       put(8,"curVenodorLocation");put(9,"socCode");put(10,"socTitle");put(11,"wageLevel");put(12,"prevailWageCurr");
-       put(13,"prevailWageRate");put(14,"prevailWageRatePer");put(15,"newLcaStartDate");put(16,"newLcaEndDate");put(17,"lcaStatus");put(18,"newStatus");
+       put(1,"newLcaNumber");put(2,"newLcaTitle");put(3,"noOfPos");put(4,"currClientLocation");put(5,"curPrimrVenodorLocation");
+       put(6,"curVenodorLocation");put(7,"socCode");put(8,"socTitle");put(9,"socJobTitle");put(10,"wageLevel");put(11,"prevailWageCurr");
+       put(12,"prevailWageRate");put(13,"prevailWageRatePer");put(14,"newLcaStartDate");put(15,"newLcaEndDate");put(16,"lcaStatus");put(17,"newStatus");
    }};
    
-   public static final String[] LCA_LIST_EXCEL_HEADERS = { "LCA Number", "LCA Title", "Number Of Positions", "Employee Name", "Employee Email", "Current Client Location", "Current Primary Venodor Location", "Current Venodor Location", "Soc Code",
-			"SOC Title", "Wage Level", "Prevail Wage Currency", "Prevail Wage Rate", "Prevail Wage Rate Per", "LCA Start Date", "LCA End Date", "LCA Status", "Status"};
+   public static final String[] LCA_LIST_EXCEL_HEADERS = { "LCA Number", "LCA Title", "Number Of Positions","Current Client Location", "Current Primary Venodor Location", "Current Venodor Location", "Soc Code",
+			"SOC Title","Job Title", "Wage Level", "Prevail Wage Currency", "Prevail Wage Rate", "Prevail Wage Rate Per", "LCA Start Date", "LCA End Date", "LCA Status", "Status"};
    
    public static final Map HEADERS_FIELD_NAMES_MAP = new HashMap<Integer, String>(){{
        put(1,"Beneficiary First Name");
@@ -99,19 +99,21 @@ public class ImmigrationConstants {
        put(37,"Job ID");
    }};
    public static final Map LCA_HEADERS_FIELD_NAMES_MAP = new HashMap<Integer, String>(){{
-       put(1,"LCA Number");
+   	   put(1,"LCA Number");
        put(2,"LCA Title");
-       put(6,"Current Client Location");
-       put(9,"SOC Code");
-       put(10,"SOC Occupation Title");
-       put(11,"Wage Level");
-       put(12,"Prevailing Wage Currency");
-       put(13,"Prevailing Wage Rate");
-       put(14,"Prevailing Wage rate per");
-       put(15,"LCA Start Date");
-       put(16,"LCA End Date");
-       put(17,"LCA Status");
-       put(18,"Status");
+       put(3,"Number Of Positions");
+       put(4,"Current Client Location");
+       put(7,"SOC Code");
+       put(8,"SOC Occupation Title");
+       put(9,"JobTitle");
+       put(10,"Wage Level");
+       put(11,"Prevailing Wage Currency");
+       put(12,"Prevailing Wage Rate");
+       put(13,"Prevailing Wage rate per");
+       put(14,"LCA Start Date");
+       put(15,"LCA End Date");
+       put(16,"LCA Status");
+       put(17,"Status");
    }};
 	public static List<String> IMMIGRATION_INPROGRESS_STATUS_LIST= Arrays.asList("Filled", "Reviewed & Send to attorney", "Request for modifications","Reviewed & Filed","Motion to Re-Open");
 
@@ -137,6 +139,6 @@ public class ImmigrationConstants {
 	
 	public static List<String> MARRAIAGE_STATUS_LIST = Arrays.asList("Single","Married","","Divorced","Separated");
 	
-	public static List<String> LCA_EXCEL_REFLECTION_FILEDS_LIST = Arrays.asList("lcaNo","lcaTitle", "noOfPositions","empName","empEmail","location","socCode","socOccupationTitle","wagesLevel","privilingWageCurrency","prevailingWage",
+	public static List<String> LCA_EXCEL_REFLECTION_FILEDS_LIST = Arrays.asList("lcaNo","lcaTitle", "noOfPositions","location","socCode","socOccupationTitle","jobTitle","wagesLevel","privilingWageCurrency","prevailingWage",
 			                                                                    "privilingWageRateType","startDate","endDate","lcaStatus","status");
 }
