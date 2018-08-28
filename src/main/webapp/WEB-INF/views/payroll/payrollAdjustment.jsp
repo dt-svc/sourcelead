@@ -131,6 +131,10 @@
                           <td>Advanced Earned Income Credit</td>
                            <td><span id="aeicWT">0</span></td>
                         </tr>
+                           <tr>
+                          <td>localTax</td>
+                           <td><span id="localTaxWT">0</span></td>
+                        </tr>
                         
                       </tbody>
                       <tfoot>
@@ -238,10 +242,10 @@
 
 
 <script>
-	function payAdjustment(payrollUUID){
-		  $.ajax({
+	function payAdjustment(payrollUUID,status){
+		$.ajax({
 		  	type: "GET",
-		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID,                 
+		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
 		            var json = data.object;
 		            $("#empAddress").text(json.employeeAddress);
@@ -262,6 +266,7 @@
 		            $("#ficaWT").text(json.fica);
 		            $("#stateWithHoldingWT").text(json.stateWithHolding);
 		            $("#aeicWT").text(json.aeic);
+		            $("#localTaxWT").text(json.localTax);
 		            $("#taxes").text(json.taxes);
 		            
 		            $("#gross").text(json.grossPay);

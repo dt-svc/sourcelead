@@ -402,6 +402,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					dataMigrationCommonUtil.dataValidationForLCA(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
 					//System.out.println(" inside validateImportedFormData lcaUpload case ==========>");
+					break;
 					
 				case "submmissionTemplateUpload":
 					dataMigrationCommonUtil.dataValidationForRequirementSubmisssionTemplate(errorSet, dataMigrationDTOJsonCopy, user,

@@ -67,6 +67,7 @@ import com.bis.sourcelead.payroll.service.DeductionHistoryService;
 import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
 import com.bis.sourcelead.payroll.service.PayAdjustmentHistoryService;
 import com.bis.sourcelead.payroll.service.PayrollAdjustmentService;
+import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.payroll.symmetry.PayrollCalculatorDTO;
 import com.bis.sourcelead.payroll.symmetry.SymmetryPayrollCalculator;
@@ -149,6 +150,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	
 	@Autowired
 	PayAdjustmentHistoryService payAdjustmentHistoryService;
+	
+	@Autowired
+	PaysheetFrequencyService paysheetFrequencyService;
 	
 	
 	 
@@ -820,7 +824,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	}
 
 	@Override
-	public Response<USPayrollDTO> getEmployeePayrollByUUID(String payrollUUID,OrgLocations orgLocation)
+	public Response<USPayrollDTO> getEmployeePayrollByUUID(String payrollUUID,OrgLocations orgLocation,String approverStatus)
 	{
 		EmployeePayroll payroll = generateUSPayrollDao.getEmployeePayrollByUUID(payrollUUID);
 		BigDecimal totalDeduction = BigDecimal.ZERO;
@@ -857,6 +861,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setPreTaxDeduction(payroll.getPreTaxDeduction());
 			payrollDTO.setRegularHours(regHrs);
 			payrollDTO.setTaxes(payroll.getTaxes());
+			
 			payrollDTO.setOvertimeHours(otHrs);
 			totalHours = CommonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
 			payrollDTO.setTotalHours(totalHours);
@@ -877,6 +882,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				payrollDTO.setAeic(tax.getEarnedIncCredit());
 				payrollDTO.setMedicare(tax.getMedicareWithholding());
 				payrollDTO.setStateWithHolding(tax.getStateWithholding());
+				payrollDTO.setLocalTax(tax.getLocalTax());
 			}
 			payrollDTO.setTaxes(payroll.getTaxes());
 			
@@ -914,7 +920,18 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				piTotal = BigDecimal.valueOf(payItemTotal);
 				payrollDTO.setPayItemTotal(piTotal);
 			}
+			
+			
+			
+			
+			List<EmployeePayroll> ytdList = paysheetFrequencyService.employeePayrollYTD(payroll.getCandidate(),orgLocation,approverStatus);
+			
+//			double ytdGross = 
+			
+			
 			res.setObject(payrollDTO);
+			
+			
 		}
 		return res;
 	}
