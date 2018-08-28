@@ -811,10 +811,10 @@ $('#endDate').datepicker({
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "           <div class='positionRelative'>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 						<input class="form-control positionRelative"';
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 						id="location'+rowId+'" name="lcaPlaceOfEmploymentList['+rowId+'].location"';
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							placeholder="Enter Location" value="'+(typeof plsofEmpmtVal[1]==="undefined"?"":plsofEmpmtVal[1])+'" field-name="Location" data-validation="required" type="text" onclick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'addressLine1'+rowId+'\',\'addressLine2'+rowId+'\');"></input> <i';
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							placeholder="Enter Location" value="'+(typeof plsofEmpmtVal[1]==="undefined"?"":plsofEmpmtVal[1])+'" field-name="Location" data-validation="required" type="text" onclick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipCode'+rowId+'\',\'\',\'\',\'\',\'addressLine1'+rowId+'\',\'addressLine2'+rowId+'\');"></input> <i';
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							class="fa fa-refresh btn btn-primary refresh-icon"';
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							title="Refresh"';
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							onClick="refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'addressLine1'+rowId+'\');"></i>';
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ ' 							onClick="refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipCode'+rowId+'\',\'\',\'\',\'\',\'addressLine1'+rowId+'\');"></i>';
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ " 			</div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       </div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "     </div>";
@@ -861,7 +861,7 @@ $('#endDate').datepicker({
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "     <div class='col-xs-12 col-sm-6 col-md-6 minHeight50 mb'>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       <label class='col-md-4'>Zip Code</label>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       <div class='col-md-8'>";
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "          <input class='form-control' id='zipcode"+rowId+"' value='"+(typeof plsofEmpmtVal[7]==="undefined"?"":plsofEmpmtVal[7])+"' name='lcaPlaceOfEmploymentList["+rowId+"].zipcode' data-validation='validate_Space validate_length validate_zipcode length2-8' data-validation-optional='true'";
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "          <input class='form-control' id='zipCode"+rowId+"' value='"+(typeof plsofEmpmtVal[7]==="undefined"?"":plsofEmpmtVal[7])+"' name='lcaPlaceOfEmploymentList["+rowId+"].zipCode' data-validation='validate_Space validate_length validate_zipcode length2-8' data-validation-optional='true'";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ " 						placeholder='Zip code' type='text' ></input>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       </div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "     </div>";

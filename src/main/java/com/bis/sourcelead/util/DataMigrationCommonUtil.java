@@ -2362,9 +2362,9 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					errorSet.put("noOfPos", "No.of Positions is missing"); 
 					}
 			   
-			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("noOfPos"))) {
+			  /* if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("noOfPos"))) {
 					errorSet.put("noOfPos", "No.of Positions is missing"); 
-					}
+					}*/
 			   
 			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("currClientLocation"))) {
 					errorSet.put("currClientLocation", "Current Client Location is missing"); 
