@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.PayitemHistory;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -341,6 +343,7 @@ public class PayrollUtil {
 							}
 						}
 						contDTO.setAmount(precontrAmt);
+						contDTO.setId(dedHis.getContributionId().toString());
 						contDTO.setPostContributionAmt(postcontrAmt);
 						contDTO.setId(String.valueOf(dedHis.getContributionId().getId()));
 						contDTO.setContributionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
@@ -419,5 +422,25 @@ public class PayrollUtil {
 		} catch (Exception e) {
 		}
 		return ytd;
+	}
+
+		/**
+	 * Calculating PayItem
+	 * @param payroll
+	 * @return List<AssociatePayItemDTO>
+	 */
+	public List<AssociatePayItemDTO> getPayItemData(EmployeePayroll payroll)
+	{
+		List<AssociatePayItemDTO> list = new ArrayList<>();
+		if (payroll.getPayitemHistory() != null) {
+			for (PayitemHistory his : payroll.getPayitemHistory()) {
+				AssociatePayItemDTO payItemDTO = new AssociatePayItemDTO();
+				payItemDTO.setId(his.getId().toString());
+				payItemDTO.setPayItemName(his.getAssociatePayItem().getPayItemName());
+				payItemDTO.setPayItemAmt(his.getAssociatePayItem().getPayItemAmount().doubleValue());
+				list.add(payItemDTO);
+			}
+		}
+		return list;
 	}
 }

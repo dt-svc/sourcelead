@@ -7,8 +7,7 @@
 <!-- below rows.count are equal to column indexes in excel and those fields are not mandatory-->
 <c:forEach var="columnHeader" items="${columnHeaders}" varStatus="rows"> <!-- below rows.count are equal to column indexes in excel and those fields are mandatory-->
 	<c:choose>
-		<c:when test="${rows.count == 3 || rows.count == 4 || rows.count == 5 
-			|| rows.count == 7 || rows.count == 8}">
+		<c:when test="${rows.count ==5||  rows.count == 6}">
 			<div class="form-group">
 				<label class="col-md-4 text-right mt5">${columnHeader} 
 				</label>
