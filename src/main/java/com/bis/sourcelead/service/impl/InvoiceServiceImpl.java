@@ -121,6 +121,8 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -3373,7 +3375,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		CreditDebitNote creditDebitNote = null;
 		if(StringUtils.isNotBlank(creditDebitNoteDTO.getSavedNoteId())){
-			
+			creditDebitNote = invoiceDao.getCreditDebitNoteById(Long.parseLong(creditDebitNoteDTO.getSavedNoteId()));
 		}else{
 			creditDebitNote = new CreditDebitNote();
 			creditDebitNote.setCreditDebitUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -3485,11 +3487,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	private CreditDebitNote saveChildCreditDebitNote(CreditDebitNote parentCreditDebitNote, User user, OrgLocations vendorOrgLocation) throws Exception {
-		CreditDebitNote childCreditDebitNote = null;
-		if(parentCreditDebitNote.getId() !=null){
-			childCreditDebitNote = new CreditDebitNote();	
-		}else{
+		
+		CreditDebitNote childCreditDebitNote = invoiceDao.getParentCreditDebitNoteById(parentCreditDebitNote.getId());
+		
+		if(childCreditDebitNote == null){
 			childCreditDebitNote = new CreditDebitNote();
+			childCreditDebitNote.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
+			childCreditDebitNote.setCreatedBy(user);
 		}
 		if(parentCreditDebitNote.getNoteType().equalsIgnoreCase(Constants.CREDIT_NOTE)){
 			childCreditDebitNote.setNoteType(Constants.DEBIT_NOTE);
@@ -3517,8 +3521,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 		childCreditDebitNote.setCreditDebitUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		childCreditDebitNote.setUpdatedBy(user);
 		childCreditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
-		childCreditDebitNote.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
-		childCreditDebitNote.setCreatedBy(user);
 		childCreditDebitNote.setSubTotal(parentCreditDebitNote.getSubTotal());
 		childCreditDebitNote.setTotal(parentCreditDebitNote.getTotal());
 		childCreditDebitNote.setDiscountType(parentCreditDebitNote.getDiscountType());
@@ -3590,23 +3592,39 @@ public class InvoiceServiceImpl implements InvoiceService {
 		
 		ResponseList<CreditDebitNote> creditDebitNoteList = invoiceDao.creditDebtListByOrgLocationId(orgLocations, startDateUTC, endDateUTC, creditDebitNoteDTO);
 		List<CreditDebitNote> notesFilterList = creditDebitNoteList.getData();
-		for(CreditDebitNote creditDebitNote: notesFilterList){
+			notesFilterList.forEach(creditDebitNote->{
 			CreditDebitNoteListDTO creditDebitNoteListDTO = new CreditDebitNoteListDTO();
 			creditDebitNoteListDTO.setReferenceNumber(creditDebitNote.getReferenceNumber());
 			creditDebitNoteListDTO.setGrandTotal(creditDebitNote.getTotal().toString());
-			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(creditDebitNote.getOrgRelations().getId());
-			if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
-				creditDebitNoteListDTO.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
-			}
-			if (orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
-				creditDebitNoteListDTO.setClientName(orgRelations.getLocationId().getOrgLocationName());
+			OrgRelations orgRelations = null;
+			try {
+				orgRelations = orgRelationsService.getOrgRelationById(creditDebitNote.getOrgRelations().getId());
+				if (orgRelations.getLocationId().getId().equals(orgLocations.getId())) {
+					creditDebitNoteListDTO.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+				}
+				if (orgRelations.getResponderLocationId().getId().equals(orgLocations.getId())) {
+					creditDebitNoteListDTO.setClientName(orgRelations.getLocationId().getOrgLocationName());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			creditDebitNoteListDTO.setGeneratedId(creditDebitNote.getReferenceNumber());
 			creditDebitNoteListDTO.setInvoceId(creditDebitNote.getInvoice());
 			creditDebitNoteListDTO.setCreditDebitNotedate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), creditDebitNote.getCreditNoteDate()));
 			creditDebitNoteListDTO.setCreditDebitNoteStatus(creditDebitNote.getNoteStatus());
+			creditDebitNoteListDTO.setCreditDebitUUID(creditDebitNote.getCreditDebitUUID());
+			creditDebitNoteListDTO.setSavedNoteId(creditDebitNote.getId().toString());
+			creditDebitNoteListDTO.setContactUser(creditDebitNote.getContactUser());
+			creditDebitNoteListDTO.setApproverCheckBox(creditDebitNote.getApproverCheckBox());
+			creditDebitNoteListDTO.setApprovers(creditDebitNote.getApprovers());
+			if(StringUtils.isNotBlank(creditDebitNote.getApprovers())){
+			List<String> appUserList = Arrays.asList(creditDebitNoteListDTO.getApprovers().split(","));
+				creditDebitNoteListDTO.setApproverUserSplitId(appUserList);
+				System.out.println(appUserList.size());
+			}
+			creditDebitNoteListDTO.setOwnerUser(creditDebitNote.getOwnerUser().getId().toString());
 			creditDebitList.add(creditDebitNoteListDTO);	
-		}
+		});
 		
 		creditDebitDTOList.setData(creditDebitList);
 		creditDebitDTOList.setRecordsFiltered(creditDebitNoteList.getRecordsFiltered());
@@ -3614,6 +3632,40 @@ public class InvoiceServiceImpl implements InvoiceService {
 		return creditDebitDTOList;
 	}
 
+	@Override
+	public boolean deleteCreditDebitNote(String noteUUID,String reason,String noteType,User user,OrgLocations orgLocations)throws Exception {
+		boolean result = false;
+		CreditDebitNote note = invoiceDao.getCreditDebitNoteByUUID(noteUUID);
+		Date date = new Date();
+		if(note!= null){
+				note.setRejectReason(reason);
+				note.setStatus(Constants.MEMBER_IN_ACTIVE);
+				note.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+				note.setUpdatedBy(user);
+				CreditDebitNote savedNote = invoiceDao.saveCreditDebitNote(note);
+				if (null != savedNote) {
+					if (null != note.getParentCreditDebitNote()) {
+						// parent invoice update
+						CreditDebitNote parentnote = invoiceDao.getParentCreditDebitNoteById(savedNote.getParentCreditDebitNote().getId());
+						parentnote.setStatus(Constants.MEMBER_IN_ACTIVE);
+						parentnote.setUpdatedBy(user);
+						parentnote.setRejectReason(reason);
+						parentnote.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+						invoiceDao.saveCreditDebitNote(parentnote);
+					}else{
+						// update child invoice
+						CreditDebitNote childInvoice = invoiceDao.getParentCreditDebitNoteById(savedNote.getId());
+						childInvoice.setStatus(Constants.MEMBER_IN_ACTIVE);
+						childInvoice.setUpdatedBy(user);
+						childInvoice.setRejectReason(reason);
+						childInvoice.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+						invoiceDao.saveCreditDebitNote(childInvoice);
+					}
+				}
+				result = true;	
+		}
+		return result;
+	}
 	/*public EmailAttachment zipFileReminderInvoiceAttachedDoc(List<EmailAttachment> docusList) throws MessagingException {
 
 		EmailAttachment ema = null;

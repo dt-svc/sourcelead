@@ -11,6 +11,7 @@ public class CreditDebitNoteListDTO extends SearchDTO {
 	private String invoceId;
 	private String ownerUser;
 	private String contactUser;
+	private List<String> approverUserSplitId;
 	private String spocUser;
 	private String billingAddress;
 	private String shippingAddress;
@@ -28,6 +29,7 @@ public class CreditDebitNoteListDTO extends SearchDTO {
 	private String clientName;
 	private String generatedId;
 	private String creditDebitNoteStatus;
+	private String creditDebitUUID;
 	
 	 
 	public List<FileInfo> getFileInfo() {
@@ -175,6 +177,20 @@ public class CreditDebitNoteListDTO extends SearchDTO {
 	public void setCreditDebitNoteStatus(String creditDebitNoteStatus) {
 		this.creditDebitNoteStatus = creditDebitNoteStatus;
 	}
+	public String getCreditDebitUUID() {
+		return creditDebitUUID;
+	}
+	public void setCreditDebitUUID(String creditDebitUUID) {
+		this.creditDebitUUID = creditDebitUUID;
+	}
+	public List<String> getApproverUserSplitId() {
+		return approverUserSplitId;
+	}
+	public void setApproverUserSplitId(List<String> approverUserSplitId) {
+		this.approverUserSplitId = approverUserSplitId;
+	}
+	
+	
 
 	
 }

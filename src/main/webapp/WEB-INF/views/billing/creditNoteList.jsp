@@ -225,6 +225,7 @@ function prepareCreditNoteList(url,locationdateForList){
  	result = result + '<table id="creditListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result +'       <tr>                             ';
+	result = result +'         <th>Action</th>                ';
 	result = result +'         <th>Date</th>                ';
 	result = result +'         <th>ID</th>                    ';
 	result = result +'         <th>Reference Number</th>           ';
@@ -258,6 +259,7 @@ function creditNotePagination(url){
           pages: 10
         }),
         "columns": [
+        	{ "data": "action" },
             { "data": "date" },
             { "data": "id"},
             { "data": "referenceNumber"},
@@ -268,6 +270,41 @@ function creditNotePagination(url){
             { "data": "status"}
         ],
         "columnDefs": [{
+    	  	"targets": colIndex++,
+    	  	"data": "action",
+    	  	"render": function(data, type, report, meta) {
+    	  		var result = "";
+    	  		result = result +'         <td>   ';
+    	  		if(report.approverCheckBox == 'Y' && (report.approverUserSplitId.length >1)){
+    	  			for(var i=0; i<report.approverUserSplitId.length; i++) {
+    	  				result = result +'<div class="tbldata-dotdot-vsm">';
+    	  				if(report.approverUserSplitId[i] == '${SourceLeadWeb_user.id}'){
+						result = result +'           <span class="clearfix" ><a onclick="acceptCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectCreditDebitNote(\''+report.creditDebitUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
+			    	}else{
+			    		if((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft"))
+	    				 {
+						result = result +' <span class="clearfix"><a onClick="editCreditDebitNote(\''+report.savedNoteId+'\');"><i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
+	    				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
+
+						// to avoid multiple edit buttons for multiple approvers 
+						break;
+	    				 }  
+			    	}
+			    	result = result +' </div>';	
+			    }
+    	  		}else{
+    	  			result = result +'<div class="tbldata-dotdot-vsm">';
+    	  			if((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft"))
+   				 {
+					result = result +' <span class="clearfix"><a onClick="editCreditDebitNote(\''+report.savedNoteId+'\');"><i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
+   				 }
+    				 result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
+    				 result = result +'</div>  ';	
+    	  		}
+			      result = result +'         </td> ';
+	             return result;
+    	  	}
+      		},{
 	    	  	"targets": colIndex++,
 	    	  	"data": "date",
 	    	  	"render": function(data, type, report, meta) {
@@ -387,7 +424,7 @@ function creditNotePagination(url){
                   }],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[2,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -633,67 +670,6 @@ $(document).ready(function() {
         }
 
         
-   function showInvoiceStartDate(){
-    
-        var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-  	  var finalDateFormatClientInvoiceDate = '';
-  	  if(locationDate.match("yyyy-MM-dd")){
-  		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
-  	  }if(locationDate.match("dd-MM-yyyy")){
-  		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
-  	  }if(locationDate.match("MM-dd-yyyy")){
-  		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
-  	  }if(locationDate.match("yyyy-dd-MM")){
-  		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
-  	  }
-  	  
-  	
-  	$('#billingStartDate').datepicker({
-  		changeMonth: true,
-  		changeYear: true, 
-  		dateFormat : finalDateFormatClientInvoiceDate,
-  		onSelect : function(selected) {
-  			//var dt = new Date(selected);
-  			//var dt = toDate("#billingStartDate");
-  			 var dt = $(this).datepicker('getDate', '+1d');
-  	            dt.setDate(dt.getDate() + 1);
-  			$("#billingEndDate").datepicker("option", "minDate", dt);
-  			removeStartdateval();
-  		}
-  	}).datepicker('show');;
-   }
-  	
-   function showInvoiceEndDate(){
-	   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  	  var finalDateFormatClientInvoiceDate = '';
-	  	  if(locationDate.match("yyyy-MM-dd")){
-	  		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
-	  	  }if(locationDate.match("dd-MM-yyyy")){
-	  		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
-	  	  }if(locationDate.match("MM-dd-yyyy")){
-	  		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
-	  	  }if(locationDate.match("yyyy-dd-MM")){
-	  		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
-	  	  }
-	   
-	   
-  	$('#billingEndDate').datepicker({
-  		changeMonth: true,
-  		changeYear: true, 
-  		dateFormat : finalDateFormatClientInvoiceDate,
-  		beforeShow: function(){
-  	           this.value='';
-  	     },
-  		onSelect : function(selected) {
-//   			var dt = new Date(selected);
-//   			var dt = toDate("#billingEndDate");
-  			   var dt = $(this).datepicker('getDate', '-1d');
-  	            dt.setDate(dt.getDate() - 1);
-  			$("#billingStartDate").datepicker("option", "maxDate", dt);
-  			removeEnddateval();
-  		}
-  	}).datepicker('show');;
-   }
 </script>
 
 <script>
@@ -736,19 +712,42 @@ function closePopup() {
 
 
 <script>
-function deleteInvoice(invoiceUUID){ 
+function deleteCreditDebitNote(creditDebitUUID){ 
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 
 	result = result +"		<p>Are you sure you want to delete ?</p>";
-	result = result +"		<textarea  id='reasonForInvoice' name='reasonForInvoice'  placeholder='Comments here' ></textarea>";
+	result = result +"		<textarea  id='reasonForCreditDebitNote' name='reasonForInvoice'  placeholder='Comments here' ></textarea>";
 	result = result + ' <div id="reasonForInvoiceDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveInvoiceRejectedReason(\''+invoiceUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveCreditDebitRejectedReason(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
+}
+
+function saveCreditDebitRejectedReason(creditDebitUUID){
+	var reason = $("#reasonForCreditDebitNote").val();
+	if(reason != null && reason != ''){
+		 $("#reasonForInvoiceDiv").empty();
+		if(reason.length > 250){
+		$("#reasonForInvoiceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+		}else{
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/deleteCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Credit&creditDebitUUID="+creditDebitUUID+"&reason="+reason,
+		   		    success: function(data) {
+		   		    	$("#popUp").empty();
+		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 	location.replace(sourceleadUrl+"/creditNoteList");	
+		   		    }
+			     });
+		}
+	}
+	else{
+			$("#reasonForInvoiceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
 }
 
 function cancelTermination(){

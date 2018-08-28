@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
@@ -717,6 +719,33 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		} else {
 			return null;
 		}
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CreditDebitNote getParentCreditDebitNoteById(Long noteId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CreditDebitNote note  where note.parentCreditDebitNote =:noteId";
+		CreditDebitNote parentCreditDebitNote = (CreditDebitNote) session.createQuery(query).setLong("noteId", noteId).uniqueResult();
+		return parentCreditDebitNote;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CreditDebitNote getCreditDebitNoteByUUID(String noteUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CreditDebitNote note  where note.creditDebitUUID =:noteUUID";
+		CreditDebitNote creditDebitNote = (CreditDebitNote) session.createQuery(query).setParameter("noteUUID", noteUUID).uniqueResult();
+		return creditDebitNote;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CreditDebitNote getCreditDebitNoteById(Long noteId) {
+			Session session = this.sessionFactory.getCurrentSession();
+			CreditDebitNote	note = (CreditDebitNote) session.get(CreditDebitNote.class, noteId);
+		return note;
 	}
 
 	@SuppressWarnings("unchecked")

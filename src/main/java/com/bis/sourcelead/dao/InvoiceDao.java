@@ -60,6 +60,12 @@ public interface InvoiceDao{
 	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
 
 	Invoice getParentInvoiceByInvoiceId(Long invoiceId)throws Exception;
+	
+	CreditDebitNote getParentCreditDebitNoteById(Long noteId)throws Exception;
+	
+	 CreditDebitNote getCreditDebitNoteById(Long noteId)throws Exception;
+	 
+	 CreditDebitNote getCreditDebitNoteByUUID(String noteUUID)throws Exception;
 
 	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId, Long orgLocationId, String invoiceStatus, Date startDate, Date endDate);
 

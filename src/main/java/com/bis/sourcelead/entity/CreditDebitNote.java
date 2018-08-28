@@ -89,6 +89,9 @@ public class CreditDebitNote implements Serializable {
 	@Column(name = "REASON", columnDefinition = "TEXT default NULL")
 	private String reason;
 	
+	@Column(name = "REJECT_REASON", columnDefinition = "TEXT default NULL")
+	private String rejectReason;
+	
 	@Column(name = "CREDIT_NOTE_DATE")
 	private Date creditNoteDate;
 	
@@ -365,6 +368,14 @@ public class CreditDebitNote implements Serializable {
 
 	public void setGeneratedId(String generatedId) {
 		this.generatedId = generatedId;
+	}
+
+	public String getRejectReason() {
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
 	}
 	
 	

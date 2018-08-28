@@ -357,7 +357,7 @@ public ResponseList<CreditDebitNoteListDTO> getCreDitNotesList(CreditDebitNoteDT
 {
 
 OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(creditDebitNoteDTO.getOrglocationId()));
-String[] tableColumns = { "date", "id", "referenceNumber", "clientName","invoiceId", "total", "balance", "status"};
+String[] tableColumns = { "","date", "id", "referenceNumber", "clientName","invoiceId", "total", "balance", "status"};
 
 int sortColumnIndex = 1; // by default sorting using invoice date
 String sortColumnOrder = "asc"; // by default descending order
@@ -907,12 +907,12 @@ return responseList;
 						invoice.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
 						}
 				}
-				else {
+				/*else {
 					invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).toString());
 				}
 				if (null != invoice.getContactUser()) {
 					invoice.setClientContactEmail(invoice.getOwnerUserId().getEmail());
-				}
+				}*/
 			
 			invoice.setExchangeRate(invoice.getExchangeRate());
 			if (invoice.getConvertAmount() != null) {
@@ -2298,5 +2298,18 @@ return responseList;
 		}
 		timelineHistories = invoiceService.getInvoiceTimelineHistoryList(invoice.getId(), user, searchVal, orderVal, datesRange, checkedStatus,namesStatus);
 		return timelineHistories;
+	}
+	
+	@RequestMapping(value = "/deleteCreditDebitNote", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "reason", required = false) String reason, 
+			@RequestParam(value = "noteType", required = false) String noteType, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orglocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		boolean isDeleted = invoiceService.deleteCreditDebitNote(creditDebitUUID, reason, noteType, user,orglocations);
+		
+		return isDeleted;
 	}
 }
