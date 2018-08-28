@@ -3066,7 +3066,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			timelineHistory.setInvoicePaymentReminderId(invoicePaymentId);
 			timelineHistory.setInvoicePaymentReminderStatus(invoice.getPaymentStatus());
 			timelineHistory.setInvoiceStatus(Constants.INVOICE_TIMELINE_STATUS_PAID);
-		}else if (invoice.getPaymentStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PARTIAL_PAID)) {
+		}else if (invoice.getPaymentStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PARTIAL_PAID) && invoicePaymentId != null) {
 			timelineHistory.setInvoicePaymentReminderId(invoicePaymentId);
 			timelineHistory.setInvoicePaymentReminderStatus(invoice.getPaymentStatus());
 			timelineHistory.setInvoiceStatus(invoice.getPaymentStatus());
