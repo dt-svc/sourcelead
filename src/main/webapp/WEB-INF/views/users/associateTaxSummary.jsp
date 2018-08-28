@@ -436,7 +436,7 @@ function associateTaxSummary(userId){
               result = result + ' <div class="col-md-12">';
               result = result + '   <div class="pull-right">';
               result = result + ' <input value="Save" class="btn btn-success btnSuccess" id="associate_tax_button" type="button" onclick="saveAssociateTax('+userId+');">';
-              result = result + ' <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = "/app/usersList"" type="button">';
+              result = result + ' <input value="Cancel" class="btn btn-default ml10" onclick="cancelButton();" type="button">';
               result = result + '  </div>';
               result = result + '  </div>';
               result = result + '  </div>';
@@ -505,6 +505,12 @@ function associateTaxSummary(userId){
 		$("#associate_tax_form").showHelpOnFocus();
 		$("#associate_tax_form").validateOnBlur(false, validationSettings);  
    });  
+</script>
+
+<script>
+function cancelButton(){ 
+	location.replace(sourceleadUrl+ "/usersList");
+}
 </script>
 
 
