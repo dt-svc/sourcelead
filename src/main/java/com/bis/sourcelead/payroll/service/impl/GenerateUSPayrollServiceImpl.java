@@ -197,8 +197,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			Set<EmployeePayroll> payrollList = calculatePayroll(existedData,paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
-			paySheetFreq.setEmployeepayroll(payrollList);
 			if(payrollList !=null && payrollList.size() > 0) {
+				paySheetFreq.setEmployeepayroll(payrollList);
 				uSPaysheetService.addPaysheetFrequency(paySheetFreq);
 			}
 				paysheetFrequencyDTO = getPayrollData(generateUSPayrollDTO,orgLocation,loginUser);
@@ -943,8 +943,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				payrollDTO.setPayItem(payItem);
 				double payItemTotal = payItem.stream().mapToDouble(pitem->pitem.getPayItemAmt()).sum();
 				piTotal = BigDecimal.valueOf(payItemTotal);
-				payrollDTO.setPayItemTotal(piTotal);
 			}
+			payrollDTO.setPayItemTotal(piTotal);
 			
 			// Calculating YTD
 			YTDPayrollDTO ytdDTO = getEmployeeYTDPayroll(payroll,orgLocation,approverStatus);

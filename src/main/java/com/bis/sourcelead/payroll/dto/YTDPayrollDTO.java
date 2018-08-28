@@ -15,7 +15,7 @@ public class YTDPayrollDTO {
 	private BigDecimal ytdFederal ;
 	
 	private BigDecimal ytdFICA;
-
+	
 	public BigDecimal getYtdGross()
 	{
 		return ytdGross;
