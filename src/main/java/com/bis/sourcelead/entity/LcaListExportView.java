@@ -50,6 +50,10 @@ public class LcaListExportView implements Serializable {
 	
 	@Column(name = "SOC_OCCUPATION_TITLE")
 	private String socOccupationTitle;
+	
+	
+	@Column(name = "JOB_TITLE")
+	private String jobTitle;
     
 	@Column(name = "WAGES_LEVEL")
 	private String wagesLevel;
