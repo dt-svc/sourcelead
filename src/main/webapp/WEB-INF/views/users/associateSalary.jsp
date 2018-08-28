@@ -242,7 +242,6 @@ function calculateHourlyRateSal(){
 			} else if (response.response === "SUCCESS") {
 				var result = "";
 				var allCheck =response.data.length;
-       		 alert(allCheck);
 				result = result +'<table class="table">';
 				result = result +'<thead>';
 				result = result +'<tr>';
