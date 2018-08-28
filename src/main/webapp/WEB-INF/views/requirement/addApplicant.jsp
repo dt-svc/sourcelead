@@ -482,11 +482,12 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
 	
-	
-	result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv">';
-	result = result + '<select id="candidateResumesList" name="candidateResume" data-validation-optional="true" field-name="Resume" class="form-control block">';
-	result = result + '</select>';
-	result = result + '</div>';
+	if(resumeId != null && resumeId != '' && resumeId != 'undefined'){
+		result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv">';
+		result = result + '<select id="candidateResumesList" name="candidateResume" data-validation-optional="true" field-name="Resume" class="form-control block">';
+		result = result + '</select>';
+		result = result + '</div>';
+	}
 	
 	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: none;">';
 	result = result + '------- ( OR ) -------';

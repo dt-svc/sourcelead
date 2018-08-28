@@ -7,7 +7,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
 
  <section class="content-wraper content-wraperNew">
 	        <div class="success_pop" id="selector" >
@@ -15,7 +14,7 @@
 			</div>
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>LCA View Details</h2>
+        <h2>View LCA</h2>
       </div>
 	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewLCAList">LCA List</a> &raquo; LCA Summary</div>
 		<input type="hidden" id = "lcaUuid" value = "${lcaUuid}">
@@ -33,7 +32,14 @@
 				<li class="clearfix"><span>LCA No</span><p>: ${lcaDTO.lcaNo}</p></li>
 				<li class="clearfix"><span>LCA Title</span><p>: ${lcaDTO.lcaTitle}</p></li>
 				<li class="clearfix"><span>LCA Status</span><p>: ${lcaDTO.lcaStatus}</p></li>
-				<li class="clearfix"><span>Status</span><p>: ${lcaDTO.status}</p></li>
+				
+				<c:if test="${lcaDTO.status == '1'}">
+				<li class="clearfix"><span>Status</span><p>: Active</p></li>
+				</c:if>
+				<c:if test="${lcaDTO.status == '0'}">
+				<li class="clearfix"><span>Status</span><p>: In-active</p></li>
+				</c:if>
+				
 				<li class="clearfix"><span>Start Date</span><p>: ${lcaDTO.startDate}</p></li>
 				<li class="clearfix"><span>End Date</span><p>: ${lcaDTO.endDate}</p></li>
 				<li class="clearfix"><span>No.of Positions</span><p>: ${lcaDTO.noOfPositions}</p></li>
@@ -108,7 +114,7 @@
 	           
 			  	<ul>
 					<li class="clearfix"><span>Document Title</span><p>: ${doc.documentTitle}</p></li>
-					<li class="clearfix"><span>File Name</span><p>: ${doc.fileName}</p></li>
+					<li class="clearfix"><span>File Name</span><p>: ${doc.fileName}</p> <p><a class="fa fa-eye" onClick="viewFile('${doc.fileUrl}','${doc.fileName}','${doc.fileContentType}');"></a> &nbsp;<a download class="glyphicon glyphicon-download-alt" target="_blank" href="${doc.fileUrl}" download title="Download"></a></p> </li>
 					<li class="clearfix"><span>Comment</span><p>: ${doc.description}</p></li>
 				</ul>	
 				
