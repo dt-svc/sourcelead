@@ -323,7 +323,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 					List<ContributionDTO> clist = payrollUtil.getContributionData(payroll);
 					contributionHisList.addAll(clist);
 					
-					List<AssociatePayItemDTO> pList = getPayItemData(payroll);
+					List<AssociatePayItemDTO> pList = payrollUtil.getPayItemData(payroll);
 					payItemList.addAll(pList);
 					// Employee Taxes
 					Set<EmployeePayrollTax> payrollTax = payroll.getUsPayrollTax();
@@ -426,24 +426,6 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		return response;
 	}
 
-	/**
-	 * Calculating PayItem
-	 * @param payroll
-	 * @return List<AssociatePayItemDTO>
-	 */
-	private List<AssociatePayItemDTO> getPayItemData(EmployeePayroll payroll)
-	{
-		List<AssociatePayItemDTO> list = new ArrayList<>();
-		if (payroll.getPayitemHistory() != null) {
-			for (PayitemHistory his : payroll.getPayitemHistory()) {
-				AssociatePayItemDTO payItemDTO = new AssociatePayItemDTO();
-				payItemDTO.setPayItemName(his.getAssociatePayItem().getPayItemName());
-				payItemDTO.setPayItemAmt(his.getAssociatePayItem().getPayItemAmount().doubleValue());
-				list.add(payItemDTO);
-			}
-		}
-		return list;
-	}
 
 
 	/**
