@@ -49,9 +49,12 @@
 						  </c:if>
 						</div>
 					
+					 
+					      <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">
 					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
 					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
+					     </sec:authorize>
 					     
 					      <c:if test="${isReopenButtonVisible && isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
 						        <c:if test="${!empty eah.reopenRejectedReason}">
