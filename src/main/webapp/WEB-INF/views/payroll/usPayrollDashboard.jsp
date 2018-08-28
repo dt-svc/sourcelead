@@ -715,7 +715,7 @@ function sendPayrollForApprover(){
 
 <script>
 function confirmPayroll(){
-// 	$("#reviewPayrollDiv").hide();
+	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
 	 var confirmType = "DRAFT";
 	 var formData = $($('#submit_for_approver')[0]).serialize();
