@@ -19,10 +19,10 @@
                     <div>
                       <select class="sel" id="federaltaxFillingStatus" name="federaltaxFillingStatus" data-validation="required" field-name="Filling Status">
                         <option value="">--Select--</option>
-                        <option value="SINGLE">Single</option>
-                        <option value="MARRIED">Married</option>
-                        <option value="MARRIED_USE_SINGLE_RATE">Married Use Single Rate</option>
-                        <option value="NONRESIDENT_ALIEN">Non Resident Alien</option>
+                        <option value="Single">Single</option>
+                        <option value="Married">Married</option>
+                        <option value="Married_Use_Single_Rate">Married Use Single Rate</option>
+                        <option value="NonResident_Alien">Non Resident Alien</option>
                       </select>
                     </div>
                   </div>
