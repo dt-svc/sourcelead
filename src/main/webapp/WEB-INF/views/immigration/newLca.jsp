@@ -512,7 +512,7 @@
 						<input type="file" style="display: none;" onchange="uploadBtnFile(0);"  id="uploadBtn0" class="upload">
 						</span>
 					</label>
-					<input type="text" class="form-control" name="lcaDocumentList[0].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[0].fileName}" readonly id="uploadFile0" placeholder="Files are not selected...">
+					<input type="text" class="form-control" name="lcaDocumentList[0].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[0].fileName}" readonly id="uploadFile0" placeholder="Files are not selected..." field-name="Upload Document" data-validation="required validatedoc">
 					</div>
         		</div>
         	</div>
@@ -558,7 +558,7 @@
 						<input type="file" style="display: none;" onchange="uploadBtnFile(${rows.count-1});"  id="uploadBtn${rows.count-1}" class="upload">
 						</span>
 					</label>
-					<input type="text" class="form-control" name="lcaDocumentList[${rows.count-1}].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[rows.count-1].fileName}" readonly id="uploadFile${rows.count-1}" placeholder="Files are not selected...">
+					<input type="text" class="form-control" name="lcaDocumentList[${rows.count-1}].fileInfo[0].docFile" value="${lcaDTO.lcaDocumentList[rows.count-1].fileName}" readonly id="uploadFile${rows.count-1}" placeholder="Files are not selected..." field-name="Upload Document" data-validation="required validatedoc">
 					</div>
         		</div>
         	</div>
@@ -941,7 +941,7 @@ $('#endDate').datepicker({
        prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='file' style='display: none;' multiple onchange='uploadBtnFile("+rowId+");' id='uploadBtn" + rowId + "'  class='upload'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "</span>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</label>";
-	   prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='text' class='form-control' name='lcaDocumentList["+rowId+"].fileInfo[0].docFile' value='' readonly id='uploadFile"+rowId+"' placeholder='Files are not selected...'>";
+	   prepareAttachmentdiv =prepareAttachmentdiv+ "<input type='text' class='form-control' name='lcaDocumentList["+rowId+"].fileInfo[0].docFile' value='' readonly id='uploadFile"+rowId+"' placeholder='Files are not selected...' field-name='Upload Document' data-validation='required validatedoc'>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ "</div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
 	   prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
