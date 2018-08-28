@@ -242,10 +242,10 @@
 
 
 <script>
-	function payAdjustment(payrollUUID){
-		  $.ajax({
+	function payAdjustment(payrollUUID,status){
+		$.ajax({
 		  	type: "GET",
-		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID,                 
+		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
 		            var json = data.object;
 		            $("#empAddress").text(json.employeeAddress);

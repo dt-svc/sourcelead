@@ -28,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -552,6 +553,12 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		});
 		
 		return list;
+	}
+
+	@Override
+	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus)
+	{
+		return paysheetFrequencyDao.employeePayrollYTD(candidate,orgLocation,approverStatus);
 	}
 
 }
