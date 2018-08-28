@@ -175,12 +175,12 @@
                         </tr>
                         <tr>
                           <td>YTD</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td> 
-                          <td>xxxx</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td>
+                          <td><span id="ytdGross">0</span></td>
+                          <td><span id="ytdFederal">0</span></td> 
+                          <td><span id="ytdFICA">0</span></td>
+                          <td><span id="ytdTaxes">0</span></td>
+                          <td><span id="ytdDeduction">0</span></td>
+                          <td><span id="ytdNetpay">0</span></td>
                         </tr>
                       </tbody>
                     </table></td>
@@ -264,6 +264,8 @@
 		            $("#preOverTimeHours").val(json.overtimeHours.toFixed(2));
 		            $("#preOverTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
 		            
+		            // Taxes 
+		            
 		            $("#federalWT").text(json.federal);
 		            $("#medicareWT").text(json.medicare);
 		            $("#ficaWT").text(json.fica);
@@ -281,6 +283,15 @@
 		            $("#payRate").val(json.payRate);
 		            $("#payrollId").val(json.payrollId);
 		            $("#payrollUUID").val(json.payrollUUID);
+		            
+		             // YTD      
+		             var ytd = json.ytdDTO;
+	                 $("#ytdGross").text(ytd.ytdGross);
+	                 $("#ytdFederal").text(ytd.ytdFederal);
+	                 $("#ytdFICA").text(ytd.ytdFICA);
+	                 $("#ytdTaxes").text(ytd.ytdTaxes);
+	                 $("#ytdDeduction").text(ytd.ytdDeduction);
+	                 $("#ytdNetpay").text(ytd.ytdNet);
 		             
 		                var postDed = "";
 	        			postDed = postDed + '<table width="100%" class="table table-bordered" >';
@@ -300,10 +311,10 @@
 				        			postDed = postDed + '<tr>';
 				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
 				        			postDed = postDed + ' <td>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+ded.deductionId+'>';
+				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+ded.id+'>';
 				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionType" value='+ded.deductionType+'>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+ded.amount+' > ';
-				        			postDed = postDed + '<input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.amount+' class="formControl" readOnly></td>';
+				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+ded.postDeductionAmt+' > ';
+				        			postDed = postDed + '<input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
 			            	  $("#postDeductionLength").val(json.postDed.length);
@@ -337,10 +348,10 @@
 				            	preDed = preDed + '<tr>';
 				            	preDed = preDed + ' <td>'+preded.deductionType+'</td>';
 				            	preDed = preDed + ' <td>';
-				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+preded.deductionId+'>';
+				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+preded.id+'>';
 				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionType" value='+preded.deductionType+'>';
-				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+preded.amount+' >'; 
-				            	preDed = preDed + ' <input type="text" id="preDeductionAmount'+i+'" name="preDeduction['+i+'].amount" value='+preded.amount+' class="formControl" readOnly></td>';
+				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+preded.preDeductionAmount+' >'; 
+				            	preDed = preDed + ' <input type="text" id="preDeductionAmount'+i+'" name="preDeduction['+i+'].amount" value='+preded.preDeductionAmount+' class="formControl" readOnly></td>';
 				            	preDed = preDed + ' </tr>';
 				            }
 				            $("#preDeductionLength").val(json.preDed.length);
@@ -376,7 +387,7 @@
 					            	output = output + '<input type="hidden" name="contribution['+i+'].taxtType" value='+ot.taxtType+' id="taxtType"/>';
 					            	output = output + '<td>'+ot.contributionType+'</td>';
 					            	output = output + '<td>';
-					            	output = output + ' <input type="hidden"  name="contribution['+i+'].id" value='+ot.contributionId+'>';
+					            	output = output + ' <input type="hidden"  name="contribution['+i+'].id" value='+ot.id+'>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionType" value='+ot.contributionType+'>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionAmt" value='+ot.amount+' >'; 
 					            	output = output + '<input type="text" id="totalContributions'+i+'" name="contribution['+i+'].contributionAmount" value='+ot.amount+' class="formControl" readOnly></td>';
@@ -396,6 +407,7 @@
 	                        $("#employerPaidBenefitDiv").append(output);
 	                        
 	                        
+	                        // PayItems
 	                        var payItem = "";
 	                        
 	                        payItem = payItem +'<table width="100%" class="table table-bordered">';
@@ -420,10 +432,10 @@
 						            	var pi = json.payItem[i];
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';	
-						            	payItem = payItem +'<input type="hidden" value='+pi.payItemId+' id="id" name="payItem['+i+'].payItemId"/>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].payItemId"/>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.payItemName+' id="id" name="payItem['+i+'].prePayItemName"/>';
-						            	payItem = payItem +'<input type="hidden" value='+pi.amount+' id="id" name="payItem['+i+'].prePayItemAmt"/>';
-						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount'+i+'" name="payItem['+i+'].payItemAmount" readOnly value='+pi.amount+'></td>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.payItemAmt+' id="id" name="payItem['+i+'].prePayItemAmt"/>';
+						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount'+i+'" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
 						            	payItem = payItem +' <td>';
 						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
 						            	payItem = payItem +' <input id="cashTips" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
@@ -446,6 +458,7 @@
 	                          payItem = payItem +' </table>';
 	                          $("#payItemDiv").empty();
 	                          $("#payItemDiv").append(payItem)
+	                          
                        
 		        },
 		    }); 
