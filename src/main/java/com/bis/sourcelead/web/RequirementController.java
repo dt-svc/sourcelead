@@ -1597,15 +1597,5 @@ private Sheet createXlsSheet(HSSFWorkbook createExcelworkbook,HSSFSheet createEx
 	return createExcelsheet;
 }
 
-private DataValidation getDropDownListForCell(String[] choicesArrayList, int column, String fileName)
-{
-	@SuppressWarnings("deprecation")
-	CellRangeAddressList addressList = new CellRangeAddressList(1, 500, column, column);
-	DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(choicesArrayList);
-	DataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
-	dataValidation.setSuppressDropDownArrow(false);
-	return dataValidation;
-}
-
 	
 }

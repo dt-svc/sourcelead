@@ -1359,6 +1359,7 @@ public class RequirementRestController {
 							if(StringUtils.isNotBlank(candidate.getPhoneNumber())) {
 								JSONObject mobilePhoneItem = new JSONObject();
 								mobilePhoneItem.put("label", "Phone Number");
+								mobilePhoneItem.put("type", "text");
 								mobilePhoneItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
 								mobilePhoneItem.put("name", "PhoneNumber");
 								mobilePhoneItem.put("value", candidate.getPhoneNumber());
@@ -1368,6 +1369,7 @@ public class RequirementRestController {
 							
 							JSONObject emailItem = new JSONObject();
 							emailItem.put("label", "Email Id");
+							emailItem.put("type", "text");
 							emailItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
 							emailItem.put("name", "EmailId");
 							emailItem.put("value", candidate.getEmail());
@@ -1376,6 +1378,7 @@ public class RequirementRestController {
 							
 							JSONObject locationItem = new JSONObject();
 							locationItem.put("label", "Location");
+							locationItem.put("type", "text");
 							locationItem.put("id", "submissionLocation");
 							locationItem.put("name", "location");
 							locationItem.put("value", candidate.getLocation());
@@ -1384,6 +1387,7 @@ public class RequirementRestController {
 							
 							JSONObject countryItem = new JSONObject();
 							countryItem.put("label", "Country");
+							countryItem.put("type", "text");
 							countryItem.put("id", "submissionCountry");
 							countryItem.put("name", "country");
 							countryItem.put("value", candidate.getCountry());
@@ -1393,6 +1397,7 @@ public class RequirementRestController {
 							if(StringUtils.isNotBlank(candidate.getState())) {
 								JSONObject stateItem = new JSONObject();
 								stateItem.put("label", "State");
+								stateItem.put("type", "text");
 								stateItem.put("id", "submissionState");
 								stateItem.put("name", "state");
 								stateItem.put("value", candidate.getState());
@@ -1403,6 +1408,7 @@ public class RequirementRestController {
 							if(StringUtils.isNotBlank(candidate.getCity())) {
 								JSONObject cityItem = new JSONObject();
 								cityItem.put("label", "City");
+								cityItem.put("type", "text");
 								cityItem.put("id", "submissionCity");
 								cityItem.put("name", "city");
 								cityItem.put("value", candidate.getCity());
@@ -1413,6 +1419,7 @@ public class RequirementRestController {
 							if(StringUtils.isNotBlank(candidate.getNoticePeriod())) {
 								JSONObject npItem = new JSONObject();
 								npItem.put("label", "Notice Period");
+								npItem.put("type", "text");
 								npItem.put("id", "select-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
 								npItem.put("name", "NoticePeriod");
 								npItem.put("value", candidate.getNoticePeriod());
