@@ -198,9 +198,9 @@ function approvePayrollDiv(){
 	</div>						
 </div>
 <div class="clearfix"></div>
-<div class="remove_search">
+<!-- <div class="remove_search">
 	<input placeholder="Search" type="text">
-</div>     
+</div>   -->   
 </div>         
 </form:form>
 </div>
@@ -715,7 +715,7 @@ function sendPayrollForApprover(){
 
 <script>
 function confirmPayroll(){
-	$("#reviewPayrollDiv").hide();
+// 	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
 	 var confirmType = "DRAFT";
 	 var formData = $($('#submit_for_approver')[0]).serialize();
@@ -758,6 +758,8 @@ function clearPayrollDiv(){
 
 <script type="text/javascript">
 function getDraftData(){
+	
+	$("#initiateLoading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getPaysheetFrequencyDraftData",                 
@@ -813,6 +815,7 @@ function getDraftData(){
 			        	$("#approveDiv").hide();
 			        	$("#historyDataTableSearch").hide();
 			        	$("#draftFrequencyDiv").show();
+			        	$("#initiateLoading").removeAttr('style');
 			        	draftPagination();
 	        }
 	 }); 
