@@ -326,7 +326,8 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 			if (pf != null && pf.getEmployeepayroll() != null) {
 				Set<EmployeePayroll> set = null;
 				if(paysheetFrequencyDTO.getApproverStatus() != null && paysheetFrequencyDTO.getApproverStatus().equalsIgnoreCase(Constants.DRAFT)) {
-					set = pf.getEmployeepayroll().stream().filter(p->p.getPaysheetFrequency().getId() == pfDTO.getPaySheetFrequencyId() && p.getSubmitForAproverStatus().equalsIgnoreCase(Constants.DRAFT)).collect(Collectors.toSet());
+					set = pf.getEmployeepayroll().stream().filter(emp->emp.getPaysheetFrequency().getId() == pfDTO.getPaySheetFrequencyId() && emp.getSubmitForAproverStatus().equalsIgnoreCase(Constants.DRAFT)).collect(Collectors.toSet());
+					logger.info("Number of payrolls in draft state ==========="+set.size());
 				}else {
 					set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum()).collect(Collectors.toSet());
 				}

@@ -2,8 +2,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script type="text/javascript">
-function calculateTotalPay(formData,confirmType){
-	          /* approvePayrollDiv(); */
+function calculateTotalPay(formData,confirmType,fromState){
+
+		if(fromState == null || fromState == '' || fromState == 'undefined'){
+			approvePayrollDiv();
+		}
 		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType, formData, function(json) {
 		    	  $("#totRegularHours").text(json.regularHours.toFixed(2));
 		    	  $("#totRegularEarningsAmt").text(json.regularHoursAmount.toFixed(2));

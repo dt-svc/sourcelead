@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.omg.CORBA.COMM_FAILURE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
@@ -26,6 +28,7 @@ import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class PayrollUtil {
@@ -34,6 +37,10 @@ public class PayrollUtil {
 	
 	@Autowired
 	AssociateDeductionService associateDeductionService;
+	
+	
+	@Autowired
+	CommonUtil commonUtil;
 	/***
 	 * calculating total amount by multipltying hours with rate
 	 * 
@@ -391,5 +398,26 @@ public class PayrollUtil {
 			e.printStackTrace();
 		}
 		return dedList;
+	}
+
+	/**
+	 * Get Year Start Date and current date
+	 * @param orgLocation
+	 * @return Date[]
+	 */
+	public Date[] getYTDDates(OrgLocations orgLocation)
+	{
+		Date[] ytd = new Date[2];
+		try {
+			Calendar c = Calendar.getInstance(); // this takes current date
+			ytd[1] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+			System.out.println("End Date = " + c.getTime());
+			c.set(Calendar.MONTH, 0);
+			c.set(Calendar.DAY_OF_MONTH, 1);
+			ytd[0] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+			System.out.println(c.getTime());
+		} catch (Exception e) {
+		}
+		return ytd;
 	}
 }
