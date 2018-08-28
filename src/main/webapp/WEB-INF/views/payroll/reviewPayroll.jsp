@@ -6,7 +6,8 @@
 <script>
 $(document).ready(function(){
 	$("#approveDiv").hide();
-	getReviewPayroll(); 
+	var status = "${approverStatus}";
+	getReviewPayroll(status); 
 });
 </script>
 
@@ -65,7 +66,7 @@ function approvePayrollTab(){
   <!-- Content Area Ends--> 
   
   <script>
-  function getReviewPayroll(){
+  function getReviewPayroll(status){
 	  var uuid = '${paySheetFrequencyUUID}';
 	  var payPeriodNum = '${payPeriodNum}';
 		 $.ajax({
@@ -174,7 +175,7 @@ function approvePayrollTab(){
 		            
 		            if(report.netPay != null && report.netPay != '' && report.netPay != 'undefined'){
 // 		            	result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.netPay.toFixed(2)+'</div></td>                                                      ';
-		            	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+report.empPayrollUUID+'\');">$ '+report.netPay.toFixed(2)+'</a></div></td>';
+		            	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+report.empPayrollUUID+'\',\''+status+'\');">$ '+report.netPay.toFixed(2)+'</a></div></td>';
 		            }else{
 		            	result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                      ';
 		            }

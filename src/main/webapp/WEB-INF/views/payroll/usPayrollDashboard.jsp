@@ -624,7 +624,7 @@ function runUSPayroll(){
 						        	}
 						        	
 						        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
-						        	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
+						        	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\',\'DRAFT\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
 						        	result += '</tr>';  
 					        	}
 					        	

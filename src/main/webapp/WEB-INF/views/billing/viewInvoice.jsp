@@ -429,9 +429,9 @@ function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesS
 				    	}
 				    	resultDiv = resultDiv + '</div>';
 				    	resultDiv = resultDiv + '<div class="timeLeft">'+json[j].timeValue+'</div>';
-				    	if(json[j].invoicePaymentReminderStatus != null || json[j].status == 'Sent'){
+				    	if(json[j].invoicePaymentReminderStatus != null || json[j].status == 'Sent' || json[j].status == 'Received'){
 				    		resultDiv = resultDiv + '<div class="timeLibtn pull-right clearfix" id="timeLineBtn">';
-				    		if(json[j].invoicePaymentReminderStatus == "Paid" || json[j].invoicePaymentReminderStatus == "Reminder"){
+				    		if(json[j].invoicePaymentReminderStatus == "Paid" || json[j].invoicePaymentReminderStatus == "Reminder" || json[j].invoicePaymentReminderStatus == "Partial Paid"){
 				    			if(json[j].emailAttachment != null){
 				    				resultDiv = resultDiv + '<i class="attaIcon pull-left"></i>';		
 				    			}
@@ -440,6 +440,24 @@ function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesS
 				    		resultDiv = resultDiv + '</div>';
 				    		resultDiv = resultDiv + '<div class="clearfix"></div>';
 				    		if(json[j].invoicePaymentReminderStatus == "Paid"){
+				    			resultDiv = resultDiv + '<div class="timelineInn">';
+				    			resultDiv = resultDiv + '<div class="mesText">';
+				    			resultDiv = resultDiv + '<p>Payment Reference Number : '+json[j].paymentReferenceNum+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment On : '+json[j].paymentDate+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Method : '+json[j].paymentMethod+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Amount : '+json[j].paymentCurrency+' '+json[j].paymentAmount+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Memo : '+(json[j].paymentComment != null ? json[j].paymentComment : "---")+'</p>';
+				    			resultDiv = resultDiv + '</div>';
+				    			if(json[j].emailAttachment != null){
+					    			resultDiv = resultDiv + '<div class="attaWrap">';
+					    			resultDiv = resultDiv + '<h2>Attachment</h2>';
+					    			resultDiv = resultDiv + '<p class="pull-left" title="'+json[j].emailAttachment.name+'">'+json[j].emailAttachment.name+'</p>';
+					    			resultDiv = resultDiv + "<span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\'"+json[j].emailAttachment.fileUrl+"\' title='download' download></a><a class='fa fa-eye ml10' onClick='viewFile(\""+json[j].emailAttachment.fileUrl+"\",\""+json[j].emailAttachment.name+"\",\""+json[j].emailAttachment.content+"\");'title='preview'></a></i>";
+					    			resultDiv = resultDiv + '</div>';
+				    			}
+				    			resultDiv = resultDiv + '</div>';
+				    		}
+				    		if(json[j].invoicePaymentReminderStatus == "Partial Paid"){
 				    			resultDiv = resultDiv + '<div class="timelineInn">';
 				    			resultDiv = resultDiv + '<div class="mesText">';
 				    			resultDiv = resultDiv + '<p>Payment Reference Number : '+json[j].paymentReferenceNum+'</p>';
@@ -475,6 +493,16 @@ function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesS
 				    			resultDiv = resultDiv + '</div>';
 				    		}
 				    		if(json[j].status == "Sent"){
+				    			resultDiv = resultDiv + '<div class="timelineInn">';
+				    			resultDiv = resultDiv + '<div class="mesText">';
+				    			resultDiv = resultDiv + '<p> To : '+json[j].invoiceReminderEmailTo+'</p>';
+				    			resultDiv = resultDiv + '<p> From : '+json[j].invoiceReminderEmailFrom+'</p>';
+				    			resultDiv = resultDiv + '<p> Subject : '+json[j].invoiceReminderEmailSubject+'</p>';
+				    			resultDiv = resultDiv + '<p>'+json[j].invoiceReminderEmailBody+'</p>';
+				    			resultDiv = resultDiv + '</div>';
+				    			resultDiv = resultDiv + '</div>';
+				    		}
+				    		if(json[j].status == "Received"){
 				    			resultDiv = resultDiv + '<div class="timelineInn">';
 				    			resultDiv = resultDiv + '<div class="mesText">';
 				    			resultDiv = resultDiv + '<p> To : '+json[j].invoiceReminderEmailTo+'</p>';
