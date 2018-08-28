@@ -30,7 +30,10 @@
                 <input type="hidden" id="preRgularHoursAmt" name="preRegularHoursAmt"/>
                  <input type="hidden" id="preOverTimeHours" name="preOverTimeHours"/>
                 <input type="hidden" id="preOverTimeHoursAmt" name="preOverTimeHoursAmt"/>
-                 
+                 <input type="hidden" id="preDeductionLength" name="preDeductionLength" value="">
+                 <input type="hidden" id="postDeductionLength" name="postDeductionLength" value="">
+                 <input type="hidden" id="totalContributionsLngth" name="totalContributionsLngth" value="">
+                 <input type="hidden" id="total1payItemsLength" name="total1payItemsLength" value="">
               
             </div>
           </div>
@@ -132,7 +135,7 @@
                            <td><span id="aeicWT">0</span></td>
                         </tr>
                            <tr>
-                          <td>localTax</td>
+                          <td>LocalTax</td>
                            <td><span id="localTaxWT">0</span></td>
                         </tr>
                         
@@ -172,12 +175,12 @@
                         </tr>
                         <tr>
                           <td>YTD</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td> 
-                          <td>xxxx</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td>
-                          <td>xxxx</td>
+                          <td><span id="ytdGross">0</span></td>
+                          <td><span id="ytdFederal">0</span></td> 
+                          <td><span id="ytdFICA">0</span></td>
+                          <td><span id="ytdTaxes">0</span></td>
+                          <td><span id="ytdDeduction">0</span></td>
+                          <td><span id="ytdNetpay">0</span></td>
                         </tr>
                       </tbody>
                     </table></td>
@@ -261,6 +264,8 @@
 		            $("#preOverTimeHours").val(json.overtimeHours.toFixed(2));
 		            $("#preOverTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
 		            
+		            // Taxes 
+		            
 		            $("#federalWT").text(json.federal);
 		            $("#medicareWT").text(json.medicare);
 		            $("#ficaWT").text(json.fica);
@@ -278,6 +283,15 @@
 		            $("#payRate").val(json.payRate);
 		            $("#payrollId").val(json.payrollId);
 		            $("#payrollUUID").val(json.payrollUUID);
+		            
+		             // YTD      
+		             var ytd = json.ytdDTO;
+	                 $("#ytdGross").text(ytd.ytdGross);
+	                 $("#ytdFederal").text(ytd.ytdFederal);
+	                 $("#ytdFICA").text(ytd.ytdFICA);
+	                 $("#ytdTaxes").text(ytd.ytdTaxes);
+	                 $("#ytdDeduction").text(ytd.ytdDeduction);
+	                 $("#ytdNetpay").text(ytd.ytdNet);
 		             
 		                var postDed = "";
 	        			postDed = postDed + '<table width="100%" class="table table-bordered" >';
@@ -297,22 +311,23 @@
 				        			postDed = postDed + '<tr>';
 				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
 				        			postDed = postDed + ' <td>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+ded.deductionId+'>';
+				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+ded.id+'>';
 				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionType" value='+ded.deductionType+'>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+ded.amount+' > ';
-				        			postDed = postDed + '<input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.amount+' class="formControl" readOnly></td>';
+				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+ded.postDeductionAmt+' > ';
+				        			postDed = postDed + '<input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
+			            	  $("#postDeductionLength").val(json.postDed.length);
 			            }
 	                      postDed = postDed + '</tbody>';
 	                      postDed = postDed + '<tfoot>';
 	                      postDed = postDed + '<tr>';
 	                      postDed = postDed + '<th>Total</th>';
-	                      postDed = postDed + '<td><span>'+json.postDedTotal+'</span></td>';
+	                      postDed = postDed + '<td><span id="postDeductionTotal">'+json.postDedTotal+'</span></td>';
 	                      postDed = postDed + '</tr>';
 	                      postDed = postDed + '</tfoot>';
 	                      postDed = postDed + '</table>';
-	                     $("#postdedDiv").empty(); 
+	                      $("#postdedDiv").empty(); 
 	                      $("#postdedDiv").append(postDed);
 	                     
 	                        var preDed = "";
@@ -333,18 +348,19 @@
 				            	preDed = preDed + '<tr>';
 				            	preDed = preDed + ' <td>'+preded.deductionType+'</td>';
 				            	preDed = preDed + ' <td>';
-				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+preded.deductionId+'>';
+				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+preded.id+'>';
 				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionType" value='+preded.deductionType+'>';
-				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+preded.amount+' >'; 
-				            	preDed = preDed + ' <input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.amount+' class="formControl" readOnly></td>';
+				            	preDed = preDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+preded.preDeductionAmount+' >'; 
+				            	preDed = preDed + ' <input type="text" id="preDeductionAmount'+i+'" name="preDeduction['+i+'].amount" value='+preded.preDeductionAmount+' class="formControl" readOnly></td>';
 				            	preDed = preDed + ' </tr>';
 				            }
+				            $("#preDeductionLength").val(json.preDed.length);
 	                        }
 				            preDed = preDed + '</tbody>';
 				            preDed = preDed + '<tfoot>';
 				            preDed = preDed + '<tr>';
 				            preDed = preDed + '<th>Total</th>';
-				            preDed = preDed + '<td><span>$ '+json.preDedTotal+'</span></td>';
+				            preDed = preDed + '<td><span id="preDeductionTotal">$ '+json.preDedTotal+'</span></td>';
 				            preDed = preDed + '</tr>';
 				            preDed = preDed + '</tfoot>';
 				            preDed = preDed + '</table>';
@@ -371,18 +387,19 @@
 					            	output = output + '<input type="hidden" name="contribution['+i+'].taxtType" value='+ot.taxtType+' id="taxtType"/>';
 					            	output = output + '<td>'+ot.contributionType+'</td>';
 					            	output = output + '<td>';
-					            	output = output + ' <input type="hidden"  name="contribution['+i+'].id" value='+ot.contributionId+'>';
+					            	output = output + ' <input type="hidden"  name="contribution['+i+'].id" value='+ot.id+'>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionType" value='+ot.contributionType+'>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionAmt" value='+ot.amount+' >'; 
-					            	output = output + '<input type="text" name="contribution['+i+'].contributionAmount" value='+ot.amount+' class="formControl" readOnly></td>';
+					            	output = output + '<input type="text" id="totalContributions'+i+'" name="contribution['+i+'].contributionAmount" value='+ot.amount+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
+		                	  $("#totalContributionsLngth").val(json.contribution.length);
 		                  }
 	                        output = output + ' </tbody>';
 	                        output = output + ' <tfoot>';
 	                        output = output + '   <tr>';
 	                        output = output + '  <th>Total</th>';
-	                        output = output + '  <td><span>$ '+json.contributionTotal+'</span></td>';
+	                        output = output + '  <td><span id="totalGrandContributions">$ '+json.contributionTotal+'</span></td>';
 	                        output = output + '  </tr>';
 	                        output = output + '  </tfoot>';
 	                        output = output + '  </table>';
@@ -390,6 +407,7 @@
 	                        $("#employerPaidBenefitDiv").append(output);
 	                        
 	                        
+	                        // PayItems
 	                        var payItem = "";
 	                        
 	                        payItem = payItem +'<table width="100%" class="table table-bordered">';
@@ -414,10 +432,10 @@
 						            	var pi = json.payItem[i];
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';	
-						            	payItem = payItem +'<input type="hidden" value='+pi.payItemId+' id="id" name="payItem['+i+'].payItemId"/>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].payItemId"/>';
 						            	payItem = payItem +'<input type="hidden" value='+pi.payItemName+' id="id" name="payItem['+i+'].prePayItemName"/>';
-						            	payItem = payItem +'<input type="hidden" value='+pi.amount+' id="id" name="payItem['+i+'].prePayItemAmt"/>';
-						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount" name="payItem['+i+'].payItemAmount" readOnly value='+pi.amount+'></td>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.payItemAmt+' id="id" name="payItem['+i+'].prePayItemAmt"/>';
+						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount'+i+'" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
 						            	payItem = payItem +' <td>';
 						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
 						            	payItem = payItem +' <input id="cashTips" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
@@ -426,19 +444,21 @@
 						            	payItem = payItem +' </td>';
 						            	payItem = payItem +' </tr>';
 				                  }
+			                	  $("#total1payItemsLength").val(json.payItem.length);
 			                  }
 	                          
 	                          payItem = payItem +'</tbody>';
 	                          payItem = payItem +'<tfoot>';
 	                          payItem = payItem +' <tr>';
 	                          payItem = payItem +'  <th>Total</th>';
-	                          payItem = payItem +'<td><span>$ '+json.payItemTotal+'</span></td>';
+	                          payItem = payItem +'<td><span id="payItemTotalAmount">$ '+json.payItemTotal+'</span></td>';
 	                          payItem = payItem +' <td></td>';
 	                          payItem = payItem +' </tr>';
 	                          payItem = payItem +' </tfoot>';
 	                          payItem = payItem +' </table>';
 	                          $("#payItemDiv").empty();
 	                          $("#payItemDiv").append(payItem)
+	                          
                        
 		        },
 		    }); 
@@ -448,30 +468,99 @@
 	function closeusRunpayrol(){
 		$(".usRunpayroll").fadeOut();
 		$(".sideMask").fadeOut();
+		setTimeout(function(){
+			var text = document.getElementById("editUspaysliptext");
+			if(text.innerHTML === "Save")
+				text.innerHTML = "Edit";
+		}, 1000)
 	};
 </script> 
 
-
 <script>
-	function editUspayslip(event){
-		var text = document.getElementById("editUspaysliptext");
-		if(text.innerHTML === "Edit") {
-			text.innerHTML = "Save"
-		}else {
-			text.innerHTML = "Edit"
-			savePayrollAdjustment();
+function calculatePreTaxDedAmount(){
+	var maxCount = $("#preDeductionLength").val();
+	var amount = 0;
+	for(var i=0;i<maxCount; i++){
+		amount += parseFloat($("#preDeductionAmount"+i+"").val());
+	} 
+	$("#preDeductionTotal").html("$ "+amount+""); 
+}
+
+function calculatePostTaxDedAmount(){
+	var maxCount = $("#postDeductionLength").val();
+	var amount = 0;
+	for(var i=0;i<maxCount; i++){
+		amount += parseFloat($("#"+i+"amount").val());
+	} 
+	$("#postDeductionTotal").html("$ "+amount+""); 
+}
+
+function calculateTotalCotributionsAmount(){
+	var maxCount = $("#totalContributionsLngth").val();
+	var amount = 0;
+	for(var i=0;i<maxCount; i++){
+		amount += parseFloat($("#totalContributions"+i+"").val());
+	} 
+	$("#totalGrandContributions").html("$ "+amount+""); 
+}
+
+function calculateTotalPayItemAmount(){
+	var maxCount = $("#total1payItemsLength").val();
+	var amount = 0;
+	for(var i=0;i<maxCount; i++){
+		amount += parseFloat($("#payItemAmount"+i+"").val());
+	} 
+	$("#payItemTotalAmount").html("$ "+amount+""); 
+}
+</script>
+<script>
+function editUspayslip(event){
+	var maxPreCount = $("#preDeductionLength").val();
+	var maxPostCount = $("#postDeductionLength").val();
+	var maxContriCount = $("#totalContributionsLngth").val();
+	var maxPayItemCount = $("#total1payItemsLength").val();
+	var text = document.getElementById("editUspaysliptext");
+	if(text.innerHTML === "Edit") {
+		text.innerHTML = "Save";
+		for(var i = 0; i < maxPreCount; i++){
+			$("#preDeductionAmount"+i+"").attr("onblur","calculatePreTaxDedAmount();");
 		}
-		
+		for(var i = 0; i < maxPostCount; i++){
+			$("#"+i+"amount").attr("onblur","calculatePostTaxDedAmount();");
+		}
+		for(var i = 0; i < maxContriCount; i++){
+			$("#totalContributions"+i+"").attr("onblur","calculateTotalCotributionsAmount();");
+		}
+		for(var i = 0; i < maxPayItemCount; i++){
+			$("#payItemAmount"+i+"").attr("onblur","calculateTotalPayItemAmount();");
+		}
+	}else {
+		text.innerHTML = "Edit";
+		for(var i = 0; i < maxPreCount; i++){
+			$("#preDeductionAmount"+i+"").removeAttr("onblur");
+		}
+		for(var i = 0; i < maxPostCount; i++){
+			$("#"+i+"amount").removeAttr("onblur");
+		}
+		for(var i = 0; i < maxContriCount; i++){
+			$("#totalContributions"+i+"").removeAttr("onblur");
+		}
+		for(var i = 0; i < maxPayItemCount; i++){
+			$("#payItemAmount"+i+"").removeAttr("onblur");
+		}
+		savePayrollAdjustment();
+	}
+	
 	$("#tablePayslip").find(".formControl").toggleClass("activeEdit");
-		var x = document.getElementsByClassName("formControl"), i;
-		for (i=0; i<x.length; i++) {
-			if(x[i].readOnly) {
-			x[i].readOnly = false;
-			}else {
-			x[i].readOnly = true;
-			}
+	var x = document.getElementsByClassName("formControl"), i;
+	for (i=0; i<x.length; i++) {
+		if(x[i].readOnly) {
+		x[i].readOnly = false;
+		}else {
+		x[i].readOnly = true;
 		}
 	}
+}
 </script>
 
 

@@ -67,9 +67,9 @@ $(document).ready(function(){
 				result = result + '<table id="payItemTable" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
 				result = result + '<tr>';
-				result = result + '<th>PayItem Name</th>';
+				result = result + '<th>Name</th>';
 				result = result + '<th>Description</th>';
-				result = result + '<th>Allo Emp Type</th>';
+				result = result + '<th>Emp Type</th>';
 				result = result + '<th>Schedule</th>';
 				result = result + '<th>Action</th>';
 				result = result + '</tr>';
@@ -84,28 +84,28 @@ $(document).ready(function(){
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
 			        		 if(opt.payItemName !=null && opt.payItemName !='' && opt.payItemName !='undefined'){
-			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave">'+opt.payItemName+'</div>'; 
+			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.payItemName+'">'+opt.payItemName+'</div>'; 
 			        		 }else{
 			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="Sick Leave">--</div>';
 			        		 }
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-			        		 result = result + '   <div title="Calendaer month" class="tblminwidth-75">'+opt.description+'</div>';
+			        		 result = result + '   <div title="'+opt.description+'" class="tblminwidth-75">'+opt.description+'</div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-			        		 result = result + '   <div title="Leave Transfer" class="tbldata-dotdot-100">'+opt.empType+'</div>';
+			        		 result = result + '   <div title="'+opt.empType+'" class="tbldata-dotdot-100">'+opt.empType+'</div>';
 			        		 result = result + '</td>';
 			        		 result = result + ' <td>';
 			        		 if(opt.paySchedule !=null && opt.paySchedule != 'undefined' && opt.paySchedule != ''){
 			        			 if(opt.paySchedule == 'EVERY_PAY'){
-			        				 result = result + '     <div title="2" class="tblminwidth-75">Every Pay</div>';
+			        				 result = result + '     <div title="Every Pay" class="tblminwidth-75">Every Pay</div>';
 			        			 }else if(opt.paySchedule == 'MONTHLY'){
-			        				 result = result + '     <div title="2" class="tblminwidth-75">Monthly</div>';
+			        				 result = result + '     <div title="Monthly" class="tblminwidth-75">Monthly</div>';
 			        			 }else if(opt.paySchedule == 'QUARTERLY'){
-			        				 result = result + '     <div title="2" class="tblminwidth-75">Quarterly</div>';
+			        				 result = result + '     <div title="Quarterly" class="tblminwidth-75">Quarterly</div>';
 			        			 }else if(opt.paySchedule == 'ANNUALLY'){
-			        				 result = result + '     <div title="2" class="tblminwidth-75">Annually</div>';
+			        				 result = result + '     <div title="Annually" class="tblminwidth-75">Annually</div>';
 			        			 }
 			        		 }else{
 			        			 result = result + '     <div title="2" class="tblminwidth-75">--</div>';	
