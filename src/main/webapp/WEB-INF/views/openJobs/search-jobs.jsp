@@ -1069,14 +1069,11 @@ function redirectPage(){
 	if(experience != null && experience != '' && experience != 'undefined'){
 		url += "/"+experience;
 	}
-	else{
-		url += "/all";
-	}
 	
 	if((title == null || title == '' || title == 'undefined') && (location == null || location == '' || location == 'undefined') && (experience == null || experience == '' || experience == 'undefined')){
-		window.location.href = "jobs"+url;
+		window.location.href = "jobs";
 	}else if((title != null && title != '' && title != 'undefined') && (location == null || location == '' || location == 'undefined') && (experience == null || experience == '' || experience == 'undefined')){
-		window.location.href = "jobs"+url;
+		window.location.href = "jobs/"+title;
 	}else{
 		window.location.href = "jobs"+url;
 	}

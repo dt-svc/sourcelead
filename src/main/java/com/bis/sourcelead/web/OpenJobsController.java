@@ -179,11 +179,11 @@ public class OpenJobsController {
 		return modelAndView;
 	}
 
-	/*@RequestMapping(value = "/jobs")
+	@RequestMapping(value = "/jobs")
 	public String openRequirementsRedirect(ModelMap modelMap,@RequestParam(value = "offset", defaultValue = "", required = false) String offset, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, HttpServletRequest request) throws Exception
 	{
 		return "forward:/jobs/null/null/null";
-	}*/
+	}
 	
 	@RequestMapping(value = "/jobs/{title}")
 	public String openRequirementsRedirect(ModelMap modelMap,@RequestParam(value = "offset", defaultValue = "", required = false) String offset, @PathVariable String title, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, HttpServletRequest request) throws Exception
