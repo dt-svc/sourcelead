@@ -15,7 +15,7 @@ public interface GenerateUSPayrollService {
 
 	PaysheetFrequencyDTO getPayrollData(GenerateUSPayrollDTO generateUSPayrollDTO, OrgLocations orgLocation, User loginUser);
 
-	Response<USPayrollDTO> getEmployeePayrollByUUID(String payrollUUID, OrgLocations orgLocation);
+	Response<USPayrollDTO> getEmployeePayrollByUUID(String payrollUUID, OrgLocations orgLocation, String approverStatus);
 
 	Response<PayAdjustmentDTO> updateEmployeePayroll(PayAdjustmentDTO payAdjustmentDTO, OrgLocations orgLocation, User loginUser);
 

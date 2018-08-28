@@ -5,7 +5,8 @@
 
 <script>
 $(document).ready(function(){
-   getPaySheetFrequencySummary();
+	var status = "${approverStatus}";
+   getPaySheetFrequencySummary(status);
 });
 </script>
 
@@ -28,7 +29,7 @@ $(document).ready(function(){
     </section>
   
 <script>
-function getPaySheetFrequencySummary(){
+function getPaySheetFrequencySummary(status){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var uuid = '${paySheetFrequencyUUID}';
 	var payPeriodNum = '${payPeriodNum}';
@@ -130,7 +131,7 @@ function getPaySheetFrequencySummary(){
 	            result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                         ';
 	            result = result +'  <td>                                                                                                                ';
 				result = result +'	  <div class="tblminwidth-30 text-center">                                                                          ';
-				result = result +'	  	<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye" onclick="payAdjustment(\''+report.empPayrollUUID+'\');"></i></a>                                  ';
+				result = result +'	  	<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye" onclick="payAdjustment(\''+report.empPayrollUUID+'\',\''+status+'\');"></i></a>                                  ';
 				result = result +'	  </div>                                                                                                            ';
 	            result = result +'  </td>                                                                                                               ';
 	            result = result +'</tr>                                                                                                                 ';
