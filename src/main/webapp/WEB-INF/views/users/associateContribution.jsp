@@ -192,11 +192,13 @@ $('body').on('blur', '#associate_contribution_form', function() {
 							$("#tab-1").removeAttr("href");
 							$("#associateLeaveType").click();
 							getAllLeaveType();
+							$("#contribution_save_button").removeAttr("disabled");
+							$("#contribution_save_button").addClass('button').val('Save & Continue');
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {
 		                    $("#contribution_save_button").removeAttr("disabled");
-		                    $("#contribution_save_button").addClass('button').val('Save');
+		                    $("#contribution_save_button").addClass('button').val('Save & Continue');
 		                    showError("Operation failed, please try again");
 		                }
 						 
