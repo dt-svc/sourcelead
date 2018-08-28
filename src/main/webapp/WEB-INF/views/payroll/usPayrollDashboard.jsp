@@ -29,7 +29,7 @@ function approvePayrollDiv(){
   <div class="pull-left">
     <h2>Payroll</h2>
   </div>
-  <div class="pull-right brud-crum">Home &raquo; My Forms</div>
+<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Payroll</div>
 </section>
 
    <div class="project_side_wrap_inn_tabs">
@@ -624,7 +624,7 @@ function runUSPayroll(){
 						        	}
 						        	
 						        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
-						        	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
+						        	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\',\'DRAFT\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
 						        	result += '</tr>';  
 					        	}
 					        	

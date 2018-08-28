@@ -2298,6 +2298,7 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		lca.setLcaUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		lca.setLcaNo(lcaDTO.getLcaNo());
 		lca.setLcaTitle(lcaDTO.getLcaTitle());
+		
 		lca.setLcaStatus(lcaDTO.getLcaStatus());
 		
 		lca.setOfferedWage(lcaDTO.getOfferedWage());
@@ -2317,8 +2318,11 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		lca.setJobTitle(lcaDTO.getJobTitle());
 		lca.setSocCode(lcaDTO.getSocCode());
 		lca.setSocOccupationTitle(lcaDTO.getSocOccupationTitle());
-		
+		if(lcaDTO.getStatus() == "Active") {
 		lca.setStatus(Constants.RECORD_ACTIVE);
+		}else {
+			lca.setStatus(Constants.RECORD_INACTIVE);
+		}
 		lca.setUpdatedBy(user);
 		lca.setUpdatedDate(currentDate);
 
@@ -2536,7 +2540,7 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 				    		 
 				    		 cellIndex++;
 				    	 }
-				    	 cellIndex = 7;// setting default value for next column index. It does not depend on address or location list. 
+				    	 cellIndex = 5;// setting default value for next column index. It does not depend on address or location list. 
 				     }else if(fieldName.contains("Date")) {
 				    	 
 				    	 
