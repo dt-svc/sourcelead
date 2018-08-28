@@ -370,9 +370,9 @@ creditDebitNoteDTO.setSortOrder(sortColumnOrder);
 
 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 DateTime zoned = new DateTime();
-DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
-DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd");
-DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
+DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 Date endDateUTC = null;
 Date startDateUTC = null;
 if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(creditDebitNoteDTO.getDayWiseType())	&& !"".equals(creditDebitNoteDTO.getDayWiseType())) {

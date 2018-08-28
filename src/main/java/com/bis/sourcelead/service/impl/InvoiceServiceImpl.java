@@ -3378,7 +3378,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitNote = new CreditDebitNote();
 			creditDebitNote.setCreditDebitUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			creditDebitNote.setCreatedBy(user);
-			creditDebitNote.setCreatedDate(commonUtil.currentDate());
+			creditDebitNote.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 			creditDebitNote.setStatus(Constants.RECORD_ACTIVE.toString());
 		}
 		
@@ -3467,7 +3467,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitNote.setApprovers(null);
 		}
 		creditDebitNote.setUpdatedBy(user);
-		creditDebitNote.setUpdatedDate(commonUtil.currentDate());
+		creditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 		
 		// storing Credit or Debit line items
 		if (null != creditDebitNote.getId()) {
@@ -3515,10 +3515,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 		childCreditDebitNote.setShippingAddress(parentCreditDebitNote.getShippingAddress());
 		childCreditDebitNote.setInvoice(parentCreditDebitNote.getInvoice());
 		childCreditDebitNote.setCreditDebitUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		childCreditDebitNote.setCreatedBy(user);
 		childCreditDebitNote.setUpdatedBy(user);
-		childCreditDebitNote.setCreatedDate(parentCreditDebitNote.getCreatedDate());
-		childCreditDebitNote.setUpdatedDate(parentCreditDebitNote.getUpdatedDate());
+		childCreditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
+		childCreditDebitNote.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), vendorOrgLocation));
+		childCreditDebitNote.setCreatedBy(user);
 		childCreditDebitNote.setSubTotal(parentCreditDebitNote.getSubTotal());
 		childCreditDebitNote.setTotal(parentCreditDebitNote.getTotal());
 		childCreditDebitNote.setDiscountType(parentCreditDebitNote.getDiscountType());
@@ -3573,8 +3573,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
 			creditDebitLineItems.setCreatedBy(user);
 			creditDebitLineItems.setUpdatedBy(user);
-			creditDebitLineItems.setCreatedDate(commonUtil.currentDate());
-			creditDebitLineItems.setUpdatedDate(commonUtil.currentDate());
+			creditDebitLineItems.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
+			creditDebitLineItems.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 			creditDebitLineItems.setCreditDebitNote(creditDebitNote);
 			creditDebitLineItemsList.add(creditDebitLineItems);
 		}

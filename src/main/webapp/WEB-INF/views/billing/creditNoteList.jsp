@@ -162,16 +162,9 @@ function removeErr(){
 function getCreditList(){
 	var creditDebitNoteStatus = [];
 	var orglocationId = '${SourceLeadWeb_orgLocationId}';
-	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  locationdateForList = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  locationdateForList = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  locationdateForList = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  locationdateForList = 'YYYY-DD-MM'; 
-	  } 
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';
+	// for orglocation date format
+	var locationdateForList = getOrgDateFormat(locationList);
 	var startDate = null;
 	var endDate = null;
 	var dayWiseType = null;
