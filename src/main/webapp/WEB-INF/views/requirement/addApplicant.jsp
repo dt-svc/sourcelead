@@ -482,11 +482,12 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
 	
-	
-	result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv">';
-	result = result + '<select id="candidateResumesList" name="candidateResume" data-validation-optional="true" field-name="Resume" class="form-control block">';
-	result = result + '</select>';
-	result = result + '</div>';
+	if(resumeId != null && resumeId != '' && resumeId != 'undefined'){
+		result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv">';
+		result = result + '<select id="candidateResumesList" name="candidateResume" data-validation-optional="true" field-name="Resume" class="form-control block">';
+		result = result + '</select>';
+		result = result + '</div>';
+	}
 	
 	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: none;">';
 	result = result + '------- ( OR ) -------';
@@ -578,6 +579,15 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
       	  var fieldLabel = $this.find('label:first').text().replace("*","");
       	  var inputValue = $this.find('input[type="radio"]:checked').val();
       	  
+      	 var inputtype = $(this).find('input').attr('type');
+	   	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+	   		  if($(this).find('select').val() != null){
+	   			  inputtype = 'select';
+	   		  }else{
+	   			  inputtype = 'textarea';
+	   		  }
+	   	  }
+      	  
       	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
     		   inputValue = $this.find('input[type="checkbox"]:checked').val();
     		   if(inputValue != null){
@@ -624,6 +634,10 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
 	     		 id = $this.find('select').attr('id');
      	      }
 	     	  
+	     	 if(name == null || name == '' || name == 'undefined'){
+	     		 name = $this.find('textarea').attr('name');
+     	      }
+	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
 	     		  if(null != inputValue){
@@ -662,6 +676,7 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
 	     	  
       	  fields.push({
                 label: fieldLabel,
+                type:inputtype,
                 id :id,
                 name :name,
                 value: inputValue,
@@ -995,6 +1010,15 @@ function addApplicantSubmission(){
     	  var fieldLabel = $this.find('label:first').text().replace("*","");
     	  var inputValue = $this.find('input[type="radio"]:checked').val();
     	  
+    	  var inputtype = $(this).find('input').attr('type');
+    	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+    		  if($(this).find('select').val() != null){
+    			  inputtype = 'select';
+    		  }else{
+    			  inputtype = 'textarea';
+    		  }
+    	  }
+    	  
     	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
   		   inputValue = $this.find('input[type="checkbox"]:checked').val();
   		   if(inputValue != null){
@@ -1039,7 +1063,11 @@ function addApplicantSubmission(){
 	     	  if(name == null || name == '' || name == 'undefined'){
 	     		 name = $this.find('select').attr('name');
 	     		 id = $this.find('select').attr('id');
-   	      }
+   	          }
+	     	  
+	     	  if(name == null || name == '' || name == 'undefined'){
+	     		 name = $this.find('textarea').attr('name');
+     	      }
 	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
@@ -1079,6 +1107,7 @@ function addApplicantSubmission(){
 	     	  
     	  fields.push({
               label: fieldLabel,
+              type : inputtype,
               id :id,
               name :name,
               value: inputValue,
@@ -1156,6 +1185,15 @@ function addRequirementRecommendations(){
 	      	  var fieldLabel = $this.find('label:first').text().replace("*","");
 	      	  var inputValue = $this.find('input[type="radio"]:checked').val();
 	      	  
+	      	  var inputtype = $(this).find('input').attr('type');
+	    	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+	    		  if($(this).find('select').val() != null){
+	    			  inputtype = 'select';
+	    		  }else{
+	    			  inputtype = 'textarea';
+	    		  }
+	    	  }
+	      	  
 	      	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
 	    		   inputValue = $this.find('input[type="checkbox"]:checked').val();
 	    		   if(inputValue != null){
@@ -1202,6 +1240,10 @@ function addRequirementRecommendations(){
 		     		 id = $this.find('select').attr('id');
 	     	      }
 		     	  
+		     	 if(name == null || name == '' || name == 'undefined'){
+		     		 name = $this.find('textarea').attr('name');
+	     	      }
+		     	  
 		     	  if(name == "WorkExperience"){
 		     		 var monthExp = document.getElementById("monthExp").value; 
 		     		  if(null != inputValue){
@@ -1240,6 +1282,7 @@ function addRequirementRecommendations(){
 		     	  
 	      	  fields.push({
 	                label: fieldLabel,
+	                type : inputtype,
 	                id :id,
 	                name :name,
 	                value: inputValue,
@@ -1956,10 +1999,21 @@ function getSubmittedCandidateDetails(submissionId){
 		    				var attrValues = v['value'].split(',');
 		    				
 		    				if(attrValues.length == 1){
-		    					$("select[name='"+attr+"']").val(attrVal);
-		    					$("input[name='"+v['name']+"']").val(v['value']);
-			    				$("input[name='"+attr+"'][value='"+attrVal+"']").attr('checked', true);
-		    				    $('#'+attr+"radio").val(attrVal); 
+		    							    					
+		    					if(v['type'] == 'select'){
+		    						$("select[name='"+attr+"']").val(attrVal);
+		    					}else if(v['type'] == 'checkbox'){
+		    						$("input[name='"+attr+"'][value='"+attrVal+"']").attr('checked', true);
+		    						$('#'+attr+"checkbox").val(attrVal); 
+		    					}else if(v['type'] == 'radio'){
+		    						$("input[name='"+attr+"'][value='"+attrVal+"']").attr('checked', true);
+		    						$('#'+attr+"radio").val(attrVal); 
+		    					}else if(v['type'] == 'textarea'){
+		    						$("textarea[name='"+attr+"']").text(attrVal);
+		    					}else{
+		    						$("input[name='"+v['name']+"']").val(v['value']);
+		    					}
+		    				   
 		    				}else{
 		    					for(var i=0; i<=attrValues.length; i++){
 		    						$("input[name='"+attr+"'][value='"+attrValues[i]+"']").attr('checked', true);

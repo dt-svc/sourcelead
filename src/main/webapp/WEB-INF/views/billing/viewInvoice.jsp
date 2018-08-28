@@ -149,7 +149,8 @@ $(document).ready(function(){
 					<div class="clearfix">
 						 <div class="headActions">
 							<ul class="clearfix">
-								<li><a href="javascript:void(0)"><i class="filtIcon" onclick="openPop();"></i></a>
+								<li><a href="javascript:void(0)" class="sortIcon" id="sortTimeline"></a></li>
+								<li><a href="javascript:void(0)"><i class="filtIcon" onclick="openPop();"></i></a></li>
 								<li><input class="innSeaFld" id="invoiceTimelineSearch" placeholder="Status/Reason" type="text"></li>	
 							</ul>
 						</div> 
@@ -173,22 +174,6 @@ $(document).ready(function(){
 				<div class="addInner newOver">
 					<div class="row">
 							
-						<div class="col-md-2">
-						<div class="row">
-						<div class="col-md-12 mb">
-							<label><strong>Sorting</strong></label>
-							 <div class="clearfix">
-								<ul class="list-unstyled" id="statusFilter">
-		                    	    <li class="checkBox positionRelative"><input   type="radio" id="timelineRadioDesc" value="desc" name="orderTimelineRadio" checked="checked"><label>&nbsp;Top to Bottom</label></li>
-									<li class="checkBox positionRelative"><input   type="radio" id="timelineRadioAsc" value="asc" name="orderTimelineRadio"><label>&nbsp;Bottom to Top</label></li>
-		               				
-		                        </ul>
-							 </div>
-							 </div> 
-							 
-						  </div>
-						</div>
-						
 						<div class="col-md-7">
 						<div class="row">
 							 <div class="col-md-6 positionRelative mb">
@@ -383,13 +368,11 @@ function restTimelineFileter(){
 	$.datepicker._clearDate('#timelineFromDate');
 	$.datepicker._clearDate('#timelineToDate');
 	$('input[name="timelineStatusCheck"]:checkbox').attr('checked',false);
-	document.getElementById("timelineRadioDesc").checked = true;
 	timelineHistoryFunction('', 'desc', null, null,null);
 	$('input[name="userNameCheck"]:checkbox').attr('checked',false);
 }
 
 function submitFilterActions(){
-	var selectedOrderVal = $('input[name="orderTimelineRadio"]:checked').val();
 	var checkedStatus = [];
 	$('input[name="timelineStatusCheck"]:checked').each(function() {
 		   checkedStatus.push(this.value);
@@ -403,7 +386,7 @@ function submitFilterActions(){
 	$('input[name="userNameCheck"]:checked').each(function() {
 		checkedNames.push(this.value);
 	});
-	timelineHistoryFunction("",selectedOrderVal,dateRange, checkedStatus,checkedNames);
+	timelineHistoryFunction("",'desc',dateRange, checkedStatus,checkedNames);
 }
 
 function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesStatus){
@@ -457,6 +440,24 @@ function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesS
 				    		resultDiv = resultDiv + '</div>';
 				    		resultDiv = resultDiv + '<div class="clearfix"></div>';
 				    		if(json[j].invoicePaymentReminderStatus == "Paid"){
+				    			resultDiv = resultDiv + '<div class="timelineInn">';
+				    			resultDiv = resultDiv + '<div class="mesText">';
+				    			resultDiv = resultDiv + '<p>Payment Reference Number : '+json[j].paymentReferenceNum+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment On : '+json[j].paymentDate+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Method : '+json[j].paymentMethod+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Amount : '+json[j].paymentCurrency+' '+json[j].paymentAmount+'</p>';
+				    			resultDiv = resultDiv + '<p>Payment Memo : '+(json[j].paymentComment != null ? json[j].paymentComment : "---")+'</p>';
+				    			resultDiv = resultDiv + '</div>';
+				    			if(json[j].emailAttachment != null){
+					    			resultDiv = resultDiv + '<div class="attaWrap">';
+					    			resultDiv = resultDiv + '<h2>Attachment</h2>';
+					    			resultDiv = resultDiv + '<p class="pull-left" title="'+json[j].emailAttachment.name+'">'+json[j].emailAttachment.name+'</p>';
+					    			resultDiv = resultDiv + "<span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\'"+json[j].emailAttachment.fileUrl+"\' title='download' download></a><a class='fa fa-eye ml10' onClick='viewFile(\""+json[j].emailAttachment.fileUrl+"\",\""+json[j].emailAttachment.name+"\",\""+json[j].emailAttachment.content+"\");'title='preview'></a></i>";
+					    			resultDiv = resultDiv + '</div>';
+				    			}
+				    			resultDiv = resultDiv + '</div>';
+				    		}
+				    		if(json[j].invoicePaymentReminderStatus == "Partial Paid"){
 				    			resultDiv = resultDiv + '<div class="timelineInn">';
 				    			resultDiv = resultDiv + '<div class="mesText">';
 				    			resultDiv = resultDiv + '<p>Payment Reference Number : '+json[j].paymentReferenceNum+'</p>';
@@ -1772,6 +1773,20 @@ $(".filtIcon, .newActFilter").click(function(e){
 		
 	</script>
 
+<script>
+function ascFunctionCall(){
+	timelineHistoryFunction('', 'asc', null, null, null);
+}
+
+function descFunctionCall(){
+	timelineHistoryFunction('', 'desc', null, null, null);
+}
+
+$('#sortTimeline').click(function(){
+	  $(this).toggleClass('sortUp');
+	  return $(this).hasClass('sortUp') ? ascFunctionCall() : descFunctionCall();
+});
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />	

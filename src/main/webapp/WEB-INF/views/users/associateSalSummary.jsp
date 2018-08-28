@@ -258,7 +258,7 @@ function associateSalSummary(userId){
               <div class="col-md-5">
                 <label>Annual Salary</label>
                 <div id="AnnualSal">
-                  <input class="form-control" name="annualSal" id="annualSal" type="text" data-validation="required" field-name="Annual Salary" onblur = "calaculateIncDecPer();">
+                  <input class="form-control" name="annualSal" id="annualSal" type="text" data-validation="required" field-name="Annual Salary" onblur = "calculateSal();">
                    <input class="form-control" name="previousAnnualSal" id="previousAnnualSal" type="hidden">
                    
                 </div>
@@ -436,7 +436,8 @@ function closeSalaryHistory() {
 
 
 function closeupdateSalaryDetails() {
-	$(".updateSalaryDetails, .sideMask").fadeOut()
+	$(".updateSalaryDetails, .sideMask").fadeOut();
+	setTimeout(function(){ document.getElementById("update_associate_salary_form").reset();  }, 1000);
 }
 		
 </script>  
@@ -520,7 +521,6 @@ function calculateSal(){
 	var annualSal = $("#annualSal").val();
 	var hourlyRate = $("#hourlyRate").val();
 	var hours = $("#standardHours").val();
-	
 
 	if(annualSal != null && annualSal != '' && annualSal != 'undefined' && hours != null && hours != '' && hours != 'undefined'){
 		$('#AnnualSal').find('p.jquery_form_error_message').remove(); 
@@ -545,6 +545,7 @@ function calculateSal(){
 		}
 		var hourRate = rate/hours;
 		$("#hourlyRate").val(hourRate.toFixed(2));
+		calaculateIncDecPer();
 	}
 }
 </script>
@@ -614,8 +615,10 @@ function calculateHourlyRateSal(){
 function calculatePercentSal(){
 	
 	var increasePer  = $("#increasePer").val();
-	if(increasePer != null && increasePer != '' && increasePer != 'undefined'){
+	if(increasePer != null && increasePer != '' && increasePer != 'undefined' && increasePer > 0){
 		var annualSal = $("#previousAnnualSal").val();
+		if(annualSal == null || annualSal == '' || annualSal == 'undefined')
+			annualSal = $("#annualSal").val();
 		var percentValue = increasePer/100;
 
 		var percentMulValue =  percentValue * parseFloat(annualSal);
@@ -623,7 +626,7 @@ function calculatePercentSal(){
 		$("#annualSal").val(incrementAnnualSal);
 		$("#salaryType").val('increment');
 		calculateSal();
-	}
+	} 
 }
 </script>
 
@@ -660,7 +663,7 @@ function calaculateIncDecPer(){
 			$("#increasePer").val(icrementPer.toFixed(2));
 // 			calculateSal();
 		}
-		calculateSal();
+// 		calculateSal();
 	}
 	
 	
