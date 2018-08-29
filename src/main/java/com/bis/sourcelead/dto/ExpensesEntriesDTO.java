@@ -37,6 +37,8 @@ public class ExpensesEntriesDTO {
 	
 	private BigDecimal amountRoundOff;
 	
+	private Boolean billable;
+	
 	private float amount;
 
 	public Long getId() {
@@ -165,6 +167,14 @@ public class ExpensesEntriesDTO {
 
 	public void setAmount(float amount) {
 		this.amount = amount;
+	}
+
+	public Boolean getBillable() {
+		return billable;
+	}
+
+	public void setBillable(Boolean billable) {
+		this.billable = billable;
 	}
 	
 	

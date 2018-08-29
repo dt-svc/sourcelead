@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
@@ -149,7 +151,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	String status = "draft";
-	if(StringUtils.isNotEmpty(expensesDTO.getExpenseStatus())){
+	if(StringUtils.isNotEmpty(expensesDTO.getExpenseStatus())) {
 		status = expensesDTO.getExpenseStatus();
 	}
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
@@ -400,5 +402,27 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 public void deleteDocumentByDocumentId(String documentId) {
 	addExpensesDao.deleteDocumentByDocumentId(Long.parseLong(documentId));
 	
+}
+
+
+@Override
+public Response<String> changeStatusToBillable(long expenseEntriesId) {
+	Response<String> response = new Response<>();
+	try {
+		long result = addExpensesDao.changeStatusToBillable(expenseEntriesId);
+		if (result > 0) {
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} else if (result == -2) {
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+		} else {
+			response.setResponse(Result.FAILED.name());
+			response.setResponseMessage(Result.FAILED.getValue());
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return response;
 }
 }
