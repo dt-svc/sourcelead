@@ -239,6 +239,7 @@ function prepareSourceleadTicketList(url){
 function dynamicTicketListPagination(url){
 	 var sourceleadUrl = '${sourceleadUrl}';
 	 var loginRoleName = '${SourceLeadWeb_loginUserRole}'
+		 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var colIndex = 0;
    table =  $('#dynamicTicketListView').DataTable( { 
 	  "processing": true,
@@ -330,7 +331,7 @@ function dynamicTicketListPagination(url){
 		  	"data": "",
 		  	"render": function(data, type, report, meta) {
 		  		var result = "";
-		  		 if(loginRoleName == 'ROLE_SOURCELEAD_ADMIN'){
+		  		 if(loginRoleName == 'ROLE_SOURCELEAD_ADMIN' || orgLocationId == '1' ){
 		  			result = result + ' <td><div class="tbldata-dotdot-100" style="width:100px">';
 			  		result = result + ' <select id="ticketStatus" name="ticketStatus" onchange="changeStatus(\''+report.ticketUUID+'\',this);">';
 					result = result + '<option value="Open"  '+ (report.ticketStatus == "Open" ? "selected" : '') +'>Open</option>';
