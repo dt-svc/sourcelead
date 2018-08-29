@@ -220,6 +220,8 @@
 								document.getElementById("associateDeduction").removeAttribute("class"); 
 								associateDeduction.href="#tab-4"; 
 								$("#associateDeduction").click();
+								$("#associate_tax_button").removeAttr("disabled");
+								$("#associate_tax_button").addClass('button').val('Save & Continue');
 			                } else if (result.indexOf('Sign In') !== -1) {
 								location.replace(sourceleadUrl);
 							} else {
