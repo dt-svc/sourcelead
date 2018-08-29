@@ -307,6 +307,7 @@ private String beneficiaryFirstName;
     
     private String lcaRatePer;
     
+    
     private String lcaRate;
     
     private String lcaLocation;
@@ -418,6 +419,54 @@ private String beneficiaryFirstName;
     private String isMailSent;
     
     private String isGlobalAccess;
+    
+    //NEW LCA Import Excel Fields
+    
+    private String newLcaNumber;
+    
+    private String newLcaTitle;
+    
+    private String noOfPos;
+    
+    private String empName;
+    
+    private String empMail;
+    
+    private String currClientLocation;
+    
+    private String curPrimrVenodorLocation;
+    
+    private String curVenodorLocation;
+    
+    private String socCode;
+    
+    private String socTitle;
+    
+    private String socJobTitle;
+    
+    private String wageLevel;
+    
+    private String prevailWageCurr;
+    
+    private String prevailWageRate;
+    
+    private String prevailWageRatePer;
+    
+    private String newLcaStartDate;
+    
+    private String newLcaEndDate;
+    
+    private String lcaStatus;
+    
+    private String newStatus;
+
+    // This for associate bulk import to job
+    private String jsonData;
+    
+    private String con;
+    
+    private Long requirementId;
+
     
     
 	public String getEmployeeId() {
@@ -2125,4 +2174,185 @@ private String beneficiaryFirstName;
 		this.inviteEmail = inviteEmail;
 	}
 
+
+	// LCA FIELDS
+	
+	public String getNewLcaNumber() {
+		return newLcaNumber;
+	}
+
+	public void setNewLcaNumber(String newLcaNumber) {
+		this.newLcaNumber = newLcaNumber;
+	}
+
+	public String getNewLcaTitle() {
+		return newLcaTitle;
+	}
+
+	public void setNewLcaTitle(String newLcaTitle) {
+		this.newLcaTitle = newLcaTitle;
+	}
+
+	public String getNoOfPos() {
+		return noOfPos;
+	}
+
+	public void setNoOfPos(String noOfPos) {
+		this.noOfPos = noOfPos;
+	}
+
+	public String getEmpName() {
+		return empName;
+	}
+
+	public void setEmpName(String empName) {
+		this.empName = empName;
+	}
+
+	public String getEmpMail() {
+		return empMail;
+	}
+
+	public void setEmpMail(String empMail) {
+		this.empMail = empMail;
+	}
+
+	public String getCurrClientLocation() {
+		return currClientLocation;
+	}
+
+	public void setCurrClientLocation(String currClientLocation) {
+		this.currClientLocation = currClientLocation;
+	}
+
+	public String getCurPrimrVenodorLocation() {
+		return curPrimrVenodorLocation;
+	}
+
+	public void setCurPrimrVenodorLocation(String curPrimrVenodorLocation) {
+		this.curPrimrVenodorLocation = curPrimrVenodorLocation;
+	}
+
+	public String getCurVenodorLocation() {
+		return curVenodorLocation;
+	}
+
+	public void setCurVenodorLocation(String curVenodorLocation) {
+		this.curVenodorLocation = curVenodorLocation;
+	}
+
+	public String getSocCode() {
+		return socCode;
+	}
+
+	public void setSocCode(String socCode) {
+		this.socCode = socCode;
+	}
+
+	
+
+	public String getSocTitle() {
+		return socTitle;
+	}
+
+	public void setSocTitle(String socTitle) {
+		this.socTitle = socTitle;
+	}
+
+	public String getWageLevel() {
+		return wageLevel;
+	}
+
+	public void setWageLevel(String wageLevel) {
+		this.wageLevel = wageLevel;
+	}
+
+	public String getPrevailWageCurr() {
+		return prevailWageCurr;
+	}
+
+	public void setPrevailWageCurr(String prevailWageCurr) {
+		this.prevailWageCurr = prevailWageCurr;
+	}
+
+	public String getPrevailWageRate() {
+		return prevailWageRate;
+	}
+
+	public void setPrevailWageRate(String prevailWageRate) {
+		this.prevailWageRate = prevailWageRate;
+	}
+
+	public String getPrevailWageRatePer() {
+		return prevailWageRatePer;
+	}
+
+	public void setPrevailWageRatePer(String prevailWageRatePer) {
+		this.prevailWageRatePer = prevailWageRatePer;
+	}
+
+	public String getNewLcaStartDate() {
+		return newLcaStartDate;
+	}
+
+	public void setNewLcaStartDate(String newLcaStartDate) {
+		this.newLcaStartDate = newLcaStartDate;
+	}
+
+	public String getNewLcaEndDate() {
+		return newLcaEndDate;
+	}
+
+	public void setNewLcaEndDate(String newLcaEndDate) {
+		this.newLcaEndDate = newLcaEndDate;
+	}
+
+	public String getLcaStatus() {
+		return lcaStatus;
+	}
+
+	public void setLcaStatus(String lcaStatus) {
+		this.lcaStatus = lcaStatus;
+	}
+
+	public String getNewStatus() {
+		return newStatus;
+	}
+
+	public void setNewStatus(String newStatus) {
+		this.newStatus = newStatus;
+	}
+	
+	public String getJsonData() {
+		return jsonData;
+	}
+
+	public void setJsonData(String jsonData) {
+		this.jsonData = jsonData;
+	}
+
+	public String getCon() {
+		return con;
+	}
+
+	public void setCon(String con) {
+		this.con = con;
+	}
+
+	public Long getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(Long requirementId) {
+		this.requirementId = requirementId;
+	}
+
+	public String getSocJobTitle() {
+		return socJobTitle;
+	}
+
+	public void setSocJobTitle(String socJobTitle) {
+		this.socJobTitle = socJobTitle;
+	}
+   
 }

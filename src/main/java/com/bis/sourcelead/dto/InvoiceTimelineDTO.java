@@ -29,6 +29,7 @@ public class InvoiceTimelineDTO {
 	private String invoiceId;
 	private String invoiceUUID;
 	private String ownerName;
+	private String statusBy;
 	
 	public String getStatus() {
 		return status;
@@ -156,4 +157,11 @@ public class InvoiceTimelineDTO {
 	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
 	}
+	public String getStatusBy() {
+		return statusBy;
+	}
+	public void setStatusBy(String statusBy) {
+		this.statusBy = statusBy;
+	}
+	
 }

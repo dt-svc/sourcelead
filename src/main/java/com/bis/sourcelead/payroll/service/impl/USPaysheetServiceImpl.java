@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserGroupDao;
@@ -319,10 +320,18 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 		PaysheetFrequencyDTO pfDTO = new PaysheetFrequencyDTO(); 
 		pfDTO.setPayrollFrequencyUUID(pf.getPaySheetFrequencyUUID());
 		pfDTO.setId(String.valueOf(pf.getId()));
+		pfDTO.setPaySheetFrequencyId(pf.getId());
 		List<USPayrollDTO> list = new ArrayList<>();
 		try {
 			if (pf != null && pf.getEmployeepayroll() != null) {
-				Set<EmployeePayroll> set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum()).collect(Collectors.toSet());
+				Set<EmployeePayroll> set = null;
+				if(paysheetFrequencyDTO.getApproverStatus() != null && paysheetFrequencyDTO.getApproverStatus().equalsIgnoreCase(Constants.DRAFT)) {
+					set = pf.getEmployeepayroll().stream().filter(emp->emp.getPaysheetFrequency().getId() == pfDTO.getPaySheetFrequencyId() && emp.getSubmitForAproverStatus().equalsIgnoreCase(Constants.DRAFT)).collect(Collectors.toSet());
+					logger.info("Number of payrolls in draft state ==========="+set.size());
+				}else {
+					set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum()).collect(Collectors.toSet());
+				}
+				
 				for(EmployeePayroll pay : set) {
 					USPayrollDTO payrollDTO = new USPayrollDTO();
 					payrollDTO.setEmpPayrollId(pay.getId());
@@ -339,11 +348,15 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 					payrollDTO.setEmpPayrollUUID(pay.getUsEmpPayrollUUID());
 					payrollDTO.setGrossPay(pay.getGrossPay());
 					payrollDTO.setNetPay(pay.getNetPay());
-					payrollDTO.setRegularHrsTotalAmt(pay.getRehularHoursAmount());
+					payrollDTO.setRegularHrsTotalAmt(pay.getRegularHoursAmount());
 					payrollDTO.setPayRate(pay.getEmpPayRate());
 					payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
 					payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());
-					payrollDTO.setRegularHours(Float.parseFloat(pay.getRegularHours()));
+					float regHours = 0;
+					if(StringUtils.isNotBlank(pay.getRegularHours())) {
+						regHours = Float.parseFloat(pay.getRegularHours());
+					}
+					payrollDTO.setRegularHours(regHours);
 					payrollDTO.setTaxes(pay.getTaxes());
 					payrollDTO.setOtHoursTotalAmt(pay.getOverTimeAmount());
 					double overTimeHours = 0;
@@ -351,7 +364,9 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
 					}
 					payrollDTO.setOvertimeHours(overTimeHours);
+					if(paysheetFrequencyDTO.getApproverStatus() != null && !paysheetFrequencyDTO.getApproverStatus().equalsIgnoreCase(Constants.DRAFT)) {
 					pfDTO.setPayPeriodNum(Integer.parseInt(pay.getPayPeriodNum()));
+					}
 					list.add(payrollDTO);
 				}
 				pfDTO.setPayrollDTO(list);
@@ -361,4 +376,5 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 		}
 		return pfDTO;
 	}
+
 }

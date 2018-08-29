@@ -4,6 +4,8 @@
 package com.bis.sourcelead.immigration.service.impl;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -43,6 +45,10 @@ import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
+import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaDocumentHistoryDTO;
+import com.bis.sourcelead.dto.LcaListViewDTO;
+import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -62,12 +68,17 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationListExportView;
-import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
+import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaDocumentHistory;
+import com.bis.sourcelead.entity.LcaHistory;
+import com.bis.sourcelead.entity.LcaListExportView;
+import com.bis.sourcelead.entity.LcaPlaceOfEployment;
+import com.bis.sourcelead.entity.LcaVisaClarifications;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -82,6 +93,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.ExcelHelperUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -161,6 +173,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				requirement.setId(Long.parseLong(immigrationDTO.getJobId()));
 			}
 
+			
 			Immigration immigration = new Immigration();
 			immigration = savePetitionImmigration(immigrationDTO, orgLocations, candidate, requirement, user);
 
@@ -187,6 +200,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			// Copy IMMIGRATION_TEMPLATE_DOCUMENTS data to IMMIGRATION_CANDIDATE_DOCS table
 			// based on templateId
 			
+			//Save LCAHISTORY with lcaId,candidateId,immigrationId
+			Lca lca = new Lca();
+			lca.setId(Long.valueOf(immigrationDTO.getLcaId()));
+			saveLcaHistoryDetails(immigrationObj,candidate,lca,user,orgLocations);
+			
 			StringBuilder actionDesc = new StringBuilder();
 			if (StringUtils.isNotBlank(immigrationDTO.getImmigrationId())) {
 				actionDesc.append("Immigration Details Edited").toString();
@@ -198,7 +216,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 			// Copy IMMIGRATION_TEMPLATE_FORMS data to IMMIGRATION_CANDIDATE_FORMS table
 			// based on templateId
-			
 
 			if (StringUtils.isEmpty(immigrationDTO.getImmigrationId())) {
 				copyImmigrationTemplateTaskToImmigrationTaskAndTask(immigrationObj, user, orgLocations);
@@ -213,7 +230,31 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 		return immigrationObj;
 	}
-
+   
+	private LcaHistory saveLcaHistoryDetails(Immigration immigrationObj, Candidate candidate, Lca lca,User user,OrgLocations orgLocations) {
+		
+		LcaHistory lcaHistory = null;
+		try {
+			    lcaHistory = new LcaHistory();
+			    lcaHistory.setImmigrationId(immigrationObj);
+				lcaHistory.setCandidate(candidate);
+				lcaHistory.setLcaId(lca);
+				lcaHistory.setIsCurrent(Constants.YES);
+				lcaHistory.setStatus(Constants.RECORD_ACTIVE);
+				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+				lcaHistory.setCreatedDate(currentDate);
+				lcaHistory.setUpdatedDate(currentDate);
+				lcaHistory.setCreatedBy(user);
+				lcaHistory.setUpdatedBy(user);
+				immigrationCommonDao.saveLcaHistory(lcaHistory);
+			
+		} catch (Exception e) {
+			logger.error("Exception caugth in LcaHistory service" + e.getMessage());
+			e.printStackTrace();
+		}
+		return lcaHistory;
+	}
+	
 	private void copyImmigrationTemplateTaskToImmigrationTaskAndTask(Immigration immigrationObj, User user,
 			OrgLocations orgLocations) throws NumberFormatException, Exception {
 		List<ImmigrationTasks> immigrationTasksList = new ArrayList<>();
@@ -411,6 +452,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	private List<CandidateLcaI94Summary> savePetitionLcaSummaryList(ImmigrationDTO immigrationDTO, Candidate candidate,
 			User user, Requirement requirement, OrgLocations orgLocations) {
 		List<CandidateLcaI94Summary> lcaSummaryLst = new ArrayList<CandidateLcaI94Summary>();
+		
 		CandidateLcaI94Summary lcaSummaryCurr = null;
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		lcaSummaryCurr = immigrationCommonDao.getCandidateLCADetails(Long.parseLong(immigrationDTO.getCandidateId()),
@@ -420,7 +462,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			lcaSummaryCurr.setCreatedDate(currentDate);
 			lcaSummaryCurr.setCreatedBy(user);
 		}
-		lcaSummaryCurr.setIdNumber(immigrationDTO.getLcaNumber());
+		
+		/*lcaSummaryCurr.setIdNumber(immigrationDTO.getLcaNumber());
+		
 		if (immigrationDTO.getLcaStartDate() != null && !StringUtils.isEmpty(immigrationDTO.getLcaStartDate())) {
 			lcaSummaryCurr.setStartDate(
 					commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), immigrationDTO.getLcaStartDate()));
@@ -433,7 +477,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}else {
 			lcaSummaryCurr.setEndDate(null);	
 		}
-		lcaSummaryCurr.setIsCurrent(Constants.YES);
+		lcaSummaryCurr.setIsCurrent(Constants.YES);*/
 		lcaSummaryCurr.setRequirementId(requirement);
 		lcaSummaryCurr.setCandidateId(candidate);
 		lcaSummaryCurr.setUpdatedBy(user);
@@ -460,7 +504,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		lcaSummaryLst.add(lcaSummaryCurr); // add current lca
 
-		CandidateLcaI94Summary lcaSummaryPrev = null;
+		
+		
+		/*CandidateLcaI94Summary lcaSummaryPrev = null;
 		lcaSummaryPrev = immigrationCommonDao.getCandidateLCADetails(Long.parseLong(immigrationDTO.getCandidateId()),
 				Constants.NO);
 		if (lcaSummaryPrev == null) {
@@ -497,7 +543,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		lcaSummaryPrev.setUpdatedBy(user);
 		lcaSummaryPrev.setCreatedDate(currentDate);
 		lcaSummaryPrev.setUpdatedDate(currentDate);
-		lcaSummaryLst.add(lcaSummaryPrev);
+		lcaSummaryLst.add(lcaSummaryPrev);*/
 		return lcaSummaryLst;
 	}
 
@@ -565,8 +611,18 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			candidate.setNationality(immigrationDTO.getNationality());
 			candidate.setMaritalStatus(immigrationDTO.getMaritalStatus());
 			candidate.setEadNo(immigrationDTO.getEadNumber());
-			candidate.setI20ServiceNo(immigrationDTO.getI_20_number());
+			
+			if(immigrationDTO.getI_20_number().equals("N-")) {
+			candidate.setI20ServiceNo(null);
+			}else {
+			candidate.setI20ServiceNo(immigrationDTO.getI_20_number());	
+			}
+			
+			if(immigrationDTO.getI_94_number().equals("I---")) {
+			candidate.setI94No(null);
+			}else {
 			candidate.setI94No(immigrationDTO.getI_94_number());
+			}
 			candidate.setUpdatedBy(user.getId().toString());
 			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 			candidate.setUpdatedDate(currentDate);
@@ -1411,12 +1467,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			 */
 			CandidateLcaI94Summary lcaSummaryCurr = immigrationCommonDao
 					.getCandidateLCADetails(immigration.getCandidate().getId(), Constants.YES);
-			immigrationDTO.setLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			/*immigrationDTO.setLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					lcaSummaryCurr.getStartDate()));
 			immigrationDTO.setLcaEndDate(
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lcaSummaryCurr.getEndDate()));
 			immigrationDTO.setLcaNumber(lcaSummaryCurr.getIdNumber());
-			immigrationDTO.setIsCurrResidence(lcaSummaryCurr.getIsCurrent());
+			immigrationDTO.setIsCurrResidence(lcaSummaryCurr.getIsCurrent());*/
 			immigrationDTO.setEmploymentLevel(lcaSummaryCurr.getEmploymentLevel());
 			immigrationDTO.setEmployer(lcaSummaryCurr.getEmployerName());
 			immigrationDTO.setJobLocation(lcaSummaryCurr.getEmployerLocation());
@@ -1434,6 +1490,18 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigrationDTO.setPrevLcaEndDate(
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lcaSummaryPrev.getEndDate()));
 			immigrationDTO.setPrevLcaNumber(lcaSummaryPrev.getIdNumber());
+			
+			/*
+			 * LCA Details from LCA History Table
+			 */
+			LcaHistory lh=immigrationCommonDao.getLcaHistoryDetails(immigration.getId(), Constants.YES);
+			
+			if(lh != null) {
+				
+				immigrationDTO.setLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getLcaId().getStartDate()));
+				immigrationDTO.setLcaEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lh.getLcaId().getEndDate()));
+				immigrationDTO.setLcaNumber(lh.getLcaId().getLcaNo());
+			}
 			/*
 			 * ==============================from CandidateResumes
 			 * Table==================================
@@ -1990,5 +2058,580 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	public List<Immigration> getImmigrationsByOrgId(Long id) {
 		return immigrationCommonDao.getImmigrationsByOrgId(id);
 	}
+	
+	/*
+	 * LCA Code Starts Here
+	 */
+	
+	@Override
+	public Lca saveLcaDetails(LcaDTO lcaDTO, User user, OrgLocations orgLocations) {
+		Lca lcaObj = null;
+		try {
+             
+			Lca lca = null;
+			if(StringUtils.isNotBlank(lcaDTO.getLcaId())) {
+				lca =immigrationCommonDao.getLcaById(Long.parseLong(lcaDTO.getLcaId()));
+			}else {
+				lca = new Lca();
+			}
+			lca = saveLcaDetailsInfo(lcaDTO,user,orgLocations);
+			
+			// Lca Place Of employment
+			List<LcaPlaceOfEployment> lcaPlaceOfEploymentList = new ArrayList<LcaPlaceOfEployment>(); 
+			lcaPlaceOfEploymentList = saveLcaPlaceOfEploymentList(lcaDTO,lca, user, orgLocations);
+			
+			// Lca Attachments 
+			List<LcaDocumentHistory> lcaDocumentList = new ArrayList<LcaDocumentHistory>(); 
+			lcaDocumentList = saveLcaDocumentHistoryList(lcaDTO, lca, user, orgLocations);
+			lcaObj = immigrationCommonDao.saveLcaDetails(lca,lcaPlaceOfEploymentList,lcaDocumentList);
+			
+			
+			System.out.println("LCA Saved Successfully");
+			if (StringUtils.isEmpty(lcaDTO.getLcaId())) {
+				copyLcaVisaClarificationsToVisaClarifications(lcaObj,lcaDTO, user, orgLocations);
+				//copyLcaDocumentHistoryToDocumentHistory(lcaObj,lcaDTO, user, orgLocations);
+			}
+
+		} catch (Exception e) {
+			logger.error("Exception caugth in savePetitionDetails service" + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return lcaObj;
+	}
+	
+	
+
+	private List<LcaPlaceOfEployment> saveLcaPlaceOfEploymentList(LcaDTO lcaDTO, Lca lca ,User user, OrgLocations orgLocations) {
+		
+		List<LcaPlaceOfEployment> lcaPlaceOfEploymentList = new ArrayList<LcaPlaceOfEployment>(); // add LcaPlaceOfEployment to LCA
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		if (lcaDTO.getLcaPlaceOfEmploymentList() != null) {
+			
+		List<LcaPlaceOfEmploymentDTO> lcaPlaceOfEmploymentDtoLst = lcaDTO.getLcaPlaceOfEmploymentList();
+		
+		for (LcaPlaceOfEmploymentDTO lcaPlaceOfEmploymentDTO : lcaPlaceOfEmploymentDtoLst) {
+			
+		LcaPlaceOfEployment lcaPlaceOfEploymentEntity = null;
+		
+		if (StringUtils.isNotBlank(lcaPlaceOfEmploymentDTO.getPlsempmntId())) {
+			lcaPlaceOfEploymentEntity = immigrationCommonDao.getLcaPlaceOfEploymentDetailsById(Long.parseLong(lcaPlaceOfEmploymentDTO.getPlsempmntId()));
+			
+		}else {
+			lcaPlaceOfEploymentEntity = new LcaPlaceOfEployment();
+			lcaPlaceOfEploymentEntity.setCreatedDate(currentDate);
+			lcaPlaceOfEploymentEntity.setCreatedBy(user);
+		}
+		
+		lcaPlaceOfEploymentEntity.setLcaId(lca);
+		
+		lcaPlaceOfEploymentEntity.setLocation(lcaPlaceOfEmploymentDTO.getLocation());
+		lcaPlaceOfEploymentEntity.setAddressLine1(lcaPlaceOfEmploymentDTO.getAddressLine1());
+		
+		if(lcaPlaceOfEmploymentDTO.getAddressLine2() != null && !lcaPlaceOfEmploymentDTO.getAddressLine2().isEmpty()) {
+		lcaPlaceOfEploymentEntity.setAddressLine2(lcaPlaceOfEmploymentDTO.getAddressLine2());
+		}
+		lcaPlaceOfEploymentEntity.setCity(lcaPlaceOfEmploymentDTO.getCity());
+		lcaPlaceOfEploymentEntity.setState(lcaPlaceOfEmploymentDTO.getState());
+		lcaPlaceOfEploymentEntity.setCountry(lcaPlaceOfEmploymentDTO.getCountry());
+		
+		if(lcaPlaceOfEmploymentDTO.getZipCode()!= null && !lcaPlaceOfEmploymentDTO.getZipCode().isEmpty()) {
+		lcaPlaceOfEploymentEntity.setZipCode(lcaPlaceOfEmploymentDTO.getZipCode());
+		}
+		// default No for multiple residences treated as secondary residences.
+		lcaPlaceOfEploymentEntity.setStatus(Constants.RECORD_ACTIVE);
+		
+		
+		lcaPlaceOfEploymentEntity.setUpdatedDate(currentDate);
+		
+		lcaPlaceOfEploymentEntity.setUpdatedBy(user);
+		lcaPlaceOfEploymentList.add(lcaPlaceOfEploymentEntity);
+		}
+		
+		}
+      return lcaPlaceOfEploymentList;
+	}
+	
+	
+	//Lca Attachments
+	
+private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca lca ,User user, OrgLocations orgLocations) throws IOException {
+		
+		List<LcaDocumentHistory> lcaDocumentList = new ArrayList<LcaDocumentHistory>(); // add residences to immigration
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		if (lcaDTO.getLcaDocumentList() != null) {
+			
+		List<LcaDocumentHistoryDTO> lcaDocumentDtoList = lcaDTO.getLcaDocumentList();
+		LcaDocumentHistory lcaDocumentHistoryEntity = null;
+		for (LcaDocumentHistoryDTO lcaDocumentDTO : lcaDocumentDtoList) {
+			
+		if (StringUtils.isNotBlank(lcaDocumentDTO.getDocId())) {
+			lcaDocumentHistoryEntity = immigrationCommonDao.getLcaDocumentHistoryDetailsById(Long.parseLong(lcaDocumentDTO.getDocId()),lca.getId());
+			
+		}else {
+			lcaDocumentHistoryEntity = new LcaDocumentHistory();
+			lcaDocumentHistoryEntity.setCreatedDate(currentDate);
+			lcaDocumentHistoryEntity.setCreatedBy(user);
+		}
+		
+		
+		lcaDocumentHistoryEntity.setLcaId(lca);
+		
+		if(lcaDocumentDTO.getDocumentTitle() != null && !lcaDocumentDTO.getDocumentTitle().isEmpty()) {
+		lcaDocumentHistoryEntity.setDocumentTitle(lcaDocumentDTO.getDocumentTitle());
+		}
+		lcaDocumentHistoryEntity.setDocumentUUID(lcaDocumentDTO.getDocumentUUID());
+		
+		if(lcaDocumentDTO.getDescription() != null && !lcaDocumentDTO.getDescription().isEmpty()) {
+			
+		lcaDocumentHistoryEntity.setDescription(lcaDocumentDTO.getDescription());
+		
+		}
+		lcaDocumentDTO.setStaticPath(staticPath);
+		if (lcaDocumentDTO.getFileInfo() != null) {
+		FileInfo fileInfo = lcaDocumentDTO.getFileInfo().get(0);
+		if(fileInfo.getFileName() != null) {
+			if (fileInfo != null) {
+				lcaDocumentHistoryEntity.setFileName(fileInfo.getFileName());
+				lcaDocumentHistoryEntity.setFileUrl(fileInfo.getFileURL());
+				lcaDocumentHistoryEntity.setFileContentType(fileInfo.getContentType());
+             try {
+                 FileUploadUtil.moveFile(lcaDocumentDTO.getStaticPath(), fileInfo, "LCADocuments");
+             } catch (java.io.IOException e) {
+                 // TODO Auto-generated catch block
+                 e.printStackTrace();
+             }
+         }
+		}
+			 
+		}
+		lcaDocumentHistoryEntity.setStatus(Constants.RECORD_ACTIVE);
+		lcaDocumentHistoryEntity.setUpdatedDate(currentDate);
+		
+		lcaDocumentHistoryEntity.setUpdatedBy(user);
+		lcaDocumentList.add(lcaDocumentHistoryEntity);
+		}
+		
+		}
+      return lcaDocumentList;
+	}
+
+	
+
+	private void copyLcaVisaClarificationsToVisaClarifications(Lca lcaObj,LcaDTO lcaDTO, User user, OrgLocations orgLocations) {
+		
+		
+		    LcaVisaClarifications lcaVisaClfsObj = null;
+
+		    lcaVisaClfsObj = new LcaVisaClarifications();
+		    
+		    lcaVisaClfsObj.setLcaId(lcaObj);
+		    
+		    if(lcaDTO.getNewEmployment() != null && !lcaDTO.getNewEmployment().isEmpty()) {
+		    lcaVisaClfsObj.setNewEmployment(lcaDTO.getNewEmployment());
+		    lcaVisaClfsObj.setNewEmploymentCount(Integer.parseInt(lcaDTO.getNewEmploymentCount()));
+		    }
+		    
+		    if(lcaDTO.getChangeInEmployer() != null && !lcaDTO.getChangeInEmployer().isEmpty()) {
+		    lcaVisaClfsObj.setChangeInEmployer(lcaDTO.getChangeInEmployer());
+		    lcaVisaClfsObj.setChangeInEmployerCount(Integer.parseInt(lcaDTO.getChangeInEmployerCount()));
+		    }
+		    
+		    if(lcaDTO.getConcurrentEmployment() != null && !lcaDTO.getConcurrentEmployment().isEmpty()) {
+		    lcaVisaClfsObj.setConcurrentEmployment(lcaDTO.getConcurrentEmployment());
+		    lcaVisaClfsObj.setConcurrentEmploymentCount(Integer.parseInt(lcaDTO.getConcurrentEmploymentCount()));
+		    }
+		    
+		    if(lcaDTO.getChangeInPreApproEmployment() != null && !lcaDTO.getChangeInPreApproEmployment().isEmpty()) {
+		    lcaVisaClfsObj.setChangeInPreApproEmployment(lcaDTO.getChangeInPreApproEmployment());
+		    lcaVisaClfsObj.setChangeInPreApproEmplmtCount(Integer.parseInt(lcaDTO.getChangeInPreApproEmplmtCount()));
+		    }
+		    
+		    if(lcaDTO.getAmendment() != null && !lcaDTO.getAmendment().isEmpty()) {
+		    lcaVisaClfsObj.setAmendment(lcaDTO.getAmendment());
+		    lcaVisaClfsObj.setAmendmentCount(Integer.parseInt(lcaDTO.getAmendmentCount()));
+		    }
+		    
+		    if(lcaDTO.getExtention() != null && !lcaDTO.getExtention().isEmpty()) {
+		    lcaVisaClfsObj.setExtention(lcaDTO.getExtention());
+		    lcaVisaClfsObj.setExtentionCount(Integer.parseInt(lcaDTO.getExtentionCount()));
+		    }
+		   
+		    
+			lcaVisaClfsObj.setStatus(Constants.RECORD_ACTIVE);
+			lcaVisaClfsObj.setCreatedBy(user);
+			lcaVisaClfsObj.setUpdatedBy(user);
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+			lcaVisaClfsObj.setUpdatedDate(currentDate);
+			lcaVisaClfsObj.setCreatedDate(currentDate);
+			try {
+				immigrationCommonDao.saveLcaVisaClarifications(lcaVisaClfsObj);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+
+	private Lca saveLcaDetailsInfo(LcaDTO lcaDTO, User user, OrgLocations orgLocations) throws Exception {
+		
+		Lca lca = null;
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		if (lcaDTO.getLcaId() != null && StringUtils.isNotEmpty(lcaDTO.getLcaId())) {
+			lca = immigrationCommonDao.getLcaById(Long.parseLong(lcaDTO.getLcaId()));
+		} else {
+			lca = new Lca();
+			lca.setCreatedBy(user);
+			lca.setCreatedDate(currentDate);
+		}
+		
+		if(lcaDTO.getStartDate() != null && !lcaDTO.getStartDate().isEmpty())
+		{
+		lca.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), lcaDTO.getStartDate()));
+		}
+		if(lcaDTO.getEndDate() != null && !lcaDTO.getEndDate().isEmpty())
+		{
+		lca.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), lcaDTO.getEndDate()));
+		}
+		if(lcaDTO.getNoOfPositions() != null && !lcaDTO.getNoOfPositions().isEmpty()) {
+		lca.setNoOfPositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
+		}
+		lca.setLcaUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		lca.setLcaNo(lcaDTO.getLcaNo());
+		lca.setLcaTitle(lcaDTO.getLcaTitle());
+		
+		lca.setLcaStatus(lcaDTO.getLcaStatus());
+		
+		lca.setOfferedWage(lcaDTO.getOfferedWage());
+		lca.setOfferedWageCurrency(lcaDTO.getOfferedWageCurrency());
+		lca.setOfferedWageRateType(lcaDTO.getOfferedWageRateType());
+		
+		if(orgLocations != null){
+			lca.setOrgLocationId(orgLocations);
+			}
+		
+		lca.setPrevailingWage(lcaDTO.getPrevailingWage());
+		lca.setPrivilingWageCurrency(lcaDTO.getPrivilingWageCurrency());
+		lca.setPrivilingWageRateType(lcaDTO.getPrivilingWageRateType());
+		
+		lca.setEmployee(lcaDTO.getEmployee());
+		lca.setWagesLevel(lcaDTO.getWagesLevel());
+		lca.setJobTitle(lcaDTO.getJobTitle());
+		lca.setSocCode(lcaDTO.getSocCode());
+		lca.setSocOccupationTitle(lcaDTO.getSocOccupationTitle());
+		if(lcaDTO.getStatus().equals("Active")) {
+		lca.setStatus(Constants.RECORD_ACTIVE);
+		}else {
+			lca.setStatus(Constants.RECORD_INACTIVE);
+		}
+		lca.setUpdatedBy(user);
+		lca.setUpdatedDate(currentDate);
+
+		return lca;
+		
+	}
+
+   @Override
+	public ResponseList<LcaListViewDTO> getLcasList(LcaListViewDTO lcaListViewDTO,String status,String lcaStatus, String searchValue,
+			OrgLocations orgLocations, Map<String, Long[]> filterVal,String filterByDays) throws Exception {
+		return immigrationCommonDao.getLcaList(lcaListViewDTO,status, lcaStatus,searchValue, orgLocations, filterVal,filterByDays);
+	}
+
+	@Override
+	public Long getLcaIdByUUID(String lcaUuid) {
+		return immigrationCommonDao.getLcaIdByUUID(lcaUuid);
+	}
+
+	@Override
+	public String deleteLcaDetailsById(Long lcaId) {
+		return immigrationCommonDao.deleteLcaDetailsById(lcaId);
+	}
+
+	@Override
+	public LcaDTO editLcaDetails(Long lcaId, OrgLocations orgLocations) {
+		
+		Lca lca = immigrationCommonDao.getLcaById(lcaId);
+		LcaDTO lcaDTO = new LcaDTO();
+		try {
+			/* ============================from lca Table================= */
+		    lcaDTO.setLcaId(lca.getId().toString());
+		    lcaDTO.setLcaNo(lca.getLcaNo());
+		    lcaDTO.setLcaTitle(lca.getLcaTitle());
+		    lcaDTO.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lca.getStartDate()));
+		    lcaDTO.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lca.getEndDate()));
+		    lcaDTO.setNoOfPositions(lca.getNoOfPositions().toString());
+		    lcaDTO.setWagesLevel(lca.getWagesLevel());
+		    
+		    lcaDTO.setPrevailingWage(lca.getPrevailingWage());
+		    lcaDTO.setPrivilingWageRateType(lca.getPrivilingWageRateType());
+		    lcaDTO.setPrivilingWageCurrency(lca.getPrivilingWageCurrency());
+		    
+		    lcaDTO.setOfferedWage(lca.getOfferedWage());
+		    lcaDTO.setOfferedWageRateType(lca.getOfferedWageRateType());
+		    lcaDTO.setOfferedWageCurrency(lca.getOfferedWageCurrency());
+		    
+		    lcaDTO.setJobTitle(lca.getJobTitle());
+		    lcaDTO.setStatus(lca.getStatus().toString());
+		    lcaDTO.setLcaStatus(lca.getLcaStatus());
+		    lcaDTO.setEmployee(lca.getEmployee());
+		    lcaDTO.setSocCode(lca.getSocCode());
+		    lcaDTO.setSocOccupationTitle(lca.getSocOccupationTitle());
+		    
+		    
+		    LcaVisaClarifications lcaVisaClfs = null;
+		    lcaVisaClfs = immigrationCommonDao.getLcaVisaClarificationsByIDAndLcaId(lca.getId());
+			if(lcaVisaClfs != null) {
+				
+				if(lcaVisaClfs.getNewEmployment() != null){
+				lcaDTO.setNewEmployment(lcaVisaClfs.getNewEmployment());
+				}
+				if(lcaVisaClfs.getNewEmploymentCount() != null){
+				lcaDTO.setNewEmploymentCount(lcaVisaClfs.getNewEmploymentCount().toString());
+				}
+				if(lcaVisaClfs.getConcurrentEmployment()!= null){
+				lcaDTO.setConcurrentEmployment(lcaVisaClfs.getConcurrentEmployment());
+				}
+				if(lcaVisaClfs.getConcurrentEmploymentCount() != null){
+				lcaDTO.setConcurrentEmploymentCount(lcaVisaClfs.getConcurrentEmploymentCount().toString());
+				}
+				
+				if(lcaVisaClfs.getExtention() != null){
+				lcaDTO.setExtention(lcaVisaClfs.getExtention());
+				}
+				
+				if(lcaVisaClfs.getExtentionCount() != null){
+				lcaDTO.setExtentionCount(lcaVisaClfs.getExtentionCount().toString());
+				}
+				if(lcaVisaClfs.getChangeInEmployer() != null){
+				lcaDTO.setChangeInEmployer(lcaVisaClfs.getChangeInEmployer());
+				}
+				if(lcaVisaClfs.getChangeInEmployerCount() != null){
+				lcaDTO.setChangeInEmployerCount(lcaVisaClfs.getChangeInEmployerCount().toString());
+				}
+				if(lcaVisaClfs.getChangeInPreApproEmployment() != null){
+				lcaDTO.setChangeInPreApproEmployment(lcaVisaClfs.getChangeInPreApproEmployment());
+				}
+				if(lcaVisaClfs.getChangeInPreApproEmplmtCount() != null){
+				lcaDTO.setChangeInPreApproEmplmtCount(lcaVisaClfs.getChangeInPreApproEmplmtCount().toString());
+				}
+				if(lcaVisaClfs.getAmendment() != null){
+				lcaDTO.setAmendment(lcaVisaClfs.getAmendment());
+				}
+				if(lcaVisaClfs.getAmendment() != null){
+				lcaDTO.setAmendmentCount(lcaVisaClfs.getAmendmentCount().toString());
+				}
+				
+				/* ============================from lca Table End================= */
+				
+				/* ============================from LcaPlaceOfEployment Table Start================= */
+				
+				List<LcaPlaceOfEployment> lcaPlaceOfEployment = immigrationCommonDao.getLcaPlaceOfEploymentListByIdAndLcaID(lca.getId());
+				if (!lcaPlaceOfEployment.isEmpty()) {
+					List<LcaPlaceOfEmploymentDTO> residenceList = new ArrayList<LcaPlaceOfEmploymentDTO>();
+					for (LcaPlaceOfEployment residence : lcaPlaceOfEployment) {
+						LcaPlaceOfEmploymentDTO residenceDTO = new LcaPlaceOfEmploymentDTO();
+						residenceDTO.setPlsempmntId(residence.getId().toString());
+						residenceDTO.setAddressLine1(residence.getAddressLine1());
+						
+						if(StringUtils.isNotBlank(residence.getAddressLine2())) {
+						residenceDTO.setAddressLine2(residence.getAddressLine2());
+						}
+						residenceDTO.setCity(residence.getCity());
+						residenceDTO.setCountry(residence.getCountry());
+						residenceDTO.setLocation(residence.getLocation());
+						residenceDTO.setState(residence.getState());
+						residenceDTO.setZipCode(residence.getZipCode());
+						
+						residenceList.add(residenceDTO);
+					}
+
+					lcaDTO.setLcaPlaceOfEmploymentList(residenceList);;
+				}
+				
+				/* ============================from LcaPlaceOfEployment Table End================= */
+				
+				/* ============================from LcaDocumentHistory Table Start================= */
+				
+				List<LcaDocumentHistory> lcaDocs = immigrationCommonDao.getLcaDocumentHistoryListById(lcaId)  ;
+				if(!lcaDocs.isEmpty()) {
+					
+		        List<LcaDocumentHistoryDTO> lcaDocsDTOList =new ArrayList<LcaDocumentHistoryDTO>();
+		        for(LcaDocumentHistory lcaAttachments:lcaDocs) {
+		        	LcaDocumentHistoryDTO lcaDocDTO = new LcaDocumentHistoryDTO();
+		        	lcaDocDTO.setDocId(lcaAttachments.getId().toString());
+		        	lcaDocDTO.setDocumentTitle(lcaAttachments.getDocumentTitle());
+		        	lcaDocDTO.setFileName(lcaAttachments.getFileName());
+		        	lcaDocDTO.setFileContentType(lcaAttachments.getFileContentType());
+		        	lcaDocDTO.setFileUrl(lcaAttachments.getFileUrl());
+		        	lcaDocDTO.setDescription(lcaAttachments.getDescription());
+		        	
+		        	lcaDocsDTOList.add(lcaDocDTO);
+		        }
+		        lcaDTO.setLcaDocumentList(lcaDocsDTOList);
+				}
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return lcaDTO;
+	}
+
+	@Override
+	public List<Map<String, String>> getSocCodeWithSOCOccupationTitleList(String name,String category,String socType) {
+		return immigrationCommonDao.getSocCodeWithSOCOccupationTitleList(name,socType);
+	}
+
+	@Override
+	public String reActiveLcaById(Long lcaId) {
+		return immigrationCommonDao.reActiveLcaById(lcaId);
+	}
+
+	@Override
+	public String getOesSocCodeById(Long id, String socType) {
+		return immigrationCommonDao.getOesSocCodeById(id, socType);
+	}
+	
+	
+	@Override
+	public Sheet getLCAExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, OrgLocations orgLocations) {
+		Row writeRow = null;
+		
+		createExcelsheet = getLCAExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+       List<LcaListExportView> immigrationListExportView = immigrationCommonDao.getLcaListExportDetails(orgLocations);
+		int column=0;
+        for(LcaListExportView exportView : immigrationListExportView){
+       	 writeRow = createExcelsheet.createRow(column+1);
+       	 try {
+			createExcelsheet = createLcaListXlsSheet(createExcelsheet,writeRow,exportView,orgLocations);
+		} catch (IllegalArgumentException e) {
+			logger.error("IllegalArgumentException occured while genearting LCA Excel sheet.");
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			logger.error("IllegalAccessException occured while genearting LCA Excel sheet.");
+			e.printStackTrace();
+		}
+       	 column++;  
+        }
+		return createExcelsheet;
+	}
+	
+	private Sheet createLcaListXlsSheet(Sheet createExcelsheet, Row writeRow,
+			LcaListExportView lcaExportView, OrgLocations orgLocations) throws IllegalArgumentException, IllegalAccessException {
+		Class mainClass= LcaListExportView.class;
+		int cellIndex=0;
+		for(String fieldName : ImmigrationConstants.LCA_EXCEL_REFLECTION_FILEDS_LIST) {
+			if(fieldName.equalsIgnoreCase("empName")|| fieldName.equalsIgnoreCase("empEmail")) {
+				cellIndex++;
+				continue;
+			}
+			// above if condition should be removed once columns are update in view in the databse.
+			try {
+				Field field = mainClass.getDeclaredField(fieldName);
+				
+				     field.setAccessible(true);
+				     if(fieldName.equalsIgnoreCase("location")) {
+				    
+				    	 String addrArr[]= ((String)field.get(lcaExportView)).split("\n");
+				    	 for(int i=0; i<addrArr.length; i++) {
+				    		 
+				    		 if(i==3) break;
+				    		 ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), addrArr[i], null); 
+				    		 
+				    		 cellIndex++;
+				    	 }
+				    	 cellIndex = 5;// setting default value for next column index. It does not depend on address or location list. 
+				     }else if(fieldName.contains("Date")) {
+				    	 
+				    	 
+				    	String dateString = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaExportView.getStartDate());
+				    	 ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), dateString, null);
+				    	
+				     }/*else if(fieldName.equalsIgnoreCase("status")) {
+				    	 Integer status = lcaExportView.getStatus();
+				    	 if(status == 1) {
+				    	     ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), ImmigrationConstants.LCA_STATUS_ACTIVE, null);
+				    	 }else {
+				    		 ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), ImmigrationConstants.LCA_STATUS_IN_ACTIVE, null);
+				    	 }
+				     }*/
+				     else {
+				             ExcelHelperUtil.setDataValueInCell(writeRow.createCell(cellIndex), field.get(lcaExportView), null);
+				     }
+				
+			} catch (NoSuchFieldException | SecurityException e) {
+				logger.error(" NoSuchFieldException | SecurityException  while genearting LCA Excel sheet.");
+				e.printStackTrace();
+			}
+			cellIndex++;
+		}
+		
+		return createExcelsheet;
+	}
+	private Sheet getLCAExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+		
+		CellStyle style = createExcelworkbook.createCellStyle();
+		style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		Font font = createExcelworkbook.createFont();
+		font.setColor(IndexedColors.BLACK.getIndex());
+		style.setFont(font);
+		String headers [] = ImmigrationConstants.LCA_LIST_EXCEL_HEADERS;
+		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+	}
+
+	@Override
+	public List<Lca> getAllLcaList(Date currentDate) {
+		return immigrationCommonDao.getAllLcaList(currentDate);
+	}
+
+	@Override
+	public String updateLcaStatusWithExpired(Long lcaId) {
+		return immigrationCommonDao.updateLcaStatusWithExpired(lcaId);
+	}
+		public Lca getLcaDetailsByLcaNoAndId(String lcaNo, Long lcaId) throws Exception {
+		return immigrationCommonDao.getLcaDetailsByLcaNoAndId(lcaNo, lcaId);
+	}
+
+	@Override
+	public Boolean validateLcaNumber(String lcaNo, Long orgLocationId) throws Exception {
+		return immigrationCommonDao.validateLcaNumber(lcaNo, orgLocationId);
+	}
+
+	@Override
+	public Lca getLcaDetailsByLcaTitleAndId(String lcaTitle, Long lcaId) throws Exception {
+		return immigrationCommonDao.getLcaDetailsByLcaTitleAndId(lcaTitle, lcaId);
+	}
+
+	@Override
+	public Boolean validateLcaTitle(String lcaTitle, Long orgLocationId) throws Exception {
+		return immigrationCommonDao.validateLcaTitle(lcaTitle, orgLocationId);
+	}
+
+	@Override
+	public List<Map<String, String>> getLcaNumbersList(String lcaNum,String orgLocationId,String statusLca,String candidateId) {
+		return immigrationCommonDao.getLcaNumbersList(lcaNum,orgLocationId,statusLca,candidateId);
+	}
+
+	@Override
+	public Lca getLcaByLcaId(Long lcaId) throws Exception {
+		
+        Lca lca=immigrationCommonDao.getLcaByLcaId(lcaId);
+        // Set Location From LcaPlaceOfEployment table
+		List<LcaPlaceOfEployment> locList = immigrationCommonDao.getLcaPlaceOfEploymentListById(lcaId);
+		LcaPlaceOfEployment lcaPlaceOfEployment = locList.get(0);
+		lca.setLcaPlaceOfEployment(locList);
+		lca.setLcaLocation(lcaPlaceOfEployment.getLocation());
+		return lca;
+	}
+
+	@Override
+	public List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId) {
+		return immigrationCommonDao.getLcaHistoryDetailsInfo(immigrationId);
+	}
+	
+	/*
+	 * LCA Code Ends Here
+	 */
 
 }

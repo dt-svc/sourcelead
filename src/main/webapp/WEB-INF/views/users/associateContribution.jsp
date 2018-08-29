@@ -1,21 +1,31 @@
   <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
- <script type="text/javascript">
+  <script type="text/javascript">
+ var conValue = [];
+ var conTempIndex = null;
     $(document).ready(function(){
     	$(".add-contribution-row").click(function(){
     		var i = $("#index").val(); 
         	var contributionType = $("#contriType").val();
         	var contributionTypeValue = $('#contriType :selected').text();
         	var contributionAmount = $("#contriAmt").val();
-        	if(contributionType != null && contributionType != '' && contributionType != 'undefined' && contributionAmount != null && contributionAmount != '' && contributionAmount != 'undefined'){
-                  var contributionMethod = $("#contricontributionMethod").val();
-                  var markuptr = "<tr><td><input type='checkbox' name='contributio-record'></td><td><input type='hidden' id='contributionType' name='contributionDTOList["+i+"].contributionType' value='"+contributionType+"'/>" + contributionTypeValue + "</td><td><input type='hidden' id='contributionMethod' name='contributionDTOList["+i+"].contributionMethod' value='"+contributionMethod+"' />" + contributionMethod + "</td><td><input type='hidden' id='contributionAmount' name='contributionDTOList["+i+"].contributionAmount' value='"+contributionAmount+"'/>" + contributionAmount + "</td><td><a onclick='deleteRowCont();'><i class='fa fa-remove text-danger'></i></a></td></tr>";
-                  $("#contribuionTrAdd").append(markuptr);
-                  i++;
-                  $("#index").val(i);	
+        	if(!conValue.includes(contributionTypeValue)){
+        		conValue.push(contributionTypeValue);
+        		if(contributionType != null && contributionType != '' && contributionType != 'undefined' && contributionAmount != null && contributionAmount != '' && contributionAmount != 'undefined'){
+                    var contributionMethod = $("#contricontributionMethod").val();
+                    var markuptr = "";
+                    if(conTempIndex >= 0 && conTempIndex != null){
+                    	markuptr = '<tr id="row'+conTempIndex+'"><td><input type="checkbox" name="contributio-record"></td><td><input type="hidden" id="contributionType" name="contributionDTOList['+i+'].contributionType" value="'+contributionType+'"/><span id="conTypeVal'+conTempIndex+'">'+ contributionTypeValue + '</span></td><td><input type="hidden" id="contributionMethod" name="contributionDTOList['+i+'].contributionMethod" value="'+contributionMethod+'" />'+ contributionMethod+'</td><td><input type="hidden" id="contributionAmount" name="contributionDTOList['+i+'].contributionAmount" value="'+contributionAmount+'"/>' + contributionAmount + '</td><td><a onclick="deleteRowCont(\''+conTempIndex+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+                    }else{
+                    	markuptr = '<tr id="row'+i+'"><td><input type="checkbox" name="contributio-record"></td><td><input type="hidden" id="contributionType" name="contributionDTOList['+i+'].contributionType" value="'+contributionType+'"/><span id="conTypeVal'+i+'">'+ contributionTypeValue + '</span></td><td><input type="hidden" id="contributionMethod" name="contributionDTOList['+i+'].contributionMethod" value="'+contributionMethod+'" />'+ contributionMethod+'</td><td><input type="hidden" id="contributionAmount" name="contributionDTOList['+i+'].contributionAmount" value="'+contributionAmount+'"/>' + contributionAmount + '</td><td><a onclick="deleteRowCont(\''+i+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+                    	i++;
+                    	conTempIndex = null;
+                    }
+                    $("#contribuionTrAdd").append(markuptr);
+                    $("#index").val(i);	
+          		}
         	}
-        	
         });
         
         // Find and remove selected table rows
@@ -31,18 +41,26 @@
 
 <script>
 
-function deleteRowCont(){
-	var i = $("#index").val(); 
+function deleteRowCont(rowId){
+	
+	var conSelValue = $("#conTypeVal"+rowId).html();
+	$("#row"+rowId).remove();
+	var deleted= conValue.indexOf(conSelValue);
+	conTempIndex = deleted;
+	conValue.splice(deleted,1);
+	
+	/* var i = $("#index").val(); 
 	$("#contribuionTrAdd").find('input[name="contributio-record"]').each(function(){
     	if($(this).is(":checked")){
             $(this).parents("tr").remove();
             i--;
             $("#index").val(i);	
         }
-    });
+    }); */
 }
 
 </script>
+
 
 <script>
 $(document).ready(function(){
@@ -68,7 +86,7 @@ $(document).ready(function(){
                   <div class="col-md-5">
                     <label class="clearfix">contributionAmount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_int" field-name="Amount" readonly>
+                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_float" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
@@ -146,6 +164,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
  <script>
  function saveAssociateContribution(){
 	 var userId = $("#associateId").val();  
+	 var saveType = "New";
 	 var contributionType = $("#contributionType").val();
 	 if(contributionType != null && contributionType != '' && contributionType != 'undefined'){
 		 var formData = getFormData("associate_contribution_form"); 
@@ -156,7 +175,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
       $.ajax({
 				type : "POST",
   	    data: formData,
-				url : sourceleadUrl+"/saveAssociateContribution?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+				url : sourceleadUrl+"/saveAssociateContribution?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
 				success : function(result) {
 					 if (result && result.response === "INVALID_DATA") {
 		                    $("#contribution_save_button").removeAttr("disabled");
@@ -173,11 +192,13 @@ $('body').on('blur', '#associate_contribution_form', function() {
 							$("#tab-1").removeAttr("href");
 							$("#associateLeaveType").click();
 							getAllLeaveType();
+							$("#contribution_save_button").removeAttr("disabled");
+							$("#contribution_save_button").addClass('button').val('Save & Continue');
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {
 		                    $("#contribution_save_button").removeAttr("disabled");
-		                    $("#contribution_save_button").addClass('button').val('Save');
+		                    $("#contribution_save_button").addClass('button').val('Save & Continue');
 		                    showError("Operation failed, please try again");
 		                }
 						 

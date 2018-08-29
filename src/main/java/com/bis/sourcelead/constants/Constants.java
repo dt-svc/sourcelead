@@ -173,6 +173,11 @@ public class Constants {
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
 	
+	
+	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
+	
+	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
+	
 	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
 	public static final String LEAVE_CANCEL_EMAIL_TO_USER = "LeaveCancelEmailToUser";
@@ -654,6 +659,9 @@ public class Constants {
 			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
 			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
 
+	
+	
+	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee ID" , "First Name*","Last Name", "Email id*", "Phone Number", "Extension Number",
 			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User(Y/N)","Is Global Manage(Y/N)"};
 
@@ -805,6 +813,8 @@ public class Constants {
 	public static final String INVOICE_RECEIVED = "Received";
 	public static final String INVOICE_STATUS_UNPAID = "Unpaid";
 	public static final String INVOICE_STATUS_PAID = "Paid";
+	public static final String INVOICE_TIMELINE_STATUS_PAID = "Payment";
+	public static final String INVOICE_TIMELINE_STATUS_CREATED = "Created";
 	public static final String INVOICE_STATUS_PARTIAL_PAID = "Partial Paid";
 	public static final String INVOICE_SENT = "SENT";
 	public static final Long CANDIATE_RESUME_IN_ACTIVE = 0L;

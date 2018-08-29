@@ -393,31 +393,32 @@ public class InvoiceRestController {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 				}
 			}
-		}
-		else {
-			if (StringUtils.isNotBlank(invoiceDTO.getStartDate())
-					&& StringUtils.isNotBlank(invoiceDTO.getEndDate())
-					&& !"undefined".equalsIgnoreCase(invoiceDTO.getStartDate())
-					&& !"undefined".equalsIgnoreCase(invoiceDTO.getEndDate())) {
-				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
-				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");
-				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getStartDate());
-				Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getEndDate());
-				String customStartTimeStr = TZ_DF_CSD.format(startTime);
-				String customEndTimeStr = TZ_DF_CED.format(endTime);
-				// String startDateString =
-				// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-				// Constants.UTC_TIMEZONE, customStartTimeStr);
-				// String endDateString =
-				// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-				// Constants.UTC_TIMEZONE, customEndTimeStr);
-				startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
-				endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
-			}
 			else {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+				if (StringUtils.isNotBlank(invoiceDTO.getStartDate())
+						&& StringUtils.isNotBlank(invoiceDTO.getEndDate())
+						&& !"undefined".equalsIgnoreCase(invoiceDTO.getStartDate())
+						&& !"undefined".equalsIgnoreCase(invoiceDTO.getEndDate())) {
+					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
+					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");
+					Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getStartDate());
+					Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), invoiceDTO.getEndDate());
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);
+					String customEndTimeStr = TZ_DF_CED.format(endTime);
+					// String startDateString =
+					// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
+					// Constants.UTC_TIMEZONE, customStartTimeStr);
+					// String endDateString =
+					// CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
+					// Constants.UTC_TIMEZONE, customEndTimeStr);
+					startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+					endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+				}
+				else {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+				}
 			}
 		}
+		
 		ResponseList<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations, startDateUTC, endDateUTC, invoiceDTO);
 		Date todayDate = new Date();
 		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -1400,6 +1401,7 @@ public class InvoiceRestController {
 						invoice.setDueAmount("0.0");
 						invoice.setUpdatedDate(commonUtil.currentDate());
 						Invoice childOrParentInvoice = invoiceDao.saveInvoce(invoice);
+						invoiceService.saveInvoiceTimelineHistory(invoice, user, null, null, null, null);
 						if (null != childOrParentInvoice) {
 							if (null != invoice.getParentInvoiceId()) {
 								// parent invoice update
@@ -1409,6 +1411,7 @@ public class InvoiceRestController {
 								parentInvoice.setUpdatedBy(user.getUserCode());
 								parentInvoice.setUpdatedDate(commonUtil.currentDate());
 								invoiceDao.saveInvoce(parentInvoice);
+								invoiceService.saveInvoiceTimelineHistory(parentInvoice, user, null, null, null, null);
 							}else{
 								// update child invoice
 								Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
@@ -1417,6 +1420,7 @@ public class InvoiceRestController {
 								childInvoice.setUpdatedBy(user.getUserCode());
 								childInvoice.setUpdatedDate(commonUtil.currentDate());
 								invoiceDao.saveInvoce(childInvoice);
+								invoiceService.saveInvoiceTimelineHistory(childInvoice, user, null, null, null, null);
 							}
 						}
 						response.setResponse(Result.SUCCESS.name());
@@ -2159,23 +2163,32 @@ public class InvoiceRestController {
 			@RequestParam(value = "searchVal", required = false) String searchVal,@RequestParam(value = "orderVal", required = false) String orderVal,
 			@RequestParam(value = "locationId", required = false) String locationId,
 			@RequestParam(value = "checkedStatus") String[] checkedStatus,
+			@RequestParam(value = "namesStatus") String[] namesStatus,
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<InvoiceTimelineDTO> timelineHistories = new ArrayList<>();
 		Date datesRange[] = new Date[2];
-		if(dateRange[0] != null && !dateRange[0].equals("null")) {
-			OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(locationId));
-			DateFormat dateFormat = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
-			Date fromDate = dateFormat.parse(dateRange[0]);
-			Date toDate = dateFormat.parse(dateRange[1]);
-			//Date fromDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[0]);
-			//Date toDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[1]);
+		if(dateRange[0] != null && !dateRange[0].equals("null") && !dateRange[0].equalsIgnoreCase("") && !dateRange[1].equalsIgnoreCase("")) {
+				OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(locationId));
+				Date fromDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[0]);
+				Date toDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dateRange[1]);
+				/*Calendar cal = Calendar.getInstance();
+			    cal.setTime(fromDate);
+			    cal.add(Calendar.DATE, 1);
+			    cal.add(Calendar.SECOND, -1);
+			    cal.getTime();*/
+			    Calendar cal1 = Calendar.getInstance();
+			    cal1.setTime(toDate);
+			    cal1.add(Calendar.DATE, 1);
+			    cal1.add(Calendar.SECOND, -1);
+			    cal1.getTime();
+			System.out.println("from date : "+fromDate);
+			System.out.println("to date : "+cal1.getTime());
 			datesRange[0] = fromDate;
-			datesRange[1] = toDate;
+			datesRange[1] = cal1.getTime();
 		}
-		
-		timelineHistories = invoiceService.getInvoiceTimelineHistoryList(invoice.getId(), user, searchVal, orderVal, datesRange, checkedStatus);
+		timelineHistories = invoiceService.getInvoiceTimelineHistoryList(invoice.getId(), user, searchVal, orderVal, datesRange, checkedStatus,namesStatus);
 		return timelineHistories;
 	}
 }

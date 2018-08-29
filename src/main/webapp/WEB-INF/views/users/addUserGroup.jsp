@@ -75,8 +75,8 @@
 									<option value="">Selected</option>
 									<option value="Weekly" ${userGroup.payFrequency == 'Weekly' ? 'selected' : ''}>Weekly</option>
 									<option value="Bi-Weekly" ${userGroup.payFrequency == 'Bi-Weekly' ? 'selected' : ''}>Bi-Weekly</option>
-									<option value="Monthly" ${userGroup.payFrequency == '' ? 'Monthly' : ''}>Monthly</option>
-									<option value="Annually" ${userGroup.payFrequency == '' ? 'Annually' : ''}>Annually</option>
+									<option value="Monthly" ${userGroup.payFrequency == 'Monthly' ? 'selected' : ''}>Monthly</option>
+									<option value="Annually" ${userGroup.payFrequency == 'Annually' ? 'selected'  : ''}>Annually</option>
 								</select>
 						</div>
 						</div>
@@ -133,9 +133,11 @@ function validateGroupName(){
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
                 	$('#groupNameDiv').find('p.jquery_form_error_message').remove();
+                	$("#save_user_group_button").attr("disabled", false);
                 }  else {
 					$('#groupNameDiv').find('p.jquery_form_error_message').remove();
       			  	$("#groupName").after("<p class='jquery_form_error_message'>"+groupName+" already exists..!!</span>");
+      			  	$("#save_user_group_button").attr("disabled", true);
                 }
 			
 		});

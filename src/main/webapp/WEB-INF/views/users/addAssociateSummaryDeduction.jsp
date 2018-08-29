@@ -4,18 +4,22 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
  <script type="text/javascript">
+ var value =[];
     $(document).ready(function(){
     	$(".add-row").click(function(){
             var i = $("#index").val();
         	var deductionType = $("#dedType").val();
         	var deductionTypeValue = $('#dedType :selected').text();
         	var amount = $("#amt").val();
+        	if(!value.includes(deductionTypeValue)){
+                 value.push(deductionTypeValue);
         	if(deductionType != null && deductionType != '' && deductionType != 'undefined' && amount != null && amount != '' && amount != 'undefined'){
                   var method = $("#mthd").val();
-                  var markup = "<tr><td><input type='checkbox' name='record'></td><td><input type='hidden' id='deductionType' name='deductionDTOList["+i+"].deductionType' value='"+deductionType+"'/>" + deductionTypeValue + "</td><td><input type='hidden' id='method' name='deductionDTOList["+i+"].method' value='"+method+"' />" + method + "</td><td><input type='hidden' id='amount' name='deductionDTOList["+i+"].amount' value='"+amount+"'/>" + amount + "</td><td><a onclick='deleteRow();'><i class='fa fa-remove text-danger'></i></a></td></tr>";
+                  var markup = '<tr><td><input type="checkbox" name="record"></td><td><input type="hidden" id="deductionType" name="deductionDTOList['+i+'].deductionType" value="'+deductionType+'"/>' + deductionTypeValue + '</td><td><input type="hidden" id="method" name="deductionDTOList['+i+'].method" value="'+method+'" />' + method + '</td><td><input type="hidden" id="amount" name="deductionDTOList['+i+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+deductionTypeValue+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
                   $("#deductionTrAdd").append(markup);
                   i++;
                   $("#index").val(i);	
+        	}
         	}
           
         });
@@ -29,18 +33,17 @@
             });
         }); */
         
-    });    
-</script>
-
-<script>
-
-function deleteRow(){
+    }); 
+    
+function deleteRow(deductionTypeValue){
 	var i = $("#index").val();
 	 $("#deductionTrAdd").find('input[name="record"]').each(function(){
-     	if($(this).is(":checked")){
+     	if($(this).is(':checked')){
              $(this).parents("tr").remove();
              i--;
              $("#index").val(i);
+             var deleted = value.indexOf(deductionTypeValue);
+             value.splice(deleted,1);
          }
      });
 }
@@ -80,7 +83,7 @@ getDeductionType();
                   <div class="col-md-5">
                     <label class="clearfix">Amount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_int" field-name="Amount">
+                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_float" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
@@ -154,7 +157,8 @@ $('body').on('blur', '#associate_deduction_form', function() {
  <div id="deductionPopup"></div>
  <script>
  function saveAssociateDeduction(){
-	 var userId = '${userId}';  
+	 var userId = '${userId}';
+	 var saveType = '${saveType}';  
 	 var deductionType = $("#deductionType").val();
 	 if(deductionType != null && deductionType != '' && deductionType != "undefined"){
 		var formData = getFormData("associate_deduction_form");
@@ -165,7 +169,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
      $.ajax({
 			type : "POST",
  	    data: formData,
-			url : sourceleadUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+			url : sourceleadUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
 			success : function(result) {
 				 if (result && result.response === "INVALID_DATA") {
 	                    $("#associate_deduction_save_button").removeAttr("disabled");
@@ -259,10 +263,11 @@ function deductionPopup(){
  <script>
  function validateDuplicateDeductions(){
 	 var dedType = $("#dedType").val();
+	 var userId = '${userId}';
 	 if(dedType != null && dedType != '' && dedType != 'undefined'){
 		 $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType,
+				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType+"&userId="+userId,
 				success :function(data) {
 					if(data == true){
 						$("#dedType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");

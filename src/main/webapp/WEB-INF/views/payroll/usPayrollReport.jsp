@@ -56,7 +56,7 @@
             <div class="pull-left">
               <h4 class="text-primary"><a href="apaging-graph.html" class="anchorBlue">Employee Report</a></h4>
               <small class="text-muted">Employee Payroll Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/employeePayrollReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+             <div class="clearfix mt10"><a href="#" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           <div class="col-md-3">

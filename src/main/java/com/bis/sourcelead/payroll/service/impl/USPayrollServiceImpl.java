@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
@@ -40,13 +41,10 @@ import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
-import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
-import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollTax;
-import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
@@ -56,6 +54,7 @@ import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
+import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -100,6 +99,9 @@ public class USPayrollServiceImpl  implements USPayrollService{
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private PayrollUtil payrollUtil;
 	
 	
 	@Override
@@ -156,7 +158,11 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			
 			PaysheetFrequency pf = uSPaysheetService.getPayFrequencyByUUID(payrollApproverDTO.getPayrollFrequencyUUID());
 			paySum.setPfUUID(pf.getPaySheetFrequencyUUID());
-			Set<EmployeePayroll> payrollList = pf.getEmployeepayroll();
+			
+			
+//			CopyOnWriteArraySet<EmployeePayroll> payrollList = new CopyOnWriteArraySet<EmployeePayroll>(pf.getEmployeepayroll());
+			List<EmployeePayroll> payrollListt = pf.getEmployeepayroll().stream().filter(payy-> !Constants.APPROVED.equalsIgnoreCase(payy.getSubmitForAproverStatus())).collect(Collectors.toList());
+			CopyOnWriteArraySet<EmployeePayroll> payrollList = new CopyOnWriteArraySet<>(payrollListt);
 			List<Long> payrollIds = null;
 			if(!PayrollConstant.SENT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
 			for (EmployeePayroll payroll : payrollList) {
@@ -175,7 +181,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			paySum.setPid(payrollIds);
 			double regularHours = payrollList.stream().filter(p->p.getRegularHours() != null).mapToDouble(p->Double.parseDouble(p.getRegularHours())).sum();
 			double overTimeHours = payrollList.stream().filter(p->p.getOverTimeHours() !=null).mapToDouble(p->Double.parseDouble(p.getOverTimeHours())).sum();
-			double regularTimeEarnings = payrollList.stream().mapToDouble(p->p.getRehularHoursAmount().doubleValue()).sum();
+			double regularTimeEarnings = payrollList.stream().mapToDouble(p->p.getRegularHoursAmount().doubleValue()).sum();
 			double overTimeEarnings = payrollList.stream().filter(p->p.getOverTimeAmount() != null).mapToDouble(p->p.getOverTimeAmount().doubleValue()).sum();
 			double grossPay = payrollList.stream().mapToDouble(p->p.getGrossPay().doubleValue()).sum();
 			double netPay = payrollList.stream().mapToDouble(p->p.getNetPay().doubleValue()).sum();
@@ -185,16 +191,24 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			List<ContributionDTO> contriList = new ArrayList<>();
 			
 			for(EmployeePayroll payroll : payrollList) {
-				// Deductions
+				/*
 				ResponseList<DeductionDTO> dedRes = associateDeductionService.findAllDeductionSummaryByCandidateId(payroll.getCandidate().getId(), orgLocation);
 				if(dedRes.getData() != null) {
 					dedList.addAll(dedRes.getData());
 				}
-				// Contributions
+				
 				ResponseList<ContributionDTO> contributionRes = associateContributionService.findAllContributionSummaryByCandidateId(payroll.getCandidate().getId(), orgLocation);
 				if(contributionRes.getData() != null) {
 					contriList.addAll(contributionRes.getData());
-				}
+				}*/
+				// Deductions
+				List<DeductionDTO> dlist = payrollUtil.getDeductionData(payroll);
+				dedList.addAll(dlist);
+				
+				// Contributions
+				List<ContributionDTO> clist = payrollUtil.getContributionData(payroll);
+				contriList.addAll(clist);
+				
 				// Employee Taxes
 				Set<EmployeePayrollTax> payrollTax = payroll.getUsPayrollTax();
 				EmployeePayrollTax tax = payrollTax.iterator().next();
@@ -258,8 +272,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			paySum.setEmployerTotalPay(emplrTotalTax);
 			paySum.setConfirmType(payrollApproverDTO.getConfirmType());
 			paySum.setPpn(payrollApproverDTO.getPayPeriodNum());
-			List<DeductionDTO> deduction = new ArrayList<>();
-			Map<String, Double> dedMap = dedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getDedAmount)));
+			/*Map<String, Double> dedMap = dedLis1t.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getDedAmount)));
 		     for (Map.Entry<String,Double> entry : dedMap.entrySet()) {
 		    	 DeductionDTO dedDTO = new DeductionDTO();
 		    	 dedDTO.setDeductionType(entry.getKey());
@@ -268,9 +281,18 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		    }
 		     if(deduction.size()>0) {
 		    	 paySum.setDeduction(deduction);
-		     }
-		     List<ContributionDTO> contribution = new ArrayList<>();
-				Map<String, Double> contriMmap = contriList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getAmount)));
+		     }*/
+			if(dedList.size() >0) {
+//				List<DeductionDTO> preDedList = dedList.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
+//			    List<DeductionDTO> postDedList = dedList.stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
+			    Map<String, Double> list = dedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getDedAmount)));
+			    paySum.setDeduction(list);
+//			    Map<String, Double> postDList = postDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPostDeductionAmt)));
+//			    response.setPostDed(postDList);
+			}
+			
+		    /* List<ContributionDTO> contribution = new ArrayList<>();
+				Map<String, Double> contriMmap = contriLis1t.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getAmount)));
 				 for (Map.Entry<String,Double> entry : contriMmap.entrySet()) {
 					 ContributionDTO contDTO = new ContributionDTO();
 					 contDTO.setContributionType(entry.getKey());
@@ -279,7 +301,13 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			    }
 				 if(contribution.size()>0) {
 			    	 paySum.setContribution(contribution);
-			     }
+			     }*/
+				 
+				 if(contriList.size() >0) {
+						Map<String, Double> contribution = contriList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getContributionAmt)));
+						paySum.setContribution(contribution);
+					}
+				 
 		}catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
@@ -301,7 +329,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				if (period != null) {
 					payPeriodNum = payPeriodNum + period.getPayPeriodNum();
 				}
-				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation);
+				uSPayPeriod = saevPayPeriodNumber(pf, payPeriodNum, orgLocation,loginUser);
 			}else {
 				int isUpadted = uSPayPeriodService.updatedPayperiod(confirmPaySumDto.getPpn());
 			}
@@ -339,8 +367,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		
 		User user = null;
 		int approvedSize = 0;
-		USPayPeriod uSPayPeriodw = uSPayPeriodService.getPaySheetFrequencyIdAndOrglocationId(orgLocation, savedPF.getId());
-        	 user = userService.getUserById(uSPayPeriodw.getPaysheetFrequency().getCreatedBy());
+		USPayPeriod uSPayPeriodw = uSPayPeriodService.getPayPeriodByOrglocationId(orgLocation, savedPF.getId());
+        user = userService.getUserById(savedPF.getCreatedBy());
         	 List<EmployeePayroll> empList = uSPayPeriodService.getEmployeePayrollListByPayperiodNum(uSPayPeriodw.getPayPeriodNum());
         	 for (EmployeePayroll employeePayroll : empList) {
         		 if(employeePayroll.getSubmitForAproverStatus().equalsIgnoreCase(Constants.APPROVED)){
@@ -427,7 +455,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		
 	}
 
-	private USPayPeriod saevPayPeriodNumber(PaysheetFrequency pf, int payPeriodNum, OrgLocations orgLocation)
+	private USPayPeriod saevPayPeriodNumber(PaysheetFrequency pf, int payPeriodNum, OrgLocations orgLocation, User loginUser)
 	{
 		USPayPeriod  uSPayPeriod = new USPayPeriod();
 		uSPayPeriod.setPaysheetFrequency(pf);
@@ -437,6 +465,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		uSPayPeriod.setCreatedDate(new Date());
 		uSPayPeriod.setUpdatedDate(new Date());
 		uSPayPeriod.setApproverStatus(PayrollConstant.APPROVE);
+		uSPayPeriod.setCreatedBy(loginUser.getId());
+		uSPayPeriod.setUpdatedBy(loginUser.getId());
 		return uSPayPeriodService.savePayPeriodNumber(uSPayPeriod);
 	}
 }

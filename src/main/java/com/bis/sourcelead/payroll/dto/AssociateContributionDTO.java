@@ -19,6 +19,8 @@ public class AssociateContributionDTO {
 	
 	private String userId;
 	
+	private String saveType;
+	
 	private List<ContributionDTO> contributionDTOList;
 
 	
@@ -81,6 +83,13 @@ public class AssociateContributionDTO {
 	{
 		this.userId = userId;
 	}
-	
+
+	public String getSaveType() {
+		return saveType;
+	}
+
+	public void setSaveType(String saveType) {
+		this.saveType = saveType;
+	}
 	
 }

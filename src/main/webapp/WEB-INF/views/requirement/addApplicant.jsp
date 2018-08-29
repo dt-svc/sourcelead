@@ -482,11 +482,12 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
 	
-	
-	result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv">';
-	result = result + '<select id="candidateResumesList" name="candidateResume" data-validation-optional="true" field-name="Resume" class="form-control block">';
-	result = result + '</select>';
-	result = result + '</div>';
+	if(resumeId != null && resumeId != '' && resumeId != 'undefined'){
+		result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv">';
+		result = result + '<select id="candidateResumesList" name="candidateResume" data-validation-optional="true" field-name="Resume" class="form-control block">';
+		result = result + '</select>';
+		result = result + '</div>';
+	}
 	
 	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: none;">';
 	result = result + '------- ( OR ) -------';
@@ -541,7 +542,10 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	$(".sideMask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	
-	getSubmittedCandidateResumes(candidateId,resumeId);
+	if(resumeId != null && resumeId != '' && resumeId != 'undefined'){
+		getSubmittedCandidateResumes(candidateId,resumeId);
+	}
+	
 	$("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	setTimeout(function () {
 		       getSubmittedCandidateDetails(submissionId);
@@ -574,6 +578,15 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
       	  var divId = $(this).attr('id');  
       	  var fieldLabel = $this.find('label:first').text().replace("*","");
       	  var inputValue = $this.find('input[type="radio"]:checked').val();
+      	  
+      	 var inputtype = $(this).find('input').attr('type');
+	   	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+	   		  if($(this).find('select').val() != null){
+	   			  inputtype = 'select';
+	   		  }else{
+	   			  inputtype = 'textarea';
+	   		  }
+	   	  }
       	  
       	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
     		   inputValue = $this.find('input[type="checkbox"]:checked').val();
@@ -621,6 +634,10 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
 	     		 id = $this.find('select').attr('id');
      	      }
 	     	  
+	     	 if(name == null || name == '' || name == 'undefined'){
+	     		 name = $this.find('textarea').attr('name');
+     	      }
+	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
 	     		  if(null != inputValue){
@@ -659,6 +676,7 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
 	     	  
       	  fields.push({
                 label: fieldLabel,
+                type:inputtype,
                 id :id,
                 name :name,
                 value: inputValue,
@@ -992,6 +1010,15 @@ function addApplicantSubmission(){
     	  var fieldLabel = $this.find('label:first').text().replace("*","");
     	  var inputValue = $this.find('input[type="radio"]:checked').val();
     	  
+    	  var inputtype = $(this).find('input').attr('type');
+    	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+    		  if($(this).find('select').val() != null){
+    			  inputtype = 'select';
+    		  }else{
+    			  inputtype = 'textarea';
+    		  }
+    	  }
+    	  
     	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
   		   inputValue = $this.find('input[type="checkbox"]:checked').val();
   		   if(inputValue != null){
@@ -1036,7 +1063,11 @@ function addApplicantSubmission(){
 	     	  if(name == null || name == '' || name == 'undefined'){
 	     		 name = $this.find('select').attr('name');
 	     		 id = $this.find('select').attr('id');
-   	      }
+   	          }
+	     	  
+	     	  if(name == null || name == '' || name == 'undefined'){
+	     		 name = $this.find('textarea').attr('name');
+     	      }
 	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
@@ -1076,6 +1107,7 @@ function addApplicantSubmission(){
 	     	  
     	  fields.push({
               label: fieldLabel,
+              type : inputtype,
               id :id,
               name :name,
               value: inputValue,
@@ -1153,6 +1185,15 @@ function addRequirementRecommendations(){
 	      	  var fieldLabel = $this.find('label:first').text().replace("*","");
 	      	  var inputValue = $this.find('input[type="radio"]:checked').val();
 	      	  
+	      	  var inputtype = $(this).find('input').attr('type');
+	    	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+	    		  if($(this).find('select').val() != null){
+	    			  inputtype = 'select';
+	    		  }else{
+	    			  inputtype = 'textarea';
+	    		  }
+	    	  }
+	      	  
 	      	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
 	    		   inputValue = $this.find('input[type="checkbox"]:checked').val();
 	    		   if(inputValue != null){
@@ -1199,6 +1240,10 @@ function addRequirementRecommendations(){
 		     		 id = $this.find('select').attr('id');
 	     	      }
 		     	  
+		     	 if(name == null || name == '' || name == 'undefined'){
+		     		 name = $this.find('textarea').attr('name');
+	     	      }
+		     	  
 		     	  if(name == "WorkExperience"){
 		     		 var monthExp = document.getElementById("monthExp").value; 
 		     		  if(null != inputValue){
@@ -1237,6 +1282,7 @@ function addRequirementRecommendations(){
 		     	  
 	      	  fields.push({
 	                label: fieldLabel,
+	                type : inputtype,
 	                id :id,
 	                name :name,
 	                value: inputValue,
@@ -1938,6 +1984,46 @@ function getSubmittedCandidateDetails(submissionId){
 		        		 $("select[name=NoticePeriod]").val(''); 
 		        	 } 
 		        	 
+		        	 
+		        	 var details = eval(json.submissionJsonStringValue);
+			    	   $.each(details, function( k, v ) {
+		    			  if(v['name'] != 'FirstName' && v['name'] != 'LastName' && v['name'] != 'EmailId' && v['name'] != 'PhoneNumber'
+		    				  && v['name'] != 'Designation' && v['name'] != 'country' && v['name'] != 'state' && v['name'] != 'city'  
+		    					  && v['name'] != 'NoticePeriod' && v['name'] != 'WorkExperience' && v['name'] != 'ExpectedCTC'
+		    						  && v['name'] != 'CurrentCTC' && v['name'] != 'Education' && v['name'] != 'AlternateNumber' 
+		    						  && v['name'] != 'location' && v['name'] != 'zipcode' && v['name'] != 'DOB' 
+		    							  && v['name'] != 'Current/LastCompany'){
+		    				  
+		    				var attr = v['name'];
+		    				var attrVal = v['value'];
+		    				var attrValues = v['value'].split(',');
+		    				
+		    				if(attrValues.length == 1){
+		    							    					
+		    					if(v['type'] == 'select'){
+		    						$("select[name='"+attr+"']").val(attrVal);
+		    					}else if(v['type'] == 'checkbox'){
+		    						$("input[name='"+attr+"'][value='"+attrVal+"']").attr('checked', true);
+		    						$('#'+attr+"checkbox").val(attrVal); 
+		    					}else if(v['type'] == 'radio'){
+		    						$("input[name='"+attr+"'][value='"+attrVal+"']").attr('checked', true);
+		    						$('#'+attr+"radio").val(attrVal); 
+		    					}else if(v['type'] == 'textarea'){
+		    						$("textarea[name='"+attr+"']").text(attrVal);
+		    					}else{
+		    						$("input[name='"+v['name']+"']").val(v['value']);
+		    					}
+		    				   
+		    				}else{
+		    					for(var i=0; i<=attrValues.length; i++){
+		    						$("input[name='"+attr+"'][value='"+attrValues[i]+"']").attr('checked', true);
+		    					}
+		    					 $('#'+attr+"checkbox").val(attrVal); 
+		    				}
+		    				
+		    			  }
+		    				   
+			    	   });
 		        },
 		    });
 	 }else{
