@@ -34,6 +34,8 @@
                  <input type="hidden" id="postDeductionLength" name="postDeductionLength" value="">
                  <input type="hidden" id="totalContributionsLngth" name="totalContributionsLngth" value="">
                  <input type="hidden" id="total1payItemsLength" name="total1payItemsLength" value="">
+                 <input type="hidden" id="assSalType" name="assSalType" value="">
+                 <input type="hidden" id="assSalary" name="assSalary" value="">
               
             </div>
           </div>
@@ -265,6 +267,8 @@
 		            var json = data.object;
 		            $("#empAddress").text(json.employeeAddress);
 		            
+		            $("#assSalType").val(json.assSalType);
+            		$("#assSalary").val(json.assSalary);
 		            if(json.assSalType == "Salary"){
 		            	$("#hoursAndEarningsTable").hide();
 		            	$("#assSalaryTable").show();
@@ -332,9 +336,9 @@
 				        			postDed = postDed + '<tr>';
 				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
 				        			postDed = postDed + ' <td>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+ded.id+'>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionType" value='+ded.deductionType+'>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+ded.postDeductionAmt+' > ';
+				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].id" value='+ded.id+'>';
+				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].preDeductionType" value='+ded.deductionType+'>';
+				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].preDeductionAmt" value='+ded.postDeductionAmt+' > ';
 				        			postDed = postDed + '<input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	

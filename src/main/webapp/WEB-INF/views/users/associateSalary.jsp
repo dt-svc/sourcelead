@@ -276,7 +276,7 @@ function calculateHourlyRateSal(){
 			        		result = result +' </td>';
 			        		result = result +' <td>';
 			        		/* result = result +' <div class="tblminwidth-100 text-left" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" >'+opt.payItemName+'</div>'; */
-			        		result = result +' <input type="text" class="form-control tabField" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" value='+opt.payItemName+'>';
+			        		result = result +' <input type="text" class="form-control tabField" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" value=\''+opt.payItemName+'\'>';
 			        		result = result +' </td>';
 			        		result = result +' <td>';
 			        		if(opt.paySchedule != '' && opt.paySchedule != 'undefined' && opt.paySchedule != null){
