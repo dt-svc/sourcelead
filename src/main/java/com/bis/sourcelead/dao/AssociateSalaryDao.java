@@ -25,4 +25,6 @@ public interface AssociateSalaryDao {
 	List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId);
 
 	List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId);
+
+	AssociateSalary getAssociateSalaryByCandidateIdAndOrgLocationId(Long candidateId, Long locationId);
 }
