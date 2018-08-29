@@ -786,12 +786,12 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String [] str = groupUUID.split(",");
 		Response<UserGroupDTO> userGroup = userGroupService.findUserGroupById(str[0]);
-		if ("Weekly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		if (userGroup.getObject() != null && "Weekly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
 			Calendar now = Calendar.getInstance(); // Gets the current date and
 			int year = now.get(Calendar.YEAR);
 			int month = now.get(Calendar.MONTH);
 			listDates = getNumberOfWeeks(year, month, orgLocation);
-		}else if("Monthly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		}else if(userGroup.getObject() != null && "Monthly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
 			Calendar now = Calendar.getInstance(); // Gets the current date and
 			int month = now.get(Calendar.MONTH);
 			listDates = getStartDateAndEndDateOfMonths(month, orgLocation);
@@ -1055,10 +1055,10 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = { "/getEmployeePayroll","/rest/getEmployeePayroll" }, method = RequestMethod.GET)
 	@ResponseBody
-	public Response<USPayrollDTO> getEmployeePayroll(@RequestParam(value = "payrollUUID",required = false) String payrollUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public Response<USPayrollDTO> getEmployeePayroll(@RequestParam(value = "payrollUUID",required = false) String payrollUUID,@RequestParam(value = "status",required = false) String approverStatus, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Response<USPayrollDTO>  resObj = generateUSPayrollService.getEmployeePayrollByUUID(payrollUUID,orgLocation);
+		Response<USPayrollDTO>  resObj = generateUSPayrollService.getEmployeePayrollByUUID(payrollUUID,orgLocation,approverStatus);
 		return resObj;
 	}
 	
@@ -1261,6 +1261,7 @@ public class USPayrollRestController {
 		if (sessionData == null) {
 			sessionData = new SessionMaintainanceData();
 		}
+		model.addObject("approverStatus",approverStatus);
 		sessionData.setNav(Constants.PAYROLL);
 		request.getSession().setAttribute("sessionData", sessionData);
 		return model;

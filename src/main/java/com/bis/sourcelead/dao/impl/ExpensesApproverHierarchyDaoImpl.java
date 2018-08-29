@@ -125,6 +125,7 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 			 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 			 */
 			+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = sah.expenseId.id ) and  "+Constants.loginUserAsAdminWithMaxHeirarchyLevelForExp+")  "
+		    +"   OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1'  and pm.projects.isReportingManagerAsApprover = 'Y'  and sah.hierarchyId.projectClientsId.orgLocationsId.id = pm.projectMemberCandidteId.orgLocationId.id and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
 			+ "   ) and ( " + subQuery2 +" )";
 		
 		

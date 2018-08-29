@@ -86,7 +86,7 @@ $(document).ready(function(){
                   <div class="col-md-5">
                     <label class="clearfix">contributionAmount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_int" field-name="Amount" readonly>
+                      <input type="text" class="form-control" id="contriAmt" name="contriAmt" data-validation="required validate_float" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
@@ -192,11 +192,13 @@ $('body').on('blur', '#associate_contribution_form', function() {
 							$("#tab-1").removeAttr("href");
 							$("#associateLeaveType").click();
 							getAllLeaveType();
+							$("#contribution_save_button").removeAttr("disabled");
+							$("#contribution_save_button").addClass('button').val('Save & Continue');
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {
 		                    $("#contribution_save_button").removeAttr("disabled");
-		                    $("#contribution_save_button").addClass('button').val('Save');
+		                    $("#contribution_save_button").addClass('button').val('Save & Continue');
 		                    showError("Operation failed, please try again");
 		                }
 						 

@@ -293,7 +293,7 @@ function Projects() {
 						{
 			        		var selected = "";
 			        		var opt = json[i];
-			        		if(approverUserId != null && approverUserId != 'undefied' && approverUserId != '' && approverUserId == opt.id){
+			        		if(approverUserId != null && approverUserId != 'undefined' && approverUserId != '' && approverUserId == opt.id){
 			        			selected = "selected";
 			        		}
 				        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";

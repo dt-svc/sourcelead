@@ -60,7 +60,7 @@ public class SourceleadTicketsController {
    		return model;
        }
 	 
-	 @PreAuthorize("hasRole('ROLE_SUPPORT')")
+//	 @PreAuthorize("hasRole('ROLE_SUPPORT')")
 	 @RequestMapping(value = "/addSourceleadTicket")
    	 public ModelAndView addSourceleadTicket(@RequestParam(value = "ticketUUID", required = false) String ticketUUID, HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();
@@ -82,7 +82,7 @@ public class SourceleadTicketsController {
    		return model;
        }
     
-	 @PreAuthorize("hasRole('ROLE_SUPPORT')")
+//	 @PreAuthorize("hasRole('ROLE_SUPPORT')")
 	 @RequestMapping(value = "/sourceleadTicketView")
    	 public ModelAndView sourceleadTicketView(@RequestParam(value = "ticketUUID", required = false) String ticketUUID,HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();

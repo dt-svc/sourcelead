@@ -123,7 +123,16 @@
 		</div>
 	</div>
 	</a>
-	</sec:authorize>	
+	</sec:authorize>
+	
+	<a href="${appPath}/requirementOffersList?&tab=previous&orgLocationId=${orgLocationId}">		
+	<div class="repDashCta">
+		<span><i class="fa fa-id-badge"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Placement Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>	
 				
 	<div class="clearfix"></div>	
 </div>

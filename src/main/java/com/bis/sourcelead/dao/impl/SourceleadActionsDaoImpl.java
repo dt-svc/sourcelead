@@ -272,7 +272,7 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 				    
 				     actionsList = session.createQuery(query.toString()).setParameterList("tabsIds", tabsIds).list();
 				     for(SourceleadActions actions : actionsList) {
-				    	if(actions.getLoctionCode() == null || (actions.getLoctionCode() != null && actions.getLoctionCode().equalsIgnoreCase(countries.getCode2()))) {
+				    	if(actions.getLocationCode() == null || (actions.getLocationCode() != null && actions.getLocationCode().equalsIgnoreCase(countries.getCode2()))) {
 				    		sourceleadActionsList.add(actions);
 				    	}
 				     }
