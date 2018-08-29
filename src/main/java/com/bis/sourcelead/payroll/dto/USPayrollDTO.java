@@ -89,9 +89,11 @@ public class USPayrollDTO {
 	
 	private BigDecimal localTax;
 	
-	
     private YTDPayrollDTO ytdDTO;
 	
+    private String assSalType;
+    
+    private BigDecimal assSalary;
 	
 	
 	public YTDPayrollDTO getYtdDTO()
@@ -434,6 +436,21 @@ public class USPayrollDTO {
 	{
 		this.regularHours = regularHours;
 	}
-	
+	public String getAssSalType()
+	{
+		return assSalType;
+	}
+	public void setAssSalType(String assSalType)
+	{
+		this.assSalType = assSalType;
+	}
+	public BigDecimal getAssSalary()
+	{
+		return assSalary;
+	}
+	public void setAssSalary(BigDecimal assSalary)
+	{
+		this.assSalary = assSalary;
+	}
 	
 }

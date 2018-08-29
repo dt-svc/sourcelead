@@ -83,6 +83,8 @@
 							document.getElementById("associateTax").removeAttribute("class"); 
 							associateTax.href="#tab-3"; 
 							$("#associateTax").click();
+							$("#save_associate_bank_data_button").removeAttr("disabled");
+							$("#save_associate_bank_data_button").addClass('button').val('Save & Continue');
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {

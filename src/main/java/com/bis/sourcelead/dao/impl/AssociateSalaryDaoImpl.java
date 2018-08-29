@@ -167,4 +167,24 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		}
 		return payItemHis;
 	}
+
+
+	@Override
+	@Transactional
+	public AssociateSalary getAssociateSalaryByCandidateIdAndOrgLocationId(Long candidateId, Long locationId)
+	{
+		List<AssociateSalary> assSal = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from AssociateSalary ass where ass.orgLocations.id = :locationId and ass.candidate.id = :candidateId";
+			assSal = session.createQuery(query).setLong("locationId", locationId).setLong("candidateId", candidateId).list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(assSal != null) {
+			return assSal.get(0);
+		}else {
+			return null;
+		}
+	}
 }

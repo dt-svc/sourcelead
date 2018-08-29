@@ -290,7 +290,7 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 							 		}
 							 	}
 							 	
-								result = result + '<th>Total Balance Leaves</th>';
+								result = result + '<th>Total Taken Leaves</th>';
 								result = result + '</tr>';
 								result = result + '</thead>';
 								result = result + '<tbody>';
@@ -341,7 +341,7 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 							$("#topLeaveTakenReportsList").empty();
 							$("#topLeaveTakenReportsList").append(result);
 							$("#loading").removeAttr('style');
-							listTypePagination();
+							listTypePagination(opt.leaveTypeNames.length);
 							$(".proj_show").click(
 									function() {
 										$(".new_side_wrap").addClass(
@@ -361,11 +361,12 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 					
 </script>
 <script>
-	function listTypePagination() {
+	function listTypePagination(count) {
+		count += 3;
 		$('#topLeaveTakenReportsListView').DataTable({
 			"scrollCollapse" : false,
 			"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
-			"aaSorting": [[1,'desc']],
+			"aaSorting": [[count,'desc']],
 			"bLengthChange" : true,
 			"bDestroy" : true,
 			"ordering" : true,
