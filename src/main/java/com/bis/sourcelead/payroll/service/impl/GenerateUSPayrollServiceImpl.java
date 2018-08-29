@@ -1057,10 +1057,13 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			EmployeePayroll payroll = payrollAdjustmentService.getEmployeePayrollByUUID(payAdjustmentDTO.getPayrollUUID());
 			payroll.setPreTaxContribution(BigDecimal.valueOf(preTaxContriSum));
 			payroll.setPostTaxContribution(BigDecimal.valueOf(postTaxContriSum));
-			payroll.setRegularHours(payAdjustmentDTO.getRegularHours());
-			payroll.setRegularHoursAmount(new BigDecimal(payAdjustmentDTO.getRegularHoursAmt()));
-			payroll.setOverTimeHours(payAdjustmentDTO.getOverTimeHours());
-			payroll.setOverTimeAmount(new BigDecimal(payAdjustmentDTO.getOverTimeHoursAmt()));
+			if(!"Salary".equalsIgnoreCase(payAdjustmentDTO.getAssSalType())) {
+				payroll.setRegularHours(payAdjustmentDTO.getRegularHours());
+				payroll.setRegularHoursAmount(new BigDecimal(payAdjustmentDTO.getRegularHoursAmt()));
+				payroll.setOverTimeHours(payAdjustmentDTO.getOverTimeHours());
+				payroll.setOverTimeAmount(new BigDecimal(payAdjustmentDTO.getOverTimeHoursAmt()));
+			}
+			
 			payroll.setPostTaxDeduction(BigDecimal.valueOf(postTax));
 			payroll.setPreTaxDeduction(BigDecimal.valueOf(preTax));
 			payroll.setGrossPay(grossAmount);
