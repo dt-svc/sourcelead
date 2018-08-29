@@ -7,7 +7,7 @@ public interface AssociatePfEsiDao {
 
 	AssociatePfEsiDetails saveAssociatePfEsi(AssociatePfEsiDetails associatePfEsiDetails);
 
-	AssociatePfEsiDetails findAssociatePfEsiByUserId(Long userId, OrgLocations orgLocation);
+	AssociatePfEsiDetails findAssociatePfEsiByCandidateId(Long candidateId, OrgLocations orgLocation);
 
 	AssociatePfEsiDetails findAssociatePfEsiId(Long id);
 }

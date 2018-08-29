@@ -118,6 +118,7 @@ public interface LeaveService {
 
 	public File getDailyWiseLeavePdfFile(ResponseList<LeaveReportView>  leaveReportsList,OrgLocations orgLocations) throws Exception;
 	
+
 	
 	public Sheet getLeaveReportExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<LeaveReportView>  leaveReportsList,OrgLocations orgLocations) throws Exception;
 	
