@@ -198,7 +198,7 @@
                      <input type="hidden" id="residenceCountry" name="residenceCountry" />
                      <input type="hidden" id="residenceState" name="residenceState" />
                      <input type="hidden" id="residenceCity" name="residenceCity" />
-<!--                      <input type="hidden" id="residenceZipCode" name="residenceZipCode" /> -->
+					 <input type="hidden" id="residenceZipCode" name="residenceZipCode" />
                      <input type="hidden" id="residenceLatitude" name="residenceLatitude" />
                      <input type="hidden" id="residenceLongitude" name="residenceLongitude" />
                   <i class="fa fa-refresh btn btn-primary refresh-icon bg-blue" title="Refresh" onClick="refreshGoogleApiLocation('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','');"></i>
@@ -206,12 +206,12 @@
                 </div>
                 
                 
-                <div class="form-group">
+          <!--       <div class="form-group">
                   <label class="col-md-3">Zip Code<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9 positionRelative" id="ZipCode">
 						<input  class="form-control" id="residenceZipCode" name="residenceZipCode" placeholder="Enter Zip code" field-name="Zip Code" type="text" data-validation="required">                    
                   </div>
-                </div>
+                </div> -->
                 
                   
                  <div class="form-group">

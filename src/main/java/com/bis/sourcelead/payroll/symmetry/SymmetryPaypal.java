@@ -25,7 +25,7 @@ public class SymmetryPaypal {
 			STEPayrollCalculator STE = new STEPayrollCalculator(jniHome, STEhome);
 			System.out.println(STE.toString());
 			getLocationCode(STE);
-			Date today = new Date();
+		/*	Date today = new Date();
 			STE.setPayrollRunParameters(today, 52, 13);
 			STE.clearPayrollCalculations();
 			STE.setCalculationMethod(FEDERAL_LOCATION_CODE, CalcMethod.ANNUALIZED, CalcMethod.NONE);
@@ -76,7 +76,7 @@ public class SymmetryPaypal {
 			System.out.println("MunicipalityCode : "+w.getMunicipalityCode());
 			System.out.println("SchoolCode       : "+w.getSchoolCode());
 			
-			System.out.println("");
+			System.out.println("");*/
 			// End Of Location Code
 			
 			
@@ -93,8 +93,13 @@ public class SymmetryPaypal {
 		// Calcualting Location Code
 		WebServiceLocationCodeV2 webServiceLocationCodeV2 = null;
 		try {
+//			401 Massachusetts Avenue, Cambridge, MA, USA
+//			8741 Universal Boulevard, Orlando, FL, USA
+//			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2("Santa Fe 4017", "", "Rosario","21","",null,null);
+//			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2("896A Massachusetts Avenue", "", "Cambridge","MA","",null,null);
+//			WebServiceLocationCodeV2 webServiceLocationCodeV2(string streetAddress, string streetAddressSecondLine, string city, string state, string zip, string latitudeIN, string longi-tudeIN)
 			STE.setWebService(WebServiceType.STE_LOC_CODE, "http://lcs2.symmetry.com/", null, "sourcelead", "s290sdq", null);
-			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2("4121 Broadway, New York, NY, USA", "4121 Broadway, New York, NY, USA", "New York", "New York", null, null, null);
+			webServiceLocationCodeV2 = STE.webServiceLocationCodeV2("8741 Universal Boulevard", "", "Orlando", "FL", "32819", null, null);
 			System.out.println("Country code     : " + webServiceLocationCodeV2.getCountyCode());
 			System.out.println("City code**********        : " + webServiceLocationCodeV2.getCityCode());
 			System.out.println("Location Code *******   : " + webServiceLocationCodeV2.getLocationCode());
@@ -111,7 +116,7 @@ public class SymmetryPaypal {
 	{
 		SymmetryPaypal client = new SymmetryPaypal();
 //		String locationCode = "18-097-452890";
-		String locationCode = "04-013-12233";       // Arizona Location Code 
+//		String locationCode = "04-013-12233";       // Arizona Location Code 
 		client.hello("");
 	}
 }

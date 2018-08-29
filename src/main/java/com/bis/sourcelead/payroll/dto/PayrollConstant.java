@@ -41,6 +41,8 @@ public class PayrollConstant {
 	
 	public static final String ADDED = "ADDED"; 
 	
+	public static final String PAYROLL_MISSED = "MISSED"; 
+	
 	 
 	  
 	
