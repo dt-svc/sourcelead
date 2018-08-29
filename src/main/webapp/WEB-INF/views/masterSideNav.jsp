@@ -323,7 +323,6 @@
 	                <c:if test="${userTabs.tabName == 'Campaigns'}">
                          <li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns"><span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i></a></li>			  
 			         </c:if>
-<<<<<<< HEAD
 
 					<c:if test="${SourceLeadWeb_paryrollTabCount == 2 && userTabs.tabName == 'Run Payroll'}">
 						<li class="${sessionData.nav == 'Run Payroll' || sessionData.nav == 'My Payroll' ? 'side-nav-active' : ''}">
