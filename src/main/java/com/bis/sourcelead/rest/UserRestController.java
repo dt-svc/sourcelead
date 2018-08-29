@@ -326,6 +326,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		User savedUser = userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
 		addUserDTO.setUserId(String.valueOf(savedUser.getId()));
+		addUserDTO.setCandidateId(savedUser.getCandidateId());
 		resObj.setObject(addUserDTO);
 		return resObj;
 	}

@@ -132,15 +132,8 @@ function getTicketCustomDates(){
 						<a href="<c:url value='${appPath}/addSourceleadTicket'/>"  title="Add Issue" class="action newAdBtn mr5">+ Issue</a>
 					</li>	
 						
-					<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
+					<c:if test="${SourceLeadWeb_orgLocationId == 1}">
 					<li id="filter1ApprovePop"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a>
-			              	<div id="filter1ApprovedPop" class="approved_pop">
-			                  	<ul>
-			                  	  <c:forEach var="orgList" items="${orgLocationsList}">  
-			                      	<li><input  id="companyName${orgList.id}" name="selectCompanyById" value ="${orgList.id}"  onclick="getSourceleadTicketList();"  type="checkbox"><label for="companyName${orgList.id}">${orgList.orgLocationName}</label></li>
-							  </c:forEach>
-			                      </ul>
-			                  </div>                	
 			           </li>
 			           </c:if> 		
 					    
@@ -199,12 +192,16 @@ function getTicketCustomDates(){
 	     {
 			selectCompanyIds.push($(this).val());
 		 });
-		
+		  var ticketStatus = [];
+			$('input:checkbox[name=ticketStatus]:checked').each(function() 
+		     {
+				ticketStatus.push($(this).val());
+			 });
 	  if(flag){
 	  var sourceleadUrl = '${sourceleadUrl}';
 		var searchValue = $("#ticketDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection+"&selectCompanyIds="+selectCompanyIds+"&fromDate="+fromDate+"&toDate="+toDate;
+		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection+"&selectCompanyIds="+selectCompanyIds+"&fromDate="+fromDate+"&toDate="+toDate+"&ticketStatus="+ticketStatus;
 		prepareSourceleadTicketList(url);
 	  }
 	  $("#customSearch").hide();
@@ -242,6 +239,7 @@ function prepareSourceleadTicketList(url){
 function dynamicTicketListPagination(url){
 	 var sourceleadUrl = '${sourceleadUrl}';
 	 var loginRoleName = '${SourceLeadWeb_loginUserRole}'
+		 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var colIndex = 0;
    table =  $('#dynamicTicketListView').DataTable( { 
 	  "processing": true,
@@ -333,13 +331,17 @@ function dynamicTicketListPagination(url){
 		  	"data": "",
 		  	"render": function(data, type, report, meta) {
 		  		var result = "";
-		  		 if(loginRoleName == 'ROLE_SOURCELEAD_ADMIN'){
-		  			result = result + ' <td><div class="tbldata-dotdot-100" style="width:75px">';
+		  		 if(loginRoleName == 'ROLE_SOURCELEAD_ADMIN' || orgLocationId == '1' ){
+		  			result = result + ' <td><div class="tbldata-dotdot-100" style="width:100px">';
 			  		result = result + ' <select id="ticketStatus" name="ticketStatus" onchange="changeStatus(\''+report.ticketUUID+'\',this);">';
 					result = result + '<option value="Open"  '+ (report.ticketStatus == "Open" ? "selected" : '') +'>Open</option>';
 					result = result + '<option value="On-Hold"  '+ (report.ticketStatus == "On-Hold" ? "selected" : '') +'>On-Hold</option>';
 					result = result + '<option value="Closed"  '+ (report.ticketStatus == "Closed" ? "selected" : '') +'>Closed</option>';
-			  		result = result + ' </select>';
+					result = result + '<option value="In-progress"  '+ (report.ticketStatus == "In-progress" ? "selected" : '') +'>In-progress</option>';
+					result = result + '<option value="Invalid"  '+ (report.ticketStatus == "Invalid" ? "selected" : '') +'>Invalid</option>';
+					result = result + '<option value="Duplicate"  '+ (report.ticketStatus == "Duplicate" ? "selected" : '') +'>Duplicate</option>';
+
+					result = result + ' </select>';
 			  		result = result + '</div></td>';
 		  		 }else{
 		  			result = result + ' <td><div class="tbldata-dotdot-100"> '+report.ticketStatus+'</div></td>';
@@ -499,5 +501,89 @@ $(".action, .action-pop").click(function(e){
  	e.stopPropagation();
 });	
 </script>
+<script>
+function closeTicketFilterPop(){
+	$("#invoiceFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openPop(){
+	 $("#invoiceFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+function resetTicketFilter(){
+	$("ul#myTicketUL > li input:checkbox").prop("checked",false);
+	getSourceleadTicketList();
+	
+}
+function myTicketFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTicketInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTicketUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
 
+        }
+    }
+}
+
+</script>
+
+<div class="advancedsearch-mask"></div>
+      <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="invoiceFilterId">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeTicketFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-4">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="paymnetFilter">
+									<li class="checkBox positionRelative" ><input type="checkbox"  value="Open" name="ticketStatus"><label for="onboard3">Open</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="On-Hold" name="ticketStatus"><label for="onboard2">On-Hold</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="Closed" name="ticketStatus"><label for="onboard4">Closed</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="In-progress" name="ticketStatus"><label for="onboard1">In-progress</label></li>
+                        	        <li class="checkBox positionRelative" ><input type="checkbox"  value="Invalid" name="ticketStatus"><label for="onboard4">Invalid</label></li>
+                        	        <li class="checkBox positionRelative" ><input type="checkbox"  value="Duplicate" name="ticketStatus"><label for="onboard4">Duplicate</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						<c:if test="${!empty orgLocationsList}">
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myTicketInput" onkeyup="myTicketFunction()" placeholder="Companies" title="Type in a tag">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTicketUL">
+									<c:forEach var="orgList" items="${orgLocationsList}">  
+				                      	<li class="checkBox positionRelative"><input  type="checkbox" name="selectCompanyById" value ="${orgList.id}" ><label>${orgList.orgLocationName}</label></li>
+								 	 </c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+					  </div>
+					  
+					  
+					  
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeTicketFilterPop();getSourceleadTicketList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetTicketFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
  <jsp:include page="masterFooter.jsp" />	

@@ -60,17 +60,32 @@
         <div class="tabsMenu">
         <ul class="list-unstyled">
           <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
+
+
+         <%--  <c:if test="${SourceLeadWeb_country != 'United States'}">
+          <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
+          </c:if>  --%>
+           
+          <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+         		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
+       		     <li><a href="#tab-3" data-toggle="tab" id="indInformationDetails" onclick="getIndAssociateInformationDetails();">Information</a></li>
+       		     <li><a href="#tab-4" data-toggle="tab" id="indLoanAndAdvancesDetails" onclick="loanAdv.getIndAssociateLoanAndAdvancesDetails();">Loan / Advances</a></li>
+       		     <li><a href="#tab-5" data-toggle="tab" id="indSalaryDetails" onClick="indAssociateSalarySummary();">Salary</a></li>
+          </c:if>
+
+
           <%-- <c:if test="${SourceLeadWeb_country != 'United States'}">
           <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
           </c:if> --%>
+
           <c:if test="${SourceLeadWeb_country == 'United States'}">
             <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
 	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
 	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
+	          <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
 	      </c:if>
-	      <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
           <div class="clearfix"></div>
         </ul>
 		</div>
@@ -90,6 +105,7 @@
           <form:form id="createUser_form"  name="createUser_form" method="post">
           <input type="hidden" id="actionId" value="${actionId}">
           <input type="hidden" id="associateId" name="associateId">
+          <input type="hidden" id="associateCandidateId" >
           <input type="hidden" id="empType" name="empType">
             <div class="row clearfix minHeightcol5">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -185,7 +201,7 @@
                    	<select class="form-control chosen-select" id="workLocation" name="workLocation" field-name="Work Location" data-validation="required" >
                         <option value="">--Select Location--</option>
                         <c:forEach var="option" items="${locationList}">
-							<option value="${option.id}">${option.orgLocationAddress}</option>
+							<option value="${option.id}">${option.orgLocationAddress != '' ? option.orgLocationAddress : option.registeredLocation}</option>
 						</c:forEach>
               		</select>
                   </div>
@@ -490,19 +506,32 @@
           </div>
           </div>
         </div>
-        <jsp:include page="associateLeaveType.jsp" />
-          <jsp:include page="associateSalary.jsp" />
-       <jsp:include page="associateBankData.jsp" />
-       <jsp:include page="associateTax.jsp" />
-       <jsp:include page="associateDeduction.jsp" />
-        <jsp:include page="associateContribution.jsp" />
+       
+      
+        <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+	       <jsp:include page="associateSalary.jsp" />
+	       <jsp:include page="associateBankData.jsp" />
+	       <jsp:include page="associateTax.jsp" />
+	       <jsp:include page="associateDeduction.jsp" />
+	       <jsp:include page="associateContribution.jsp" />
+	       <jsp:include page="associateLeaveType.jsp" />
+        </c:if>
+        
+          <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+              <jsp:include page="associateIndiaBankingDetails.jsp" />
+              <jsp:include page="associateIndiaInformationDetails.jsp" />
+              <jsp:include page="associateIndiaLoanAndAdvancesDetails.jsp" />
+              <jsp:include page="associateIndiaSalaryDetails.jsp" />
+         </c:if> 
+        
       </section>
       <!-- Content Area Ends--> 
 
       <!-- Footer Area -->
       <jsp:include page="../masterFooter.jsp" />
       <!-- Footer Area -->
-
+ 
+ <div id="candidateSalaryDiv"></div> 
 
 <script>
 function getCustomDependentField(sectionId){
@@ -675,6 +704,89 @@ function getEmployeementType(designationType){
 
 <script type="text/javascript">
  function createUser() {
+	 
+	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}'; 
+	 var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
+	 var country = '${SourceLeadWeb_loginCountryName}'; 
+
+	 	var RatePer = document.getElementById("RatePer").value; 
+		if(RatePer != null && RatePer != ""){
+			$('#Rate').removeAttr('data-validation-optional');
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+		}else{
+			$('#Rate').removeAttr('data-validation');
+			$('#Rate').attr("data-validation-optional","true"); 
+		}
+		 
+		var Rate = document.getElementById("Rate").value; 
+		if(Rate != null && Rate != ""){
+			$('#RatePer').removeAttr('data-validation-optional');
+			$('#RatePer').attr("data-validation","required");
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+		}else{
+			$('#RatePer').removeAttr('data-validation');
+			$('#RatePer').attr("data-validation-optional","true"); 
+		}
+	 
+	   if ($('#createUser_form').validate(false, validationSettings)){
+		    var formData = getFormData("createUser_form");
+			$("#create_user").attr("disabled", "disabled");
+			$("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+            $( "#create_user" ).addClass('button').val('Processing..');
+            
+            $.ajax({
+				type : "POST",
+        	    data: formData,
+				url : sourceleadUrl+"/createUser?"+tokenParamName+"="+tokenValue+"",
+				success : function(result) {
+					if(result && result === "DataMissing") {
+						$("#create_user").removeAttr("disabled");
+						$("#create_user").removeAttr('button').val('Save');	
+						showError("Invalid data");
+						$("#loading").removeAttr('style');
+					} 
+
+					else if(loginLocationCountry == 'India'){
+						    $("#associateId").val(result.object.userId);
+						    $("#associateCandidateId").val(result.object.candidateId); 
+							$("#empType").val(result.object.designationType);
+							 var indBankingDetails = document.getElementById("indBankingDetails");
+							 document.getElementById("indBankingDetails").removeAttribute("class");
+							 indBankingDetails.href="#tab-2";
+							 $("#indBankingDetails").click();
+					}
+					
+					else if(loginLocationCountry == 'United States') {
+
+						$("#associateId").val(result.object.userId);
+						$("#empType").val(result.object.designationType);
+						var associateSalary = document.getElementById("associateSalary");
+						document.getElementById("associateSalary").removeAttribute("class"); 
+						associateSalary.href="#tab-6"; 
+						$("#associateSalary").click();
+						 getPayItemList();
+					}
+				
+			});
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+    }
+ 
+   $('body').on('blur', '#createUser_form', function() {
+		$("#createUser_form").showHelpOnFocus();
+		$("#createUser_form").validateOnBlur(false, validationSettings);  
+   });
+  
+ 
+</script>  
+
+
+
+<script type="text/javascript">
+ function createUser() {
 	 var country = '${SourceLeadWeb_loginCountryName}'; 
 	 	var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){
@@ -698,7 +810,7 @@ function getEmployeementType(designationType){
 	   if ($('#createUser_form').validate(false, validationSettings)){
 		    var formData = getFormData("createUser_form");
 			$("#create_user").attr("disabled", "disabled");
-			$("#loading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $( "#create_user" ).addClass('button').val('Processing..');
             
             $.ajax({
@@ -712,23 +824,22 @@ function getEmployeementType(designationType){
 						showError("Invalid data");
 						$("#loading").removeAttr('style');
 					} 
-					else if(country != 'United States') {
-						$("#associateId").val(result.object.userId);
-						var associateLeaveType = document.getElementById("associateLeaveType");
-						document.getElementById("associateLeaveType").removeAttribute("class"); 
-						associateLeaveType.href="#tab-7"; 
-						$("#tab-1").removeAttr("href");
-						$("#associateLeaveType").click();
-						getAllLeaveType();
-						/* location.replace(sourceleadUrl+"/usersList"); */
+					else if(country == 'India') {
+						  $("#associateId").val(result.object.userId);
+						    $("#associateCandidateId").val(result.object.candidateId); 
+							$("#empType").val(result.object.designationType);
+							 var indBankingDetails = document.getElementById("indBankingDetails");
+							 document.getElementById("indBankingDetails").removeAttribute("class");
+							 indBankingDetails.href="#tab-2";
+							 $("#indBankingDetails").click();
 					}else{
-					$("#associateId").val(result.object.userId);
+					    $("#associateId").val(result.object.userId);
 						$("#empType").val(result.object.designationType);
 						var associateSalary = document.getElementById("associateSalary");
 						document.getElementById("associateSalary").removeAttribute("class"); 
 						associateSalary.href="#tab-6"; 
 						$("#associateSalary").click();
-						 getPayItemList();
+						getPayItemList();
 					}
 				},
 			});
@@ -746,6 +857,7 @@ function getEmployeementType(designationType){
   
  
 </script>  
+
 
 <script type="text/javascript">
         var validationSettings = {
@@ -824,7 +936,7 @@ function getEmployeementType(designationType){
  function getUserByUserEmail() {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 if(EmailId != null && EmailId != ""){
-		 $("#loading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
@@ -1082,7 +1194,7 @@ function getAssociateUserDetails(){
  function getDesignationType(){
 	 var employmentDesignationType = $("#employmentDesignationType").val();
 	 if(employmentDesignationType){
-	 $("#candidatesLoading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#candidatesLoading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employmentDesignationType,
@@ -1373,19 +1485,16 @@ function clearDateofJoin(){
 </script>
 
 <script>
-// project side bar tabs
+var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 
-var associateLeaveType = document.getElementById("associateLeaveType");
+               var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateLeaveType){
 					associateLeaveType.href = "#";
 					associateLeaveType.className = "disabledLink";
 				}
 				
-				var associates = document.getElementById("associates");
-				if(associates){
-					associates.href = "#";
-					associates.className = "disabledLink";
-				} 
+		if(loginLocationCountry == 'United States'){		
+				
 				var associateBanking = document.getElementById("associateBanking");
 				if(associateBanking){
 					associateBanking.href = "#";
@@ -1419,7 +1528,10 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateSalary){
 					associateSalary.href = "#";
 					associateSalary.className = "disabledLink";
-				}  
+
+				} 
+		
+		}  
 				
 				var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateLeaveType){
@@ -1427,7 +1539,34 @@ var associateLeaveType = document.getElementById("associateLeaveType");
 					associateLeaveType.className = "disabledLink";
 				}   
 
- 
+
+		if(loginLocationCountry == 'India'){
+		    
+			var indBankingDetails = document.getElementById("indBankingDetails");
+			if(indBankingDetails){
+				indBankingDetails.href = "#";
+				indBankingDetails.className = "disabledLink";
+			}
+			
+		   var indInformationDetails = document.getElementById("indInformationDetails");
+			if(indInformationDetails){
+				indInformationDetails.href = "#";
+				indInformationDetails.className = "disabledLink";
+			} 
+			
+			var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
+			if(indLoanAndAdvancesDetails){
+				indLoanAndAdvancesDetails.href = "#";
+				indLoanAndAdvancesDetails.className = "disabledLink";
+			}  
+			
+			var indSalaryDetails =  document.getElementById("indSalaryDetails");
+			if(indSalaryDetails){
+				indSalaryDetails.href = "#";
+				indSalaryDetails.className = "disabledLink";
+			}   
+			
+		}
 
 
 $(document).ready(function() {
@@ -1443,6 +1582,9 @@ $(document).ready(function() {
     });
 });
 </script> 
+
+
+
 
 
 
