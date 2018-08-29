@@ -1,3 +1,6 @@
+<%@ page language="java"
+    contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec"
@@ -41,7 +44,7 @@
 	rel="stylesheet">
 <link rel="stylesheet"
 	href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link rel="stylesheet"3
+<link rel="stylesheet"
 	href="/resources/css/timesheet.css?staticTime=${staticTime}"
 	type="text/css">
 <style type="text/css">
