@@ -166,6 +166,7 @@
 				<th>Currency</th>
 				<th>Payment Mode</th>
 				<th>Paid By</th>
+				<th>Billable</th>
 			</tr>
 		</thead>	
 			<tbody>
@@ -178,9 +179,10 @@
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
 			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
+			            <td><div class=""><input type="checkbox" ${entry.billable ? 'checked' : ''} name="expenses" onclick="showPopUp();"></div></td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
-				        <td colspan="7">
+				        <td colspan="8">
 						<div class="expDetails">
 							<ul>
 							    <li><strong>Date :</strong><span>${entry.dateOccurred}</span><div class="clearfix"></div></li>
@@ -191,6 +193,9 @@
 								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
 								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
+								<c:if test="${entry.billable}">
+								<li><strong>Billable :</strong><span>YES</span><div class="clearfix"></div></li>
+								</c:if>
 								<div class="clearfix"></div>
 								</li>
 								<div class="clearfix">
@@ -224,6 +229,31 @@
 </div>
 </div>
     </section>
+ <div class="mask_time"></div>
+<div class="time_appr_rejct_pop" id="" style="top: 25%; display: none;">
+	<textarea placeholder="Are you sure you want to make this expense item as billable" id="reject2message" "=""></textarea>
+	 <div id="rejectReasonDiv"></div>
+	 <a href="#" onclick="" class="pull-left">Ok</a>
+	 <a class="close_color"  class="pull-left">Cancel</a>
+</div>
+  
+<script>	
+	// close popup
+	$(document).ready(function() {
+	    $(".fa-times").click(function(){
+			$(".mask_time").fadeIn(200);
+			$(".time_appr_rejct_pop").slideToggle(200);
+		});
+	    $(".time_appr_rejct_pop a").click(function(){
+			$(".mask_time").fadeOut(200);
+			$(".time_appr_rejct_pop").slideUp(200);
+		});	
+	});
+	function showPopUp(){
+		$(".mask_time").fadeIn(200);
+		$(".time_appr_rejct_pop").slideToggle(200);
+	}
+</script> 
     
 <script>
 function viewDocument(title,id){
@@ -234,5 +264,20 @@ function viewDocument(title,id){
 <script>
 function exportMyExpenses(type,Expid,ApproverType){
 	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
+}
+</script>
+
+<script>
+function changeStatusToBillable(ExpenseEntriesId){
+	alert("i ma inside");
+	 $.ajax({
+         type : "POST",
+         url: sourceleadUrl+"/changeStatusToBillable?&ExpenseEntriesId="+ExpenseEntriesId,    
+         
+          success :function(result) {
+        	  
+          }
+	
+})
 }
 </script>
