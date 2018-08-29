@@ -179,7 +179,7 @@
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
 			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
-			            <td><div class=""><input type="checkbox" ${entry.billable ? 'checked' : ''} name="expenses" onclick="showPopUp();"></div></td>
+			            <td><div class=""><input type="checkbox" ${entry.billable ? 'checked' : ''} name="expenses" data-id="${entry.id}" onclick="showPopUp(this,${entry.id});"></div></td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
 				        <td colspan="8">
@@ -231,13 +231,21 @@
     </section>
  <div class="mask_time"></div>
 <div class="time_appr_rejct_pop" id="" style="top: 25%; display: none;">
-	<textarea placeholder="Are you sure you want to make this expense item as billable" id="reject2message" "=""></textarea>
+	<p id="reject2message" class="modal-body text-center">Are you sure <br/> you want to make this expense item as billable ?</p>
 	 <div id="rejectReasonDiv"></div>
-	 <a href="#" onclick="" class="pull-left">Ok</a>
-	 <a class="close_color"  class="pull-left">Cancel</a>
+	 <a href="javascript:void(0)" class="pull-left" id="changeBillableStatus">Ok</a>
+	 <a class="close_color" class="pull-left" id="cancelBillingStatus">Cancel</a>
 </div>
   
-<script>	
+<script type="text/javascript">
+
+	$("#changeBillableStatus").click(function () {
+		var id = $("#changeBillableStatus").data("id");
+		changeStatusToBillable(id);
+	});
+	$("#cancelBillingStatus").click(function() {
+		$("#changeBillableStatus").data("id", 0);
+	});
 	// close popup
 	$(document).ready(function() {
 	    $(".fa-times").click(function(){
@@ -249,7 +257,15 @@
 			$(".time_appr_rejct_pop").slideUp(200);
 		});	
 	});
-	function showPopUp(){
+	function showPopUp(element, ExpenseEntriesId){
+		var checked = $(element).is(":checked");
+		if(checked) {
+			$(element).prop("checked", false);
+		} else {
+			$(element).prop("checked", true);
+		}
+		$("#reject2message").html("Are you sure <br/> you want to make this expense item as " + (checked ? "billable ? " : "non-billable ? "));
+		$("#changeBillableStatus").data("id", ExpenseEntriesId);
 		$(".mask_time").fadeIn(200);
 		$(".time_appr_rejct_pop").slideToggle(200);
 	}
@@ -269,13 +285,21 @@ function exportMyExpenses(type,Expid,ApproverType){
 
 <script>
 function changeStatusToBillable(ExpenseEntriesId){
-	alert("i ma inside");
+	alert("hi"+ExpenseEntriesId);
 	 $.ajax({
          type : "POST",
          url: sourceleadUrl+"/changeStatusToBillable?&ExpenseEntriesId="+ExpenseEntriesId,    
-         
           success :function(result) {
-        	  
+			var checkboxes = $("input[name='expenses']");
+			$(checkboxes).each(function(){
+				if($(this).data("id") === ExpenseEntriesId) {
+					if($(this).is(":checked")) {
+						$(this).prop("checked", false);
+					} else {
+						$(this).prop("checked", true);
+					}
+				}
+			});
           }
 	
 })
