@@ -581,7 +581,7 @@ function getMyPayrollList(){
 	 	        result = result +'</td>';
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-30">';
-	 	        result = result +'<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye" onclick="payAdjustment(\''+json.payrollUUID+'\');"></i></a>';
+	 	        result = result +'<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye" onclick="payAdjustment(\''+json.payrollUUID+'\',\'APPROVED\');"></i></a>';
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'</tr>';
