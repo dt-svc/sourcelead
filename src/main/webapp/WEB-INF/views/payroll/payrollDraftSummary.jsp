@@ -622,7 +622,7 @@ function approvePayrollTab(){
   </div> --%>
   
   
-  <div class="reviewPayrollDiv">
+  <div id="reviewPayrollDiv">
 <form:form id="submit_for_approver"  name="submit_for_approver" method="post">
  <div class="styleTables clearfix mt">
  <!-- <div id="USPayrollDiv"></div> -->
@@ -636,7 +636,7 @@ function approvePayrollTab(){
 	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
 		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
-		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
+		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll('FROMDRAFT');">Confirm</a></li>
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
 	</div>
@@ -761,7 +761,7 @@ function approvePayrollTab(){
 		            
 		            if(report.netPay != null && report.netPay != '' && report.netPay != 'undefined'){
 // 		            	result = result +'  <td><div class="tblminwidth-50 clearfix">'+report.netPay.toFixed(2)+'</div></td>                                                      ';
-		            	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+report.empPayrollUUID+'\');">$ '+report.netPay.toFixed(2)+'</a></div></td>';
+		            	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+report.empPayrollUUID+'\',\'DRAFT\');">$ '+report.netPay.toFixed(2)+'</a></div></td>';
 		            }else{
 		            	result = result +'  <td><div class="tblminwidth-50 clearfix">0.0</div></td>                                                      ';
 		            }
@@ -802,12 +802,12 @@ function sendPayrollForApprover(){
 </script>
   
  <script>
-function confirmPayroll(){
+function confirmPayroll(fromState){
 	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
-	 var confirmType = "SENT";
+	 var confirmType = "DRAFT";
 	 var formData = $($('#submit_for_approver')[0]).serialize();
-	 calculateTotalPay(formData,confirmType);
+	 calculateTotalPay(formData,confirmType,fromState);
 }
 </script>
 

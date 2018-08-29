@@ -429,9 +429,9 @@ function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesS
 				    	}
 				    	resultDiv = resultDiv + '</div>';
 				    	resultDiv = resultDiv + '<div class="timeLeft">'+json[j].timeValue+'</div>';
-				    	if(json[j].invoicePaymentReminderStatus != null || json[j].status == 'Sent'){
+				    	if(json[j].invoicePaymentReminderStatus != null || json[j].status == 'Sent' || json[j].status == 'Received'){
 				    		resultDiv = resultDiv + '<div class="timeLibtn pull-right clearfix" id="timeLineBtn">';
-				    		if(json[j].invoicePaymentReminderStatus == "Paid" || json[j].invoicePaymentReminderStatus == "Reminder"){
+				    		if(json[j].invoicePaymentReminderStatus == "Paid" || json[j].invoicePaymentReminderStatus == "Reminder" || json[j].invoicePaymentReminderStatus == "Partial Paid"){
 				    			if(json[j].emailAttachment != null){
 				    				resultDiv = resultDiv + '<i class="attaIcon pull-left"></i>';		
 				    			}
@@ -493,6 +493,16 @@ function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesS
 				    			resultDiv = resultDiv + '</div>';
 				    		}
 				    		if(json[j].status == "Sent"){
+				    			resultDiv = resultDiv + '<div class="timelineInn">';
+				    			resultDiv = resultDiv + '<div class="mesText">';
+				    			resultDiv = resultDiv + '<p> To : '+json[j].invoiceReminderEmailTo+'</p>';
+				    			resultDiv = resultDiv + '<p> From : '+json[j].invoiceReminderEmailFrom+'</p>';
+				    			resultDiv = resultDiv + '<p> Subject : '+json[j].invoiceReminderEmailSubject+'</p>';
+				    			resultDiv = resultDiv + '<p>'+json[j].invoiceReminderEmailBody+'</p>';
+				    			resultDiv = resultDiv + '</div>';
+				    			resultDiv = resultDiv + '</div>';
+				    		}
+				    		if(json[j].status == "Received"){
 				    			resultDiv = resultDiv + '<div class="timelineInn">';
 				    			resultDiv = resultDiv + '<div class="mesText">';
 				    			resultDiv = resultDiv + '<p> To : '+json[j].invoiceReminderEmailTo+'</p>';
