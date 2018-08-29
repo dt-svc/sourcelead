@@ -240,13 +240,14 @@ function calculateHourlyRateSal(){
 			  if (response.response === "AWKWARD") {
 			    location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
-				var result = "";				        	
+				var result = "";
+				var allCheck =response.data.length;
 				result = result +'<table class="table">';
 				result = result +'<thead>';
 				result = result +'<tr>';
 				result = result +'<th>';
 				result = result +'	<div class="checkbox-new">';
-				result = result +'	<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">';
+				result = result +'	<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox" onclick="selectAllCheckBox('+allCheck+');">';
 				result = result +'	<label for="all" class="checkbox-custom-label">';
 				result = result +'</label>';
 				result = result +'</div>';
@@ -273,10 +274,9 @@ function calculateHourlyRateSal(){
 			        		result = result +' 	<label for="'+i+'payItemCheck" class="checkbox-custom-label"></label>';
 			        		result = result +' </div>';
 			        		result = result +' </td>';
-	                 			
 			        		result = result +' <td>';
 			        		/* result = result +' <div class="tblminwidth-100 text-left" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" >'+opt.payItemName+'</div>'; */
-			        		result = result +' <input type="text" class="form-control tabField" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" value='+opt.payItemName+'>';
+			        		result = result +' <input type="text" class="form-control tabField" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" value=\''+opt.payItemName+'\'>';
 			        		result = result +' </td>';
 			        		result = result +' <td>';
 			        		if(opt.paySchedule != '' && opt.paySchedule != 'undefined' && opt.paySchedule != null){
@@ -438,6 +438,23 @@ function selectCheckBox(i){
 	$("#"+i+"payItemCheck").val(isChecked);
 }
 </script>  
+
+<script>
+function selectAllCheckBox(allCheck){
+	var isChecked = $("#all").is(':checked');
+	for(var j=0;j<allCheck;j++){
+	if(isChecked){
+		$("#"+j+"effectiveDate").removeAttr('data-validation-optional');
+		$("#"+j+"effectiveDate").attr('data-validation', "required");
+		$("#"+j+"payItemCheck").attr("checked",true);
+	}else{
+		$("#"+j+"effectiveDate").removeAttr('data-validation');
+		$("#"+j+"effectiveDate").attr('data-validation-optional', "true");
+		$("#"+j+"payItemCheck").attr("checked",false);
+	}
+}
+}
+</script> 
 
 <script>
 function skipSalaryJsp(){
