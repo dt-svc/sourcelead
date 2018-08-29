@@ -876,6 +876,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payrollDTO.setTotalEarnings(totalEarnings);
 			payrollDTO.setEmployeeAddress(payroll.getCandidate().getResidenceAddress());
 			
+			AssociateSalary assSal = associateSalaryService.getAssociateSalaryByCandidateIdAndOrgLocationId(payroll.getCandidate().getId(), orgLocation.getId());
+			if(assSal != null) {
+				payrollDTO.setAssSalary(assSal.getGrossSalary());
+				payrollDTO.setAssSalType(assSal.getPayType());
+			}
 			for(EmployeePayrollTax tax : payroll.getUsPayrollTax()) {
 				payrollDTO.setFederal(tax.getFederalWithholding());
 				payrollDTO.setFica(tax.getFicaWithholding());

@@ -442,6 +442,8 @@ private String beneficiaryFirstName;
     
     private String socTitle;
     
+    private String socJobTitle;
+    
     private String wageLevel;
     
     private String prevailWageCurr;
@@ -2345,5 +2347,12 @@ private String beneficiaryFirstName;
 		this.requirementId = requirementId;
 	}
 
+	public String getSocJobTitle() {
+		return socJobTitle;
+	}
 
+	public void setSocJobTitle(String socJobTitle) {
+		this.socJobTitle = socJobTitle;
+	}
+   
 }

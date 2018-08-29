@@ -2378,6 +2378,10 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					errorSet.put("socTitle", "Soc Title is missing"); 
 					}
 			   
+			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("socJobTitle"))) {
+					errorSet.put("socJobTitle", "Job Title is missing"); 
+					}
+			   
 			   if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("wageLevel"))) {
 					errorSet.put("wageLevel", "Wage Level is missing"); 
 					}
