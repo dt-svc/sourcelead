@@ -18,11 +18,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dto.OrgDTO;
 import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
@@ -48,6 +50,9 @@ public class OrgDaoImpl implements OrgDao {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	CandidateDao candidateDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -621,7 +626,12 @@ public class OrgDaoImpl implements OrgDao {
             pay.setMicrCode(account.getMicrCode());
             pay.setAccountNumber(account.getAccountNumber());
             pay.setRoutingNumber(account.getRoutingNumber());
-            pay.setAssociateUser(session.get(User.class,account.getAssociateUserId()));
+            if(account.getAssociateUserId() > 0) {
+            	Candidate candidate = candidateDao.getCandidateByConsultantUserId(account.getAssociateUserId(), account.getOrgLocationId());
+            	pay.setCandidateId(candidate);
+            }else {
+            	pay.setCandidateId(session.get(Candidate.class,account.getCandidateId()));
+            }
             pay.setDefaultAccount(account.isDefaultAccount());
             pay.setDisabled(account.isDisabled());
             session.saveOrUpdate(pay);
@@ -703,18 +713,17 @@ public class OrgDaoImpl implements OrgDao {
     
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public int changeDefaultPaymentAccount(long id, long orgId, boolean defaultAccount) {
+    public int changeDefaultPaymentAccount(long id, long orgLocationId, boolean defaultAccount) {
         try {
             Session session = this.sessionFactory.getCurrentSession();
             PaymentAccount pay = session.get(PaymentAccount.class, id);
-            if (Objects.equals(pay.getOrg().getId(), orgId)) {
+            if (Objects.equals(pay.getOrgLocation().getId(), orgLocationId)) {
                 pay.setDefaultAccount(defaultAccount);
                 if(defaultAccount) {
                 	pay.setDisabled(false);
-                    String query = "from PaymentAccount p where p.org.id = :orgId";
-                    query += " and p.orgLocation.id = :orgLocationId and p.id != :pid";
+                    String query = "from PaymentAccount p where ";
+                    query += "  p.orgLocation.id = :orgLocationId and p.id != :pid";
                     Query queryObj = session.createQuery(query);
-                    queryObj.setLong("orgId", orgId);
                     queryObj.setLong("pid", pay.getId());
                     queryObj.setLong("orgLocationId", pay.getOrgLocation().getId());
                     List<PaymentAccount> list = queryObj.list();
@@ -741,9 +750,8 @@ public class OrgDaoImpl implements OrgDao {
         pay.setAccountId(p.getAccountId());
         pay.setAccountType(p.getAccountType());
         pay.setDefaultAccount(p.isDefaultAccount());
-        pay.setOrgId(p.getOrg().getId());
         pay.setOrgLocationId(p.getOrgLocation().getId());
-        pay.setAssociateUserId(p.getAssociateUser().getId());
+        pay.setCandidateId(p.getCandidateId().getId());
         pay.setFirstName(p.getFirstName());
         pay.setBankName(p.getBankName());
         pay.setLastName(p.getLastName());
@@ -753,17 +761,16 @@ public class OrgDaoImpl implements OrgDao {
         pay.setRoutingNumber(p.getRoutingNumber());
         pay.setEmail(p.getEmail());
         pay.setDisabled(p.isDisabled());
-        pay.setUserId(p.getUserId());
         pay.setOrgLocationName(p.getOrgLocation().getOrgLocationName());
     }
 
 	@Override
 	@Transactional(rollbackFor = {Exception.class})
-	public int changePaymentAccountStatus(long id, long orgId) {
+	public int changePaymentAccountStatus(long id, long orgLocationId) {
 		try {
             Session session = this.sessionFactory.getCurrentSession();
             PaymentAccount pay = session.get(PaymentAccount.class, id);
-            if (Objects.equals(pay.getOrg().getId(), orgId)) {
+            if (Objects.equals(pay.getOrgLocation().getId(), orgLocationId)) {
             	pay.setDisabled(!pay.isDisabled());
             	if(pay.isDisabled())
             		pay.setDefaultAccount(false);
@@ -800,6 +807,32 @@ public class OrgDaoImpl implements OrgDao {
             ex.printStackTrace();
         }
         return resultList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public List<PaymentAccountDTO> getPaymentAccountListByCandidateId(long candidateId, boolean onlyEnabledAccounts) {
+
+		List<PaymentAccountDTO> resultList = new ArrayList<>();
+		try {
+            Session session = this.sessionFactory.getCurrentSession();
+            String query = "from PaymentAccount p where p.candidateId.id = :candidateId";
+            if(onlyEnabledAccounts) {
+            	query += " and p.disabled = 0";
+            }
+            Query queryObj = session.createQuery(query);
+            queryObj.setLong("candidateId", candidateId);
+            List<PaymentAccount> list = queryObj.list();
+            for (PaymentAccount p : list) {
+                PaymentAccountDTO pay = new PaymentAccountDTO();
+                applyEntityDataToDTO(p, pay);
+                resultList.add(pay);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return resultList;
+	
 	}
 	 
 }

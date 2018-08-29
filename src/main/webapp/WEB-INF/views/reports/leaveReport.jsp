@@ -177,8 +177,12 @@ function exportToPdf(){
 	var startDate = $('#fromDate').val();
 	var endDate = $('#toDate').val();
 	var searchValue = $("#leaveReportDataTableSearch").val();
+	var status="";
+	if($("#status").val() != null){
+		status = $("#status").val();
+		}
 	if(ReportsListEmpty > 0){
-		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&type="+type;
+		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&type="+type+"&status="+status;
 	}else{
 		var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -203,8 +207,12 @@ function exportUserData(){
 	var endDate = $('#toDate').val();
 	var searchValue = $("#leaveReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
+	var status="";
+	if($("#status").val() != null){
+		status = $("#status").val();
+		}
 	if(ReportsListEmpty > 0){
-		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue;
+		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&status="+status;
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";

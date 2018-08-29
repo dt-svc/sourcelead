@@ -28,4 +28,5 @@ public interface UserGroupDao {
 
 	List<TotalHoursDTO> getTotalHoursByCandidateId(Long candidateId, Date actualStartDate, Date actualEndDate);
 
+	List<UserGroup> getAllUserGroupsByLocationIdAndPayFrequency(OrgLocations orgLocation, String payFrequency);
 }

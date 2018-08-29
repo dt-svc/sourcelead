@@ -115,5 +115,22 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 		session.saveOrUpdate(expensesEntryDocuments);
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public long changeStatusToBillable(long expenseEntriesId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			ExpensesEntries expensesentries = session.get(ExpensesEntries.class, expenseEntriesId);
+			if (expensesentries != null) {
+				expensesentries.setBillable(true);
+				return expensesentries.getId();
+			} else
+				return -2;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
 	
 }
