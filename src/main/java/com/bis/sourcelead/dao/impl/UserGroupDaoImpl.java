@@ -70,30 +70,32 @@ public class UserGroupDaoImpl implements UserGroupDao{
 				qry = " order by ugroup." + userGroupDTO.getSortColumn() + " "
 						+ userGroupDTO.getSortOrder();
 			}
-			String query = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = 1";
-			String countQuery = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = 1";
+			String query = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = :status ";
+			String countQuery = "from UserGroup ugroup where ugroup.orgLocationId.id =:orgLocationId and ugroup.status = :status ";
 			StringBuilder searchQuery = new StringBuilder();
 			if (StringUtils.isNoneBlank(userGroupDTO.getSearchValue())) {
-				searchQuery.append(" and ugroup.groupId like '%"+ userGroupDTO.getSearchValue()+ "%' ")
+				searchQuery.append(" and ( ugroup.groupId like '%"+ userGroupDTO.getSearchValue()+ "%' ")
 				           .append(" OR ugroup.payFrequency like '%"+ userGroupDTO.getSearchValue()+ "%' ")
-				           .append("OR ugroup.groupName like '%"+ userGroupDTO.getSearchValue() + "%' ");
+				           .append(" OR ugroup.groupName like '%"+ userGroupDTO.getSearchValue() + "%' )");
 			}
-			Query queryObj = session.createQuery(query + searchQuery + qry);
+			Query queryObj = session.createQuery(query + searchQuery);
 			if (userGroupDTO != null && userGroupDTO.getLength() > 0) {
 				queryObj.setFirstResult(userGroupDTO.getStart());
 				queryObj.setMaxResults(userGroupDTO.getLength());
+				queryObj.setInteger("status", 1);
 				queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+				
 			}
 			List<UserGroup> userGroupList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).list();
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).setInteger("status", 1).list();
 			if (countlist != null && !countlist.isEmpty()) {
 				count = countlist.iterator().next().intValue();
 			}
 			response.setRecordsTotal(count);
 			if (userGroupDTO != null) {
-				List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).list();
+				List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + searchQuery).setLong("orgLocationId", orgLocation.getId()).setInteger("status", 1).list();
 				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
