@@ -31,6 +31,7 @@ public class ExpensesEntriesDTOConverter {
 			expensesEntriesDTO.setAmountRoundOff(amountRoundOff);	
 			expensesEntriesDTO.setEntryDescription(expensesEntries.getDescription());
 			expensesEntriesDTO.setPaidBy(expensesEntries.getPaidBy());
+			expensesEntriesDTO.setBillable(expensesEntries.getBillable());
 			if(expensesEntries.getExpensesCategoryId() != null){
 				expensesEntriesDTO.setCategoryTypeId(expensesEntries.getExpensesCategoryId().getId());
 				expensesEntriesDTO.setCategoryName(expensesEntries.getExpensesCategoryId().getExpensesName());

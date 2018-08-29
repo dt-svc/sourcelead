@@ -91,6 +91,9 @@ public class ExpensesEntries implements Serializable {
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "BILLABLE")
+	private Boolean billable;
 
 	@Transient
 	private String expenseDateStr;
@@ -256,6 +259,17 @@ public class ExpensesEntries implements Serializable {
 	public void setPaidBy(String paidBy) {
 		this.paidBy = paidBy;
 	}
+
+	public Boolean getBillable() {
+		return billable;
+	}
+
+	public void setBillable(Boolean billable) {
+		this.billable = billable;
+	}
+
+	
+	
 	
 	
 }
