@@ -66,7 +66,7 @@
 		
 	    $(document).ready(function () {
 	    	 immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
-	        getPetitionTypeOnCountries($("#countryName"),"${templateDTO.petitionType}");
+	        immigration.getPetitionTypeOnCountries($("#countryName"),"${templateDTO.petitionType}");
 	    });
       
 	    var config = {
