@@ -48,7 +48,7 @@ public class SourceleadActions implements Serializable{
    	private Integer status;
 	
 	@Column(name = "LOCATION_CODE")
-   	private String loctionCode;
+   	private String locationCode;
 	
 
 	public Long getId() {
@@ -99,12 +99,12 @@ public class SourceleadActions implements Serializable{
 		this.status = status;
 	}
 
-	public String getLoctionCode() {
-		return loctionCode;
+	public String getLocationCode() {
+		return locationCode;
 	}
 
 	public void setLoctionCode(String loctionCode) {
-		this.loctionCode = loctionCode;
+		this.locationCode = loctionCode;
 	}
 
 	

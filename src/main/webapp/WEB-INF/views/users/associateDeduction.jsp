@@ -86,7 +86,7 @@ getDeductionType();
                   <div class="col-md-5">
                     <label class="clearfix">Amount</label>
                     <div class="clearfix">
-                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_int" field-name="Amount" readonly>
+                      <input type="text" class="form-control" id="amt" name="amt" data-validation="required validate_float" field-name="Amount" readonly>
                     </div>
                   </div>
                   </div>
@@ -186,6 +186,8 @@ $('body').on('blur', '#associate_deduction_form', function() {
 						document.getElementById("associateContribution").removeAttribute("class"); 
 						associateContribution.href="#tab-5"; 
 						$("#associateContribution").click();
+						$("#associate_deduction_save_button").removeAttr("disabled");
+						$("#associate_deduction_save_button").addClass('button').val('Save & Continue');
 	                } else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {

@@ -1165,11 +1165,25 @@ public class LeaveDaoImpl implements LeaveDao{
 		endDateSqlDate = new java.sql.Date(endDate.getTime());
 	}
 
-		if(hrLeaveReportDTO.getStatus() !=null){
+		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && hrLeaveReportDTO.getStatus() !=null && !hrLeaveReportDTO.getStatus().isEmpty()){
+
 			query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and  leaveReport.status  IN (:leaveStatusList) ";
 
-		}else{
+		}
+		else if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && hrLeaveReportDTO.getStatus().isEmpty()){
+			query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId)and leaveReport.reportingManagerId = :loginUserId and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and leaveReport.status = 'APPROVED' ";
+
+		}
+		else if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !hrLeaveReportDTO.getStatus().isEmpty()){
+			query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId)and leaveReport.reportingManagerId = :loginUserId and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and  leaveReport.status  IN (:leaveStatusList) ";
+
+		}
+		else if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")  && hrLeaveReportDTO.getStatus().isEmpty()){
 			query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and leaveReport.status = 'APPROVED' ";
+
+		}
+		else{
+			query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and leaveReport.reportingManagerId = :loginUserId and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate) and leaveReport.status = 'APPROVED' ";
 
 		}
 		StringBuilder query1 = new StringBuilder();
@@ -1330,6 +1344,10 @@ public class LeaveDaoImpl implements LeaveDao{
 //		countQueryString.setLong("loginUserId", hrLeaveReportDTO.getLoginUserId());
 
 		}
+		if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+			countQueryString.setLong("loginUserId", hrLeaveReportDTO.getLoginUserId());
+	
+		}
 		countlist = countQueryString.list();
 		response.setData(leaveReportList);
 		int count = 0;
@@ -1338,9 +1356,18 @@ public class LeaveDaoImpl implements LeaveDao{
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
+	
 		if (leaveReportList != null) {
 			List<Long> filteredCountlist = null;
-			if (!leaveStatusList.isEmpty()) {
+			if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !leaveStatusList.isEmpty()) {
+				filteredCountlist = session.createQuery("select count(*) " + query
+						+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setLong("loginUserId", hrLeaveReportDTO.getLoginUserId()).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).setParameterList("leaveStatusList", leaveStatusList).list();
+			}
+			else if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && leaveStatusList.isEmpty()) {
+				filteredCountlist = session.createQuery("select count(*) " + query
+						+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setLong("loginUserId", hrLeaveReportDTO.getLoginUserId()).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).list();
+			}
+			else if (loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !leaveStatusList.isEmpty()) {
 				filteredCountlist = session.createQuery("select count(*) " + query
 						+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).setParameterList("leaveStatusList", leaveStatusList).list();
 			}

@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -33,9 +32,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -46,7 +42,6 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.DataMigrationDao;
-import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.AssetsDataImportDTO;
@@ -66,7 +61,6 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
@@ -742,6 +736,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				 lcaDTO.setSocOccupationTitle(dataMigrationDTOJsonCopy.getString("socTitle"));
 			}
 			
+			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("socJobTitle")) && !"null".equals(dataMigrationDTOJsonCopy.getString("socJobTitle"))) {
+				lcaDTO.setJobTitle(dataMigrationDTOJsonCopy.getString("socJobTitle"));
+			}
 			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("wageLevel")) && !"null".equals(dataMigrationDTOJsonCopy.getString("wageLevel"))) {
 				 lcaDTO.setWagesLevel(dataMigrationDTOJsonCopy.getString("wageLevel"));
 			}

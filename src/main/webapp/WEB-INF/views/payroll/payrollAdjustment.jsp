@@ -34,6 +34,8 @@
                  <input type="hidden" id="postDeductionLength" name="postDeductionLength" value="">
                  <input type="hidden" id="totalContributionsLngth" name="totalContributionsLngth" value="">
                  <input type="hidden" id="total1payItemsLength" name="total1payItemsLength" value="">
+                 <input type="hidden" id="assSalType" name="assSalType" value="">
+                 <input type="hidden" id="assSalary" name="assSalary" value="">
               
             </div>
           </div>
@@ -54,7 +56,7 @@
               <tbody>
                 <tr>
                   <td colspan="2">
-                     <table width="100%" class="table table-bordered">
+                     <table width="100%" class="table table-bordered" id="hoursAndEarningsTable">
                       <thead>
                         <tr>
                           <th colspan="4">Hours &amp; Earnings</th>
@@ -84,6 +86,18 @@
                           <td><span id="totalEarnings">0</span></td>
                         </tr>
                       </tfoot>
+                    </table>
+                    <table width="100%" class="table table-bordered" id="assSalaryTable">
+                      <thead>
+                        <tr>
+                          <th colspan="4">Salary</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>Pay Salary</th><td><input type="text" id="assSalaryAmount" name="assSalaryAmount" readOnly></td>
+                        </tr>
+                      </tbody>
                     </table>
                     </td>
                 </tr>
@@ -252,12 +266,23 @@
 		        success: function(data) {
 		            var json = data.object;
 		            $("#empAddress").text(json.employeeAddress);
-		            $("#regularHours").val(json.regularHours.toFixed(2));
-		            $("#regularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
-		            $("#overTimeHours").val(json.overtimeHours.toFixed(2));
-		            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
-		            $("#totalHours").text(json.totalHours.toFixed(2));
-		            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
+		            
+		            $("#assSalType").val(json.assSalType);
+            		$("#assSalary").val(json.assSalary);
+		            if(json.assSalType == "Salary"){
+		            	$("#hoursAndEarningsTable").hide();
+		            	$("#assSalaryTable").show();
+		            	$("#assSalaryAmount").val(json.assSalary);
+		            }else{
+		            	$("#hoursAndEarningsTable").show();
+		            	$("#assSalaryTable").hide();
+		            	$("#regularHours").val(json.regularHours.toFixed(2));
+			            $("#regularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
+			            $("#overTimeHours").val(json.overtimeHours.toFixed(2));
+			            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
+			            $("#totalHours").text(json.totalHours.toFixed(2));
+			            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
+		            }
 		            
 		            $("#preRegularHours").val(json.regularHours.toFixed(2));
 		            $("#preRegularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
@@ -311,9 +336,9 @@
 				        			postDed = postDed + '<tr>';
 				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
 				        			postDed = postDed + ' <td>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+ded.id+'>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionType" value='+ded.deductionType+'>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+ded.postDeductionAmt+' > ';
+				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].id" value='+ded.id+'>';
+				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].preDeductionType" value='+ded.deductionType+'>';
+				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].preDeductionAmt" value='+ded.postDeductionAmt+' > ';
 				        			postDed = postDed + '<input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
