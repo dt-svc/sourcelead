@@ -240,6 +240,7 @@ public class UserServiceImpl implements UserService {
 	public User storeUser(AddUserDTO addUserDTO,CandidateDTO candidateDTO,User loginuser,OrgLocations orgLocations,String sourceType,String responderType,Org loginOrg) throws Exception {
 	   User user1 = null;
 	   User user = null;
+	   Candidate candidate = null;
 	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
@@ -415,7 +416,7 @@ public class UserServiceImpl implements UserService {
 		
 		//for updating cosultantUserId in candidate
 		if(StringUtils.isNotBlank(candidateDTO.getAssociateId())){
-			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDTO.getAssociateId()));
+			candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDTO.getAssociateId()));
 			if(null != candidate){
 				candidate.setConsultantUser(user1);
 				candidate.setUpdatedBy(loginuser.getUserCode());
@@ -468,14 +469,14 @@ public class UserServiceImpl implements UserService {
 			}	
 		}else{
 			// existing candidate saving as a User
-			Candidate candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail(),orgLocations.getId());
+			candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail(),orgLocations.getId());
 			if(candidate == null){
 				MasterCandidate masterCandidate = null;
 				masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 				if(null == masterCandidate){
 					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
 				}
-				candidateService.storeCandidateForUsers(candidateDTO, addUserDTO,user, orgLocations, masterCandidate,loginuser);
+			 candidate = candidateService.storeCandidateForUsers(candidateDTO, addUserDTO,user, orgLocations, masterCandidate,loginuser);
 				
 			}else{
 				candidate.setConsultantUser(user);
@@ -533,6 +534,7 @@ public class UserServiceImpl implements UserService {
 			
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
 			user1.setTempPwd(password);
+			user1.setCandidateId(candidate.getId());
         return user1;
 				
 		

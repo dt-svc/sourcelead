@@ -171,7 +171,10 @@ public class LeaveManagementReportsRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		LeaveReportView leaveReportView = new LeaveReportView();
 		ResponseList<LeaveReportView> leaveReportsList=null;
-		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+	    String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
 
 		try{
 			String[] tableColumns = {"id", "name", "userDeptName", "leaveTypeName","leaveTypeBillable", "fromDate", "toDate", "appliedOn", "status","approver","approvedOn"};
@@ -184,6 +187,7 @@ public class LeaveManagementReportsRestController {
 					}
 					hrLeaveReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
 					hrLeaveReportDTO.setSortOrder(sortColumnOrder);
+					hrLeaveReportDTO.setLoginUserId(loginUser.getId());
 				
 					
 			leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromDateToDate(hrLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
@@ -255,7 +259,9 @@ public class LeaveManagementReportsRestController {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		LeaveReportView leaveReportView = new LeaveReportView();
-		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
 		ResponseList<LeaveReportView> leaveReportsList=null;
 		try{
 		String[] tableColumns = {"name", "userDeptName", "employmentType", "userRoleName","leaveTypeName", "leaveTypeBillable", "duration", "fromDate", "toDate","reason","approver","status"};
@@ -268,7 +274,7 @@ public class LeaveManagementReportsRestController {
 				}
 				dayWiseLeaveReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				dayWiseLeaveReportDTO.setSortOrder(sortColumnOrder);
-			
+				dayWiseLeaveReportDTO.setLoginUserId(loginUser.getId());
 				
 				leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
 		List<LeaveReportView> list = leaveReportsList.getData();
@@ -306,7 +312,8 @@ public class LeaveManagementReportsRestController {
 	         Workbook createExcelworkbook =  new XSSFWorkbook();
 	         StringBuilder excelSB = new StringBuilder();
 		    String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    dayWiseLeaveReportDTO.setLoginUserId(loginUser.getId());
 	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	         Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -368,11 +375,14 @@ public class LeaveManagementReportsRestController {
 		List<Long> userRoleList = new ArrayList<>();
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
 		 StringBuilder excelSB = new StringBuilder();
-         
+		    String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
- 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+ 		hrLeaveReportDTO.setLoginUserId(loginUser.getId());
+
 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("dailyWiseLeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
 			ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromDateToDate(hrLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId(),loginUserRole);
 

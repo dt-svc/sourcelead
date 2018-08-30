@@ -45,7 +45,6 @@ function approvePayrollTab(){
     <div class="positionRelative timesheet_head minHeight clearfix"></div>
     	<div id="reviewDiv"></div>
     
-    
             <nav class="clearfix">
           <ul class="pull-right mr list-unstyled list-inline">
 <!--             <li><a href="#" class="btn btn-primary btnSuccess" onclick="sendPayrollForApproval();">Sent for Approve</a></li> -->
@@ -71,14 +70,14 @@ function approvePayrollTab(){
 	  var payPeriodNum = '${payPeriodNum}';
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum,                 
+		        url: sourceleadUrl+"/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum+"&approverStatus="+status,                 
 		        success: function(data) {
 					var json = data.payrollDTO;
 		        	var result = "";
 		        	result = result +'<table id="reviewTableId">';
 			    	result = result +'<thead>';
 			    	result = result +'	<tr>';
-			    	/* result = result +'	<th></th>'; */
+// 			    	result = result +'	<th>Exclude</th>';
 			    	result = result +'	<th>Emp Id</th>';
 			    	result = result +'	<th>Emp Name</th>';
 			    	result = result +'	<th>Rate</th>';
@@ -101,10 +100,12 @@ function approvePayrollTab(){
 			    	result = result +'<tr>																													';	
 		            
 			   	 	/* result += '<td>';
+			   	 	if(json.length > 1){
 		        	result += '<div class="checkbox-new pull-left ml5">';
 		        	result += '<input id="'+i+'emp1" value="YES" class="checkbox-custom" name="uspayroll['+i+'].isExcept" type="checkbox">';
 		        	result += '<label for="'+i+'emp1" class="checkbox-custom-label"></label>';
 		        	result += '</div>';
+			   	 	}
 		        	result += '</td>';  */
 		        	result += '<input type="hidden" value='+report.empPayrollId+' id="'+i+'empPayrollId" name="uspayroll['+i+'].empPayrollId" />';
 			    	if(report.empId != null && report.empId != '' && report.empId != 'undefined'){
@@ -196,11 +197,13 @@ function approvePayrollTab(){
   
  <script>
 function confirmPayroll(){
+	
+	var payPeriodNum = $("#payPeriodNum").val();
 	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
 	 var confirmType = "SENT";
 	 var formData = $($('#submit_for_approver')[0]).serialize();
-	 calculateTotalPay(formData,confirmType);
+	 calculateTotalPay(formData,confirmType,payPeriodNum);
 }
 </script>
 

@@ -428,6 +428,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
 		commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
+		commonUtil.storeDefaultPayheadsWithOrgLocation(user, orgLocations);
 		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		userService.sendEmail(user, loginUser, password,orgLocations.getId());
@@ -842,10 +843,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 						
 						for(SourceleadActions actions : sourceLeadActionsList){
 							if(roleActonsList.contains(actions.getId())){
-								if(actions.getLoctionCode() == null) {
+								if(actions.getLocationCode() == null) {
 									strbul.append(actions.getId()).append(",");
-								}else if(actions.getLoctionCode() != null) {
-									if(actions.getLoctionCode().equalsIgnoreCase(countires.getCode2())) {
+								}else if(actions.getLocationCode() != null) {
+									if(actions.getLocationCode().equalsIgnoreCase(countires.getCode2())) {
 										strbul.append(actions.getId()).append(",");
 									}
 								}
