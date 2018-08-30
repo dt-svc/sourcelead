@@ -285,7 +285,6 @@ function exportMyExpenses(type,Expid,ApproverType){
 
 <script>
 function changeStatusToBillable(ExpenseEntriesId){
-	alert("hi"+ExpenseEntriesId);
 	 $.ajax({
          type : "POST",
          url: sourceleadUrl+"/changeStatusToBillable?&ExpenseEntriesId="+ExpenseEntriesId,    
