@@ -159,12 +159,22 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			PaysheetFrequency pf = uSPaysheetService.getPayFrequencyByUUID(payrollApproverDTO.getPayrollFrequencyUUID());
 			paySum.setPfUUID(pf.getPaySheetFrequencyUUID());
 			
-			
 //			CopyOnWriteArraySet<EmployeePayroll> payrollList = new CopyOnWriteArraySet<EmployeePayroll>(pf.getEmployeepayroll());
-			List<EmployeePayroll> payrollListt = pf.getEmployeepayroll().stream().filter(payy-> !Constants.APPROVED.equalsIgnoreCase(payy.getSubmitForAproverStatus())).collect(Collectors.toList());
+			List<EmployeePayroll> payrollListt = null;
+			if(Constants.DRAFT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
+				 payrollListt = pf.getEmployeepayroll()
+						.stream()
+						.filter(payy-> !Constants.APPROVED.equalsIgnoreCase(payy.getSubmitForAproverStatus()) && payy.getSubmitForAproverStatus().equalsIgnoreCase(payrollApproverDTO.getConfirmType()))
+						.collect(Collectors.toList());
+			}else {
+				 payrollListt = pf.getEmployeepayroll()
+						.stream()
+						.filter(payy-> !Constants.APPROVED.equalsIgnoreCase(payy.getSubmitForAproverStatus()) && payy.getSubmitForAproverStatus().equalsIgnoreCase(payrollApproverDTO.getConfirmType()) && Integer.valueOf(payy.getPayPeriodNum()) == Integer.valueOf(payrollApproverDTO.getPayPeriodNum()))
+						.collect(Collectors.toList());
+			}
 			CopyOnWriteArraySet<EmployeePayroll> payrollList = new CopyOnWriteArraySet<>(payrollListt);
 			List<Long> payrollIds = null;
-			if(!PayrollConstant.SENT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
+		/*	if(!PayrollConstant.SENT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
 			for (EmployeePayroll payroll : payrollList) {
 				for (USPayrollDTO payrollDTO : payrollApproverDTO.getUspayroll()) {
 					if ((payrollDTO.getIsExcept() != null && "YES".equalsIgnoreCase(payrollDTO.getIsExcept())) && payrollDTO.getEmpPayrollId().longValue() == payroll.getId().longValue()) {
@@ -176,7 +186,22 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			}else {
 				List<EmployeePayroll> pidList = payrollList.stream().filter(ep->PayrollConstant.SENT.equalsIgnoreCase(ep.getSubmitForAproverStatus())).collect(Collectors.toList());
 				payrollIds = pidList.stream().map(p -> p.getId()).collect(Collectors.toList());
+			}*/
+			
+			for (EmployeePayroll payroll : payrollList) {
+				for (USPayrollDTO payrollDTO : payrollApproverDTO.getUspayroll()) {
+					if ((payrollDTO.getIsExcept() != null && "YES".equalsIgnoreCase(payrollDTO.getIsExcept())) && payrollDTO.getEmpPayrollId().longValue() == payroll.getId().longValue()) {
+						boolean s = payrollList.removeIf(x -> x.getId().longValue() == payroll.getId());
+					}
+				}
 			}
+			
+//			if(!PayrollConstant.SENT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
+				payrollIds = payrollList.stream().map(p -> p.getId()).collect(Collectors.toList());
+//				}else {
+//					List<EmployeePayroll> pidList = payrollList.stream().filter(ep->PayrollConstant.SENT.equalsIgnoreCase(ep.getSubmitForAproverStatus())).collect(Collectors.toList());
+//					payrollIds = pidList.stream().map(p -> p.getId()).collect(Collectors.toList());
+//				}
 			
 			paySum.setPid(payrollIds);
 			double regularHours = payrollList.stream().filter(p->p.getRegularHours() != null).mapToDouble(p->Double.parseDouble(p.getRegularHours())).sum();
