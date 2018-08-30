@@ -6,8 +6,10 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
@@ -66,9 +68,15 @@ public interface InvoiceDao{
 	 CreditDebitNote getCreditDebitNoteById(Long noteId)throws Exception;
 	 
 	 CreditDebitNote getCreditDebitNoteByUUID(String noteUUID)throws Exception;
+	 
+	 List<CreditDebitLineItems> getCreditDebitLineItemsListByNoteIdAndLocationId(Long noteId,Long locationId)throws Exception;
+	 
+	 CreditDebitNote getCreditDebitNoteByIdAndOrglocationId(Long id, Long orgLocationId) throws Exception;
 
 	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId, Long orgLocationId, String invoiceStatus, Date startDate, Date endDate);
 
+	List<Invoice> getInvoiceListUsingMultipleStringIds(String ids, Long orgLocationId) throws Exception;
+	
 	void saveInvoiceTimelineHistory(InvoiceTimelineHistory timelineHistory);
 
 	List<InvoiceTimelineHistory> getInvoiceTimelineHistoryList(Long id, String searchVal, String orderVal, Date[] datesRange, String[] checkedStatus) throws ParseException;

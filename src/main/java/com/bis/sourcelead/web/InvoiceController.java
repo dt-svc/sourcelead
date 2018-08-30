@@ -298,6 +298,30 @@ public class InvoiceController {
 	return model;
 	}
 	
+	@RequestMapping(value = "/viewCreditDebitNote")
+	public ModelAndView viewCreditDebitNote(@RequestParam(value="creditDebitUUID", required=false) String creditDebitUUID,
+			@RequestParam(value="noteType", required=false) String noteType,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		model.setViewName("billing/viewCreditDebitNote");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("creditDebitUUID", creditDebitUUID);
+		model.addObject("noteType", noteType);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+	return model;
+	}
+	
 	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/invoiceList")
 	public ModelAndView createInvoice(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {

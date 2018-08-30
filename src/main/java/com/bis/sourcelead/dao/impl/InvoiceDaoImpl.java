@@ -31,10 +31,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
@@ -733,10 +735,47 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<CreditDebitLineItems> getCreditDebitLineItemsListByNoteIdAndLocationId(Long noteId,Long locationId)throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CreditDebitLineItems noteLineItems  where noteLineItems.creditDebitNote.id =:noteId and noteLineItems.orgLocation.id =:locationId";
+		List<CreditDebitLineItems> list = session.createQuery(query).setLong("noteId", noteId).setParameter("locationId", locationId).list();
+		return list;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Invoice> getInvoiceListUsingMultipleStringIds(String ids, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String[] idsValues = ids.split(",");
+		// convert string array to long array
+		Long[] data = new Long[idsValues.length];
+		for (int i = 0; i < idsValues.length; i++) {
+		  data[i] = Long.valueOf(idsValues[i]);
+		}
+		
+		String query = "from Invoice invoice  where invoice.id IN ( :ids ) and invoice.orgLocation.id =:orgLocationId";
+		List<Invoice> list = session.createQuery(query).setParameterList("ids", data).setParameter("orgLocationId", orgLocationId).list();
+		return list;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public CreditDebitNote getCreditDebitNoteByUUID(String noteUUID) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CreditDebitNote note  where note.creditDebitUUID =:noteUUID";
 		CreditDebitNote creditDebitNote = (CreditDebitNote) session.createQuery(query).setParameter("noteUUID", noteUUID).uniqueResult();
+		return creditDebitNote;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public CreditDebitNote getCreditDebitNoteByIdAndOrglocationId(Long id, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CreditDebitNote note  where note.id =:id and note.orgLocations.id =:orgLocationId";
+		CreditDebitNote creditDebitNote = (CreditDebitNote) session.createQuery(query).setParameter("id", id).setParameter("orgLocationId", orgLocationId).uniqueResult();
 		return creditDebitNote;
 	}
 	
@@ -882,4 +921,6 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		return count;	
 	}
+
+	
 }

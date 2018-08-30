@@ -12,6 +12,7 @@ import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitNote;
@@ -49,6 +50,10 @@ public interface InvoiceService {
 	Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception;
 
 	List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId,Long orgLocationId)throws Exception;
+	
+	CreditDebitNote getCreditDebitNoteByUUID(String noteUUID)throws Exception;
+	
+	Response<CreditDebitNote> getCreditDebitNoteByIdAndOrglocationId(Long id,Long orgLocationId) throws Exception;
 
 	/*void getPdfFileForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws Exception;*/
 

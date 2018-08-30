@@ -68,6 +68,7 @@ import com.bis.sourcelead.dto.InvoiceExpensesDTO;
 import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
@@ -3679,6 +3680,40 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 		return result;
 	}
+	
+	@Override
+	public CreditDebitNote getCreditDebitNoteByUUID(String noteUUID) throws Exception {
+		return invoiceDao.getCreditDebitNoteByUUID(noteUUID);
+	}
+	
+	@Override
+	public Response<CreditDebitNote> getCreditDebitNoteByIdAndOrglocationId(Long id, Long orgLocationId)
+			throws Exception {
+		Response<CreditDebitNote> response = new Response<>();
+		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(id, orgLocationId);
+		// get CreditDebit Line Items 
+		List<CreditDebitLineItems> lineItems = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(id, orgLocationId);
+		creditDebitNote.setListOfCreditDebitLineItems(lineItems);
+		// get Invoice List
+		List<Invoice> listInvoice = invoiceDao.getInvoiceListUsingMultipleStringIds(creditDebitNote.getInvoice(),creditDebitNote.getOrgLocations().getId());
+		StringBuilder sb = new StringBuilder();
+		listInvoice.forEach(invoice->{
+			sb.append(invoice.getInvoiceId()).append(",").toString();
+		});
+		creditDebitNote.setInvoiceMultipleIds(sb.deleteCharAt(sb.length() - 1).toString());
+		StringBuilder contactName = new StringBuilder();
+		if (creditDebitNote.getOrgRelations().getLocationId().getId().equals(orgLocationId)) {
+			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getResponderLocationId().getOrgLocationName());
+		}
+		
+		if(creditDebitNote.getOrgRelations().getResponderLocationId().getId().equals(orgLocationId)){
+			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getLocationId().getOrgLocationName());
+		}
+		
+		response.setObject(creditDebitNote);
+		
+		return response;
+	}
 	/*public EmailAttachment zipFileReminderInvoiceAttachedDoc(List<EmailAttachment> docusList) throws MessagingException {
 
 		EmailAttachment ema = null;
@@ -3736,5 +3771,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 		return ema;
 	}*/
+
+	
+
+	
 
 }

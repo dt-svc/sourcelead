@@ -52,6 +52,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -849,6 +850,17 @@ return responseList;
 		responseList.setData(billingDtoList);
 		return responseList;
 		
+	}
+	
+	@RequestMapping(value = "/getCreditDebitNoteDetails", method = RequestMethod.GET)
+	public @ResponseBody Response<CreditDebitNote> getCreditDebitNoteDetails(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, HttpServletRequest request) throws Exception
+	{
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+		Response<CreditDebitNote> response = invoiceService.getCreditDebitNoteByIdAndOrglocationId(creditDebitNote.getId(), loginOrgLocation.getId());
+		
+		
+	return response;	
 	}
 	
 	@RequestMapping(value = "/getViewInvoice", method = RequestMethod.GET)

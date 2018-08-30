@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,6 +17,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * @author Ajith Matta
@@ -129,6 +133,18 @@ public class CreditDebitNote implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "creditDebitNote")
 	private Set<CreditDebitLineItems> creditDebitLineItems;
+	
+	@Transient
+	@JsonProperty
+	private List<CreditDebitLineItems> listOfCreditDebitLineItems;
+	
+	@Transient
+	@JsonProperty
+	private String invoiceMultipleIds;
+	
+	@Transient
+	@JsonProperty
+	private String clientOrVendorName;
 
 	public Long getId() {
 		return id;
@@ -376,6 +392,30 @@ public class CreditDebitNote implements Serializable {
 
 	public void setRejectReason(String rejectReason) {
 		this.rejectReason = rejectReason;
+	}
+
+	public List<CreditDebitLineItems> getListOfCreditDebitLineItems() {
+		return listOfCreditDebitLineItems;
+	}
+
+	public void setListOfCreditDebitLineItems(List<CreditDebitLineItems> listOfCreditDebitLineItems) {
+		this.listOfCreditDebitLineItems = listOfCreditDebitLineItems;
+	}
+
+	public String getInvoiceMultipleIds() {
+		return invoiceMultipleIds;
+	}
+
+	public void setInvoiceMultipleIds(String invoiceMultipleIds) {
+		this.invoiceMultipleIds = invoiceMultipleIds;
+	}
+
+	public String getClientOrVendorName() {
+		return clientOrVendorName;
+	}
+
+	public void setClientOrVendorName(String clientOrVendorName) {
+		this.clientOrVendorName = clientOrVendorName;
 	}
 	
 	

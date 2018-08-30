@@ -326,7 +326,9 @@ function creditNotePagination(url){
             	  result = result +'         <td>   ';
             	 if(report.referenceNumber != null && report.referenceNumber != '' && report.referenceNumber != 'undefined'){
             		 
-				      result = result +'<div class="tbldata-dotdot-vsm" title="'+report.referenceNumber+'">'+report.referenceNumber+'</div>';
+				    //result = result +'<div class="tbldata-dotdot-vsm" title="'+report.referenceNumber+'">'+report.referenceNumber+'</div>';
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" title="'+report.referenceNumber+'">'+report.referenceNumber+'</a></div>';				
+
   				     
             	 }else{
             		 result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';
