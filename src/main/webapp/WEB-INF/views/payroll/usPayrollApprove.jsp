@@ -1,13 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script type="text/javascript">
-function calculateTotalPay(formData,confirmType,fromState){
 
-		if(fromState == null || fromState == '' || fromState == 'undefined'){
+<script type="text/javascript">
+function calculateTotalPay(formData,confirmType,payPerionNum){
 			approvePayrollDiv();
-		}
-		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType, formData, function(json) {
+		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType+"&payPerionNum="+payPerionNum, formData, function(json) {
 		    	  $("#totRegularHours").text(json.regularHours.toFixed(2));
 		    	  $("#totRegularEarningsAmt").text(json.regularHoursAmount.toFixed(2));
 		    	  $("#totOverTimeHours").text(json.overTimeHours.toFixed(2));
@@ -327,6 +325,12 @@ function approvePayroll(){
  		}
       });   
     
+}
+
+
+function approvePayrollDiv(){
+	$("#reviewPayrollDiv").hide();
+	$("#approveDiv").show();
 }
 </script> 
 
