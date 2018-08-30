@@ -302,7 +302,7 @@
                 <select onchange="showOrHidePaymentFormFields($(this).val());" id="paymentAccountType" name="paymentAccountLocation" class="form-control" data-required="required">
                     <option value="0">--Select Location--</option>
                     <option value="SAVINGS" data-type="1">Savings</option>
-                    <option value="CHECKING" data-type="2">Checking</option>
+                    <option value="CHEQUE" data-type="2">Cheque</option>
                     <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}"> 
                       <option value="WEPAY" data-type="3">WePay</option>
                     </c:if>
@@ -429,7 +429,7 @@ function savePaymentAccount() {
     var data =  {};
     var val = $("#paymentAccountType").val();
     var orgloationId = '${orgLocationId}';
-    var userId = '${userId}';
+    var candidateId = '${candidateId}';
     var flag = false;
     if(validateSelect('paymentAccountType', 'Account Type')) {
         if(val === "WEPAY") {
@@ -459,7 +459,7 @@ function savePaymentAccount() {
         data["lastName"] = $("#paymentAccountLastName").val().trim();
         data["orgLocationId"] = orgloationId;
         data["accountType"] = val;
-        data["associateUserId"] = userId;
+        data["candidateId"] = candidateId;
         data["id"] = $("#paymentAccountId").val();
     }
     if(flag) {

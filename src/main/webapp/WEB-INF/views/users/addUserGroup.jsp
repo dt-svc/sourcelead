@@ -133,9 +133,11 @@ function validateGroupName(){
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
                 	$('#groupNameDiv').find('p.jquery_form_error_message').remove();
+                	$("#save_user_group_button").attr("disabled", false);
                 }  else {
 					$('#groupNameDiv').find('p.jquery_form_error_message').remove();
       			  	$("#groupName").after("<p class='jquery_form_error_message'>"+groupName+" already exists..!!</span>");
+      			  	$("#save_user_group_button").attr("disabled", true);
                 }
 			
 		});

@@ -319,4 +319,10 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	{
 		return associateSalaryDao.findAssociatePayItemByPayrollId(payrollId);
 	}
+
+	@Override
+	public AssociateSalary getAssociateSalaryByCandidateIdAndOrgLocationId(Long candidateId, Long locationId)
+	{
+		return associateSalaryDao.getAssociateSalaryByCandidateIdAndOrgLocationId(candidateId, locationId);
+	}
 }
