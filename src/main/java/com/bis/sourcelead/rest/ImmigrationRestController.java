@@ -56,6 +56,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
 import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
@@ -429,7 +430,7 @@ public class ImmigrationRestController {
 		}
 		return model;
 	}
-
+	
 	@RequestMapping(value = { "/uploadRequstedDoc" }, method = RequestMethod.POST)
 	public String uploadRequstedDoc(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,
 			@RequestParam(value = "id", required = true) Long id,
@@ -2421,6 +2422,9 @@ public class ImmigrationRestController {
 		lcaNumbersList = immigrationCommonService.getLcaNumbersList(lcaNum,orgLocations.getId().toString(),expiryStatus,candidateId);
 		return lcaNumbersList;
 	}
+	
+	
+	
 
 	@RequestMapping(value = { "/getOesSocCodeById" })
 	public String getOesSocCodeById(
@@ -2431,7 +2435,9 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value = { "/viewLca" })
 	public ModelAndView viewLCA(HttpServletRequest request,
-			@RequestParam(value = "lcaUuid", required = false) String lcaUuid) throws Exception {
+			@RequestParam(value = "lcaUuid", required = false) String lcaUuid,
+			@RequestParam(value = "myLcaPage", required = false) String myLcaPage
+			) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -2448,6 +2454,7 @@ public class ImmigrationRestController {
             }
             model.addObject("locList",lcaDTO.getLcaPlaceOfEmploymentList());
 			model.addObject("lcaDTO", lcaDTO);
+			model.addObject("myLcaPage", myLcaPage);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("/immigration/lcaView");
 		}
@@ -2532,6 +2539,18 @@ public class ImmigrationRestController {
 			flag = immigrationCommonService.validateLcaTitle(lcaTitle, orgLocations.getId());
 		}
 		return flag;
+	}
+	
+	@RequestMapping(value = "/getEmployeeByLcaId", method = RequestMethod.GET)
+	@ResponseBody
+	public ModelAndView getEmployeeByLcaId(HttpServletRequest request,@RequestParam(value = "lcaId", required = false) Long lcaId) throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<LcaDetailsDTO> empList = immigrationCommonService.getEmployeeByLcaId(lcaId ,orgLocations);
+		model.addObject("empList",empList);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("/immigration/employeeDetailsTab");
+		return model;
 	}
 	
 	/*
