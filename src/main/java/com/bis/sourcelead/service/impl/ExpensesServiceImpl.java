@@ -201,7 +201,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		        headerCellStyle(cell1);
 		        table.setWidthPercentage(100);
 		        if(approverType.equalsIgnoreCase("APPROVER")){
-		        	table.setWidths(new int[]{5,3,5,3,3,3,7,5});
+		        	table.setWidths(new int[]{5,3,5,3,3,3,7,5,5});
 		        }
 		        if(approverType.equalsIgnoreCase("USER")){
 	            table.setWidths(new int[]{5,3,5,3,3,3,7});
@@ -460,6 +460,17 @@ public class ExpensesServiceImpl implements ExpensesService{
 					   userArray[7] = "--";
 				 } 
 			 }
+			 if(expEntries.getBillable() != null){	
+				 if(expEntries.getBillable().equals(true)){
+					 userArray[8] = "YES";
+				 }
+				 else{
+					   userArray[8] = "NO";
+ 
+				 }
+			   }else{
+				   userArray[8] = "--";
+			 }
 	return userArray;
 	}
 
@@ -557,6 +568,16 @@ public class ExpensesServiceImpl implements ExpensesService{
 		 createExcelsheet.autoSizeColumn(7);
 	   }
 	 }
+	 if(expEntries.getBillable() != null){	
+		 if(expEntries.getBillable().equals(true)){
+			 writeRow.createCell(8).setCellValue("YES");
+			 createExcelsheet.autoSizeColumn(8);
+		 }
+		 else{
+			   writeRow.createCell(8).setCellValue("NO");
+				 createExcelsheet.autoSizeColumn(8);
+		 }
+	   }
 		return createExcelsheet;
 	}
 	
