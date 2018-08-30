@@ -59,6 +59,7 @@ import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteLineItemsDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
@@ -152,6 +153,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Autowired
 	InvoiceTaxDao invoiceTaxDao;
+	
+	@Autowired
+	private UserDao userDao;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -3689,25 +3693,44 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public Response<CreditDebitNote> getCreditDebitNoteByIdAndOrglocationId(Long id, Long orgLocationId)
 			throws Exception {
-		Response<CreditDebitNote> response = new Response<>();
+		Response<CreditDebitNote> response = new Response<CreditDebitNote>();
 		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(id, orgLocationId);
 		// get CreditDebit Line Items 
 		List<CreditDebitLineItems> lineItems = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(id, orgLocationId);
 		creditDebitNote.setListOfCreditDebitLineItems(lineItems);
 		// get Invoice List
 		List<Invoice> listInvoice = invoiceDao.getInvoiceListUsingMultipleStringIds(creditDebitNote.getInvoice(),creditDebitNote.getOrgLocations().getId());
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sbInvoice = new StringBuilder();
 		listInvoice.forEach(invoice->{
-			sb.append(invoice.getInvoiceId()).append(",").toString();
+			sbInvoice.append(invoice.getInvoiceId()).append(" , ").toString();
 		});
-		creditDebitNote.setInvoiceMultipleIds(sb.deleteCharAt(sb.length() - 1).toString());
+		creditDebitNote.setInvoiceMultipleIds(sbInvoice.deleteCharAt(sbInvoice.length() - 2).toString());
+		// get users list 
+		StringBuilder appSb = new StringBuilder();
+		if(StringUtils.isNotBlank(creditDebitNote.getApprovers())){
+		List<User> approversList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getApprovers(),creditDebitNote.getOrgLocations().getId());
+		approversList.forEach(approver->{
+			appSb.append(approver.getFullName()).append(" , ").toString();	
+		});
+		creditDebitNote.setApproversMultipleNames(appSb.deleteCharAt(appSb.length() - 2).toString());
+		}
 		StringBuilder contactName = new StringBuilder();
+		StringBuilder contactEmails = new StringBuilder();
 		if (creditDebitNote.getOrgRelations().getLocationId().getId().equals(orgLocationId)) {
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getResponderLocationId().getOrgLocationName());
+			List<User> contactsUserList = userDao.getUsersListUsingMultipleStringIds(creditDebitNote.getContactUser(),creditDebitNote.getOrgRelations().getResponderLocationId().getId());
+			contactsUserList.forEach(contactUser->{
+				contactName.append(contactUser.getFullName()).append(" , ").toString();	
+				contactEmails.append(contactUser.getEmail()).append(" , ").toString();
+			});
+			creditDebitNote.setContactsMultipleNames(contactName.deleteCharAt(contactName.length() - 2).toString());
+			creditDebitNote.setContactsMultipleEmails(contactEmails.deleteCharAt(contactEmails.length() - 2).toString());
 		}
 		
 		if(creditDebitNote.getOrgRelations().getResponderLocationId().getId().equals(orgLocationId)){
 			creditDebitNote.setClientOrVendorName(creditDebitNote.getOrgRelations().getLocationId().getOrgLocationName());
+			creditDebitNote.setContactsMultipleNames(creditDebitNote.getOwnerUser().getFullName());
+			creditDebitNote.setContactsMultipleEmails(creditDebitNote.getOwnerUser().getEmail());
 		}
 		
 		response.setObject(creditDebitNote);

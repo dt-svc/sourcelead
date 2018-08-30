@@ -19,7 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Ajith Matta
@@ -144,7 +144,27 @@ public class CreditDebitNote implements Serializable {
 	
 	@Transient
 	@JsonProperty
+	private String approversMultipleNames;
+	
+	@Transient
+	@JsonProperty
+	private String contactsMultipleEmails;
+	
+	@Transient
+	@JsonProperty
+	private String contactsMultipleNames;
+	
+	@Transient
+	@JsonProperty
 	private String clientOrVendorName;
+	
+	@Transient
+	@JsonProperty
+	private String creditDebitNoteDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String ownerNames;
 
 	public Long getId() {
 		return id;
@@ -417,8 +437,48 @@ public class CreditDebitNote implements Serializable {
 	public void setClientOrVendorName(String clientOrVendorName) {
 		this.clientOrVendorName = clientOrVendorName;
 	}
-	
-	
+
+	public String getApproversMultipleNames() {
+		return approversMultipleNames;
+	}
+
+	public void setApproversMultipleNames(String approversMultipleNames) {
+		this.approversMultipleNames = approversMultipleNames;
+	}
+
+	public String getContactsMultipleEmails() {
+		return contactsMultipleEmails;
+	}
+
+	public void setContactsMultipleEmails(String contactsMultipleEmails) {
+		this.contactsMultipleEmails = contactsMultipleEmails;
+	}
+
+	public String getContactsMultipleNames() {
+		return contactsMultipleNames;
+	}
+
+	public void setContactsMultipleNames(String contactsMultipleNames) {
+		this.contactsMultipleNames = contactsMultipleNames;
+	}
+
+	public String getCreditDebitNoteDateStr() {
+		return creditDebitNoteDateStr;
+	}
+
+	public void setCreditDebitNoteDateStr(String creditDebitNoteDateStr) {
+		this.creditDebitNoteDateStr = creditDebitNoteDateStr;
+	}
+
+	public String getOwnerNames() {
+		return ownerNames;
+	}
+
+	public void setOwnerNames(String ownerNames) {
+		this.ownerNames = ownerNames;
+	}
+
+
 	
 
 	}

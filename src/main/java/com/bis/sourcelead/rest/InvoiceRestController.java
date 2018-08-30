@@ -859,7 +859,6 @@ return responseList;
 		CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
 		Response<CreditDebitNote> response = invoiceService.getCreditDebitNoteByIdAndOrglocationId(creditDebitNote.getId(), loginOrgLocation.getId());
 		
-		
 	return response;	
 	}
 	
