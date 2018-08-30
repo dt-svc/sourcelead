@@ -46,6 +46,7 @@ import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaDocumentHistoryDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
@@ -2628,6 +2629,11 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	@Override
 	public List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId) {
 		return immigrationCommonDao.getLcaHistoryDetailsInfo(immigrationId);
+	}
+
+	@Override
+	public List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId,OrgLocations orgLocations) throws Exception {
+		return immigrationCommonDao.getEmployeeByLcaId(lcaId,orgLocations);
 	}
 	
 	/*
