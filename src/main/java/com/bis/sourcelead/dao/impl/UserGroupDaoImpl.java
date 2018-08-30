@@ -191,8 +191,8 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder qry = new StringBuilder(); 
 			qry.append("select distinct can.ID as candidateID,")
-			.append("projmem.ID as projectMemId,")
-			.append("projmem.PAY_RATE as payRate,")
+			.append(" projmem.ID as projectMemId,")
+			.append(" projmem.PAY_RATE as payRate,")
 			.append(" projmem.PAY_RATE_CURRENCY as payRateCurrency,")
 			.append(" projmem.CURRENT_BILL_RATE as currentBillRate,")
 			.append(" projmem.BILL_RATE_CURRENCY as billRateCurrency,")

@@ -38,6 +38,7 @@ public class PayrollConstant {
 	
 	public static final String HOURLY_RATE = "HourlyRate";
 	public static final String SALARY = "Salary";
+	public static final String LCA_WAGE = "LcaWage";
 	
 	public static final String ADDED = "ADDED"; 
 	
