@@ -1337,7 +1337,7 @@ $(document).ready(function () {
               </div>
               
               <div class="form-group" id="nofJoiners" ${requirement.incentivized == 'Y' ? '' : 'style="display:none;"'}>
-              		<label class="col-md-3">No. of Joiners</label>
+              		<label class="col-md-3">No. of Joiners <span class="text-danger paddingLeft">*</span></label>
               		
               		<c:if test="${!empty requirementIncentiveList}">
 			            <c:forEach var="inc" items="${requirementIncentiveList}" varStatus="rowCount">
@@ -1345,7 +1345,7 @@ $(document).ready(function () {
 			              <div class="col-md-9 ${rowCount.index > 0 ? 'col-md-offset-3 mt' : ''}" id="nofJoinersDiv[${rowCount.index}].rowId">
 	              			<div class="row">
 			                	<div class="col-md-3">
-			                    	<input type="text" class="form-control" id="requirementIncentive[${rowCount.index}].joiners" name="requirementIncentive[${rowCount.index}].joiners" value="${inc.joiners}" placeholder="Joiners" data-validation="validate_Space validate_length length1-5 validate_int" data-validation-optional="true">
+			                    	<input type="text" class="form-control" id="requirementIncentive[${rowCount.index}].joiners" name="requirementIncentive[${rowCount.index}].joiners" value="${inc.joiners}" placeholder="Joiners" field-name="Joiners" data-validation="required validate_Space validate_length length1-5 validate_int">
 			                	</div>
 			                	<div class="col-md-9">
 			              			<div class="row">
@@ -1358,7 +1358,7 @@ $(document).ready(function () {
 											</div>
 										</div>
 									    <div class="col-md-6 paddingLeft paddingRight">
-				                  			<input type="text" class="form-control" value="${inc.joinersAmount}" id="requirementIncentive[${rowCount.index}].joinersAmount" name="requirementIncentive[${rowCount.index}].joinersAmount" placeholder="Amount" data-validation="validate_Space validate_length ${!empty inc.joinersAmountType && inc.joinersAmountType == 'percentage' ? 'length1-2' : 'length1-10'} validate_int" data-validation-optional="true">
+				                  			<input type="text" class="form-control" value="${inc.joinersAmount}" id="requirementIncentive[${rowCount.index}].joinersAmount" name="requirementIncentive[${rowCount.index}].joinersAmount" placeholder="Amount" field-name="Amount" data-validation="required validate_Space validate_length ${!empty inc.joinersAmountType && inc.joinersAmountType == 'percentage' ? 'length1-2' : 'length1-10'} validate_int">
 				                	    </div>
 					                	<div class="col-md-1 text-center mt10">
 					                		<c:if test="${rowCount.index == 0}">
@@ -1381,7 +1381,7 @@ $(document).ready(function () {
               		<div class="col-md-9" id="nofJoinersDiv[0].rowId">
               			<div class="row">
 		                	<div class="col-md-3">
-		                    	<input type="text" class="form-control" id="requirementIncentive[0].joiners" name="requirementIncentive[0].joiners" value="" placeholder="Joiners" data-validation="validate_Space validate_length length1-5 validate_int" data-validation-optional="true">
+		                    	<input type="text" class="form-control" id="requirementIncentive[0].joiners" name="requirementIncentive[0].joiners" value="" placeholder="Joiners" field-name="Joiners" data-validation="required validate_Space validate_length length1-5 validate_int" data-validation-optional="true">
 		                	</div>
 		                	<div class="col-md-9">
 		              			<div class="row">
@@ -1393,7 +1393,7 @@ $(document).ready(function () {
 										</div>
 									</div>
 								    <div class="col-md-6 paddingLeft paddingRight">
-			                  			<input type="text" class="form-control" value="" id="requirementIncentive[0].joinersAmount" name="requirementIncentive[0].joinersAmount" placeholder="Amount" data-validation="validate_Space validate_length length1-10 validate_int" data-validation-optional="true">
+			                  			<input type="text" class="form-control" value="" id="requirementIncentive[0].joinersAmount" name="requirementIncentive[0].joinersAmount" placeholder="Amount" field-name="Amount" data-validation="required validate_Space validate_length length1-10 validate_int" data-validation-optional="true">
 			                	    </div>
 				                	<div class="col-md-1 text-center mt10">
 				                		<label><i class="fa fa-plus paddingRight cursorPointer" onClick="addJoinersRow();"></i></label>
@@ -3692,9 +3692,13 @@ function geolocate1(rowId) {
         if (ckbox.is(':checked')) {
             $("#nofJoiners").css('display','block');
             $('#incentivized').val('Y');
+            document.getElementById("requirementIncentive[0].joiners").removeAttribute('data-validation-optional');
+            document.getElementById("requirementIncentive[0].joinersAmount").removeAttribute('data-validation-optional');
         } else {
             $("#nofJoiners").css('display','none');
             $('#incentivized').val('N');
+            document.getElementById("requirementIncentive[0].joiners").setAttribute('data-validation-optional','true');
+            document.getElementById("requirementIncentive[0].joinersAmount").setAttribute('data-validation-optional','true');
             $("#nofJoinersAddRow").empty();
         }
     });
@@ -3756,7 +3760,7 @@ function addJoinersRow(){
 	result = result +'<div class="col-md-9 col-md-offset-3 mt" id="nofJoinersDiv['+rowNo+'].rowId">';
 	result = result +'<div class="row">';
 	result = result +'<div class="col-md-3">';
-	result = result +'	<input type="text" class="form-control" id="requirementIncentive['+rowNo+'].joiners" name="requirementIncentive['+rowNo+'].joiners" value="" placeholder="Joiners" data-validation="validate_Space validate_length length1-5 validate_int" data-validation-optional="true">';
+	result = result +'	<input type="text" class="form-control" id="requirementIncentive['+rowNo+'].joiners" name="requirementIncentive['+rowNo+'].joiners" value="" placeholder="Joiners" field-name="Joiners" data-validation="required validate_Space validate_length length1-5 validate_int">';
 	result = result +'</div>';
 	result = result +'<div class="col-md-9">';
 	result = result +'	<div class="row">';
@@ -3768,7 +3772,7 @@ function addJoinersRow(){
 	result = result +'		</div>';
 	result = result +'	</div>';
 	result = result +'  <div class="col-md-6 paddingLeft paddingRight">';
-	result = result +'		<input type="text" class="form-control" value="" id="requirementIncentive['+rowNo+'].joinersAmount" name="requirementIncentive['+rowNo+'].joinersAmount" placeholder="Amount" data-validation="validate_Space validate_length length1-10 validate_int" data-validation-optional="true">';
+	result = result +'		<input type="text" class="form-control" value="" id="requirementIncentive['+rowNo+'].joinersAmount" name="requirementIncentive['+rowNo+'].joinersAmount" placeholder="Amount" field-name="Amount" data-validation="required validate_Space validate_length length1-10 validate_int">';
 	result = result +'  </div>';
 	result = result +'	<div class="col-md-1 text-center mt10">';
 	result = result +'		<i class="fa fa-times colorRed cursorPointer" onclick="removeJoinersRow('+rowNo+');"></i>';
