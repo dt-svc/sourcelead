@@ -414,6 +414,7 @@
 					            	output = output + '<td>'+ot.contributionType+'</td>';
 					            	output = output + '<td>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].id" value='+ot.id+'>';
+					            	output = output + ' <input type="hidden"  name="contribution['+i+'].taxType" value='+ot.taxType+'>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionType" value='+ot.contributionType+'>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionAmt" value='+ot.contributionAmt+' >'; 
 					            	output = output + '<input type="text" id="totalContributions'+i+'" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl" readOnly></td>';
@@ -459,13 +460,13 @@
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';	
 						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].payItemId"/>';
-						            	payItem = payItem +'<input type="hidden" value='+pi.payItemName+' id="id" name="payItem['+i+'].prePayItemName"/>';
-						            	payItem = payItem +'<input type="hidden" value='+pi.payItemAmt+' id="id" name="payItem['+i+'].prePayItemAmt"/>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.payItemName+' id="prePayItemName" name="payItem['+i+'].prePayItemName"/>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.payItemAmt+' id="prePayItemAmt" name="payItem['+i+'].prePayItemAmt"/>';
 						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount'+i+'" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
 						            	payItem = payItem +' <td>';
 						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
-						            	payItem = payItem +' <input id="cashTips" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
-						            	payItem = payItem +' <label for="cashTips" class="checkbox-custom-label"></label>';
+						            	payItem = payItem +' <input id="cashTips['+i+']" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
+						            	payItem = payItem +' <label for="cashTips['+i+']" class="checkbox-custom-label"></label>';
 						            	payItem = payItem +' </div>';
 						            	payItem = payItem +' </tdgetPreDeductionAmount>';
 						            	payItem = payItem +' </tr>';
