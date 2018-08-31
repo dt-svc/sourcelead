@@ -608,7 +608,7 @@ public class RequirementServiceImpl implements RequirementService {
 				}
 			}
 			this.deleteRequirementIncentiveByRequirementIdOrIds(0l, requirementDTO.getArrDeletedIds());
-		}else if(!StringUtils.equals(requirementDTO.getIncentivized(), "Y")) {
+		}else if(requirement != null && requirement.getId() != null && !StringUtils.equals(requirementDTO.getIncentivized(), "Y")) {
 			this.deleteRequirementIncentiveByRequirementIdOrIds(requirement.getId(), "");
 		}
 		requirement.setRequirementIncentive(requirementIncentiveList);
