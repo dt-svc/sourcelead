@@ -308,6 +308,9 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		if (Arrays.asList(noteTokens).contains("Received")) {
 			subQuery = subQuery + "creditDebitNote.noteStatus = 'Received' or ";
 		}
+		if (Arrays.asList(noteTokens).contains("Rejected")) {
+			subQuery = subQuery + "creditDebitNote.noteStatus = 'Rejected' or ";
+		}
 		
 		if ((noteTokens[0] != null && noteTokens[0].length() > 0)) {
 			subQuery = " and (" + subQuery.substring(0, subQuery.length() - 4) + ")";

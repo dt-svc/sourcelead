@@ -43,6 +43,9 @@ public interface InvoiceService {
 	
 	CreditDebitNote saveCreditDebitNote(User user, OrgLocations orgLocation, String saveType,String noteType, CreditDebitNoteDTO creditDebitNoteDTO)throws Exception;
 	
+	CreditDebitNote saveAcceptedCreditDebitNote(User user, OrgLocations orgLocation,String noteType, CreditDebitNote creditDebitNote)throws Exception;
+
+	
 	Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception;
 	
 	Invoice updateInvoice(Invoice invoice) throws Exception;
@@ -92,7 +95,7 @@ public interface InvoiceService {
 
 	boolean deleteInvoice(String invoiceUUID, String reason, String invoiceType, User user)throws Exception;
 	
-	boolean deleteCreditDebitNote(String noteUUID,String reason,String noteType,User user,OrgLocations orgLocations)throws Exception;
+	boolean deleteCreditDebitNote(String noteUUID,String noteType,User user,OrgLocations orgLocations)throws Exception;
 
 	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
 

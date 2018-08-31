@@ -275,7 +275,7 @@ function creditNotePagination(url){
     	  	"render": function(data, type, report, meta) {
     	  		var result = "";
     	  		result = result +'         <td>   ';
-    	  		if(report.approverCheckBox == 'Y' && (report.approverUserSplitId.length >1)){
+    	  		if(report.approverCheckBox == 'Y' && (report.approverUserSplitId.length >0)){
     	  			for(var i=0; i<report.approverUserSplitId.length; i++) {
     	  				result = result +'<div class="tbldata-dotdot-vsm">';
     	  				if(report.approverUserSplitId[i] == '${SourceLeadWeb_user.id}'){
@@ -493,43 +493,91 @@ $('html').click(function(){
 
 
 <script>
-function acceptedInvoice(invoiceUUID){
+function acceptCreditDebitNote(creditDebitUUID){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result + ' <div id="reasonForInvoiceDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="acceptCreditDebitNoteSave(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function acceptCreditDebitNoteSave(creditDebitUUID){
 	 $.ajax({
-    	 type: "POST",
+   	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/acceptedInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
-             success: function(result) {
-            	 if (result && result.response === "INVALID_DATA") {
+	    	 url: sourceleadUrl+"/acceptCreditDebitNote?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID, 
+            success: function(result) {
+           	 if (result && result.response === "INVALID_DATA") {
 	          		    showError(result.responseMessage);
 	          		} else if (result.response === "AWKWARD") {
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
-	          			location.replace(sourceleadUrl+"/creditNoteList");
+	          			location.replace(sourceleadUrl+"/debitNoteList");
 	          		} else if (result.indexOf('Sign In') !== -1) {
 	          			location.replace(sourceleadUrl);
 	          		} else {
 	          		    showError("Operation failed, please try again");
 	          		}
-            	 
-        },
-    });  
+           	 
+       },
+   });  
 }
 
 </script>
 
 <script>
-function rejectInvoice(invoiceUUID){
+function rejectCreditDebitNote(creditDebitUUID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
-	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reject Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='reasonForReject' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForRejectDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onclick='saveReasonforReceivable(\""+invoiceUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onclick='saveReasonCreditDebitNote(\""+creditDebitUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
+}
+
+
+function saveReasonCreditDebitNote(creditDebitUUID){
+	var reason = document.getElementById("reasonForReject").value;
+	if(reason == null || reason == '' || reason == 'undefined'){
+	      
+		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
+	  	  $("#reasonForRejectDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+	  	  
+		}else{
+		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
+		$.ajax({
+		   	type: "POST",
+		   	url: sourceleadUrl+"/rejectCreditDebitNote?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID+"&reason="+reason,	    	   
+		    success: function(result) {
+		    	if (result && result.response === "INVALID_DATA") {
+          		    showError(result.responseMessage);
+          		} else if (result.response === "AWKWARD") {
+          		    location.href = "/errorPage";
+          		} else if (result.response === "SUCCESS") {
+          			$("#popUp").empty();
+   	 			    $(".project_inn_mask").fadeOut(200);
+   		    	    location.replace(sourceleadUrl+"/debitNoteList");
+          		} else if (result.indexOf('Sign In') !== -1) {
+          			location.replace(sourceleadUrl);
+          		} else {
+          		    showError("Operation failed, please try again");
+          		}
+		    	
+		    }
+	   });
+	}
+	  
 }
 </script>
 
@@ -720,36 +768,24 @@ function deleteCreditDebitNote(creditDebitUUID){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 
 	result = result +"		<p>Are you sure you want to delete ?</p>";
-	result = result +"		<textarea  id='reasonForCreditDebitNote' name='reasonForInvoice'  placeholder='Comments here' ></textarea>";
 	result = result + ' <div id="reasonForInvoiceDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveCreditDebitRejectedReason(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteCreditDebitNoteMethod(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 
-function saveCreditDebitRejectedReason(creditDebitUUID){
-	var reason = $("#reasonForCreditDebitNote").val();
-	if(reason != null && reason != ''){
-		 $("#reasonForInvoiceDiv").empty();
-		if(reason.length > 250){
-		$("#reasonForInvoiceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
-		}else{
+function deleteCreditDebitNoteMethod(creditDebitUUID){
 			 $.ajax({
 				   	type: "POST",
 				    url: sourceleadUrl+"/deleteCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Credit&creditDebitUUID="+creditDebitUUID+"&reason="+reason,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
-		   			 	location.replace(sourceleadUrl+"/creditNoteList");	
+		   			 	location.replace(sourceleadUrl+"/debitNoteList");	
 		   		    }
 			     });
-		}
-	}
-	else{
-			$("#reasonForInvoiceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-	}
 }
 
 function cancelTermination(){
@@ -833,6 +869,7 @@ function resetInvoiceFilter(){
 									<li class="checkBox positionRelative" ><input type="checkbox" value="Draft" name="creditNoteFilterStatus"><label for="onboard1">Draft</label></li>
                                     <li class="checkBox positionRelative" ><input type="checkbox" value="Send" name="creditNoteFilterStatus"><label for="onboard2">Send</label></li>
                                     <li class="checkBox positionRelative" ><input type="checkbox" value="Received" name="creditNoteFilterStatus"><label for="onboard1">Received</label></li>
+	                               	<li class="checkBox positionRelative" ><input type="checkbox" value="Rejected" name="creditNoteFilterStatus"><label>Rejected</label></li>
 	                               <!--  <li class="checkBox positionRelative" ><input type="checkbox"  value="ACCEPTED" name="creditNoteFilterStatus"><label for="onboard2">Accepted</label></li>
 	                                <li class="checkBox positionRelative" ><input type="checkbox" value="REJECTED" name="creditNoteFilterStatus"><label for="onboard2">Rejected</label></li>
 	                                <li class="checkBox positionRelative" ><input type="checkbox" value="LINKED" name="creditNoteFilterStatus"><label for="onboard2">Linked</label></li>

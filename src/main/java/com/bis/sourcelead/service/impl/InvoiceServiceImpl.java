@@ -3627,7 +3627,20 @@ public class InvoiceServiceImpl implements InvoiceService {
 				e.printStackTrace();
 			}
 			creditDebitNoteListDTO.setGeneratedId(creditDebitNote.getReferenceNumber());
-			creditDebitNoteListDTO.setInvoceId(creditDebitNote.getInvoice());
+			// get Invoice List
+			List<Invoice> listInvoice;
+			StringBuilder sbInvoice = new StringBuilder();
+			try {
+				listInvoice = invoiceDao.getInvoiceListUsingMultipleStringIds(creditDebitNote.getInvoice(),creditDebitNote.getOrgLocations().getId());
+				listInvoice.forEach(invoice->{
+					sbInvoice.append(invoice.getInvoiceId()).append(" , ").toString();
+				});
+				if(listInvoice !=null){
+				creditDebitNoteListDTO.setInvoceId(sbInvoice.deleteCharAt(sbInvoice.length() - 2).toString());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			creditDebitNoteListDTO.setCreditDebitNotedate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), creditDebitNote.getCreditNoteDate()));
 			creditDebitNoteListDTO.setCreditDebitNoteStatus(creditDebitNote.getNoteStatus());
 			creditDebitNoteListDTO.setCreditDebitUUID(creditDebitNote.getCreditDebitUUID());
@@ -3651,12 +3664,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public boolean deleteCreditDebitNote(String noteUUID,String reason,String noteType,User user,OrgLocations orgLocations)throws Exception {
+	public boolean deleteCreditDebitNote(String noteUUID,String noteType,User user,OrgLocations orgLocations)throws Exception {
 		boolean result = false;
 		CreditDebitNote note = invoiceDao.getCreditDebitNoteByUUID(noteUUID);
 		Date date = new Date();
 		if(note!= null){
-				note.setRejectReason(reason);
 				note.setStatus(Constants.MEMBER_IN_ACTIVE);
 				note.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 				note.setUpdatedBy(user);
@@ -3667,7 +3679,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 						CreditDebitNote parentnote = invoiceDao.getParentCreditDebitNoteById(savedNote.getParentCreditDebitNote().getId());
 						parentnote.setStatus(Constants.MEMBER_IN_ACTIVE);
 						parentnote.setUpdatedBy(user);
-						parentnote.setRejectReason(reason);
 						parentnote.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 						invoiceDao.saveCreditDebitNote(parentnote);
 					}else{
@@ -3675,7 +3686,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 						CreditDebitNote childInvoice = invoiceDao.getParentCreditDebitNoteById(savedNote.getId());
 						childInvoice.setStatus(Constants.MEMBER_IN_ACTIVE);
 						childInvoice.setUpdatedBy(user);
-						childInvoice.setRejectReason(reason);
 						childInvoice.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 						invoiceDao.saveCreditDebitNote(childInvoice);
 					}
@@ -3802,8 +3812,43 @@ public class InvoiceServiceImpl implements InvoiceService {
 		return ema;
 	}*/
 
-	
+	@Override
+	public CreditDebitNote saveAcceptedCreditDebitNote(User user, OrgLocations orgLocation, String noteType,
+			CreditDebitNote creditDebitNote) throws Exception {
+		
+		creditDebitNote.setNoteStatus("Send");
+		creditDebitNote.setUpdatedBy(user);
+		creditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(),orgLocation));
+		CreditDebitNote creditDebitNoteSave = invoiceDao.saveCreditDebitNote(creditDebitNote);
+		
+		OrgLocations vendorOrgLocation = null;
+		if(Constants.CREDIT_NOTE.equalsIgnoreCase(noteType)){
+        	// client details
+     			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(creditDebitNoteSave.getOrgRelations().getId());
+     			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+     				vendorOrgLocation = orgRelation.getLocationId();
+     			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				vendorOrgLocation = orgRelation.getResponderLocationId();
+			}
+     		}else{
+        	//vendor details
+      			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(creditDebitNoteSave.getOrgRelations().getId());
+      			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getLocationId();
+      			}
+      			if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getResponderLocationId();
+      			}
+        }
+		// save child record
+				if(creditDebitNote.getNoteStatus().equalsIgnoreCase("Send")){
+					saveChildCreditDebitNote(creditDebitNote,user,vendorOrgLocation);
+				}
+		
+		return creditDebitNote;
 
+	
+		}
 	
 
 }

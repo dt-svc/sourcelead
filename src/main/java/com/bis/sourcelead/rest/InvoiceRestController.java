@@ -1438,6 +1438,73 @@ return responseList;
 		
 	}
 	
+	
+	@RequestMapping(value = "/acceptCreditDebitNote", method = RequestMethod.POST)
+	public @ResponseBody Response<String> acceptCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "noteType", required = false) String noteType, 
+			 HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (creditDebitUUID != null) {
+					CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+					
+					 invoiceService.saveAcceptedCreditDebitNote(user, orgLocation, noteType, creditDebitNote);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
+	
+	@RequestMapping(value = "/rejectCreditDebitNote", method = RequestMethod.POST)
+	public @ResponseBody Response<String> rejectCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
+			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (creditDebitUUID != null) {
+					CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+					if (creditDebitNote != null) {
+						creditDebitNote.setNoteStatus(Constants.CREDIT_DEBIT_NOTE_REJECTED);
+						creditDebitNote.setRejectReason(reason);
+						creditDebitNote.setUpdatedBy(user);
+						creditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(),orgLocation));
+						invoiceDao.saveCreditDebitNote(creditDebitNote);
+						
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
 	@RequestMapping(value = "/rejectInvoice", method = RequestMethod.POST)
 	public @ResponseBody Response<String> rejectInvoice(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID, @RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception
 	{
@@ -2311,12 +2378,11 @@ return responseList;
 	@RequestMapping(value = "/deleteCreditDebitNote", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean deleteCreditDebitNote(@RequestParam(value = "creditDebitUUID", required = false) String creditDebitUUID, 
-			@RequestParam(value = "reason", required = false) String reason, 
 			@RequestParam(value = "noteType", required = false) String noteType, HttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orglocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		boolean isDeleted = invoiceService.deleteCreditDebitNote(creditDebitUUID, reason, noteType, user,orglocations);
+		boolean isDeleted = invoiceService.deleteCreditDebitNote(creditDebitUUID, noteType, user,orglocations);
 		
 		return isDeleted;
 	}

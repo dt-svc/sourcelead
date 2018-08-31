@@ -809,6 +809,8 @@ public class Constants {
 	public static final String ONE_YEAR = "oneyear";
 	public static final String INVOICE_ACCEPETED = "Accepted";
 	public static final String INVOICE_REJECTED = "Rejected";
+	public static final String CREDIT_DEBIT_NOTE_REJECTED = "Rejected";
+	public static final String CREDIT_DEBIT_NOTE_ACCEPTED = "Accepted";
 	public static final String INVOICE_BILL_VOID = "Void";
 	public static final String INVOICE_RECEIVED = "Received";
 	public static final String INVOICE_STATUS_UNPAID = "Unpaid";
