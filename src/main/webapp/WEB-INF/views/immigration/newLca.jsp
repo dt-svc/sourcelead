@@ -350,11 +350,11 @@
 	              <div class="col-md-8">
 	                  <div class="positionRelative">
 									<input class="form-control positionRelative"
-										id="location" name="lcaPlaceOfEmploymentList[${rows.count-1}].location" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].location}" onclick="initLocationAuto('location','country','state','city','zipCode','','','','addressLineOne','addressLine2');"
+										id="location${rows.count-1}" name="lcaPlaceOfEmploymentList[${rows.count-1}].location" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].location}" onclick="initLocationAuto('location','country','state','city','zipCode','','','','addressLineOne','addressLine2');"
 										placeholder="Enter Location" type="text" field-name="Location" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
-										onClick="refreshGoogleApiLocation('location','country','state','city','zipCode','addressLineOne','addressLine2');"></i>
+										onClick="refreshGoogleApiLocation('location${rows.count-1}','country${rows.count-1}','state${rows.count-1}','city${rows.count-1}','zipCode${rows.count-1}','addressLineOne${rows.count-1}','addressLine2${rows.count-1}');"></i>
 						</div>
 	              </div>
 	            </div>
@@ -362,7 +362,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Address Line 1</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].addressLine1" id="addressLineOne"  value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].addressLine1}" class="form-control" placeholder="Address Line 1" field-name="Address Line1"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].addressLine1" id="addressLineOne${rows.count-1}"  value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].addressLine1}" class="form-control" placeholder="Address Line 1" field-name="Address Line1"
 								data-validation="validate_Space validate_length length1-250"
 								data-validation-optional="true">
 					</div>
@@ -371,7 +371,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Address Line 2</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].addressLine2" id="addressLine2" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].addressLine2}" class="form-control" placeholder="Address Line 2" field-name="Address Line2"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].addressLine2" id="addressLine2${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].addressLine2}" class="form-control" placeholder="Address Line 2" field-name="Address Line2"
 								data-validation="validate_Space validate_length length1-250"
 								data-validation-optional="true">
 					</div>
@@ -380,7 +380,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">City</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].city" id="city" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].city}" class="form-control" placeholder="City" field-name="City"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].city" id="city${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].city}" class="form-control" placeholder="City" field-name="City"
 								data-validation="required validate_length length2-100">
 					</div>
 				</div>
@@ -388,7 +388,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">State</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].state" id="state" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].state}" class="form-control" placeholder="State" field-name="State"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].state" id="state${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].state}" class="form-control" placeholder="State" field-name="State"
 								data-validation="required validate_length length2-100">
 					</div>
 				</div>
@@ -396,7 +396,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Country</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].country" id="country" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country == null ? loginCountryName  : lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country}"  class="form-control" placeholder="Country" field-name="Country"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].country" id="country${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country == null ? loginCountryName  : lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country}"  class="form-control" placeholder="Country" field-name="Country"
 								data-validation="required validate_length length2-100">
 					</div>
 				</div>
@@ -405,7 +405,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
 					<label class="col-md-4">Zip Code</label>
 					<div class="col-md-8">
-					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].zipCode" id="zipCode" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].zipCode}" class="form-control" placeholder="Zip Code"
+					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].zipCode" id="zipCode${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].zipCode}" class="form-control" placeholder="Zip Code"
 					field-name="Zip Code" data-validation="validate_int validate_length length2-8" data-validation-optional="true">
 					</div>
 				</div>
@@ -499,7 +499,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Title</label>
         		<div class="col-md-12">
-        			<input type="text" name="lcaDocumentList[0].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[0].documentTitle}" class="form-control" placeholder="Document Title">
+        			<input type="text" name="lcaDocumentList[0].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[0].documentTitle}" class="form-control" placeholder="Document Title" field-name="Document Title" data-validation="required validate_Space validate_length length2-250">
         		</div>
         	</div>
         	
@@ -545,7 +545,7 @@
         	<div class="col-md-4 mb">
         		<label class="col-md-12">Title</label>
         		<div class="col-md-12">
-        			<input type="text" name="lcaDocumentList[${rows.count-1}].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[rows.count-1].documentTitle}" class="form-control" placeholder="Document Title">
+        			<input type="text" name="lcaDocumentList[${rows.count-1}].documentTitle" id="documentTitle" value="${lcaDTO.lcaDocumentList[rows.count-1].documentTitle}" class="form-control" placeholder="Document Title" field-name="Document Title" data-validation="required validate_Space validate_length length2-250">
         		</div>
         	</div>
         	
@@ -925,12 +925,10 @@ $('#endDate').datepicker({
        prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Title</label>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-12'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ "  <input type='text' class='form-control' id='documentTitle"+rowId+"'";
-       prepareAttachmentdiv =prepareAttachmentdiv+ " 						name='lcaDocumentList["+rowId+"].documentTitle' value='' field-name='documentTitle' placeholder='Document Title'";
-       prepareAttachmentdiv =prepareAttachmentdiv+ " 						data-validation='validate_Space validate_length length2-250'";
-       prepareAttachmentdiv =prepareAttachmentdiv+ " 						data-validation-optional='true'>";
+       prepareAttachmentdiv =prepareAttachmentdiv+ " 						name='lcaDocumentList["+rowId+"].documentTitle' value='' field-name='Document Title' placeholder='Document Title'";
+       prepareAttachmentdiv =prepareAttachmentdiv+ " 						data-validation='required validate_Space validate_length length2-250'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " </div>";
-	   
 	   
        prepareAttachmentdiv =prepareAttachmentdiv+ " <div class='col-md-4 mb'>";
        prepareAttachmentdiv =prepareAttachmentdiv+ " <label class='col-md-12'>Attachment</label>";

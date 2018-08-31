@@ -463,7 +463,7 @@ function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_lca_pop' class='remove_user_pop remove_user_pop_a'>";
-		result = result +"		<textarea  id='reasonForLca' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; 
+		result = result +"		<textarea  id='reasonForLca' name='reasonForSpoc'    data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; 
 		result = result +" <b>Do you want to remove record</b>";
 		result = result + ' <div id="reasonForLcaDiv"/>';
 		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onClick='deleteLcaDetailsByRowId(\""+lcaUuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelLcaDelete();'></b>";
@@ -502,6 +502,7 @@ function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 
    function cancelLcaDelete(){
 		$("#remove_lca_pop").fadeOut(200);
 		$(".project_inn_mask").fadeOut(200);
+		$("#reasonForLca").val('');
 	}
 	function columPop(){
 		$(".colPop").show();
