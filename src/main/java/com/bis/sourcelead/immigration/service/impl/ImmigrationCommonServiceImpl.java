@@ -2362,7 +2362,7 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		lca.setJobTitle(lcaDTO.getJobTitle());
 		lca.setSocCode(lcaDTO.getSocCode());
 		lca.setSocOccupationTitle(lcaDTO.getSocOccupationTitle());
-		if(lcaDTO.getStatus().equals("Active")) {
+		if(lcaDTO.getStatus().equalsIgnoreCase("Active")) {
 		lca.setStatus(Constants.RECORD_ACTIVE);
 		}else {
 			lca.setStatus(Constants.RECORD_INACTIVE);
