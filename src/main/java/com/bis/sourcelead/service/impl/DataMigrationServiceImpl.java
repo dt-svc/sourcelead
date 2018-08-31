@@ -756,6 +756,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}
 			
 			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("newLcaStartDate")) && !"null".equals(dataMigrationDTOJsonCopy.getString("newLcaStartDate"))) {
+				
 				 lcaDTO.setStartDate(dataMigrationDTOJsonCopy.getString("newLcaStartDate"));
 			}
 			
