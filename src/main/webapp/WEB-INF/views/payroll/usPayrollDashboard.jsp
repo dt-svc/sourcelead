@@ -176,9 +176,9 @@ function approvePayrollDiv(){
 <div class="col-md-7 mt">
 	<div class="row">
 		<div class="col-md-3">
-			<div class="dropdown-select">
-			<select id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
-				<option value="">--Select User Group--</option>
+			<div>
+			<select class="chosen-select" id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
+				<option value="">Select User Group</option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
 				</c:forEach>
@@ -190,7 +190,7 @@ function approvePayrollDiv(){
 			</select>
 		</div>
 		<div class="col-md-3 paddingRight">
-			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date">
+			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date" readonly="readonly">
 		</div>
 		<div class="col-md-2">
 			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runUSPayroll();">Initiate Payroll</a>
@@ -246,12 +246,13 @@ function approvePayrollDiv(){
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='historyDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
 		</ul>
    </div>
+   </div>
 	<div class="candidate_wrap_table datatable_filter backgroundWhite">
                 <div id="payrollFrequencyDiv"></div>
-                <div id="draftFrequencyDiv"></div>
+                <div id="draftFrequencyDiv" class="mt25"></div>
     </div>
-    <div class="clearfix"></div>
-	</div>
+    
+	
 		
 		
 		
@@ -693,9 +694,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		  	  changeYear: true, 
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
-		
-		
-		
+		  
 	});
 </script>
 
