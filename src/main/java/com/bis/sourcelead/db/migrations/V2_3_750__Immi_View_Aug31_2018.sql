@@ -61,7 +61,7 @@ CREATE OR REPLACE VIEW IMMIGRATION_LIST_VIEW AS
            lca.START_DATE
         FROM
             LCA lca, 
-            lca_history lh
+            LCA_HISTORY lh
         WHERE
             lh.CANDIDATE_ID = IMM.CANDIDATE_ID
             AND lh.IMMIGRATION_ID=IMM.ID
@@ -71,7 +71,7 @@ CREATE OR REPLACE VIEW IMMIGRATION_LIST_VIEW AS
            lca.END_DATE
         FROM
            LCA lca, 
-            lca_history lh
+            LCA_HISTORY lh
         WHERE
             lh.CANDIDATE_ID = IMM.CANDIDATE_ID
              AND lh.IMMIGRATION_ID=IMM.ID
