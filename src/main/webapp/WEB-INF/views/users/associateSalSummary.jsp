@@ -139,7 +139,7 @@ function associateSalSummary(userId){
                         result = result + '			<div>'+opt.effectiveDate+'</div>';
                         result = result + '			</div>';
                         
-                        result = result + '<div class="edit-input width150px" id="editEffectiveDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEffective'+opt.id+'" onclick = "editEffectiveDate(this)" value="'+opt.effectiveDate+'" class="form-control calendar"></div></td>';
+                        result = result + '<div class="edit-input width150px" id="editEffectiveDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEffective'+opt.id+'" onclick = "editEffectiveDate(this)" value="'+opt.effectiveDate+'" class="form-control calendar" readonly="readonly"></div></td>';
                         
                         result = result + '	</td>';
                         result = result + '	<td>';payType
@@ -281,7 +281,7 @@ function associateSalSummary(userId){
               <div class="col-md-5">
                 <label>Effective Date</label>
                 <div>
-                  <input class="form-control calendar" name="effectiveDate" id="effectiveDate" type="text" >
+                  <input class="form-control calendar" name="effectiveDate" readonly="readonly" id="effectiveDate" type="text" >
                 </div>
               </div>
               <div class="col-md-5">
@@ -784,6 +784,7 @@ function editEffectiveDate(e){
 }
 
 function editEndDate(e){
+// 	$("#"+e.id).attr('readonly','readonly');
 	$("#"+e.id).datepicker({
 		  changeMonth: true,
 	      changeYear: true,
