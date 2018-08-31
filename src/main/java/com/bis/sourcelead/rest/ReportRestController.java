@@ -247,7 +247,10 @@ public class ReportRestController {
 						teamsList.add(Long.parseLong(orgTeams[i]));
 					}
 				}
-			
+				String type=null;
+			if(userRoleDto.getType() != null && !userRoleDto.getType().isEmpty()){
+				type=userRoleDto.getType();
+			}
 			String[] tableColumns = { "firstName", "jobs", "candidates", "applicants", "shortlisted", "submitted", "Interviewed", "offered", "rejected","joined", "backout" };
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
@@ -257,7 +260,7 @@ public class ReportRestController {
 			}
 			userDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			userDTO.setSortOrder(sortColumnOrder);
-			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList);
+			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type);
 			return userDTOList;
 		}
 	
