@@ -221,12 +221,12 @@
             <div class="input-group er ratetype">
                 <div class="input-group-btn">
                   <select class="form-control selectpicker" id="offeredWageCurrency" name="offeredWageCurrency" data-style="btn-primary">
-										<option value="INR" ${lcaDTO.offeredWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
-										<option value="AUD" ${lcaDTO.offeredWageCurrency == 'AUD' ? 'selected' : ''}>AUD</option>
-										<option value="USD" ${lcaDTO.offeredWageCurrency == 'USD' ? 'selected' : ''}>USD</option>
-										<option value="GBP" ${lcaDTO.offeredWageCurrency == 'GBP' ? 'selected' : ''}>GBP</option>
-										<option value="SGD" ${lcaDTO.offeredWageCurrency == 'SGD' ? 'selected' : ''}>SGD</option>
-										<option value="EUR" ${lcaDTO.offeredWageCurrency == 'EUR' ? 'selected' : ''}>EUR</option> 
+										<option value="INR" ${offeredWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
+										<option value="AUD" ${offeredWageCurrency == 'AUD' ? 'selected' : ''}>AUD</option>
+										<option value="USD" ${offeredWageCurrency == 'USD' ? 'selected' : ''}>USD</option>
+										<option value="GBP" ${offeredWageCurrency == 'GBP' ? 'selected' : ''}>GBP</option>
+										<option value="SGD" ${offeredWageCurrency == 'SGD' ? 'selected' : ''}>SGD</option>
+										<option value="EUR" ${offeredWageCurrency == 'EUR' ? 'selected' : ''}>EUR</option> 
 									</select>
                 </div>
                 <input type="text" id="offeredWage" name="offeredWage" value="${lcaDTO.offeredWage}" class="form-control" value="" field-name="Offered Wage"
@@ -451,12 +451,12 @@
             <div class="input-group er ratetype">
                 <div class="input-group-btn">
                    <select class="form-control selectpicker" id="privilingWageCurrency" name="privilingWageCurrency" data-style="btn-primary">
-						<option value="INR" ${lcaDTO.privilingWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
-						<option value="AUD" ${lcaDTO.privilingWageCurrency == 'AUD' ? 'selected' : ''}>AUD</option>
-						<option value="USD" ${lcaDTO.privilingWageCurrency == 'USD' ? 'selected' : ''}>USD</option>
-						<option value="GBP" ${lcaDTO.privilingWageCurrency == 'GBP' ? 'selected' : ''}>GBP</option>
-						<option value="SGD" ${lcaDTO.privilingWageCurrency == 'SGD' ? 'selected' : ''}>SGD</option>
-						<option value="EUR" ${lcaDTO.privilingWageCurrency == 'EUR' ? 'selected' : ''}>EUR</option> 
+						<option value="INR" ${privilingWageCurrency == 'INR' ? 'selected' : ''}>INR</option>
+						<option value="AUD" ${privilingWageCurrency == 'AUD' ? 'selected' : ''}>AUD</option>
+						<option value="USD" ${privilingWageCurrency == 'USD' ? 'selected' : ''}>USD</option>
+						<option value="GBP" ${privilingWageCurrency == 'GBP' ? 'selected' : ''}>GBP</option>
+						<option value="SGD" ${privilingWageCurrency == 'SGD' ? 'selected' : ''}>SGD</option>
+						<option value="EUR" ${privilingWageCurrency == 'EUR' ? 'selected' : ''}>EUR</option> 
 					</select>
                 </div>
                 <input type="text" name="prevailingWage" id="prevailingWage" value="${lcaDTO.prevailingWage}" class="form-control" value="" field-name="Prevailing Wage"

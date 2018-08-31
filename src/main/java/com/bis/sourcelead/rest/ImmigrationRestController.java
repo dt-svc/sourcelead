@@ -2278,8 +2278,15 @@ public class ImmigrationRestController {
 	 */
      
 	@RequestMapping(value = { "/loadNewLCA" })
-	public ModelAndView loadNewLCA(HttpServletRequest request) {
+	public ModelAndView loadNewLCA(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("offeredWageCurrency", countries.getCurrency());
+        model.addObject("privilingWageCurrency", countries.getCurrency());
+		}
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/newLca");
