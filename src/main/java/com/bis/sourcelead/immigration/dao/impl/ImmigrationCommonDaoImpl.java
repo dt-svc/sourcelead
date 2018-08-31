@@ -33,6 +33,7 @@ import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -2102,7 +2103,83 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		    return lcaList;
 	}
 
-	
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId,OrgLocations orgLocations) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LcaDetailsDTO> empList = new ArrayList<LcaDetailsDTO>();
+		String queryString = "SELECT " + 
+				"IMM.GENERATED_ID AS petitionId, " + 
+				"IMM.IMMIGRATION_UUID AS immigrationUUID,"+
+				                                 "(SELECT " + 
+			                      	                       "CONCAT(FIRST_NAME, ' ', IFNULL(LAST_NAME, '')) " + 
+				                                           "FROM " + 
+				                                               " CANDIDATE " + 
+				                                                          " WHERE " + 
+				                                                               "ID = LH.CANDIDATE_ID) AS empName, " + 
+				                                                               "(SELECT "+
+				                                                                    "CANDIDATE_UUID "+
+				                                                                  "FROM "+
+				                                                                       "CANDIDATE " + 
+				                                                                   "WHERE "+
+				                                                                       "CANDIDATE_UUID = LH.CANDIDATE_ID) AS candidateUUID, "+        
+				                                       "(SELECT " + 
+				                                                    "NAME " + 
+				                                                         "FROM " + 
+				                                                             "LOOKUP_DATA " + 
+				                                                                       "WHERE " + 
+				                                                                         "ID = IMM.PETITION_TYPE) AS petitionType, " + 
+				                                        "(SELECT " + 
+				                                                      "NAME " + 
+				                                                              "FROM " + 
+				                                                                  "LOOKUP_DATA " + 
+				                                                                                "WHERE " + 
+				                                                                                         "ID = IMM.CURRENT_USCIS_STATUS) AS status, " + 
+				                                                                                         " DATE_FORMAT(IMM.OPEN_DATE ,'%Y-%m-%d') AS filedOn, " + 
+				                                      "(SELECT " + 
+				                                             "O.ORG_NAME " + 
+				                                                         "FROM " + 
+				                                                             "ORG_LOCATIONS OL, " + 
+				                                                                                 "ORG O " + 
+				                                                                                      "WHERE " + 
+				                                                                                         "OL.ORG_ID = O.ID " + 
+				                                                                                              "AND OL.ID = IMM.ORG_LOCATION_ID) AS client, " + 
+				                                       "(SELECT " + 
+				                                                    "O.ORG_NAME " + 
+				                                                                  "FROM " + 
+				                                                                            "ORG_LOCATIONS OL, " + 
+				                                                                                 " ORG O " + 
+				                                                                                     "WHERE " + 
+				                                                                                        " OL.ORG_ID = O.ID " + 
+				                                                                                           " AND OL.ID = IMM.ATTORNEY_LOCATION_ID) AS vendor, " + 
+				                                         "(SELECT " +
+			                                                         "CONVERT(ORG_LOCATION_ID,CHAR) "+
+			                                                                                    "FROM "+
+			                                                                                          "LCA "+
+			                                                                                               "WHERE "+
+			                                                                                                   "ID= LH.LCA_ID) AS orgLocationId, "+
+			                                           "(SELECT  "+
+			                                             "IT.UUID "+
+			                                                   "FROM "+
+			                                                         "IMMIGRATION_TEMPLATE IT "+
+			                                                                  "WHERE "+
+			                                                                        "IT.ID = IMM.IMMIGRATION_TEMPLATE_ID) AS immiTemplateUUID "+
+				                                                  "FROM " + 
+				                                                          "IMMIGRATION IMM, " + 
+				                                                              "LCA_HISTORY LH " + 
+				                                                                   "WHERE " + 
+				                                                                        "IMM.ID = LH.IMMIGRATION_ID " +
+				                                                                            "AND LH.LCA_ID =:lcaId";
+		empList = session.createSQLQuery(queryString).setParameter("lcaId", lcaId).setResultTransformer(Transformers.aliasToBean(LcaDetailsDTO.class)).list();
+		for(LcaDetailsDTO obj : empList) {
+			if(orgLocations.getId().equals(obj.getOrgLocationId())) {
+			obj.setAttorneyName(obj.getVendor());
+			}else {
+				obj.setAttorneyName(obj.getClient());
+			}
+		}
+		
+		return empList;
+	}
 	
 }
