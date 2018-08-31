@@ -42,6 +42,10 @@ public class CreditDebitLineItems {
 	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
 	private OrgLocations orgLocation;
 	
+	@ManyToOne
+    @JoinColumn(name="PAYMENT_ACCOUNT_ID", nullable=false )     
+	private PaymentAccount paymentAccount;
+	
 	@Column(name = "PRICE")
 	private BigDecimal price;
 	
@@ -79,6 +83,14 @@ public class CreditDebitLineItems {
 	
 	@Column(name = "QUANTITY")
 	private String quantity;
+	
+	@Transient
+	@JsonProperty
+	private String lineItemDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String associateName;
 
 	public Long getId() {
 		return id;
@@ -221,6 +233,30 @@ public class CreditDebitLineItems {
 
 	public void setQuantity(String quantity) {
 		this.quantity = quantity;
+	}
+
+	public String getLineItemDateStr() {
+		return lineItemDateStr;
+	}
+
+	public void setLineItemDateStr(String lineItemDateStr) {
+		this.lineItemDateStr = lineItemDateStr;
+	}
+
+	public PaymentAccount getPaymentAccount() {
+		return paymentAccount;
+	}
+
+	public void setPaymentAccount(PaymentAccount paymentAccount) {
+		this.paymentAccount = paymentAccount;
+	}
+
+	public String getAssociateName() {
+		return associateName;
+	}
+
+	public void setAssociateName(String associateName) {
+		this.associateName = associateName;
 	}
 
 	

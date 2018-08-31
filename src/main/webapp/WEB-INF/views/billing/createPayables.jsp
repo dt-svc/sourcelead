@@ -1879,13 +1879,12 @@ function getVendorContacts(vendorContactId){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-		success :function(data) {
-		var json = JSON.parse(data);
+		success :function(json) {
 		var output = "";
 		output = output + "<option value=''>Select Vendor Contact</option>";
-		for (var i=0; i<json.length; i++)
+		for (var i=0; i<json.data.length; i++)
 		{
-		var opt = json[i];
+		var opt = json.data[i];
 		
 		var selected = '';
 		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spocUserId){

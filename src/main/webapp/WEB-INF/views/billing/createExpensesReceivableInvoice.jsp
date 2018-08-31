@@ -320,7 +320,7 @@ function getClientContacts(){
 	for (var i=0; i<json.data.length; i++)
 	{
 	var opt = json.data[i];
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+ "(" + opt.spocName+ ")</option>";
 	$("#clientCurrency").val(opt.clientCurrency);
 	}
 	$("#clientContact").empty();

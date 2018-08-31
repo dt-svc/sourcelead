@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceDocument;
@@ -218,8 +219,9 @@ public class BillingPayableController {
 	
 	
 	@RequestMapping(value = "/getPayableVendorContactsByOrgRelationId", method = RequestMethod.GET)
-	public @ResponseBody String getPayableVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody ResponseList<OrgSpoc> getPayableVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		List<OrgSpoc> orgSpocList = null;
+		ResponseList<OrgSpoc> responseList = new ResponseList<>();
 		if(orgRelationId !="" && orgRelationId != null) {
 		 orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
 		
@@ -244,7 +246,8 @@ public class BillingPayableController {
 			orgSpoc.setVendorCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getVendorLocationId().getCountry()));
 			}
 		}
-		return commonUtil.toJSON(orgSpocList);
+		responseList.setData(orgSpocList);
+		return responseList;
 	} 
 	
 	

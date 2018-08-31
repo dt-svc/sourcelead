@@ -376,12 +376,35 @@ public class InvoiceController {
 		}
 		model.setViewName("billing/creditNoteList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		
-		List<String> invoiceTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.INVOICES.toString(), orgLocations.getId());
-        model.addObject("invoiceTagsList", invoiceTagsList);
-        
-		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
+		
+	return model;
+	}
+	
+	@RequestMapping(value = "/debitNoteList")
+	public ModelAndView debitNoteList(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "invoiceCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "invoiceCreateMsg");
+		}
+		model.setViewName("billing/debitNoteList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		request.getSession().setAttribute("sessionData",sessionData);
+		
 	return model;
 	}
 	

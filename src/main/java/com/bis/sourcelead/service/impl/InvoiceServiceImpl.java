@@ -3696,8 +3696,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 		Response<CreditDebitNote> response = new Response<CreditDebitNote>();
 		CreditDebitNote creditDebitNote = invoiceDao.getCreditDebitNoteByIdAndOrglocationId(id, orgLocationId);
 		// get CreditDebit Line Items 
-		List<CreditDebitLineItems> lineItems = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(id, orgLocationId);
-		creditDebitNote.setListOfCreditDebitLineItems(lineItems);
+		List<CreditDebitLineItems> lineItemsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(id, orgLocationId);
+		lineItemsList.forEach(lineItem->{
+			lineItem.setLineItemDateStr(commonUtil.dateStrFromOrgDateFormatter(lineItem.getOrgLocation().getDateFormat(), lineItem.getLineItemDate()));	
+			if(lineItem.getAssociate() !=null){
+			lineItem.setAssociateName(lineItem.getAssociate().getFullName());
+			}
+		});
+		creditDebitNote.setListOfCreditDebitLineItems(lineItemsList);
 		// get Invoice List
 		List<Invoice> listInvoice = invoiceDao.getInvoiceListUsingMultipleStringIds(creditDebitNote.getInvoice(),creditDebitNote.getOrgLocations().getId());
 		StringBuilder sbInvoice = new StringBuilder();
@@ -3714,6 +3720,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		});
 		creditDebitNote.setApproversMultipleNames(appSb.deleteCharAt(appSb.length() - 2).toString());
 		}
+		creditDebitNote.setCreditDebitNoteDateStr(commonUtil.dateStrFromOrgDateFormatter(creditDebitNote.getOrgLocations().getDateFormat(), creditDebitNote.getCreditNoteDate()));
 		StringBuilder contactName = new StringBuilder();
 		StringBuilder contactEmails = new StringBuilder();
 		if (creditDebitNote.getOrgRelations().getLocationId().getId().equals(orgLocationId)) {

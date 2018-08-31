@@ -20,7 +20,7 @@ $(document).ready(function(){
     <section class="content-header clearfix">
      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Receivable List</a> » Invoice View</div>
       
-      <div class="" id="invoiceIdHidden" style="display:none">
+      <div class="" id="creditDivIdHidden" style="display:none">
           <h2>Invoice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
 <!--      =================== Tags related html code written by Laxman Start ============================ -->
 			  <div class="newTagsWrap">
@@ -42,7 +42,7 @@ $(document).ready(function(){
 		  
       </div>
       
-      <div class="" id="BillIdHidden" style="display:none">
+      <div class="" id="debitDivIdHidden" style="display:none">
           <h2>Bill Id: <span><input class="ReadTextFliA" id="billIdDiv" readonly="readonly"></span></h2>
  <!--      =================== Tags related html code written by Laxman Start ============================ -->
           <div class="cearfix">
@@ -80,9 +80,7 @@ $(document).ready(function(){
               </a>
             </li>
               <li class="">
-<%--             <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')"> --%>
               <a href="#notesList" data-toggle="tab" title="Notes" aria-expanded="false" onclick="invoiceNotesList();">
-<%--               </sec:authorize> --%>
                 <h5>Notes</h5>
               </a>
             </li>
@@ -143,21 +141,46 @@ function getViewCreditDebitNote(){
 	        		result = result +'            <div class="col-md-6">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Reference Id :</label>         ';
 					result = result +'              <div class="col-md-8">                                               ';
+					if(response.object.referenceNumber !=null && response.object.referenceNumber !='' && response.object.referenceNumber !='undefined'){
 					result = result +'                <label>'+response.object.referenceNumber+'</label>                     ';
+					}else{
+					result = result +'                <label>---</label>                     ';
+					}
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					
 					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">Credit Note Date :</label>         ';
+					result = result +'              <div class="col-md-8">                                               ';
+					if(response.object.creditDebitNoteDateStr !=null && response.object.creditDebitNoteDateStr !='' && response.object.creditDebitNoteDateStr !='undefined'){
+					result = result +'                <label>'+response.object.creditDebitNoteDateStr+'</label>                     ';
+					}else{
+					result = result +'                <label>---</label>                     ';
+					}
+					result = result +'              </div>                                                               ';
+					result = result +'            </div>                                                                 ';
+					
+					
+					result = result +'            <div class="col-md-6">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Billing Address :</label>      ';
 					result = result +'              <div class="col-md-8">                                               ';
+					if(response.object.billingAddress !=null && response.object.billingAddress !='' && response.object.billingAddress !='undefined'){
 					result = result +'                <label>'+response.object.billingAddress+'</label>                      ';
+					}else{
+					result = result +'                <label>---</label>                      ';
+					}
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					
 					result = result +'            <div class="col-md-6">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Shipping Address :</label>     ';
 					result = result +'              <div class="col-md-8">                                               ';
+					if(response.object.shippingAddress !=null && response.object.shippingAddress !='' && response.object.shippingAddress !='undefined'){
 					result = result +'                <label>'+response.object.shippingAddress+'</label>                     ';
+					}
+					else{
+					result = result +'                <label>---</label>                     ';
+					}
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					
@@ -175,17 +198,25 @@ function getViewCreditDebitNote(){
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					
+					if(response.object.approverCheckBox == "Y"){
 					result = result +'            <div class="col-md-6">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Approvers :</label>     ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+response.object.approversMultipleNames+'</label>                  ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
+					}
 					
 					result = result +'            <div class="col-md-6">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Reason :</label>     ';
 					result = result +'              <div class="col-md-8">                                               ';
-					result = result +'                <label>'+response.object.reason+'</label>                  ';
+					if(response.object.reason !=null && response.object.reason !='' && response.object.reason !='undefined'){
+						result = result +'                <label>'+response.object.reason+'</label>                  ';
+
+					}else{
+						result = result +'                <label>---</label>                  ';
+	
+					}
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					
@@ -214,7 +245,6 @@ function getViewCreditDebitNote(){
 	                result = result +'<th>Date</th>																';
 	                result = result +'<th>Description</th>															';
 	                result = result +'<th>Associate</th>														';
-	                result = result +'<th>Account</th>															';
 	                result = result +'<th>Quantity</th>																';
 	                result = result +'<th>Price</th>															';
 	                result = result +'<th>Amount</th>															';
@@ -226,19 +256,27 @@ function getViewCreditDebitNote(){
 							result = result +'                 <tr>                                                          ';
 							
 							result = result +'<td>'																			;
-                            result = result +'<div title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>'							;
+							if(items.lineItemDateStr !=null && items.lineItemDateStr !='' && items.lineItemDateStr !='undefined'){
+                            result = result +'<div title="'+items.lineItemDateStr+'">'+items.lineItemDateStr+'</div>'							;
+							}else{
+	                         result = result +'<div>---</div>'							;
+							}
                             result = result +'</td>																			';
                             
                             result = result +'<td>'																			;
+							if(items.inlineDescription !=null && items.inlineDescription !='' && items.inlineDescription !='undefined'){
                             result = result +'<div title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>'							;
+							}else{
+	                         result = result +'<div>---</div>'							;
+							}
                             result = result +'</td>																			';
                             
                             result = result +'<td>'																			;
-                            result = result +'<div title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>'							;
-                            result = result +'</td>																			';
-                            
-                            result = result +'<td>'																			;
-                            result = result +'<div title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>'							;
+							if(items.associateName !=null && items.associateName !='' && items.associateName !='undefined'){
+                            result = result +'<div title="'+items.associateName+'">'+items.associateName+'</div>'							;
+							}else{
+		                    result = result +'<div>---</div>'							;
+							}
                             result = result +'</td>																			';
                             
                             result = result +'<td>'																			;

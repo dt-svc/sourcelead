@@ -413,7 +413,7 @@ function removeDynamicRowDiv(id){
 		$("#spocUser").empty();
 		$.ajax({
 					type : "GET",
-					url : sourceleadUrl + "/getClientContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
+					url : sourceleadUrl + "/getPayableVendorContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
 					success : function(json) {
 						var output = "";
 						output = output+ "<option value=''>Select Client Contact</option>";
