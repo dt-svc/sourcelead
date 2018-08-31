@@ -251,6 +251,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" onClick="closeusRunpayrol();">Close</button>
       </div>
+      <div id="editPayrollLoading"></div>
     </div>
   </div>
   </form:form>
@@ -593,8 +594,9 @@ function editUspayslip(event){
 function savePayrollAdjustment(){
 	  var formData = getFormData("payroll_adjustment_form");
 	 /* var formData = $($('#payroll_adjustment_form')[0]).serialize(); */
-	  	//$("#paysheetLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  	$("#editPayrollLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sourceleadUrl+"/editEmployeePayroll?"+tokenParamName+"="+tokenValue, formData, function(result) {
+			$("#editPayrollLoading").removeAttr('style');
 			if (result.response === "INVALID_DATA") {
  		    showError(result.responseMessage);
  		} else if (result.response === "AWKWARD") {
@@ -607,7 +609,6 @@ function savePayrollAdjustment(){
  		} else {
  		    showError("Operation failed, please try again");
  		}
-			/*  $("#paysheetLoading").hide(); */
 		});
 }
 </script>

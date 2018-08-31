@@ -24,6 +24,7 @@ $(document).ready(function(){
     <div class="candidate_wrap_table datatable_filter backgroundWhite">
     <div class="positionRelative timesheet_head minHeight clearfix"></div>
     	<div id="paySummaryDiv"></div>
+    	<div id="approvedSummaryDiv"></div>
     </div>
     <div class="clearfix"></div>
     </section>
@@ -33,6 +34,7 @@ function getPaySheetFrequencySummary(status){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var uuid = '${paySheetFrequencyUUID}';
 	var payPeriodNum = '${payPeriodNum}';
+	$("#approvedSummaryDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 		type : "GET",
 		url : sourceleadUrl+ "/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum,
@@ -139,6 +141,7 @@ function getPaySheetFrequencySummary(status){
 		    	result = result +'</tbody>';
 			    $("#paySummaryDiv").empty();
 			    $("#paySummaryDiv").append(result);
+			    $("#approvedSummaryDiv").removeAttr('style');
 			    paySummaryPagination();
 		}
 	});
