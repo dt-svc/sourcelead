@@ -176,9 +176,9 @@ function approvePayrollDiv(){
 <div class="col-md-7 mt">
 	<div class="row">
 		<div class="col-md-3">
-			<div class="dropdown-select">
-			<select id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
-				<option value="">--Select User Group--</option>
+			<div>
+			<select class="chosen-select" id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
+				<option value="">Select User Group</option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
 				</c:forEach>
@@ -246,12 +246,13 @@ function approvePayrollDiv(){
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='historyDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
 		</ul>
    </div>
+   </div>
 	<div class="candidate_wrap_table datatable_filter backgroundWhite">
                 <div id="payrollFrequencyDiv"></div>
-                <div id="draftFrequencyDiv"></div>
+                <div id="draftFrequencyDiv" class="mt25"></div>
     </div>
-    <div class="clearfix"></div>
-	</div>
+    
+	
 		
 		
 		
