@@ -212,6 +212,8 @@ public class ImmigrationDTO extends SearchDTO {
    
 	private String lcaId;
 	
+	private String prevLcaId;
+	
 	private String lcaCurrLocation;
     
 	public Long getId() {
@@ -960,6 +962,14 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setLcaCurrLocation(String lcaCurrLocation) {
 		this.lcaCurrLocation = lcaCurrLocation;
+	}
+
+	public String getPrevLcaId() {
+		return prevLcaId;
+	}
+
+	public void setPrevLcaId(String prevLcaId) {
+		this.prevLcaId = prevLcaId;
 	}
 	
 	
