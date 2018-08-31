@@ -464,7 +464,7 @@
 			         <div class="clearfix"></div> 
 			          
 			         <h2>Internal Details:</h2> 
-			         <div class="require_one"> 
+			         <div class="require_one clearfix"> 
 			         	 <c:if test="${requirement.isClientJob  == 'N'}">
 			         		 <div class="require_wrap_details_cta"> <b>Application form:</b><span>${!empty requirement.clientSubmissionTemplate ? requirement.clientSubmissionTemplate : ' -- '}</span></div>
 			         	 </c:if>

@@ -565,6 +565,8 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		if (StringUtils.isNotBlank(requirementDTO.getJobRate())) {
 			requirement.setJobRate(requirementDTO.getJobRate());
+		}else {
+			requirement.setJobRate(null);
 		}
 		
 		if (StringUtils.isNotBlank(requirementDTO.getIncentivized())) {
@@ -575,6 +577,8 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		if (StringUtils.isNotBlank(requirementDTO.getPayOutPeriod())) {
 			requirement.setPayOutPeriod(requirementDTO.getPayOutPeriod());
+		}else {
+			requirement.setPayOutPeriod(null);
 		}
 		
 		HashSet<RequirementIncentive> requirementIncentiveList = new HashSet<RequirementIncentive>();
