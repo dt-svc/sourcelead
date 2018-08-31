@@ -55,6 +55,7 @@ function associateSalSummary(userId){
             	result = result + '    </div>';
             	result = result + '  </div>';
                     
+            	if(json.payType != "LcaWage" && json.payType != "HourlyRate"){
             	result = result + ' <div class="col-md-5">';
             	result = result + '    <label>Standard Hours</label>';
             	result = result + '   <div>';
@@ -96,6 +97,8 @@ function associateSalSummary(userId){
                 result = result + '   </div>';
                 result = result + ' </div>';
                 result = result + ' </div>';
+                
+            	 }
                 
                 // Adding Pay Items
                 result = result + '<div class="clearfix"></div>';
@@ -220,10 +223,11 @@ function associateSalSummary(userId){
                  <input class="form-control" name="salaryType" id="salaryType" type="hidden">
                   <input class="form-control" name="id" id="id" type="hidden">
                    <input class="form-control" name="userId" id="userId" type="hidden">
-                  <select class="sel" id="payType" name="payType" data-validation="required" field-name="Pay Type">
+                  <select class="sel" id="payType" name="payType" data-validation="required" onchange="showHideSalaryDIV();" field-name="Pay Type">
                     <option value="">--Select--</option>
                     <option value="HourlyRate">Hourly Rate</option>
                     <option value="Salary">Salary</option>
+                    <option value="LcaWage">LCA Wage</option>
                     <option value="Commission Only">Commission Only</option>
                   </select>
                 </div>
@@ -248,6 +252,7 @@ function associateSalSummary(userId){
                       </select>
                     </div>
                   </div>
+             <div id="salaryDIV">
               <div class="col-md-5">
                 <label>Standard Hours</label>
                 <div>
@@ -296,6 +301,7 @@ function associateSalSummary(userId){
                   <textarea class="form-control" rows="2" placeholder="Enter" name="changeReason" id="changeReason"></textarea>
                 </div>
               </div>
+              </div>
               <div class="clearfix"></div>
             </div>
         </div>
@@ -310,6 +316,37 @@ function associateSalSummary(userId){
 </div>
 <!-- Add Team modal popup ends -->
 
+
+<script>
+function showHideSalaryDIV(){
+	var payType = $("#payType").val();
+	 if(payType == "HourlyRate" || payType == "LcaWage"){
+		$("#salaryDIV").hide();
+		$("#standardHours").val('');    
+		$("#annualSal").val('');
+		$("#perPaySal").val('');
+		$("#hourlyRate").val('');
+		$("#standardHours").removeAttr('data-validation');
+		$('#standardHours').attr('data-validation-optional',"true");
+		$("#annualSal").removeAttr('data-validation');
+		$('#annualSal').attr('data-validation-optional',"true");
+		$("#perPaySal").removeAttr('data-validation');
+		$('#perPaySal').attr('data-validation-optional',"true"); 
+		$("#hourlyRate").removeAttr('data-validation');
+		$('#hourlyRate').attr('data-validation-optional',"true");
+	}else{
+		$("#salaryDIV").show();
+		$("#standardHours").removeAttr('data-validation-optional');
+		$('#standardHours').attr('data-validation',"required validate_float");
+		$("#annualSal").removeAttr('data-validation-optional ');
+		$('#annualSal').attr('data-validation',"required validate_float");
+		$("#perPaySal").removeAttr('data-validation-optional');
+		$('#perPaySal').attr('data-validation',"required validate_float");
+		$("#hourlyRate").removeAttr('data-validation-optional');
+		$('#hourlyRate').attr('data-validation',"required validate_float");
+	}
+}
+</script>
 
 <!-- Ends update salary details -->
 
@@ -447,7 +484,7 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 	 document.getElementById("update_associate_salary_form").reset(); 
 	
 	 if(id != null && id != '' && id != 'undefined'){
-		 $("#payType").val(payType);
+			 $("#payType").val(payType);
 			$("#payFrequency").val(payFrequency);
 			$("#standardHours").val(standardHours);
 			$("#annualSal").val(annualSal);
@@ -466,6 +503,32 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 			$("#userId").val(userId);
 			
 			getPayGroups(groupUUID);
+			
+			 if(payType == "HourlyRate" || payType == "LcaWage"){
+				    $("#salaryDIV").hide();
+					$("#standardHours").val('');    
+					$("#annualSal").val('');
+					$("#perPaySal").val('');
+					$("#hourlyRate").val('');
+					$("#standardHours").removeAttr('data-validation');
+					$('#standardHours').attr('data-validation-optional',"true");
+					$("#annualSal").removeAttr('data-validation');
+					$('#annualSal').attr('data-validation-optional',"true");
+					$("#perPaySal").removeAttr('data-validation');
+					$('#perPaySal').attr('data-validation-optional',"true"); 
+					$("#hourlyRate").removeAttr('data-validation');
+					$('#hourlyRate').attr('data-validation-optional',"true");
+			}else{
+				$("#salaryDIV").show();
+				$("#standardHours").removeAttr('data-validation-optional');
+				$('#standardHours').attr('data-validation',"required validate_float");
+				$("#annualSal").removeAttr('data-validation-optional ');
+				$('#annualSal').attr('data-validation',"required validate_float");
+				$("#perPaySal").removeAttr('data-validation-optional');
+				$('#perPaySal').attr('data-validation',"required validate_float");
+				$("#hourlyRate").removeAttr('data-validation-optional');
+				$('#hourlyRate').attr('data-validation',"required validate_float");
+			}
 	 }
 	 $(".updateSalaryDetails, .sideMask").fadeIn();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 

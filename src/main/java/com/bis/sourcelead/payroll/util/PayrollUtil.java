@@ -414,12 +414,11 @@ public class PayrollUtil {
 		try {
 			Calendar c = Calendar.getInstance(); // this takes current date
 			ytd[1] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
-			System.out.println("End Date = " + c.getTime());
 			c.set(Calendar.MONTH, 0);
 			c.set(Calendar.DAY_OF_MONTH, 1);
 			ytd[0] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
-			System.out.println(c.getTime());
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return ytd;
 	}

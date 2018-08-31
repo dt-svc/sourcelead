@@ -43,6 +43,18 @@ public class PayAdjustmentHistory {
 	@Column( name = "PRE_OVERTIME_HOURS_AMOUNT")
 	private BigDecimal preOvertimeHoursAmt;
 	
+	@Column( name = "PRE_PAY_TYPE")
+	private String prePayType;
+	
+	@Column( name = "PRE_PAY_PER_SALARY")
+	private BigDecimal prePayPerSalary;
+	
+	@Column( name = "PAY_TYPE")
+	private String payType;
+	
+	@Column( name = "PAY_PER_SALARY")
+	private BigDecimal payPerSalary;
+	
 	
 	@Column( name = "REGULAR_HOURS")
 	private String regularHours;
@@ -252,6 +264,46 @@ public class PayAdjustmentHistory {
 	public void setPayAdjustmentPayItemHistory(Set<PayAdjustmentPayItemHistory> payAdjustmentPayItemHistory)
 	{
 		this.payAdjustmentPayItemHistory = payAdjustmentPayItemHistory;
+	}
+
+	public String getPrePayType()
+	{
+		return prePayType;
+	}
+
+	public BigDecimal getPrePayPerSalary()
+	{
+		return prePayPerSalary;
+	}
+
+	public String getPayType()
+	{
+		return payType;
+	}
+
+	public BigDecimal getPayPerSalary()
+	{
+		return payPerSalary;
+	}
+
+	public void setPrePayType(String prePayType)
+	{
+		this.prePayType = prePayType;
+	}
+
+	public void setPrePayPerSalary(BigDecimal prePayPerSalary)
+	{
+		this.prePayPerSalary = prePayPerSalary;
+	}
+
+	public void setPayType(String payType)
+	{
+		this.payType = payType;
+	}
+
+	public void setPayPerSalary(BigDecimal payPerSalary)
+	{
+		this.payPerSalary = payPerSalary;
 	}
 	
 

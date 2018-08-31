@@ -2166,6 +2166,9 @@ public class CandidateOnBoardRestController {
 			HttpServletRequest request) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(associatePfEsiDetailsDTO.getPfesiId() != null && !associatePfEsiDetailsDTO.getPfesiId().isEmpty()) {
+			associatePfEsiDetailsDTO.setId(Long.valueOf(associatePfEsiDetailsDTO.getPfesiId()));
+		}
 		Response<AssociatePfEsiDetailsDTO>  resObj = associatePfEsiService.saveAssociatePfEsi(associatePfEsiDetailsDTO,orgLocation,loginUser);	
 		return resObj;
 	}

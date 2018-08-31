@@ -40,13 +40,6 @@
     </repositories>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
-		<dependency>
-		    <groupId>net.sf.ehcache</groupId>
-		    <artifactId>ehcache</artifactId>
-		    <version>1.5.0</version>
-		</dependency>
-        
         <!-- https://mvnrepository.com/artifact/com.itextpdf.tool/xmlworker -->
         <dependency>
             <groupId>com.itextpdf.tool</groupId>
@@ -577,15 +570,6 @@
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
-        
-        <!-- Added STE Custom Jar -->
-        <dependency>
-    		 <groupId>com.symmetry.ste</groupId>
-    		 <artifactId>ste</artifactId>
-   			  <version>1.0</version>
-		</dependency>
-        
-        <!-- END OF STE JAR -->
 
 
         <!-- https://mvnrepository.com/artifact/net.sourceforge.javacsv/javacsv -->
@@ -696,12 +680,22 @@
 		    <scope>provided</scope>
 		</dependency>
         <!-- Docusign dependency end -->
-
-		<dependency>
-		    <groupId>net.sf.ehcache</groupId>
-		    <artifactId>ehcache</artifactId>
-		    <version>1.5.0</version>
+        
+            <!-- Added STE Custom Jar -->
+        <dependency>
+    		 <groupId>com.symmetry.ste</groupId>
+    		 <artifactId>ste</artifactId>
+   			  <version>1.0</version>
 		</dependency>
+        
+        <!-- END OF STE JAR -->
+        
+        <dependency>
+		   <groupId>net.sf.ehcache</groupId>
+		   <artifactId>ehcache</artifactId>
+		   <version>1.5.0</version>
+		</dependency>
+
     </dependencies>
 
     <build>

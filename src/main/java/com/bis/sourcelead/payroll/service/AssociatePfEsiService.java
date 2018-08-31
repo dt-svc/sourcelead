@@ -10,5 +10,7 @@ public interface AssociatePfEsiService {
 
 	Response<AssociatePfEsiDetailsDTO> saveAssociatePfEsi(AssociatePfEsiDetailsDTO associatePfEsiDetailsDTO, OrgLocations orgLocation, User loginUser);
 
-	AssociatePfEsiDetails findAssociatePfEsiByUserId(Long userId, OrgLocations orgLocation);
+	AssociatePfEsiDetails findAssociatePfEsiByCandidateId(Long candidateId, OrgLocations orgLocation);
+	
+	AssociatePfEsiDetailsDTO getAssociatePfEsiDetailsDTOByCandidateId(Long candidateId, OrgLocations orgLocation);
 }

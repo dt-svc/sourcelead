@@ -37,6 +37,7 @@ import com.bis.sourcelead.payroll.dao.GenerateUSPayrollDao;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.LCAWageDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
@@ -230,7 +231,14 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							amount = getTotalAmount(totalHours,payRate);
 						}else if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
 							amount = assoSal.getGrossSalary();
+						}else if(PayrollConstant.LCA_WAGE.equalsIgnoreCase(assoSal.getPayType())) {
+							LCAWageDTO lcaWageDTO  = generateUSPayrollDao.getLcaWageByCandidateIdLcationId(assoSal.getCandidate(),orgLocation);
+							if(lcaWageDTO != null) {
+								amount = new BigDecimal(lcaWageDTO.getLcaWage());
+							}
 						}
+						employeePayroll.setPayType(assoSal.getPayType());
+						employeePayroll.setPayPerSalary(amount);
 						employeePayroll.setRegularHours(String.valueOf(totalHours));
 						employeePayroll.setEmpPayRate(payRate);
 //						User user = userService.getUserById(assoSal.getUserId().getId());
@@ -808,6 +816,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
 					}
 					payrollDTO.setOvertimeHours(overTimeHours);
+					if(pay.getPayType() != null) {
+						payrollDTO.setPayType(pay.getPayType());
+					}
 					payrollDTO.setApproverStatus(pay.getSubmitForAproverStatus());
 //					if(PayrollConstant.DRAFT.equalsIgnoreCase(pay.getSubmitForAproverStatus())) {
 						list.add(payrollDTO);	
@@ -917,8 +928,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			List<DeductionDTO> dlist = payrollUtil.getDeductionData(payroll);
 			List<DeductionDTO> preDedList = dlist.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
 		    List<DeductionDTO> postDedList = dlist.stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
-		    double  preDedTotal = preDedList.stream().mapToDouble(ded->ded.getAmount().doubleValue()).sum();
-			double postDedTotal = postDedList.stream().mapToDouble(ded->ded.getAmount().doubleValue()).sum();		    
+		    double  preDedTotal = preDedList.stream().mapToDouble(ded->ded.getDedAmount()).sum();
+			double postDedTotal = postDedList.stream().mapToDouble(ded->ded.getDedAmount()).sum();		    
 			payrollDTO.setPreDedTotal(BigDecimal.valueOf(preDedTotal));
 			payrollDTO.setPostDedTotal(BigDecimal.valueOf(postDedTotal));
 		    totalDeduction = dlist.stream().mapToDouble(ded->ded.getDedAmount()).sum();
@@ -934,13 +945,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			
 			List<ContributionDTO> clist = payrollUtil.getContributionData(payroll);
 			
-			
+			double contributionTotal =0;
 			if(clist != null && clist.size() >0) {
 				payrollDTO.setContribution(clist);
-				double contributionTotal = clist.stream().mapToDouble(con->con.getAmount()).sum();
-				payrollDTO.setContributionTotal(BigDecimal.valueOf(contributionTotal));
+				contributionTotal = clist.stream().mapToDouble(con->con.getContributionAmt()).sum();
 			}
-			
+			payrollDTO.setContributionTotal(BigDecimal.valueOf(contributionTotal));
 			BigDecimal piTotal = BigDecimal.ZERO;
 			List<AssociatePayItemDTO> payItem = payrollUtil.getPayItemData(payroll);
 			if(payItem != null && payItem.size() >0) {
@@ -1017,22 +1027,29 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			double otHrs = 0;
 			double regHrsAmt = 0;
 			double otHrsAmt = 0;
-			if(StringUtils.isNotBlank(payAdjustmentDTO.getRegularHours())) {
-				regHrs = Double.parseDouble(payAdjustmentDTO.getRegularHours());
+			double totalHours = 0;
+			BigDecimal amount = BigDecimal.ZERO;
+			if(!PayrollConstant.SALARY.equalsIgnoreCase(payAdjustmentDTO.getAssSalType()) && !PayrollConstant.LCA_WAGE.equalsIgnoreCase(payAdjustmentDTO.getAssSalType())) {
+				if(StringUtils.isNotBlank(payAdjustmentDTO.getRegularHours())) {
+					regHrs = Double.parseDouble(payAdjustmentDTO.getRegularHours());
+				}
+				if(StringUtils.isNotBlank(payAdjustmentDTO.getOverTimeHours())) {
+					otHrs = Double.parseDouble(payAdjustmentDTO.getOverTimeHours());
+				}
+				
+				if(StringUtils.isNotBlank(payAdjustmentDTO.getRegularHoursAmt())) {
+					regHrsAmt = Double.parseDouble(payAdjustmentDTO.getRegularHoursAmt());
+				}
+				
+				if(StringUtils.isNotBlank(payAdjustmentDTO.getOverTimeHoursAmt())) {
+					otHrsAmt = Double.parseDouble(payAdjustmentDTO.getOverTimeHoursAmt());
+				}
+				 totalHours = CommonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
+				double totAmount =  regHrsAmt+ otHrsAmt;
+				amount = new BigDecimal(totAmount);
+			}else {
+				amount = payAdjustmentDTO.getAssSalary();
 			}
-			if(StringUtils.isNotBlank(payAdjustmentDTO.getOverTimeHours())) {
-				otHrs = Double.parseDouble(payAdjustmentDTO.getOverTimeHours());
-			}
-			
-			if(StringUtils.isNotBlank(payAdjustmentDTO.getRegularHoursAmt())) {
-				regHrsAmt = Double.parseDouble(payAdjustmentDTO.getRegularHoursAmt());
-			}
-			
-			if(StringUtils.isNotBlank(payAdjustmentDTO.getOverTimeHoursAmt())) {
-				otHrsAmt = Double.parseDouble(payAdjustmentDTO.getOverTimeHoursAmt());
-			}
-			double totalHours = CommonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
-			double amount =  regHrsAmt+ otHrsAmt;
 			double preTax = 0;
 			double postTax = 0;
 			if(payAdjustmentDTO.getPreDeduction() != null && payAdjustmentDTO.getPreDeduction().size() >0) {
@@ -1045,6 +1062,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payAdjHistory.setOvertimeHours(String.valueOf(otHrs));
 			payAdjHistory.setRegularHoursAmt(new BigDecimal(regHrsAmt));
 			payAdjHistory.setOvertimeHoursAmt(new BigDecimal(otHrsAmt));
+			payAdjHistory.setPrePayType(payAdjustmentDTO.getAssSalType());
+			payAdjHistory.setPrePayPerSalary(amount);
+			payAdjHistory.setPayType(payAdjustmentDTO.getAssSalType());
+			payAdjHistory.setPayPerSalary(amount);
 			double preTaxContriSum = 0;
 			double postTaxContriSum = 0;
 			if(payAdjustmentDTO.getContribution() != null && payAdjustmentDTO.getContribution().size()>0) {
@@ -1052,14 +1073,19 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				postTaxContriSum= payAdjustmentDTO.getContribution().stream().filter(con->"posttax".equalsIgnoreCase(con.getTaxType())).mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
 			}
 			
-			BigDecimal grossAmount = BigDecimal.valueOf(amount).subtract(BigDecimal.valueOf(preTax)).add(BigDecimal.valueOf(preTaxContriSum));
+			BigDecimal grossAmount = (amount.subtract(BigDecimal.valueOf(preTax))).add(BigDecimal.valueOf(preTaxContriSum));
 			EmployeePayroll payroll = payrollAdjustmentService.getEmployeePayrollByUUID(payAdjustmentDTO.getPayrollUUID());
 			payroll.setPreTaxContribution(BigDecimal.valueOf(preTaxContriSum));
 			payroll.setPostTaxContribution(BigDecimal.valueOf(postTaxContriSum));
-			payroll.setRegularHours(payAdjustmentDTO.getRegularHours());
-			payroll.setRegularHoursAmount(new BigDecimal(payAdjustmentDTO.getRegularHoursAmt()));
-			payroll.setOverTimeHours(payAdjustmentDTO.getOverTimeHours());
-			payroll.setOverTimeAmount(new BigDecimal(payAdjustmentDTO.getOverTimeHoursAmt()));
+			if(!"Salary".equalsIgnoreCase(payAdjustmentDTO.getAssSalType())) {
+				payroll.setRegularHours(payAdjustmentDTO.getRegularHours());
+				payroll.setRegularHoursAmount(new BigDecimal(payAdjustmentDTO.getRegularHoursAmt()));
+				payroll.setOverTimeHours(payAdjustmentDTO.getOverTimeHours());
+				payroll.setOverTimeAmount(new BigDecimal(payAdjustmentDTO.getOverTimeHoursAmt()));
+			}else {
+				payroll.setPayPerSalary(payAdjustmentDTO.getAssSalary());
+			}
+			payroll.setPayType(payAdjustmentDTO.getAssSalType());
 			payroll.setPostTaxDeduction(BigDecimal.valueOf(postTax));
 			payroll.setPreTaxDeduction(BigDecimal.valueOf(preTax));
 			payroll.setGrossPay(grossAmount);

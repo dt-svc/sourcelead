@@ -34,6 +34,8 @@
                  <input type="hidden" id="postDeductionLength" name="postDeductionLength" value="">
                  <input type="hidden" id="totalContributionsLngth" name="totalContributionsLngth" value="">
                  <input type="hidden" id="total1payItemsLength" name="total1payItemsLength" value="">
+                 <input type="hidden" id="assSalType" name="assSalType" value="">
+                 <input type="hidden" id="assSalary" name="assSalary" value="">
               
             </div>
           </div>
@@ -265,6 +267,8 @@
 		            var json = data.object;
 		            $("#empAddress").text(json.employeeAddress);
 		            
+		            $("#assSalType").val(json.assSalType);
+            		$("#assSalary").val(json.assSalary);
 		            if(json.assSalType == "Salary"){
 		            	$("#hoursAndEarningsTable").hide();
 		            	$("#assSalaryTable").show();
@@ -332,9 +336,9 @@
 				        			postDed = postDed + '<tr>';
 				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
 				        			postDed = postDed + ' <td>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].id" value='+ded.id+'>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionType" value='+ded.deductionType+'>';
-				        			postDed = postDed + ' <input type="hidden"  name="preDeduction['+i+'].preDeductionAmt" value='+ded.postDeductionAmt+' > ';
+				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].id" value='+ded.id+'>';
+				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].preDeductionType" value='+ded.deductionType+'>';
+				        			postDed = postDed + ' <input type="hidden"  name="postDeduction['+i+'].preDeductionAmt" value='+ded.postDeductionAmt+' > ';
 				        			postDed = postDed + '<input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
@@ -410,8 +414,8 @@
 					            	output = output + '<td>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].id" value='+ot.id+'>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionType" value='+ot.contributionType+'>';
-					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionAmt" value='+ot.amount+' >'; 
-					            	output = output + '<input type="text" id="totalContributions'+i+'" name="contribution['+i+'].contributionAmount" value='+ot.amount+' class="formControl" readOnly></td>';
+					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionAmt" value='+ot.contributionAmt+' >'; 
+					            	output = output + '<input type="text" id="totalContributions'+i+'" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
 		                	  $("#totalContributionsLngth").val(json.contribution.length);
@@ -462,7 +466,7 @@
 						            	payItem = payItem +' <input id="cashTips" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
 						            	payItem = payItem +' <label for="cashTips" class="checkbox-custom-label"></label>';
 						            	payItem = payItem +' </div>';
-						            	payItem = payItem +' </td>';
+						            	payItem = payItem +' </tdgetPreDeductionAmount>';
 						            	payItem = payItem +' </tr>';
 				                  }
 			                	  $("#total1payItemsLength").val(json.payItem.length);

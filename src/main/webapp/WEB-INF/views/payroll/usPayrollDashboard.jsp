@@ -570,6 +570,7 @@ function runUSPayroll(){
 				        	result += '<th>Emp Name</th>';
 				        	result += '<th>Regular<br>Hours</th>';
 				        	result += '<th>Payrate</th>';
+				        	result += '<th>Pay Type</th>';
 				        	result += '<th>OT<br>Hours</th>';
 				        	result += '<th>Gross<br>Pay</th>';
 				        	result += '<th>Pretax<br>Deduction</th>';
@@ -604,6 +605,12 @@ function runUSPayroll(){
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.payRate+'</div></td>';
+						        	if(opt.payType != null && opt.payType != ''){
+						        		result += '<td><div class="tbldata-dotdot-vsm">'+opt.payType+'</div></td>';
+						        	}else{
+						        		result += '<td><div class="tbldata-dotdot-vsm">--</div></td>';
+						        	}
+						        	
 						        	
 						        	if(opt.overtimeHours != null && opt.overtimeHours != '' && opt.overtimeHours != 'undefined'){
 						        		result += '<td><div class="tblminwidth-50">'+opt.overtimeHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.otHoursTotalAmt.toFixed(2)+'</div></td>';
