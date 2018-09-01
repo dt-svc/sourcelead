@@ -47,6 +47,7 @@ function assocBalanceLeaveSummary(userId){
           	    $("#tab-20").empty();
           	    $("#candidateSideDiv").empty();  
           	    $("#tab-29").empty();  
+          	  	$("#tab-25").empty();
           	    $("#tab-29").append(result);
         	    
         	    
