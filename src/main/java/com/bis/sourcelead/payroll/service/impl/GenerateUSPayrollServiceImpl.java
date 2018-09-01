@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -234,7 +235,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						}else if(PayrollConstant.LCA_WAGE.equalsIgnoreCase(assoSal.getPayType())) {
 							LCAWageDTO lcaWageDTO  = generateUSPayrollDao.getLcaWageByCandidateIdLcationId(assoSal.getCandidate(),orgLocation);
 							if(lcaWageDTO != null) {
-								amount = new BigDecimal(lcaWageDTO.getLcaWage());
+								amount  = payrollUtil.getHourlyRate(amount,lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
 							}
 						}
 						employeePayroll.setPayType(assoSal.getPayType());
@@ -308,6 +309,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	}
 	
 	
+   /**
+    * check same frequency or not 
+    * @param existedData
+    * @param assoSal
+    * @return boolean
+    */
 	private boolean isPayrollRunForSameFrequency(PaysheetFrequencyDTO existedData, AssociateSalary assoSal) {
 		
 		boolean isExisted = false;

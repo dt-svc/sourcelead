@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
 
+
 public class PayrollConstant {
 	
 	public static final String ALABAMA = "Alabama";
@@ -47,7 +48,12 @@ public class PayrollConstant {
 	public static final String PRE_TAX = "pretax";
 	public static final String POST_TAX = "posttax";
 	
-	 
+	public static final String PAY_ANNUAL = "Annual"; 
+	public static final String PAY_MONTHLY = "Monthly";
+	public static final String PAY_BI_WEEKLY = "Bi-Weekly"; 
+	public static final String PAY_WEEKLY = "Weekly";
+	public static final String PAY_YEARLY = "Yearly";
+	public static final String PAY_BI_MONTHLY = "Bi-Monthly";
 	  
 	
   
