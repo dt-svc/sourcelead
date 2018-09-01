@@ -334,12 +334,12 @@ function calculateHourlyRateSal(){
 							result = result +'</td>';
 							result = result +'<td>';
 							result = result +'	<div class="tblminwidth-50">';
-							result = result +'		<input class="form-control calendar" placeholder="Effective Date" field-name="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text">';
+							result = result +'		<input class="form-control calendar" placeholder="Effective Date" field-name="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text" readonly="readonly">';
 							result = result +'	</div>';
 							result = result +'</td>';
 							result = result +'<td>';
 							result = result +'	<div class="tblminwidth-50">';
-							result = result +'		<input class="form-control calendar" placeholder="End Date" id="'+i+'endDate" name="associatePayItemDto['+i+'].endDate" type="text">';
+							result = result +'		<input class="form-control calendar" placeholder="End Date" id="'+i+'endDate" name="associatePayItemDto['+i+'].endDate" type="text" readonly="readonly">';
 							result = result +'	</div>';
 							result = result +'</td>';
 							result = result +'<td>';

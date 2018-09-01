@@ -44,6 +44,9 @@ public class PayrollConstant {
 	
 	public static final String PAYROLL_MISSED = "MISSED"; 
 	
+	public static final String PRE_TAX = "pretax";
+	public static final String POST_TAX = "posttax";
+	
 	 
 	  
 	

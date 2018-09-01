@@ -74,6 +74,7 @@ function approvePayrollDiv(){
 			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period" class="chosen-select" onchange="clearPayrollDiv();">
 			</select>
 		</div>
+
 		<div class="col-md-2 paddingLeft paddingRight">
 			<select id="payType" name="payType" data-validation="required" field-name="Pay Type" class="chosen-select">
 				 <option value="">Select Pay type</option>
@@ -83,8 +84,9 @@ function approvePayrollDiv(){
                  <option value = "LcaWage">LCA Wage</option>
 			</select>
 		</div>
-		<div class="col-md-2 paddingRight">
-			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date">
+
+		<div class="col-md-3 paddingRight">
+			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date" readonly="readonly">
 		</div>
 		<div class="col-md-2">
 			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runUSPayroll();">Initiate Payroll</a>
@@ -589,9 +591,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		  	  changeYear: true, 
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
-		
-		
-		
+		  
 	});
 </script>
 
