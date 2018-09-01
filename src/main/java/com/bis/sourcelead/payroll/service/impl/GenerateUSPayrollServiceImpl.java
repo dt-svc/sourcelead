@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -16,13 +17,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserGroupDao;
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Candidate;
@@ -68,6 +73,8 @@ import com.bis.sourcelead.payroll.symmetry.PayrollCalculatorDTO;
 import com.bis.sourcelead.payroll.symmetry.SymmetryPayrollCalculator;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.payroll.view.AssociateTaxDedContriView;
+import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
+import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserService;
@@ -149,7 +156,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	@Autowired
 	PaysheetFrequencyService paysheetFrequencyService;
 	
+	@Autowired
+	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
 	
+	@Autowired
+	AssociateLoanAndAdvancesHistoryService associateLoanAndAdvancesHistoryService;
 	 
 	@Override
 	public PaysheetFrequencyDTO generateUSPayroll(PaysheetFrequencyDTO existedData,OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO,User loginUser) throws Exception
@@ -248,6 +259,11 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						BigDecimal preContriSum = contributionTaxes[0];
 						BigDecimal postContriSum = contributionTaxes[1];
 						PayItemDTO payItemDTO = getPayItemSum(orgLocation,assoSal.getAssociatePayItem(),paySheetFreq,employeePayroll,loginUser);
+						
+						//for loan and advances
+						AssociateLoanAndAdvancesDTO assLoanAndAdvDTO = getAssLoanAndAdvanceDedAmount(orgLocation,paySheetFreq,loginUser,assoSal.getCandidate());
+						
+						
 						BigDecimal payItemSum = payItemDTO.getPayItemSum();
 						employeePayroll.setPayitemSum(payItemSum);
 						employeePayroll.setPreTaxDeduction(preTax);
@@ -265,6 +281,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							logger.info("*** Taxes :"+taxes);
 							BigDecimal totalPay = grossAmount.subtract(taxes);
 							BigDecimal netPay = (totalPay.subtract(postTax)).add(postContriSum).add(payItemSum);
+							//to deduct loan and advance amount from net pay
+							if(assLoanAndAdvDTO.getTotalLoanAmount() != null && assLoanAndAdvDTO.getTotalAdvanceAmount() != null)
+								netPay = netPay.subtract((assLoanAndAdvDTO.getTotalLoanAmount().add(assLoanAndAdvDTO.getTotalAdvanceAmount())));
 							logger.info("*** Net Pay :"+netPay);
 							employeePayroll.setNetPay(netPay);
 							Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
@@ -300,6 +319,69 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	}
 	
 	
+	private AssociateLoanAndAdvancesDTO getAssLoanAndAdvanceDedAmount(OrgLocations orgLocation, PaysheetFrequency paySheetFreq, User loginUser, Candidate candidate)
+	{
+		AssociateLoanAndAdvancesDTO assLoanAdvDto = new AssociateLoanAndAdvancesDTO();
+		try {
+			List<AssociateLoanAndAdvances> loanAndAdvList = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByCandidateId(candidate.getId(), orgLocation.getId());
+			BigDecimal totalLoanAmount = BigDecimal.ZERO, totalAdvanceAmount = BigDecimal.ZERO;
+			for(AssociateLoanAndAdvances assLoanAndAdv : loanAndAdvList) {
+				boolean thisPayCheck = false;
+				if(assLoanAndAdv.getDeductStartDate() == null && assLoanAndAdv.getDeductEndDate() == null) {
+					thisPayCheck = true;
+				}
+				if(paySheetFreq.getFrequencyStartDate().after(assLoanAndAdv.getEffectiveDate()) || paySheetFreq.getFrequencyStartDate().equals(assLoanAndAdv.getEffectiveDate())) {
+					thisPayCheck = true;
+				}
+				if(assLoanAndAdv.getDeductStartDate() != null && assLoanAndAdv.getDeductEndDate() != null) {
+					thisPayCheck = payrollUtil.isDateBetweenEffectiveDate(assLoanAndAdv.getDeductStartDate(), assLoanAndAdv.getDeductEndDate(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate());
+				}
+				if(thisPayCheck) {
+					AssociateLoanAndAdvances assLoan = assLoanAndAdv;
+					AssociateLoanAndAdvanceHistory assLoanAndAdvHis = associateLoanAndAdvancesHistoryService.getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceId(assLoan.getId());
+					if(assLoanAndAdvHis == null || assLoanAndAdvHis.getSchedule() <= assLoan.getNoOfSchedules()) {
+						int scheduleCount = 0;
+						if(assLoanAndAdvHis != null && assLoanAndAdvHis.getSchedule() != null) {
+							scheduleCount = assLoanAndAdvHis.getSchedule() + 1;
+						}else {
+							scheduleCount += 1;
+						}
+						
+						Date[] dedFreqDates = payrollUtil.getDeductionDates(paySheetFreq.getFrequencyStartDate(), assLoanAndAdv.getScheduler());
+						if("Loan".equalsIgnoreCase(assLoanAndAdv.getLoanAdvanceType())){
+							totalLoanAmount = totalLoanAmount.add(new BigDecimal(assLoanAndAdv.getDeductAmount()));
+						}else if("Advance".equalsIgnoreCase(assLoanAndAdv.getLoanAdvanceType())){
+							totalAdvanceAmount = totalAdvanceAmount.add(new BigDecimal(assLoanAndAdv.getDeductAmount()));
+						}
+						assLoan.setDeductStartDate(dedFreqDates[0]);
+						assLoan.setDeductEndDate(dedFreqDates[1]);
+						assLoan.setDeductionStatus(Constants.DEDUCTED);
+						assLoan.setUpdatedDate(new Date());
+						associateLoanAndAdvancesService.saveAssociateLoanAndAdvances(assLoan);
+						
+						AssociateLoanAndAdvanceHistory assLoanHistory = new AssociateLoanAndAdvanceHistory();
+						assLoanHistory.setAssociateLoanAndAdvances(assLoan);
+						assLoanHistory.setDeductAmount(assLoanAndAdv.getDeductAmount());
+						assLoanHistory.setSchedule(scheduleCount);
+						assLoanHistory.setScheduleStartDate(assLoan.getDeductStartDate());
+						assLoanHistory.setScheduleEndDate(assLoan.getDeductEndDate());
+						assLoanHistory.setCreatedDate(new Date());
+						assLoanHistory.setCreatedBy(loginUser.getUserCode());
+						assLoanHistory.setUpdatedBy(loginUser.getUserCode());
+						assLoanHistory.setUpdatedDate(new Date());
+						assLoanHistory = associateLoanAndAdvancesHistoryService.saveAssociateLoanAndAdvancesHistory(assLoanHistory);
+					}
+ 				}
+			}
+			assLoanAdvDto.setTotalAdvanceAmount(totalAdvanceAmount);
+			assLoanAdvDto.setTotalLoanAmount(totalLoanAmount);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return assLoanAdvDto;
+	}
+
+
 	private boolean isPayrollRunForSameFrequency(PaysheetFrequencyDTO existedData, AssociateSalary assoSal) {
 		
 		boolean isExisted = false;
