@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -104,17 +105,38 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						if(StringUtils.isNotBlank(entryCategory.getReceiptIssuedBy())){
 							entries.setReceiptIssuedBy(entryCategory.getReceiptIssuedBy());
 						}
-						if(StringUtils.isNotBlank(entryCategory.getCategoryAmount()) && StringUtils.isNotBlank(entryCategory.getCategoryAmountType())){
+						if(StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmount()) && StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmountType())){
 							Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 							if(country!= null &&  country.getCurrency()!= null && !country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryAmountType())){
 							 Float amount = conversionUtil.convert(entryCategory.getCategoryAmountType(),country.getCurrency(),Float.valueOf(entryCategory.getCategoryAmount()));
 							 entries.setCurrencyType(country.getCurrency());
-							 entries.setAmount(amount);
+							 entries.setSubmittedamount(new BigDecimal (amount));
 							}else{
 								entries.setCurrencyType((entryCategory.getCategoryAmountType()));
-								entries.setAmount(Float.valueOf(entryCategory.getCategoryAmount()));
+								entries.setSubmittedamount(new BigDecimal(entryCategory.getCategoryAmount()));
 							}
 						}
+						
+						
+						
+						
+						
+						if(StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmount()) && StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmountType())){
+							Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+							if(country!= null &&  country.getCurrency()!= null && !country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryApprovedAmountType())){
+							 Float amount = conversionUtil.convert(entryCategory.getCategoryApprovedAmountType(),country.getCurrency(),Float.valueOf(entryCategory.getCategoryApprovedAmount()));
+							 entries.setCurrencyType(country.getCurrency());
+							 entries.setAmount(new BigDecimal (amount));
+							}else{
+								entries.setCurrencyType((entryCategory.getCategoryAmountType()));
+								entries.setAmount(new BigDecimal(entryCategory.getCategoryAmount()));
+							}
+						}else {
+							entries.setAmount(new BigDecimal(entryCategory.getCategoryAmount()));
+							entries.setAmountchangereason(null);
+						}
+						
+						
 					if(StringUtils.isNotBlank(entryCategory.getEntryDescription())){
 						entries.setDescription(entryCategory.getEntryDescription());
 					}
@@ -136,6 +158,8 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					entries.setExpensesId(expenses);
 					entries.setUpdatedBy(expenses.getUpdatedBy());
 					entries.setBillable(false);
+					
+					
 					
 					
 				    //save  mutliple attachments.
