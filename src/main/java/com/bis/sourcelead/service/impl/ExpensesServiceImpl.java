@@ -272,10 +272,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        		orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append("--").toString()));	
 			        	}
 			      
-			        if(expenses.getTotalAmount() != 0){
+			        if(expenses.getTotalAmount().doubleValue() > 0){
 			        	StringBuilder str = new StringBuilder();
-			        	BigDecimal bd = new BigDecimal(Double.toString(expenses.getTotalAmount()));
-			        	bd = bd.setScale(2,BigDecimal.ROUND_UP);
+			        	BigDecimal bd = new BigDecimal((expenses.getTotalAmount()));
+			        	//bd = bd.setScale(2,BigDecimal.ROUND_UP);
 			        	orderedList.add(new ListItem(str.append("TotalAmount :").append(bd).toString()));
 			        	}else{
 			        		orderedList.add(new ListItem(totalStringBuilder.append("TotalAmount :").append("00.00").toString()));	
@@ -365,10 +365,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 				        	}else{
 				        		orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append("--").toString()));
 				        	}
-				        if( expenses.getTotalAmount() != 0){
+				        if( expenses.getTotalAmount().doubleValue() > 0){
 				        	StringBuilder str = new StringBuilder();
-				    		BigDecimal bd = new BigDecimal(Double.toString(expenses.getTotalAmount()));
-				    		bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );	
+				    		BigDecimal bd = new BigDecimal((expenses.getTotalAmount()));
+				    		//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );	
 				        	orderedList.add(new ListItem(str.append("TotalAmount :").append(bd).toString()));
 				        	}else{
 				        		orderedList.add(new ListItem(totalStringBuilder.append("TotalAmount :").append("00.00").toString()));
@@ -673,8 +673,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 
 		Cell cell14 = writeRow.createCell(1);
 		StringBuilder str = new StringBuilder();
-    	BigDecimal bd = new BigDecimal(Double.toString(exp.getTotalAmount()));
-    	bd = bd.setScale(2,BigDecimal.ROUND_UP);
+    	BigDecimal bd = new BigDecimal((exp.getTotalAmount()));
+    	//bd = bd.setScale(2,BigDecimal.ROUND_UP);
 		cell14.setCellValue(str.append(bd).toString());
 		cell14.setCellStyle(style);
 		}
@@ -781,10 +781,10 @@ public class ExpensesServiceImpl implements ExpensesService{
         	}else{
         		purposeStringBuilder.append("--").toString();
         	}
-        if(expenseDetails.getTotalAmount() != 0){
+        if(expenseDetails.getTotalAmount().doubleValue() > 0){
         	StringBuilder str = new StringBuilder();
-    		BigDecimal bd = new BigDecimal(Double.toString(expenseDetails.getTotalAmount()));
-    		bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );	
+    		BigDecimal bd = new BigDecimal((expenseDetails.getTotalAmount()));
+    		//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );	
         
         	str.append(bd).toString();
         	}else{
@@ -928,8 +928,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell23.setCellStyle(style);
 
 		Cell cell24 = writeRow.createCell(1);
-		BigDecimal bd = new BigDecimal(Double.toString(expenseDetails.getTotalAmount()));
-		bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
+		BigDecimal bd = new BigDecimal((expenseDetails.getTotalAmount()));
+		//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
 		cell24.setCellValue(bd.toString());
 		
 		cell24.setCellStyle(style);
@@ -1070,9 +1070,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 							}
 							
 
-							if(expenseId.getTotalAmount() != 0){
+							if(expenseId.getTotalAmount().doubleValue() > 0){
 								StringBuilder str = new StringBuilder();
-								BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
+								BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
 								bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
 								expenseArray[7] = str.append(bd).toString();
 								
@@ -1174,10 +1174,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 							writeRow.createCell(6).setCellValue(expenseId.getNoOfExpenses());
 							createExcelsheet.autoSizeColumn(6);
 						}
-						if(expenseId.getTotalAmount() != 0){
+						if(expenseId.getTotalAmount().doubleValue() > 0){
 			                StringBuilder str = new StringBuilder();
-			                BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
-							bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
+			                BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
+							//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
 			                writeRow.createCell(7).setCellValue(str.append(bd).toString());
 			                createExcelsheet.autoSizeColumn(7);
 						}
@@ -1256,7 +1256,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 					expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
 					expensesEntriesDTO.setEntryDescription(entries.getDescription());
 					expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
-					expensesEntriesDTO.setAmount(entries.getAmount());
+					expensesEntriesDTO.setAmount(entries.getAmount().floatValue());
 					expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
 					expensesEntriesDTOList.add(expensesEntriesDTO);
 			}

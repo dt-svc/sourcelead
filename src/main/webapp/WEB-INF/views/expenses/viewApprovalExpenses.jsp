@@ -162,12 +162,14 @@
 			    <th>Date</th>
 				<th>Exp Category</th>
 				<th>Description</th>
-				<th>Amount</th>
+				<th>Submitted Amount</th>
+				<th>Approved Amount</th>
 				<th>Currency</th>
 				<th>Payment Mode</th>
 				<th>Paid By</th>
 				<th>Billable</th>
 			</tr>
+			
 		</thead>	
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
@@ -175,6 +177,7 @@
 			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.dateOccurred}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.categoryName}</div></td>
 			       <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
+			             <td><div id="expenseSubmittedAmountDiv${entryCount.count}">${entry.submittedamount}</div></td>
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amountRoundOff}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
@@ -182,14 +185,15 @@
 			            <td><div class=""><input type="checkbox" ${entry.billable ? 'checked' : ''} name="expenses" data-id="${entry.id}" onclick="showPopUp(this,${entry.id});"></div></td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
-				        <td colspan="8">
+				        <td colspan="10">
 						<div class="expDetails">
 							<ul>
 							    <li><strong>Date :</strong><span>${entry.dateOccurred}</span><div class="clearfix"></div></li>
 								<li><strong>Exp Category :</strong><span>${entry.categoryName}</span><div class="clearfix"></div></li>
 								<li><strong>Description :</strong><span title="${entry.entryDescription}">${entry.entryDescription}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
-								<li><strong>Amount :</strong><span>${entry.amountRoundOff}</span><div class="clearfix"></div></li>
+								<li><strong>Submitted Amount :</strong><span>${entry.submittedamount}</span><div class="clearfix"></div></li>
+								<li><strong>Approved Amount :</strong><span>${entry.amountRoundOff}</span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
 								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
@@ -285,7 +289,6 @@ function exportMyExpenses(type,Expid,ApproverType){
 
 <script>
 function changeStatusToBillable(ExpenseEntriesId){
-	alert("hi"+ExpenseEntriesId);
 	 $.ajax({
          type : "POST",
          url: sourceleadUrl+"/changeStatusToBillable?&ExpenseEntriesId="+ExpenseEntriesId,    
