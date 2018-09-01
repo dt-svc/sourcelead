@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -245,7 +246,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						}else if(PayrollConstant.LCA_WAGE.equalsIgnoreCase(assoSal.getPayType())) {
 							LCAWageDTO lcaWageDTO  = generateUSPayrollDao.getLcaWageByCandidateIdLcationId(assoSal.getCandidate(),orgLocation);
 							if(lcaWageDTO != null) {
-								amount = new BigDecimal(lcaWageDTO.getLcaWage());
+								amount  = payrollUtil.getHourlyRate(amount,lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
 							}
 						}
 						employeePayroll.setPayType(assoSal.getPayType());
@@ -327,6 +328,25 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	}
 	
 	
+   /**
+    * check same frequency or not 
+    * @param existedData
+    * @param assoSal
+    * @return boolean
+    */
+	private boolean isPayrollRunForSameFrequency(PaysheetFrequencyDTO existedData, AssociateSalary assoSal) {
+		
+		boolean isExisted = false;
+		if(existedData != null) {
+		for (USPayrollDTO uSPayrollDTO : existedData.getPayrollDTO()) {
+			if((uSPayrollDTO.getCandidateId().longValue() == assoSal.getCandidate().getId().longValue()) && (existedData.getPaySheetFrequencyId().longValue() == uSPayrollDTO.getPaySheetFrequencyId().longValue())) {
+				return true;
+			}
+		}
+		}
+		return isExisted;
+	}
+	
 	private AssociateLoanAndAdvancesDTO getAssLoanAndAdvanceDedAmount(OrgLocations orgLocation, PaysheetFrequency paySheetFreq, User loginUser, Candidate candidate)
 	{
 		AssociateLoanAndAdvancesDTO assLoanAdvDto = new AssociateLoanAndAdvancesDTO();
@@ -388,22 +408,6 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		}
 		return assLoanAdvDto;
 	}
-
-
-	private boolean isPayrollRunForSameFrequency(PaysheetFrequencyDTO existedData, AssociateSalary assoSal) {
-		
-		boolean isExisted = false;
-		if(existedData != null) {
-		for (USPayrollDTO uSPayrollDTO : existedData.getPayrollDTO()) {
-			if((uSPayrollDTO.getCandidateId().longValue() == assoSal.getCandidate().getId().longValue()) && (existedData.getPaySheetFrequencyId().longValue() == uSPayrollDTO.getPaySheetFrequencyId().longValue())) {
-				return true;
-			}
-		}
-		}
-		return isExisted;
-	}
-	
-
 
 
 	/**
