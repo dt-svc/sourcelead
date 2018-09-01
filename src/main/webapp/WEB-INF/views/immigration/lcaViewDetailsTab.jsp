@@ -97,7 +97,7 @@
 	           
 			  	<ul>
 					<li class="clearfix"><span>Document Title</span><p>: ${doc.documentTitle}</p></li>
-					<li class="clearfix"><span>File Name</span><p>: ${doc.fileName}</p> <p><a class="fa fa-eye" onClick="viewFile('${doc.fileUrl}','${doc.fileName}','${doc.fileContentType}');"></a> &nbsp;<a download class="glyphicon glyphicon-download-alt" target="_blank" href="${doc.fileUrl}" download title="Download"></a></p> </li>
+					<li class="clearfix"><span>File Name</span><p>: ${doc.fileName} <span class="pull-right"><a class="fa fa-eye" onClick="viewFile('${doc.fileUrl}','${doc.fileName}','${doc.fileContentType}');"></a> &nbsp;<a download class="glyphicon glyphicon-download-alt" target="_blank" href="${doc.fileUrl}" download title="Download"></a></span></p> </li>
 					<li class="clearfix"><span>Comment</span><p>: ${doc.description}</p></li>
 				</ul>	
 				
