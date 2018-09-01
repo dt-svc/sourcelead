@@ -88,6 +88,15 @@ public class AssociateLoanAndAdvances implements Serializable{
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	@Column(name = "DEDUCT_START_DATE")
+	private Date deductStartDate;
+	
+	@Column(name = "DEDUCT_END_DATE")
+	private Date deductEndDate;
+	
+	@Column(name = "DEDUCTION_STATUS")
+	private String deductionStatus;
+	
     @Column(name = "CREATED_DATE")
 	private Date createdDate;
    
@@ -327,5 +336,35 @@ public class AssociateLoanAndAdvances implements Serializable{
 
 	public void setEffectiveDateStr(String effectiveDateStr) {
 		this.effectiveDateStr = effectiveDateStr;
+	}
+	
+	public Date getDeductStartDate()
+	{
+		return deductStartDate;
+	}
+
+	public void setDeductStartDate(Date deductStartDate)
+	{
+		this.deductStartDate = deductStartDate;
+	}
+
+	public Date getDeductEndDate()
+	{
+		return deductEndDate;
+	}
+
+	public void setDeductEndDate(Date deductEndDate)
+	{
+		this.deductEndDate = deductEndDate;
+	}
+
+	public String getDeductionStatus()
+	{
+		return deductionStatus;
+	}
+
+	public void setDeductionStatus(String deductionStatus)
+	{
+		this.deductionStatus = deductionStatus;
 	}
 }

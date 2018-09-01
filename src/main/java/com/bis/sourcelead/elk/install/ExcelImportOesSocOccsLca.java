@@ -23,7 +23,7 @@ import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-public class ExcelImportOesSocOccsTest {
+public class ExcelImportOesSocOccsLca {
 
 	private ComboPooledDataSource comboPooledDataSource;
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
@@ -113,7 +113,7 @@ public class ExcelImportOesSocOccsTest {
 	}
 
 	public static void main(String[] args) throws IOException, SQLException {
-		ExcelImportOesSocOccsTest dump = new ExcelImportOesSocOccsTest();
+		ExcelImportOesSocOccsLca dump = new ExcelImportOesSocOccsLca();
 		dump.dumpOesSocOccsFromExcelToTable();
 		//	dump.dumpEdcExportFromExcelToTable();
 		// dump.dumpAlcExportFromExcelToTable();
