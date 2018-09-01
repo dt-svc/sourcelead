@@ -1811,7 +1811,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    	
 	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
 	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
-	    	candidate.setResidenceStateCode(stateCode);
+	    	if(stateCode != null) {
+	    		candidate.setResidenceStateCode(stateCode);
+	    	}
+	    	
 	    }
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);

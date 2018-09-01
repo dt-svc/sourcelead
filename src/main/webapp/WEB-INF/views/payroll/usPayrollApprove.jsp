@@ -1,13 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script type="text/javascript">
-function calculateTotalPay(formData,confirmType,fromState){
 
-		if(fromState == null || fromState == '' || fromState == 'undefined'){
+<script type="text/javascript">
+function calculateTotalPay(formData,confirmType,payPerionNum){
 			approvePayrollDiv();
-		}
-		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType, formData, function(json) {
+		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType+"&payPerionNum="+payPerionNum, formData, function(json) {
 		    	  $("#totRegularHours").text(json.regularHours.toFixed(2));
 		    	  $("#totRegularEarningsAmt").text(json.regularHoursAmount.toFixed(2));
 		    	  $("#totOverTimeHours").text(json.overTimeHours.toFixed(2));
@@ -83,6 +81,7 @@ function calculateTotalPay(formData,confirmType,fromState){
     
     <div class="clearfix"></div>
     <div class="timesheet_out" id="approveDiv">
+    <div id="approvePayrollDivLoding"></div>
       <div class="clearfix mt">
       <form:form id="approve_payroll_form" name="approve_payroll_form" method="post">
                <div class="clearfix approveTabelesStyles">
@@ -313,8 +312,10 @@ function calculateTotalPay(formData,confirmType,fromState){
 <script type="text/javascript">
 function approvePayroll(){
       var formData = $($('#approve_payroll_form')[0]).serialize();
+      $("#approvePayrollDivLoding").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       $.post(sourceleadUrl+"/approvePayroll?"+tokenParamName+"="+tokenValue, formData, function(result) {
-  		if (result.response === "INVALID_DATA") {
+    	  $("#approvePayrollDivLoding").removeAttr('style');
+    	  if (result.response === "INVALID_DATA") {
  		    showError(result.responseMessage);
  		} else if (result.response === "AWKWARD") {
  		    location.href = "/errorPage";
@@ -327,6 +328,12 @@ function approvePayroll(){
  		}
       });   
     
+}
+
+
+function approvePayrollDiv(){
+	$("#reviewPayrollDiv").hide();
+	$("#approveDiv").show();
 }
 </script> 
 

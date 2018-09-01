@@ -342,10 +342,9 @@ public class PayrollUtil {
 								amount = dedHis.getPostContributionAmount().doubleValue();
 							}
 						}
+						contDTO.setId(dedHis.getId().toString());
 						contDTO.setAmount(precontrAmt);
-						contDTO.setId(dedHis.getContributionId().toString());
 						contDTO.setPostContributionAmt(postcontrAmt);
-						contDTO.setId(String.valueOf(dedHis.getContributionId().getId()));
 						contDTO.setContributionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
 						contDTO.setTaxType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getTaxType());
 						contDTO.setContributionAmount(dedHis.getContributionId().getContributionAmount());
@@ -372,7 +371,7 @@ public class PayrollUtil {
 			if (hisList != null && hisList.size() > 0) {
 				for (DeductionHistory dedHis : hisList) {
 					DeductionDTO dedDTO = new DeductionDTO();
-					dedDTO.setId(String.valueOf(dedHis.getDeductionId().getId()));
+					dedDTO.setId(String.valueOf(dedHis.getId()));
 					dedDTO.setDeductionType(dedHis.getDeductionId().getDeductionTypeId().getPayrollDeductionType());
 					double preDedAmt = 0;
 					double postDedAmt = 0;
@@ -414,12 +413,11 @@ public class PayrollUtil {
 		try {
 			Calendar c = Calendar.getInstance(); // this takes current date
 			ytd[1] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
-			System.out.println("End Date = " + c.getTime());
 			c.set(Calendar.MONTH, 0);
 			c.set(Calendar.DAY_OF_MONTH, 1);
 			ytd[0] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
-			System.out.println(c.getTime());
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return ytd;
 	}
@@ -437,7 +435,7 @@ public class PayrollUtil {
 				AssociatePayItemDTO payItemDTO = new AssociatePayItemDTO();
 				payItemDTO.setId(his.getId().toString());
 				payItemDTO.setPayItemName(his.getAssociatePayItem().getPayItemName());
-				payItemDTO.setPayItemAmt(his.getAssociatePayItem().getPayItemAmount().doubleValue());
+				payItemDTO.setPayItemAmt(his.getAmount().doubleValue());
 				list.add(payItemDTO);
 			}
 		}

@@ -627,7 +627,12 @@ function preventTabkey(e){
 						   </sec:authorize>
 						   
 					   <c:if test="${SourceLeadWeb_isAdmin == true}">
-					  	<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
+						   	<c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+						  		<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
+						  	</c:if>
+						  	<c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
+						  		<li><a href="<c:url value='${sourceleadUrl}/indPayrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
+						  	</c:if>
                        </c:if>
                          
                        <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Tags</a></li>
@@ -641,7 +646,6 @@ function preventTabkey(e){
                         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 					       <li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i>Invite Company</a></li>
 	                   </c:if>
-                       <li><a href="<c:url value='${sourceleadUrl}/indPayrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
 	              </ul>
 	            </div>
 	          </li>
