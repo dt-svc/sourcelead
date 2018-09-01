@@ -29,7 +29,7 @@
     	 						<select class="form-control chosen-select" id="orgRelationId" name="orgRelationId" field-name="Client" onchange="getSpocsList();getInvoiceList();" data-validation="required" >
 		                        <option value="">-Select Vendor-</option>
 		                        <c:forEach var="vendors" items="${vendorsList}">
-									<option ${creditDebitNote.orgRelationId == clients.id ? 'selected': ''} value="${vendors.id}">${vendors.orgName}</option>
+									<option ${creditDebitNote.orgRelationId == vendors.id ? 'selected': ''} value="${vendors.id}">${vendors.orgName}</option>
 								</c:forEach>
 			              </select>
     	 				</div>
@@ -418,7 +418,7 @@ function getSpocsList() {
 	$("#spocUser").empty();
 	$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/getClientContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
+				url : sourceleadUrl + "/getPayableVendorContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
 				success : function(json) {
 					var output = "";
 					for (var i = 0; i < json.data.length; i++) {
@@ -467,7 +467,7 @@ function getSpocsList() {
 		$("#invoceId").empty();
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/getInvoiceListForCreditDebitNote?"+ tokenParamName + "=" + tokenValue + "&orgRelationId="+ orgRelationId + "&invoiceType=Receivable",
+			url : sourceleadUrl + "/getInvoiceListForCreditDebitNote?"+ tokenParamName + "=" + tokenValue + "&orgRelationId="+ orgRelationId + "&invoiceType=Payables",
 			success : function(json) {
 				var output = "";
 				for (var i = 0; i < json.data.length; i++) {

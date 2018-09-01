@@ -202,7 +202,7 @@ public class InvoiceController {
 			model.addObject("creditDebitNote", creditDebitNoteListDTO);
 		}
 		model.addObject("vendorsList", orgVendorsList);
-		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+		//model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("approversList",approversList);
 		return model;
 		
