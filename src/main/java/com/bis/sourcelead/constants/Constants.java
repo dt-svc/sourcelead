@@ -994,6 +994,8 @@ public class Constants {
 	public static final String IMPORT_CANDIDATE = "import";
 	public static final String INVOICE_ENTITY_SHORTCODE = "INV";
 	public static final String BILL_ENTITY_SHORTCODE = "BIL";
+	public static final String CREDIT_ENTITY_SHORTCODE = "CR";
+	public static final String DEBIT_ENTITY_SHORTCODE = "DB";
 	public static final String CANDIDATE_ADDED_MANUALLY = "added manually";
 	public static final String CANDIDATE_ADDED_BY_IMPORTING = "imported";
 	public static final String CANDIDATE_EDITTED = "updated profile";

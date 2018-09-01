@@ -283,7 +283,7 @@ function creditNotePagination(url){
 			    	}else{
 			    		if((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft"))
 	    				 {
-						result = result +' <span class="clearfix"><a onClick="editCreditDebitNote(\''+report.savedNoteId+'\');"><i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
+						result = result +' <span class="clearfix"><a href="<c:url value="/app/addDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
 	    				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 
 						// to avoid multiple edit buttons for multiple approvers 
@@ -296,7 +296,7 @@ function creditNotePagination(url){
     	  			result = result +'<div class="tbldata-dotdot-vsm">';
     	  			if((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft"))
    				 {
-					result = result +' <span class="clearfix"><a onClick="editCreditDebitNote(\''+report.savedNoteId+'\');"><i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
+					result = result +' <span class="clearfix"><a href="<c:url value="/app/addDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
    				 }
     				 result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
     				 result = result +'</div>  ';	

@@ -45,6 +45,7 @@ public interface InvoiceService {
 	
 	CreditDebitNote saveAcceptedCreditDebitNote(User user, OrgLocations orgLocation,String noteType, CreditDebitNote creditDebitNote)throws Exception;
 
+	CreditDebitNoteListDTO editCreditDebitNote(Long noteId,OrgLocations orgLocation,String noteType)throws Exception;
 	
 	Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception;
 	

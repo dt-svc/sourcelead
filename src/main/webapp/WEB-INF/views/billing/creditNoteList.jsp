@@ -232,7 +232,7 @@ function prepareCreditNoteList(url,locationdateForList){
 	result = result +'         <th>Client Name</th>               ';
 	result = result +'         <th>Invoice ID</th>   ';
 	result = result +'         <th>Total</th>                 ';
-	result = result +'         <th>Balance</th>                   ';
+	result = result +'         <th>Balance</th>               ';
 	result = result +'         <th>Status</th>                ';
 	result = result +'       </tr>                            ';
 	result = result + '</thead>	';
@@ -285,7 +285,7 @@ function creditNotePagination(url){
 			    	}else{
 			    		if((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft"))
 	    				 {
-						result = result +' <span class="clearfix"><a onClick="editCreditDebitNote(\''+report.savedNoteId+'\');"><i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
+						result = result +' <span class="clearfix"><a href="<c:url value="/app/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
 	    				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 						// to avoid multiple edit buttons for multiple approvers 
 						break;
@@ -297,7 +297,7 @@ function creditNotePagination(url){
     	  			result = result +'<div class="tbldata-dotdot-vsm">';
     	  			if((report.creditDebitNoteStatus == "Submit") ||  (report.creditDebitNoteStatus == "Draft"))
    				 {
-					result = result +' <span class="clearfix"><a onClick="editCreditDebitNote(\''+report.savedNoteId+'\');"><i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
+					result = result +' <span class="clearfix"><a href="<c:url value="/app/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
    				 	result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 
    				 }else{
@@ -329,10 +329,10 @@ function creditNotePagination(url){
               "render": function ( data, type, report, meta ) {
             	  var result = "";
             	  result = result +'         <td>   ';
-            	 if(report.referenceNumber != null && report.referenceNumber != '' && report.referenceNumber != 'undefined'){
+            	 if(report.generatedId != null && report.generatedId != '' && report.generatedId != 'undefined'){
             		 
 				    //result = result +'<div class="tbldata-dotdot-vsm" title="'+report.referenceNumber+'">'+report.referenceNumber+'</div>';
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" title="'+report.referenceNumber+'">'+report.referenceNumber+'</a></div>';				
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" title="'+report.generatedId+'">'+report.generatedId+'</a></div>';				
 
   				     
             	 }else{

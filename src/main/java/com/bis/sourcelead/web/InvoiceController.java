@@ -8,6 +8,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -147,7 +151,8 @@ public class InvoiceController {
 	}
 	
 	@RequestMapping(value = "/addCreditNote")
-	public ModelAndView addCreditNote(HttpServletRequest request) throws Exception{
+	public ModelAndView addCreditNote(HttpServletRequest request,
+			@RequestParam(value="creditDebitUUID", required=false)String creditDebitUUID) throws Exception{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("billing/addCreditNote");
@@ -162,15 +167,21 @@ public class InvoiceController {
 				clients.setOrgName(clients.getLocationId().getOrgLocationName());
 			}
 		});
+		if(StringUtils.isNotBlank(creditDebitUUID)){
+			CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+			CreditDebitNoteListDTO creditDebitNoteListDTO = invoiceService.editCreditDebitNote(creditDebitNote.getId(), orgLocations, null);
+			model.addObject("creditDebitNote", creditDebitNoteListDTO);
+		}
 		model.addObject("clientsList", orgClientList);
-		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+		//model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("approversList",approversList);
 		return model;
 		
 	}
 	
 	@RequestMapping(value = "/addDebitNote")
-	public ModelAndView addDebitNote(HttpServletRequest request) throws Exception{
+	public ModelAndView addDebitNote(HttpServletRequest request,
+			@RequestParam(value="creditDebitUUID", required=false)String creditDebitUUID) throws Exception{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("billing/addDebitNote");
@@ -185,6 +196,11 @@ public class InvoiceController {
 				vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
 			}
 		});
+		if(StringUtils.isNotBlank(creditDebitUUID)){
+			CreditDebitNote creditDebitNote = invoiceService.getCreditDebitNoteByUUID(creditDebitUUID);
+			CreditDebitNoteListDTO creditDebitNoteListDTO = invoiceService.editCreditDebitNote(creditDebitNote.getId(), orgLocations, null);
+			model.addObject("creditDebitNote", creditDebitNoteListDTO);
+		}
 		model.addObject("vendorsList", orgVendorsList);
 		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("approversList",approversList);

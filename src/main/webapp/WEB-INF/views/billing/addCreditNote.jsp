@@ -29,7 +29,8 @@
     	 						<select class="form-control chosen-select" id="orgRelationId" name="orgRelationId" field-name="Client" onchange="getSpocsList();getInvoiceList();" data-validation="required" >
 		                        <option value="">-Select Client-</option>
 		                        <c:forEach var="clients" items="${clientsList}">
-									<option value="${clients.id}">${clients.orgName}</option>
+								<option ${creditDebitNote.orgRelationId == clients.id ? 'selected': ''} value="${clients.id}">${clients.orgName}</option>
+									
 								</c:forEach>
 			              </select>
     	 				</div>
@@ -47,15 +48,15 @@
 		<div class="form-group row">
 		<label class="col-md-3 paddingRight">Ref. ID</label>
 		<div class="col-md-9">
-		<input type="text" class="form-control" value="" id="referenceNumber" name="referenceNumber" field-name="Ref. ID" data-validation-optional="true" placeholder="Ref. ID">
-		</div>
+		<input type="text" class="form-control" value="${creditDebitNote.referenceNumber}" id="referenceNumber" name="referenceNumber" field-name="Ref. ID" data-validation-optional="true" placeholder="Ref. ID">
+		</div> 
 		</div>
 		</div>
 		<div class="col-xs-12 col-sm-6 col-md-6">
 		<div class="form-group row">
 		<label class="col-md-3">Billing Address</label>
 		<div class="col-md-9">
-		<input type="text" class="form-control" value="" id="billingAddress" name="billingAddress" field-name="Billing Address" placeholder="Billing Address" data-validation="validate_length length2-100" data-validation-optional="true">
+		<input type="text" class="form-control" value="${creditDebitNote.billingAddress}" id="billingAddress" name="billingAddress" field-name="Billing Address" placeholder="Billing Address" data-validation="validate_length length2-100" data-validation-optional="true">
 		</div>
 		</div>
 		</div>
@@ -63,7 +64,7 @@
 		<div class="form-group row">
 		<label class="col-md-3 paddingRight">Shipping Address</label>
 		<div class="col-md-9">
-		<input type="text" class="form-control" value="" id="shippingAddress" name="shippingAddress" placeholder="Shipping Address" field-name="Shipping Address" data-validation="validate_lengrh length2-100" data-validation-optional="true">
+		<input type="text" class="form-control" value="${creditDebitNote.shippingAddress}" id="shippingAddress" name="shippingAddress" placeholder="Shipping Address" field-name="Shipping Address" data-validation="validate_lengrh length2-100" data-validation-optional="true">
 		</div>
 		</div>
 		</div>
@@ -71,7 +72,7 @@
 		<div class="form-group row">
 		<label class="col-md-3 paddingRight">Credit Note Date</label>
 		<div class="col-md-9" id= "creditDebitNotedateDiv">
-    	<input class="form-control calendar" placeholder="Credit Note Date" type="text" value = "" id="creditDebitNotedate" name="creditDebitNotedate" field-name="Credit Note Date" readonly>
+    	<input class="form-control calendar" placeholder="Credit Note Date" type="text" value = "${creditDebitNote.creditDebitNotedate}"  id="creditDebitNotedate" name="creditDebitNotedate" field-name="Credit Note Date" readonly>
     	</div>
 		</div>
 		</div>
@@ -83,11 +84,11 @@
 		</div>
 		</div>
 		</div>
-		<div class="col-xs-12 col-sm-6 col-md-6">
+		<div class="col-xs-12 col-sm-6 col-md-6"> 
 		<div class="form-group row">
 		<label class="col-md-3 paddingRight">Reason</label>
 		<div class="col-md-9">
-		<textarea class="form-control" cols="2" id="reason" name="reason" field-name="Reason" placeholder="Reason" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
+		<textarea class="form-control" cols="2" id="reason" name="reason" field-name="Reason" placeholder="Reason" data-validation="validate_length length2-250" data-validation-optional="true">${creditDebitNote.reason}</textarea>
 		</div>
 		</div>
 		</div>
@@ -212,7 +213,7 @@
             <div class="form-horizontal">
               <div class="form-group">
                 <label class="control-label col-md-7"><strong>Sub Total</strong></label>
-                <div class="col-md-5 text-right"><span class="pull-left"></span><input type="text" value = "00:00" id="subTotalAmount" name="subTotalAmount" class="ReadTextFli" readonly></div>
+                <div class="col-md-5 text-right"><span class="pull-left"></span><input type="text" value = "${creditDebitNote.subTotalAmount}" id="subTotalAmount" name="subTotalAmount" class="ReadTextFli" readonly></div>
               </div>
               <!-- Discount UI Starts-->
               <div class="form-group">
@@ -220,24 +221,24 @@
                   <div class="row">
                     <div class="col-md-7 paddingRight">
                       <select class="form-control input-sm" id="disCount" name="discountType" onchange="calculateDisCount();">
-                        <option value="Percentage">Discount %</option>
-                        <option value="Flat">Discount Value</option>
+                         <option  ${creditDebitNote.discountType  == 'Percentage' ? 'selected' : ''}>Discount %</option>
+                         <option  ${creditDebitNote.discountType  == 'Flat' ? 'selected' : ''}>Discount Value</option>
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft" id="discountValueDiv">
-                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" placeholder="Flat / Discount" name="discountValue" type="text" onkeyup="calculateDisCount();">
+                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" value = "${creditDebitNote.discountValue}" placeholder="Flat / Discount" name="discountValue" type="text" onkeyup="calculateDisCount();">
                     </div>
                   </div>
                 </div>
                 <div class="col-md-5 text-right">
-                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text" placeholder="00.00" readonly>
+                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" value = "${creditDebitNote.discountTotal}" type="text" placeholder="00.00" readonly>
                 </div>
 
               </div>
               <!-- Discount UI Ends-->
                <div class="form-group mt">
                 <label class="col-md-7 text-right"><strong>Total</strong></label>
-                    <div class="col-md-5 text-right"><span class="pull-left"></span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>
+                    <div class="col-md-5 text-right"><span class="pull-left"></span><input type="text" value = "${creditDebitNote.grandTotal}" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>
               </div>
               </div>
               </div>
@@ -260,6 +261,11 @@
       </div>
  
 <script type="text/javascript">
+$(document).ready(function(){
+	getSpocsList();
+	getInvoiceList();
+	});
+
 function saveCreditNote(saveType){
 	
 	if ($('#creditNote_form').validate(false, validationSettings)){  
@@ -409,6 +415,7 @@ function removeDynamicRowDiv(id){
 <script>
 
 	function getSpocsList() {
+		var spocIds = "${creditDebitNote.contactUser}";
 		var orgRelationId = $("#orgRelationId").val();
 		$("#spocUser").empty();
 		$.ajax({
@@ -416,11 +423,18 @@ function removeDynamicRowDiv(id){
 					url : sourceleadUrl + "/getClientContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
 					success : function(json) {
 						var output = "";
-						output = output+ "<option value=''>Select Client Contact</option>";
 						for (var i = 0; i < json.data.length; i++) {
 							var opt = json.data[i];
-							var selected = "";
-							output = output	+ "<option value='" +opt.spocUserId+ "' "+selected+">"+ opt.ownerName + "(" + opt.spocName+ ")</option>";
+							if(spocIds != ""){
+								var arraySpocIds = spocIds.split(",");
+								if(arraySpocIds.includes(opt.spocUserId.toString())){
+									output = output	+ "<option value='" +opt.spocUserId+ "' selected >"+ opt.ownerName + "(" + opt.spocName+ ")</option>";
+								}else{
+									output = output	+ "<option value='" +opt.spocUserId+ "'>"+ opt.ownerName + "(" + opt.spocName+ ")</option>";
+								}
+							}else{
+								output = output	+ "<option value='" +opt.spocUserId+ "'>"+ opt.ownerName + "(" + opt.spocName+ ")</option>";
+							}
 						}
 						$("#spocUser").append(output);
 						$('#spocUser').trigger("chosen:updated");
@@ -450,6 +464,7 @@ function removeDynamicRowDiv(id){
 	}
 
 	function getInvoiceList() {
+		var invoiceIds = "${creditDebitNote.invoceId}";
 		var orgRelationId = $("#orgRelationId").val();
 		$("#invoceId").empty();
 		$.ajax({
@@ -457,11 +472,18 @@ function removeDynamicRowDiv(id){
 			url : sourceleadUrl + "/getInvoiceListForCreditDebitNote?"+ tokenParamName + "=" + tokenValue + "&orgRelationId="+ orgRelationId + "&invoiceType=Receivable",
 			success : function(json) {
 				var output = "";
-				output = output + "<option value=''>Select Invoice</option>";
 				for (var i = 0; i < json.data.length; i++) {
 					var opt = json.data[i];
-					var selected = "";
-					output = output + "<option value='" +opt.id+ "' "+selected+">"+ opt.invoiceId + "</option>";
+					if(invoiceIds != ""){
+						var arrayinvoiceIds = invoiceIds.split(",");
+						if(arrayinvoiceIds.includes(opt.id.toString())){
+							output = output	+ "<option value='" +opt.id+ "' selected >"+ opt.invoiceId + "</option>";
+						}else{
+							output = output	+ "<option value='" +opt.id+ "'>"+ opt.invoiceId + "</option>";
+						}
+					}else{
+						output = output	+ "<option value='" +opt.id+ "'>"+ opt.invoiceId + "</option>";
+					}
 				}
 				$("#invoceId").append(output);
 				$('#invoceId').trigger("chosen:updated");
@@ -609,6 +631,7 @@ function datePickerFunction(id){
 					});
 	
 	});
+			
  		</script>
       
 <jsp:include page="../masterFooter.jsp" />

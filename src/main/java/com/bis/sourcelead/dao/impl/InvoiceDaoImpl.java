@@ -749,7 +749,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	@SuppressWarnings("unchecked")
-	public List<Invoice> getInvoiceListUsingMultipleStringIds(String ids, Long orgLocationId) throws Exception {
+	public List<Invoice> getInvoiceListUsingMultipleStringIdsAndLocationId(String ids, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String[] idsValues = ids.split(",");
 		// convert string array to long array
@@ -760,6 +760,40 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		
 		String query = "from Invoice invoice  where invoice.id IN ( :ids ) and invoice.orgLocation.id =:orgLocationId";
 		List<Invoice> list = session.createQuery(query).setParameterList("ids", data).setParameter("orgLocationId", orgLocationId).list();
+		return list;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Invoice> getInvoiceListUsingMultipleIds(String ids) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String[] idsValues = ids.split(",");
+		// convert string array to long array
+		Long[] data = new Long[idsValues.length];
+		for (int i = 0; i < idsValues.length; i++) {
+		  data[i] = Long.valueOf(idsValues[i]);
+		}
+		
+		String query = "from Invoice invoice  where invoice.id IN ( :ids )";
+		List<Invoice> list = session.createQuery(query).setParameterList("ids", data).list();
+		return list;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Invoice> getInvoiceListUsingMultipleIdsForChild(String ids) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String[] idsValues = ids.split(",");
+		// convert string array to long array
+		Long[] data = new Long[idsValues.length];
+		for (int i = 0; i < idsValues.length; i++) {
+		  data[i] = Long.valueOf(idsValues[i]);
+		}
+		
+		String query = "from Invoice invoice  where invoice.parentInvoiceId.id IN ( :ids )";
+		List<Invoice> list = session.createQuery(query).setParameterList("ids", data).list();
 		return list;
 	}
 	
@@ -922,6 +956,28 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
 			count = (Long) maxCountList.iterator().next().longValue();
 		}
+		return count;	
+	}
+	
+	@Override
+	@Transactional
+	public Long checkCreditDebitIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "'";
+		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+		Long count = 0L;
+		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+			count = (Long) maxCountList.iterator().next().longValue();
+		}
+		if(count == 0){
+			 query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'7') AS UNSIGNED)) FROM "+schema+".CREDIT_DEBIT_NOTE WHERE ORG_LOCATIONS_ID = '"+ orgLocationId + "'";
+			 maxCountList = session.createSQLQuery(query).list();
+			 if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+					count = (Long) maxCountList.iterator().next().longValue();
+				}
+		}
+		
+		
 		return count;	
 	}
 

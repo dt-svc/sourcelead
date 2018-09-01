@@ -75,12 +75,18 @@ public interface InvoiceDao{
 
 	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId, Long orgLocationId, String invoiceStatus, Date startDate, Date endDate);
 
-	List<Invoice> getInvoiceListUsingMultipleStringIds(String ids, Long orgLocationId) throws Exception;
+	List<Invoice> getInvoiceListUsingMultipleStringIdsAndLocationId(String ids, Long orgLocationId) throws Exception;
+	
+	List<Invoice> getInvoiceListUsingMultipleIds(String ids) throws Exception;
+	
+	public List<Invoice> getInvoiceListUsingMultipleIdsForChild(String ids) throws Exception;
 	
 	void saveInvoiceTimelineHistory(InvoiceTimelineHistory timelineHistory);
 
 	List<InvoiceTimelineHistory> getInvoiceTimelineHistoryList(Long id, String searchVal, String orderVal, Date[] datesRange, String[] checkedStatus) throws ParseException;
 
 	public Long checkInvoiceOrBillIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount,String invoiceType);
+	
+	public Long checkCreditDebitIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount);
 
 }

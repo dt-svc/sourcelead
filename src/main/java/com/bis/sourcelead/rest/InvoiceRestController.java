@@ -1974,7 +1974,10 @@ return responseList;
 	{
 		ResponseList<Invoice> responseList = new ResponseList<>();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Invoice> invoiceList = invoiceService.getClientBasedInvoiceLists(Long.parseLong(orgRelationId), orgLocation.getId(), invoiceType);
+		List<Invoice> invoiceList = null;
+		if(StringUtils.isNotBlank(orgRelationId)){
+		invoiceList = invoiceService.getClientBasedInvoiceLists(Long.parseLong(orgRelationId), orgLocation.getId(), invoiceType);
+		}
 			responseList.setData(invoiceList);
 		return responseList;
 	}
