@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
@@ -133,10 +134,19 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 
 	@Override
 	@Transactional
-	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId) {
+	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,String payType) {
+		
+		String qry = "";
+		List<AssociateSalary> assList = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		String qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
-		List<AssociateSalary> assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
+		if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
+			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
+			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
+		}else {
+			qry = "from AssociateSalary ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1'";
+			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).setParameter("payType", payType).list();
+		}
+		 
 		if(assList != null)
 			return assList;
 		else

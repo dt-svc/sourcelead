@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
@@ -162,7 +163,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		
 		
 		String[] groupId = generateUSPayrollDTO.getGroupId().split(",");
-		List<AssociateSalary> assSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]));
+		List<AssociateSalary> assSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]),generateUSPayrollDTO.getPayType());
 		
 		UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
 		
