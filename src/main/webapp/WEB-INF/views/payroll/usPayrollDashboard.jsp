@@ -58,7 +58,7 @@ function approvePayrollDiv(){
 <div class="timesheet_head minHeight">
 <form:form id="generate_payroll_form" name="generate_payroll_form" method="post">
 <div id="initiateDivv">
-<div class="col-md-10 mt">
+<div class="col-md-12 mt">
 	<div class="row">
 		<div class="col-md-3">
 			<div>
@@ -85,7 +85,7 @@ function approvePayrollDiv(){
 			</select>
 		</div>
 
-		<div class="col-md-3 paddingRight">
+		<div class="col-md-2 paddingRight">
 			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date" readonly="readonly">
 		</div>
 		<div class="col-md-2">
