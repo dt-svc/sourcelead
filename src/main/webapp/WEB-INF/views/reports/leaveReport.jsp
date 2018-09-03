@@ -791,6 +791,7 @@ function searchReportCollapse() {
 	$("#leaveTypeList").val('');
 	$("#leaveReportsList, #searchReport").hide();
 	$("#reportCollapse").show();
+	
 }
 
 </script>
