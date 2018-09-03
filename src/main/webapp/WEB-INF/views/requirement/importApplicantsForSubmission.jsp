@@ -48,7 +48,7 @@
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadSubmissionTemplateForm'/>'">
+										onClick="resetSubmissionTemplate();">
 								</div>
 							</div>
 						</div>
@@ -116,6 +116,11 @@
 <script type="text/javascript">
 function cancelFileImport(){
 	location.replace(sourceleadUrl+"/uploadCandidateForm");
+}
+
+function resetSubmissionTemplate(){
+	$('#upload_candidate_form')[0].reset();
+	$('#newUploadFile').text('');
 }
 </script>
 	
