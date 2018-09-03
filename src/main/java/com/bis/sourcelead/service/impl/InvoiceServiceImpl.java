@@ -3450,7 +3450,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         creditDebitNote.setSubTotal(new BigDecimal(creditDebitNoteDTO.getSubTotalAmount()));
         creditDebitNote.setTotal(new BigDecimal(creditDebitNoteDTO.getGrandTotal()));
         
-        if(creditDebitNoteDTO.getSavedNoteId() == null){
+        if(StringUtils.isEmpty(creditDebitNoteDTO.getSavedNoteId())){
         creditDebitNote.setGeneratedId(getCreditDebitGeneratedId(orgLocation,vendorOrgLocation,noteType));
         }
         

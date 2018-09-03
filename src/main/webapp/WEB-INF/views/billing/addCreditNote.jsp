@@ -204,14 +204,14 @@
               </c:if>
               <c:if test="${!empty creditDebitNote.creditDebitNoteLineItems}">
               <c:forEach var="items" items="${creditDebitNote.creditDebitNoteLineItems}" varStatus="rows">
-              <input type="hidden" name="creditDebitNoteLineItems[${rows.count-1}].lineItemId" value="${items.lineItemId}" id="tlineItemId${rows.count-1}"/>
               
               <tr>
+               <input type="hidden" name="creditDebitNoteLineItems[${rows.count-1}].lineItemId" value="${items.lineItemId}" id="lineItemId${rows.count-1}"/>
           
-               <input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber0" value="0"/>
+               <input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber${rows.count-1}" value="${rows.count-1}"/>
               <td>
                 	<div class="width150px">
-                	<input class="form-control calendar" placeholder="Date" type="text" value = "${items.lineItemDate}" id="lineItemDate0" name="creditDebitNoteLineItems[${rows.count-1}].lineItemDate" onclick="datePickerFunction(${rows.count-1});" field-name="Date" readonly>
+                	<input class="form-control calendar" placeholder="Date" type="text" value = "${items.lineItemDate}" id="lineItemDate${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].lineItemDate" onclick="datePickerFunction(${rows.count-1});" field-name="Date" readonly>
 
                 	</div>
                 </td>
@@ -641,9 +641,9 @@ function datePickerFunction(id){
   
   
   function calculateSumSubTotal(id){
-		 var maxRowNum = $("#invoiceExpMaxRowNumber"+id).val();
+		 var maxRowNum = $("input[id^='invoiceExpMaxRowNumber']").length; // $("#invoiceExpMaxRowNumber"+id).val();
 		 var sum = 0;
-		  for(var i=0;i <= maxRowNum;i++){
+		  for(var i=0;i < maxRowNum;i++){
 			  if(document.getElementById("rowTotalAmount"+i)){
 		    		 if(document.getElementById("rowTotalAmount"+i).value){
 		    			var rowAmount = $('#rowTotalAmount'+i).val();
@@ -661,7 +661,6 @@ function datePickerFunction(id){
 		var discountType = $("#disCount").val();
 		var subTotal = $("#subTotalAmount").val();
 		var discountValue = $("#discountValue").val();
-		alert("ooo"+discountType)
 		var total ='';
 		if(discountType == 'Flat'){
 			if(discountValue !=null && discountValue !='undefined'){
