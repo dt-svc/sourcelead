@@ -65,7 +65,7 @@ public class RequirementSubmissionTemplateFields implements Serializable{
 	@Column(name = "CITY")
 	private String city;
 	
-	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
+	@Column(name = "LOCATION")
 	private String location;
 	
 	@Column(name = "ZIPCODE")
