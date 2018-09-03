@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -281,6 +282,10 @@ public class ReportRestController {
 			
 				if(!"custom".equalsIgnoreCase(timePeriod)){
 					searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+					if(timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+						Date newDate = DateUtils.addHours(searchDates[0], 24);
+						searchDates[1] = newDate;
+					}
 				}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 		    	    
 		    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");

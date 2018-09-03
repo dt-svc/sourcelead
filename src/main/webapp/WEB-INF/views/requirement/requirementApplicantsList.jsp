@@ -82,7 +82,6 @@
     			 clientNameById.push($(this).val());
 			 });
     	    if(frequency == "Custom"){
-    	    	alert("custome")
     	        if(fromDate == ''){
     	        	$("#invoiceFilterId").show();
     	        	$(".advancedsearch-mask").fadeIn();
@@ -438,6 +437,15 @@ $(".overIcon, .newActPop").click(function(e){
 					<div class="row">
 					  <div class="col-md-4">
 						<div class="row">
+						   <!-- <div class="col-md-12 mb">
+								<label><strong>Incentivized</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="TypeFilter">
+									     <li class="checkBox positionRelative" ><input id="candidateTypeAll" type="checkbox" name="incentivizedType"  value ="All" ><label for="Yes">Yes</label></li>
+										 <li class="checkBox positionRelative" ><input id="onlycandidate" type="checkbox" name="incentivizedType" value ="Favourite" ><label for="No">No</label></li>
+				                    </ul>
+								 </div>
+						   </div> -->
 						    <div class="col-md-12 mb">
 								<label><strong>Duration</strong></label>
 								 <div class="clearfix">
@@ -464,6 +472,7 @@ $(".overIcon, .newActPop").click(function(e){
 			                        </ul>
 							      </div>
 						     </div> 
+						     
 						  </div>
 						  <div class="clearfix pull-left" id="custom-selects" style="display: none; width: 346px;" >
 							<div class="pull-left">
