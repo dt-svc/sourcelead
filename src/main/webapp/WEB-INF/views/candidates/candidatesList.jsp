@@ -2897,7 +2897,7 @@ function resetCandidateFilter(){
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
 	document.getElementById("candidateCheck").checked = true;
-	document.getElementById("allCandidatesRadio").checked = true;
+	document.getElementById("myCandidatesRadio").checked = true;
 	candidateList();
 }
 </script>		
@@ -2973,8 +2973,8 @@ function resetCandidateFilter(){
 				<label><strong>Created By</strong></label>
 				 <div class="clearfix">
 					<ul class="list-unstyled" id="createdByTypeFilter">
-					    <li class="radioIput positionRelative" ><input  type="radio" id="myCandidatesRadio" name="createdByFilter"  value ="myCandidates"  ><label>My Candidates</label></li>
-						<li class="radioIput positionRelative" ><input  type="radio" id="allCandidatesRadio"  name="createdByFilter"  value ="allCandidates" checked ><label>All Candidates</label></li>
+					    <li class="radioIput positionRelative" ><input  type="radio" id="myCandidatesRadio" name="createdByFilter"  value ="myCandidates" checked ><label>My Candidates</label></li>
+						<li class="radioIput positionRelative" ><input  type="radio" id="allCandidatesRadio"  name="createdByFilter"  value ="allCandidates"  ><label>All Candidates</label></li>
                     </ul>
 				 </div>
 				 </div>  
