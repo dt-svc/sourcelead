@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -68,8 +69,14 @@ public class ExpensesEntries implements Serializable {
 	@Column(name = "CURRENCY_TYPE")
 	private String currencyType;
 
-	@Column(name = "AMOUNT")
-	private Float amount;
+	@Column(name = "APPROVED_AMOUNT")
+	private BigDecimal amount;
+	
+	@Column(name = "SUBMITTED_AMOUNT")
+	private BigDecimal submittedamount;
+	
+	@Column(name = "AMOUNT_CHANGE_REASON")
+	private String amountchangereason;
 	
 	@Column(name = "PAID_BY")
 	private String paidBy;
@@ -160,11 +167,11 @@ public class ExpensesEntries implements Serializable {
 		this.currencyType = currencyType;
 	}
 
-	public Float getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Float amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 
@@ -266,6 +273,22 @@ public class ExpensesEntries implements Serializable {
 
 	public void setBillable(Boolean billable) {
 		this.billable = billable;
+	}
+
+	public BigDecimal getSubmittedamount() {
+		return submittedamount;
+	}
+
+	public void setSubmittedamount(BigDecimal submittedamount) {
+		this.submittedamount = submittedamount;
+	}
+
+	public String getAmountchangereason() {
+		return amountchangereason;
+	}
+
+	public void setAmountchangereason(String amountchangereason) {
+		this.amountchangereason = amountchangereason;
 	}
 
 	
