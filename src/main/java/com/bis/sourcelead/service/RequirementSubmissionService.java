@@ -1,14 +1,18 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
@@ -52,6 +56,8 @@ public interface RequirementSubmissionService {
 	void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, String selectedShortlistsRate, Org org) throws Exception;
 	
 	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus,String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate);
+	
+	public Integer [] getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate);
 	
 	//to get candidates for submit to client
 	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(OrgLocations loginOrgLocation,Requirement requirement,User user,String loginUserRole) throws Exception;
@@ -286,5 +292,9 @@ public interface RequirementSubmissionService {
 	RequirementSubmission getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
 	
 	boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId,Long requirementId) throws Exception;
+	
+	File getPdfFile(ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations loginOrgLocations);
+
+	Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations loginOrgLocations, String submissionStatus) throws Exception;
 
 }
