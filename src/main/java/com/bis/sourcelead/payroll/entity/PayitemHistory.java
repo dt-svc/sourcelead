@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -28,6 +29,9 @@ public class PayitemHistory {
 	@ManyToOne
 	@JoinColumn (name="PAY_ITEM_ID")
 	private AssociatePayItem associatePayItem;
+	
+	@Column (name ="AMOUNT")
+	private BigDecimal amount;
 	
 	@ManyToOne
 	@JoinColumn(name = "PAYROLL_ID")
@@ -188,6 +192,16 @@ public class PayitemHistory {
 	public void setAssociatePayItem(AssociatePayItem associatePayItem)
 	{
 		this.associatePayItem = associatePayItem;
+	}
+
+	public BigDecimal getAmount()
+	{
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount)
+	{
+		this.amount = amount;
 	}
 	
 	

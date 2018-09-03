@@ -59,7 +59,7 @@ public class USPayPeriodServiceImpl implements USPayPeriodService{
 			pfd.setPayPeriod(sbDate.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPaysheetFrequency().getFrequencyStartDate())).append(" / ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPaysheetFrequency().getFrequencyEndDate())).toString());
 		
 			Set<EmployeePayroll> payRollSet = pay.getPaysheetFrequency().getEmployeepayroll();
-			double sum = payRollSet.stream().filter(paySet -> paySet.getPayPeriodNum() != null && Integer.valueOf(paySet.getPayPeriodNum()) == pay.getPayPeriodNum()).mapToDouble(i->i.getNetPay().doubleValue()).sum();
+			double sum = payRollSet.stream().filter(paySet -> paySet.getPayPeriodNum() != null && Integer.parseInt(paySet.getPayPeriodNum()) == pay.getPayPeriodNum()).mapToDouble(i->i.getNetPay().doubleValue()).sum();
 			pfd.setTotal(BigDecimal.valueOf(sum));
 			pfd.setGroupId(String.valueOf(pay.getPaysheetFrequency().getUserGroup().getId()));
 			totalList.add(pfd);

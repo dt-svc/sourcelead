@@ -93,17 +93,16 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 				return response;
 			}
 			else {
-				if (paysheetFrequencyDTO.getSearchValue() != null
-						&& !"".equalsIgnoreCase(paysheetFrequencyDTO.getSearchValue())) {
+				if (paysheetFrequencyDTO.getSearchValue() != null && !"".equalsIgnoreCase(paysheetFrequencyDTO.getSearchValue())) {
 					query1.append(" and (up.paysheetFrequency.userGroup.payFrequency like '%"
 							+ paysheetFrequencyDTO.getSearchValue()
 							+ "%' ").append("OR up.paysheetFrequency.userGroup.groupName like '%"
-									+ paysheetFrequencyDTO.getSearchValue()
-									+ "%' ").append("OR up.approverStatus like '%"
-											+ paysheetFrequencyDTO.getSearchValue()
-											+ "%' ").append("OR up.paysheetFrequency.type like '%"
-													+ paysheetFrequencyDTO.getSearchValue()
-													+ "%' )");
+							+ paysheetFrequencyDTO.getSearchValue()
+							+ "%' ").append("OR up.approverStatus like '%"
+							+ paysheetFrequencyDTO.getSearchValue()
+							+ "%' ").append("OR up.paysheetFrequency.type like '%"
+							+ paysheetFrequencyDTO.getSearchValue()
+							+ "%' )");
 				}
 			}
 		}

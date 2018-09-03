@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -342,10 +343,9 @@ public class PayrollUtil {
 								amount = dedHis.getPostContributionAmount().doubleValue();
 							}
 						}
+						contDTO.setId(dedHis.getId().toString());
 						contDTO.setAmount(precontrAmt);
-						contDTO.setId(dedHis.getContributionId().toString());
 						contDTO.setPostContributionAmt(postcontrAmt);
-						contDTO.setId(String.valueOf(dedHis.getContributionId().getId()));
 						contDTO.setContributionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
 						contDTO.setTaxType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getTaxType());
 						contDTO.setContributionAmount(dedHis.getContributionId().getContributionAmount());
@@ -372,7 +372,7 @@ public class PayrollUtil {
 			if (hisList != null && hisList.size() > 0) {
 				for (DeductionHistory dedHis : hisList) {
 					DeductionDTO dedDTO = new DeductionDTO();
-					dedDTO.setId(String.valueOf(dedHis.getDeductionId().getId()));
+					dedDTO.setId(String.valueOf(dedHis.getId()));
 					dedDTO.setDeductionType(dedHis.getDeductionId().getDeductionTypeId().getPayrollDeductionType());
 					double preDedAmt = 0;
 					double postDedAmt = 0;
@@ -414,12 +414,11 @@ public class PayrollUtil {
 		try {
 			Calendar c = Calendar.getInstance(); // this takes current date
 			ytd[1] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
-			System.out.println("End Date = " + c.getTime());
 			c.set(Calendar.MONTH, 0);
 			c.set(Calendar.DAY_OF_MONTH, 1);
 			ytd[0] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
-			System.out.println(c.getTime());
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return ytd;
 	}
@@ -437,10 +436,55 @@ public class PayrollUtil {
 				AssociatePayItemDTO payItemDTO = new AssociatePayItemDTO();
 				payItemDTO.setId(his.getId().toString());
 				payItemDTO.setPayItemName(his.getAssociatePayItem().getPayItemName());
-				payItemDTO.setPayItemAmt(his.getAssociatePayItem().getPayItemAmount().doubleValue());
+				payItemDTO.setPayItemAmt(his.getAmount().doubleValue());
 				list.add(payItemDTO);
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * Get Houry rate by lca wage type
+	 * @param amount
+	 * @param lcaWageType
+	 * @param payFrequency 
+	 * @return BigDecimal
+	 */
+	public BigDecimal getHourlyRate(BigDecimal amount, String lcaWageType, String payFrequency)
+	{
+		BigDecimal houryRate = BigDecimal.ZERO;
+		BigDecimal payAmount = BigDecimal.ZERO;
+			if(PayrollConstant.PAY_YEARLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate =  amount.divide(new BigDecimal(2088),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(176),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(80),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(40),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(88),3, RoundingMode.CEILING);
+			}
+			
+			BigDecimal hours = BigDecimal.ZERO;
+			if(PayrollConstant.PAY_ANNUAL.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(2088);
+			}
+			if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(176);
+			}
+			if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(80);
+			}
+			if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(40);
+			}
+			payAmount = houryRate.multiply(hours);
+			return payAmount;
+			
 	}
 }
