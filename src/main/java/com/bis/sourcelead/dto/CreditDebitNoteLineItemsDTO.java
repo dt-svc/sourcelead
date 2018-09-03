@@ -13,6 +13,7 @@ public class CreditDebitNoteLineItemsDTO {
     private String account;
     private String lineItemDate;
     private String associates;
+    private String lineItemId;
     
     
 	public String getInlineDescription() {
@@ -82,6 +83,12 @@ public class CreditDebitNoteLineItemsDTO {
 	}
 	public void setAssociates(String associates) {
 		this.associates = associates;
+	}
+	public String getLineItemId() {
+		return lineItemId;
+	}
+	public void setLineItemId(String lineItemId) {
+		this.lineItemId = lineItemId;
 	}
     
     

@@ -3495,10 +3495,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 		creditDebitNote.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 		
 		// storing Credit or Debit line items
+		List<CreditDebitLineItems> creditDebitLineItemsIdsList = null;
 		if (null != creditDebitNote.getId()) {
-			//invoiceLineItemsIdsList = invoiceLineItemDao.getInvoiceLineItemsIdsByInvoiceId(invoice.getId());
+			creditDebitLineItemsIdsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(creditDebitNote.getId(), orgLocation.getId());
 		}
-		Set<CreditDebitLineItems> invoiceLineItemSet = getCreditDebitLineItems(user, orgLocation, creditDebitNote,creditDebitNoteDTO);
+		Set<CreditDebitLineItems> invoiceLineItemSet = getCreditDebitLineItems(user, orgLocation, creditDebitNote,creditDebitNoteDTO,creditDebitLineItemsIdsList);
 		creditDebitNote.setCreditDebitLineItems(invoiceLineItemSet);
 
 		invoiceDao.saveCreditDebitNote(creditDebitNote);
@@ -3563,11 +3564,20 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	private Set<CreditDebitLineItems> getCreditDebitLineItems(User user, OrgLocations orgLocation,
-			CreditDebitNote creditDebitNote, CreditDebitNoteDTO creditDebitNoteDTO) {
+			CreditDebitNote creditDebitNote, CreditDebitNoteDTO creditDebitNoteDTO,List<CreditDebitLineItems> creditDebitLineItemsSavedList) {
+		
 		Set<CreditDebitLineItems> creditDebitLineItemsList = new HashSet<CreditDebitLineItems>();
+		
+		List<CreditDebitLineItems> updatedLineItems = new ArrayList<CreditDebitLineItems>();
+		
 		for(CreditDebitNoteLineItemsDTO creditDebitLineItemsDTO :creditDebitNoteDTO.getCreditDebitNoteLineItems())
 		{
 			CreditDebitLineItems creditDebitLineItems = new CreditDebitLineItems();
+			
+			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getLineItemId())){
+				creditDebitLineItems.setId(Long.parseLong(creditDebitLineItemsDTO.getLineItemId()));
+			}
+			
 			if(StringUtils.isNotBlank(creditDebitLineItemsDTO.getInlineDescription())){
 			creditDebitLineItems.setInlineDescription(creditDebitLineItemsDTO.getInlineDescription());
 			}else{
@@ -3608,6 +3618,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			creditDebitLineItems.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
 			creditDebitLineItems.setCreditDebitNote(creditDebitNote);
 			creditDebitLineItemsList.add(creditDebitLineItems);
+		}
+		if (null != creditDebitNote.getId()) {
+			updatedLineItems.retainAll(creditDebitLineItemsSavedList);
+			creditDebitLineItemsSavedList.removeAll(updatedLineItems);
 		}
 		return creditDebitLineItemsList;
 	}
@@ -3920,10 +3934,36 @@ public class InvoiceServiceImpl implements InvoiceService {
 		creditDebitNoteListDTO.setOrgRelationId(note.getOrgRelations().getId().toString());
 		creditDebitNoteListDTO.setGrandTotal(note.getTotal().toString());
 		creditDebitNoteListDTO.setSubTotalAmount(note.getSubTotal().toString());
+		if(note.getDiscountValue() !=null){
 		creditDebitNoteListDTO.setDiscountValue(note.getDiscountValue().toString());
 		creditDebitNoteListDTO.setDiscountTotal(note.getDiscountTotal().toString());
 		creditDebitNoteListDTO.setDiscountType(note.getDiscountType());
+		}
+		creditDebitNoteListDTO.setSavedNoteId(note.getId().toString());
 		
+		//Credit Debit Note Line Items
+		List<CreditDebitLineItems> lineItemsList = invoiceDao.getCreditDebitLineItemsListByNoteIdAndLocationId(noteId, orgLocation.getId());
+		List<CreditDebitNoteLineItemsDTO> lineItemsDTOList = new ArrayList<CreditDebitNoteLineItemsDTO>();
+		lineItemsList.forEach(lineItems->{
+		CreditDebitNoteLineItemsDTO	 listDto = new CreditDebitNoteLineItemsDTO();
+		listDto.setInlineDescription(lineItems.getInlineDescription());
+		listDto.setPrice(lineItems.getPrice().toString());
+		listDto.setQuantity(lineItems.getQuantity());
+		listDto.setLineItemDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lineItems.getLineItemDate()));
+		if(lineItems.getAssociate() !=null){
+			listDto.setAssociates(lineItems.getAssociate().getId().toString());	
+		}
+		if(lineItems.getTaxAmount() !=null){
+		listDto.setTaxAmount(lineItems.getTaxAmount().toString());
+		listDto.setTaxType(lineItems.getTaxType());
+		}
+		listDto.setRowTotalAmount(lineItems.getTotalAmount().toString());
+		listDto.setRowTotal(lineItems.getAmount().toString());
+		listDto.setLineItemId(lineItems.getId().toString());
+			
+		lineItemsDTOList.add(listDto);	 	
+		});
+		creditDebitNoteListDTO.setCreditDebitNoteLineItems(lineItemsDTOList);
 		
 		return creditDebitNoteListDTO;
 	}
