@@ -1127,12 +1127,32 @@ public class LeaveDaoImpl implements LeaveDao{
 				queryString.setLong("loginUserId", dayWiseLeaveReportDTO.getLoginUserId());
 			}
 			leaveReportList = queryString.list();
-			countQueryString = session.createQuery(("select count(*) " + query));
+			String countQuery1=null;
+			countQuery1=query + query1.toString() + " " + userRoleSubQuery
+					+ " " + deptSubQuery + " " + employmentTypeSubQuery + " " + leaveTypeSubQuery
+					+ " " + leaveTypeBillableTypeSubQuery + " " + sortingQry;
+			
+			countQueryString = session.createQuery(("select count(*) " + countQuery1));
 			countQueryString.setParameter("orgLocationId", orgLocationId);
 			countQueryString.setParameter("orgId", orgId);
 			countQueryString.setParameter("fromDate", sqlDate);
 			if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
 				countQueryString.setLong("loginUserId", dayWiseLeaveReportDTO.getLoginUserId());
+			}
+			if (!userRoleList.isEmpty()) {
+				countQueryString.setParameterList("userRoleList", userRoleList);
+			}
+			if (!departmentsList.isEmpty()) {
+				countQueryString.setParameterList("departmentsList", departmentsList);
+			}
+			if (!employmentTypeList.isEmpty()) {
+				countQueryString.setParameterList("employmentTypeList", employmentTypeList);
+			}
+			if (!leaveTypeNamesList.isEmpty()) {
+				countQueryString.setParameterList("leaveTypeNamesList", leaveTypeNamesList);
+			}
+			if (!leaveTypeBillableList.isEmpty()) {
+				countQueryString.setParameterList("leaveTypeBillableList", leaveTypeBillableList);
 			}
 			countlist = countQueryString.list();
 			int count = 0;
@@ -1143,14 +1163,8 @@ public class LeaveDaoImpl implements LeaveDao{
 			response.setRecordsTotal(count);
 			if (leaveReportList != null) {
 				List<Long> filteredCountlist = null;
-				if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
-					filteredCountlist = session.createQuery("select count(*) " + query
-							+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", sqlDate).setLong("loginUserId", dayWiseLeaveReportDTO.getLoginUserId()).list();
-				}
-				else {
-					filteredCountlist = session.createQuery("select count(*) " + query
-							+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", sqlDate).list();
-				}
+					filteredCountlist = countQueryString.list();
+				
 				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
@@ -1366,13 +1380,35 @@ public class LeaveDaoImpl implements LeaveDao{
 				queryString.setLong("loginUserId", hrLeaveReportDTO.getLoginUserId());
 			}
 			leaveReportList = queryString.list();
-			countQueryString = session.createQuery(("select count(*) " + query));
+			
+			String countQuery1=null;
+			countQuery1=query + " " + query1.toString() + " " + deptSubQuery
+							+ " " + userRoleSubQuery + " " + employmentTypeSubQuery + " "
+							+ associateSubQuery + " " + leaveTypeSubQuery + " " + leaveStatusSubQuery + " "
+							+ sortingQry;
+			
+			countQueryString = session.createQuery(("select count(*) " + countQuery1));
 			countQueryString.setParameter("orgLocationId", orgLocationId);
 			countQueryString.setParameter("orgId", orgId);
 			countQueryString.setParameter("fromDate", startDateSqlDate);
 			countQueryString.setParameter("toDate", endDateSqlDate);
 			if (!leaveStatusList.isEmpty()) {
 				countQueryString.setParameterList("leaveStatusList", leaveStatusList);
+			}
+			if (!userRoleList.isEmpty()) {
+				countQueryString.setParameterList("userRoleList", userRoleList);
+			}
+			if (!departmentsList.isEmpty()) {
+				countQueryString.setParameterList("departmentsList", departmentsList);
+			}
+			if (!employmentTypeList.isEmpty()) {
+				countQueryString.setParameterList("employmentTypeList", employmentTypeList);
+			}
+			if (!leaveTypeNamesList.isEmpty()) {
+				countQueryString.setParameterList("leaveTypeNamesList", leaveTypeNamesList);
+			}
+			if (!associateNamesList.isEmpty()) {
+				countQueryString.setParameterList("associateNamesList", associateNamesList);
 			}
 			if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
 				countQueryString.setLong("loginUserId", hrLeaveReportDTO.getLoginUserId());
@@ -1387,24 +1423,9 @@ public class LeaveDaoImpl implements LeaveDao{
 			response.setRecordsTotal(count);
 			if (leaveReportList != null) {
 				List<Long> filteredCountlist = null;
-				if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !leaveStatusList.isEmpty()) {
-					filteredCountlist = session.createQuery("select count(*) " + query
-							+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setLong("loginUserId", hrLeaveReportDTO.getLoginUserId()).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).setParameterList("leaveStatusList", leaveStatusList).list();
-				}
-				else if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")
-						&& leaveStatusList.isEmpty()) {
-					filteredCountlist = session.createQuery("select count(*) " + query
-							+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setLong("loginUserId", hrLeaveReportDTO.getLoginUserId()).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).list();
-				}
-				else if (loginUserRole.equalsIgnoreCase("ROLE_ADMIN")
-						&& !leaveStatusList.isEmpty()) {
-					filteredCountlist = session.createQuery("select count(*) " + query
-							+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).setParameterList("leaveStatusList", leaveStatusList).list();
-				}
-				else {
-					filteredCountlist = session.createQuery("select count(*) " + query
-							+ query1.toString()).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId).setParameter("fromDate", startDateSqlDate).setParameter("toDate", endDateSqlDate).list();
-				}
+			
+					filteredCountlist = countQueryString.list();
+				
 				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
