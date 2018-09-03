@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.dto.HrLeaveReportDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveReportView;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Org;
@@ -54,6 +56,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -86,6 +89,9 @@ public class LeaveManagementReportsRestController {
 	
 	@Autowired
 	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	LeaveManagementUtil leaveManagementUtil;
 	
 	@RequestMapping(value = "/daywiseLeaveReport")
 	public ModelAndView approvedLeavesJsp(HttpServletRequest request,
@@ -137,6 +143,9 @@ public class LeaveManagementReportsRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		LeaveReportView leaveReportView = new LeaveReportView();
 		ResponseList<LeaveReportView> leaveReportsList=null;
+	    String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
 		try{
 			String[] tableColumns = {"id", "name", "userDeptName", "leaveTypeName","leaveTypeBillable", "fromDate", "toDate", "appliedOn", "status","approver","approvedOn"};
 
@@ -148,9 +157,10 @@ public class LeaveManagementReportsRestController {
 					}
 					hrLeaveReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
 					hrLeaveReportDTO.setSortOrder(sortColumnOrder);
+					hrLeaveReportDTO.setLoginUserId(loginUser.getId());
 				
 					
-			leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromDateToDate(hrLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId());
+			leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromDateToDate(hrLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
 			List<LeaveReportView> list = leaveReportsList.getData();
 	        for(LeaveReportView lrv : list){
 	        	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
@@ -162,9 +172,48 @@ public class LeaveManagementReportsRestController {
 	 		   u.setAppliedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
 	 		   u.setApprovedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
 	 		   
+	 		   
+	 		  LeaveType leaveType = new LeaveType() ;
+	 		  leaveType.setId(u.getLeaveTypeId());
+	 		  leaveType.setDuration(u.getDuration());
+	 		  leaveType.setIncludeWeekoff(u.getIncludeWeekoff());
+	 		  leaveType.setIncludeHolidays(u.getIncludeHolidays());
+				Leave leave = new Leave();
+				leave.setFromDate(u.getFromDate());
+				if(StringUtils.isNotBlank(hrLeaveReportDTO.getEndDate()))
+					leave.setToDate( u.getToDate());
+				
+				if(StringUtils.isNotBlank(u.getFromHalfDay())) {
+					leave.setFromHalfDay(u.getFromHalfDay());
+				}
+				if(StringUtils.isNotBlank(u.getToHalfDay())) {
+					leave.setToHalfDay(u.getToHalfDay());
+				}
+				if(StringUtils.isNotBlank(u.getFromDateFromHalfTime())) {
+					leave.setFromDateFromHalfTime(u.getFromDateFromHalfTime());
+				}
+				if(StringUtils.isNotBlank(u.getFromDateToHalfTime())) {
+					leave.setFromDateToHalfTime(u.getFromDateToHalfTime());
+				}
+				if(StringUtils.isNotBlank(u.getToDateFromHalfTime())) {
+					leave.setToDateFromHalfTime(u.getToDateFromHalfTime());
+				}
+				if(StringUtils.isNotBlank(u.getToDateToHalfTime())) {
+					leave.setToDateToHalfTime(u.getToDateToHalfTime());
+				}
+				if(u.getUserId() !=null) {
+					User user=new User();
+					user.setId(u.getUserId());
+					leave.setUser(user);
+				}
+				float noOfDays = 0f;
+				noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocation,leaveType,leave,"Duration");
+				String noOfDays1 = String.valueOf(noOfDays);
+				u.setNoOfDays(noOfDays1);
+	 		   
 	 	   });
-			
-			
+	    	
+
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -181,6 +230,7 @@ public class LeaveManagementReportsRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		LeaveReportView leaveReportView = new LeaveReportView();
 	    String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
 		ResponseList<LeaveReportView> leaveReportsList=null;
 		try{
@@ -194,7 +244,7 @@ public class LeaveManagementReportsRestController {
 				}
 				dayWiseLeaveReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				dayWiseLeaveReportDTO.setSortOrder(sortColumnOrder);
-			
+				dayWiseLeaveReportDTO.setLoginUserId(loginUser.getId());
 				
 		leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
 		List<LeaveReportView> list = leaveReportsList.getData();
@@ -232,7 +282,8 @@ public class LeaveManagementReportsRestController {
 	         Workbook createExcelworkbook =  new XSSFWorkbook();
 	         StringBuilder excelSB = new StringBuilder();
 		    String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    dayWiseLeaveReportDTO.setLoginUserId(loginUser.getId());
 	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	         Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -294,12 +345,14 @@ public class LeaveManagementReportsRestController {
 		List<Long> userRoleList = new ArrayList<>();
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
 		 StringBuilder excelSB = new StringBuilder();
-         
+		    String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+ 		hrLeaveReportDTO.setLoginUserId(loginUser.getId());
 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("dailyWiseLeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
-			ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromDateToDate(hrLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId());
+			ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromDateToDate(hrLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId(),loginUserRole);
 
 
 		leaveReportsList.getData().stream().forEach(u -> {
@@ -308,7 +361,45 @@ public class LeaveManagementReportsRestController {
 	    		   u.setAppliedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getAppliedOn()));
 	    		   u.setApprovedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getAppliedOn()));
 	    		   
-	    	   });
+	    	       LeaveType leaveType = new LeaveType() ;
+	 	 		  leaveType.setId(u.getLeaveTypeId());
+	 	 		  leaveType.setDuration(u.getDuration());
+	 	 		  leaveType.setIncludeWeekoff(u.getIncludeWeekoff());
+	 	 		  leaveType.setIncludeHolidays(u.getIncludeHolidays());
+	 				Leave leave = new Leave();
+	 				leave.setFromDate(u.getFromDate());
+	 				if(StringUtils.isNotBlank(hrLeaveReportDTO.getEndDate()))
+	 					leave.setToDate( u.getToDate());
+	 				
+	 				if(StringUtils.isNotBlank(u.getFromHalfDay())) {
+	 					leave.setFromHalfDay(u.getFromHalfDay());
+	 				}
+	 				if(StringUtils.isNotBlank(u.getToHalfDay())) {
+	 					leave.setToHalfDay(u.getToHalfDay());
+	 				}
+	 				if(StringUtils.isNotBlank(u.getFromDateFromHalfTime())) {
+	 					leave.setFromDateFromHalfTime(u.getFromDateFromHalfTime());
+	 				}
+	 				if(StringUtils.isNotBlank(u.getFromDateToHalfTime())) {
+	 					leave.setFromDateToHalfTime(u.getFromDateToHalfTime());
+	 				}
+	 				if(StringUtils.isNotBlank(u.getToDateFromHalfTime())) {
+	 					leave.setToDateFromHalfTime(u.getToDateFromHalfTime());
+	 				}
+	 				if(StringUtils.isNotBlank(u.getToDateToHalfTime())) {
+	 					leave.setToDateToHalfTime(u.getToDateToHalfTime());
+	 				}
+	 				if(u.getUserId() !=null) {
+	 					User users=new User();
+	 					users.setId(u.getUserId());
+	 					leave.setUser(users);
+	 				}
+	 				float noOfDays = 0f;
+	 				noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocations,leaveType,leave,"Duration");
+	 				String noOfDays1 = String.valueOf(noOfDays);
+	 				u.setNoOfDays(noOfDays1);
+		
+		});
 			
 			File file = null;
 	 		if(!"pdf".equalsIgnoreCase(hrLeaveReportDTO.getExportType())){

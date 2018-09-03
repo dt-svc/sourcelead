@@ -26,6 +26,11 @@ import org.joda.time.Weeks;
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
+	public static void main(String[] args) {
+		HashMap<Integer,Integer> h = new  HashMap<>();
+		h.put(1, 1);
+		System.out.println(h.remove(1));
+	}
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);

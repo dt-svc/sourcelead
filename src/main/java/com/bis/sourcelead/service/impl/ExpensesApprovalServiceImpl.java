@@ -303,16 +303,17 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	    }
 		 
 
-		BigDecimal totalAmo = new BigDecimal(expensesApproverHierarchy.getExpenseId().getTotalAmount());
-		BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		//BigDecimal totalAmo = new BigDecimal(expensesApproverHierarchy.getExpenseId().getTotalAmount());
+		//BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 		 
-		expensesApproverHierarchyDto.setTotalAmount(totalAmountRoundOff);
+		expensesApproverHierarchyDto.setTotalAmount(expensesApproverHierarchy.getExpenseId().getTotalAmount());
 		expensesApproverHierarchyDto.setTdSpanLength("9");
-		if(expensesApproverHierarchy.getActionbyorglocid()!= null) {
-		 OrgLocations actionPerformedBy = orgLocationService.getOrgLocations(expensesApproverHierarchy.getActionbyorglocid());
-		 	expensesApproverHierarchyDto.setActionPerformedBy(actionPerformedBy.getOrgLocationName());
-		}else {
+		//if(expensesApproverHierarchy.getActionbyorglocid()!= null) {
+		if(StringUtils.isNotEmpty(expensesApproverHierarchy.getActionPerformedBy())) {
 			expensesApproverHierarchyDto.setActionPerformedBy(expensesApproverHierarchy.getActionPerformedBy());
+		}else if(expensesApproverHierarchy.getActionbyorglocid()!= null){
+			 OrgLocations actionPerformedBy = orgLocationService.getOrgLocations(expensesApproverHierarchy.getActionbyorglocid());
+			 expensesApproverHierarchyDto.setActionPerformedBy(actionPerformedBy.getOrgLocationName());
 		}
 		expensesApproverHierarchyDto.setNoOfExpenses(expensesApproverHierarchy.getExpenseId().getNoOfExpenses());
 		expensesApproverHierarchyDto.setExpId(expensesApproverHierarchy.getExpenseId().getId());
@@ -506,10 +507,10 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			}else{
 				expenseArray[10] = "--";
 			}
-			if(expenseId.getTotalAmount() != 0){
+			if(expenseId.getTotalAmount().intValue() > 0){
 				StringBuilder str = new StringBuilder();
-				BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
-				bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
+				BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
+				//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
 				expenseArray[11] = str.append(bd).toString();
 			}else{
 				expenseArray[11] = "--";
@@ -682,10 +683,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				writeRow.createCell(10).setCellValue(expenseId.getNoOfExpenses());
 				createExcelsheet.autoSizeColumn(10);
 			}
-			if(expenseId.getTotalAmount() != 0){
+			if(expenseId.getTotalAmount().doubleValue() > 0){
 				StringBuilder str = new StringBuilder();
-				BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
-				bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );                
+				BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
+				//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );                
                 writeRow.createCell(11).setCellValue(str.append(bd).toString());
                 createExcelsheet.autoSizeColumn(11);
 			}
@@ -786,7 +787,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 						 }
 						 
 						 StringBuilder amopuntRate = new StringBuilder();
-						 amopuntRate.append(Float.toString(expenses.getTotalAmount())).append(" ");
+						 amopuntRate.append((expenses.getTotalAmount())).append(" ");
 						 
 						 globalVarsMap.put("amount",amopuntRate.toString());
 						
@@ -874,7 +875,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 emailMessage.setFromName(orgLoc.getUser().getFirstName());
 			 
-			 
+			 emailMessage.setCreatedBy(loginUser.getFullName());
 			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
 			 //ProjectMembers projectMembers = projectMembersDao.getgetProjectMemberById(expenseId);
@@ -884,7 +885,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 			 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
-			 globalVarsMap.put("reopenUser",orgLoc.getUser().getFirstName());
+			 globalVarsMap.put("reopenUser",loginUser.getFullName());
 			 globalVarsMap.put("projectName", projectName);
 			 globalVarsMap.put("clientName",expenses.getClientName());
 			 
@@ -900,7 +901,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			 globalVarsMap.put("endDate",expenses.getEndDateStr());
 				 }
 			 }
-			 globalVarsMap.put("amount",Float.toString(expenses.getTotalAmount()));
+			 globalVarsMap.put("amount",(expenses.getTotalAmount()) + "");
 			 globalVarsMap.put("reason",reason);
 			 
 			 globalVarsMap.put("loginURL","<a href='"+sourceleadLoginUrl+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");

@@ -1537,10 +1537,10 @@ public File createLeaveReportPdfTable(ResponseList<LeaveReportView> leaveReports
 	        PdfPTable table = new PdfPTable(headers.length);
 	        Font font = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(12);
+	        cell1.setColspan(13);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{5, 5, 5,5, 5, 4, 4, 5, 5, 6, 3, 4});
+            table.setWidths(new int[]{5, 5, 5,5, 5, 4, 4, 5, 5, 6, 3, 4,4});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -1583,8 +1583,8 @@ public File createLeaveReportPdfTable(ResponseList<LeaveReportView> leaveReports
 
 private String[] prepareLeaveReportStringArray(LeaveReportView lrv, String[] headers) throws Exception {
 	String userArray[] = new String[headers.length];
-		 if(lrv.getEmployeeId() !=null){
-			 userArray[0] = lrv.getEmployeeId().toString();
+		 if(lrv.getEid() != null && !lrv.getEid().isEmpty()){
+			 userArray[0] = lrv.getEid().toString();
 		 }else{
 			 userArray[0] = "--";
 		 }
@@ -1628,20 +1628,26 @@ private String[] prepareLeaveReportStringArray(LeaveReportView lrv, String[] hea
 	   }else{
 		   userArray[8] = "--";
 	   }
+	   if(lrv.getNoOfDays() !=null){
+	   userArray[9] = lrv.getNoOfDays();
+	   }
+	   else{
+		   userArray[9] = "0.0";
+	   }
 	   if(lrv.getStatus() !=null){
-		   userArray[9] = lrv.getStatus();
-   }else{
-	   userArray[9] = "--";
-   }
-	   if(lrv.getApprover() !=null){
-		   userArray[10] = lrv.getApprover();
+		   userArray[10] = lrv.getStatus();
    }else{
 	   userArray[10] = "--";
    }
-	   if(lrv.getApprovedOnDateStr() !=null){
-		   userArray[11] = lrv.getApprovedOnDateStr();
+	   if(lrv.getApprover() !=null){
+		   userArray[11] = lrv.getApprover();
    }else{
 	   userArray[11] = "--";
+   }
+	   if(lrv.getApprovedOnDateStr() !=null){
+		   userArray[12] = lrv.getApprovedOnDateStr();
+   }else{
+	   userArray[12] = "--";
    }
 	return userArray;
 	

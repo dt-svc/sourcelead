@@ -33,6 +33,7 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	private String isGlobalUser;
 	private Long orgId;
 	private BigInteger orgLocationId;
+	private String type;
 	
 	
 	public Long getId() {
@@ -206,6 +207,14 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	}
 	public void setOrgLocationId(BigInteger orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+	public String getType()
+	{
+		return type;
+	}
+	public void setType(String type)
+	{
+		this.type = type;
 	}
 
 }
