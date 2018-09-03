@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -440,5 +441,50 @@ public class PayrollUtil {
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * Get Houry rate by lca wage type
+	 * @param amount
+	 * @param lcaWageType
+	 * @param payFrequency 
+	 * @return BigDecimal
+	 */
+	public BigDecimal getHourlyRate(BigDecimal amount, String lcaWageType, String payFrequency)
+	{
+		BigDecimal houryRate = BigDecimal.ZERO;
+		BigDecimal payAmount = BigDecimal.ZERO;
+			if(PayrollConstant.PAY_YEARLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate =  amount.divide(new BigDecimal(2088),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(176),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(80),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(40),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(88),3, RoundingMode.CEILING);
+			}
+			
+			BigDecimal hours = BigDecimal.ZERO;
+			if(PayrollConstant.PAY_ANNUAL.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(2088);
+			}
+			if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(176);
+			}
+			if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(80);
+			}
+			if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(40);
+			}
+			payAmount = houryRate.multiply(hours);
+			return payAmount;
+			
 	}
 }
