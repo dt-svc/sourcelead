@@ -105,32 +105,25 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						if(StringUtils.isNotBlank(entryCategory.getReceiptIssuedBy())){
 							entries.setReceiptIssuedBy(entryCategory.getReceiptIssuedBy());
 						}
-						if(StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmount()) && StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmountType())){
-							Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
-							if(country!= null &&  country.getCurrency()!= null && !country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryAmountType())){
-							 Float amount = conversionUtil.convert(entryCategory.getCategoryAmountType(),country.getCurrency(),Float.valueOf(entryCategory.getCategoryAmount()));
-							 entries.setCurrencyType(country.getCurrency());
-							 entries.setSubmittedamount(new BigDecimal (amount));
-							}else{
-								entries.setCurrencyType((entryCategory.getCategoryAmountType()));
-								entries.setSubmittedamount(new BigDecimal(entryCategory.getCategoryAmount()));
-							}
+						
+						Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+						String currencyType = null;
+						if(country!= null &&  country.getCurrency()!= null && !country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryAmountType())){
+							currencyType = country.getCurrency();
+						}
+						
+						if(StringUtils.isEmpty(entryCategory.getCategoryAmountType()) || (StringUtils.isNotEmpty(currencyType) && !currencyType.equalsIgnoreCase(entryCategory.getCategoryAmountType()))){
+							entries.setCurrencyType(currencyType);
+						}else {
+							entries.setCurrencyType(entryCategory.getCategoryAmountType());
 						}
 						
 						
+						entries.setSubmittedamount(new BigDecimal(entryCategory.getCategoryAmount()));
 						
-						
-						
-						if(StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmount()) && StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmountType())){
-							Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
-							if(country!= null &&  country.getCurrency()!= null && !country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryApprovedAmountType())){
-							 Float amount = conversionUtil.convert(entryCategory.getCategoryApprovedAmountType(),country.getCurrency(),Float.valueOf(entryCategory.getCategoryApprovedAmount()));
-							 entries.setCurrencyType(country.getCurrency());
-							 entries.setAmount(new BigDecimal (amount));
-							}else{
-								entries.setCurrencyType((entryCategory.getCategoryAmountType()));
-								entries.setAmount(new BigDecimal(entryCategory.getCategoryAmount()));
-							}
+						if(StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmount())){
+							entries.setAmount(new BigDecimal(entryCategory.getCategoryApprovedAmount()));
+							entries.setAmountchangereason(null);
 						}else {
 							entries.setAmount(new BigDecimal(entryCategory.getCategoryAmount()));
 							entries.setAmountchangereason(null);

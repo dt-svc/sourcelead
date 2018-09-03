@@ -1654,9 +1654,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList)
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type)
 			throws Exception {
-		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates,teamsList);
+		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type);
 	}
 
 
