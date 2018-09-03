@@ -351,7 +351,7 @@ public class LeaveManagementReportsRestController {
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  		hrLeaveReportDTO.setLoginUserId(loginUser.getId());
-		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("dailyWiseLeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("LeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
 			ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromDateToDate(hrLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId(),loginUserRole);
 
 
