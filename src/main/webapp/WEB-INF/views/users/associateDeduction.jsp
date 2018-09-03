@@ -17,9 +17,9 @@ $(document).ready(function(){
 				var method = $("#mthd").val();
 				var markup = "";
 				if(tempIndex >= 0 && tempIndex != null){
-					markup = '<tr id="row'+tempIndex+'"><td><input type="checkbox" name="record"></td><td><input type="hidden" id="deductionType" name="deductionDTOList['+tempIndex+'].deductionType" value="'+deductionType+'"/><span id="dedTypeVal'+tempIndex+'"> '+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+tempIndex+'].method" value="'+method+'" />'+ method +'</td><td><input type="hidden" id="amount" name="deductionDTOList['+tempIndex+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+tempIndex+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+					markup = '<tr id="row'+tempIndex+'"><td><input type="hidden" id="deductionType" name="deductionDTOList['+tempIndex+'].deductionType" value="'+deductionType+'"/><span id="dedTypeVal'+tempIndex+'"> '+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+tempIndex+'].method" value="'+method+'" />'+ method +'</td><td><input type="hidden" id="amount" name="deductionDTOList['+tempIndex+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+tempIndex+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
 				}else{
-					markup = '<tr id="row'+i+'"><td><input type="checkbox" name="record"></td><td><input type="hidden" id="deductionType" name="deductionDTOList['+i+'].deductionType" value="'+deductionType+'"/> <span id="dedTypeVal'+i+'">'+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+i+'].method" value="'+method+'" />'+ method +'</td><td><input type="hidden" id="amount" name="deductionDTOList['+i+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+i+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+					markup = '<tr id="row'+i+'"><td><td><input type="hidden" id="deductionType" name="deductionDTOList['+i+'].deductionType" value="'+deductionType+'"/> <span id="dedTypeVal'+i+'">'+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+i+'].method" value="'+method+'" />'+ method +'</td><td><input type="hidden" id="amount" name="deductionDTOList['+i+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+i+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
 					i++;
 					tempIndex = null;
 				}
@@ -47,6 +47,8 @@ function deleteRow(rowId){
 	var deleted= value.indexOf(dedValue);
 	tempIndex = deleted;
 	value.splice(deleted,1);
+	
+	
 	/* var i = $("#index").val();
 	$("#deductionTrAdd").find('input[name="record"]').each(function(){
 		if($(this).is(":checked")){
@@ -107,7 +109,7 @@ getDeductionType();
                 <table>
                 	<thead>
                 		<tr>
-                		    <th>Select</th>
+<!--                 		    <th>Select</th> -->
                 			<th>Type</th>
                 			<th>Method</th>
                 			<th>Amount</th>
