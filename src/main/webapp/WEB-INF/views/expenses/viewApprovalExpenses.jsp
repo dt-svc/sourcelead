@@ -245,6 +245,7 @@
 
 	$("#changeBillableStatus").click(function () {
 		var id = $("#changeBillableStatus").data("id");
+		var billableStatus = $("#changeBillableStatus").data("billableStatus");
 		changeStatusToBillable(id);
 	});
 	$("#cancelBillingStatus").click(function() {
@@ -270,6 +271,7 @@
 		}
 		$("#reject2message").html("Are you sure <br/> you want to make this expense item as " + (checked ? "billable ? " : "non-billable ? "));
 		$("#changeBillableStatus").data("id", ExpenseEntriesId);
+		$("#changeBillableStatus").data("billableStatus", checked ? "billable": "non-billable");
 		$(".mask_time").fadeIn(200);
 		$(".time_appr_rejct_pop").slideToggle(200);
 	}

@@ -47,7 +47,7 @@ public class ExpensesEntriesDTO {
 	
 	private BigDecimal submittedamount;
 	
-	private float amount;
+	private BigDecimal amount;
 
 	public Long getId() {
 		return id;
@@ -170,11 +170,11 @@ public class ExpensesEntriesDTO {
 		this.paidBy = paidBy;
 	}
 
-	public float getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(float amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 

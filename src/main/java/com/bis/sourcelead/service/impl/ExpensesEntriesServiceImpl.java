@@ -150,7 +150,12 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					entries.setUpdatedDate(CommonUtil.currentDate());
 					entries.setExpensesId(expenses);
 					entries.setUpdatedBy(expenses.getUpdatedBy());
-					entries.setBillable(false);
+					if(entryCategory.getBillable() != null) {
+						entries.setBillable(entryCategory.getBillable());
+					}else {
+						entries.setBillable(false);
+					}
+					
 					
 					
 					

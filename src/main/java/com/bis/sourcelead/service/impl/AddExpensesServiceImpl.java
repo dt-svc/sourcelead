@@ -409,10 +409,10 @@ public void deleteDocumentByDocumentId(String documentId) {
 
 
 @Override
-public Response<String> changeStatusToBillable(long expenseEntriesId) {
+public Response<String> changeStatusToBillable(long expenseEntriesId,String billableStatus) {
 	Response<String> response = new Response<>();
 	try {
-		long result = addExpensesDao.changeStatusToBillable(expenseEntriesId);
+		long result = addExpensesDao.changeStatusToBillable(expenseEntriesId,billableStatus);
 		if (result > 0) {
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
