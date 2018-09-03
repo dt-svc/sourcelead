@@ -273,7 +273,7 @@ $(document).ready(function(){
 												   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
 									                  <option  ${entry.categoryAmountType == currencyType ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
 									              </c:forEach>
-										  </select>
+										     </select>
 									</div>
 								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Submitted Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='submittedexpenseAmount${(2*(entryCount.count))-1}' value='${entry.submittedamount}' field-name='Submitted Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
 									</div>
