@@ -26,7 +26,7 @@
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop" style="display: none;">
 							<span>
-			           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a>
+<!-- 			           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a> -->
 								<a href="javascript:void(0)" onclick="projectExport('Excel');" title="Excel">Export Excel</a>            
 							</span>
 						</div>
@@ -123,13 +123,13 @@ function prepareOfferList(url){
 		result = result + '<th>Applicant name</th>';
 		result = result + '<th>Job</th>';
 		result = result + '<th>Client</th>';
-		result = result + '<th>Resume</th>';
 		result = result + '<th>Join Date</th>';
-		result = result + '<th>Rate</th>';
 		result = result + '<th>Position Type</th>';
 		result = result + '<th>Attachment</th>';
 		result = result + '<th>Offered On</th>';
 		result = result + '<th>Status</th>';
+		result = result + '<th>Job Rating</th>';
+		result = result + '<th>Incentivized</th>';
 		result = result + '</tr>';
         result = result +'</thead>';
         result = result +'<tbody>'; 
@@ -157,13 +157,13 @@ function offerpagination(url){
             { "data": "applicantName" },
             { "data": "job"},
             { "data": "client"},
-            { "data": "resume" },
             { "data": "joinDate"},
-            { "data": "rate" },
             { "data": "positionType" },
             { "data": "attachment"},
             { "data": "offeredOn"},
-            { "data": "status"}
+            { "data": "status"},
+            { "data": "jobRating"},
+            { "data": "incentivized"}
             
         ],
         "columnDefs": [ {
@@ -172,7 +172,10 @@ function offerpagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  		 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
-							result = result + ' <td><div><span>'+opt.candidateName+'</span></div></td>';
+	    	  			result = result + ' <td>';
+						result = result + ' <div title='+opt.candidateName+' class="clearfix mt5 proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.candidateName+'<i class="fa fa-binoculars"></i></a></span></div>';
+						result = result + ' <div title='+opt.email+' class="clearfix mt5 mb5">'+opt.email+'</div>';
+						result = result + ' </td>';
 						}else{
 							result = result + ' <td><div>--</div></td>';
 						}
@@ -184,8 +187,12 @@ function offerpagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.requirementUUID !=null && opt.requirementUUID !='' && opt.requirementUUID !='undefined'){
-            		  result = result + '<td><div class="proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.jobTitle+'<i class="fa fa-binoculars"></i></a></span></div></td>';
-					}else{
+            		  if(opt.jobGeneratedId != null && opt.jobGeneratedId != ''  && opt.jobGeneratedId !="undefined"){
+                		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'>'+opt.jobGeneratedId+' - '+opt.jobTitle+'</span></div></td>';
+            		  }else{
+                		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'>'+opt.jobTitle+'</span></div></td>';
+            		  }
+            		}else{
 						result = result + ' <td><div>--</div></td>';
 					}
             	  return result;
@@ -204,23 +211,7 @@ function offerpagination(url){
             	 }
    				return result;
             }
-          }, {
-              "targets": colIndex++,
-              "data": "resume",
-              "render": function ( data, type, opt, meta ) {
-            	  var result = "";
-            	  if(opt.resumeUUID !=null && opt.resumeUUID !='' && opt.resumeUUID !='undefined'){
-		              result = result + ' <td><div><span>';   
-		              result = result + ' <a target="_blank" href="'+opt.fileUrl+'"><i class="fa fa-download"></i></a>';
-		              result = result + ' <a onclick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.contentType+'\');" class="fa fa-eye ml10 paddingRight"></a>';
-//			              result = result + ' <a href="<c:url value="/downloadResumeCandidate/'+opt.resumeUUID+'"/>"></a>';
-		              result = result + '</span></div></td>';  
-				}else{
-              		 result = result + '<td><div><span>---</span></div></td>';
-              	 }
-            	  return result;
-              }
-            }, {
+          } , {
                 "targets": colIndex++,
                 "data": "joinDate",
                 "render": function ( data, type, opt, meta ) {
@@ -232,19 +223,7 @@ function offerpagination(url){
 						}
     	              return result;
                 }
-          },{
-	    	  	"targets": colIndex++,
-	    	  	"data": "rate",
-	    	  	"render": function(data, type, opt, meta) {
-	    	  		var result = "";
-	    	  		if(opt.offerRate !=null && opt.offerRate !='' && opt.offerRate !='undefined'){
-	    	  			result = result + ' <td><div><span>'+opt.offerRate+'</span></div></td>';
-					}else{
-						result = result + ' <td><div>--</div></td>';
-					}
-  	              return result;
-	    	  	}
-	    	  },{
+          } ,{
 	    	  	"targets": colIndex++,
 	    	  	"data": "positionType",
 	    	  	"render": function(data, type, opt, meta) {
@@ -296,7 +275,31 @@ function offerpagination(url){
       	    	  		   }
       	    	  		return result;
                       }
-                    } ],
+                    },{
+                        "targets": colIndex++,
+                        "data": "jobRating",
+                        "render": function ( data, type, opt, meta ) {
+                      	  var result = "";
+        	    	  		   if(opt.jobRating != null && opt.jobRating !='' && opt.jobRating != 'undefined'){
+        	    	  			result = result + ' <td><div><span>'+opt.jobRating+'</span></div></td>';
+        	    	  		   }else{
+        	    	  			result = result + ' <td><div><span>---</span></div></td>';
+        	    	  		   }
+        	    	  		return result;
+                        }
+                      },{
+                          "targets": colIndex++,
+                          "data": "incentivized",
+                          "render": function ( data, type, opt, meta ) {
+                        	  var result = "";
+          	    	  		   if(opt.incentivize != null && opt.incentivize !='' && opt.incentivize != 'undefined'){
+          	    	  			result = result + ' <td><div><span>'+opt.incentivize+'</span></div></td>';
+          	    	  		   }else{
+          	    	  			result = result + ' <td><div><span>---</span></div></td>';
+          	    	  		   }
+          	    	  		return result;
+                          }
+                        }  ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 // 	    	"aaSorting": [[3,'desc']],
@@ -559,6 +562,39 @@ function myClientFunction() {
 
         }
     }
+}
+</script>
+
+
+
+<!-- =============== Pdf and  Excel Export scripts writen by Laxman =================== -->
+<script>
+function projectExport(type){
+	if(type == "Pdf"){
+		exportType = "pdf";
+	}else{
+		exportType = "xls";
+	}
+	 var sourceleadUrl ='${sourceleadUrl}';
+	   var tab = '${tab}';
+	   var frequency = $('input[name=customDates]:checked').val(); 
+	    var fromDate = $("#custFromDate").val();
+	    var toDate = $("#custToDate").val();
+		var searchValue = $("#dataTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		searchValue = searchValue ? searchValue : "";
+		var employmentType = [];
+		 $('input:checkbox[name=employmentType]:checked').each(function() 
+		 {
+			employmentType.push($(this).val());
+		 });
+		 var clientNameById = [];
+		 $('input:checkbox[name=clientNameById]:checked').each(function() 
+		 {
+			 clientNameById.push($(this).val());
+		 });
+		 window.location.href = sourceleadUrl+"/applicantListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=OFFERMADE&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById;
+	     
 }
 </script>
 

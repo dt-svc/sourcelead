@@ -78,6 +78,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -98,6 +99,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementLocationsService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -232,6 +234,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 	
+	@Autowired
+	RequirementOffersService requirementOffersService;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -5160,53 +5164,273 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			writeRow.createCell(0).setCellValue(candidateName.append(rsh.getSubmissionId().getCandidate().getFirstName()).toString()); 
 		}
 		
-		//Requirement Name
-		writeRow.createCell(1).setCellValue(rsh.getSubmissionId().getRequirement().getJobTitle());
+		//Candidate Email
+		writeRow.createCell(1).setCellValue(rsh.getSubmissionId().getCandidate().getEmail());
 		
+		//Requirement Name
+		if(rsh.getSubmissionId().getRequirement() != null) {
+			if(rsh.getSubmissionId().getRequirement().getGeneratedId() != null) {
+				writeRow.createCell(2).setCellValue(rsh.getSubmissionId().getRequirement().getGeneratedId() +" - "+rsh.getSubmissionId().getRequirement().getJobTitle());
+			}else {
+				writeRow.createCell(2).setCellValue(rsh.getSubmissionId().getRequirement().getJobTitle());
+			}
+		}
+		
+				
 		//Clinet Name
 		if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
 			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
 				if (rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
-					writeRow.createCell(2).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+					writeRow.createCell(3).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 				}else {
-					writeRow.createCell(2).setCellValue("--");
+					writeRow.createCell(3).setCellValue("--");
 				}
 			}
 			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
 				if (rsh.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
-					writeRow.createCell(2).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+					writeRow.createCell(3).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 				}else {
-					writeRow.createCell(2).setCellValue("--");
+					writeRow.createCell(3).setCellValue("--");
 				}
 			}
+		}else {
+			writeRow.createCell(3).setCellValue("--");
 		}
 		 
-		//Job Location
-		List<String> requirementLocationsList = new ArrayList<>();
-		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rsh.getSubmissionId().getRequirement().getId());
-		if(locationsList != null && !locationsList.isEmpty()) {
-			for(RequirementLocations location : locationsList) {
-				requirementLocationsList.add(location.getLocation());
-			}
-		}
-		writeRow.createCell(3).setCellValue(requirementLocationsList.toString()); 
+		 if(submissionStatus.equalsIgnoreCase("SUBMISSION")) {
+			//Candidate Phone Number
+				if(rsh.getSubmissionId().getCandidate().getMobilePhone() != null){
+					writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getCandidate().getMobilePhone());
+				}else {
+					writeRow.createCell(4).setCellValue("--");
+				}
+				
+			//Job Location
+				List<String> requirementLocationsList = new ArrayList<>();
+				List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rsh.getSubmissionId().getRequirement().getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations location : locationsList) {
+						requirementLocationsList.add(location.getLocation());
+					}
+				}
+				writeRow.createCell(5).setCellValue(requirementLocationsList.toString()); 
+				
+				//Sourece Name
+				writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
+				
+				//Aplicant Status
+				writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+				
+				//Job Rating
+				 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+					 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+				 }else {
+					 writeRow.createCell(8).setCellValue("--");
+
+				 }
+
+				//Incentivize
+				 if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+					 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
+				 }else {
+					 writeRow.createCell(9).setCellValue("--");
+				 }
+				
+		 }else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+			 //Applied On
+			 writeRow.createCell(4).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate())); 
+			 
+			 //Submitted On
+			 writeRow.createCell(5).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate())); 
+
+			 //Sub rate
+			 if(rsh.getSubmissionId().getFinalizedRate() != null) {
+				 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getFinalizedRate());
+			 }else {
+				 writeRow.createCell(6).setCellValue("--");
+			 }
+			 
+			 //Submitted by
+			 writeRow.createCell(7).setCellValue(rsh.getCreatedUser());
+			 
+			//Sourece Name
+			 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getCreatedUser());
+				
+			//Aplicant Status
+			 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			
+			//Job Rating
+			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+				 writeRow.createCell(10).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+			 }else {
+				 writeRow.createCell(10).setCellValue("--");
+
+			 }
+
+			//Incentivize
+			 if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+				 writeRow.createCell(11).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
+			 }else {
+				 writeRow.createCell(11).setCellValue("--");
+			 }
+			 
+		 }else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
+			 //Applied On
+			 writeRow.createCell(4).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate())); 
+			 
+			 //No Of Interviews
+			 int interviewedCount = requirementSubmissionDao.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), rsh.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
+			 writeRow.createCell(5).setCellValue(interviewedCount);
+			 
+			//Sourece Name
+			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
+				
+			//Aplicant Status
+			 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			
+			//Job Rating
+			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+				 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+			 }else {
+				 writeRow.createCell(8).setCellValue("--");
+
+			 }
+
+			//Incentivize
+			 if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+				 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
+			 }else {
+				 writeRow.createCell(9).setCellValue("--");
+			 }
+		 }else if(submissionStatus.equalsIgnoreCase("OFFERMADE")) {
+				List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(rsh.getSubmissionId().getId(), orgLocations.getId());
+				for (RequirementOffers requirementOffers : offersList) {
+					//Join Date
+					 writeRow.createCell(4).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementOffers.getDateOfJoining()));
+					 
+					 //Position Type 
+					 writeRow.createCell(5).setCellValue(requirementOffers.getPositionType());
+					 
+					 //Offered On
+					 if("OFFERMADE".equalsIgnoreCase(rsh.getToStage())){
+						 writeRow.createCell(6).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate()));
+					}
+				}
+				
+				//Aplicant Status
+				 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+				
+				//Job Rating
+				 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+					 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+				 }else {
+					 writeRow.createCell(8).setCellValue("--");
+
+				 }
+
+				//Incentivize
+				 if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+					 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
+				 }else {
+					 writeRow.createCell(9).setCellValue("--");
+				 }
+		 }else if(submissionStatus.equalsIgnoreCase("REJECTED")) {
+			 //Rejected Type
+			 if(rsh.getSubmissionId().getRejectedCategoryType() != null) {
+				 writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getRejectedCategoryType());
+			 }else {
+				 writeRow.createCell(4).setCellValue("--");
+			 }
+			 
+			 //"Rejected Reason
+			 if(rsh.getSubmissionId().getRejectedReason() != null) {
+				 writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getRejectedReason());
+			 }else {
+				 writeRow.createCell(5).setCellValue("--");
+			 }
+			 
+			//Sourece Name
+			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
+				
+			//Aplicant Status
+			 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			
+			//Job Rating
+			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+				 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+			 }else {
+				 writeRow.createCell(8).setCellValue("--");
+
+			 }
+
+			//Incentivize
+			 if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+				 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
+			 }else {
+				 writeRow.createCell(9).setCellValue("--");
+			 }
+		 }else if(submissionStatus.equalsIgnoreCase("JOINED")) {
+			 //join Date
+			 writeRow.createCell(4).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate()));
+			 
+			//Sourece Name
+			 writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getCreatedUser());
+				
+			//Aplicant Status
+			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			
+			//Job Rating
+			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+				 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+			 }else {
+				 writeRow.createCell(7).setCellValue("--");
+
+			 }
+
+			//Incentivize
+			 if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+				 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
+			 }else {
+				 writeRow.createCell(8).setCellValue("--");
+			 }
+			 
+		 }else if(submissionStatus.equalsIgnoreCase("BACKOUT")) {
+			 //Backout Type
+			 if(rsh.getSubmissionId().getBackOutCategoryType() != null) {
+				 writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getBackOutCategoryType());
+			 }else {
+				 writeRow.createCell(4).setCellValue("--");
+			 }
+			 
+			 //Backout Reason
+			 if(rsh.getSubmissionId().getBackOutReason() !=null) {
+				 writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getBackOutReason());
+			 }else {
+				 writeRow.createCell(5).setCellValue("--");
+			 }
+			
+			//Sourece Name
+			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
+				
+			//Aplicant Status
+			 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			
+			//Job Rating
+			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+				 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+			 }else {
+				 writeRow.createCell(8).setCellValue("--");
+
+			 }
+
+			//Incentivize
+			 if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+				 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
+			 }else {
+				 writeRow.createCell(9).setCellValue("--");
+			 }
+		 }
 		
-		
-		//Candidate Email
-		writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getCandidate().getEmail());
-		
-		//Candidate Phone Number
-		if(rsh.getSubmissionId().getCandidate().getMobilePhone() != null){
-			writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getCandidate().getMobilePhone());
-		}else {
-			writeRow.createCell(5).setCellValue("--");
-		}
-		
-		//Sourece Name
-		writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
-		
-		//Aplicant Status
-		writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
 		return createExcelsheet;
 	}
 }

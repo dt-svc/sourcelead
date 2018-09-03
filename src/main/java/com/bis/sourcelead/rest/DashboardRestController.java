@@ -1661,10 +1661,24 @@ public class DashboardRestController {
 				rshDTO.setBackoutType(rsh.getSubmissionId().getBackOutCategoryType());
 				rshDTO.setBackoutReason(rsh.getSubmissionId().getBackOutReason());
 			}
-			
+			if(rsh.getSubmissionId().getRejectedCategoryType() != null) {
+				rshDTO.setRejectedType(rsh.getSubmissionId().getRejectedCategoryType());
+				rshDTO.setRejectedReason(rsh.getSubmissionId().getRejectedReason());
+			}
+			if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+				rshDTO.setJobRating(rsh.getSubmissionId().getRequirement().getJobRate());
+			}
+			if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+				rshDTO.setIncentivize(rsh.getSubmissionId().getRequirement().getIncentivized());
+			}
 			if(rsh.getSubmissionId().getCandidate().getMobilePhone() != null){
 				rshDTO.setMobilePhone(rsh.getSubmissionId().getCandidate().getMobilePhone());
 			}
+			
+			if(rsh.getSubmissionId().getJoinedDate()  != null){
+				rshDTO.setJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate()));
+			}
+			
 			if(rsh.getSubmissionId().getCandidateResumes() != null){
 				rshDTO.setResumeUUID(rsh.getSubmissionId().getCandidateResumes().getResumeUUID());
 				rshDTO.setFileUrl(rsh.getSubmissionId().getCandidateResumes().getFileURL());

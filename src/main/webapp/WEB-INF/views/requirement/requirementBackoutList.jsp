@@ -26,7 +26,7 @@
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop" style="display: none;">
 							<span>
-			           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a>
+<!-- 			           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a> -->
 								<a href="javascript:void(0)" onclick="projectExport('Excel');" title="Excel">Export Excel</a>            
 							</span>
 						</div>
@@ -130,6 +130,8 @@ function prepareOfferList(url){
 		result = result + '<th>Backout Type</th>';
 		result = result + '<th>Backout Reason</th>';
 		result = result + '<th>Status</th>';
+		result = result + '<th>Job Rating</th>';
+		result = result + '<th>Incentivized</th>';
 		result = result + '</tr>';
         result = result +'</thead>';
         result = result +'<tbody>'; 
@@ -163,7 +165,9 @@ function offerpagination(url){
             { "data": "offeredOn"},
             { "data": "backoutType"},
             { "data": "backoutReason"},
-            { "data": "status"}
+            { "data": "status"},
+            { "data": "jobRating"},
+            { "data": "incentivized"}
             
         ],
         "columnDefs": [ {
@@ -268,11 +272,7 @@ function offerpagination(url){
                       "data": "backoutType",
                       "render": function ( data, type, opt, meta ) {
                       	var result = "";
-//      	    	  		   if(opt.appliedOn != null && opt.appliedOn !='' && opt.appliedOn != 'undefined'){
-//      	    	  			result = result + ' <td><div><span>'+opt.appliedOn+'</span></div></td>';
-//      	    	  		   }else{
-     	    	  			result = result + ' <td><div><span>Compensation</span></div></td>';
-//      	    	  		   }
+     	    	  			result = result + ' <td><div><span>'+opt.backoutType+'</span></div></td>';
      	    	  		return result;
                       }
                     },{
@@ -280,11 +280,11 @@ function offerpagination(url){
                         "data": "backoutReason",
                         "render": function ( data, type, opt, meta ) {
                         	var result = "";
-//        	    	  		   if(opt.appliedOn != null && opt.appliedOn !='' && opt.appliedOn != 'undefined'){
-//        	    	  			result = result + ' <td><div><span>'+opt.appliedOn+'</span></div></td>';
-//        	    	  		   }else{
-       	    	  			result = result + ' <td><div><span>zxcvzxcvz</span></div></td>';
-//        	    	  		   }
+                        	if(opt.backoutReason != null && opt.backoutReason != "" && opt.backoutReason != "undefined"){
+           	    	  			result = result + ' <td><div><span>'+opt.backoutReason+'</span></div></td>';
+                        	}else{
+           	    	  			result = result + ' <td><div><span>--</span></div></td>';
+                        	}
        	    	  		return result;
                         }
                       },{
@@ -299,7 +299,31 @@ function offerpagination(url){
       	    	  		   }
       	    	  		return result;
                       }
-                    } ],
+                    },{
+                        "targets": colIndex++,
+                        "data": "jobRating",
+                        "render": function ( data, type, opt, meta ) {
+                      	  var result = "";
+        	    	  		   if(opt.jobRating != null && opt.jobRating !='' && opt.jobRating != 'undefined'){
+        	    	  			result = result + ' <td><div><span>'+opt.jobRating+'</span></div></td>';
+        	    	  		   }else{
+        	    	  			result = result + ' <td><div><span>---</span></div></td>';
+        	    	  		   }
+        	    	  		return result;
+                        }
+                      },{
+                          "targets": colIndex++,
+                          "data": "incentivized",
+                          "render": function ( data, type, opt, meta ) {
+                        	  var result = "";
+          	    	  		   if(opt.incentivize != null && opt.incentivize !='' && opt.incentivize != 'undefined'){
+          	    	  			result = result + ' <td><div><span>'+opt.incentivize+'</span></div></td>';
+          	    	  		   }else{
+          	    	  			result = result + ' <td><div><span>---</span></div></td>';
+          	    	  		   }
+          	    	  		return result;
+                          }
+                        }  ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 // 	    	"aaSorting": [[3,'desc']],
@@ -565,4 +589,36 @@ function myClientFunction() {
 }
 </script>
 
+
+
+<!-- =============== Pdf and  Excel Export scripts writen by Laxman =================== -->
+<script>
+function projectExport(type){
+	if(type == "Pdf"){
+		exportType = "pdf";
+	}else{
+		exportType = "xls";
+	}
+	 var sourceleadUrl ='${sourceleadUrl}';
+	   var tab = '${tab}';
+	   var frequency = $('input[name=customDates]:checked').val(); 
+	    var fromDate = $("#custFromDate").val();
+	    var toDate = $("#custToDate").val();
+		var searchValue = $("#dataTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		searchValue = searchValue ? searchValue : "";
+		var employmentType = [];
+		 $('input:checkbox[name=employmentType]:checked').each(function() 
+		 {
+			employmentType.push($(this).val());
+		 });
+		 var clientNameById = [];
+		 $('input:checkbox[name=clientNameById]:checked').each(function() 
+		 {
+			 clientNameById.push($(this).val());
+		 });
+		 window.location.href = sourceleadUrl+"/applicantListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=BACKOUT&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById;
+	     
+}
+</script>
 <jsp:include page="../masterFooter.jsp" />

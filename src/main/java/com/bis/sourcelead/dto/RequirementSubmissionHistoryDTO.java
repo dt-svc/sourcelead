@@ -50,7 +50,10 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String backoutType;
 	private String backoutReason;
 	private String incentivize;
-	private Long jobRating;
+	private String jobRating;
+	private String rejectedType;
+	private String rejectedReason;
+	private String joinDate;
 	
 	public String getCandidateName()
 	{
@@ -379,9 +382,7 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	public String getIncentivize() {
 		return incentivize;
 	}
-	public Long getJobRating() {
-		return jobRating;
-	}
+	 
 	public void setBackoutType(String backoutType) {
 		this.backoutType = backoutType;
 	}
@@ -391,7 +392,28 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	public void setIncentivize(String incentivize) {
 		this.incentivize = incentivize;
 	}
-	public void setJobRating(Long jobRating) {
+	public String getJobRating() {
+		return jobRating;
+	}
+	public void setJobRating(String jobRating) {
 		this.jobRating = jobRating;
+	}
+	public String getRejectedType() {
+		return rejectedType;
+	}
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+	public void setRejectedType(String rejectedType) {
+		this.rejectedType = rejectedType;
+	}
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+	public String getJoinDate() {
+		return joinDate;
+	}
+	public void setJoinDate(String joinDate) {
+		this.joinDate = joinDate;
 	}
 }

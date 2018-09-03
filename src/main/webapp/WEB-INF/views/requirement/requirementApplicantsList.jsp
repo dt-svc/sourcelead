@@ -30,7 +30,7 @@
 					<div class="newActPop" style="display: none;">
 						<span>
 	                	 
-		           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a>
+<!-- 		           	   		<a href="javascript:void(0)" onclick="projectExport('Pdf');" title="PDF">Export PDF</a> -->
 							<a href="javascript:void(0)" onclick="projectExport('Excel');" title="Excel">Export Excel</a>            
 			          	
 						</span>
@@ -126,8 +126,9 @@ function prepareApplicantList(url){
 		result = result + '<th>Job</th>';
 		result = result + '<th>Location(s)</th>';
 		result = result + '<th>Source</th>';
-		result = result + '<th>Score</th>';
 		result = result + '<th>Status</th>';
+		result = result + '<th>Job Rating</th>';
+		result = result + '<th>Incentivized</th>';
 		result = result + '</tr>';
         result = result +'</thead>';
         result = result +'<tbody>'; 
@@ -158,8 +159,9 @@ function applicantpagination(url){
             { "data": "client"},
             { "data": "locations" },
             { "data": "source"},
-            { "data": "score"},
-            { "data": "status"}
+            { "data": "status"},
+            { "data": "jobRating"},
+            { "data": "incentivized"}
             
         ],
         "columnDefs": [ {
@@ -249,19 +251,7 @@ function applicantpagination(url){
         		
 	    	  		return result;
 	    	  	}
-	    	  }, {
-                  "targets": colIndex++,
-                  "data": "source",
-                  "render": function ( data, type, opt, meta ) {
-                	  var result = "";
-  	    	  		   if(opt.createdUser != null && opt.createdUser !='' && opt.createdUser != 'undefined'){
-  	    	  			result = result + ' <td><div><span>'+opt.createdUser+'</span></div></td>';
-  	    	  		   }else{
-  	    	  			result = result + ' <td><div><span>---</span></div></td>';
-  	    	  		   }
-  	    	  		return result;
-                  }
-                },{
+	    	  },{
                     "targets": colIndex++,
                     "data": "score",
                     "render": function ( data, type, opt, meta ) {
@@ -285,7 +275,31 @@ function applicantpagination(url){
       	    	  		   }
       	    	  		return result;
                       }
-                    } ],
+                    },{
+                        "targets": colIndex++,
+                        "data": "jobRating",
+                        "render": function ( data, type, opt, meta ) {
+                      	  var result = "";
+        	    	  		   if(opt.jobRating != null && opt.jobRating !='' && opt.jobRating != 'undefined'){
+        	    	  			result = result + ' <td><div><span>'+opt.jobRating+'</span></div></td>';
+        	    	  		   }else{
+        	    	  			result = result + ' <td><div><span>---</span></div></td>';
+        	    	  		   }
+        	    	  		return result;
+                        }
+                      },{
+                          "targets": colIndex++,
+                          "data": "incentivized",
+                          "render": function ( data, type, opt, meta ) {
+                        	  var result = "";
+          	    	  		   if(opt.incentivize != null && opt.incentivize !='' && opt.incentivize != 'undefined'){
+          	    	  			result = result + ' <td><div><span>'+opt.incentivize+'</span></div></td>';
+          	    	  		   }else{
+          	    	  			result = result + ' <td><div><span>---</span></div></td>';
+          	    	  		   }
+          	    	  		return result;
+                          }
+                        } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 // 	    	"aaSorting": [[3,'desc']],
@@ -553,8 +567,6 @@ function projectExport(type){
 	}else{
 		exportType = "xls";
 	}
-	
-	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	   var tab = '${tab}';
 	   var frequency = $('input[name=customDates]:checked').val(); 
