@@ -51,121 +51,6 @@ function approvePayrollDiv(){
     </div> --%>
     
     <div id="overViewDiv">
-   <!--  <div class="project_tabs">
-      <div class="clearfix">
-        <div class="minHeight40 reportHead clearfix">
-          <div class="col-md-9">
-          	
-          </div>
-          <ul class="col-md-3 mt10">
-            <li class="pull-right"><input class="repSearchBar" placeholder="Search" id="dataTableSearch" type="text"><span class="repSearchIcon" onclick="getClientList();"></span></li>
-          </ul>
-        </div>
-          <div class="project_tabs_inn_table clearfix">
-            <table>
-              <thead>
-                <tr>
-                  <th>Assessment Year</th>
-                  <th>Form Type</th>
-                  <th>Filling Date</th>
-                  <th>Dummy Filling</th>
-                  <th>Dummy Filling</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                  	<div class="tblminwidth-150"><span class="mr">01/02/2018</span><span>02/02/2019</span></div>
-                  </td>
-                  <td>
-                  	<div class="tblminwidth-150 clearfix">IT Declaration</div>
-                  </td>
-                  <td>
-					  <span class="tblminwidth-100">
-							25/02/2018                 	
-					  </span>
-                  </td>
-                  <td>
-					  <span class="tblminwidth-100">
-							25/02/2018                 	
-					  </span>
-                  </td>
-                  <td>
-					  <span class="tblminwidth-100">
-							25/02/2018                 	
-					  </span>
-                  </td>
-                  <td><div class="tblminwidth-150 clearfix">Submitted</div></td>
-                </tr>
-                <tr>
-                  <td>
-                  	<div class="tblminwidth-150"><span class="mr">01/02/2018</span><span>02/02/2019</span></div>
-                  </td>
-                  <td>
-                  	<div class="tblminwidth-150 clearfix">IT Declaration</div>
-                  </td>
-                  <td>
-					  <span class="tblminwidth-100">
-							25/02/2018                 	
-					  </span>
-                  </td>
-                  <td>
-					  <span class="tblminwidth-100">
-							25/02/2018                 	
-					  </span>
-                  </td>
-                  <td>
-					  <span class="tblminwidth-100">
-							25/02/2018                 	
-					  </span>
-                  </td>
-                  <td><div class="tblminwidth-150 clearfix">Submitted</div></td>
-                </tr>
-                 
-              </tbody>
-            </table>
-          </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-	<div class="clearfix"></div>
-	
-	<div class="row mt">
-		<div class="col-md-8">
-		</div>
-		<div class="col-md-4">
-              <div class="clearfix mb">
-                <div class="dropdown-select">
-                  <select>
-                    <option selected>Select Group</option>
-                    <option>Group-1</option>
-                    <option>Group-2</option>
-                    <option>Group-3</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row">
-                 <div class="dropdown-select col-md-7">
-                  <select>
-                    <option selected>Select Frequency</option>
-                    <option>01/02/2018</option>
-                    <option>01/02/2018</option>
-                    <option>09/02/2018 - 15/01/2018</option>
-                  </select>
-                </div>
-              
-               <div class="clearfix col-md-5">
-                <input name="" class="form-control calendar" placeholder="Check Date" type="text" id="checkDate">
-              </div>
-              
-              </div>
-          <div class="clearfix mt">
-          	<button type="button" class="btn btn-primary btn-block">Run Payroll</button>
-          </div>  
-         </div>
-		</div> -->
-		
 <div class="clearfix"></div>
 <div class="timesheet_out" id="reviewPayrollDiv">
 
@@ -173,23 +58,34 @@ function approvePayrollDiv(){
 <div class="timesheet_head minHeight">
 <form:form id="generate_payroll_form" name="generate_payroll_form" method="post">
 <div id="initiateDivv">
-<div class="col-md-7 mt">
+<div class="col-md-12 mt">
 	<div class="row">
 		<div class="col-md-3">
-			<div class="dropdown-select">
-			<select id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
-				<option value="">--Select User Group--</option>
+			<div>
+			<select class="chosen-select" id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
+				<option value="">Select User Group</option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
 				</c:forEach>
 			</select>
 			</div>
 		</div>
-		<div class="col-md-4 paddingLeft paddingRight">
+		<div class="col-md-3 paddingLeft paddingRight">
 			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period" class="chosen-select" onchange="clearPayrollDiv();">
 			</select>
 		</div>
-		<div class="col-md-3 paddingRight">
+
+		<div class="col-md-2 paddingLeft paddingRight">
+			<select id="payType" name="payType" data-validation="required" field-name="Pay Type" class="chosen-select">
+				 <option value="">Select Pay type</option>
+				 <option value="All">All</option>
+				 <option value="HourlyRate">Hourly Rate</option>
+                 <option value = "Salary">Salary</option>
+                 <option value = "LcaWage">LCA Wage</option>
+			</select>
+		</div>
+
+		<div class="col-md-2 paddingRight">
 			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date" readonly="readonly">
 		</div>
 		<div class="col-md-2">
@@ -246,12 +142,13 @@ function approvePayrollDiv(){
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='historyDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
 		</ul>
    </div>
+   </div>
 	<div class="candidate_wrap_table datatable_filter backgroundWhite">
                 <div id="payrollFrequencyDiv"></div>
-                <div id="draftFrequencyDiv"></div>
+                <div id="draftFrequencyDiv" class="mt25"></div>
     </div>
-    <div class="clearfix"></div>
-	</div>
+    
+	
 		
 		
 		
@@ -548,10 +445,11 @@ function runUSPayroll(){
 		searchValue = searchValue ? searchValue : "";
 		var groupId = $("#groupId").val();
 		var payPeriod = $("#payPeriod").val();
+		var payType = $("#payType").val();
 		var payrollPayDate = $("#payrollPayDate").val();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate,                 
+		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&payType="+payType,                 
 		        success: function(data) {
 		        	   var count = 0;
 		        		 var json = data.payrollDTO;

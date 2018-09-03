@@ -89,7 +89,21 @@
         </div>
         <div class="clearfix"></div>
       </div>
+      
+      <div class="col-md-3 mb">
+        <div class="pull-left mr10"> <i class="fa fa-suitcase fa-2x text-muted"></i> </div>
+        <div class="pull-left">
+          <h4 class="text-muted">Loan & Advances</h4>
+          <small class="text-muted">Manage your loan & advances</small>
+          <div class="mt10">
+          	<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/payrollLoanAndAdvances'/>">Add</a> 
+			<a class="btn btn-primary btn-sm" href="<c:url value='${appPath}/payrollLoanAndAdvancesList'/>">View</a>
+		  </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
       <div class="clearfix"></div>
+      
     </div>
   </section>
 

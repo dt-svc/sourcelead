@@ -204,14 +204,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			//Save LCAHISTORY with lcaId,candidateId,immigrationId
 			if(StringUtils.isNotBlank(immigrationDTO.getLcaId())) {
 				Lca lca = new Lca();
-				lca.setId(Long.valueOf(immigrationDTO.getPrevLcaId()));
+				lca.setId(Long.parseLong(immigrationDTO.getLcaId()));
 				saveLcaHistoryDetails(immigrationObj,candidate,lca,user,orgLocations,true);
 			}
 			if(StringUtils.isNotBlank(immigrationDTO.getPrevLcaId())) {
 				Lca prevLca = new Lca();
-				prevLca.setId(Long.valueOf(immigrationDTO.getLcaId()));
+				prevLca.setId(Long.parseLong(immigrationDTO.getPrevLcaId()));
 				saveLcaHistoryDetails(immigrationObj,candidate,prevLca,user,orgLocations, false);
 			}
+			
 			StringBuilder actionDesc = new StringBuilder();
 			if (StringUtils.isNotBlank(immigrationDTO.getImmigrationId())) {
 				actionDesc.append("Immigration Details Edited").toString();
@@ -2361,7 +2362,7 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		lca.setJobTitle(lcaDTO.getJobTitle());
 		lca.setSocCode(lcaDTO.getSocCode());
 		lca.setSocOccupationTitle(lcaDTO.getSocOccupationTitle());
-		if(lcaDTO.getStatus().equals("Active")) {
+		if(lcaDTO.getStatus().equalsIgnoreCase("Active")) {
 		lca.setStatus(Constants.RECORD_ACTIVE);
 		}else {
 			lca.setStatus(Constants.RECORD_INACTIVE);
