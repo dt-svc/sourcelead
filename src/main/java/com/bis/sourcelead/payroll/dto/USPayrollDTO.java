@@ -96,6 +96,8 @@ public class USPayrollDTO {
     private BigDecimal assSalary;
     
     private String payType;
+    
+    private String employeeDesignationType;
 	
 	
 	public YTDPayrollDTO getYtdDTO()
@@ -462,7 +464,11 @@ public class USPayrollDTO {
 	{
 		this.payType = payType;
 	}
-	
-	
+	public String getEmployeeDesignationType() {
+		return employeeDesignationType;
+	}
+	public void setEmployeeDesignationType(String employeeDesignationType) {
+		this.employeeDesignationType = employeeDesignationType;
+	}
 	
 }
