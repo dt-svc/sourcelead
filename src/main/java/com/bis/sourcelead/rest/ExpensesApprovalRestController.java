@@ -296,7 +296,7 @@ public class ExpensesApprovalRestController {
     }
 
    
-	private void sendEmailToVendorAtExpensesApprovalStatus(Float amount,ProjectMembers projectMembers, User user,OrgLocations orgLoc,String startDateStr,String endDateStr,
+	private void sendEmailToVendorAtExpensesApprovalStatus(java.math.BigDecimal bigDecimal,ProjectMembers projectMembers, User user,OrgLocations orgLoc,String startDateStr,String endDateStr,
 			String rejectedReason,String currencyCode, String status) throws Exception {
 		
 		 // Expenses expense = expensesService.getExpenseById(expenseId);
@@ -338,7 +338,7 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			 globalVarsMap.put("loginlink",loginURLSB.toString());
 			 StringBuilder amountCurrencyType = new StringBuilder();
-			 BigDecimal amountCurrencyType1 = new BigDecimal(Double.toString(amount));
+			 BigDecimal amountCurrencyType1 = new BigDecimal((bigDecimal));
 			 amountCurrencyType1 = amountCurrencyType1.setScale(2,BigDecimal.ROUND_HALF_UP );
 			 
 			 
@@ -398,7 +398,7 @@ public class ExpensesApprovalRestController {
 		 globalVarsMap.put("endDate", endDate);
 		 
 		 StringBuilder amountCurrencyType = new StringBuilder();
-		 BigDecimal amountCurrencyType1 = new BigDecimal(Double.toString(expenses.getTotalAmount()));
+		 BigDecimal amountCurrencyType1 = new BigDecimal((expenses.getTotalAmount()));
 		 amountCurrencyType1 = amountCurrencyType1.setScale(2,BigDecimal.ROUND_HALF_UP );
 		 
 		 
