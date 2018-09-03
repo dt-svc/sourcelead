@@ -27,47 +27,17 @@
                             </div>
                         </div>
                 
-      <%--                   <div class="col-md-12">
-                            <div class="popTabl mb clearfix">
-                                
-                                <div class="row">
-                                <div class="col-md-4 mb">
-                                <select class="form-control" onchange="getUsersByDepartment();" id="department" name="department">
+                       <div class="col-md-6">
+                                 <label>Department</label>
+                               		 <div class="clearfix">
+                               		 <select class="form-control chosen-select" onchange="getUsersByDepartment();" id="department" name="department">
                                      <option value=" ">--Select Department--</option>
                         				  <c:forEach var="dept" items="${departmentList}">
 										   <option value="${dept.id}" ${userGroup.departmentId == dept.id ? 'selected' : ''}>${dept.departmentName}</option>
-									</c:forEach>
-                                </select>                                    
+										  </c:forEach>
+                               		 </select>                                    
                                 </div>
-                                
-                                <div class="col-md-3 mb col-md-offset-3	">
-                                <h4>Associate <span class="text-danger">*</span></h4>
-                                </div>
-                                
-                                </div>
-                                
-                                <table>
-                                    <tr>
-                                        <td>
-                                           <select class="movSel" multiple="multiple" id="assocByDept">
-                                            </select>                                            
-                                        </td>
-                                        <td><input type="button" id="btnRight" onclick="moveAss();" value ="  >  " /></td>
-                                        <td>
-                                        <div id="userErrorMsgDic">
-                                           <select class="movSel" multiple="multiple" id="userId" name="userId"  field-name="Associate">
-                                           		<c:if test="${!empty selectedUserList}">
-                                           			<c:forEach var="userRole" items="${selectedUserList}">
-														<option value="${userRole.user.id}"> ${userRole.user.firstName} ${userRole.user.lastName}(${userRole.roles.displayName})</option>
-													</c:forEach>
-                                           		</c:if>
-                                           </select>    
-                                            </div>                                        
-                                        </td>
-                                    </tr>    
-                                </table>
-                            </div>
-                        </div> --%>
+                        </div> 
           	         <div class="col-md-6">
 							<label>Pay Frequencey<span class="text-danger">*</span> </label>
 							<div class="clearfix" >

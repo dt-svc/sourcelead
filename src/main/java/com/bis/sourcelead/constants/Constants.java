@@ -1220,6 +1220,7 @@ public class Constants {
 
 	
 	public static final String[] IT_DECLARATION_SUBMISSION_FORM = { "Item Name", "Particulars" ,"Eligibility(Rs.)","Amount"};
+	public static final String DEDUCTED = "Deducted";
 	
 
 

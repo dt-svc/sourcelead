@@ -101,12 +101,12 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	@Override
 	public AssociateBankDataDTO findAssociateBankDataByUserId(Long userId, OrgLocations orgLocation)
 	{
-		AssociateBankDataDTO associateBankDataDTO = null;
+		AssociateBankDataDTO associateBankDataDTO = new AssociateBankDataDTO();
 		try {
 			Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocation.getId());
 			AssociateBankData associateBankData =  associateBankDataDao.findAssociateBankDataByCandidateId(candidate.getId(),orgLocation);
 			if(associateBankData != null){
-				associateBankDataDTO = new AssociateBankDataDTO();
+//				associateBankDataDTO = new AssociateBankDataDTO();
 				associateBankDataDTO.setId(associateBankData.getId());
 				associateBankDataDTO.setAccountType(associateBankData.getAccountType());
 				associateBankDataDTO.setBankName(associateBankData.getBankName());

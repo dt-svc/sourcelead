@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import com.bis.sourcelead.annotations.Required;
 
@@ -56,6 +57,10 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 	 private String associateUserId;
 	 
 	 private String loanAndAdvId;
+	 
+	 private BigDecimal totalLoanAmount;
+	 
+	 private BigDecimal totalAdvanceAmount;
 	 
 
 	public String getLoanAndAdvType() {
@@ -201,6 +206,24 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 	public void setLoanAndAdvId(String loanAndAdvId) {
 		this.loanAndAdvId = loanAndAdvId;
 	}
-	 
-	 
+
+	public BigDecimal getTotalLoanAmount()
+	{
+		return totalLoanAmount;
+	}
+
+	public void setTotalLoanAmount(BigDecimal totalLoanAmount)
+	{
+		this.totalLoanAmount = totalLoanAmount;
+	}
+
+	public BigDecimal getTotalAdvanceAmount()
+	{
+		return totalAdvanceAmount;
+	}
+
+	public void setTotalAdvanceAmount(BigDecimal totalAdvanceAmount)
+	{
+		this.totalAdvanceAmount = totalAdvanceAmount;
+	}
 }
