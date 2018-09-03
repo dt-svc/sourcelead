@@ -1534,4 +1534,23 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		} 
 		return flag;
 	}
+
+	@Override
+	@Transactional
+	public Boolean isUserWithMultipleOrgsAccounts(Long orgId,Long userId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("isUserWithMultipleOrgsAccounts start");
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations ol left join fetch ol.org org where org.id <> :orgId and userRole.user.id = :userId ")
+						   .setLong("orgId", orgId).setLong("userId", userId).list();
+		
+		logger.debug("isUserWithMultipleOrgsAccounts End");
+		
+		Boolean flag = false;
+		if (userRole.size() > 0) {
+			flag = true;
+		} 
+		return flag;
+	}
 }
