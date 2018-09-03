@@ -657,6 +657,21 @@ public class Constants {
 			"Rate","Rate Per", "Gender*","Martial Status","Date of Join","Date of Birth","Role*","Day Hours(HH:MM)","Manager*(Email)", "Employment Type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Send Mail to User(Y/N)","Is Global Manage(Y/N)"};
 
 
+	public static final String[] REQIREMENT_APPLICANT_HEADERS = { "Applicant Name", "Job", "Client", "Job Location", "Email", "Phone Number",  "Source", "Status"};
+
+	public static final String[] REQIREMENT_SUBMISSION_HEADERS = { "Applicant Name", "Job", "Client", "Job Location", "Applied On", "Submitted On", "Exp","Sub rate", "Source", "Submitted by","Status"};
+
+	public static final String[] REQIREMENT_INTERVIEW_HEADERS = { "Applicant Name", "Job", "Client", "Job Location", "Applied On", "No Of Interviews",  "Source", "Status"};
+
+	public static final String[] REQIREMENT_OFFERMADE_HEADERS = { "Applicant Name", "Job", "Client", "Job Location", "Join Date", "Rate", "Position Type", "Offered On", "Status"};
+
+	public static final String[] REQIREMENT_REJECTED_HEADERS = { "Applicant Name", "Job", "Client", "Job Location", "Rejected Type", "Rejected Reason", "Source", "Status"};
+
+	public static final String[] REQIREMENT_JOINED_HEADERS = { "Applicant Name", "Job", "Client", "Email", "Phone Number", "Job Location", "Source", "Status"};
+
+	public static final String[] REQIREMENT_BACKOUT_HEADERS = { "Applicant Name", "Job", "Client", "Job Location","Baclout Type", "Backout Reason",  "Source", "Status"};
+
+	
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";

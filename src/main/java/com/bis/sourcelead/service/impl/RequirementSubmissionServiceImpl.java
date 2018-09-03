@@ -52,6 +52,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
@@ -5095,5 +5096,117 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId, Long requirementId)
 			throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionByCandidateIdAndJobId(candidateId, requirementId);
+	}
+
+	@Override
+	public Integer[] getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate) {
+		return requirementSubmissionDao.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(orgLocationsId, dateRange, userType, user, startUTCDate, endUTCDate);
+	}
+
+	@Override
+	public File getPdfFile(ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist,
+			OrgLocations loginOrgLocations) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations orgLocations,String submissionStatus) throws Exception {
+		Row writeRow = null;
+        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,dashboardJobsCountlist,orgLocations,submissionStatus);
+        List<RequirementSubmissionHistory> list =  dashboardJobsCountlist.getData();
+        int column=0;
+        for(RequirementSubmissionHistory rsh : list){
+       	 writeRow = createExcelsheet.createRow(column+1);
+       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,column,rsh,orgLocations,submissionStatus);
+       	 column++;
+        }
+		return createExcelsheet;
+	}
+
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations orgLocations,String submissionStatus) {
+		 CellStyle style = createExcelworkbook.createCellStyle();
+	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	     Font font = createExcelworkbook.createFont();
+         font.setColor(IndexedColors.BLACK.getIndex());
+         style.setFont(font);
+         String[] headers = null;
+         if(submissionStatus.equalsIgnoreCase("SUBMISSION")) {
+        	  headers = Constants.REQIREMENT_APPLICANT_HEADERS;
+         }else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+        	 headers = Constants.REQIREMENT_SUBMISSION_HEADERS;
+         }else if(submissionStatus.equalsIgnoreCase("INTERVIEW")) {
+        	 headers = Constants.REQIREMENT_INTERVIEW_HEADERS;
+         }else if(submissionStatus.equalsIgnoreCase("OFFERMADE")) {
+        	 headers = Constants.REQIREMENT_OFFERMADE_HEADERS;
+         }else if(submissionStatus.equalsIgnoreCase("REJECTED")) {
+        	 headers = Constants.REQIREMENT_REJECTED_HEADERS;
+         }else if(submissionStatus.equalsIgnoreCase("JOINED")) {
+        	 headers = Constants.REQIREMENT_JOINED_HEADERS;
+         }else if(submissionStatus.equalsIgnoreCase("BACKOUT")) {
+        	 headers = Constants.REQIREMENT_BACKOUT_HEADERS;
+         }
+		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+	}
+	
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, RequirementSubmissionHistory rsh, OrgLocations orgLocations,String submissionStatus) throws Exception {
+		StringBuilder candidateName = new StringBuilder();
+		
+		//Candidate Name
+		if(rsh.getSubmissionId().getCandidate().getLastName() != null) {
+			writeRow.createCell(0).setCellValue(candidateName.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString()); 
+		}else {
+			writeRow.createCell(0).setCellValue(candidateName.append(rsh.getSubmissionId().getCandidate().getFirstName()).toString()); 
+		}
+		
+		//Requirement Name
+		writeRow.createCell(1).setCellValue(rsh.getSubmissionId().getRequirement().getJobTitle());
+		
+		//Clinet Name
+		if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
+			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
+				if (rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
+					writeRow.createCell(2).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+				}else {
+					writeRow.createCell(2).setCellValue("--");
+				}
+			}
+			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
+				if (rsh.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
+					writeRow.createCell(2).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+				}else {
+					writeRow.createCell(2).setCellValue("--");
+				}
+			}
+		}
+		 
+		//Job Location
+		List<String> requirementLocationsList = new ArrayList<>();
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rsh.getSubmissionId().getRequirement().getId());
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations location : locationsList) {
+				requirementLocationsList.add(location.getLocation());
+			}
+		}
+		writeRow.createCell(3).setCellValue(requirementLocationsList.toString()); 
+		
+		
+		//Candidate Email
+		writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getCandidate().getEmail());
+		
+		//Candidate Phone Number
+		if(rsh.getSubmissionId().getCandidate().getMobilePhone() != null){
+			writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getCandidate().getMobilePhone());
+		}else {
+			writeRow.createCell(5).setCellValue("--");
+		}
+		
+		//Sourece Name
+		writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
+		
+		//Aplicant Status
+		writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+		return createExcelsheet;
 	}
 }
