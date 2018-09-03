@@ -119,6 +119,16 @@ public class RequirementDTO extends CommonDTO {
 	private String clientSubmissionForm;
 
 	private String cd;
+	
+	private String jobRate;
+	
+	private String incentivized;
+	
+	private String payOutPeriod;
+	
+	private List<RequirementIncentiveDTO> requirementIncentive;
+	
+	private String arrDeletedIds;
 
 	private String approver;
 
@@ -764,6 +774,46 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setCd(String cd) {
 		this.cd = cd;
+	}
+
+	public String getJobRate() {
+		return jobRate;
+	}
+
+	public void setJobRate(String jobRate) {
+		this.jobRate = jobRate;
+	}
+
+	public String getIncentivized() {
+		return incentivized;
+	}
+
+	public void setIncentivized(String incentivized) {
+		this.incentivized = incentivized;
+	}
+
+	public String getPayOutPeriod() {
+		return payOutPeriod;
+	}
+
+	public void setPayOutPeriod(String payOutPeriod) {
+		this.payOutPeriod = payOutPeriod;
+	}
+
+	public List<RequirementIncentiveDTO> getRequirementIncentive() {
+		return requirementIncentive;
+	}
+
+	public void setRequirementIncentive(List<RequirementIncentiveDTO> requirementIncentive) {
+		this.requirementIncentive = requirementIncentive;
+	}
+
+	public String getArrDeletedIds() {
+		return arrDeletedIds;
+	}
+
+	public void setArrDeletedIds(String arrDeletedIds) {
+		this.arrDeletedIds = arrDeletedIds;
 	}
 
 	public String getApprover() {

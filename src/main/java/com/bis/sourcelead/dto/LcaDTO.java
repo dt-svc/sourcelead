@@ -114,6 +114,8 @@ public class LcaDTO extends SearchDTO {
 	
 	private List<LcaDocumentHistoryDTO> lcaDocumentList;
 	
+	private Long lcaPlacaOfempDeletedListIds[];
+	
 	//End Place of Employment dto fields
 	
 	//Start  of Docs dto fields 
@@ -579,6 +581,14 @@ public class LcaDTO extends SearchDTO {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public Long[] getLcaPlacaOfempDeletedListIds() {
+		return lcaPlacaOfempDeletedListIds;
+	}
+
+	public void setLcaPlacaOfempDeletedListIds(Long[] lcaPlacaOfempDeletedListIds) {
+		this.lcaPlacaOfempDeletedListIds = lcaPlacaOfempDeletedListIds;
 	}
 	
 }
