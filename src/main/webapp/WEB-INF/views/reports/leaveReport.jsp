@@ -774,6 +774,8 @@ function reportCollapse() {
 	//$("#leaveReportsList").slideUp();
 }
 function searchReportCollapse() {
+	document.getElementById("showReport").style.display="none";
+	document.getElementById("hearderId").style.display="none";
 	$("#fromDate").val('');
 	$("#toDate").val('');
 	$("#departmentList").val('');
