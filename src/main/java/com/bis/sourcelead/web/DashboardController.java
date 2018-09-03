@@ -193,17 +193,7 @@ public class DashboardController {
 		}
 		sessionData.setNav(Constants.Dashboard);
 		String stage ="INTERVIEW" ;
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		/*List<RequirementSubmissionHistory> toDayReqInterviewscount = getReqSubmissionListByStage(request,stage,tab);
-	  // SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
-		for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqInterviewscount) {
-			int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), requirementSubmissionHistory2.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
-			requirementSubmissionHistory2.getSubmissionId().setNumOfInterview(interviewedCount);
-			 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
-			for (RequirementSubmissionHistory rsh : requirementSubmissionHistory) {
-			      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getCreatedDate()));
-		    }
-		  }*/
+	 
 		model.addObject("tab",tab);
 		model.addObject("reqList","interList");
 //		model.addObject("toDayReqInterviewscount", toDayReqInterviewscount);
@@ -225,29 +215,6 @@ public class DashboardController {
 		}
 		sessionData.setNav(Constants.Dashboard);
 		String stage ="OFFERMADE" ;
-		
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		/*List<RequirementSubmissionHistory> toDayReqOfferscount = getReqSubmissionListByStage(request,stage,tab);
-		//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
-		for (RequirementSubmissionHistory requirementSubmissionHistory : toDayReqOfferscount) {
-			List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmissionHistory.getSubmissionId().getId(), loginOrgLocations.getId());
-			for (RequirementOffers requirementOffers : offersList) {
-				requirementSubmissionHistory.getSubmissionId().setOfferId(requirementOffers.getId());
-				requirementSubmissionHistory.getSubmissionId().setOfferRate(requirementOffers.getAmount());
-				requirementSubmissionHistory.getSubmissionId().setRateType(requirementOffers.getPaymentType());
-				requirementSubmissionHistory.getSubmissionId().setRatePer(requirementOffers.getPaymentMode());
-				requirementSubmissionHistory.getSubmissionId().setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementOffers.getDateOfJoining()));
-				if(null != requirementOffers.getPositionType()){
-					requirementSubmissionHistory.getSubmissionId().setPositionType(requirementOffers.getPositionType());
-				}
-				if(null != requirementOffers.getFileName()){
-					requirementSubmissionHistory.getSubmissionId().setAttachment(requirementOffers.getFileName());
-				}
-			}
-				if("OFFERMADE".equalsIgnoreCase(requirementSubmissionHistory.getToStage())){
-					requirementSubmissionHistory.getSubmissionId().setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementSubmissionHistory.getCreatedDate()));
-				}
-		}*/
 		
 		
 		model.addObject("tab",tab);
@@ -322,5 +289,67 @@ public class DashboardController {
 				loginOrgLocations.getId(), stage, tab, userType, user, startUTCDate, endUTCDate);
 	}
 
+	
+	
+	@RequestMapping(value = "/requirementRejectedList")
+	public ModelAndView requirementRejectedList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
+			HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		model.addObject("tab",tab);
+		model.addObject("reqList","rejectedlist");
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/requirementRejectedList");
+		return model;
+	}
+	
+	@RequestMapping(value = "/requirementJoinedList")
+	public ModelAndView requirementJoinedList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
+			HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		model.addObject("tab",tab);
+		model.addObject("reqList","joinedlist");
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/requirementJoinedList");
+		return model;
+	}
+	
+	@RequestMapping(value = "/requirementBackoutList")
+	public ModelAndView requirementBackoutList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
+			HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		model.addObject("tab",tab);
+		model.addObject("reqList","backoutlist");
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/requirementBackoutList");
+		return model;
+	}
+	
 	
 }
