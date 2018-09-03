@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -233,7 +234,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						BigDecimal amount = BigDecimal.ZERO;
 						if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
 							 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
-							payRate = assoSal.getHourlyRate();
+							 
+							 payRate = assoSal.getHourlyRate();
 							if(totalHoursDto !=null ) {
 								for(TotalHoursDTO totalHoursDTO : totalHoursDto) {
 									totalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getTotalHours()),totalHours);
@@ -245,7 +247,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						}else if(PayrollConstant.LCA_WAGE.equalsIgnoreCase(assoSal.getPayType())) {
 							LCAWageDTO lcaWageDTO  = generateUSPayrollDao.getLcaWageByCandidateIdLcationId(assoSal.getCandidate(),orgLocation);
 							if(lcaWageDTO != null) {
-								amount = new BigDecimal(lcaWageDTO.getLcaWage());
+								amount  = payrollUtil.getHourlyRate(amount,lcaWageDTO.getLcaWageType(),assoSal.getGroupId().getPayFrequency());
 							}
 						}
 						employeePayroll.setPayType(assoSal.getPayType());
@@ -278,8 +280,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						employeePayroll.setPostTaxDeduction(postTax);
 						employeePayroll.setPreTaxContribution(postContriSum);
 						employeePayroll.setPostTaxContribution(postContriSum);
+						employeePayroll.setGrossPay(amount);
 						BigDecimal grossAmount = (amount.subtract(preTax)).add(preContriSum);
-						employeePayroll.setGrossPay(grossAmount);
 						PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(assoSal.getCandidate(),totalHours,grossAmount,invoiceFrequency,associateTaxView,paySheetFreq.getPayCheckDate());
 						if(payrollCalculator != null) {
 							STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
@@ -326,6 +328,25 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		
 	}
 	
+	
+   /**
+    * check same frequency or not 
+    * @param existedData
+    * @param assoSal
+    * @return boolean
+    */
+	private boolean isPayrollRunForSameFrequency(PaysheetFrequencyDTO existedData, AssociateSalary assoSal) {
+		
+		boolean isExisted = false;
+		if(existedData != null) {
+		for (USPayrollDTO uSPayrollDTO : existedData.getPayrollDTO()) {
+			if((uSPayrollDTO.getCandidateId().longValue() == assoSal.getCandidate().getId().longValue()) && (existedData.getPaySheetFrequencyId().longValue() == uSPayrollDTO.getPaySheetFrequencyId().longValue())) {
+				return true;
+			}
+		}
+		}
+		return isExisted;
+	}
 	
 	private AssociateLoanAndAdvancesDTO getAssLoanAndAdvanceDedAmount(OrgLocations orgLocation, PaysheetFrequency paySheetFreq, User loginUser, Candidate candidate)
 	{
@@ -391,22 +412,6 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	}
 
 
-	private boolean isPayrollRunForSameFrequency(PaysheetFrequencyDTO existedData, AssociateSalary assoSal) {
-		
-		boolean isExisted = false;
-		if(existedData != null) {
-		for (USPayrollDTO uSPayrollDTO : existedData.getPayrollDTO()) {
-			if((uSPayrollDTO.getCandidateId().longValue() == assoSal.getCandidate().getId().longValue()) && (existedData.getPaySheetFrequencyId().longValue() == uSPayrollDTO.getPaySheetFrequencyId().longValue())) {
-				return true;
-			}
-		}
-		}
-		return isExisted;
-	}
-	
-
-
-
 	/**
 	 * Calculating Deductions and Contributions By Schedule
 	 * 
@@ -437,15 +442,19 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						.filter(ded -> "pretax".equalsIgnoreCase(ded.getDedTaxType()))
 						.collect(Collectors.toList());
 				for (DeductionDTO ded : preDedList) {
+					 BigDecimal preDedTax = BigDecimal.ZERO;
+					 BigDecimal preDedContriTax = BigDecimal.ZERO;
 					AssociateDeduction assoDeduction = associateDeductionService.getAsociateDedByUserIdDeductionId(Long.parseLong(ded.getId()), candidate.getId());
 					boolean dedSchedulePay = payrollUtil.findDeductionSchedulePay(assoDeduction, paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
 					if (!dedSchedulePay) {
 						if (PayrollConstant.FIXED.equalsIgnoreCase(ded.getMethod())) {
 							preTax = preTax.add(ded.getAmount());
+							preDedTax = ded.getAmount();
 						}
 						else {
 							BigDecimal perAmount = getPercentAmount(amount, ded.getAmount());
 							preTax = preTax.add(perAmount);
+							preDedTax = perAmount;
 						}
 						Date[] deductionDates = null;
 						if (StringUtils.isNoneBlank(assoDeduction.getDedStatus()) && !PayrollConstant.EVERY_PAY.equalsIgnoreCase(assoDeduction.getDeductionTypeId().getPayrollScheduled())) {
@@ -474,10 +483,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							if(assContribution != null) {
 								if (PayrollConstant.FIXED.equalsIgnoreCase(assContribution.getContributionMethod())) {
 			    					preContriTax = preContriTax.add(assContribution.getContributionAmount());
+			    					preDedContriTax = assContribution.getContributionAmount();
 								}
 								else {
 									BigDecimal perAmount = getPercentAmount(amount, assContribution.getContributionAmount());
 									preContriTax = preContriTax.add(perAmount);
+									preDedContriTax = perAmount;
 								}
 								assContribution.setContributionStatus("CONTRIBUTED");
 								assContribution.setContributionStartDate(deductionDates[0]);
@@ -491,7 +502,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							}
 							
 						}
-						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,assoDeduction,logonUser,deductionDates,employeePayroll,savedAassContribution,preTax,preContriTax,BigDecimal.ZERO,BigDecimal.ZERO);
+						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,assoDeduction,logonUser,deductionDates,employeePayroll,savedAassContribution,preDedTax,preDedContriTax,BigDecimal.ZERO,BigDecimal.ZERO);
 						dedHis.add(dedHistory);
 					}
 				}
@@ -500,15 +511,19 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				List<DeductionDTO> postDedList = res.getData().stream().filter(ded -> "posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
 				
 				for (DeductionDTO postDed : postDedList) {
+					BigDecimal postDedTax = BigDecimal.ZERO;
+					 BigDecimal postDedContriTax = BigDecimal.ZERO;
 					AssociateDeduction assoDeduction = associateDeductionService.getAsociateDedByUserIdDeductionId(Long.parseLong(postDed.getId()), candidate.getId());
 					boolean dedSchedulePay = payrollUtil.findDeductionSchedulePay(assoDeduction, paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
 					if (!dedSchedulePay) {
 						if (PayrollConstant.FIXED.equalsIgnoreCase(postDed.getMethod())) {
 							postTax = postTax.add(postDed.getAmount());
+							postDedTax = postDed.getAmount();
 						}
 						else {
 							BigDecimal perAmount = getPercentAmount(amount, postDed.getAmount());
 							postTax = postTax.add(perAmount);
+							postDedTax = perAmount;
 						}
 						Date[] deductionDates = null;
 						if (StringUtils.isNoneBlank(assoDeduction.getDedStatus()) && !PayrollConstant.EVERY_PAY.equalsIgnoreCase(assoDeduction.getDeductionTypeId().getPayrollScheduled())) {
@@ -538,10 +553,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							if(assContribution != null) {
 								if (PayrollConstant.FIXED.equalsIgnoreCase(assContribution.getContributionMethod())) {
 									postContriTax = postContriTax.add(assContribution.getContributionAmount());
+									postDedContriTax = assContribution.getContributionAmount();
 								}
 								else {
 									BigDecimal perAmount = getPercentAmount(amount, assContribution.getContributionAmount());
 									postContriTax = postContriTax.add(perAmount);
+									postDedContriTax = perAmount;
 								}
 								assContribution.setContributionStatus(PayrollConstant.CONTRIBUTED);
 								assContribution.setContributionStartDate(deductionDates[0]);
@@ -555,7 +572,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 							
 						}
 						
-						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,assoDeduction,logonUser,deductionDates,employeePayroll,savedAssContribution,BigDecimal.ZERO,BigDecimal.ZERO,postTax,postContriTax);
+						DeductionHistory dedHistory  = populateDeductionHistory(paySheet,assoDeduction,logonUser,deductionDates,employeePayroll,savedAssContribution,BigDecimal.ZERO,BigDecimal.ZERO,postDedTax,postDedContriTax);
 						dedHis.add(dedHistory);
 					}
 				
@@ -1165,8 +1182,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				postTaxContriSum= payAdjustmentDTO.getContribution().stream().filter(con->"posttax".equalsIgnoreCase(con.getTaxType())).mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
 			}
 			
+			
 			BigDecimal grossAmount = (amount.subtract(BigDecimal.valueOf(preTaxDed))).add(BigDecimal.valueOf(preTaxContriSum));
 			EmployeePayroll payroll = payrollAdjustmentService.getEmployeePayrollByUUID(payAdjustmentDTO.getPayrollUUID());
+			payroll.setGrossPay(amount);
 			payroll.setPreTaxContribution(BigDecimal.valueOf(preTaxContriSum));
 			payroll.setPostTaxContribution(BigDecimal.valueOf(postTaxContriSum));
 			if(!"Salary".equalsIgnoreCase(payAdjustmentDTO.getAssSalType())) {
@@ -1180,12 +1199,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			payroll.setPayType(payAdjustmentDTO.getAssSalType());
 			payroll.setPostTaxDeduction(BigDecimal.valueOf(postTaxDed));
 			payroll.setPreTaxDeduction(BigDecimal.valueOf(preTaxDed));
-			payroll.setGrossPay(grossAmount);
+			
 			AssociateTaxDedContriView associateTaxDTO = associateTaxService.findUserTaxDeatails(payroll.getCandidate().getId(), orgLocation);
 			PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(payroll.getCandidate(), totalHours, grossAmount, payroll.getFrequency(), associateTaxDTO,payroll.getPayCheckDate());
 			STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
 			String  locationCode = payrollCalculator.getWebServiceLocationCodeV2().getLocationCode();
-			BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal().add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal());
+			BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal().add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal()).add(STE.getCityCalc(locationCode).asBigDecimal());
 			payroll.setTaxes(taxes);
 			BigDecimal totalPay = grossAmount.subtract(taxes);
 			BigDecimal totPay = totalPay.subtract(BigDecimal.valueOf(postTaxDed)).add(BigDecimal.valueOf(postTaxContriSum));

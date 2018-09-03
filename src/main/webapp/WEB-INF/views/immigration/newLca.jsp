@@ -216,7 +216,7 @@
           </div>
           
           <div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-            <label class="col-md-4 paddingRight">Offered Wage <span class="text-danger paddingLeft">*</span> </label>
+            <label class="col-md-4 paddingRight">Offered Wage</label>
             <div class="col-md-8 ">
             <div class="input-group er ratetype">
                 <div class="input-group-btn">
@@ -230,7 +230,7 @@
 									</select>
                 </div>
                 <input type="text" id="offeredWage" name="offeredWage" value="${lcaDTO.offeredWage}" class="form-control" value="" field-name="Offered Wage"
-								data-validation="required validate_Space validate_float validate_length length1-8"
+								data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"
 								 placeholder="Wage Or Rate">
                 <div class="input-group-btn ratetype">
                  <select class="selectpicker form-control" id="offeredWageRateType" name="offeredWageRateType" field-name="Rate Per" data-style="btn-primary">
@@ -460,7 +460,7 @@
 					</select>
                 </div>
                 <input type="text" name="prevailingWage" id="prevailingWage" value="${lcaDTO.prevailingWage}" class="form-control" value="" field-name="Prevailing Wage"
-								data-validation="required validate_Space validate_float validate_length length1-8"
+								data-validation="required validate_Space validate_float validate_length length1-8" 
 							    placeholder="Wage Or Rate">
                 <div class="input-group-btn ratetype">
                  <select class="selectpicker form-control" id="privilingWageRateType" name="privilingWageRateType" field-name="Rate Per" data-style="btn-primary">
