@@ -61,22 +61,12 @@
         <ul class="list-unstyled">
           <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
 
-
-         <%--  <c:if test="${SourceLeadWeb_country != 'United States'}">
-          <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
-          </c:if>  --%>
-           
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
          		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
        		     <li><a href="#tab-3" data-toggle="tab" id="indInformationDetails" onclick="getIndAssociateInformationDetails();">Information</a></li>
        		     <li><a href="#tab-4" data-toggle="tab" id="indLoanAndAdvancesDetails" onclick="loanAdv.getIndAssociateLoanAndAdvancesDetails();">Loan / Advances</a></li>
        		     <li><a href="#tab-5" data-toggle="tab" id="indSalaryDetails" onClick="indAssociateSalarySummary();">Salary</a></li>
           </c:if>
-
-
-          <%-- <c:if test="${SourceLeadWeb_country != 'United States'}">
-          <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
-          </c:if> --%>
 
           <c:if test="${SourceLeadWeb_country == 'United States'}">
             <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
@@ -86,6 +76,8 @@
 	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
 	          <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
 	      </c:if>
+	      <!-- below tab should be visible for all locations -->
+	        <li class=""><a href="#tab-7" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
           <div class="clearfix"></div>
         </ul>
 		</div>
@@ -514,7 +506,6 @@
 	       <jsp:include page="associateTax.jsp" />
 	       <jsp:include page="associateDeduction.jsp" />
 	       <jsp:include page="associateContribution.jsp" />
-	       <jsp:include page="associateLeaveType.jsp" />
         </c:if>
         
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
@@ -523,7 +514,7 @@
               <jsp:include page="associateIndiaLoanAndAdvancesDetails.jsp" />
               <jsp:include page="associateIndiaSalaryDetails.jsp" />
          </c:if> 
-        
+        <jsp:include page="associateLeaveType.jsp" />
       </section>
       <!-- Content Area Ends--> 
 

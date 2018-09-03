@@ -1,6 +1,5 @@
 package com.bis.sourcelead.immigration.service;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,7 @@ import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.LcaDTO;
+import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
@@ -30,8 +30,6 @@ import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.Lca;
-import com.bis.sourcelead.entity.LcaHistory;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -188,4 +186,6 @@ public interface ImmigrationCommonService {
     public Lca getLcaByLcaId(Long lcaId) throws Exception;
     
     List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId);
+    
+    List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId ,OrgLocations orgLocations)throws Exception;
 }

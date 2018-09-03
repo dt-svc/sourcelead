@@ -251,6 +251,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" onClick="closeusRunpayrol();">Close</button>
       </div>
+      <div id="editPayrollLoading"></div>
     </div>
   </div>
   </form:form>
@@ -413,9 +414,10 @@
 					            	output = output + '<td>'+ot.contributionType+'</td>';
 					            	output = output + '<td>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].id" value='+ot.id+'>';
+					            	output = output + ' <input type="hidden"  name="contribution['+i+'].taxType" value='+ot.taxType+'>';
 					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionType" value='+ot.contributionType+'>';
-					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionAmt" value='+ot.amount+' >'; 
-					            	output = output + '<input type="text" id="totalContributions'+i+'" name="contribution['+i+'].contributionAmount" value='+ot.amount+' class="formControl" readOnly></td>';
+					            	output = output + ' <input type="hidden"  name="contribution['+i+'].preContributionAmt" value='+ot.contributionAmt+' >'; 
+					            	output = output + '<input type="text" id="totalContributions'+i+'" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
 		                	  $("#totalContributionsLngth").val(json.contribution.length);
@@ -458,15 +460,15 @@
 						            	payItem = payItem +' <tr>';
 						            	payItem = payItem +' <td>'+pi.payItemName+'</td>';	
 						            	payItem = payItem +'<input type="hidden" value='+pi.id+' id="id" name="payItem['+i+'].payItemId"/>';
-						            	payItem = payItem +'<input type="hidden" value='+pi.payItemName+' id="id" name="payItem['+i+'].prePayItemName"/>';
-						            	payItem = payItem +'<input type="hidden" value='+pi.payItemAmt+' id="id" name="payItem['+i+'].prePayItemAmt"/>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.payItemName+' id="prePayItemName" name="payItem['+i+'].prePayItemName"/>';
+						            	payItem = payItem +'<input type="hidden" value='+pi.payItemAmt+' id="prePayItemAmt" name="payItem['+i+'].prePayItemAmt"/>';
 						            	payItem = payItem +' <td><input type="text" class="formControl" id="payItemAmount'+i+'" name="payItem['+i+'].payItemAmount" readOnly value='+pi.payItemAmt+'></td>';
 						            	payItem = payItem +' <td>';
 						            	payItem = payItem +' <div class="checkbox-new ml mr pull-left">';
-						            	payItem = payItem +' <input id="cashTips" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
-						            	payItem = payItem +' <label for="cashTips" class="checkbox-custom-label"></label>';
+						            	payItem = payItem +' <input id="cashTips['+i+']" class="checkbox-custom" name="payItem['+i+'].payItemCheck" type="checkbox">';
+						            	payItem = payItem +' <label for="cashTips['+i+']" class="checkbox-custom-label"></label>';
 						            	payItem = payItem +' </div>';
-						            	payItem = payItem +' </td>';
+						            	payItem = payItem +' </tdgetPreDeductionAmount>';
 						            	payItem = payItem +' </tr>';
 				                  }
 			                	  $("#total1payItemsLength").val(json.payItem.length);
@@ -593,8 +595,9 @@ function editUspayslip(event){
 function savePayrollAdjustment(){
 	  var formData = getFormData("payroll_adjustment_form");
 	 /* var formData = $($('#payroll_adjustment_form')[0]).serialize(); */
-	  	//$("#paysheetLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  	$("#editPayrollLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sourceleadUrl+"/editEmployeePayroll?"+tokenParamName+"="+tokenValue, formData, function(result) {
+			$("#editPayrollLoading").removeAttr('style');
 			if (result.response === "INVALID_DATA") {
  		    showError(result.responseMessage);
  		} else if (result.response === "AWKWARD") {
@@ -607,7 +610,6 @@ function savePayrollAdjustment(){
  		} else {
  		    showError("Operation failed, please try again");
  		}
-			/*  $("#paysheetLoading").hide(); */
 		});
 }
 </script>
