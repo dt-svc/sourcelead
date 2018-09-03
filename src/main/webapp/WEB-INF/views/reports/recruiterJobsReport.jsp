@@ -274,6 +274,7 @@ function jobsDataTableList(){
 	 var startDate = '';
 	 var endDate = '';
 	 if(timePeriod == 'custom'){
+		 custDatesJobs();
 		  startDate = $("#ReportStartDateJobs").val();
 		  endDate = $("#ReportEndDateJobs").val();
 		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
