@@ -79,7 +79,9 @@ $(document).ready(function(){
 </script>
 		
 		<div id="projectSideDiv"></div>
-		<div id="candidateSideDiv"></div> 
+		<div id="baningDetailsDiv"></div> 
+		<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
+
 		
 		
 		 
@@ -92,7 +94,10 @@ $(document).ready(function(){
 	 var candidateId = '${candidateId}';
 	 var timesheet = '${SourceLeadWeb_timesheet}';
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}'; 
+	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}';
+	 var country = '${SourceLeadWeb_orgLocations.country}'
 	 var loginCountry = '${SourceLeadWeb_country}';
+
 	 
 		 result = result + ' <div class="user_summ_wrap">';
 		 result = result + '<div class="project_side_wrap_inn_tabs">';
@@ -122,10 +127,22 @@ $(document).ready(function(){
 			 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
 			 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
 		 }
+
+		
+		 if(country == 'India'){
+			 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
+			 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
+// 			 result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
+			 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
+		 }
+		 //below tab is used for both locations
+		 result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
+
 		 
 		 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
 		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
 		 '</sec:authorize>';
+
 
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
@@ -3769,7 +3786,85 @@ function profileDetails(candidateId){
 </script>
 
 
+<script>
+function assocSalarySummary(candidateId){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
+			    complete: function (response) {
+			  		if($("#status").val() == "NODATA"){
+			  			$('#saveAssociateBtnDiv').css('display','block');
+			  			$('#editAssociateBtn').css('display','none');
+			  			$('#cancelAssociateSalaryIndBtn').css('display','none');
+			  		}else{
+			  			$('#editAssociateBtn').css('display','block');
+			  			$('#saveAssociateBtnDiv').css('display','none');
+			  			$('#associateSalary_form input').attr('disabled','true');
+				  		$('#associateSalary_form select').prop('disabled', true);
+			  		}
+			       }
+			});
+	}
+</script>
 
+
+<script>
+function associateBankingDetails(candidateId){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateBankingDetailsByOrgLocation?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
+			});
+	}
+	
+	
+function associateInformationDetails(candidateId){
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateInformationDetailsByOrgLocation?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
+			});
+	
+}	
+
+function associateLoanAndAdvanceDetails(candidateId){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#tab-25").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+		    	    loanAdv.getLoanAndAdvApprovers();
+				},
+			});
+}
+</script>
 
 
 <%-- 

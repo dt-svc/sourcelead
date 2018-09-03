@@ -123,7 +123,7 @@
               <div class="col-md-12 mb">
                 <div class="clearfix row">
                   <div class="col-md-6 mb checkbox-new">
-                  <c:if test="${associatePfEsi.eligibleForPf eq 'pf'}">
+                  <c:if test="${associatePfEsi.eligibleForPf eq 'Y'}">
                   		<input id="pf" class="checkbox-custom" checked name="eligibleForPf" type="checkbox"   onClick="pfFunction()">
                   </c:if>
                    <c:if test="${empty associatePfEsi.eligibleForPf}">
@@ -157,7 +157,7 @@
                   </div>
                   <div class="clearfix"></div>
                    <div class="col-md-6 mb checkbox-new">
-                   <c:if test="${associatePfEsi.eligibleForEsi eq 'esi'}">
+                   <c:if test="${associatePfEsi.eligibleForEsi eq 'Y'}">
                              <input id="esi" class="checkbox-custom"  checked name="eligibleForEsi" type="checkbox"  onClick="esiFunction()">
                    </c:if>
                    <c:if test="${empty associatePfEsi.eligibleForEsi}">
@@ -389,7 +389,7 @@ function pfFunction() {
     if (checkBox.checked == true){
         pfel.style.display = "block";
         $("#pfUan").attr("data-validation", "required validate_int validate_length length1-12");
-        $("#pfNumber").attr("data-validation", "required validate_int validate_length length1-19");
+        $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length1-19");
         $("#pf").val('pf');
     } else {
        pfel.style.display = "none";

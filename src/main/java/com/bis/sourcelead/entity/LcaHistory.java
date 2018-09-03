@@ -71,7 +71,7 @@ private static final long serialVersionUID = 1L;
 	
 	@Transient
 	@JsonProperty
-	private List<String> lcaLocations;
+	private List<LcaPlaceOfEployment> lcaLocations;
 
 	public Long getId() {
 		return id;
@@ -169,11 +169,11 @@ private static final long serialVersionUID = 1L;
 		this.endDateStr = endDateStr;
 	}
 
-	public List<String> getLcaLocations() {
+	public List<LcaPlaceOfEployment> getLcaLocations() {
 		return lcaLocations;
 	}
 
-	public void setLcaLocations(List<String> lcaLocations) {
+	public void setLcaLocations(List<LcaPlaceOfEployment> lcaLocations) {
 		this.lcaLocations = lcaLocations;
 	}
 	

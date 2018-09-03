@@ -53,9 +53,9 @@ public class USPayrollDTO {
      
     private BigDecimal aeic;
     
-    private List<DeductionHistoryDTO> preDed;
+    private List<DeductionDTO> preDed;
     
-    private List<DeductionHistoryDTO> postDed;
+    private List<DeductionDTO> postDed;
     
     private BigDecimal preDedTotal;
     
@@ -63,7 +63,7 @@ public class USPayrollDTO {
     
     private BigDecimal contributionTotal;
     
-    private List<ContributionHistoryDTO> contribution;
+    private List<ContributionDTO> contribution;
     
     private List<AssociatePayItemDTO> payItem; 
     
@@ -89,7 +89,23 @@ public class USPayrollDTO {
 	
 	private BigDecimal localTax;
 	
+    private YTDPayrollDTO ytdDTO;
 	
+    private String assSalType;
+    
+    private BigDecimal assSalary;
+    
+    private String payType;
+	
+	
+	public YTDPayrollDTO getYtdDTO()
+	{
+		return ytdDTO;
+	}
+	public void setYtdDTO(YTDPayrollDTO ytdDTO)
+	{
+		this.ytdDTO = ytdDTO;
+	}
 	public BigDecimal getLocalTax()
 	{
 		return localTax;
@@ -112,11 +128,11 @@ public class USPayrollDTO {
 	{
 		this.isExcept = isExcept;
 	}
-	public List<ContributionHistoryDTO> getContribution()
+	public List<ContributionDTO> getContribution()
 	{
 		return contribution;
 	}
-	public void setContribution(List<ContributionHistoryDTO> contribution)
+	public void setContribution(List<ContributionDTO> contribution)
 	{
 		this.contribution = contribution;
 	}
@@ -372,19 +388,19 @@ public class USPayrollDTO {
 	{
 		this.payItemId = payItemId;
 	}
-	public List<DeductionHistoryDTO> getPreDed()
+	public List<DeductionDTO> getPreDed()
 	{
 		return preDed;
 	}
-	public List<DeductionHistoryDTO> getPostDed()
+	public List<DeductionDTO> getPostDed()
 	{
 		return postDed;
 	}
-	public void setPreDed(List<DeductionHistoryDTO> preDed)
+	public void setPreDed(List<DeductionDTO> preDed)
 	{
 		this.preDed = preDed;
 	}
-	public void setPostDed(List<DeductionHistoryDTO> postDed)
+	public void setPostDed(List<DeductionDTO> postDed)
 	{
 		this.postDed = postDed;
 	}
@@ -422,6 +438,31 @@ public class USPayrollDTO {
 	{
 		this.regularHours = regularHours;
 	}
+	public String getAssSalType()
+	{
+		return assSalType;
+	}
+	public void setAssSalType(String assSalType)
+	{
+		this.assSalType = assSalType;
+	}
+	public BigDecimal getAssSalary()
+	{
+		return assSalary;
+	}
+	public void setAssSalary(BigDecimal assSalary)
+	{
+		this.assSalary = assSalary;
+	}
+	public String getPayType()
+	{
+		return payType;
+	}
+	public void setPayType(String payType)
+	{
+		this.payType = payType;
+	}
+	
 	
 	
 }

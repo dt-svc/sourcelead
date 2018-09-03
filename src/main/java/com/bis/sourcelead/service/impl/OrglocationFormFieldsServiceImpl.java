@@ -116,13 +116,13 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 		orgLocFormFields.setUpdatedBy(loginUser);
 		orgLocFormFields.setUpdatedDate(new Date());
 		
-		  orglocationFormFieldsDao.saveOrglocationFormField(orgLocFormFields);
+		OrglocationFormFields orgLocFormFieldSavedData = orglocationFormFieldsDao.saveOrglocationFormField(orgLocFormFields);
 		if(orgLocFormFieldsDTO.getOptionData() != null && !orgLocFormFieldsDTO.getOptionData().isEmpty()) {
 			for(OrglocationFormSubFieldsDTO optionData:orgLocFormFieldsDTO.getOptionData()) {
 				if(optionData != null && StringUtils.isNotBlank(optionData.getOption())) {
 				OrglocationFormSubFields subFields = new OrglocationFormSubFields();
 				subFields.setId(optionData.getId());
-				subFields.setFormField(orgLocFormFields);
+				subFields.setFormField(orgLocFormFieldSavedData);
 				subFields.setLabelName(optionData.getOption());
 				subFields.setStatus(1);
 				orglocationFormSubFieldsDao.saveOrglocationFormSubField(subFields);

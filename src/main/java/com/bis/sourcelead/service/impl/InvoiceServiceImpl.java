@@ -3040,6 +3040,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 				timelineHistory.setInvoicePaymentReminderEmailTo(returnMap.get("toEmail"));
 				timelineHistory.setInvoicePaymentReminderEmailSubject(returnMap.get("emailSubject"));
 			}
+		}else if (invoice.getInvoiceStatus().equalsIgnoreCase("Received")) {
+			invoiceStatus = invoice.getInvoiceStatus();
+			if (returnMap != null) {
+				timelineHistory.setInvoicePaymentReminderEmailBody(returnMap.get("emailBody"));
+				timelineHistory.setInvoicePaymentReminderEmailFrom(returnMap.get("fromEmail"));
+				timelineHistory.setInvoicePaymentReminderEmailTo(returnMap.get("toEmail"));
+				timelineHistory.setInvoicePaymentReminderEmailSubject(returnMap.get("emailSubject"));
+			}
 		} else if(invoice.getStatus().equalsIgnoreCase("0")){
 			invoiceStatus = "Deleted";
 			timelineHistory.setRejectReason(invoice.getRejectReason());
@@ -3058,7 +3066,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			timelineHistory.setInvoicePaymentReminderId(invoicePaymentId);
 			timelineHistory.setInvoicePaymentReminderStatus(invoice.getPaymentStatus());
 			timelineHistory.setInvoiceStatus(Constants.INVOICE_TIMELINE_STATUS_PAID);
-		}else if (invoice.getPaymentStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PARTIAL_PAID)) {
+		}else if (invoice.getPaymentStatus().equalsIgnoreCase(Constants.INVOICE_STATUS_PARTIAL_PAID) && invoicePaymentId != null) {
 			timelineHistory.setInvoicePaymentReminderId(invoicePaymentId);
 			timelineHistory.setInvoicePaymentReminderStatus(invoice.getPaymentStatus());
 			timelineHistory.setInvoiceStatus(invoice.getPaymentStatus());
@@ -3222,6 +3230,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 						statusVal = "Received";
 						statusBy = " from ";
 						statusValue = timelineHistory.getInvoice().getContactUser().getFullName();
+						timelineDTO.setInvoiceReminderEmailBody(timelineHistory.getInvoicePaymentReminderEmailBody());
+						timelineDTO.setInvoiceReminderEmailTo(timelineHistory.getInvoicePaymentReminderEmailTo());
+						timelineDTO.setInvoiceReminderEmailFrom(timelineHistory.getInvoicePaymentReminderEmailFrom());
+						timelineDTO.setInvoiceReminderEmailSubject(
+								timelineHistory.getInvoicePaymentReminderEmailSubject());
 					} else if (status.equalsIgnoreCase("Accepted")) {
 						if (timelineHistory.getCreatedBy().getId().equals(timelineHistory.getOwnerUser().getId())) {
 							statusVal = "Accepted";

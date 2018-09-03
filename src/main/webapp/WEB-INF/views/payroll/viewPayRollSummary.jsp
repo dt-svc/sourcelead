@@ -101,23 +101,23 @@
                         </tr>
                         <tr>
                           <td>Federal with holding</td>
-                          <td><span id="federal">0</span></td>
+                          <td><span id="federalWT">0</span></td>
                          <!--  <td><input type="text" id="federal" name="federal" value="" class="formControl" readOnly></td> -->
                         </tr>
                         <tr>
                           <td>Medicare</td>
-                           <td><span id="medicare">0</span></td>
+                           <td><span id="medicareWT">0</span></td>
                          <!--  <td><input type="text" id="medicare" name="medicare" value="" class="formControl" readOnly></td> -->
                         </tr>
                         <tr>
                           <td>FICA</td>
-                           <td><span id="fica">0</span></td>
+                           <td><span id="ficaWT">0</span></td>
                          <!-- <td><input type="text" id="fica" name="fica" value="" class="formControl" readOnly></td> -->
                         </tr>
                       
                         <tr>
                           <td>State Withholding</td>
-                          <td><span id="stateWithHolding">0</span></td>
+                          <td><span id="stateWithHoldingWT">0</span></td>
                          <!--  <td><input type="text" id="stateWithHolding" name="stateWithHolding" value="" class="formControl" readOnly></td> -->
                         </tr>
                           <tr>
@@ -185,10 +185,10 @@
 </div>
 
 <script>
-	function payAdjustment(payrollUUID){
+	function payAdjustment(payrollUUID,status){
 		  $.ajax({
 		  	type: "GET",
-		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID,                 
+		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
 		            var json = data.object;
 		            $("#empAddress").text(json.employeeAddress);
@@ -199,10 +199,10 @@
 		            $("#totalHours").text(json.totalHours.toFixed(2));
 		            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
 		        	
-		            $("#federal").text(json.federal);
-		            $("#medicare").text(json.medicare);
-		            $("#fica").text(json.fica);
-		            $("#stateWithHolding").text(json.stateWithHolding);
+		            $("#federalWT").text(json.federal);
+		            $("#medicareWT").text(json.medicare);
+		            $("#ficaWT").text(json.fica);
+		            $("#stateWithHoldingWT").text(json.stateWithHolding);
 		            $("#aeic").text(json.aeic);
 		            $("#taxes").text(json.taxes);
 		            
@@ -299,7 +299,7 @@
 					            	output = output + '<tr>';
 					            	output = output + '<input type="hidden" name="contribution['+i+'].taxtType" value='+ot.taxtType+' id="taxtType"/>';
 					            	output = output + '<td>'+ot.contributionType+'</td>';
-					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.amount+' class="formControl" readOnly></td>';
+					            	output = output + ' <td><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
 		                  }

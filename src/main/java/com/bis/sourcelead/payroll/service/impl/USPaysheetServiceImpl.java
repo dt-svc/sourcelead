@@ -326,9 +326,12 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 			if (pf != null && pf.getEmployeepayroll() != null) {
 				Set<EmployeePayroll> set = null;
 				if(paysheetFrequencyDTO.getApproverStatus() != null && paysheetFrequencyDTO.getApproverStatus().equalsIgnoreCase(Constants.DRAFT)) {
-					set = pf.getEmployeepayroll().stream().filter(p->p.getPaysheetFrequency().getId() == pfDTO.getPaySheetFrequencyId() && p.getSubmitForAproverStatus().equalsIgnoreCase(Constants.DRAFT)).collect(Collectors.toSet());
+					set = pf.getEmployeepayroll().stream().filter(emp->emp.getPaysheetFrequency().getId().longValue() == pfDTO.getPaySheetFrequencyId().longValue() && emp.getSubmitForAproverStatus().equalsIgnoreCase(Constants.DRAFT)).collect(Collectors.toSet());
+					logger.info("Number of payrolls in draft state ==========="+set.size());
+				}else if(paysheetFrequencyDTO.getApproverStatus() != null && paysheetFrequencyDTO.getApproverStatus().equalsIgnoreCase(Constants.SENT)) {
+					set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum() && p.getSubmitForAproverStatus().equalsIgnoreCase(Constants.SENT)).collect(Collectors.toSet());
 				}else {
-					set = pf.getEmployeepayroll().stream().filter(p->p.getPayPeriodNum() != null && Integer.parseInt(p.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum()).collect(Collectors.toSet());
+					set = pf.getEmployeepayroll().stream().filter(empPayroll->empPayroll.getPayPeriodNum() != null && Integer.parseInt(empPayroll.getPayPeriodNum()) == paysheetFrequencyDTO.getPayPeriodNum() && empPayroll.getSubmitForAproverStatus().equalsIgnoreCase(Constants.APPROVED)).collect(Collectors.toSet());
 				}
 				
 				for(EmployeePayroll pay : set) {
@@ -351,7 +354,11 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 					payrollDTO.setPayRate(pay.getEmpPayRate());
 					payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
 					payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());
-					payrollDTO.setRegularHours(Float.parseFloat(pay.getRegularHours()));
+					float regHours = 0;
+					if(StringUtils.isNotBlank(pay.getRegularHours())) {
+						regHours = Float.parseFloat(pay.getRegularHours());
+					}
+					payrollDTO.setRegularHours(regHours);
 					payrollDTO.setTaxes(pay.getTaxes());
 					payrollDTO.setOtHoursTotalAmt(pay.getOverTimeAmount());
 					double overTimeHours = 0;
@@ -359,9 +366,8 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 						overTimeHours = Double.parseDouble(pay.getOverTimeHours());
 					}
 					payrollDTO.setOvertimeHours(overTimeHours);
-					if(paysheetFrequencyDTO.getApproverStatus() != null && !paysheetFrequencyDTO.getApproverStatus().equalsIgnoreCase(Constants.DRAFT)) {
+					if(pay.getPayPeriodNum() != null)
 					pfDTO.setPayPeriodNum(Integer.parseInt(pay.getPayPeriodNum()));
-					}
 					list.add(payrollDTO);
 				}
 				pfDTO.setPayrollDTO(list);

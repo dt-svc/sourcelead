@@ -65,7 +65,9 @@ import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
@@ -117,6 +119,7 @@ import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -173,6 +176,9 @@ public class CommonUtil {
 	
 	@Autowired
 	private ProjectsService projectsService;
+	
+	@Autowired
+	private PayrollPayheadService payrollPayheadService;
 	
 	@Autowired
 	private UserService userService;
@@ -2540,7 +2546,6 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 }
 
   
-  
   public String getConfiguredFromEmail(Long orgLocationId,EmailScenario  emailScenario) throws Exception{
 	  
 	     String fromEmail = null;
@@ -2618,13 +2623,11 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
   
   public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-
 		if(!requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.JOINED)) {
 			// to update submission history
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
-
 			// to update Submission status
 			requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
@@ -2647,6 +2650,16 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		}
 		return "success";
+	}
+
+  	public void storeDefaultPayheadsWithOrgLocation(User user, OrgLocations orgLocations) throws Exception{
+	  OrgLocations sourceLeadOrgLocations = new OrgLocations();
+	  sourceLeadOrgLocations.setId(1l);
+		ResponseList<PayrollPayheadDTO> responsePayheadList = payrollPayheadService.getPayrollPayheadList(sourceLeadOrgLocations);
+		for(PayrollPayheadDTO payrollPayheadDTO : responsePayheadList.getData()) {
+			payrollPayheadDTO.setUuid(null);
+			payrollPayheadService.savePayrollPayhead(payrollPayheadDTO, user, orgLocations);
+		}
 	}
 
   

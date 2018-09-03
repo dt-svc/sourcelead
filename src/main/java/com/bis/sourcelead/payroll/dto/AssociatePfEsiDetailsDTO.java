@@ -24,6 +24,10 @@ public class AssociatePfEsiDetailsDTO {
 	private String userId;
 	
 	private String orglocationId;
+	
+	private String associateUserId;
+	
+	private String pfesiId;
 
 	public Long getId() {
 		return id;
@@ -95,5 +99,21 @@ public class AssociatePfEsiDetailsDTO {
 
 	public void setOrglocationId(String orglocationId) {
 		this.orglocationId = orglocationId;
+	}
+
+	public String getAssociateUserId() {
+		return associateUserId;
+	}
+
+	public void setAssociateUserId(String associateUserId) {
+		this.associateUserId = associateUserId;
+	}
+
+	public String getPfesiId() {
+		return pfesiId;
+	}
+
+	public void setPfesiId(String pfesiId) {
+		this.pfesiId = pfesiId;
 	}
 }

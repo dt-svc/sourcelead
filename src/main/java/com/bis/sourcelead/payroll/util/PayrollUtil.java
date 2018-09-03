@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,13 +11,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.omg.CORBA.COMM_FAILURE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
@@ -24,8 +28,10 @@ import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.PayitemHistory;
 import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class PayrollUtil {
@@ -34,6 +40,10 @@ public class PayrollUtil {
 	
 	@Autowired
 	AssociateDeductionService associateDeductionService;
+	
+	
+	@Autowired
+	CommonUtil commonUtil;
 	/***
 	 * calculating total amount by multipltying hours with rate
 	 * 
@@ -333,9 +343,9 @@ public class PayrollUtil {
 								amount = dedHis.getPostContributionAmount().doubleValue();
 							}
 						}
+						contDTO.setId(dedHis.getId().toString());
 						contDTO.setAmount(precontrAmt);
 						contDTO.setPostContributionAmt(postcontrAmt);
-						contDTO.setId(String.valueOf(dedHis.getContributionId().getId()));
 						contDTO.setContributionType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
 						contDTO.setTaxType(dedHis.getContributionId().getContributionTypeId().getDeductionTypeId().getTaxType());
 						contDTO.setContributionAmount(dedHis.getContributionId().getContributionAmount());
@@ -362,7 +372,7 @@ public class PayrollUtil {
 			if (hisList != null && hisList.size() > 0) {
 				for (DeductionHistory dedHis : hisList) {
 					DeductionDTO dedDTO = new DeductionDTO();
-					dedDTO.setId(String.valueOf(dedHis.getDeductionId().getId()));
+					dedDTO.setId(String.valueOf(dedHis.getId()));
 					dedDTO.setDeductionType(dedHis.getDeductionId().getDeductionTypeId().getPayrollDeductionType());
 					double preDedAmt = 0;
 					double postDedAmt = 0;
@@ -391,5 +401,90 @@ public class PayrollUtil {
 			e.printStackTrace();
 		}
 		return dedList;
+	}
+
+	/**
+	 * Get Year Start Date and current date
+	 * @param orgLocation
+	 * @return Date[]
+	 */
+	public Date[] getYTDDates(OrgLocations orgLocation)
+	{
+		Date[] ytd = new Date[2];
+		try {
+			Calendar c = Calendar.getInstance(); // this takes current date
+			ytd[1] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+			c.set(Calendar.MONTH, 0);
+			c.set(Calendar.DAY_OF_MONTH, 1);
+			ytd[0] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ytd;
+	}
+
+		/**
+	 * Calculating PayItem
+	 * @param payroll
+	 * @return List<AssociatePayItemDTO>
+	 */
+	public List<AssociatePayItemDTO> getPayItemData(EmployeePayroll payroll)
+	{
+		List<AssociatePayItemDTO> list = new ArrayList<>();
+		if (payroll.getPayitemHistory() != null) {
+			for (PayitemHistory his : payroll.getPayitemHistory()) {
+				AssociatePayItemDTO payItemDTO = new AssociatePayItemDTO();
+				payItemDTO.setId(his.getId().toString());
+				payItemDTO.setPayItemName(his.getAssociatePayItem().getPayItemName());
+				payItemDTO.setPayItemAmt(his.getAmount().doubleValue());
+				list.add(payItemDTO);
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * Get Houry rate by lca wage type
+	 * @param amount
+	 * @param lcaWageType
+	 * @param payFrequency 
+	 * @return BigDecimal
+	 */
+	public BigDecimal getHourlyRate(BigDecimal amount, String lcaWageType, String payFrequency)
+	{
+		BigDecimal houryRate = BigDecimal.ZERO;
+		BigDecimal payAmount = BigDecimal.ZERO;
+			if(PayrollConstant.PAY_YEARLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate =  amount.divide(new BigDecimal(2088),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(176),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(80),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(40),3, RoundingMode.CEILING);
+			}
+			if(PayrollConstant.PAY_BI_MONTHLY.equalsIgnoreCase(lcaWageType.trim())){
+				houryRate = amount.divide(new BigDecimal(88),3, RoundingMode.CEILING);
+			}
+			
+			BigDecimal hours = BigDecimal.ZERO;
+			if(PayrollConstant.PAY_ANNUAL.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(2088);
+			}
+			if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(176);
+			}
+			if(PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(80);
+			}
+			if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(payFrequency)){
+				hours = new BigDecimal(40);
+			}
+			payAmount = houryRate.multiply(hours);
+			return payAmount;
+			
 	}
 }

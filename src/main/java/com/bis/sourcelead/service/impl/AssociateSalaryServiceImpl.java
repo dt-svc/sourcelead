@@ -308,9 +308,9 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	}
 
 	@Override
-	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation,long groupId) {
+	public List<AssociateSalary> getAssociateSalaryListByGroupId(OrgLocations orgLocation,long groupId,String payType) {
 		
-		List<AssociateSalary> list = associateSalaryDao.getAssociateSalaryListByGroupId(orgLocation,groupId);
+		List<AssociateSalary> list = associateSalaryDao.getAssociateSalaryListByGroupId(orgLocation,groupId,payType);
 		return list;
 	}
 
@@ -318,5 +318,11 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	public List<AssociatePayItemDTO> findAssociatePayItemByPayrollId(Long payrollId)
 	{
 		return associateSalaryDao.findAssociatePayItemByPayrollId(payrollId);
+	}
+
+	@Override
+	public AssociateSalary getAssociateSalaryByCandidateIdAndOrgLocationId(Long candidateId, Long locationId)
+	{
+		return associateSalaryDao.getAssociateSalaryByCandidateIdAndOrgLocationId(candidateId, locationId);
 	}
 }
