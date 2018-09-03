@@ -41,7 +41,7 @@ $(document).ready(function(){
          <label class="col-md-12">&nbsp;</label>
 		<div class="col-md-12">
             <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="savePayrollApprover();">
-            <input value="Cancel" class="btn btn-defualt ml10" type="button">
+            <input value="Cancel" class="btn btn-defualt ml10" type="button" onclick="cancelButton();">
 		</div>
             </div>
 			</div>
@@ -161,6 +161,12 @@ $('body').on('blur', '#payroll_approver_form', function() {
 	$("#payroll_approver_form").showHelpOnFocus();
 	$("#payroll_approver_form").validateOnBlur(false, validationSettings);
 });
+</script>
+
+<script>
+function cancelButton(){
+	location.replace(sourceleadUrl+ "/payrollConfiguration");
+}
 </script>
 
 

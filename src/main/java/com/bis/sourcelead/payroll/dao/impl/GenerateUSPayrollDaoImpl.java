@@ -22,6 +22,7 @@ import com.bis.sourcelead.payroll.dao.GenerateUSPayrollDao;
 import com.bis.sourcelead.payroll.dto.DeductionHistoryDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.LCAWageDTO;
+import com.bis.sourcelead.payroll.dto.ProjectRateDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.util.CommonUtil;
@@ -110,6 +111,50 @@ public class GenerateUSPayrollDaoImpl implements GenerateUSPayrollDao{
 			e.printStackTrace();
 		}
 		return lcaWage;
+	}
+
+	@Override
+	@Transactional
+	public List<ProjectRateDTO> payRateByCandidateLocation(Candidate candidate, OrgLocations orgLocation, Date freqStartDate, Date freqEndDate)
+	{
+		List<ProjectRateDTO> projectRateDTO = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date sqlStartDate = new java.sql.Date(freqStartDate.getTime());
+			java.sql.Date sqlEndDate = new java.sql.Date(freqEndDate.getTime());
+			StringBuilder sb = new StringBuilder();
+			sb.append("select pmrs.PROJECT_MEMBER_ID as projectMemId,") 
+			.append("pmrs.BILL_RATE as billRate,")
+			.append("pmrs.BILL_RATE_TYPE as billRateType,")
+		    .append("pmrs.BILL_RATE_START_DATE as billRateStartDate,")
+			.append("pmrs.BILL_RATE_END_DATE as billRateEndDate,")
+			.append("pmrs.PAY_RATE as payRate,")
+			.append("pmrs.PAY_RATE_TYPE as payRateType,")
+			.append("pmrs.PAY_RATE_START_DATE as payRateStartDate,") 
+			.append("pmrs.PAY_RATE_END_DATE as payRateEndDate,") 
+			.append("pm.CANDIDATE_ID as candidateId,") 
+			.append("pm.PROJECT_ID as projectId,") 
+			.append("pm.PROJECT_CLIENTS_ID as projectClientId,")
+			.append("pm.PROJECT_ASSIGNED_DATE as projectAssignedDate,")
+			.append("pm.PROJECT_END_DATE as projectEndDate,")
+			.append("pm.PAY_RATE as actualPayRate,")
+			.append(" pm.PAY_RATE_TYPE as actualPayRateType ")
+			.append(" from  PROJECT_MEMBERS pm ") 
+			.append(" left join PROJECT_MEMBERS_RATE_HISTORY pmrs ON  pmrs.PROJECT_MEMBER_ID = pm.ID ")
+			.append(" left join CANDIDATE can ON can.ID = pm.CANDIDATE_ID ")
+			.append(" where can.ORG_LOCATION_ID = :locationId and pm.CANDIDATE_ID= :candidateId and ((:freqStartDate >= pmrs.PAY_RATE_START_DATE AND :freqEndDate <= pmrs.PAY_RATE_END_DATE) OR (pmrs.PAY_RATE_START_DATE IS NULL OR pmrs.PAY_RATE_END_DATE IS NULL))");
+			Query queryObj = session.createSQLQuery(sb.toString());
+			queryObj.setLong("candidateId", candidate.getId());
+			queryObj.setLong("locationId", orgLocation.getId());
+			queryObj.setDate("freqStartDate", sqlStartDate);
+			queryObj.setDate("freqEndDate", sqlEndDate);
+			queryObj.setResultTransformer(Transformers.aliasToBean(ProjectRateDTO.class));
+			projectRateDTO = queryObj.list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return projectRateDTO;
+		
 	}
 	
 }

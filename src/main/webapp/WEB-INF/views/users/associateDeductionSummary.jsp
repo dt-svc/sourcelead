@@ -4,6 +4,8 @@
  
  <script>
 function associateDeductionSummary(userId){
+	let searchParams = new URLSearchParams(window.location.search);
+	let param = searchParams.get('userCode')
 	$.ajax({
            type : "GET",
            url: sourceleadUrl+"/findAllDeductionSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
@@ -15,7 +17,7 @@ function associateDeductionSummary(userId){
             result = result + '<div class="table-header clearfix">';
             result = result + '<h4 class="pull-left margin-top0">Deductions</h4>';
             result = result + '<ul class="list-unstyled list-inline pull-right">';
-            result = result + '<li><a href="<c:url value="${appPath}/addAssociateDeduction?userId='+userId+'&saveType=edit"/>" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
+            result = result + '<li><a href="<c:url value="${appPath}/addAssociateDeduction?userCode='+param+'&saveType=edit"/>" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
             result = result + '<div class="clearfix"></div>';
             result = result + '</ul>';
             result = result + '</div>';

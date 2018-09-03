@@ -1768,6 +1768,36 @@ public class UserServiceImpl implements UserService {
 		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList,topleave,MonthStart,MonthEnd);
 	 }
 
+	@Override
+	public void sendEmailToUserForEmailUpdation(User user, User loginUser, OrgLocations orgLocations, String toEmail,
+			String existingEmail) throws Exception {
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(toEmail);
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setFromName(loginUser.getFullName());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setOrgLocationId(orgLocations.getId());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("Login_User_Name",loginUser.getFullName());
+		 globalVarsMap.put("Associate_Name", user.getFullName());
+		 globalVarsMap.put("Existing_Email", existingEmail);
+		 globalVarsMap.put("New_Email", user.getEmail());
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("URL_Link",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+		
+		List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
+		
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_EMAIL_UPDATION,attachmentList);
+		
+	}
+
 
 }
 
