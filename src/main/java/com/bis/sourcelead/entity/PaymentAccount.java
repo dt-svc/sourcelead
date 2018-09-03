@@ -26,24 +26,33 @@ public class PaymentAccount extends Record implements Serializable {
 
     private String email;
     @Column(name = "FIRST_NAME")
+    
     private String firstName;
+    
     @Column(name = "LAST_NAME")
     private String lastName;
+    
     @Column(name = "IS_DEFAULT")
     private boolean defaultAccount;
+    
     @Column(name = "ACCESS_TOKEN")
     private String accessToken;
+    
     @Column(name = "USER_ID")
     private String userId;
+    
     @Column(name = "ACCOUNT_ID")
     private String accountId;
+    
     @Column(name = "GRANT_ACCESS")
     private boolean access;
+    
     @Column(name = "ACCOUNT_TYPE")
     private String accountType;
 
     @Column(name = "ACCOUNT_NUMBER")
     private String accountNumber;
+    
     @Column(name = "ROUTING_NUMBER")
     private String routingNumber;
     
@@ -62,11 +71,20 @@ public class PaymentAccount extends Record implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
     private OrgLocations orgLocation;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CANDIDATE_ID", nullable = false)
+    private Candidate candidateId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ORG_ID", nullable = false)
+    @JoinColumn(name = "ORG_ID")
     private Org org;
-
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ASSOCIATE_USER_ID")
+    private User associateUser;
+    
+    
     /**
      * @return the id
      */
@@ -299,5 +317,21 @@ public class PaymentAccount extends Record implements Serializable {
 
 	public void setMicrCode(String micrCode) {
 		this.micrCode = micrCode;
+	}
+
+	public User getAssociateUser() {
+		return associateUser;
+	}
+
+	public void setAssociateUser(User associateUser) {
+		this.associateUser = associateUser;
+	}
+
+	public Candidate getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Candidate candidateId) {
+		this.candidateId = candidateId;
 	}
 }

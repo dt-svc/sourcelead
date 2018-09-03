@@ -1,0 +1,112 @@
+package com.bis.sourcelead.web;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SourceleadTaxSubmissionMasterDTO;
+import com.bis.sourcelead.dto.helper.Paginator;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.TaxService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+@Controller
+@RequestMapping("/app/myPayroll")
+public class MyPayrollController {
+	private static final Logger logger = LoggerFactory.getLogger(MyPayrollController.class);
+
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+
+	@Autowired
+	private TaxService taxService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+
+	@RequestMapping(value = "/pays")
+	public ModelAndView paySlips(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
+			modelAndView.addObject("activeTaxTab", "pays");
+			modelAndView.setViewName("payroll_india/my_payroll/pays");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/forms")
+	public ModelAndView forms(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			TaxAdminController.setYears(modelAndView, null);
+			modelAndView.addObject("activeTaxTab", "forms");
+			modelAndView.setViewName("payroll_india/my_payroll/forms");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/loansAndAdvances")
+	public ModelAndView loansAndAdvances(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			modelAndView.addObject("activeTaxTab", "loansAndAdvances");
+			modelAndView.setViewName("payroll_india/my_payroll/loansAndAdvances");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/forms/all", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<SourceleadTaxSubmissionMasterDTO> getCentralTaxes(HttpServletRequest request,
+			@RequestParam(defaultValue = "") String financialYear, Paginator paginator) {
+		ResponseList<SourceleadTaxSubmissionMasterDTO> response = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				List<SourceleadTaxSubmissionMasterDTO> taxSubmissionMasterList = taxService.getTaxSubmissionMaster(user.getId(), orgLocations.getDateFormat(), financialYear, paginator);
+				response.setData(taxSubmissionMasterList);
+				response.setPaginator(paginator);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+}

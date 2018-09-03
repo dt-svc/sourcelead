@@ -41,6 +41,7 @@ import org.springframework.web.client.RestTemplate;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
@@ -52,11 +53,14 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SingnatoryDTO;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.AssetAssign;
+import com.bis.sourcelead.entity.AssociateDepartmentView;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.Department;
@@ -74,6 +78,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Result;
@@ -99,6 +104,7 @@ import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -199,8 +205,12 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 
 	@Autowired
 	AssetService assetService;
-	private Org org;
 	
+	/*@Autowired
+	private Org org;*/
+	
+	@Autowired
+	UserGroupService userGroupService;
 	
 	@Autowired
 	AssociateBalanceLeaveService associateBalanceLeaveService;
@@ -316,6 +326,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		User savedUser = userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
 		addUserDTO.setUserId(String.valueOf(savedUser.getId()));
+		addUserDTO.setCandidateId(savedUser.getCandidateId());
 		resObj.setObject(addUserDTO);
 		return resObj;
 	}
@@ -486,6 +497,22 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			 	
 				return flag;
 		   }
+		 
+		 @RequestMapping(value = "/validateExistingEmailIdForUser" , method = RequestMethod.POST)
+		 public @ResponseBody  Boolean validateExistingEmailIdForUser(@RequestParam(value="emailId", required=true) String emailId,@RequestParam(value="userId", required=false) Long userId, HttpServletRequest request) throws Exception {
+			   
+			    Boolean flag = false;
+			    User user = userService.getUserById(userId);
+			 	if(!user.getEmail().equalsIgnoreCase(emailId)) {
+			 		User existingUser = userService.getUserByEmail(emailId);
+			 		if(existingUser != null) {
+			 			flag = true;
+			 		}
+			 	}
+				return flag;
+		   }
+		 
+		 
 	 
 		 
 		 @RequestMapping(value = "/validateExistingEmployeeEmailId" , method = RequestMethod.POST)
@@ -1517,6 +1544,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 public String saveLocationAssociate(AddAssociateDTO addAssociateDTO, HttpServletRequest request)
 			throws Exception {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
            User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       candidateService.saveOrglocationAsssociate(addAssociateDTO, loginUser, orgLocations, org); 
          
@@ -1524,7 +1552,70 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 
 	 }
 	 
+	 /**
+	  * Get all department users by Dept Id
+	  * @param departmentId
+	  * @param request
+	  * @return List<AssociateDepartmentView> 
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/getUsersByDepartment" , method = RequestMethod.GET)
+	 public List<AssociateDepartmentView> getUsersByDepartment(@RequestParam(value = "departmentId", required = false) String departmentId,HttpServletRequest request)
+			throws Exception {
+		 long lStartTime = System.currentTimeMillis();  
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<AssociateDepartmentView>  viewList = userRoleService.getUserRolesByDepartmentId(departmentId,orgLocations.getId());
+		 long lEndTime = System.currentTimeMillis();
+		 long totalTime = lEndTime - lStartTime;
+		 logger.debug("Response time is "+totalTime);
+		 return viewList;
+	 }
 	 
+	 /**"
+	  * create user group
+	  * @param userGroupDTO
+	  * @param request
+	  * @return UserGroup
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/createUserGroup" , method = RequestMethod.POST)
+	 public Response<UserGroup> createUserGroup(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
+		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  return userGroupService.createUserGroup(orgLocations,userGroupDTO,loginUser);
+	 }
+	 
+	 /**
+	  * 
+	  * @param userGroupDTO
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/validateUserGroupIdOrGroupName" , method = RequestMethod.GET)
+	 public Response<UserGroup> validateUserGroupIdOrGroupName(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
+		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  return userGroupService.validateUserGroupIdOrGroupName(orgLocations,userGroupDTO);
+	 }
+	 
+	 @RequestMapping(value = "/getUserGroupByGroupUUID" , method = RequestMethod.GET)
+	 public Response<UserGroupDTO> getUserGroupByGroupUUID(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  Response<UserGroupDTO> userGroupDto =  userGroupService.findUserGroupById(userGroupDTO.getGroupUUID());
+		  return userGroupDto;
+	 }
+	 
+
+	 @RequestMapping(value = "/deleteUserGroupByUUID" , method = RequestMethod.GET)
+	 public Response<UserGroupDTO> deleteUserGroupByUUID(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  Response<UserGroupDTO> userGroupDto =  userGroupService.deleteUserGroupByUUID(userGroupDTO.getGroupUUID(),loginUser);
+		  return userGroupDto;
+	 }
+
 	 @RequestMapping(value = "/getLinkedUserDetailsByUserName" , method = RequestMethod.POST)
 	 public String getLinkedUserDetailsByUserName(UserDTO userDTO, HttpServletRequest request)
 			throws Exception {
@@ -1677,7 +1768,6 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		return response;
 	 
 	 }
-	 
 	 
 	 
 	 

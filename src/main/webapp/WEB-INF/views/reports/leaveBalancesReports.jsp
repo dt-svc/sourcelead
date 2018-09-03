@@ -23,27 +23,7 @@ $(document).ready(function(){
       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
-		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
-	                    
-                  <c:if test="${orgLocationsCount > 1}">
-		                    <li>
-								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
-								<div class="action-pop">
-									<span> 
-									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
-									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
-									</span>
-								</div>
-							</li>
-				</c:if>
-				
-				<c:if test="${orgLocationsCount == 1}">
-				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
-				</c:if>		
-	           
-						
-	       </sec:authorize>
-			
+		  
 			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')"> 
 				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
 			</sec:authorize>
@@ -178,7 +158,7 @@ $(document).ready(function(){
   </div>
       </div>
     </div>
-    <div id="loading"></div>
+  <div id="loading"></div>
   </section>
 
 <script>
@@ -195,7 +175,10 @@ function getBalanceLeaveReportList(){
 
 <script>
 function getBalanceLeaveReportList(){
-	
+
+var topleave = "";
+var MonthStartDate ="";
+var MonthEndDate ="";
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	
 	var userRole = [];
@@ -218,8 +201,8 @@ var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 		    {
 		leaveType.push($(this).val());
      });
-	var url = sourceleadUrl+"/getLeaveBalanceReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType;
-$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var url = sourceleadUrl+"/getLeaveBalanceReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate;
+$("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.get(url,function(response) {
 							if (response.response === "AWKWARD") {
 								location.href = "/errorPage";
@@ -278,6 +261,7 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 								
 								result = result + '  </tbody>                                                                                                        ';
 								result = result + '</table> ';
+							
 							$("#balanceLeaveReportsList").empty();
 							$("#balanceLeaveReportsList").append(result);
 							$("#loading").removeAttr("style");
@@ -314,8 +298,7 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 				"sSearch" : "",
 				"sZeroRecords" : "",
 				"sEmptyTable" : "",
-	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-
+					"sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 			}
 		});
 		$("#dynamicBalanceLeaveReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");

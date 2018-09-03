@@ -85,10 +85,15 @@ function getDaywiseLeaveReportList(){
 		    {
 		leaveTypeNames.push($(this).val());
      });
+	var leaveTypeBillable = [];
+	$('input:checkbox[name=leaveTypeBillable]:checked').each(function() 
+		    {
+		leaveTypeBillable.push($(this).val());
+     });
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames;
+	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
 	prepareAllDaywiseLeaveReportList(url);
 }
 </script>	
@@ -155,8 +160,9 @@ function daywiseLeaveReportsListPagination(url){
 		    	  	"targets": colIndex++,
 		    	  	"data": "name",
 		    	  	"render": function(data, type, user, meta) {
-			        	  var result = '';
+        	  var result = '';
 			        	  $("#noReports").val("1");
+
 			        	  result = result + ' <td>';
 				          if(user.name !=null && user.name !='' && user.name !='undefined'){
 								 result = result +'<div class="tbldata-dotdot" title="'+user.name+'">'+user.name+'</div>';
@@ -491,6 +497,15 @@ function closeAssetFilterPop(){
 			                        </ul>
 								 </div>
 							 </div> 
+							 	   	 <div class="col-md-3 mb">
+								<label><strong>Leave Type</strong></label>
+								 <div class="clearfix">
+							<ul class="list-unstyled" id="employmentTypeFilter">
+			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable" checked="checked" value ="Billable"><label>&nbsp;Billable</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="leaveTypeBillable"  value ="Non Billable" ><label>&nbsp;Non Billable</label></li>
+			                        </ul>
+								 </div>
+							 </div> 
 					 	<c:if test="${!empty leaveTypeNamesList}">
 						<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
@@ -646,15 +661,13 @@ function exportToPdf(){
 	var ReportsListEmpty = $("#noReports").val();
 	var exportType = "pdf";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    
-	
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	if(ReportsListEmpty > 0){
 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
 	}else{
-		 var result = "";
+		var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='empty_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>DailyWise Leave Report List is Empty</p>";

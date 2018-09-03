@@ -209,6 +209,12 @@ public class ImmigrationDTO extends SearchDTO {
     private String isOwnTemplateId;
     
     private String candidateNameEmail;
+   
+	private String lcaId;
+	
+	private String prevLcaId;
+	
+	private String lcaCurrLocation;
     
 	public Long getId() {
 		return id;
@@ -940,6 +946,30 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setCandidateNameEmail(String candidateNameEmail) {
 		this.candidateNameEmail = candidateNameEmail;
+	}
+
+	public String getLcaId() {
+		return lcaId;
+	}
+
+	public void setLcaId(String lcaId) {
+		this.lcaId = lcaId;
+	}
+
+	public String getLcaCurrLocation() {
+		return lcaCurrLocation;
+	}
+
+	public void setLcaCurrLocation(String lcaCurrLocation) {
+		this.lcaCurrLocation = lcaCurrLocation;
+	}
+
+	public String getPrevLcaId() {
+		return prevLcaId;
+	}
+
+	public void setPrevLcaId(String prevLcaId) {
+		this.prevLcaId = prevLcaId;
 	}
 	
 	

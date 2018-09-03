@@ -586,6 +586,15 @@ function addApplicantForm(){
       	  var fieldLabel = $this.find('label:first').text().replace("*","");
       	  var inputValue = $this.find('input[type="radio"]:checked').val();
       	  
+    	 var inputtype = $(this).find('input').attr('type');
+	   	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+	   		  if($(this).find('select').val() != null){
+	   			  inputtype = 'select';
+	   		  }else{
+	   			  inputtype = 'textarea';
+	   		  }
+	   	  }
+      	  
       	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
     		   inputValue = $this.find('input[type="checkbox"]:checked').val();
     		   if(inputValue != null){
@@ -632,6 +641,10 @@ function addApplicantForm(){
 	     		 id = $this.find('select').attr('id');
      	      }
 	     	  
+	     	  if(name == null || name == '' || name == 'undefined'){
+	     		 name = $this.find('textarea').attr('name');
+     	      }
+	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
 	     		 if(inputValue != null && inputValue != 'undefined' && inputValue != ''){
@@ -670,6 +683,7 @@ function addApplicantForm(){
 	     	  
       	  fields.push({
                 label: fieldLabel,
+                type : inputtype,
                 id :id,
                 name :name,
                 value: inputValue,

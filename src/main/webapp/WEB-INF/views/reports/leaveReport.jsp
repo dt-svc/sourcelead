@@ -767,7 +767,6 @@ function resetFilter(){
 	$('#associateList').trigger("chosen:updated");
 	$('#leaveTypeList').trigger("chosen:updated");
 	$("#leaveTypeList").val('');
-
 }
 function reportCollapse() {
 	$("#reportCollapse").slideToggle(300);

@@ -1,8 +1,10 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,10 +18,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.dto.UserGroupDTO;
+import com.bis.sourcelead.entity.AssociateDepartmentView;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -29,9 +35,13 @@ import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -88,11 +98,16 @@ public class UserController {
 	OrgLocationService orgLocationService;
 	
 	@Autowired
+	DepartmentService departmentService;
+
+	@Autowired
 	AssociateGradesService associateGradesService;
 	
 	@Autowired
 	private ShiftService shiftService;
 
+	@Autowired
+	UserGroupDao userGroupDao;
 	
 	/**
 	 * To forward user creation jsp page
@@ -120,6 +135,9 @@ public class UserController {
 		    
 		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		    model.addObject("rolesList", rolesList);
+
+			List<OrgLocations> locationList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+		    model.addObject("locationList", locationList);
 		    
 		    List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
 		    model.addObject("gradesList", gradesList);
@@ -134,6 +152,9 @@ public class UserController {
 		     
 		     model.addObject("averageWorkingHours",orgLocations.getAverageWorkingHours());
 		   		    
+		     StringBuilder sb = new StringBuilder();
+		     sb.append(orgLocations.getState()).append(",").append(orgLocations.getCity());
+		     model.addObject("location",sb.toString());
 		    commonUtil.highLightMenu(Constants.Users, request);
 		    
 			model.setViewName("users/userCreation");
@@ -190,6 +211,7 @@ public class UserController {
 			ModelAndView model = new ModelAndView();
 			commonUtil.highLightMenu(Constants.Users, request);
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 			String isTimeSheetEnrolled = (String) SourceLeadSessionManager.getSessionAttribute(request,"timesheet");
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(null != countries){
@@ -202,7 +224,7 @@ public class UserController {
 		   
 			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		    model.addObject("documentsList", documentsList);
-		    if(userId != null && StringUtils.isNoneEmpty(userId)) {
+		    if(userId != null && StringUtils.isNotEmpty(userId)) {
 		    	User user = userService.getUserById(Long.parseLong(userId));
 		    	userCode = user.getUserCode();
 		    }
@@ -231,7 +253,10 @@ public class UserController {
 			     model.addObject("actionId",action.getId());
 			     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
 			     model.addObject("sourceleadSectionList",sections); 
-				
+			     
+			    boolean isMulitplieOrgAccounts = userRoleService.isUserWithMultipleOrgsAccounts(org.getId(), user.getId());
+			    model.addObject("isMulitplieOrgAccounts", isMulitplieOrgAccounts);
+			    
 				request.setAttribute("candidateId", candidate.getId());
 				request.setAttribute("userId", user.getId());
 				model.setViewName("users/userSummary");
@@ -239,7 +264,7 @@ public class UserController {
 				model.setViewName("registration/persmissionDenied");
 			}
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			
+			model.addObject("userCode",userCode);
 		
 		return model;
 
@@ -254,5 +279,48 @@ public class UserController {
 			return str == null || "".equals(str.trim());
 		}
 	 
-	
+	 
+	 /**
+		 * User Group List JSp
+		 * @param deductionUUID
+		 * @param request
+		 * @param response
+		 * @return ModelAndView
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/userGroupList")
+		public ModelAndView userBatchList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   ModelAndView model = new ModelAndView();
+			   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
+			   model.addObject("departmentList", departmentList);
+			   model.addObject("sourceleadUrl", sourceleadUrl);
+			   model.setViewName("users/usergroupList");
+		       return model;
+		}
+		
+		@RequestMapping(value = "/addUserGroup")
+		public ModelAndView addUserGroup(UserGroupDTO userGroupDto , HttpServletRequest request,HttpServletResponse response) throws Exception {
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   ModelAndView model = new ModelAndView();
+			   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
+			   model.addObject("departmentList", departmentList);
+			   if(StringUtils.isNotBlank(userGroupDto.getGroupUUID())){
+				   UserGroup userGroup = userGroupDao.findUserGroupById(userGroupDto.getGroupUUID());
+				   model.addObject("userGroup", userGroup);
+			/*	   if(userGroup.getUserId() != null) {
+					   String[] userIds = userGroup.getUserId().split(",");
+					   List<Long> userIdList = new ArrayList<>();
+					   for(int i=0;i<userIds.length;i++){
+							userIdList.add(Long.parseLong(userIds[i]));
+					   }
+					   List<UserRole> userList = userRoleService.getUserListByUserIdList(userIdList,loginOrgLocation.getId());
+					   model.addObject("selectedUserList", userList);
+				   }*/
+			   }
+			   model.addObject("sourceleadUrl", sourceleadUrl);
+			   model.setViewName("users/addUserGroup");
+		       return model;
+		}
+		
 }

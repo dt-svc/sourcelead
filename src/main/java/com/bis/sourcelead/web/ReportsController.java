@@ -333,5 +333,13 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 //		 model.addObject("vendorTabAccess", vendorTabAccess);
 		 model.setViewName("reports/userUsageReportsGraph");
 		 return model;
-	 }	
+	 }
+	 
+	 @RequestMapping(value = "/placementReportListForReports")
+		public ModelAndView placementsReportListForReports() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/placementReport");
+		  return model;		
+	 }
 }

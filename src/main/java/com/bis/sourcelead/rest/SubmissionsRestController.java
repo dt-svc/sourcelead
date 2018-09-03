@@ -807,8 +807,8 @@ public class SubmissionsRestController {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		/*requirementSubmissionTemplateFields.setSubmissionJsonString(requirementSubmission.getSubmissionTemplateJsonString());
-		requirementSubmissionTemplateFields.setSubmissionJsonStringValue(requirementSubmission.getSubmissionTemplateJsonStringValue());*/
+		requirementSubmissionTemplateFields.setSubmissionJsonString(requirementSubmission.getSubmissionTemplateJsonString());
+		requirementSubmissionTemplateFields.setSubmissionJsonStringValue(requirementSubmission.getSubmissionTemplateJsonStringValue());
 		return requirementSubmissionTemplateFields;
 	}
 	

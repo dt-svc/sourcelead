@@ -9104,6 +9104,28 @@ padding: 0 15px !important;
 .candidate_wrap_table.recruiterReports_table.fixedColumntable .DTFC_ScrollWrapper {
 height: auto !important;
 }
+.activeIcon a {
+color: #0084bf !important;
+}
+.tabnew-styles li {
+border-right: 1px solid #ddd !important;
+}
+.tabnew-styles li:last-child {
+border-right:none;
+}
+.tableEqualHeight-pay {
+	width: 100%; display: table;
+}
+.tableEqualHeight-pay .col-md-3 {
+	float: none; display: table-cell; margin:15px; border: 1px dotted #909090;
+}
+.tableEqualHeight-pay .col-md-3:nth-child(even) {
+	background-color: #ededed;
+}
+.tableEqualHeight-pay .col-md-3:nth-child(1n+2) {
+	border-left: none;
+}
+
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
