@@ -332,7 +332,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		AssociateLoanAndAdvancesDTO assLoanAdvDto = new AssociateLoanAndAdvancesDTO();
 		try {
 			List<AssociateLoanAndAdvances> loanAndAdvList = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByCandidateId(candidate.getId(), orgLocation.getId());
-			BigDecimal totalLoanAmount = BigDecimal.ZERO, totalAdvanceAmount = BigDecimal.ZERO;
+			BigDecimal totalLoanAmount = BigDecimal.ZERO, totalAdvanceAmount = BigDecimal.ZERO; 
 			for(AssociateLoanAndAdvances assLoanAndAdv : loanAndAdvList) {
 				boolean thisPayCheck = false;
 				if(assLoanAndAdv.getDeductStartDate() == null && assLoanAndAdv.getDeductEndDate() == null) {
@@ -340,14 +340,15 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				}
 				if(paySheetFreq.getFrequencyStartDate().after(assLoanAndAdv.getEffectiveDate()) || paySheetFreq.getFrequencyStartDate().equals(assLoanAndAdv.getEffectiveDate())) {
 					thisPayCheck = true;
-				}
+				}else
+					thisPayCheck = false;
 				if(assLoanAndAdv.getDeductStartDate() != null && assLoanAndAdv.getDeductEndDate() != null) {
 					thisPayCheck = payrollUtil.isDateBetweenEffectiveDate(assLoanAndAdv.getDeductStartDate(), assLoanAndAdv.getDeductEndDate(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate());
 				}
 				if(thisPayCheck) {
 					AssociateLoanAndAdvances assLoan = assLoanAndAdv;
 					AssociateLoanAndAdvanceHistory assLoanAndAdvHis = associateLoanAndAdvancesHistoryService.getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceId(assLoan.getId());
-					if(assLoanAndAdvHis == null || assLoanAndAdvHis.getSchedule() <= assLoan.getNoOfSchedules()) {
+					if(assLoanAndAdvHis == null || assLoanAndAdvHis.getSchedule() < assLoan.getNoOfSchedules()) {
 						int scheduleCount = 0;
 						if(assLoanAndAdvHis != null && assLoanAndAdvHis.getSchedule() != null) {
 							scheduleCount = assLoanAndAdvHis.getSchedule() + 1;
