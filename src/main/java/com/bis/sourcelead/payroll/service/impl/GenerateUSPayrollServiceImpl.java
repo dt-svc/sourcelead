@@ -239,7 +239,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 						BigDecimal amount = BigDecimal.ZERO;
 						if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
 							 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
-							 
+//							 generateUSPayrollDao.payRateByCandidateLocation(assoSal.getCandidate(),orgLocation,freqStartDate,freqEndDate);
 							 payRate = assoSal.getHourlyRate();
 							if(totalHoursDto !=null ) {
 								for(TotalHoursDTO totalHoursDTO : totalHoursDto) {
@@ -618,7 +618,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					if (match) {
 						boolean schedulePay = payrollUtil.findPayItemSchedulePay(payItem, paySheet.getFrequencyStartDate(), paySheet.getFrequencyEndDate());
 						if (!schedulePay) {
-							payItemSum = payItem.getPayItemAmount();
+							payItemSum = payItemSum.add(payItem.getPayItemAmount());
 							Date[] payItemDate = null;
 							if (StringUtils.isNotBlank(payItem.getPayitemStatus()) && !PayrollConstant.EVERY_PAY.equalsIgnoreCase(payItem.getPayItemSchedule())) {
 								payItemDate = payrollUtil.getDeductionDates(payItem.getPayitemEndDate(), payItem.getPayItemSchedule());
