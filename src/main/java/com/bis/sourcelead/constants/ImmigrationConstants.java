@@ -82,7 +82,7 @@ public class ImmigrationConstants {
    }};
    
    public static final String[] LCA_LIST_EXCEL_HEADERS = { "LCA Number", "LCA Title", "Number Of Positions","Current Client Location", "Current Primary Venodor Location", "Current Venodor Location", "Soc Code",
-			"SOC Title","Job Title", "Wage Level", "Prevail Wage Currency", "Prevail Wage Rate", "Prevail Wage Rate Per", "LCA Start Date", "LCA End Date", "LCA Status", "Status"};
+			"SOC Title","Job Title", "Wage Level", "Prevailing  Wage Currency", "Prevailing  Wage Rate", "Prevailing  Wage Rate Per", "LCA Start Date", "LCA End Date", "LCA Status", "Status"};
    
    public static final Map HEADERS_FIELD_NAMES_MAP = new HashMap<Integer, String>(){{
        put(1,"Beneficiary First Name");

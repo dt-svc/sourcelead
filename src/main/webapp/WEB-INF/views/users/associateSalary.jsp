@@ -16,11 +16,12 @@ $(document).ready(function(){
                   <div class="col-md-5">
                     <label>Pay Type</label>
                     <div>
-                      <select class="sel" id="payType" name="payType" id="payType" data-validation="required" field-name="Pay Type">
+                      <select class="sel" id="payType" name="payType" data-validation="required" onchange="showHideSalaryDIV();" field-name="Pay Type">
                         <option value="">--Select--</option>
                         <option value="HourlyRate">Hourly Rate</option>
                         <option value = "Salary">Salary</option>
-                        <option value= "Commission Only">Commission Only</option>
+                        <option value = "LcaWage">LCA Wage</option>
+                        <!-- <option value= "Commission Only">Commission Only</option> -->
                       </select>
                     </div>
                   </div>
@@ -43,6 +44,8 @@ $(document).ready(function(){
                       </select>
                     </div>
                   </div>
+                  
+                  <div id="salaryDIV">
                   <div class="col-md-5">
                     <label>Standard Hours</label>
                     <div>
@@ -67,6 +70,8 @@ $(document).ready(function(){
                       <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" data-validation="required validate_float" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                     </div>
                   </div>
+                  </div>
+                  
                    <div class="col-md-5">
                     <label>&nbsp;</label>
                     <div>
@@ -95,14 +100,46 @@ $(document).ready(function(){
                     </div>
                   </div>
                 </div>
-                  
-                  
                 </div>
               </div>
             </div>
             </form:form>
           </div>
           
+
+<script>
+function showHideSalaryDIV(){
+	var payType = $("#payType").val();
+	 if(payType == "HourlyRate" || payType == "LcaWage"){
+		$("#salaryDIV").hide();
+		$("#standardHours").val('');    
+		$("#annualSal").val('');
+		$("#perPaySal").val('');
+		$("#hourlyRate").val('');
+		$("#standardHours").removeAttr('data-validation');
+		$('#standardHours').attr('data-validation-optional',"true");
+		$("#annualSal").removeAttr('data-validation');
+		$('#annualSal').attr('data-validation-optional',"true");
+		$("#perPaySal").removeAttr('data-validation');
+		$('#perPaySal').attr('data-validation-optional',"true"); 
+		$("#hourlyRate").removeAttr('data-validation');
+		$('#hourlyRate').attr('data-validation-optional',"true");
+	}else{
+		$("#salaryDIV").show();
+		$("#standardHours").removeAttr('data-validation-optional');
+		$('#standardHours').attr('data-validation',"required validate_float");
+		$("#annualSal").removeAttr('data-validation-optional ');
+		$('#annualSal').attr('data-validation',"required validate_float");
+		$("#perPaySal").removeAttr('data-validation-optional');
+		$('#perPaySal').attr('data-validation',"required validate_float");
+		$("#hourlyRate").removeAttr('data-validation-optional');
+		$('#hourlyRate').attr('data-validation',"required validate_float");
+	}
+}
+</script>
+
+
+
 <script>
 function getPayFreqHours(){
 	var payFrequency = $("#payFrequency").val();
@@ -297,12 +334,12 @@ function calculateHourlyRateSal(){
 							result = result +'</td>';
 							result = result +'<td>';
 							result = result +'	<div class="tblminwidth-50">';
-							result = result +'		<input class="form-control calendar" placeholder="Effective Date" field-name="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text">';
+							result = result +'		<input class="form-control calendar" placeholder="Effective Date" field-name="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text" readonly="readonly">';
 							result = result +'	</div>';
 							result = result +'</td>';
 							result = result +'<td>';
 							result = result +'	<div class="tblminwidth-50">';
-							result = result +'		<input class="form-control calendar" placeholder="End Date" id="'+i+'endDate" name="associatePayItemDto['+i+'].endDate" type="text">';
+							result = result +'		<input class="form-control calendar" placeholder="End Date" id="'+i+'endDate" name="associatePayItemDto['+i+'].endDate" type="text" readonly="readonly">';
 							result = result +'	</div>';
 							result = result +'</td>';
 							result = result +'<td>';

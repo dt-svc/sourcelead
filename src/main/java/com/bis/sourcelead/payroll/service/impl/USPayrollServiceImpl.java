@@ -169,7 +169,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			}else {
 				 payrollListt = pf.getEmployeepayroll()
 						.stream()
-						.filter(payy-> !Constants.APPROVED.equalsIgnoreCase(payy.getSubmitForAproverStatus()) && payy.getSubmitForAproverStatus().equalsIgnoreCase(payrollApproverDTO.getConfirmType()) && Integer.valueOf(payy.getPayPeriodNum()) == Integer.valueOf(payrollApproverDTO.getPayPeriodNum()))
+						.filter(payy-> !Constants.APPROVED.equalsIgnoreCase(payy.getSubmitForAproverStatus()) && payy.getSubmitForAproverStatus().equalsIgnoreCase(payrollApproverDTO.getConfirmType()) && Integer.parseInt(payy.getPayPeriodNum()) == Integer.parseInt(payrollApproverDTO.getPayPeriodNum()))
 						.collect(Collectors.toList());
 			}
 			CopyOnWriteArraySet<EmployeePayroll> payrollList = new CopyOnWriteArraySet<>(payrollListt);
