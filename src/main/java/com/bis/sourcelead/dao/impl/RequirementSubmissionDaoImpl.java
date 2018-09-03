@@ -2563,7 +2563,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        
 			String clientSubQuery = " and ((:varZero  IN (:clientIdsList)) OR (:varZero NOT IN (:clientIdsList) and rsh.submissionId.requirement.clientId.id IN (:clientIdsList)))";
 
-			
+			//Incentivized filter
+			String incentivizedQuery =  "";
+	        if(requirementSubmissionHistoryDTO.getIncentivizedType() != null && requirementSubmissionHistoryDTO.getIncentivizedType() != "") {
+	        	incentivizedQuery = " and rsh.submissionId.requirement.incentivized IN('"+StringUtils.join(requirementSubmissionHistoryDTO.getIncentivizedType().split(","),"','")+"') ";
+	        }
+	        
 	        StringBuilder query1 = new StringBuilder("");
 			if(requirementSubmissionHistoryDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementSubmissionHistoryDTO.getSearchValue())) {
 			
@@ -2604,7 +2609,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		
 	    		String subQuery = "";
 	    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
-	    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
+	    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
 	    			params.put("orgLocationsId",orgLocationsId);
 	    			params.put("startDate",startUTCDate);
 	    			params.put("endDate",endUTCDate);
@@ -2656,8 +2661,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		List  requirementSubmissionHistoryList = null;
 	        	String query = "";
 	        	 
-	     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
-     			String countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+	     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
+     			String countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
      			requirementSubmissionHistoryList =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("varZero", 0).setParameterList("clientIdsList", clientIdsList).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setFirstResult(requirementSubmissionHistoryDTO.getStart()).setMaxResults(requirementSubmissionHistoryDTO.getLength()).list();
 
      			Query listCountQuery = session.createQuery(countQuery);
