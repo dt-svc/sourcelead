@@ -5,6 +5,7 @@
 
  <script type="text/javascript">
  var value =[];
+ var tempIndex = null;
     $(document).ready(function(){
     	$(".add-row").click(function(){
             var i = $("#index").val();
@@ -15,9 +16,16 @@
                  value.push(deductionTypeValue);
         	if(deductionType != null && deductionType != '' && deductionType != 'undefined' && amount != null && amount != '' && amount != 'undefined'){
                   var method = $("#mthd").val();
-                  var markup = '<tr><td><input type="checkbox" name="record"></td><td><input type="hidden" id="deductionType" name="deductionDTOList['+i+'].deductionType" value="'+deductionType+'"/>' + deductionTypeValue + '</td><td><input type="hidden" id="method" name="deductionDTOList['+i+'].method" value="'+method+'" />' + method + '</td><td><input type="hidden" id="amount" name="deductionDTOList['+i+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+deductionTypeValue+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+                  var markup = "";
+                  if(tempIndex >= 0 && tempIndex != null){
+                	  var markup = '<tr id="row'+tempIndex+'"><td><input type="hidden" id="deductionType" name="deductionDTOList['+i+'].deductionType" value="'+deductionType+'"/><span id="dedTypeVal'+i+'">'+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+i+'].method" value="'+method+'" />' + method + '</td><td><input type="hidden" id="amount" name="deductionDTOList['+i+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+tempIndex+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>'; 
+                  }else{
+                	  var markup = '<tr id="row'+i+'"><td><input type="hidden" id="deductionType" name="deductionDTOList['+i+'].deductionType" value="'+deductionType+'"/><span id="dedTypeVal'+i+'">'+deductionTypeValue+'</span></td><td><input type="hidden" id="method" name="deductionDTOList['+i+'].method" value="'+method+'" />' + method + '</td><td><input type="hidden" id="amount" name="deductionDTOList['+i+'].amount" value="'+amount+'"/>' + amount + '</td><td><a onclick="deleteRow(\''+i+'\');"><i class="fa fa-remove text-danger"></i></a></td></tr>';
+                	  i++;
+  					  tempIndex = null;
+                  }
+                  
                   $("#deductionTrAdd").append(markup);
-                  i++;
                   $("#index").val(i);	
         	}
         	}
@@ -35,8 +43,15 @@
         
     }); 
     
-function deleteRow(deductionTypeValue){
-	var i = $("#index").val();
+function deleteRow(rowId){
+	var dedValue = $("#dedTypeVal"+rowId).html();
+	$("#row"+rowId).remove();
+	var deleted= value.indexOf(dedValue);
+	tempIndex = deleted;
+	value.splice(deleted,1);
+	
+	
+	/* var i = $("#index").val();
 	 $("#deductionTrAdd").find('input[name="record"]').each(function(){
      	if($(this).is(':checked')){
              $(this).parents("tr").remove();
@@ -45,7 +60,7 @@ function deleteRow(deductionTypeValue){
              var deleted = value.indexOf(deductionTypeValue);
              value.splice(deleted,1);
          }
-     });
+     }); */
 }
 
 </script>
@@ -104,7 +119,7 @@ getDeductionType();
                 <table>
                 	<thead>
                 		<tr>
-                		    <th>Select</th>
+<!--                 		    <th>Select</th> -->
                 			<th>Type</th>
                 			<th>Method</th>
                 			<th>Amount</th>
@@ -128,7 +143,7 @@ getDeductionType();
                   <div class="col-md-6">
                    <div class="pull-right">
                     <input value="Save" class="btn btn-success btnSuccess" type="button" id="associate_deduction_save_button" onclick="saveAssociateDeduction();">
-                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
+                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/userSummaryDetails?userCode=${userCode}'" type="button">
                     </div>
                   </div>
                 </div>
@@ -157,6 +172,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
  <div id="deductionPopup"></div>
  <script>
  function saveAssociateDeduction(){
+	 var userCode = '${userCode}';
 	 var userId = '${userId}';
 	 var saveType = '${saveType}';  
 	 var deductionType = $("#deductionType").val();
@@ -178,7 +194,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
 	                } else if (result.response === "AWKWARD") {
 	                    location.href = "/errorPage";
 	                } else if (result.response === "SUCCESS") {
-	                	location.replace(sourceleadUrl+"/usersList");
+	                	location.replace(sourceleadUrl+"/userSummaryDetails?userCode="+userCode);
 	                } else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
