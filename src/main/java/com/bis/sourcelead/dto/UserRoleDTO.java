@@ -215,7 +215,7 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	}
 	public void setEmployeeid(Long employeeid) {
 		this.employeeid = employeeid;
-
+	}
 	public String getType()
 	{
 		return type;
