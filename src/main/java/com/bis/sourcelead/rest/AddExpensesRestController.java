@@ -419,7 +419,7 @@ public class AddExpensesRestController {
 				 }
 				 
 				 StringBuilder amopuntRate = new StringBuilder();
-				 amopuntRate.append(Float.toString(expenses.getTotalAmount())).append(" ").append(currencyCode);
+				 amopuntRate.append((expenses.getTotalAmount())).append(" ").append(currencyCode);
 				 
 				 globalVarsMap.put("amount",amopuntRate.toString());
 				 

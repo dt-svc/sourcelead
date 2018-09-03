@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +45,6 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.ibm.icu.math.BigDecimal;
 
 @Service
 public class AddExpensesServiceImpl implements AddExpensesService{
@@ -212,13 +212,13 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	expenses.setExpensesEntries(expensesEntriesList);
 	
 	expenses.setNoOfExpenses(String.valueOf(expensesEntriesList.size()));
-	float totalAmount = 0;
+//	float totalAmount = 0;
+	BigDecimal bd = new BigDecimal(0);
 	for(ExpensesEntries expensesEntry : expensesEntriesList){
-		totalAmount = Float.sum(totalAmount, expensesEntry.getAmount());
+//		totalAmount = Float.sum(totalAmount, expensesEntry.getAmount());
+		bd = bd.add(expensesEntry.getAmount());
 	}
-	BigDecimal bd = new BigDecimal(Double.toString(totalAmount));
-	bd = bd.setScale(2,BigDecimal.ROUND_UP);
-	expenses.setTotalAmount(bd.floatValue());
+	expenses.setTotalAmount(bd);
 	HashMap<Integer,User> managers = new HashMap<>() ;
 	if(projMembers != null){
 		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
@@ -373,8 +373,11 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 		 }
 		 
 		 StringBuilder str = new StringBuilder();
-			BigDecimal cg = new BigDecimal(Double.toString(expenses.getTotalAmount()));
-			cg = cg.setScale(2,BigDecimal.ROUND_HALF_UP );		
+		 BigDecimal cg = new BigDecimal(0);
+				 cg.add(expenses.getTotalAmount());
+		 
+			/*BigDecimal cg = new BigDecimal(Double.toString(expenses.getTotalAmount()));
+			cg = cg.setScale(2,BigDecimal.ROUND_HALF_UP );	*/	
 			
 		 globalVarsMap.put("totalAmount",str.append(cg).append(" ").append(currencyCode).toString());
 
