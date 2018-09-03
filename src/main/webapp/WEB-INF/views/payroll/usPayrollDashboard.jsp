@@ -482,6 +482,8 @@ function runUSPayroll(){
 				        	result += '<input type="hidden" value='+data.payrollFrequencyUUID+' id="payrollFrequencyUUID" name="payrollFrequencyUUID" />';
 				        	if(json != null && json.length > 0){
 				        		$("#submitButtonDiv").show();
+				        		$("#Submit").show();
+					    		$("#Confirm").show();
 				        		for (var i=0; i<json.length; i++){
 				        			var opt = json[i];
 				        			count++;
