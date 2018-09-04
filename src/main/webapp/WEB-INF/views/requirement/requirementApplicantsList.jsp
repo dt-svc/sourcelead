@@ -156,7 +156,7 @@ function applicantpagination(url){
         "ajax": $.fn.dataTable.pipeline( {
             url: url,
             method: 'POST',
-            pages: 10
+            pages: 1
         }),
         "columns": [
             { "data": "applicantName" },
