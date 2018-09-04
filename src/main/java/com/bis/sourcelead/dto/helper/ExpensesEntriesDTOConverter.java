@@ -34,6 +34,7 @@ public class ExpensesEntriesDTOConverter {
 			expensesEntriesDTO.setBillable(expensesEntries.getBillable());
 			expensesEntriesDTO.setAmountchangereason(expensesEntries.getAmountchangereason());
 			expensesEntriesDTO.setSubmittedamount(expensesEntries.getSubmittedamount());
+			expensesEntriesDTO.setAmount(expensesEntries.getAmount());
 			if(expensesEntries.getExpensesCategoryId() != null){
 				expensesEntriesDTO.setCategoryTypeId(expensesEntries.getExpensesCategoryId().getId());
 				expensesEntriesDTO.setCategoryName(expensesEntries.getExpensesCategoryId().getExpensesName());

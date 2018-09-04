@@ -8,6 +8,7 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	private Long id;
 	private String userName;
 	private Long userId;
+	private Long employeeid;
 	private String userRoleName;
 	private String isMailSent;
 	private String userEmail;
@@ -208,6 +209,13 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	public void setOrgLocationId(BigInteger orgLocationId) {
 		this.orgLocationId = orgLocationId;
 	}
+
+	public Long getEmployeeid() {
+		return employeeid;
+	}
+	public void setEmployeeid(Long employeeid) {
+		this.employeeid = employeeid;
+	}
 	public String getType()
 	{
 		return type;
@@ -215,6 +223,8 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	public void setType(String type)
 	{
 		this.type = type;
+
 	}
 
+	
 }
