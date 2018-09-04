@@ -35,6 +35,8 @@ public class LcaPlaceOfEmploymentDTO extends SearchDTO {
 	
 	@Required(desc = "location")
 	private String location;
+	
+	private Long lcaPlacaOfempDeletedListIds[];
 
 	public String getPlsempmntId() {
 		return plsempmntId;
@@ -142,6 +144,14 @@ public class LcaPlaceOfEmploymentDTO extends SearchDTO {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public Long[] getLcaPlacaOfempDeletedListIds() {
+		return lcaPlacaOfempDeletedListIds;
+	}
+
+	public void setLcaPlacaOfempDeletedListIds(Long[] lcaPlacaOfempDeletedListIds) {
+		this.lcaPlacaOfempDeletedListIds = lcaPlacaOfempDeletedListIds;
 	}
 	
 	
