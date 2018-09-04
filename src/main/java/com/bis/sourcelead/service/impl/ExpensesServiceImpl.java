@@ -1277,7 +1277,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 					expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
 					expensesEntriesDTO.setEntryDescription(entries.getDescription());
 					expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
-					expensesEntriesDTO.setAmount(entries.getAmount().floatValue());
+					expensesEntriesDTO.setAmount(entries.getAmount());
 					expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
 					expensesEntriesDTOList.add(expensesEntriesDTO);
 			}

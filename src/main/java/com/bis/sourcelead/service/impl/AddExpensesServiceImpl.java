@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
@@ -84,6 +85,7 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
 	
 	@Override
 	public String getExpenseId(OrgLocations orgLoc) {
@@ -161,9 +163,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	}else {
 		expenses = new Expenses();
 	}
-	if (StringUtils.isNotBlank(expensesDTO.getExpenseAutoId())){
-		expenses.setExpenseId(expensesDTO.getExpenseAutoId());	
-	 }
+	
 	if (StringUtils.isNotBlank(expensesDTO.getExpensePurpose())){
 		expenses.setPurpose(expensesDTO.getExpensePurpose());	
 	 }
@@ -287,9 +287,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	
 	expenses.setExpensesLocationId(orgLoc.getId());
 	
-	 expenses = addExpensesDao.storeAddExpensesData(expenses);
-	 
-	 if(expenses != null && expenses.getProjects() != null && StringUtils.isNotEmpty( expenses.getProjects().getIsReportingManagerAsApprover())
+	if(expenses != null && expenses.getProjects() != null && StringUtils.isNotEmpty( expenses.getProjects().getIsReportingManagerAsApprover())
 			   &&  expenses.getProjects().getIsReportingManagerAsApprover().equalsIgnoreCase("Y")) {
 		   if(projMembers != null && projMembers.getProjectMemberCandidteId() != null &&  projMembers.getProjectMemberCandidteId().getConsultantUser() != null
 				   &&  projMembers.getProjectMemberCandidteId().getConsultantUser()!= null && projMembers.getProjectMemberCandidteId().getOrgLocationId() != null) {
@@ -299,15 +297,36 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 			   }
 		   }
 	   }
-	     
+	
+	if (StringUtils.isEmpty(expenses.getExpenseId())){
+	    OrgLocations orgLocations = null;
+	    Projects projects =projMembers.getProjects();
+		if(projects != null && projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
+			orgLocations = projects.getOrgLocationsId();
+		}else {
+			orgLocations = orgLoc;
+		}
+		 synchronized (this) {
+			   String expenseId = getExpenseId(orgLocations);
+			   expenses.setExpenseId(expenseId);
+			   expenses = addExpensesDao.storeAddExpensesData(expenses);
+			   storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode);
+		 }
+		   
+    }else {
+    	 expenses = addExpensesDao.storeAddExpensesData(expenses);
+    	 storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode);
+    }
+	
+}
+
+private void storeExpenseApprovers(String status,Expenses expenses,HashMap<Integer,User> managers,User loginUser,OrgLocations orgLoc,String currencyCode) throws Exception{
 	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
 		 if(managers != null && !managers.isEmpty()){
 				expenses.setProjectManagerUserList(new ArrayList(managers.values()));
 	     }
 		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "",orgLoc);
 	 }
-	 
-	 
 	 
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		 managers.remove(2);
@@ -409,10 +428,10 @@ public void deleteDocumentByDocumentId(String documentId) {
 
 
 @Override
-public Response<String> changeStatusToBillable(long expenseEntriesId) {
+public Response<String> changeStatusToBillable(long expenseEntriesId,String billableStatus) {
 	Response<String> response = new Response<>();
 	try {
-		long result = addExpensesDao.changeStatusToBillable(expenseEntriesId);
+		long result = addExpensesDao.changeStatusToBillable(expenseEntriesId,billableStatus);
 		if (result > 0) {
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
