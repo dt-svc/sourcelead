@@ -89,7 +89,7 @@ function checkBox(){
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
               <div class="col-md-9 chooRadius">
                  <div class="input-group col-md-10 pull-left">					   
-                <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
+                <select class="chosen-select form-control" id="clientContact" multiple="multiple" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
                 <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
                 </div>
@@ -311,26 +311,25 @@ function remove(){
 function getClientContacts(){
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-	success :function(json) {
-// 	var json = JSON.parse(data);
-	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.data.length; i++)
-	{
-	var opt = json.data[i];
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
-	$("#clientCurrency").val(opt.clientCurrency);
-	}
-	$("#clientContact").empty();
-	$("#clientContact").append(output);
-	$('#clientContact').trigger("chosen:updated");
-	},
+		type : "GET",
+		url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		success :function(json) {
+		// 	var json = JSON.parse(data);
+			var output = "";
+			//output = output + "<option value=''>Select Client Contact</option>";
+			for (var i=0; i<json.data.length; i++){
+				var opt = json.data[i];
+				output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
+				$("#clientCurrency").val(opt.clientCurrency);
+			}
+			$("#clientContact").empty();
+			$("#clientContact").append(output);
+			$('#clientContact').trigger("chosen:updated");
+		},
 	});
 	addConversionDiv();
 	getProjectsList(); 
-	}
+}
 </script>
 
 

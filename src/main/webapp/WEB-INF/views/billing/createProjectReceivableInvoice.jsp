@@ -53,7 +53,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
               <div class="col-md-9 chooRadius">		
               <div class="input-group col-md-10 pull-left">
-                <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
+                <select class="chosen-select form-control" multiple="multiple" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
                  <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
               </div>
@@ -295,15 +295,30 @@ function getClientContacts(){
 	success :function(json) {
 // 	var json = JSON.parse(data);
 	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.data.length; i++)
+	//output = output + "<option value=''>Select Client Contact</option>";
+		for (var i=0; i<json.data.length; i++)
+			{
+				var opt = json.data[i];
+				/* if(clientContactId != null && clientContactId != "" && clientContactId !="undefined"){
+					var array = clientContactId.split(",");
+					if(array.includes(opt.spocUserId.toString())){
+						output = output + "<option value='"+opt.spocUserId+"' selected >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}else{
+						output = output + "<option value='"+opt.spocUserId+"' >"+opt.ownerName+"("+opt.spocName+")</option>";
+					}
+				}else{ */
+					output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"("+opt.spocName+")</option>";
+				/* } */
+				$("#clientCurrency").val(opt.clientCurrency);
+			}
+	/* for (var i=0; i<json.data.length; i++)
 	{
 	var opt = json.data[i];
 	// need to use in edit
 	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
 	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"("+opt.spocName+")</option>";
 	$("#clientCurrency").val(opt.clientCurrency);
-	}
+	} */
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
 	$('#clientContact').trigger("chosen:updated");
