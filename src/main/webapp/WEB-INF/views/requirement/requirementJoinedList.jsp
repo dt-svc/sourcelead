@@ -376,7 +376,7 @@ function resetApplicantFilter(){
 	$("ul#empFilter > li input:checkbox").prop("checked",false);
 	$("ul#durationFilter > li input:checkbox").prop("checked",false);
 	$("ul#myClinetListUL > li input:checkbox").prop("checked",false);
-	$("ul#incentivizedFilter > li input:checkbox").prop("checked",false);
+	$("ul#incentivizedFilter  > li input:checkbox").prop("checked",false);
 	
 	requirementJoinedList();
 }

@@ -2552,17 +2552,18 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        
 	        //Clinet reated filter 
 	        List<Long> clientIdsList = new ArrayList<>();
+	        String clientSubQuery = "";
 			if(requirementSubmissionHistoryDTO.getClientId() != null && !requirementSubmissionHistoryDTO.getClientId().isEmpty()){
 				String[] client = requirementSubmissionHistoryDTO.getClientId().split(",");
 				for(int i=0; i<client.length; i++){
 					clientIdsList.add(Long.valueOf(client[i]));
 				}
 			}else {
-				clientIdsList.add(0L);
+				clientIdsList = null;
 			}
-	        
-			String clientSubQuery = " and ((:varZero  IN (:clientIdsList)) OR (:varZero NOT IN (:clientIdsList) and rsh.submissionId.requirement.clientId.id IN (:clientIdsList)))";
-
+	        if(clientIdsList != null) {
+				clientSubQuery = " and (rsh.submissionId.requirement.clientId.id IN (:clientIdsList))";
+	        }
 			//Incentivized filter
 			String incentivizedQuery =  "";
 	        if(requirementSubmissionHistoryDTO.getIncentivizedType() != null && requirementSubmissionHistoryDTO.getIncentivizedType() != "") {
@@ -2615,7 +2616,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    			params.put("endDate",endUTCDate);
 	    		}
 	    		String whereCondition = subQuery;
-	    		Query query =  session.createQuery(from+" "+whereCondition+" "+query1+"");
+	    		Query query =  session.createQuery(from+" "+whereCondition+" "+query1+"").setFirstResult(requirementSubmissionHistoryDTO.getStart()).setMaxResults(requirementSubmissionHistoryDTO.getLength());
 	    		
 	    		for (String str : query.getNamedParameters())
 	            {
