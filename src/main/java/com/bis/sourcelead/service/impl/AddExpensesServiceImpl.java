@@ -170,20 +170,6 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	if (expensesDTO.getProjectMemberId()!= null){
 		projMembers = projectMembersService.getProjectMemberById(expensesDTO.getProjectMemberId());
 		expenses.setProjectMembers(projMembers);	
-		
-		if (StringUtils.isNotBlank(expensesDTO.getExpenseAutoId())){
-		    OrgLocations orgLocations = null;
-		    Projects projects =projMembers.getProjects();
-			if(projects != null && projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
-				orgLocations = projects.getOrgLocationsId();
-			}else {
-				orgLocations = orgLoc;
-			}
-			synchronized (this) {
-				String expenseId = getExpenseId(orgLocations);
-			    expenses.setExpenseId(expenseId);
-			}
-	    }
 	 }
 	if (StringUtils.isNotBlank(expensesDTO.getClientName())){
 		expenses.setClientName(expensesDTO.getClientName());	
@@ -301,9 +287,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	
 	expenses.setExpensesLocationId(orgLoc.getId());
 	
-	 expenses = addExpensesDao.storeAddExpensesData(expenses);
-	 
-	 if(expenses != null && expenses.getProjects() != null && StringUtils.isNotEmpty( expenses.getProjects().getIsReportingManagerAsApprover())
+	if(expenses != null && expenses.getProjects() != null && StringUtils.isNotEmpty( expenses.getProjects().getIsReportingManagerAsApprover())
 			   &&  expenses.getProjects().getIsReportingManagerAsApprover().equalsIgnoreCase("Y")) {
 		   if(projMembers != null && projMembers.getProjectMemberCandidteId() != null &&  projMembers.getProjectMemberCandidteId().getConsultantUser() != null
 				   &&  projMembers.getProjectMemberCandidteId().getConsultantUser()!= null && projMembers.getProjectMemberCandidteId().getOrgLocationId() != null) {
@@ -313,15 +297,36 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 			   }
 		   }
 	   }
-	     
+	
+	if (StringUtils.isEmpty(expenses.getExpenseId())){
+	    OrgLocations orgLocations = null;
+	    Projects projects =projMembers.getProjects();
+		if(projects != null && projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
+			orgLocations = projects.getOrgLocationsId();
+		}else {
+			orgLocations = orgLoc;
+		}
+		 synchronized (this) {
+			   String expenseId = getExpenseId(orgLocations);
+			   expenses.setExpenseId(expenseId);
+			   expenses = addExpensesDao.storeAddExpensesData(expenses);
+			   storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode);
+		 }
+		   
+    }else {
+    	 expenses = addExpensesDao.storeAddExpensesData(expenses);
+    	 storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode);
+    }
+	
+}
+
+private void storeExpenseApprovers(String status,Expenses expenses,HashMap<Integer,User> managers,User loginUser,OrgLocations orgLoc,String currencyCode) throws Exception{
 	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
 		 if(managers != null && !managers.isEmpty()){
 				expenses.setProjectManagerUserList(new ArrayList(managers.values()));
 	     }
 		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "",orgLoc);
 	 }
-	 
-	 
 	 
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		 managers.remove(2);
