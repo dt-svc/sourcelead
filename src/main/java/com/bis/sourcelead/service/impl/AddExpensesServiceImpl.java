@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
@@ -84,6 +85,7 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
 	
 	@Override
 	public String getExpenseId(OrgLocations orgLoc) {
@@ -161,15 +163,27 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	}else {
 		expenses = new Expenses();
 	}
-	if (StringUtils.isNotBlank(expensesDTO.getExpenseAutoId())){
-		expenses.setExpenseId(expensesDTO.getExpenseAutoId());	
-	 }
+	
 	if (StringUtils.isNotBlank(expensesDTO.getExpensePurpose())){
 		expenses.setPurpose(expensesDTO.getExpensePurpose());	
 	 }
 	if (expensesDTO.getProjectMemberId()!= null){
 		projMembers = projectMembersService.getProjectMemberById(expensesDTO.getProjectMemberId());
 		expenses.setProjectMembers(projMembers);	
+		
+		if (StringUtils.isNotBlank(expensesDTO.getExpenseAutoId())){
+		    OrgLocations orgLocations = null;
+		    Projects projects =projMembers.getProjects();
+			if(projects != null && projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
+				orgLocations = projects.getOrgLocationsId();
+			}else {
+				orgLocations = orgLoc;
+			}
+			synchronized (this) {
+				String expenseId = getExpenseId(orgLocations);
+			    expenses.setExpenseId(expenseId);
+			}
+	    }
 	 }
 	if (StringUtils.isNotBlank(expensesDTO.getClientName())){
 		expenses.setClientName(expensesDTO.getClientName());	
