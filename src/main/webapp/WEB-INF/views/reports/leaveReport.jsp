@@ -30,7 +30,7 @@ $( document ).ready(function() {
  <div id="popUp"></div>
     </section>
       <div class="positionRelative reportHead clearfix" style="display:none" id="hearderId">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();" oncontextmenu="return false"></a></span>
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="searchReportCollapse();" oncontextmenu="return false"></a></span>
          
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
@@ -51,7 +51,7 @@ $( document ).ready(function() {
     <div class="contentareaInner-styles clearfix">
     <h4 class="panel-title">
           <a href="javascript:void(0)" id="showReport" style="display:none;"><i class="fa fa-angle-double-left paddingRight"></i>Search Report</a>
-          <a href="javascript:void(0)" onclick="searchReportCollapse();" id="searchReport" style="display:none;"><i class="fa fa-angle-double-left paddingRight"></i>Search Report</a>
+<!--           <a href="javascript:void(0)" onclick="searchReportCollapse();" id="searchReport" style="display:none;"><i class="fa fa-angle-double-left paddingRight"></i>Search Report</a> -->
     </h4>
     <div id="reportCollapse" class="rundiv mt">
       <div class="clearfix form-horizontal minHeight_225 minHeightcol5">
@@ -178,11 +178,31 @@ function exportToPdf(){
 	var endDate = $('#toDate').val();
 	var searchValue = $("#leaveReportDataTableSearch").val();
 	var status="";
+	var leaveTypeIds="";
+	var departmentIds=""
+	var reportRolesId="";
+	var employmentType="";
+	var associateListId="";
 	if($("#status").val() != null){
 		status = $("#status").val();
 		}
+	if($("#leaveTypeList").val() != null){
+		leaveTypeIds = $("#leaveTypeList").val();
+		}
+	if($("#departmentList").val() != null){
+		departmentIds = $("#departmentList").val();
+		}
+	if($("#reportRoles").val() != null){
+		reportRolesId = $("#reportRoles").val();
+		}
+	if($("#designationType").val() != null){
+		employmentType = $("#designationType").val();
+		}
+	if($("#associateList").val() != null){
+		associateListId = $("#associateList").val();
+		}
 	if(ReportsListEmpty > 0){
-		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&type="+type+"&status="+status;
+		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&type="+type+"&status="+status+"&leaveTypeIds="+leaveTypeIds+"&departmentIds="+departmentIds+"&reportRolesId="+reportRolesId+"&employmentType="+employmentType+"&associateListId="+associateListId;
 	}else{
 		var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -208,11 +228,31 @@ function exportUserData(){
 	var searchValue = $("#leaveReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var status="";
-	if($("#status").val() != null){
-		status = $("#status").val();
-		}
+	var leaveTypeIds="";
+	var departmentIds="";
+	var reportRolesId="";
+	var employmentType="";
+	var associateListId="";
+		if($("#status").val() != null){
+			status = $("#status").val();
+			}
+		if($("#leaveTypeList").val() != null){
+			leaveTypeIds = $("#leaveTypeList").val();
+			}
+		if($("#departmentList").val() != null){
+			departmentIds = $("#departmentList").val();
+			}
+		if($("#reportRoles").val() != null){
+			reportRolesId = $("#reportRoles").val();
+			}
+		if($("#designationType").val() != null){
+			employmentType = $("#designationType").val();
+			}
+		if($("#associateList").val() != null){
+			associateListId = $("#associateList").val();
+			}
 	if(ReportsListEmpty > 0){
-		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&status="+status;
+		window.location.href = sourceleadUrl + "/getExportLeaveReport?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&searchValue="+searchValue+"&status="+status+"&leaveTypeIds="+leaveTypeIds+"&departmentIds="+departmentIds+"&reportRolesId="+reportRolesId+"&associateListId="+associateListId;
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -733,6 +773,8 @@ function reportCollapse() {
 	//$("#leaveReportsList").slideUp();
 }
 function searchReportCollapse() {
+	document.getElementById("showReport").style.display="none";
+	document.getElementById("hearderId").style.display="none";
 	$("#fromDate").val('');
 	$("#toDate").val('');
 	$("#departmentList").val('');
@@ -748,6 +790,7 @@ function searchReportCollapse() {
 	$("#leaveTypeList").val('');
 	$("#leaveReportsList, #searchReport").hide();
 	$("#reportCollapse").show();
+	
 }
 
 </script>
