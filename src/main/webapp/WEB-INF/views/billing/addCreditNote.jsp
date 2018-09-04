@@ -133,7 +133,7 @@
             <tbody id="tableId">
             <c:if test="${empty creditDebitNote.creditDebitNoteLineItems}">
               <tr>
-               <input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber0" value="0"/>
+               <input type="hidden" name="creditDebitMaxRowNumber"  id="creditDebitMaxRowNumber0" value="0"/>
               <td>
                 	<div class="width150px">
                 	<input class="form-control calendar" placeholder="Date" type="text" value = "" id="lineItemDate0" name="creditDebitNoteLineItems[0].lineItemDate" onclick="datePickerFunction(0);" field-name="Date" readonly>
@@ -208,7 +208,7 @@
               <tr>
                <input type="hidden" name="creditDebitNoteLineItems[${rows.count-1}].lineItemId" value="${items.lineItemId}" id="lineItemId${rows.count-1}"/>
           
-               <input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber${rows.count-1}" value="${rows.count-1}"/>
+               <input type="hidden" name="creditDebitMaxRowNumber"  id="creditDebitMaxRowNumber${rows.count-1}" value="${rows.count-1}"/>
               <td>
                 	<div class="width150px">
                 	<input class="form-control calendar" placeholder="Date" type="text" value = "${items.lineItemDate}" id="lineItemDate${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].lineItemDate" onclick="datePickerFunction(${rows.count-1});" field-name="Date" readonly>
@@ -410,7 +410,7 @@ function cloneRows(){
 function prepareDynamicRoweDiv(rowId){
 	var rowDiv ='';
    rowDiv =rowDiv+ '<tr id ="dynamicAddrowDiv'+rowId+'">';
-   rowDiv =rowDiv+ '<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber'+rowId+'" value="'+rowId+'"/>';
+   rowDiv =rowDiv+ '<input type="hidden" name="creditDebitMaxRowNumber"  id="creditDebitMaxRowNumber'+rowId+'" value="'+rowId+'"/>';
    rowDiv =rowDiv+ ' <td>';
    rowDiv =rowDiv+ '	<div class="width150px">';
    rowDiv =rowDiv+ '	<input class="form-control calendar" placeholder="Date" type="text" value = "" id="lineItemDate'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].lineItemDate" field-name="Date" readonly onclick="datePickerFunction('+rowId+');">';
@@ -641,7 +641,7 @@ function datePickerFunction(id){
   
   
   function calculateSumSubTotal(id){
-		 var maxRowNum = $("input[id^='invoiceExpMaxRowNumber']").length; // $("#invoiceExpMaxRowNumber"+id).val();
+		 var maxRowNum = $("input[id^='creditDebitMaxRowNumber']").length; // $("#creditDebitMaxRowNumber"+id).val();
 		 var sum = 0;
 		  for(var i=0;i < maxRowNum;i++){
 			  if(document.getElementById("rowTotalAmount"+i)){

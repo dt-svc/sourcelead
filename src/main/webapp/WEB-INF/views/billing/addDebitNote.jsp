@@ -7,6 +7,7 @@
 	uri="http://www.springframework.org/security/tags"%>
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
+<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index  rowindex starts from 0-->
 
 <div class="wraper"> 
   
@@ -22,6 +23,7 @@
     <div id="creditDebitLoading"></div>
       <div class="clearfix mt formgroup-minheight">
       <form id="creditNote_form" name ="creditNote_form" method="Post">
+       <input type = "hidden" name = "savedNoteId" value ="${creditDebitNote.savedNoteId}">
 		<div class="col-xs-12 col-sm-6 col-md-6">
 					<div class="form-group row">
 					  <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
@@ -130,8 +132,9 @@
               </tr>
             </thead>
             <tbody id="tableId">
+            <c:if test="${empty creditDebitNote.creditDebitNoteLineItems}">
               <tr>
-               <input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber0" value="0"/>
+               <input type="hidden" name="creditDebitMaxRowNumber"  id="creditDebitMaxRowNumber0" value="0"/>
               <td>
                 	<div class="width150px">
                 	<input class="form-control calendar" placeholder="Date" type="text" value = "" id="lineItemDate0" name="creditDebitNoteLineItems[0].lineItemDate" onclick="datePickerFunction(0);" field-name="Date" readonly>
@@ -174,8 +177,8 @@
                 <td>
                   <div class="width100px">
                     <select class="form-control sel" id="taxType0" name="creditDebitNoteLineItems[0].taxType" onchange="taxCalculatedAmount(0);">
-                      <option value="Percentage">Tax %</option>
-                      <option value="Flat">Tax Value</option>
+                      <option value="Percentage">Percentage</option>
+                      <option value="Flat">Flat</option>
                     </select>
                   </div>
                 </td>
@@ -197,6 +200,87 @@
                 </td>
                 <td><a class="text-danger"  title="Remove row"><i class=""></i></a></td>
               </tr>
+                <c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/>
+              </c:if>
+              
+              <c:if test="${!empty creditDebitNote.creditDebitNoteLineItems}">
+              <c:forEach var="items" items="${creditDebitNote.creditDebitNoteLineItems}" varStatus="rows">
+              
+              <tr>
+               <input type="hidden" name="creditDebitNoteLineItems[${rows.count-1}].lineItemId" value="${items.lineItemId}" id="lineItemId${rows.count-1}"/>
+          
+               <input type="hidden" name="creditDebitMaxRowNumber"  id="creditDebitMaxRowNumber${rows.count-1}" value="${rows.count-1}"/>
+              <td>
+                	<div class="width150px">
+                	<input class="form-control calendar" placeholder="Date" type="text" value = "${items.lineItemDate}" id="lineItemDate${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].lineItemDate" onclick="datePickerFunction(${rows.count-1});" field-name="Date" readonly>
+
+                	</div>
+                </td>
+                <td>
+                	<div class="width150px">
+                		<textarea placeholder="Description" rows="1" class="form-control" id="inlineDescription${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].inlineDescription" field-name="Description">${items.inlineDescription}</textarea>
+                	</div>
+                </td>
+                <td>
+                  <div class="width150px">
+                  	<select class="chosen-select" id="associates${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].associates">
+                  	<option selected value="">Select Associate</option>
+                  		<c:forEach var="approvers" items="${approversList}">
+                  		<option ${items.associates == approvers.id ? 'selected': ''} value="${approvers.id}">${approvers.firstName}</option>
+					</c:forEach>
+					</select>
+                  </div>
+                </td>
+                <td>
+                  <div class="tbldata-dotdot-vsm">
+                    <select class="form-control sel" id="account${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].account">
+                      <option selected value = "">Select Account</option>
+                      <c:forEach var="paymentAccount" items="${paymentAccountList}">
+					<option value="${paymentAccount.id}" ${paymentAccount.defaultAccount ? 'selected="selected"' : ""}>${paymentAccount.accountType == "WEPAY" ? paymentAccount.email.concat(" (WePay)") : paymentAccount.accountNumber.concat(" (").concat(paymentAccount.bankName).concat(")")}</option>	</c:forEach>
+                    </select>
+                  </div>
+                </td>
+                <td>
+                    <div class="width90px">
+                    <input type="text" class="form-control" placeholder="Quantity" id="quantity${rows.count-1}" value = "${items.quantity}" name="creditDebitNoteLineItems[${rows.count-1}].quantity" field-name="Quantity" onkeyup="totalCalculateAmount(${rows.count-1});validateNumber(this);" data-validation="required">
+                  </div>
+                </td>
+                <td>
+                  <div class="width100px">
+                    <input type="text" class="form-control" placeholder="Price" id="price${rows.count-1}" value = "${items.price}" name="creditDebitNoteLineItems[${rows.count-1}].price" field-name="Price" onkeyup="totalCalculateAmount(${rows.count-1});validateNumber(this);" data-validation="required">
+                  </div>
+                </td>
+                <td>
+                  <div class="width100px">
+                    <select class="form-control sel" id="taxType${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].taxType" onchange="taxCalculatedAmount(${rows.count-1});">
+                       <option  ${items.taxType  == 'Percentage' ? 'selected' : ''}>Percentage</option>
+                         <option  ${items.taxType  == 'Flat' ? 'selected' : ''}>Flat</option>
+                    </select>
+                  </div>
+                </td>
+                <td>
+                	<div class="width110px">
+                    <input type="text" class="form-control" placeholder="Tax Amount" id="taxAmount${rows.count-1}" value = "${items.taxAmount}" name="creditDebitNoteLineItems[${rows.count-1}].taxAmount" onkeyup="taxCalculatedAmount(${rows.count-1});validateNumber(this);">
+                  </div>
+                </td>
+                <td>
+                	<div class="width110px">
+                    <input type="text" class="form-control" placeholder="Amount" id="rowTotal${rows.count-1}" value = "${items.rowTotal}" name="creditDebitNoteLineItems[${rows.count-1}].rowTotal" readonly="readonly">
+                  </div>
+                </td>
+                
+                <td>
+                	<div class="width110px">
+                    <input type="text" class="form-control" placeholder="Total Amount" value = "${items.rowTotalAmount}" id="rowTotalAmount${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].rowTotalAmount" readonly="readonly">
+                  </div>
+                </td>
+                <td><a class="text-danger"  title="Remove row"><i class="fa fa-remove" onclick="removeDynamicRowDiv(${rows.count-1});"></i></a></td>
+              </tr>
+              <!--increment the rowIndex  for dynamic rows after save or page navigation  -->
+              <c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/>
+             </c:forEach>
+              </c:if>
+              
             </tbody>
           
           </table>
@@ -220,8 +304,8 @@
                   <div class="row">
                     <div class="col-md-7 paddingRight">
                       <select class="form-control input-sm" id="disCount" name="discountType" onchange="calculateDisCount();">
-                        <option  ${creditDebitNote.discountType  == 'Percentage' ? 'selected' : ''}>Discount %</option>
-                         <option  ${creditDebitNote.discountType  == 'Flat' ? 'selected' : ''}>Discount Value</option>
+                        <option  ${creditDebitNote.discountType  == 'Percentage' ? 'selected' : ''}>Percentage</option>
+                         <option  ${creditDebitNote.discountType  == 'Flat' ? 'selected' : ''}>Flat</option>
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft" id="discountValueDiv">
@@ -317,7 +401,7 @@ $('body').on('blur', '#creditNote_form', function() {
 <!-- Add row functionality -->
 <script type="text/javascript">
 
-var rowId =1;
+var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.;
 function cloneRows(){
    console.log("rowId value is --->"+rowId);
    $("#tableId").append(prepareDynamicRoweDiv(rowId++)); 
@@ -326,7 +410,7 @@ function cloneRows(){
 function prepareDynamicRoweDiv(rowId){
 	var rowDiv ='';
    rowDiv =rowDiv+ '<tr id ="dynamicAddrowDiv'+rowId+'">';
-   rowDiv =rowDiv+ '<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber'+rowId+'" value="'+rowId+'"/>';
+   rowDiv =rowDiv+ '<input type="hidden" name="creditDebitMaxRowNumber"  id="creditDebitMaxRowNumber'+rowId+'" value="'+rowId+'"/>';
    rowDiv =rowDiv+ ' <td>';
    rowDiv =rowDiv+ '	<div class="width150px">';
    rowDiv =rowDiv+ '	<input class="form-control calendar" placeholder="Date" type="text" value = "" id="lineItemDate'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].lineItemDate" field-name="Date" readonly onclick="datePickerFunction('+rowId+');">';
@@ -368,8 +452,8 @@ function prepareDynamicRoweDiv(rowId){
    rowDiv =rowDiv+ '  <td>';
    rowDiv =rowDiv+ '    <div class="width100px">';
    rowDiv =rowDiv+ '      <select class="form-control sel" id="taxType'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].taxType" onchange="taxCalculatedAmount('+rowId+');">';
-   rowDiv =rowDiv+ '        <option value="Percentage">Tax %</option>';
-   rowDiv =rowDiv+ '        <option value="Flat">Tax Value</option>';
+   rowDiv =rowDiv+ '        <option value="Percentage">Percentage</option>';
+   rowDiv =rowDiv+ '        <option value="Flat">Flat</option>';
    rowDiv =rowDiv+ '      </select>';
    rowDiv =rowDiv+ '    </div>';
    rowDiv =rowDiv+ '  </td>';
@@ -421,6 +505,7 @@ function getSpocsList() {
 				url : sourceleadUrl + "/getPayableVendorContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
 				success : function(json) {
 					var output = "";
+					if(json.data !=null){
 					for (var i = 0; i < json.data.length; i++) {
 						var opt = json.data[i];
 						if(spocIds != ""){
@@ -433,6 +518,7 @@ function getSpocsList() {
 						}else{
 							output = output	+ "<option value='" +opt.spocUserId+ "'>"+ opt.ownerName + "(" + opt.spocName+ ")</option>";
 						}
+					}
 					}
 					$("#spocUser").append(output);
 					$('#spocUser').trigger("chosen:updated");
@@ -470,6 +556,7 @@ function getSpocsList() {
 			url : sourceleadUrl + "/getInvoiceListForCreditDebitNote?"+ tokenParamName + "=" + tokenValue + "&orgRelationId="+ orgRelationId + "&invoiceType=Payables",
 			success : function(json) {
 				var output = "";
+				if(json.data !=null){
 				for (var i = 0; i < json.data.length; i++) {
 					var opt = json.data[i];
 					if(invoiceIds != ""){
@@ -482,6 +569,7 @@ function getSpocsList() {
 					}else{
 						output = output	+ "<option value='" +opt.id+ "'>"+ opt.invoiceId + "</option>";
 					}
+				}
 				}
 				$("#invoceId").append(output);
 				$('#invoceId').trigger("chosen:updated");
@@ -556,7 +644,8 @@ function datePickerFunction(id){
   
   
   function calculateSumSubTotal(id){
-		 var maxRowNum = $("#invoiceExpMaxRowNumber"+id).val();
+		 //var maxRowNum = $("#invoiceExpMaxRowNumber"+id).val();
+		 var maxRowNum = $("input[id^='creditDebitMaxRowNumber']").length; // $("#creditDebitMaxRowNumber"+id).val();
 		 var sum = 0;
 		  for(var i=0;i <= maxRowNum;i++){
 			  if(document.getElementById("rowTotalAmount"+i)){
