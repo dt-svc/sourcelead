@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serializable{
@@ -41,7 +42,20 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String frequency;
 	private String fromDate;
 	private String toDate;
- 
+	private String employmentType;
+	private String clientId;
+	private String exportType;
+	private List<String> locationsList;
+	private String jobGeneratedId;
+	private String backoutType;
+	private String backoutReason;
+	private String incentivize;
+	private String jobRating;
+	private String rejectedType;
+	private String rejectedReason;
+	private String joinDate;
+	private String incentivizedType;
+	
 	public String getCandidateName()
 	{
 		return candidateName;
@@ -329,5 +343,84 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	public void setToDate(String toDate)
 	{
 		this.toDate = toDate;
+	}
+	public String getClientId() {
+		return clientId;
+	}
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+	public String getEmploymentType() {
+		return employmentType;
+	}
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+	public String getExportType() {
+		return exportType;
+	}
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
+	public String getJobGeneratedId() {
+		return jobGeneratedId;
+	}
+	public void setJobGeneratedId(String jobGeneratedId) {
+		this.jobGeneratedId = jobGeneratedId;
+	}
+	public String getBackoutType() {
+		return backoutType;
+	}
+	public String getBackoutReason() {
+		return backoutReason;
+	}
+	public String getIncentivize() {
+		return incentivize;
+	}
+	 
+	public void setBackoutType(String backoutType) {
+		this.backoutType = backoutType;
+	}
+	public void setBackoutReason(String backoutReason) {
+		this.backoutReason = backoutReason;
+	}
+	public void setIncentivize(String incentivize) {
+		this.incentivize = incentivize;
+	}
+	public String getJobRating() {
+		return jobRating;
+	}
+	public void setJobRating(String jobRating) {
+		this.jobRating = jobRating;
+	}
+	public String getRejectedType() {
+		return rejectedType;
+	}
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+	public void setRejectedType(String rejectedType) {
+		this.rejectedType = rejectedType;
+	}
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+	public String getJoinDate() {
+		return joinDate;
+	}
+	public void setJoinDate(String joinDate) {
+		this.joinDate = joinDate;
+	}
+	public String getIncentivizedType() {
+		return incentivizedType;
+	}
+	public void setIncentivizedType(String incentivizedType) {
+		this.incentivizedType = incentivizedType;
 	}
 }
