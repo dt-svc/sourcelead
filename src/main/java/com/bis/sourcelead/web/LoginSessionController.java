@@ -926,7 +926,7 @@ public class LoginSessionController {
   
 
   @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
-  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password ,@RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletRequest request) throws Exception {
+  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletRequest request) throws Exception {
 	  ModelAndView model = new ModelAndView();
 	  User user = userService.findByUserName(userName);
 
@@ -939,7 +939,6 @@ public class LoginSessionController {
 		boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress,user.getId());
 		model.addObject("alreadyVerifiedBefore", alreadyVerifiedBefore);
 		model.addObject("username", userName);
-//		model.addObject("password", password);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("requirementUUID", requirementUUID);
 		model.addObject("roleList", userSpocRolesList);
