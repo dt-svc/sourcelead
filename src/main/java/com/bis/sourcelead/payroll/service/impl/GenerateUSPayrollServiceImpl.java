@@ -1257,7 +1257,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					updatedDedHis = getUpdatedContribution(updatedDedHis,preContribution,PayrollConstant.PRE_TAX);
 				}
 				if(postContribution != null && postContribution.size() >0) {
-					updatedDedHis = getUpdatedContribution(updatedDedHis,preContribution,PayrollConstant.POST_TAX);
+					updatedDedHis = getUpdatedContribution(updatedDedHis,postContribution,PayrollConstant.POST_TAX);
 				}
 			}
 //			List<ContributionDTO> postContribution = null;
