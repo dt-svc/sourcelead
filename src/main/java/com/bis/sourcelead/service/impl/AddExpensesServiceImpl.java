@@ -86,8 +86,6 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	@Autowired
-	private AddExpensesService addExpensesService;
 	
 	@Override
 	public String getExpenseId(OrgLocations orgLoc) {
@@ -181,8 +179,10 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 			}else {
 				orgLocations = orgLoc;
 			}
-			String expenseId = addExpensesService.getExpenseId(orgLocations);
-		    expenses.setExpenseId(expenseId);	
+			synchronized (this) {
+				String expenseId = getExpenseId(orgLocations);
+			    expenses.setExpenseId(expenseId);
+			}
 	    }
 	 }
 	if (StringUtils.isNotBlank(expensesDTO.getClientName())){
