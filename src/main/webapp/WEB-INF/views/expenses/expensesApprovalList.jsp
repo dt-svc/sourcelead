@@ -670,6 +670,8 @@ $(".overIcon, .newActPop").click(function(e){
 
 $("#appro-pop").click(function(){
 	$(".newActPop").hide();
+	$(".approved_pop").toggle();
+	
 });
 
 </script>
