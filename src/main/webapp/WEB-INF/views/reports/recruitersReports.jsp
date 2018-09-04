@@ -53,6 +53,7 @@ function getDayWiseReports(){
           <select class="form-control repSelFiled" id="reportTypeId" onChange="flushCustom(); custDates();">
 			  <!-- <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option> -->
+			  <option value="today">Today</option>
 			  <option value="Last_7_days">Last 7 days</option>
 			  <option value="Last_15_days">Last 15 days</option>
 			  <option value="1_month">Last 1 month</option>

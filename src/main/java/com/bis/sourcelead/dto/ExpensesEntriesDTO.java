@@ -29,6 +29,10 @@ public class ExpensesEntriesDTO {
 	
 	private String categoryAmountType;
 	
+	private String categoryApprovedAmountType;
+	
+	private String categoryApprovedAmount;
+	
 	private String paidBy;
 	
 	private String entryDescription;
@@ -39,7 +43,11 @@ public class ExpensesEntriesDTO {
 	
 	private Boolean billable;
 	
-	private float amount;
+	private String amountchangereason;
+	
+	private BigDecimal submittedamount;
+	
+	private BigDecimal amount;
 
 	public Long getId() {
 		return id;
@@ -137,6 +145,7 @@ public class ExpensesEntriesDTO {
 		this.fileInfo = fileInfo;
 	}
 
+
 	public BigDecimal getAmountRoundOff() {
 		return amountRoundOff;
 	}
@@ -161,11 +170,11 @@ public class ExpensesEntriesDTO {
 		this.paidBy = paidBy;
 	}
 
-	public float getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(float amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 
@@ -176,6 +185,41 @@ public class ExpensesEntriesDTO {
 	public void setBillable(Boolean billable) {
 		this.billable = billable;
 	}
+
+	public String getAmountchangereason() {
+		return amountchangereason;
+	}
+
+	public void setAmountchangereason(String amountchangereason) {
+		this.amountchangereason = amountchangereason;
+	}
+
+	public BigDecimal getSubmittedamount() {
+		return submittedamount;
+	}
+
+	public void setSubmittedamount(BigDecimal submittedamount) {
+		this.submittedamount = submittedamount;
+	}
+
+	public String getCategoryApprovedAmountType() {
+		return categoryApprovedAmountType;
+	}
+
+	public void setCategoryApprovedAmountType(String categoryApprovedAmountType) {
+		this.categoryApprovedAmountType = categoryApprovedAmountType;
+	}
+
+	public String getCategoryApprovedAmount() {
+		return categoryApprovedAmount;
+	}
+
+	public void setCategoryApprovedAmount(String categoryApprovedAmount) {
+		this.categoryApprovedAmount = categoryApprovedAmount;
+	}
+
+
+	
 	
 	
 }

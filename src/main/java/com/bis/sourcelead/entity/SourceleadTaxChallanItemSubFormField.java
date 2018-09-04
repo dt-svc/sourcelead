@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "SOURCELEAD_TAX_CHALLAN_ITEM_SUB_FORMFIELD", catalog = "sourcelead")
+@Table(name = "SOURCELEAD_TAX_CHALLAN_ITEM_SUB_FORMFIELD")
 public class SourceleadTaxChallanItemSubFormField implements Serializable {
 	private static final long serialVersionUID = 1L;
 

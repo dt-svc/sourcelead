@@ -1317,6 +1317,107 @@ $(document).ready(function () {
 	               </c:if>
 	            </c:forEach>
 	         </c:if>
+            <div class="form-group">
+                <label class="col-md-3">Job Rating</label>
+                <div class="col-md-9">
+                  <div>
+				   		<input type="text" class="form-control"  placeholder="Job Rating" id="jobRate" name="jobRate" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" field-name="Job Rating" value="${requirement.jobRate}">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="col-md-3">Incentivized</label>
+                <div class="col-md-9 toggle-button">
+                      <label class="switch">
+                      <input type="checkbox" ${requirement.incentivized == 'Y' ? 'checked' : ''} id="incentivized" name="incentivized" value="${!empty requirement.incentivized ? requirement.incentivized : 'N'}" class="nofJoinersDIv">
+                      <div class="slider round"></div>
+                      </label>
+                </div>
+              </div>
+              
+              <div class="form-group" id="nofJoiners" ${requirement.incentivized == 'Y' ? '' : 'style="display:none;"'}>
+              		<label class="col-md-3">No. of Joiners <span class="text-danger paddingLeft">*</span></label>
+              		
+              		<c:if test="${!empty requirementIncentiveList}">
+			            <c:forEach var="inc" items="${requirementIncentiveList}" varStatus="rowCount">
+			              
+			              <div class="col-md-9 ${rowCount.index > 0 ? 'col-md-offset-3 mt' : ''}" id="nofJoinersDiv[${rowCount.index}].rowId">
+	              			<div class="row">
+			                	<div class="col-md-3">
+			                    	<input type="text" class="form-control" id="requirementIncentive[${rowCount.index}].joiners" name="requirementIncentive[${rowCount.index}].joiners" value="${inc.joiners}" placeholder="Joiners" field-name="Joiners" data-validation="required validate_Space validate_length length1-5 validate_int">
+			                	</div>
+			                	<div class="col-md-9">
+			              			<div class="row">
+					                	<div class="col-md-4 padding_right">
+					                		<div class="btn-group">
+										    	<button type="button" class="btn ${!empty inc.joinersAmountType && inc.joinersAmountType == 'flat' ? 'btn-primary' : !empty inc.joinersAmountType && inc.joinersAmountType == 'percentage' ? 'btn-default' : 'btn-primary'}" id="requirementIncentive[${rowCount.index}].flatAmount" value="flat" onClick="getJoinersAmountType(this)">Flat</button>
+										    	<button type="button" class="btn ${!empty inc.joinersAmountType && inc.joinersAmountType == 'percentage' ? 'btn-primary' : 'btn-default'}" id="requirementIncentive[${rowCount.index}].percentageAmount" value="percentage" onClick="getJoinersAmountType(this)">%</button>
+										    	<input type="hidden"  id="requirementIncentive[${rowCount.index}].joinersAmountType" name="requirementIncentive[${rowCount.index}].joinersAmountType" value="${inc.joinersAmountType}">
+										    	<input type="hidden"  id="requirementIncentive[${rowCount.index}].id" name="requirementIncentive[${rowCount.index}].id" value="${inc.id}">
+											</div>
+										</div>
+									    <div class="col-md-6 paddingLeft paddingRight">
+				                  			<input type="text" class="form-control" value="${inc.joinersAmount}" id="requirementIncentive[${rowCount.index}].joinersAmount" name="requirementIncentive[${rowCount.index}].joinersAmount" placeholder="Amount" field-name="Amount" data-validation="required validate_Space validate_length ${!empty inc.joinersAmountType && inc.joinersAmountType == 'percentage' ? 'length1-2' : 'length1-10'} validate_int">
+				                	    </div>
+					                	<div class="col-md-1 text-center mt10">
+					                		<c:if test="${rowCount.index == 0}">
+					                			<label><i class="fa fa-plus paddingRight cursorPointer" onClick="addJoinersRow();"></i></label>
+					                		</c:if>
+					                		<c:if test="${rowCount.index > 0}">
+					                			<i class="fa fa-times colorRed cursorPointer" onclick="removeJoinersRow(${rowCount.index}); getDeletedIds(${inc.id})"></i>
+					                		</c:if>
+					                	</div>
+				                	</div>
+		                		</div>
+	                		</div>
+	                		<div class="clearfix"></div>
+		                </div>
+			            </c:forEach>
+			         </c:if>
+              		
+              		<c:if test="${empty requirementIncentiveList}">
+              		
+              		<div class="col-md-9" id="nofJoinersDiv[0].rowId">
+              			<div class="row">
+		                	<div class="col-md-3">
+		                    	<input type="text" class="form-control" id="requirementIncentive[0].joiners" name="requirementIncentive[0].joiners" value="" placeholder="Joiners" field-name="Joiners" data-validation="required validate_Space validate_length length1-5 validate_int" data-validation-optional="true">
+		                	</div>
+		                	<div class="col-md-9">
+		              			<div class="row">
+				                	<div class="col-md-4 padding_right">
+				                		<div class="btn-group">
+									    	<button type="button" class="btn btn-primary" id="requirementIncentive[0].flatAmount" value="flat" onClick="getJoinersAmountType(this)">Flat</button>
+									    	<button type="button" class="btn btn-default" id="requirementIncentive[0].percentageAmount" value="percentage" onClick="getJoinersAmountType(this)">%</button>
+									    	<input type="hidden"  id="requirementIncentive[0].joinersAmountType" name="requirementIncentive[0].joinersAmountType" value="flat">
+										</div>
+									</div>
+								    <div class="col-md-6 paddingLeft paddingRight">
+			                  			<input type="text" class="form-control" value="" id="requirementIncentive[0].joinersAmount" name="requirementIncentive[0].joinersAmount" placeholder="Amount" field-name="Amount" data-validation="required validate_Space validate_length length1-10 validate_int" data-validation-optional="true">
+			                	    </div>
+				                	<div class="col-md-1 text-center mt10">
+				                		<label><i class="fa fa-plus paddingRight cursorPointer" onClick="addJoinersRow();"></i></label>
+				                	</div>
+			                	</div>
+	                		</div>
+                		</div>
+                		<div class="clearfix"></div>
+	                </div>
+	                </c:if>
+	                <div id="nofJoinersAddRow" class="clearfix mt">
+	                
+	                <input type="hidden" id="joinersCount" value="${requirementIncentiveListSize}">
+	                </div>
+	                
+                </div>
+                <div class="form-group">
+	                <label class="col-md-3">Pay out Period (Days)</label>
+	                <div class="col-md-9">
+	                      <input type="text" value="${requirement.payOutPeriod}" id="payOutPeriod" name="payOutPeriod" class="form-control" data-validation="validate_Space validate_length length1-3 validate_int" data-validation-optional="true">
+	                </div>
+	            </div>
+	            <input type="hidden" id="arrDeletedIds" name="arrDeletedIds" value="">
+              </div>
             </div>
           </div>
         </div>
@@ -3583,6 +3684,120 @@ function geolocate1(rowId) {
             autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
         });
     }
+}
+</script>
+<script>
+	var ckbox = $('#incentivized');
+	$('.nofJoinersDIv').on('click',function () {
+        if (ckbox.is(':checked')) {
+            $("#nofJoiners").css('display','block');
+            $('#incentivized').val('Y');
+            document.getElementById("requirementIncentive[0].joiners").removeAttribute('data-validation-optional');
+            document.getElementById("requirementIncentive[0].joinersAmount").removeAttribute('data-validation-optional');
+        } else {
+            $("#nofJoiners").css('display','none');
+            $('#incentivized').val('N');
+            document.getElementById("requirementIncentive[0].joiners").setAttribute('data-validation-optional','true');
+            document.getElementById("requirementIncentive[0].joinersAmount").setAttribute('data-validation-optional','true');
+            $("#nofJoinersAddRow").empty();
+        }
+    });
+	
+	/* if ($("#incentivized").attr('checked') == true){
+		$("#nofJoiners").css('display','block');
+	} */
+	
+</script>
+<!-- <script>
+$("#percentageAmount").click(function(){
+	$(this).toggleClass("btn-default btn-primary");
+	$("#flatAmount").toggleClass("btn-primary btn-default");
+});
+$("#flatAmount").click(function(){
+	$(this).toggleClass("btn-default btn-primary");
+	$("#percentageAmount").toggleClass("btn-primary btn-default");
+});
+</script> -->
+<script type="text/javascript">
+function getJoinersAmountType(e){
+	var amountType = e.value;
+	 if(amountType == 'flat'){
+		 $(e).removeClass('btn btn-default');
+		 $(e).attr('class','btn btn-primary');
+		 document.getElementById(e.id.split('.')[0]+".percentageAmount").className = "btn btn-default";
+		 document.getElementById(e.id.split('.')[0]+".joinersAmountType").value = "flat";
+		 
+		 var rId = e.id.split('[').pop().split(']').shift();
+		 var x = document.getElementById("nofJoinersDiv["+rId+"].rowId");
+		 $(x).find("p.jquery_form_error_message").remove();
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").value = "";
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('data-validation');
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("data-validation", "validate_Space validate_length length1-10 validate_int");
+		 
+	 } 
+	 
+	 if(amountType == 'percentage'){
+		 $(e).removeClass('btn btn-default');
+		 $(e).attr('class','btn btn-primary');
+		 document.getElementById(e.id.split('.')[0]+".flatAmount").className = "btn btn-default";
+		 document.getElementById(e.id.split('.')[0]+".joinersAmountType").value = "percentage";
+		 
+		 /* var rId = e.id.split('[').pop().split(']').shift();
+		 var x = document.getElementById("nofJoinersDiv["+rId+"].rowId");
+		 x.querySelectorAll("p.jquery_form_error_message")[1].remove(); */
+		 var rId = e.id.split('[').pop().split(']').shift();
+		 var x = document.getElementById("nofJoinersDiv["+rId+"].rowId");
+		 $(x).find("p.jquery_form_error_message").remove();
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").value= "";
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('data-validation');
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("data-validation", "validate_Space validate_length length1-2 validate_int");
+	 }
+}
+
+function addJoinersRow(){
+	var rowNo = Number($("#joinersCount").val()) + Number(1);
+	var result = "";
+	result = result +'<div class="col-md-9 col-md-offset-3 mt" id="nofJoinersDiv['+rowNo+'].rowId">';
+	result = result +'<div class="row">';
+	result = result +'<div class="col-md-3">';
+	result = result +'	<input type="text" class="form-control" id="requirementIncentive['+rowNo+'].joiners" name="requirementIncentive['+rowNo+'].joiners" value="" placeholder="Joiners" field-name="Joiners" data-validation="required validate_Space validate_length length1-5 validate_int">';
+	result = result +'</div>';
+	result = result +'<div class="col-md-9">';
+	result = result +'	<div class="row">';
+	result = result +'  	<div class="col-md-4 padding_right">';
+	result = result +'		<div class="btn-group">';
+	result = result +'	    	<button type="button" class="btn btn-primary" id="requirementIncentive['+rowNo+'].flatAmount" value="flat" onClick="getJoinersAmountType(this)">Flat</button>';
+	result = result +'	    	<button type="button" class="btn btn-default" id="requirementIncentive['+rowNo+'].percentageAmount" value="percentage" onClick="getJoinersAmountType(this)">%</button>';
+	result = result +'	    	<input type="hidden"  id="requirementIncentive['+rowNo+'].joinersAmountType" name="requirementIncentive['+rowNo+'].joinersAmountType" value="flat">';
+	result = result +'		</div>';
+	result = result +'	</div>';
+	result = result +'  <div class="col-md-6 paddingLeft paddingRight">';
+	result = result +'		<input type="text" class="form-control" value="" id="requirementIncentive['+rowNo+'].joinersAmount" name="requirementIncentive['+rowNo+'].joinersAmount" placeholder="Amount" field-name="Amount" data-validation="required validate_Space validate_length length1-10 validate_int">';
+	result = result +'  </div>';
+	result = result +'	<div class="col-md-1 text-center mt10">';
+	result = result +'		<i class="fa fa-times colorRed cursorPointer" onclick="removeJoinersRow('+rowNo+');"></i>';
+	result = result +'	</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	
+	$("#nofJoinersAddRow").append(result);
+	$("#joinersCount").val(rowNo);
+}
+
+function removeJoinersRow(rowNo){
+	document.getElementById("nofJoinersDiv["+rowNo+"].rowId").remove();
+}
+
+function getDeletedIds(id){
+	var idList = $("#arrDeletedIds").val();
+	if(idList == ''){
+		$("#arrDeletedIds").val(id);
+	}else{
+		$("#arrDeletedIds").val(idList + "," + id);
+	}
+	
 }
 </script>
 <jsp:include page="../masterFooter.jsp" />
