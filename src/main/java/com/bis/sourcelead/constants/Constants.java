@@ -1216,6 +1216,7 @@ public class Constants {
 	public static final String[] IT_DECLARATION_SUBMISSION_FORM = { "Item Name", "Particulars" ,"Eligibility(Rs.)","Amount"};
 	public static final String DEDUCTED = "Deducted";
 	
+	public static final String FULL_TIME = "Full Time";
 	public static final String USER_EMAIL_UPDATION = "UserEmailUpdation";
 	
 	
